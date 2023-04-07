@@ -809,7 +809,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                             // the support of multi-unlimited dimension. KY 2016-02-09
                             if(dim->HaveUnlimitedDim() == true) {
                                 
-                                string unlimited_dim_name = cvar->getNewName();
+                                string unlimited_dim_name = dim->getNewName();
                                 if(unlimited_dim_names=="") 
                                    unlimited_dim_names = unlimited_dim_name;
                                 else {
@@ -1402,9 +1402,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -1440,9 +1440,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
            
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -1480,9 +1480,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
@@ -1519,9 +1519,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
@@ -1553,9 +1553,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName())
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -1638,9 +1638,9 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
 
         for (const auto &dim:dims) {
             if (""==dim->getNewName()) 
-                ar->append_dim((int)(dim->getSize()));
+                ar->append_dim_ll(dim->getSize());
             else 
-                ar->append_dim((int)(dim->getSize()), dim->getNewName());
+                ar->append_dim_ll(dim->getSize(), dim->getNewName());
         }
 
         ar->set_is_dap4(true);

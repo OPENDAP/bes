@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/gateway_module/tests testsuite])
 
-m4_include(../../../modules/handler_tests_macros.m4)
+m4_include(../../common/handler_tests_macros.m4)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([gateway/fnoc1.nc.nc.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dds.bescmd])
@@ -17,7 +17,6 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.nc.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dods.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dods.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.dods.dods.bescmd])
-
 
 # Utilizing dapreader to read returned and cached DAP4 responses.
 #
@@ -46,4 +45,5 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.dap.dap.bescmd])
 #
 AT_BESCMD_RESPONSE_TEST([gateway/test_streaming.bescmd])
 AT_BESCMD_RESPONSE_TEST([gateway/test_streaming2.bescmd])
-
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([gateway/test_streaming2_dods.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/test_streaming2_dap.bescmd])

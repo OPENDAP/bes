@@ -44,7 +44,7 @@
 #include "DapObj.h"
 #include "D4Group.h"
 
-#include "run_tests_cppunit.h"
+#include "modules/common/run_tests_cppunit.h"
 
 using namespace std;
 using namespace d4_tools;

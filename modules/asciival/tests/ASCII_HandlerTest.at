@@ -30,7 +30,6 @@ AT_BESCMD_RESPONSE_TEST([ascii/sequence_1.dmr.dap.ascii.bescmd])
 AT_BESCMD_RESPONSE_TEST([ascii/zero_length_array.data.ascii.bescmd])
 AT_BESCMD_RESPONSE_TEST([ascii/zero_length_array.data.ascii2.bescmd])
 
-
 # there is a bug in the way dapreader or DAP4 handles reading values
 # from variables that causes this test to use the Test* class' default
 # values instead of the values loaded into the variables by dapreader.
@@ -39,3 +38,6 @@ AT_BESCMD_RESPONSE_TEST([ascii/zero_length_array.data.ascii2.bescmd])
 AT_BESCMD_RESPONSE_TEST([ascii/zero_length_array.data.ascii3.bescmd], [xfail])
 
 AT_BESCMD_RESPONSE_TEST([ascii/function_result_unwrap.ascii.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([ascii/test_ba_start.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST([ascii/test_ba_stride_stop.dap.bescmd])

@@ -37,6 +37,7 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <libdap/InternalErr.h>
 #include <BESDebug.h>
@@ -752,9 +753,9 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 
         for (const auto &dim:dims) {
             if ("" == dim->getNewName())
-                ar->append_dim((int)(dim->getSize()));
+                ar->append_dim_ll(dim->getSize());
             else
-                ar->append_dim((int)(dim->getSize()), dim->getNewName());
+                ar->append_dim_ll(dim->getSize(), dim->getNewName());
         }
 
         delete bt;
@@ -1299,7 +1300,7 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
         char sep=' ';
         vector<string>cvalue_vec;
         HDF5CFUtil::Split_helper(cvalue_vec,tempstring2,sep);
-        for (int i = 0; i<cvalue_vec.size();i++) {
+        for (unsigned int i = 0; i<cvalue_vec.size();i++) {
             HDF5CFUtil::cha_co(cvalue_vec[i],var_path);
             string t_str = get_cf_string(cvalue_vec[i]);
             if(i == 0) 
@@ -1521,9 +1522,9 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
                 bool has_dim0 = false;
                 bool has_dim1 = false;
                 for(;dim_i !=dim_e;dim_i++) {
-                    if((*dim_i).name == dim0name && (*dim_i).size == dim0size)
+                    if((*dim_i).name == dim0name && (*dim_i).size == (int64_t)dim0size)
                         has_dim0 = true;
-                    else if((*dim_i).name == dim1name && (*dim_i).size == dim1size)                              
+                    else if((*dim_i).name == dim1name && (*dim_i).size == (int64_t)dim1size)                              
                         has_dim1 = true;
                 }
 
@@ -1694,7 +1695,7 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
                 // Need to ensure the map array can be found.
                 unordered_map<string, Array*>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
                 if(it_ma != d4map_array_maps.end()) {
-                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
+                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
                     has_map_array->maps()->add_map(d4_map);
                 }
             }
@@ -1706,8 +1707,12 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
 
         for ( auto has_map_array:has_map_arrays) {
 
-            // If we cannot find the "coordinates",then this var doesn't have a map.
+            // Find the "coordinates".
             vector<string> coord_names;
+
+            // The coord dimension names cannot be the third dimension.
+            unordered_set<string>coord_dim_names;
+
             D4Attributes *d4_attrs = has_map_array->attributes();
             const D4Attribute *d4_attr = d4_attrs->find("coordinates");
             if (d4_attr != nullptr) {
@@ -1721,14 +1726,38 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
             }
 
             // Search if these coordiates can be found in the coordinate variable list.
+            // If yes, add maps.
             for(const auto& cname:coord_names) {
 
                 unordered_map<string, Array*>::const_iterator it_ma = d4map_array_maps.find(cname);
                 if(it_ma != d4map_array_maps.end()) {
-                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
+
+                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
                     has_map_array->maps()->add_map(d4_map);
+
+                    // We need to find the dimension names of these coordinates.
+                    Array::Dim_iter dim_i = it_ma->second->dim_begin();
+                    Array::Dim_iter dim_e = it_ma->second->dim_end();
+                    for (; dim_i != dim_e; dim_i++) 
+                        coord_dim_names.insert(dim_i->name);
                 }
 
+            }
+ 
+            // Some variables have the third or the fourth dimensions that don't belong to dimensions of the cvs from coordinate attribute.
+            // For these dimensions, we need to check if any real CV(like dimension scale) exists. If yes, add them to it.
+            Array::Dim_iter dim_i = has_map_array->dim_begin();
+            Array::Dim_iter dim_e = has_map_array->dim_end();
+            for (; dim_i != dim_e; dim_i++) {
+
+                // This dimension is not found among dimensions of coordiate variables. Check if it is a valid map candidate.If yes, add it.
+                if (coord_dim_names.find(dim_i->name) == coord_dim_names.end()) {
+                    unordered_map<string, Array*>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
+                    if(it_ma != d4map_array_maps.end()) {
+                        auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+                        has_map_array->maps()->add_map(d4_map);
+                    }
+                }
             }
 
             // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
@@ -1741,9 +1770,6 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
         d4map_array_map.second = nullptr;
  
 }
-
-
-
 
 // Mainly copy from HDF5CF::get_CF_string. Should be 
 // removed if we can generate DMR independently.

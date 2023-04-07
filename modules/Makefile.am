@@ -5,12 +5,12 @@
 AUTOMAKE_OPTIONS = foreign
 
 # Might move these to a child directory for testing things. jhrg 5/16/18
-EXTRA_DIST = data/README read_test_baseline.cc read_test_baseline.h handler_tests_macros.m4 run_tests_cppunit.h
+EXTRA_DIST = data/README
 
 toplevel_datadir = $(datadir)/hyrax/data
 toplevel_data_DATA = data/README
 
-SUBDIRS = csv_handler freeform_handler functions usage asciival
+SUBDIRS = common csv_handler freeform_handler functions usage asciival
 
 if WITH_CMR
 SUBDIRS += cmr_module
@@ -40,7 +40,7 @@ SUBDIRS += netcdf_handler fileout_netcdf fileout_covjson
 endif
 
 # Why are these here? Because they have tests that depend on netcdf.
-SUBDIRS +=  httpd_catalog_module ngap_module s3_reader fileout_json w10n_handler gateway_module xml_data_handler
+SUBDIRS +=  httpd_catalog_module ngap_module s3_reader fileout_json w10n_handler gateway_module xml_data_handler builddmrpp_module
 
 if BUILD_GDAL
 SUBDIRS += gdal_module

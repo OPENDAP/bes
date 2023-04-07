@@ -20,15 +20,15 @@ bool HDF5CFGeoCF1D::read()
 {
 
     // Declaration of offset,count and step
-    vector<int> offset;
+    vector<int64_t> offset;
     offset.resize(1);
-    vector<int> count;
+    vector<int64_t> count;
     count.resize(1);
-    vector<int> step;
+    vector<int64_t> step;
     step.resize(1);
 
     // Obtain offset,step and count from the client expression constraint
-    int nelms = -1;
+    int64_t nelms = -1;
     nelms = format_constraint(offset.data(), step.data(), count.data());
 
     vector<double> val;
@@ -46,18 +46,18 @@ bool HDF5CFGeoCF1D::read()
     
     double step_v = (evalue - svalue)/tnumelm;
     val[0] = svalue;
-    for(int i = 1;i<tnumelm; i++)
+    for(int64_t i = 1;i<tnumelm; i++)
         val[i] = val[i-1] + step_v;
 
     if (nelms == tnumelm) {
-        set_value((dods_float64 *) val.data(), nelms);
+        set_value_ll((dods_float64 *) val.data(), nelms);
     }
     else {
         vector<double>val_subset;
         val_subset.resize(nelms);
-        for (int i = 0; i < count[0]; i++)
+        for (int64_t i = 0; i < count[0]; i++)
             val_subset[i] = val[offset[0] + step[0] * i];
-        set_value((dods_float64 *) val_subset.data(), nelms);
+        set_value_ll((dods_float64 *) val_subset.data(), nelms);
     }
  
     return false;

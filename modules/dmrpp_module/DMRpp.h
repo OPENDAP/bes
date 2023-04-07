@@ -45,7 +45,7 @@ class DMRpp : public libdap::DMR {
 private:
     std::string d_href;
     std::string d_version;
-    bool d_print_chunks;
+    bool d_print_chunks{};
 
 public:
     DMRpp() : DMR() { }

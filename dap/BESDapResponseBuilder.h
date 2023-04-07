@@ -111,31 +111,31 @@ public:
 
     virtual std::string get_dap4ce() const;
 
-    virtual void set_dap4ce(std::string _ce);
+    virtual void set_dap4ce(const std::string &_ce);
 
     virtual std::string get_dap4function() const;
 
-    virtual void set_dap4function(std::string _func);
+    virtual void set_dap4function(const std::string &_func);
 
     virtual std::string get_store_result() const;
 
-    virtual void set_store_result(std::string _sr);
+    virtual void set_store_result(const std::string &_sr);
 
     virtual std::string get_async_accepted() const;
 
-    virtual void set_async_accepted(std::string _aa);
+    virtual void set_async_accepted(const std::string &_aa);
 
     virtual std::string get_btp_func_ce() const {
         return d_btp_func_ce;
     }
 
-    virtual void set_btp_func_ce(std::string _ce) {
+    virtual void set_btp_func_ce(const std::string &_ce) {
         d_btp_func_ce = _ce;
     }
 
     virtual std::string get_dataset_name() const;
 
-    virtual void set_dataset_name(const std::string _dataset);
+    virtual void set_dataset_name(const std::string &_dataset);
 
     virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="d_int" space="catalog">/data/d_dset_big.h5</setContainer>
+    <define name="d">
+	<container name="d_int" >
+	<dap4constraint>dset[1:5368709117:5368709119]</dap4constraint>
+	</container>
+    </define>
+    <get type="dap" definition="d" />
+</request>

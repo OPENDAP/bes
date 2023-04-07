@@ -44,6 +44,7 @@
 #include <BESDebug.h>
 
 #include <libdap/mime_util.h>
+#include <libdap/D4Maps.h>
 
 #include "hdf5_handler.h"
 #include "HDF5Int32.h"
@@ -328,7 +329,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
 //bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
 //bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,unordered_map<string, vector<string>>& varpath_to_dims)
-bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,const eos5_dim_info_t & eos5_dim_info)
+bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,const eos5_dim_info_t & eos5_dim_info, vector<string> & handled_cv_names)
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -425,7 +426,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
             // Work on this later, redundant for dmr since dataset is opened twice. KY 2015-07-01
             // Dimension scale is handled in this routine. So need to keep it. KY 2020-06-10
             bool is_pure_dim = false;
-            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_eos5,is_pure_dim,hdf5_hls);
+            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_eos5,is_pure_dim,hdf5_hls,handled_cv_names);
                
             if(false == is_pure_dim) {
                 hid_t dset_id = -1;
@@ -606,7 +607,7 @@ cout <<"par_grp_name is "<<par_grp_name <<endl;
                     par_grp->add_group_nocopy(tem_d4_cgroup);
 
                     // Continue searching the objects under this group
-                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info);
+                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_cv_names);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
@@ -758,7 +759,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         // This essentially stores in the struct.
         ar->set_memneed(dt_inst.need);
         ar->set_numdim(dt_inst.ndims);
-        ar->set_numelm((int) (dt_inst.nelmts));
+        ar->set_numelm((dt_inst.nelmts));
         ar->set_varpath(varname);
 
  
@@ -782,9 +783,9 @@ cerr<<"ndims is "<<dt_inst.ndims <<endl;
 
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                 if(dt_inst.dimnames[dim_index] !="") 
-                    ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
+                    ar->append_dim_ll(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
                 else 
-                    ar->append_dim(dt_inst.size[dim_index]);
+                    ar->append_dim_ll(dt_inst.size[dim_index]);
                     // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
             }
             dt_inst.dimnames.clear();
@@ -803,11 +804,11 @@ for (const auto & dname:dim_names)
             // For DAP4, no need to add dimension if no dimension name
             if (is_eos5_dims) {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim(dt_inst.size[dim_index],dim_names[dim_index]);
+                    ar->append_dim_ll(dt_inst.size[dim_index],dim_names[dim_index]);
             }
             else {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim(dt_inst.size[dim_index]); 
+                    ar->append_dim_ll(dt_inst.size[dim_index]); 
             }
         }
 
@@ -911,8 +912,8 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             // These parameters are used in the data read function.
             ar->set_memneed(dt_inst.need);
             ar->set_numdim(dt_inst.ndims);
-            ar->set_numelm((int) (dt_inst.nelmts));
-            ar->set_length((int) (dt_inst.nelmts));
+            ar->set_numelm(dt_inst.nelmts);
+            ar->set_length(dt_inst.nelmts);
             ar->set_varpath(varname);
  
             // If having dimension names, add the dimension names to DAP.
@@ -930,15 +931,15 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             if(dimnames_size ==dt_inst.ndims) {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                     if(dt_inst.dimnames[dim_index] !="")
-                        ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
+                        ar->append_dim_ll(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
                     else 
-                        ar->append_dim(dt_inst.size[dim_index]);
+                        ar->append_dim_ll(dt_inst.size[dim_index]);
                 }
                 dt_inst.dimnames.clear();
             }
             else {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim(dt_inst.size[dim_index]);
+                    ar->append_dim_ll(dt_inst.size[dim_index]);
                     
             }
 
@@ -1336,7 +1337,7 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
         string objno;
 
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
         char *obj_tok_str = nullptr;
         if(H5Otoken_to_str(h5obj_id, &(obj_info.token), &obj_tok_str) <0) {
             throw InternalErr(__FILE__, __LINE__, "H5Otoken_to_str failed.");
@@ -2056,3 +2057,472 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
  
     return ret_value;
 }
+
+// The main routine to handle the coverage support. The handled_all_cv_names should be detected before
+// calling this routine. It includes all valid dimension scale variables. that is: the pure netCDF4-like
+// dimensions are not included.
+void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_all_cv_names) {
+
+    // We need to construct the var name to Array map,using unordered_map for quick search.
+    // Dimension scale path to array maps(Grid and non-coordinate dimensions)
+    unordered_map<string, Array*> dsname_array_maps;
+    obtain_ds_name_array_maps(d4_root,dsname_array_maps, handled_all_cv_names);
+
+
+    // Coordinate to array(Swath or other cases)
+    unordered_map<string, Array*> coname_array_maps;
+ 
+    Constructor::Vars_iter vi = d4_root->var_begin();
+    Constructor::Vars_iter ve = d4_root->var_end();
+
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+
+        // Only Array can have maps.
+        if (libdap::dods_array_c == v->type()) {
+
+            auto t_a = static_cast<Array *>(*vi);
+
+            vector<string> coord_names;
+            unordered_set<string> handled_dim_names;
+            obtain_coord_names(t_a,coord_names);
+
+            // Having the coordinate attributes,
+            if (coord_names.empty()==false) {
+                make_coord_names_fpath(d4_root,coord_names);
+                remove_empty_coord_names(coord_names);
+                add_coord_maps(d4_root,t_a,coord_names,coname_array_maps,handled_dim_names);
+                add_dimscale_maps(t_a,dsname_array_maps,handled_dim_names);
+            }
+            else  // Just use the dimension scales.
+                add_dimscale_maps(t_a,dsname_array_maps,handled_dim_names);
+ 
+        }
+    }
+
+    // Go over the children groups.
+    for (D4Group::groupsIter gi = d4_root->grp_begin(), ge = d4_root->grp_end(); gi != ge; ++gi) 
+        add_dap4_coverage_default_internal(*gi, dsname_array_maps,coname_array_maps);
+
+    // Now we need to remove the maps from the coordinate variables and the dimension scales. 
+    // First dimension scales.
+    for (auto &ds_map:dsname_array_maps) {
+        D4Maps *d4_maps = (ds_map.second)->maps();
+        if (d4_maps->size() !=1) 
+            throw InternalErr(__FILE__, __LINE__, "The number of dims of a dimension scale should be 1");
+        D4Map * d4_map = d4_maps->get_map(0);
+        d4_maps->remove_map(d4_map);
+        delete d4_map;
+    }
+
+    // Then coordinates
+    for (auto &cv_map:coname_array_maps) {
+        D4Maps *d4_maps = (cv_map.second)->maps();
+
+        D4Maps::D4MapsIter d4map_i = d4_maps->map_begin();
+        D4Maps::D4MapsIter d4map_e = d4_maps->map_end();
+
+        for(; d4map_i !=d4map_e;d4map_i++) { 
+            D4Map *tmp_map = *d4map_i;
+            d4_maps->remove_map(*d4map_i);
+            delete tmp_map;
+        }
+
+    }
+
+}
+
+void add_dap4_coverage_default_internal(D4Group* d4_grp, unordered_map<string, Array*> &dsname_array_maps, unordered_map<string, Array*> &coname_array_maps) {
+
+
+    Constructor::Vars_iter vi = d4_grp->var_begin();
+    Constructor::Vars_iter ve = d4_grp->var_end();
+
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+
+        // Only Arrays can have maps.
+        if (libdap::dods_array_c == v->type()) {
+
+            auto t_a = static_cast<Array *>(*vi);
+
+            vector<string> coord_names;
+            unordered_set<string> handled_dim_names;
+
+            // Obtain the coordinate names if having the coordinates attribute.
+            obtain_coord_names(t_a,coord_names);
+
+            if (coord_names.empty()==false) {
+
+                // Obtain FQN of  all coordinates 
+                make_coord_names_fpath(d4_grp,coord_names);
+                remove_empty_coord_names(coord_names);
+
+                // Add coordinates to the coordinate-array map. Also need to return handled dimension names.
+                add_coord_maps(d4_grp,t_a,coord_names,coname_array_maps,handled_dim_names);
+
+                // For the dimensions not covered by found coordinates attribute, check dimension scales.
+                add_dimscale_maps(t_a,dsname_array_maps,handled_dim_names);
+            }
+            else 
+                add_dimscale_maps(t_a,dsname_array_maps,handled_dim_names);
+
+#if 0
+for (unsigned i = 0; i <coord_names.size();i++)
+cerr<<"coordinate name final is "<<coord_names[i] <<endl;
+cerr<<"var FQN is "<<t_a->FQN() <<endl;
+#endif
+ 
+        }
+
+    }
+
+    // Go over children groups.
+    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
+        //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
+        add_dap4_coverage_default_internal(*gi, dsname_array_maps, coname_array_maps);
+    }
+}
+
+void obtain_coord_names(Array* ar, vector<string> & coord_names) {
+
+    D4Attributes *d4_attrs = ar->attributes();
+    D4Attribute *d4_attr = d4_attrs->find("coordinates");
+    if (d4_attr != nullptr) {
+        if (d4_attr->type() == attr_str_c) {
+            if (d4_attr->num_values() == 1) {
+                string tempstring = d4_attr->value(0);
+                char sep=' ';
+                HDF5CFUtil::Split_helper(coord_names,tempstring,sep);
+            }
+            // From our observations, the coordinates attribute is always just one string. 
+            // So this else block may never be executed.
+            else {
+
+                for (D4Attribute::D4AttributeIter av_i = d4_attr->value_begin(), av_e = d4_attr->value_end(); av_i != av_e; av_i++) {
+                    vector <string> tempstr_vec;
+                    char sep=' ';
+                    HDF5CFUtil::Split_helper(tempstr_vec,*av_i,sep);
+                    for (const auto &tve:tempstr_vec)
+                        coord_names.push_back(tve);
+                }
+            }
+        }
+    }
+}
+
+// Generate absolute path(FQN) for all coordinate variables.
+void make_coord_names_fpath(D4Group* d4_grp,  vector<string> &coord_names) {
+
+    for (auto &cname:coord_names) {
+
+        // No path inside the coordinate name.
+        if (cname.find('/')==string::npos) { 
+            if (false == obtain_no_path_cv(d4_grp,cname))
+                cname ="";
+        }
+        else if(cname[0] == '/') // the absolute path is specified
+            handle_absolute_path_cv(d4_grp,cname);
+        else  //  The relative path is specified.
+            handle_relative_path_cv(d4_grp, cname);
+    }
+
+}
+
+// This is for case when coordinates is something like "lat lon", no path is provided.
+// We then search the variable names at this group and the ancestor groups until we find them.
+// Note this function only applies to one coordinate at each time.
+bool obtain_no_path_cv(D4Group *d4_grp, string &coord_name) {
+    
+    bool found_cv = false;
+    
+    Constructor::Vars_iter vi = d4_grp->var_begin();
+    Constructor::Vars_iter ve = d4_grp->var_end();
+
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+
+        // Currently we only consider the cv that is an array.
+        if (libdap::dods_array_c == v->type()) {
+
+            auto t_a = static_cast<Array *>(*vi);
+            if (coord_name == t_a->name()) {
+                // Find the coordinate variable, But We need to return the absolute path of the variable.
+                coord_name = t_a->FQN();
+                found_cv = true;
+                break;
+            }
+        }
+    }
+
+    if (found_cv == false) {
+        if (d4_grp->get_parent()) {
+            auto d4_grp_par = static_cast<D4Group*>(d4_grp->get_parent());
+            found_cv = obtain_no_path_cv(d4_grp_par,coord_name);
+        }
+    }
+    return found_cv;
+}
+
+void handle_absolute_path_cv(const D4Group *d4_grp, const string &coord_name) {
+    // For the time being, we don't check if this cv with absolute path exists.
+    return;
+}
+
+// Handle the coordinate attribute that includes relative paths such as coordinates={../../foo etc}
+void handle_relative_path_cv(const D4Group *d4_grp, string &coord_name) {
+
+    // The only valid relative path is among the path of the ancestor groups according to CF.
+    // So if the identified coordinate variable (cv) names are not under the ancestor groups, we
+    // don't consider a valid coordinate and skip it. Also we assume the "../" is used
+    // in the relative path as a way to go to the parent group.
+
+    bool find_coord = true;
+    string sep = "../";
+    unsigned short sep_count = 0;
+    size_t pos = coord_name.find(sep, 0);
+    if (pos !=0)
+        find_coord = false;
+    else {
+        while(pos != string::npos)
+        {   
+            sep_count++;
+            size_t temp_pos = pos;
+            pos = coord_name.find(sep,pos+1);
+            // If we find something not like ../../../??,this is invalid.
+            if ((pos !=string::npos) && (pos !=(temp_pos+3))) {
+                find_coord = false;
+                break;
+            }
+        }
+    }
+    string msg = "The coordinate attribute that includes the relative path ";
+    msg +="must contain at least one ../ string but this coordinate with the value <";
+    msg +=coord_name +'>'+" doesn't contain one.";
+
+    // This exception may be lifted if we care more on the execution of operations than  the values of coordinates and the maps.
+    if (sep_count == 0)
+         throw InternalErr(__FILE__, __LINE__, msg); 
+
+    // Now we need to find the absolute path of the coordinate variable. 
+    if (find_coord) {
+
+        // Obtain variable's name and FQN
+        string grp_fqn  = d4_grp->FQN();
+
+        size_t co_path_pos = 0;
+            
+        size_t var_back_st_pos = grp_fqn.size()-1;
+        if (var_back_st_pos >0)
+            var_back_st_pos--;
+
+        // To find the coordinate variable path, we need to search backward and then reduce the number of "../".
+        for (size_t i =var_back_st_pos; i >=0;i--) {
+	    if (grp_fqn[i] == '/') {
+                sep_count--;
+                if(sep_count == 0) {
+                    co_path_pos = i;
+                    break;
+                }
+            }
+        }
+
+        if (sep_count > 0) { // Invalid relative paths. 
+            //We should not include this coordinate in the map. 
+            coord_name="";
+        }
+        else {//build up the coordinate variable full path
+
+            // The path includes the '/' at the end.
+            string the_path = grp_fqn.substr(0,co_path_pos+1);
+            string the_name = HDF5CFUtil::obtain_string_after_lastslash(coord_name);
+            coord_name = the_path + the_name;
+        }
+    }
+}
+
+void remove_empty_coord_names(vector<string> & coord_names) {
+
+    for (auto it = coord_names.begin(); it !=coord_names.end();) {
+        if (*it =="")
+            it = coord_names.erase(it);
+        else 
+            ++it;
+    }
+
+}
+
+// Obtain global dimension scale to array maps for this group for the coverage support.
+// Note: the handled_all_cv_names are the coordinte variables based on dimension scales  detected before adding DAP4 maps.
+// This vector is const and should not be changed.
+void obtain_ds_name_array_maps(D4Group *d4_grp,unordered_map<string,Array*>&dsn_array_maps, 
+                               const vector<string>& handled_all_cv_names) {
+
+    // Loop through all the variables in this group.
+    Constructor::Vars_iter vi = d4_grp->var_begin();
+    Constructor::Vars_iter ve = d4_grp->var_end();
+
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+
+        // Only Array can have maps.
+        if (libdap::dods_array_c == v->type()) {
+
+            auto t_a = static_cast<Array *>(*vi);
+            // Dimension scales must be 1-dimension. So we save many unnecessary operations.
+            // Find the dimension scale, insert to the global unordered_map.
+            if (t_a->dimensions() == 1) {
+                string t_a_fqn = t_a->FQN();
+                if (find(handled_all_cv_names.begin(),handled_all_cv_names.end(),t_a_fqn) != handled_all_cv_names.end()) 
+                    dsn_array_maps.emplace(t_a_fqn,t_a);
+            }
+        }
+    }
+
+#if 0
+for (const auto &dmap:dsn_array_maps) 
+    cout <<"dim map name before: " << dmap.first <<endl;
+#endif
+
+
+    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
+        BESDEBUG("h5",  "In group:  " << (*gi)->name() << endl);
+        obtain_ds_name_array_maps(*gi, dsn_array_maps, handled_all_cv_names);
+    }
+
+}
+
+// Add the valid coordinate variables(via CF's coordinates attribute of this variable) to the var's DAP4 maps.
+void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names, 
+                    unordered_map<string,Array*> & coname_array_maps, 
+                    unordered_set<string> & handled_dim_names) {
+
+    // Search if the coord name(in full path) can be found in the current coname_array_maps. 
+    // If the coord name is found, add it to the DAP4 map.
+    for (auto cv_it =coord_names.begin(); cv_it != coord_names.end();) {
+
+        unordered_map<string, Array*>::const_iterator it_ma = coname_array_maps.find(*cv_it);
+        if (it_ma != coname_array_maps.end()) {
+
+            auto d4_map = new D4Map(it_ma->first, it_ma->second);
+            var->maps()->add_map(d4_map);
+
+            // Obtain the dimension full paths. These dimensions are handled dimensions. The dimension scales of 
+            // these dimensions should NOT be included in the final coverage maps. 
+            obtain_handled_dim_names(it_ma->second,handled_dim_names);
+            
+            // Also need to remove this coordinate name from the coord_names vector since this coordinate is handled.
+            // Note the coord_names is only for this variable. 
+            cv_it = coord_names.erase(cv_it);
+            
+        }
+        else 
+            ++cv_it;
+    }
+
+   // Now we need to search the rest of this variable's coordinates.
+    for (auto cv_it =coord_names.begin(); cv_it != coord_names.end();) {
+
+        bool found_cv = false;
+        Constructor::Vars_iter vi = d4_grp->var_begin();
+        Constructor::Vars_iter ve = d4_grp->var_end();
+
+        for (; vi != ve; vi++) {
+    
+            const BaseType *v = *vi;
+    
+            // DAP4 requires the maps to be Arrays. So we only consider the cv that is an array.
+            // Note the DSG(Discrete Sample Geometry) data may contain scalar coordinates. DAP4
+            // cannot handle such a case now. So no maps will be generated for scalar coordiates.
+            if (libdap::dods_array_c == v->type()) {
+    
+                auto t_a = static_cast<Array *>(*vi);
+                // Find it.
+                if (*cv_it == t_a->FQN()) {
+    
+                    // Add the maps
+                    auto d4_map = new D4Map(t_a->FQN(), t_a);
+                    var->maps()->add_map(d4_map);
+
+                    // Need to add this coordinate to the coname_array_maps 
+                    coname_array_maps.emplace(t_a->FQN(),t_a);
+
+                    // Obtain the dimension full paths. These dimensions are handled dimensions. The dimension scales of
+                    // these dimensions should NOT be included in the final coverage maps.
+                    obtain_handled_dim_names(t_a,handled_dim_names);
+
+                    found_cv = true;
+                    break;
+                }
+            }
+        }
+
+        // Done with this coordinate, erase it from the coordinate names vector, search the next.
+        if (found_cv) 
+            cv_it = coord_names.erase(cv_it);
+        else
+            ++cv_it;
+    }
+
+    // Need to check the parent group and call recursively for the coordinates not found in this group..
+    if (coord_names.empty() == false && d4_grp->get_parent()) {
+        auto d4_grp_par = static_cast<D4Group*>(d4_grp->get_parent());
+        add_coord_maps(d4_grp_par,var,coord_names,coname_array_maps,handled_dim_names);
+    }
+}
+
+// Add the valid coordinate variables(via dimension scales) to the var's DAP4 maps.
+// Loop through the handled dimension names(by the coordinate variables) set
+// Then check this var's dimensions. Only add this var's unhandled coordinates(dimension scales) if these dimension scales exist. 
+void add_dimscale_maps(libdap::Array* var, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names) {
+
+    BESDEBUG("h5","Coming to add_dimscale_maps() "<<endl);
+
+    Array::Dim_iter di = var->dim_begin();
+    Array::Dim_iter de = var->dim_end();
+
+    for (; di != de; di++) {
+
+        const D4Dimension * d4_dim = var->dimension_D4dim(di);
+
+        // DAP4 dimension may not exist, so need to check.
+        if(d4_dim) { 
+
+            // Fully Qualified name(absolute path) needs to be used as a key for search.
+            string dim_fqn = d4_dim->fully_qualified_name();
+
+            // Find that this dimension is not handled, we need to check if there is a coordinate variable via dimension scale 
+            // for this dimension.
+            if (handled_dim_names.find(dim_fqn) == handled_dim_names.end()) {
+
+                unordered_map<string, Array*>::const_iterator it_ma = dc_array_maps.find(dim_fqn);
+
+                // Find a valid coordinate variable for this dimension, insert this coordinate variable as a DAP4 map to this var.
+                if (it_ma != dc_array_maps.end()) {
+                    auto d4_map = new D4Map(it_ma->first, it_ma->second);
+                    var->maps()->add_map(d4_map);
+                }
+            }
+        }
+    }
+    return;
+}
+
+
+// Obtain handled dimension names of this variable. An unordered set is used for quick search.
+void obtain_handled_dim_names(Array *var, unordered_set<string> & handled_dim_names) {
+
+    Array::Dim_iter di = var->dim_begin();
+    Array::Dim_iter de = var->dim_end();
+
+    for (; di != de; di++) {
+        const D4Dimension * d4_dim = var->dimension_D4dim(di);
+        if (d4_dim) 
+            handled_dim_names.insert(d4_dim->fully_qualified_name());
+    }
+}
+ 

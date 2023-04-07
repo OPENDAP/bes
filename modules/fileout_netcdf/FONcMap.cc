@@ -141,7 +141,7 @@ bool FONcMap::compare(libdap::Array *tomap)
     }
 
     // compare the dimension size. Is this the same as the length of the array
-    if (isequal && tomap->dimension_size(tomap->dim_begin(), true) != map->dimension_size(map->dim_begin(), true)) {
+    if (isequal && tomap->dimension_size_ll(tomap->dim_begin(), true) != map->dimension_size_ll(map->dim_begin(), true)) {
         isequal = false;
     }
 

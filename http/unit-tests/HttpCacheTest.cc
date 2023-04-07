@@ -38,7 +38,7 @@
 #include "test_config.h"
 
 // Maybe the common testing code in modules should be moved up one level? jhrg 11/3/22
-#include "modules/run_tests_cppunit.h"
+#include "modules/common/run_tests_cppunit.h"
 
 using namespace std;
 
@@ -66,19 +66,9 @@ public:
         DBG(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
         DBG2(show_file(bes_conf));
         TheBESKeys::ConfigFile = bes_conf;
+        TheBESKeys::TheKeys()->reload_keys();
 
         DBG(cerr << "setUp() - END" << endl);
-    }
-
-    void tearDown() override {
-        DBG(cerr << endl);
-        DBG(cerr << "tearDown() - BEGIN" << endl);
-
-        // Reload the keys after every test.
-        delete TheBESKeys::d_instance;
-        TheBESKeys::d_instance = nullptr;
-
-        DBG(cerr << "tearDown() - END" << endl);
     }
 
 /*##################################################################################################*/

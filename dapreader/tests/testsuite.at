@@ -2,7 +2,7 @@
 
 AT_INIT([bes/dapreader/tests ./testsuite])
 
-m4_include([../../modules/handler_tests_macros.m4])
+m4_include([../../modules/common/handler_tests_macros.m4])
 
 ## These initial tests look at the basic operation of the dapreader
 ## handler.
@@ -114,3 +114,6 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/zero_length_array.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/zero_length_array.dmr2.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/zero_length_array.dap2.bescmd])
 
+# Test big start,stop,stride values (>4GB) in the expression constraint
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/test_ba_start.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/test_ba_stride_stop.dap.bescmd])

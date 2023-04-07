@@ -8,6 +8,7 @@
         <Int16 name="i"/>
         <Int32 name="j"/>
         <Dim name="/dim1"/>
+        <Map name="/dim1"/>
     </Structure>
     <Group name="g1">
         <Dimension name="dim2" size="3"/>
@@ -19,6 +20,8 @@
             <Float32 name="f"/>
             <Dim name="/dim1"/>
             <Dim name="/g1/dim2"/>
+            <Map name="/dim1"/>
+            <Map name="/g1/dim2"/>
         </Structure>
     </Group>
 </Dataset>

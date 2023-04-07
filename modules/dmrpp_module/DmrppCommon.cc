@@ -292,7 +292,6 @@ unsigned long DmrppCommon::add_chunk(
         const vector<unsigned long long> &position_in_array)
 {
     shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, position_in_array));
-
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
@@ -381,7 +380,9 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     if (!d_chunk_dimension_sizes.empty()) { //d_chunk_dimension_sizes.size() > 0) {
         // Write element "chunkDimensionSizes" with dmrpp namespace:
         ostringstream oss;
-        copy(d_chunk_dimension_sizes.begin(), d_chunk_dimension_sizes.end(), ostream_iterator<unsigned int>(oss, " "));
+        // Note: the ostream_iterator previously used unsigned int, which may siliently generate the wrong value when
+        // the size is >4G. Fix it by using unsigned long long. KY 2023-02-09
+        copy(d_chunk_dimension_sizes.begin(), d_chunk_dimension_sizes.end(), ostream_iterator<unsigned long long>(oss, " "));
         string sizes = oss.str();
         sizes.erase(sizes.size() - 1, 1);    // trim the trailing space
 
@@ -414,7 +415,10 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             vector<unsigned long long> pia = chunk->get_position_in_array();
             ostringstream oss;
             oss << "[";
-            copy(pia.begin(), pia.end(), ostream_iterator<unsigned int>(oss, ","));
+
+            // Note: the ostream_iterator previously used unsigned int, which may siliently generate the wrong value when
+            // the size is >4G. Fix it by using unsigned long long. KY 2023-02-09
+            copy(pia.begin(), pia.end(), ostream_iterator<unsigned long long>(oss, ","));
             string pia_str = oss.str();
             if (pia.size() > 0) pia_str.replace(pia_str.size() - 1, 1, "]"); // replace the trailing ',' with ']'
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) pia_str.c_str()) < 0)

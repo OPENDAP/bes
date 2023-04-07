@@ -103,8 +103,8 @@ private:
     void read_contiguous_string();
 
 #ifdef USE_READ_SERIAL
-    virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned int> *target_element_address,
-        std::vector<unsigned int> *chunk_source_address, Chunk *chunk);
+    virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned long long> *target_element_address,
+        std::vector<unsigned long long> *chunk_source_address, Chunk *chunk);
     virtual void read_chunks_serial();
 #endif
 
@@ -128,7 +128,7 @@ private:
     void read_chunks();
     void read_chunks_unconstrained();
 
-    unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
+    unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address, std::shared_ptr<Chunk> chunk);
 

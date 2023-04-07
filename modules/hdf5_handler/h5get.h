@@ -45,7 +45,7 @@ hid_t get_attr_info(hid_t dset, int index, bool, DSattr_t * attr_inst, bool*);
 
 std::string get_dap_type(hid_t type,bool);
 
-void get_dataset_dmr(const hid_t file_id, hid_t pid, const std::string &dname, DS_t * dt_inst_ptr,bool has_dimscale, bool is_eos5, bool &is_pure_dims,std::vector<link_info_t> &);
+void get_dataset_dmr(const hid_t file_id, hid_t pid, const std::string &dname, DS_t * dt_inst_ptr,bool has_dimscale, bool is_eos5, bool &is_pure_dims,std::vector<link_info_t> &,std::vector<std::string> &);
 void get_dataset(hid_t pid, const std::string &dname, DS_t * dt_inst_ptr);
 
 hid_t get_fileid(const char *filename);

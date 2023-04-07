@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/fileout_covjson/tests ./testsuite])
 
-m4_include(../../../modules/handler_tests_macros.m4)
+m4_include(../../common/handler_tests_macros.m4)
 
 # The data size is huge, so we only test the metadata.
 AT_BESCMD_RESPONSE_TEST([covjson_nasa/AIRS_md.bescmd])

@@ -26,7 +26,7 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 # Note These tests do not work when run in parallel.
 check-local: atconfig atlocal $(TESTSUITE)
