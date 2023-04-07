@@ -165,20 +165,25 @@ string S3Container::access()
                 besTimer.start("DMR++ retrieval: " + dmrpp_url->str());
             }
 #endif
-            d_dmrpp_rresource->retrieveResource(content_filters);
+            //d_dmrpp_rresource->retrieveResource(content_filters); // <- previous code
+            d_dmrpp_rresource->retrieve_resource();
         }
 
+        //BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url->str() << " returning cached file "
+        //         << d_dmrpp_rresource->getCacheFileName() << endl);
         BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url->str() << " returning cached file "
-                 << d_dmrpp_rresource->getCacheFileName() << endl);
+                                << d_dmrpp_rresource->get_filename() << endl);
     }
 
     // RemoteResource has a destructor that unlocks the cached item. This string is
     // how the DMR++ handler will access the DMR++ that will then be used to access
     // the data. jhrg 10/18/22
-    string cachedResource = d_dmrpp_rresource->getCacheFileName();
+    //string cachedResource = d_dmrpp_rresource->getCacheFileName();
+    string cachedResource = d_dmrpp_rresource->get_filename();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
-    const auto type = d_dmrpp_rresource->getType();
+    //const auto type = d_dmrpp_rresource->getType();
+    const auto type = d_dmrpp_rresource->get_type();
     set_container_type(type);
 
     BESDEBUG(MODULE, prolog << "Type: " << type << endl);
@@ -219,7 +224,7 @@ void S3Container::dump(ostream &strm) const
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_dmrpp_rresource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_rresource->getCacheFileName()
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_rresource->get_filename()
              << endl;
         strm << BESIndent::LMarg << "response headers: ";
 #ifdef RR_HEADERS   // jhrg 11/16/22
