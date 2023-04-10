@@ -2109,11 +2109,10 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
     // First dimension scales.
     for (auto &ds_map:dsname_array_maps) {
         D4Maps *d4_maps = (ds_map.second)->maps();
+#if 0
         if (d4_maps->size() !=1) 
             throw InternalErr(__FILE__, __LINE__, "The number of dims of a dimension scale should be 1");
-        D4Map * d4_map = d4_maps->get_map(0);
-        d4_maps->remove_map(d4_map);
-        delete d4_map;
+#endif
     }
 
     // Then coordinates
@@ -2130,6 +2129,27 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
         }
 
     }
+
+    // Reorder the variables so that the map variables are at the front.
+    unordered_map<string,Array*> dc_co_array_maps;
+    // STOP
+    // Loop through dsname_array_maps, then search coname_array_maps, if this element is not in the coname_array_maps, add this to dc_co_array_maps.
+    for (const auto dsname_array_map:dsname_array_maps) {
+        
+        bool found_coname = false;
+        for (const auto coname_array_map:coname_array_maps) {
+            if (coname_array_map.first == dsname_array_map.first) {
+                found_coname = true;
+                break;
+            }
+        }
+
+        if (found_coname == false) 
+            dc_co_array_maps.insert(dsname_array_map);
+    }
+
+
+    reorder_vars(d4_root,coname_array_maps,dc_co_array_maps);
 
 }
 
@@ -2526,3 +2546,164 @@ void obtain_handled_dim_names(Array *var, unordered_set<string> & handled_dim_na
     }
 }
  
+void reorder_vars(D4Group *d4_grp, const unordered_map<string,Array*> &coname_array_maps, const unordered_map<string,Array*> & dc_array_maps) {
+
+    
+    Constructor::Vars_iter vi = d4_grp->var_begin();
+    Constructor::Vars_iter ve = d4_grp->var_end();
+
+    set<int> cv_pos;
+    set<BaseType *> cv_obj_ptr;
+
+    int v_index = 0;
+    for (; vi != ve; vi++) {
+
+        BaseType *v = *vi;
+        // We only need to re-order arrays. 
+        if (libdap::dods_array_c == v->type()) {
+            for (const auto coname_array_map:coname_array_maps) {
+                if (coname_array_map.first == v->FQN()) {
+                    cv_pos.insert(v_index);
+                    cv_obj_ptr.insert(v);
+                }
+            }
+            for (const auto dc_array_map:dc_array_maps) {
+                if (dc_array_map.first == v->FQN()) {
+                    cv_pos.insert(v_index);
+                    cv_obj_ptr.insert(v);
+                }
+            }
+        }
+        v_index++;
+    }
+
+    set<int> front_v_pos;
+    set<BaseType *>front_v_ptr;
+
+    int stop_index = (int)(cv_pos.size()) + 1;
+
+#if 0
+    for (; vi != ve; vi++) {
+
+        BaseType *v = *vi;
+        // We only need to re-order arrays. 
+        if (libdap::dods_array_c == v->type()) {
+            //auto t_a = static_cast<Array *>(*vi);
+            v_copy = v;
+            break;
+        }
+
+    }
+
+    vi++;
+
+    BaseType* v_copy2;
+    for (; vi != ve; vi++) {
+
+        BaseType *v = *vi;
+        // We only need to re-order arrays. 
+        if (libdap::dods_array_c == v->type()) {
+            //auto t_a = static_cast<Array *>(*vi);
+            v_copy2 = v;
+            break;
+        }
+
+    }
+
+//#if 0
+    d4_grp->set_var_index(v_copy2,0);
+    d4_grp->set_var_index(v_copy,1);
+//#endif
+#endif
+
+#if 0
+    vi = d4_grp->var_begin();
+    ve = d4_grp->var_end();
+
+    for (; vi != ve; vi++) {
+
+        BaseType *v = *vi;
+        // We only need to re-order arrays. 
+        if (libdap::dods_array_c == v->type()) {
+            *vi = &v_copy2_val;
+            //delete v;
+            break;
+        }
+
+    }
+
+    for (; vi != ve; vi++) {
+
+        BaseType *v = *vi;
+        // We only need to re-order arrays. 
+        if (libdap::dods_array_c == v->type()) {
+            *vi = &v_copy_val;
+            //delete v;
+            break;
+        }
+
+    }
+#endif
+
+#if 0
+    for (; vi != ve; ) {
+
+        BaseType *v = *vi;
+
+        // We only need to re-order arrays. 
+        if (libdap::dods_array_c == v->type()) {
+cerr<<"first v name is "<<v->name() <<endl;
+
+            bool is_cv = is_cvar(v,coname_array_maps,dc_array_maps);
+            if (!is_cv) {
+
+                auto t_a = static_cast<Array *>(*vi);
+                Array v_copy = *t_a;
+cerr<<"coming before del_var"<<endl;
+cerr<<"v name is "<<v->name() <<endl;
+                // delete and add var.
+                Constructor::Vars_iter vi_copy = vi ;
+                //vi++;
+                if (vi !=ve) {
+                BaseType *v_temp = *vi;
+cerr<<"v_temp  name is "<<v_temp->name() <<endl;
+}
+                
+                d4_grp->del_var(vi_copy);
+cerr<<"coming after del_var"<<endl;
+                d4_grp->add_var(&v_copy);
+cerr<<"v_copy name "<<v_copy.name() <<endl;
+cerr<<"coming after add_var_nocopy"<<endl;
+                vi++;
+            }
+            else 
+                vi++;
+
+        }
+        else 
+            vi++;
+
+    }
+#endif
+
+    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
+        //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
+        reorder_vars(*gi, coname_array_maps, dc_array_maps);
+    }   
+    
+}
+
+bool is_cvar(BaseType *v, const unordered_map<string,Array*> &coname_array_maps, const unordered_map<string,Array*> & dc_array_maps) {
+
+    bool ret_value = false;
+    unordered_map<string, Array*>::const_iterator it_ma = coname_array_maps.find(v->FQN());
+    if (it_ma != coname_array_maps.end()) 
+        ret_value = true;
+    else {
+        it_ma = dc_array_maps.find(v->FQN());
+        if (it_ma != dc_array_maps.end()) 
+            ret_value = true;
+    }
+    return ret_value;
+}
+
