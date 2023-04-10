@@ -2137,13 +2137,14 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
     }
 
     // Reorder the variables so that the map variables are at the front.
-    unordered_map<string,Array*> dc_co_array_maps;
+    map<string,Array*> ordered_dc_co_array_maps;
+    map<string,Array*> ordered_coname_array_maps;
     // STOP
     // Loop through dsname_array_maps, then search coname_array_maps, if this element is not in the coname_array_maps, add this to dc_co_array_maps.
-    for (const auto dsname_array_map:dsname_array_maps) {
+    for (const auto &dsname_array_map:dsname_array_maps) {
         
         bool found_coname = false;
-        for (const auto coname_array_map:coname_array_maps) {
+        for (const auto &coname_array_map:coname_array_maps) {
             if (coname_array_map.first == dsname_array_map.first) {
                 found_coname = true;
                 break;
@@ -2151,11 +2152,12 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
         }
 
         if (found_coname == false) 
-            dc_co_array_maps.insert(dsname_array_map);
+            ordered_dc_co_array_maps.insert(dsname_array_map);
     }
+    for (const auto &coname_array_map:coname_array_maps)
+        ordered_coname_array_maps.insert(coname_array_map);
 
-
-    reorder_vars(d4_root,coname_array_maps,dc_co_array_maps);
+    reorder_vars(d4_root,ordered_coname_array_maps,ordered_dc_co_array_maps);
 
 }
 
@@ -2552,14 +2554,14 @@ void obtain_handled_dim_names(Array *var, unordered_set<string> & handled_dim_na
     }
 }
  
-void reorder_vars(D4Group *d4_grp, const unordered_map<string,Array*> &coname_array_maps, const unordered_map<string,Array*> & dc_array_maps) {
+void reorder_vars(D4Group *d4_grp, const map<string,Array*> &coname_array_maps, const map<string,Array*> & dc_array_maps) {
 
-    
+
     Constructor::Vars_iter vi = d4_grp->var_begin();
     Constructor::Vars_iter ve = d4_grp->var_end();
 
-    set<int> cv_pos;
-    set<BaseType *> cv_obj_ptr;
+    vector<int> cv_pos;
+    vector<BaseType *> cv_obj_ptr;
 
     int v_index = 0;
     for (; vi != ve; vi++) {
@@ -2567,26 +2569,67 @@ void reorder_vars(D4Group *d4_grp, const unordered_map<string,Array*> &coname_ar
         BaseType *v = *vi;
         // We only need to re-order arrays. 
         if (libdap::dods_array_c == v->type()) {
-            for (const auto coname_array_map:coname_array_maps) {
+            for (const auto &coname_array_map:coname_array_maps) {
                 if (coname_array_map.first == v->FQN()) {
-                    cv_pos.insert(v_index);
-                    cv_obj_ptr.insert(v);
+                    cv_pos.push_back(v_index);
+                    cv_obj_ptr.push_back(v);
                 }
             }
-            for (const auto dc_array_map:dc_array_maps) {
+            for (const auto &dc_array_map:dc_array_maps) {
                 if (dc_array_map.first == v->FQN()) {
-                    cv_pos.insert(v_index);
-                    cv_obj_ptr.insert(v);
+                    cv_pos.push_back(v_index);
+                    cv_obj_ptr.push_back(v);
                 }
             }
         }
         v_index++;
     }
 
-    set<int> front_v_pos;
-    set<BaseType *>front_v_ptr;
+for (const auto &cv_p:cv_pos) 
+cerr<< ": "<<cv_p <<endl;
 
-    int stop_index = (int)(cv_pos.size()) + 1;
+for (const auto &cv_obj_p:cv_obj_ptr) 
+cerr<< "name: "<<cv_obj_p->FQN() <<endl;
+
+    
+    //vector<int> front_v_pos;
+    vector<BaseType *>front_v_ptr;
+
+    int stop_index = (int)(cv_pos.size());
+
+#if 0
+    for (int i = 0; i<stop_index;i++)
+        front_v_pos.push_back(i);
+#endif
+
+    if (stop_index >0) {
+        vi = d4_grp->var_begin();
+        ve = d4_grp->var_end();
+    
+        v_index = 0;
+    
+        for (; vi != ve; vi++) {
+            BaseType *v = *vi;
+            front_v_ptr.push_back(v);
+cerr<<"front_v_ptr name is "<<v->FQN() <<endl;
+            v_index++;
+            if (v_index == stop_index) 
+                break;
+        }
+
+        // Move the map variables to the front, move the front variables to the original map variable location.
+        for (int i =0; i<stop_index;i++) { 
+            d4_grp->set_var_index(cv_obj_ptr[i],i);
+            d4_grp->set_var_index(front_v_ptr[i],cv_pos[i]);
+        }
+        
+        
+    }
+
+   
+
+
+
 
 #if 0
     for (; vi != ve; vi++) {
