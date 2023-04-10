@@ -142,23 +142,23 @@ string GatewayContainer::access() {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
         std::shared_ptr<http::url> url_ptr(new http::url(url));
         d_remoteResource = new http::RemoteResource(url_ptr);
-        d_remoteResource->retrieveResource();
+        d_remoteResource->retrieve_resource();
     }
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
 
 
-    string cachedResource = d_remoteResource->getCacheFileName();
-    BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
+    string local_name = d_remoteResource->get_filename();
+    BESDEBUG( MODULE, prolog << "Using local file: " << local_name << endl );
 
-    type = d_remoteResource->getType();
+    type = d_remoteResource->get_type();
     set_container_type(type);
     BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
-    BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+    BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << local_name << endl);
     BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
     BESDEBUG( MODULE, prolog << "END" << endl);
 
-    return cachedResource;    // this should return the file name from the GatewayCache
+    return local_name;    // this should return the file name from the GatewayCache
 }
 
 
@@ -193,7 +193,7 @@ void GatewayContainer::dump(ostream &strm) const {
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_remoteResource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->get_filename()
                 << endl;
     } else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;

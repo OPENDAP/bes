@@ -2113,6 +2113,12 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
         if (d4_maps->size() !=1) 
             throw InternalErr(__FILE__, __LINE__, "The number of dims of a dimension scale should be 1");
 #endif
+
+        for (unsigned i =0; i<d4_maps->size();i++) {
+            D4Map * d4_map = d4_maps->get_map(i);
+            d4_maps->remove_map(d4_map);
+            delete d4_map;
+        }
     }
 
     // Then coordinates

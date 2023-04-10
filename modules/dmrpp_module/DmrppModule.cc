@@ -31,8 +31,16 @@
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 
+#include <BESReturnManager.h>
+#include <BESServiceRegistry.h>
+#include <BESDapNames.h>
+
 #include "DmrppModule.h"
 #include "DmrppRequestHandler.h"
+
+#include "writer/FODmrppTransmitter.h"
+
+#define RETURNAS_DMRPP "dmrpp"
 
 using namespace std;
 
@@ -60,6 +68,13 @@ void DmrppModule::initialize(const string &modname)
         BESFileContainerStorage *csc = new BESFileContainerStorage(DAP_CATALOG);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
+
+    /*BESDEBUG(modname, "    adding " << modname << " dmrpp-ngap container storage" << endl);
+    BESContainerStorageList::TheList()->add_persistence(new NgapBuildDmrppContainerStorage(modname));*/
+
+    // This part of the handler sets up transmitters that return DMRPP responses
+    BESReturnManager::TheManager()->add_transmitter(RETURNAS_DMRPP, new FODmrppTransmitter());
+    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DAP4DATA_SERVICE, RETURNAS_DMRPP);
 
     BESDEBUG(modname, prolog << "Done Initializing DMR++ Reader Module " << modname << endl);
 }
