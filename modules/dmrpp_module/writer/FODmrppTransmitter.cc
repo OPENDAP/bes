@@ -105,7 +105,7 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
 {
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
-    bool add_production_metadata = false;
+    bool add_production_metadata = true;
 
     auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
@@ -134,15 +134,16 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         // BUT we need access to the container::d_real_name so we use an iterator to the dhi.containers
         // to get the first container.
         string dataset_name = (*(dhi.containers.begin()))->access();
+        string href_url = (*(dhi.containers.begin()))->get_real_name();
 
         build_dmrpp_util::add_chunk_information(dataset_name, &dmrpp);
 
-        /*if (add_production_metadata) {
-            inject_version_and_configuration(&dmrpp);
-        }*/
+        if (add_production_metadata) {
+            build_dmrpp_util::inject_version_and_configuration(&dmrpp);
+        }
 
         XMLWriter dmrpp_writer;
-        dmrpp.print_dmrpp(dmrpp_writer);
+        dmrpp.print_dmrpp(dmrpp_writer, href_url);
 
         auto &strm = dhi.get_output_stream();
         strm << dmrpp_writer.get_doc() << flush;
