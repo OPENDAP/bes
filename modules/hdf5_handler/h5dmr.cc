@@ -2556,7 +2556,6 @@ void obtain_handled_dim_names(Array *var, unordered_set<string> & handled_dim_na
  
 void reorder_vars(D4Group *d4_grp, const map<string,Array*> &coname_array_maps, const map<string,Array*> & dc_array_maps) {
 
-
     Constructor::Vars_iter vi = d4_grp->var_begin();
     Constructor::Vars_iter ve = d4_grp->var_end();
 
@@ -2585,11 +2584,13 @@ void reorder_vars(D4Group *d4_grp, const map<string,Array*> &coname_array_maps, 
         v_index++;
     }
 
+#if 0
 for (const auto &cv_p:cv_pos) 
 cerr<< ": "<<cv_p <<endl;
 
 for (const auto &cv_obj_p:cv_obj_ptr) 
 cerr<< "name: "<<cv_obj_p->FQN() <<endl;
+#endif
 
     
     //vector<int> front_v_pos;
@@ -2611,25 +2612,101 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
         for (; vi != ve; vi++) {
             BaseType *v = *vi;
             front_v_ptr.push_back(v);
-cerr<<"front_v_ptr name is "<<v->FQN() <<endl;
+//cerr<<"front_v_ptr name is "<<v->FQN() <<endl;
             v_index++;
             if (v_index == stop_index) 
                 break;
         }
 
+#if 0
         // Move the map variables to the front, move the front variables to the original map variable location.
         for (int i =0; i<stop_index;i++) { 
             d4_grp->set_var_index(cv_obj_ptr[i],i);
             d4_grp->set_var_index(front_v_ptr[i],cv_pos[i]);
         }
-        
+#endif
+        // Check the overlaps of cvs with the front variables. 
+        // For example, there are 3 coordinate variables, c1,c2,c3. The first 3 variables
+        // are v1,v2,c1. In this case, c1 doesn't need to move. We only switch v1 with c2 and v2 with c3. 
+        // Usually there are only a few coordinate variables. So even the nested loops are not costly.
+   
+        // First, obtain the overlapped cv and front v positions.
+        vector <int> overlap_cv_pos;
+        vector <int> overlap_front_pos;
+        for (int i =0; i<stop_index;i++) { 
+            for (int j = 0; j< stop_index;j++) {
+                if (i == cv_pos[j]) {
+                    overlap_cv_pos.push_back(cv_pos[j]);
+//cerr<<"overlap_cv_pos is "<<cv_pos[j] <<endl;
+                    overlap_front_pos.push_back(i);
+                    break;
+                }
+            }
+        }
+
+        // No need to move a cv if this cv is in the front(overlapped with the first few vars) already.
+        // Now we need to find the cv and front variables that need to move.
+
+        // The cvs that need to be moved.
+        vector <int> mov_cv_pos;
+        vector <BaseType *> mov_cv_ptr;
+        for (int i =0; i<stop_index;i++) { 
+            bool overlapped_cv = false;
+            for (int j =0; j<overlap_cv_pos.size();j++) {
+                if (cv_pos[i]  == overlap_cv_pos[j]) {
+//cerr<<"overlapped cv_pos is "<<cv_pos[i]<<endl;
+                    overlapped_cv = true;
+                    break;
+                }
+            }
+            if (overlapped_cv == false) {
+                mov_cv_pos.push_back(cv_pos[i]);
+                mov_cv_ptr.push_back(cv_obj_ptr[i]);
+            }
+               
+        }
+
+        // The front non-cv variables  that need to be moved.
+        vector <int> mov_front_pos;
+        vector <BaseType *> mov_front_v_ptr;
+        for (int i =0; i<stop_index;i++) { 
+            bool overlapped_front_cv = false;
+            for (int j =0; j<overlap_front_pos.size();j++) {
+                if (i  == overlap_front_pos[j]) {
+                    overlapped_front_cv = true;
+                    break;
+                }
+            }
+            if (overlapped_front_cv == false) {
+                mov_front_pos.push_back(i);
+                mov_front_v_ptr.push_back(front_v_ptr[i]);
+            }
+               
+        }
+
+        // sanity check 
+        if (mov_cv_pos.size() != mov_front_pos.size()) { 
+            string err_msg = "The number of moved coordinate variables is not the same as ";
+            err_msg +="the number of moved non-coordinate variables";
+            throw InternalErr(__FILE__, __LINE__, err_msg);
+        }
+#if 0
+for (int i = 0; i <mov_cv_pos.size();i++) {
+cerr<<"mov_front_pos: "<<mov_front_pos[i] <<endl;
+cerr<<"mov_cv_pos: "<<mov_cv_pos[i] <<endl;
+
+}
+#endif
+
+//#if 0
+        // Move the map variables to the front, move the front non-coordinate variables to the original map variable location.
+        for (int i =0; i<mov_front_pos.size();i++) { 
+            d4_grp->set_var_index(mov_cv_ptr[i],mov_front_pos[i]);
+            d4_grp->set_var_index(mov_front_v_ptr[i],mov_cv_pos[i]);
+        }
+//#endif
         
     }
-
-   
-
-
-
 
 #if 0
     for (; vi != ve; vi++) {

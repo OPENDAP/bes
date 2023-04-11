@@ -82,6 +82,33 @@
             <Value>4af54ddb</Value>
         </Attribute>
     </Float64>
+    <Float64 name="lat">
+        <Dim name="/obs"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Y</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-90.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>90.</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>ca6910a9</Value>
+        </Attribute>
+    </Float64>
     <Float64 name="sal">
         <Dim name="/obs"/>
         <Attribute name="_FillValue" type="Float64">
@@ -125,33 +152,6 @@
         <Map name="/lon"/>
         <Map name="/z"/>
     </Float64>
-    <Float64 name="lat">
-        <Dim name="/obs"/>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>Y</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-90.</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>90.</Value>
-        </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>ca6910a9</Value>
-        </Attribute>
-    </Float64>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.6</Value>
     </Attribute>
@@ -179,6 +179,6 @@ The data:
 Float64 lon[obs = 2] = {-123.580012789251, -123.534672055733};
 Float64 z[obs = 2] = {1.5, 1.5};
 Float64 time[obs = 2] = {1427322218, 1427322228};
-Float64 sal[obs = 2] = {33.2675425087858, 33.1118001036892};
 Float64 lat[obs = 2] = {37.3587999168171, 37.3092204097212};
+Float64 sal[obs = 2] = {33.2675425087858, 33.1118001036892};
 
