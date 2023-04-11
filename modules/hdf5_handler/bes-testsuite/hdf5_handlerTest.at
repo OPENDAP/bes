@@ -788,6 +788,10 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_single_trajectory.h5.d4constraint.
 # The constraint with DAP4 dimensions. 
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_single_trajectory.h5.d4constraint_dim.dap.bescmd])
 
+# map order tests(map variables should be in front of all the other variables)
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord3.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_coord4.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_coord5.h5.dmr.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dap.bescmd])
