@@ -2653,7 +2653,7 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
         vector <BaseType *> mov_cv_ptr;
         for (int i =0; i<stop_index;i++) { 
             bool overlapped_cv = false;
-            for (int j =0; j<overlap_cv_pos.size();j++) {
+            for (unsigned int j =0; j < overlap_cv_pos.size();j++) {
                 if (cv_pos[i]  == overlap_cv_pos[j]) {
 //cerr<<"overlapped cv_pos is "<<cv_pos[i]<<endl;
                     overlapped_cv = true;
@@ -2672,7 +2672,7 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
         vector <BaseType *> mov_front_v_ptr;
         for (int i =0; i<stop_index;i++) { 
             bool overlapped_front_cv = false;
-            for (int j =0; j<overlap_front_pos.size();j++) {
+            for (unsigned int j =0; j<overlap_front_pos.size();j++) {
                 if (i  == overlap_front_pos[j]) {
                     overlapped_front_cv = true;
                     break;
@@ -2701,7 +2701,7 @@ cerr<<"mov_cv_pos: "<<mov_cv_pos[i] <<endl;
 
 //#if 0
         // Move the map variables to the front, move the front non-coordinate variables to the original map variable location.
-        for (int i =0; i<mov_front_pos.size();i++) { 
+        for (unsigned int i =0; i<mov_front_pos.size();i++) { 
             d4_grp->set_var_index(mov_cv_ptr[i],mov_front_pos[i]);
             d4_grp->set_var_index(mov_front_v_ptr[i],mov_cv_pos[i]);
         }
