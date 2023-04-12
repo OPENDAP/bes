@@ -34,16 +34,16 @@
 #ifndef I_BESStopWatch_h
 #define I_BESStopWatch_h 1
 
-#include "sys/time.h"
-#include "sys/resource.h"
+#include <sys/time.h>
+#include <sys/resource.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
 #include "BESObj.h"
 
-#define TIMING_LOG_KEY "timing"
-#define MISSING_LOG_PARAM ""
+const std::string TIMING_LOG_KEY = "timing";
+const std::string MISSING_LOG_PARAM;
 
 class BESStopWatch;
 
@@ -52,51 +52,33 @@ extern BESStopWatch *elapsedTimeToReadStart;
 extern BESStopWatch *elapsedTimeToTransmitStart;
 }
 
-class BESStopWatch : public BESObj
-{
+class BESStopWatch : public BESObj {
  private:
 	std::string d_timer_name;
 	std::string d_req_id;
-	std::string d_log_name;
-    bool d_started ;
-    bool d_stopped ;
+	std::string d_log_name = TIMING_LOG_KEY;
+    bool d_started = false;
+    bool d_stopped = false;
 
-	struct timeval d_start_usage;
-	struct timeval d_stop_usage;
-    struct timeval d_result ;
+	struct timeval d_start_usage{};
+	struct timeval d_stop_usage{};
 
-    // bool timeval_subtract() ;
     unsigned long int get_elapsed_us();
     unsigned long int get_start_us();
     unsigned long int get_stop_us();
     bool get_time_of_day(struct timeval &time_val);
-	void report();
 
  public:
 
-    /**
-     * Makes a new BESStopWatch with a logName of TIMING_LOG_KEY
-     */
- BESStopWatch() : d_timer_name(MISSING_LOG_PARAM),
-				  d_req_id(MISSING_LOG_PARAM),
-				  d_log_name(TIMING_LOG_KEY),
-				  d_started(false),
-				  d_stopped(false)
-{ 
-}
+    /// Makes a new BESStopWatch with a logName of TIMING_LOG_KEY
+    BESStopWatch() = default;
 
     /**
      * Makes a new BESStopWatch.
      *
      * @param logName The name of the log to use in the logging output.
      */
-    BESStopWatch(std::string logName)  : d_timer_name(MISSING_LOG_PARAM),
-										 d_req_id(MISSING_LOG_PARAM),
-										 d_log_name(logName),
-										 d_started(false),
-										 d_stopped(false)
-{ 
-}
+    explicit BESStopWatch(const std::string &logName)  : d_log_name(logName) { }
 
     /**
      * This destructor is "special" in that it's execution signals the
@@ -105,7 +87,7 @@ class BESStopWatch : public BESObj
      * BESDebug::GetStrm() stream. If the start method has not been
      * called then the method exits silently.
      */
-    virtual ~BESStopWatch();
+    ~BESStopWatch() override;
 
     /**
      * Starts the timer.
@@ -113,7 +95,7 @@ class BESStopWatch : public BESObj
      * information to the BESDebug::GetStrm() stream.
      * @param name The name of the timer.
      */
-    virtual bool		start(std::string name) ;
+    virtual bool start(const std::string &name);
 
     /**
      * Starts the timer. NB: This method will attempt to write logging
@@ -123,10 +105,10 @@ class BESStopWatch : public BESObj
      * @param reqID The client's request ID associated with this
      * activity. Available from the DataHandlerInterfact object.
      */
-    virtual bool		start(std::string name, std::string reqID) ;
+    virtual bool start(const std::string &name, const std::string &reqID);
 
-    virtual void		dump( std::ostream &strm ) const ;
-} ;
+    void dump(std::ostream &strm) const override;
+};
 
 #endif // I_BESStopWatch_h
 

@@ -64,7 +64,7 @@ class debugT: public TestFixture {
 
 public:
     debugT() = default;
-    ~debugT() = default;
+    ~debugT() override = default;
 
     void setUp() override
     {
@@ -75,7 +75,7 @@ public:
     CPPUNIT_TEST_SUITE( debugT );
 
         CPPUNIT_TEST(do_test);
-        CPPUNIT_TEST(profile_is_set);
+        // CPPUNIT_TEST(profile_is_set);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -93,12 +93,6 @@ public:
 
     // This test is here to help profile the debug code. jhrg 4/12/23
     void profile_is_set() {
-        // switch to a large bes.conf that mirrors the one used in the server
-#if 0
-        string bes_conf = "/Users/jimg/src/opendap/hyrax/build/etc/bes/bes.conf";
-        TheBESKeys::ConfigFile = bes_conf;
-#endif
-
         struct timeval start_usage;
         gettimeofday(&start_usage, nullptr);
         for (int i = 0; i < 10000000; ++i)
