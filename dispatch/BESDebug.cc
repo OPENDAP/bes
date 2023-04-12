@@ -49,8 +49,7 @@ using namespace std;
 
 ostream *BESDebug::_debug_strm = NULL;
 bool BESDebug::_debug_strm_created = false;
-map<string, bool> BESDebug::_debug_map;
-
+BESDebug::DebugMap BESDebug::_debug_map;
 
 /** @brief Returns debug log line prefix containing date&time, pid, and thread id.
  *
@@ -197,13 +196,21 @@ string BESDebug::GetOptionsString()
 {
     ostringstream oss;
 
-    if (_debug_map.size()) {
+    if (!_debug_map.empty()) {
+
+#if 0
         BESDebug::debug_citer i = _debug_map.begin();
         BESDebug::debug_citer e = _debug_map.end();
         for (; i != e; i++) {
             if (!(*i).second) oss << "-";
             oss << (*i).first << ",";
         }
+#endif
+        std::for_each(_debug_map.begin(), _debug_map.end(), [&oss](const std::pair<std::string, bool> &p) {
+            if (!p.second) oss << "-";
+            oss << p.first << ",";
+        });
+
         string retval = oss.str();
         return retval.erase(retval.size() - 1);
     }

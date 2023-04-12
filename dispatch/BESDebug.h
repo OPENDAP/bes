@@ -38,6 +38,7 @@
 
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <mutex>
 
@@ -62,12 +63,7 @@ static std::mutex bes_debug_log_mutex;
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
-#if 0
-#define BESDEBUG( x, y ) do { std::unique_lock<std::mutex> lck (bes_debug_log_mutex); if( BESDebug::IsSet( x ) ) {  *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << "["<< x << "] " << y; } } while( 0 )
-#else
 #define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << "["<< x << "] " << y ; } while( 0 )
-#endif
-
 #endif // NDEBUG
 
 #ifdef NDEBUG
@@ -98,7 +94,11 @@ static std::mutex bes_debug_log_mutex;
 
 class BESDebug {
 private:
-    typedef std::map<std::string, bool> DebugMap;
+    // The time to make 10000000 calls to IsSet with a std::map was 3 763 862 us and
+    // to make the same calls to IsSet with a std::unordered_map was 2 675 492 us
+    // jhrg 4/12/23
+    // typedef std::unordered_map<std::string, bool> DebugMap;
+    using DebugMap = std::unordered_map<std::string, bool>;
 
     static DebugMap _debug_map;
     static std::ostream *_debug_strm;
@@ -126,13 +126,17 @@ public:
      */
     static void Set(const std::string &flagName, bool value)
     {
-        if (flagName == "all" && value) {
+        if (value && flagName == "all") {
+            std::for_each(_debug_map.begin(), _debug_map.end(), [](DebugMap::value_type &p) { p.second = true; });
+#if 0
             _debug_iter i = _debug_map.begin();
             _debug_iter e = _debug_map.end();
             for (; i != e; i++) {
                 (*i).second = true;
             }
+#endif
         }
+        // _debug_map.insert(std::make_pair(flagName, value));
         _debug_map[flagName] = value;
     }
 
@@ -148,9 +152,9 @@ public:
      */
     static void Register(const std::string &flagName)
     {
-        debug_citer a = _debug_map.find("all");
         debug_citer i = _debug_map.find(flagName);
         if (i == _debug_map.end()) {
+            debug_citer a = _debug_map.find("all");
             if (a == _debug_map.end()) {
                 _debug_map[flagName] = false;
             }
@@ -172,6 +176,7 @@ public:
             return (*i).second;
         else
             i = _debug_map.find("all");
+
         if (i != _debug_map.end())
             return (*i).second;
         else
@@ -188,8 +193,6 @@ public:
     {
         return _debug_strm;
     }
-
-    static std::string GetPidStr();
 
     /** @brief set the debug output stream to the specified stream
      *
@@ -211,7 +214,7 @@ public:
         if (_debug_strm_created && _debug_strm) {
             _debug_strm->flush();
             delete _debug_strm;
-            _debug_strm = NULL;
+            _debug_strm = nullptr;
         }
         else if (_debug_strm) {
             _debug_strm->flush();

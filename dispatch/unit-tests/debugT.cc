@@ -39,6 +39,8 @@
 using namespace CppUnit;
 
 #include <unistd.h>  // for access
+#include <sys/time.h> // for gettimeofday
+
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
@@ -59,32 +61,23 @@ string DebugArgs;
 static bool debug = false;
 
 class debugT: public TestFixture {
-private:
 
 public:
-    debugT()
-    {
-    }
-    ~debugT()
-    {
-    }
+    debugT() = default;
+    ~debugT() = default;
 
-    void setUp()
+    void setUp() override
     {
         string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
         TheBESKeys::ConfigFile = bes_conf;
     }
 
-    void tearDown()
-    {
-    }
+    CPPUNIT_TEST_SUITE( debugT );
 
-CPPUNIT_TEST_SUITE( debugT );
+        CPPUNIT_TEST(do_test);
+        CPPUNIT_TEST(profile_is_set);
 
-    CPPUNIT_TEST(do_test);
-
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
     void compare_debug(string result, string expected)
     {
@@ -96,6 +89,27 @@ CPPUNIT_TEST_SUITE( debugT );
             result = result.substr(rb + 2);
         }
         CPPUNIT_ASSERT(result == expected);
+    }
+
+    // This test is here to help profile the debug code. jhrg 4/12/23
+    void profile_is_set() {
+        // switch to a large bes.conf that mirrors the one used in the server
+#if 0
+        string bes_conf = "/Users/jimg/src/opendap/hyrax/build/etc/bes/bes.conf";
+        TheBESKeys::ConfigFile = bes_conf;
+#endif
+
+        struct timeval start_usage;
+        gettimeofday(&start_usage, nullptr);
+        for (int i = 0; i < 10000000; ++i)
+            BESDebug::IsSet("nc");
+
+        struct timeval end_usage;
+        gettimeofday(&end_usage, nullptr);
+
+        cout << "start: " << start_usage.tv_sec << " " << start_usage.tv_usec << endl;
+        cout << "end: " << end_usage.tv_sec << " " << end_usage.tv_usec << endl;
+        cout << "diff: " << (end_usage.tv_sec*1000000 + end_usage.tv_usec) - (start_usage.tv_sec*1000000 + start_usage.tv_usec) << "us" << endl;
     }
 
     void do_test()
