@@ -478,13 +478,23 @@
             <Dimension name="nitrogendioxide_tropospheric_column_pdf_axis" size="400"/>
             <Dimension name="nitrogendioxide_total_column_histogram_axis" size="100"/>
             <Dimension name="nitrogendioxide_tropospheric_column_histogram_axis" size="100"/>
-            <Float32 name="nitrogendioxide_total_column_pdf_bounds">
+            <Float32 name="nitrogendioxide_total_column_pdf_axis">
                 <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_total_column_pdf_axis"/>
-                <Dim name="/METADATA/QA_STATISTICS/vertices"/>
+                <Attribute name="units" type="String">
+                    <Value>mol m-2</Value>
+                </Attribute>
+                <Attribute name="comment" type="String">
+                    <Value>Probability density function of the total NO2 vertical column</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Probability density function of the total NO2 vertical column</Value>
+                </Attribute>
+                <Attribute name="bounds" type="String">
+                    <Value>nitrogendioxide_total_column_pdf_bounds</Value>
+                </Attribute>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>9.969209968e+36</Value>
                 </Attribute>
-                <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_total_column_pdf_axis"/>
             </Float32>
             <Float32 name="nitrogendioxide_stratospheric_column_histogram_axis">
                 <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_histogram_axis"/>
@@ -504,13 +514,23 @@
                     <Value>9.969209968e+36</Value>
                 </Attribute>
             </Float32>
-            <Float32 name="nitrogendioxide_stratospheric_column_pdf_bounds">
-                <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf_axis"/>
-                <Dim name="/METADATA/QA_STATISTICS/vertices"/>
+            <Float32 name="nitrogendioxide_tropospheric_column_histogram_axis">
+                <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_histogram_axis"/>
+                <Attribute name="units" type="String">
+                    <Value>mol m-2</Value>
+                </Attribute>
+                <Attribute name="comment" type="String">
+                    <Value>Histogram of the tropospheric NO2 vertical column</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Histogram of the tropospheric NO2 vertical column</Value>
+                </Attribute>
+                <Attribute name="bounds" type="String">
+                    <Value>nitrogendioxide_tropospheric_column_histogram_bounds</Value>
+                </Attribute>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>9.969209968e+36</Value>
                 </Attribute>
-                <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf_axis"/>
             </Float32>
             <Float32 name="nitrogendioxide_stratospheric_column_pdf_axis">
                 <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf_axis"/>
@@ -530,13 +550,23 @@
                     <Value>9.969209968e+36</Value>
                 </Attribute>
             </Float32>
-            <Float32 name="nitrogendioxide_tropospheric_column_pdf_bounds">
-                <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_axis"/>
-                <Dim name="/METADATA/QA_STATISTICS/vertices"/>
+            <Float32 name="nitrogendioxide_total_column_histogram_axis">
+                <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_total_column_histogram_axis"/>
+                <Attribute name="units" type="String">
+                    <Value>mol m-2</Value>
+                </Attribute>
+                <Attribute name="comment" type="String">
+                    <Value>Histogram of the total NO2 vertical column</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Histogram of the total NO2 vertical column</Value>
+                </Attribute>
+                <Attribute name="bounds" type="String">
+                    <Value>nitrogendioxide_total_column_histogram_bounds</Value>
+                </Attribute>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>9.969209968e+36</Value>
                 </Attribute>
-                <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_axis"/>
             </Float32>
             <Float32 name="nitrogendioxide_tropospheric_column_pdf_axis">
                 <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_axis"/>
@@ -593,23 +623,13 @@
                 </Attribute>
                 <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_histogram_axis"/>
             </Int32>
-            <Float32 name="nitrogendioxide_total_column_pdf_axis">
+            <Float32 name="nitrogendioxide_total_column_pdf_bounds">
                 <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_total_column_pdf_axis"/>
-                <Attribute name="units" type="String">
-                    <Value>mol m-2</Value>
-                </Attribute>
-                <Attribute name="comment" type="String">
-                    <Value>Probability density function of the total NO2 vertical column</Value>
-                </Attribute>
-                <Attribute name="long_name" type="String">
-                    <Value>Probability density function of the total NO2 vertical column</Value>
-                </Attribute>
-                <Attribute name="bounds" type="String">
-                    <Value>nitrogendioxide_total_column_pdf_bounds</Value>
-                </Attribute>
+                <Dim name="/METADATA/QA_STATISTICS/vertices"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>9.969209968e+36</Value>
                 </Attribute>
+                <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_total_column_pdf_axis"/>
             </Float32>
             <Int32 name="nitrogendioxide_total_column_histogram">
                 <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_total_column_histogram_axis"/>
@@ -648,23 +668,13 @@
                 </Attribute>
                 <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_histogram_axis"/>
             </Float32>
-            <Float32 name="nitrogendioxide_tropospheric_column_histogram_axis">
-                <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_histogram_axis"/>
-                <Attribute name="units" type="String">
-                    <Value>mol m-2</Value>
-                </Attribute>
-                <Attribute name="comment" type="String">
-                    <Value>Histogram of the tropospheric NO2 vertical column</Value>
-                </Attribute>
-                <Attribute name="long_name" type="String">
-                    <Value>Histogram of the tropospheric NO2 vertical column</Value>
-                </Attribute>
-                <Attribute name="bounds" type="String">
-                    <Value>nitrogendioxide_tropospheric_column_histogram_bounds</Value>
-                </Attribute>
+            <Float32 name="nitrogendioxide_stratospheric_column_pdf_bounds">
+                <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf_axis"/>
+                <Dim name="/METADATA/QA_STATISTICS/vertices"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>9.969209968e+36</Value>
                 </Attribute>
+                <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf_axis"/>
             </Float32>
             <Float32 name="nitrogendioxide_tropospheric_column_pdf">
                 <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_axis"/>
@@ -703,23 +713,13 @@
                 </Attribute>
                 <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_histogram_axis"/>
             </Int32>
-            <Float32 name="nitrogendioxide_total_column_histogram_axis">
-                <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_total_column_histogram_axis"/>
-                <Attribute name="units" type="String">
-                    <Value>mol m-2</Value>
-                </Attribute>
-                <Attribute name="comment" type="String">
-                    <Value>Histogram of the total NO2 vertical column</Value>
-                </Attribute>
-                <Attribute name="long_name" type="String">
-                    <Value>Histogram of the total NO2 vertical column</Value>
-                </Attribute>
-                <Attribute name="bounds" type="String">
-                    <Value>nitrogendioxide_total_column_histogram_bounds</Value>
-                </Attribute>
+            <Float32 name="nitrogendioxide_tropospheric_column_pdf_bounds">
+                <Dim name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_axis"/>
+                <Dim name="/METADATA/QA_STATISTICS/vertices"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>9.969209968e+36</Value>
                 </Attribute>
+                <Map name="/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_axis"/>
             </Float32>
             <Attribute name="number_of_groundpixels" type="Int32">
                 <Value>31950</Value>
@@ -4687,190 +4687,6 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         <Dimension name="ground_pixel" size="450"/>
         <Dimension name="polynomial_exponents" size="6"/>
         <Dimension name="corner" size="4"/>
-        <Float32 name="tm5_constant_b">
-            <Dim name="/PRODUCT/layer"/>
-            <Dim name="/PRODUCT/vertices"/>
-            <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>TM5 hybrid B coefficient at upper and lower interface levels</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>9.969209968e+36</Value>
-            </Attribute>
-            <Map name="/PRODUCT/layer"/>
-            <Map name="/PRODUCT/vertices"/>
-        </Float32>
-        <Float32 name="averaging_kernel">
-            <Dim name="/PRODUCT/time"/>
-            <Dim name="/PRODUCT/scanline"/>
-            <Dim name="/PRODUCT/ground_pixel"/>
-            <Dim name="/PRODUCT/layer"/>
-            <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>averaging kernel</Value>
-            </Attribute>
-            <Attribute name="coordinates" type="String">
-                <Value>/PRODUCT/longitude /PRODUCT/latitude</Value>
-            </Attribute>
-            <Attribute name="ancillary_variables" type="String">
-                <Value>tm5_constant_a tm5_constant_b tm5_tropopause_layer_index /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>9.969209968e+36</Value>
-            </Attribute>
-            <Map name="/PRODUCT/longitude"/>
-            <Map name="/PRODUCT/latitude"/>
-            <Map name="/PRODUCT/layer"/>
-        </Float32>
-        <Int32 name="vertices">
-            <Dim name="/PRODUCT/vertices"/>
-            <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>TM5 atmospheric layer upper and lower bound indices</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Int32">
-                <Value>-2147483647</Value>
-            </Attribute>
-        </Int32>
-        <Int32 name="tm5_tropopause_layer_index">
-            <Dim name="/PRODUCT/time"/>
-            <Dim name="/PRODUCT/scanline"/>
-            <Dim name="/PRODUCT/ground_pixel"/>
-            <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>TM5 layer index of the highest layer in the tropopause</Value>
-            </Attribute>
-            <Attribute name="coordinates" type="String">
-                <Value>/PRODUCT/longitude /PRODUCT/latitude</Value>
-            </Attribute>
-            <Attribute name="ancillary_variables" type="String">
-                <Value>tm5_constant_a tm5_constant_b /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Int32">
-                <Value>-2147483647</Value>
-            </Attribute>
-            <Map name="/PRODUCT/longitude"/>
-            <Map name="/PRODUCT/latitude"/>
-        </Int32>
-        <Float32 name="tm5_constant_a">
-            <Dim name="/PRODUCT/layer"/>
-            <Dim name="/PRODUCT/vertices"/>
-            <Attribute name="units" type="String">
-                <Value>Pa</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>TM5 hybrid A coefficient at upper and lower interface levels</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>9.969209968e+36</Value>
-            </Attribute>
-            <Map name="/PRODUCT/layer"/>
-            <Map name="/PRODUCT/vertices"/>
-        </Float32>
-        <Byte name="qa_value">
-            <Dim name="/PRODUCT/time"/>
-            <Dim name="/PRODUCT/scanline"/>
-            <Dim name="/PRODUCT/ground_pixel"/>
-            <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="scale_factor" type="Float32">
-                <Value>0.009999999776</Value>
-            </Attribute>
-            <Attribute name="add_offset" type="Float32">
-                <Value>0.</Value>
-            </Attribute>
-            <Attribute name="valid_min" type="Byte">
-                <Value>0</Value>
-            </Attribute>
-            <Attribute name="valid_max" type="Byte">
-                <Value>100</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>data quality value</Value>
-            </Attribute>
-            <Attribute name="comment" type="String">
-                <Value>A continuous quality descriptor, varying between 0 (no data) and 1 (full quality data). Recommend to ignore data with qa_value &lt; 0.5</Value>
-            </Attribute>
-            <Attribute name="coordinates" type="String">
-                <Value>longitude latitude</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Byte">
-                <Value>255</Value>
-            </Attribute>
-            <Map name="/PRODUCT/longitude"/>
-            <Map name="/PRODUCT/latitude"/>
-        </Byte>
-        <Int32 name="time">
-            <Dim name="/PRODUCT/time"/>
-            <Attribute name="units" type="String">
-                <Value>seconds since 2010-01-01 00:00:00</Value>
-            </Attribute>
-            <Attribute name="standard_name" type="String">
-                <Value>time</Value>
-            </Attribute>
-            <Attribute name="axis" type="String">
-                <Value>T</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>reference time for the measurements</Value>
-            </Attribute>
-            <Attribute name="comment" type="String">
-                <Value>The time in this variable corresponds to the time in the time_reference global attribute</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Int32">
-                <Value>-2147483647</Value>
-            </Attribute>
-        </Int32>
-        <Float32 name="air_mass_factor_troposphere">
-            <Dim name="/PRODUCT/time"/>
-            <Dim name="/PRODUCT/scanline"/>
-            <Dim name="/PRODUCT/ground_pixel"/>
-            <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>tropospheric air mass factor</Value>
-            </Attribute>
-            <Attribute name="coordinates" type="String">
-                <Value>/PRODUCT/longitude /PRODUCT/latitude</Value>
-            </Attribute>
-            <Attribute name="ancillary_variables" type="String">
-                <Value>tm5_tropopause_layer_index</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>9.969209968e+36</Value>
-            </Attribute>
-            <Map name="/PRODUCT/longitude"/>
-            <Map name="/PRODUCT/latitude"/>
-        </Float32>
-        <Float32 name="air_mass_factor_total">
-            <Dim name="/PRODUCT/time"/>
-            <Dim name="/PRODUCT/scanline"/>
-            <Dim name="/PRODUCT/ground_pixel"/>
-            <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>total air mass factor</Value>
-            </Attribute>
-            <Attribute name="coordinates" type="String">
-                <Value>/PRODUCT/longitude /PRODUCT/latitude</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>9.969209968e+36</Value>
-            </Attribute>
-            <Map name="/PRODUCT/longitude"/>
-            <Map name="/PRODUCT/latitude"/>
-        </Float32>
         <Int32 name="polynomial_exponents">
             <Dim name="/PRODUCT/polynomial_exponents"/>
             <Attribute name="units" type="String">
@@ -4912,6 +4728,18 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
                 <Value>9.969209968e+36</Value>
             </Attribute>
         </Float32>
+        <Int32 name="vertices">
+            <Dim name="/PRODUCT/vertices"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>TM5 atmospheric layer upper and lower bound indices</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
         <Float32 name="latitude">
             <Dim name="/PRODUCT/time"/>
             <Dim name="/PRODUCT/scanline"/>
@@ -4938,6 +4766,166 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
                 <Value>9.969209968e+36</Value>
             </Attribute>
         </Float32>
+        <Int32 name="ground_pixel">
+            <Dim name="/PRODUCT/ground_pixel"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>X</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>across-track dimension index</Value>
+            </Attribute>
+            <Attribute name="comment" type="String">
+                <Value>This coordinate variable defines the indices across track, from west to east; index starts at 0</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="layer">
+            <Dim name="/PRODUCT/layer"/>
+            <Attribute name="standard_name" type="String">
+                <Value>atmosphere_hybrid_sigma_pressure_coordinate</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>TM5 atmospheric layer numbers</Value>
+            </Attribute>
+            <Attribute name="positive" type="String">
+                <Value>down</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>Z</Value>
+            </Attribute>
+            <Attribute name="formula_terms" type="String">
+                <Value>ap: tm5_constant_a b: tm5_constant_b ps: /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure</Value>
+            </Attribute>
+            <Attribute name="comment" type="String">
+                <Value>p(t, k, j, i, l) = ap(k, l) + b(k, l)*ps(t, j, i); k from surface to top of atmosphere; l=0 for base of layer, l=1 for top of layer.</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="time">
+            <Dim name="/PRODUCT/time"/>
+            <Attribute name="units" type="String">
+                <Value>seconds since 2010-01-01 00:00:00</Value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <Value>time</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>T</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>reference time for the measurements</Value>
+            </Attribute>
+            <Attribute name="comment" type="String">
+                <Value>The time in this variable corresponds to the time in the time_reference global attribute</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="corner">
+            <Dim name="/PRODUCT/corner"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>pixel corner index</Value>
+            </Attribute>
+            <Attribute name="comment" type="String">
+                <Value>This coordinate variable defines the indices for the pixel corners; index starts at 0 (counter-clockwise, starting from south-western corner of the pixel in ascending part of the orbit)</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Int32 name="scanline">
+            <Dim name="/PRODUCT/scanline"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>Y</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>along-track dimension index</Value>
+            </Attribute>
+            <Attribute name="comment" type="String">
+                <Value>This coordinate variable defines the indices along track; index starts at 0</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="tm5_constant_b">
+            <Dim name="/PRODUCT/layer"/>
+            <Dim name="/PRODUCT/vertices"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>TM5 hybrid B coefficient at upper and lower interface levels</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9.969209968e+36</Value>
+            </Attribute>
+            <Map name="/PRODUCT/layer"/>
+            <Map name="/PRODUCT/vertices"/>
+        </Float32>
+        <Float32 name="averaging_kernel">
+            <Dim name="/PRODUCT/time"/>
+            <Dim name="/PRODUCT/scanline"/>
+            <Dim name="/PRODUCT/ground_pixel"/>
+            <Dim name="/PRODUCT/layer"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>averaging kernel</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>/PRODUCT/longitude /PRODUCT/latitude</Value>
+            </Attribute>
+            <Attribute name="ancillary_variables" type="String">
+                <Value>tm5_constant_a tm5_constant_b tm5_tropopause_layer_index /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9.969209968e+36</Value>
+            </Attribute>
+            <Map name="/PRODUCT/longitude"/>
+            <Map name="/PRODUCT/latitude"/>
+            <Map name="/PRODUCT/layer"/>
+        </Float32>
+        <Int32 name="tm5_tropopause_layer_index">
+            <Dim name="/PRODUCT/time"/>
+            <Dim name="/PRODUCT/scanline"/>
+            <Dim name="/PRODUCT/ground_pixel"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>TM5 layer index of the highest layer in the tropopause</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>/PRODUCT/longitude /PRODUCT/latitude</Value>
+            </Attribute>
+            <Attribute name="ancillary_variables" type="String">
+                <Value>tm5_constant_a tm5_constant_b /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int32">
+                <Value>-2147483647</Value>
+            </Attribute>
+            <Map name="/PRODUCT/longitude"/>
+            <Map name="/PRODUCT/latitude"/>
+        </Int32>
         <Float32 name="nitrogendioxide_tropospheric_column_precision">
             <Dim name="/PRODUCT/time"/>
             <Dim name="/PRODUCT/scanline"/>
@@ -4975,24 +4963,21 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
             <Map name="/PRODUCT/time"/>
             <Map name="/PRODUCT/scanline"/>
         </String>
-        <Int32 name="ground_pixel">
-            <Dim name="/PRODUCT/ground_pixel"/>
+        <Float32 name="tm5_constant_a">
+            <Dim name="/PRODUCT/layer"/>
+            <Dim name="/PRODUCT/vertices"/>
             <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="axis" type="String">
-                <Value>X</Value>
+                <Value>Pa</Value>
             </Attribute>
             <Attribute name="long_name" type="String">
-                <Value>across-track dimension index</Value>
+                <Value>TM5 hybrid A coefficient at upper and lower interface levels</Value>
             </Attribute>
-            <Attribute name="comment" type="String">
-                <Value>This coordinate variable defines the indices across track, from west to east; index starts at 0</Value>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9.969209968e+36</Value>
             </Attribute>
-            <Attribute name="_FillValue" type="Int32">
-                <Value>-2147483647</Value>
-            </Attribute>
-        </Int32>
+            <Map name="/PRODUCT/layer"/>
+            <Map name="/PRODUCT/vertices"/>
+        </Float32>
         <Int32 name="delta_time">
             <Dim name="/PRODUCT/time"/>
             <Dim name="/PRODUCT/scanline"/>
@@ -5008,48 +4993,62 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
             <Map name="/PRODUCT/time"/>
             <Map name="/PRODUCT/scanline"/>
         </Int32>
-        <Int32 name="layer">
-            <Dim name="/PRODUCT/layer"/>
-            <Attribute name="standard_name" type="String">
-                <Value>atmosphere_hybrid_sigma_pressure_coordinate</Value>
+        <Byte name="qa_value">
+            <Dim name="/PRODUCT/time"/>
+            <Dim name="/PRODUCT/scanline"/>
+            <Dim name="/PRODUCT/ground_pixel"/>
+            <Attribute name="units" type="String">
+                <Value>1</Value>
             </Attribute>
+            <Attribute name="scale_factor" type="Float32">
+                <Value>0.009999999776</Value>
+            </Attribute>
+            <Attribute name="add_offset" type="Float32">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="valid_min" type="Byte">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="valid_max" type="Byte">
+                <Value>100</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>data quality value</Value>
+            </Attribute>
+            <Attribute name="comment" type="String">
+                <Value>A continuous quality descriptor, varying between 0 (no data) and 1 (full quality data). Recommend to ignore data with qa_value &lt; 0.5</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>longitude latitude</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Byte">
+                <Value>255</Value>
+            </Attribute>
+            <Map name="/PRODUCT/longitude"/>
+            <Map name="/PRODUCT/latitude"/>
+        </Byte>
+        <Float32 name="air_mass_factor_troposphere">
+            <Dim name="/PRODUCT/time"/>
+            <Dim name="/PRODUCT/scanline"/>
+            <Dim name="/PRODUCT/ground_pixel"/>
             <Attribute name="units" type="String">
                 <Value>1</Value>
             </Attribute>
             <Attribute name="long_name" type="String">
-                <Value>TM5 atmospheric layer numbers</Value>
+                <Value>tropospheric air mass factor</Value>
             </Attribute>
-            <Attribute name="positive" type="String">
-                <Value>down</Value>
+            <Attribute name="coordinates" type="String">
+                <Value>/PRODUCT/longitude /PRODUCT/latitude</Value>
             </Attribute>
-            <Attribute name="axis" type="String">
-                <Value>Z</Value>
+            <Attribute name="ancillary_variables" type="String">
+                <Value>tm5_tropopause_layer_index</Value>
             </Attribute>
-            <Attribute name="formula_terms" type="String">
-                <Value>ap: tm5_constant_a b: tm5_constant_b ps: /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure</Value>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9.969209968e+36</Value>
             </Attribute>
-            <Attribute name="comment" type="String">
-                <Value>p(t, k, j, i, l) = ap(k, l) + b(k, l)*ps(t, j, i); k from surface to top of atmosphere; l=0 for base of layer, l=1 for top of layer.</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Int32">
-                <Value>-2147483647</Value>
-            </Attribute>
-        </Int32>
-        <Int32 name="corner">
-            <Dim name="/PRODUCT/corner"/>
-            <Attribute name="units" type="String">
-                <Value>1</Value>
-            </Attribute>
-            <Attribute name="long_name" type="String">
-                <Value>pixel corner index</Value>
-            </Attribute>
-            <Attribute name="comment" type="String">
-                <Value>This coordinate variable defines the indices for the pixel corners; index starts at 0 (counter-clockwise, starting from south-western corner of the pixel in ascending part of the orbit)</Value>
-            </Attribute>
-            <Attribute name="_FillValue" type="Int32">
-                <Value>-2147483647</Value>
-            </Attribute>
-        </Int32>
+            <Map name="/PRODUCT/longitude"/>
+            <Map name="/PRODUCT/latitude"/>
+        </Float32>
         <Float32 name="nitrogendioxide_tropospheric_column">
             <Dim name="/PRODUCT/time"/>
             <Dim name="/PRODUCT/scanline"/>
@@ -5078,24 +5077,25 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
             <Map name="/PRODUCT/longitude"/>
             <Map name="/PRODUCT/latitude"/>
         </Float32>
-        <Int32 name="scanline">
+        <Float32 name="air_mass_factor_total">
+            <Dim name="/PRODUCT/time"/>
             <Dim name="/PRODUCT/scanline"/>
+            <Dim name="/PRODUCT/ground_pixel"/>
             <Attribute name="units" type="String">
                 <Value>1</Value>
             </Attribute>
-            <Attribute name="axis" type="String">
-                <Value>Y</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
-                <Value>along-track dimension index</Value>
+                <Value>total air mass factor</Value>
             </Attribute>
-            <Attribute name="comment" type="String">
-                <Value>This coordinate variable defines the indices along track; index starts at 0</Value>
+            <Attribute name="coordinates" type="String">
+                <Value>/PRODUCT/longitude /PRODUCT/latitude</Value>
             </Attribute>
-            <Attribute name="_FillValue" type="Int32">
-                <Value>-2147483647</Value>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9.969209968e+36</Value>
             </Attribute>
-        </Int32>
+            <Map name="/PRODUCT/longitude"/>
+            <Map name="/PRODUCT/latitude"/>
+        </Float32>
         <Group name="SUPPORT_DATA">
             <Group name="GEOLOCATIONS">
                 <Float32 name="satellite_altitude">
