@@ -35,7 +35,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <fstream>
 #include <iostream>
 #include <sstream>
 
@@ -47,7 +46,7 @@
 
 using namespace std;
 
-ostream *BESDebug::_debug_strm = NULL;
+ostream *BESDebug::_debug_strm = nullptr;
 bool BESDebug::_debug_strm_created = false;
 BESDebug::DebugMap BESDebug::_debug_map;
 
@@ -57,16 +56,35 @@ BESDebug::DebugMap BESDebug::_debug_map;
  */
 string get_debug_log_line_prefix()
 {
+    // Given C++11, this could be done with std::put_time() and std::localtime().
+#if 1
+    std::ostringstream oss;
+    
+    // Time Field
+    auto t = time(nullptr);
+    struct tm stm{};
+    localtime_r(&t, &stm);
+    // Mimic zone + asctime: GMT Thu Nov 24 18:22:48 1986
+    oss << std::put_time(&stm, "[%Z %c]");
+
+    // PID field
+    oss << "[pid:" << getpid() <<"]";
+
+    // Thread field
+    oss << "[thread:" << pthread_self() <<"]";
+
+    return oss.str();
+#else
     ostringstream strm;
     // Time Field
-    const time_t sctime = time(NULL);
-    struct tm sttime;
+    const time_t sctime = time(nullptr);
+    struct tm sttime{};
     localtime_r(&sctime, &sttime);
     char zone_name[10];
     strftime(zone_name, sizeof(zone_name), "%Z", &sttime);
 
     char b[32]; // The linux man-page for asctime_r() says "at least 26 bytes".
-    asctime_r(&sttime,b);
+    asctime_r(&sttime, b);
     strm << "[" << zone_name << " ";
     for (size_t j = 0; b[j] != '\n' && j<32; j++)
         strm << b[j];
@@ -79,6 +97,7 @@ string get_debug_log_line_prefix()
     // Thread field
     strm << "[thread:" << pthread_self() <<"]";
     return strm.str();
+#endif
 }
 
 
@@ -164,7 +183,8 @@ void BESDebug::Help(ostream &strm)
         << "  context with dash (-) in front will be turned off" << endl << "  context of all will turn on debugging for all contexts" << endl << endl
         << "Possible context(s):" << endl;
 
-    if (_debug_map.size()) {
+    if (!_debug_map.empty()) {
+#if 0
         BESDebug::debug_citer i = _debug_map.begin();
         BESDebug::debug_citer e = _debug_map.end();
         for (; i != e; i++) {
@@ -174,6 +194,14 @@ void BESDebug::Help(ostream &strm)
             else
                 strm << "off" << endl;
         }
+#endif
+        std::for_each(_debug_map.begin(), _debug_map.end(), [&strm](const auto &pair) {
+            strm << "  " << pair.first << ": ";
+            if (pair.second)
+                strm << "on" << endl;
+            else
+                strm << "off" << endl;
+        });
     }
     else {
         strm << "  none specified" << endl;
@@ -197,7 +225,6 @@ string BESDebug::GetOptionsString()
     ostringstream oss;
 
     if (!_debug_map.empty()) {
-
 #if 0
         BESDebug::debug_citer i = _debug_map.begin();
         BESDebug::debug_citer e = _debug_map.end();

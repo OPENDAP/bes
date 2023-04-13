@@ -47,6 +47,7 @@ std::string get_debug_log_line_prefix();
 
 static std::mutex bes_debug_log_mutex;
 
+/// When NDEBUG is defined, BESDEBUG and BESISDEBUG are no-ops.
 #ifdef NDEBUG
 #define BESDEBUG( x, y )
 #else
