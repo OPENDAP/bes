@@ -2,6 +2,18 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="good_imerge.h5">
     <Dimension name="lon" size="3600"/>
     <Dimension name="lat" size="1800"/>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
     <Int16 name="HQprecipSource2">
         <Dim name="/lon"/>
         <Dim name="/lat"/>
@@ -11,24 +23,6 @@
         <Map name="/lon"/>
         <Map name="/lat"/>
     </Int16>
-    <Int16 name="IRkalmanFilterWeight">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-10000</Value>
-        </Attribute>
-        <Map name="/lon"/>
-        <Map name="/lat"/>
-    </Int16>
-    <Float32 name="lon">
-        <Dim name="/lon"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
     <Int8 name="HQobservationTime2">
         <Dim name="/lon"/>
         <Dim name="/lat"/>
@@ -89,12 +83,18 @@
         <Map name="/lon"/>
         <Map name="/lat"/>
     </Float32>
-    <Float32 name="lat">
+    <Int16 name="IRkalmanFilterWeight">
+        <Dim name="/lon"/>
         <Dim name="/lat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
         </Attribute>
-    </Float32>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-10000</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int16>
     <Float32 name="HQprecipitation">
         <Dim name="/lon"/>
         <Dim name="/lat"/>

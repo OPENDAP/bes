@@ -2,39 +2,42 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5">
     <Dimension name="Longitude" size="1440"/>
     <Dimension name="Latitude" size="720"/>
-    <Int16 name="mask">
+    <Float32 name="Longitude">
         <Dim name="/Longitude"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>Bit Mask</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>Longitude Latitude</Value>
-        </Attribute>
-        <Map name="/Longitude"/>
-        <Map name="/Latitude"/>
-    </Int16>
-    <Int16 name="opt_depth_c2">
-        <Dim name="/Longitude"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>Optical Depth from 7.3 GHz</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>Longitude Latitude</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-32767</Value>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
         </Attribute>
         <Attribute name="scale_factor" type="Float32">
-            <Value>0.009999999776</Value>
+            <Value>1.</Value>
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Map name="/Longitude"/>
-        <Map name="/Latitude"/>
-    </Int16>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Lon</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Latitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Lat</Value>
+        </Attribute>
+    </Float32>
     <Int16 name="frequency_map">
         <Dim name="/Longitude"/>
         <Dim name="/Latitude"/>
@@ -107,24 +110,18 @@
         <Map name="/Longitude"/>
         <Map name="/Latitude"/>
     </Int16>
-    <Float32 name="Longitude">
+    <Int16 name="mask">
         <Dim name="/Longitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float32">
-            <Value>1.</Value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float32">
-            <Value>0.</Value>
-        </Attribute>
+        <Dim name="/Latitude"/>
         <Attribute name="long_name" type="String">
-            <Value>Longitude</Value>
+            <Value>Bit Mask</Value>
         </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>Lon</Value>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
         </Attribute>
-    </Float32>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+    </Int16>
     <Int16 name="soil_moisture_c2_error">
         <Dim name="/Longitude"/>
         <Dim name="/Latitude"/>
@@ -188,24 +185,27 @@
         <Map name="/Longitude"/>
         <Map name="/Latitude"/>
     </Float64>
-    <Float32 name="Latitude">
+    <Int16 name="opt_depth_c2">
+        <Dim name="/Longitude"/>
         <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
+        <Attribute name="long_name" type="String">
+            <Value>Optical Depth from 7.3 GHz</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Longitude Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
         </Attribute>
         <Attribute name="scale_factor" type="Float32">
-            <Value>1.</Value>
+            <Value>0.009999999776</Value>
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>Lat</Value>
-        </Attribute>
-    </Float32>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+    </Int16>
     <Int16 name="opt_depth_x">
         <Dim name="/Longitude"/>
         <Dim name="/Latitude"/>

@@ -46,20 +46,18 @@ group: HALOE {
   	lat = 18 ;
   	dayInBin = 31 ;
   variables:
-  	float lat_max(time, lev, lat) ;
-  		lat_max:long_name = "Hydrogen Chloride Maximum Latitude from HALOE" ;
-  		lat_max:units = "degrees_north" ;
-  		lat_max:description = "The maximum latitude of the usable data for each bin" ;
-  		lat_max:_FillValue = -999.f ;
+  	float lat(lat) ;
+  		lat:long_name = "Latitude" ;
+  		lat:units = "degrees_north" ;
+  		lat:description = "Center latitude" ;
   	int time(time) ;
   		time:long_name = "Time" ;
   		time:units = "days since 1950-01-01" ;
   		time:description = "Day number referenced to 15th day of the month" ;
-  	float std_error(time, lev, lat) ;
-  		std_error:long_name = "Hydrogen Chloride Standard Error from HALOE" ;
-  		std_error:units = "mol/mol" ;
-  		std_error:description = "The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)" ;
-  		std_error:_FillValue = -999.f ;
+  	float lev(lev) ;
+  		lev:long_name = "Pressure" ;
+  		lev:units = "hPa" ;
+  		lev:description = "Value of vertical coordinate (Pressure)" ;
   	float lat_min(time, lev, lat) ;
   		lat_min:long_name = "Hydrogen Chloride Minimum Latitude from HALOE" ;
   		lat_min:units = "degrees_north" ;
@@ -90,10 +88,11 @@ group: HALOE {
   		sza_avg:units = "degrees" ;
   		sza_avg:description = "The average solar zenith angle of the usable data for each bin" ;
   		sza_avg:_FillValue = -999.f ;
-  	float lat(lat) ;
-  		lat:long_name = "Latitude" ;
-  		lat:units = "degrees_north" ;
-  		lat:description = "Center latitude" ;
+  	float lat_max(time, lev, lat) ;
+  		lat_max:long_name = "Hydrogen Chloride Maximum Latitude from HALOE" ;
+  		lat_max:units = "degrees_north" ;
+  		lat_max:description = "The maximum latitude of the usable data for each bin" ;
+  		lat_max:_FillValue = -999.f ;
   	float sza_max(time, lat) ;
   		sza_max:long_name = "Hydrogen Chloride Maximum Solar Zenith Angle from HALOE" ;
   		sza_max:units = "degrees" ;
@@ -139,10 +138,11 @@ group: HALOE {
   		nvalues:units = "1" ;
   		nvalues:description = "The number of values used in the calculations of the zonal average quantities for each bin" ;
   		nvalues:_FillValue = -999 ;
-  	float lev(lev) ;
-  		lev:long_name = "Pressure" ;
-  		lev:units = "hPa" ;
-  		lev:description = "Value of vertical coordinate (Pressure)" ;
+  	float std_error(time, lev, lat) ;
+  		std_error:long_name = "Hydrogen Chloride Standard Error from HALOE" ;
+  		std_error:units = "mol/mol" ;
+  		std_error:description = "The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)" ;
+  		std_error:_FillValue = -999.f ;
 
   // group attributes:
   		:OriginalFileVersion = "v19" ;
@@ -160,20 +160,18 @@ group: ACE-FTS {
   	lat = 18 ;
   	dayInBin = 31 ;
   variables:
-  	float lat_max(time, lev, lat) ;
-  		lat_max:long_name = "Hydrogen Chloride Maximum Latitude from ACE-FTS" ;
-  		lat_max:units = "degrees_north" ;
-  		lat_max:description = "The maximum latitude of the usable data for each bin" ;
-  		lat_max:_FillValue = -999.f ;
+  	float lat(lat) ;
+  		lat:long_name = "Latitude" ;
+  		lat:units = "degrees_north" ;
+  		lat:description = "Center latitude" ;
   	int time(time) ;
   		time:long_name = "Time" ;
   		time:units = "days since 1950-01-01" ;
   		time:description = "Day number referenced to 15th day of the month" ;
-  	float std_error(time, lev, lat) ;
-  		std_error:long_name = "Hydrogen Chloride Standard Error from ACE-FTS" ;
-  		std_error:units = "mol/mol" ;
-  		std_error:description = "The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)" ;
-  		std_error:_FillValue = -999.f ;
+  	float lev(lev) ;
+  		lev:long_name = "Pressure" ;
+  		lev:units = "hPa" ;
+  		lev:description = "Value of vertical coordinate (Pressure)" ;
   	float lat_min(time, lev, lat) ;
   		lat_min:long_name = "Hydrogen Chloride Minimum Latitude from ACE-FTS" ;
   		lat_min:units = "degrees_north" ;
@@ -204,10 +202,11 @@ group: ACE-FTS {
   		sza_avg:units = "degrees" ;
   		sza_avg:description = "The average solar zenith angle of the usable data for each bin" ;
   		sza_avg:_FillValue = -999.f ;
-  	float lat(lat) ;
-  		lat:long_name = "Latitude" ;
-  		lat:units = "degrees_north" ;
-  		lat:description = "Center latitude" ;
+  	float lat_max(time, lev, lat) ;
+  		lat_max:long_name = "Hydrogen Chloride Maximum Latitude from ACE-FTS" ;
+  		lat_max:units = "degrees_north" ;
+  		lat_max:description = "The maximum latitude of the usable data for each bin" ;
+  		lat_max:_FillValue = -999.f ;
   	float sza_max(time, lat) ;
   		sza_max:long_name = "Hydrogen Chloride Maximum Solar Zenith Angle from ACE-FTS" ;
   		sza_max:units = "degrees" ;
@@ -253,10 +252,11 @@ group: ACE-FTS {
   		nvalues:units = "1" ;
   		nvalues:description = "The number of values used in the calculations of the zonal average quantities for each bin" ;
   		nvalues:_FillValue = -999 ;
-  	float lev(lev) ;
-  		lev:long_name = "Pressure" ;
-  		lev:units = "hPa" ;
-  		lev:description = "Value of vertical coordinate (Pressure)" ;
+  	float std_error(time, lev, lat) ;
+  		std_error:long_name = "Hydrogen Chloride Standard Error from ACE-FTS" ;
+  		std_error:units = "mol/mol" ;
+  		std_error:description = "The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)" ;
+  		std_error:_FillValue = -999.f ;
 
   // group attributes:
   		:OriginalFileVersion = "v2.2" ;
@@ -274,20 +274,18 @@ group: Aura\ MLS {
   	lat = 18 ;
   	dayInBin = 31 ;
   variables:
-  	float lat_max(time, lev, lat) ;
-  		lat_max:long_name = "Hydrogen Chloride Maximum Latitude from Aura MLS" ;
-  		lat_max:units = "degrees_north" ;
-  		lat_max:description = "The maximum latitude of the usable data for each bin" ;
-  		lat_max:_FillValue = -999.f ;
+  	float lat(lat) ;
+  		lat:long_name = "Latitude" ;
+  		lat:units = "degrees_north" ;
+  		lat:description = "Center latitude" ;
   	int time(time) ;
   		time:long_name = "Time" ;
   		time:units = "days since 1950-01-01" ;
   		time:description = "Day number referenced to 15th day of the month" ;
-  	float std_error(time, lev, lat) ;
-  		std_error:long_name = "Hydrogen Chloride Standard Error from Aura MLS" ;
-  		std_error:units = "mol/mol" ;
-  		std_error:description = "The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)" ;
-  		std_error:_FillValue = -999.f ;
+  	float lev(lev) ;
+  		lev:long_name = "Pressure" ;
+  		lev:units = "hPa" ;
+  		lev:description = "Value of vertical coordinate (Pressure)" ;
   	float lat_min(time, lev, lat) ;
   		lat_min:long_name = "Hydrogen Chloride Minimum Latitude from Aura MLS" ;
   		lat_min:units = "degrees_north" ;
@@ -318,10 +316,11 @@ group: Aura\ MLS {
   		sza_avg:units = "degrees" ;
   		sza_avg:description = "The average solar zenith angle of the usable data for each bin" ;
   		sza_avg:_FillValue = -999.f ;
-  	float lat(lat) ;
-  		lat:long_name = "Latitude" ;
-  		lat:units = "degrees_north" ;
-  		lat:description = "Center latitude" ;
+  	float lat_max(time, lev, lat) ;
+  		lat_max:long_name = "Hydrogen Chloride Maximum Latitude from Aura MLS" ;
+  		lat_max:units = "degrees_north" ;
+  		lat_max:description = "The maximum latitude of the usable data for each bin" ;
+  		lat_max:_FillValue = -999.f ;
   	float sza_max(time, lat) ;
   		sza_max:long_name = "Hydrogen Chloride Maximum Solar Zenith Angle from Aura MLS" ;
   		sza_max:units = "degrees" ;
@@ -367,10 +366,11 @@ group: Aura\ MLS {
   		nvalues:units = "1" ;
   		nvalues:description = "The number of values used in the calculations of the zonal average quantities for each bin" ;
   		nvalues:_FillValue = -999 ;
-  	float lev(lev) ;
-  		lev:long_name = "Pressure" ;
-  		lev:units = "hPa" ;
-  		lev:description = "Value of vertical coordinate (Pressure)" ;
+  	float std_error(time, lev, lat) ;
+  		std_error:long_name = "Hydrogen Chloride Standard Error from Aura MLS" ;
+  		std_error:units = "mol/mol" ;
+  		std_error:description = "The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)" ;
+  		std_error:_FillValue = -999.f ;
 
   // group attributes:
   		:OriginalFileVersion = "v3.3" ;
