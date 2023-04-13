@@ -2601,7 +2601,7 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
     // We also need to remember the positions since it is possible that these front variables contain the coordinate/dimension variables.
     // We will not move those coordinate/dimension variables in the front.
     vector<BaseType *>front_v_ptr;
-    int stop_index = (int)(cv_pos.size());
+    auto stop_index = (int)(cv_pos.size());
 
     // If we do have coordinate/dimension variables,find those variables and re-order.(We cannot assume that we always have these variables).
     if (stop_index >0) {
@@ -2645,8 +2645,8 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
         vector <BaseType *> mov_cv_ptr;
         for (int i =0; i<stop_index;i++) { 
             bool overlapped_cv = false;
-            for (unsigned int j =0; j < overlap_cv_pos.size();j++) {
-                if (cv_pos[i]  == overlap_cv_pos[j]) {
+            for (const auto &overlap_cv_p: overlap_cv_pos) {
+                if (cv_pos[i]  == overlap_cv_p) {
                     overlapped_cv = true;
                     break;
                 }
@@ -2662,8 +2662,8 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
         vector <BaseType *> mov_front_v_ptr;
         for (int i =0; i<stop_index;i++) { 
             bool overlapped_front_cv = false;
-            for (unsigned int j =0; j<overlap_front_pos.size();j++) {
-                if (i  == overlap_front_pos[j]) {
+            for (const auto &overlap_front_p:overlap_front_pos) {
+                if (i  == overlap_front_p) {
                     overlapped_front_cv = true;
                     break;
                 }
@@ -2706,7 +2706,7 @@ cerr<<"mov_cv_pos: "<<mov_cv_pos[i] <<endl;
     
 }
 
-bool is_cvar(BaseType *v, const unordered_map<string,Array*> &coname_array_maps, const unordered_map<string,Array*> & dc_array_maps) {
+bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array_maps, const unordered_map<string,Array*> & dc_array_maps) {
 
     bool ret_value = false;
     unordered_map<string, Array*>::const_iterator it_ma = coname_array_maps.find(v->FQN());

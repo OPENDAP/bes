@@ -126,7 +126,7 @@ void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & 
 void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &coord_name, std::unordered_map<std::string,libdap::Array*> & coname_array_maps, std::unordered_set<std::string>&);
 void add_dimscale_maps(libdap::Array*, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names);
 void reorder_vars(libdap::D4Group*, const std::map<std::string,libdap::Array*> &coname_array_maps, const std::map<std::string,libdap::Array*> & dc_array_maps);
-bool is_cvar(libdap::BaseType*, const std::unordered_map<std::string,libdap::Array*> &coname_array_maps, const std::unordered_map<std::string,libdap::Array*> & dc_array_maps);
+bool is_cvar(const libdap::BaseType*, const std::unordered_map<std::string,libdap::Array*> &coname_array_maps, const std::unordered_map<std::string,libdap::Array*> & dc_array_maps);
 
 /// EOS5 handling 
 string read_struct_metadata(hid_t s_file_id);
