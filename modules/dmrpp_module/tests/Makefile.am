@@ -40,9 +40,10 @@ TESTSUITE_DMRPP = $(srcdir)/testsuite_dmrpp_tests
 
 TESTSUITE_DMRPP_BUILDER = $(srcdir)/testsuite_dmrpp_builder
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) bes.conf bes_serial.conf 
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
+	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER)' $(TESTSUITEFLAGS)
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
