@@ -2138,9 +2138,10 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
     }
 
     // Reorder the variables so that the map variables are at the front.
+    // We decide to use map instead of unordered_map since now the order of variables is important.
     map<string,Array*> ordered_dc_co_array_maps;
     map<string,Array*> ordered_coname_array_maps;
-    // STOP
+
     // Loop through dsname_array_maps, then search coname_array_maps, if this element is not in the coname_array_maps, add this to dc_co_array_maps.
     for (const auto &dsname_array_map:dsname_array_maps) {
         
@@ -2569,6 +2570,8 @@ void reorder_vars(D4Group *d4_grp, const map<string,Array*> &coname_array_maps, 
         BaseType *v = *vi;
         // We only need to re-order arrays. 
         if (libdap::dods_array_c == v->type()) {
+
+            // We need to remember the coordinate variable positions and remember the corresponding arrays.
             for (const auto &coname_array_map:coname_array_maps) {
                 if (coname_array_map.first == v->FQN()) {
                     cv_pos.push_back(v_index);
@@ -2585,6 +2588,7 @@ void reorder_vars(D4Group *d4_grp, const map<string,Array*> &coname_array_maps, 
         v_index++;
     }
 
+// Leave the following #if 0 block for debugging.
 #if 0
 for (const auto &cv_p:cv_pos) 
 cerr<< ": "<<cv_p <<endl;
@@ -2593,18 +2597,15 @@ for (const auto &cv_obj_p:cv_obj_ptr)
 cerr<< "name: "<<cv_obj_p->FQN() <<endl;
 #endif
 
-    
-    //vector<int> front_v_pos;
+    // Obtain the front variables. The number of front variables is set to be the same as the coordinate variables and dimension scales.
+    // We also need to remember the positions since it is possible that these front variables contain the coordinate/dimension variables.
+    // We will not move those coordinate/dimension variables in the front.
     vector<BaseType *>front_v_ptr;
-
     int stop_index = (int)(cv_pos.size());
 
-#if 0
-    for (int i = 0; i<stop_index;i++)
-        front_v_pos.push_back(i);
-#endif
-
+    // If we do have coordinate/dimension variables,find those variables and re-order.(We cannot assume that we always have these variables).
     if (stop_index >0) {
+
         vi = d4_grp->var_begin();
         ve = d4_grp->var_end();
     
@@ -2613,21 +2614,13 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
         for (; vi != ve; vi++) {
             BaseType *v = *vi;
             front_v_ptr.push_back(v);
-//cerr<<"front_v_ptr name is "<<v->FQN() <<endl;
             v_index++;
             if (v_index == stop_index) 
                 break;
         }
 
-#if 0
-        // Move the map variables to the front, move the front variables to the original map variable location.
-        for (int i =0; i<stop_index;i++) { 
-            d4_grp->set_var_index(cv_obj_ptr[i],i);
-            d4_grp->set_var_index(front_v_ptr[i],cv_pos[i]);
-        }
-#endif
         // Check the overlaps of cvs with the front variables. 
-        // For example, there are 3 coordinate variables, c1,c2,c3. The first 3 variables
+        // For example, if there are 3 coordinate variables, c1,c2,c3; the first 3 variables
         // are v1,v2,c1. In this case, c1 doesn't need to move. We only switch v1 with c2 and v2 with c3. 
         // Usually there are only a few coordinate variables. So even the nested loops are not costly.
    
@@ -2638,7 +2631,6 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
             for (int j = 0; j< stop_index;j++) {
                 if (i == cv_pos[j]) {
                     overlap_cv_pos.push_back(cv_pos[j]);
-//cerr<<"overlap_cv_pos is "<<cv_pos[j] <<endl;
                     overlap_front_pos.push_back(i);
                     break;
                 }
@@ -2655,7 +2647,6 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
             bool overlapped_cv = false;
             for (unsigned int j =0; j < overlap_cv_pos.size();j++) {
                 if (cv_pos[i]  == overlap_cv_pos[j]) {
-//cerr<<"overlapped cv_pos is "<<cv_pos[i]<<endl;
                     overlapped_cv = true;
                     break;
                 }
@@ -2664,10 +2655,9 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
                 mov_cv_pos.push_back(cv_pos[i]);
                 mov_cv_ptr.push_back(cv_obj_ptr[i]);
             }
-               
         }
 
-        // The front non-cv variables  that need to be moved.
+        // The front non-cv variables that need to be moved.
         vector <int> mov_front_pos;
         vector <BaseType *> mov_front_v_ptr;
         for (int i =0; i<stop_index;i++) { 
@@ -2682,7 +2672,6 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
                 mov_front_pos.push_back(i);
                 mov_front_v_ptr.push_back(front_v_ptr[i]);
             }
-               
         }
 
         // sanity check 
@@ -2691,128 +2680,25 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
             err_msg +="the number of moved non-coordinate variables";
             throw InternalErr(__FILE__, __LINE__, err_msg);
         }
+
+// Leave the following #if 0 for the time being. This is for debugging purpose. KY 2023-04-13
 #if 0
 for (int i = 0; i <mov_cv_pos.size();i++) {
 cerr<<"mov_front_pos: "<<mov_front_pos[i] <<endl;
 cerr<<"mov_cv_pos: "<<mov_cv_pos[i] <<endl;
-
 }
 #endif
 
-//#if 0
         // Move the map variables to the front, move the front non-coordinate variables to the original map variable location.
         for (unsigned int i =0; i<mov_front_pos.size();i++) { 
             d4_grp->set_var_index(mov_cv_ptr[i],mov_front_pos[i]);
             d4_grp->set_var_index(mov_front_v_ptr[i],mov_cv_pos[i]);
         }
-//#endif
         
     }
 
-#if 0
-    for (; vi != ve; vi++) {
-
-        BaseType *v = *vi;
-        // We only need to re-order arrays. 
-        if (libdap::dods_array_c == v->type()) {
-            //auto t_a = static_cast<Array *>(*vi);
-            v_copy = v;
-            break;
-        }
-
-    }
-
-    vi++;
-
-    BaseType* v_copy2;
-    for (; vi != ve; vi++) {
-
-        BaseType *v = *vi;
-        // We only need to re-order arrays. 
-        if (libdap::dods_array_c == v->type()) {
-            //auto t_a = static_cast<Array *>(*vi);
-            v_copy2 = v;
-            break;
-        }
-
-    }
-
-//#if 0
-    d4_grp->set_var_index(v_copy2,0);
-    d4_grp->set_var_index(v_copy,1);
-//#endif
-#endif
-
-#if 0
-    vi = d4_grp->var_begin();
-    ve = d4_grp->var_end();
-
-    for (; vi != ve; vi++) {
-
-        BaseType *v = *vi;
-        // We only need to re-order arrays. 
-        if (libdap::dods_array_c == v->type()) {
-            *vi = &v_copy2_val;
-            //delete v;
-            break;
-        }
-
-    }
-
-    for (; vi != ve; vi++) {
-
-        BaseType *v = *vi;
-        // We only need to re-order arrays. 
-        if (libdap::dods_array_c == v->type()) {
-            *vi = &v_copy_val;
-            //delete v;
-            break;
-        }
-
-    }
-#endif
-
-#if 0
-    for (; vi != ve; ) {
-
-        BaseType *v = *vi;
-
-        // We only need to re-order arrays. 
-        if (libdap::dods_array_c == v->type()) {
-cerr<<"first v name is "<<v->name() <<endl;
-
-            bool is_cv = is_cvar(v,coname_array_maps,dc_array_maps);
-            if (!is_cv) {
-
-                auto t_a = static_cast<Array *>(*vi);
-                Array v_copy = *t_a;
-cerr<<"coming before del_var"<<endl;
-cerr<<"v name is "<<v->name() <<endl;
-                // delete and add var.
-                Constructor::Vars_iter vi_copy = vi ;
-                //vi++;
-                if (vi !=ve) {
-                BaseType *v_temp = *vi;
-cerr<<"v_temp  name is "<<v_temp->name() <<endl;
-}
-                
-                d4_grp->del_var(vi_copy);
-cerr<<"coming after del_var"<<endl;
-                d4_grp->add_var(&v_copy);
-cerr<<"v_copy name "<<v_copy.name() <<endl;
-cerr<<"coming after add_var_nocopy"<<endl;
-                vi++;
-            }
-            else 
-                vi++;
-
-        }
-        else 
-            vi++;
-
-    }
-#endif
-
+    // Now go the the children groups. Because the coordinate variables is always on the ancestor groups or this group,
+    // the re-ordering routine guarantees that a map variable is in front of all other variables that use this map.
     for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
         //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
         reorder_vars(*gi, coname_array_maps, dc_array_maps);
