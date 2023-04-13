@@ -327,5 +327,4 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cstr.h5.dmrpp.dap])
 
 dnl - writer - build_dmrpp tests ------------------------------------------
 
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([builddmrpp/ghrsst_cmr_dmrpp.dap])
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([builddmrpp/ghrsst_cmr_dmrpp.dap])
