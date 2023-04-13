@@ -110,25 +110,17 @@
         <Dimension name="lev" size="25"/>
         <Dimension name="lat" size="18"/>
         <Dimension name="dayInBin" size="31"/>
-        <Float32 name="lat_max">
-            <Dim name="/HALOE/time"/>
-            <Dim name="/HALOE/lev"/>
+        <Float32 name="lat">
             <Dim name="/HALOE/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Hydrogen Chloride Maximum Latitude from HALOE</Value>
+                <Value>Latitude</Value>
             </Attribute>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>The maximum latitude of the usable data for each bin</Value>
+                <Value>Center latitude</Value>
             </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>-999.</Value>
-            </Attribute>
-            <Map name="/HALOE/time"/>
-            <Map name="/HALOE/lev"/>
-            <Map name="/HALOE/lat"/>
         </Float32>
         <Int32 name="time">
             <Dim name="/HALOE/time"/>
@@ -142,25 +134,17 @@
                 <Value>Day number referenced to 15th day of the month</Value>
             </Attribute>
         </Int32>
-        <Float32 name="std_error">
-            <Dim name="/HALOE/time"/>
+        <Float32 name="lev">
             <Dim name="/HALOE/lev"/>
-            <Dim name="/HALOE/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Hydrogen Chloride Standard Error from HALOE</Value>
+                <Value>Pressure</Value>
             </Attribute>
             <Attribute name="units" type="String">
-                <Value>mol/mol</Value>
+                <Value>hPa</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
+                <Value>Value of vertical coordinate (Pressure)</Value>
             </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>-999.</Value>
-            </Attribute>
-            <Map name="/HALOE/time"/>
-            <Map name="/HALOE/lev"/>
-            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="lat_min">
             <Dim name="/HALOE/time"/>
@@ -278,17 +262,25 @@
             <Map name="/HALOE/time"/>
             <Map name="/HALOE/lat"/>
         </Float32>
-        <Float32 name="lat">
+        <Float32 name="lat_max">
+            <Dim name="/HALOE/time"/>
+            <Dim name="/HALOE/lev"/>
             <Dim name="/HALOE/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Latitude</Value>
+                <Value>Hydrogen Chloride Maximum Latitude from HALOE</Value>
             </Attribute>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>Center latitude</Value>
+                <Value>The maximum latitude of the usable data for each bin</Value>
             </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="sza_max">
             <Dim name="/HALOE/time"/>
@@ -463,17 +455,25 @@
             <Map name="/HALOE/lev"/>
             <Map name="/HALOE/lat"/>
         </Int32>
-        <Float32 name="lev">
+        <Float32 name="std_error">
+            <Dim name="/HALOE/time"/>
             <Dim name="/HALOE/lev"/>
+            <Dim name="/HALOE/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Pressure</Value>
+                <Value>Hydrogen Chloride Standard Error from HALOE</Value>
             </Attribute>
             <Attribute name="units" type="String">
-                <Value>hPa</Value>
+                <Value>mol/mol</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>Value of vertical coordinate (Pressure)</Value>
+                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
             </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Attribute name="OriginalFileVersion" type="String">
             <Value>v19</Value>
@@ -499,25 +499,17 @@
         <Dimension name="lev" size="25"/>
         <Dimension name="lat" size="18"/>
         <Dimension name="dayInBin" size="31"/>
-        <Float32 name="lat_max">
-            <Dim name="/ACE-FTS/time"/>
-            <Dim name="/ACE-FTS/lev"/>
+        <Float32 name="lat">
             <Dim name="/ACE-FTS/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Hydrogen Chloride Maximum Latitude from ACE-FTS</Value>
+                <Value>Latitude</Value>
             </Attribute>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>The maximum latitude of the usable data for each bin</Value>
+                <Value>Center latitude</Value>
             </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>-999.</Value>
-            </Attribute>
-            <Map name="/ACE-FTS/time"/>
-            <Map name="/ACE-FTS/lev"/>
-            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Int32 name="time">
             <Dim name="/ACE-FTS/time"/>
@@ -531,25 +523,17 @@
                 <Value>Day number referenced to 15th day of the month</Value>
             </Attribute>
         </Int32>
-        <Float32 name="std_error">
-            <Dim name="/ACE-FTS/time"/>
+        <Float32 name="lev">
             <Dim name="/ACE-FTS/lev"/>
-            <Dim name="/ACE-FTS/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Hydrogen Chloride Standard Error from ACE-FTS</Value>
+                <Value>Pressure</Value>
             </Attribute>
             <Attribute name="units" type="String">
-                <Value>mol/mol</Value>
+                <Value>hPa</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
+                <Value>Value of vertical coordinate (Pressure)</Value>
             </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>-999.</Value>
-            </Attribute>
-            <Map name="/ACE-FTS/time"/>
-            <Map name="/ACE-FTS/lev"/>
-            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="lat_min">
             <Dim name="/ACE-FTS/time"/>
@@ -667,17 +651,25 @@
             <Map name="/ACE-FTS/time"/>
             <Map name="/ACE-FTS/lat"/>
         </Float32>
-        <Float32 name="lat">
+        <Float32 name="lat_max">
+            <Dim name="/ACE-FTS/time"/>
+            <Dim name="/ACE-FTS/lev"/>
             <Dim name="/ACE-FTS/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Latitude</Value>
+                <Value>Hydrogen Chloride Maximum Latitude from ACE-FTS</Value>
             </Attribute>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>Center latitude</Value>
+                <Value>The maximum latitude of the usable data for each bin</Value>
             </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="sza_max">
             <Dim name="/ACE-FTS/time"/>
@@ -852,17 +844,25 @@
             <Map name="/ACE-FTS/lev"/>
             <Map name="/ACE-FTS/lat"/>
         </Int32>
-        <Float32 name="lev">
+        <Float32 name="std_error">
+            <Dim name="/ACE-FTS/time"/>
             <Dim name="/ACE-FTS/lev"/>
+            <Dim name="/ACE-FTS/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Pressure</Value>
+                <Value>Hydrogen Chloride Standard Error from ACE-FTS</Value>
             </Attribute>
             <Attribute name="units" type="String">
-                <Value>hPa</Value>
+                <Value>mol/mol</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>Value of vertical coordinate (Pressure)</Value>
+                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
             </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Attribute name="OriginalFileVersion" type="String">
             <Value>v2.2</Value>
@@ -888,25 +888,17 @@
         <Dimension name="lev" size="25"/>
         <Dimension name="lat" size="18"/>
         <Dimension name="dayInBin" size="31"/>
-        <Float32 name="lat_max">
-            <Dim name="/Aura MLS/time"/>
-            <Dim name="/Aura MLS/lev"/>
+        <Float32 name="lat">
             <Dim name="/Aura MLS/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Hydrogen Chloride Maximum Latitude from Aura MLS</Value>
+                <Value>Latitude</Value>
             </Attribute>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>The maximum latitude of the usable data for each bin</Value>
+                <Value>Center latitude</Value>
             </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>-999.</Value>
-            </Attribute>
-            <Map name="/Aura MLS/time"/>
-            <Map name="/Aura MLS/lev"/>
-            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Int32 name="time">
             <Dim name="/Aura MLS/time"/>
@@ -920,25 +912,17 @@
                 <Value>Day number referenced to 15th day of the month</Value>
             </Attribute>
         </Int32>
-        <Float32 name="std_error">
-            <Dim name="/Aura MLS/time"/>
+        <Float32 name="lev">
             <Dim name="/Aura MLS/lev"/>
-            <Dim name="/Aura MLS/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Hydrogen Chloride Standard Error from Aura MLS</Value>
+                <Value>Pressure</Value>
             </Attribute>
             <Attribute name="units" type="String">
-                <Value>mol/mol</Value>
+                <Value>hPa</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
+                <Value>Value of vertical coordinate (Pressure)</Value>
             </Attribute>
-            <Attribute name="_FillValue" type="Float32">
-                <Value>-999.</Value>
-            </Attribute>
-            <Map name="/Aura MLS/time"/>
-            <Map name="/Aura MLS/lev"/>
-            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="lat_min">
             <Dim name="/Aura MLS/time"/>
@@ -1056,17 +1040,25 @@
             <Map name="/Aura MLS/time"/>
             <Map name="/Aura MLS/lat"/>
         </Float32>
-        <Float32 name="lat">
+        <Float32 name="lat_max">
+            <Dim name="/Aura MLS/time"/>
+            <Dim name="/Aura MLS/lev"/>
             <Dim name="/Aura MLS/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Latitude</Value>
+                <Value>Hydrogen Chloride Maximum Latitude from Aura MLS</Value>
             </Attribute>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>Center latitude</Value>
+                <Value>The maximum latitude of the usable data for each bin</Value>
             </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="sza_max">
             <Dim name="/Aura MLS/time"/>
@@ -1241,17 +1233,25 @@
             <Map name="/Aura MLS/lev"/>
             <Map name="/Aura MLS/lat"/>
         </Int32>
-        <Float32 name="lev">
+        <Float32 name="std_error">
+            <Dim name="/Aura MLS/time"/>
             <Dim name="/Aura MLS/lev"/>
+            <Dim name="/Aura MLS/lat"/>
             <Attribute name="long_name" type="String">
-                <Value>Pressure</Value>
+                <Value>Hydrogen Chloride Standard Error from Aura MLS</Value>
             </Attribute>
             <Attribute name="units" type="String">
-                <Value>hPa</Value>
+                <Value>mol/mol</Value>
             </Attribute>
             <Attribute name="description" type="String">
-                <Value>Value of vertical coordinate (Pressure)</Value>
+                <Value>The standard error of the mean for each bin (equal to std_dev divided by the square root of nvalues)</Value>
             </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-999.</Value>
+            </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Attribute name="OriginalFileVersion" type="String">
             <Value>v3.3</Value>

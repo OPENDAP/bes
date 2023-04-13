@@ -1,0 +1,27 @@
+netcdf t_group_atomic {
+dimensions:
+        dim1 = 2 ;
+        dim2 = 3 ;
+variables:
+        float d1(dim1,dim2);
+        d1:coordinates = "c1 c2";
+        float d2(dim1,dim2);
+        d2:coordinates = "c3 c4";
+        float c1(dim1,dim2);
+        float c2(dim1,dim2);
+        float d3(dim1,dim2);
+        d3:coordinates = "c5 c1";
+        float c3(dim1,dim2);
+        float c4(dim1,dim2);
+        float c5(dim1,dim2);
+        
+data:
+        d1 = 0.5,1.5,2.5,3.5,4.5,5.5;
+        d2 = 1.5,2.5,3.5,4.5,5.5,6.5;
+        c1 = 1.0,2.0,3.0,4.0,5.0,6.0;
+        c2 = 2.0,4.0,6.0,8.0,10.0,12.0;
+        d3 = 0.2,0.4,0.6,0.8,1.0,1.2;
+        c3 = 4.0,6.0,8.0,10.0,12.0,14.0;
+        c4 = 3.0,4.0,5.0,6.0,7.0,8.0;
+        c5 = 5.0,6.0,7.0,8.0,9.0,9.5;
+}
