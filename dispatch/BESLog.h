@@ -188,7 +188,7 @@ public:
      * @see verbose_off
      * @see BESKeys
      */
-    bool is_verbose()
+    bool is_verbose() const
     {
         return d_verbose;
     }
@@ -212,7 +212,7 @@ public:
     BESLog& operator<<(p_ostream_manipulator);
     BESLog& operator<<(p_ios_manipulator);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     virtual void flush_me();
 

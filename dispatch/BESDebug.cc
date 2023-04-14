@@ -32,13 +32,12 @@
 
 #include "config.h"
 
-#include <time.h>
-#include <unistd.h>
-
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
-#include <pthread.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
