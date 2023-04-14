@@ -37,7 +37,7 @@
 #define I_BESDebug_h 1
 
 #include <iostream>
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <mutex>
 
@@ -98,7 +98,7 @@ private:
     // to make the same calls to IsSet with a std::unordered_map was 2 675 492 us
     // jhrg 4/12/23
     // typedef std::unordered_map<std::string, bool> DebugMap;
-    using DebugMap = std::unordered_map<std::string, bool>;
+    using DebugMap = std::map<std::string, bool>;
 
     static DebugMap _debug_map;
     static std::ostream *_debug_strm;
