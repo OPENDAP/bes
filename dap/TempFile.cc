@@ -185,14 +185,15 @@ string TempFile::create(const std::string &dir_name, const std::string &temp_fil
     string target_file = BESUtil::pathConcat(dir_name,file_template);
     BESDEBUG(MODULE, prolog << "target_file: " << target_file << endl);
 
-    char tmp_name[target_file.size() + 1];
-    std::string::size_type len = target_file.copy(tmp_name, target_file.size());
+    // char tmp_name[target_file.size() + 1];
+    vector<char> tmp_name(target_file.size() + 1);
+    std::string::size_type len = target_file.copy(tmp_name.data(), target_file.size());
     tmp_name[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using
     // a mode of 666.
     mode_t original_mode = umask(077);
-    d_fd = mkstemp(tmp_name);
+    d_fd = mkstemp(tmp_name.data());
     umask(original_mode);
 
     if (d_fd == -1) {
@@ -202,13 +203,13 @@ string TempFile::create(const std::string &dir_name, const std::string &temp_fil
         msg << " FileTemplate: " + target_file;
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
-    d_fname.assign(tmp_name);
+    d_fname.assign(tmp_name.data());
 
     // Check to see if there are already active TempFile things,
     // we can tell because if open_files->size() is zero then this
     // is the first, and we need to register SIGPIPE handler.
     if (open_files->empty()) {
-        struct sigaction act;
+        struct sigaction act{};
         sigemptyset(&act.sa_mask);
         sigaddset(&act.sa_mask, SIGPIPE);
         act.sa_flags = 0;

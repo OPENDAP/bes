@@ -36,7 +36,7 @@
 #include <sstream>
 #include <algorithm>
 
-#include <time.h>
+#include <ctime>
 #include <unistd.h>
 
 #include "BESDebug.h"
@@ -166,6 +166,31 @@ void BESDebug::SetUp(const string &values)
     else {
         BESDebug::Set(flagName, true);
     }
+}
+
+/** @brief set the debug context to the specified value
+ *
+ * Static function that sets the specified debug context (flagName)
+ * to the specified debug value (true or false). If the context is
+ * found then the value is set. Else the context is created and the
+ * value set.
+ *
+ * @param flagName debug context flag to set to the given value
+ * @param value set the debug context to this value
+ */
+void BESDebug::Set(const std::string &flagName, bool value)
+{
+    if (value && flagName == "all") {
+        std::for_each(_debug_map.begin(), _debug_map.end(), [](DebugMap::value_type &p) { p.second = true; });
+#if 0
+        _debug_iter i = _debug_map.begin();
+            _debug_iter e = _debug_map.end();
+            for (; i != e; i++) {
+                (*i).second = true;
+            }
+#endif
+    }
+    _debug_map[flagName] = value;
 }
 
 /** @brief Writes help information for so that developers know what can

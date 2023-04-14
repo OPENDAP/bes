@@ -37,7 +37,6 @@
 #define I_BESDebug_h 1
 
 #include <iostream>
-#include <map>
 #include <unordered_map>
 #include <string>
 #include <mutex>
@@ -105,43 +104,16 @@ private:
     static std::ostream *_debug_strm;
     static bool _debug_strm_created;
 
-    typedef DebugMap::iterator _debug_iter;
-
 public:
-    typedef DebugMap::const_iterator debug_citer;
-
     static const DebugMap &debug_map()
     {
         return _debug_map;
     }
 
-    /** @brief set the debug context to the specified value
-     *
-     * Static function that sets the specified debug context (flagName)
-     * to the specified debug value (true or false). If the context is
-     * found then the value is set. Else the context is created and the
-     * value set.
-     *
-     * @param flagName debug context flag to set to the given value
-     * @param value set the debug context to this value
-     */
-    static void Set(const std::string &flagName, bool value)
-    {
-        if (value && flagName == "all") {
-            std::for_each(_debug_map.begin(), _debug_map.end(), [](DebugMap::value_type &p) { p.second = true; });
-#if 0
-            _debug_iter i = _debug_map.begin();
-            _debug_iter e = _debug_map.end();
-            for (; i != e; i++) {
-                (*i).second = true;
-            }
-#endif
-        }
-        // _debug_map.insert(std::make_pair(flagName, value));
-        _debug_map[flagName] = value;
-    }
+    // Moved to the .cc file to avoid <algorithm> in a header file. jhrg 4/14/23
+    static void Set(const std::string &flagName, bool value);
 
-    /** @brief register the specified debug flag
+     /** @brief register the specified debug flag
      *
      * Allows developers to register a debug flag for when Help method
      * is called. It's OK to register a context more than once (subsequent
@@ -153,9 +125,9 @@ public:
      */
     static void Register(const std::string &flagName)
     {
-        debug_citer i = _debug_map.find(flagName);
+        auto i = _debug_map.find(flagName);
         if (i == _debug_map.end()) {
-            debug_citer a = _debug_map.find("all");
+            auto a = _debug_map.find("all");
             if (a == _debug_map.end()) {
                 _debug_map[flagName] = false;
             }
@@ -172,7 +144,7 @@ public:
      */
     static bool IsSet(const std::string &flagName)
     {
-        debug_citer i = _debug_map.find(flagName);
+        auto i = _debug_map.find(flagName);
         if (i != _debug_map.end())
             return (*i).second;
         else
