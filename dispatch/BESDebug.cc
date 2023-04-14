@@ -57,7 +57,6 @@ BESDebug::DebugMap BESDebug::_debug_map;
 string get_debug_log_line_prefix()
 {
     // Given C++11, this could be done with std::put_time() and std::localtime().
-#if 1
     std::ostringstream oss;
     
     // Time Field
@@ -74,30 +73,6 @@ string get_debug_log_line_prefix()
     oss << "[thread:" << pthread_self() <<"]";
 
     return oss.str();
-#else
-    ostringstream strm;
-    // Time Field
-    const time_t sctime = time(nullptr);
-    struct tm sttime{};
-    localtime_r(&sctime, &sttime);
-    char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", &sttime);
-
-    char b[32]; // The linux man-page for asctime_r() says "at least 26 bytes".
-    asctime_r(&sttime, b);
-    strm << "[" << zone_name << " ";
-    for (size_t j = 0; b[j] != '\n' && j<32; j++)
-        strm << b[j];
-    strm << "]";
-
-    // PID field
-    pid_t thepid = getpid();
-    strm << "[pid:" << thepid <<"]";
-
-    // Thread field
-    strm << "[thread:" << pthread_self() <<"]";
-    return strm.str();
-#endif
 }
 
 
@@ -183,13 +158,6 @@ void BESDebug::Set(const std::string &flagName, bool value)
 {
     if (value && flagName == "all") {
         std::for_each(_debug_map.begin(), _debug_map.end(), [](DebugMap::value_type &p) { p.second = true; });
-#if 0
-        _debug_iter i = _debug_map.begin();
-            _debug_iter e = _debug_map.end();
-            for (; i != e; i++) {
-                (*i).second = true;
-            }
-#endif
     }
     _debug_map[flagName] = value;
 }
@@ -209,17 +177,6 @@ void BESDebug::Help(ostream &strm)
         << "Possible context(s):" << endl;
 
     if (!_debug_map.empty()) {
-#if 0
-        BESDebug::debug_citer i = _debug_map.begin();
-        BESDebug::debug_citer e = _debug_map.end();
-        for (; i != e; i++) {
-            strm << "  " << (*i).first << ": ";
-            if ((*i).second)
-                strm << "on" << endl;
-            else
-                strm << "off" << endl;
-        }
-#endif
         std::for_each(_debug_map.begin(), _debug_map.end(), [&strm](const auto &pair) {
             strm << "  " << pair.first << ": ";
             if (pair.second)
@@ -250,14 +207,6 @@ string BESDebug::GetOptionsString()
     ostringstream oss;
 
     if (!_debug_map.empty()) {
-#if 0
-        BESDebug::debug_citer i = _debug_map.begin();
-        BESDebug::debug_citer e = _debug_map.end();
-        for (; i != e; i++) {
-            if (!(*i).second) oss << "-";
-            oss << (*i).first << ",";
-        }
-#endif
         std::for_each(_debug_map.begin(), _debug_map.end(), [&oss](const std::pair<std::string, bool> &p) {
             if (!p.second) oss << "-";
             oss << p.first << ",";
@@ -267,7 +216,7 @@ string BESDebug::GetOptionsString()
         return retval.erase(retval.size() - 1);
     }
     else {
-        return "";
+        return {""};
     }
 }
 
