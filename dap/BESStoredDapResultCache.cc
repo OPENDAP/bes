@@ -456,15 +456,14 @@ bool BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file
             }
 
             // get chunk
-            //char chunk[chunk_size];
-            vector<char> chunk(chunk_size);
-            cis.read(chunk.data(), chunk_size);
+            char chunk[chunk_size];
+            cis.read(chunk, chunk_size);
             BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Read first chunk." << endl);
 
             // parse char * with given size
             D4ParserSax2 parser;
             // '-2' to discard the CRLF pair
-            parser.intern(chunk.data(), chunk_size - 2, dmr, debug);
+            parser.intern(chunk, chunk_size - 2, dmr, debug);
             BESDEBUG("cache", "BESStoredDapResultCache::read_dap4_data_from_cache() - Parsed first chunk." << endl);
 
             D4StreamUnMarshaller um(cis, cis.twiddle_bytes());
@@ -478,10 +477,13 @@ bool BESStoredDapResultCache::read_dap4_data_from_cache(const string &cache_file
             unlock_and_close(cache_file_name /* was fd */);
 
             return true;
+
         }
         else {
             BESDEBUG("cache", "BESStoredDapResultCache - The requested file does not exist. File: " + cache_file_name);
+
             return false;
+
         }
     }
     catch (...) {
