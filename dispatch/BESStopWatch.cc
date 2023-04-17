@@ -110,12 +110,11 @@ BESStopWatch::start(const string &name, const string &reqID) {
     return d_started;
 }
 
-bool BESStopWatch::get_time_of_day(struct timeval &time_val) {
+bool BESStopWatch::get_time_of_day(struct timeval &time_val) const {
     bool retval = true;
     if (gettimeofday(&time_val, nullptr) != 0) {
-        // int myerrno = errno;
         const char *c_err = strerror(errno);
-        string errno_msg = (c_err != 0) ? c_err : "unknown error";
+        string errno_msg = (c_err != nullptr) ? c_err : "unknown error";
         std::stringstream msg;
         msg << prolog << "ERROR The gettimeofday() function failed. errno_msg: " << errno_msg << endl;
         if (BESDebug::GetStrm()) {
@@ -125,7 +124,6 @@ bool BESStopWatch::get_time_of_day(struct timeval &time_val) {
         retval = false;
     }
     return retval;
-
 }
 
 /**
@@ -174,15 +172,15 @@ BESStopWatch::~BESStopWatch() {
  *
  * @return
  */
-unsigned long int BESStopWatch::get_elapsed_us() {
+unsigned long int BESStopWatch::get_elapsed_us() const {
     return get_stop_us() - get_start_us();
 }
 
-unsigned long int BESStopWatch::get_start_us() {
+unsigned long int BESStopWatch::get_start_us() const {
     return d_start_usage.tv_sec * 1000 * 1000 + d_start_usage.tv_usec;
 }
 
-unsigned long int BESStopWatch::get_stop_us() {
+unsigned long int BESStopWatch::get_stop_us() const {
     return d_stop_usage.tv_sec * 1000 * 1000 + d_stop_usage.tv_usec;
 }
 

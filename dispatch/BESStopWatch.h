@@ -64,15 +64,17 @@ class BESStopWatch : public BESObj {
 	struct timeval d_start_usage{};
 	struct timeval d_stop_usage{};
 
-    unsigned long int get_elapsed_us();
-    unsigned long int get_start_us();
-    unsigned long int get_stop_us();
-    bool get_time_of_day(struct timeval &time_val);
+    unsigned long int get_elapsed_us() const;
+    unsigned long int get_start_us() const;
+    unsigned long int get_stop_us() const;
+    bool get_time_of_day(struct timeval &time_val) const;
 
  public:
 
     /// Makes a new BESStopWatch with a logName of TIMING_LOG_KEY
     BESStopWatch() = default;
+    BESStopWatch(const BESStopWatch &copy_from) = default;
+    BESStopWatch &operator=(const BESStopWatch &copy_from) = default;
 
     /**
      * Makes a new BESStopWatch.
