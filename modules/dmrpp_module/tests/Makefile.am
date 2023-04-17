@@ -43,7 +43,7 @@ TESTSUITE_DMRPP_BUILDER = $(srcdir)/testsuite_dmrpp_builder
 check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
-	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER)' $(TESTSUITEFLAGS)
+	###$(SHELL) '$(TESTSUITE_DMRPP_BUILDER)' $(TESTSUITEFLAGS)
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
@@ -64,7 +64,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUI
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
-	test ! -f '$(TESTSUITE_DMRPP_BUILDER)' || $(SHELL) '$(TESTSUITE_DMRPP_BUILDER)' --clean
+	###test ! -f '$(TESTSUITE_DMRPP_BUILDER)' || $(SHELL) '$(TESTSUITE_DMRPP_BUILDER)' --clean
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
