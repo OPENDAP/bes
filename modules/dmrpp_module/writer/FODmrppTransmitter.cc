@@ -68,16 +68,13 @@ using namespace std;
 #define MODULE "dmrpp"
 #define prolog string("FODmrppTransmitter::").append(__func__).append("() - ")
 
-/** @brief Construct the FoW10nJsonTransmitter
+/** @brief BESTransmitter class named "dmrpp" that transmits an OPeNDAP
+ * data object as a DMRPP file
  *
+ * The FoDapDmrppTransmitter transforms an OPeNDAP DMR object into a
+ * DMRPP file and streams the new (temporary) DMRPP file back to the
+ * client.
  *
- * The transmitter is created to add the ability to return OPeNDAP data
- * objects (DataDDS) as abstract object representation JSON documents.
- *
- * The OPeNDAP data object is written to a JSON file locally in a
- * temporary directory specified by the BES configuration parameter
- * FoJson.Tempdir. If this variable is not found or is not set then it
- * defaults to the macro definition FO_JSON_TEMP_DIR.
  */
 FODmrppTransmitter::FODmrppTransmitter() :
     BESTransmitter()
