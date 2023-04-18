@@ -175,7 +175,7 @@ void BESLog::dump_time()
         (*d_file_buffer) << now;
     }
     else {
-        struct tm date_time;
+        struct tm date_time{};
         if (!d_use_local_time){
             gmtime_r(&now, &date_time);
         }
@@ -399,7 +399,7 @@ void BESLog::dump(ostream &strm) const
 BESLog *
 BESLog::TheLog()
 {
-    if (d_instance == 0) {
+    if (d_instance == nullptr) {
         d_instance = new BESLog;
     }
     return d_instance;
