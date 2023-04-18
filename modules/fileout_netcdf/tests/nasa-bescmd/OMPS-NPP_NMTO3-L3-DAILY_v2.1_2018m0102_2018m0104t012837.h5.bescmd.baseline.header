@@ -3,6 +3,16 @@ dimensions:
 	Latitude = 180 ;
 	Longitude = 360 ;
 variables:
+	float Latitude(Latitude) ;
+		Latitude:valid_range = -90.f, 90.f ;
+		Latitude:_FillValue = -1.267651e+30f ;
+		Latitude:long_name = "Geodetic Latitude" ;
+		Latitude:units = "degrees_north" ;
+	float Longitude(Longitude) ;
+		Longitude:valid_range = -180.f, 180.f ;
+		Longitude:_FillValue = -1.267651e+30f ;
+		Longitude:long_name = "Geodetic Longitude" ;
+		Longitude:units = "degrees_east" ;
 	float ColumnAmountO3(Latitude, Longitude) ;
 		ColumnAmountO3:long_name = "Best Total Ozone Solution" ;
 		ColumnAmountO3:units = "DU" ;
@@ -17,16 +27,6 @@ variables:
 		LandSeaMask:DIMENSION_LABELS = "Latitude\nLongitude" ;
 		LandSeaMask:flag_values = 0UB, 1UB ;
 		LandSeaMask:flag_meanings = "ocean land" ;
-	float Latitude(Latitude) ;
-		Latitude:valid_range = -90.f, 90.f ;
-		Latitude:_FillValue = -1.267651e+30f ;
-		Latitude:long_name = "Geodetic Latitude" ;
-		Latitude:units = "degrees_north" ;
-	float Longitude(Longitude) ;
-		Longitude:valid_range = -180.f, 180.f ;
-		Longitude:_FillValue = -1.267651e+30f ;
-		Longitude:long_name = "Geodetic Longitude" ;
-		Longitude:units = "degrees_east" ;
 	float PercentWater(Latitude, Longitude) ;
 		PercentWater:valid_range = 0.f, 100.f ;
 		PercentWater:_FillValue = -1.267651e+30f ;
