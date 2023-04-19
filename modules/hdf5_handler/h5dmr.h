@@ -57,7 +57,9 @@
 
 #include <libdap/D4Group.h>
 #include <libdap/D4Attributes.h>
+#include <HE5Grid.h>
 #include <HE5Var.h>
+#include <HE5GridPara.h>
 
 // This struct stores the link object address and the shortest path link. 
 // Note: if it is necessary to retrieve all the link paths, uncomment
@@ -82,8 +84,51 @@ typedef struct {
 enum class HE5_TYPE {SW,GD,ZA};
 
 typedef struct {
+
+    std::string xdim_name;
+    std::string ydim_name;
+    int xdim_size;
+    int ydim_size;
+
+    /// The bottom coordinate value of a Grid
+    double point_lower;
+    /// The top coordinate value of a Grid
+    double point_upper;
+    /// The leftmost coordinate value of a Grid
+    double point_left;
+    /// The rightmost coordinate value of a Grid
+    double point_right;
+
+    // The following pixel registration, grid origin, and projection code
+    // are defined in include/HE5_HdfEosDef.h that can be found in
+    // HDF-EOS5 library distribution.
+
+    // PixelRegistration
+    // These are actually EOS5 constants, but we define these
+    // since we do not depend on the HDF-EOS5 lib.
+    EOS5GridPRType pixelregistration; // either _HE5_HDFE_(CENTER|CORNER)
+
+    // GridOrigin
+    EOS5GridOriginType gridorigin; // one of HE5_HDFE_GD_(U|L)(L|R)
+
+    // ProjectionCode
+    EOS5GridPCType projection;
+
+    // Projection parameters
+    double param[13];
+
+    // zone (may only be applied to UTM)
+    int zone;
+
+    // sphere
+    int sphere;
+ 
+} eos5_grid_info_t;
+
+typedef struct {
     std::unordered_map<std::string,std::vector<std::string>> varpath_to_dims;
     std::unordered_map<std::string,std::vector<HE5Dim>> grppath_to_dims;
+    std::unordered_map<std::string,eos5_grid_info_t> gridname_to_info;
 } eos5_dim_info_t;
 
 #if 0
@@ -136,6 +181,8 @@ void build_var_dim_path(const std::string & eos5_obj_name, const std::vector<HE5
 void build_grp_dim_path(const std::string & eos5_obj_name, const std::vector<HE5Dim>& dim_list, std::unordered_map<std::string, std::vector<HE5Dim>>& grppath_to_dims, HE5_TYPE eos5_type);
 bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::string, vector<std::string>>& varpath_to_dims, vector<std::string> & dimnames);
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
+void add_possible_eos5_grid_vars(libdap::D4Group*, const eos5_dim_info_t &);
+void build_gd_info(const HE5Grid &gd,std::unordered_map<std::string,eos5_grid_info_t>& gridname_to_info);
 
 hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname);
 

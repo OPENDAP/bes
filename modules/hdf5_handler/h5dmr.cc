@@ -67,6 +67,7 @@
 #include "he5dds.tab.hh"
 #include "HE5Parser.h"
 #include "HE5Checker.h"
+#include "HDF5GeoCFProj.h"
 
 using namespace std;
 using namespace libdap;
@@ -355,6 +356,20 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
         
     ssize_t oname_size;
 
+#if 0
+    // This is the ugly part. To support HDF-EOS5 grids, we have to add extra variables.
+    // These variables are geo-location related variables such as latitude and longitude.
+    // These geo-location variables are DAP4 coverage map variable candidates. 
+    // And to follow the DAP4 coverage specification, we need to define map variables.
+    // So here we have to insert these extra variables if an HDF-EOS5 grid is found.
+#define KENT 1
+#if KENT
+    if (is_eos5 && !use_dimscale) 
+        add_possible_eos5_grid_vars(par_grp, eos5_dim_info);
+#endif
+#endif
+
+    
     // First iterate through the HDF5 datasets under the group.
     for (hsize_t i = 0; i < nelems; i++) {
 
@@ -605,6 +620,17 @@ cout <<"par_grp_name is "<<par_grp_name <<endl;
 
                     // Add this new DAP4 group 
                     par_grp->add_group_nocopy(tem_d4_cgroup);
+    // This is the ugly part. To support HDF-EOS5 grids, we have to add extra variables.
+    // These variables are geo-location related variables such as latitude and longitude.
+    // These geo-location variables are DAP4 coverage map variable candidates. 
+    // And to follow the DAP4 coverage specification, we need to define map variables.
+    // So here we have to insert these extra variables if an HDF-EOS5 grid is found.
+#define KENT 1
+#if KENT
+    if (is_eos5 && !use_dimscale) 
+        add_possible_eos5_grid_vars(par_grp, eos5_dim_info);
+#endif
+
 
                     // Continue searching the objects under this group
                     breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_cv_names);
@@ -1685,6 +1711,7 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
 
     unordered_map<string, vector<string>> varpath_to_dims;
     unordered_map<string, vector<HE5Dim>> grppath_to_dims;
+    unordered_map<string, eos5_grid_info_t> gridname_to_info;
 
     string st_str = read_struct_metadata(fileid);
     
@@ -1718,9 +1745,6 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
     // HDF-EOS5 provides default pixel and origin values if they are not defined.
     c.set_grids_missing_pixreg_orig(&p);
 
-    // HDF-EOS5 provides default pixel and origin values if they are not defined.
-    c.set_grids_missing_pixreg_orig(&p);
-
     // Check if this multi-grid file shares the same grid.
     // TODO: NEED TO check if the following function needs to be called 
     //       when handling the HDF-EOS5 grid.
@@ -1743,6 +1767,9 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
     for (const auto &gd:p.grid_list) 
       build_var_dim_path(gd.name,gd.data_var_list,varpath_to_dims,HE5_TYPE::GD,false);
 
+    for (const auto &gd:p.grid_list) 
+      build_gd_info(gd, gridname_to_info);
+    
     for (const auto &za:p.za_list) 
       build_grp_dim_path(za.name,za.dim_list,grppath_to_dims,HE5_TYPE::ZA);
 
@@ -2720,3 +2747,18 @@ bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array
     return ret_value;
 }
 
+void add_possible_eos5_grid_vars(D4Group* d4_grp, const eos5_dim_info_t &eos5_dim_info) {
+
+    string cf_projection_name = "eos5_cf_projection";
+    HDF5GeoCFProj *dummy_proj_cf = nullptr;
+    dummy_proj_cf = new HDF5GeoCFProj(cf_projection_name,cf_projection_name);
+    d4_grp->add_var_nocopy(dummy_proj_cf);
+}
+
+void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gridname_to_info) {
+
+    //string grid_name = 
+
+    
+
+}
