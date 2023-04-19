@@ -356,17 +356,19 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
         
     ssize_t oname_size;
 
-#if 0
+#define KENT 1
     // This is the ugly part. To support HDF-EOS5 grids, we have to add extra variables.
     // These variables are geo-location related variables such as latitude and longitude.
     // These geo-location variables are DAP4 coverage map variable candidates. 
     // And to follow the DAP4 coverage specification, we need to define map variables.
     // So here we have to insert these extra variables if an HDF-EOS5 grid is found.
-#define KENT 1
+    // We may need to remember the full path of these extra variables. These will be
+    // used as the coordinates of this group's data variables. For geographic projection,
+    // this is not necessary. 
 #if KENT
+    vector <string>coord_paths;
     if (is_eos5 && !use_dimscale) 
-        add_possible_eos5_grid_vars(par_grp, eos5_dim_info);
-#endif
+        add_possible_eos5_grid_vars(par_grp, eos5_dim_info,coord_paths);
 #endif
 
     
@@ -625,8 +627,8 @@ cout <<"par_grp_name is "<<par_grp_name <<endl;
     // These geo-location variables are DAP4 coverage map variable candidates. 
     // And to follow the DAP4 coverage specification, we need to define map variables.
     // So here we have to insert these extra variables if an HDF-EOS5 grid is found.
-#define KENT 1
-#if KENT
+    // The following code will be handled in the front.
+#if 0
     if (is_eos5 && !use_dimscale) 
         add_possible_eos5_grid_vars(par_grp, eos5_dim_info);
 #endif
@@ -2747,18 +2749,86 @@ bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array
     return ret_value;
 }
 
-void add_possible_eos5_grid_vars(D4Group* d4_grp, const eos5_dim_info_t &eos5_dim_info) {
+void add_possible_eos5_grid_vars(D4Group* d4_grp, const eos5_dim_info_t &eos5_dim_info, vector<string> &coord_paths) {
 
+    eos5_grid_info_t eg_info;
+    bool add_grid_var = is_eos5_grid_grp(d4_grp,eos5_dim_info,eg_info);
+    if (add_grid_var && eg_info.projection == HE5_GCTP_GEO) {
+        
+
+    }
+    else if (add_grid_var && (eg_info.projection == HE5_GCTP_SNSOID || 
+                           eg_info.projection == HE5_GCTP_PS ||
+                           eg_info.projection == HE5_GCTP_LAMAZ)) {
+
+
+    }
     string cf_projection_name = "eos5_cf_projection";
     HDF5GeoCFProj *dummy_proj_cf = nullptr;
     dummy_proj_cf = new HDF5GeoCFProj(cf_projection_name,cf_projection_name);
     d4_grp->add_var_nocopy(dummy_proj_cf);
+    
 }
+
+bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &eg_info) {
+
+    bool ret_value = false;
+    string grp_fqn = d4_group->FQN();
+cerr<<"grp_fqn is"<<grp_fqn <<endl;
+    for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
+        if (grp_fqn == ed_info.first) {
+            eg_info = ed_info.second;
+            ret_value = true;
+            break;
+        }
+    }
+
+    return ret_value;
+} 
 
 void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gridname_to_info) {
 
-    //string grid_name = 
+    string grid_name = "/HDFEOS/GRIDS/"+gd.name;
+    eos5_grid_info_t eg_info;
+    eg_info.xdim_fqn = grid_name+"/XDim";
+    eg_info.ydim_fqn = grid_name+"/YDim";
 
-    
+    bool find_xdim = false;
+    bool find_ydim = false;
+
+    // I need to use data_var_list since the application may change grid's dimension names.
+    for (const auto &var:gd.data_var_list) {
+        for (const auto &dim:var.dim_list) {
+            if (dim.name == "XDim" && find_xdim == false) {
+                eg_info.xdim_size = dim.size;
+                find_xdim = true;
+            }
+            else if (dim.name == "YDim" && find_ydim == false) {
+                eg_info.ydim_size = dim.size;
+                find_ydim = true;
+            }
+        }
+        if (find_xdim == true && find_ydim == true)
+            break;
+    }
+
+    if (find_xdim == true && find_ydim == true) {
+
+        eg_info.point_lower = gd.point_lower;
+        eg_info.point_upper = gd.point_upper;
+        eg_info.point_left = gd.point_left;
+        eg_info.point_right = gd.point_right;
+        eg_info.pixelregistration = gd.pixelregistration;
+        eg_info.gridorigin = gd.gridorigin;
+        eg_info.projection = gd.projection;
+
+        for (int i = 0; i <13;i++)
+            eg_info.param[i] = gd.param[i];
+
+        eg_info.zone = gd.zone;
+        eg_info.sphere = eg_info.sphere;
+        gridname_to_info[grid_name] = eg_info;       
+
+    }
 
 }

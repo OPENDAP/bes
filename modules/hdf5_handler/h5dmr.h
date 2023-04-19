@@ -83,10 +83,12 @@ typedef struct {
 
 enum class HE5_TYPE {SW,GD,ZA};
 
+//enum class HE5G_TYPE{HE5G_UNSUPPORTED,HE5G_GEO,HE5G_OTHERS};
+
 typedef struct {
 
-    std::string xdim_name;
-    std::string ydim_name;
+    std::string xdim_fqn;
+    std::string ydim_fqn;
     int xdim_size;
     int ydim_size;
 
@@ -181,8 +183,9 @@ void build_var_dim_path(const std::string & eos5_obj_name, const std::vector<HE5
 void build_grp_dim_path(const std::string & eos5_obj_name, const std::vector<HE5Dim>& dim_list, std::unordered_map<std::string, std::vector<HE5Dim>>& grppath_to_dims, HE5_TYPE eos5_type);
 bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::string, vector<std::string>>& varpath_to_dims, vector<std::string> & dimnames);
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
-void add_possible_eos5_grid_vars(libdap::D4Group*, const eos5_dim_info_t &);
+void add_possible_eos5_grid_vars(libdap::D4Group*, const eos5_dim_info_t &, std::vector<std::string> &);
 void build_gd_info(const HE5Grid &gd,std::unordered_map<std::string,eos5_grid_info_t>& gridname_to_info);
+bool is_eos5_grid_grp(libdap::D4Group *,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &);
 
 hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname);
 
