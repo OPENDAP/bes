@@ -112,6 +112,7 @@ NgapBuildDmrppContainer::NgapBuildDmrppContainer(const NgapBuildDmrppContainer &
     BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
 }
 
+
 /**
  * @brief Duplicate the contents of this instance into 'copy_to.'
  * @param copy_to
@@ -173,12 +174,6 @@ string NgapBuildDmrppContainer::access() {
     string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
     BESDEBUG(MODULE, prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
 
- /*   string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
-    BESDEBUG(MODULE, prolog << "           missing_data_access_url_key: " << missing_data_access_url_key << endl);
-
-    string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
-    BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);*/
-
     if (!d_data_rresource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
         map<string, string> content_filters;
@@ -188,6 +183,7 @@ string NgapBuildDmrppContainer::access() {
             *//*content_filters.insert(
                     pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));*//*
         }*/
+
         auto data_url(std::make_shared<http::url>(data_access_url_str, true));
         {
             d_data_rresource = std::make_shared<http::RemoteResource>(data_url);
@@ -205,11 +201,13 @@ string NgapBuildDmrppContainer::access() {
     // TODO This file should be read locked before leaving this method.
     //  10/8/21 I think the RemoteResource should do that. jhrg
     string cachedResource = d_data_rresource->get_filename();
+
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
     BESDEBUG(MODULE, prolog << "Done retrieving:  " << data_access_url_str << " returning cached file " << cachedResource << endl);
     BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
 
     return cachedResource;    // this should return the dmr++ file name from the NgapCache
+
 }
 
 
@@ -222,6 +220,7 @@ string NgapBuildDmrppContainer::access() {
 bool NgapBuildDmrppContainer::release() {
     // TODO The cache file (that will be) read locked in the access() method must be unlocked here.
     //  If we make that part of the RemoteResource dtor, the unlock will happen here. jhrg
+
 #if 0
     if (d_data_rresource) {
         BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
@@ -247,7 +246,6 @@ void NgapBuildDmrppContainer::dump(ostream &strm) const {
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_data_rresource) {
-        //strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_data_rresource->getCacheFileName()
         strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_data_rresource->get_filename()
              << endl;
     } else {
