@@ -122,6 +122,7 @@ before_script:
 
 stages:
   - name: build-and-package
+    if: branch = off
   - name: scan
     if:  branch = master
   - name: hyrax-olfs-trigger
