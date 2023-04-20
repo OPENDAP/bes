@@ -1,20 +1,20 @@
 // This file is part of the hdf5 data handler for the OPeNDAP data server.
 
 /////////////////////////////////////////////////////////////////////////////
-#ifndef _HDF5GeoCFPROJ_H
-#define _HDF5GeoCFPROJ_H
+#ifndef _HDF5CFPROJ_H
+#define _HDF5CFPROJ_H
 
 // DODS includes
 #include <libdap/Byte.h>
 
 
-class HDF5GeoCFProj:public libdap::Byte {
+class HDF5CFProj:public libdap::Byte {
   public:
-    HDF5GeoCFProj(const std::string & varname, const std::string &datasetname);
-    ~ HDF5GeoCFProj() override = default;
+    HDF5CFProj(const std::string & varname, const std::string &datasetname);
+    ~ HDF5CFProj() override = default;
     libdap::BaseType *ptr_duplicate() override;
     bool read() override;
 };
 
-#endif                          // _HDF5GeoCFPROJ_H
+#endif                          // _HDF5CFPROJ_H
 

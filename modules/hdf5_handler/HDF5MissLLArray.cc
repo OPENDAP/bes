@@ -1,0 +1,405 @@
+// This file is part of the hdf5_handler implementing for the CF-compliant
+// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+//
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
+//
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
+
+/////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf5.h"
+#include <sys/stat.h>
+#include <iostream>
+#include <sstream>
+#include <BESDebug.h>
+#include <libdap/InternalErr.h>
+
+#include "HDF5MissLLArray.h"
+#include "HDF5CFUtil.h"
+#if 0
+#include "HDF5RequestHandler.h"
+#endif
+
+using namespace std;
+using namespace libdap;
+
+BaseType *HDF5MissLLArray::ptr_duplicate()
+{
+    return new HDF5MissLLArray(*this);
+}
+
+bool HDF5MissLLArray::read()
+{
+
+    BESDEBUG("h5","Coming to HDF5MissLLArray read "<<endl);
+    
+    if (g_info.projection == HE5_GCTP_GEO) 
+        read_data_geo();
+    else 
+        read_data_non_geo();
+
+    return true;
+}
+
+
+bool HDF5MissLLArray::read_data_non_geo() {
+
+    int64_t nelms = -1;
+    vector<int64_t>offset;
+    vector<int64_t>count;
+    vector<int64_t>step;
+
+    if (rank <=  0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of dimension of this variable should be greater than 0");
+    else {
+         offset.resize(rank);
+         count.resize(rank);
+         step.resize(rank);
+         nelms = format_constraint (offset.data(), step.data(), count.data());
+    }
+
+    if (nelms <= 0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments is negative.");
+
+    int64_t total_elms = g_info.xdim_size * g_info.ydim_size;
+    if (total_elms > DODS_INT_MAX)
+       throw InternalErr (__FILE__, __LINE__,
+                          "Currently we cannot calculate lat/lon that is greater than 2G for HDF-EOS5.");
+
+    if(g_info.ydim_size <=0 || g_info.xdim_size <=0) 
+	    throw InternalErr (__FILE__, __LINE__,
+			    "The number of elments at each dimension should be greater than 0.");
+        
+    vector<size_t>pos(rank,0);
+    for (int i = 0; i< rank; i++)
+        pos[i] = offset[i];
+
+    vector<size_t>dimsizes;
+    dimsizes.push_back(g_info.ydim_size);
+    dimsizes.push_back(g_info.xdim_size);
+
+    double upleft[2];
+    double lowright[2];
+    vector<int>rows;
+    vector<int>cols;
+    vector<double>lon;
+    vector<double>lat;
+    rows.resize(g_info.xdim_size * g_info.ydim_size);
+    cols.resize(g_info.xdim_size * g_info.ydim_size);
+    lon.resize(g_info.xdim_size * g_info.ydim_size);
+    lat.resize(g_info.xdim_size * g_info.ydim_size);
+
+    upleft[0] = g_info.point_left;
+    upleft[1] = g_info.point_upper;
+    lowright[0] = g_info.point_right;
+    lowright[1] = g_info.point_lower;
+
+    int j = 0;
+    int r = -1;
+
+    for (int k = j = 0; j < g_info.ydim_size; ++j) {
+        for (int i = 0; i < g_info.xdim_size; ++i) {
+            rows[k] = j;
+            cols[k] = i;
+            ++k;
+        }
+    }
+
+    BESDEBUG("h5", " Before calling GDij2ll, check all projection parameters. "  << endl);
+    BESDEBUG("h5", " eos5_projcode is "  << g_info.projection <<endl);
+    BESDEBUG("h5", " eos5_zone is "  << g_info.zone <<endl);
+    BESDEBUG("h5", " eos5_params[0] is "  << g_info.param[0] <<endl);
+    BESDEBUG("h5", " eos5_params[1] is "  << g_info.param[1] <<endl);
+    BESDEBUG("h5", " eos5_sphere is "  << g_info.sphere <<endl);
+    BESDEBUG("h5", " xdimsize is "  << g_info.xdim_size <<endl);
+    BESDEBUG("h5", " ydimsize is "  << g_info.ydim_size <<endl);
+    BESDEBUG("h5", " eos5_pixelreg is "  << g_info.pixelregistration <<endl);
+    BESDEBUG("h5", " eos5_origin is "  << g_info.gridorigin <<endl);
+    BESDEBUG("h5", " upleft[0] is "  << upleft[0] <<endl);
+    BESDEBUG("h5", " upleft[1] is "  << upleft[1] <<endl);
+    BESDEBUG("h5", " lowright[0] is "  << lowright[0] <<endl);
+    BESDEBUG("h5", " lowright[1] is "  << lowright[1] <<endl);
+    
+ 
+    // Calculate Lat/lon by using GCTP
+    r = GDij2ll (g_info.projection, g_info.zone, g_info.param,g_info.sphere, g_info.xdim_size, g_info.ydim_size, upleft, lowright,
+                 g_info.xdim_size * g_info.ydim_size, rows.data(), cols.data(), lon.data(), lat.data(), g_info.pixelregistration, g_info.gridorigin);
+    if (r != 0) {
+        ostringstream eherr;
+        eherr << "cannot calculate grid latitude and longitude";
+        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+    }
+
+
+    BESDEBUG("h5", " The first value of lon is "  << lon[0] <<endl);
+    BESDEBUG("h5", " The first value of lat is "  << lat[0] <<endl);
+
+    
+    if(is_lat) {
+        if(total_elms == nelms)
+            set_value_ll(lat.data(),total_elms);
+        else {
+            vector<double>val;
+            subset<double>(
+                           lat.data(),
+                           rank,
+                           dimsizes,
+                           offset.data(),
+                           step.data(),
+                           count.data(),
+                           &val,
+                           pos,
+                           0);
+            set_value_ll(val.data(),nelms);
+        }
+       
+    }
+    else {
+
+        if(total_elms == nelms)
+            set_value_ll(lon.data(),total_elms);
+        else {
+            vector<double>val;
+            subset<double>(
+                           lon.data(),
+                           rank,
+                           dimsizes,
+                           offset.data(),
+                           step.data(),
+                           count.data(),
+                           &val,
+                           pos,
+                           0);
+            set_value_ll(val.data(),nelms);
+        }
+    }
+    return true;
+
+}
+
+bool HDF5MissLLArray::read_data_geo(){
+
+    BESDEBUG("h5","HDF5MissLLArray: Coming to read_data_geo "<<endl);
+    int64_t nelms = -1;
+    vector<int64_t>offset;
+    vector<int64_t>count;
+    vector<int64_t>step;
+
+
+    if (rank <=  0) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of dimension of this variable should be greater than 0");
+    else {
+
+         offset.resize(rank);
+         count.resize(rank);
+         step.resize(rank);
+         nelms = format_constraint (offset.data(), step.data(), count.data());
+    }
+
+    if (nelms <= 0 || nelms >DODS_INT_MAX) 
+       throw InternalErr (__FILE__, __LINE__,
+                          "The number of elments for geographic lat/lon is negative or greater than 2G.");
+
+    float start = 0.0;
+    float end   = 0.0;
+
+    vector<float>val;
+    val.resize(nelms);
+    
+
+    if (is_lat) {
+        
+	if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_UR == g_info.gridorigin) {
+
+	    start = g_info.point_upper;
+	    end   = g_info.point_lower; 
+
+	}
+	else {// (gridorigin == HE5_HDFE_GD_LL || gridorigin == HE5_HDFE_GD_LR)
+        
+	    start = g_info.point_lower;
+	    end = g_info.point_upper;
+	}
+
+	if(g_info.ydim_size <=0) 
+	    throw InternalErr (__FILE__, __LINE__,
+			    "The number of elments should be greater than 0.");
+           
+	float lat_step = (end - start) /g_info.ydim_size;
+
+	// Now offset,step and val will always be valid. line 74 and 85 assure this.
+	if ( HE5_HDFE_CENTER == g_info.pixelregistration ) {
+	    for (int i = 0; i < nelms; i++)
+		val[i] = ((offset[0]+i*step[0] + 0.5F) * lat_step + start) / 1000000.0F;
+	}
+	else { // HE5_HDFE_CORNER 
+	    for (int i = 0; i < nelms; i++)
+		val[i] = ((float)(offset[0]+i * step[0])*lat_step + start) / 1000000.0F;
+	}
+    }
+    else {
+
+	if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_LL == g_info.gridorigin) {
+
+	    start = g_info.point_left;
+	    end   = g_info.point_right; 
+
+	}
+	else {// (gridorigin == HE5_HDFE_GD_UR || gridorigin == HE5_HDFE_GD_LR)
+        
+	    start = g_info.point_right;
+	    end = g_info.point_left;
+	}
+
+	if(g_info.xdim_size <=0) 
+	    throw InternalErr (__FILE__, __LINE__,
+			"The number of elments should be greater than 0.");
+	float lon_step = (end - start) /g_info.xdim_size;
+
+	if (HE5_HDFE_CENTER == g_info.pixelregistration) {
+
+	    for (int i = 0; i < nelms; i++)
+		val[i] = ((offset[0] + i *step[0] + 0.5F) * lon_step + start ) / 1000000.0F;
+
+	}
+	else { // HE5_HDFE_CORNER 
+	    for (int i = 0; i < nelms; i++)
+		val[i] = ((float)(offset[0]+i*step[0]) * lon_step + start) / 1000000.0F;
+	}
+    }
+
+#if 0
+for (int i =0; i <nelms; i++) 
+"h5","final data val "<< i <<" is " << val[i] <<endl;
+#endif
+
+    set_value_ll(val.data(), nelms);
+    
+ 
+    return true;
+}
+
+// parse constraint expr. and make hdf5 coordinate point location.
+// return number of elements to read. 
+int64_t 
+HDF5MissLLArray::format_constraint (int64_t *offset, int64_t *step, int64_t *count)
+{
+        int64_t nels = 1;
+        int id = 0;
+
+        Dim_iter p = dim_begin ();
+
+        while (p != dim_end ()) {
+
+                int64_t start = dimension_start (p, true);
+                int64_t stride = dimension_stride (p, true);
+                int64_t stop = dimension_stop (p, true);
+
+                // Check for illegal  constraint
+                if (start > stop) {
+                   ostringstream oss;
+
+                   oss << "Array/Grid hyperslab start point "<< start <<
+                         " is greater than stop point " <<  stop <<".";
+                   throw Error(malformed_expr, oss.str());
+                }
+
+
+
+                offset[id] = start;
+                step[id] = stride;
+                count[id] = ((stop - start) / stride) + 1;      // count of elements
+                nels *= count[id];              // total number of values for variable
+
+                BESDEBUG ("h5",
+                         "=format_constraint():"
+                         << "id=" << id << " offset=" << offset[id]
+                         << " step=" << step[id]
+                         << " count=" << count[id]
+                         << endl);
+
+                id++;
+                p++;
+        }
+
+        return nels;
+}
+
+//! Getting a subset of a variable
+//
+//      \param input Input variable
+//       \param dim dimension info of the input
+//       \param start start indexes of each dim
+//       \param stride stride of each dim
+//       \param edge count of each dim
+//       \param poutput output variable
+//      \parrm index dimension index
+//       \return 0 if successful. -1 otherwise.
+//
+template<typename T>
+int HDF5MissLLArray::subset(
+    void* input,
+    int rank,
+    const vector<size_t> & dim,
+    int64_t start[],
+    int64_t stride[],
+    int64_t edge[],
+    vector<T> *poutput,
+    vector<size_t>& pos,
+    int index)
+{
+    for(int k=0; k<edge[index]; k++)
+    {
+        pos[index] = start[index] + k*stride[index];
+        if(index+1<rank)
+            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);
+        if(index==rank-1)
+        {
+            size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
+            void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
+            poutput->push_back(*(static_cast<T*>(tempbuf)));
+            //"poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);"
+        }
+    } // end of for
+    return 0;
+} // end of template<typename T> static int subset
+
+size_t HDF5MissLLArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
+                                 const std::vector < size_t > &pos) const {
+    //
+    //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"
+    //  "int b[10][2] // &b[1][1] == b + (2*1 + 1)"
+    //
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (size_t p = 0; p < pos.size (); p++) {
+        size_t m = 1;
+
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * pos[p];
+        start++;
+    }
+    return sum;
+}
+

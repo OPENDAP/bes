@@ -3,22 +3,22 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "HDF5GeoCFProj.h"
+#include "HDF5CFProj.h"
 
 using namespace std;
 using namespace libdap;
 
 
-HDF5GeoCFProj::HDF5GeoCFProj(const string & n, const string &d ) : Byte(n, d)
+HDF5CFProj::HDF5CFProj(const string & n, const string &d ) : Byte(n, d)
 {
 }
 
-BaseType *HDF5GeoCFProj::ptr_duplicate()
+BaseType *HDF5CFProj::ptr_duplicate()
 {
-    return new HDF5GeoCFProj(*this);
+    return new HDF5CFProj(*this);
 }
 
-bool HDF5GeoCFProj::read()
+bool HDF5CFProj::read()
 {
     // Just return a dummy value.
     char buf='p';

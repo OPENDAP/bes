@@ -67,7 +67,9 @@
 #include "he5dds.tab.hh"
 #include "HE5Parser.h"
 #include "HE5Checker.h"
-#include "HDF5GeoCFProj.h"
+#include "HDF5CFProj.h"
+#include "HDF5CFProj1D.h"
+#include "HDF5MissLLArray.h"
 
 using namespace std;
 using namespace libdap;
@@ -1797,6 +1799,7 @@ for (auto it:grppath_to_dims) {
 
     eos5_dim_info.varpath_to_dims = varpath_to_dims;
     eos5_dim_info.grppath_to_dims = grppath_to_dims;
+    eos5_dim_info.gridname_to_info = gridname_to_info;
 }
 
 void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_list, unordered_map<string, vector<HE5Dim>>& grppath_to_dims, HE5_TYPE e5_type) {
@@ -2760,13 +2763,13 @@ void add_possible_eos5_grid_vars(D4Group* d4_grp, const eos5_dim_info_t &eos5_di
     else if (add_grid_var && (eg_info.projection == HE5_GCTP_SNSOID || 
                            eg_info.projection == HE5_GCTP_PS ||
                            eg_info.projection == HE5_GCTP_LAMAZ)) {
-
+    string cf_projection_name = "eos5_cf_projection";
+    HDF5CFProj *dummy_proj_cf = nullptr;
+    dummy_proj_cf = new HDF5CFProj(cf_projection_name,cf_projection_name);
+    d4_grp->add_var_nocopy(dummy_proj_cf);
+ 
 
     }
-    string cf_projection_name = "eos5_cf_projection";
-    HDF5GeoCFProj *dummy_proj_cf = nullptr;
-    dummy_proj_cf = new HDF5GeoCFProj(cf_projection_name,cf_projection_name);
-    d4_grp->add_var_nocopy(dummy_proj_cf);
     
 }
 
@@ -2776,7 +2779,8 @@ bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eo
     string grp_fqn = d4_group->FQN();
 cerr<<"grp_fqn is"<<grp_fqn <<endl;
     for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
-        if (grp_fqn == ed_info.first) {
+cerr<<"ed_info first: "<<ed_info.first <<endl;
+        if (grp_fqn == (ed_info.first+"/")) {
             eg_info = ed_info.second;
             ret_value = true;
             break;
@@ -2800,6 +2804,7 @@ void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gri
     for (const auto &var:gd.data_var_list) {
         for (const auto &dim:var.dim_list) {
             if (dim.name == "XDim" && find_xdim == false) {
+cerr<<"find XDim "<<endl;
                 eg_info.xdim_size = dim.size;
                 find_xdim = true;
             }
@@ -2827,6 +2832,7 @@ void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gri
 
         eg_info.zone = gd.zone;
         eg_info.sphere = eg_info.sphere;
+cerr<<"grid_name is "<<grid_name <<endl;
         gridname_to_info[grid_name] = eg_info;       
 
     }
