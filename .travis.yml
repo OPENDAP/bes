@@ -189,9 +189,9 @@ jobs:
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
       # only compute coverage for merges to master; PRs and branch builds often are
-      # done over an over with little change.
+      # done over an over with little change. Temp remove: -a "$TRAVIS_PULL_REQUEST" = "false"
       - |
-        if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+        if test "$TRAVIS_BRANCH" = "master" ; then
             make coverage
         fi
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
