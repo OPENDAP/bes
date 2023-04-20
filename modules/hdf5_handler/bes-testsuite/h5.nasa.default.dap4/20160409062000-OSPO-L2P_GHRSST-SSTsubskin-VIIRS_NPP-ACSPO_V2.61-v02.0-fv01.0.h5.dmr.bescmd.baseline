@@ -3,6 +3,71 @@
     <Dimension name="time" size="1"/>
     <Dimension name="nj" size="5392"/>
     <Dimension name="ni" size="3200"/>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="comment" type="String">
+            <Value>seconds since 1981-01-01 00:00:00</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>reference time of sst file</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1981-01-01 00:00:00</Value>
+        </Attribute>
+        <Attribute name="calendar" type="String">
+            <Value>Gregorian</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="lat">
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="comment" type="String">
+            <Value>Latitude of retrievals</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-90.</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lon">
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="comment" type="String">
+            <Value>Longitude of retrievals</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>180.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-180.</Value>
+        </Attribute>
+    </Float32>
     <Int8 name="wind_speed">
         <Dim name="/time"/>
         <Dim name="/nj"/>
@@ -47,87 +112,6 @@
         <Map name="/lat"/>
         <Map name="/time"/>
     </Int8>
-    <Int16 name="brightness_temperature_4um">
-        <Dim name="/time"/>
-        <Dim name="/nj"/>
-        <Dim name="/ni"/>
-        <Attribute name="add_offset" type="Float32">
-            <Value>273.1499939</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>non L2P core field; brightness temperature for 3.7 um channel VIIRS M12</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>lon lat</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>brightness temperature for 3.7 um channel</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float32">
-            <Value>0.009999999776</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>VIIRS-M12-SDR</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>kelvin</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int16">
-            <Value>32767</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int16">
-            <Value>-32767</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-32768</Value>
-        </Attribute>
-        <Map name="/lon"/>
-        <Map name="/lat"/>
-        <Map name="/time"/>
-    </Int16>
-    <Float32 name="lon">
-        <Dim name="/nj"/>
-        <Dim name="/ni"/>
-        <Attribute name="comment" type="String">
-            <Value>Longitude of retrievals</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>180.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-180.</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="time">
-        <Dim name="/time"/>
-        <Attribute name="comment" type="String">
-            <Value>seconds since 1981-01-01 00:00:00</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>reference time of sst file</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 1981-01-01 00:00:00</Value>
-        </Attribute>
-        <Attribute name="calendar" type="String">
-            <Value>Gregorian</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>T</Value>
-        </Attribute>
-    </Int32>
     <Int8 name="sses_standard_deviation">
         <Dim name="/time"/>
         <Dim name="/nj"/>
@@ -504,28 +488,44 @@
         <Map name="/lat"/>
         <Map name="/time"/>
     </Int8>
-    <Float32 name="lat">
+    <Int16 name="brightness_temperature_4um">
+        <Dim name="/time"/>
         <Dim name="/nj"/>
         <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>273.1499939</Value>
+        </Attribute>
         <Attribute name="comment" type="String">
-            <Value>Latitude of retrievals</Value>
+            <Value>non L2P core field; brightness temperature for 3.7 um channel VIIRS M12</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <Value>latitude</Value>
+            <Value>brightness temperature for 3.7 um channel</Value>
         </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>latitude</Value>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>VIIRS-M12-SDR</Value>
         </Attribute>
         <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
+            <Value>kelvin</Value>
         </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>90.</Value>
+        <Attribute name="valid_max" type="Int16">
+            <Value>32767</Value>
         </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-90.</Value>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-32767</Value>
         </Attribute>
-    </Float32>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int16>
     <Int8 name="sses_bias">
         <Dim name="/time"/>
         <Dim name="/nj"/>

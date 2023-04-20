@@ -38,7 +38,7 @@ TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
 
 TESTSUITE_DMRPP = $(srcdir)/testsuite_dmrpp_tests
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) bes.conf bes_serial.conf 
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "

@@ -33,7 +33,6 @@
 #include <memory>
 
 #include "BESContainer.h"
-// #include "RemoteResource.h"
 
 namespace http {
 class RemoteResource;

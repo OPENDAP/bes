@@ -36,7 +36,7 @@
 /** @brief BESTransmitter class named "dmrpp" that transmits an OPeNDAP
  * data object as a DMRPP file
  *
- * The FoDapDmrppTransmitter transforms an OPeNDAP DataDDS object into a
+ * The FoDapDmrppTransmitter transforms an OPeNDAP DMR object into a
  * DMRPP file and streams the new (temporary) DMRPP file back to the
  * client.
  *
