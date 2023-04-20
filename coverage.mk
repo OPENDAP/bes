@@ -9,6 +9,6 @@ AM_CXXFLAGS += --coverage -pg
 AM_LDFLAGS += --coverage -pg
 
 coverage: 
-	-gcovr --sonarqube -r . $(GCOVR_FLAGS) > gcovr_report.txt
+	-gcovr -r . $(GCOVR_FLAGS) > gcovr_report.txt
 
 endif
