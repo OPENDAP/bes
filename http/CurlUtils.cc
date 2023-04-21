@@ -117,7 +117,7 @@ const vector<string>http_server_errors = {
  * @param status The HTTP status to associate with an error message
  * @return The error message associated with status.
  */
-static string http_status_to_string(int status) {
+static string http_status_to_string(long status) {
     if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)
         return {http_client_errors[status - CLIENT_ERR_MIN]};
     else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
