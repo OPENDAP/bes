@@ -76,7 +76,7 @@ unsigned long max_redirects();
 std::string hyrax_user_agent();
 
 void eval_curl_easy_setopt_result(CURLcode result,  const std::string &msg_base, const std::string &opt_name,
-                                  char *ebuf, const std::string &file, unsigned int line);
+                                  const char *ebuf, const std::string &file, unsigned int line);
 
 std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
 

@@ -827,6 +827,8 @@ static bool eval_curl_easy_perform_code(
  * with HTTP status codes that are >= 400. This returns if the request can be retried. If it cannot
  * be retried then a BESInternalError is thrown (and this never returns).
  *
+ * @note: Only call this when there was a problem with the HTTP request.
+ *
  * @param http_code
  * @param requested_url
  * @param last_accessed_url
@@ -928,30 +930,9 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
     if (curl_code != CURLE_OK)
         throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
 
-#if 0
-    // This makes no sense. The error code is from curl_easy_getinfo() and not from the HTTP response.
-    // The libcurl docs say "Returns CURLE_OK if the option is supported, and CURLE_UNKNOWN_OPTION if not"
-    // jhrg 4/20/23
-    if (curl_code == CURLE_GOT_NOTHING) {
-        // First we check to see if the response was empty. This is a cURL error, not an HTTP error
-        // so we have to handle it like this. And we do that because this is one of the failure modes
-        // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
-        stringstream msg;
-        msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: ";
-        msg << error_message(curl_code, error_buffer) << ", ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
-        msg << "A retry may be possible for: " << requested_url << ")." << endl;
-        BESDEBUG(MODULE, msg.str());
-        ERROR_LOG(msg.str());
-        return false;
-    }
-    else if (curl_code != CURLE_OK) {
-        // Not an error we are trapping so it's fail time.
-        throw BESInternalError(
-                string("Error acquiring HTTP response code: ").append(curl::error_message(curl_code, error_buffer)),
-                __FILE__, __LINE__);
-    }
-#endif
+    // Special case for file:// URLs. An HTTP Code is zero means success in that case. jhrg 4/20/23
+    if (requested_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
+        return true;
 
     if (BESISDEBUG(MODULE)) {   // BESISDEBUG is a macro that expands to false when NDEBUG is defined. jhrg 4/19/23
         long redirects;
@@ -966,17 +947,6 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
     switch (http_code) {
-#if 0
-        case 0: {
-
-            // Do not call this if this is a file URL. jhrg 4/20/23
-            if (requested_url.find(FILE_PROTOCOL) != 0) {
-                ERROR_LOG(msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-            return true;
-        }
-#endif
         case 0:
         case 200: // OK
         case 206: // Partial content - this is to be expected since we use range gets
@@ -985,15 +955,16 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
             return true;
 
         default:
-            // process_http_code_helper() returns if the request can be retried otherwise
+            string last_accessed_url = get_effective_url(ceh, requested_url);
+            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): "
+                                    << filter_effective_url(last_accessed_url) << endl);
+
+            // process_http_code_helper() _only_ returns if the request can be retried, otherwise
             // it throws an exception. Pass the unfiltered last_accessed_url because the
             // query string params might be needed to determine if the URL should be retried.
             // jhrg 4/20/23
-            string last_accessed_url = get_effective_url(ceh, requested_url);
-            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): "
-                    << filter_effective_url(last_accessed_url) << endl);
             process_http_code_helper(http_code, requested_url, last_accessed_url);
-            return false;   // retry the request
+            return false;   // if we get here, retry the request
     }
 }
 
