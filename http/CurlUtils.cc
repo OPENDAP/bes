@@ -690,10 +690,11 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
  * it will look any thing with an X-Amz- prefix if that is found it will remove the whole
  * query string. This code should only be called if an error is being reported, so high
  * performance is not required.
+ * @note Public only to enable testing.
  * @param eff_url
  * @return The URL with the tokens removed
  */
-static string filter_effective_url(const string &eff_url) {
+string filter_effective_url(const string &eff_url) {
     // It seems unlikely that the X-Amz prefix will be in the first part of the query string
     // and the first part will likely be useful for the error message, so looking for the first
     // '&' is a good start.
