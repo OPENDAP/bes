@@ -122,7 +122,6 @@ before_script:
 
 stages:
   - name: build-and-package
-    if: branch = off
   - name: scan
     if:  branch = master
   - name: hyrax-olfs-trigger
@@ -192,13 +191,14 @@ jobs:
       # done over an over with little change.
       - |
         if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+            make check -j16
             make coverage
         fi
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
     - stage: scan
-      name: "scan bes-modules"
+      name: "scan bes-modules-1"
       script:
         - export BES_BUILD=sonar-bes-modules
         - autoreconf --force --install --verbose
@@ -210,7 +210,7 @@ jobs:
         #    make check -j16
         #    make coverage
         #  fi
-        - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+        - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
     - stage: scan
