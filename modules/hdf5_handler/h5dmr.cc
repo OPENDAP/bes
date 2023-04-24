@@ -2787,9 +2787,15 @@ for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
                                           "Latitude",
                                           ar_bt_lat);
 
-            //string dim_path = d4_grp->FQN();
-            ar_lat->append_dim_ll(eg_info.ydim_size,"YDim");
+            string ydimpath = d4_grp->FQN() + "YDim";
+            ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
+            auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
+            (ar_lat->dim_begin())->dim = d4_dim0;
 
+            // The DAP4 group needs also to store these dimensions.
+            D4Dimensions *dims = d4_grp->dims();
+            dims->add_dim_nocopy(d4_dim0);
+ 
 #if 0
             Array::Dim_iter ar_lat_d = ar_lat->dim_begin();
             d4_dim = auto D4Dimension(
@@ -2801,10 +2807,21 @@ for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
                                           eg_info,
                                           "Longitude",
                                           ar_bt_lon);
-            ar_lon->append_dim_ll(eg_info.xdim_size,"XDim");
+            string xdimpath = d4_grp->FQN() + "XDim";
+            ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
+
+            auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
+            (ar_lon->dim_begin())->dim = d4_dim1;
+
+            // The DAP4 group needs also to store these dimensions.
+            dims = d4_grp->dims();
+            dims->add_dim_nocopy(d4_dim1);
+ 
 
             d4_grp->add_var_nocopy(ar_lat);
             d4_grp->add_var_nocopy(ar_lon);
+            delete ar_bt_lon;
+            delete ar_bt_lat;
         }
         catch (...) {
             if (ar_bt_lat) delete ar_bt_lat;
