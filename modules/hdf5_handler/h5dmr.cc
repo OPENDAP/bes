@@ -511,22 +511,25 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
         auto par_grp_name = string(gname);
         if (par_grp_name.size()>1)
             par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
-#if 0
-cout <<"par_grp_name is "<<par_grp_name <<endl;
-#endif
+//#if 0
+cout <<"group: par_grp_name is "<<par_grp_name <<endl;
+//#endif
         // We need to ensure the special characters are handled.
         bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
         if (is_eos5_dims) {
+cerr<<"coming to is_eos5_dims "<<endl;
             vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
             D4Dimensions *d4_dims = par_grp->dims();
             for (unsigned grp_dim_idx = 0; grp_dim_idx<dim_names.size();grp_dim_idx++) {
                 D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
                 if (d4_dim == nullptr) {
+cerr<<"dim_names: "<<dim_names[grp_dim_idx] <<endl;
                     d4_dim = new D4Dimension(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
                     d4_dims->add_dim_nocopy(d4_dim);
                 }
             }
         }
+cerr<<"end of is_eos5 "<<endl;
 
     }
     // The fullnamepath of the group is not necessary since dmrpp only needs the dataset path to retrieve info.
@@ -1728,9 +1731,7 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
 
     // Retrieve ProjParams from StructMetadata
     p.add_projparams(st_str);
-#if 0
     p.print();
-#endif
 
     // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
     if (c.check_grids_unknown_parameters(&p)) {
@@ -2754,22 +2755,184 @@ bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array
 
 void add_possible_eos5_grid_vars(D4Group* d4_grp, const eos5_dim_info_t &eos5_dim_info, vector<string> &coord_paths) {
 
+cerr<<"coming to add_possible_eos5_grid_vars"<<endl;
     eos5_grid_info_t eg_info;
+for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
+    cerr<<"grid name: "<<ed_info.first <<endl;
+    cerr<<"           "<<"xdim fqn:" << ed_info.second.xdim_fqn <<endl;
+    cerr<<"           "<<"ydim fqn:" << ed_info.second.ydim_fqn <<endl;
+    cerr<<"           "<<"xdim size:" << ed_info.second.xdim_size <<endl;
+    cerr<<"           "<<"ydim size:" << ed_info.second.ydim_size <<endl;
+    cerr<<"           "<<"xdim point_lower:" << ed_info.second.point_lower <<endl;
+    cerr<<"           "<<"xdim point_upper:" << ed_info.second.point_upper <<endl;
+    cerr<<"           "<<"xdim point_left:" << ed_info.second.point_lower <<endl;
+    cerr<<"           "<<"xdim point_right:" << ed_info.second.point_right <<endl;
+
+}
     bool add_grid_var = is_eos5_grid_grp(d4_grp,eos5_dim_info,eg_info);
+
     if (add_grid_var && eg_info.projection == HE5_GCTP_GEO) {
-        
+    
+        BaseType *ar_bt_lat = nullptr;
+        BaseType *ar_bt_lon = nullptr;
+        HDF5MissLLArray *ar_lat = nullptr;
+        HDF5MissLLArray *ar_lon = nullptr;
+
+        try {
+            ar_bt_lat = new (Float32)("YDim");
+            ar_lat = new HDF5MissLLArray (
+                                          true,
+                                          1,
+                                          eg_info,
+                                          "Latitude",
+                                          ar_bt_lat);
+
+            //string dim_path = d4_grp->FQN();
+            ar_lat->append_dim_ll(eg_info.ydim_size,"YDim");
+
+#if 0
+            Array::Dim_iter ar_lat_d = ar_lat->dim_begin();
+            d4_dim = auto D4Dimension(
+#endif
+            ar_bt_lon = new (Float32)("XDim");
+            ar_lon = new HDF5MissLLArray (
+                                          false,
+                                          1,
+                                          eg_info,
+                                          "Longitude",
+                                          ar_bt_lon);
+            ar_lon->append_dim_ll(eg_info.xdim_size,"XDim");
+
+            d4_grp->add_var_nocopy(ar_lat);
+            d4_grp->add_var_nocopy(ar_lon);
+        }
+        catch (...) {
+            if (ar_bt_lat) delete ar_bt_lat;
+            if (ar_bt_lon) delete ar_bt_lon;
+            if (ar_lat) delete ar_lat;
+            if (ar_lon) delete ar_lon;
+            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
+        }
 
     }
     else if (add_grid_var && (eg_info.projection == HE5_GCTP_SNSOID || 
                            eg_info.projection == HE5_GCTP_PS ||
                            eg_info.projection == HE5_GCTP_LAMAZ)) {
-    string cf_projection_name = "eos5_cf_projection";
-    HDF5CFProj *dummy_proj_cf = nullptr;
-    dummy_proj_cf = new HDF5CFProj(cf_projection_name,cf_projection_name);
-    d4_grp->add_var_nocopy(dummy_proj_cf);
- 
+
+        HDF5CFProj *dummy_proj_cf = nullptr;
+        BaseType *ar_bt_dim0 = nullptr;
+        BaseType *ar_bt_dim1 = nullptr;
+        HDF5CFProj1D *ar_dim0 = nullptr;
+        HDF5CFProj1D *ar_dim1 = nullptr;
+
+        BaseType *ar_bt_lat = nullptr;
+        BaseType *ar_bt_lon = nullptr;
+        HDF5MissLLArray *ar_lat = nullptr;
+        HDF5MissLLArray *ar_lon = nullptr;
+
+        try {
+            string cf_projection_name = "eos5_cf_projection";
+            dummy_proj_cf = new HDF5CFProj(cf_projection_name,cf_projection_name);
+            d4_grp->add_var_nocopy(dummy_proj_cf);
+
+//#if 0
+            ar_bt_dim1 = new (Float64)("XDim");
+            ar_dim1 = new HDF5CFProj1D(eg_info.point_left,eg_info.point_right,eg_info.xdim_size,"XDim",ar_bt_dim1);
+
+            // Handle dimensions
+            string xdimpath = d4_grp->FQN() + "XDim";
+            ar_dim1->append_dim_ll(eg_info.xdim_size,xdimpath);
+
+            // Need to add DAP4 dimensions
+            //auto d4_dim1 = new D4Dimension(xdimpath,eg_info.xdim_size);
+            auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
+cerr<<"xdim_size is "<<eg_info.xdim_size <<endl;
+            (ar_dim1->dim_begin())->dim = d4_dim1;
+cerr<<"pass ar_dim1 "<<endl;
+
+            // The DAP4 group needs also to store these dimensions.
+            D4Dimensions *dims = d4_grp->dims();
+            dims->add_dim_nocopy(d4_dim1);
+            
+
+            ar_bt_dim0 = new (Float64)("YDim");
+            ar_dim0 = new HDF5CFProj1D(eg_info.point_upper,eg_info.point_lower,eg_info.ydim_size,"XDim",ar_bt_dim0);
+            string ydimpath = d4_grp->FQN() + "YDim";
+            ar_dim0->append_dim_ll(eg_info.ydim_size,ydimpath);
+
+            // Need to add DAP4 dimensions
+            auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
+            (ar_dim0->dim_begin())->dim = d4_dim0;
+
+//#if 0
+            // The DAP4 group needs also to store these dimensions.
+            dims = d4_grp->dims();
+            dims->add_dim_nocopy(d4_dim0);
+//#endif
+
+            ar_dim1->set_is_dap4(true);
+            ar_dim0->set_is_dap4(true);
+            d4_grp->add_var_nocopy(ar_dim1);
+            d4_grp->add_var_nocopy(ar_dim0);
+            
+            ar_bt_lat = new (Float64)("Latitude");
+            ar_lat = new HDF5MissLLArray (
+                                          true,
+                                          2,
+                                          eg_info,
+                                          "Latitude",
+                                          ar_bt_lat);
+            ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
+            ar_lat->append_dim_ll(eg_info.xdim_size,xdimpath);
+
+//#if 0
+            Array::Dim_iter d = ar_lat->dim_begin();
+            d->dim = d4_dim0; 
+            d++;
+            d->dim = d4_dim1;
+//#endif
+
+           
+            ar_bt_lon = new (Float64)("Longitude");
+            ar_lon = new HDF5MissLLArray (
+                                          false,
+                                          2,
+                                          eg_info,
+                                          "Longitude",
+                                          ar_bt_lon);
+            ar_lon->append_dim_ll(eg_info.ydim_size,ydimpath);
+            ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
+
+//#if 0
+            d = ar_lon->dim_begin();
+            d->dim = d4_dim0; 
+            d++;
+            d->dim = d4_dim1;
+//#endif
+
+
+            ar_lat->set_is_dap4(true);
+            ar_lon->set_is_dap4(true);
+            d4_grp->add_var_nocopy(ar_lat);
+            d4_grp->add_var_nocopy(ar_lon);
+//#endif
+
+        }
+        catch (...) {
+            if (dummy_proj_cf) delete dummy_proj_cf;
+            if (ar_bt_dim0) delete ar_bt_dim0;
+            if (ar_bt_dim1) delete ar_bt_dim1;
+            if (ar_dim0) delete ar_dim0;
+            if (ar_dim1) delete ar_dim1;
+            if (ar_bt_lat) delete ar_bt_lat;
+            if (ar_bt_lon) delete ar_bt_lon;
+            if (ar_lat) delete ar_lat;
+            if (ar_lon) delete ar_lon;
+            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
+        }
 
     }
+cerr<<"end of add_possible_vars "<<endl;            
     
 }
 
@@ -2800,11 +2963,20 @@ void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gri
     bool find_xdim = false;
     bool find_ydim = false;
 
+    // I have to use the grid dimension name and size information since the struct metadata
+    // doesn't contain the dimension size information of a variable. It has to be deduced from
+    // the grid dimension information. Note: application can choose their own dimension names in
+    // the grid. This is a flaw in the HDF-EOS5 library since the variable's dimension names 
+    // are always XDim or YDim. So far I only see one variation in the NASA products. Use Xdim rather than Ydim.
+    // An error will be generated if neither XDim/Xdim nor YDim/Ydim is found.
     // I need to use data_var_list since the application may change grid's dimension names.
+#if 0
     for (const auto &var:gd.data_var_list) {
         for (const auto &dim:var.dim_list) {
             if (dim.name == "XDim" && find_xdim == false) {
 cerr<<"find XDim "<<endl;
+cerr<<"var.name "<<var.name <<endl;
+cerr<<"dim.size is "<<dim.size <<endl;
                 eg_info.xdim_size = dim.size;
                 find_xdim = true;
             }
@@ -2816,7 +2988,24 @@ cerr<<"find XDim "<<endl;
         if (find_xdim == true && find_ydim == true)
             break;
     }
+#endif
 
+    for (const auto &dim:gd.dim_list) {
+        if ((dim.name == "XDim" || dim.name == "Xdim") && find_xdim == false) {
+cerr<<"find XDim "<<endl;
+cerr<<"dim.size is "<<dim.size <<endl;
+                eg_info.xdim_size = dim.size;
+                find_xdim = true;
+            }
+            else if ((dim.name == "YDim" || dim.name == "Ydim") && find_ydim == false) {
+                eg_info.ydim_size = dim.size;
+                find_ydim = true;
+            }
+        
+        if (find_xdim == true && find_ydim == true)
+            break;
+
+    }
     if (find_xdim == true && find_ydim == true) {
 
         eg_info.point_lower = gd.point_lower;
@@ -2831,9 +3020,21 @@ cerr<<"find XDim "<<endl;
             eg_info.param[i] = gd.param[i];
 
         eg_info.zone = gd.zone;
-        eg_info.sphere = eg_info.sphere;
+        eg_info.sphere = gd.sphere;
 cerr<<"grid_name is "<<grid_name <<endl;
         gridname_to_info[grid_name] = eg_info;       
+
+    }
+    else {
+       
+        string dimname_list;
+        for (const auto &dim:gd.dim_list) {
+            dimname_list += dim.name;
+            dimname_list += " ";
+        }
+        string err_msg = "This HDF-EOS5 grid dimension list doesn't contain XDim, Xdim, YDim or Ydim.";
+        err_msg +=  " The dimension names of this grid are: "+dimname_list;
+        throw InternalErr(__FILE__,__LINE__,err_msg);
 
     }
 
