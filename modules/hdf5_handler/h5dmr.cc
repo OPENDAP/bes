@@ -2875,6 +2875,8 @@ cerr<<"pass ar_dim1 "<<endl;
             d4_grp->add_var_nocopy(ar_dim1);
             d4_grp->add_var_nocopy(ar_dim0);
             
+            delete ar_bt_dim1;
+            delete ar_bt_dim0;
             ar_bt_lat = new (Float64)("Latitude");
             ar_lat = new HDF5MissLLArray (
                                           true,
@@ -2915,6 +2917,8 @@ cerr<<"pass ar_dim1 "<<endl;
             ar_lon->set_is_dap4(true);
             d4_grp->add_var_nocopy(ar_lat);
             d4_grp->add_var_nocopy(ar_lon);
+            delete ar_bt_lon;
+            delete ar_bt_lat;
 //#endif
 
         }
