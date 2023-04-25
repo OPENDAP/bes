@@ -2784,11 +2784,13 @@ for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
                                           true,
                                           1,
                                           eg_info,
-                                          "Latitude",
+                                          "YDim",
                                           ar_bt_lat);
 
             string ydimpath = d4_grp->FQN() + "YDim";
+cerr<<"ydimpath is "<<ydimpath <<endl;
             ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
+            //ar_lat->append_dim_ll(eg_info.ydim_size,"YDim");
             auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
             (ar_lat->dim_begin())->dim = d4_dim0;
 
@@ -2805,10 +2807,11 @@ for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
                                           false,
                                           1,
                                           eg_info,
-                                          "Longitude",
+                                          "XDim",
                                           ar_bt_lon);
             string xdimpath = d4_grp->FQN() + "XDim";
             ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
+            //ar_lon->append_dim_ll(eg_info.xdim_size,"XDim");
 
             auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
             (ar_lon->dim_begin())->dim = d4_dim1;
@@ -2817,6 +2820,8 @@ for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
             dims = d4_grp->dims();
             dims->add_dim_nocopy(d4_dim1);
  
+            ar_lat->set_is_dap4(true);
+            ar_lon->set_is_dap4(true);
 
             d4_grp->add_var_nocopy(ar_lat);
             d4_grp->add_var_nocopy(ar_lon);
