@@ -117,7 +117,7 @@ const vector<string>http_server_errors = {
  * @param status The HTTP status to associate with an error message
  * @return The error message associated with status.
  */
-static string http_status_to_string(int status) {
+static string http_status_to_string(long status) {
     if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)
         return {http_client_errors[status - CLIENT_ERR_MIN]};
     else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
@@ -690,10 +690,11 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
  * it will look any thing with an X-Amz- prefix if that is found it will remove the whole
  * query string. This code should only be called if an error is being reported, so high
  * performance is not required.
+ * @note Public only to enable testing.
  * @param eff_url
  * @return The URL with the tokens removed
  */
-static string filter_effective_url(const string &eff_url) {
+string filter_effective_url(const string &eff_url) {
     // It seems unlikely that the X-Amz prefix will be in the first part of the query string
     // and the first part will likely be useful for the error message, so looking for the first
     // '&' is a good start.
@@ -743,155 +744,9 @@ bool is_retryable(const string &target_url) {
             }
         }
     }
+
     BESDEBUG(MODULE, prolog << "END retryable: " << (retryable ? "true" : "false") << endl);
     return retryable;
-}
-
-
-/**
- * @brief Evaluates the HTTP semantics of a the result of issuing a cURL GET request.
- *
- * @note used only locally by super_easy_perform. jhrg 3/8/23
- *
- * This code requires that:
- * - curl_easy_perform() has been called on the handle ceh.
- * - The returned CURLcode value was CURLE_OK.
- * This code operates under the assumption that the world is not perfect and that things
- * fail, sometimes for no good reason, and trying the thing a again may be worth while.
- *
- * With that in mind, if:
- *
- *    CURLINFO_RESPONSE_CODE returns CURLE_GOT_NOTHING
- *
- * or if the HTTP response code was one of:
- *
- *   case 422:  Unprocessable Entity
- *   case 500:  Internal server error
- *   case 502:  Bad Gateway
- *   case 503:  Service Unavailable
- *   case 504:  Gateway Timeout
- *
- * This function will return false, indicating that there was a problem, but a retry
- * might be reasonable.
- *
- * If another cURL error or different HTTP response error code is encountered a
- * BESInternalError is thrown.
- *
- * This function returns true if the CURLINFO_RESPONSE_CODE response code is 200 (OK) or
- * 206 (Partial Content)
- *
- * @param ceh The cURL easy_handle to evaluate.
- * @return true if at all worked out, false if it didn't and a retry is reasonable.
- * @throws BESInternalError When something really bad happens.
-*/
-static bool eval_http_get_response(CURL *ceh, const char *error_buffer, const string &requested_url) {
-    BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
-    CURLcode curl_code;
-    string last_accessed_url = get_effective_url(ceh, requested_url);
-    BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << filter_effective_url(last_accessed_url) << endl);
-
-    long http_code = 0;
-
-    curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
-
-    // TODO I think we could use eval_curl_easy_perform_code() here. Will need to pass in a value for
-    //  the param 'attempt'. jhrg 4/19/23
-    if (curl_code == CURLE_GOT_NOTHING) {
-        // First we check to see if the response was empty. This is a cURL error, not an HTTP error
-        // so we have to handle it like this. And we do that because this is one of the failure modes
-        // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
-        stringstream msg;
-        msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: ";
-        msg << error_message(curl_code, error_buffer) << ", ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
-        msg << "A retry may be possible for: " << requested_url << ")." << endl;
-        BESDEBUG(MODULE, msg.str());
-        ERROR_LOG(msg.str());
-        return false;
-    }
-    else if (curl_code != CURLE_OK) {
-        // Not an error we are trapping so it's fail time.
-        throw BESInternalError(
-                string("Error acquiring HTTP response code: ").append(curl::error_message(curl_code, error_buffer)),
-                __FILE__, __LINE__);
-    }
-
-    if (BESISDEBUG(MODULE)) {   // BESISDEBUG is a macro that expands to false when NDEBUG is defined. jhrg 4/19/23
-        long redirects;
-        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_COUNT, &redirects);
-        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
-
-        char *redirect_url = nullptr;
-        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &redirect_url);
-        if (redirect_url)
-            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
-    }
-
-    stringstream msg;
-    // TODO Move this into the switch statement. jhrg 4/19/23
-    if (http_code >= 400) {
-        msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << filter_effective_url(last_accessed_url) << " ";
-        BESDEBUG(MODULE, prolog << msg.str() << endl);
-    }
-    // TODO Refactor this so that the code only writes to 'msg' when the value will be used. jhrg 4/19/23
-    msg << "The response had an HTTP status of " << http_code;
-    msg << " which means " << http_status_to_string(http_code) << "";
-
-    // Newer Apache servers return 206 for range requests. jhrg 8/8/18
-    switch (http_code) {
-        case 0: {
-            // If this is a file URL, then it's not an error. jhrg 4/19/23
-            if (requested_url.find(FILE_PROTOCOL) != 0) {
-                ERROR_LOG(msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-            return true;
-        }
-        case 200: // OK
-        case 206: // Partial content - this is to be expected since we use range gets
-            // cases 201-205 are things we should probably reject, unless we add more
-            // comprehensive HTTP/S processing here. jhrg 8/8/18
-            return true;
-
-            // TODO wrap these cases in a function. jhrg 4/19/23
-        case 400: // Bad Request
-            ERROR_LOG(msg.str() << endl);
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-
-        case 401: // Unauthorized
-        case 402: // Payment Required
-        case 403: // Forbidden
-            ERROR_LOG(msg.str() << endl);
-            throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-
-        case 404: // Not Found
-            ERROR_LOG(msg.str() << endl);
-            throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
-
-        case 408: // Request Timeout
-            ERROR_LOG(msg.str() << endl);
-            throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
-
-        case 422: // Unprocessable Entity
-        case 500: // Internal server error
-        case 502: // Bad Gateway
-        case 503: // Service Unavailable
-        case 504: // Gateway Timeout
-        {
-            if (!is_retryable(last_accessed_url)) {
-                msg << " The semantics of this particular last accessed URL indicate that it should not be retried.";
-                ERROR_LOG(msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-            return false;
-        }
-
-        default: {
-            ERROR_LOG(msg.str() << endl);
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
-    }
 }
 
 /**
@@ -965,6 +820,153 @@ static bool eval_curl_easy_perform_code(
     return true;
 }
 
+/**
+ * Helper for the eval_http_get_response() function that evaluates the HTTP status code. Only call this
+ * with HTTP status codes that are >= 400. This returns if the request can be retried. If it cannot
+ * be retried then a BESInternalError is thrown (and this never returns).
+ *
+ * @note: Only call this when there was a problem with the HTTP request.
+ *
+ * @param http_code
+ * @param requested_url
+ * @param last_accessed_url
+ */
+static void process_http_code_helper(long http_code, const string &requested_url, const string &last_accessed_url) {
+    stringstream msg;
+    if (http_code >= 400) {
+        msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
+        msg << "CURLINFO_EFFECTIVE_URL: " << filter_effective_url(last_accessed_url) << " ";
+        BESDEBUG(MODULE, prolog << msg.str() << endl);
+    }
+
+    msg << "The response had an HTTP status of " << http_code;
+    msg << " which means " << http_status_to_string(http_code) << "";
+
+    switch (http_code) {
+        case 400: // Bad Request
+            ERROR_LOG(msg.str() << endl);
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+
+        case 401: // Unauthorized
+        case 402: // Payment Required
+        case 403: // Forbidden
+            ERROR_LOG(msg.str() << endl);
+            throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+
+        case 404: // Not Found
+            ERROR_LOG(msg.str() << endl);
+            throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+
+        case 408: // Request Timeout
+            ERROR_LOG(msg.str() << endl);
+            throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
+
+        case 422: // Unprocessable Entity
+        case 500: // Internal server error
+        case 502: // Bad Gateway
+        case 503: // Service Unavailable
+        case 504: // Gateway Timeout
+            if (!is_retryable(last_accessed_url)) {
+                msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
+                ERROR_LOG(msg.str() << endl);
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+            else {
+                msg << " The HTTP response code of this last accessed URL indicate that it should be retried.";
+                BESDEBUG(MODULE, prolog << msg.str() << endl);
+            }
+            break;
+
+        default:
+            ERROR_LOG(msg.str() << endl);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+}
+
+/**
+ * @brief Evaluates the HTTP semantics of a the result of issuing a cURL GET request.
+ *
+ * @note used only locally by super_easy_perform. jhrg 3/8/23
+ * @note Do not call this for file:// URLs. jhrg 4/20/23
+ *
+ * This code requires that:
+ * - curl_easy_perform() has been called on the handle ceh.
+ * - The returned CURLcode value was CURLE_OK.
+ * This code operates under the assumption that the world is not perfect and that things
+ * fail, sometimes for no good reason, and trying the thing a again may be worth while.
+ *
+ * With that in mind, if:
+ *
+ *    CURLINFO_RESPONSE_CODE returns CURLE_GOT_NOTHING
+ *
+ * or if the HTTP response code was one of:
+ *
+ *   case 422:  Unprocessable Entity
+ *   case 500:  Internal server error
+ *   case 502:  Bad Gateway
+ *   case 503:  Service Unavailable
+ *   case 504:  Gateway Timeout
+ *
+ * This function will return false, indicating that there was a problem, but a retry
+ * might be reasonable.
+ *
+ * If another cURL error or different HTTP response error code is encountered a
+ * BESInternalError is thrown.
+ *
+ * This function returns true if the CURLINFO_RESPONSE_CODE response code is 200 (OK) or
+ * 206 (Partial Content)
+ *
+ * @param ceh The cURL easy_handle to evaluate.
+ * @return true if at all worked out, false if it didn't and a retry is reasonable.
+ * @throws BESInternalError When something really bad happens.
+*/
+static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
+    BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
+
+    long http_code = 0;
+    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
+    if (curl_code != CURLE_OK)
+        throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
+
+    // Special case for file:// URLs. An HTTP Code is zero means success in that case. jhrg 4/20/23
+    if (requested_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
+        return true;
+
+    if (BESISDEBUG(MODULE)) {   // BESISDEBUG is a macro that expands to false when NDEBUG is defined. jhrg 4/19/23
+        long redirects;
+        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_COUNT, &redirects);
+        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
+
+        char *redirect_url = nullptr;
+        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &redirect_url);
+        if (redirect_url)
+            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
+    }
+
+    // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+    switch (http_code) {
+        case 0:
+        case 200: // OK
+        case 206: // Partial content - this is to be expected since we use range gets
+            // cases 201-205 are things we should probably reject, unless we add more
+            // comprehensive HTTP/S processing here. jhrg 8/8/18
+            return true;
+
+        default:
+            string last_accessed_url = get_effective_url(ceh, requested_url);
+            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): "
+                                    << filter_effective_url(last_accessed_url) << endl);
+
+            // process_http_code_helper() _only_ returns if the request can be retried, otherwise
+            // it throws an exception. Pass the unfiltered last_accessed_url because the
+            // query string params might be needed to determine if the URL should be retried.
+            // jhrg 4/20/23
+            process_http_code_helper(http_code, requested_url, last_accessed_url);
+            return false;   // if we get here, retry the request
+    }
+}
+
+// Used here only. jhrg 3/8/23
 static void super_easy_perform(CURL *c_handle, int fd) {
     unsigned int attempts = 0;
     useconds_t retry_time = uone_second / 4;
@@ -989,7 +991,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
         success = eval_curl_easy_perform_code(c_handle, target_url, curl_code, curlErrorBuf, attempts);
         if (success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
-            success = eval_http_get_response(c_handle, curlErrorBuf, target_url);
+            success = eval_http_get_response(c_handle, target_url);
         }
         // If the curl_easy_perform failed, or if the http request failed then
         // we keep trying until we have exceeded the retry_limit.
@@ -1126,6 +1128,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
             curl_slist_free_all(req_headers);
         if (ceh)
             curl_easy_cleanup(ceh);
+
         BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
     }
     catch (...) {
@@ -1135,6 +1138,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
             curl_easy_cleanup(ceh);
         throw;
     }
+
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
@@ -1464,8 +1468,8 @@ string hyrax_user_agent() {
  * @param file The value of __FILE__ of the calling function.
  * @param line The value of __LINE__ of the calling function.
  */
-void eval_curl_easy_setopt_result(CURLcode curl_code, const string &msg_base, const string &opt_name, char *ebuf,
-                                  const string &file, unsigned int line) {
+void eval_curl_easy_setopt_result(CURLcode curl_code, const string &msg_base, const string &opt_name,
+                                  const char *ebuf, const string &file, unsigned int line) {
     if (curl_code != CURLE_OK) {
         stringstream msg;
         msg << msg_base << "ERROR - cURL failed to set " << opt_name << " Message: "

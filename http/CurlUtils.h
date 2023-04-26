@@ -54,14 +54,16 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, i
 void http_get(const std::string &url, char *response_buf, size_t bufsz);
 void http_get(const std::string &target_url, std::vector<char> &buf);
 
+void super_easy_perform(CURL *ceh);
+///@}
+
 rapidjson::Document http_get_as_json(const std::string &target_url);
 
 std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr<http::url> &starting_point_url);
+std::string filter_effective_url(const std::string &eff_url);
 
 CURL *init(const std::string &target_url, const struct curl_slist *http_request_headers,
            std::vector<std::string> *resp_hdrs);
-
-void super_easy_perform(CURL *ceh);
 
 void set_error_buffer(CURL *ceh, char *error_buffer);
 
@@ -76,7 +78,7 @@ unsigned long max_redirects();
 std::string hyrax_user_agent();
 
 void eval_curl_easy_setopt_result(CURLcode result,  const std::string &msg_base, const std::string &opt_name,
-                                  char *ebuf, const std::string &file, unsigned int line);
+                                  const char *ebuf, const std::string &file, unsigned int line);
 
 std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
 

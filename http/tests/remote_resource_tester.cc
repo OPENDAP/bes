@@ -5,14 +5,12 @@
 #include "config.h"
 
 #include <iostream>
-#include <fstream>
 #include <string>
 
 #include <sys/stat.h>
 
 #include "TheBESKeys.h"
 #include "RemoteResource.h"
-#include "url_impl.h"
 #include "BESError.h"
 #include "BESDebug.h"
 
@@ -26,21 +24,21 @@ using namespace http;
  * @param argv
  * @return 0 if things work, 10 if some sort of BESError is caught, else EXIT_FAILURE
  */
-int main(int argc, char *argv[])
+int main(int, char *argv[])
 {
     cerr << "Hello, world!" << endl;
     string bes_conf = "bes.conf";
 
-    // TODO undo this hack. jhrg 3/9/23
-    mkdir("/tmp/bes_rr_cache", 0777);
+    // Hack - depends on the bes.conf not overriding the default value for the temp dir. jhrg 4/21/23
+    mkdir("/tmp/bes_rr_tmp", 0777);
 
     try {
         string debug_dest = argv[3];
         debug_dest.append(",http");
         BESDebug::SetUp(debug_dest);
         TheBESKeys::ConfigFile = argv[1];
-        auto url = make_shared<http::url>(argv[2]);
-        unique_ptr<RemoteResource> rr(new RemoteResource(url));
+        auto url = std::make_shared<http::url>(argv[2]);
+        auto rr = std::make_unique<RemoteResource>(url);
 
         rr->retrieve_resource();
 
