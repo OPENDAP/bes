@@ -763,7 +763,7 @@ bool is_retryable(const string &target_url) {
  *  If the curl_code is another value a BESInternalError is thrown.
  *
  * @param ceh The cURL easy handle used in the request.
- * @param requested_url The requested URL.
+ * @param eff_req_url The requested URL - This should be the 'effective URL'.
  * @param curl_code The CURLcode value to evaluate.
  * @param error_buffer The CURLOPT_ERRORBUFFER used in the request.
  * @param attempt The number of attempts on the url that this request represents.
@@ -773,27 +773,25 @@ bool is_retryable(const string &target_url) {
  */
 static bool eval_curl_easy_perform_code(
         CURL *ceh,
-        const string &requested_url,
+        const string &eff_req_url,
         CURLcode curl_code,
         const char *error_buffer,
         const unsigned int attempt
 ) {
     if (curl_code == CURLE_SSL_CONNECT_ERROR) {
         stringstream msg;
-        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: '";
-        msg << error_message(curl_code, error_buffer) << "' ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << filter_effective_url(get_effective_url(ceh, requested_url)) << " ";
-        msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
+        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: ";
+        msg << error_message(curl_code, error_buffer) << ". ";
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
     }
     else if (curl_code == CURLE_SSL_CACERT_BADFILE) {
         stringstream msg;
-        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. Message: '";
-        msg << error_message(curl_code, error_buffer) << "' ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << filter_effective_url(get_effective_url(ceh, requested_url)) << " ";
-        msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
+        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. Message: ";
+        msg << error_message(curl_code, error_buffer) << ". ";
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
@@ -804,9 +802,8 @@ static bool eval_curl_easy_perform_code(
         // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
         stringstream msg;
         msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: ";
-        msg << error_message(curl_code, error_buffer) << "' ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << filter_effective_url(get_effective_url(ceh, requested_url)) << " ";
-        msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
+        msg << error_message(curl_code, error_buffer) << ". ";
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
@@ -814,7 +811,7 @@ static bool eval_curl_easy_perform_code(
     else if (curl_code != CURLE_OK) {
         stringstream msg;
         msg << "ERROR - Problem with data transfer. Message: " << error_message(curl_code, error_buffer);
-        msg << " CURLINFO_EFFECTIVE_URL: " << filter_effective_url(get_effective_url(ceh, requested_url));
+        msg << " CURLINFO_EFFECTIVE_URL: " << filter_effective_url(eff_req_url);
         BESDEBUG(MODULE, prolog << msg.str() << endl);
         ERROR_LOG(msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -1659,8 +1656,8 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
 
         INFO_LOG(prolog << "Source URL: '" << starting_point_url->str() << "("
                         << (starting_point_url->is_trusted() ? "" : "NOT ") << "trusted)" <<
-                        "' CURLINFO_EFFECTIVE_URL: '" << eurl->str() << "'" << "(" << (eurl->is_trusted() ? "" : "NOT ")
-                        << "trusted)" << endl);
+                        "' CURLINFO_EFFECTIVE_URL: '" << filter_effective_url(eurl->str()) << "'" << "("
+                        << (eurl->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
 
         if (request_headers)
             curl_slist_free_all(request_headers);
