@@ -128,10 +128,23 @@ typedef struct {
 } eos5_grid_info_t;
 
 typedef struct {
+    std::string dpath0;
+    std::string dpath1;
+} eos5_dname_info_t;
+
+typedef struct {
+    std::string vpath0;
+    std::string vpath1;
+    std::string cf_gmap_path;
+} eos5_cname_info_t;
+
+typedef struct {
     std::unordered_map<std::string,std::vector<std::string>> varpath_to_dims;
     std::unordered_map<std::string,std::vector<HE5Dim>> grppath_to_dims;
     std::unordered_map<std::string,eos5_grid_info_t> gridname_to_info;
+    std::vector<std::pair<eos5_dname_info_t,eos5_cname_info_t>> dimpath_to_cvpath;
 } eos5_dim_info_t;
+
 
 #if 0
 typedef struct {
@@ -140,10 +153,10 @@ typedef struct {
 } eos5_dim_info_t;
 #endif
 
-bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, const eos5_dim_info_t & ,std::vector<std::string> &);
+bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &);
 
-void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool,const std::unordered_map<std::string, std::vector<std::string>>&);
-void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
+void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
+void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool);
 #if 0
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
@@ -183,10 +196,13 @@ void build_var_dim_path(const std::string & eos5_obj_name, const std::vector<HE5
 void build_grp_dim_path(const std::string & eos5_obj_name, const std::vector<HE5Dim>& dim_list, std::unordered_map<std::string, std::vector<HE5Dim>>& grppath_to_dims, HE5_TYPE eos5_type);
 bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::string, vector<std::string>>& varpath_to_dims, vector<std::string> & dimnames);
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
-void add_possible_eos5_grid_vars(libdap::D4Group*, const eos5_dim_info_t &, std::vector<std::string> &);
+void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
 void build_gd_info(const HE5Grid &gd,std::unordered_map<std::string,eos5_grid_info_t>& gridname_to_info);
 bool is_eos5_grid_grp(libdap::D4Group *,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &);
 
 hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname);
 
+void add_ps_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
+void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
+void add_possible_var_cv_info(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
 #endif
