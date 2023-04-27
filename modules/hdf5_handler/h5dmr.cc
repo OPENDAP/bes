@@ -504,7 +504,6 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
     // The attributes of this group. Doing this order to follow ncdump's way (variable,attribute then groups)
     map_h5_attrs_to_dap4(pid,par_grp,nullptr,nullptr,0);
 
-#define KENT 1
     // This is the ugly part. To support HDF-EOS5 grids, we have to add extra variables.
     // These variables are geo-location related variables such as latitude and longitude.
     // These geo-location variables are DAP4 coverage map variable candidates. 
@@ -513,11 +512,9 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
     // We may need to remember the full path of these extra variables. These will be
     // used as the coordinates of this group's data variables. For geographic projection,
     // this is not necessary. 
-#if KENT
     vector <string>coord_paths;
     if (is_eos5 && !use_dimscale) 
         add_possible_eos5_grid_vars(par_grp, eos5_dim_info);
-#endif
 
 
     // For HDF-EOS5 files, We also need to add DAP4 dimensions to this group if there are HDF-EOS5 dimensions.
@@ -901,7 +898,7 @@ cout<<"dimpath final non-eos5 "<<td<<endl;
             map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
 
         if (is_eos5_dims && !use_dimscale 
-                         && (eos5_dim_info.dimpath_to_cvpath.size() >0)
+                         && (eos5_dim_info.dimpath_to_cvpath.empty() == false )
                          && (ar->get_numdim() >1)) 
             add_possible_var_cv_info(new_var,eos5_dim_info);
             
@@ -3081,15 +3078,19 @@ bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eo
 
         const BaseType *v = *vi;
         string vname = v->name();
-        if (eg_info.projection == HE5_GCTP_GEO && (vname == "YDim" || vname == "XDim")) {
-            ret_value = false;
-            break;
+        if (eg_info.projection == HE5_GCTP_GEO) {
+            if (vname == "YDim" || vname == "XDim") {
+                ret_value = false;
+                break;
+            }
 
         }
-        else if (vname == "YDim" || vname == "XDim" || vname =="Latitude" || vname == "Longitude" 
+        else {
+            if (vname == "YDim" || vname == "XDim" || vname =="Latitude" || vname == "Longitude" 
                 || vname == "eos5_cf_projection") {
-            ret_value = false;
-            break;
+                ret_value = false;
+                break;
+            }
         }
     }
     }
@@ -3288,8 +3289,8 @@ void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *var, const eos5_grid_info
 
 void add_possible_var_cv_info(libdap::BaseType *var, const eos5_dim_info_t &eos5_dim_info) {
 
-    bool have_cv_dim0;
-    bool have_cv_dim1;
+    bool have_cv_dim0 = false;
+    bool have_cv_dim1 = false;
     string dim0_cv_name1;
     string dim0_cv_name2;
     string dim0_gm_name;

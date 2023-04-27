@@ -110,10 +110,10 @@ bool HDF5MissLLArray::read_data_non_geo() {
     lowright[0] = g_info.point_right;
     lowright[1] = g_info.point_lower;
 
-    int j = 0;
     int r = -1;
 
-    for (int k = j = 0; j < g_info.ydim_size; ++j) {
+    int k = 0;
+    for (int j = 0; j < g_info.ydim_size; ++j) {
         for (int i = 0; i < g_info.xdim_size; ++i) {
             rows[k] = j;
             cols[k] = i;
@@ -228,26 +228,26 @@ bool HDF5MissLLArray::read_data_geo(){
         
 	if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_UR == g_info.gridorigin) {
 
-	    start = g_info.point_upper;
-	    end   = g_info.point_lower; 
+	    start = (float)(g_info.point_upper);
+	    end   = (float)(g_info.point_lower); 
 
 	}
 	else {// (gridorigin == HE5_HDFE_GD_LL || gridorigin == HE5_HDFE_GD_LR)
         
-	    start = g_info.point_lower;
-	    end = g_info.point_upper;
+	    start = (float)(g_info.point_lower);
+	    end = (float)(g_info.point_upper);
 	}
 
 	if(g_info.ydim_size <=0) 
 	    throw InternalErr (__FILE__, __LINE__,
 			    "The number of elments should be greater than 0.");
            
-	float lat_step = (end - start) /g_info.ydim_size;
+	float lat_step = (end - start) /(float)(g_info.ydim_size);
 
 	// Now offset,step and val will always be valid. line 74 and 85 assure this.
 	if ( HE5_HDFE_CENTER == g_info.pixelregistration ) {
 	    for (int i = 0; i < nelms; i++)
-		val[i] = ((offset[0]+i*step[0] + 0.5F) * lat_step + start) / 1000000.0F;
+		val[i] = (((float)(offset[0]+i*step[0]) + 0.5F) * lat_step + start) / 1000000.0F;
 	}
 	else { // HE5_HDFE_CORNER 
 	    for (int i = 0; i < nelms; i++)
@@ -258,25 +258,25 @@ bool HDF5MissLLArray::read_data_geo(){
 
 	if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_LL == g_info.gridorigin) {
 
-	    start = g_info.point_left;
-	    end   = g_info.point_right; 
+	    start = (float)(g_info.point_left);
+	    end   = (float)(g_info.point_right); 
 
 	}
 	else {// (gridorigin == HE5_HDFE_GD_UR || gridorigin == HE5_HDFE_GD_LR)
         
-	    start = g_info.point_right;
-	    end = g_info.point_left;
+	    start = (float)(g_info.point_right);
+	    end = (float)(g_info.point_left);
 	}
 
 	if(g_info.xdim_size <=0) 
 	    throw InternalErr (__FILE__, __LINE__,
 			"The number of elments should be greater than 0.");
-	float lon_step = (end - start) /g_info.xdim_size;
+	float lon_step = (end - start) /(float)(g_info.xdim_size);
 
 	if (HE5_HDFE_CENTER == g_info.pixelregistration) {
 
 	    for (int i = 0; i < nelms; i++)
-		val[i] = ((offset[0] + i *step[0] + 0.5F) * lon_step + start ) / 1000000.0F;
+		val[i] = (((float)(offset[0] + i *step[0]) + 0.5F) * lon_step + start ) / 1000000.0F;
 
 	}
 	else { // HE5_HDFE_CORNER 
@@ -356,7 +356,7 @@ HDF5MissLLArray::format_constraint (int64_t *offset, int64_t *step, int64_t *cou
 template<typename T>
 int HDF5MissLLArray::subset(
     void* input,
-    int rank,
+    int s_rank,
     const vector<size_t> & dim,
     int64_t start[],
     int64_t stride[],
@@ -368,9 +368,9 @@ int HDF5MissLLArray::subset(
     for(int k=0; k<edge[index]; k++)
     {
         pos[index] = start[index] + k*stride[index];
-        if(index+1<rank)
-            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);
-        if(index==rank-1)
+        if(index+1<s_rank)
+            subset(input, s_rank, dim, start, stride, edge, poutput,pos,index+1);
+        if(index==s_rank-1)
         {
             size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
             void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));

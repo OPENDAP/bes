@@ -113,7 +113,7 @@ class HDF5Array:public libdap::Array {
     void set_numdim(int ndims);
 
     /// obtain the number of dimensions of this array.
-    int get_numdim() { return d_num_dim;}
+    int get_numdim() const { return d_num_dim;}
     /// remembers number of elements in this array.  
     void set_numelm(hsize_t nelms);
 
