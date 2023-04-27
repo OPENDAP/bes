@@ -529,24 +529,24 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
         if (par_grp_name.size()>1)
             par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
 //#if 0
-cout <<"group: par_grp_name is "<<par_grp_name <<endl;
+//cout <<"group: par_grp_name is "<<par_grp_name <<endl;
 //#endif
         // We need to ensure the special characters are handled.
         bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
         if (is_eos5_dims) {
-cerr<<"coming to is_eos5_dims "<<endl;
+//cerr<<"coming to is_eos5_dims "<<endl;
             vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
             D4Dimensions *d4_dims = par_grp->dims();
             for (unsigned grp_dim_idx = 0; grp_dim_idx<dim_names.size();grp_dim_idx++) {
                 D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
                 if (d4_dim == nullptr) {
-cerr<<"dim_names: "<<dim_names[grp_dim_idx] <<endl;
+//cerr<<"dim_names: "<<dim_names[grp_dim_idx] <<endl;
                     d4_dim = new D4Dimension(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
                     d4_dims->add_dim_nocopy(d4_dim);
                 }
             }
         }
-cerr<<"end of is_eos5 "<<endl;
+//cerr<<"end of is_eos5 "<<endl;
 
     }
     // The fullnamepath of the group is not necessary since dmrpp only needs the dataset path to retrieve info.
@@ -900,7 +900,9 @@ cout<<"dimpath final non-eos5 "<<td<<endl;
         if (is_eos5)
             map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
 
-        if (is_eos5_dims && !use_dimscale) 
+        if (is_eos5_dims && !use_dimscale 
+                         && (eos5_dim_info.dimpath_to_cvpath.size() >0)
+                         && (ar->get_numdim() >1)) 
             add_possible_var_cv_info(new_var,eos5_dim_info);
             
 #if 0
@@ -1755,7 +1757,7 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
 
     // Retrieve ProjParams from StructMetadata
     p.add_projparams(st_str);
-    p.print();
+    //p.print();
 
     // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
     if (c.check_grids_unknown_parameters(&p)) {
@@ -2779,8 +2781,10 @@ bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array
 
 void add_possible_eos5_grid_vars(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info) {
 
-cerr<<"coming to add_possible_eos5_grid_vars"<<endl;
+//cerr<<"coming to add_possible_eos5_grid_vars"<<endl;
     eos5_grid_info_t eg_info;
+
+#if 0
 for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
     cerr<<"grid name: "<<ed_info.first <<endl;
     cerr<<" projection: "<<ed_info.second.projection <<endl;
@@ -2794,6 +2798,7 @@ for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
     cerr<<"           "<<"xdim point_right:" << ed_info.second.point_right <<endl;
 
 }
+#endif
 
 #if 0
 for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
@@ -2808,7 +2813,7 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
 #endif
     bool add_grid_var = is_eos5_grid_grp(d4_grp,eos5_dim_info,eg_info);
 
-    cerr<<" projection: "<<eg_info.projection <<endl;
+//    cerr<<" projection: "<<eg_info.projection <<endl;
     if (add_grid_var && eg_info.projection == HE5_GCTP_GEO) {
     
         BaseType *ar_bt_lat = nullptr;
@@ -2826,7 +2831,7 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
                                           ar_bt_lat);
 
             string ydimpath = d4_grp->FQN() + "YDim";
-cerr<<"ydimpath is "<<ydimpath <<endl;
+//cerr<<"ydimpath is "<<ydimpath <<endl;
             ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
             //ar_lat->append_dim_ll(eg_info.ydim_size,"YDim");
             auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
@@ -2882,7 +2887,7 @@ cerr<<"ydimpath is "<<ydimpath <<endl;
                            eg_info.projection == HE5_GCTP_PS ||
                            eg_info.projection == HE5_GCTP_LAMAZ)) {
 
-cerr<<"coming to 2d projection." <<endl;
+//cerr<<"coming to 2d projection." <<endl;
         HDF5CFProj *dummy_proj_cf = nullptr;
         BaseType *ar_bt_dim0 = nullptr;
         BaseType *ar_bt_dim1 = nullptr;
@@ -2924,9 +2929,9 @@ cerr<<"coming to 2d projection." <<endl;
             // Need to add DAP4 dimensions
             //auto d4_dim1 = new D4Dimension(xdimpath,eg_info.xdim_size);
             auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
-cerr<<"xdim_size is "<<eg_info.xdim_size <<endl;
+//cerr<<"xdim_size is "<<eg_info.xdim_size <<endl;
             (ar_dim1->dim_begin())->dim = d4_dim1;
-cerr<<"pass ar_dim1 "<<endl;
+//cerr<<"pass ar_dim1 "<<endl;
 
             // The DAP4 group needs also to store these dimensions.
             D4Dimensions *dims = d4_grp->dims();
@@ -3015,6 +3020,7 @@ cerr<<"pass ar_dim1 "<<endl;
             eos5_dim_info.dimpath_to_cvpath.push_back(t_pair);
             //t_map[edname_info] = ecname_info;
             
+#if 0
 for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
     cerr<<" dimension name 1: " <<d_v_info.first.dpath0 <<endl;
     cerr<<" dimension name 2: " <<d_v_info.first.dpath1 <<endl;
@@ -3024,7 +3030,7 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
 
 
 }
-//#endif
+#endif
 
         }
         catch (...) {
@@ -3041,7 +3047,7 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
         }
 
     }
-cerr<<"end of add_possible_vars "<<endl;            
+//cerr<<"end of add_possible_vars "<<endl;            
     
 }
 
@@ -3049,11 +3055,11 @@ bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eo
 
     bool ret_value = false;
     string grp_fqn = d4_group->FQN();
-cerr<<"grp_fqn is"<<grp_fqn <<endl;
+//cerr<<"grp_fqn is"<<grp_fqn <<endl;
     for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
-cerr<<"ed_info first: "<<ed_info.first <<endl;
+//cerr<<"ed_info first: "<<ed_info.first <<endl;
         string eos_mod_path = handle_string_special_characters_in_path(ed_info.first);
-cerr<<"eos_mod_path is "<<eos_mod_path <<endl;
+//cerr<<"eos_mod_path is "<<eos_mod_path <<endl;
         if (grp_fqn == (eos_mod_path + "/")) {
             eg_info = ed_info.second;
             ret_value = true;
@@ -3062,7 +3068,7 @@ cerr<<"eos_mod_path is "<<eos_mod_path <<endl;
     }
 
     if (ret_value == true) {
-cerr<<"coming to cf var name check"<<endl;
+//cerr<<"coming to cf var name check"<<endl;
     // Even if we find the correct eos group, we need to ensure that the variables we want to add 
     // do not exist. That is we need to check the variable names like Latitude/Longitude etc don't exist in
     // this group. This seems unnecessary but we do observe that data producers may add CF variables by themseleves.
@@ -3071,7 +3077,7 @@ cerr<<"coming to cf var name check"<<endl;
     Constructor::Vars_iter ve = d4_group->var_end();
 
     for (; vi != ve; vi++) {
-cerr<<"Should see this line for the normal case."<<endl;
+//cerr<<"Should see this line for the normal case."<<endl;
 
         const BaseType *v = *vi;
         string vname = v->name();
@@ -3131,8 +3137,8 @@ cerr<<"dim.size is "<<dim.size <<endl;
 
     for (const auto &dim:gd.dim_list) {
         if ((dim.name == "XDim" || dim.name == "Xdim") && find_xdim == false) {
-cerr<<"find XDim "<<endl;
-cerr<<"dim.size is "<<dim.size <<endl;
+//cerr<<"find XDim "<<endl;
+//cerr<<"dim.size is "<<dim.size <<endl;
                 eg_info.xdim_size = dim.size;
                 find_xdim = true;
             }
@@ -3160,7 +3166,7 @@ cerr<<"dim.size is "<<dim.size <<endl;
 
         eg_info.zone = gd.zone;
         eg_info.sphere = gd.sphere;
-cerr<<"grid_name is "<<grid_name <<endl;
+//cerr<<"grid_name is "<<grid_name <<endl;
         gridname_to_info[grid_name] = eg_info;       
 
     }
@@ -3244,7 +3250,7 @@ void add_ps_cf_grid_mapping_attrs(libdap::BaseType *var, const eos5_grid_info_t 
 
 void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *var, const eos5_grid_info_t & eg_info) {
 
-cerr<<"coming to lamaz" <<endl; 
+//cerr<<"coming to lamaz" <<endl; 
         double lon_proj_origin = HE5_EHconvAng(eg_info.param[4],HE5_HDFE_DMS_DEG);
         double lat_proj_origin = HE5_EHconvAng(eg_info.param[5],HE5_HDFE_DMS_DEG);
         double fe = eg_info.param[6];
@@ -3280,8 +3286,70 @@ cerr<<"coming to lamaz" <<endl;
         add_var_dap4_attr(var,"_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
 }
 
-void add_possible_var_cv_info(libdap::BaseType *new_var, const eos5_dim_info_t &eos5_dim_info) {
+void add_possible_var_cv_info(libdap::BaseType *var, const eos5_dim_info_t &eos5_dim_info) {
 
+    bool have_cv_dim0;
+    bool have_cv_dim1;
+    string dim0_cv_name1;
+    string dim0_cv_name2;
+    string dim0_gm_name;
+    string dim1_cv_name1;
+    string dim1_cv_name2;
+    string dim1_gm_name;
+
+    auto t_a = dynamic_cast<Array*>(var);
+
+    Array::Dim_iter di = t_a->dim_begin();
+    Array::Dim_iter de = t_a->dim_end();
+
+    for (; di != de; di++) {
+
+        const D4Dimension * d4_dim = t_a->dimension_D4dim(di);
+
+        // DAP4 dimension may not exist, so need to check.
+        if(d4_dim) { 
+
+            // Fully Qualified name(absolute path) of the dimension
+            string dim_fqn = d4_dim->fully_qualified_name();
+
+            for (const auto &dim_to_cv:eos5_dim_info.dimpath_to_cvpath) {
+                if (dim_fqn == dim_to_cv.first.dpath0) {
+
+                    dim0_cv_name1 = dim_to_cv.second.vpath0;
+                    dim0_cv_name2 = dim_to_cv.second.vpath1;
+                    dim0_gm_name = dim_to_cv.second.cf_gmap_path;
+
+                    have_cv_dim0 = true;
+                }
+                else if (dim_fqn == dim_to_cv.first.dpath1) {
+
+                    dim1_cv_name1 = dim_to_cv.second.vpath0;
+                    dim1_cv_name2 = dim_to_cv.second.vpath1;
+                    dim1_gm_name = dim_to_cv.second.cf_gmap_path;
+ 
+                    have_cv_dim1 = true;
+                }
+
+                if (have_cv_dim0 && have_cv_dim1) 
+                    break;
+            }
+        }
+
+        // We know the dimension names in each grid are different. 
+        // We can have only one set of match in each grid.
+        if (have_cv_dim0 && have_cv_dim1) 
+            break;
+    }
+ 
+    if (have_cv_dim0 && have_cv_dim1) {
+        if (dim0_cv_name1 != dim1_cv_name1 || dim0_cv_name2 !=dim1_cv_name2 || dim0_gm_name !=dim1_gm_name) 
+            throw InternalErr(__FILE__,__LINE__,"Inconsistent coordinates for the EOS5 Grids");
+        else {// Add the CV attributes.
+            string coord_value = dim0_cv_name1 + " "+dim0_cv_name2;
+            add_var_dap4_attr(var,"coordinates",attr_str_c,coord_value);
+            add_var_dap4_attr(var,"grid_mapping",attr_str_c,dim0_gm_name);
+        }
+    }
 
 }
 
