@@ -633,7 +633,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
 					BESDEBUG("besdaemon",
 							"DaemonCommandHandler::execute_command() - There are " << BESDebug::debug_map().size() << " Contexts" << endl);
 					if (BESDebug::debug_map().size()) {
-						BESDebug::debug_citer i = BESDebug::debug_map().begin();
+						auto i = BESDebug::debug_map().begin();
 						while (i != BESDebug::debug_map().end()) {
 							if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:LogContext") < 0)
 								throw BESInternalFatalError("Could not write <hai:LogContext> element ", __FILE__,

@@ -17,7 +17,7 @@ BES_CONF_IN = bes.conf.in
 
 noinst_DATA = bes.conf
 
-CLEANFILES = bes.conf d1-* d2-* tmp1-* tmp2-* $(srcdir)/package.m4 $(TESTSUITE)
+CLEANFILES = bes.conf $(srcdir)/package.m4 $(TESTSUITE)
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
 
@@ -39,13 +39,12 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
-	-rm -rf $(abs_builddir)/cache/*
+	-rm -rf d1-* d2-* tmp1-* tmp2-*
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	-rm -f d1-* d2-* tmp1-* tmp2-* $(abs_builddir)/cache/*
+	-rm -f d1-* d2-* tmp1-* tmp2-*
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -rf cache
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 

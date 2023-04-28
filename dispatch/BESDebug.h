@@ -46,6 +46,7 @@ std::string get_debug_log_line_prefix();
 
 static std::mutex bes_debug_log_mutex;
 
+/// When NDEBUG is defined, BESDEBUG and BESISDEBUG are no-ops.
 #ifdef NDEBUG
 #define BESDEBUG( x, y )
 #else
@@ -62,12 +63,7 @@ static std::mutex bes_debug_log_mutex;
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
-#if 0
-#define BESDEBUG( x, y ) do { std::unique_lock<std::mutex> lck (bes_debug_log_mutex); if( BESDebug::IsSet( x ) ) {  *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << "["<< x << "] " << y; } } while( 0 )
-#else
 #define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << "["<< x << "] " << y ; } while( 0 )
-#endif
-
 #endif // NDEBUG
 
 #ifdef NDEBUG
@@ -98,45 +94,26 @@ static std::mutex bes_debug_log_mutex;
 
 class BESDebug {
 private:
-    typedef std::map<std::string, bool> DebugMap;
+    // The time to make 10000000 calls to IsSet with a std::map was 3 763 862 us and
+    // to make the same calls to IsSet with a std::unordered_map was 2 675 492 us
+    // jhrg 4/12/23
+    // typedef std::unordered_map<std::string, bool> DebugMap;
+    using DebugMap = std::map<std::string, bool>;
 
     static DebugMap _debug_map;
     static std::ostream *_debug_strm;
     static bool _debug_strm_created;
 
-    typedef DebugMap::iterator _debug_iter;
-
 public:
-    typedef DebugMap::const_iterator debug_citer;
-
     static const DebugMap &debug_map()
     {
         return _debug_map;
     }
 
-    /** @brief set the debug context to the specified value
-     *
-     * Static function that sets the specified debug context (flagName)
-     * to the specified debug value (true or false). If the context is
-     * found then the value is set. Else the context is created and the
-     * value set.
-     *
-     * @param flagName debug context flag to set to the given value
-     * @param value set the debug context to this value
-     */
-    static void Set(const std::string &flagName, bool value)
-    {
-        if (flagName == "all" && value) {
-            _debug_iter i = _debug_map.begin();
-            _debug_iter e = _debug_map.end();
-            for (; i != e; i++) {
-                (*i).second = true;
-            }
-        }
-        _debug_map[flagName] = value;
-    }
+    // Moved to the .cc file to avoid <algorithm> in a header file. jhrg 4/14/23
+    static void Set(const std::string &flagName, bool value);
 
-    /** @brief register the specified debug flag
+     /** @brief register the specified debug flag
      *
      * Allows developers to register a debug flag for when Help method
      * is called. It's OK to register a context more than once (subsequent
@@ -148,9 +125,9 @@ public:
      */
     static void Register(const std::string &flagName)
     {
-        debug_citer a = _debug_map.find("all");
-        debug_citer i = _debug_map.find(flagName);
+        auto i = _debug_map.find(flagName);
         if (i == _debug_map.end()) {
+            auto a = _debug_map.find("all");
             if (a == _debug_map.end()) {
                 _debug_map[flagName] = false;
             }
@@ -167,11 +144,12 @@ public:
      */
     static bool IsSet(const std::string &flagName)
     {
-        debug_citer i = _debug_map.find(flagName);
+        auto i = _debug_map.find(flagName);
         if (i != _debug_map.end())
             return (*i).second;
         else
             i = _debug_map.find("all");
+
         if (i != _debug_map.end())
             return (*i).second;
         else
@@ -188,8 +166,6 @@ public:
     {
         return _debug_strm;
     }
-
-    static std::string GetPidStr();
 
     /** @brief set the debug output stream to the specified stream
      *
@@ -211,7 +187,7 @@ public:
         if (_debug_strm_created && _debug_strm) {
             _debug_strm->flush();
             delete _debug_strm;
-            _debug_strm = NULL;
+            _debug_strm = nullptr;
         }
         else if (_debug_strm) {
             _debug_strm->flush();
