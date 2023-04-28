@@ -1,24 +1,6 @@
-// This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
-//
-// This is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License as published by the Free
-// Software Foundation; either version 2.1 of the License, or (at your
-// option) any later version.
-//
-// This software is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
-// License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-//
-// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
-
+/////////////////////////////////////////////////////////////////////////////
+// This file is part of the hdf5 data handler for the OPeNDAP data server.
+// Currently it provides the missing latitude,longitude fields for the HDF-EOS5 files for the default option.
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf5.h"
@@ -168,7 +150,6 @@ bool HDF5MissLLArray::read_data_non_geo() {
                            0);
             set_value_ll(val.data(),nelms);
         }
-       
     }
     else {
 
@@ -223,7 +204,6 @@ bool HDF5MissLLArray::read_data_geo(){
     vector<float>val;
     val.resize(nelms);
     
-
     if (is_lat) {
         
 	if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_UR == g_info.gridorigin) {
@@ -244,7 +224,6 @@ bool HDF5MissLLArray::read_data_geo(){
            
 	float lat_step = (end - start) /(float)(g_info.ydim_size);
 
-	// Now offset,step and val will always be valid. line 74 and 85 assure this.
 	if ( HE5_HDFE_CENTER == g_info.pixelregistration ) {
 	    for (int i = 0; i < nelms; i++)
 		val[i] = (((float)(offset[0]+i*step[0]) + 0.5F) * lat_step + start) / 1000000.0F;
@@ -315,13 +294,10 @@ HDF5MissLLArray::format_constraint (int64_t *offset, int64_t *step, int64_t *cou
                 // Check for illegal  constraint
                 if (start > stop) {
                    ostringstream oss;
-
                    oss << "Array/Grid hyperslab start point "<< start <<
                          " is greater than stop point " <<  stop <<".";
                    throw Error(malformed_expr, oss.str());
                 }
-
-
 
                 offset[id] = start;
                 step[id] = stride;
@@ -375,7 +351,6 @@ int HDF5MissLLArray::subset(
             size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
             void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
             poutput->push_back(*(static_cast<T*>(tempbuf)));
-            //"poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);"
         }
     } // end of for
     return 0;

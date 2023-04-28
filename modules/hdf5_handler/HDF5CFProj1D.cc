@@ -1,5 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf5 data handler for the OPeNDAP data server.
+// This is to support the HDF-EOS5 grid for the default option. 
+// The grid mapping variable is declared here.
 /////////////////////////////////////////////////////////////////////////////
 
 #include "HDF5CFProj1D.h"
@@ -45,9 +47,8 @@ bool HDF5CFProj1D::read()
     for(int64_t i = 1;i<tnumelm; i++)
         val[i] = val[i-1] + step_v;
 
-    if (nelms == tnumelm) {
+    if (nelms == tnumelm) 
         set_value_ll((dods_float64 *) val.data(), nelms);
-    }
     else {
         vector<double>val_subset;
         val_subset.resize(nelms);

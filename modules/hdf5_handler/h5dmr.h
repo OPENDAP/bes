@@ -83,8 +83,6 @@ typedef struct {
 
 enum class HE5_TYPE {SW,GD,ZA};
 
-//enum class HE5G_TYPE{HE5G_UNSUPPORTED,HE5G_GEO,HE5G_OTHERS};
-
 typedef struct {
 
     std::string xdim_fqn;
@@ -144,7 +142,6 @@ typedef struct {
     std::unordered_map<std::string,eos5_grid_info_t> gridname_to_info;
     std::vector<std::pair<eos5_dname_info_t,eos5_cname_info_t>> dimpath_to_cvpath;
 } eos5_dim_info_t;
-
 
 #if 0
 typedef struct {

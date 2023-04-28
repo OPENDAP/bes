@@ -1,12 +1,11 @@
 // This file is part of the hdf5 data handler for the OPeNDAP data server.
-
+// This is to support the HDF-EOS5 grid for the default option. 
+// The grid mapping variable is declared here.
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _HDF5CFPROJ_H
 #define _HDF5CFPROJ_H
 
-// DODS includes
 #include <libdap/Byte.h>
-
 
 class HDF5CFProj:public libdap::Byte {
   public:

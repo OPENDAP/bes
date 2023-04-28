@@ -2231,7 +2231,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
         H5T_cset_t c_set_type = H5Tget_cset(ty_id);
         if (c_set_type < 0)
             throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
-        if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == 1))
+        if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
             is_utf8_str = true;
     }
 

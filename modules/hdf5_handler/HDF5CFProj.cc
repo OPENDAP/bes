@@ -1,5 +1,6 @@
 // This file is part of the hdf5 data handler for the OPeNDAP data server.
-
+// This is to support the HDF-EOS5 grid for the default option. 
+// The grid mapping variable is declared here.
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -24,8 +25,6 @@ bool HDF5CFProj::read()
     char buf='p';
     set_read_p(true);
     set_value((dods_byte)buf);
-
     return true;
-
 }
 

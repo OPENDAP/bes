@@ -3,7 +3,7 @@
   
   To compile this program, run
 
-  %h5cc -I/path/to/hdfeos5/include -L/path/to/hdfeos5/lib -o grid_2_2d_size.c \
+  %h5cc -I/path/to/hdfeos5/include -L/path/to/hdfeos5/lib -o grid_2_2d_size_ps.c \
         -lhe5_hdfeos -lgctp
 
   To generate the test file, run
@@ -17,7 +17,6 @@
 
 herr_t write_attr(hid_t gdid, char* field_name, char* attr_name, char* value);
 herr_t write_field_2d(hid_t gdid, char* field_name, long xdim, long ydim);
-herr_t write_field_2d_dynamic(hid_t gdid, char* field_name, long xdim, long ydim);
 herr_t write_grid(hid_t gdfid, char* gname, long xdim, long ydim);
 
 /* Write a local attribute. See HDF-EOS5 testdrivers/grid/TestGrid.c.  */
@@ -78,59 +77,6 @@ herr_t write_field_2d(hid_t gdid, char* field_name, long xdim, long ydim)
     return write_attr(gdid, field_name, "units", "C");
 }
 
-/* This one doesn't work with HDF-EOS5 library. We need to check it later. */
-herr_t write_field_2d_dynamic(hid_t gdid, char* field_name, long xdim, long ydim)
-{
-    int i = 0;
-    int j = 0;
-
-    int x = 0;
-    int y = 0;
-
-    float **temp = NULL;
-
-    hsize_t edge[2];
-    hssize_t start[2];
-
-    x = (int) xdim;
-    y = (int) ydim;
-
-    /* Allocate memory */
-    temp = malloc(y * sizeof(float *));
-    if(temp == NULL)
-        fprintf(stderr, "Out of Memory\n");
-    for (i=0; i < y; i++){
-        temp[i] = malloc(x * sizeof(float));
-        if(temp[i] == NULL){
-            fprintf(stderr, "Out of Memory\n");
-        }
-    }
-
-    /* Fill data. */
-    for (i=0; i < y; i++)
-        for(j=0; j < x; j++)
-            temp[i][j] = (float)(10 + i);
-
-    start[0] = 0; 
-    start[1] = 0;
-    edge[0] = (hsize_t) ydim;
-    edge[1] = (hsize_t) xdim;
-
-    /* Create a field. */
-    HE5_GDdeffield(gdid, field_name, "YDim,XDim", NULL, 
-                   H5T_NATIVE_FLOAT, 0);
-    
-
-    HE5_GDwritefield(gdid, field_name, start, NULL, edge, temp);
-
-    for(i=0; i < y; i++){
-        free(temp[i]);
-    }
-    free(temp);
-
-    /* Write attribute. */
-    return write_attr(gdid, field_name, "units", "C");
-}
 
 herr_t write_grid1(hid_t gdfid, char* gname, long xdim, long ydim)
 {
