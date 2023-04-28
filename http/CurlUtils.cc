@@ -1275,6 +1275,8 @@ void http_get(const std::string &target_url, char *response_buf, size_t bufsz) {
  * data will be appended to the vector by first allocating more space and then
  * using memcpy to write the new dat into that space.
  *
+ * @note The vector should be empty when this is first called.
+ *
  * @param buffer Data from libcurl
  * @param size Number of 'mem' things
  * @param nmemb Number of bytes in 'mem'. Total size of data in this call is 'size * nmemb'
@@ -1293,7 +1295,7 @@ static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *d
 /**
  * Dereference the target URL and put the response in response_buf
  *
- * @note Only used by tests. jhrg 3/8/23
+ * @note The vector<char> should be empty when this is first called.
  *
  * @param target_url The URL to dereference.
  * @param buf The vector<char> into which to put the response. New data will be
