@@ -218,11 +218,9 @@ static size_t writeToOpenFileDescriptor(char *data, size_t /* size */, size_t nm
     int wrote = write(*fd, data, nmemb);
     BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
 
-    //return 0;
-    //throw BESTimeoutError("MOOOOOOOOOOOOOOO",__FILE__,__LINE__);
-
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired",
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired("The function curl::writeToOpenFileDescriptor() "
+                                                              "was unable to complete the download process.",
                                                                   __FILE__, __LINE__);
     return wrote;
 }
