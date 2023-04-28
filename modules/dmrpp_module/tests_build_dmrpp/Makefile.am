@@ -10,9 +10,9 @@ CLEANFILES =
 EXTRA_DIST = get_dmrpp_baselines $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in build_dmrpp_macros.m4 test_bes.conf.in
 
-DISTCLEANFILES = atconfig test_bes.conf a.out chunked_oneD.h5 grid_1_2d.h5 grid_1_2d.h5.missing
+DISTCLEANFILES = atconfig test_bes.conf a.out chunked_oneD.h5 grid_1_2d.h5 grid_2_2d.h5 grid_1_2d.h5.missing
 
-noinst_DATA = $(abs_builddir)/grid_1_2d.h5
+noinst_DATA = $(abs_builddir)/grid_1_2d.h5 $(abs_builddir)/grid_2_2d.h5
 
 ############## Autotest follows #####################
 
@@ -51,13 +51,15 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
 
-$(abs_builddir)/grid_1_2d.h5:
+$(abs_builddir)/grid_1_2d.h5 $(abs_builddir)/grid_2_2d.h5:
 	@echo "# abs_top_srcdir: $(abs_top_srcdir)"
 	@echo "# top_srcdir: $(top_srcdir)"
 	@echo "# srcdir: $(srcdir)"
 	@echo "# abs_top_builddir: $(abs_top_builddir)"
 	@echo "# abs_builddir: $(abs_builddir)"
 	@echo "# builddir: $(builddir)"
-	@echo "# Coping grid_1_2d.h5 from: '$(top_srcdir)/modules/dmrpp_module/data/dmrpp/grid_1_2d.h5' to '$(abs_builddir)/grid_1_2d.h5'"
+	@echo "# Coping grid_1_2d.h5 from: '$(top_srcdir)/modules/dmrpp_module/data/dmrpp/grid_1_2d.h5' to '$(abs_builddir)/'"
+	@echo "# Duplicating grid_1_2d.h5 to grid_2_2d.h5"
 	cp $(top_srcdir)/modules/dmrpp_module/data/dmrpp/grid_1_2d.h5 $(abs_builddir)/grid_1_2d.h5
-	chmod -R ug+rw $(abs_builddir)/grid_1_2d.h5
+	cp $(abs_builddir)/grid_1_2d.h5 $(abs_builddir)/grid_2_2d.h5
+	chmod -R ug+rw $(abs_builddir)/grid_1_2d.h5 $(abs_builddir)/grid_2_2d.h5
