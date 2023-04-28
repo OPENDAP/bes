@@ -36,7 +36,7 @@ AT_GET_DMRPP_3_20_MAKE_MISSING([-M, make missing data file], [grid_1_2d.h5], [mi
 AT_GET_DMRPP_3_20_MAKE_MISSING([-M -p, make missing data file with missing data url], [grid_1_2d.h5], [missing_data_url_dmrpp.baseline], [missing_data.baseline], [-M -p http://some.where.over.the.rainbow.oz -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
 
 # -r Provide missing variables sidecar file, requires use_cf_conf "site.conf" file
-AT_GET_DMRPP_3_20_MAKE_MISSING([-M -r, make missing data file with reused missing data url], [grid_1_2d.h5], [md_reduce_url_1_dmrpp.baseline], [md_reduce.baseline.missing], [-M -r grid_1_2d.h5.missing -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out], [xfail])
+AT_GET_DMRPP_3_20_MAKE_MISSING([-M -r, make missing data file with reused missing data url], [grid_1_2d.h5], [md_reduce_url_1_dmrpp.baseline], [md_reduce.baseline.missing], [-M -r grid_1_2d.h5.missing -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
 AT_GET_DMRPP_3_20_MAKE_MISSING([-M -r, make missing data file with reused missing data url], [grid_2_2d.h5], [md_reduce_url_2_dmrpp.baseline], [md_reduce.baseline.missing], [-M -r grid_1_2d.h5.missing -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out], [xfail])
 
 # AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.reduce_href.baseline], [-M -r ${abs_builddir}/grid_1_2d.h5.missing], [${abs_builddir}/a.out])
