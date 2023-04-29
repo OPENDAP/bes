@@ -1160,6 +1160,7 @@ string error_message(const CURLcode response_code, const char *error_buffer) {
     return oss.str();
 }
 
+#if 0
 /**
  * @brief Used to pass memory into the original version of http_get()
  */
@@ -1168,7 +1169,9 @@ struct http_get_buffer {
     size_t capacity;
     size_t size;
 };
+#endif
 
+#if 0
 /**
  * @brief Callback passed to libcurl to handle reading some number of bytes.
  *
@@ -1191,6 +1194,7 @@ static size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) 
     hg_buf->size += nbytes;
     return nbytes;
 }
+#endif
 
 /**
  * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
@@ -1202,14 +1206,19 @@ static size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) 
  * @return JSON document parsed from the response document returned by target_url
  */
 rapidjson::Document http_get_as_json(const std::string &target_url) {
+#if 0
     char response_buf[1024 * 1024];
 
     curl::http_get(target_url, response_buf, sizeof(response_buf));
+#endif
+    vector<char> response_buf;
+    curl::http_get(target_url, response_buf);
     rapidjson::Document d;
-    d.Parse(response_buf);
+    d.Parse(response_buf.data());
     return d;
 }
 
+#if 0
 /**
  * Dereference the target URL and put the response in response_buf
  *
@@ -1266,6 +1275,7 @@ void http_get(const std::string &target_url, char *response_buf, size_t bufsz) {
         throw;
     }
 }
+#endif
 
 /**
  * @brief Callback passed to libcurl to handle reading some number of bytes.
@@ -1296,6 +1306,8 @@ static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * Dereference the target URL and put the response in response_buf
  *
  * @note The vector<char> should be empty when this is first called.
+ *
+ * @note Used only in http_get_as_json() in this module. jhrg 4/28/23
  *
  * @param target_url The URL to dereference.
  * @param buf The vector<char> into which to put the response. New data will be
