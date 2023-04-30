@@ -349,7 +349,7 @@ int HDF5MissLLArray::subset(
         if(index==s_rank-1)
         {
             size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
-            void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
+            auto tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
             poutput->push_back(*(static_cast<T*>(tempbuf)));
         }
     } // end of for
@@ -367,12 +367,12 @@ size_t HDF5MissLLArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     size_t sum = 0;
     size_t  start = 1;
 
-    for (size_t p = 0; p < pos.size (); p++) {
+    for (const auto &p:pos) {
         size_t m = 1;
 
         for (size_t j = start; j < dims.size (); j++)
             m *= dims[j];
-        sum += m * pos[p];
+        sum += m *p; 
         start++;
     }
     return sum;

@@ -132,8 +132,20 @@
         </Group>
         <Group name="GRIDS">
             <Group name="OMI_Total_Column_Amount_SO2">
-                <Dimension name="XDim" size="1440"/>
                 <Dimension name="YDim" size="720"/>
+                <Dimension name="XDim" size="1440"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
                 <Attribute name="GCTPProjectionCode" type="Int32">
                     <Value>0</Value>
                 </Attribute>
