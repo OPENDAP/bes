@@ -33,6 +33,7 @@ class DMRpp;
 namespace build_dmrpp_util {
 
 void add_chunk_information(const std::string &h5_file_name, dmrpp::DMRpp *dmrpp);
+void inject_version_and_configuration(dmrpp::DMRpp *dmrpp);
 
 extern bool verbose;
 }

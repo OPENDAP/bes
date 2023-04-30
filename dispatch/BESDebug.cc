@@ -32,14 +32,13 @@
 
 #include "config.h"
 
-#include <time.h>
-#include <unistd.h>
-
-#include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+#include <iomanip>
 
-#include <pthread.h>
+#include <ctime>
+#include <unistd.h>
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -47,10 +46,9 @@
 
 using namespace std;
 
-ostream *BESDebug::_debug_strm = NULL;
+ostream *BESDebug::_debug_strm = nullptr;
 bool BESDebug::_debug_strm_created = false;
-map<string, bool> BESDebug::_debug_map;
-
+BESDebug::DebugMap BESDebug::_debug_map;
 
 /** @brief Returns debug log line prefix containing date&time, pid, and thread id.
  *
@@ -58,28 +56,23 @@ map<string, bool> BESDebug::_debug_map;
  */
 string get_debug_log_line_prefix()
 {
-    ostringstream strm;
+    // Given C++11, this could be done with std::put_time() and std::localtime().
+    std::ostringstream oss;
+    
     // Time Field
-    const time_t sctime = time(NULL);
-    struct tm sttime;
-    localtime_r(&sctime, &sttime);
-    char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", &sttime);
-
-    char b[32]; // The linux man-page for asctime_r() says "at least 26 bytes".
-    asctime_r(&sttime,b);
-    strm << "[" << zone_name << " ";
-    for (size_t j = 0; b[j] != '\n' && j<32; j++)
-        strm << b[j];
-    strm << "]";
+    auto t = time(nullptr);
+    struct tm stm{};
+    localtime_r(&t, &stm);
+    // Mimic zone + asctime: GMT Thu Nov 24 18:22:48 1986
+    oss << std::put_time(&stm, "[%Z %c]");
 
     // PID field
-    pid_t thepid = getpid();
-    strm << "[pid:" << thepid <<"]";
+    oss << "[pid:" << getpid() <<"]";
 
     // Thread field
-    strm << "[thread:" << pthread_self() <<"]";
-    return strm.str();
+    oss << "[thread:" << pthread_self() <<"]";
+
+    return oss.str();
 }
 
 
@@ -151,6 +144,24 @@ void BESDebug::SetUp(const string &values)
     }
 }
 
+/** @brief set the debug context to the specified value
+ *
+ * Static function that sets the specified debug context (flagName)
+ * to the specified debug value (true or false). If the context is
+ * found then the value is set. Else the context is created and the
+ * value set.
+ *
+ * @param flagName debug context flag to set to the given value
+ * @param value set the debug context to this value
+ */
+void BESDebug::Set(const std::string &flagName, bool value)
+{
+    if (value && flagName == "all") {
+        std::for_each(_debug_map.begin(), _debug_map.end(), [](DebugMap::value_type &p) { p.second = true; });
+    }
+    _debug_map[flagName] = value;
+}
+
 /** @brief Writes help information for so that developers know what can
  * be set for debugging.
  *
@@ -165,16 +176,14 @@ void BESDebug::Help(ostream &strm)
         << "  context with dash (-) in front will be turned off" << endl << "  context of all will turn on debugging for all contexts" << endl << endl
         << "Possible context(s):" << endl;
 
-    if (_debug_map.size()) {
-        BESDebug::debug_citer i = _debug_map.begin();
-        BESDebug::debug_citer e = _debug_map.end();
-        for (; i != e; i++) {
-            strm << "  " << (*i).first << ": ";
-            if ((*i).second)
+    if (!_debug_map.empty()) {
+        std::for_each(_debug_map.begin(), _debug_map.end(), [&strm](const auto &pair) {
+            strm << "  " << pair.first << ": ";
+            if (pair.second)
                 strm << "on" << endl;
             else
                 strm << "off" << endl;
-        }
+        });
     }
     else {
         strm << "  none specified" << endl;
@@ -197,18 +206,17 @@ string BESDebug::GetOptionsString()
 {
     ostringstream oss;
 
-    if (_debug_map.size()) {
-        BESDebug::debug_citer i = _debug_map.begin();
-        BESDebug::debug_citer e = _debug_map.end();
-        for (; i != e; i++) {
-            if (!(*i).second) oss << "-";
-            oss << (*i).first << ",";
-        }
+    if (!_debug_map.empty()) {
+        std::for_each(_debug_map.begin(), _debug_map.end(), [&oss](const std::pair<std::string, bool> &p) {
+            if (!p.second) oss << "-";
+            oss << p.first << ",";
+        });
+
         string retval = oss.str();
         return retval.erase(retval.size() - 1);
     }
     else {
-        return "";
+        return {""};
     }
 }
 
