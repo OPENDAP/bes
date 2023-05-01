@@ -874,11 +874,12 @@ cout<<"dimpath final non-eos5 "<<td<<endl;
             map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
 
         // Here we need to add grid_mapping information if necessary.
-        if (is_eos5_dims && !use_dimscale 
-                         && (eos5_dim_info.dimpath_to_cvpath.empty() == false )
-                         && (ar->get_numdim() >1)) 
-            add_possible_var_cv_info(new_var,eos5_dim_info);
-            
+        if (is_eos5_dims && !use_dimscale) {  
+            if ((eos5_dim_info.dimpath_to_cvpath.empty() == false) && (ar->get_numdim() >1)) 
+                add_possible_var_cv_info(new_var,eos5_dim_info);
+            if (eos5_dim_info.gridname_to_info.empty() == false)  
+                make_attributes_to_cf(new_var,eos5_dim_info);
+        }
 #if 0
         // Test the attribute
         D4Attribute *test_attr = new D4Attribute("DAP4_test",attr_str_c);
@@ -3285,3 +3286,33 @@ void add_possible_var_cv_info(libdap::BaseType *var, const eos5_dim_info_t &eos5
 
 }
 
+void make_attributes_to_cf(BaseType *var, const eos5_dim_info_t &eos5_dim_info) {
+
+    bool check_attr = false;
+    for (const auto & ed_info:eos5_dim_info.gridname_to_info) { 
+        if (ed_info.second.projection == HE5_GCTP_GEO) {
+            check_attr = true;
+            break;
+        }
+    }
+
+    if (check_attr == true) {
+
+        D4Attributes *d4_attrs = var->attributes();
+        bool have_scale_factor = false;
+        bool have_add_offset = false;
+        for (auto ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+            if ((*ii)->name() == "ScaleFactor") { 
+                (*ii)->set_name("scale_factor");
+                have_scale_factor = true;
+            }
+            else  if ((*ii)->name() == "Offset") { 
+                (*ii)->set_name("add_offset");
+                have_add_offset = true;
+            }
+            if (have_scale_factor && have_add_offset)
+                break;
+        }
+    }
+}
+        

@@ -202,4 +202,5 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname);
 void add_ps_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
 void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
 void add_possible_var_cv_info(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
+void make_attributes_to_cf(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
 #endif
