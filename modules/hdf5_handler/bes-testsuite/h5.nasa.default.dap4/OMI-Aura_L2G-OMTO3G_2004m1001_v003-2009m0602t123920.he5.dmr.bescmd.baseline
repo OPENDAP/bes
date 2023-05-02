@@ -234,10 +234,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -267,10 +267,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Byte">
@@ -300,10 +300,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -333,10 +333,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -366,10 +366,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="UInt16">
@@ -399,10 +399,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Byte">
@@ -432,10 +432,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-Aura-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -466,10 +466,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -499,10 +499,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Int32">
@@ -532,10 +532,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-Aura-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -565,10 +565,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Byte">
@@ -597,10 +597,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Int32">
@@ -630,10 +630,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Byte">
@@ -663,10 +663,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -696,10 +696,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Int32">
@@ -729,10 +729,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -762,10 +762,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="UInt16">
@@ -795,10 +795,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -828,10 +828,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -861,10 +861,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -894,10 +894,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -928,10 +928,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -961,10 +961,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -994,10 +994,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Int32">
@@ -1027,10 +1027,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-Aura-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -1060,10 +1060,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Int16">
@@ -1093,10 +1093,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-Aura-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -1126,10 +1126,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -1159,10 +1159,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-Aura-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Int16">
@@ -1192,10 +1192,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -1225,10 +1225,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-Aura-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float64">
@@ -1258,10 +1258,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -1291,10 +1291,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
@@ -1322,10 +1322,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TOMS-OMI-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="ValidRange" type="Float32">
