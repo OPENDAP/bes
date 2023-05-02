@@ -55,6 +55,7 @@
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
 #include "CredentialsManager.h"
+#include "RequestServiceTimer.h"
 
 #include "awsv4.h"
 #include "url_impl.h"
@@ -217,6 +218,10 @@ static size_t writeToOpenFileDescriptor(char *data, size_t /* size */, size_t nm
     int wrote = write(*fd, data, nmemb);
     BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
 
+    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired("The function curl::writeToOpenFileDescriptor() "
+                                                              "was unable to complete the download process.",
+                                                                  __FILE__, __LINE__);
     return wrote;
 }
 
