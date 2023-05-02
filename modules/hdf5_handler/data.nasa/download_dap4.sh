@@ -30,6 +30,10 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GSFC/mabel_l2a_20110322T165030_005_1.h5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LaRC/AirMSPI_ER2_GRP_ELLIPSOID_20161006_181726Z_CA-NewberrySprings_SWPF_F01_V006.he5
 
+# LaRC
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LaRC/MOP03T-20221002-L3V5.9.1.he5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LaRC/MOP03TM-202209-L3V95.9.1.he5
+
 # NSIDC
 ## GLAS
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/GLAH13_633_2103_001_1317_0_01_0001.h5

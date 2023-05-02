@@ -1,0 +1,338 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex AMSR_2_L3_SeaIce12km_P00_20160831.he5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"AMSR_2_L3_SeaIce12km_P00_20160831.he5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: NpPolarGrid12km {
+      dimensions:
+      	XDim = 608 ;
+      	YDim = 896 ;
+      variables:
+      	ubyte eos5_cf_projection ;
+      		eos5_cf_projection:grid_mapping_name = "polar_stereographic" ;
+      		eos5_cf_projection:straight_vertical_longitude_from_pole = -45. ;
+      		eos5_cf_projection:standard_parallel = 70. ;
+      		eos5_cf_projection:false_easting = 0. ;
+      		eos5_cf_projection:false_northing = 0. ;
+      		eos5_cf_projection:latitude_of_projection_origin = 90. ;
+      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection " ;
+      		XDim:units = "meter" ;
+      		XDim:_CoordinateAxisType = "GeoX" ;
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection " ;
+      		YDim:units = "meter" ;
+      		YDim:_CoordinateAxisType = "GeoY" ;
+      	double Latitude(YDim, XDim) ;
+      		Latitude:units = "degrees_north" ;
+      	double Longitude(YDim, XDim) ;
+      		Longitude:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	int SI_12km_NH_18H_ASC(YDim, XDim) ;
+        		SI_12km_NH_18H_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_ASC" ;
+        		SI_12km_NH_18H_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_18H_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_18H_DAY(YDim, XDim) ;
+        		SI_12km_NH_18H_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_DAY" ;
+        		SI_12km_NH_18H_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_18H_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_18H_DSC(YDim, XDim) ;
+        		SI_12km_NH_18H_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_DSC" ;
+        		SI_12km_NH_18H_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_18H_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_18V_ASC(YDim, XDim) ;
+        		SI_12km_NH_18V_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_ASC" ;
+        		SI_12km_NH_18V_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_18V_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_18V_DAY(YDim, XDim) ;
+        		SI_12km_NH_18V_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_DAY" ;
+        		SI_12km_NH_18V_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_18V_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_18V_DSC(YDim, XDim) ;
+        		SI_12km_NH_18V_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_DSC" ;
+        		SI_12km_NH_18V_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_18V_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_23H_ASC(YDim, XDim) ;
+        		SI_12km_NH_23H_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_ASC" ;
+        		SI_12km_NH_23H_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_23H_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_23H_DAY(YDim, XDim) ;
+        		SI_12km_NH_23H_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_DAY" ;
+        		SI_12km_NH_23H_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_23H_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_23H_DSC(YDim, XDim) ;
+        		SI_12km_NH_23H_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_DSC" ;
+        		SI_12km_NH_23H_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_23H_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_23V_ASC(YDim, XDim) ;
+        		SI_12km_NH_23V_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_ASC" ;
+        		SI_12km_NH_23V_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_23V_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_23V_DAY(YDim, XDim) ;
+        		SI_12km_NH_23V_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_DAY" ;
+        		SI_12km_NH_23V_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_23V_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_23V_DSC(YDim, XDim) ;
+        		SI_12km_NH_23V_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_DSC" ;
+        		SI_12km_NH_23V_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_23V_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_36H_ASC(YDim, XDim) ;
+        		SI_12km_NH_36H_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_ASC" ;
+        		SI_12km_NH_36H_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_36H_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_36H_DAY(YDim, XDim) ;
+        		SI_12km_NH_36H_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_DAY" ;
+        		SI_12km_NH_36H_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_36H_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_36H_DSC(YDim, XDim) ;
+        		SI_12km_NH_36H_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_DSC" ;
+        		SI_12km_NH_36H_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_36H_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_36V_ASC(YDim, XDim) ;
+        		SI_12km_NH_36V_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_ASC" ;
+        		SI_12km_NH_36V_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_36V_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_36V_DAY(YDim, XDim) ;
+        		SI_12km_NH_36V_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_DAY" ;
+        		SI_12km_NH_36V_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_36V_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_36V_DSC(YDim, XDim) ;
+        		SI_12km_NH_36V_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_DSC" ;
+        		SI_12km_NH_36V_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_36V_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_89H_ASC(YDim, XDim) ;
+        		SI_12km_NH_89H_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_ASC" ;
+        		SI_12km_NH_89H_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_89H_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_89H_DAY(YDim, XDim) ;
+        		SI_12km_NH_89H_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_DAY" ;
+        		SI_12km_NH_89H_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_89H_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_89H_DSC(YDim, XDim) ;
+        		SI_12km_NH_89H_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_DSC" ;
+        		SI_12km_NH_89H_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_89H_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_89V_ASC(YDim, XDim) ;
+        		SI_12km_NH_89V_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_ASC" ;
+        		SI_12km_NH_89V_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_89V_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_89V_DAY(YDim, XDim) ;
+        		SI_12km_NH_89V_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_DAY" ;
+        		SI_12km_NH_89V_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_89V_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_89V_DSC(YDim, XDim) ;
+        		SI_12km_NH_89V_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_DSC" ;
+        		SI_12km_NH_89V_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_89V_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_ICECON_ASC(YDim, XDim) ;
+        		SI_12km_NH_ICECON_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_ASC" ;
+        		SI_12km_NH_ICECON_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_ICECON_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_ICECON_DAY(YDim, XDim) ;
+        		SI_12km_NH_ICECON_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_DAY" ;
+        		SI_12km_NH_ICECON_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_ICECON_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_ICECON_DSC(YDim, XDim) ;
+        		SI_12km_NH_ICECON_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_DSC" ;
+        		SI_12km_NH_ICECON_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_ICECON_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_ICEDIFF_ASC(YDim, XDim) ;
+        		SI_12km_NH_ICEDIFF_ASC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_ASC" ;
+        		SI_12km_NH_ICEDIFF_ASC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_ICEDIFF_ASC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_ICEDIFF_DAY(YDim, XDim) ;
+        		SI_12km_NH_ICEDIFF_DAY:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_DAY" ;
+        		SI_12km_NH_ICEDIFF_DAY:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_ICEDIFF_DAY:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_NH_ICEDIFF_DSC(YDim, XDim) ;
+        		SI_12km_NH_ICEDIFF_DSC:fullnamepath = "/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_DSC" ;
+        		SI_12km_NH_ICEDIFF_DSC:coordinates = "/HDFEOS/GRIDS/NpPolarGrid12km/Latitude /HDFEOS/GRIDS/NpPolarGrid12km/Longitude" ;
+        		SI_12km_NH_ICEDIFF_DSC:grid_mapping = "/HDFEOS/GRIDS/NpPolarGrid12km/eos5_cf_projection" ;
+        } // group Data_Fields
+      } // group NpPolarGrid12km
+
+    group: SpPolarGrid12km {
+      dimensions:
+      	XDim = 632 ;
+      	YDim = 664 ;
+      variables:
+      	ubyte eos5_cf_projection ;
+      		eos5_cf_projection:grid_mapping_name = "polar_stereographic" ;
+      		eos5_cf_projection:straight_vertical_longitude_from_pole = 0. ;
+      		eos5_cf_projection:standard_parallel = -70. ;
+      		eos5_cf_projection:false_easting = 0. ;
+      		eos5_cf_projection:false_northing = 0. ;
+      		eos5_cf_projection:latitude_of_projection_origin = -90. ;
+      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection " ;
+      		XDim:units = "meter" ;
+      		XDim:_CoordinateAxisType = "GeoX" ;
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection " ;
+      		YDim:units = "meter" ;
+      		YDim:_CoordinateAxisType = "GeoY" ;
+      	double Latitude(YDim, XDim) ;
+      		Latitude:units = "degrees_north" ;
+      	double Longitude(YDim, XDim) ;
+      		Longitude:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	int SI_12km_SH_18H_ASC(YDim, XDim) ;
+        		SI_12km_SH_18H_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_ASC" ;
+        		SI_12km_SH_18H_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_18H_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_18H_DAY(YDim, XDim) ;
+        		SI_12km_SH_18H_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_DAY" ;
+        		SI_12km_SH_18H_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_18H_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_18H_DSC(YDim, XDim) ;
+        		SI_12km_SH_18H_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_DSC" ;
+        		SI_12km_SH_18H_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_18H_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_18V_ASC(YDim, XDim) ;
+        		SI_12km_SH_18V_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_ASC" ;
+        		SI_12km_SH_18V_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_18V_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_18V_DAY(YDim, XDim) ;
+        		SI_12km_SH_18V_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_DAY" ;
+        		SI_12km_SH_18V_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_18V_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_18V_DSC(YDim, XDim) ;
+        		SI_12km_SH_18V_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_DSC" ;
+        		SI_12km_SH_18V_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_18V_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_23H_ASC(YDim, XDim) ;
+        		SI_12km_SH_23H_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_ASC" ;
+        		SI_12km_SH_23H_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_23H_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_23H_DAY(YDim, XDim) ;
+        		SI_12km_SH_23H_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_DAY" ;
+        		SI_12km_SH_23H_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_23H_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_23H_DSC(YDim, XDim) ;
+        		SI_12km_SH_23H_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_DSC" ;
+        		SI_12km_SH_23H_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_23H_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_23V_ASC(YDim, XDim) ;
+        		SI_12km_SH_23V_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_ASC" ;
+        		SI_12km_SH_23V_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_23V_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_23V_DAY(YDim, XDim) ;
+        		SI_12km_SH_23V_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_DAY" ;
+        		SI_12km_SH_23V_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_23V_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_23V_DSC(YDim, XDim) ;
+        		SI_12km_SH_23V_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_DSC" ;
+        		SI_12km_SH_23V_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_23V_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_36H_ASC(YDim, XDim) ;
+        		SI_12km_SH_36H_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_ASC" ;
+        		SI_12km_SH_36H_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_36H_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_36H_DAY(YDim, XDim) ;
+        		SI_12km_SH_36H_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_DAY" ;
+        		SI_12km_SH_36H_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_36H_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_36H_DSC(YDim, XDim) ;
+        		SI_12km_SH_36H_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_DSC" ;
+        		SI_12km_SH_36H_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_36H_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_36V_ASC(YDim, XDim) ;
+        		SI_12km_SH_36V_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_ASC" ;
+        		SI_12km_SH_36V_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_36V_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_36V_DAY(YDim, XDim) ;
+        		SI_12km_SH_36V_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_DAY" ;
+        		SI_12km_SH_36V_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_36V_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_36V_DSC(YDim, XDim) ;
+        		SI_12km_SH_36V_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_DSC" ;
+        		SI_12km_SH_36V_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_36V_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_89H_ASC(YDim, XDim) ;
+        		SI_12km_SH_89H_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_ASC" ;
+        		SI_12km_SH_89H_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_89H_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_89H_DAY(YDim, XDim) ;
+        		SI_12km_SH_89H_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_DAY" ;
+        		SI_12km_SH_89H_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_89H_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_89H_DSC(YDim, XDim) ;
+        		SI_12km_SH_89H_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_DSC" ;
+        		SI_12km_SH_89H_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_89H_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_89V_ASC(YDim, XDim) ;
+        		SI_12km_SH_89V_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_ASC" ;
+        		SI_12km_SH_89V_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_89V_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_89V_DAY(YDim, XDim) ;
+        		SI_12km_SH_89V_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_DAY" ;
+        		SI_12km_SH_89V_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_89V_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_89V_DSC(YDim, XDim) ;
+        		SI_12km_SH_89V_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_DSC" ;
+        		SI_12km_SH_89V_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_89V_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_ICECON_ASC(YDim, XDim) ;
+        		SI_12km_SH_ICECON_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_ASC" ;
+        		SI_12km_SH_ICECON_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_ICECON_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_ICECON_DAY(YDim, XDim) ;
+        		SI_12km_SH_ICECON_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_DAY" ;
+        		SI_12km_SH_ICECON_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_ICECON_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_ICECON_DSC(YDim, XDim) ;
+        		SI_12km_SH_ICECON_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_DSC" ;
+        		SI_12km_SH_ICECON_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_ICECON_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_ICEDIFF_ASC(YDim, XDim) ;
+        		SI_12km_SH_ICEDIFF_ASC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_ASC" ;
+        		SI_12km_SH_ICEDIFF_ASC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_ICEDIFF_ASC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_ICEDIFF_DAY(YDim, XDim) ;
+        		SI_12km_SH_ICEDIFF_DAY:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_DAY" ;
+        		SI_12km_SH_ICEDIFF_DAY:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_ICEDIFF_DAY:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        	int SI_12km_SH_ICEDIFF_DSC(YDim, XDim) ;
+        		SI_12km_SH_ICEDIFF_DSC:fullnamepath = "/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_DSC" ;
+        		SI_12km_SH_ICEDIFF_DSC:coordinates = "/HDFEOS/GRIDS/SpPolarGrid12km/Latitude /HDFEOS/GRIDS/SpPolarGrid12km/Longitude" ;
+        		SI_12km_SH_ICEDIFF_DSC:grid_mapping = "/HDFEOS/GRIDS/SpPolarGrid12km/eos5_cf_projection" ;
+        } // group Data_Fields
+      } // group SpPolarGrid12km
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	CoreMetadata_0_len1 = 6399 ;
+  	StructMetadata_0_len2 = 32002 ;
+  variables:
+  	char CoreMetadata_0(CoreMetadata_0_len1) ;
+  		CoreMetadata_0:fullnamepath = "/HDFEOS INFORMATION/CoreMetadata.0" ;
+  	char StructMetadata_0(StructMetadata_0_len2) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.15" ;
+  } // group HDFEOS_INFORMATION
+}

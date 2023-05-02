@@ -1,0 +1,133 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex OMI-Aura_L3-OMAERUVd_2009m0109_v003-2011m1203t141123.he5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"OMI-Aura_L3-OMAERUVd_2009m0109_v003-2011m1203t141123.he5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+
+      // group attributes:
+      		:OrbitNumber = 23849, 23850, 23851, 23852, 23853, 23854, 23855, 23856, 23857, 23858, 23859, 23860, 23861, 23862, 23863, 23864, 23865, 23866, 23867, 23868, 23869, 23870, 23871, 23872, 23873, 23874, 23875, 23876, 23877, 23878, 23879, 23880, 23881, 23882, 23883, 23884, 23885, 23886, 23887, 23888, 23889, 23890, 23891, 23892, 23893 ;
+      		:OrbitPeriod = 5933., 5934., 5933., 5933., 5934., 5933., 5933., 5934., 5933., 5933., 5934., 5933., 5933., 5934., 5933., 5934., 5933., 5933., 5933., 5934., 5933., 5934., 5933., 5933., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5933., 5933., 5934., 5933., 5934., 5933., 5933., 5934., 5933., 5933., 5934., 5933., 5934., 5933. ;
+      		:InstrumentName = "OMI" ;
+      		:ProcessLevel = "3" ;
+      		:GranuleMonth = 1 ;
+      		:GranuleDay = 9 ;
+      		:GranuleYear = 2009 ;
+      		:GranuleDayOfYear = 9 ;
+      		:TAI93At0zOfGranule = 505612807. ;
+      		:PGEVersion = "\"1.2.0.1\"" ;
+      		:StartUTC = "removed date-time" ;
+      		:EndUTC = "removed date-time" ;
+      		:Period = "Daily" ;
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: Aerosol_NearUV_Grid {
+      dimensions:
+      	YDim = 180 ;
+      	XDim = 360 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+
+      // group attributes:
+      		:GCTPProjectionCode = 0 ;
+      		:Projection = "Geographic" ;
+      		:GridOrigin = "Center" ;
+      		:GridSpacing = "(1.0,1.0)" ;
+      		:GridSpacingUnit = "deg" ;
+      		:GridSpan = "(-180,180,-90,90)" ;
+      		:GridSpanUnit = "deg" ;
+      		:NumberOfLongitudesInGrid = 360 ;
+      		:NumberOfLatitudesInGrid = 180 ;
+
+      group: Data_Fields {
+        variables:
+        	float FinalAerosolAbsOpticalDepth388(YDim, XDim) ;
+        		FinalAerosolAbsOpticalDepth388:_FillValue = -1.267651e+30f ;
+        		FinalAerosolAbsOpticalDepth388:Units = "NoUnits" ;
+        		FinalAerosolAbsOpticalDepth388:Title = "Final Aerosol Absorption Optical Depth at 388 nm" ;
+        		FinalAerosolAbsOpticalDepth388:UniqueFieldDefinition = "OMI-Specific" ;
+        		FinalAerosolAbsOpticalDepth388:scale_factor = 1. ;
+        		FinalAerosolAbsOpticalDepth388:add_offset = 0. ;
+        		FinalAerosolAbsOpticalDepth388:MissingValue = -1.267651e+30f ;
+        		FinalAerosolAbsOpticalDepth388:fullnamepath = "/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolAbsOpticalDepth388" ;
+        	float FinalAerosolAbsOpticalDepth500(YDim, XDim) ;
+        		FinalAerosolAbsOpticalDepth500:_FillValue = -1.267651e+30f ;
+        		FinalAerosolAbsOpticalDepth500:Units = "deg" ;
+        		FinalAerosolAbsOpticalDepth500:Title = "Final Aerosol Absorption Optical Depth at 500 nm" ;
+        		FinalAerosolAbsOpticalDepth500:UniqueFieldDefinition = "Aura-Shared" ;
+        		FinalAerosolAbsOpticalDepth500:scale_factor = 1. ;
+        		FinalAerosolAbsOpticalDepth500:add_offset = 0. ;
+        		FinalAerosolAbsOpticalDepth500:MissingValue = -1.267651e+30f ;
+        		FinalAerosolAbsOpticalDepth500:fullnamepath = "/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolAbsOpticalDepth500" ;
+        	float FinalAerosolExtOpticalDepth388(YDim, XDim) ;
+        		FinalAerosolExtOpticalDepth388:_FillValue = -1.267651e+30f ;
+        		FinalAerosolExtOpticalDepth388:Units = "NoUnits" ;
+        		FinalAerosolExtOpticalDepth388:Title = "Final Aerosol Extinction Optical Depth at 388 nm" ;
+        		FinalAerosolExtOpticalDepth388:UniqueFieldDefinition = "OMI-Specific" ;
+        		FinalAerosolExtOpticalDepth388:scale_factor = 1. ;
+        		FinalAerosolExtOpticalDepth388:add_offset = 0. ;
+        		FinalAerosolExtOpticalDepth388:MissingValue = -1.267651e+30f ;
+        		FinalAerosolExtOpticalDepth388:fullnamepath = "/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolExtOpticalDepth388" ;
+        	float FinalAerosolExtOpticalDepth500(YDim, XDim) ;
+        		FinalAerosolExtOpticalDepth500:_FillValue = -1.267651e+30f ;
+        		FinalAerosolExtOpticalDepth500:Units = "NoUnits" ;
+        		FinalAerosolExtOpticalDepth500:Title = "Final Aerosol Extinction Optical Depth at 500 nm" ;
+        		FinalAerosolExtOpticalDepth500:UniqueFieldDefinition = "OMI-Specific" ;
+        		FinalAerosolExtOpticalDepth500:scale_factor = 1. ;
+        		FinalAerosolExtOpticalDepth500:add_offset = 0. ;
+        		FinalAerosolExtOpticalDepth500:MissingValue = -1.267651e+30f ;
+        		FinalAerosolExtOpticalDepth500:fullnamepath = "/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolExtOpticalDepth500" ;
+        	float FinalAerosolSingleScattAlb388(YDim, XDim) ;
+        		FinalAerosolSingleScattAlb388:_FillValue = -1.267651e+30f ;
+        		FinalAerosolSingleScattAlb388:Units = "NoUnits" ;
+        		FinalAerosolSingleScattAlb388:Title = "Final Aerosol Single Scattering Albedo at 388 nm" ;
+        		FinalAerosolSingleScattAlb388:UniqueFieldDefinition = "OMI-Specific" ;
+        		FinalAerosolSingleScattAlb388:scale_factor = 1. ;
+        		FinalAerosolSingleScattAlb388:add_offset = 0. ;
+        		FinalAerosolSingleScattAlb388:MissingValue = -1.267651e+30f ;
+        		FinalAerosolSingleScattAlb388:fullnamepath = "/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolSingleScattAlb388" ;
+        	float FinalAerosolSingleScattAlb500(YDim, XDim) ;
+        		FinalAerosolSingleScattAlb500:_FillValue = -1.267651e+30f ;
+        		FinalAerosolSingleScattAlb500:Units = "NoUnits" ;
+        		FinalAerosolSingleScattAlb500:Title = "Final Aerosol Single Scattering Albedo at 500 nm" ;
+        		FinalAerosolSingleScattAlb500:UniqueFieldDefinition = "OMI-Specific" ;
+        		FinalAerosolSingleScattAlb500:scale_factor = 1. ;
+        		FinalAerosolSingleScattAlb500:add_offset = 0. ;
+        		FinalAerosolSingleScattAlb500:MissingValue = -1.267651e+30f ;
+        		FinalAerosolSingleScattAlb500:fullnamepath = "/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolSingleScattAlb500" ;
+        	float UVAerosolIndex(YDim, XDim) ;
+        		UVAerosolIndex:_FillValue = -1.267651e+30f ;
+        		UVAerosolIndex:Units = "NoUnits" ;
+        		UVAerosolIndex:Title = "UV Aerosol Index" ;
+        		UVAerosolIndex:UniqueFieldDefinition = "OMI-Specific" ;
+        		UVAerosolIndex:scale_factor = 1. ;
+        		UVAerosolIndex:add_offset = 0. ;
+        		UVAerosolIndex:MissingValue = -1.267651e+30f ;
+        		UVAerosolIndex:fullnamepath = "/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/UVAerosolIndex" ;
+        } // group Data_Fields
+      } // group Aerosol_NearUV_Grid
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.11" ;
+  } // group HDFEOS_INFORMATION
+}
