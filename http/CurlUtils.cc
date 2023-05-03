@@ -55,6 +55,7 @@
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
 #include "CredentialsManager.h"
+#include "RequestServiceTimer.h"
 
 #include "awsv4.h"
 #include "url_impl.h"
@@ -117,7 +118,7 @@ const vector<string>http_server_errors = {
  * @param status The HTTP status to associate with an error message
  * @return The error message associated with status.
  */
-static string http_status_to_string(int status) {
+static string http_status_to_string(long status) {
     if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)
         return {http_client_errors[status - CLIENT_ERR_MIN]};
     else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
@@ -217,6 +218,10 @@ static size_t writeToOpenFileDescriptor(char *data, size_t /* size */, size_t nm
     int wrote = write(*fd, data, nmemb);
     BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
 
+    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired("The function curl::writeToOpenFileDescriptor() "
+                                                              "was unable to complete the download process.",
+                                                                  __FILE__, __LINE__);
     return wrote;
 }
 
@@ -682,6 +687,34 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
     return effective_url;
 }
 
+// https://<<host>>>/<<path>>?A-userid=jhrg&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=...;
+// X-Amz-Date=20230417T193403Z&amp;X-Amz-Expires=3467&amp;X-Amz-Security-Token=...
+/**
+ * @brief Remove AWS tokens from the URL
+ * This function will look for the first ampersand and remove everything after it. Then
+ * it will look any thing with an X-Amz- prefix if that is found it will remove the whole
+ * query string. This code should only be called if an error is being reported, so high
+ * performance is not required.
+ * @note Public only to enable testing.
+ * @param eff_url
+ * @return The URL with the tokens removed
+ */
+string filter_effective_url(const string &eff_url) {
+    // It seems unlikely that the X-Amz prefix will be in the first part of the query string
+    // and the first part will likely be useful for the error message, so looking for the first
+    // '&' is a good start.
+    auto pos = eff_url.find('&');
+    string filtered_url = eff_url.substr(0, pos);
+    // Check to make sure that the X-Amz prefix is not in the first part of the query string
+    if (filtered_url.find("X-Amz-") == string::npos) {
+        return filtered_url;
+    }
+    else {
+        pos = filtered_url.find('?');
+        return filtered_url.substr(0, pos);
+    }
+}
+
 /**
  * Checks to see if the entire url matches any of the "no retry" regular expressions held in the TheBESKeys
  * under the HTTP_NO_RETRY_URL_REGEX_KEY which atm, is set to "Http.No.Retry.BESRegex"
@@ -716,114 +749,105 @@ bool is_retryable(const string &target_url) {
             }
         }
     }
+
     BESDEBUG(MODULE, prolog << "END retryable: " << (retryable ? "true" : "false") << endl);
     return retryable;
 }
 
-
 /**
- * @brief Evaluates the HTTP semantics of a the result of issuing a cURL GET request.
+ * This function evaluates the CURLcode value returned by curl_easy_perform.
  *
- * @note used only locally by super_easy_perform. jhrg 3/8/23
+ * This function assumes that three types of cURL error may be retried:
+ *  - CURLE_SSL_CONNECT_ERROR
+ *  - CURLE_SSL_CACERT_BADFILE
+ *  - CURLE_GOT_NOTHING
+ *  And for these values of curl_code the function returns false.
  *
- * This code requires that:
- * - curl_easy_perform() has been called on the handle ceh.
- * - The returned CURLcode value was CURLE_OK.
- * This code operates under the assumption that the world is not perfect and that things
- * fail, sometimes for no good reason, and trying the thing a again may be worth while.
+ *  The function returns success iff curl_code == CURLE_OK.
  *
- * With that in mind, if:
+ *  If the curl_code is another value a BESInternalError is thrown.
  *
- *    CURLINFO_RESPONSE_CODE returns CURLE_GOT_NOTHING
+ * @param ceh The cURL easy handle used in the request.
+ * @param eff_req_url The requested URL - This should be the 'effective URL'.
+ * @param curl_code The CURLcode value to evaluate.
+ * @param error_buffer The CURLOPT_ERRORBUFFER used in the request.
+ * @param attempt The number of attempts on the url that this request represents.
  *
- * or if the HTTP response code was one of:
- *
- *   case 422: // Unprocessable Entity
- *   case 500: // Internal server error
- *   case 502: // Bad Gateway
- *   case 503: // Service Unavailable
- *   case 504: // Gateway Timeout
- *
- * This function will return false, indicating that there was a problem, but a retry
- * might be reasonable.
- *
- * If another cURL error or different HTTP response error code is encountered a
- * BESInternalError is thrown.
- *
- * This function returns true if the CURLINFO_RESPONSE_CODE response code is 200 (OK) or
- * 206 (Partial Content)
- *
- * @param ceh The cURL easy_handle to evaluate.
- * @return true if at all worked out, false if it didn't and a retry is reasonable.
- * @throws BESInternalError When something really bad happens.
-*/
-static bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &requested_url) {
-    BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
-    CURLcode curl_code;
-    string last_accessed_url = get_effective_url(ceh, requested_url);
-    BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
-
-    long http_code = 0;
-
-    curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
-    if (curl_code == CURLE_GOT_NOTHING) {
+ * @return True if the curl_easy_perform was successful, false if not but the request may be retried.
+ * @throws BESInternalError When the curl_code is an error that should not be retried.
+ */
+static bool eval_curl_easy_perform_code(
+        CURL *ceh,
+        const string &eff_req_url,
+        CURLcode curl_code,
+        const char *error_buffer,
+        const unsigned int attempt
+) {
+    if (curl_code == CURLE_SSL_CONNECT_ERROR) {
+        stringstream msg;
+        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: ";
+        msg << error_message(curl_code, error_buffer) << ". ";
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
+        BESDEBUG(MODULE, msg.str());
+        ERROR_LOG(msg.str());
+        return false;
+    }
+    else if (curl_code == CURLE_SSL_CACERT_BADFILE) {
+        stringstream msg;
+        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. Message: ";
+        msg << error_message(curl_code, error_buffer) << ". ";
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
+        BESDEBUG(MODULE, msg.str());
+        ERROR_LOG(msg.str());
+        return false;
+    }
+    else if (curl_code == CURLE_GOT_NOTHING) {
         // First we check to see if the response was empty. This is a cURL error, not an HTTP error
         // so we have to handle it like this. And we do that because this is one of the failure modes
         // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
         stringstream msg;
-        msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: '";
-        msg << error_message(curl_code, error_buffer) << "' ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
-        msg << "A retry may be possible for: " << requested_url << ")." << endl;
+        msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: ";
+        msg << error_message(curl_code, error_buffer) << ". ";
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
     }
     else if (curl_code != CURLE_OK) {
-        // Not an error we are trapping so it's fail time.
-        throw BESInternalError(
-                string("Error acquiring HTTP response code: ").append(curl::error_message(curl_code, error_buffer)),
-                __FILE__, __LINE__);
+        stringstream msg;
+        msg << "ERROR - Problem with data transfer. Message: " << error_message(curl_code, error_buffer);
+        msg << " CURLINFO_EFFECTIVE_URL: " << filter_effective_url(eff_req_url);
+        BESDEBUG(MODULE, prolog << msg.str() << endl);
+        ERROR_LOG(msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
-    if (BESDebug::IsSet(MODULE)) {
-        long redirects;
-        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_COUNT, &redirects);
-        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
+    return true;
+}
 
-        char *redirect_url = NULL;
-        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &redirect_url);
-        if (redirect_url)
-            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
-    }
-
+/**
+ * Helper for the eval_http_get_response() function that evaluates the HTTP status code. Only call this
+ * with HTTP status codes that are >= 400. This returns if the request can be retried. If it cannot
+ * be retried then a BESInternalError is thrown (and this never returns).
+ *
+ * @note: Only call this when there was a problem with the HTTP request.
+ *
+ * @param http_code
+ * @param requested_url
+ * @param last_accessed_url
+ */
+static void process_http_code_helper(long http_code, const string &requested_url, const string &last_accessed_url) {
     stringstream msg;
     if (http_code >= 400) {
         msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
+        msg << "CURLINFO_EFFECTIVE_URL: " << filter_effective_url(last_accessed_url) << " ";
         BESDEBUG(MODULE, prolog << msg.str() << endl);
     }
+
     msg << "The response had an HTTP status of " << http_code;
-    msg << " which means '" << http_status_to_string(http_code) << "'";
+    msg << " which means " << http_status_to_string(http_code) << "";
 
-    // Newer Apache servers return 206 for range requests. jhrg 8/8/18
     switch (http_code) {
-        case 0: {
-            if (requested_url.find(FILE_PROTOCOL) != 0) {
-                ERROR_LOG(msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-            return true;
-        }
-        case 200: // OK
-        case 206: // Partial content - this is to be expected since we use range gets
-            // cases 201-205 are things we should probably reject, unless we add more
-            // comprehensive HTTP/S processing here. jhrg 8/8/18
-            return true;
-
-            //case 301: // Moved Permanently - but that's ok for now?
-            //    return true;
-
         case 400: // Bad Request
             ERROR_LOG(msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
@@ -847,94 +871,104 @@ static bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &
         case 502: // Bad Gateway
         case 503: // Service Unavailable
         case 504: // Gateway Timeout
-        {
             if (!is_retryable(last_accessed_url)) {
-                msg << " The semantics of this particular last accessed URL indicate that it should not be retried.";
+                msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
                 ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
-            return false;
-        }
+            else {
+                msg << " The HTTP response code of this last accessed URL indicate that it should be retried.";
+                BESDEBUG(MODULE, prolog << msg.str() << endl);
+            }
+            break;
 
-        default: {
+        default:
             ERROR_LOG(msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
     }
 }
 
 /**
- * This function evaluates the CURLcode value returned by curl_easy_perform.
+ * @brief Evaluates the HTTP semantics of a the result of issuing a cURL GET request.
  *
- * This function assumes that two types of cURL error may be retried:
- *  - CURLE_SSL_CONNECT_ERROR
- *  - CURLE_SSL_CACERT_BADFILE
- *  And for these values of curl_code the fundtion returns false.
+ * @note used only locally by super_easy_perform. jhrg 3/8/23
+ * @note Do not call this for file:// URLs. jhrg 4/20/23
  *
- *  The function returns success iff curl_code == CURLE_OK.
+ * This code requires that:
+ * - curl_easy_perform() has been called on the handle ceh.
+ * - The returned CURLcode value was CURLE_OK.
+ * This code operates under the assumption that the world is not perfect and that things
+ * fail, sometimes for no good reason, and trying the thing a again may be worth while.
  *
- *  If the curl_code is another value a BESInternalError is thrown.
+ * With that in mind, if:
  *
- * @param curl The cURL easy handle used in the request.
- * @param requested_url The requested URL.
- * @param curl_code The CURLcode value to evaluate.
- * @param error_buffer The CURLOPT_ERRORBUFFER used in the request.
- * @param attempt The number of attempts on the url that this request represents.
- * @return True if the curl_easy_perform was successful, false if not but the request may be retried.
- * @throws BESInternalError When the curl_code is an error that should not be retried.
- */
-static bool eval_curl_easy_perform_code(
-        CURL *ceh,
-        const string requested_url,
-        CURLcode curl_code,
-        char *error_buffer,
-        const unsigned int attempt
-) {
-    bool success = true;
-    string last_accessed_url = get_effective_url(ceh, requested_url);
-    if (curl_code == CURLE_SSL_CONNECT_ERROR) {
-        stringstream msg;
-        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: '";
-        msg << error_message(curl_code, error_buffer) << "' ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
-        msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
-        BESDEBUG(MODULE, msg.str());
-        ERROR_LOG(msg.str());
-        success = false;
+ *    CURLINFO_RESPONSE_CODE returns CURLE_GOT_NOTHING
+ *
+ * or if the HTTP response code was one of:
+ *
+ *   case 422:  Unprocessable Entity
+ *   case 500:  Internal server error
+ *   case 502:  Bad Gateway
+ *   case 503:  Service Unavailable
+ *   case 504:  Gateway Timeout
+ *
+ * This function will return false, indicating that there was a problem, but a retry
+ * might be reasonable.
+ *
+ * If another cURL error or different HTTP response error code is encountered a
+ * BESInternalError is thrown.
+ *
+ * This function returns true if the CURLINFO_RESPONSE_CODE response code is 200 (OK) or
+ * 206 (Partial Content)
+ *
+ * @param ceh The cURL easy_handle to evaluate.
+ * @return true if at all worked out, false if it didn't and a retry is reasonable.
+ * @throws BESInternalError When something really bad happens.
+*/
+static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
+    BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
+
+    long http_code = 0;
+    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
+    if (curl_code != CURLE_OK)
+        throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
+
+    // Special case for file:// URLs. An HTTP Code is zero means success in that case. jhrg 4/20/23
+    if (requested_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
+        return true;
+
+    if (BESISDEBUG(MODULE)) {   // BESISDEBUG is a macro that expands to false when NDEBUG is defined. jhrg 4/19/23
+        long redirects;
+        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_COUNT, &redirects);
+        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
+
+        char *redirect_url = nullptr;
+        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &redirect_url);
+        if (redirect_url)
+            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
     }
-    else if (curl_code == CURLE_SSL_CACERT_BADFILE) {
-        stringstream msg;
-        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. Message: '";
-        msg << error_message(curl_code, error_buffer) << "' ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
-        msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
-        BESDEBUG(MODULE, msg.str());
-        ERROR_LOG(msg.str());
-        success = false;
+
+    // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+    switch (http_code) {
+        case 0:
+        case 200: // OK
+        case 206: // Partial content - this is to be expected since we use range gets
+            // cases 201-205 are things we should probably reject, unless we add more
+            // comprehensive HTTP/S processing here. jhrg 8/8/18
+            return true;
+
+        default:
+            string last_accessed_url = get_effective_url(ceh, requested_url);
+            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): "
+                                    << filter_effective_url(last_accessed_url) << endl);
+
+            // process_http_code_helper() _only_ returns if the request can be retried, otherwise
+            // it throws an exception. Pass the unfiltered last_accessed_url because the
+            // query string params might be needed to determine if the URL should be retried.
+            // jhrg 4/20/23
+            process_http_code_helper(http_code, requested_url, last_accessed_url);
+            return false;   // if we get here, retry the request
     }
-    else if (curl_code == CURLE_GOT_NOTHING) {
-        // First we check to see if the response was empty. This is a cURL error, not an HTTP error
-        // so we have to handle it like this. And we do that because this is one of the failure modes
-        // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
-        stringstream msg;
-        msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: ";
-        msg << error_message(curl_code, error_buffer) << "' ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
-        msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
-        BESDEBUG(MODULE, msg.str());
-        ERROR_LOG(msg.str());
-        return false;
-    }
-    else if (CURLE_OK != curl_code) {
-        stringstream msg;
-        msg << "ERROR - Problem with data transfer. Message: " << error_message(curl_code, error_buffer);
-        string effective_url = get_effective_url(ceh, requested_url);
-        msg << " CURLINFO_EFFECTIVE_URL: " << effective_url;
-        BESDEBUG(MODULE, prolog << msg.str() << endl);
-        ERROR_LOG(msg.str() << endl);
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
-    return success;
 }
 
 // Used here only. jhrg 3/8/23
@@ -944,10 +978,9 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     bool success;
     CURLcode curl_code;
     char curlErrorBuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
-    string target_url;
 
     string empty_str;
-    target_url = get_effective_url(c_handle, empty_str); // This is a trick to get the URL from the cURL handle.
+    string target_url = get_effective_url(c_handle, empty_str); // This is a trick to get the URL from the cURL handle.
     // We check the value of target_url to see if the URL was correctly set in the cURL handle.
     if (target_url.empty())
         throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
@@ -957,13 +990,13 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     do {
         curlErrorBuf[0] = 0; // Initialize to empty string
         ++attempts;
-        BESDEBUG(MODULE, prolog << "Requesting URL: " << target_url << " attempt: " << attempts << endl);
+        BESDEBUG(MODULE, prolog << "Requesting URL: " << filter_effective_url(target_url) << " attempt: " << attempts << endl);
 
         curl_code = curl_easy_perform(c_handle);
         success = eval_curl_easy_perform_code(c_handle, target_url, curl_code, curlErrorBuf, attempts);
         if (success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
-            success = eval_http_get_response(c_handle, curlErrorBuf, target_url);
+            success = eval_http_get_response(c_handle, target_url);
         }
         // If the curl_easy_perform failed, or if the http request failed then
         // we keep trying until we have exceeded the retry_limit.
@@ -971,14 +1004,14 @@ static void super_easy_perform(CURL *c_handle, int fd) {
             if (attempts == retry_limit) {
                 stringstream msg;
                 msg << prolog << "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL "
-                    << target_url;
+                    << filter_effective_url(target_url);
                 msg << " The retry limit has been exceeded. Giving up!";
                 ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             else {
-                ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << target_url <<
-                                 " attempt: " << attempts << ")." << endl);
+                ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
+                        << filter_effective_url(target_url) << " attempt: " << attempts << ")." << endl);
                 usleep(retry_time);
                 retry_time *= 2;
 
@@ -1100,6 +1133,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
             curl_slist_free_all(req_headers);
         if (ceh)
             curl_easy_cleanup(ceh);
+
         BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
     }
     catch (...) {
@@ -1109,25 +1143,25 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
             curl_easy_cleanup(ceh);
         throw;
     }
+
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
 /**
- * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
+ * Returns a cURL error message string based on the contents of the error_buf or, if the error_buf is empty, the
  * CURLcode code.
  * @note Used here and in dmrpp_module in one place. jhrg 3/8/23
  * @param response_code
  * @param error_buf
  * @return
  */
-string error_message(const CURLcode response_code, char *error_buffer) {
+string error_message(const CURLcode response_code, const char *error_buffer) {
     std::ostringstream oss;
     size_t len = strlen(error_buffer);
     if (len) {
-        oss << "cURL_error_buffer: '" << error_buffer;
+        oss << "cURL_error_buffer: " << error_buffer << ", ";
     }
-    oss << "' cURL_message: '" << curl_easy_strerror(response_code);
-    oss << "' (code: " << (int) response_code << ")";
+    oss << "cURL_message: " << curl_easy_strerror(response_code) << " (code: " << (int) response_code << ")";
     return oss.str();
 }
 
@@ -1439,8 +1473,8 @@ string hyrax_user_agent() {
  * @param file The value of __FILE__ of the calling function.
  * @param line The value of __LINE__ of the calling function.
  */
-void eval_curl_easy_setopt_result(CURLcode curl_code, const string &msg_base, const string &opt_name, char *ebuf,
-                                  const string &file, unsigned int line) {
+void eval_curl_easy_setopt_result(CURLcode curl_code, const string &msg_base, const string &opt_name,
+                                  const char *ebuf, const string &file, unsigned int line) {
     if (curl_code != CURLE_OK) {
         stringstream msg;
         msg << msg_base << "ERROR - cURL failed to set " << opt_name << " Message: "
@@ -1627,8 +1661,8 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
 
         INFO_LOG(prolog << "Source URL: '" << starting_point_url->str() << "("
                         << (starting_point_url->is_trusted() ? "" : "NOT ") << "trusted)" <<
-                        "' CURLINFO_EFFECTIVE_URL: '" << eurl->str() << "'" << "(" << (eurl->is_trusted() ? "" : "NOT ")
-                        << "trusted)" << endl);
+                        "' CURLINFO_EFFECTIVE_URL: '" << filter_effective_url(eurl->str()) << "'" << "("
+                        << (eurl->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
 
         if (request_headers)
             curl_slist_free_all(request_headers);

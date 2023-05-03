@@ -134,8 +134,20 @@
         </Group>
         <Group name="GRIDS">
             <Group name="Aerosol_NearUV_Grid">
-                <Dimension name="XDim" size="360"/>
                 <Dimension name="YDim" size="180"/>
+                <Dimension name="XDim" size="360"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
                 <Attribute name="GCTPProjectionCode" type="Int32">
                     <Value>0</Value>
                 </Attribute>
@@ -179,10 +191,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="MissingValue" type="Float32">
@@ -207,10 +219,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="MissingValue" type="Float32">
@@ -235,10 +247,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="MissingValue" type="Float32">
@@ -263,10 +275,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="MissingValue" type="Float32">
@@ -291,10 +303,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="MissingValue" type="Float32">
@@ -319,10 +331,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="MissingValue" type="Float32">
@@ -347,10 +359,10 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
-                        <Attribute name="ScaleFactor" type="Float64">
+                        <Attribute name="scale_factor" type="Float64">
                             <Value>1.</Value>
                         </Attribute>
-                        <Attribute name="Offset" type="Float64">
+                        <Attribute name="add_offset" type="Float64">
                             <Value>0.</Value>
                         </Attribute>
                         <Attribute name="MissingValue" type="Float32">

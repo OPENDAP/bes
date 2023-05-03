@@ -1,3 +1,5 @@
+#ifndef _HE5GridPara_H
+#define _HE5GridPara_H
     /// This file defines a few enum types used by HDF-EOS5 products
     // PixelRegistration
     enum EOS5GridPRType{
@@ -49,3 +51,4 @@
         HE5_GCTP_MISSING
     };
 
+#endif

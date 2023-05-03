@@ -2,12 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-# FIXME Remove this hack. Set these with configure. jhrg 11/25/19
-# jhrg 4/19/23 OPENSSL_LIBS=-lcrypto
-OPENSSL_INC=-I/usr/local/opt/openssl/include
-# jhrg 4/19/23 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
-
-AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 

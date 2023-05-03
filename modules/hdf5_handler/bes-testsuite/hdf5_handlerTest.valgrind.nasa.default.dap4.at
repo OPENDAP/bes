@@ -161,6 +161,7 @@ AT_BESCMD_RESPONSE_TEST([S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5.dmr.besc
 AT_BESCMD_RESPONSE_TEST([good_imerge.h5.dmr.bescmd])
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST([good_imerge.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([MOP03T-20131129-L3V4.2.1.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MOP03T-20221002-L3V5.9.1.he5.dmr.bescmd])
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST([MOP03T-20131129-L3V4.2.1.h5.data.bescmd])
 # This is like 1-group 2-D lat/lon netCDF-4-like HDF5 file
 AT_BESCMD_RESPONSE_TEST([TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5.dmr.bescmd])
@@ -181,6 +182,12 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([S-MODE_PFC_OC2108A_adcp_os75nb.h5.dap4
 
 #HYRAX-973 map variables in front of the non-map variables
 AT_BESCMD_RESPONSE_TEST([SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5.dmr.bescmd])
+
+#HYRAX-961 HDF-EOS5 Grid PS,LAMAZ and sinusoidal projections
+AT_BESCMD_RESPONSE_TEST([eos5ps.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5lamaz.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5_sin_one_grid.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([eos5_sin_multi_grids.h5.dmr.bescmd])
 
 #Big array size tests
 AT_BESCMD_RESPONSE_TEST([dset_big.dmr.bescmd])

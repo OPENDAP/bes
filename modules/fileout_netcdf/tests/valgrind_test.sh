@@ -151,6 +151,9 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c.d
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c_c.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_grid.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_grid.h5.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_2_grids.h5.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_ps_grp.h5.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_sin_grp.h5.bescmd >test.nc
 
 
 valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/grid_1_2d_dap2_ce_empty.h5.2.bescmd>gr.nc4

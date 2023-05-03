@@ -48,38 +48,24 @@ namespace curl {
 
 ///@name Get data from a URL
 ///@{
-void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, const int fd,
+void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, int fd,
                                  std::vector<std::string> *http_response_headers);
 
 void http_get(const std::string &url, char *response_buf, size_t bufsz);
 void http_get(const std::string &target_url, std::vector<char> &buf);
 
+void super_easy_perform(CURL *ceh);
+///@}
+
 rapidjson::Document http_get_as_json(const std::string &target_url);
 
 std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr<http::url> &starting_point_url);
+std::string filter_effective_url(const std::string &eff_url);
 
 CURL *init(const std::string &target_url, const struct curl_slist *http_request_headers,
            std::vector<std::string> *resp_hdrs);
 
-#if 0
-// made static in CurlUtils.cc. jhrg 03/07/23
-CURL *init(CURL *ceh,
-           const std::string &target_url,
-           const struct curl_slist *http_request_headers,
-           std::vector<std::string> *http_response_hdrs);
-
-void super_easy_perform(CURL *ceh, const int fd);
-// made static. jhrg 3/7/23
-bool configure_curl_handle_for_proxy(CURL *ceh, const std::string &url);
-#endif
-
-void super_easy_perform(CURL *ceh);
-
 void set_error_buffer(CURL *ceh, char *error_buffer);
-
-#if 0
-void unset_error_buffer(CURL *ceh);
-#endif
 
 std::string get_netrc_filename();
 
@@ -91,31 +77,12 @@ unsigned long max_redirects();
 
 std::string hyrax_user_agent();
 
-
 void eval_curl_easy_setopt_result(CURLcode result,  const std::string &msg_base, const std::string &opt_name,
-                                  char *ebuf, const std::string &file, unsigned int line);
-
-#if 0
-bool eval_curl_easy_perform_code(CURL *ceh,
-                                 std::string url,
-                                 CURLcode curl_code,
-                                 char *error_buffer,
-                                 unsigned int attempt);
-
-bool eval_http_get_response(CURL *ceh, char *error_buffer, const std::string &requested_url);
-std::string get_effective_url(CURL *ceh, std::string requested_url);
-std::string http_status_to_string(int status);
-
-#endif
+                                  const char *ebuf, const std::string &file, unsigned int line);
 
 std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
 
-
-std::string error_message(CURLcode response_code, char *error_buf);
-
-#if 0
-size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
-#endif
+std::string error_message(CURLcode response_code, const char *error_buf);
 
 void read_data(CURL *c_handle);
 
@@ -125,11 +92,6 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers);
 
 curl_slist *sign_s3_url(const std::shared_ptr<http::url> &target_url, http::AccessCredentials *ac,
                          curl_slist *req_headers);
-
-#if 0
-curl_slist *sign_url_for_s3_if_possible(const std::shared_ptr<http::url> &url,  curl_slist *request_headers);
-#endif
-
 } // namespace curl
 
 #endif /*  _bes_http_CURL_UTILS_H_ */
