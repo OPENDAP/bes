@@ -968,11 +968,6 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
 
 // Used here only. jhrg 3/8/23
 static void super_easy_perform(CURL *c_handle, int fd) {
-    unsigned int attempts = 0;
-    useconds_t retry_time = uone_second / 4;
-    bool success;
-    CURLcode curl_code;
-    vector<char> error_buffer(CURL_ERROR_SIZE, 0);
 
     string empty_str;
     string target_url = get_effective_url(c_handle, empty_str); // This is a trick to get the URL from the cURL handle.
@@ -981,12 +976,16 @@ static void super_easy_perform(CURL *c_handle, int fd) {
         throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
 
     // SET Error Buffer --------------------------------------------------------------------------------------------
+    vector<char> error_buffer(CURL_ERROR_SIZE, 0);
     set_error_buffer(c_handle, error_buffer.data());
+    unsigned int attempts = 0;
+    useconds_t retry_time = uone_second / 4;
+    bool success;
     do {
         ++attempts;
         BESDEBUG(MODULE, prolog << "Requesting URL: " << filter_effective_url(target_url) << " attempt: " << attempts << endl);
 
-        curl_code = curl_easy_perform(c_handle);
+        CURLcode curl_code = curl_easy_perform(c_handle);
         success = eval_curl_easy_perform_code(/*c_handle, */target_url, curl_code, error_buffer.data(), attempts);
         if (success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
