@@ -28,10 +28,22 @@
         </Group>
         <Group name="GRIDS">
             <Group name="SET1">
-                <Dimension name="XDim" size="360"/>
                 <Dimension name="YDim" size="180"/>
+                <Dimension name="XDim" size="360"/>
                 <Dimension name="Xdim" size="360"/>
                 <Dimension name="Ydim" size="180"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
                 <Group name="Data_Fields">
                     <Float32 name="DQ">
                         <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
@@ -180,10 +192,22 @@
                 </Group>
             </Group>
             <Group name="SET2">
-                <Dimension name="XDim" size="360"/>
                 <Dimension name="YDim" size="180"/>
+                <Dimension name="XDim" size="360"/>
                 <Dimension name="Xdim" size="360"/>
                 <Dimension name="Ydim" size="180"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
                 <Group name="Data_Fields">
                     <Float32 name="DQ">
                         <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>

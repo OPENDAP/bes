@@ -1,0 +1,162 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex GSSTF.2b.2008.01.01.he5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"GSSTF.2b.2008.01.01.he5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+
+      // group attributes:
+      		:BeginDate = "2008-01-01" ;
+      		:EndDate = "2008-01-02" ;
+      		:ShortName = "GSSTF" ;
+      		:VersionID = "2b" ;
+      		:CollectionDescription = "Goddard Satellite-Based Surface Turbulent Fluxes (GSSTF2b) in HDF-EOS5, 1x1 degree Daily Grid, Set1 and Set2, Combined Satellites" ;
+      		:LongName = "Surface Turbulent Fluxes, 1x1 deg Daily Grid, Set1 and Set2" ;
+      		:Set2eqSet1 = "F" ;
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: SET1 {
+      dimensions:
+      	YDim = 180 ;
+      	XDim = 360 ;
+      	Xdim = 360 ;
+      	Ydim = 180 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	float DQ(YDim, XDim) ;
+        		DQ:_FillValue = -999.f ;
+        		DQ:LongName = "sea-air humidity difference" ;
+        		DQ:Units = "g/kg" ;
+        		DQ:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/DQ" ;
+        	float E(YDim, XDim) ;
+        		E:_FillValue = -999.f ;
+        		E:LongName = "latent heat flux" ;
+        		E:Units = "W/m^^2" ;
+        		E:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/E" ;
+        	float H(YDim, XDim) ;
+        		H:_FillValue = -999.f ;
+        		H:LongName = "sensible heat flux" ;
+        		H:Units = "W/m^^2" ;
+        		H:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/H" ;
+        	float Qair(YDim, XDim) ;
+        		Qair:_FillValue = -999.f ;
+        		Qair:LongName = "surface air (~10-m) specific humidity" ;
+        		Qair:Units = "g/kg" ;
+        		Qair:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/Qair" ;
+        	float STu(YDim, XDim) ;
+        		STu:_FillValue = -999.f ;
+        		STu:LongName = "zonal wind stress" ;
+        		STu:Units = "N/m^^2" ;
+        		STu:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/STu" ;
+        	float STv(YDim, XDim) ;
+        		STv:_FillValue = -999.f ;
+        		STv:LongName = "meridional wind stress" ;
+        		STv:Units = "N/m^^2" ;
+        		STv:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/STv" ;
+        	float Tot_Precip_Water(YDim, XDim) ;
+        		Tot_Precip_Water:_FillValue = -999.f ;
+        		Tot_Precip_Water:LongName = "total precipitable water" ;
+        		Tot_Precip_Water:Units = "g/cm^^2" ;
+        		Tot_Precip_Water:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/Tot_Precip_Water" ;
+        	float U(YDim, XDim) ;
+        		U:_FillValue = -999.f ;
+        		U:LongName = "10-m wind speed" ;
+        		U:Units = "m/s" ;
+        		U:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/U" ;
+        	float WB(YDim, XDim) ;
+        		WB:_FillValue = -999.f ;
+        		WB:LongName = "lowest 500-m precipitable water" ;
+        		WB:Units = "g/cm^^2" ;
+        		WB:fullnamepath = "/HDFEOS/GRIDS/SET1/Data Fields/WB" ;
+        } // group Data_Fields
+      } // group SET1
+
+    group: SET2 {
+      dimensions:
+      	YDim = 180 ;
+      	XDim = 360 ;
+      	Xdim = 360 ;
+      	Ydim = 180 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	float DQ(YDim, XDim) ;
+        		DQ:_FillValue = -999.f ;
+        		DQ:LongName = "sea-air humidity difference" ;
+        		DQ:Units = "g/kg" ;
+        		DQ:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/DQ" ;
+        	float E(YDim, XDim) ;
+        		E:_FillValue = -999.f ;
+        		E:LongName = "latent heat flux" ;
+        		E:Units = "W/m^^2" ;
+        		E:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/E" ;
+        	float H(YDim, XDim) ;
+        		H:_FillValue = -999.f ;
+        		H:LongName = "sensible heat flux" ;
+        		H:Units = "W/m^^2" ;
+        		H:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/H" ;
+        	float Qair(YDim, XDim) ;
+        		Qair:_FillValue = -999.f ;
+        		Qair:LongName = "surface air (~10-m) specific humidity" ;
+        		Qair:Units = "g/kg" ;
+        		Qair:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/Qair" ;
+        	float STu(YDim, XDim) ;
+        		STu:_FillValue = -999.f ;
+        		STu:LongName = "zonal wind stress" ;
+        		STu:Units = "N/m^^2" ;
+        		STu:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/STu" ;
+        	float STv(YDim, XDim) ;
+        		STv:_FillValue = -999.f ;
+        		STv:LongName = "meridional wind stress" ;
+        		STv:Units = "N/m^^2" ;
+        		STv:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/STv" ;
+        	float Tot_Precip_Water(YDim, XDim) ;
+        		Tot_Precip_Water:_FillValue = -999.f ;
+        		Tot_Precip_Water:LongName = "total precipitable water" ;
+        		Tot_Precip_Water:Units = "g/cm^^2" ;
+        		Tot_Precip_Water:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/Tot_Precip_Water" ;
+        	float U(YDim, XDim) ;
+        		U:_FillValue = -999.f ;
+        		U:LongName = "10-m wind speed" ;
+        		U:Units = "m/s" ;
+        		U:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/U" ;
+        	float WB(YDim, XDim) ;
+        		WB:_FillValue = -999.f ;
+        		WB:LongName = "lowest 500-m precipitable water" ;
+        		WB:Units = "g/cm^^2" ;
+        		WB:fullnamepath = "/HDFEOS/GRIDS/SET2/Data Fields/WB" ;
+        } // group Data_Fields
+      } // group SET2
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.11" ;
+  } // group HDFEOS_INFORMATION
+}
