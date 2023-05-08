@@ -51,7 +51,9 @@ namespace curl {
 void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, int fd,
                                  std::vector<std::string> *http_response_headers);
 
+#if 0
 void http_get(const std::string &url, char *response_buf, size_t bufsz);
+#endif
 void http_get(const std::string &target_url, std::vector<char> &buf);
 
 void super_easy_perform(CURL *ceh);

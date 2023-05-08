@@ -131,14 +131,14 @@ public:
     }
 
     void filter_effective_url_test() {
-        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899";
+        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=Foo&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
         string filtered_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax";
         CPPUNIT_ASSERT_MESSAGE("The URL should have the AWS security tokens removed",
                                filtered_url == curl::filter_effective_url(url));
     }
 
     void filter_effective_url_token_first_test() {
-        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899";
+        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?X-Amz-Security-Token=Foo&A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
         string filtered_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc";
         CPPUNIT_ASSERT_MESSAGE("The URL should have the AWS security tokens removed",
                                filtered_url == curl::filter_effective_url(url));
@@ -325,6 +325,7 @@ public:
         curl_slist_free_all(headers);
     }
 
+#if 0
     // Test the first version of http_get() function tht takes a fixed size buffer.
     // If the buffer is too small, buffer overflow.
     void http_get_test_1() {
@@ -351,6 +352,7 @@ public:
 
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
+#endif
 
     // Test the http_get() function that extends as needed a vector<char>
     void http_get_test_2() {
@@ -474,6 +476,38 @@ public:
         }
     }
 
+    // This test uses a local JSON document
+    void http_get_as_json_file_test() {
+        const string url = "file://" + d_data_dir + "/test_data.json";
+        // const string url = "https://hub.docker.com/v2/repositories/opendap/besd/tags/3.20.13-555";
+        auto document = curl::http_get_as_json(url);
+        CPPUNIT_ASSERT_MESSAGE("The document should be an object", document.IsObject());
+        CPPUNIT_ASSERT_MESSAGE("The document should have a member 'creator'", document.HasMember("creator"));
+        CPPUNIT_ASSERT_MESSAGE("The document should have a number 'creator'", document["creator"].IsNumber());
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find 'creator''", document["creator"].GetInt() == 13215106);
+    }
+
+    void http_get_as_json_http_test() {
+        // I think the DockerHub response is stable enough and the github JSON API
+        // was more than I wanted to deal with for this test. jhrg 4/28/23
+        const string url = "https://hub.docker.com/v2/repositories/opendap/";
+        auto document = curl::http_get_as_json(url);
+        CPPUNIT_ASSERT_MESSAGE("The document should be an object", document.IsObject());
+        CPPUNIT_ASSERT_MESSAGE("The document should have a member 'count'", document.HasMember("count"));
+        CPPUNIT_ASSERT_MESSAGE("The document should have a number 'count'", document["count"].IsNumber());
+        // results, name
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find 'results''", document["results"].IsArray());
+
+        DBG(cerr << "document[\"results\"].Size() = " << document["results"].Size() << endl);
+        auto &results = document["results"];
+        for (auto &result : results.GetArray()) {
+            CPPUNIT_ASSERT_MESSAGE("Should be able to find 'name''", result.HasMember("name"));
+            CPPUNIT_ASSERT_MESSAGE("Should be able to find 'name''", result["name"].IsString());
+            CPPUNIT_ASSERT_MESSAGE("Should be able to find 'name''", result["name"].GetStringLength() > 0);
+            DBG(cerr << "results[].name = " << result["name"].GetString() << endl);
+        }
+    }
+
 /* TESTS END */
 /*##################################################################################################*/
 
@@ -491,8 +525,10 @@ public:
     CPPUNIT_TEST(sign_s3_url_test_2);
     CPPUNIT_TEST(sign_s3_url_test_3);
 
+#if 0
     CPPUNIT_TEST(http_get_test_1);
     CPPUNIT_TEST_EXCEPTION(http_get_test_1_0, BESInternalError);
+#endif
     CPPUNIT_TEST(http_get_test_2);
     CPPUNIT_TEST(http_get_test_3);
 
@@ -501,6 +537,9 @@ public:
     CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
 
     CPPUNIT_TEST(http_get_test_7);
+
+    CPPUNIT_TEST(http_get_as_json_file_test);
+    CPPUNIT_TEST(http_get_as_json_http_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
