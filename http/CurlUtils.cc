@@ -69,15 +69,15 @@ using namespace std;
 
 namespace curl {
 
-const unsigned int retry_limit = 10; // Amazon's suggestion
-const useconds_t uone_second = 1000000; // one second in micro seconds
+const unsigned int retry_limit = 3; // 10; // Amazon's suggestion
+const useconds_t uone_second = 1'000'000; // one second in micro seconds
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 const int curl_trace = 0;
 
 const int CLIENT_ERR_MIN = 400;
 const int CLIENT_ERR_MAX = 417;
-const vector<string> http_client_errors = {
+const vector <string> http_client_errors = {
         "Bad Request:",
         "Unauthorized: Contact the server administrator.",
         "Payment Required.",
@@ -100,14 +100,14 @@ const vector<string> http_client_errors = {
 
 const int SERVER_ERR_MIN = 500;
 const int SERVER_ERR_MAX = 505;
-const vector<string>http_server_errors = {
-                "Internal Server Error.",
-                "Not Implemented.",
-                "Bad Gateway.",
-                "Service Unavailable.",
-                "Gateway Time-out.",
-                "HTTP Version Not Supported."
-        };
+const vector <string> http_server_errors = {
+        "Internal Server Error.",
+        "Not Implemented.",
+        "Bad Gateway.",
+        "Service Unavailable.",
+        "Gateway Time-out.",
+        "HTTP Version Not Supported."
+};
 
 /**
  * @brief Translates an HTTP status code into an error message.
@@ -220,7 +220,7 @@ static size_t writeToOpenFileDescriptor(const char *data, size_t /* size */, siz
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
     RequestServiceTimer::TheTimer()->throw_if_timeout_expired("The function curl::writeToOpenFileDescriptor() "
                                                               "was unable to complete the download process.",
-                                                                  __FILE__, __LINE__);
+                                                              __FILE__, __LINE__);
     return wrote;
 }
 
@@ -419,7 +419,8 @@ static bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url)
             }
             else if (!proxyUserPW.empty()) {
                 res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
-                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERPWD", error_buffer.data(), __FILE__, __LINE__);
+                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERPWD", error_buffer.data(), __FILE__,
+                                             __LINE__);
                 BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
             }
             unset_error_buffer(ceh);
@@ -431,7 +432,7 @@ static bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url)
 
 // This is used in only one place.
 static CURL *init(CURL *ceh, const string &target_url, const struct curl_slist *http_request_headers,
-                  vector <string> *http_response_hdrs ) {
+                  vector <string> *http_response_hdrs) {
     vector<char> error_buffer(CURL_ERROR_SIZE);
     error_buffer[0] = 0; // Null terminate this string for safety.
     CURLcode res;
@@ -611,7 +612,7 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
  * @return A cURL easy handle configured as described above,
  */
 static CURL *init_effective_url_retriever_handle(const string &target_url, struct curl_slist *req_headers,
-                                          vector <string> &resp_hdrs) {
+                                                 vector <string> &resp_hdrs) {
     vector<char> error_buffer(CURL_ERROR_SIZE);
     error_buffer[0] = '\0'; // null terminate empty string
 
@@ -732,10 +733,10 @@ bool is_retryable(const string &target_url) {
     bool found;
     TheBESKeys::TheKeys()->get_values(HTTP_NO_RETRY_URL_REGEX_KEY, nr_regexs, found);
     if (found) {
-        for (const auto &nr_regex : nr_regexs) {
+        for (const auto &nr_regex: nr_regexs) {
             BESDEBUG(MODULE, prolog << "nr_regex: '" << nr_regex << "'" << endl);
-            BESRegex no_retry_regex(nr_regex.c_str(), (int)nr_regex.size());
-            size_t match_length = no_retry_regex.match(target_url.c_str(), (int)target_url.size(), 0);
+            BESRegex no_retry_regex(nr_regex.c_str(), (int) nr_regex.size());
+            size_t match_length = no_retry_regex.match(target_url.c_str(), (int) target_url.size(), 0);
             if (match_length == target_url.size()) {
                 BESDEBUG(MODULE, prolog << "The url: '" << target_url << "' fully matched the "
                                         << HTTP_NO_RETRY_URL_REGEX_KEY << ": '" << nr_regex << "'" << endl);
@@ -782,7 +783,8 @@ static bool eval_curl_easy_perform_code(
         stringstream msg;
         msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: ";
         msg << error_message(curl_code, error_buffer) << ". ";
-        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")."
+            << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
@@ -791,7 +793,8 @@ static bool eval_curl_easy_perform_code(
         stringstream msg;
         msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. Message: ";
         msg << error_message(curl_code, error_buffer) << ". ";
-        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")."
+            << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
@@ -803,7 +806,8 @@ static bool eval_curl_easy_perform_code(
         stringstream msg;
         msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: ";
         msg << error_message(curl_code, error_buffer) << ". ";
-        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")." << endl;
+        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")."
+            << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
@@ -966,16 +970,26 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
     }
 }
 
+// Truncate the file that holds information read off the wire when the
+// library has to retry a request made to S3. The file will contain error
+// text from the failed attempt and that needs to be cleaned out before
+// the next attempt. jhrg 5/9/23
+static void truncate_file(int fd) {
+    int status = ftruncate(fd, 0);
+    if (status == -1)
+        throw BESInternalError(string("Could not truncate the file prior to retrying request (") + strerror(errno)
+                + ").", __FILE__, __LINE__);
+    lseek(fd, 0, SEEK_SET);
+}
+
 // Used here only. jhrg 3/8/23
 static void super_easy_perform(CURL *c_handle, int fd) {
-
     string empty_str;
     string target_url = get_effective_url(c_handle, empty_str); // This is a trick to get the URL from the cURL handle.
     // We check the value of target_url to see if the URL was correctly set in the cURL handle.
     if (target_url.empty())
         throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
 
-    // SET Error Buffer --------------------------------------------------------------------------------------------
     vector<char> error_buffer(CURL_ERROR_SIZE, 0);
     set_error_buffer(c_handle, error_buffer.data());
     unsigned int attempts = 0;
@@ -983,10 +997,11 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     bool success;
     do {
         ++attempts;
-        BESDEBUG(MODULE, prolog << "Requesting URL: " << filter_effective_url(target_url) << " attempt: " << attempts << endl);
+        BESDEBUG(MODULE,
+                 prolog << "Requesting URL: " << filter_effective_url(target_url) << " attempt: " << attempts << endl);
 
         CURLcode curl_code = curl_easy_perform(c_handle);
-        success = eval_curl_easy_perform_code(/*c_handle, */target_url, curl_code, error_buffer.data(), attempts);
+        success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
         if (success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
             success = eval_http_get_response(c_handle, target_url);
@@ -997,66 +1012,22 @@ static void super_easy_perform(CURL *c_handle, int fd) {
             if (attempts == retry_limit) {
                 stringstream msg;
                 msg << prolog << "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL "
-                    << filter_effective_url(target_url);
-                msg << " The retry limit has been exceeded. Giving up!";
+                    << filter_effective_url(target_url) << " The retry limit has been exceeded. Giving up!";
                 ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             else {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
-                        << filter_effective_url(target_url) << " attempt: " << attempts << ")." << endl);
+                                 << filter_effective_url(target_url) << " attempt: " << attempts << ")." << endl);
                 usleep(retry_time);
                 retry_time *= 2;
 
-                if (fd >= 0) {
-                    // Thanks to Stevens APitUE
-
-                    // Check the output file descriptor
-                    int val = fcntl(fd, F_GETFL, 0);
-                    if (val < 0) {
-                        stringstream ss;
-                        ss << prolog << "Encountered fcntl error " << val << " for fd: " << fd << endl;
-                        BESDEBUG(MODULE, ss.str());
-                        ERROR_LOG(ss.str());
-                    }
-                    else {
-                        int accmode = val & O_ACCMODE;
-#if 1
-                        // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-                        if (accmode == O_RDONLY) {
-                            BESDEBUG(MODULE, prolog << " FILE " << fd << " is open and read only" << endl);
-                        }
-                        else if (accmode == O_WRONLY) {
-                            BESDEBUG(MODULE, prolog << " FILE " << fd << " is open and write only" << endl);
-                        }
-                        else if (accmode == O_RDWR) {
-                            BESDEBUG(MODULE, prolog << " FILE " << fd << " is open for read and write" << endl);
-                        }
-                        else {
-                            stringstream ss;
-                            ss << prolog << "ERROR Unknown access mode mode for FILE '" << fd << "'" << endl;
-                            BESDEBUG(MODULE, ss.str());
-                            ERROR_LOG(ss.str());
-                        }
-                        // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-#endif
-                        // Reset output file pointer here to clear any document returned with the error response
-                        if (accmode == O_WRONLY || accmode == O_RDWR) {
-                            int status = ftruncate(fd, 0);
-                            if (-1 == status)
-                                throw BESInternalError("Could not truncate the file prior to retrying from remote. ",
-                                                       __FILE__, __LINE__);
-                            BESDEBUG(MODULE, prolog << "Truncated file, length is zero." << endl);
-                        }
-
-                        // FIXME Now what about the memory buffer case? How do we solve the same issue there?
-                    }
-
-                }
-
+                if (fd >= 0)
+                    truncate_file(fd);
             }
         }
     } while (!success);
+
     // Unset the buffer as it goes out of scope
     unset_error_buffer(c_handle);
 }
@@ -1079,7 +1050,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
  * error message is stuffed into the Error object.
  */
 void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
-                                 vector<string> *http_response_headers) {
+                                 vector <string> *http_response_headers) {
 
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURLcode res;

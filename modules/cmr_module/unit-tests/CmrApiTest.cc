@@ -52,11 +52,11 @@
 using namespace std;
 
 static bool debug = false;
-static bool Debug = false;
+static bool debug2 = false;
 static bool bes_debug = false;
 
-#undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+#define DBG2(x) do { if (debug2) x; } while(false)
 #define prolog std::string("CmrApiTest::").append(__func__).append("() - ")
 
 namespace cmr {
@@ -84,29 +84,26 @@ public:
     CmrApiTest() = default;
 
     // Called at the end of the test
-    ~CmrApiTest() = default;
+    ~CmrApiTest() override = default;
 
     // Called before each test
-    void setUp() {
-        if(debug) cerr << endl;
-        if(Debug) cerr << "setUp() - BEGIN" << endl;
+    void setUp() override {
+        DBG(cerr << endl);
+        DBG2(cerr << "setUp() - BEGIN" << endl);
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-        if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+        DBG2(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if(Debug) cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl;
+        DBG2(cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl);
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
-        if (bes_debug) BESDebug::SetUp("cerr,cmr");
+        if (bes_debug) {
+            BESDebug::SetUp("cerr,cmr");
+            show_file(bes_conf);
+        }
 
-        if (bes_debug) show_file(bes_conf);
-        if(Debug) cerr << "setUp() - END" << endl;
-    }
-
-    // Called after each test
-    void tearDown()
-    {
+        DBG2(cerr << "setUp() - END" << endl);
     }
 
     void get_years_test() {
@@ -663,7 +660,7 @@ int main(int argc, char*argv[])
             debug = true;  // debug is a static global
             break;
         case 'D':
-            Debug = true;  // Debug is a static global
+            debug2 = true;  // debug2 is a static global
             break;
         case 'b':
             bes_debug = true;  // debug is a static global
@@ -684,7 +681,7 @@ int main(int argc, char*argv[])
     else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            DBG(cerr << "Running " << argv[i] << endl);
             test = cmr::CmrApiTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
