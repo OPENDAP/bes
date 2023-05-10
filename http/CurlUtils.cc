@@ -70,7 +70,7 @@ using namespace std;
 namespace curl {
 
 const unsigned int retry_limit = 3; // 10; // Amazon's suggestion
-const useconds_t uone_second = 1'000'000; // one second in micro seconds
+const useconds_t url_retry_time = 250'000; // 1/4 second in micro seconds
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 const int curl_trace = 0;
@@ -975,17 +975,22 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
 // text from the failed attempt and that needs to be cleaned out before
 // the next attempt. jhrg 5/9/23
 static void truncate_file(int fd) {
-    int status = ftruncate(fd, 0);
+    auto status = ftruncate(fd, 0);
     if (status == -1)
-        throw BESInternalError(string("Could not truncate the file prior to retrying request (") + strerror(errno)
-                + ").", __FILE__, __LINE__);
-    lseek(fd, 0, SEEK_SET);
+        throw BESInternalError(string("Could not truncate the file before retrying request (") + strerror(errno) + ").",
+                               __FILE__, __LINE__);
+
+    // Removing this call to lseek will cause tests for the retry code to fail, which demonstrates that
+    // this fixes the issue with retires without this call having corrupted data. jhrg 5/9/23
+    status = lseek(fd, 0, SEEK_SET);
+    if (-1 == status)
+        throw BESInternalError(string("Could not seek within the response file (") + strerror(errno) + ").",
+                               __FILE__, __LINE__);
 }
 
 // Used here only. jhrg 3/8/23
 static void super_easy_perform(CURL *c_handle, int fd) {
-    string empty_str;
-    string target_url = get_effective_url(c_handle, empty_str); // This is a trick to get the URL from the cURL handle.
+    string target_url = get_effective_url(c_handle, ""); // This is a trick to get the URL from the cURL handle.
     // We check the value of target_url to see if the URL was correctly set in the cURL handle.
     if (target_url.empty())
         throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
@@ -993,7 +998,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     vector<char> error_buffer(CURL_ERROR_SIZE, 0);
     set_error_buffer(c_handle, error_buffer.data());
     unsigned int attempts = 0;
-    useconds_t retry_time = uone_second / 4;
+    useconds_t retry_time = url_retry_time; // 0.25 seconds
     bool success;
     do {
         ++attempts;
