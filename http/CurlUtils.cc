@@ -1028,6 +1028,11 @@ static void super_easy_perform(CURL *c_handle, int fd) {
         }
     } while (!success);
 
+    // rewind the file
+    auto status = lseek(fd, 0, SEEK_SET);
+    if (-1 == status)
+        throw BESInternalError("Could not seek within the response file.", __FILE__, __LINE__);
+
     // Unset the buffer as it goes out of scope
     unset_error_buffer(c_handle);
 }

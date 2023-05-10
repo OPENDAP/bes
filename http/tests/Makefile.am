@@ -39,9 +39,7 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
-	-rm -rf d1-* d2-* tmp1-* tmp2-*
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	-rm -f d1-* d2-* tmp1-* tmp2-*
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

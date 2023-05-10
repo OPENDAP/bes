@@ -11,6 +11,7 @@
 
 #include "TheBESKeys.h"
 #include "RemoteResource.h"
+#include "HttpNames.h"
 #include "BESError.h"
 #include "BESDebug.h"
 
@@ -26,17 +27,15 @@ using namespace http;
  */
 int main(int, char *argv[])
 {
-    cerr << "Hello, world!" << endl;
-    string bes_conf = "bes.conf";
-
-    // Hack - depends on the bes.conf not overriding the default value for the temp dir. jhrg 4/21/23
-    mkdir("/tmp/bes_rr_tmp", 0777);
-
     try {
         string debug_dest = argv[3];
         debug_dest.append(",http");
         BESDebug::SetUp(debug_dest);
         TheBESKeys::ConfigFile = argv[1];
+
+        string tmp_dir_path = TheBESKeys::TheKeys()->read_string_key(REMOTE_RESOURCE_TMP_DIR_KEY, "/tmp/bes_rr_tmp");
+        mkdir("/tmp/bes_rr_tmp", 0777);
+
         auto url = std::make_shared<http::url>(argv[2]);
         auto rr = std::make_unique<RemoteResource>(url);
 
