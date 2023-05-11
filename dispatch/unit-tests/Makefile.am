@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = foreign
 .NOTPARALLEL:
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-LDADD = $(top_builddir)/dispatch/.libs/libbes_dispatch.a $(DAP_LIBS) $(BES_BZ2_LIBS) $(BES_ZLIB_LIBS)
+LDADD = $(top_builddir)/dispatch/.libs/libbes_dispatch.a $(DAP_LIBS) $(BES_BZ2_LIBS) $(BES_ZLIB_LIBS) $(XML2_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
