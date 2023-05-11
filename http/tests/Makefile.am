@@ -10,15 +10,15 @@ noinst_PROGRAMS = remote_resource_tester
 remote_resource_tester_SOURCES = remote_resource_tester.cc
 remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
 remote_resource_tester_LDFLAGS = -L$(top_builddir)/dispatch -L$(top_builddir)/http
-# $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 remote_resource_tester_LDADD = -lbes_dispatch -lbes_http
+
 BES_CONF_IN = bes.conf.in
 
 noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf $(srcdir)/package.m4 $(TESTSUITE)
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN) mock-s3
 
 DISTCLEANFILES =  atconfig
 
@@ -41,10 +41,10 @@ TESTSUITE = $(srcdir)/testsuite
 # Note that once the service is started, the code waits for it to start to respond.
 # jhrg 5/10/23
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) remote_resource_tester bes.conf
-	@python3 mock-s3/main.py >/dev/null 2>&1 &
-	@while ! curl -s http://localhost:8000/200/1/init >/dev/null; do sleep 1; done
+	python3 $(srcdir)/mock-s3/main.py >/dev/null 2>&1 &
+	while ! curl -s http://localhost:8000/200/1/init >/dev/null; do sleep 1; done
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	@curl -s http://localhost:8000/exit >/dev/null
+	curl -s http://localhost:8000/exit >/dev/null
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
