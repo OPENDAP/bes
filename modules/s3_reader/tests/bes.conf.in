@@ -48,7 +48,10 @@ S3.inject_data_urls=true
 
 AllowedHosts = ^https?://localhost:8080/.*$
 AllowedHosts += ^https?://test.opendap.org/.*$
+AllowedHosts += ^https:\/\/s3\.amazonaws\.com\/cloudy(open)?dap\/.*$
+AllowedHosts += ^https:\/\/cmr\.earthdata\.nasa\.gov\/.*$
 
 # For this to work with the DMR++ documents, we will have to modify the
 # RemoteResource code in the http library. jhrg 10/20/22
-# CredentialsManager.config = ENV_CREDS
+
+CredentialsManager.config = ENV_CREDS

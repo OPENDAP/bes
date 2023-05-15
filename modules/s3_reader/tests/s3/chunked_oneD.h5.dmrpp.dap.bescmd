@@ -6,7 +6,8 @@
   <bes:setContext name="max_response_size">0</bes:setContext>
 
   <bes:setContainer name="S3_1" space="s3">
-    http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5
+    https://s3-module-test-bucket.s3.us-west-2.amazonaws.com/chunked_oneD.h5
+    <!-- http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5 -->
   </bes:setContainer>
 
   <bes:define name="d1" space="default">
