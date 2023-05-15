@@ -1,0 +1,124 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex AMSR_2_L3_DailySnow_P00_20160831.he5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"AMSR_2_L3_DailySnow_P00_20160831.he5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: Northern_Hemisphere {
+      dimensions:
+      	XDim = 721 ;
+      	YDim = 721 ;
+      variables:
+      	ubyte eos5_cf_projection ;
+      		eos5_cf_projection:grid_mapping_name = "lambert_azimuthal_equal_area" ;
+      		eos5_cf_projection:longitude_of_projection_origin = 0. ;
+      		eos5_cf_projection:latitude_of_projection_origin = 90. ;
+      		eos5_cf_projection:false_easting = 0. ;
+      		eos5_cf_projection:false_northing = 0. ;
+      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection " ;
+      		XDim:units = "meter" ;
+      		XDim:_CoordinateAxisType = "GeoX" ;
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection " ;
+      		YDim:units = "meter" ;
+      		YDim:_CoordinateAxisType = "GeoY" ;
+      	double Latitude(YDim, XDim) ;
+      		Latitude:units = "degrees_north" ;
+      	double Longitude(YDim, XDim) ;
+      		Longitude:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	ubyte Flags_NorthernDaily(YDim, XDim) ;
+        		Flags_NorthernDaily:_FillValue = 255UB ;
+        		Flags_NorthernDaily:fullnamepath = "/HDFEOS/GRIDS/Northern Hemisphere/Data Fields/Flags_NorthernDaily" ;
+        		Flags_NorthernDaily:coordinates = "/HDFEOS/GRIDS/Northern_Hemisphere/Latitude /HDFEOS/GRIDS/Northern_Hemisphere/Longitude" ;
+        		Flags_NorthernDaily:grid_mapping = "/HDFEOS/GRIDS/Northern_Hemisphere/eos5_cf_projection" ;
+        	ubyte SWE_NorthernDaily(YDim, XDim) ;
+        		SWE_NorthernDaily:_FillValue = 255UB ;
+        		SWE_NorthernDaily:long_name = "Daily snow water equivalent (SWE)" ;
+        		SWE_NorthernDaily:units = "mm" ;
+        		SWE_NorthernDaily:format = "f3.0" ;
+        		SWE_NorthernDaily:scale_factor = 2.f ;
+        		SWE_NorthernDaily:fullnamepath = "/HDFEOS/GRIDS/Northern Hemisphere/Data Fields/SWE_NorthernDaily" ;
+        		SWE_NorthernDaily:coordinates = "/HDFEOS/GRIDS/Northern_Hemisphere/Latitude /HDFEOS/GRIDS/Northern_Hemisphere/Longitude" ;
+        		SWE_NorthernDaily:grid_mapping = "/HDFEOS/GRIDS/Northern_Hemisphere/eos5_cf_projection" ;
+        } // group Data_Fields
+      } // group Northern_Hemisphere
+
+    group: Southern_Hemisphere {
+      dimensions:
+      	XDim = 721 ;
+      	YDim = 721 ;
+      variables:
+      	ubyte eos5_cf_projection ;
+      		eos5_cf_projection:grid_mapping_name = "lambert_azimuthal_equal_area" ;
+      		eos5_cf_projection:longitude_of_projection_origin = 0. ;
+      		eos5_cf_projection:latitude_of_projection_origin = -90. ;
+      		eos5_cf_projection:false_easting = 0. ;
+      		eos5_cf_projection:false_northing = 0. ;
+      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection " ;
+      		XDim:units = "meter" ;
+      		XDim:_CoordinateAxisType = "GeoX" ;
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection " ;
+      		YDim:units = "meter" ;
+      		YDim:_CoordinateAxisType = "GeoY" ;
+      	double Latitude(YDim, XDim) ;
+      		Latitude:units = "degrees_north" ;
+      	double Longitude(YDim, XDim) ;
+      		Longitude:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	ubyte Flags_SouthernDaily(YDim, XDim) ;
+        		Flags_SouthernDaily:_FillValue = 255UB ;
+        		Flags_SouthernDaily:fullnamepath = "/HDFEOS/GRIDS/Southern Hemisphere/Data Fields/Flags_SouthernDaily" ;
+        		Flags_SouthernDaily:coordinates = "/HDFEOS/GRIDS/Southern_Hemisphere/Latitude /HDFEOS/GRIDS/Southern_Hemisphere/Longitude" ;
+        		Flags_SouthernDaily:grid_mapping = "/HDFEOS/GRIDS/Southern_Hemisphere/eos5_cf_projection" ;
+        	ubyte SWE_SouthernDaily(YDim, XDim) ;
+        		SWE_SouthernDaily:_FillValue = 255UB ;
+        		SWE_SouthernDaily:long_name = "Daily snow water equivalent (SWE)" ;
+        		SWE_SouthernDaily:units = "mm" ;
+        		SWE_SouthernDaily:format = "f3.0" ;
+        		SWE_SouthernDaily:scale_factor = 2.f ;
+        		SWE_SouthernDaily:fullnamepath = "/HDFEOS/GRIDS/Southern Hemisphere/Data Fields/SWE_SouthernDaily" ;
+        		SWE_SouthernDaily:coordinates = "/HDFEOS/GRIDS/Southern_Hemisphere/Latitude /HDFEOS/GRIDS/Southern_Hemisphere/Longitude" ;
+        		SWE_SouthernDaily:grid_mapping = "/HDFEOS/GRIDS/Southern_Hemisphere/eos5_cf_projection" ;
+        } // group Data_Fields
+      } // group Southern_Hemisphere
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	CoreMetadata_0_len1 = 65537 ;
+  	StructMetadata_0_len2 = 32002 ;
+  variables:
+  	char CoreMetadata_0(CoreMetadata_0_len1) ;
+  		CoreMetadata_0:fullnamepath = "/HDFEOS INFORMATION/CoreMetadata.0" ;
+  	char StructMetadata_0(StructMetadata_0_len2) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.15" ;
+  } // group HDFEOS_INFORMATION
+}

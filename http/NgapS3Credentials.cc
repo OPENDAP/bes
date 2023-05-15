@@ -95,7 +95,7 @@ void NgapS3Credentials::get_temporary_credentials() {
     BESDEBUG(HTTP_MODULE, prolog << AWS_EXPIRATION_KEY << ":         " << expiration << endl);
 
     // parse the time string into a something useful -------------------------------------------------------
-    struct tm tm;
+    struct tm tm{};
     // 2020-02-18 13:49:30+00:00
     strptime(expiration.c_str(), "%Y-%m-%d %H:%M:%S%z", &tm);
     d_expiration_time = mktime(&tm);  // t is now your desired time_t

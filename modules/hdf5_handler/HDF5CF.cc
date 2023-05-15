@@ -640,7 +640,7 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
             if(c_set_type <0) 
                 throw2("Cannot get hdf5 character set type for the attribute ", attr_name);
             // This is a UTF-8 string
-            if(c_set_type == 1)
+            if(c_set_type == H5T_CSET_UTF8)
                 attr->is_cset_ascii = false;
         }
 

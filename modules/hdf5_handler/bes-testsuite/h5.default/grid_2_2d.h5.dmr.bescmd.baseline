@@ -6,8 +6,20 @@
         </Group>
         <Group name="GRIDS">
             <Group name="GeoGrid1">
-                <Dimension name="XDim" size="8"/>
                 <Dimension name="YDim" size="4"/>
+                <Dimension name="XDim" size="8"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/GeoGrid1/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/GeoGrid1/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
                 <Group name="Data_Fields">
                     <Float32 name="temperature">
                         <Dim name="/HDFEOS/GRIDS/GeoGrid1/YDim"/>
@@ -22,8 +34,20 @@
                 </Group>
             </Group>
             <Group name="GeoGrid2">
-                <Dimension name="XDim" size="8"/>
                 <Dimension name="YDim" size="4"/>
+                <Dimension name="XDim" size="8"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/GeoGrid2/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/GeoGrid2/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
                 <Group name="Data_Fields">
                     <Float32 name="temperature">
                         <Dim name="/HDFEOS/GRIDS/GeoGrid2/YDim"/>

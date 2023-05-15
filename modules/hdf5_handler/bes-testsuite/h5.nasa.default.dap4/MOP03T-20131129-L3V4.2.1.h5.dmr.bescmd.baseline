@@ -22,11 +22,23 @@
         </Group>
         <Group name="GRIDS">
             <Group name="MOP03">
-                <Dimension name="XDim" size="360"/>
                 <Dimension name="YDim" size="180"/>
+                <Dimension name="XDim" size="360"/>
                 <Dimension name="Prs" size="9"/>
                 <Dimension name="Prs2" size="10"/>
                 <Dimension name="NTWO" size="2"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
                 <Group name="Data_Fields">
                     <Float32 name="APrioriCOMixingRatioProfileDay">
                         <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>

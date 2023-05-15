@@ -52,19 +52,17 @@
 using namespace std;
 
 static bool debug = false;
-static bool Debug = false;
+static bool debug2 = false;
 static bool bes_debug = false;
 
-#undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+#define DBG2(x) do { if (debug2) x; } while(false)
 #define prolog std::string("CmrApiTest::").append(__func__).append("() - ")
 
 namespace cmr {
 
 class CmrApiTest: public CppUnit::TestFixture {
 private:
-
-    // char curl_error_buf[CURL_ERROR_SIZE];
 
     void show_file(string filename)
     {
@@ -83,42 +81,32 @@ private:
 
 public:
     // Called once before everything gets tested
-    CmrApiTest()
-    {
-    }
+    CmrApiTest() = default;
 
     // Called at the end of the test
-    ~CmrApiTest()
-    {
-    }
+    ~CmrApiTest() override = default;
 
     // Called before each test
-    void setUp()
-    {
-        if(debug) cerr << endl;
-        if(Debug) cerr << "setUp() - BEGIN" << endl;
+    void setUp() override {
+        DBG(cerr << endl);
+        DBG2(cerr << "setUp() - BEGIN" << endl);
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-        if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+        DBG2(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if(Debug) cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl;
+        DBG2(cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl);
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
-        if (bes_debug) BESDebug::SetUp("cerr,cmr");
+        if (bes_debug) {
+            BESDebug::SetUp("cerr,cmr");
+            show_file(bes_conf);
+        }
 
-        if (bes_debug) show_file(bes_conf);
-        if(Debug) cerr << "setUp() - END" << endl;
+        DBG2(cerr << "setUp() - END" << endl);
     }
-
-    // Called after each test
-    void tearDown()
-    {
-    }
-
 
     void get_years_test() {
-
         string collection_name = "C179003030-ORNL_DAAC";
         string expected[] = { string("1984"), string("1985"), string("1986"),
                 string("1987"), string("1988") };
@@ -148,18 +136,15 @@ public:
                 BESDEBUG(MODULE, msg.str() << endl);
                 CPPUNIT_ASSERT(expected[i] == years[i]);
             }
-
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
-
     }
 
     void get_months_test() {
-
         string collection_name = "C179003030-ORNL_DAAC";
         string expected[] = {
                 string("01"),
@@ -210,11 +195,9 @@ public:
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
-
     }
 
     void get_days_test() {
-
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
         string expected[] = {
@@ -252,18 +235,15 @@ public:
                 BESDEBUG(MODULE, msg.str() << endl);
                 CPPUNIT_ASSERT(expected[i] == days[i]);
             }
-
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
-
     }
 
     void get_granule_ids_day_test() {
-
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
 
@@ -301,18 +281,14 @@ public:
                 BESDEBUG(MODULE, msg.str() << endl);
                 CPPUNIT_ASSERT(expected[i] == granules[i]);
             }
-
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
-
-
-
-
     }
+
     void get_granule_ids_month_test() {
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
@@ -538,14 +514,12 @@ public:
                 BESDEBUG(MODULE, msg.str() << endl);
                 // CPPUNIT_ASSERT(expected[i] == url);
             }
-
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
-
     }
 
     unsigned long gct_helper(string collection, string year, string month, string day){
@@ -598,16 +572,15 @@ public:
         if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
                        << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
         CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
-
     }
 
+    // these three tests now fail with an exception. Patched. jhrg 5/2/23
     void get_provider_test() {
         stringstream msg;
         CmrApi cmr;
 
         Provider ges_disc = cmr.get_provider("GES_DISC");
         cerr << ges_disc.to_string() << endl;
-
     }
 
     void get_providers_test() {
@@ -619,7 +592,6 @@ public:
         for (auto &provider: providers){
             cerr << provider->to_string() << endl;
         }
-
     }
 
     void get_opendap_providers_test() {
@@ -632,7 +604,6 @@ public:
         for (auto &provider: providers){
             cerr << provider.second->to_string() << endl;
         }
-
     }
 
     void get_opendap_collections_test() {
@@ -647,14 +618,20 @@ public:
         for (auto &collection: collections){
             cerr << collection.second->to_string() << endl;
         }
-
     }
-CPPUNIT_TEST_SUITE( CmrApiTest );
 
+    CPPUNIT_TEST_SUITE( CmrApiTest );
+#if 0
+    // These tests now fail with an exception. Patched. jhrg 5/2/23
+    CPPUNIT_TEST_EXCEPTION(get_provider_test, BESError);
+    CPPUNIT_TEST_EXCEPTION(get_opendap_providers_test, BESError);
+    CPPUNIT_TEST_EXCEPTION(get_providers_test, BESError);
+#else
     CPPUNIT_TEST(get_provider_test);
-    CPPUNIT_TEST(get_opendap_collections_test);
     CPPUNIT_TEST(get_opendap_providers_test);
     CPPUNIT_TEST(get_providers_test);
+#endif
+    CPPUNIT_TEST(get_opendap_collections_test);
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
     CPPUNIT_TEST(get_days_test);
@@ -663,7 +640,6 @@ CPPUNIT_TEST_SUITE( CmrApiTest );
     CPPUNIT_TEST(get_granules_month_test);
     CPPUNIT_TEST(get_granules_data_access_urls_month_test);
     CPPUNIT_TEST(granule_count_test);
-
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -684,7 +660,7 @@ int main(int argc, char*argv[])
             debug = true;  // debug is a static global
             break;
         case 'D':
-            Debug = true;  // Debug is a static global
+            debug2 = true;  // debug2 is a static global
             break;
         case 'b':
             bes_debug = true;  // debug is a static global
@@ -705,7 +681,7 @@ int main(int argc, char*argv[])
     else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            DBG(cerr << "Running " << argv[i] << endl);
             test = cmr::CmrApiTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;

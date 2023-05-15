@@ -91,6 +91,7 @@ void FONcDim::define(int ncid)
         }
 
         BESDEBUG("fonc",  "FONcDim:: dimension size is "<<_size <<endl);
+        BESDEBUG("fonc",  "FONcDim:: dimension name is "<<_name <<endl);
         int stax = nc_def_dim(ncid, _name.c_str(), _size, &_dimid);
         if (stax != NC_NOERR) {
             string err = (string) "fileout.netcdf - " + "Failed to add dimension " + _name;

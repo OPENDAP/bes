@@ -5,21 +5,20 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-# TODO Remove this if not needed and noist_... works. jhrg 11/16/22
-# bin_PROGRAMS = remote_resource_tester
 noinst_PROGRAMS = remote_resource_tester
 
 remote_resource_tester_SOURCES = remote_resource_tester.cc
 remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
-remote_resource_tester_LDFLAGS = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
+remote_resource_tester_LDFLAGS = -L$(top_builddir)/dispatch -L$(top_builddir)/http
+remote_resource_tester_LDADD = -lbes_dispatch -lbes_http
 
 BES_CONF_IN = bes.conf.in
 
 noinst_DATA = bes.conf
 
-CLEANFILES = bes.conf d1-* d2-* tmp1-* tmp2-* $(srcdir)/package.m4 $(TESTSUITE)
+CLEANFILES = bes.conf $(srcdir)/package.m4 $(TESTSUITE)
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN) mock-s3
 
 DISTCLEANFILES =  atconfig
 
@@ -38,14 +37,17 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
-	-rm -rf $(abs_builddir)/cache/*
+# This target starts the mock s3 service, runs the tests, and then stops the service.
+# Note that once the service is started, the code waits for it to start to respond.
+# jhrg 5/10/23
+check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) remote_resource_tester bes.conf
+	python3 $(srcdir)/mock-s3/main.py >/dev/null 2>&1 &
+	while ! curl -s http://localhost:8000/200/1/init >/dev/null; do sleep 1; done
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	-rm -f d1-* d2-* tmp1-* tmp2-* $(abs_builddir)/cache/*
+	curl -s http://localhost:8000/exit >/dev/null
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -rf cache
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
