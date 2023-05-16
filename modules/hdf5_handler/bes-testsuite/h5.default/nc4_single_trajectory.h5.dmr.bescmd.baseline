@@ -73,48 +73,29 @@
             <Value>julian</Value>
         </Attribute>
     </Float64>
-    <Float64 name="temp">
+    <Float64 name="lat">
         <Dim name="/obs"/>
         <Attribute name="_FillValue" type="Float64">
             <Value>-9999.</Value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <Value>Temperature</Value>
+            <Value>Latitude</Value>
         </Attribute>
         <Attribute name="standard_name" type="String">
-            <Value>sea_water_temperature</Value>
-        </Attribute>
-        <Attribute name="nodc_name" type="String">
-            <Value>WATER TEMPERATURE</Value>
+            <Value>latitude</Value>
         </Attribute>
         <Attribute name="units" type="String">
-            <Value>degree_Celsius</Value>
+            <Value>degrees_north</Value>
         </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1.</Value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0.</Value>
+        <Attribute name="axis" type="String">
+            <Value>Y</Value>
         </Attribute>
         <Attribute name="valid_min" type="Float64">
-            <Value>0.</Value>
+            <Value>-90.</Value>
         </Attribute>
         <Attribute name="valid_max" type="Float64">
-            <Value>100.</Value>
+            <Value>90.</Value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>time lat lon z</Value>
-        </Attribute>
-        <Attribute name="grid_mapping" type="String">
-            <Value>crs</Value>
-        </Attribute>
-        <Attribute name="cell_methods" type="String">
-            <Value>time: point longitude: point latitude: point</Value>
-        </Attribute>
-        <Map name="/time"/>
-        <Map name="/lat"/>
-        <Map name="/lon"/>
-        <Map name="/z"/>
     </Float64>
     <Int32 name="trajectory">
         <Attribute name="long_name" type="String">
@@ -164,29 +145,48 @@
         <Map name="/lon"/>
         <Map name="/z"/>
     </Float64>
-    <Float64 name="lat">
+    <Float64 name="temp">
         <Dim name="/obs"/>
         <Attribute name="_FillValue" type="Float64">
             <Value>-9999.</Value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <Value>Latitude</Value>
+            <Value>Temperature</Value>
         </Attribute>
         <Attribute name="standard_name" type="String">
-            <Value>latitude</Value>
+            <Value>sea_water_temperature</Value>
+        </Attribute>
+        <Attribute name="nodc_name" type="String">
+            <Value>WATER TEMPERATURE</Value>
         </Attribute>
         <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
+            <Value>degree_Celsius</Value>
         </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>Y</Value>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
         </Attribute>
         <Attribute name="valid_min" type="Float64">
-            <Value>-90.</Value>
+            <Value>0.</Value>
         </Attribute>
         <Attribute name="valid_max" type="Float64">
-            <Value>90.</Value>
+            <Value>100.</Value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time lat lon z</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="cell_methods" type="String">
+            <Value>time: point longitude: point latitude: point</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <Map name="/z"/>
     </Float64>
     <Float64 name="crs">
         <Attribute name="grid_mapping_name" type="String">

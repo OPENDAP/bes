@@ -21,6 +21,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <iostream>
 #include <sstream>
 #include <memory>
@@ -46,6 +48,9 @@
 #include <BESDebug.h>
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
+
+#include <TheBESKeys.h>
+#include <BESContextManager.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
@@ -85,6 +90,8 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
 #define prolog std::string("# build_dmrpp::").append(__func__).append("() - ")
+
+#define INVOCATION_CONTEXT "invocation"
 
 // FYI: Filter IDs
 // H5Z_FILTER_ERROR         (-1) no filter
@@ -1153,5 +1160,51 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
         throw;
     }
 }
+
+/**
+ * @brief Write information to the the DMR++ about its provenance.
+ * @param dmrpp Add provenance information to this instance of DMRpp
+ * @note The DMRpp instance will free all memory allocated by this method.
+ */
+    void inject_version_and_configuration(DMRpp *dmrpp)
+    {
+        bool found;
+
+        dmrpp->set_version(CVER);
+
+        // Build the version attributes for the DMR++
+        auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+
+        auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
+        build_dmrpp_version->add_value(CVER);
+        version->attributes()->add_attribute_nocopy(build_dmrpp_version);
+
+        auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
+        bes_version->add_value(CVER);
+        version->attributes()->add_attribute_nocopy(bes_version);
+
+        stringstream ldv;
+        ldv << libdap_name() << "-" << libdap_version();
+        auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
+        libdap4_version->add_value(ldv.str());
+        version->attributes()->add_attribute_nocopy(libdap4_version);
+
+        if(!TheBESKeys::ConfigFile.empty()) {
+            // What is the BES configuration in play?
+            auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
+            config->add_value(TheBESKeys::TheKeys()->get_as_config());
+            version->attributes()->add_attribute_nocopy(config);
+        }
+
+        // How was build_dmrpp invoked?
+        string invocation = BESContextManager::TheManager()->get_context(INVOCATION_CONTEXT, found);
+
+        auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+        invoke->add_value(invocation);
+        version->attributes()->add_attribute_nocopy(invoke);
+
+        // Inject version and configuration attributes into DMR here.
+        dmrpp->root()->attributes()->add_attribute_nocopy(version);
+    }
 
 } // namespace build_dmrpp_util

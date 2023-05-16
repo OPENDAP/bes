@@ -686,6 +686,52 @@
         </Group>
         <Group name="Time">
             <Dimension name="d_UTCTime_40" size="43920"/>
+            <Float64 name="d_UTCTime_40">
+                <Dim name="/Data_40HZ/Time/d_UTCTime_40"/>
+                <Attribute name="units" type="String">
+                    <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value>40</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>Transmit time of each shot in J2000 seconds</Value>
+                </Attribute>
+                <Attribute name="standard_name" type="String">
+                    <Value>time</Value>
+                </Attribute>
+                <Attribute name="description" type="String">
+                    <Value>The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
+                </Attribute>
+                <Attribute name="source" type="String">
+                    <Value>Rel 34 GLAS Binary Data</Value>
+                </Attribute>
+                <Attribute name="HDF5_HARDLINK" type="String">
+                    <Value>/Data_40HZ/DS_UTCTime_40</Value>
+                </Attribute>
+            </Float64>
+            <Int32 name="i_rec_ndx">
+                <Dim name="/Data_40HZ/DS_UTCTime_40"/>
+                <Attribute name="hertz" type="String">
+                    <Value>40</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>GLAS Record Index</Value>
+                </Attribute>
+                <Attribute name="description" type="String">
+                    <Value>Unique index that relates this record to the corresponding record(s) in each GLAS data product.</Value>
+                </Attribute>
+                <Attribute name="source" type="String">
+                    <Value>Rel 34 GLAS Binary Data</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>DS_UTCTime_40</Value>
+                </Attribute>
+                <Attribute name="valid_min" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
+            </Int32>
             <Int32 name="i_shot_count">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
                 <Attribute name="hertz" type="String">
@@ -711,52 +757,6 @@
                 </Attribute>
                 <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int32>
-            <Int32 name="i_rec_ndx">
-                <Dim name="/Data_40HZ/DS_UTCTime_40"/>
-                <Attribute name="hertz" type="String">
-                    <Value>40</Value>
-                </Attribute>
-                <Attribute name="long_name" type="String">
-                    <Value>GLAS Record Index</Value>
-                </Attribute>
-                <Attribute name="description" type="String">
-                    <Value>Unique index that relates this record to the corresponding record(s) in each GLAS data product.</Value>
-                </Attribute>
-                <Attribute name="source" type="String">
-                    <Value>Rel 34 GLAS Binary Data</Value>
-                </Attribute>
-                <Attribute name="coordinates" type="String">
-                    <Value>DS_UTCTime_40</Value>
-                </Attribute>
-                <Attribute name="valid_min" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
-                <Map name="/Data_40HZ/DS_UTCTime_40"/>
-            </Int32>
-            <Float64 name="d_UTCTime_40">
-                <Dim name="/Data_40HZ/Time/d_UTCTime_40"/>
-                <Attribute name="units" type="String">
-                    <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value>40</Value>
-                </Attribute>
-                <Attribute name="long_name" type="String">
-                    <Value>Transmit time of each shot in J2000 seconds</Value>
-                </Attribute>
-                <Attribute name="standard_name" type="String">
-                    <Value>time</Value>
-                </Attribute>
-                <Attribute name="description" type="String">
-                    <Value>The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
-                </Attribute>
-                <Attribute name="source" type="String">
-                    <Value>Rel 34 GLAS Binary Data</Value>
-                </Attribute>
-                <Attribute name="HDF5_HARDLINK" type="String">
-                    <Value>/Data_40HZ/DS_UTCTime_40</Value>
-                </Attribute>
-            </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains the 40HZ index and time-related parameters</Value>
             </Attribute>

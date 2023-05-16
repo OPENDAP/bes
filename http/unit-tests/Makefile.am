@@ -3,6 +3,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT
@@ -90,6 +91,7 @@ HttpUtilsTest_SOURCES = HttpUtilsTest.cc
 HttpUtilsTest_LDADD = $(LIBADD)
 
 RemoteResourceTest_SOURCES = RemoteResourceTest.cc
+RemoteResourceTest_CXXFLAGS = -static
 RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc

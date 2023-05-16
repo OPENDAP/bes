@@ -125,8 +125,8 @@ void EffectiveUrl::get_header(const std::string &name, std::string &value, bool 
 }
 
 /**
- * @brief Ingests the passed response hedaers.
- * @param resp_hdrs The reponse headers to ingest.
+ * @brief Replaces the existing header names and values with the new response headers.
+ * @param resp_hdrs The response headers to ingest.
  */
 void EffectiveUrl::ingest_response_headers(const vector <string> &resp_hdrs) {
     d_response_header_names.clear();

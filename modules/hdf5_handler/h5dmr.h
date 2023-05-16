@@ -42,6 +42,7 @@
 #define _h5dmr_H
 #include <unordered_map>
 #include <unordered_set>
+#include <map>
 #include <H5Gpublic.h>
 #include <H5Fpublic.h>
 #include <H5Ipublic.h>
@@ -56,7 +57,9 @@
 
 #include <libdap/D4Group.h>
 #include <libdap/D4Attributes.h>
+#include <HE5Grid.h>
 #include <HE5Var.h>
+#include <HE5GridPara.h>
 
 // This struct stores the link object address and the shortest path link. 
 // Note: if it is necessary to retrieve all the link paths, uncomment
@@ -81,8 +84,63 @@ typedef struct {
 enum class HE5_TYPE {SW,GD,ZA};
 
 typedef struct {
+
+    std::string xdim_fqn;
+    std::string ydim_fqn;
+    int xdim_size;
+    int ydim_size;
+
+    /// The bottom coordinate value of a Grid
+    double point_lower;
+    /// The top coordinate value of a Grid
+    double point_upper;
+    /// The leftmost coordinate value of a Grid
+    double point_left;
+    /// The rightmost coordinate value of a Grid
+    double point_right;
+
+    // The following pixel registration, grid origin, and projection code
+    // are defined in include/HE5_HdfEosDef.h that can be found in
+    // HDF-EOS5 library distribution.
+
+    // PixelRegistration
+    // These are actually EOS5 constants, but we define these
+    // since we do not depend on the HDF-EOS5 lib.
+    EOS5GridPRType pixelregistration; // either _HE5_HDFE_(CENTER|CORNER)
+
+    // GridOrigin
+    EOS5GridOriginType gridorigin; // one of HE5_HDFE_GD_(U|L)(L|R)
+
+    // ProjectionCode
+    EOS5GridPCType projection;
+
+    // Projection parameters
+    double param[13];
+
+    // zone (may only be applied to UTM)
+    int zone;
+
+    // sphere
+    int sphere;
+ 
+} eos5_grid_info_t;
+
+typedef struct {
+    std::string dpath0;
+    std::string dpath1;
+} eos5_dname_info_t;
+
+typedef struct {
+    std::string vpath0;
+    std::string vpath1;
+    std::string cf_gmap_path;
+} eos5_cname_info_t;
+
+typedef struct {
     std::unordered_map<std::string,std::vector<std::string>> varpath_to_dims;
     std::unordered_map<std::string,std::vector<HE5Dim>> grppath_to_dims;
+    std::unordered_map<std::string,eos5_grid_info_t> gridname_to_info;
+    std::vector<std::pair<eos5_dname_info_t,eos5_cname_info_t>> dimpath_to_cvpath;
 } eos5_dim_info_t;
 
 #if 0
@@ -92,10 +150,10 @@ typedef struct {
 } eos5_dim_info_t;
 #endif
 
-bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, const eos5_dim_info_t & ,std::vector<std::string> &);
+bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &);
 
-void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool,const std::unordered_map<std::string, std::vector<std::string>>&);
-void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
+void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
+void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool);
 #if 0
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
@@ -124,6 +182,8 @@ void remove_empty_coord_names(std::vector<std::string>&);
 void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & handled_dim_names);
 void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &coord_name, std::unordered_map<std::string,libdap::Array*> & coname_array_maps, std::unordered_set<std::string>&);
 void add_dimscale_maps(libdap::Array*, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names);
+void reorder_vars(libdap::D4Group*, const std::map<std::string,libdap::Array*> &coname_array_maps, const std::map<std::string,libdap::Array*> & dc_array_maps);
+bool is_cvar(const libdap::BaseType*, const std::unordered_map<std::string,libdap::Array*> &coname_array_maps, const std::unordered_map<std::string,libdap::Array*> & dc_array_maps);
 
 /// EOS5 handling 
 string read_struct_metadata(hid_t s_file_id);
@@ -133,7 +193,14 @@ void build_var_dim_path(const std::string & eos5_obj_name, const std::vector<HE5
 void build_grp_dim_path(const std::string & eos5_obj_name, const std::vector<HE5Dim>& dim_list, std::unordered_map<std::string, std::vector<HE5Dim>>& grppath_to_dims, HE5_TYPE eos5_type);
 bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::string, vector<std::string>>& varpath_to_dims, vector<std::string> & dimnames);
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
+void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
+void build_gd_info(const HE5Grid &gd,std::unordered_map<std::string,eos5_grid_info_t>& gridname_to_info);
+bool is_eos5_grid_grp(libdap::D4Group *,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &);
 
 hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname);
 
+void add_ps_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
+void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
+void add_possible_var_cv_info(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
+void make_attributes_to_cf(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
 #endif

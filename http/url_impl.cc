@@ -39,7 +39,6 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESCatalogList.h"
-#include "BESInternalError.h"
 #include "HttpNames.h"
 
 #include "url_impl.h"
@@ -295,8 +294,7 @@ bool url::is_expired()
  */
 string url::dump(){
     stringstream ss;
-    string indent_inc = "  ";
-    string indent = indent_inc;
+    string indent = "  ";
 
     ss << "http::url [" << this << "] " << endl;
     ss << indent << "d_source_url_str: " << d_source_url_str << endl;
@@ -305,7 +303,7 @@ string url::dump(){
     ss << indent << "d_path:       " << d_path << endl;
     ss << indent << "d_query:      " << d_query << endl;
 
-    string idt = indent+indent_inc;
+    string idt = indent+indent;
     for(const auto &it: d_query_kvp) {
         ss << indent << "d_query_kvp["<<it.first<<"]: " << endl;
         int i = 0;
