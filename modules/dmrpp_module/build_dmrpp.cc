@@ -244,6 +244,26 @@ int main(int argc, char *argv[]) {
             // is fragile. - ndp 6/6/18
             string h5_file_path = BESUtil::assemblePath(bes_data_root, h5_file_name);
 
+            //Check to see if the file being used is a HDF5 file
+            std::ifstream file(h5_file_path, std::ios::binary);
+            if (!file) {
+                std::cerr << "Error opening file: " << h5_file_path << std::endl;
+                return false;
+            }
+
+            // Read the first 8 bytes (file signature) from the file
+            char signature[8];
+            file.read(signature, 8);
+
+            // Compare the signature with the HDF5 file signature
+            const char hdf5Signature[] = { '\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n' };
+
+            bool isHDF5 = std::memcmp(signature, hdf5Signature, sizeof(hdf5Signature)) == 0;
+            if (!isHDF5) {
+                cerr << "The file provided is not HDF5, currently only HDF5 files are supported" << endl;
+                return EXIT_FAILURE;
+            }
+
             bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
