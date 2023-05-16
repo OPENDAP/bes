@@ -260,7 +260,6 @@ int main(int argc, char *argv[]) {
             char signature[8];
             file.read(signature, 8);
 
-            //Check to see if the file is an HDF5 file
             bool isHDF5 = memcmp(signature, hdf5Signature, sizeof(hdf5Signature)) == 0;
             if (!isHDF5) {
                 //Reset the file stream to read from the beginning
@@ -270,7 +269,6 @@ int main(int argc, char *argv[]) {
                 char newSignature[3];
                 file.read(newSignature, 3);
 
-                //Check to see if the file is a netcdf3 file
                 bool isNetCDF3 = memcmp(newSignature, netcdf3Signature, sizeof(netcdf3Signature)) == 0;
                 if (isNetCDF3) {
                     cerr << "The file submitted, " << h5_file_name << ", is a NetCDF-3 classic file and is not "
