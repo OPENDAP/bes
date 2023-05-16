@@ -54,6 +54,7 @@
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
 #include "CredentialsManager.h"
+#include "AccessCredentials.h"
 #include "RequestServiceTimer.h"
 
 #include "awsv4.h"

@@ -52,7 +52,7 @@ class S3Container: public BESContainer {
     void _duplicate(S3Container &copy_to);
 
 public:
-    S3Container() : BESContainer() { }
+    S3Container() = default;
     S3Container(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
     S3Container(const S3Container &copy_from) = delete;
@@ -63,7 +63,7 @@ public:
     // These three methods are abstract in the BESContainer parent class. jhrg 10/18/22
     BESContainer *ptr_duplicate() override;
 
-    void filter_response(const std::map<std::string, std::string> &content_filters) const;
+    void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters) const;
 
     std::string access() override;
 

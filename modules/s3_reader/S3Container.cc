@@ -122,7 +122,7 @@ S3Container::~S3Container()
  * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
  * resource will be replaced with its associated value.
  */
-void S3Container::filter_response(const map<string, string> &content_filters) const {
+void S3Container::filter_response(const map<string, string, std::less<>> &content_filters) const {
 
     string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
 
@@ -146,7 +146,6 @@ string S3Container::access()
     if (!d_dmrpp_rresource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
 
-        // TODO What if this wasn't the assumption? jhrg 10/18/22
         // Since this is S3 we know that the real_name is a URL.
         const string data_access_url_str = get_real_name();
 
@@ -175,12 +174,6 @@ string S3Container::access()
         BESDEBUG(MODULE, prolog << "missing_data_access_url_key: " << missing_data_access_url_key << endl);
         BESDEBUG(MODULE, prolog << "   missing_data_url_trusted: " << missing_data_url_with_trusted_attr_str << endl);
 
-        map<string, string> content_filters;
-        if (S3RequestHandler::d_inject_data_url) {
-            content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-            content_filters.insert(pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
-        }
-
         auto dmrpp_url = std::make_shared<http::url>(dmrpp_url_str, true);
 
         {
@@ -195,6 +188,12 @@ string S3Container::access()
             d_dmrpp_rresource->retrieve_resource();
 
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
+            map<string, string, std::less<>> content_filters;
+            if (S3RequestHandler::d_inject_data_url) {
+                content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
+                content_filters.insert(pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+            }
+
             filter_response(content_filters);
         }
 
@@ -202,20 +201,13 @@ string S3Container::access()
                                 << d_dmrpp_rresource->get_filename() << endl);
     }
 
-    // RemoteResource has a destructor that unlocks the cached item. This string is
-    // how the DMR++ handler will access the DMR++ that will then be used to access
-    // the data. jhrg 10/18/22
-    //string cachedResource = d_dmrpp_rresource->getCacheFileName();
-    string cachedResource = d_dmrpp_rresource->get_filename();
-    BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
-
     const auto type = d_dmrpp_rresource->get_type();
     set_container_type(type);
 
     BESDEBUG(MODULE, prolog << "Type: " << type << endl);
     BESDEBUG(MODULE, prolog << "END  (obj_addr: " << (void *) this << ")" << endl);
 
-    return cachedResource;    // this should return the dmr++ file name from the S3Cache
+    return d_dmrpp_rresource->get_filename();    // this should return the dmr++ file name for the temporary file
 }
 
 /**
@@ -227,8 +219,6 @@ string S3Container::access()
  */
 bool S3Container::release()
 {
-    // RemoteRelease is a shared_ptr with a destructor. It's dtor unlocks the
-    // cached object. jhrg 10/18/22
     if (d_dmrpp_rresource) {
         delete d_dmrpp_rresource;
         d_dmrpp_rresource = nullptr;
@@ -253,20 +243,6 @@ void S3Container::dump(ostream &strm) const
         strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_rresource->get_filename()
              << endl;
         strm << BESIndent::LMarg << "response headers: ";
-#ifdef RR_HEADERS   // jhrg 11/16/22
-        const vector<string> *hdrs = d_dmrpp_rresource->getResponseHeaders();
-        if (hdrs) {
-            strm << endl;
-            BESIndent::Indent();
-            for (auto &hdr_line: *hdrs) {
-                strm << BESIndent::LMarg << hdr_line << endl;
-            }
-            BESIndent::UnIndent();
-        }
-        else {
-            strm << "none" << endl;
-        }
-#endif
     }
     else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;

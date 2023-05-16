@@ -33,6 +33,8 @@
 #include "BESCatalogList.h"
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
+#include "url_impl.h"
+#include "AccessCredentials.h"
 #include "CurlUtils.h"
 #include "CredentialsManager.h"
 #include "BESForbiddenError.h"

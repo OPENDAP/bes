@@ -204,7 +204,9 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
         ERROR_LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
 #endif
 
+#if 0
     CredentialsManager::theCM()->load_credentials();
+#endif
 
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool(d_max_transfer_threads);

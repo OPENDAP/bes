@@ -29,7 +29,6 @@
 #include <cstring>
 #include <iomanip>
 #include <sstream>
-#include <locale>
 #include <string>
 #include <memory>
 #include <sys/stat.h>
@@ -39,7 +38,6 @@
 #include "kvp_utils.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
-#include "CurlUtils.h"
 #include "HttpNames.h"
 
 #include "CredentialsManager.h"
@@ -49,7 +47,6 @@ using namespace std;
 
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
-// TODO Should this be a member in the class? jhrg 10/31/22
 #define NGAP_S3_BASE_DEFAULT "https://"
 
 namespace http {
@@ -63,7 +60,7 @@ const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
 
 // Static class members
 std::unique_ptr<CredentialsManager> CredentialsManager::d_instance = nullptr;
-std::once_flag CredentialsManager::d_euc_init_once;
+std::once_flag CredentialsManager::d_init_once;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -99,8 +96,9 @@ std::string get_env_value(const string &key) {
  */
 CredentialsManager *CredentialsManager::theCM() {
     if (d_instance == nullptr) {
-        std::call_once(d_euc_init_once, []() {
+        std::call_once(d_init_once, []() {
             d_instance.reset(new CredentialsManager);
+            d_instance->load_credentials();
         });
     }
 
@@ -147,7 +145,7 @@ CredentialsManager::get(const shared_ptr <http::url> &url) {
     std::string best_key;
 
     if (url->protocol() == HTTP_PROTOCOL || url->protocol() == HTTPS_PROTOCOL) {
-        for (auto &item: creds) {
+        for (const auto &item: creds) {
             const std::string &key = item.first;
             if ((url->str().rfind(key, 0) == 0) && (key.size() > best_key.size())) {
                 // url starts with key
@@ -216,6 +214,8 @@ bool file_is_secured(const string &filename) {
 }
 
 /**
+ * Private method. Must be called inside code protected by a mutex.
+ *
  * This method loads credentials from a special file identified in the bes.conf chain
  * by the key "CredentialsManager.config". If the key is missing from the bes.conf chain
  * the method will return and no credentials will be loaded.
@@ -246,10 +246,6 @@ bool file_is_secured(const string &filename) {
  * key is missing.
  */
 void CredentialsManager::load_credentials() {
-
-    // This lock is a RAII implementation. It will block until the mutex is
-    // available and the lock will be released when the instance is destroyed.
-    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     bool found_key = true;
     AccessCredentials *accessCredentials;
@@ -360,9 +356,8 @@ void CredentialsManager::load_credentials() {
     BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << theCM()->size() << " AccessCredentials" << endl);
 }
 
-
 /**
- * @brief Attempts to load Access Credentials from the environment variables.
+ * Private method. Must be called inside code protected by a mutex.
  *
  * @return A pointer to AccessCredentials if successful, nullptr otherwise.
  */
@@ -370,7 +365,7 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
 
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
-    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+    // std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     AccessCredentials *ac = nullptr;
     string env_url, env_id, env_access_key, env_region;
@@ -392,13 +387,15 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
 }
 
 /**
+ * Private method. Must be called inside code protected by a mutex.
+ *
  * Read the BESKeys (from bes.conf chain) and if NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY is present builds
  * and adds to the CredentialsManager an instance of NgapS3Credentials based on the values found in the bes.conf chain.
  */
-void CredentialsManager::load_ngap_s3_credentials() {
+void CredentialsManager::load_ngap_s3_credentials() const {
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
-    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+    // std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     string s3_distribution_endpoint_url;
     bool found;
@@ -418,7 +415,7 @@ void CredentialsManager::load_ngap_s3_credentials() {
             s3_base_url = value;
         }
 
-        unique_ptr<NgapS3Credentials> nsc(new NgapS3Credentials(s3_distribution_endpoint_url, refresh_margin));
+        auto nsc = std::make_unique<NgapS3Credentials>(s3_distribution_endpoint_url, refresh_margin);
         nsc->add(AccessCredentials::URL_KEY, s3_base_url);
         nsc->name("NgapS3Credentials");
 
