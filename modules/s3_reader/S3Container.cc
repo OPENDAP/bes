@@ -166,8 +166,9 @@ string S3Container::access()
         const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + R"(")";
 
         const string trusted_url_hack = R"(" dmrpp:trust="true")";
-        const string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack ;
-            const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+
+        const string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
+        const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
 
         BESDEBUG(MODULE, prolog << "        data_access_url_key: " << data_access_url_key << endl);
         BESDEBUG(MODULE, prolog << "    data_access_url_trusted: " << data_access_url_with_trusted_attr_str << endl);
