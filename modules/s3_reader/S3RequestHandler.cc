@@ -38,12 +38,14 @@
 #include <TheBESKeys.h>
 #include <BESUtil.h>
 
+#include "CredentialsManager.h"
 #include "S3RequestHandler.h"
 #include "S3Names.h"
 
 using namespace std;
 using namespace libdap;
 using namespace s3;
+using namespace http;
 
 bool S3RequestHandler::d_inject_data_url;
 
@@ -53,6 +55,8 @@ S3RequestHandler::S3RequestHandler(const string &name) : BESRequestHandler(name)
     add_method(HELP_RESPONSE, S3RequestHandler::S3_build_help);
 
     d_inject_data_url = TheBESKeys::TheKeys()->read_bool_key(S3_INJECT_DATA_URL_KEY, false);
+
+    CredentialsManager::theCM()->load_credentials();
 }
 
 bool S3RequestHandler::S3_build_vers(BESDataHandlerInterface &dhi)

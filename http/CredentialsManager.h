@@ -53,18 +53,22 @@ private:
     bool ngaps3CredentialsLoaded = false;
     std::map<std::string, AccessCredentials *> creds;
 
+    static std::unique_ptr<CredentialsManager> d_instance;
+    static std::once_flag d_euc_init_once;
+
     CredentialsManager() = default;   // only called here to build the singleton
+#if 0
     static void initialize_instance();
+
 
     static void delete_instance();
 
-    AccessCredentials *load_credentials_from_env();
+#endif
 
+    AccessCredentials *load_credentials_from_env();
     void load_ngap_s3_credentials();
 
 public:
-    static CredentialsManager *theMngr;
-
     ~CredentialsManager();
 
     static CredentialsManager *theCM();

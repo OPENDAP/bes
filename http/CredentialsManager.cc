@@ -31,6 +31,7 @@
 #include <sstream>
 #include <locale>
 #include <string>
+#include <memory>
 #include <sys/stat.h>
 
 #include "AllowedHosts.h"
@@ -60,15 +61,9 @@ const char *CredentialsManager::ENV_REGION_KEY = "CMAC_REGION";
 const char *CredentialsManager::ENV_URL_KEY = "CMAC_URL";
 const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
 
-/**
- * Our singleton instance
- */
-CredentialsManager *CredentialsManager::theMngr = nullptr;
-
-/**
- * Run once_flag for initializing the singleton instance.
- */
-std::once_flag d_cmac_init_once;
+// Static class members
+std::unique_ptr<CredentialsManager> CredentialsManager::d_instance = nullptr;
+std::once_flag CredentialsManager::d_euc_init_once;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -89,9 +84,7 @@ std::string get_env_value(const string &key) {
         value.assign(cstr);
         BESDEBUG(HTTP_MODULE, prolog << "From system environment - " << key << ": " << value << endl);
     }
-    else {
-        value.clear();
-    }
+
     return value;
 }
 
@@ -101,20 +94,17 @@ std::string get_env_value(const string &key) {
 //
 
 /**
- * @brief Returns the singleton instance of the CrednetialsManager.
+ * @brief Returns the singleton instance of the CredentialsManager.
  * @return Returns the singleton instance of the CredentialsManager
  */
 CredentialsManager *CredentialsManager::theCM() {
+    if (d_instance == nullptr) {
+        std::call_once(d_euc_init_once, []() {
+            d_instance.reset(new CredentialsManager);
+        });
+    }
 
-    std::call_once(d_cmac_init_once, CredentialsManager::initialize_instance);
-    return theMngr;
-}
-
-void CredentialsManager::initialize_instance() {
-    theMngr = new CredentialsManager;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
+    return d_instance.get();
 }
 
 /**
@@ -124,18 +114,7 @@ CredentialsManager::~CredentialsManager() {
     for (auto &item: creds) {
         delete item.second;
     }
-    creds.clear();
 }
-
-
-/**
- * Private static function can only be called by friends and pThreads code.
- */
-void CredentialsManager::delete_instance() {
-    delete theMngr;
-    theMngr = nullptr;
-}
-
 
 /**
  * Add the passed set of AccessCredentials to the collection, filed under key.
@@ -149,8 +128,7 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     creds.insert(std::pair<std::string, AccessCredentials *>(key, ac));
-    BESDEBUG(HTTP_MODULE,
-             prolog << "Added AccessCredentials to CredentialsManager. credentials: " << endl << ac->to_json() << endl);
+    BESDEBUG(HTTP_MODULE, prolog << "Added AccessCredentials to CredentialsManager. credentials: " << endl << ac->to_json() << endl);
 }
 
 /**
