@@ -244,24 +244,43 @@ int main(int argc, char *argv[]) {
             // is fragile. - ndp 6/6/18
             string h5_file_path = BESUtil::assemblePath(bes_data_root, h5_file_name);
 
-            //Check to see if the file being used is an HDF5 file
+            //Use this ifstream file to run a check on the provided file's signature
+            // to see if it is an HDF5 file
             ifstream file(h5_file_path, ios::binary);
             if (!file) {
                 cerr << "Error opening file: " << h5_file_path << endl;
                 return false;
             }
 
-            // Read the first 8 bytes (file signature) from the file
+            //HDF5 and NetCDF3 signatures:
+            const char hdf5Signature[] = { '\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n' };
+            const char netcdf3Signature[] = {'C', 'D', 'F'};
+
+            //Read the first 8 bytes (file signature) from the file
             char signature[8];
             file.read(signature, 8);
 
-            // Compare the signature with the HDF5 file signature
-            const char hdf5Signature[] = { '\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n' };
-
+            //Check to see if the file is an HDF5 file
             bool isHDF5 = memcmp(signature, hdf5Signature, sizeof(hdf5Signature)) == 0;
             if (!isHDF5) {
-                cerr << "The file provided is not HDF5, currently only HDF5 files are supported" << endl;
-                return EXIT_FAILURE;
+                //Reset the file stream to read from the beginning
+                file.clear();
+                file.seekg(0);
+
+                char newSignature[3];
+                file.read(newSignature, 3);
+
+                //Check to see if the file is a netcdf3 file
+                bool isNetCDF3 = memcmp(newSignature, netcdf3Signature, sizeof(netcdf3Signature)) == 0;
+                if (isNetCDF3) {
+                    cerr << "The file submitted, " << h5_file_name << ", is a NetCDF-3 classic file and is not "
+                            "compatible with dmr++ production at this time." << endl;
+                    return EXIT_FAILURE;
+                } else {
+                    cerr << "The provided file," << h5_file_name << ", is neither an HDF5 or an NetCDF-4 file,"
+                            " currently only HDF5 and NetCDF-4 files are supported for dmr++ production" << endl;
+                    return EXIT_FAILURE;
+                }
             }
             file.close();
 
