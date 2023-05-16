@@ -30,7 +30,22 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	@if [ -n "$${CMAC_ID}" ] \
+		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
+		&& [ -n "$${CMAC_REGION}" ]  \
+		&& [ -n "$${CMAC_URL}" ] ; then \
+		echo "--------- S3 Auth Tests ---------"; \
+		echo "        CMAC_ID: <Has Been Set>"; \
+		echo "CMAC_ACCESS_KEY: <Has Been Set>"; \
+		echo "    CMAC_REGION: ${CMAC_REGION}"; \
+		echo "       CMAC_URL: ${CMAC_URL}"; \
+		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
+	else \
+		echo "No access credentials available, skipping S3 authentication tests"; \
+		true;\
+	fi
+	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
