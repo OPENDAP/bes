@@ -151,23 +151,23 @@ string S3Container::access()
         const string data_access_url_str = get_real_name();
 
         // And we know that the dmr++ file should be "right next to it" (side-car)
-        const string dmrpp_url_str = string(data_access_url_str).append(".dmrpp");
+        const string dmrpp_url_str = data_access_url_str + ".dmrpp";
 
         // And if there's a missing data file (side-car) it should be "right there" too.
-        const string missing_data_url_str = string(data_access_url_str).append(".missing");
+        const string missing_data_url_str = data_access_url_str+ ".missing";
 
         BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);
         BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url_str << endl);
         BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
 
-        const string href = "href=\"";
+        const string href = R"(href=")";
 
-        const string data_access_url_key = string(href).append(DATA_ACCESS_URL_KEY).append("\"");
-        const string missing_data_access_url_key = string(href).append(MISSING_DATA_ACCESS_URL_KEY).append("\"");
+        const string data_access_url_key = href + DATA_ACCESS_URL_KEY + R"(")";
+        const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + R"(")";
 
         const string trusted_url_hack = R"(" dmrpp:trust="true")";
-        const string data_access_url_with_trusted_attr_str = string(href).append(data_access_url_str).append(trusted_url_hack);
-        const string missing_data_url_with_trusted_attr_str = string(href).append(missing_data_url_str).append(trusted_url_hack);
+        const string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack ;
+            const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
 
         BESDEBUG(MODULE, prolog << "        data_access_url_key: " << data_access_url_key << endl);
         BESDEBUG(MODULE, prolog << "    data_access_url_trusted: " << data_access_url_with_trusted_attr_str << endl);
@@ -180,7 +180,7 @@ string S3Container::access()
             content_filters.insert(pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
         }
 
-        shared_ptr<http::url> dmrpp_url(new http::url(dmrpp_url_str, true));
+        auto dmrpp_url = std::make_shared<http::url>(dmrpp_url_str, true);
 
         {
             // This scope is here because of the BESStopWatch. jhrg 10/18/22
@@ -191,15 +191,12 @@ string S3Container::access()
                 besTimer.start("DMR++ retrieval: " + dmrpp_url->str());
             }
 #endif
-            //d_dmrpp_rresource->retrieveResource(content_filters); // <- previous code
             d_dmrpp_rresource->retrieve_resource();
 
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
             filter_response(content_filters);
         }
 
-        //BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url->str() << " returning cached file "
-        //         << d_dmrpp_rresource->getCacheFileName() << endl);
         BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url->str() << " returning cached file "
                                 << d_dmrpp_rresource->get_filename() << endl);
     }
@@ -211,7 +208,6 @@ string S3Container::access()
     string cachedResource = d_dmrpp_rresource->get_filename();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
-    //const auto type = d_dmrpp_rresource->getType();
     const auto type = d_dmrpp_rresource->get_type();
     set_container_type(type);
 

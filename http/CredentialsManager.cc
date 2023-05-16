@@ -386,10 +386,7 @@ void CredentialsManager::load_credentials() {
 /**
  * @brief Attempts to load Access Credentials from the environment variables.
  *
- * WARNING: This method assumes that the Manager is located and makes no
- * effort to lock or unlock the manager.
- *
- * @return A pointer to AccessCredntials of successful, nullptr otherwise.
+ * @return A pointer to AccessCredentials if successful, nullptr otherwise.
  */
 AccessCredentials *CredentialsManager::load_credentials_from_env() {
 
@@ -398,23 +395,21 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     AccessCredentials *ac = nullptr;
-    string env_url, env_id, env_access_key, env_region, env_bucket;
+    string env_url, env_id, env_access_key, env_region;
 
-    // If we are in developer mode then we compile this section which
-    // allows us to inject credentials via the system environment
+    env_id =get_env_value(CredentialsManager::ENV_ID_KEY);
+    env_access_key = get_env_value(CredentialsManager::ENV_ACCESS_KEY);
+    env_region = get_env_value(CredentialsManager::ENV_REGION_KEY);
+    env_url = get_env_value(CredentialsManager::ENV_URL_KEY);
 
-    env_id.assign(get_env_value(CredentialsManager::ENV_ID_KEY));
-    env_access_key.assign(get_env_value(CredentialsManager::ENV_ACCESS_KEY));
-    env_region.assign(get_env_value(CredentialsManager::ENV_REGION_KEY));
-    env_url.assign(get_env_value(CredentialsManager::ENV_URL_KEY));
-
-    if (env_url.size() && env_id.size() && env_access_key.size() && env_region.size()) {
+    if (!(env_url.empty() || env_id.empty() || env_access_key.empty() || env_region.empty())) {
         ac = new AccessCredentials();
         ac->add(AccessCredentials::URL_KEY, env_url);
         ac->add(AccessCredentials::ID_KEY, env_id);
         ac->add(AccessCredentials::KEY_KEY, env_access_key);
         ac->add(AccessCredentials::REGION_KEY, env_region);
     }
+
     return ac;
 }
 

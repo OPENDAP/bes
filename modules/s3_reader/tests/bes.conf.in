@@ -49,6 +49,7 @@ S3.inject_data_urls=true
 AllowedHosts = ^https?://localhost:8080/.*$
 AllowedHosts += ^https?://test.opendap.org/.*$
 AllowedHosts += ^https:\/\/s3\.amazonaws\.com\/cloudy(open)?dap\/.*$
+AllowedHosts += ^https:\/\/s3-module-test-bucket\.s3\.us-west-2\.amazonaws.com\/\.*$
 AllowedHosts += ^https:\/\/cmr\.earthdata\.nasa\.gov\/.*$
 
 # For this to work with the DMR++ documents, we will have to modify the
