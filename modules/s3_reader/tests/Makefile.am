@@ -40,7 +40,7 @@ check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
 		echo "CMAC_ACCESS_KEY: <Has Been Set>"; \
 		echo "    CMAC_REGION: ${CMAC_REGION}"; \
 		echo "       CMAC_URL: ${CMAC_URL}"; \
-		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
+		$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
 	else \
 		echo "No access credentials available, skipping S3 authentication tests"; \
 		true;\
