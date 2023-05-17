@@ -41,7 +41,7 @@ using json = nlohmann::json;
 
 namespace cmr {
 
-/*
+/* Response from the CMR legacy service api: https://cmr-host/legacy-services/rest/providers
    {
     "provider": {
       "contacts": [
@@ -53,7 +53,7 @@ namespace cmr {
           "role": "Default Contact"
         }
       ],
-      "description_of_holdings": "EO European and Canadian missions Earth Science Data",
+      "description_of_holding": "EO European and Canadian missions Earth Science Data",
       "discovery_urls": [
         "https://fedeo-client.ceos.org/about/"
       ],
@@ -67,41 +67,118 @@ namespace cmr {
     }
  */
 
-/*
-    {
-        "email": "michael.p.morahan@nasa.gov",
-        "first_name": "Michael",
-        "last_name": "Morahan",
-        "phones": [],
-        "role": "Default Contact"
-    }
+/* Response from CMR ingest API:  https://cmr-host/ingest/providers
 
+[{
+    "provider-id": "LARC_ASDC",
+    "short-name": "LARC_ASDC",
+    "cmr-only": false,
+    "small": false,
+    "consortiums": "EOSDIS GEOSS"
+}, {
+    "provider-id": "USGS_EROS",
+    "short-name": "USGS_EROS",
+    "cmr-only": false,
+    "small": false,
+    "consortiums": "CEOS CWIC"
+}, {
+ ...
+ }]
+
+ */
+
+
+/*
+   Response from the new Providermapi:
+   https://cmr.uat.earthdata.nasa.gov/ingest/providers/provider_id
+
+
+   {
+  "MetadataSpecification": {
+    "Name": "Provider",
+    "Version": "1.0.0",
+    "URL": "https://cdn.earthdata.nasa.gov/schemas/provider/v1.0.0"
+  },
+  "ProviderId": "GES_DISC",
+  "DescriptionOfHolding": "None",
+  "Organizations": [
+    {
+      "ShortName": "GES_DISC",
+      "LongName": "GES_DISC",
+      "URLValue": "https://disc.sci.gsfc.nasa.gov",
+      "Roles": [
+        "PUBLISHER"
+      ]
+    }
+  ],
+  "Administrators": [
+    "cloeser1",
+    "cdurbin",
+    "ECHO_SYS",
+    "gesdisc_test",
+    "mmorahan",
+    "sritz"
+  ],
+  "ContactPersons": [
+    {
+      "Roles": [
+        "PROVIDER MANAGEMENT"
+      ],
+      "LastName": "Seiler",
+      "FirstName": "Ed",
+      "ContactInformation": {
+        "Addresses": [
+          {
+            "City": "Greenbelt",
+            "Country": "United States",
+            "StateProvince": "MD",
+            "PostalCode": "20771",
+            "StreetAddresses": [
+              "Building 32",
+              "Goddard Space Flight Center"
+            ]
+          }
+        ],
+        "ContactMechanisms": [
+          {
+            "Type": "Email",
+            "Value": "edward.j.seiler@nasa.gov"
+          },
+          {
+            "Type": "Telephone",
+            "Value": "301.614.5486"
+          }
+        ]
+      }
+    }
+  ],
+  "Consortiums": [
+    "EOSDIS",
+    "GEOSS"
+  ]
+}
  */
 
 
 string Provider::id() const{
     JsonUtils json;
-    return json.get_str_if_present(CMR_PROVIDER_ID_KEY,d_provider_json_obj);
+    return json.get_str_if_present(CMR_PROVIDER_ID_KEY, d_provider_json_obj);
 }
 
-string Provider::description_of_holdings() const {
+string Provider::description_of_holding() const {
     JsonUtils json;
-    return json.get_str_if_present(CMR_PROVIDER_DESCRIPTION_OF_HOLDINGS_KEY,d_provider_json_obj);
+    return json.get_str_if_present(CMR_DESCRIPTION_OF_HOLDING_KEY, d_provider_json_obj);
 }
 
-string Provider::organization_name() const {
-    JsonUtils json;
-    return json.get_str_if_present(CMR_PROVIDER_ORGANIZATION_NAME_KEY,d_provider_json_obj);
-}
 
 json Provider::contacts() const {
     JsonUtils json;
-    return json.get_str_if_present(CMR_PROVIDER_CONTACTS_KEY,d_provider_json_obj);
+    return json.get_str_if_present(CMR_LEGACY_PROVIDER_CONTACTS_KEY, d_provider_json_obj);
 }
 
 bool Provider::rest_only() const {
     JsonUtils json;
-    return json.qc_boolean(CMR_PROVIDER_REST_ONLY_KEY,d_provider_json_obj);
+    return json.qc_boolean(CMR_LEGACY_PROVIDER_REST_ONLY_KEY, d_provider_json_obj);
 }
 void Provider::get_collections(std::map<std::string,unique_ptr<cmr::Collection>> &collections) const
 {
@@ -118,16 +195,22 @@ void Provider::get_opendap_collections(std::map<std::string, std::unique_ptr<cmr
 
 
 
-string Provider::to_string() const {
+string Provider::to_string(bool show_json) const {
     stringstream msg;
     msg << "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #" << endl;
     msg << "# Provider" << endl;
     msg << "#              provider_id: " << id() << endl;
-    msg << "#        organization_name: " << organization_name() << endl;
-    msg << "#  description_of_holdings: " << description_of_holdings() << endl;
-    msg << "#                 contacts: " << contacts().dump() << endl;
-    msg << "#                rest_only: " << (rest_only()?"true":"false") << endl;
+//    msg << "#        organization_name: " << organization_name() << endl;
+    msg << "#  description_of_holding: " << description_of_holding() << endl;
+//    msg << "#                 contacts: " << contacts().dump() << endl;
+//    msg << "#                rest_only: " << (rest_only()?"true":"false") << endl;
     msg << "# OPeNDAP collection count: " << d_opendap_collection_count << endl;
+    msg << "#" << endl;
+    if(show_json) {
+        msg << "# json: " << endl;
+        msg << d_provider_json_obj.dump(4) << endl;
+        msg << "#" << endl;
+    }
     msg << "#" << endl;
     return msg.str();
 }

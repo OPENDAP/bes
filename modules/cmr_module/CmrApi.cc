@@ -43,7 +43,7 @@
 
 #include "BESError.h"
 #include "BESInternalError.h"
-#include "BESSyntaxUserError.h"
+#include "BESStopWatch.h"
 #include "BESNotFoundError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -74,8 +74,13 @@ CmrApi::CmrApi() {
     }
     BESDEBUG(MODULE, prolog << "d_cmr_endpoint_url: " << d_cmr_endpoint_url << endl);
 
+    d_cmr_legacy_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
+                                                                       CMR_PROVIDERS_LEGACY_API_ENDPOINT);
+    BESDEBUG(MODULE,
+             prolog << "d_cmr_legacy_providers_search_endpoint_url: " << d_cmr_legacy_providers_search_endpoint_url << endl);
+
     d_cmr_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
-                                                                CMR_PROVIDERS_LEGACY_API_ENDPOINT);
+                                                                       CMR_PROVIDERS_API_ENDPOINT);
     BESDEBUG(MODULE,
              prolog << "d_cmr_providers_search_endpoint_url: " << d_cmr_providers_search_endpoint_url << endl);
 
@@ -764,42 +769,81 @@ const {
     return result;
 }
 
-
-/**
- * https://cmr.earthdata.nasa.gov/legacy-services/rest/providers/LPDAAC_ECS.json
- * @param provider_id
- * @return
- */
-Provider CmrApi::get_provider(const std::string &provider_id) const
-{
-    JsonUtils json;
-
-    string cmr_query_url = BESUtil::pathConcat(d_cmr_providers_search_endpoint_url,provider_id);
-    cmr_query_url += ".json";
-    BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url << endl);
-
-    const auto &cmr_doc = json.get_as_json(cmr_query_url);
-
-    // We know that this CMR query returns a single anonymous json object, which
-    // in turn contains a single provider object (really...)
-
-    // Grab the internal provider object...
-    const auto &provider_json = json.qc_get_object(CMR_PROVIDER_KEY,cmr_doc);
-
-    // And then make a new provider.
-    Provider provider(provider_json);
-
-    return provider;
-}
-
-
-void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
+void CmrApi::get_providers_list(std::vector<std::string> &provider_ids) const
 {
     JsonUtils json;
 
     stringstream cmr_query_url;
-    cmr_query_url << d_cmr_providers_search_endpoint_url << ".json?page_size=" << CMR_MAX_PAGE_SIZE;
-    BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url.str() << endl);
+    cmr_query_url << d_cmr_providers_search_endpoint_url;
+    BESDEBUG(MODULE, prolog << "CMR Providers List Request Url: : " << cmr_query_url.str() << endl);
+
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
+
+    // We know that this CMR query returns an array of anonymous json objects, each of which
+    //  {
+    //    "provider-id": "LARC_ASDC",
+    //    "short-name": "LARC_ASDC",
+    //    "cmr-only": false,
+    //    "small": false,
+    //    "consortiums": "EOSDIS GEOSS"
+    //  },
+    // All we need is the provider-id for now.
+
+    // So we iterate over the anonymous objects
+    for (const auto &obj : cmr_doc){
+        // And the grab the internal provider object...
+        auto provider_id = json.get_str_if_present(CMR_PROVIDER_LIST_ID_KEY, obj);
+
+        if(!provider_id.empty()){
+            provider_ids.emplace_back(provider_id);
+        }
+    }
+
+}
+
+void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
+{
+    BESStopWatch bsw;
+    bsw.start(prolog);
+    vector<string> provider_ids;
+    get_providers_list(provider_ids);
+    get_providers(provider_ids,providers);
+}
+
+void CmrApi::get_providers(
+        const std::vector<std::string> &provider_ids,
+        std::vector<std::unique_ptr<cmr::Provider>> &providers) const
+{
+
+    for(const auto &provider_id:provider_ids){
+        auto provider = get_provider(provider_id);
+        providers.emplace_back(std::move(provider));
+    }
+}
+
+
+std::unique_ptr<cmr::Provider> CmrApi::get_provider(const string &provider_id) const
+{
+    JsonUtils json;
+    stringstream cmr_query_url;
+    cmr_query_url << d_cmr_providers_search_endpoint_url << "/" << provider_id;
+    BESDEBUG(MODULE, prolog << "CMR Provider Info Request Url: " << cmr_query_url.str() << endl);
+
+    const auto &provider_json = json.get_as_json(cmr_query_url.str());
+    // We know that this CMR query returns a single of anonymous json object, which is the Provider object
+
+    return unique_ptr<Provider>(new Provider(provider_json));
+}
+
+
+
+void CmrApi::get_providers_old(vector<unique_ptr<cmr::Provider>> &providers) const
+{
+    JsonUtils json;
+
+    stringstream cmr_query_url;
+    cmr_query_url << d_cmr_legacy_providers_search_endpoint_url << ".json?page_size=" << CMR_MAX_PAGE_SIZE;
+    BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: " << cmr_query_url.str() << endl);
 
     const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
 
@@ -809,7 +853,7 @@ void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
     // So we iterate over the anonymous objects
     for (const auto &obj : cmr_doc){
         // And the grab the internal provider object...
-        auto provider_json = json.qc_get_object(CMR_PROVIDER_KEY, obj);
+        auto provider_json = json.qc_get_object(CMR_LEGACY_PROVIDER_KEY, obj);
         // And then make a new Provider and put it in the vector.
         auto provider = unique_ptr<Provider>(new Provider(provider_json));
         providers.emplace_back(std::move(provider));
@@ -817,18 +861,32 @@ void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
 
 }
 
+
 void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opendap_providers) const
 {
     vector<unique_ptr<cmr::Provider>> all_providers;
+    BESStopWatch bsw;
+    bsw.start(prolog);
     get_providers(all_providers);
     for(auto &provider: all_providers){
-        BESDEBUG(MODULE, prolog << "PROVIDER: " << provider->id() << endl);
+        BESDEBUG(MODULE, prolog << "Processing PROVIDER: " << provider->id() << endl);
         auto hits = get_opendap_collections_count(provider->id());
         if (hits > 0){
             provider->set_opendap_collection_count(hits);
             opendap_providers.emplace(provider->id(), std::move(provider));
         }
     }
+}
+void foo(){
+    CmrApi cmr;
+    vector<unique_ptr<Provider>> providers;
+    cmr.get_providers( providers);
+    cerr << "Found " << providers.size() << " Provider records." << endl;
+    for(const auto &provider:providers){
+        cerr << prolog << "          ProviderId: " << provider->id() << endl;
+        //cerr << prolog << "DescriptionOfHolding: " << provider->description_of_holding() << endl;
+    }
+
 }
 
 unsigned long int CmrApi::get_opendap_collections_count(const string &provider_id) const

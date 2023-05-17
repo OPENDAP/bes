@@ -98,7 +98,7 @@ public:
         if(Debug) cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl;
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
-        if (bes_debug) BESDebug::SetUp("cerr,cmr");
+        if (bes_debug) BESDebug::SetUp("cerr,timing");
 
         if (bes_debug) show_file(bes_conf);
         if(Debug) cerr << "setUp() - END" << endl;
@@ -577,23 +577,34 @@ public:
         CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
     }
 
-    // these three tests now fail with an exception. Patched. jhrg 5/2/23
     void get_provider_test() {
         stringstream msg;
         CmrApi cmr;
 
-        Provider ges_disc = cmr.get_provider("GES_DISC");
-        cerr << ges_disc.to_string() << endl;
+        auto ges_disc = cmr.get_provider("GES_DISC");
+        DBG(cerr << ges_disc->to_string() << endl;);
+    }
+
+    void get_providers_list_test() {
+        stringstream msg;
+        CmrApi cmr;
+
+        vector<string> provider_ids;
+        cmr.get_providers_list(provider_ids);
+        for (auto &provider_id: provider_ids){
+            DBG(cerr << provider_id << endl;);
+        }
     }
 
     void get_providers_test() {
         stringstream msg;
         CmrApi cmr;
-        std::vector<std::unique_ptr<cmr::Provider>> providers;
 
-        cmr.get_providers(providers);
-        for (auto &provider: providers){
-            cerr << provider->to_string() << endl;
+        vector<unique_ptr<Provider>> providers;
+        cmr.get_providers( providers);
+        DBG(cerr << "Found " << providers.size() << " Provider records." << endl;);
+        for(const auto &provider:providers){
+            DBG(cerr << prolog << "          ProviderId: " << provider->id() << endl;);
         }
     }
 
@@ -604,8 +615,11 @@ public:
 
         cmr.get_opendap_providers(providers);
 
-        for (auto &provider: providers){
-            cerr << provider.second->to_string() << endl;
+        if(debug){
+            for (auto itr = providers.begin(); itr != providers.end(); itr++){
+                cerr << prolog << "# ProviderId: " << itr->second->id() << " ";
+                cerr << "(OPeNDAP Collections: " << itr->second->get_opendap_collection_count() << ")" << endl;
+            }
         }
     }
 
@@ -617,9 +631,11 @@ public:
 
         cmr.get_opendap_collections(provider_id, collections);
 
-        cerr << prolog << "Got " << collections.size() << " Collections" << endl;
-        for (auto &collection: collections){
-            cerr << collection.second->to_string() << endl;
+        if(debug) {
+            cerr << prolog << "Got " << collections.size() << " Collections" << endl;
+            for (auto &collection: collections) {
+                cerr << collection.second->to_string() << endl;
+            }
         }
     }
 
@@ -631,8 +647,9 @@ public:
     CPPUNIT_TEST_EXCEPTION(get_providers_test, BESError);
 #else
     CPPUNIT_TEST(get_provider_test);
-    CPPUNIT_TEST(get_opendap_providers_test);
+    CPPUNIT_TEST(get_providers_list_test);
     CPPUNIT_TEST(get_providers_test);
+    CPPUNIT_TEST(get_opendap_providers_test);
 #endif
     CPPUNIT_TEST(get_opendap_collections_test);
     CPPUNIT_TEST(get_years_test);
