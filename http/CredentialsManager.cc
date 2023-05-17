@@ -247,13 +247,8 @@ bool file_is_secured(const string &filename) {
  */
 void CredentialsManager::load_credentials() {
 
-    bool found_key = true;
-    AccessCredentials *accessCredentials;
-    map<string, AccessCredentials *> credential_sets;
-
-    string config_file;
-    TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
-    if (!found_key) {
+    string config_file = TheBESKeys::TheKeys()->read_string_key(CATALOG_MANAGER_CREDENTIALS, "");
+    if (config_file.empty()) {
         BESDEBUG(HTTP_MODULE, prolog << "The BES key " << CATALOG_MANAGER_CREDENTIALS
                                      << " was not found in the BES configuration tree. No AccessCredentials were loaded"
                                      << endl);
@@ -263,7 +258,7 @@ void CredentialsManager::load_credentials() {
     // Does the configuration indicate that credentials will be submitted via the runtime environment?
     if (config_file == string(CredentialsManager::USE_ENV_CREDS_KEY_VALUE)) {
         // Apparently so...
-        accessCredentials = theCM()->load_credentials_from_env();
+        auto accessCredentials = CredentialsManager::load_credentials_from_env();
         if (accessCredentials) {
             // So if we have them, we add them to theCM() and then return without processing the configuration.
             string url = accessCredentials->get(AccessCredentials::URL_KEY);
@@ -294,15 +289,17 @@ void CredentialsManager::load_credentials() {
     }
     BESDEBUG(HTTP_MODULE, prolog << "The config file '" << config_file << "' is secured." << endl);
 
+    // Load the credentials from the config file into 'keystore'
     map<string, vector<string>> keystore;
-
     kvp::load_keys(config_file, keystore);
+
+    map<string, AccessCredentials *, std::less<>> credential_sets;
+    AccessCredentials *accessCredentials = nullptr;
 
     for (const auto &key: keystore) {
         string creds_name = key.first;
         const vector<string> &credentials_entries = key.second;
-        map<string, AccessCredentials *>::iterator mit;
-        mit = credential_sets.find(creds_name);
+        auto mit = credential_sets.find(creds_name);
         if (mit != credential_sets.end()) {  // New?
             // Nope.
             accessCredentials = mit->second;
@@ -314,7 +311,7 @@ void CredentialsManager::load_credentials() {
         }
 
         for (const auto &entry: credentials_entries) {
-            size_t index = entry.find(":");
+            size_t index = entry.find(':');
             if (index > 0) {
                 string key_name = entry.substr(0, index);
                 string value = entry.substr(index + 1);

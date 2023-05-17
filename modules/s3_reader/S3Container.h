@@ -28,6 +28,7 @@
 
 #include <string>
 #include <ostream>
+#include <memory>
 
 #include "BESContainer.h"
 #include "RemoteResource.h"
@@ -46,7 +47,7 @@ namespace s3 {
 
 class S3Container: public BESContainer {
 
-    http::RemoteResource *d_dmrpp_rresource = nullptr;
+    std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
 
     void initialize();
     void _duplicate(S3Container &copy_to);
@@ -58,7 +59,7 @@ public:
     S3Container(const S3Container &copy_from) = delete;
     S3Container& operator=(const S3Container& other) = delete;
 
-    ~S3Container() override;
+    ~S3Container() = default;
 
     // These three methods are abstract in the BESContainer parent class. jhrg 10/18/22
     BESContainer *ptr_duplicate() override;

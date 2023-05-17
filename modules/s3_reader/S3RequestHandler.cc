@@ -54,10 +54,6 @@ S3RequestHandler::S3RequestHandler(const string &name) : BESRequestHandler(name)
     add_method(HELP_RESPONSE, S3RequestHandler::S3_build_help);
 
     d_inject_data_url = TheBESKeys::TheKeys()->read_bool_key(S3_INJECT_DATA_URL_KEY, false);
-
-#if 0
-    CredentialsManager::theCM()->load_credentials();
-#endif
 }
 
 bool S3RequestHandler::S3_build_vers(BESDataHandlerInterface &dhi)

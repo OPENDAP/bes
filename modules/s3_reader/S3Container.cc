@@ -104,12 +104,18 @@ S3Container::ptr_duplicate()
     return container;
 }
 
+#if 0
+
 S3Container::~S3Container()
 {
+#if 0
     if (d_dmrpp_rresource) {
         release();
     }
+#endif
 }
+
+#endif
 
 /**
  * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
@@ -178,7 +184,8 @@ string S3Container::access()
 
         {
             // This scope is here because of the BESStopWatch. jhrg 10/18/22
-            d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
+            //d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
+            d_dmrpp_rresource = std::make_shared<http::RemoteResource>(dmrpp_url);
 #ifndef NDEBUG
             BESStopWatch besTimer;
             if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
@@ -220,7 +227,7 @@ string S3Container::access()
 bool S3Container::release()
 {
     if (d_dmrpp_rresource) {
-        delete d_dmrpp_rresource;
+        // delete d_dmrpp_rresource;
         d_dmrpp_rresource = nullptr;
     }
 
