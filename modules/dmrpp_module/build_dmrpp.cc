@@ -249,6 +249,7 @@ int main(int argc, char *argv[]) {
             ifstream file(h5_file_path, ios::binary);
             if (!file) {
                 cerr << "Error opening file: " << h5_file_path << endl;
+                cerr << "Cause of error: " << strerror(errno) << endl;
                 return false;
             }
 
