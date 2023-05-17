@@ -482,7 +482,8 @@ public:
     void http_get_as_json_file_test() {
         const string url = "file://" + d_data_dir + "/test_data.json";
         // const string url = "https://hub.docker.com/v2/repositories/opendap/besd/tags/3.20.13-555";
-        auto document = curl::http_get_as_json(url);
+        vector<char> buf;
+        auto document = curl::http_get_as_json(url, buf);
         CPPUNIT_ASSERT_MESSAGE("The document should be an object", document.IsObject());
         CPPUNIT_ASSERT_MESSAGE("The document should have a member 'creator'", document.HasMember("creator"));
         CPPUNIT_ASSERT_MESSAGE("The document should have a number 'creator'", document["creator"].IsNumber());
@@ -493,7 +494,8 @@ public:
         // I think the DockerHub response is stable enough and the github JSON API
         // was more than I wanted to deal with for this test. jhrg 4/28/23
         const string url = "https://hub.docker.com/v2/repositories/opendap/";
-        auto document = curl::http_get_as_json(url);
+        vector<char> buf;
+        auto document = curl::http_get_as_json(url, buf);
         CPPUNIT_ASSERT_MESSAGE("The document should be an object", document.IsObject());
         CPPUNIT_ASSERT_MESSAGE("The document should have a member 'count'", document.HasMember("count"));
         CPPUNIT_ASSERT_MESSAGE("The document should have a number 'count'", document["count"].IsNumber());

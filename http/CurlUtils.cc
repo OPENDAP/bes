@@ -1149,10 +1149,11 @@ string error_message(const CURLcode response_code, const char *error_buffer) {
  * @note used in one place in NgapS3Credentials in this module. jhrg 3/8/23
  *
  * @param target_url The URL to dereference.
+ * @param response_buf A vector<char> that will be used to hold the response from the HTTP request.
  * @return JSON document parsed from the response document returned by target_url
  */
-rapidjson::Document http_get_as_json(const std::string &target_url) {
-    vector<char> response_buf;
+rapidjson::Document http_get_as_json(const std::string &target_url, vector<char> &response_buf) {
+    // vector<char> response_buf;
     curl::http_get(target_url, response_buf);
     rapidjson::Document d;
     d.Parse(response_buf.data());
