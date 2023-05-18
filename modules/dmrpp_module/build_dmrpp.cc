@@ -169,12 +169,16 @@ string qc_input_file(const string &file_name){
 
 
     std::ifstream file(file_fqn, ios::binary);
+    auto errnum = errno;
     if (!file)  // This is same as if(file.fail()){...}
     {
+
         stringstream msg;
         msg << "Encountered a Read/writing error when attempting to open the file" << file_fqn << endl;
-        msg << "* failbit: " << (((file.rdstate() & std::ifstream::failbit) != 0) ? "true" : "false") << endl;
-        msg << "* badbit: " << (((file.rdstate() & std::ifstream::badbit) != 0) ? "true" : "false") << endl;
+        msg << "*          failbit: " << (((file.rdstate() & std::ifstream::failbit) != 0) ? "true" : "false") << endl;
+        msg << "*           badbit: " << (((file.rdstate() & std::ifstream::badbit) != 0) ? "true" : "false") << endl;
+        msg << "*            errno: " << errnum << endl;
+        msg << "*  strerror(errno): " << strerror(errnum) << endl;
         msg << "Things to check:" << endl;
         msg << "* Does the file exist at expected location?" << endl;
         msg << "* Does your user have permission to read the file?" << endl;
@@ -302,7 +306,7 @@ void build_dmrpp_from_dmr(
 }
 
 /**
- * 
+ *
  * @param argc
  * @param argv
  * @return
