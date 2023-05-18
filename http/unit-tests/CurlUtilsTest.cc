@@ -27,6 +27,9 @@
 #include <cstring>
 #include <iostream>
 
+#include "rapidjson/document.h"
+#include "rapidjson/error/en.h"
+
 #include "BESError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -368,7 +371,7 @@ public:
                                string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
                                string::npos);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
-        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288);
     }
 
     // Test the http_get() function that extends as needed a vector<char>.
@@ -391,7 +394,7 @@ public:
 
         DBG(cerr << "twimc.size() = " << twimc.size() << endl);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
-        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287 + twimc.size());
+        CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288 + twimc.size());
     }
 
     // This test is to an S3 bucket and must be signed. Use the ENV_CRED
@@ -496,6 +499,11 @@ public:
         const string url = "https://hub.docker.com/v2/repositories/opendap/";
         vector<char> buf;
         auto document = curl::http_get_as_json(url, buf);
+        if (document.HasParseError()) {
+            ostringstream oss;
+            oss << "Parse error: " << rapidjson::GetParseError_En(document.GetParseError()) << " at " << document.GetErrorOffset();
+            CPPUNIT_FAIL(oss.str());
+        }
         CPPUNIT_ASSERT_MESSAGE("The document should be an object", document.IsObject());
         CPPUNIT_ASSERT_MESSAGE("The document should have a member 'count'", document.HasMember("count"));
         CPPUNIT_ASSERT_MESSAGE("The document should have a number 'count'", document["count"].IsNumber());

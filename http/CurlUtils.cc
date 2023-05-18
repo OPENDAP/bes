@@ -30,11 +30,12 @@
 
 #include <curl/curl.h>
 
+#include "rapidjson/document.h"
+#include "rapidjson/error/en.h"
+
 #include <sstream>
 #include <vector>
 #include <algorithm>    // std::for_each
-
-#include "rapidjson/document.h"
 
 #include "BESContextManager.h"
 #include "BESSyntaxUserError.h"
@@ -1157,6 +1158,13 @@ rapidjson::Document http_get_as_json(const std::string &target_url, vector<char>
     curl::http_get(target_url, response_buf);
     rapidjson::Document d;
     d.Parse(response_buf.data());
+    rapidjson::ParseResult ok = d.Parse(response_buf.data());
+    if (!ok) {
+        ostringstream oss;
+        oss << "JSON parse error: " << rapidjson::GetParseError_En(ok.Code()) << " (" << ok.Offset() << ")" << endl;
+        throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
+    }
+
     return d;
 }
 
@@ -1235,6 +1243,8 @@ void http_get(const string &target_url, vector<char> &buf) {
             curl_slist_free_all(request_headers);
 
         curl_easy_cleanup(ceh);
+
+        buf.push_back('\0');    // add a trailing null byte
     }
     catch (...) {
         if (request_headers)
