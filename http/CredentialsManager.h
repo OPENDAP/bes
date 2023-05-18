@@ -59,7 +59,6 @@ private:
 
     void load_credentials();
     static AccessCredentials *load_credentials_from_env();
-    void load_ngap_s3_credentials() const;
 
     friend class CredentialsManagerTest;
     friend class CurlUtilsTest;     // so that a test can call load_credentials() jhrg 5/16/23

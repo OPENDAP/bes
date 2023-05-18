@@ -40,8 +40,8 @@
 #include "BESDebug.h"
 #include "HttpNames.h"
 
+#include "AccessCredentials.h"
 #include "CredentialsManager.h"
-#include "NgapS3Credentials.h"
 
 using namespace std;
 
@@ -271,8 +271,6 @@ void CredentialsManager::load_credentials() {
         return;
     }
 
-    load_ngap_s3_credentials();
-
     if (!file_exists(config_file)) {
         BESDEBUG(HTTP_MODULE, prolog << "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
                                      << " does not exist. No Access Credentials were loaded." << endl);
@@ -381,49 +379,6 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
     }
 
     return ac;
-}
-
-/**
- * Private method. Must be called inside code protected by a mutex.
- *
- * Read the BESKeys (from bes.conf chain) and if NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY is present builds
- * and adds to the CredentialsManager an instance of NgapS3Credentials based on the values found in the bes.conf chain.
- */
-void CredentialsManager::load_ngap_s3_credentials() const {
-    // This lock is a RAII implementation. It will block until the mutex is
-    // available and the lock will be released when the instance is destroyed.
-    // std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
-
-    string s3_distribution_endpoint_url;
-    bool found;
-    TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY, s3_distribution_endpoint_url, found);
-    if (found) {
-        string value;
-
-        long refresh_margin = 600;
-        TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_REFRESH_KEY, value, found);
-        if (found) {
-            refresh_margin = strtol(value.c_str(), nullptr, 10);
-        }
-
-        string s3_base_url = NGAP_S3_BASE_DEFAULT;
-        TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_URL_BASE_KEY, value, found);
-        if (found) {
-            s3_base_url = value;
-        }
-
-        auto nsc = std::make_unique<NgapS3Credentials>(s3_distribution_endpoint_url, refresh_margin);
-        nsc->add(AccessCredentials::URL_KEY, s3_base_url);
-        nsc->name("NgapS3Credentials");
-
-        CredentialsManager::theCM()->add(s3_base_url, nsc.release());
-        CredentialsManager::theCM()->ngaps3CredentialsLoaded = true;
-    }
-    else {
-        BESDEBUG(HTTP_MODULE, prolog << "WARNING: The BES configuration did not contain an instance of "
-                                     << NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY
-                                     << " NGAP S3 Credentials NOT loaded." << endl);
-    }
 }
 
 } // namespace http

@@ -30,13 +30,6 @@
 
 #include <curl/curl.h>
 
-#if 0
-
-#include "rapidjson/document.h"
-#include "rapidjson/error/en.h"
-
-#endif
-
 #include <sstream>
 #include <vector>
 #include <algorithm>    // std::for_each
@@ -175,31 +168,6 @@ static string getCurlAuthTypeName(unsigned long auth_type) {
             authTypeString += " ";
         authTypeString += "CURLAUTH_NTLM";
     }
-
-#if 0
-    match = auth_type & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ANY";
-    }
-
-
-    match = auth_type & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ANYSAFE";
-    }
-
-
-    match = auth_type & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ONLY";
-    }
-#endif
 
     return authTypeString;
 }
@@ -1143,35 +1111,6 @@ string error_message(const CURLcode response_code, const char *error_buffer) {
     oss << "cURL_message: " << curl_easy_strerror(response_code) << " (code: " << (int) response_code << ")";
     return oss.str();
 }
-
-#if 0
-
-/**
- * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
- * No attempt to cache is performed, the HTTP request is made for each invocation of this method.
- *
- * @note used in one place in NgapS3Credentials in this module. jhrg 3/8/23
- *
- * @param target_url The URL to dereference.
- * @param response_buf A vector<char> that will be used to hold the response from the HTTP request.
- * @return JSON document parsed from the response document returned by target_url
- */
-rapidjson::Document http_get_as_json(const std::string &target_url, vector<char> &response_buf) {
-    // vector<char> response_buf;
-    curl::http_get(target_url, response_buf);
-    rapidjson::Document d;
-    d.Parse(response_buf.data());
-    rapidjson::ParseResult ok = d.Parse(response_buf.data());
-    if (!ok) {
-        ostringstream oss;
-        oss << "JSON parse error: " << rapidjson::GetParseError_En(ok.Code()) << " (" << ok.Offset() << ")" << endl;
-        throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
-    }
-
-    return d;
-}
-
-#endif
 
 /**
  * @brief Callback passed to libcurl to handle reading some number of bytes.
