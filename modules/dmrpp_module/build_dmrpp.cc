@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
         string h5_file_path = qc_input_file(h5_file_name);
 
         if (!dmr_name.empty()) {
-            // Build the dmr++ from an exisiting DMR file.
+            // Build the dmr++ from an existing DMR file.
             build_dmrpp_from_dmr( url_name,  dmr_name,  h5_file_name,  add_production_metadata,  argc,  argv);
         }
         else {
