@@ -26,6 +26,7 @@
 
 #include <string>
 
+
 namespace dmrpp {
 class DMRpp;
 }
@@ -34,6 +35,19 @@ namespace build_dmrpp_util {
 
 void add_chunk_information(const std::string &h5_file_name, dmrpp::DMRpp *dmrpp);
 void inject_version_and_configuration(dmrpp::DMRpp *dmrpp);
+
+void build_dmrpp_from_dmr(
+    const std::string &url_name,
+    const std::string &dmr_name,
+    const std::string &h5_file_name,
+    bool add_production_metadata,
+    int argc, char *argv[]);
+
+void check_mds(const std::string &url_name, const std::string &h5_file_path, const std::string &h5_file_name);
+
+std::string qc_input_file(const std::string &file_name);
+
+void inject_version_and_configuration(int argc, char **argv, dmrpp::DMRpp *dmrpp);
 
 extern bool verbose;
 }

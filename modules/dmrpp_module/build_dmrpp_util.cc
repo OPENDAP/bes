@@ -48,14 +48,18 @@
 #include <BESDebug.h>
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
+#include <BESInternalFatalError.h>
 
 #include <TheBESKeys.h>
 #include <BESContextManager.h>
+#include <BESUtil.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppArray.h"
+#include "DmrppMetadataStore.h"
+#include "D4ParserSax2.h"
 
 #if 0
 #define H5S_MAX_RANK    32
@@ -92,6 +96,7 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 #define prolog std::string("# build_dmrpp::").append(__func__).append("() - ")
 
 #define INVOCATION_CONTEXT "invocation"
+#define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
 // FYI: Filter IDs
 // H5Z_FILTER_ERROR         (-1) no filter
@@ -1206,5 +1211,230 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
         // Inject version and configuration attributes into DMR here.
         dmrpp->root()->attributes()->add_attribute_nocopy(version);
     }
+
+/**
+*
+* @param file_name
+* @return
+*/
+string qc_input_file(const string &file_name)
+{
+    //Use this ifstream file to run a check on the provided file's signature
+    // to see if it is an HDF5 file. - kln 5/18/23
+
+    if (file_name.empty()) {
+        stringstream msg;
+        msg << "HDF5 input file name must be given (-f <input>)." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    string bes_data_root = TheBESKeys::TheKeys()->read_string_key(ROOT_DIRECTORY, "");
+    if (bes_data_root.empty()) {
+        stringstream msg;
+        cerr << "Could not locate the data directory." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    string file_fqn = BESUtil::assemblePath(bes_data_root, file_name);
+
+
+    std::ifstream file(file_fqn, ios::binary);
+    auto errnum = errno;
+    if (!file)  // This is same as if(file.fail()){...}
+    {
+        stringstream msg;
+        msg << "Encountered a Read/writing error when attempting to open the file" << file_fqn << endl;
+        msg << "*          failbit: " << (((file.rdstate() & std::ifstream::failbit) != 0) ? "true" : "false") << endl;
+        msg << "*           badbit: " << (((file.rdstate() & std::ifstream::badbit) != 0) ? "true" : "false") << endl;
+        msg << "*            errno: " << errnum << endl;
+        msg << "*  strerror(errno): " << strerror(errnum) << endl;
+        msg << "Things to check:" << endl;
+        msg << "* Does the file exist at expected location?" << endl;
+        msg << "* Does your user have permission to read the file?" << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    //HDF5 and NetCDF3 signatures:
+    const char hdf5Signature[] = {'\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n'};
+    const char netcdf3Signature[] = {'C', 'D', 'F'};
+
+    //Read the first 8 bytes (file signature) from the file
+    char signature[8];
+    file.read(signature, 8);
+
+    //First check if file is NOT an HDF5 file, then, if it is not, check if it is netcdf3
+    bool isHDF5 = memcmp(signature, hdf5Signature, sizeof(hdf5Signature)) == 0;
+    if (!isHDF5) {
+        //Reset the file stream to read from the beginning
+        file.clear();
+        file.seekg(0);
+
+        char newSignature[3];
+        file.read(newSignature, 3);
+
+        bool isNetCDF3 = memcmp(newSignature, netcdf3Signature, sizeof(netcdf3Signature)) == 0;
+        if (isNetCDF3) {
+            stringstream msg;
+            msg << "The file submitted, " << file_fqn << ", ";
+            msg << "is a NetCDF-3 classic file and is not compatible with dmr++ production at this time." << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+        }
+        else {
+            stringstream msg;
+            msg << "The provided file," << file_fqn << ", ";
+            msg << "is neither an HDF5 or an NetCDF-4 file, currently only HDF5 and NetCDF-4 files ";
+            msg << "are supported for dmr++ production" << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+        }
+    }
+    return file_fqn;
+}
+
+/**
+ * Use the full path to open the file, but use the 'name' (which is the
+ * path relative to the BES Data Root) with the MDS.
+ * Changed this to utilize assemblePath() because simply concatenating the strings
+ * is fragile. - ndp 6/6/18
+ * @param url_name
+ * @param h5_file_path
+ * @param h5_file_name
+ */
+void check_mds(const string &url_name, const string &h5_file_path, const string &h5_file_name)
+{
+    // Use the values from the bes.conf file... jhrg 5/21/18
+    bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
+    if (!mds) {
+        stringstream msg;
+        msg << "The Metadata Store (MDS) must be configured for this command to work (but see the -r option)." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
+    if (lock()) {
+        // parse the DMR into a DMRpp (that uses the DmrppTypes)
+        unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp *>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
+        if (!dmrpp) {
+            stringstream msg;
+            msg << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+        }
+
+        add_chunk_information(h5_file_path, dmrpp.get());
+
+        dmrpp->set_href(url_name);
+
+        mds->add_dmrpp_response(dmrpp.get(), h5_file_name /*h5_file_path*/);
+
+        XMLWriter writer;
+        dmrpp->set_print_chunks(true);
+        dmrpp->print_dap4(writer);
+
+        cout << writer.get_doc();
+    } else {
+        stringstream msg;
+        msg << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+}
+
+/**
+ * @brief Recreate the command invocation given argv and argc.
+ * @param argc
+ * @param argv
+ * @return The command
+ */
+static string cmdln(int argc, char *argv[])
+{
+    stringstream ss;
+    for(int i=0; i<argc; i++) {
+        if (i > 0)
+            ss << " ";
+        ss << argv[i];
+    }
+    return ss.str();
+}
+
+/**
+ * @brief Write information to the the DMR++ about its provenance.
+ * @param argc Used to determine how this DMR++ was built
+ * @param argv Used to determine how this DMR++ was built
+ * @param dmrpp Add provenance information to this instance of DMRpp
+ * @note The DMRpp instance will free all memory allocated by this method.
+ */
+void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp)
+{
+    dmrpp->set_version(CVER);
+
+    // Build the version attributes for the DMR++
+    auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+
+    auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
+    build_dmrpp_version->add_value(CVER);
+    version->attributes()->add_attribute_nocopy(build_dmrpp_version);
+
+    auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
+    bes_version->add_value(CVER);
+    version->attributes()->add_attribute_nocopy(bes_version);
+
+    stringstream ldv;
+    ldv << libdap_name() << "-" << libdap_version();
+    auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
+    libdap4_version->add_value(ldv.str());
+    version->attributes()->add_attribute_nocopy(libdap4_version);
+
+    if(!TheBESKeys::ConfigFile.empty()) {
+        // What is the BES configuration in play?
+        auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
+        config->add_value(TheBESKeys::TheKeys()->get_as_config());
+        version->attributes()->add_attribute_nocopy(config);
+    }
+
+    // How was build_dmrpp invoked?
+    auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+    invoke->add_value(cmdln(argc, argv));
+    version->attributes()->add_attribute_nocopy(invoke);
+
+    // Inject version and configuration attributes into DMR here.
+    dmrpp->root()->attributes()->add_attribute_nocopy(version);
+}
+
+
+/**
+ *
+ * @param url_name
+ * @param dmr_name
+ * @param h5_file_name
+ * @param add_production_metadata
+ * @param argc
+ * @param argv
+ */
+void build_dmrpp_from_dmr(
+        const string &url_name,
+        const string &dmr_name,
+        const string &h5_file_name,
+        bool add_production_metadata,
+        int argc, char *argv[])
+{
+    // Get dmr:
+    DMRpp dmrpp;
+    DmrppTypeFactory dtf;
+    dmrpp.set_factory(&dtf);
+
+    ifstream in(dmr_name.c_str());
+    D4ParserSax2 parser;
+    parser.intern(in, &dmrpp, false);
+
+    add_chunk_information(h5_file_name, &dmrpp);
+
+    if (add_production_metadata) {
+        inject_version_and_configuration(argc, argv, &dmrpp);
+    }
+
+    XMLWriter writer;
+    dmrpp.print_dmrpp(writer, url_name);
+    cout << writer.get_doc();
+
+}
+
 
 } // namespace build_dmrpp_util
