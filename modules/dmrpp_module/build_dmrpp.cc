@@ -245,13 +245,10 @@ int main(int argc, char *argv[]) {
             string h5_file_path = BESUtil::assemblePath(bes_data_root, h5_file_name);
 
             //Use this ifstream file to run a check on the provided file's signature
-            // to see if it is an HDF5 file
+            // to see if it is an HDF5 file. - kln 5/18/23
             ifstream file(h5_file_path, ios::binary);
-            if (!file) {
-                cerr << "Error opening file: " << h5_file_path << endl;
-                cerr << "Cause of error: " << strerror(errno) << endl;
-                return false;
-            }
+            if (!file.is_open())
+                perror(("error while opening file " + h5_file_path).c_str());
 
             //HDF5 and NetCDF3 signatures:
             const char hdf5Signature[] = { '\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n' };
@@ -261,6 +258,7 @@ int main(int argc, char *argv[]) {
             char signature[8];
             file.read(signature, 8);
 
+            //First check if file is NOT an HDF5 file, then, if it is not, check if it is netcdf3
             bool isHDF5 = memcmp(signature, hdf5Signature, sizeof(hdf5Signature)) == 0;
             if (!isHDF5) {
                 //Reset the file stream to read from the beginning
@@ -281,6 +279,8 @@ int main(int argc, char *argv[]) {
                     return EXIT_FAILURE;
                 }
             }
+            if (file.bad())
+                perror(("error while checking file " + h5_file_name).c_str());
             file.close();
 
             bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
