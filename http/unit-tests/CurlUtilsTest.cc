@@ -27,13 +27,6 @@
 #include <cstring>
 #include <iostream>
 
-#if 0
-
-#include "rapidjson/document.h"
-#include "rapidjson/error/en.h"
-
-#endif
-
 #include "BESError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"

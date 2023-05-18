@@ -34,13 +34,6 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
-#if 0
-
-#include "rapidjson/document.h"
-#include "rapidjson/error/en.h"
-
-#endif
-
 #include "BESRegex.h"
 #include "EffectiveUrl.h"
 
