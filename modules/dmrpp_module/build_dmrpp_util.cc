@@ -96,7 +96,6 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 #define prolog std::string("# build_dmrpp::").append(__func__).append("() - ")
 
 #define INVOCATION_CONTEXT "invocation"
-#define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
 // FYI: Filter IDs
 // H5Z_FILTER_ERROR         (-1) no filter
