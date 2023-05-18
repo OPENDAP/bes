@@ -470,7 +470,7 @@ public:
                                        != string::npos);
 
                 DBG(cerr << "buf.size() = " << buf.size() << endl);
-                CPPUNIT_ASSERT_MESSAGE("Size should be 93", buf.size() == 93);
+                CPPUNIT_ASSERT_MESSAGE("Size should be 94", buf.size() == 94);
             }
             catch(const BESError &e) {
                 CPPUNIT_FAIL(string("Did not sign the URL correctly. ").append(e.get_verbose_message()));

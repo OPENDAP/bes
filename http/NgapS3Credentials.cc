@@ -83,6 +83,7 @@ void NgapS3Credentials::get_temporary_credentials() {
     if (d.HasParseError()) {
         ostringstream oss;
         oss << "Parse error: " << rapidjson::GetParseError_En(d.GetParseError()) << " at " << d.GetErrorOffset();
+        BESDEBUG(HTTP_MODULE, prolog << oss.str() << endl);
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 

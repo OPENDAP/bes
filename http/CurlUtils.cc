@@ -1099,13 +1099,10 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
         res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, writeToOpenFileDescriptor);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
 
-#ifdef CURLOPT_WRITEDATA
-        res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, &fd);
-        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer, __FILE__, __LINE__);
-#else
+        // since curl 7.9.7 CURLOPT_FILE is the same as CURLOPT_WRITEDATA.
         res = curl_easy_setopt(ceh, CURLOPT_FILE, &fd);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FILE", error_buffer.data(), __FILE__, __LINE__);
-#endif
+
         unset_error_buffer(ceh);
 
         super_easy_perform(ceh, fd);

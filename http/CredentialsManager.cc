@@ -164,7 +164,7 @@ CredentialsManager::get(const shared_ptr <http::url> &url) {
  * @return true if file exists, false otherwise.
  */
 bool file_exists(const string &filename) {
-    struct stat buffer;
+    struct stat buffer{};
     return (stat(filename.c_str(), &buffer) == 0);
 }
 
