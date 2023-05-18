@@ -481,6 +481,8 @@ public:
         }
     }
 
+#if 0
+
     // This test uses a local JSON document
     void http_get_as_json_file_test() {
         const string url = "file://" + d_data_dir + "/test_data.json";
@@ -520,6 +522,8 @@ public:
         }
     }
 
+#endif
+
 /* TESTS END */
 /*##################################################################################################*/
 
@@ -550,8 +554,10 @@ public:
 
     CPPUNIT_TEST(http_get_test_7);
 
+#if 0
     CPPUNIT_TEST(http_get_as_json_file_test);
     CPPUNIT_TEST(http_get_as_json_http_test);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 };

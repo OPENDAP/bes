@@ -30,8 +30,12 @@
 
 #include <curl/curl.h>
 
+#if 0
+
 #include "rapidjson/document.h"
 #include "rapidjson/error/en.h"
+
+#endif
 
 #include <sstream>
 #include <vector>
@@ -1143,6 +1147,8 @@ string error_message(const CURLcode response_code, const char *error_buffer) {
     return oss.str();
 }
 
+#if 0
+
 /**
  * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
  * No attempt to cache is performed, the HTTP request is made for each invocation of this method.
@@ -1167,6 +1173,8 @@ rapidjson::Document http_get_as_json(const std::string &target_url, vector<char>
 
     return d;
 }
+
+#endif
 
 /**
  * @brief Callback passed to libcurl to handle reading some number of bytes.

@@ -65,7 +65,7 @@ void http_get(const std::string &target_url, std::vector<char> &buf);
 void super_easy_perform(CURL *ceh);
 ///@}
 
-rapidjson::Document http_get_as_json(const std::string &target_url, std::vector<char> &response_buf);
+// rapidjson::Document http_get_as_json(const std::string &target_url, std::vector<char> &response_buf);
 
 std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr<http::url> &starting_point_url);
 std::string filter_effective_url(const std::string &eff_url);

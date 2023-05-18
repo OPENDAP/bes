@@ -22,13 +22,15 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <string>
+#include <sstream>
 #include <vector>
 
-#include "document.h"
-#include "writer.h"
-#include "stringbuffer.h"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/error/en.h"
 
 #include "BESError.h"
+#include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
 #include "CurlUtils.h"
@@ -74,7 +76,17 @@ void NgapS3Credentials::get_temporary_credentials() {
     BESDEBUG(HTTP_MODULE, prolog << "distribution_api_endpoint: " << distribution_api_endpoint << endl);
 
     vector<char> buf;
-    rapidjson::Document d = curl::http_get_as_json(distribution_api_endpoint, buf);
+    curl::http_get(distribution_api_endpoint, buf);
+
+    rapidjson::Document d;
+    d.Parse(buf.data());
+    if (d.HasParseError()) {
+        ostringstream oss;
+        oss << "Parse error: " << rapidjson::GetParseError_En(d.GetParseError()) << " at " << d.GetErrorOffset();
+        throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
+    }
+
+    // rapidjson::Document d = curl::http_get_as_json(distribution_api_endpoint, buf);
     BESDEBUG(HTTP_MODULE, prolog << "S3 Credentials:" << endl);
 
     rapidjson::Value &val = d[AWS_ACCESS_KEY_ID_KEY];
