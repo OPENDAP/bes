@@ -42,6 +42,7 @@
 #include <BESUtil.h>
 #include <BESDebug.h>
 #include <BESError.h>
+#include <BESInternalError.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
@@ -142,6 +143,170 @@ void usage() {
     cerr << help << endl;
 }
 
+/**
+ *
+ * @param file_name
+ * @return
+ */
+string qc_input_file(const string &file_name){
+    //Use this ifstream file to run a check on the provided file's signature
+    // to see if it is an HDF5 file. - kln 5/18/23
+
+    if (file_name.empty()) {
+        stringstream msg;
+        msg << "HDF5 input file name must be given (-f <input>)." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    string bes_data_root = TheBESKeys::TheKeys()->read_string_key(ROOT_DIRECTORY, "");
+    if (bes_data_root.empty()) {
+        stringstream msg;
+        cerr << "Could not locate the data directory." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    string file_fqn = BESUtil::assemblePath(bes_data_root, file_name);
+
+
+    std::ifstream file(file_fqn, ios::binary);
+    if (!file)  // This is same as if(file.fail()){...}
+    {
+        stringstream msg;
+        msg << "Encountered a Read/writing error when attempting to open the file" << file_fqn << endl;
+        msg << "* failbit: " << (((file.rdstate() & std::ifstream::failbit) != 0) ? "true" : "false") << endl;
+        msg << "* badbit: " << (((file.rdstate() & std::ifstream::badbit) != 0) ? "true" : "false") << endl;
+        msg << "Things to check:" << endl;
+        msg << "* Does the file exist at expected location?" << endl;
+        msg << "* Does your user have permission to read the file?" << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    //HDF5 and NetCDF3 signatures:
+    const char hdf5Signature[] = {'\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n'};
+    const char netcdf3Signature[] = {'C', 'D', 'F'};
+
+    //Read the first 8 bytes (file signature) from the file
+    char signature[8];
+    file.read(signature, 8);
+
+    //First check if file is NOT an HDF5 file, then, if it is not, check if it is netcdf3
+    bool isHDF5 = memcmp(signature, hdf5Signature, sizeof(hdf5Signature)) == 0;
+    if (!isHDF5) {
+        //Reset the file stream to read from the beginning
+        file.clear();
+        file.seekg(0);
+
+        char newSignature[3];
+        file.read(newSignature, 3);
+
+        bool isNetCDF3 = memcmp(newSignature, netcdf3Signature, sizeof(netcdf3Signature)) == 0;
+        if (isNetCDF3) {
+            stringstream msg;
+            msg << "The file submitted, " << file_fqn << ", ";
+            msg << "is a NetCDF-3 classic file and is not compatible with dmr++ production at this time." << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+        }
+        else {
+            stringstream msg;
+            msg << "The provided file," << file_fqn << ", ";
+            msg << "is neither an HDF5 or an NetCDF-4 file, currently only HDF5 and NetCDF-4 files ";
+            msg << "are supported for dmr++ production" << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+        }
+    }
+    return file_fqn;
+}
+
+/**
+ * Use the full path to open the file, but use the 'name' (which is the
+ * path relative to the BES Data Root) with the MDS.
+ * Changed this to utilize assemblePath() because simply concatenating the strings
+ * is fragile. - ndp 6/6/18
+ * @param url_name
+ * @param h5_file_path
+ * @param h5_file_name
+ */
+void check_mds(const string &url_name, const string &h5_file_path, const string &h5_file_name)
+{
+    // Use the values from the bes.conf file... jhrg 5/21/18
+    bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
+    if (!mds) {
+        stringstream msg;
+        msg << "The Metadata Store (MDS) must be configured for this command to work (but see the -r option)." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
+    if (lock()) {
+        // parse the DMR into a DMRpp (that uses the DmrppTypes)
+        unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp *>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
+        if (!dmrpp) {
+            stringstream msg;
+            msg << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+        }
+
+        add_chunk_information(h5_file_path, dmrpp.get());
+
+        dmrpp->set_href(url_name);
+
+        mds->add_dmrpp_response(dmrpp.get(), h5_file_name /*h5_file_path*/);
+
+        XMLWriter writer;
+        dmrpp->set_print_chunks(true);
+        dmrpp->print_dap4(writer);
+
+        cout << writer.get_doc();
+    } else {
+        stringstream msg;
+        msg << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+}
+
+/**
+ *
+ * @param url_name
+ * @param dmr_name
+ * @param h5_file_name
+ * @param add_production_metadata
+ * @param argc
+ * @param argv
+ */
+void build_dmrpp_from_dmr(
+        const string &url_name,
+        const string &dmr_name,
+        const string &h5_file_name,
+        bool add_production_metadata,
+        int argc, char *argv[])
+{
+    // Get dmr:
+    DMRpp dmrpp;
+    DmrppTypeFactory dtf;
+    dmrpp.set_factory(&dtf);
+
+    ifstream in(dmr_name.c_str());
+    D4ParserSax2 parser;
+    parser.intern(in, &dmrpp, false);
+
+    add_chunk_information(h5_file_name, &dmrpp);
+
+    if (add_production_metadata) {
+        inject_version_and_configuration(argc, argv, &dmrpp);
+    }
+
+    XMLWriter writer;
+    dmrpp.print_dmrpp(writer, url_name);
+    cout << writer.get_doc();
+
+}
+
+/**
+ * 
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     string h5_file_name;
     string h5_dset_path;
@@ -194,119 +359,17 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (h5_file_name.empty()) {
-        cerr << "HDF5 file name must be given (-f <input>)." << endl;
-        return EXIT_FAILURE;
-    }
-
     try {
-        // Turn off automatic hdf5 error printing.
-        // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
 
-        // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
-        // given HDF5 dataset
+        string h5_file_path = qc_input_file(h5_file_name);
+
         if (!dmr_name.empty()) {
-            // Get dmr:
-            DMRpp dmrpp;
-            DmrppTypeFactory dtf;
-            dmrpp.set_factory(&dtf);
-
-            ifstream in(dmr_name.c_str());
-            D4ParserSax2 parser;
-            parser.intern(in, &dmrpp, false);
-
-            add_chunk_information(h5_file_name, &dmrpp);
-
-            if (add_production_metadata) {
-                inject_version_and_configuration(argc, argv, &dmrpp);
-            }
-
-            XMLWriter writer;
-            dmrpp.print_dmrpp(writer, url_name);
-            cout << writer.get_doc();
-        } else {
-            string bes_data_root = TheBESKeys::TheKeys()->read_string_key(ROOT_DIRECTORY, "");
-            if (bes_data_root.empty()) {
-                cerr << "Could not find the data directory." << endl;
-                return EXIT_FAILURE;
-            }
-
-            // Use the values from the bes.conf file... jhrg 5/21/18
-            bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
-            if (!mds) {
-                cerr << "The Metadata Store (MDS) must be configured for this command to work (but see the -r option)." << endl;
-                return EXIT_FAILURE;
-            }
-
-            // Use the full path to open the file, but use the 'name' (which is the
-            // path relative to the BES Data Root) with the MDS.
-            // Changed this to utilize assemblePath() because simply concatenating the strings
-            // is fragile. - ndp 6/6/18
-            string h5_file_path = BESUtil::assemblePath(bes_data_root, h5_file_name);
-
-            //Use this ifstream file to run a check on the provided file's signature
-            // to see if it is an HDF5 file. - kln 5/18/23
-            ifstream file(h5_file_path, ios::binary);
-            if (!file.is_open())
-                perror(("error while opening file " + h5_file_path).c_str());
-
-            //HDF5 and NetCDF3 signatures:
-            const char hdf5Signature[] = { '\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n' };
-            const char netcdf3Signature[] = {'C', 'D', 'F'};
-
-            //Read the first 8 bytes (file signature) from the file
-            char signature[8];
-            file.read(signature, 8);
-
-            //First check if file is NOT an HDF5 file, then, if it is not, check if it is netcdf3
-            bool isHDF5 = memcmp(signature, hdf5Signature, sizeof(hdf5Signature)) == 0;
-            if (!isHDF5) {
-                //Reset the file stream to read from the beginning
-                file.clear();
-                file.seekg(0);
-
-                char newSignature[3];
-                file.read(newSignature, 3);
-
-                bool isNetCDF3 = memcmp(newSignature, netcdf3Signature, sizeof(netcdf3Signature)) == 0;
-                if (isNetCDF3) {
-                    cerr << "The file submitted, " << h5_file_name << ", is a NetCDF-3 classic file and is not "
-                            "compatible with dmr++ production at this time." << endl;
-                    return EXIT_FAILURE;
-                } else {
-                    cerr << "The provided file," << h5_file_name << ", is neither an HDF5 or an NetCDF-4 file,"
-                            " currently only HDF5 and NetCDF-4 files are supported for dmr++ production" << endl;
-                    return EXIT_FAILURE;
-                }
-            }
-            if (file.bad())
-                perror(("error while checking file " + h5_file_name).c_str());
-            file.close();
-
-            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
-            if (lock()) {
-                // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp *>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
-                if (!dmrpp) {
-                    cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
-                    return EXIT_FAILURE;
-                }
-
-                add_chunk_information(h5_file_path, dmrpp.get());
-
-                dmrpp->set_href(url_name);
-
-                mds->add_dmrpp_response(dmrpp.get(), h5_file_name /*h5_file_path*/);
-
-                XMLWriter writer;
-                dmrpp->set_print_chunks(true);
-                dmrpp->print_dap4(writer);
-
-                cout << writer.get_doc();
-            } else {
-                cerr << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
-                return EXIT_FAILURE;
-            }
+            // Build the dmr++ from an exisiting DMR file.
+            build_dmrpp_from_dmr( url_name,  dmr_name,  h5_file_name,  add_production_metadata,  argc,  argv);
+        }
+        else {
+            // No existing DMR file? Check the MDS!
+            check_mds(url_name, h5_file_path, h5_file_name);
         }
     }
     catch (const BESError &e) {
