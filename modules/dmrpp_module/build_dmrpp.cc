@@ -43,6 +43,7 @@
 #include <BESDebug.h>
 #include <BESError.h>
 #include <BESInternalError.h>
+#include <BESInternalFatalError.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
@@ -66,14 +67,8 @@ void usage() {
 
     build_dmrpp -V: Show build versions for components that make up the program
 
-    build_dmrpp -c <bes.conf> -f <data file> [-u <href url>]: Build the DMR++ using the <bes.conf>
-       options to initialize the software for the <data file>. Optionally substitute the <href url>.
-       Builds the DMR using the HDF5 handler as configured using the options in the <bes.conf>.
-
-    build_dmrpp build_dmrpp -f <data file> -r <dmr file> [-u <href url>]: As above, but uses the DMR
-       read from the given file (so it does not run the HDF5 handler code and does not require the
-       Metadata Store - MDS - be configured). Note that the get_dmrpp command appears to use this
-       option and thus, the configuration options listed in the built DMR++ files lack the MDS setup.
+    build_dmrpp -f <data file> -r <dmr file> [-u <href url>]: As above, but uses the DMR
+       read from the given file.
 
     Other options:
         -v: Verbose
@@ -125,10 +120,6 @@ int main(int argc, char *argv[]) {
                 url_name = optarg;
                 break;
 
-            case 'c':
-                TheBESKeys::ConfigFile = optarg;
-                break;
-
             case 'M':
                 add_production_metadata = true;
                 break;
@@ -144,15 +135,16 @@ int main(int argc, char *argv[]) {
 
     try {
 
-        string h5_file_path = qc_input_file(h5_file_name);
+        qc_input_file(h5_file_name);
 
         if (!dmr_name.empty()) {
             // Build the dmr++ from an existing DMR file.
             build_dmrpp_from_dmr( url_name,  dmr_name,  h5_file_name,  add_production_metadata,  argc,  argv);
         }
         else {
-            // No existing DMR file? Check the MDS!
-            check_mds(url_name, h5_file_path, h5_file_name);
+            stringstream msg;
+            msg << "A DMR fully file for the granule '" << h5_file_name << " must also be provided." << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
     }
     catch (const BESError &e) {

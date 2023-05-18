@@ -1217,26 +1217,16 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
 * @param file_name
 * @return
 */
-string qc_input_file(const string &file_name)
+void qc_input_file(const string &file_fqn)
 {
     //Use this ifstream file to run a check on the provided file's signature
     // to see if it is an HDF5 file. - kln 5/18/23
 
-    if (file_name.empty()) {
+    if (file_fqn.empty()) {
         stringstream msg;
-        msg << "HDF5 input file name must be given (-f <input>)." << endl;
+        msg << "HDF5 input file name must be provided (-f <input>) and be a fully qualified path name." << endl;
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
-
-    string bes_data_root = TheBESKeys::TheKeys()->read_string_key(ROOT_DIRECTORY, "");
-    if (bes_data_root.empty()) {
-        stringstream msg;
-        cerr << "The BES key '" << ROOT_DIRECTORY << "' does not have a value.  Unable to continue." << endl;
-        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
-    }
-
-    string file_fqn = BESUtil::assemblePath(bes_data_root, file_name);
-
 
     std::ifstream file(file_fqn, ios::binary);
     auto errnum = errno;
@@ -1287,55 +1277,8 @@ string qc_input_file(const string &file_name)
             throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
     }
-    return file_fqn;
 }
 
-/**
- * Use the full path to open the file, but use the 'name' (which is the
- * path relative to the BES Data Root) with the MDS.
- * Changed this to utilize assemblePath() because simply concatenating the strings
- * is fragile. - ndp 6/6/18
- * @param url_name
- * @param h5_file_path
- * @param h5_file_name
- */
-void check_mds(const string &url_name, const string &h5_file_path, const string &h5_file_name)
-{
-    // Use the values from the bes.conf file... jhrg 5/21/18
-    bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
-    if (!mds) {
-        stringstream msg;
-        msg << "The Metadata Store (MDS) must be configured for this command to work (but see the -r option)." << endl;
-        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
-    }
-
-    bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
-    if (lock()) {
-        // parse the DMR into a DMRpp (that uses the DmrppTypes)
-        unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp *>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
-        if (!dmrpp) {
-            stringstream msg;
-            msg << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
-            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
-        }
-
-        add_chunk_information(h5_file_path, dmrpp.get());
-
-        dmrpp->set_href(url_name);
-
-        mds->add_dmrpp_response(dmrpp.get(), h5_file_name /*h5_file_path*/);
-
-        XMLWriter writer;
-        dmrpp->set_print_chunks(true);
-        dmrpp->print_dap4(writer);
-
-        cout << writer.get_doc();
-    } else {
-        stringstream msg;
-        msg << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
-        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
-    }
-}
 
 /**
  * @brief Recreate the command invocation given argv and argc.
@@ -1408,12 +1351,8 @@ void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp)
  * @param argc
  * @param argv
  */
-void build_dmrpp_from_dmr(
-        const string &url_name,
-        const string &dmr_name,
-        const string &h5_file_name,
-        bool add_production_metadata,
-        int argc, char *argv[])
+void build_dmrpp_from_dmr(const string &url_name, const string &dmr_name, const string &h5_file_fqn,
+        bool add_production_metadata, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
@@ -1424,7 +1363,7 @@ void build_dmrpp_from_dmr(
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h5_file_name, &dmrpp);
+    add_chunk_information(h5_file_fqn, &dmrpp);
 
     if (add_production_metadata) {
         inject_version_and_configuration(argc, argv, &dmrpp);
