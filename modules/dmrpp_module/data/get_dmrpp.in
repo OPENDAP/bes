@@ -672,7 +672,7 @@ function mk_dmrpp() {
 
     if test -z "${JUST_DMR}"; then
         prms="${VERY_VERBOSE}"
-        prms="${prms} -c ${bes_conf_file} "
+        #prms="${prms} -c ${bes_conf_file} "
         prms="${prms} -f ${full_data_path} "
         prms="${prms} -r ${source_dmr_file} "
         prms="${prms} -u ${DMRPP_URL} "
