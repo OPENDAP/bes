@@ -1231,7 +1231,7 @@ string qc_input_file(const string &file_name)
     string bes_data_root = TheBESKeys::TheKeys()->read_string_key(ROOT_DIRECTORY, "");
     if (bes_data_root.empty()) {
         stringstream msg;
-        cerr << "Could not locate the data directory." << endl;
+        cerr << "The BES key '" << ROOT_DIRECTORY << "' does not have a value.  Unable to continue." << endl;
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
 
