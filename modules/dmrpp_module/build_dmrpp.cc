@@ -90,6 +90,7 @@ int main(int argc, char *argv[]) {
     string h5_dset_path;
     string dmr_name;
     string url_name;
+    string bes_conf_file_used_to_create_dmr;
     bool add_production_metadata = false;
 
     int option_char;
@@ -120,6 +121,10 @@ int main(int argc, char *argv[]) {
                 url_name = optarg;
                 break;
 
+            case 'c':
+                bes_conf_file_used_to_create_dmr = optarg;
+                break;
+
             case 'M':
                 add_production_metadata = true;
                 break;
@@ -139,7 +144,7 @@ int main(int argc, char *argv[]) {
 
         if (!dmr_name.empty()) {
             // Build the dmr++ from an existing DMR file.
-            build_dmrpp_from_dmr( url_name,  dmr_name,  h5_file_name,  add_production_metadata,  argc,  argv);
+            build_dmrpp_from_dmr( url_name,  dmr_name,  h5_file_name,  add_production_metadata,  bes_conf_file_used_to_create_dmr, argc,  argv);
         }
         else {
             stringstream msg;

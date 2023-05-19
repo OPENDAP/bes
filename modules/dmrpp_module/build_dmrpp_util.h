@@ -34,18 +34,19 @@ class DMRpp;
 namespace build_dmrpp_util {
 
 void add_chunk_information(const std::string &h5_file_name, dmrpp::DMRpp *dmrpp);
-void inject_version_and_configuration(dmrpp::DMRpp *dmrpp);
 
 void build_dmrpp_from_dmr(
     const std::string &url_name,
     const std::string &dmr_name,
     const std::string &h5_file_name,
     bool add_production_metadata,
+    std::string bes_conf_used_for_dmr,
     int argc, char *argv[]);
 
 void qc_input_file(const std::string &file_name);
 
-void inject_version_and_configuration(int argc, char **argv, dmrpp::DMRpp *dmrpp);
+void inject_version_and_configuration(int argc, char **argv, string bes_conf_file_used_to_create_dmr, dmrpp::DMRpp *dmrpp);
+void inject_version_and_configuration(dmrpp::DMRpp *dmrpp);
 
 extern bool verbose;
 }

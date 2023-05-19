@@ -1165,51 +1165,6 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
     }
 }
 
-/**
- * @brief Write information to the the DMR++ about its provenance.
- * @param dmrpp Add provenance information to this instance of DMRpp
- * @note The DMRpp instance will free all memory allocated by this method.
- */
-    void inject_version_and_configuration(DMRpp *dmrpp)
-    {
-        bool found;
-
-        dmrpp->set_version(CVER);
-
-        // Build the version attributes for the DMR++
-        auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
-
-        auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
-        build_dmrpp_version->add_value(CVER);
-        version->attributes()->add_attribute_nocopy(build_dmrpp_version);
-
-        auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
-        bes_version->add_value(CVER);
-        version->attributes()->add_attribute_nocopy(bes_version);
-
-        stringstream ldv;
-        ldv << libdap_name() << "-" << libdap_version();
-        auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
-        libdap4_version->add_value(ldv.str());
-        version->attributes()->add_attribute_nocopy(libdap4_version);
-
-        if(!TheBESKeys::ConfigFile.empty()) {
-            // What is the BES configuration in play?
-            auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
-            config->add_value(TheBESKeys::TheKeys()->get_as_config());
-            version->attributes()->add_attribute_nocopy(config);
-        }
-
-        // How was build_dmrpp invoked?
-        string invocation = BESContextManager::TheManager()->get_context(INVOCATION_CONTEXT, found);
-
-        auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
-        invoke->add_value(invocation);
-        version->attributes()->add_attribute_nocopy(invoke);
-
-        // Inject version and configuration attributes into DMR here.
-        dmrpp->root()->attributes()->add_attribute_nocopy(version);
-    }
 
 /**
 *
@@ -1285,7 +1240,7 @@ void qc_input_file(const string &file_fqn)
  * @param argv
  * @return The command
  */
-static string cmdln(int argc, char *argv[])
+static string recreate_cmdln_from_args(int argc, char *argv[])
 {
     stringstream ss;
     for(int i=0; i<argc; i++) {
@@ -1296,14 +1251,8 @@ static string cmdln(int argc, char *argv[])
     return ss.str();
 }
 
-/**
- * @brief Write information to the the DMR++ about its provenance.
- * @param argc Used to determine how this DMR++ was built
- * @param argv Used to determine how this DMR++ was built
- * @param dmrpp Add provenance information to this instance of DMRpp
- * @note The DMRpp instance will free all memory allocated by this method.
- */
-void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp)
+
+void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
 {
     dmrpp->set_version(CVER);
 
@@ -1324,20 +1273,68 @@ void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp)
     libdap4_version->add_value(ldv.str());
     version->attributes()->add_attribute_nocopy(libdap4_version);
 
-    if(!TheBESKeys::ConfigFile.empty()) {
-        // What is the BES configuration in play?
+    if(!bes_conf_doc.empty()) {
+        // Add the BES configuration used to create the base DMR
         auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
-        config->add_value(TheBESKeys::TheKeys()->get_as_config());
+        config->add_value(bes_conf_doc);
         version->attributes()->add_attribute_nocopy(config);
     }
 
-    // How was build_dmrpp invoked?
-    auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
-    invoke->add_value(cmdln(argc, argv));
-    version->attributes()->add_attribute_nocopy(invoke);
-
+    if(!invocation.empty()) {
+        // How was build_dmrpp invoked?
+        auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+        invoke->add_value(invocation);
+        version->attributes()->add_attribute_nocopy(invoke);
+    }
     // Inject version and configuration attributes into DMR here.
     dmrpp->root()->attributes()->add_attribute_nocopy(version);
+}
+
+
+/**
+ * @brief Write information to the the DMR++ about its provenance.
+ * @param argc Used to determine how this DMR++ was built
+ * @param argv Used to determine how this DMR++ was built
+ * @param dmrpp Add provenance information to this instance of DMRpp
+ * @note The DMRpp instance will free all memory allocated by this method.
+ */
+void inject_version_and_configuration(int argc, char **argv, string bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
+{
+    string bes_configuration;
+    string invocation;
+    if(!bes_conf_file_used_to_create_dmr.empty()) {
+        // Add the BES configuration used to create the base DMR
+        TheBESKeys::ConfigFile = bes_conf_file_used_to_create_dmr;
+        bes_configuration = TheBESKeys::TheKeys()->get_as_config();
+    }
+
+    invocation = recreate_cmdln_from_args(argc, argv);
+
+    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+
+}
+
+/**
+ * @brief Write information to the the DMR++ about its provenance.
+ * @param dmrpp Add provenance information to this instance of DMRpp
+ * @note The DMRpp instance will free all memory allocated by this method.
+ */
+void inject_version_and_configuration(DMRpp *dmrpp)
+{
+    bool found;
+
+    string bes_configuration;
+    string invocation;
+    if(!TheBESKeys::ConfigFile.empty()) {
+        // Add the BES configuration used to create the base DMR
+        bes_configuration = TheBESKeys::TheKeys()->get_as_config();
+    }
+
+    // How was build_dmrpp invoked?
+    invocation = BESContextManager::TheManager()->get_context(INVOCATION_CONTEXT, found);
+
+    // Do the work now...
+    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
 }
 
 
@@ -1351,7 +1348,7 @@ void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp)
  * @param argv
  */
 void build_dmrpp_from_dmr(const string &url_name, const string &dmr_name, const string &h5_file_fqn,
-        bool add_production_metadata, int argc, char *argv[])
+        bool add_production_metadata, string bes_conf_used_for_dmr, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
@@ -1365,7 +1362,7 @@ void build_dmrpp_from_dmr(const string &url_name, const string &dmr_name, const 
     add_chunk_information(h5_file_fqn, &dmrpp);
 
     if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, &dmrpp);
+        inject_version_and_configuration(argc, argv, bes_conf_used_for_dmr, &dmrpp);
     }
 
     XMLWriter writer;
