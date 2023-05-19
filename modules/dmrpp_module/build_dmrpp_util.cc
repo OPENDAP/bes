@@ -1362,6 +1362,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
 
 /**
  * @brief Builds a DMR++ from an existing DMR file in conjunction with source granule file.
+ * 
  * @param granule_url The value to use for the XML attribute dap4:Dataset/@dmrpp:href This may be a template string,
  * or it may be the actual URL location of the source granule file.
  * @param dmr_filename The name of the file from which to read the DMR.
