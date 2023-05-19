@@ -1343,7 +1343,8 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
  * @brief Injects the DMR++ provenance informatio: software version, runtime configuration, into the DMR++ as attributes.
  *
  * This method assumes that it is being called from inside running besd. To obtain the configuration state of the BES
- * it interrogates TheBESKeys. The invocation string is consists of the request URL
+ * it interrogates TheBESKeys. The invocation string consists of the request URL which is recovered from the BES Context
+ * key "invocation". This value would typiucally be set in the BES command transmitted by the OLFS
  *
  * @param dmrpp The DMRpp instance to annotate.
  * @note The DMRpp instance will free all memory allocated by this method.
