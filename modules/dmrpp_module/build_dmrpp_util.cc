@@ -1269,7 +1269,7 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
  * @param dmrpp The DMR++ to annotate
  * @param bes_conf_doc The BES configuration document used to produce the source DMR.
  * @param invocation The invocation of the build_dmrpp program, or the request URL if the running server was used to
- * create the DMR file that is being annotated into a DMR++. 
+ * create the DMR file that is being annotated into a DMR++.
  */
 void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
 {
