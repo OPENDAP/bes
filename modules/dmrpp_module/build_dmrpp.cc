@@ -88,8 +88,8 @@ void usage() {
 int main(int argc, char *argv[]) {
     string h5_file_name;
     string h5_dset_path;
-    string dmr_name;
-    string url_name;
+    string dmr_filename;
+    string dmrpp_href_value;
     string bes_conf_file_used_to_create_dmr;
     bool add_production_metadata = false;
 
@@ -114,11 +114,11 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 'r':
-                dmr_name = optarg;
+                dmr_filename = optarg;
                 break;
 
             case 'u':
-                url_name = optarg;
+                dmrpp_href_value = optarg;
                 break;
 
             case 'c':
@@ -142,11 +142,11 @@ int main(int argc, char *argv[]) {
 
         qc_input_file(h5_file_name);
 
-        if (!dmr_name.empty()) {
+        if (!dmr_filename.empty()) {
             // Build the dmr++ from an existing DMR file.
             build_dmrpp_from_dmr_file(
-                    url_name,
-                    dmr_name,
+                    dmrpp_href_value,
+                    dmr_filename,
                     h5_file_name,
                     add_production_metadata,
                     bes_conf_file_used_to_create_dmr,

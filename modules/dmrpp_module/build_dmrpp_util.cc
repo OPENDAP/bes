@@ -1340,11 +1340,11 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 }
 
 /**
- * @brief Injects the DMR++ provenance informatio: software version, runtime configuration, into the DMR++ as attributes.
+ * @brief Injects the DMR++ provenance information: software version, runtime configuration, into the DMR++ as attributes.
  *
  * This method assumes that it is being called from inside running besd. To obtain the configuration state of the BES
  * it interrogates TheBESKeys. The invocation string consists of the request URL which is recovered from the BES Context
- * key "invocation". This value would typiucally be set in the BES command transmitted by the OLFS
+ * key "invocation". This value would typically be set in the BES command transmitted by the OLFS
  *
  * @param dmrpp The DMRpp instance to annotate.
  * @note The DMRpp instance will free all memory allocated by this method.
@@ -1380,8 +1380,8 @@ void inject_version_and_configuration(DMRpp *dmrpp)
  * @param argc The number of arguments supplied to build_dmrpp
  * @param argv The arguments for build_dmrpp.
  */
-void build_dmrpp_from_dmr_file(const string &granule_url, const string &dmr_filename, const string &h5_file_fqn,
-        bool add_production_metadata, string bes_conf_file_used_to_create_dmr, int argc, char *argv[])
+void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h5_file_fqn,
+        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
@@ -1399,7 +1399,7 @@ void build_dmrpp_from_dmr_file(const string &granule_url, const string &dmr_file
     }
 
     XMLWriter writer;
-    dmrpp.print_dmrpp(writer, granule_url);
+    dmrpp.print_dmrpp(writer, dmrpp_href_value);
     cout << writer.get_doc();
 
 }
