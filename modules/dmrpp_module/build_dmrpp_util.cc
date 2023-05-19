@@ -1168,6 +1168,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
 
 /**
  * @brief Performs a quality control check on the user supplied data file.
+ *
  * The supplied file is going to be used by build_dmrpp as the source of variable/dataset chunk information.
  * At the time of this writing only netcdf-4 and hdf5 file encodings are supported (Note that netcdf-4 is a subset of
  * hdf5 and all netcdf-4 files are defacto hdf5 files.)
@@ -1245,6 +1246,7 @@ void qc_input_file(const string &file_fqn)
 
 /**
  * @brief Recreate the command invocation given argv and argc.
+ *
  * @param argc
  * @param argv
  * @return The command
@@ -1262,11 +1264,12 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
 
 
 /**
- * @brief This worker method provides a SSOT for how the version and configuration information is added to the DMR++
+ * @brief This worker method provides a SSOT for how the version and configuration information are added to the DMR++
+ *
  * @param dmrpp The DMR++ to annotate
  * @param bes_conf_doc The BES configuration document used to produce the source DMR.
  * @param invocation The invocation of the build_dmrpp program, or the request URL if the running server was used to
- * create the DMR file that is being annotated into a DMR++.
+ * create the DMR file that is being annotated into a DMR++. 
  */
 void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
 {
@@ -1309,8 +1312,10 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 
 /**
  * @brief Injects software version, runtime configuration, and program invocation into DMRpp as attributes.
+ *
  * This method assumes that it is being called outside of a running besd and thus requires a the configuration
  * used to create the DMR be supplied, along with the program parameters as invoked.
+ *
  * @param argc The number of program arguments in the invocation.
  * @param argv The program arguments for the invocation.
  * @param bes_conf_file_used_to_create_dmr  The bes.conf configuration file used to create the DMR which is being
@@ -1336,8 +1341,10 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 
 /**
  * @brief Injects the DMR++ provenance informatio: software version, runtime configuration, into the DMR++ as attributes.
+ *
  * This method assumes that it is being called from inside running besd. To obtain the configuration state of the BES
  * it interrogates TheBESKeys. The invocation string is consists of the request URL
+ *
  * @param dmrpp The DMRpp instance to annotate.
  * @note The DMRpp instance will free all memory allocated by this method.
 */
@@ -1362,7 +1369,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
 
 /**
  * @brief Builds a DMR++ from an existing DMR file in conjunction with source granule file.
- * 
+ *
  * @param granule_url The value to use for the XML attribute dap4:Dataset/@dmrpp:href This may be a template string,
  * or it may be the actual URL location of the source granule file.
  * @param dmr_filename The name of the file from which to read the DMR.
