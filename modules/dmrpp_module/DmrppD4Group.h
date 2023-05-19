@@ -49,7 +49,7 @@ public:
 
     DmrppD4Group &operator=(const DmrppD4Group &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate(){
+    virtual libdap::BaseType *ptr_duplicate() override {
         return new DmrppD4Group(*this);
     }
 
@@ -57,7 +57,8 @@ public:
     void set_send_p(bool state) override;
 #endif
 
-    virtual void dump(ostream & strm) const;
+
+    virtual void dump(ostream & strm) const override;
 };
 
 } // namespace dmrpp
