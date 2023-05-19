@@ -1167,10 +1167,19 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
 
 
 /**
-*
-* @param file_name
-* @return
-*/
+ * @brief Performs a quality control check on the user supplied data file.
+ * The supplied file is going to be used by build_dmrpp as the source of variable/dataset chunk information.
+ * At the time of this writing only netcdf-4 and hdf5 file encodings are supported (Note that netcdf-4 is a subset of
+ * hdf5 and all netcdf-4 files are defacto hdf5 files.)
+ *
+ * To that end this function will:
+ * * Test that the file exists and can be read from.
+ * * The first few bytes of the file will be checked to ensure that it is an hdf5 file.
+ * * If it's not an hdf5 file the head bytes will checked to see if the file is a netcdf-3 file, as that is common
+ *   mistake.
+ *
+ * @param file_name
+ */
 void qc_input_file(const string &file_fqn)
 {
     //Use this ifstream file to run a check on the provided file's signature
@@ -1252,6 +1261,13 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
 }
 
 
+/**
+ * @brief This worker method provides a SSOT for how the version and configuration information is added to the DMR++
+ * @param dmrpp The DMR++ to annotate
+ * @param bes_conf_doc The BES configuration document used to produce the source DMR.
+ * @param invocation The invocation of the build_dmrpp program, or the request URL if the running server was used to
+ * create the DMR file that is being annotated into a DMR++.
+ */
 void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
 {
     dmrpp->set_version(CVER);
@@ -1292,13 +1308,17 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 
 
 /**
- * @brief Write information to the the DMR++ about its provenance.
- * @param argc Used to determine how this DMR++ was built
- * @param argv Used to determine how this DMR++ was built
- * @param dmrpp Add provenance information to this instance of DMRpp
+ * @brief Injects software version, runtime configuration, and program invocation into DMRpp as attributes.
+ * This method assumes that it is being called outside of a running besd and thus requires a the configuration
+ * used to create the DMR be supplied, along with the program parameters as invoked.
+ * @param argc The number of program arguments in the invocation.
+ * @param argv The program arguments for the invocation.
+ * @param bes_conf_file_used_to_create_dmr  The bes.conf configuration file used to create the DMR which is being
+ * annotated as a DMR++
+ * @param dmrpp The DMR++ instance to anontate.
  * @note The DMRpp instance will free all memory allocated by this method.
- */
-void inject_version_and_configuration(int argc, char **argv, string bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
+*/
+ void inject_version_and_configuration(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
 {
     string bes_configuration;
     string invocation;
@@ -1315,10 +1335,12 @@ void inject_version_and_configuration(int argc, char **argv, string bes_conf_fil
 }
 
 /**
- * @brief Write information to the the DMR++ about its provenance.
- * @param dmrpp Add provenance information to this instance of DMRpp
+ * @brief Injects the DMR++ provenance informatio: software version, runtime configuration, into the DMR++ as attributes.
+ * This method assumes that it is being called from inside running besd. To obtain the configuration state of the BES
+ * it interrogates TheBESKeys. The invocation string is consists of the request URL
+ * @param dmrpp The DMRpp instance to annotate.
  * @note The DMRpp instance will free all memory allocated by this method.
- */
+*/
 void inject_version_and_configuration(DMRpp *dmrpp)
 {
     bool found;
@@ -1339,34 +1361,36 @@ void inject_version_and_configuration(DMRpp *dmrpp)
 
 
 /**
- *
- * @param url_name
- * @param dmr_name
- * @param h5_file_name
- * @param add_production_metadata
- * @param argc
- * @param argv
+ * @brief Builds a DMR++ from an existing DMR file in conjunction with source granule file.
+ * @param granule_url The value to use for the XML attribute dap4:Dataset/@dmrpp:href This may be a template string,
+ * or it may be the actual URL location of the source granule file.
+ * @param dmr_filename The name of the file from which to read the DMR.
+ * @param h5_file_name The granule filename.
+ * @param add_production_metadata If true the production metadata (software version, configuration, and invocation) will
+ * be added to the DMR++.
+ * @param argc The number of arguments supplied to build_dmrpp
+ * @param argv The arguments for build_dmrpp.
  */
-void build_dmrpp_from_dmr(const string &url_name, const string &dmr_name, const string &h5_file_fqn,
-        bool add_production_metadata, string bes_conf_used_for_dmr, int argc, char *argv[])
+void build_dmrpp_from_dmr_file(const string &granule_url, const string &dmr_filename, const string &h5_file_fqn,
+        bool add_production_metadata, string bes_conf_file_used_to_create_dmr, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
     DmrppTypeFactory dtf;
     dmrpp.set_factory(&dtf);
 
-    ifstream in(dmr_name.c_str());
+    ifstream in(dmr_filename.c_str());
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
     add_chunk_information(h5_file_fqn, &dmrpp);
 
     if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, bes_conf_used_for_dmr, &dmrpp);
+        inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
 
     XMLWriter writer;
-    dmrpp.print_dmrpp(writer, url_name);
+    dmrpp.print_dmrpp(writer, granule_url);
     cout << writer.get_doc();
 
 }

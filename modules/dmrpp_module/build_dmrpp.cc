@@ -144,7 +144,13 @@ int main(int argc, char *argv[]) {
 
         if (!dmr_name.empty()) {
             // Build the dmr++ from an existing DMR file.
-            build_dmrpp_from_dmr( url_name,  dmr_name,  h5_file_name,  add_production_metadata,  bes_conf_file_used_to_create_dmr, argc,  argv);
+            build_dmrpp_from_dmr_file(
+                    url_name,
+                    dmr_name,
+                    h5_file_name,
+                    add_production_metadata,
+                    bes_conf_file_used_to_create_dmr,
+                    argc,  argv);
         }
         else {
             stringstream msg;
