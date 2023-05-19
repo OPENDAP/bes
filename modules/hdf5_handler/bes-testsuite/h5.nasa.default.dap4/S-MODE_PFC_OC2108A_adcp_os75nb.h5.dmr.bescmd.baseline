@@ -3,161 +3,6 @@
     <Dimension name="time" size="4564"/>
     <Dimension name="depth" size="60"/>
     <Dimension name="trajectory" size="1"/>
-    <Float64 name="zonal_velocity_component">
-        <Dim name="/time"/>
-        <Dim name="/depth"/>
-        <Attribute name="long_name" type="String">
-            <Value>Zonal velocity component of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>5.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-5.</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude depth time</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>sea_water_x_velocity</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>m s-1</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>NaN</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="status_flag">
-        <Dim name="/time"/>
-        <Dim name="/depth"/>
-        <Attribute name="long_name" type="String">
-            <Value>Editing flags of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>7.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>0.</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Float64">
-            <Value>0.</Value>
-            <Value>1.</Value>
-            <Value>2.</Value>
-            <Value>3.</Value>
-            <Value>4.</Value>
-            <Value>5.</Value>
-            <Value>6.</Value>
-            <Value>7.</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>good bin_bad percent_good_bad bin_and_percent_good_bad range_bad range_and_bin_bad range_and_percent_good_bad range_and_percent_good_and_bin_bad</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>status_flag</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude depth time</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="time">
-        <Dim name="/time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Time of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>T</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>days since 1950-01-01T00:00:00Z</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>coordinate</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="meridional_velocity_component">
-        <Dim name="/time"/>
-        <Dim name="/depth"/>
-        <Attribute name="long_name" type="String">
-            <Value>Meridional velocity component of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>5.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-5.</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude depth time</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>sea_water_y_velocity</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>m s-1</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>NaN</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="amplitude">
-        <Dim name="/time"/>
-        <Dim name="/depth"/>
-        <Attribute name="long_name" type="String">
-            <Value>Received signal strength of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude depth time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>NaN</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="heading">
-        <Dim name="/time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Ship heading of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>180.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-180.</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude time</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>platform_course</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degree</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>NaN</Value>
-        </Attribute>
-    </Float64>
     <Float64 name="trajectory">
         <Dim name="/trajectory"/>
         <Attribute name="standard_name" type="String">
@@ -185,6 +30,24 @@
             <Value>NaN</Value>
         </Attribute>
     </Float64>
+    <Float64 name="time">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Time of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>days since 1950-01-01T00:00:00Z</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>coordinate</Value>
+        </Attribute>
+    </Float64>
     <Float64 name="latitude">
         <Dim name="/time"/>
         <Attribute name="long_name" type="String">
@@ -195,102 +58,6 @@
         </Attribute>
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>NaN</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="transducer_temperature">
-        <Dim name="/time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Transducer temperature of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>30.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>0.</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_C</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>NaN</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="ship_meridional_velocity_component">
-        <Dim name="/time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Ship meridional velocity component of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>10.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-10.</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude time</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>platform_speed_wrt_ground</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>m s-1</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>NaN</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="ship_zonal_velocity_component">
-        <Dim name="/time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Ship zonal velocity component of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>10.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-10.</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude time</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>platform_speed_wrt_ground</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>m s-1</Value>
-        </Attribute>
-        <Attribute name="coverage_content_type" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>NaN</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="number_of_pings">
-        <Dim name="/time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Number of pings averaged per ensemble of ADCP measurement</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>longitude latitude time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
         </Attribute>
         <Attribute name="coverage_content_type" type="String">
             <Value>referenceInformation</Value>
@@ -327,6 +94,270 @@
             <Value>coordinate</Value>
         </Attribute>
     </Float64>
+    <Float64 name="heading">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ship heading of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>180.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-180.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>platform_course</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degree</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>NaN</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/time"/>
+    </Float64>
+    <Float64 name="zonal_velocity_component">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Zonal velocity component of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>5.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-5.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_water_x_velocity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>NaN</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/depth"/>
+        <Map name="/time"/>
+    </Float64>
+    <Float64 name="status_flag">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Editing flags of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>7.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Float64">
+            <Value>0.</Value>
+            <Value>1.</Value>
+            <Value>2.</Value>
+            <Value>3.</Value>
+            <Value>4.</Value>
+            <Value>5.</Value>
+            <Value>6.</Value>
+            <Value>7.</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>good bin_bad percent_good_bad bin_and_percent_good_bad range_bad range_and_bin_bad range_and_percent_good_bad range_and_percent_good_and_bin_bad</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/depth"/>
+        <Map name="/time"/>
+    </Float64>
+    <Float64 name="meridional_velocity_component">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Meridional velocity component of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>5.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-5.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_water_y_velocity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>NaN</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/depth"/>
+        <Map name="/time"/>
+    </Float64>
+    <Float64 name="transducer_temperature">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Transducer temperature of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>30.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_C</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>NaN</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/time"/>
+    </Float64>
+    <Float64 name="ship_meridional_velocity_component">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ship meridional velocity component of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>10.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-10.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>platform_speed_wrt_ground</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>NaN</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/time"/>
+    </Float64>
+    <Float64 name="ship_zonal_velocity_component">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ship zonal velocity component of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>10.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-10.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>platform_speed_wrt_ground</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>NaN</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/time"/>
+    </Float64>
+    <Float64 name="number_of_pings">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Number of pings averaged per ensemble of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>NaN</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/time"/>
+    </Float64>
+    <Float64 name="amplitude">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Received signal strength of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>NaN</Value>
+        </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/depth"/>
+        <Map name="/time"/>
+    </Float64>
     <Float64 name="percent_good">
         <Dim name="/time"/>
         <Dim name="/depth"/>
@@ -348,6 +379,10 @@
         <Attribute name="_FillValue" type="Float64">
             <Value>NaN</Value>
         </Attribute>
+        <Map name="/longitude"/>
+        <Map name="/latitude"/>
+        <Map name="/depth"/>
+        <Map name="/time"/>
     </Float64>
     <Attribute name="DOI" type="String">
         <Value>10.5067/SMODE-RVADC</Value>

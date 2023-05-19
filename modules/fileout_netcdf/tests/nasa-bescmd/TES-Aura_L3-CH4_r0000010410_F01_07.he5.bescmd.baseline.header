@@ -1,0 +1,125 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex TES-Aura_L3-CH4_r0000010410_F01_07.he5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"TES-Aura_L3-CH4_r0000010410_F01_07.he5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+
+      // group attributes:
+      		:InstrumentName = "TES" ;
+      		:ProcessLevel = "L3" ;
+      		:OrbitNumber = 25048, 25049, 25050, 25051, 25052, 25053, 25054, 25055, 25056, 25057, 25058, 25059, 25060, 25061, 25062, 25063 ;
+      		:OrbitPeriod = -999., -999., -999., -999., -999., -999., -999., -999., -999., -999., -999., -999., -999., -999., -999., -999. ;
+      		:TAI93At0zOfGranule = 512645383.237304 ;
+      		:GlobalSurveyNumber = "10410" ;
+      		:GranuleMonth = 3b ;
+      		:GranuleDay = 31b ;
+      		:GranuleYear = 2009 ;
+      		:GranuleDayOfYear = 90s ;
+      		:SurveyMode = "Global" ;
+      		:PGEVersion = "R11.01.00" ;
+      		:StartUTC = "removed date-time" ;
+      		:EndUTC = "removed date-time" ;
+      		:Period = "Daily" ;
+      		:Command_Seq_ID = 41 ;
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: NadirGrid {
+      dimensions:
+      	YDim = 83 ;
+      	XDim = 90 ;
+      	nLevels = 15 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+
+      // group attributes:
+      		:Projection = "Geographic" ;
+      		:GridOrigin = "Center" ;
+      		:GridSpacing = "(4,2)" ;
+      		:GridSpacingUnit = "deg" ;
+      		:GridSpan = "(-180,+180,-82,+82)" ;
+      		:GridSpanUnit = "deg" ;
+      		:GlobalSurveyL3Algorithm = "Along orbit interpolation, Delaunay sphere triangulation, and 2-D linear interpolation" ;
+      		:TriangleVertDistMax = -999.f ;
+
+      group: Data_Fields {
+        variables:
+        	float CH4(XDim, YDim, nLevels) ;
+        		CH4:_FillValue = -999.f ;
+        		CH4:MissingValue = -999.f ;
+        		CH4:Title = "CH4" ;
+        		CH4:Units = "VMR" ;
+        		CH4:UniqueFieldDefinition = "HIRDLS-MLS-TES-SHARED" ;
+        		CH4:fullnamepath = "/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4" ;
+        	float CH4AtSurface(XDim, YDim) ;
+        		CH4AtSurface:_FillValue = -999.f ;
+        		CH4AtSurface:MissingValue = -999.f ;
+        		CH4AtSurface:Title = "CH4AtSurface" ;
+        		CH4AtSurface:Units = "VMR" ;
+        		CH4AtSurface:UniqueFieldDefinition = "TES-SPECIFIC" ;
+        		CH4AtSurface:fullnamepath = "/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4AtSurface" ;
+        	float Latitude(YDim) ;
+        		Latitude:_FillValue = -999.f ;
+        		Latitude:MissingValue = -999.f ;
+        		Latitude:Title = "Latitude" ;
+        		Latitude:Units = "deg" ;
+        		Latitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-SHARED" ;
+        		Latitude:fullnamepath = "/HDFEOS/GRIDS/NadirGrid/Data Fields/Latitude" ;
+        	float Longitude(XDim) ;
+        		Longitude:_FillValue = -999.f ;
+        		Longitude:MissingValue = -999.f ;
+        		Longitude:Title = "Longitude" ;
+        		Longitude:Units = "deg" ;
+        		Longitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-SHARED" ;
+        		Longitude:fullnamepath = "/HDFEOS/GRIDS/NadirGrid/Data Fields/Longitude" ;
+        	float Pressure(nLevels) ;
+        		Pressure:_FillValue = -999.f ;
+        		Pressure:MissingValue = -999.f ;
+        		Pressure:Title = "Pressure" ;
+        		Pressure:Units = "hPa" ;
+        		Pressure:UniqueFieldDefinition = "HIRDLS-MLS-TES-SHARED" ;
+        		Pressure:fullnamepath = "/HDFEOS/GRIDS/NadirGrid/Data Fields/Pressure" ;
+        	float SurfacePressure(XDim, YDim) ;
+        		SurfacePressure:_FillValue = -999.f ;
+        		SurfacePressure:MissingValue = -999.f ;
+        		SurfacePressure:Title = "SurfacePressure" ;
+        		SurfacePressure:Units = "hPa" ;
+        		SurfacePressure:UniqueFieldDefinition = "TES-SPECIFIC" ;
+        		SurfacePressure:fullnamepath = "/HDFEOS/GRIDS/NadirGrid/Data Fields/SurfacePressure" ;
+        	float TotalColumnDensity(XDim, YDim) ;
+        		TotalColumnDensity:_FillValue = -999.f ;
+        		TotalColumnDensity:MissingValue = -999.f ;
+        		TotalColumnDensity:Title = "TotalColumnDensity" ;
+        		TotalColumnDensity:Units = "Molecules/cm^2" ;
+        		TotalColumnDensity:UniqueFieldDefinition = "TES-SPECIFIC" ;
+        		TotalColumnDensity:fullnamepath = "/HDFEOS/GRIDS/NadirGrid/Data Fields/TotalColumnDensity" ;
+        } // group Data_Fields
+      } // group NadirGrid
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  	coremetadata_len2 = 65537 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+  	char coremetadata(coremetadata_len2) ;
+  		coremetadata:fullnamepath = "/HDFEOS INFORMATION/coremetadata" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.10.1" ;
+  } // group HDFEOS_INFORMATION
+}

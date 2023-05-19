@@ -33,9 +33,9 @@
 #include <unistd.h>
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <cstdlib>
+#include <cstring>
+#include <fcntl.h>
 #include <list>
 
 #include <cppunit/TextTestRunner.h>
@@ -44,9 +44,9 @@
 
 #include "BESUtil.h"
 #include "BESError.h"
+#include "BESInternalError.h"
 #include "TheBESKeys.h"
 #include "test_config.h"
-#include <unistd.h>
 
 using namespace CppUnit;
 using namespace std;
@@ -438,58 +438,227 @@ public:
         if (debug) cerr << prolog << "END" << endl;
     }
 
-    CPPUNIT_TEST_SUITE( utilT );
+    // string_to_file(const string &filename, const string &content)
+    void string_to_file_and_file_to_string_test() {
+        BESUtil::string_to_file("test.txt", "This is a test");
+        string info = BESUtil::file_to_string("test.txt");
+        CPPUNIT_ASSERT(info == "This is a test");
+        system("rm test.txt");  // cleanup
+    }
 
-    CPPUNIT_TEST( test_assemblePath_1 );
-    CPPUNIT_TEST( test_assemblePath_2 );
-    CPPUNIT_TEST( test_assemblePath_3 );
-    CPPUNIT_TEST( test_assemblePath_4 );
-    CPPUNIT_TEST( test_assemblePath_5 );
-    CPPUNIT_TEST( test_assemblePath_6 );
-    CPPUNIT_TEST_FAIL( test_assemblePath_7 );
-    CPPUNIT_TEST( test_assemblePath_8 );
-    CPPUNIT_TEST( test_assemblePath_9 );
-    CPPUNIT_TEST( test_assemblePath_10 );
+    void string_to_file_test_empty_name() {
+        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::string_to_file("", "This is a test"), BESInternalError);
+    }
 
-    CPPUNIT_TEST( test_unescape );
+    void string_to_file_test_not_allowed() {
+        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::string_to_file("/", "This is a test"), BESInternalError);
+    }
 
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_1 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_2 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_3 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_4 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_5 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_6 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_7 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_8 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_9 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_10 );
-    CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_11 );
+    void file_to_string_test_empty_name() {
+        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::file_to_string(""), BESInternalError);
+    }
 
-    CPPUNIT_TEST( test_explode_1 );
-    CPPUNIT_TEST( test_explode_2 );
-    CPPUNIT_TEST( test_explode_3 );
-    CPPUNIT_TEST( test_explode_4 );
+    void file_to_string_test_not_allowed() {
+        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::file_to_string("/tmp/no_such_file"), BESInternalError);
+    }
 
-    CPPUNIT_TEST( test_implode_1 );
-    CPPUNIT_TEST( test_implode_2 );
-    CPPUNIT_TEST( test_implode_3 );
+    // BESUtil::make_temp_file(const string &temp_file_dir, string &temp_file_name)
+    void make_temp_file_test() {
+        string temp_file_name;
+        BESUtil::make_temp_file("/tmp", temp_file_name);
+        CPPUNIT_ASSERT(temp_file_name.find("/tmp/") == 0);
+        CPPUNIT_ASSERT(temp_file_name.find("bes_util_") == 5);
+        CPPUNIT_ASSERT(temp_file_name.length() == 20);
+        CPPUNIT_ASSERT_MESSAGE("Temporary file should exist", access(temp_file_name.c_str(), F_OK) != -1);
+        system(("rm " + temp_file_name).c_str());  // cleanup
+    }
 
-    CPPUNIT_TEST( test_trim_if_trailing_slash_1 );
-    CPPUNIT_TEST( test_trim_if_trailing_slash_2 );
-    CPPUNIT_TEST( test_trim_if_trailing_slash_3 );
-    CPPUNIT_TEST( test_trim_if_trailing_slash_4 );
-    CPPUNIT_TEST( test_trim_if_trailing_slash_5 );
+    // Test that when the temp file is written to, the int file descriptor is still valid and
+    // does not move from the start of the file. jhrg 3/9/23
+    void make_temp_file_write_data_test() {
+        string temp_file_name;
+        int fd = BESUtil::make_temp_file("/tmp", temp_file_name);
+        CPPUNIT_ASSERT_MESSAGE("Temporary file should exist", access(temp_file_name.c_str(), F_OK) != -1);
+        BESUtil::string_to_file(temp_file_name, "This is a test");
+        CPPUNIT_ASSERT_MESSAGE("Temporary file should exist", fcntl(fd, F_GETFD) != -1);
+        unsigned long pos = lseek(fd, 0, SEEK_CUR);
+        CPPUNIT_ASSERT_MESSAGE("The fd should be at the start of the file", pos == 0);
+        system(("rm " + temp_file_name).c_str());  // cleanup
+    }
 
-    CPPUNIT_TEST( test_trim_if_surrounding_quotes_1 );
-    CPPUNIT_TEST( test_trim_if_surrounding_quotes_2 );
-    CPPUNIT_TEST( test_trim_if_surrounding_quotes_3 );
-    CPPUNIT_TEST( test_trim_if_surrounding_quotes_4 );
-    CPPUNIT_TEST( test_trim_if_surrounding_quotes_5 );
+    // Test that we can write and then read. jhrg 3/9/23
+    void make_temp_file_read_data_test() {
+        string temp_file_name;
+        int fd = BESUtil::make_temp_file("/tmp", temp_file_name);
+        CPPUNIT_ASSERT_MESSAGE("Temporary file should exist", access(temp_file_name.c_str(), F_OK) != -1);
+        string data = "This is a test";
+        BESUtil::string_to_file(temp_file_name, data);
+        CPPUNIT_ASSERT_MESSAGE("The fd should be open", fcntl(fd, F_GETFD) != -1);
+        unsigned long pos = lseek(fd, 0, SEEK_CUR);
+        CPPUNIT_ASSERT_MESSAGE("The fd should be at the start of the file", pos == 0);
+        char *buf = new char[data.length() + 1];
+        memset(buf, 0, data.length() + 1);
+        read(fd, buf, data.length());
+        string read_data = buf;
+        CPPUNIT_ASSERT(read_data == data);
+        system(("rm " + temp_file_name).c_str());  // cleanup
+    }
 
-    CPPUNIT_TEST( replace_all_test_01 );
-    CPPUNIT_TEST( replace_all_test_02 );
-    CPPUNIT_TEST( replace_all_test_03 );
-    CPPUNIT_TEST( replace_all_test_04 );
+    void make_temp_file_write_data_with_truncate_test() {
+        string temp_file_name;
+        int fd = BESUtil::make_temp_file("/tmp", temp_file_name);
+        CPPUNIT_ASSERT_MESSAGE("Temporary file should exist", access(temp_file_name.c_str(), F_OK) != -1);
+        string data = "This is a test";
+        BESUtil::string_to_file(temp_file_name, data);
+        string new_data = "test test test tes test";
+        BESUtil::string_to_file(temp_file_name, new_data);
+
+        // After the second write, which truncates the file, the fd should (still) be at the start of the file
+        CPPUNIT_ASSERT_MESSAGE("The fd should be open", fcntl(fd, F_GETFD) != -1);
+        unsigned long pos = lseek(fd, 0, SEEK_CUR);
+        CPPUNIT_ASSERT_MESSAGE("The fd should be at the start of the file", pos == 0);
+
+        // And the new info should be in the file
+        CPPUNIT_ASSERT(new_data == BESUtil::file_to_string(temp_file_name));
+        system(("rm " + temp_file_name).c_str());  // cleanup
+    }
+
+    void mkdir_p_simple_test() {
+        string dir = "/tmp/bes_util_test";
+        // initial condition: bes_util_test does not exist
+        CPPUNIT_ASSERT_MESSAGE("bes_util_test should not exist", access(dir.c_str(), F_OK) == -1);
+        BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
+        system(("rm -rf " + dir).c_str());  // cleanup
+    }
+
+    void mkdir_p_w_missing_parent_test() {
+        string dir = "/tmp/bes_util_test/parent";
+        // initial condition: neither bes_util_test nor parent exists
+        CPPUNIT_ASSERT_MESSAGE("Neither bes_util_test nor parent should exist",
+                               access("/tmp/bes_util_test", F_OK) == -1
+                               && access(dir.c_str(), F_OK) == -1);
+        BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
+        system("rm -rf /tmp/bes_util_test");  // cleanup
+    }
+
+    void mkdir_p_exists_test() {
+        string dir = "/tmp";
+        // Unlike mkdir(2), mkdir_p returns 0 (success) if the directory exists.
+        int status = BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Call to make an existing dir should fail", status == 0);
+    }
+
+    void mkdir_p_exists_trailing_slash_test() {
+        string dir = "/tmp/";
+        // Unlike mkdir(2), mkdir_p returns 0 (success) if the directory exists.
+        int status = BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Call to make an existing dir should fail", status == 0);
+    }
+
+    void mkdir_p_w_missing_parent_trailing_slash_test() {
+        string dir = "/tmp/bes_util_test/parent/";
+        // initial condition: neither bes_util_test nor parent exists
+        CPPUNIT_ASSERT_MESSAGE("Neither bes_util_test nor parent should exist",
+                               access("/tmp/bes_util_test", F_OK) == -1
+                               && access(dir.c_str(), F_OK) == -1);
+        BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
+        system("rm -rf /tmp/bes_util_test");  // cleanup
+    }
+
+    void mkdir_p_not_allowed_test() {
+        string dir = "/dev/mkdir_p_not_allowed";
+        // initial conditions: /dev/mkdir_p_not_allowed does not exist and we cannot write to /dev
+        CPPUNIT_ASSERT_MESSAGE("/dev/mkdir_p_not_allowed should not exist", access(dir.c_str(), F_OK) == -1);
+        CPPUNIT_ASSERT_MESSAGE("/dev not writable by this process", access("/dev", W_OK) == -1);
+        int status = BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("mkdir_p() should return an error", status == -1);
+        DBG(cerr << "errno: " << strerror(errno) << " (" << errno << ")" << endl);
+        CPPUNIT_ASSERT_MESSAGE("Error code should be EACCES or EPERM", errno == EACCES || errno == EPERM);
+        CPPUNIT_ASSERT_MESSAGE("Directory should not exist because we are not allowed to write there",
+                               access(dir.c_str(), F_OK) == -1);
+    }
+
+    void mkdir_p_empty_path_test() {
+        string dir = "";
+        int status = BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("An empty path will succeed", status == 0);
+    }
+
+
+CPPUNIT_TEST_SUITE( utilT );
+
+        CPPUNIT_TEST( mkdir_p_simple_test );
+        CPPUNIT_TEST( mkdir_p_w_missing_parent_test );
+        CPPUNIT_TEST( mkdir_p_exists_test );
+        CPPUNIT_TEST( mkdir_p_exists_trailing_slash_test );
+        CPPUNIT_TEST( mkdir_p_w_missing_parent_trailing_slash_test );
+        CPPUNIT_TEST( mkdir_p_not_allowed_test );
+        CPPUNIT_TEST( mkdir_p_empty_path_test );
+
+        CPPUNIT_TEST( make_temp_file_test );
+        CPPUNIT_TEST( make_temp_file_write_data_test );
+        CPPUNIT_TEST( make_temp_file_read_data_test );
+        CPPUNIT_TEST( make_temp_file_write_data_with_truncate_test );
+
+        CPPUNIT_TEST( string_to_file_and_file_to_string_test );
+        CPPUNIT_TEST( string_to_file_test_empty_name );
+        CPPUNIT_TEST( string_to_file_test_not_allowed );
+        CPPUNIT_TEST( file_to_string_test_empty_name );
+        CPPUNIT_TEST( file_to_string_test_not_allowed );
+
+        CPPUNIT_TEST( test_assemblePath_1 );
+        CPPUNIT_TEST( test_assemblePath_2 );
+        CPPUNIT_TEST( test_assemblePath_3 );
+        CPPUNIT_TEST( test_assemblePath_4 );
+        CPPUNIT_TEST( test_assemblePath_5 );
+        CPPUNIT_TEST( test_assemblePath_6 );
+        CPPUNIT_TEST_FAIL( test_assemblePath_7 );
+        CPPUNIT_TEST( test_assemblePath_8 );
+        CPPUNIT_TEST( test_assemblePath_9 );
+        CPPUNIT_TEST( test_assemblePath_10 );
+
+        CPPUNIT_TEST( test_unescape );
+
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_1 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_2 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_3 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_4 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_5 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_6 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_7 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_8 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_9 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_10 );
+        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_11 );
+
+        CPPUNIT_TEST( test_explode_1 );
+        CPPUNIT_TEST( test_explode_2 );
+        CPPUNIT_TEST( test_explode_3 );
+        CPPUNIT_TEST( test_explode_4 );
+
+        CPPUNIT_TEST( test_implode_1 );
+        CPPUNIT_TEST( test_implode_2 );
+        CPPUNIT_TEST( test_implode_3 );
+
+        CPPUNIT_TEST( test_trim_if_trailing_slash_1 );
+        CPPUNIT_TEST( test_trim_if_trailing_slash_2 );
+        CPPUNIT_TEST( test_trim_if_trailing_slash_3 );
+        CPPUNIT_TEST( test_trim_if_trailing_slash_4 );
+        CPPUNIT_TEST( test_trim_if_trailing_slash_5 );
+
+        CPPUNIT_TEST( test_trim_if_surrounding_quotes_1 );
+        CPPUNIT_TEST( test_trim_if_surrounding_quotes_2 );
+        CPPUNIT_TEST( test_trim_if_surrounding_quotes_3 );
+        CPPUNIT_TEST( test_trim_if_surrounding_quotes_4 );
+        CPPUNIT_TEST( test_trim_if_surrounding_quotes_5 );
+
+        CPPUNIT_TEST( replace_all_test_01 );
+        CPPUNIT_TEST( replace_all_test_02 );
+        CPPUNIT_TEST( replace_all_test_03 );
+        CPPUNIT_TEST( replace_all_test_04 );
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -498,7 +667,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( utilT );
 
 int main(int argc, char *argv[]) {
     int option_char;
-    while ((option_char = getopt(argc, argv, "dh")) != EOF)
+    while ((option_char = getopt(argc, argv, "dDh")) != EOF)
         switch (option_char) {
             case 'd':
                 debug = true;  // debug is a static global
@@ -509,9 +678,9 @@ int main(int argc, char *argv[]) {
             case 'h': {     // help - show test names
                 cerr << "Usage: utilT has the following tests:" << endl;
                 const std::vector<Test *> &tests = utilT::suite()->getTests();
-                unsigned int prefix_len = utilT::suite()->getName().append("::").size();
-                for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                    cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+                unsigned long prefix_len = utilT::suite()->getName().append("::").size();
+                for (auto &test: tests) {
+                    cerr << test->getName().replace(0, prefix_len, "") << endl;
                 }
                 break;
             }
@@ -526,7 +695,6 @@ int main(int argc, char *argv[]) {
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
-    string test = "";
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
@@ -535,8 +703,7 @@ int main(int argc, char *argv[]) {
         int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = utilT::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
+            wasSuccessful = wasSuccessful && runner.run(utilT::suite()->getName().append("::").append(argv[i]));
             ++i;
         }
     }

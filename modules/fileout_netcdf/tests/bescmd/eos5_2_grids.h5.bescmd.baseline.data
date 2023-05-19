@@ -1,0 +1,148 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex grid_2_2d_size.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"grid_2_2d_size.h5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: GeoGrid1 {
+      dimensions:
+      	YDim = 8 ;
+      	XDim = 16 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+      data:
+
+       YDim = 7.5, 6.5, 5.5, 4.5, 3.5, 2.5, 1.5, 0.5 ;
+
+       XDim = 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5, 
+          12.5, 13.5, 14.5, 15.5 ;
+
+      group: Data_Fields {
+        variables:
+        	float Temperature(YDim, XDim) ;
+        		Temperature:units = "K" ;
+        		Temperature:fullnamepath = "/HDFEOS/GRIDS/GeoGrid1/Data Fields/Temperature" ;
+        data:
+
+         Temperature =
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+  32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+  48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
+  64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+  80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
+  96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 
+            110, 111,
+  112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 
+            125, 126, 127 ;
+        } // group Data_Fields
+      } // group GeoGrid1
+
+    group: GeoGrid2 {
+      dimensions:
+      	YDim = 4 ;
+      	XDim = 8 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+      data:
+
+       YDim = 3.5, 2.5, 1.5, 0.5 ;
+
+       XDim = 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5 ;
+
+      group: Data_Fields {
+        variables:
+        	float Temperature(YDim, XDim) ;
+        		Temperature:units = "K" ;
+        		Temperature:fullnamepath = "/HDFEOS/GRIDS/GeoGrid2/Data Fields/Temperature" ;
+        data:
+
+         Temperature =
+  0, 1, 2, 3, 4, 5, 6, 7,
+  8, 9, 10, 11, 12, 13, 14, 15,
+  16, 17, 18, 19, 20, 21, 22, 23,
+  24, 25, 26, 27, 28, 29, 30, 31 ;
+        } // group Data_Fields
+      } // group GeoGrid2
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.13" ;
+  data:
+
+   StructMetadata_0 = "GROUP=SwathStructure\n",
+    "END_GROUP=SwathStructure\n",
+    "GROUP=GridStructure\n",
+    "\tGROUP=GRID_1\n",
+    "\t\tGridName=\"GeoGrid1\"\n",
+    "\t\tXDim=16\n",
+    "\t\tYDim=8\n",
+    "\t\tUpperLeftPointMtrs=(0.000000,8000000.000000)\n",
+    "\t\tLowerRightMtrs=(16000000.000000,0.000000)\n",
+    "\t\tProjection=HE5_GCTP_GEO\n",
+    "\t\tGROUP=Dimension\n",
+    "\t\tEND_GROUP=Dimension\n",
+    "\t\tGROUP=DataField\n",
+    "\t\t\tOBJECT=DataField_1\n",
+    "\t\t\t\tDataFieldName=\"Temperature\"\n",
+    "\t\t\t\tDataType=H5T_NATIVE_FLOAT\n",
+    "\t\t\t\tDimList=(\"YDim\",\"XDim\")\n",
+    "\t\t\t\tMaxdimList=(\"YDim\",\"XDim\")\n",
+    "\t\t\tEND_OBJECT=DataField_1\n",
+    "\t\tEND_GROUP=DataField\n",
+    "\t\tGROUP=MergedFields\n",
+    "\t\tEND_GROUP=MergedFields\n",
+    "\tEND_GROUP=GRID_1\n",
+    "\tGROUP=GRID_2\n",
+    "\t\tGridName=\"GeoGrid2\"\n",
+    "\t\tXDim=8\n",
+    "\t\tYDim=4\n",
+    "\t\tUpperLeftPointMtrs=(0.000000,4000000.000000)\n",
+    "\t\tLowerRightMtrs=(8000000.000000,0.000000)\n",
+    "\t\tProjection=HE5_GCTP_GEO\n",
+    "\t\tGROUP=Dimension\n",
+    "\t\tEND_GROUP=Dimension\n",
+    "\t\tGROUP=DataField\n",
+    "\t\t\tOBJECT=DataField_1\n",
+    "\t\t\t\tDataFieldName=\"Temperature\"\n",
+    "\t\t\t\tDataType=H5T_NATIVE_FLOAT\n",
+    "\t\t\t\tDimList=(\"YDim\",\"XDim\")\n",
+    "\t\t\t\tMaxdimList=(\"YDim\",\"XDim\")\n",
+    "\t\t\tEND_OBJECT=DataField_1\n",
+    "\t\tEND_GROUP=DataField\n",
+    "\t\tGROUP=MergedFields\n",
+    "\t\tEND_GROUP=MergedFields\n",
+    "\tEND_GROUP=GRID_2\n",
+    "END_GROUP=GridStructure\n",
+    "GROUP=PointStructure\n",
+    "END_GROUP=PointStructure\n",
+    "GROUP=ZaStructure\n",
+    "END_GROUP=ZaStructure\n",
+    "END\n",
+    "" ;
+  } // group HDFEOS_INFORMATION
+}

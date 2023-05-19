@@ -1,0 +1,207 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex OMI-Aura_L3-OMAEROe_2012m0213_v003-2012m0215t021315.he5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"OMI-Aura_L3-OMAEROe_2012m0213_v003-2012m0215t021315.he5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+
+      // group attributes:
+      		:OrbitNumber = 40305, 40306, 40307, 40308, 40309, 40310, 40311, 40312, 40313, 40314, 40315, 40316, 40317, 40318, 40319, 40320, 40321, 40322, 40323, 40324, 40325, 40326, 40327, 40328, 40329, 40330, 40331, 40332, 40333, 40334, 40335, 40336, 40337, 40338, 40339, 40340, 40341, 40342, 40343, 40344, 40345, 40346, 40347, 40348 ;
+      		:OrbitPeriod = 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5934., 5933., 5933., 5934., 5933., 5934., 5933., 5934., 5934., 5933., 5933., 5934., 5933., 5934., 5933., 5934. ;
+      		:InstrumentName = "OMI" ;
+      		:ProcessLevel = "3e" ;
+      		:GranuleMonth = 2 ;
+      		:GranuleDay = 13 ;
+      		:GranuleYear = 2012 ;
+      		:GranuleDayOfYear = 44 ;
+      		:TAI93At0zOfGranule = 603244807. ;
+      		:PGEVersion = "\"1.1.0.1\"" ;
+      		:StartUTC = "removed date-time" ;
+      		:EndUTC = "removed date-time" ;
+      		:Period = "Daily" ;
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: ColumnAmountAerosol {
+      dimensions:
+      	YDim = 720 ;
+      	XDim = 1440 ;
+      	nWavelDiagnostic = 5 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+
+      // group attributes:
+      		:GCTPProjectionCode = 0 ;
+      		:Projection = "Geographic" ;
+      		:GridOrigin = "Center" ;
+      		:GridSpacing = "(0.25,0.25)" ;
+      		:GridSpacingUnit = "deg" ;
+      		:GridSpan = "(-180,180,-90,90)" ;
+      		:GridSpanUnit = "deg" ;
+      		:NumberOfLongitudesInGrid = 1440 ;
+      		:NumberOfLatitudesInGrid = 720 ;
+      		:WavelDiagnostic = "342.5, 388.0, 442.0, 463.0, 483.5" ;
+
+      group: Data_Fields {
+        variables:
+        	short AbsorbingAerosolOpticalThicknessMW(nWavelDiagnostic, YDim, XDim) ;
+        		AbsorbingAerosolOpticalThicknessMW:_FillValue = -32767s ;
+        		AbsorbingAerosolOpticalThicknessMW:Units = "NoUnits" ;
+        		AbsorbingAerosolOpticalThicknessMW:Title = "Spectral Absorbing Aerosol Optical Thickness for best fit aerosol model derived with the Multi-Wavelength method, scaled by a factor 1000" ;
+        		AbsorbingAerosolOpticalThicknessMW:UniqueFieldDefinition = "OMI-Specific" ;
+        		AbsorbingAerosolOpticalThicknessMW:scale_factor = 0.001 ;
+        		AbsorbingAerosolOpticalThicknessMW:add_offset = 0. ;
+        		AbsorbingAerosolOpticalThicknessMW:MissingValue = -32767s ;
+        		AbsorbingAerosolOpticalThicknessMW:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AbsorbingAerosolOpticalThicknessMW" ;
+        	ushort AerosolModelMW(YDim, XDim) ;
+        		AerosolModelMW:_FillValue = 65535US ;
+        		AerosolModelMW:Units = "NoUnits" ;
+        		AerosolModelMW:Title = "Aerosol model indicator for best fit aerosol model derived with the Multi-Wavelength method" ;
+        		AerosolModelMW:UniqueFieldDefinition = "OMI-Specific" ;
+        		AerosolModelMW:scale_factor = 1. ;
+        		AerosolModelMW:add_offset = 0. ;
+        		AerosolModelMW:MissingValue = 65535US ;
+        		AerosolModelMW:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolModelMW" ;
+        	short AerosolOpticalThicknessMW(nWavelDiagnostic, YDim, XDim) ;
+        		AerosolOpticalThicknessMW:_FillValue = -32767s ;
+        		AerosolOpticalThicknessMW:Units = "NoUnits" ;
+        		AerosolOpticalThicknessMW:Title = "Spectral Aerosol Optical Thickness for best fit aerosol model derived with the Multi-Wavelength method, scaled by a factor 1000" ;
+        		AerosolOpticalThicknessMW:UniqueFieldDefinition = "OMI-Specific" ;
+        		AerosolOpticalThicknessMW:scale_factor = 0.001 ;
+        		AerosolOpticalThicknessMW:add_offset = 0. ;
+        		AerosolOpticalThicknessMW:MissingValue = -32767s ;
+        		AerosolOpticalThicknessMW:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessMW" ;
+        	short AerosolOpticalThicknessPassedThresholdMean(YDim, XDim) ;
+        		AerosolOpticalThicknessPassedThresholdMean:_FillValue = -32767s ;
+        		AerosolOpticalThicknessPassedThresholdMean:Units = "NoUnits" ;
+        		AerosolOpticalThicknessPassedThresholdMean:Title = "Mean spectral Aerosol Optical Thickness of aerosol models that passed the threshold.Scaled by a factor 1000." ;
+        		AerosolOpticalThicknessPassedThresholdMean:UniqueFieldDefinition = "OMI-Specific" ;
+        		AerosolOpticalThicknessPassedThresholdMean:scale_factor = 0.001 ;
+        		AerosolOpticalThicknessPassedThresholdMean:add_offset = 0. ;
+        		AerosolOpticalThicknessPassedThresholdMean:MissingValue = -32767s ;
+        		AerosolOpticalThicknessPassedThresholdMean:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessPassedThresholdMean" ;
+        	short AerosolOpticalThicknessPassedThresholdStd(YDim, XDim) ;
+        		AerosolOpticalThicknessPassedThresholdStd:_FillValue = -32767s ;
+        		AerosolOpticalThicknessPassedThresholdStd:Units = "NoUnits" ;
+        		AerosolOpticalThicknessPassedThresholdStd:Title = "Standard deviation of the spectral Single  ScatteringAlbedo ss of aerosol models that passed the threshold.Scaled by a factor 1000." ;
+        		AerosolOpticalThicknessPassedThresholdStd:UniqueFieldDefinition = "OMI-Specific" ;
+        		AerosolOpticalThicknessPassedThresholdStd:scale_factor = 0.001 ;
+        		AerosolOpticalThicknessPassedThresholdStd:add_offset = 0. ;
+        		AerosolOpticalThicknessPassedThresholdStd:MissingValue = -32767s ;
+        		AerosolOpticalThicknessPassedThresholdStd:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessPassedThresholdStd" ;
+        	float Latitude(YDim, XDim) ;
+        		Latitude:_FillValue = -1.267651e+30f ;
+        		Latitude:Units = "deg" ;
+        		Latitude:Title = "Latitude of the center of the groundpixel" ;
+        		Latitude:UniqueFieldDefinition = "Aura-Shared" ;
+        		Latitude:scale_factor = 1. ;
+        		Latitude:add_offset = 0. ;
+        		Latitude:MissingValue = -1.267651e+30f ;
+        		Latitude:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/Latitude" ;
+        	float Longitude(YDim, XDim) ;
+        		Longitude:_FillValue = -1.267651e+30f ;
+        		Longitude:Units = "deg" ;
+        		Longitude:Title = "Longitude of the center of the groundpixel" ;
+        		Longitude:UniqueFieldDefinition = "Aura-Shared" ;
+        		Longitude:scale_factor = 1. ;
+        		Longitude:add_offset = 0. ;
+        		Longitude:MissingValue = -1.267651e+30f ;
+        		Longitude:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/Longitude" ;
+        	short SingleScatteringAlbedoMW(nWavelDiagnostic, YDim, XDim) ;
+        		SingleScatteringAlbedoMW:_FillValue = -32767s ;
+        		SingleScatteringAlbedoMW:Units = "NoUnits" ;
+        		SingleScatteringAlbedoMW:Title = "Spectral Single Scattering Albedo for best fit aerosol model derived with the Multi-Wavelength method, scaled by a factor 1000" ;
+        		SingleScatteringAlbedoMW:UniqueFieldDefinition = "OMI-Specific" ;
+        		SingleScatteringAlbedoMW:scale_factor = 0.001 ;
+        		SingleScatteringAlbedoMW:add_offset = 0. ;
+        		SingleScatteringAlbedoMW:MissingValue = -32767s ;
+        		SingleScatteringAlbedoMW:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoMW" ;
+        	short SingleScatteringAlbedoPassedThresholdMean(YDim, XDim) ;
+        		SingleScatteringAlbedoPassedThresholdMean:_FillValue = -32767s ;
+        		SingleScatteringAlbedoPassedThresholdMean:Units = "NoUnits" ;
+        		SingleScatteringAlbedoPassedThresholdMean:Title = "Mean spectral Aerosol Optical Thickness of aerosol models that passed the threshold.Scaled by a factor 1000." ;
+        		SingleScatteringAlbedoPassedThresholdMean:UniqueFieldDefinition = "OMI-Specific" ;
+        		SingleScatteringAlbedoPassedThresholdMean:scale_factor = 0.001 ;
+        		SingleScatteringAlbedoPassedThresholdMean:add_offset = 0. ;
+        		SingleScatteringAlbedoPassedThresholdMean:MissingValue = -32767s ;
+        		SingleScatteringAlbedoPassedThresholdMean:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoPassedThresholdMean" ;
+        	short SingleScatteringAlbedoPassedThresholdStd(YDim, XDim) ;
+        		SingleScatteringAlbedoPassedThresholdStd:_FillValue = -32767s ;
+        		SingleScatteringAlbedoPassedThresholdStd:Units = "NoUnits" ;
+        		SingleScatteringAlbedoPassedThresholdStd:Title = "Standard deviation of the spectral Single  ScatteringAlbedo of aerosol models that passed the threshold.Scaled by a factor 1000." ;
+        		SingleScatteringAlbedoPassedThresholdStd:UniqueFieldDefinition = "OMI-Specific" ;
+        		SingleScatteringAlbedoPassedThresholdStd:scale_factor = 0.001 ;
+        		SingleScatteringAlbedoPassedThresholdStd:add_offset = 0. ;
+        		SingleScatteringAlbedoPassedThresholdStd:MissingValue = -32767s ;
+        		SingleScatteringAlbedoPassedThresholdStd:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoPassedThresholdStd" ;
+        	float SolarZenithAngle(YDim, XDim) ;
+        		SolarZenithAngle:_FillValue = -1.267651e+30f ;
+        		SolarZenithAngle:Units = "deg" ;
+        		SolarZenithAngle:Title = "Solar zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel" ;
+        		SolarZenithAngle:UniqueFieldDefinition = "Aura-Shared" ;
+        		SolarZenithAngle:scale_factor = 1. ;
+        		SolarZenithAngle:add_offset = 0. ;
+        		SolarZenithAngle:MissingValue = -1.267651e+30f ;
+        		SolarZenithAngle:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SolarZenithAngle" ;
+        	short TerrainReflectivity(YDim, XDim) ;
+        		TerrainReflectivity:_FillValue = -32767s ;
+        		TerrainReflectivity:Units = "NoUnits" ;
+        		TerrainReflectivity:Title = "Reflectivity of the ground pixel, scaled by a factor 1000" ;
+        		TerrainReflectivity:UniqueFieldDefinition = "OMI-Specific" ;
+        		TerrainReflectivity:scale_factor = 0.001 ;
+        		TerrainReflectivity:add_offset = 0. ;
+        		TerrainReflectivity:MissingValue = -32767s ;
+        		TerrainReflectivity:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/TerrainReflectivity" ;
+        	float UVAerosolIndex(YDim, XDim) ;
+        		UVAerosolIndex:_FillValue = -1.267651e+30f ;
+        		UVAerosolIndex:Units = "NoUnits" ;
+        		UVAerosolIndex:Title = "UV Aerosol Index" ;
+        		UVAerosolIndex:UniqueFieldDefinition = "OMI-Specific" ;
+        		UVAerosolIndex:scale_factor = 1. ;
+        		UVAerosolIndex:add_offset = 0. ;
+        		UVAerosolIndex:MissingValue = -1.267651e+30f ;
+        		UVAerosolIndex:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/UVAerosolIndex" ;
+        	float VISAerosolIndex(YDim, XDim) ;
+        		VISAerosolIndex:_FillValue = -1.267651e+30f ;
+        		VISAerosolIndex:Units = "NoUnits" ;
+        		VISAerosolIndex:Title = "VIS Aerosol Index" ;
+        		VISAerosolIndex:UniqueFieldDefinition = "OMI-Specific" ;
+        		VISAerosolIndex:scale_factor = 1. ;
+        		VISAerosolIndex:add_offset = 0. ;
+        		VISAerosolIndex:MissingValue = -1.267651e+30f ;
+        		VISAerosolIndex:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/VISAerosolIndex" ;
+        	float ViewingZenithAngle(YDim, XDim) ;
+        		ViewingZenithAngle:_FillValue = -1.267651e+30f ;
+        		ViewingZenithAngle:Units = "deg" ;
+        		ViewingZenithAngle:Title = "Viewing zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel" ;
+        		ViewingZenithAngle:UniqueFieldDefinition = "OMI-Specific" ;
+        		ViewingZenithAngle:scale_factor = 1. ;
+        		ViewingZenithAngle:add_offset = 0. ;
+        		ViewingZenithAngle:MissingValue = -1.267651e+30f ;
+        		ViewingZenithAngle:fullnamepath = "/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/ViewingZenithAngle" ;
+        } // group Data_Fields
+      } // group ColumnAmountAerosol
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.11" ;
+  } // group HDFEOS_INFORMATION
+}

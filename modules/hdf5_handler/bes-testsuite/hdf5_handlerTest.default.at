@@ -166,3 +166,7 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic.h5.dmr.bescmd])
 
 #netcdf4 enhanced compound
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
+
+#big-endian
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dap.bescmd])

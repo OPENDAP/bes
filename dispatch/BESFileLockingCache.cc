@@ -106,6 +106,8 @@ static inline string get_errno() {
 //
 // Using whence == SEEK_SET with start and len set to zero means lock the whole file.
 // jhrg 9/8/18
+//
+// TODO Thread safety?
 static inline struct flock *lock(int type)
 {
     static struct flock lock;

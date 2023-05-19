@@ -2,29 +2,27 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="good_imerge.h5">
     <Dimension name="lon" size="3600"/>
     <Dimension name="lat" size="1800"/>
-    <Int16 name="HQprecipSource2">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-    </Int16>
-    <Int16 name="IRkalmanFilterWeight">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-10000</Value>
-        </Attribute>
-    </Int16>
     <Float32 name="lon">
         <Dim name="/lon"/>
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
     </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="HQprecipSource2">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int16>
     <Int8 name="HQobservationTime2">
         <Dim name="/lon"/>
         <Dim name="/lat"/>
@@ -37,6 +35,8 @@
         <Attribute name="_FillValue" type="Int8">
             <Value>-99</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int8>
     <Float32 name="precipitationCal">
         <Dim name="/lon"/>
@@ -50,6 +50,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.900391</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Int8 name="HQobservationTime1">
         <Dim name="/lon"/>
@@ -63,6 +65,8 @@
         <Attribute name="_FillValue" type="Int8">
             <Value>-99</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int8>
     <Float32 name="precipitationUncal">
         <Dim name="/lon"/>
@@ -76,13 +80,21 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.900391</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
-    <Float32 name="lat">
+    <Int16 name="IRkalmanFilterWeight">
+        <Dim name="/lon"/>
         <Dim name="/lat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
         </Attribute>
-    </Float32>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-10000</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int16>
     <Float32 name="HQprecipitation">
         <Dim name="/lon"/>
         <Dim name="/lat"/>
@@ -95,6 +107,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.900391</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Int8 name="probabilityLiquidPrecipitation">
         <Dim name="/lon"/>
@@ -105,6 +119,8 @@
         <Attribute name="Units" type="String">
             <Value>percent</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int8>
     <Float32 name="randomError">
         <Dim name="/lon"/>
@@ -118,6 +134,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.900391</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Float32 name="IRprecipitation">
         <Dim name="/lon"/>
@@ -131,6 +149,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-99999.</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Int16 name="HQprecipSource1">
         <Dim name="/lon"/>
@@ -138,6 +158,8 @@
         <Attribute name="DimensionNames" type="String">
             <Value>nlon,nlat</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int16>
     <Attribute name="FileHeader" type="String">
         <Value>AlgorithmID=3IMERGHH;

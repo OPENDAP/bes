@@ -1,0 +1,782 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="20160409062000-OSPO-L2P_GHRSST-SSTsubskin-VIIRS_NPP-ACSPO_V2.61-v02.0-fv01.0.nc.h5">
+    <Dimension name="time" size="1"/>
+    <Dimension name="nj" size="5392"/>
+    <Dimension name="ni" size="3200"/>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="comment" type="String">
+            <Value>seconds since 1981-01-01 00:00:00</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>reference time of sst file</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1981-01-01 00:00:00</Value>
+        </Attribute>
+        <Attribute name="calendar" type="String">
+            <Value>Gregorian</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="lat">
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="comment" type="String">
+            <Value>Latitude of retrievals</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-90.</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lon">
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="comment" type="String">
+            <Value>Longitude of retrievals</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>180.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-180.</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="wind_speed">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Typically represents surface winds (10 meters above the sea surface)</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="height" type="String">
+            <Value>10 m</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>wind speed</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.150000006</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Wind speed from NCEP GFS data</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>wind_speed</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int8>
+    <Int8 name="sses_standard_deviation">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Standard deviation of sea_surface_temperature from SST measured by drifting buoys. Further information at (Petrenko et al., JTECH, 2016; doi:10.1175/JTECH-D-15-0166.1)</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SSES standard deviation</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int8>
+    <Int16 name="brightness_temperature_08um6">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>273.1499939</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>non L2P core field; brightness temperature for 8.6 um channel VIIRS Ch. M14</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>brightness temperature for 8.6 um channel</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>VIIRS channel M14</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int16>
+    <Int16 name="sst_dtime">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>time plus sst_dtime gives seconds since 1981-01-01 00:00:00 UTC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>time difference from reference time</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.25</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int16>
+    <Int8 name="sea_ice_fraction">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Fractional sea ice cover from reference SST</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sea ice fraction</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>CMC0.1deg-CMC-L4-GLOB-v2.0</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_ice_area_fraction</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>100</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int8>
+    <Int16 name="l2p_flags">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="comment" type="String">
+            <Value>L2P common flags in bits 1-6 and data provider flags (from ACSPO mask) in bits 9-16: bit01 (0=IR: 1=microwave); bit02 (0=ocean; 1=land); bit03 (0=no ice; 1=ice); bits04-08 (reserved,set to 0); bit09 (0=radiance valid; 1=invalid); bit10 (0=night; 1=day); bit11 (0=ocean; 1=land); bit12 (0=good quality data; 1=degraded quality data due to &quot;twilight&quot; region); bit13 (0=no glint; 1=glint); bit14 (0=no snow/ice; 1=snow/ice); bits15-16 (00=clear; 01=probably clear; 10=cloudy; 11=clear-sky mask undefined)</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="flag_masks" type="Int16">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>4</Value>
+            <Value>256</Value>
+            <Value>512</Value>
+            <Value>1024</Value>
+            <Value>2048</Value>
+            <Value>4096</Value>
+            <Value>8192</Value>
+            <Value>-16384</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>microwave land ice invalid day land twilight glint ice probably_clear_or_cloudy_or_undefined</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>L2P flags</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int16>
+    <Int16 name="sea_surface_temperature">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>273.1499939</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>SST obtained by regression with buoy measurements, sensitive to skin SST. Further information at (Petrenko et al., JGR, 2014; doi:10.1002/2013JD020637)</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sea_surface_subskin_temperature</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>NOAA</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_surface_subskin_temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int16>
+    <Int8 name="quality_level">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="comment" type="String">
+            <Value>SST quality levels: 5 corresponds to clear-sky pixels and is recommended for operational applications and validation;</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>missing invalid not_used not_used not_used clear</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>quality level of SST pixel</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int8>
+    <Int8 name="dt_analysis">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Deviation from reference SST, i.e., dt_analysis = SST - reference SST</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>deviation from SST reference</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>CMC0.1deg-CMC-L4-GLOB-v2.0</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.1000000015</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int8>
+    <Int16 name="brightness_temperature_12um">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>273.1499939</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>non L2P core field; brightness temperature for 12.0 um channel VIIRS M16</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>brightness temperature for 12.0 um channel</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>VIIRS-M16-SDR</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int16>
+    <Int8 name="satellite_zenith_angle">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>satellite zenith angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>satellite zenith angle</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int8>
+    <Int16 name="brightness_temperature_4um">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>273.1499939</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>non L2P core field; brightness temperature for 3.7 um channel VIIRS M12</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>brightness temperature for 3.7 um channel</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>VIIRS-M12-SDR</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int16>
+    <Int8 name="sses_bias">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Bias is derived against Piecewise Regression SST produced by local regressions with buoys. Subtracting sses_bias from sea_surface_temperature producess more accurate SST at the depth of buoys  Further information at (Petrenko et al., JTECH, 2016; doi:10.1175/JTECH-D-15-0166.1)</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SSES bias estimate</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.01600000076</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int8>
+    <Int16 name="brightness_temperature_11um">
+        <Dim name="/time"/>
+        <Dim name="/nj"/>
+        <Dim name="/ni"/>
+        <Attribute name="add_offset" type="Float32">
+            <Value>273.1499939</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>non L2P core field; brightness temperature for 10.8 um channel VIIRS M15</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lon lat</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>brightness temperature for 10.8 um channel</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>VIIRS-M15-SDR</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>32767</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+        <Map name="/time"/>
+    </Int16>
+    <Attribute name="geospatial_bounds" type="String">
+        <Value>POLYGON(( -86.871  31.018,  -87.950  65.348,  -31.004  56.730,  -55.853  26.251,  -86.871  31.018))</Value>
+    </Attribute>
+    <Attribute name="geospatial_first_scanline_first_fov_lat" type="Float32">
+        <Value>65.34767151</Value>
+    </Attribute>
+    <Attribute name="geospatial_first_scanline_first_fov_lon" type="Float32">
+        <Value>-87.9498291</Value>
+    </Attribute>
+    <Attribute name="geospatial_first_scanline_last_fov_lat" type="Float32">
+        <Value>56.72998047</Value>
+    </Attribute>
+    <Attribute name="geospatial_first_scanline_last_fov_lon" type="Float32">
+        <Value>-31.0043335</Value>
+    </Attribute>
+    <Attribute name="geospatial_last_scanline_first_fov_lat" type="Float32">
+        <Value>31.01787949</Value>
+    </Attribute>
+    <Attribute name="geospatial_last_scanline_first_fov_lon" type="Float32">
+        <Value>-86.87120819</Value>
+    </Attribute>
+    <Attribute name="geospatial_last_scanline_last_fov_lat" type="Float32">
+        <Value>26.2514534</Value>
+    </Attribute>
+    <Attribute name="geospatial_last_scanline_last_fov_lon" type="Float32">
+        <Value>-55.85289764</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6, ACDD-1.3</Value>
+    </Attribute>
+    <Attribute name="Metadata_Conventions" type="String">
+        <Value>Unidata Dataset Discovery v1.0</Value>
+    </Attribute>
+    <Attribute name="acknowledgement" type="String">
+        <Value>Please acknowledge the use of these data with the following statement: These data were provided by Group for High Resolution Sea Surface Temperature (GHRSST) and the National Oceanic and Atmospheric Administration (NOAA).</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>swath</Value>
+    </Attribute>
+    <Attribute name="comment" type="String">
+        <Value>none</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>Alex.Ignatov@noaa.gov</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>Alex Ignatov</Value>
+    </Attribute>
+    <Attribute name="creator_url" type="String">
+        <Value>http://www.star.nesdis.noaa.gov</Value>
+    </Attribute>
+    <Attribute name="date_created" type="String">
+        <Value>20190308T111823Z</Value>
+    </Attribute>
+    <Attribute name="destripe" type="String">
+        <Value>yes (M5:1.0:f M7:1.0:f M10:1.0:f M12:1.0:b M13:1.0:b M14:1.0:b M15:1.0:b M16:1.0:b)</Value>
+    </Attribute>
+    <Attribute name="easternmost_longitude" type="Float32">
+        <Value>-31.0043335</Value>
+    </Attribute>
+    <Attribute name="file_quality_level" type="Int16">
+        <Value>3</Value>
+    </Attribute>
+    <Attribute name="gds_version_id" type="String">
+        <Value>02.0</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_resolution" type="Float32">
+        <Value>0.006699999794</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>degrees_north</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_resolution" type="Float32">
+        <Value>0.006699999794</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>degrees_east</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>Created by Advanced Clear-Sky Processor for Oceans (ACSPO)-VIIRS at NOAA/NESDIS/STAR.</Value>
+    </Attribute>
+    <Attribute name="id" type="String">
+        <Value>VIIRS_NPP-STAR-L2P-v2.61</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>NOAA/NESDIS/STAR</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>Oceans &gt; Ocean Temperature &gt; Sea Surface Temperature</Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>NASA Global Change Master Directory (GCMD) Science Keywords</Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>GHRSST protocol describes data use as free and open</Value>
+    </Attribute>
+    <Attribute name="metadata_link" type="String">
+        <Value>http://podaac.jpl.nasa.gov/ws/metadata/dataset/?format=iso&amp;shortName=VIIRS_NPP-STAR-L2P-v2.61</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>org.ghrsst</Value>
+    </Attribute>
+    <Attribute name="northernmost_latitude" type="Float32">
+        <Value>65.71283722</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>NPP</Value>
+    </Attribute>
+    <Attribute name="processing_level" type="String">
+        <Value>L2P</Value>
+    </Attribute>
+    <Attribute name="product_version" type="String">
+        <Value>2.61</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>Group for High Resolution Sea Surface Temperature</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>ghrsst-po@nceo.ac.uk</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>The GHRSST Project Office</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>http://www.ghrsst.org</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>Data convention: GHRSST Data Specification (GDS) v2.0. Algorithms: ACSPO-VIIRS ATBD (NOAA/NESDIS/STAR)</Value>
+    </Attribute>
+    <Attribute name="sensor" type="String">
+        <Value>VIIRS</Value>
+    </Attribute>
+    <Attribute name="aggregator_version" type="String">
+        <Value>V1.00</Value>
+    </Attribute>
+    <Attribute name="preprocessor_version" type="String">
+        <Value>1.14</Value>
+    </Attribute>
+    <Attribute name="sst_luts" type="String">
+        <Value>LUT_VIIRS_NPP_L2P_DEPTH_DAY_V01.04_20181217.txt,LUT_VIIRS_NPP_L2P_SKIN_DAYNIGHT_V01.00_20180408.txt,LUT_VIIRS_NPP_L2P_DEPTH_NIGHT_V01.04_20181217.txt,LUT_VIIRS_NPP_L2P_SKIN_NIGHT_V01.00_20180408.txt</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>VIIRS-MOD-GEO-TC,VIIRS-M5-SDR,VIIRS-M7-SDR,VIIRS-M10-SDR,VIIRS-M12-SDR,VIIRS-M15-SDR,VIIRS-M16-SDR,CMC0.1deg-CMC-L4-GLOB-v2.0,NOAA-NCEP-GFS</Value>
+    </Attribute>
+    <Attribute name="southernmost_latitude" type="Float32">
+        <Value>26.2514534</Value>
+    </Attribute>
+    <Attribute name="spatial_resolution" type="String">
+        <Value>742 m at nadir</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>CF Standard Name Table (v26, 08 November 2013)</Value>
+    </Attribute>
+    <Attribute name="start_time" type="String">
+        <Value>20160409T062000Z</Value>
+    </Attribute>
+    <Attribute name="stop_time" type="String">
+        <Value>20160409T062959Z</Value>
+    </Attribute>
+    <Attribute name="summary" type="String">
+        <Value>Sea surface temperature retrievals produced by NOAA/NESDIS/STAR office from VIIRS sensor</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>20160409T062959Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>20160409T062000Z</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>VIIRS L2P SST</Value>
+    </Attribute>
+    <Attribute name="uuid" type="String">
+        <Value>e2e1a9cc-4193-11e9-a378-ac1f6b5681f6</Value>
+    </Attribute>
+    <Attribute name="westernmost_longitude" type="Float32">
+        <Value>-87.9498291</Value>
+    </Attribute>
+    <Attribute name="netcdf_version_id" type="String">
+        <Value>4.5.0 of Oct 31 2017 11:38:27 $</Value>
+    </Attribute>
+</Dataset>

@@ -1,0 +1,17 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+variables:
+	ubyte dset(dim1) ;
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.invocation = "/scr/kent/opendap/hyrax-dev/hyrax/bes/modules/dmrpp_module/.libs/build_dmrpp -f d_dset_big_1d_cont.h5 -r d_dset_big_1d_cont.h5.dmr -M" ;
+		:history = "removed date-timex d_dset_big_1d_cont.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"d_dset_big_1d_cont.h5.dmrpp\"}]}]" ;
+data:
+
+ dset = 1, 2 ;
+}

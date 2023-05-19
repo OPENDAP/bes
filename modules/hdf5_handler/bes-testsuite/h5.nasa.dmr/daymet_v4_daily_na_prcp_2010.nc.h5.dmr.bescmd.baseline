@@ -113,6 +113,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/yearday</Value>
         </Attribute>
+        <Map name="/time"/>
     </Int16>
     <Float32 name="prcp">
         <Dim name="/time"/>
@@ -147,6 +148,7 @@
         </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
+        <Map name="/time"/>
     </Float32>
     <Float32 name="time_bnds">
         <Dim name="/time"/>
@@ -157,6 +159,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/time_bnds</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/nv"/>
     </Float32>
     <Float32 name="x">
         <Dim name="/x"/>

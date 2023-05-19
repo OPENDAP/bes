@@ -1589,6 +1589,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/TimeUTC</Value>
         </Attribute>
+        <Map name="/nUTCdim"/>
     </Int16>
     <Float32 name="ViewingAzimuthAngle">
         <Dim name="/nTimes"/>

@@ -332,6 +332,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_sDevNsOb1">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -362,6 +363,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_satNrgCorr">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -392,6 +394,7 @@
                 <Attribute name="hertz" type="String">
                     <Value>40</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_RecNrgAll">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -422,6 +425,7 @@
                 <Attribute name="hertz" type="String">
                     <Value>40</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains reflectivity parameters.</Value>
@@ -457,6 +461,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_TrshRngOff">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -487,6 +492,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_SigEndOff">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -517,6 +523,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_cntRngOff">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -547,6 +554,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_isRngOff">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -577,6 +585,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_siRngOff">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -607,6 +616,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_ldRngOff">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -637,6 +647,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_ocRngOff">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -667,6 +678,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>The group contains elevation offsets. These offsets allow the elevation for the specific surface types to be derived.</Value>
@@ -674,51 +686,6 @@
         </Group>
         <Group name="Time">
             <Dimension name="d_UTCTime_40" size="43920"/>
-            <Int32 name="i_shot_count">
-                <Dim name="/Data_40HZ/DS_UTCTime_40"/>
-                <Attribute name="hertz" type="String">
-                    <Value>40</Value>
-                </Attribute>
-                <Attribute name="long_name" type="String">
-                    <Value>GLAS Pulse Index</Value>
-                </Attribute>
-                <Attribute name="description" type="String">
-                    <Value>Identifies each laser shot within a record index.  A combination of i_rec_ndx and i_shot_count can be used to uniquely identify each GLAS laser shot.</Value>
-                </Attribute>
-                <Attribute name="source" type="String">
-                    <Value>Rel 34 GLAS Binary Data</Value>
-                </Attribute>
-                <Attribute name="coordinates" type="String">
-                    <Value>DS_UTCTime_40</Value>
-                </Attribute>
-                <Attribute name="valid_min" type="Int32">
-                    <Value>1</Value>
-                </Attribute>
-                <Attribute name="valid_max" type="Int32">
-                    <Value>40</Value>
-                </Attribute>
-            </Int32>
-            <Int32 name="i_rec_ndx">
-                <Dim name="/Data_40HZ/DS_UTCTime_40"/>
-                <Attribute name="hertz" type="String">
-                    <Value>40</Value>
-                </Attribute>
-                <Attribute name="long_name" type="String">
-                    <Value>GLAS Record Index</Value>
-                </Attribute>
-                <Attribute name="description" type="String">
-                    <Value>Unique index that relates this record to the corresponding record(s) in each GLAS data product.</Value>
-                </Attribute>
-                <Attribute name="source" type="String">
-                    <Value>Rel 34 GLAS Binary Data</Value>
-                </Attribute>
-                <Attribute name="coordinates" type="String">
-                    <Value>DS_UTCTime_40</Value>
-                </Attribute>
-                <Attribute name="valid_min" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
-            </Int32>
             <Float64 name="d_UTCTime_40">
                 <Dim name="/Data_40HZ/Time/d_UTCTime_40"/>
                 <Attribute name="units" type="String">
@@ -743,6 +710,53 @@
                     <Value>/Data_40HZ/DS_UTCTime_40</Value>
                 </Attribute>
             </Float64>
+            <Int32 name="i_rec_ndx">
+                <Dim name="/Data_40HZ/DS_UTCTime_40"/>
+                <Attribute name="hertz" type="String">
+                    <Value>40</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>GLAS Record Index</Value>
+                </Attribute>
+                <Attribute name="description" type="String">
+                    <Value>Unique index that relates this record to the corresponding record(s) in each GLAS data product.</Value>
+                </Attribute>
+                <Attribute name="source" type="String">
+                    <Value>Rel 34 GLAS Binary Data</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>DS_UTCTime_40</Value>
+                </Attribute>
+                <Attribute name="valid_min" type="Int32">
+                    <Value>0</Value>
+                </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
+            </Int32>
+            <Int32 name="i_shot_count">
+                <Dim name="/Data_40HZ/DS_UTCTime_40"/>
+                <Attribute name="hertz" type="String">
+                    <Value>40</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>GLAS Pulse Index</Value>
+                </Attribute>
+                <Attribute name="description" type="String">
+                    <Value>Identifies each laser shot within a record index.  A combination of i_rec_ndx and i_shot_count can be used to uniquely identify each GLAS laser shot.</Value>
+                </Attribute>
+                <Attribute name="source" type="String">
+                    <Value>Rel 34 GLAS Binary Data</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>DS_UTCTime_40</Value>
+                </Attribute>
+                <Attribute name="valid_min" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="valid_max" type="Int32">
+                    <Value>40</Value>
+                </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
+            </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains the 40HZ index and time-related parameters</Value>
             </Attribute>
@@ -777,6 +791,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Int8 name="FRir_qa_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -822,6 +837,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>15</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Float64 name="d_FRir_intsig">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -852,6 +868,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains atmosphere-related parameters.</Value>
@@ -887,6 +904,7 @@
                 <Attribute name="hertz" type="String">
                     <Value>40</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_ocElv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -920,6 +938,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_d2refTrk">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -950,6 +969,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_poTide">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -983,6 +1003,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_gdHt">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1016,6 +1037,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_eqElv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1049,6 +1071,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_ElevBiasCorr">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1079,6 +1102,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_deltaEllip">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1109,6 +1133,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_erElv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1142,6 +1167,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_DEMhiresArElv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1173,6 +1199,8 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
+                <Map name="/Data_40HZ/DS_DEMhiresArElv"/>
             </Float64>
             <Int8 name="i_DEM_hires_src_1">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1209,6 +1237,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>6</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Float64 name="d_DEM_elv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1239,6 +1268,7 @@
                 <Attribute name="hertz" type="String">
                     <Value>40</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains geophysical parameters.</Value>
@@ -1274,6 +1304,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_beamAzimuth">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1304,6 +1335,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains pointing angle parameters.</Value>
@@ -1342,6 +1374,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_satElevCorr">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1372,6 +1405,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_GmC">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1402,6 +1436,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_wTrop">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1435,6 +1470,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains elevation-related corrections.</Value>
@@ -1467,6 +1503,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_maxRecAmp">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1497,6 +1534,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_maxSmAmp">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1527,6 +1565,7 @@
                 <Attribute name="hertz" type="String">
                     <Value>40</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Int32 name="i_nPeaks1">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1551,6 +1590,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>50</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int32>
             <Int32 name="i_numPk">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1575,6 +1615,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>6</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int32>
             <Float64 name="d_kurt2">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1602,6 +1643,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Int32 name="i_gval_rcv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1629,6 +1671,7 @@
                 <Attribute name="_FillValue" type="Int32">
                     <Value>2147483647</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains waveform-related parameters.</Value>
@@ -1664,6 +1707,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains transmit energy parameters.</Value>
@@ -1702,6 +1746,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_refRng">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1735,6 +1780,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains surface-related parameters.</Value>
@@ -1771,6 +1817,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="elv_cnt_2_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1802,6 +1849,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="elv_peak_1_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1833,6 +1881,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="elv_peak_2_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1864,6 +1913,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="elv_thres_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1895,6 +1945,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="elv_gauss_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1926,6 +1977,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="elv_other_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1957,6 +2009,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="elv_cloud_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1988,6 +2041,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Attribute name="Description" type="String">
                 <Value>This group contains flags related to the elevation estimates for each shot.</Value>
@@ -2024,6 +2078,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_sigend2_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2055,6 +2110,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="elev_use_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2086,6 +2142,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_thres2_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2117,6 +2174,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="att_calc_pad_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2148,6 +2206,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_sigbeg2_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2179,6 +2238,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_si_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2210,6 +2270,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_is_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2241,6 +2302,7 @@
                 <Attribute name="long_name" type="String">
                     <Value>Range Offset Quality/Use Flag</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="sat_corr_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2276,6 +2338,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>4</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="att_pad_use_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2307,6 +2370,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_thres1_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2338,6 +2402,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_sigend1_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2369,6 +2434,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_ld_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2400,6 +2466,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_oc_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2431,6 +2498,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Float64 name="d_pctSAT">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2461,6 +2529,7 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Int8 name="att_lpa_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2493,6 +2562,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>3</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int32 name="i_satNdx">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2520,6 +2590,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>126</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int32>
             <Int8 name="sigma_att_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2556,6 +2627,7 @@
                 <Attribute name="_FillValue" type="Int32">
                     <Value>127</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_cent2_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2587,6 +2659,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Int8 name="rng_uqf_cent1_flg">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2618,6 +2691,7 @@
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int8>
             <Attribute name="Description" type="String">
                 <Value>This group contains data quality flags and related parameters.</Value>
@@ -2653,6 +2727,7 @@
                 <Attribute name="valid_max" type="Float64">
                     <Value>90.</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_lon">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -2683,6 +2758,7 @@
                 <Attribute name="valid_max" type="Float64">
                     <Value>360.</Value>
                 </Attribute>
+                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains geolocation-related parameters.</Value>
@@ -4442,6 +4518,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Float64 name="d_Azimuth">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4475,6 +4552,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Float64 name="d_SolAng">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4505,6 +4583,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Float64 name="d_reflCor_atm">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4532,6 +4611,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains reflectivity information.</Value>
@@ -4592,6 +4672,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="hertz" type="String">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Int8 name="shot_time_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4623,6 +4704,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>time correction flag</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="ddelay_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4654,6 +4736,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int32 name="i_shot_count">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4678,6 +4761,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>GLAS Pulse Index</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int32>
             <Float64 name="d_transtime">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4708,6 +4792,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="hertz" type="String">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Int8 name="peaktp_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4739,6 +4824,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>time correction flag</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="gps_time_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4770,6 +4856,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>time correction flag</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="pl_timing_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4801,6 +4888,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>time correction flag</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int32 name="i_rec_ndx">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4825,6 +4913,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2147483647</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains the 1HZ index and time-related parameters</Value>
@@ -4875,6 +4964,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>15</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Float64 name="d_Surface_pres">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4908,6 +4998,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="hertz" type="String">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Int8 name="atm_char_conf">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4942,6 +5033,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>3</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="atm_gla09_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -4973,6 +5065,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="atm_char_flag">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5011,6 +5104,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>10</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="atm_gla11_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5042,6 +5136,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="MRC_af_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5087,6 +5182,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>15</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Float64 name="d_Surface_temp">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5120,6 +5216,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="hertz" type="String">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Float64 name="d_Surface_relh">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5153,6 +5250,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="hertz" type="String">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains atmosphere information and flags.</Value>
@@ -5188,6 +5286,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Float64 name="d_tpintensity_avg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5215,6 +5314,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Float64 name="d_tpeccentricity_avg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5242,6 +5342,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Float64 name="d_tpmajoraxis_avg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5272,6 +5373,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="hertz" type="String">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Attribute name="Description" type="String">
                 <Value>This group contains information relating to transmit energy.</Value>
@@ -5309,6 +5411,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADLg_4_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5341,6 +5444,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>APID Data Availability Flag</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADSm_3_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5373,6 +5477,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_CT20_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5405,6 +5510,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_LS25_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5437,6 +5543,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_LPA_2_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5469,6 +5576,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADLg_2_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5501,6 +5609,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_PRAP_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5533,6 +5642,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_LS55_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5565,6 +5675,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADLg_3_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5597,6 +5708,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>APID Data Availability Flag</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ASCT_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5629,6 +5741,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_CT21_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5661,6 +5774,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADSm_4_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5693,6 +5807,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADSm_1_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5725,6 +5840,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADSm_2_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5757,6 +5873,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ASPC_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5789,6 +5906,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_CD1064_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5821,6 +5939,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_LPA_3_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5853,6 +5972,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ASAD_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5885,6 +6005,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_SS24_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5917,6 +6038,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADLg_1_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5949,6 +6071,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_LPA_1_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -5981,6 +6104,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ASCF_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6013,6 +6137,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_ADSci_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6045,6 +6170,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_CT23_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6077,6 +6203,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_CT50_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6109,6 +6236,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_PC532_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6141,6 +6269,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>APID Data Availability Flag</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_GPS_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6173,6 +6302,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="apid_LPA_4_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6205,6 +6335,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Attribute name="Description" type="String">
                 <Value>This group contains flags indicating packet availability.</Value>
@@ -6243,6 +6374,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>3</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_ldtide_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6274,6 +6406,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_wettrop_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6305,6 +6438,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_atmcorr_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6339,6 +6473,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>4</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="surf_is_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6370,6 +6505,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_intbias_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6401,6 +6537,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="surf_oc_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6432,6 +6569,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_setide_flag">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6463,6 +6601,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="surf_si_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6494,6 +6633,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_octide_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6525,6 +6665,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_plbias_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6556,6 +6697,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_drytrop_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6587,6 +6729,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="surf_ld_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6618,6 +6761,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="rng_oldmet_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6651,6 +6795,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>3</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Attribute name="Description" type="String">
                 <Value>This group contains flags indicating the quality or suitability of elevation data.</Value>
@@ -6687,6 +6832,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="altfrm_meas_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6718,6 +6864,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="att_gyro_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6751,6 +6898,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="altfrm_corr_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6782,6 +6930,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="att_oceansw_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6813,6 +6962,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="orbit_model_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6844,6 +6994,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="orbit_array_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6875,6 +7026,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="orbit_pred_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6907,6 +7059,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>2</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="att_pointing_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6938,6 +7091,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="long_name" type="String">
                     <Value>Attitude Flag 1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="att_steering_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -6969,6 +7123,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="orbit_man_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7000,6 +7155,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="altfrm_use_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7031,6 +7187,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="orbit_att_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7062,6 +7219,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="att_ist_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7095,6 +7253,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="att_lrs_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7132,6 +7291,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="att_offnadir_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7163,6 +7323,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="att_actual_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7194,6 +7355,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Int8 name="altfrm_data_flg">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7225,6 +7387,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Int32">
                     <Value>1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int8>
             <Attribute name="Description" type="String">
                 <Value>This group contains data quality flags and related parameters.</Value>
@@ -7260,6 +7423,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Float64">
                     <Value>90.</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Float64 name="d_lon">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7290,6 +7454,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="valid_max" type="Float64">
                     <Value>360.</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Float64>
             <Int32 name="i_track">
                 <Dim name="/Data_1HZ/DS_UTCTime_1"/>
@@ -7308,6 +7473,7 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Attribute name="coordinates" type="String">
                     <Value>DS_UTCTime_1</Value>
                 </Attribute>
+                <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains geolocation-related parameters.</Value>

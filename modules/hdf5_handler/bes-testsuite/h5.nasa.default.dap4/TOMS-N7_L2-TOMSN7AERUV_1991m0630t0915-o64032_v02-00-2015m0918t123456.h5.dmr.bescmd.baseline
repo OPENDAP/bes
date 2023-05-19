@@ -210,6 +210,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="SurfaceAlbedo340">
             <Dim name="/nTimes"/>
@@ -232,6 +234,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="SurfaceAlbedo360">
             <Dim name="/nTimes"/>
@@ -254,6 +258,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="SurfaceAlbedo380">
             <Dim name="/nTimes"/>
@@ -276,6 +282,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="SurfaceAlbedoOC331">
             <Dim name="/nTimes"/>
@@ -298,6 +306,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="SurfaceAlbedoOC340">
             <Dim name="/nTimes"/>
@@ -320,6 +330,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="SurfaceAlbedoOC360">
             <Dim name="/nTimes"/>
@@ -342,6 +354,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="SurfaceAlbedoOC380">
             <Dim name="/nTimes"/>
@@ -364,6 +378,8 @@
             <Attribute name="valid_min" type="Float32">
                 <Value>0.</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="TerrainPressure">
             <Dim name="/nTimes"/>
@@ -386,6 +402,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
     </Group>
     <Group name="GEOLOCATION_DATA">
@@ -411,6 +429,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nCorners"/>
         </Float32>
         <Float32 name="CornerLongitude">
             <Dim name="/nTimes"/>
@@ -434,6 +455,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nCorners"/>
         </Float32>
         <Int32 name="GroundPixelQualityFlags">
             <Dim name="/nTimes"/>
@@ -456,6 +480,8 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Int32>
         <Float32 name="Latitude">
             <Dim name="/nTimes"/>
@@ -478,6 +504,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="Longitude">
             <Dim name="/nTimes"/>
@@ -500,6 +528,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="RelativeAzimuthAngle">
             <Dim name="/nTimes"/>
@@ -522,6 +552,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="SecondsInDay">
             <Dim name="/nTimes"/>
@@ -543,6 +575,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="SolarZenithAngle">
             <Dim name="/nTimes"/>
@@ -565,6 +598,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float64 name="Time">
             <Dim name="/nTimes"/>
@@ -586,6 +621,7 @@
             <Attribute name="_FillValue" type="Float64">
                 <Value>-1.2676506002282294e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float64>
         <Float32 name="ViewingZenithAngle">
             <Dim name="/nTimes"/>
@@ -608,6 +644,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
     </Group>
     <Group name="SCIENCE_DATA">
@@ -632,6 +670,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="AerosolAbsorptionOpticalDepthVsHeight331">
             <Dim name="/nTimes"/>
@@ -655,6 +695,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolAbsorptionOpticalDepthVsHeight340">
             <Dim name="/nTimes"/>
@@ -678,6 +721,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolAbsorptionOpticalDepthVsHeight360">
             <Dim name="/nTimes"/>
@@ -701,6 +747,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolAbsorptionOpticalDepthVsHeight380">
             <Dim name="/nTimes"/>
@@ -724,6 +773,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolAbsorptionOpticalDepthVsHeight500a">
             <Dim name="/nTimes"/>
@@ -747,6 +799,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolAbsorptionOpticalDepthVsHeight500b">
             <Dim name="/nTimes"/>
@@ -770,6 +825,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolOpticalDepthVsHeight331">
             <Dim name="/nTimes"/>
@@ -793,6 +851,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolOpticalDepthVsHeight340">
             <Dim name="/nTimes"/>
@@ -816,6 +877,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolOpticalDepthVsHeight360">
             <Dim name="/nTimes"/>
@@ -839,6 +903,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolOpticalDepthVsHeight380">
             <Dim name="/nTimes"/>
@@ -862,6 +929,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolOpticalDepthVsHeight500a">
             <Dim name="/nTimes"/>
@@ -885,6 +955,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolOpticalDepthVsHeight500b">
             <Dim name="/nTimes"/>
@@ -908,6 +981,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolSingleScatteringAlbedoVsHeight331">
             <Dim name="/nTimes"/>
@@ -931,6 +1007,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolSingleScatteringAlbedoVsHeight340">
             <Dim name="/nTimes"/>
@@ -954,6 +1033,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolSingleScatteringAlbedoVsHeight360">
             <Dim name="/nTimes"/>
@@ -977,6 +1059,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolSingleScatteringAlbedoVsHeight380">
             <Dim name="/nTimes"/>
@@ -1000,6 +1085,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolSingleScatteringAlbedoVsHeight500a">
             <Dim name="/nTimes"/>
@@ -1023,6 +1111,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="AerosolSingleScatteringAlbedoVsHeight500b">
             <Dim name="/nTimes"/>
@@ -1046,6 +1137,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Int32 name="AerosolType_331and360">
             <Dim name="/nTimes"/>
@@ -1068,6 +1162,8 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Int32>
         <Int32 name="AerosolType_340and380">
             <Dim name="/nTimes"/>
@@ -1090,6 +1186,8 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Int32>
         <Int32 name="AlgorithmFlagsVsHeight_331and360">
             <Dim name="/nTimes"/>
@@ -1113,6 +1211,9 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Int32>
         <Int32 name="AlgorithmFlagsVsHeight_340and380">
             <Dim name="/nTimes"/>
@@ -1136,6 +1237,9 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Int32>
         <Float32 name="CloudFraction360">
             <Dim name="/nTimes"/>
@@ -1158,6 +1262,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="CloudFraction380">
             <Dim name="/nTimes"/>
@@ -1180,6 +1286,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="CloudOpticalDepth360">
             <Dim name="/nTimes"/>
@@ -1202,6 +1310,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="CloudOpticalDepth380">
             <Dim name="/nTimes"/>
@@ -1224,6 +1334,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolAbsorptionOpticalDepth331">
             <Dim name="/nTimes"/>
@@ -1246,6 +1358,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolAbsorptionOpticalDepth340">
             <Dim name="/nTimes"/>
@@ -1268,6 +1382,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolAbsorptionOpticalDepth360">
             <Dim name="/nTimes"/>
@@ -1290,6 +1406,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolAbsorptionOpticalDepth380">
             <Dim name="/nTimes"/>
@@ -1312,6 +1430,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolAbsorptionOpticalDepth500a">
             <Dim name="/nTimes"/>
@@ -1334,6 +1454,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolAbsorptionOpticalDepth500b">
             <Dim name="/nTimes"/>
@@ -1356,6 +1478,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolLayerHeight_331and360">
             <Dim name="/nTimes"/>
@@ -1378,6 +1502,8 @@
             <Attribute name="units" type="String">
                 <Value>km</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolLayerHeight_340and380">
             <Dim name="/nTimes"/>
@@ -1400,6 +1526,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolOpticalDepth331">
             <Dim name="/nTimes"/>
@@ -1422,6 +1550,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolOpticalDepth340">
             <Dim name="/nTimes"/>
@@ -1444,6 +1574,8 @@
             <Attribute name="long_name" type="String">
                 <Value>Final Aerosol Optical Depth at 340 nm</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolOpticalDepth360">
             <Dim name="/nTimes"/>
@@ -1466,6 +1598,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolOpticalDepth380">
             <Dim name="/nTimes"/>
@@ -1488,6 +1622,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolOpticalDepth500a">
             <Dim name="/nTimes"/>
@@ -1510,6 +1646,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolOpticalDepth500b">
             <Dim name="/nTimes"/>
@@ -1532,6 +1670,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolSingleScatteringAlbedo331">
             <Dim name="/nTimes"/>
@@ -1554,6 +1694,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolSingleScatteringAlbedo340">
             <Dim name="/nTimes"/>
@@ -1576,6 +1718,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolSingleScatteringAlbedo360">
             <Dim name="/nTimes"/>
@@ -1598,6 +1742,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolSingleScatteringAlbedo380">
             <Dim name="/nTimes"/>
@@ -1620,6 +1766,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolSingleScatteringAlbedo500a">
             <Dim name="/nTimes"/>
@@ -1642,6 +1790,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="FinalAerosolSingleScatteringAlbedo500b">
             <Dim name="/nTimes"/>
@@ -1664,6 +1814,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Int32 name="FinalAlgorithmFlags_331and360">
             <Dim name="/nTimes"/>
@@ -1686,6 +1838,8 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Int32>
         <Int32 name="FinalAlgorithmFlags_340and380">
             <Dim name="/nTimes"/>
@@ -1708,6 +1862,8 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Int32>
         <Float32 name="ImaginaryRefractiveIndex331">
             <Dim name="/nTimes"/>
@@ -1731,6 +1887,9 @@
             <Attribute name="units" type="String">
                 <Value>1</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="ImaginaryRefractiveIndex340">
             <Dim name="/nTimes"/>
@@ -1754,6 +1913,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="ImaginaryRefractiveIndex360">
             <Dim name="/nTimes"/>
@@ -1777,6 +1939,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="ImaginaryRefractiveIndex380">
             <Dim name="/nTimes"/>
@@ -1800,6 +1965,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="ImaginaryRefractiveIndex500a">
             <Dim name="/nTimes"/>
@@ -1823,6 +1991,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="ImaginaryRefractiveIndex500b">
             <Dim name="/nTimes"/>
@@ -1846,6 +2017,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nLevels"/>
         </Float32>
         <Float32 name="NormalizedRadiance">
             <Dim name="/nTimes"/>
@@ -1869,6 +2043,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
+            <Map name="/nWavel"/>
         </Float32>
         <Float32 name="Reflectivity331">
             <Dim name="/nTimes"/>
@@ -1891,6 +2068,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="Reflectivity340">
             <Dim name="/nTimes"/>
@@ -1913,6 +2092,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="Reflectivity360">
             <Dim name="/nTimes"/>
@@ -1935,6 +2116,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="Reflectivity380">
             <Dim name="/nTimes"/>
@@ -1957,6 +2140,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="Residue_331and360">
             <Dim name="/nTimes"/>
@@ -1979,6 +2164,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="Residue_340and380">
             <Dim name="/nTimes"/>
@@ -2001,6 +2188,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="UVAerosolIndex_331and360">
             <Dim name="/nTimes"/>
@@ -2023,6 +2212,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="UVAerosolIndex_340and380">
             <Dim name="/nTimes"/>
@@ -2045,6 +2236,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="UVAerosolIndex_Mie_331and360">
             <Dim name="/nTimes"/>
@@ -2067,6 +2260,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
         <Float32 name="UVAerosolIndex_Mie_340and380">
             <Dim name="/nTimes"/>
@@ -2089,6 +2284,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nXtrack"/>
         </Float32>
     </Group>
     <Group name="SENSOR_DATA">
@@ -2112,6 +2309,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Float32 name="Wavelength">
             <Dim name="/nWavel"/>
@@ -2133,6 +2331,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nWavel"/>
         </Float32>
     </Group>
 </Dataset>

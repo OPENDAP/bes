@@ -1,0 +1,99 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex grid_2_2d_sin.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"grid_2_2d_sin.h5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: SinGrid1 {
+      dimensions:
+      	XDim = 2 ;
+      	YDim = 2 ;
+      variables:
+      	ubyte eos5_cf_projection ;
+      		eos5_cf_projection:grid_mapping_name = "sinusoidal" ;
+      		eos5_cf_projection:longitude_of_central_meridian = 0. ;
+      		eos5_cf_projection:earth_radius = 6371007.181 ;
+      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection " ;
+      		XDim:units = "meter" ;
+      		XDim:_CoordinateAxisType = "GeoX" ;
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection " ;
+      		YDim:units = "meter" ;
+      		YDim:_CoordinateAxisType = "GeoY" ;
+      	double Latitude(YDim, XDim) ;
+      		Latitude:units = "degrees_north" ;
+      	double Longitude(YDim, XDim) ;
+      		Longitude:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	float Temperature(YDim, XDim) ;
+        		Temperature:units = "K" ;
+        		Temperature:fullnamepath = "/HDFEOS/GRIDS/SinGrid1/Data Fields/Temperature" ;
+        		Temperature:coordinates = "/HDFEOS/GRIDS/SinGrid1/Latitude /HDFEOS/GRIDS/SinGrid1/Longitude" ;
+        		Temperature:grid_mapping = "/HDFEOS/GRIDS/SinGrid1/eos5_cf_projection" ;
+        } // group Data_Fields
+      } // group SinGrid1
+
+    group: SinGrid2 {
+      dimensions:
+      	XDim = 4 ;
+      	YDim = 4 ;
+      variables:
+      	ubyte eos5_cf_projection ;
+      		eos5_cf_projection:grid_mapping_name = "sinusoidal" ;
+      		eos5_cf_projection:longitude_of_central_meridian = 0. ;
+      		eos5_cf_projection:earth_radius = 6371007.181 ;
+      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection " ;
+      		XDim:units = "meter" ;
+      		XDim:_CoordinateAxisType = "GeoX" ;
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection " ;
+      		YDim:units = "meter" ;
+      		YDim:_CoordinateAxisType = "GeoY" ;
+      	double Latitude(YDim, XDim) ;
+      		Latitude:units = "degrees_north" ;
+      	double Longitude(YDim, XDim) ;
+      		Longitude:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	float Temperature(YDim, XDim) ;
+        		Temperature:units = "K" ;
+        		Temperature:fullnamepath = "/HDFEOS/GRIDS/SinGrid2/Data Fields/Temperature" ;
+        		Temperature:coordinates = "/HDFEOS/GRIDS/SinGrid2/Latitude /HDFEOS/GRIDS/SinGrid2/Longitude" ;
+        		Temperature:grid_mapping = "/HDFEOS/GRIDS/SinGrid2/eos5_cf_projection" ;
+        } // group Data_Fields
+      } // group SinGrid2
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.17" ;
+  } // group HDFEOS_INFORMATION
+}

@@ -16,8 +16,18 @@ group: HDFEOS {
 
     group: GeoGrid {
       dimensions:
-      	XDim = 8 ;
       	YDim = 4 ;
+      	XDim = 8 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+      data:
+
+       YDim = 3.5, 2.5, 1.5, 0.5 ;
+
+       XDim = 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5 ;
 
       group: Data_Fields {
         variables:
