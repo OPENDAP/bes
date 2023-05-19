@@ -1373,7 +1373,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
  * @param granule_url The value to use for the XML attribute dap4:Dataset/@dmrpp:href This may be a template string,
  * or it may be the actual URL location of the source granule file.
  * @param dmr_filename The name of the file from which to read the DMR.
- * @param h5_file_name The granule filename.
+ * @param h5_file_fqn The granule filename.
  * @param add_production_metadata If true the production metadata (software version, configuration, and invocation) will
  * be added to the DMR++.
  * @param argc The number of arguments supplied to build_dmrpp
