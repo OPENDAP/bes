@@ -34,7 +34,6 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
-#include "rapidjson/document.h"
 #include "BESRegex.h"
 #include "EffectiveUrl.h"
 
@@ -51,15 +50,10 @@ namespace curl {
 void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, int fd,
                                  std::vector<std::string> *http_response_headers);
 
-#if 0
-void http_get(const std::string &url, char *response_buf, size_t bufsz);
-#endif
 void http_get(const std::string &target_url, std::vector<char> &buf);
 
 void super_easy_perform(CURL *ceh);
 ///@}
-
-rapidjson::Document http_get_as_json(const std::string &target_url);
 
 std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr<http::url> &starting_point_url);
 std::string filter_effective_url(const std::string &eff_url);

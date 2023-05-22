@@ -26,13 +26,12 @@
 
 #include <memory>
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <unistd.h>
-#include <libdap/util.h>
 #include <libdap/debug.h>
 
 #include "BESContextManager.h"
@@ -41,11 +40,13 @@
 #include "TheBESKeys.h"
 
 #include "HttpNames.h"
+#include "url_impl.h"
+#include "AccessCredentials.h"
 #include "CredentialsManager.h"
 
 #include "test_config.h"
 
-using namespace libdap;
+using namespace std;
 
 static bool debug = false;
 static bool bes_debug = false;

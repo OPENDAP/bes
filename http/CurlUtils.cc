@@ -34,8 +34,6 @@
 #include <vector>
 #include <algorithm>    // std::for_each
 
-#include "rapidjson/document.h"
-
 #include "BESContextManager.h"
 #include "BESSyntaxUserError.h"
 #include "BESForbiddenError.h"
@@ -54,6 +52,7 @@
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
 #include "CredentialsManager.h"
+#include "AccessCredentials.h"
 #include "RequestServiceTimer.h"
 
 #include "awsv4.h"
@@ -169,31 +168,6 @@ static string getCurlAuthTypeName(unsigned long auth_type) {
             authTypeString += " ";
         authTypeString += "CURLAUTH_NTLM";
     }
-
-#if 0
-    match = auth_type & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ANY";
-    }
-
-
-    match = auth_type & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ANYSAFE";
-    }
-
-
-    match = auth_type & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ONLY";
-    }
-#endif
 
     return authTypeString;
 }
@@ -1093,13 +1067,10 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
         res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, writeToOpenFileDescriptor);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
 
-#ifdef CURLOPT_WRITEDATA
-        res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, &fd);
-        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer, __FILE__, __LINE__);
-#else
+        // since curl 7.9.7 CURLOPT_FILE is the same as CURLOPT_WRITEDATA.
         res = curl_easy_setopt(ceh, CURLOPT_FILE, &fd);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FILE", error_buffer.data(), __FILE__, __LINE__);
-#endif
+
         unset_error_buffer(ceh);
 
         super_easy_perform(ceh, fd);
@@ -1139,23 +1110,6 @@ string error_message(const CURLcode response_code, const char *error_buffer) {
     }
     oss << "cURL_message: " << curl_easy_strerror(response_code) << " (code: " << (int) response_code << ")";
     return oss.str();
-}
-
-/**
- * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
- * No attempt to cache is performed, the HTTP request is made for each invocation of this method.
- *
- * @note used in one place in NgapS3Credentials in this module. jhrg 3/8/23
- *
- * @param target_url The URL to dereference.
- * @return JSON document parsed from the response document returned by target_url
- */
-rapidjson::Document http_get_as_json(const std::string &target_url) {
-    vector<char> response_buf;
-    curl::http_get(target_url, response_buf);
-    rapidjson::Document d;
-    d.Parse(response_buf.data());
-    return d;
 }
 
 /**
@@ -1233,6 +1187,8 @@ void http_get(const string &target_url, vector<char> &buf) {
             curl_slist_free_all(request_headers);
 
         curl_easy_cleanup(ceh);
+
+        buf.push_back('\0');    // add a trailing null byte
     }
     catch (...) {
         if (request_headers)

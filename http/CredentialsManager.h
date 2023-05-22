@@ -28,16 +28,15 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 #include <mutex>
-
-#include "url_impl.h"
-#include "AccessCredentials.h"
 
 // These are the names of the bes keys used to configure the handler.
 #define CATALOG_MANAGER_CREDENTIALS "CredentialsManager.config"
 
 namespace http {
+
+class AccessCredentials;
+class url;
 
 class CredentialsManager {
 public:
@@ -51,34 +50,31 @@ private:
     std::recursive_mutex d_lock_mutex{};
 
     bool ngaps3CredentialsLoaded = false;
-    std::map<std::string, AccessCredentials *> creds;
+    std::map<std::string, AccessCredentials *, std::less<>> creds{};
+
+    static std::unique_ptr<CredentialsManager> d_instance;
+    static std::once_flag d_init_once;
 
     CredentialsManager() = default;   // only called here to build the singleton
-    static void initialize_instance();
 
-    static void delete_instance();
+    void load_credentials();
+    static AccessCredentials *load_credentials_from_env();
 
-    AccessCredentials *load_credentials_from_env();
-
-    void load_ngap_s3_credentials();
+    friend class CredentialsManagerTest;
+    friend class CurlUtilsTest;     // so that a test can call load_credentials() jhrg 5/16/23
 
 public:
-    static CredentialsManager *theMngr;
-
     ~CredentialsManager();
 
     static CredentialsManager *theCM();
 
     void add(const std::string &url, AccessCredentials *ac);
-
-    void load_credentials();
+    AccessCredentials *get(const std::shared_ptr<http::url> &url);
 
     void clear() {
         creds.clear();
         ngaps3CredentialsLoaded = false;
     }
-
-    AccessCredentials *get(const std::shared_ptr<http::url> &url);
 
     size_t size() const {
         return creds.size();
@@ -91,4 +87,4 @@ public:
 
 }   // namespace http
 
-#endif //HYRAX_CREDENTIALSMANAGER_H
+#endif // HYRAX_CREDENTIALSMANAGER_H
