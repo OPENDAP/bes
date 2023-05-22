@@ -100,8 +100,6 @@ private:
                                 unsigned int page_size=CMR_MAX_PAGE_SIZE,
                                 bool just_opendap=false ) const;
 
-
-
 public:
     CmrApi();
 

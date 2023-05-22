@@ -1,0 +1,32 @@
+{
+  "creator": 13215106,
+  "id": 428798374,
+  "images": [
+    {
+      "architecture": "amd64",
+      "features": "",
+      "variant": null,
+      "digest": "sha256:231212a1376b7c7cf33f323f4359534823bcf48e3cc447b00f189ebf06aa92fe",
+      "os": "linux",
+      "os_features": "",
+      "os_version": null,
+      "size": 452118338,
+      "status": "active",
+      "last_pulled": null,
+      "last_pushed": "2023-04-27T00:25:54.510579Z"
+    }
+  ],
+  "last_updated": "2023-04-27T00:25:54.610303Z",
+  "last_updater": 13215106,
+  "last_updater_username": "travis4opendap",
+  "name": "3.20.13-555",
+  "repository": 7645393,
+  "full_size": 452118338,
+  "v2": true,
+  "tag_status": "active",
+  "tag_last_pulled": null,
+  "tag_last_pushed": "2023-04-27T00:25:54.610303Z",
+  "media_type": "application/vnd.docker.container.image.v1+json",
+  "content_type": "image",
+  "digest": "sha256:231212a1376b7c7cf33f323f4359534823bcf48e3cc447b00f189ebf06aa92fe"
+}

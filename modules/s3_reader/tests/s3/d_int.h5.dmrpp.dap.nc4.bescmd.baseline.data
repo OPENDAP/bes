@@ -1,0 +1,65 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 2 ;
+	dim3 = 2 ;
+	dim4 = 2 ;
+	dim5 = 2 ;
+	dim6 = 2 ;
+	dim7 = 2 ;
+	dim8 = 2 ;
+	dim9 = 2 ;
+	dim10 = 2 ;
+	dim11 = 2 ;
+variables:
+	short d16_1(dim1) ;
+		d16_1:minimum = -32768s ;
+		d16_1:maximum = 32767s ;
+	short d16_2(dim2, dim3) ;
+		d16_2:minimum = -32768s ;
+		d16_2:maximum = 32767s ;
+		d16_2:value_1d = -32768s, 32767s ;
+		d16_2:value_2d = -32768s, 1s, 2s, 32767s ;
+	int d32_1(dim4, dim5, dim6) ;
+		d32_1:minimum = -2147483648 ;
+		d32_1:maximum = 2147483647 ;
+	int d32_2(dim7, dim8, dim9, dim10, dim11) ;
+		d32_2:minimum = -2147483648 ;
+		d32_2:maximum = 2147483647 ;
+
+// global attributes:
+		:history = "removed date-timex d_int.h5.dmrpp\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"d_int.h5.dmrpp\"}]}]" ;
+data:
+
+ d16_1 = -32768, 32767 ;
+
+ d16_2 =
+  -32768, 1,
+  2, 32767 ;
+
+ d32_1 =
+  -2147483648, 1,
+  2, 3,
+  4, 5,
+  6, 2147483647 ;
+
+ d32_2 =
+  -2147483648, 1,
+  2, 3,
+  4, 5,
+  6, 7,
+  8, 9,
+  10, 11,
+  12, 13,
+  14, 15,
+  16, 17,
+  18, 19,
+  20, 21,
+  22, 23,
+  24, 25,
+  26, 27,
+  28, 29,
+  30, 2147483647 ;
+}
