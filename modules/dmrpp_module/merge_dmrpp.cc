@@ -49,7 +49,8 @@ bool merge_chunk_info_g(const string &str, const vector<string> &var_type, const
 bool obtain_miss_var_candidate_pos(const string &dmrpp_str, const vector<string> &var_type,
                                    const vector<string> &var_name, vector<size_t> &var_pos);
 
-void obtain_final_miss_var_pos(const vector <string> &var_fqn, const vector <string> &miss_var_fqn,
+void obtain_final_miss_var_info(const vector <string> &var_fqn, const vector <string> &miss_var_fqn,
+                                const vector <string> &var_type, vector <string> &final_var_type,
                                const vector <size_t> &var_candidate_pos, vector<size_t> &var_pos,
                                const vector <string> &chunk_info, vector<string> &ordered_chunk_info);
 
@@ -1016,6 +1017,7 @@ bool string_tokenize_by_pos(const string &in_str,const vector<size_t>& pos, vect
     if (pos.size() == 0 || pos.front() ==0 || (pos.back()+1) >in_str.size())
         return false;
 
+    size_t start_pos = 0;
     out_vec.push_back(in_str.substr(0,pos[0]));
     for (unsigned int i = 0; i < (pos.size()-1); i++)
         out_vec.push_back(in_str.substr(pos[i],pos[i+1]-pos[i]));
@@ -1438,22 +1440,32 @@ cout <<"dmrpp_str is "<<dmrpp_str<<endl;
     vector<size_t> var_candidate_pos;
     ret_value = obtain_miss_var_candidate_pos(dmrpp_str, var_type, var_name,var_candidate_pos);
 
+#if 0
+for (const auto &vcp:var_candidate_pos) 
+    cout <<"pos is: "<<vcp <<endl;
+#endif
+
+
     // Convert string according to the string positions.
     vector<string> dmrpp_vec;
     vector<string> ordered_chunk_info;
 
-    // Find the positions of the final missing variables in the original dmrpp file.
+    // Find the positions and the datatypes of the final missing variables in the original dmrpp file.
+    vector<string> final_var_type;
     vector<size_t> var_pos;
-    obtain_final_miss_var_pos(var_candidate_fqn,miss_var_fqn,var_candidate_pos, var_pos,chunk_info,ordered_chunk_info);
+    obtain_final_miss_var_info(var_candidate_fqn,miss_var_fqn,miss_var_type,final_var_type,var_candidate_pos, var_pos,chunk_info,ordered_chunk_info);
 
 #if 0
 for (const auto &oci:ordered_chunk_info)
     cout << "chunk info: "<<oci <<endl;
+for (const auto &fvt:final_var_type)
+    cout << "fvt: "<<fvt <<endl;
+
 #endif
 
     string_tokenize_by_pos(dmrpp_str, var_pos, dmrpp_vec); 
     
-    ret_value = merge_chunk_info_vec(dmrpp_vec, miss_var_type, ordered_chunk_info);
+    ret_value = merge_chunk_info_vec(dmrpp_vec, final_var_type, ordered_chunk_info);
     if (ret_value == true)
         write_vec_to_file(fname,dmrpp_vec);
 
@@ -1480,7 +1492,8 @@ bool obtain_miss_var_candidate_pos(const string &dmrpp_str, const vector<string>
     return ret_value;
 }
 
-void obtain_final_miss_var_pos(const vector<string> &var_fqn, const vector<string> &miss_var_fqn,
+void obtain_final_miss_var_info(const vector<string> &var_fqn, const vector<string> &miss_var_fqn,
+                               const vector<string> &miss_var_type, vector<string> &final_var_type,
                                const vector<size_t> &var_candidate_pos, vector<size_t> &var_pos,
                                const vector<string> &chunk_info, vector<string> &ordered_chunk_info) {
 
@@ -1491,6 +1504,7 @@ void obtain_final_miss_var_pos(const vector<string> &var_fqn, const vector<strin
             // in the original dmrpp file.
             if (var_fqn[i] == miss_var_fqn[j]) {
                 var_pos.push_back(var_candidate_pos[i]);
+                final_var_type.push_back(miss_var_type[j]);
                 ordered_chunk_info.push_back(chunk_info[j]);
                 break;
             }
