@@ -467,6 +467,150 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
 AT_CLEANUP
 ])
 
+##########################################################################################
+# AT_GET_DMRPP_3_20_MAKE_MISSING_GROUP()
+#
+#
+m4_define([AT_GET_DMRPP_3_20_MAKE_MISSING_GROUP],  [dnl
+
+AT_SETUP([get_dmrpp $1])
+AT_KEYWORDS([get_dmrpp data dap4 DAP4])
+
+GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
+chmod +x "${GET_DMRPP}"
+ls -l "${GET_DMRPP}"
+
+BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
+BES_DATA_ROOT=$(readlink -f "${abs_builddir}")
+
+test_name="$1"
+input_file="$2"
+dmrpp_baseline="${BASELINES_DIR}/$3"
+missing_baseline="${BASELINES_DIR}/$4"
+output_file="$5"
+AT_XFAIL_IF([test z$6 = zxfail]) # This is always run FIRST
+
+# Amend the PATH to pick up besstandalone
+export PATH=${abs_top_builddir}/standalone:$PATH
+
+missing_data_file="${input_file}.missing"
+
+echo "${input_file}" | grep "s3://"
+if test $? -eq 0
+then
+    # We're here because it's an S3 Test
+    # Only run the S3 tests if specifically instructed to do so.
+    AT_SKIP_IF([test x$s3tests = xno])
+    # We reset the missing data file name because we know that
+    # the $input_file is an S3 URL
+    missing_data_file=$(basename "${input_file}").missing
+fi
+
+AT_CHECK([test -n "${output_file}"])
+#Note: the input params is not used for this version.
+params="-o ${output_file}"
+
+gd_verbose=""
+AS_IF([test -z "$at_verbose"], [ gd_verbose="-v -X" ])
+
+TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} -m ${params} ${gd_verbose} ${input_file}"
+
+# at_verbose=""
+
+AS_IF([test -z "$at_verbose"], [
+    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    echo "#   abs_top_srcdir: ${abs_top_srcdir}"
+    echo "#       abs_srcdir: ${abs_srcdir}"
+    echo "#       top_srcdir: ${top_srcdir}"
+    echo "#         builddir: ${builddir}"
+    echo "#     abs_builddir: ${abs_builddir}"
+    echo "#     top_builddir: ${top_builddir}"
+    echo "# top_build_prefix: ${top_build_prefix}"
+    echo "# abs_top_builddir: ${abs_top_builddir}"
+    echo "#        GET_DMRPP: ${GET_DMRPP}"
+    echo "#    BES_DATA_ROOT: ${BES_DATA_ROOT}"
+    echo "#    BASELINES_DIR: ${BASELINES_DIR}"
+    echo "#"
+    echo "# AT_GET_DMRPP_3_20() arguments: "
+    echo "#            arg #1: "$1
+    echo "#            arg #2: "$2
+    echo "#            arg #3: "$3
+    echo "#            arg #4: "$4
+    echo "#            arg #5: "$5
+    echo "#            arg #6: "$6
+    echo "#          test_name: ${test_name}"
+    echo "#        input_file: ${input_file}"
+    echo "#    dmrpp_baseline: ${dmrpp_baseline}"
+    echo "#  missing_baseline: ${missing_baseline}"
+    echo "#       output_file: ${output_file}"
+    echo "#       xfail_param: ${xfail_param}"
+    echo "# missing_data_file: ${missing_data_file}"
+    echo "#       gd_verbose: ${gd_verbose}"
+    echo "#          TEST_CMD: ${TEST_CMD}"
+])
+
+AS_IF([test -n "$baselines" -a x$baselines = xyes],
+[
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
+    AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+    NORMALIZE_EXEC_NAME([${output_file}])
+    REMOVE_PATH_COMPONENTS([${output_file}])
+    REMOVE_VERSIONS([${output_file}])
+    REMOVE_BUILD_DMRPP_INVOCATION_ATTR_VALUE([${output_file}])
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data dmrpp result to ${dmrpp_baseline}.tmp"])
+    AT_CHECK([mv ${output_file} ${dmrpp_baseline}.tmp])
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data result to ${missing_baseline}.missing.tmp"])
+    AT_CHECK([ncdump ${abs_builddir}/${missing_data_file} > ${missing_baseline}.missing.tmp])
+    rm -f ${abs_builddir}/${missing_data_file}
+],
+[
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
+    AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+    NORMALIZE_EXEC_NAME([${output_file}])
+    REMOVE_PATH_COMPONENTS([${output_file}])
+    REMOVE_VERSIONS([${output_file}])
+     AS_IF([test -z "$at_verbose"], [
+        echo ""
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+        echo "# get_dmrpp: Filtered GROUP BEFORE INV ${output_file} BEGIN"
+        echo "#"
+        cat ${output_file};
+        echo "#"
+        echo "# get_dmrpp: Filtered GROUP BEFORE INV ${output_file} END"
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    ])
+    
+    REMOVE_BUILD_DMRPP_INVOCATION_ATTR_VALUE([${output_file}])
+    AS_IF([test -z "$at_verbose"], [
+        echo ""
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+        echo "# get_dmrpp: Filtered GROUP ${output_file} BEGIN"
+        echo "#"
+        cat ${output_file};
+        echo "#"
+        echo "# get_dmrpp: Filtered GROUP ${output_file} END"
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    ])
+    AT_CHECK([diff -b -B ${dmrpp_baseline} ${output_file}])
+
+    AT_CHECK([ncdump ${abs_builddir}/${missing_data_file} > tmp])
+    AS_IF([test -z "$at_verbose"], [
+        echo ""
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+        echo "# get_dmrpp: missing data file BEGIN"
+        echo "#"
+        cat tmp;
+        echo "#"
+        echo "# get_dmrpp: missing data file END"
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    ])
+    AT_CHECK([diff -b -B ${missing_baseline} tmp])
+    rm -f ${abs_builddir}/${missing_data_file}
+])
+
+AT_CLEANUP
+])
+
 
 ##########################################################################################
 # AT_GET_DMRPP_3_20_TESTS()
