@@ -1183,7 +1183,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
  */
 void qc_input_file(const string &file_fqn)
 {
-    //Use this ifstream file to run a check on the provided file's signature
+    //Use an ifstream file to run a check on the provided file's signature
     // to see if it is an HDF5 file. - kln 5/18/23
 
     if (file_fqn.empty()) {
@@ -1197,11 +1197,10 @@ void qc_input_file(const string &file_fqn)
     if (!file)  // This is same as if(file.fail()){...}
     {
         stringstream msg;
-        msg << "Encountered a Read/writing error when attempting to open the file" << file_fqn << endl;
+        msg << "Encountered a Read/writing error when attempting to open the file: " << file_fqn << endl;
+        msg << "*  strerror(errno): " << strerror(errnum) << endl;
         msg << "*          failbit: " << (((file.rdstate() & std::ifstream::failbit) != 0) ? "true" : "false") << endl;
         msg << "*           badbit: " << (((file.rdstate() & std::ifstream::badbit) != 0) ? "true" : "false") << endl;
-        msg << "*            errno: " << errnum << endl;
-        msg << "*  strerror(errno): " << strerror(errnum) << endl;
         msg << "Things to check:" << endl;
         msg << "* Does the file exist at expected location?" << endl;
         msg << "* Does your user have permission to read the file?" << endl;
@@ -1235,7 +1234,7 @@ void qc_input_file(const string &file_fqn)
         }
         else {
             stringstream msg;
-            msg << "The provided file," << file_fqn << ", ";
+            msg << "The provided file: " << file_fqn << " - ";
             msg << "is neither an HDF5 or an NetCDF-4 file, currently only HDF5 and NetCDF-4 files ";
             msg << "are supported for dmr++ production" << endl;
             throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
