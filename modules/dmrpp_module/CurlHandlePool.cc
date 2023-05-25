@@ -24,20 +24,20 @@
 #include "config.h"
 
 #include <string>
-#include <locale>
+// #include <locale>
 #include <sstream>
 
-#include <cstring>
-#include <unistd.h>
+// #include <cstring>
+// #include <unistd.h>
 
 #include <curl/curl.h>
 
 #include "CurlUtils.h"
-#include "HttpNames.h"
+// #include "HttpNames.h"
 
-#include <time.h>
+#include <ctime>
 
-#include <libdap/util.h>   // long_to_string()
+// #include <libdap/util.h>   // long_to_string()
 
 #include "BESLog.h"
 #include "BESDebug.h"
@@ -61,6 +61,8 @@
 using namespace dmrpp;
 using namespace http;
 using namespace std;
+
+#if 0
 
 string pthread_error(unsigned int err){
     string error_msg;
@@ -101,6 +103,8 @@ string pthread_error(unsigned int err){
 
     return error_msg;
 }
+
+#endif
 
 /**
  * @brief Build a string with hex info about stuff libcurl gets
@@ -255,7 +259,7 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_url(nullptr), d_request_headers(nullp
 #endif
 
     d_in_use = false;
-    d_chunk = 0;
+    d_chunk = nullptr;
 }
 
 dmrpp_easy_handle::~dmrpp_easy_handle() {
@@ -325,10 +329,10 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
     std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
 
-    dmrpp_easy_handle *handle = 0;
-    for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        if (!(*i)->d_in_use) {
-            handle = *i;
+    dmrpp_easy_handle *handle = nullptr;
+    for (auto & d_easy_handle : d_easy_handles) {
+        if (!d_easy_handle->d_in_use) {
+            handle = d_easy_handle;
             break;
         }
     }
@@ -447,7 +451,7 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
 
 #if KEEP_ALIVE
     handle->d_url = nullptr;
-    handle->d_chunk = 0;
+    handle->d_chunk = nullptr;
     handle->d_in_use = false;
 #else
     // This is to test the effect of libcurl Keep Alive support
@@ -468,10 +472,10 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
  * This is intended for use in error clean up code.
  * @param chunk Find the handle for this chunk and release it.
  */
-void CurlHandlePool::release_handle(Chunk *chunk) {
-    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        if ((*i)->d_chunk == chunk) {
-            release_handle(*i);
+void CurlHandlePool::release_handle(const Chunk *chunk) {
+    for (auto & d_easy_handle : d_easy_handles) {
+        if (d_easy_handle->d_chunk == chunk) {
+            release_handle(d_easy_handle);
             break;
         }
     }
@@ -485,7 +489,7 @@ void CurlHandlePool::release_handle(Chunk *chunk) {
  * retried without ending the other accesses.
  */
 void CurlHandlePool::release_all_handles() {
-    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        release_handle(*i);
+    for (auto & d_easy_handle : d_easy_handles) {
+        release_handle(d_easy_handle);
     }
 }

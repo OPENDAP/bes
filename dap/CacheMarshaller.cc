@@ -24,15 +24,15 @@
 
 #include "config.h"
 
-#ifdef HAVE_PTHREAD_H
-#include <pthread.h>
+#if 0 // def HAVE_PTHREAD_H
+// #include <pthread.h>
 #endif
 
 #include <cassert>
 
 #include <iostream>
 #include <sstream>
-#include <iomanip>
+// #include <iomanip>
 
 #include <libdap/Vector.h>
 

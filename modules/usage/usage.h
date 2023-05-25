@@ -22,12 +22,10 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include <libdap/Error.h>
-
 namespace dap_usage {
 
 void write_usage_response(std::ostream &strm, libdap::DDS &dds, libdap::DAS &das, const std::string &dataset_name = "",
-    const std::string &server_name = "", bool httpheader = true) throw (libdap::Error);
+    const std::string &server_name = "", bool httpheader = true);
 
 void html_header(std::ostream &strm);
 

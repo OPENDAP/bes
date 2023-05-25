@@ -36,7 +36,9 @@
 #include <stdlib.h>
 #endif
 
-#include <pthread.h>
+#if 0
+// #include <pthread.h>
+#endif
 
 #include <sstream>
 

@@ -38,17 +38,7 @@
 
 #include "config.h"
 
-static char rcsid[] not_used = {"$Id$"};
-
-#include <stdio.h>
-
-// I've added the pthread code here because this might someday move inside a
-// library as a function/object and it should be MT-safe. In the current
-// build HAVE_PTHREAD_H is set by configure; not having it makes no practical
-// difference. jhrg 6/10/05
-#ifdef HAVE_PTHREAD_H
-#include <pthread.h>
-#endif
+#include <cstdio>
 
 #include <iostream>
 #include <fstream>
@@ -62,18 +52,14 @@ static char rcsid[] not_used = {"$Id$"};
 #include <libdap/Sequence.h>
 #include <libdap/Grid.h>
 #include <libdap/Ancillary.h>
-
 #include <libdap/DAS.h>
-//#include <libdap/mime_util.h>
 #include <libdap/util.h>
+#include <libdap/Error.h>
 
-#include <libdap/debug.h>
-
-using namespace libdap ;
-
-#include "../usage/usage.h"
+#include "usage.h"
 
 using namespace std;
+using namespace libdap;
 using namespace dap_usage;
 
 #ifdef WIN32
@@ -100,10 +86,12 @@ namespace dap_usage {
 // once. If the pthread package is not present when libdap++ is built, this
 // code is *not* MT-Safe.
 
-static BESRegex *dim_ptr = 0 ;
+static BESRegex *dim_ptr = nullptr;
 #if HAVE_PTHREAD_H
 static pthread_once_t dim_once_control = PTHREAD_ONCE_INIT;
 #endif
+
+// TODO std::once_flag TheBESKeys::d_euc_init_once;
 
 static void
 init_dim_regex()
@@ -127,9 +115,19 @@ name_in_kill_file(const string &name)
 
     bool ret = dim_ptr->match(name.c_str(), name.size()) != -1;
     return ret ;
+
+#ifdef TODO
+    if (d_instance == nullptr) {
+        std::call_once(d_euc_init_once, []() {
+            d_instance.reset(new TheBESKeys(get_the_config_filename()));
+        });
+    }
+
+    return d_instance.get();
+#endif
 }
 
-static BESRegex *global_ptr = 0 ;
+static BESRegex *global_ptr = nullptr;
 #if HAVE_PTHREAD_H
 static pthread_once_t global_once_control = PTHREAD_ONCE_INIT;
 #endif
@@ -162,8 +160,7 @@ name_is_global(string &name)
 // understand. So, I'm keeping this as two separate functions even though
 // there's some duplication... 3/27/2002 jhrg
 static void
-write_global_attributes(ostringstream &oss, AttrTable *attr,
-			const string prefix = "")
+write_global_attributes(ostringstream &oss, AttrTable *attr, const string prefix = "")
 {
     if (attr) {
 	AttrTable::Attr_iter a;
@@ -424,8 +421,6 @@ html_header( ostream &strm )
     feature of that server. This feature was never used outside of testing,
     to the best of our knowledge.
 
-    @todo Update this to use the DDX.
-
     @param strm Write the HTML to this stream
     @param dds The DDS
     @param das THe DAS
@@ -433,10 +428,8 @@ html_header( ostream &strm )
     the provider.
     @param server_name Use this name to find server-specific info. */
 void
-write_usage_response(ostream &strm, DDS &dds, DAS &das,
-		     const string &dataset_name,
-                     const string &server_name,
-		     bool httpheader) throw(Error)
+write_usage_response(ostream &strm, DDS &dds, DAS &das, const string &dataset_name, const string &server_name,
+                     bool httpheader)
 {
         // This will require some hacking in libdap; maybe that code should
         // move here? jhrg
