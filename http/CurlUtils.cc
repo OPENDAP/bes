@@ -192,7 +192,7 @@ static size_t writeToOpenFileDescriptor(const char *data, size_t /* size */, siz
     size_t bytes_written = write(*fd, data, nmemb);
     BESDEBUG(MODULE, prolog << " Bytes written: " << bytes_written << endl);
 
-    // Verify the request hasn't exceeded bes_timeout, and throw is it has...
+    // Verify the request hasn't exceeded bes_timeout, and throw if it has...
     RequestServiceTimer::TheTimer()->throw_if_timeout_expired(CURL_WRITE_TO_FILE_TIMEOUT_MSG,  __FILE__, __LINE__);
 
     return bytes_written;
