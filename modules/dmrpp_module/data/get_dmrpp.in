@@ -94,6 +94,7 @@ SITE_CONF_FILE=
 RUN_INVENTORY_TESTS=
 RUN_VALUE_TESTS=
 MERGE_MISSING_VARS=
+MERGE_GRP_MISSING_VARS=
 OUTPUT_FILE=
 REDUCE_MISSING_FILES=
 MASTER_SHA256=
@@ -104,7 +105,7 @@ USE_AUTOMAKE_LIBS=
 CLEANUP_TEMP_FILES="true"
 export TEMP_FILE_LIST=""
 
-while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMUAX" opt; do
+while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFmMUAX" opt; do
     case "$opt" in
     h | \?)
         show_usage >&2
@@ -141,6 +142,9 @@ while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMUAX" opt; do
         ;;
     M)
         MERGE_MISSING_VARS="yes"
+        ;;
+    m)
+        MERGE_GRP_MISSING_VARS="yes"
         ;;
     p)
         MISSING_DATA_HREF="$OPTARG"
@@ -516,6 +520,96 @@ EOF
 ########################################################################################################################
 
 ########################################################################################################################
+# mkDAP4BesCmd()
+# subshell: ALWAYS
+#
+# Creates a BES request document for the $dap4_thing (dap)
+# from the $source_data_path file and sticks the command in a temp file.
+
+function mkDAP4BesCmd() {
+    local source_data_path="${1}"
+    local dap_type=${2}
+    local dap4_ce="${3}"
+    local returnAs="${4}"
+
+    if test -n "${VERBOSE}"; then
+        echo "# BEGIN mkDAP4BesCmd() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
+        echo "# source_data_path: ${source_data_path}" >&2
+        echo "#         dap_type: ${dap_type} " >&2
+        echo "#          dap4_ce: '${dap4_ce}'" >&2
+        echo "#         returnAs: '${returnAs}'" >&2
+    fi
+
+    local noConstraintContainerElement="<bes:container name=\"c\" />"
+
+    if test -n "${dap4_ce}"; then
+        #echo "Applying DAP4 CE: '${dap4_ce}'" >&2
+        container_element=$(
+            cat << EOF
+<bes:container name="c">
+<bes:dap4constraint>${dap4_ce}</bes:dap4constraint>
+</bes:container>
+EOF
+        )
+    else
+        container_element="${noConstraintContainerElement}"
+    fi
+
+    local besGET_ELEMENT=""
+    if test -n "${returnAs}"; then
+        besGET_ELEMENT=$(
+            cat << EOF
+</bes:define>
+<bes:get type="${dap_type}" definition="d" returnAs="${returnAs}" />
+</bes:request>
+EOF
+        )
+    else
+        besGET_ELEMENT=$(
+            cat << EOF
+</bes:define>
+<bes:get type="${dap_type}" definition="d" />
+</bes:request>
+EOF
+        )
+    fi
+
+    local bes_command=$(
+        cat << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="get_dmrpp.sh">
+<bes:setContext name="dap_explicit_containers">no</bes:setContext>
+<bes:setContext name="errors">xml</bes:setContext>
+<bes:setContext name="max_response_size">0</bes:setContext>
+
+<bes:setContainer name="c">${source_data_path}</bes:setContainer>
+
+<bes:define name="d" space="default">
+${container_element}
+${besGET_ELEMENT}
+
+EOF
+    )
+    local bes_cmd_file=""
+    bes_cmd_file=$(mktemp -t bes_cmd_XXXXXX)
+    echo "${bes_command}" > ${bes_cmd_file}
+
+    if test -n "${VERBOSE}"; then
+        echo "#     bes_cmd_file: ${bes_cmd_file} " >&2
+    fi
+
+    if test -n "${VERY_VERBOSE}"; then
+        echo "#    BES Command: " >&2
+        cat "${bes_cmd_file}" >&2
+    fi
+    if test -n "${VERBOSE}"; then
+        echo "# END mkDAP2BesCmd() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    echo "${bes_cmd_file}"
+}
+########################################################################################################################
+
+########################################################################################################################
 # make_bes_conf()
 #
 # Prepare the bes.conf file - use external if provided otherwise use the here doc.
@@ -644,6 +738,81 @@ function mkDapRequest() {
     echo "${target_dap_file}"
 
 }
+
+########################################################################################################################
+
+########################################################################################################################
+# getDap4()
+# Gets the passed $dap4 response (dmr, dap) for the file $data_path and places the response in a temp file.
+#
+function mkDap4Request() {
+    local bes_conf_file="${1}"
+    local data_path="${2}"
+    local dap4_type="${3}"
+    local dap4_ce="${4}"
+    local return_as="${5}"
+
+    if test -n "${VERBOSE}"; then
+        echo "# BEGIN mkDap4Request() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
+        echo "# " >&2
+        echo "#  bes_conf_file: ${bes_conf_file}" >&2
+        echo "#      data_path: ${data_path}" >&2
+        echo "#      dap4_type: ${dap4_type}" >&2
+        echo "#        dap4_ce: ${dap4_ce}" >&2
+        echo "#      return_as: ${return_as}" >&2
+        echo "#" >&2
+    fi
+
+    local bes_command_file=""
+    bes_command_file=$(mkDAP4BesCmd "${data_path}" "${dap4_type}" "${dap4_ce}" "${return_as}")
+    # TODO - This TEMP_FILE_LIST change is pointless in a subshell
+    # export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${bes_command_file}"
+
+    if test -n "${VERBOSE}"; then
+        echo "#  bes_command_file: ${bes_command_file}" >&2
+    fi
+    if test -n "${VERY_VERBOSE}"; then
+        cat "${bes_command_file}" >&2
+    fi
+
+    local target_dap_file=""
+    target_dap_file=$(mktemp -t ${dap4_type}_${return_as}_XXXXXX)
+    if test -n "${VERBOSE}"; then echo "#   target_dap_file: ${target_dap_file}" >&2; fi
+
+    local BESCMD="besstandalone -c ${bes_conf_file} -i ${bes_command_file} -f ${target_dap_file} "
+    if test -n "${VERBOSE}"; then echo "#   BESCMD: ${BESCMD}" >&2; fi
+    ${BESCMD}
+    status=$?
+    if test -n "${CLEANUP_TEMP_FILES}"; then
+        if test -n "${VERBOSE}"; then echo "## Cleaning up bes_command_file: ${bes_command_file}" >&2;  fi
+        rm -f "${bes_command_file}"
+    fi
+    if test $status -ne 0; then
+        echo "" >&2
+        echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!" >&2
+        echo "ERROR! The besstandalone program failed to build a ${dap4_type} file!." >&2
+        echo "       The configuration is here: ${bes_conf_file}" >&2
+        echo "             The command is here: ${bes_command_file}" >&2
+        echo "The besstandalone output is here: ${target_dap_file}" >&2
+        echo "     besstandalone return status: $status" >&2
+        echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!" >&2
+        echo "" >&2
+        return $status
+    fi
+
+    if test -n "${VERY_VERBOSE}"; then
+        echo "# target_dap_file: " >&2
+        cat "${target_dap_file}" >&2
+    fi
+    if test -n "${VERBOSE}"; then
+        echo "# END mkDap4Request() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    # This is the return value of the function!
+    echo "${target_dap_file}"
+
+}
+
+
 ########################################################################################################################
 
 ########################################################################################################################
@@ -1357,7 +1526,7 @@ function merge_missing() {
     fi
 
     local status=0
-    if test -n "${MERGE_MISSING_VARS}"; then
+    if test -n "${MERGE_MISSING_VARS}" || test -n "${MERGE_GRP_MISSING_VARS}"; then
 
         # use $PATH/check_dmrpp to query dmrpp for missing CF domain variables [requires ${OUTPUT_FILE}; -o option]
         local missing_vars_file=""
@@ -1388,13 +1557,24 @@ function merge_missing() {
 
             # use besstandalone to generate SIDECAR_MISSING_FILE
             local sidecar_missing_temp_file=""
-            sidecar_missing_temp_file=$(mkDapRequest "${mk_missing_conf_file}" "${INPUT_DATA_FILE}" dods "${missing_variables}" netcdf-4)
-            status=$?
-            if test -n "${VERBOSE}"; then echo "# mkDapRequest status: ${status}" >&2; fi
-            if test ${status} -ne 0; then
-                echo "ERROR: mkDapRequest ${mk_missing_conf_file}  ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 FAILED! status: $status" >&2
-                return $status
+            if test -n "${MERGE_MISSING_VARS}"; then
+                sidecar_missing_temp_file=$(mkDapRequest "${mk_missing_conf_file}" "${INPUT_DATA_FILE}" dods "${missing_variables}" netcdf-4)
+                status=$?
+                if test -n "${VERBOSE}"; then echo "# mkDapRequest status: ${status}" >&2; fi
+                if test ${status} -ne 0; then
+                    echo "ERROR: mkDapRequest ${mk_missing_conf_file}  ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 FAILED! status: $status" >&2
+                    return $status
+                fi
+            else
+                sidecar_missing_temp_file=$(mkDap4Request "${mk_missing_conf_file}" "${INPUT_DATA_FILE}" dap "${missing_variables}" netcdf-4)
+                status=$?
+                if test -n "${VERBOSE}"; then echo "# mkDap4Request status: ${status}" >&2; fi
+                if test ${status} -ne 0; then
+                    echo "ERROR: mkDap4Request ${mk_missing_conf_file}  ${INPUT_DATA_FILE} dap ${missing_variables} netcdf-4 FAILED! status: $status" >&2
+                    return $status
+                fi
             fi
+ 
             # Because we move the temp file there is no need to add it to TEMP_FILE_LIST
             mv "${sidecar_missing_temp_file}" "${BES_DATA_ROOT}/${SIDECAR_MISSING_FILE}"
 
@@ -1405,13 +1585,24 @@ function merge_missing() {
             export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${bes_conf_file}"
 
             local missing_vars_dmr_file=""
-            missing_vars_dmr_file=$(mkDapRequest ${bes_conf_file} ${SIDECAR_MISSING_FILE} dmr) # use besstandalone to generate dmr for SIDECAR_MISSING_FILE
-            status=$?
-            if test -n "${VERBOSE}"; then echo "# mkDapRequest status: ${status}" >&2; fi
-            if test ${status} -ne 0; then
-                echo "ERROR: mkDapRequest() ${bes_conf_file} ${SIDECAR_MISSING_FILE} dmr  FAILED! status: $status" >&2
-                return $status
-            fi
+
+            if test -n "${MERGE_MISSING_VARS}"; then
+                missing_vars_dmr_file=$(mkDapRequest ${bes_conf_file} ${SIDECAR_MISSING_FILE} dmr) # use besstandalone to generate dmr for SIDECAR_MISSING_FILE
+                status=$?
+                if test -n "${VERBOSE}"; then echo "# mkDapRequest status: ${status}" >&2; fi
+                if test ${status} -ne 0; then
+                    echo "ERROR: mkDapRequest() ${bes_conf_file} ${SIDECAR_MISSING_FILE} dmr  FAILED! status: $status" >&2
+                    return $status
+                fi
+            else 
+                missing_vars_dmr_file=$(mkDap4Request ${bes_conf_file} ${SIDECAR_MISSING_FILE} dmr) # use besstandalone to generate dmr for SIDECAR_MISSING_FILE
+                status=$?
+                if test -n "${VERBOSE}"; then echo "# mkDap4Request status: ${status}" >&2; fi
+                if test ${status} -ne 0; then
+                    echo "ERROR: mkDap4Request() ${bes_conf_file} ${SIDECAR_MISSING_FILE} dmr  FAILED! status: $status" >&2
+                    return $status
+                fi
+            fi 
             export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${missing_vars_dmr_file}"
 
             master_dmrpp_file="${OUTPUT_FILE}" # save original dmrpp filename
