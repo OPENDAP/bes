@@ -117,19 +117,19 @@ int main(int argc,char**argv)
     // We only consider the atomic datatype for the missing variables.
     vector<string> var_type_check_list;
 
-    var_type_check_list.push_back("Float32");
-    var_type_check_list.push_back("Int32");
-    var_type_check_list.push_back("Float64");
-    var_type_check_list.push_back("Byte");
-    var_type_check_list.push_back("Int16");
-    var_type_check_list.push_back("UInt16");
-    var_type_check_list.push_back("String");
-    var_type_check_list.push_back("UInt32");
-    var_type_check_list.push_back("Int8");
-    var_type_check_list.push_back("Int64");
-    var_type_check_list.push_back("UInt64");
-    var_type_check_list.push_back("UInt8");
-    var_type_check_list.push_back("Char");
+    var_type_check_list.emplace_back("Float32");
+    var_type_check_list.emplace_back("Int32");
+    var_type_check_list.emplace_back("Float64");
+    var_type_check_list.emplace_back("Byte");
+    var_type_check_list.emplace_back("Int16");
+    var_type_check_list.emplace_back("UInt16");
+    var_type_check_list.emplace_back("String");
+    var_type_check_list.emplace_back("UInt32");
+    var_type_check_list.emplace_back("Int8");
+    var_type_check_list.emplace_back("Int64");
+    var_type_check_list.emplace_back("UInt64");
+    var_type_check_list.emplace_back("UInt8");
+    var_type_check_list.emplace_back("Char");
 
     // Obtain the dmrpp file name that contains the missing variable value.
     string fname(argv[1]);
@@ -181,7 +181,7 @@ cout<<"chunk_info_list["<<i<<"] "<< chunk_info_list[i] << endl;
     if (!has_delim) {
         delim=',';
         missing_vname_list.clear();
-        has_delim = string_tokenize(missing_vname_str,delim,missing_vname_list);
+        string_tokenize(missing_vname_str,delim,missing_vname_list);
     }
 
     // Check if the dmrpp file that contains just the missing variables has groups.
@@ -231,8 +231,8 @@ cout<<"chunk_info_list["<<i<<"] "<< chunk_info_list[i] << endl;
         }
 
         for (size_t i =0; i<mdp_var_fqn.size();i++) {
-            for(size_t j = 0; j<missing_vname_list.size();j++) {
-                if(mdp_var_fqn[i] == missing_vname_list[j]) {
+            for (const auto & mvl:missing_vname_list) {
+                if (mdp_var_fqn[i] == mvl) {
                     new_var_names.push_back(mdp_var_names_g[i]);
                     new_var_fqns.push_back(mdp_var_fqn[i]);
                     new_var_types.push_back(mdp_var_types_g[i]);
@@ -1014,10 +1014,9 @@ bool string_tokenize(const string &in_str, const char delim, vector<string> &out
 // We assume the positions are pre-sorted from small to large.
 bool string_tokenize_by_pos(const string &in_str,const vector<size_t>& pos, vector<string> &out_vec) {
 
-    if (pos.size() == 0 || pos.front() ==0 || (pos.back()+1) >in_str.size())
+    if (pos.empty() || pos.front() ==0 || (pos.back()+1) >in_str.size())
         return false;
 
-    size_t start_pos = 0;
     out_vec.push_back(in_str.substr(0,pos[0]));
     for (unsigned int i = 0; i < (pos.size()-1); i++)
         out_vec.push_back(in_str.substr(pos[i],pos[i+1]-pos[i]));
@@ -1084,17 +1083,17 @@ bool find_var_helper(const string &str, const vector<string> &var_type_list,
         return ret;
 
     // Try to figure out the variable type.
-    size_t var_index = -1;
-    bool found = false;
-    for (size_t i = 0; i<var_type_list.size() && !found ; i++) {
+    bool found_var_index = false;
+    size_t var_index = 0;
+    for (size_t i = 0; i<var_type_list.size(); i++) {
         if (str.compare(non_space_char_pos+1,sep_pos-non_space_char_pos-1,var_type_list[i]) == 0) {
             var_index = i;
-            found = true;
+            found_var_index = true;
         }
     }
 
     // If cannot find the supported type, ignore this line.
-    if (!found)
+    if (!found_var_index)
         return ret;
     
     // Find the end quote position of the variable name.
@@ -1318,11 +1317,14 @@ cerr<<"group name  is "<<gn <<endl;
     // group path is from backward. So we match the group line backward.
     int gl_index = gs_line_nums.size();
 
-    for (unsigned int i = 0; i <grp_path_lines.size(); i++) {
+    for (const auto &gpl:grp_path_lines) {
 
+        // Note: gl_index is modified. This is intentionally since
+        // we don't need to search the lines already visited.
+        // We just need to prepend the group path as we search backward.
         for (; gl_index >= 0; gl_index--) {
 
-            if (grp_path_lines[i] == gs_line_nums[gl_index]) {
+            if (gpl == gs_line_nums[gl_index]) {
 
                 ret_value = "/" + grp_names[gl_index] + ret_value;
                 gl_index--;
@@ -1440,12 +1442,14 @@ cout <<"dmrpp_str is "<<dmrpp_str<<endl;
     vector<size_t> var_candidate_pos;
     ret_value = obtain_miss_var_candidate_pos(dmrpp_str, var_type, var_name,var_candidate_pos);
 
+    if (ret_value == false)
+        return ret_value;
 #if 0
 for (const auto &vcp:var_candidate_pos) 
     cout <<"pos is: "<<vcp <<endl;
 #endif
 
-
+    
     // Convert string according to the string positions.
     vector<string> dmrpp_vec;
     vector<string> ordered_chunk_info;
@@ -1484,6 +1488,7 @@ bool obtain_miss_var_candidate_pos(const string &dmrpp_str, const vector<string>
         if (v_pos == string::npos) {
             cout <<"Cannot find the var name " << var_name[i] << "in the original dmrpp file "<<endl;
             ret_value = false;
+            break;
         }
         var_pos.push_back(v_pos);
         str_start_pos = v_pos + var_sign.size();

@@ -538,11 +538,14 @@ cerr<<"group name  is "<<gn <<endl;
     // group path is from backward. So we match the group line backward.
     int gl_index = gs_line_nums.size();
 
-    for (unsigned int i = 0; i <grp_path_lines.size(); i++) {
+    for (const auto & gpl:grp_path_lines) {
 
+        // Note: gl_index is modified. This is intentionally since
+        // we don't need to search the lines already visited.
+        // We just need to prepend the group path as we search backward.
         for (; gl_index >= 0; gl_index--) {
 
-            if (grp_path_lines[i] == gs_line_nums[gl_index]) {
+            if (gpl == gs_line_nums[gl_index]) {
 
                 ret_value = "/" + grp_names[gl_index] + ret_value;
                 gl_index--;
@@ -564,7 +567,7 @@ cerr<<"ret_value is "<<ret_value <<endl;
 int obtain_gse_line_index(const vector<unsigned int> &gse_line_nums, unsigned int var_line) {
 
     int ret_value = -1;
-    unsigned int total_gse_lines = gse_line_nums.size();
+    auto total_gse_lines = (unsigned int)(gse_line_nums.size());
     
     if (total_gse_lines > 0) { 
 
