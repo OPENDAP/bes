@@ -29,8 +29,6 @@
 #include <vector>
 #include <mutex>
 
-#include <pthread.h>
-
 #include <curl/curl.h>
 
 #include "url_impl.h"
@@ -90,8 +88,8 @@ public:
 
     ~CurlHandlePool()
     {
-        for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-            delete *i;
+        for (auto & d_easy_handle : d_easy_handles) {
+            delete d_easy_handle;
         }
     }
 
@@ -102,8 +100,8 @@ public:
     unsigned int get_handles_available() const
     {
         unsigned int n = 0;
-        for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-            if (!(*i)->d_in_use) {
+        for (auto d_easy_handle : d_easy_handles) {
+            if (!d_easy_handle->d_in_use) {
                 n++;
 
             }

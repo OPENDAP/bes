@@ -62,50 +62,6 @@ using namespace dmrpp;
 using namespace http;
 using namespace std;
 
-#if 0
-
-string pthread_error(unsigned int err){
-    string error_msg;
-    switch(err){
-        case EINVAL:
-            error_msg = "The mutex was either created with the "
-                        "protocol attribute having the value "
-                        "PTHREAD_PRIO_PROTECT and the calling "
-                        "thread's priority is higher than the "
-                        "mutex's current priority ceiling."
-                        "OR The value specified by mutex does not "
-                        "refer to an initialized mutex object.";
-            break;
-
-        case EBUSY:
-            error_msg = "The mutex could not be acquired "
-                        "because it was already locked.";
-            break;
-
-        case EAGAIN:
-            error_msg = "The mutex could not be acquired because "
-                        "the maximum number of recursive locks "
-                        "for mutex has been exceeded.";
-            break;
-
-        case EDEADLK:
-            error_msg = "The current thread already owns the mutex";
-            break;
-
-        case EPERM:
-            error_msg = "The current thread does not own the mutex.";
-            break;
-
-        default:
-            error_msg = "Unknown pthread error type.";
-            break;
-    }
-
-    return error_msg;
-}
-
-#endif
-
 /**
  * @brief Build a string with hex info about stuff libcurl gets
  *
