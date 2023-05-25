@@ -148,6 +148,7 @@ public:
     void test_input_file_signature_no_file() {
         CPPUNIT_ASSERT_THROW_MESSAGE("No such file expected.", qc_input_file("/foofoo"), BESInternalFatalError);
     }
+
     void test_input_file_signature_netcdf3_file() {
         CPPUNIT_ASSERT_THROW_MESSAGE("netcdf3 file expected.", qc_input_file("input-files/testfile.nc"), BESInternalFatalError);
     }
@@ -306,8 +307,8 @@ public:
         CPPUNIT_TEST(vector_init_test);
         CPPUNIT_TEST(file_and_dmr_test);
 
-        CPPUNIT_TEST_EXCEPTION(test_input_file_signature_no_file, BESInternalFatalError);
-        CPPUNIT_TEST_EXCEPTION(test_input_file_signature_netcdf3_file, BESInternalFatalError);
+        CPPUNIT_TEST(test_input_file_signature_no_file);
+        CPPUNIT_TEST(test_input_file_signature_netcdf3_file);
 
         CPPUNIT_TEST_EXCEPTION(is_hdf5_fill_value_defined_test_bad_dataset_id, BESInternalError);
 
