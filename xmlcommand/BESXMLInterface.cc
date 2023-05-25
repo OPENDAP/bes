@@ -35,8 +35,6 @@
 #include <iostream>
 #include <sstream>
 
-using namespace std;
-
 #include "BESXMLInterface.h"
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
@@ -44,7 +42,6 @@ using namespace std;
 #include "BESResponseNames.h"
 #include "BESContextManager.h"
 
-#include "BESResponseHandler.h"
 #include "BESReturnManager.h"
 #include "BESInfo.h"
 #include "BESStopWatch.h"
@@ -53,6 +50,8 @@ using namespace std;
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
+
+using namespace std;
 
 #define LOG_ONLY_GET_COMMANDS
 #define MODULE "bes"
@@ -315,8 +314,8 @@ void BESXMLInterface::log_the_command()
  */
 void BESXMLInterface::execute_data_request_plan()
 {
-    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
+    auto i = d_xml_cmd_list.begin();
+    auto e = d_xml_cmd_list.end();
     for (; i != e; i++) {
         (*i)->prep_request();
 
@@ -336,7 +335,7 @@ void BESXMLInterface::execute_data_request_plan()
             __LINE__);
 
         d_dhi_ptr->response_handler->execute(*d_dhi_ptr);
-
+        // @TODO Check RequestServiceTimer here?? Might be a good idea
         transmit_data();    // TODO move method body in here? jhrg 11/8/17
 
     }

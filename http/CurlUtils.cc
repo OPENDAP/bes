@@ -183,19 +183,19 @@ static size_t writeNothing(const char */* data */, size_t /* size */, size_t nme
  * libcurl call back function that is used to write data to a passed open file descriptor (that would
  * be instead of the default open FILE *)
  */
+#define CURL_WRITE_TO_FILE_TIMEOUT_MSG  "The function curl::writeToOpenFileDescriptor() was unable to complete the download process because it ran out of time."
 static size_t writeToOpenFileDescriptor(const char *data, size_t /* size */, size_t nmemb, const void *userdata) {
 
     const auto fd = static_cast<const int *>(userdata);
 
-    BESDEBUG(MODULE, prolog << "Bytes received " << nmemb << endl);
-    size_t wrote = write(*fd, data, nmemb);
-    BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
+    BESDEBUG(MODULE, prolog << "Bytes received: " << nmemb << endl);
+    size_t bytes_written = write(*fd, data, nmemb);
+    BESDEBUG(MODULE, prolog << " Bytes written: " << bytes_written << endl);
 
-    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired("The function curl::writeToOpenFileDescriptor() "
-                                                              "was unable to complete the download process.",
-                                                              __FILE__, __LINE__);
-    return wrote;
+    // Verify the request hasn't exceeded bes_timeout, and throw if it has...
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(CURL_WRITE_TO_FILE_TIMEOUT_MSG,  __FILE__, __LINE__);
+
+    return bytes_written;
 }
 
 
