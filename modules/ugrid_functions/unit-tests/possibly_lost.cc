@@ -29,14 +29,6 @@
 #include <iostream>
 #include <iterator>
 
-#ifdef NEVER
-
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-#endif
-
 #include <libdap/BaseType.h>
 #include <libdap/Str.h>
 #include <libdap/DDS.h>
