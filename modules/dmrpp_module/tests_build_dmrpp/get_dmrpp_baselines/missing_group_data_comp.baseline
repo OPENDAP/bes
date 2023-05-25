@@ -1,0 +1,99 @@
+netcdf grid_2_2d_sin.h5 {
+
+group: HDFEOS {
+
+  group: GRIDS {
+
+    group: SinGrid1 {
+      dimensions:
+      	XDim = 2 ;
+      	YDim = 2 ;
+      variables:
+      	ubyte eos5_cf_projection ;
+      		eos5_cf_projection:grid_mapping_name = "sinusoidal" ;
+      		eos5_cf_projection:longitude_of_central_meridian = 0. ;
+      		eos5_cf_projection:earth_radius = 6371007.181 ;
+      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection " ;
+      		XDim:units = "meter" ;
+      		XDim:_CoordinateAxisType = "GeoX" ;
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection " ;
+      		YDim:units = "meter" ;
+      		YDim:_CoordinateAxisType = "GeoY" ;
+      	double Latitude(YDim, XDim) ;
+      		Latitude:units = "degrees_north" ;
+      	double Longitude(YDim, XDim) ;
+      		Longitude:units = "degrees_east" ;
+      data:
+
+       eos5_cf_projection = 112 ;
+
+       XDim = -8895604.157333, -8339628.8975 ;
+
+       YDim = 5559752.598333, 5003777.3385 ;
+
+       Latitude =
+  47.4999999957329, 47.4999999957329,
+  42.4999999961849, 42.4999999961849 ;
+
+       Longitude =
+  -114.714510531848, -107.313574368507,
+  -105.116482114612, -98.3347735910925 ;
+      } // group SinGrid1
+
+    group: SinGrid2 {
+      dimensions:
+      	XDim = 4 ;
+      	YDim = 4 ;
+      variables:
+      	ubyte eos5_cf_projection ;
+      		eos5_cf_projection:grid_mapping_name = "sinusoidal" ;
+      		eos5_cf_projection:longitude_of_central_meridian = 0. ;
+      		eos5_cf_projection:earth_radius = 6371007.181 ;
+      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection " ;
+      		XDim:units = "meter" ;
+      		XDim:_CoordinateAxisType = "GeoX" ;
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection " ;
+      		YDim:units = "meter" ;
+      		YDim:_CoordinateAxisType = "GeoY" ;
+      	double Latitude(YDim, XDim) ;
+      		Latitude:units = "degrees_north" ;
+      	double Longitude(YDim, XDim) ;
+      		Longitude:units = "degrees_east" ;
+      data:
+
+       eos5_cf_projection = 112 ;
+
+       XDim = -8895604.157333, -8617616.5274165, -8339628.8975, 
+          -8061641.2675835 ;
+
+       YDim = 5559752.598333, 5281764.9684165, 5003777.3385, 4725789.7085835 ;
+
+       Latitude =
+  48.7499999956199, 48.7499999956199, 48.7499999956199, 48.7499999956199,
+  46.2499999958459, 46.2499999958459, 46.2499999958459, 46.2499999958459,
+  43.7499999960719, 43.7499999960719, 43.7499999960719, 43.7499999960719,
+  41.2499999962979, 41.2499999962979, 41.2499999962979, 41.2499999962979 ;
+
+       Longitude =
+  -119.436566036457, -115.644929019429, -111.853292002401, 
+          -108.061654985372,
+  -113.880713210651, -110.265452473807, -106.650191736963, 
+          -103.034931000119,
+  -109.017066359746, -105.556207110232, -102.095347860718, 
+          -98.6344886112046,
+  -104.743057237848, -101.417880817601, -98.0927043973538, 
+          -94.7675279771066 ;
+      } // group SinGrid2
+    } // group GRIDS
+  } // group HDFEOS
+}
