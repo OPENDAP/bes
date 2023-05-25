@@ -153,8 +153,12 @@ public:
         CPPUNIT_ASSERT_THROW_MESSAGE("netcdf3 file expected.", qc_input_file("input-files/testfile.nc"), BESInternalFatalError);
     }
 
+    void test_input_file_signature_hdf_file() {
+        CPPUNIT_ASSERT_NO_THROW(qc_input_file("../data/s3_data/AIRS_partial.h5"));
+    }
+
     void is_hdf5_fill_value_defined_test_bad_dataset_id() {
-        CPPUNIT_ASSERT_MESSAGE("This should throw BESInternalError", is_hdf5_fill_value_defined(-1));
+        CPPUNIT_ASSERT_THROW_MESSAGE("This should throw BESInternalError", is_hdf5_fill_value_defined(-1), BESInternalError);
     }
 
     void is_hdf5_fill_value_defined_test_chunks_all_fill() {
@@ -254,8 +258,8 @@ public:
     }
 
     void get_hdf5_fill_value_test_chunks_fill_notdefined() {
-        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
-                               get_fill_value_test_helper(fill_value_file, "/chunks_fill_notdefined", __func__) == "-99");
+        CPPUNIT_ASSERT_THROW_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_file, "/chunks_fill_notdefined", __func__) == "-99", BESInternalError);
     }
 
     void get_hdf5_fill_value_test_chunks_some_fill() {
@@ -309,8 +313,9 @@ public:
 
         CPPUNIT_TEST(test_input_file_signature_no_file);
         CPPUNIT_TEST(test_input_file_signature_netcdf3_file);
+        CPPUNIT_TEST(test_input_file_signature_hdf_file);
 
-        CPPUNIT_TEST_EXCEPTION(is_hdf5_fill_value_defined_test_bad_dataset_id, BESInternalError);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_bad_dataset_id);
 
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_all_fill);
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_fill_not_write);
@@ -332,7 +337,7 @@ public:
 
         CPPUNIT_TEST(get_hdf5_fill_value_test_chunks_all_fill);
         CPPUNIT_TEST(get_hdf5_fill_value_test_chunks_fill_not_write);
-        CPPUNIT_TEST_EXCEPTION(get_hdf5_fill_value_test_chunks_fill_notdefined, BESInternalError);
+        CPPUNIT_TEST(get_hdf5_fill_value_test_chunks_fill_notdefined);
         CPPUNIT_TEST(get_hdf5_fill_value_test_chunks_some_fill);
         CPPUNIT_TEST(get_hdf5_fill_value_test_compact_all_fill);
         CPPUNIT_TEST(get_hdf5_fill_value_test_cont_all_fill);
