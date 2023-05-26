@@ -1213,21 +1213,18 @@ void qc_input_file(const string &file_fqn)
 
     //Read the first 8 bytes (file signature) from the file
     string signature;
-    signature.reserve(8);
-
-    file.read(signature.data(), 8)
-
-
+    signature.resize(8);
+    file.read(&signature[0], signature.size());
 
     //First check if file is NOT an HDF5 file, then, if it is not, check if it is netcdf3
-    bool isHDF5 = memcmp(signature, hdf5Signature, sizeof(hdf5Signature)) == 0;
+    bool isHDF5 = memcmp(&signature[0], hdf5Signature, sizeof(hdf5Signature)) == 0;
     if (!isHDF5) {
         //Reset the file stream to read from the beginning
         file.clear();
         file.seekg(0);
 
         char newSignature[3];
-        file.read(signature, sizeof(signature));
+        file.read(&signature[0], signature.size());
 
         bool isNetCDF3 = memcmp(newSignature, netcdf3Signature, sizeof(netcdf3Signature)) == 0;
         if (isNetCDF3) {
