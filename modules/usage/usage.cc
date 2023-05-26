@@ -38,13 +38,10 @@
 
 #include "config.h"
 
-#include <cstdio>
-
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
-// #include <thread>
 
 #include <libdap/Array.h>
 #include <libdap/Structure.h>
@@ -53,7 +50,6 @@
 #include <libdap/Ancillary.h>
 #include <libdap/DAS.h>
 #include <libdap/util.h>
-// #include <libdap/Error.h>
 
 #include "BESRegex.h"
 
@@ -86,7 +82,7 @@ name_is_global(string &name) {
 // understand. So, I'm keeping this as two separate functions even though
 // there's some duplication... 3/27/2002 jhrg
 static void
-write_global_attributes(ostringstream &oss, AttrTable *attr, const string prefix = "") {
+write_global_attributes(ostringstream &oss, AttrTable *attr, const string &prefix = "") {
     if (attr) {
         AttrTable::Attr_iter a;
         for (a = attr->attr_begin(); a != attr->attr_end(); a++) {
@@ -113,7 +109,7 @@ write_global_attributes(ostringstream &oss, AttrTable *attr, const string prefix
 }
 
 static void
-write_attributes(ostringstream &oss, AttrTable *attr, const string prefix = "") {
+write_attributes(ostringstream &oss, AttrTable *attr, const string &prefix = "") {
     if (attr) {
         for (auto a = attr->attr_begin(); a != attr->attr_end(); a++) {
             if (attr->is_container(a)) {
@@ -150,7 +146,7 @@ write_attributes(ostringstream &oss, AttrTable *attr, const string prefix = "") 
     readable form (as an HTML* document).
 */
 static string
-build_global_attributes(DAS &das, DDS &) {
+build_global_attributes(DAS &das, const DDS &) {
     bool found = false;
     ostringstream ga;
 
@@ -376,10 +372,10 @@ write_usage_response(ostream &strm, DDS &dds, DAS &das, const string &dataset_na
 }
 
 /** Look in the CGI directory (given by \c cgi) for a per-cgi HTML* file.
-    Also look for a dataset-specific HTML* document. Catenate the documents
+    Also look for a dataset-specific HTML* document. Concatenate the documents
     and return them in a single String variable.
 
-    Similarly, to locate the dataset-specific HTML* file it catenates `.html'
+    Similarly, to locate the dataset-specific HTML* file it concatenates `.html'
     to \c name, where \c name is the name of the dataset. If the filename
     part of \c name is of the form [A-Za-z]+[0-9]*.* then this function also
     looks for a file whose name is [A-Za-z]+.html For example, if \c name is
@@ -394,11 +390,11 @@ write_usage_response(ostream &strm, DDS &dds, DAS &das, const string &dataset_na
     @brief Look for the user supplied CGI- and dataset-specific HTML*
     documents.
 
-    @return A String which contains these two documents catenated. Documents
+    @return A String which contains these two documents concatenated. Documents
     that don't exist are treated as `empty'.  */
 
 string
-get_user_supplied_docs(string name, string cgi) {
+get_user_supplied_docs(const string &name, const string &cgi) {
     char tmp[256];
     ostringstream oss;
     ifstream ifs((cgi + ".html").c_str());

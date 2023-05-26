@@ -29,7 +29,7 @@ void write_usage_response(std::ostream &strm, libdap::DDS &dds, libdap::DAS &das
 
 void html_header(std::ostream &strm);
 
-std::string get_user_supplied_docs(std::string name, std::string cgi);
+std::string get_user_supplied_docs(const std::string &name, const std::string &cgi);
 
 }
 

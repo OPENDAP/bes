@@ -24,21 +24,12 @@
 #include "config.h"
 
 #include <string>
-// #include <locale>
 #include <sstream>
-
-// #include <cstring>
-// #include <unistd.h>
+#include <ctime>
 
 #include <curl/curl.h>
 
 #include "CurlUtils.h"
-// #include "HttpNames.h"
-
-#include <ctime>
-
-// #include <libdap/util.h>   // long_to_string()
-
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
