@@ -50,6 +50,7 @@
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
+#include "RequestServiceTimer.h"
 
 using namespace std;
 
@@ -314,12 +315,10 @@ void BESXMLInterface::log_the_command()
  */
 void BESXMLInterface::execute_data_request_plan()
 {
-    auto i = d_xml_cmd_list.begin();
-    auto e = d_xml_cmd_list.end();
-    for (; i != e; i++) {
-        (*i)->prep_request();
+    for(auto bescmd : d_xml_cmd_list){
+        bescmd->prep_request();
 
-        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
+        d_dhi_ptr = &bescmd->get_xmlcmd_dhi();
 
         log_the_command();
 
@@ -335,7 +334,11 @@ void BESXMLInterface::execute_data_request_plan()
             __LINE__);
 
         d_dhi_ptr->response_handler->execute(*d_dhi_ptr);
-        // @TODO Check RequestServiceTimer here?? Might be a good idea
+
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(
+                prolog + "The BES ran out of time before the data could be transmitted.",
+                __FILE__,__LINE__);
+
         transmit_data();    // TODO move method body in here? jhrg 11/8/17
 
     }
