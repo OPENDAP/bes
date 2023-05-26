@@ -1236,7 +1236,7 @@ void qc_input_file(const string &file_fqn)
         else {
             stringstream msg;
             msg << "The provided file: " << file_fqn << " - ";
-            msg << "is neither an HDF5 or an NetCDF-4 file, currently only HDF5 and NetCDF-4 files ";
+            msg << "is neither an HDF5 or a NetCDF-4 file, currently only HDF5 and NetCDF-4 files ";
             msg << "are supported for dmr++ production" << endl;
             throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
