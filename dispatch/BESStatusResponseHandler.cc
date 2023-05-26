@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -40,15 +40,6 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESStatusResponseHandler::BESStatusResponseHandler( const string &name )
-    : BESResponseHandler( name )
-{
-}
-
-BESStatusResponseHandler::~BESStatusResponseHandler( )
-{
-}
-
 /** @brief executes the command 'show status;' by returning the status of
  * the server process
  *
@@ -62,15 +53,14 @@ BESStatusResponseHandler::~BESStatusResponseHandler( )
  * @see BESStatus
  */
 void
-BESStatusResponseHandler::execute( BESDataHandlerInterface &dhi )
-{
-    BESInfo *info = BESInfoList::TheList()->build_info() ;
-    d_response_object = info ;
-    BESStatus s ;
-    dhi.action_name = STATUS_RESPONSE_STR ;
-    info->begin_response( STATUS_RESPONSE_STR, dhi ) ;
-    info->add_tag( "status", s.get_status() ) ;
-    info->end_response() ;
+BESStatusResponseHandler::execute(BESDataHandlerInterface &dhi) {
+    BESInfo *info = BESInfoList::TheList()->build_info();
+    d_response_object = info;
+    BESStatus s;
+    dhi.action_name = STATUS_RESPONSE_STR;
+    info->begin_response(STATUS_RESPONSE_STR, dhi);
+    info->add_tag("status", s.get_status());
+    info->end_response();
 }
 
 /** @brief transmit the response object built by the execute command
@@ -86,15 +76,12 @@ BESStatusResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESStatusResponseHandler::transmit( BESTransmitter *transmitter,
-                                  BESDataHandlerInterface &dhi )
-{
-    if( d_response_object )
-    {
-	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+BESStatusResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
+    if (d_response_object) {
+        auto info = dynamic_cast<BESInfo *>(d_response_object);
+        if (!info)
+            throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -105,18 +92,9 @@ BESStatusResponseHandler::transmit( BESTransmitter *transmitter,
  * @param strm C++ i/o stream to dump the information to
  */
 void
-BESStatusResponseHandler::dump( ostream &strm ) const
-{
-    strm << BESIndent::LMarg << "BESStatusResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+BESStatusResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESStatusResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
-
-BESResponseHandler *
-BESStatusResponseHandler::StatusResponseBuilder( const string &name )
-{
-    return new BESStatusResponseHandler( name ) ;
-}
-
