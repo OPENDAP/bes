@@ -154,7 +154,7 @@ public:
     }
 
     void test_input_file_signature_hdf_file() {
-        CPPUNIT_ASSERT_NO_THROW(qc_input_file("../data/s3_data/AIRS_partial.h5"));
+        CPPUNIT_ASSERT_NO_THROW(qc_input_file(string(TEST_DATA_ROOT_DIR) + "s3_data/AIRS_partial.h5"));
     }
 
     void is_hdf5_fill_value_defined_test_bad_dataset_id() {
