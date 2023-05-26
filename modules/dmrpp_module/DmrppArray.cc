@@ -35,13 +35,8 @@
 
 #include <cstring>
 #include <cassert>
-#include <cerrno>
 #include <iomanip>
-
-#include <pthread.h>
 #include <cmath>
-
-#include <unistd.h>
 
 #include <libdap/D4Enum.h>
 #include <libdap/D4Attributes.h>
@@ -65,7 +60,6 @@
 
 // Used with BESDEBUG
 #define dmrpp_3 "dmrpp:3"
-#define dmrpp_4 "dmrpp:4"
 
 using namespace libdap;
 using namespace std;

@@ -7,7 +7,9 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I$(top_srcdir)/modules/ugrid_functions $(GF_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/modules/ugrid_functions \
+$(GF_CFLAGS) $(DAP_CFLAGS)
+
 LIBADD = $(GF_LIBS) $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 if CPPUNIT
