@@ -3194,7 +3194,7 @@ void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::st
 
 }
 
-bool FoDapCovJsonTransform::check_geo_dap2_grid(libdap::DDS *dds, const vector<string> &dap2_grid_map_names) {
+bool FoDapCovJsonTransform::check_geo_dap2_grid(libdap::DDS *dds, const vector<string> &dap2_grid_map_names) const {
 
     libdap::DDS::Vars_iter vi = dds->var_begin();
     libdap::DDS::Vars_iter ve = dds->var_end();
