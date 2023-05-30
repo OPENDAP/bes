@@ -12,7 +12,8 @@
 // Adapted from the File Out JSON module implemented by Nathan Potter
 // Author: Kent Yang <myang6@hdfgroup.org> 2022-10
 // Note from KY: Make the module correctly generate simple grid,point,
-//               point series and vertical profile coverage.
+//               point series and vertical profile coverage. The DAP2 
+//               grid also correctly maps to coverage.
 //               Also the original testsuite is completely replaced.
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -101,7 +102,7 @@ cerr<<"Axis value is "<<this->axes[i]->values << endl;
 #endif
 
     bool ret_value = false;
-    if(true == is_simple_cf_geographic) {
+    if(true == is_simple_cf_geographic || true == is_dap2_grid) {
         domainType = "Grid";   
         ret_value = true;
     }
@@ -793,9 +794,11 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
             // KENT: The below "if block" is wrong. If the units of lat/lon includes east, north, it may be geographic projection.
             // The ProjectedCRS may imply the 2-D lat/lon. If the variable name is the same as the axis name, and the lat/lon
             // are 1-D, this is a geographic system.
-            if((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
-                (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos)) {
-                coordRefType = "ProjectedCRS";
+            if (is_geo_dap2_grid == false) {
+                if ((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
+                   (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos)) {
+                    coordRefType = "ProjectedCRS";
+                }
             }
     
             *axisRetrieved = true;
@@ -1021,7 +1024,8 @@ string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin)
 FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
     _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType("Unknown"),
     coordRefType("GeographicCRS"), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false),
-    isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0),is_simple_cf_geographic(false)
+    isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0),
+    is_simple_cf_geographic(false),is_dap2_grid(false),is_geo_dap2_grid(false)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
@@ -1356,7 +1360,7 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
         }
         else {
             // 2-Dimensional Geographic Coordinate Reference System (lat/lon): http://www.opengis.net/def/crs/OGC/1.3/CRS84
-            if(!is_simple_cf_geographic && (dsg_type==UNSUPPORTED_DSG))
+            if(!is_simple_cf_geographic && (dsg_type==UNSUPPORTED_DSG) && (!is_geo_dap2_grid))
                *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
         }
     }
@@ -1559,12 +1563,63 @@ void FoDapCovJsonTransform::printRanges(ostream *strm, string indent)
 
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, bool testOverride)
 {
+
+    // We need to support DAP2 grid. If a DDS contains DAP2 grids, since only DAP2 grids can map to the coverage Grid object and 
+    // other objects are most likely not objects that can be mapped to the coverage, 
+    // the other objects need to be ignored; otherwise, wrong information will be generated.  
+
+    
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
+
+    vector<string> dap2_grid_map_names;
+    for (; vi != ve; vi++) {
+        if((*vi)->send_p()) {
+            libdap::BaseType *v = *vi;
+            libdap::Type type = v->type();
+            if (type == libdap::dods_grid_c) {
+                is_dap2_grid = true;
+                libdap::Grid *vgrid = dynamic_cast<libdap::Grid*>(v);
+                for (libdap::Grid::Map_iter i = vgrid->map_begin(); i != vgrid->map_end();  ++i)  {
+                    dap2_grid_map_names.emplace_back((*i)->name());
+#if 0
+cout <<"grid map name: "<<(*i)->name() <<endl;
+#endif
+                }
+                break;
+            }
+        }
+    }
+ 
+    if (is_dap2_grid)
+        is_geo_dap2_grid = check_geo_dap2_grid(dds,dap2_grid_map_names);
+
     // Sort the variables into two sets
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
 
-    libdap::DDS::Vars_iter vi = dds->var_begin();
-    libdap::DDS::Vars_iter ve = dds->var_end();
+    vi = dds->var_begin();
+    ve = dds->var_end();
+ 
+    // If we find this file contains DAP2 grids, ignore other variables.
+    if (is_dap2_grid == true) {
+
+        for(; vi != ve; vi++) {
+            if((*vi)->send_p()) {
+                libdap::BaseType *v = *vi;
+                libdap::Type type = v->type();
+                if (type == libdap::dods_grid_c) {
+                    if(v->is_constructor_type() || (v->is_vector_type() && v->var()->is_constructor_type())) {
+                        nodes.push_back(v);
+                    }
+                    else {
+                        leaves.push_back(v);
+                    }
+                }
+            }
+        }
+    }
+    else {
     for(; vi != ve; vi++) {
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
@@ -1588,6 +1643,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     if (is_simple_discrete == false && FoCovJsonRequestHandler::get_simple_geo()) 
         check_update_simple_geo(dds, sendData);
 
+    }
     // Read through the source DDS leaves and nodes, extract all axes and
     // parameter data, and store that data as Axis and Parameters
     transformNodeWorker(strm, leaves, nodes, indent + _indent_increment + _indent_increment, sendData);
@@ -1621,6 +1677,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
         break;
 
     case libdap::dods_grid_c:
+        is_dap2_grid = true;
         transform(strm, (libdap::Grid *) bt, indent, sendData);
         break;
 
@@ -2794,7 +2851,7 @@ bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z
                        if(non_xyzt_dim || axis_x_count >1 || axis_y_count >1 || axis_z_count >1 || axis_t_count >1) {
                           supported_var = false;
 #if 0
-//cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
+cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
 #endif
                           if (FoCovJsonRequestHandler::get_may_ignore_z_axis() == false) { 
                               if(d_a->name()!=axisVar_x.bound_name && d_a->name()!=axisVar_y.bound_name &&
@@ -2884,7 +2941,7 @@ cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
     }
     else {
 #if 0
-//cerr<<"coming to strict mode "<<endl;
+cerr<<"coming to strict mode "<<endl;
 #endif
         if(axis_var_z_count >1 || axis_var_t_count >1) 
             ret_value = false;
@@ -3139,5 +3196,107 @@ void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::st
             print_values= "\"bounds\": []";
         *strm << indent << print_values <<endl;
    }
+
+}
+
+bool FoDapCovJsonTransform::check_geo_dap2_grid(libdap::DDS *dds, const vector<string> &dap2_grid_map_names) {
+
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
+
+    bool has_lat = false;
+    bool has_lon = false;
+    bool ret_value = false;
+
+    for (; vi != ve; vi++) {
+
+        if ((*vi)->send_p()) {
+
+            libdap::BaseType *v = *vi;
+            libdap::Type type = v->type();
+
+            if (type == libdap::dods_array_c) {
+                
+                for (const auto &map_name:dap2_grid_map_names) {
+                    if (v->name() == map_name) {
+                        libdap::Array *d_a = dynamic_cast<libdap::Array *>(v);
+                        short lat_or_lon = check_cf_unit_attr(d_a,map_name);
+                        if (lat_or_lon == 1)
+                            has_lat = true;
+                        else if (lat_or_lon == 2)
+                            has_lon = true;
+                        break;
+                    }
+                }
+            }
+
+            if (has_lat && has_lon) {
+                ret_value = true;
+                break;
+            }
+        }
+    }
+    
+    return ret_value;
+
+}
+
+short FoDapCovJsonTransform::check_cf_unit_attr(libdap::Array *d_a, const string& map_name) {
+
+    short ret_value = 0;
+
+    // The map must be 1-D array.
+    if (d_a->dimensions() == 1) {
+
+        libdap::AttrTable &attrs = d_a->get_attr_table();
+        unsigned int num_attrs = attrs.get_size();
+
+        if (num_attrs) {
+
+            string lat_unit = "degrees_north";
+            string lon_unit = "degrees_east";
+
+            libdap::AttrTable::Attr_iter i = attrs.attr_begin();
+            libdap::AttrTable::Attr_iter e = attrs.attr_end();
+ 
+            for (; i != e; i++) {
+
+                string attr_name = attrs.get_name(i);
+#if 0
+//cerr<<"attr_name is "<<attr_name <<endl;
+#endif
+                unsigned int num_vals = attrs.get_attr_num(i);
+
+                if (num_vals == 1) {
+
+                    string units_name ="units";
+                    // Check if the attr_name is units. 
+                    bool is_attr_units = false;
+                    if ((attr_name.size() == units_name.size()) 
+                         && (attr_name.compare(units_name) == 0))
+                        is_attr_units = true;
+                    if (is_attr_units == false)
+                        if (attr_name.size() == (units_name.size()+1) &&
+                            attr_name[units_name.size()] == '\0' &&
+                            attr_name.compare(0,units_name.size(),units_name) ==0)
+                            is_attr_units = true;
+
+                    if (is_attr_units) {
+
+                        string val = attrs.get_attr(i,0);
+                        if (val.compare(0,lat_unit.size(),lat_unit) == 0) {
+                            ret_value = 1;
+                            break;
+                        }
+                        else if (val.compare(0,lon_unit.size(),lon_unit) == 0) {
+                            ret_value = 2;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ret_value;
 
 }

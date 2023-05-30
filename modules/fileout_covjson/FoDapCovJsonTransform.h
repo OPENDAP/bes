@@ -123,6 +123,8 @@ private:
     std::vector<std::string>par_vars;
 
     bool is_simple_cf_geographic;
+    bool is_dap2_grid;
+    bool is_geo_dap2_grid;
 
     // Discrete Sampling Geometries 
     DSGType dsg_type = UNSUPPORTED_DSG;
@@ -164,6 +166,9 @@ private:
     std::string cf_time_to_greg(long long time);
     void print_bound(std::ostream *strm, const std::vector<std::string> & t_bnd_val,const std::string & indent,bool is_t_axis) const;
     
+    // Check DAP2 CF units
+    bool check_geo_dap2_grid(libdap::DDS *dds, const vector<string> & dap2_grid_map_names);
+    short check_cf_unit_attr(libdap::Array *d_a, const string & dap2_grid_map_name);
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
      *    obtained any at all, can be used to convert to a CovJSON file. If x, y,
