@@ -54,19 +54,19 @@ class BESDataHandlerInterface;
 class FoDapCovJsonTransform: public BESObj {
 private:
     libdap::DDS *_dds;
-    std::string _returnAs;
-    std::string _indent_increment;
-    std::string atomicVals;
-    std::string currDataType;
-    std::string domainType;
-    std::string coordRefType;
-    bool xExists;
-    bool yExists;
-    bool zExists;
-    bool tExists;
-    bool isParam;
-    bool isAxis;
-    bool canConvertToCovJson;
+    std::string _returnAs = "";
+    std::string _indent_increment = "  ";
+    std::string atomicVals = "";
+    std::string currDataType = "";
+    std::string domainType = "Unknown";
+    std::string coordRefType = "GeographicCRS";
+    bool xExists = false;
+    bool yExists = false;
+    bool zExists = false;
+    bool tExists = false;
+    bool isParam = false;
+    bool isAxis = false;
+    bool canConvertToCovJson = false;
 
     struct Axis {
         std::string name;
@@ -85,14 +85,14 @@ private:
         std::string values;
     };
 
-    unsigned int axisCount;
+    unsigned int axisCount = 0;
     std::vector<Axis *> axes;
     std::string axis_t_units;
     std::string axis_z_units;
     std::string axis_z_direction;
     std::string axis_z_standardName;
     
-    unsigned int parameterCount;
+    unsigned int parameterCount = 0;
     std::vector<Parameter *> parameters;
     std::vector<int> shapeVals;
 
@@ -122,9 +122,9 @@ private:
     std::vector<std::string>bnd_dim_names;
     std::vector<std::string>par_vars;
 
-    bool is_simple_cf_geographic;
-    bool is_dap2_grid;
-    bool is_geo_dap2_grid;
+    bool is_simple_cf_geographic = false;
+    bool is_dap2_grid = false;
+    bool is_geo_dap2_grid = false;
 
     // Discrete Sampling Geometries 
     DSGType dsg_type = UNSUPPORTED_DSG;
@@ -168,7 +168,7 @@ private:
     
     // Check DAP2 CF units
     bool check_geo_dap2_grid(libdap::DDS *dds, const vector<string> & dap2_grid_map_names);
-    short check_cf_unit_attr(libdap::Array *d_a, const string & dap2_grid_map_name);
+    short check_cf_unit_attr(libdap::Array *d_a) const;
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
      *    obtained any at all, can be used to convert to a CovJSON file. If x, y,

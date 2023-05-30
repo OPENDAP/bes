@@ -794,12 +794,11 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
             // KENT: The below "if block" is wrong. If the units of lat/lon includes east, north, it may be geographic projection.
             // The ProjectedCRS may imply the 2-D lat/lon. If the variable name is the same as the axis name, and the lat/lon
             // are 1-D, this is a geographic system.
-            if (is_geo_dap2_grid == false) {
-                if ((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
-                   (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos)) {
+            if ((is_geo_dap2_grid == false) && 
+                ((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
+                   (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos))) 
                     coordRefType = "ProjectedCRS";
-                }
-            }
+                
     
             *axisRetrieved = true;
         }
@@ -1021,11 +1020,7 @@ string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin)
     return cleanTimeOrigin;
 }
 
-FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
-    _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType("Unknown"),
-    coordRefType("GeographicCRS"), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false),
-    isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0),
-    is_simple_cf_geographic(false),is_dap2_grid(false),is_geo_dap2_grid(false)
+FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) : _dds(dds)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
@@ -1579,7 +1574,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
             libdap::Type type = v->type();
             if (type == libdap::dods_grid_c) {
                 is_dap2_grid = true;
-                libdap::Grid *vgrid = dynamic_cast<libdap::Grid*>(v);
+                auto vgrid = dynamic_cast<libdap::Grid*>(v);
                 for (libdap::Grid::Map_iter i = vgrid->map_begin(); i != vgrid->map_end();  ++i)  {
                     dap2_grid_map_names.emplace_back((*i)->name());
 #if 0
@@ -3219,8 +3214,8 @@ bool FoDapCovJsonTransform::check_geo_dap2_grid(libdap::DDS *dds, const vector<s
                 
                 for (const auto &map_name:dap2_grid_map_names) {
                     if (v->name() == map_name) {
-                        libdap::Array *d_a = dynamic_cast<libdap::Array *>(v);
-                        short lat_or_lon = check_cf_unit_attr(d_a,map_name);
+                        auto d_a = dynamic_cast<libdap::Array *>(v);
+                        short lat_or_lon = check_cf_unit_attr(d_a);
                         if (lat_or_lon == 1)
                             has_lat = true;
                         else if (lat_or_lon == 2)
@@ -3241,7 +3236,7 @@ bool FoDapCovJsonTransform::check_geo_dap2_grid(libdap::DDS *dds, const vector<s
 
 }
 
-short FoDapCovJsonTransform::check_cf_unit_attr(libdap::Array *d_a, const string& map_name) {
+short FoDapCovJsonTransform::check_cf_unit_attr(libdap::Array *d_a) const {
 
     short ret_value = 0;
 
@@ -3275,23 +3270,22 @@ short FoDapCovJsonTransform::check_cf_unit_attr(libdap::Array *d_a, const string
                     if ((attr_name.size() == units_name.size()) 
                          && (attr_name.compare(units_name) == 0))
                         is_attr_units = true;
-                    if (is_attr_units == false)
-                        if (attr_name.size() == (units_name.size()+1) &&
-                            attr_name[units_name.size()] == '\0' &&
-                            attr_name.compare(0,units_name.size(),units_name) ==0)
-                            is_attr_units = true;
+                    if ((is_attr_units == false) && 
+                        (attr_name.size() == (units_name.size()+1) &&
+                         attr_name[units_name.size()] == '\0' &&
+                         attr_name.compare(0,units_name.size(),units_name) ==0))
+                        is_attr_units = true;
 
                     if (is_attr_units) {
 
                         string val = attrs.get_attr(i,0);
-                        if (val.compare(0,lat_unit.size(),lat_unit) == 0) {
+                        if (val.compare(0,lat_unit.size(),lat_unit) == 0) 
                             ret_value = 1;
-                            break;
-                        }
-                        else if (val.compare(0,lon_unit.size(),lon_unit) == 0) {
+                        else if (val.compare(0,lon_unit.size(),lon_unit) == 0) 
                             ret_value = 2;
+                        if (ret_value !=0)
                             break;
-                        }
+                        
                     }
                 }
             }
