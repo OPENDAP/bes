@@ -167,7 +167,7 @@ private:
     void print_bound(std::ostream *strm, const std::vector<std::string> & t_bnd_val,const std::string & indent,bool is_t_axis) const;
     
     // Check DAP2 CF units
-    bool check_geo_dap2_grid(libdap::DDS *dds, const vector<string> & dap2_grid_map_names);
+    bool check_geo_dap2_grid(libdap::DDS *dds, const vector<string> & dap2_grid_map_names) const;
     short check_cf_unit_attr(libdap::Array *d_a) const;
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
