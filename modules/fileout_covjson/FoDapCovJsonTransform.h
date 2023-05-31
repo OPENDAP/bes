@@ -54,10 +54,10 @@ class BESDataHandlerInterface;
 class FoDapCovJsonTransform: public BESObj {
 private:
     libdap::DDS *_dds;
-    std::string _returnAs = "";
+    std::string _returnAs;
     std::string _indent_increment = "  ";
-    std::string atomicVals = "";
-    std::string currDataType = "";
+    std::string atomicVals;
+    std::string currDataType;
     std::string domainType = "Unknown";
     std::string coordRefType = "GeographicCRS";
     bool xExists = false;
