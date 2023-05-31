@@ -1562,19 +1562,14 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     // We need to support DAP2 grid. If a DDS contains DAP2 grids, since only DAP2 grids can map to the coverage Grid object and 
     // other objects are most likely not objects that can be mapped to the coverage, 
     // the other objects need to be ignored; otherwise, wrong information will be generated.  
-
     
-    libdap::DDS::Vars_iter vi = dds->var_begin();
-    libdap::DDS::Vars_iter ve = dds->var_end();
-
     vector<string> dap2_grid_map_names;
-    for (; vi != ve; vi++) {
-        if((*vi)->send_p()) {
-            libdap::BaseType *v = *vi;
-            libdap::Type type = v->type();
+    for (const auto &var:dds->variables()) {
+        if(var->send_p()) {
+            libdap::Type type = var->type();
             if (type == libdap::dods_grid_c) {
                 is_dap2_grid = true;
-                auto vgrid = dynamic_cast<libdap::Grid*>(v);
+                auto vgrid = dynamic_cast<libdap::Grid*>(var);
                 for (libdap::Grid::Map_iter i = vgrid->map_begin(); i != vgrid->map_end();  ++i)  {
                     dap2_grid_map_names.emplace_back((*i)->name());
 #if 0
@@ -1593,9 +1588,11 @@ cout <<"grid map name: "<<(*i)->name() <<endl;
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
 
-    vi = dds->var_begin();
-    ve = dds->var_end();
- 
+
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
+
+
     // If we find this file contains DAP2 grids, ignore other variables.
     if (is_dap2_grid == true) {
 
