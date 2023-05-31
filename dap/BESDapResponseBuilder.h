@@ -165,6 +165,8 @@ public:
     // May need to improve. 5/13/20
     virtual libdap::DMR *intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
+    virtual libdap::DMR *process_dap4_dmr(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+
     virtual void dap4_process_ce_for_intern_data(libdap::DMR &dmr);
 
     virtual void send_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
