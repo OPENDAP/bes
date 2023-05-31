@@ -621,7 +621,7 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( CmrApiTest );
-#if 0
+#if 1
     // These tests now fail with an exception. Patched. jhrg 5/2/23
     CPPUNIT_TEST_EXCEPTION(get_provider_test, BESError);
     CPPUNIT_TEST_EXCEPTION(get_opendap_providers_test, BESError);

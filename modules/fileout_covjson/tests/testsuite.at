@@ -18,3 +18,6 @@ AT_BESCMD_RESPONSE_TEST([covjson/nc_point_d.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson/nc_point_series_d.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson/nc_point_scalar_d.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson/nc_single_profile_d.bescmd])
+#DAP2 grid
+AT_BESCMD_RESPONSE_TEST([covjson/nc_cf_1dll_simple_dap2grid_d.bescmd])
+AT_BESCMD_RESPONSE_TEST([covjson/nc_cf_1dll_extra_dap2grid_d.bescmd])
