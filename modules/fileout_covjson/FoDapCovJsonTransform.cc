@@ -53,6 +53,9 @@ using std::istringstream;
 #define prolog string("FoDapCovJsonTransform::").append(__func__).append("() - ")
 
 #include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
 #include <libdap/Structure.h>
 #include <libdap/Constructor.h>
 #include <libdap/Array.h>
@@ -1025,6 +1028,12 @@ FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) : _dds(dds)
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
 
+FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DMR *dmr) : _dmr(dmr)
+{
+    if (!_dmr) throw BESInternalError("File out COVJSON, null DMR passed to constructor", __FILE__, __LINE__);
+}
+
+
 void FoDapCovJsonTransform::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "FoDapCovJsonTransform::dump - (" << (void *) this << ")" << endl;
@@ -1038,6 +1047,11 @@ void FoDapCovJsonTransform::dump(ostream &strm) const
 void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData, bool testOverride)
 {
     transform(&ostrm, _dds, "", sendData, testOverride);
+}
+
+void FoDapCovJsonTransform::transform_dap4(ostream &ostrm, bool sendData, bool testOverride)
+{
+    transform(&ostrm, _dmr, "", sendData, testOverride);
 }
 
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrctr, string indent, bool sendData)
@@ -1648,6 +1662,75 @@ cout <<"grid map name: "<<(*i)->name() <<endl;
     printCoverageJSON(strm, indent, testOverride);
 }
 
+void FoDapCovJsonTransform::transform(ostream *strm, libdap::DMR *dmr, string indent, bool sendData, bool testOverride)
+{
+
+#if 0
+    // We need to support DAP2 grid. If a DDS contains DAP2 grids, since only DAP2 grids can map to the coverage Grid object and 
+    // other objects are most likely not objects that can be mapped to the coverage, 
+    // the other objects need to be ignored; otherwise, wrong information will be generated.  
+    
+    vector<string> dap2_grid_map_names;
+    for (const auto &var:dds->variables()) {
+        if(var->send_p()) {
+            libdap::Type type = var->type();
+            if (type == libdap::dods_grid_c) {
+                is_dap2_grid = true;
+                auto vgrid = dynamic_cast<libdap::Grid*>(var);
+                for (libdap::Grid::Map_iter i = vgrid->map_begin(); i != vgrid->map_end();  ++i)  {
+                    dap2_grid_map_names.emplace_back((*i)->name());
+                }
+                break;
+            }
+        }
+    }
+ 
+    if (is_dap2_grid)
+        is_geo_dap2_grid = check_geo_dap2_grid(dds,dap2_grid_map_names);
+#endif
+
+    // Now we only consider the variables under the groups.
+    libdap::D4Group *root_grp = dmr->root();
+
+    // Sort the variables into two sets
+    vector<libdap::BaseType *> leaves;
+    vector<libdap::BaseType *> nodes;
+
+    for (auto i = root_grp->var_begin(), e = root_->var_end(); i != e; ++i) {
+
+        if ((*i)->send_p()) {
+            libdap::BaseType *v = *i;
+            libdap::Type type = v->type();
+            if(type == libdap::dods_array_c) 
+                type = v->var()->type();
+            if(v->is_constructor_type() || (v->is_vector_type() && v->var()->is_constructor_type())) 
+                nodes.push_back(v);
+            else 
+                leaves.push_back(v);
+        }
+    }
+
+    // Check if CF discrete Sample Geometries
+    bool is_simple_discrete = check_update_simple_dsg(dds);
+   
+    // Check simple grid
+    if (is_simple_discrete == false && FoCovJsonRequestHandler::get_simple_geo()) 
+        check_update_simple_geo(dds, sendData);
+
+    }
+    // Read through the source DDS leaves and nodes, extract all axes and
+    // parameter data, and store that data as Axis and Parameters
+    transformNodeWorker(strm, leaves, nodes, indent + _indent_increment + _indent_increment, sendData);
+
+    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+    BESUtil::conditional_timeout_cancel();
+
+    // Print the Coverage data to stream as CoverageJSON
+    printCoverageJSON(strm, indent, testOverride);
+}
+
+
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, string indent, bool sendData)
 {
     switch(bt->type()) {
@@ -1661,6 +1744,11 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
     case libdap::dods_float64_c:
     case libdap::dods_str_c:
     case libdap::dods_url_c:
+    case libdap::dods_int8_c:
+    case libdap::dods_uint8_c:
+    case libdap::dods_int64_c:
+    case libdap::dods_uint64_c:
+ 
         transformAtomic(strm, bt, indent, sendData);
         break;
 
@@ -1681,10 +1769,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
         transform(strm, (libdap::Array *) bt, indent, sendData);
         break;
 
-    case libdap::dods_int8_c:
-    case libdap::dods_uint8_c:
-    case libdap::dods_int64_c:
-    case libdap::dods_uint64_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
         string s = (string) "File out COVJSON, DAP4 types not yet supported.";

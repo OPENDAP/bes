@@ -41,6 +41,8 @@ enum DSGType {
 namespace libdap {
 class BaseType;
 class DDS;
+class DMR;
+class D4Group;
 class Array;
 }
 
@@ -54,6 +56,7 @@ class BESDataHandlerInterface;
 class FoDapCovJsonTransform: public BESObj {
 private:
     libdap::DDS *_dds;
+    libdap::DMR *_dmr;
     std::string _returnAs;
     std::string _indent_increment = "  ";
     std::string atomicVals;
@@ -242,6 +245,8 @@ private:
      *    function to determine if the source DDS can be converted to CovJSON
      */
     void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, bool testOverride);
+
+    void transform(std::ostream *strm, libdap::DMR *dmr, std::string indent, bool sendData, bool testOverride);
     
     /**
      * @brief  Write the CovJSON representation of the passed BaseType instance. If the
@@ -583,6 +588,7 @@ public:
      *    be converted to CoverageJSON (for testing purposes) false: run normally
      */
     virtual void transform(std::ostream &ostrm, bool sendData, bool testOverride);
+    virtual void transform_dap4(std::ostream &ostrm, bool sendData, bool testOverride);
 
     /**
      * @brief Get the CovJSON encoding for a DDS
@@ -602,6 +608,7 @@ public:
      * @throw BESInternalError if the DDS* is null or if localfile is empty.
      */
     FoDapCovJsonTransform(libdap::DDS *dds);
+    FoDapCovJsonTransform(libdap::DMR *dmr);
 
     /**
      * @brief Destructs the FoDapCovJsonTransform object and frees all memory.
