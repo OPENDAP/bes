@@ -156,14 +156,16 @@ private:
     bool check_update_simple_dsg(libdap::DDS *);
 
     void check_update_simple_geo(libdap::DDS *dds,bool sendData);
+    void check_update_simple_geo_dap4(libdap::D4Group *d4g,bool sendData);
     bool check_add_axis(libdap::Array *d_a, const std::string &, const std::vector<std::string> &, axisVar &, bool is_t_axis);
     void check_bounds(libdap::DDS *dds, std::map<std::string,std::string>& vname_b_name);
     void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<float>& av_bnd_val,std::string &bnd_dim_name,bool);
     void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<double>& av_bnd_val,std::string &bnd_dim_name,bool);
     libdap::Array *  obtain_bound_values_worker(libdap::DDS *dds, const std::string & bound_name, std::string &bound_dim_name);
 
-    bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
 
+    bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
+    bool obtain_valid_vars_dap4(libdap::D4Group *d4g, short axis_var_z_count, short axis_var_t_count);
 
     // Convert CF time to gregorian calendar.
     std::string cf_time_to_greg(long long time);
