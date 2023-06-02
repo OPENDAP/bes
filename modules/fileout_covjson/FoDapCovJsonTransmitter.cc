@@ -323,9 +323,6 @@ void FoDapCovJsonTransmitter::send_dap4metadata(BESResponseObject *obj, BESDataH
         throw BESDapError("Failed to transform data to COVJSON: " + e.get_error_message(), false, e.get_error_code(),
             __FILE__, __LINE__);
     }
-    catch (BESError &e) {
-        throw;
-    }
     catch (...) {
         throw BESInternalError("Failed to transform to COVJSON: Unknown exception caught", __FILE__, __LINE__);
     }
