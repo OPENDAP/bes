@@ -326,8 +326,7 @@ OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
 dnl AC_CHECK_HEADER (header-file, [action-if-found], [action-if-not-found], [includes])
-AC_CHECK_HEADER(openssl/sha.h,
-    [],
+AC_CHECK_HEADER(openssl/sha.h, ,
     [AC_SUBST([OPENSSL_INC])
     AC_SUBST([OPENSSL_LDFLAGS])
     ])
