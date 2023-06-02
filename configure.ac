@@ -325,7 +325,9 @@ AC_SUBST([OPENSSL_LIBS])
 OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
-AC_CHECK_HEADER([openssl/sha.h], [],
+AC_CHECK_HEADER([openssl/sha.h], [], [openssl_found=false])
+
+AS_IF([test ! $openssl_found],
     [
     AC_SUBST([OPENSSL_INC])
     AC_SUBST([OPENSSL_LDFLAGS])
