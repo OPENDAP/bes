@@ -156,7 +156,7 @@ private:
     bool check_update_simple_dsg(libdap::DDS *);
 
     void check_update_simple_geo(libdap::DDS *dds,bool sendData);
-    void check_update_simple_geo_dap4(libdap::D4Group *d4g,bool sendData);
+    void check_update_simple_geo_dap4(libdap::D4Group *d4g);
     bool check_add_axis(libdap::Array *d_a, const std::string &, const std::vector<std::string> &, axisVar &, bool is_t_axis);
     void check_bounds(libdap::DDS *dds, std::map<std::string,std::string>& vname_b_name);
     void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<float>& av_bnd_val,std::string &bnd_dim_name,bool);
@@ -248,7 +248,7 @@ private:
      */
     void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, bool testOverride);
 
-    void transform(std::ostream *strm, libdap::DMR *dmr, std::string indent, bool sendData, bool testOverride);
+    void transform(std::ostream *strm, libdap::DMR *dmr, const std::string& indent, bool sendData, bool testOverride);
     
     /**
      * @brief  Write the CovJSON representation of the passed BaseType instance. If the

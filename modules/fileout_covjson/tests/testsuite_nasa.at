@@ -7,6 +7,10 @@ m4_include(../../common/handler_tests_macros.m4)
 # The data size is huge, so we only test the metadata.
 AT_BESCMD_RESPONSE_TEST([covjson_nasa/AIRS_md.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson_nasa/GLDAS_md.bescmd])
+AT_BESCMD_RESPONSE_TEST([covjson_nasa/TERRA_MODIS_md.bescmd])
+
+#DAP4 simple grid
+AT_BESCMD_BESCONF_RESPONSE_TEST([covjson_nasa/TERRA_MODIS_dap4_md.bescmd],[bes.default.conf])
 #AT_BESCMD_RESPONSE_TEST([covjson_nasa/AIRS_d.bescmd])
 #AT_BESCMD_RESPONSE_TEST([covjson_nasa/GLDAS_d.bescmd])
 

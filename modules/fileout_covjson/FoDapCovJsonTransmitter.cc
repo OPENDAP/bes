@@ -272,9 +272,6 @@ void FoDapCovJsonTransmitter::send_dap4data(BESResponseObject *obj, BESDataHandl
     catch (Error &e) {
         throw BESDapError("Failed to read dap4 data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
-    catch (BESError &e) {
-        throw;
-    }
     catch (std::exception &e) {
         throw BESInternalError("Failed to read dap4 data: STL Error: " + string(e.what()), __FILE__, __LINE__);
     }

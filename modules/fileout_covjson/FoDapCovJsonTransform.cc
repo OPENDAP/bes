@@ -1662,7 +1662,7 @@ cout <<"grid map name: "<<(*i)->name() <<endl;
     printCoverageJSON(strm, indent, testOverride);
 }
 
-void FoDapCovJsonTransform::transform(ostream *strm, libdap::DMR *dmr, string indent, bool sendData, bool testOverride)
+void FoDapCovJsonTransform::transform(ostream *strm, libdap::DMR *dmr, const string& indent, bool sendData, bool testOverride)
 {
 
 #if 0
@@ -1700,9 +1700,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DMR *dmr, string in
 
         if ((*i)->send_p()) {
             libdap::BaseType *v = *i;
-            libdap::Type type = v->type();
-            if(type == libdap::dods_array_c) 
-                type = v->var()->type();
             if(v->is_constructor_type() || (v->is_vector_type() && v->var()->is_constructor_type())) 
                 nodes.push_back(v);
             else 
@@ -1723,7 +1720,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DMR *dmr, string in
 
     // We currently only consider simple grids.
     if (FoCovJsonRequestHandler::get_simple_geo()) 
-        check_update_simple_geo_dap4(root_grp, sendData);
+        check_update_simple_geo_dap4(root_grp);
 
 
     // Read through the source DDS leaves and nodes, extract all axes and
@@ -2645,7 +2642,7 @@ cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
     }
 }
 
-void FoDapCovJsonTransform::check_update_simple_geo_dap4(libdap::D4Group *d4g,bool sendData) {
+void FoDapCovJsonTransform::check_update_simple_geo_dap4(libdap::D4Group *d4g) {
 
  
     // First search CF units from 1-D array. 
@@ -2671,7 +2668,7 @@ void FoDapCovJsonTransform::check_update_simple_geo_dap4(libdap::D4Group *d4g,bo
             // Check if this qualifies a simple geographic grid coverage
             // TODO: here we still use dap2's way to find dimensions. This will be changed later.
             if(type == libdap::dods_array_c) {
-                libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
+                auto d_a = dynamic_cast<libdap::Array *>(v);
                 int d_ndims = d_a->dimensions();
 #if 0
 //cerr<<"d_ndims is "<< d_ndims <<endl;
@@ -2691,13 +2688,13 @@ void FoDapCovJsonTransform::check_update_simple_geo_dap4(libdap::D4Group *d4g,bo
 
                             // Check if the attr_name is units. 
                             bool is_attr_units = false;
-                            if((attr_name.size() == units_name.size()) 
+                            if ((attr_name.size() == units_name.size())
                                && (attr_name.compare(units_name) == 0))
                                 is_attr_units = true;
-                            if(is_attr_units == false)
-                                if(attr_name.size() == (units_name.size()+1) &&
+                            if (is_attr_units == false &&
+                                (attr_name.size() == (units_name.size()+1) &&
                                    attr_name[units_name.size()] == '\0' &&
-                                   attr_name.compare(0,units_name.size(),units_name) ==0)
+                                   attr_name.compare(0,units_name.size(),units_name) ==0))
                                     is_attr_units = true;
 
                             if (is_attr_units) {
@@ -2707,17 +2704,17 @@ void FoDapCovJsonTransform::check_update_simple_geo_dap4(libdap::D4Group *d4g,bo
                                 // Here we need to check if there are 2 latitudes or longitudes. 
                                 // If we find this issue, we should mark it. The coverage json won't support this case.
                                 // longitude axis x
-                                unit_candidates.push_back("degrees_east");
+                                unit_candidates.emplace_back("degrees_east");
                                 has_axis_var_x = check_add_axis(d_a,val,unit_candidates,axisVar_x,false);
                                 if (true == has_axis_var_x) {
                                     axis_var_x_count++;
-                                    if (axis_var_x_count ==2)
+                                    if (axis_var_x_count == 2)
                                         break;
                                 }
                                 unit_candidates.clear();
 
                                 // latitude axis y
-                                unit_candidates.push_back("degrees_north");
+                                unit_candidates.emplace_back("degrees_north");
                                 has_axis_var_y = check_add_axis(d_a,val,unit_candidates,axisVar_y,false);
                                 if (true == has_axis_var_y) {
                                     axis_var_y_count++;
@@ -2727,11 +2724,11 @@ void FoDapCovJsonTransform::check_update_simple_geo_dap4(libdap::D4Group *d4g,bo
                                 unit_candidates.clear();
 
                                 // height/pressure
-                                unit_candidates.push_back("hpa");
-                                unit_candidates.push_back("hPa");
-                                unit_candidates.push_back("meter");
-                                unit_candidates.push_back("m");
-                                unit_candidates.push_back("km");
+                                unit_candidates.emplace_back("hpa");
+                                unit_candidates.emplace_back("hPa");
+                                unit_candidates.emplace_back("meter");
+                                unit_candidates.emplace_back("m");
+                                unit_candidates.emplace_back("km");
                                 has_axis_var_z = check_add_axis(d_a,val,unit_candidates,axisVar_z,false);
                                 if (true == has_axis_var_z) {
                                     axis_var_z_count++;
@@ -2745,10 +2742,10 @@ for(int i = 0; i <unit_candidates.size(); i++)
 #endif
 
                                 // time: CF units only
-                                unit_candidates.push_back("seconds since ");
-                                unit_candidates.push_back("minutes since ");
-                                unit_candidates.push_back("hours since ");
-                                unit_candidates.push_back("days since ");
+                                unit_candidates.emplace_back("seconds since ");
+                                unit_candidates.emplace_back("minutes since ");
+                                unit_candidates.emplace_back("hours since ");
+                                unit_candidates.emplace_back("days since ");
 #if 0
 for(int i = 0; i <unit_candidates.size(); i++)
 cerr<<"unit_candidates[i] again is "<<unit_candidates[i] <<endl;
@@ -3124,14 +3121,14 @@ cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
                     
                     if(supported_var) {
                         // save the var names to the vars that hold (x,y),(x,y,z),(x,y,t),(x,y,z,t)
-                        if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 0)
-                            temp_x_y_vars.push_back(d_a->name());
-                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 0)
-                            temp_x_y_z_vars.push_back(d_a->name());
-                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 1)
-                            temp_x_y_t_vars.push_back(d_a->name());
-                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 1)
-                            temp_x_y_z_t_vars.push_back(d_a->name());
+                        if(axis_x_count == 1 && axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 0)
+                            temp_x_y_vars.emplace_back(d_a->name());
+                        else if(axis_x_count == 1 && axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 0)
+                            temp_x_y_z_vars.emplace_back(d_a->name());
+                        else if(axis_x_count == 1 && axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 1)
+                            temp_x_y_t_vars.emplace_back(d_a->name());
+                        else if(axis_x_count == 1 && axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 1)
+                            temp_x_y_z_t_vars.emplace_back(d_a->name());
                     }
                     else if(ret_value == false) 
                         break;
@@ -3157,15 +3154,15 @@ cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
     if(axis_var_z_count <=1 && axis_var_t_count <=1) {
 
         for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-            par_vars.push_back(temp_x_y_vars[i]);
+            par_vars.emplace_back(temp_x_y_vars[i]);
         for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
-            par_vars.push_back(temp_x_y_t_vars[i]);
+            par_vars.emplace_back(temp_x_y_t_vars[i]);
  
         if (temp_x_y_vars.empty())  {
             for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
-                par_vars.push_back(temp_x_y_z_vars[i]);
+                par_vars.emplace_back(temp_x_y_z_vars[i]);
             for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
-                par_vars.push_back(temp_x_y_z_t_vars[i]);
+                par_vars.emplace_back(temp_x_y_z_t_vars[i]);
             
         }
         else {
@@ -3181,22 +3178,22 @@ cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
     else if (axis_var_z_count >1 && axis_var_t_count <=1) {
         //Cover all variables that have (x,y) or (x,y,t) 
         for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-            par_vars.push_back(temp_x_y_vars[i]);
+            par_vars.emplace_back(temp_x_y_vars[i]);
         for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
-            par_vars.push_back(temp_x_y_t_vars[i]);
+            par_vars.emplace_back(temp_x_y_t_vars[i]);
     }
     else if (axis_var_z_count <=1 && axis_var_t_count >1) {
         //Cover all variables that have (x,y) or (x,y,z) 
         for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-            par_vars.push_back(temp_x_y_vars[i]);
+            par_vars.emplace_back(temp_x_y_vars[i]);
         for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
-            par_vars.push_back(temp_x_y_z_vars[i]);
+            par_vars.emplace_back(temp_x_y_z_vars[i]);
     }
     else {
         // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
         // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.
         for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-            par_vars.push_back(temp_x_y_vars[i]);
+            par_vars.emplace_back(temp_x_y_vars[i]);
     }
     }
     else {
@@ -3208,13 +3205,13 @@ cerr<<"coming to strict mode "<<endl;
         else {
             //Cover all variables that have (x,y) or (x,y,z) or (x,y,t) or (x,y,z,t)
             for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-                par_vars.push_back(temp_x_y_vars[i]);
+                par_vars.emplace_back(temp_x_y_vars[i]);
             for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
-                par_vars.push_back(temp_x_y_z_vars[i]);
+                par_vars.emplace_back(temp_x_y_z_vars[i]);
             for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
-                par_vars.push_back(temp_x_y_t_vars[i]);
+                par_vars.emplace_back(temp_x_y_t_vars[i]);
             for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
-                par_vars.push_back(temp_x_y_z_t_vars[i]);
+                par_vars.emplace_back(temp_x_y_z_t_vars[i]);
         }
     }
 
@@ -3253,7 +3250,7 @@ bool FoDapCovJsonTransform::obtain_valid_vars_dap4(libdap::D4Group *d4g, short a
 
             if (type == libdap::dods_array_c) {
 
-                libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
+                auto d_a = dynamic_cast<libdap::Array *>(v);
                 int d_ndims = d_a->dimensions();
 
                 if(d_ndims >=2) {
@@ -3304,14 +3301,14 @@ cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
                     
                     if(supported_var) {
                         // save the var names to the vars that hold (x,y),(x,y,z),(x,y,t),(x,y,z,t)
-                        if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 0)
-                            temp_x_y_vars.push_back(d_a->name());
-                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 0)
-                            temp_x_y_z_vars.push_back(d_a->name());
-                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 1)
-                            temp_x_y_t_vars.push_back(d_a->name());
-                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 1)
-                            temp_x_y_z_t_vars.push_back(d_a->name());
+                        if(axis_x_count == 1 && axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 0)
+                            temp_x_y_vars.emplace_back(d_a->name());
+                        else if(axis_x_count == 1 && axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 0)
+                            temp_x_y_z_vars.emplace_back(d_a->name());
+                        else if(axis_x_count == 1 && axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 1)
+                            temp_x_y_t_vars.emplace_back(d_a->name());
+                        else if(axis_x_count == 1 && axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 1)
+                            temp_x_y_z_t_vars.emplace_back(d_a->name());
                     }
                     else if(ret_value == false) 
                         break;
@@ -3333,19 +3330,19 @@ cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
 #endif
 
     // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
-    // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.
+    // If having vars that only holds x,y; these vars are only vars that will be in the final output.
     if(axis_var_z_count <=1 && axis_var_t_count <=1) {
 
-        for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-            par_vars.push_back(temp_x_y_vars[i]);
-        for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
-            par_vars.push_back(temp_x_y_t_vars[i]);
+        for (const auto &txy_var:temp_x_y_vars)
+            par_vars.emplace_back(txy_var);
+        for (const auto &txyt_var:temp_x_y_t_vars)
+            par_vars.emplace_back(txyt_var);
  
         if (temp_x_y_vars.empty())  {
-            for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
-                par_vars.push_back(temp_x_y_z_vars[i]);
-            for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
-                par_vars.push_back(temp_x_y_z_t_vars[i]);
+            for (const auto &txyz_var:temp_x_y_z_vars)
+                par_vars.emplace_back(txyz_var);
+            for (const auto &txyzt_var:temp_x_y_z_t_vars)
+                par_vars.emplace_back(txyzt_var);
             
         }
         else {
@@ -3360,23 +3357,23 @@ cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
     }
     else if (axis_var_z_count >1 && axis_var_t_count <=1) {
         //Cover all variables that have (x,y) or (x,y,t) 
-        for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-            par_vars.push_back(temp_x_y_vars[i]);
-        for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
-            par_vars.push_back(temp_x_y_t_vars[i]);
+        for (const auto &txy_var:temp_x_y_vars)
+            par_vars.emplace_back(txy_var);
+        for (const auto &txyt_var:temp_x_y_t_vars)
+            par_vars.emplace_back(txyt_var);
     }
     else if (axis_var_z_count <=1 && axis_var_t_count >1) {
         //Cover all variables that have (x,y) or (x,y,z) 
-        for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-            par_vars.push_back(temp_x_y_vars[i]);
-        for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
-            par_vars.push_back(temp_x_y_z_vars[i]);
+        for (const auto &txy_var:temp_x_y_vars)
+            par_vars.emplace_back(txy_var);
+        for (const auto &txyz_var:temp_x_y_z_vars)
+            par_vars.emplace_back(txyz_var);
     }
     else {
         // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
         // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.
-        for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-            par_vars.push_back(temp_x_y_vars[i]);
+        for (const auto &txy_var:temp_x_y_vars)
+            par_vars.emplace_back(txy_var);
     }
     }
     else {
@@ -3387,14 +3384,14 @@ cerr<<"coming to strict mode "<<endl;
             ret_value = false;
         else {
             //Cover all variables that have (x,y) or (x,y,z) or (x,y,t) or (x,y,z,t)
-            for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
-                par_vars.push_back(temp_x_y_vars[i]);
-            for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
-                par_vars.push_back(temp_x_y_z_vars[i]);
-            for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
-                par_vars.push_back(temp_x_y_t_vars[i]);
-            for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
-                par_vars.push_back(temp_x_y_z_t_vars[i]);
+            for (const auto &txy_var:temp_x_y_vars)
+                par_vars.emplace_back(txy_var);
+            for (const auto &txyz_var:temp_x_y_z_vars)
+                par_vars.emplace_back(txyz_var);
+            for (const auto &txyt_var:temp_x_y_t_vars)
+                par_vars.emplace_back(txyt_var);
+            for (const auto &txyzt_var:temp_x_y_z_t_vars)
+                par_vars.emplace_back(txyzt_var);
         }
     }
 
@@ -3405,7 +3402,7 @@ for(unsigned i = 0; i <par_vars.size(); i++)
 #endif
 
     
-    if(par_vars.size() == 0)
+    if (par_vars.empty() == true)
         ret_value = false;
 
     }

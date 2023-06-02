@@ -27,8 +27,8 @@ BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF)(\.bz2|\.gz|\.Z)?$;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
-BES.FollowSymLinks=No
-BES.Catalog.catalog.FollowSymLinks=No
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
 
 BES.ServerPort=10002
 
