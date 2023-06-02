@@ -23,8 +23,8 @@ EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_
 DISTCLEANFILES =  atconfig
 
 # Build the bes.conf used for testing so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using
-# configure's value for the parameter when running the distcheck target.
+# @abs_top_srcdir@ does not contain '../'. This happens when using the
+# configure value for the parameter when running the distcheck target.
 
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
@@ -36,22 +36,44 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
+TESTSUITE_S3 = $(srcdir)/testsuite_s3
 
 # This target starts the mock s3 service, runs the tests, and then stops the service.
 # Note that once the service is started, the code waits for it to start to respond.
 # jhrg 5/10/23
-check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) remote_resource_tester bes.conf
+check-local: check-local-s3 atconfig atlocal $(TESTSUITE) remote_resource_tester bes.conf
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+
+
+# This target starts the mock s3 service, runs the tests, and then stops the service.
+# It requires python 3.9 or greater. jhrg 6/2/23
+if HAVE_PYTHON_3_9
+
+check-local-s3: atconfig atlocal $(TESTSUITE_S3) remote_resource_tester bes.conf
 	python3 $(srcdir)/mock-s3/main.py >/dev/null 2>&1 &
 	while ! curl -s http://localhost:8000/200/1/init >/dev/null; do sleep 1; done
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS)
 	curl -s http://localhost:8000/exit >/dev/null
+
+else
+
+check-local-s3:
+	@echo "Skipping S3 tests because Python is not available"
+
+endif
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
+	-curl -s http://localhost:8000/exit >/dev/null
+	-rm remote_resource_tester
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+$(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.

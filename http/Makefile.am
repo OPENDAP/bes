@@ -5,14 +5,14 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
+AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
-OPENSSL_LIBS=-lcrypto
-OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+# OPENSSL_LIBS=-lcrypto
+# OPENSSL_INC=-I/usr/local/opt/openssl/include
+# OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
-AM_CPPFLAGS += $(OPENSSL_INC) -I$(top_srcdir)
+# AM_CPPFLAGS +=  -I$(top_srcdir)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER

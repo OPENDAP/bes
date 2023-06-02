@@ -224,7 +224,13 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 dnl AC_PROG_LEX
 
-AM_PATH_PYTHON
+PYTHON=python3
+AM_PATH_PYTHON()
+python_major_version=$(echo $PYTHON_VERSION | sed 's@\([[0-9]]*\)\.\([[0-9]]*\)@\1@g')
+python_minor_version=$(echo $PYTHON_VERSION | sed 's@\([[0-9]]*\)\.\([[0-9]]*\)@\2@g')
+AC_MSG_CHECKING([Python version 3.9 or greater])
+AM_CONDITIONAL([HAVE_PYTHON_3_9], [test $python_major_version -ge  3 -a $python_minor_version -ge 9])
+AM_COND_IF([HAVE_PYTHON_3_9], [AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
 dnl Here we test for both C++11 and 14, but our code nominally requires 14.
 dnl We can use the C++11 test and CXX_STD_FLAG to build with 11 if we add a
@@ -311,6 +317,22 @@ AC_FUNC_MKTIME
 AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
+
+OPENSSL_LIBS=-lcrypto
+
+AC_SUBST([OPENSSL_LIBS])
+
+OPENSSL_INC=-I/usr/local/opt/openssl/include
+OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+
+dnl AC_CHECK_HEADER (header-file, [action-if-found], [action-if-not-found], [includes])
+AC_CHECK_HEADER(openssl/sha.h,
+    [],
+    [AC_SUBST([OPENSSL_INC])
+    AC_SUBST([OPENSSL_LDFLAGS])
+    ])
+
+
 
 BES_OLD_LIBS=$LIBS
 dnl z and bz2 library?
@@ -464,8 +486,8 @@ dnl link with .libs/libdap_module.a instead if that's easier.
 BES_DAP_LIB_LDFLAGS="-L\$(top_builddir)/dap -static -ldap_module -dynamic"
 AC_SUBST(BES_DAP_LIB_LDFLAGS)
 
-BES_EXTRA_LIBS="$LIBS $openssl_libs"
-AC_SUBST(BES_EXTRA_LIBS)
+dnl jhrg 6/2/23 BES_EXTRA_LIBS="$LIBS $openssl_libs"
+dnl AC_SUBST(BES_EXTRA_LIBS)
 BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
 AC_SUBST(BES_HTTP_LIB)
 
