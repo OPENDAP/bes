@@ -1665,30 +1665,6 @@ cout <<"grid map name: "<<(*i)->name() <<endl;
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::DMR *dmr, const string& indent, bool sendData, bool testOverride)
 {
 
-#if 0
-    // We need to support DAP2 grid. If a DDS contains DAP2 grids, since only DAP2 grids can map to the coverage Grid object and 
-    // other objects are most likely not objects that can be mapped to the coverage, 
-    // the other objects need to be ignored; otherwise, wrong information will be generated.  
-    
-    vector<string> dap2_grid_map_names;
-    for (const auto &var:dds->variables()) {
-        if(var->send_p()) {
-            libdap::Type type = var->type();
-            if (type == libdap::dods_grid_c) {
-                is_dap2_grid = true;
-                auto vgrid = dynamic_cast<libdap::Grid*>(var);
-                for (libdap::Grid::Map_iter i = vgrid->map_begin(); i != vgrid->map_end();  ++i)  {
-                    dap2_grid_map_names.emplace_back((*i)->name());
-                }
-                break;
-            }
-        }
-    }
- 
-    if (is_dap2_grid)
-        is_geo_dap2_grid = check_geo_dap2_grid(dds,dap2_grid_map_names);
-#endif
-
     // Now we only consider the variables under the groups.
     libdap::D4Group *root_grp = dmr->root();
 

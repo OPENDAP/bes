@@ -609,8 +609,8 @@ public:
      * 
      * @throw BESInternalError if the DDS* is null or if localfile is empty.
      */
-    FoDapCovJsonTransform(libdap::DDS *dds);
-    FoDapCovJsonTransform(libdap::DMR *dmr);
+    explicit FoDapCovJsonTransform(libdap::DDS *dds);
+    explicit FoDapCovJsonTransform(libdap::DMR *dmr);
 
     /**
      * @brief Destructs the FoDapCovJsonTransform object and frees all memory.
