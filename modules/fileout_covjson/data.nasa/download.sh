@@ -18,4 +18,4 @@ fi
 ### Grid
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/GLDAS_NOAH025_3H.A20210101.0000.021.nc4.h5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2020.01.01.L3.RetStd_IR031.v7.0.4.0.G20336214947.hdf
-
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/TERRA_MODIS.20170109_20170116.L3m.8D.NSST.sst.4km.h5
