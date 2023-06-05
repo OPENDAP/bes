@@ -614,5 +614,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CmrApiTest);
 
 int main(int argc, char*argv[])
 {
-    return bes_run_tests<cmr::CmrApiTest>(argc, argv, "cerr,cmr") ? EXIT_SUCCESS : EXIT_FAILURE
+    return bes_run_tests<cmr::CmrApiTest>(argc, argv, "cerr,cmr") ? EXIT_SUCCESS : EXIT_FAILURE;
 }
