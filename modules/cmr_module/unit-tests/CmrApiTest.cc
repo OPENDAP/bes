@@ -22,8 +22,6 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <memory>
-#include <cstdio>
-#include <cstring>
 #include <iostream>
 
 #include <cppunit/TextTestRunner.h>
@@ -41,28 +39,30 @@
 #include "test_config.h"
 
 #include "CmrApi.h"
-#include "CmrNames.h"
 #include "CmrCatalog.h"
 #include "CmrInternalError.h"
 #include "JsonUtils.h"
 
-#include "Provider.h"
-#include "Collection.h"
+#include "common/run_tests_cppunit.h"
 
 using namespace std;
 
+#if 0
 static bool debug = false;
 static bool debug2 = false;
 static bool bes_debug = false;
 
 #define DBG(x) do { if (debug) x; } while(false)
 #define DBG2(x) do { if (debug2) x; } while(false)
+#endif
 #define prolog std::string("CmrApiTest::").append(__func__).append("() - ")
 
 namespace cmr {
 
 class CmrApiTest: public CppUnit::TestFixture {
 private:
+
+#if 0
 
     void show_file(const string &filename)
     {
@@ -78,6 +78,8 @@ private:
             cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
         }
     }
+
+#endif
 
 public:
     // Called once before everything gets tested
@@ -97,10 +99,12 @@ public:
         DBG2(cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl);
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
+#if 0
         if (bes_debug) {
             BESDebug::SetUp("cerr,cmr");
             show_file(bes_conf);
         }
+#endif
 
         DBG2(cerr << "setUp() - END" << endl);
     }
@@ -610,9 +614,11 @@ public:
 
         cmr.get_opendap_collections(provider_id, collections);
 
-        cerr << prolog << "Got " << collections.size() << " Collections" << endl;
-        for (auto &collection: collections){
-            cerr << collection.second->to_string() << endl;
+        DBG(cerr << prolog << "Got " << collections.size() << " Collections" << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should get at least one collection", !collections.empty());
+
+        if (debug2) {
+            for (auto &collection: collections) cerr << collection.second->to_string() << endl;
         }
     }
 
@@ -646,6 +652,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CmrApiTest);
 
 int main(int argc, char*argv[])
 {
+    return bes_run_tests<cmr::CmrApiTest>(argc, argv, "cerr,cmr");
+#if 0
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
@@ -685,4 +693,5 @@ int main(int argc, char*argv[])
     }
 
     return wasSuccessful ? 0 : 1;
+#endif
 }
