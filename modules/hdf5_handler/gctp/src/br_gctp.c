@@ -3,7 +3,7 @@
 #ifdef unix
 /*  Fortran bridge routine for the UNIX */
 
-/* Added missin 'outdatum' param. 6/5/23 */
+/* Added missin 'outdatum' param and fixed incorrect return type. 6/5/23 */
 int gctp_(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,
                outcoor, outsys,outzone,outparm,outunit,outdatum,fn27,fn83,iflg)
 
@@ -28,6 +28,7 @@ char *fn83;
 long *iflg;
 
 {
+  /* fixed errant call to gctp. 6/5/23 */
 return gctp(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,
             outcoor, outsys,outzone,outparm,outunit,outdatum,fn27,fn83,iflg);
 }
