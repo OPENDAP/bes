@@ -61,6 +61,7 @@ public:
 
     // Called before each test
     void setUp() override {
+        DBG(cerr << endl);
         DBG2(cerr << "setUp() - BEGIN" << endl);
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         DBG2(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
@@ -613,5 +614,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CmrApiTest);
 
 int main(int argc, char*argv[])
 {
-    return bes_run_tests<cmr::CmrApiTest>(argc, argv, "cerr,cmr");
+    return bes_run_tests<cmr::CmrApiTest>(argc, argv, "cerr,cmr") ? EXIT_SUCCESS : EXIT_FAILURE
 }
