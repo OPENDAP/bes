@@ -64,7 +64,7 @@ namespace cmr {
 class CmrApiTest: public CppUnit::TestFixture {
 private:
 
-    void show_file(string filename)
+    void show_file(const string &filename)
     {
         ifstream t(filename.c_str());
 
@@ -88,7 +88,6 @@ public:
 
     // Called before each test
     void setUp() override {
-        DBG(cerr << endl);
         DBG2(cerr << "setUp() - BEGIN" << endl);
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         DBG2(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
@@ -198,7 +197,6 @@ public:
     }
 
     void get_days_test() {
-        //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
         string expected[] = {
                 string("01"),string("02"),string("03"),string("04"),string("05"),string("06"),string("07"),string("08"),string("09"),string("10"),
@@ -244,7 +242,6 @@ public:
     }
 
     void get_granule_ids_day_test() {
-        //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
 
         string expected[] = {
@@ -290,7 +287,6 @@ public:
     }
 
     void get_granule_ids_month_test() {
-        //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
 
         string expected[] = {
@@ -365,7 +361,6 @@ public:
     }
 
     void get_granules_month_test() {
-        //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
 
         string expected[] = {
@@ -478,11 +473,12 @@ public:
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850329.nc4"),
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850330.nc4"),
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850331.nc4")
-
         };
 
         unsigned long  expected_size = 31;
+#if 0
         vector<string> granules;
+#endif
         try {
             CmrApi cmr;
             std::vector<unique_ptr<Granule>> granules;
@@ -621,7 +617,7 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( CmrApiTest );
-#if 0
+#if 1
     // These tests now fail with an exception. Patched. jhrg 5/2/23
     CPPUNIT_TEST_EXCEPTION(get_provider_test, BESError);
     CPPUNIT_TEST_EXCEPTION(get_opendap_providers_test, BESError);

@@ -38,14 +38,11 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 TESTSUITE_S3 = $(srcdir)/testsuite_s3
 
-# This target starts the mock s3 service, runs the tests, and then stops the service.
-# Note that once the service is started, the code waits for it to start to respond.
-# jhrg 5/10/23
 check-local: check-local-s3 atconfig atlocal $(TESTSUITE) remote_resource_tester bes.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 
-# This target starts the mock s3 service, runs the tests, and then stops the service.
+# This target (check-local-s3) starts the mock s3 service, runs the tests, and then stops the service.
 # It requires python 3.9 or greater. jhrg 6/2/23
 if HAVE_PYTHON_3_9
 

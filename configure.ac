@@ -224,6 +224,9 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 dnl AC_PROG_LEX
 
+dnl Look for Python3. Then set a flag if we found Python 3.9 or greater. 3.9++ is
+dnl needed to run one of the tests in http/tests. jhrg 6/5/23
+
 PYTHON=python3
 AM_PATH_PYTHON()
 python_major_version=$(echo $PYTHON_VERSION | sed 's@\([[0-9]]*\)\.\([[0-9]]*\)@\1@g')
