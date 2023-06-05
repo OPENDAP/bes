@@ -1,9 +1,11 @@
+#include "cproj.h"
 
 #ifdef unix
 /*  Fortran bridge routine for the UNIX */
 
-void gctp_(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,
-               outcoor, outsys,outzone,outparm,outunit,fn27,fn83,iflg)
+/* Added missin 'outdatum' param and fixed incorrect return type. 6/5/23 */
+int gctp_(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,
+               outcoor, outsys,outzone,outparm,outunit,outdatum,fn27,fn83,iflg)
 
 double *incoor;
 long *insys;
@@ -20,12 +22,14 @@ long *outsys;
 long *outzone;
 double *outparm;
 long *outunit;
+long *outdatum;
+char *fn27;
+char *fn83;
 long *iflg;
 
 {
-gctp(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,outcoor,
-     outsys,outzone,outparm,outunit,fn27,fn83,iflg);
-
-return;
+  /* fixed errant call to gctp. 6/5/23 */
+return gctp(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,
+            outcoor, outsys,outzone,outparm,outunit,outdatum,fn27,fn83,iflg);
 }
 #endif
