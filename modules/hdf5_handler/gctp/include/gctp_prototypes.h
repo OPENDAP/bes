@@ -280,6 +280,7 @@ int bceainvint(double r_maj, double r_min, double center_lon,
 	       double center_lat, double false_east, double false_north);
 int bceainv(double x, double y, double *lon, double *lat);
 
+/* Added prototypes 6/5/23 */
 int hfor_init(int outsys, int outzone, double *outparm, int outdatum, char *fn27, char *fn83, int *iflg, int (*hfor_trans[])(double, double, double *, double *));
 long untfz(long inunit, long outunit, double *factor);
 int init(long ipr, long jpr, char *efile, char *pfile);
