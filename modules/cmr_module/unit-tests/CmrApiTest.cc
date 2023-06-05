@@ -28,7 +28,6 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <unistd.h>
 #include <libdap/util.h>
 
 #include <BESError.h>
@@ -47,39 +46,11 @@
 
 using namespace std;
 
-#if 0
-static bool debug = false;
-static bool debug2 = false;
-static bool bes_debug = false;
-
-#define DBG(x) do { if (debug) x; } while(false)
-#define DBG2(x) do { if (debug2) x; } while(false)
-#endif
 #define prolog std::string("CmrApiTest::").append(__func__).append("() - ")
 
 namespace cmr {
 
 class CmrApiTest: public CppUnit::TestFixture {
-private:
-
-#if 0
-
-    void show_file(const string &filename)
-    {
-        ifstream t(filename.c_str());
-
-        if (t.is_open()) {
-            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-            t.close();
-            cout << endl << "##################################################################" << endl;
-            cout << "file: " << filename << endl;
-            cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-            cout << file_content << endl;
-            cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-        }
-    }
-
-#endif
 
 public:
     // Called once before everything gets tested
@@ -98,13 +69,6 @@ public:
 
         DBG2(cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl);
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
-
-#if 0
-        if (bes_debug) {
-            BESDebug::SetUp("cerr,cmr");
-            show_file(bes_conf);
-        }
-#endif
 
         DBG2(cerr << "setUp() - END" << endl);
     }
@@ -480,9 +444,6 @@ public:
         };
 
         unsigned long  expected_size = 31;
-#if 0
-        vector<string> granules;
-#endif
         try {
             CmrApi cmr;
             std::vector<unique_ptr<Granule>> granules;
@@ -653,45 +614,4 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CmrApiTest);
 int main(int argc, char*argv[])
 {
     return bes_run_tests<cmr::CmrApiTest>(argc, argv, "cerr,cmr");
-#if 0
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dbD")) != -1)
-        switch (option_char) {
-        case 'd':
-            debug = true;  // debug is a static global
-            break;
-        case 'D':
-            debug2 = true;  // debug2 is a static global
-            break;
-        case 'b':
-            bes_debug = true;  // debug is a static global
-            break;
-        default:
-            break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            DBG(cerr << "Running " << argv[i] << endl);
-            test = cmr::CmrApiTest::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
-#endif
 }
