@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_ps.h5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES"/>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="NPGrid">
+                <Dimension name="XDim" size="4"/>
+                <Dimension name="YDim" size="5"/>
+                <Byte name="eos5_cf_projection">
+                    <Attribute name="grid_mapping_name" type="String">
+                        <Value>polar_stereographic</Value>
+                    </Attribute>
+                    <Attribute name="straight_vertical_longitude_from_pole" type="Float64">
+                        <Value>-45</Value>
+                    </Attribute>
+                    <Attribute name="standard_parallel" type="Float64">
+                        <Value>70</Value>
+                    </Attribute>
+                    <Attribute name="false_easting" type="Float64">
+                        <Value>0.0</Value>
+                    </Attribute>
+                    <Attribute name="false_northing" type="Float64">
+                        <Value>0.0</Value>
+                    </Attribute>
+                    <Attribute name="latitude_of_projection_origin" type="Float64">
+                        <Value>+90.0</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisTypes" type="String">
+                        <Value>GeoX GeoY</Value>
+                    </Attribute>
+                </Byte>
+                <Float64 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/NPGrid/XDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_x_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>x coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoX</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/NPGrid/YDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_y_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>y coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoY</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="Latitude">
+                    <Dim name="/HDFEOS/GRIDS/NPGrid/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/NPGrid/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="Longitude">
+                    <Dim name="/HDFEOS/GRIDS/NPGrid/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/NPGrid/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float64>
+                <Group name="Data_Fields">
+                    <Float32 name="Temperature">
+                        <Dim name="/HDFEOS/GRIDS/NPGrid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/NPGrid/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>C</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/NPGrid/Data Fields/Temperature</Value>
+                        </Attribute>
+                        <Attribute name="coordinates" type="String">
+                            <Value>/HDFEOS/GRIDS/NPGrid/Latitude /HDFEOS/GRIDS/NPGrid/Longitude</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>/HDFEOS/GRIDS/NPGrid/eos5_cf_projection</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+            <Group name="SPGrid">
+                <Dimension name="XDim" size="3"/>
+                <Dimension name="YDim" size="4"/>
+                <Byte name="eos5_cf_projection">
+                    <Attribute name="grid_mapping_name" type="String">
+                        <Value>polar_stereographic</Value>
+                    </Attribute>
+                    <Attribute name="straight_vertical_longitude_from_pole" type="Float64">
+                        <Value>0</Value>
+                    </Attribute>
+                    <Attribute name="standard_parallel" type="Float64">
+                        <Value>-70</Value>
+                    </Attribute>
+                    <Attribute name="false_easting" type="Float64">
+                        <Value>0.0</Value>
+                    </Attribute>
+                    <Attribute name="false_northing" type="Float64">
+                        <Value>0.0</Value>
+                    </Attribute>
+                    <Attribute name="latitude_of_projection_origin" type="Float64">
+                        <Value>-90.0</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisTypes" type="String">
+                        <Value>GeoX GeoY</Value>
+                    </Attribute>
+                </Byte>
+                <Float64 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/SPGrid/XDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_x_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>x coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoX</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/SPGrid/YDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_y_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>y coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoY</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="Latitude">
+                    <Dim name="/HDFEOS/GRIDS/SPGrid/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SPGrid/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="Longitude">
+                    <Dim name="/HDFEOS/GRIDS/SPGrid/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SPGrid/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float64>
+                <Group name="Data_Fields">
+                    <Float32 name="Temperature">
+                        <Dim name="/HDFEOS/GRIDS/SPGrid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SPGrid/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>C</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SPGrid/Data Fields/Temperature</Value>
+                        </Attribute>
+                        <Attribute name="coordinates" type="String">
+                            <Value>/HDFEOS/GRIDS/SPGrid/Latitude /HDFEOS/GRIDS/SPGrid/Longitude</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>/HDFEOS/GRIDS/SPGrid/eos5_cf_projection</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.17</Value>
+        </Attribute>
+    </Group>
+</Dataset>

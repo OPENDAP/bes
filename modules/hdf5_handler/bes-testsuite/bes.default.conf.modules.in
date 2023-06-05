@@ -17,7 +17,7 @@ BES.module.functions=@abs_top_builddir@/modules/functions/.libs/libfunctions_mod
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/hdf5_handler
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5|HDF5)(\.bz2|\.gz|\.Z)?$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;

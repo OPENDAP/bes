@@ -5,8 +5,13 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
--I$(top_srcdir)/modules/dmrpp_module
+# FIXME Remove this hack. Set these with configure. jhrg 11/25/19
+OPENSSL_LIBS=-lcrypto
+OPENSSL_INC=-I/usr/local/opt/openssl/include
+#OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+
+AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch \
+-I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS)
 
 # Removed linking with shared objects. jhrg 1/21/11
 # LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la \
@@ -14,7 +19,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
 
 LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/.libs/libdap_module.a \
 $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a -ltest-types $(DAP_LIBS) $(LIBS)
-
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -108,7 +112,7 @@ ResponseBuilderTest_OBJS = ../BESDapResponseBuilder.o ../BESDataDDSResponse.o \
 ../BESDDSResponse.o ../BESDapResponse.o ../BESDapFunctionResponseCache.o \
 ../BESStoredDapResultCache.o ../DapFunctionUtils.o ../CachedSequence.o ../CacheTypeFactory.o \
 ../CacheMarshaller.o ../CacheUnMarshaller.o ../../dispatch/BESFileLockingCache.o
-ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(LDADD) 
+ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(LDADD)
 
 FunctionResponseCacheTest_SOURCES = FunctionResponseCacheTest.cc $(TEST_SRC)
 FunctionResponseCacheTest_OBJS = ../BESDapFunctionResponseCache.o ../DapFunctionUtils.o \

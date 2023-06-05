@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">data/TERRA_MODIS.20170109_20170116.L3m.8D.NSST.sst.4km.h5</setContainer>
+    <define name="d">
+	<container name="c" />
+    </define>
+    <get type="ddx" definition="d"  returnAs="covjson" />
+</request>

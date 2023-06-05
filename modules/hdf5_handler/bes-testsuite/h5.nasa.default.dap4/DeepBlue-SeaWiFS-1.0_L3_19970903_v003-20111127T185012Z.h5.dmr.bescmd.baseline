@@ -4,423 +4,6 @@
     <Dimension name="longitude" size="360"/>
     <Dimension name="land_bands" size="3"/>
     <Dimension name="ocean_bands" size="3"/>
-    <Int32 name="aerosol_optical_thickness_550_count_land">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>number of retrievals used for aerosol optical thickness at 550 nm over land</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>count</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 required.</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="aerosol_optical_thickness_550_count_land_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>number of retrievals used for aerosol optical thickness at 550 nm over land and ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>count</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="aerosol_optical_thickness_550_count_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>number of retrievals used for aerosol optical thickness at 550 nm over ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>count</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 2 or 3 required.</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="aerosol_optical_thickness_550_land">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>aerosol optical thickness estimated at 550 nm over land</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Arithmetic mean of data with confidence flag equal to 3.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="aerosol_optical_thickness_550_land_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>aerosol optical thickness estimated at 550 nm over land and ocean</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol status_flag</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Arithmetic mean of data with confidence flag equal to 3 over land or 2 or 3 over ocean.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="aerosol_optical_thickness_550_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>aerosol optical thickness estimated at 550 nm over ocean</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Arithmetic mean of data with confidence flag equal to 2 or 3 only.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="aerosol_optical_thickness_550_stddev_land">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>standard deviation of aerosol optical thickness estimated at 550 nm over land</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 required.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="aerosol_optical_thickness_550_stddev_land_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>standard deviation of aerosol optical thickness estimated at 550 nm over land and ocean</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="aerosol_optical_thickness_550_stddev_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>standard deviation of aerosol optical thickness estimated at 550 nm over ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 2 or 3 required.</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="aerosol_optical_thickness_count_land">
-        <Dim name="/land_bands"/>
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>number of retrievals used for aerosol optical thickness at 412 nm, 490 nm, and 670 nm over land</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>count</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 required.</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="aerosol_optical_thickness_count_ocean">
-        <Dim name="/ocean_bands"/>
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>number of retrievals used for aerosol optical thickness at 510 nm, 670 nm, and 865 nm over ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>count</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 2 or 3 required.</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="aerosol_optical_thickness_land">
-        <Dim name="/land_bands"/>
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>aerosol optical thickness estimated at 412 nm, 490 nm, and 670 nm over land</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Arithmetic mean of data with confidence flag equal to 3.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="aerosol_optical_thickness_ocean">
-        <Dim name="/ocean_bands"/>
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>aerosol optical thickness at 510 nm, 670 nm, and 865 nm over ocean</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Arithmetic mean of data with confidence flag equal to 2 or 3 only.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="aerosol_optical_thickness_stddev_land">
-        <Dim name="/land_bands"/>
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>standard deviation of aerosol optical thickness at 412 nm, 490 nm, and 670 nm over land</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 required.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="aerosol_optical_thickness_stddev_ocean">
-        <Dim name="/ocean_bands"/>
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>standard deviation of aerosol optical thickness at 510 nm, 670 nm, and 865 nm over ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 2 or 3 required.</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="angstrom_exponent_count_land">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>number of retrievals used for angstrom exponent over land</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>count</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 required.</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="angstrom_exponent_count_land_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>number of retrievals used for angstrom exponent over land and ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>count</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="angstrom_exponent_count_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>number of retrievals used for angstrom exponent over ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>count</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 2 or 3 required.</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="angstrom_exponent_land">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>angstrom exponent over land as derived from aerosol optical thickness at 412 nm and 490 nm</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>angstrom_exponent_of_ambient_aerosol_in_air</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Arithmetic mean of data with confidence flag equal to 3.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="angstrom_exponent_land_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>angstrom exponent over land and ocean</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>angstrom_exponent_of_ambient_aerosol_in_air</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Arithmetic mean of data with confidence flag equal to 3 over land or 2 or 3 over ocean.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="angstrom_exponent_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>angstrom exponent over ocean as derived from aerosol optical thickness at 510 nm and 670 nm</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>angstrom_exponent_of_ambient_aerosol_in_air</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Arithmetic mean of data with confidence flag equal to 2 or 3 only.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="angstrom_exponent_stddev_land">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>standard deviation of angstrom exponent over land</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 required.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="angstrom_exponent_stddev_land_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>standard deviation of angstrom exponent over land and ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="angstrom_exponent_stddev_ocean">
-        <Dim name="/latitude"/>
-        <Dim name="/longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>standard deviation of angstrom exponent over ocean</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Confidence flag equal to 2 or 3 required.</Value>
-        </Attribute>
-    </Float32>
     <Float32 name="land_bands">
         <Dim name="/land_bands"/>
         <Attribute name="units" type="String">
@@ -471,6 +54,477 @@
             <Value>wavelength bands over ocean</Value>
         </Attribute>
     </Float32>
+    <Float32 name="aerosol_optical_thickness_550_land_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>aerosol optical thickness estimated at 550 nm over land and ocean</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol status_flag</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Arithmetic mean of data with confidence flag equal to 3 over land or 2 or 3 over ocean.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="aerosol_optical_thickness_550_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>aerosol optical thickness estimated at 550 nm over ocean</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Arithmetic mean of data with confidence flag equal to 2 or 3 only.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="aerosol_optical_thickness_550_stddev_land">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>standard deviation of aerosol optical thickness estimated at 550 nm over land</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="aerosol_optical_thickness_550_stddev_land_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>standard deviation of aerosol optical thickness estimated at 550 nm over land and ocean</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="aerosol_optical_thickness_550_stddev_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>standard deviation of aerosol optical thickness estimated at 550 nm over ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 2 or 3 required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Int32 name="aerosol_optical_thickness_count_land">
+        <Dim name="/land_bands"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>number of retrievals used for aerosol optical thickness at 412 nm, 490 nm, and 670 nm over land</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>count</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 required.</Value>
+        </Attribute>
+        <Map name="/land_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Int32>
+    <Int32 name="aerosol_optical_thickness_count_ocean">
+        <Dim name="/ocean_bands"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>number of retrievals used for aerosol optical thickness at 510 nm, 670 nm, and 865 nm over ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>count</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 2 or 3 required.</Value>
+        </Attribute>
+        <Map name="/ocean_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Int32>
+    <Float32 name="aerosol_optical_thickness_land">
+        <Dim name="/land_bands"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>aerosol optical thickness estimated at 412 nm, 490 nm, and 670 nm over land</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Arithmetic mean of data with confidence flag equal to 3.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Map name="/land_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="aerosol_optical_thickness_ocean">
+        <Dim name="/ocean_bands"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>aerosol optical thickness at 510 nm, 670 nm, and 865 nm over ocean</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Arithmetic mean of data with confidence flag equal to 2 or 3 only.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Map name="/ocean_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="aerosol_optical_thickness_stddev_land">
+        <Dim name="/land_bands"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>standard deviation of aerosol optical thickness at 412 nm, 490 nm, and 670 nm over land</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 required.</Value>
+        </Attribute>
+        <Map name="/land_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="aerosol_optical_thickness_stddev_ocean">
+        <Dim name="/ocean_bands"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>standard deviation of aerosol optical thickness at 510 nm, 670 nm, and 865 nm over ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 2 or 3 required.</Value>
+        </Attribute>
+        <Map name="/ocean_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Int32 name="angstrom_exponent_count_land">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>number of retrievals used for angstrom exponent over land</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>count</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Int32>
+    <Int32 name="angstrom_exponent_count_land_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>number of retrievals used for angstrom exponent over land and ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>count</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Int32>
+    <Int32 name="angstrom_exponent_count_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>number of retrievals used for angstrom exponent over ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>count</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 2 or 3 required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Int32>
+    <Float32 name="angstrom_exponent_land">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>angstrom exponent over land as derived from aerosol optical thickness at 412 nm and 490 nm</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>angstrom_exponent_of_ambient_aerosol_in_air</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Arithmetic mean of data with confidence flag equal to 3.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="angstrom_exponent_land_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>angstrom exponent over land and ocean</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>angstrom_exponent_of_ambient_aerosol_in_air</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Arithmetic mean of data with confidence flag equal to 3 over land or 2 or 3 over ocean.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="angstrom_exponent_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>angstrom exponent over ocean as derived from aerosol optical thickness at 510 nm and 670 nm</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>angstrom_exponent_of_ambient_aerosol_in_air</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Arithmetic mean of data with confidence flag equal to 2 or 3 only.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="angstrom_exponent_stddev_land">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>standard deviation of angstrom exponent over land</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="angstrom_exponent_stddev_land_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>standard deviation of angstrom exponent over land and ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Float32 name="angstrom_exponent_stddev_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>standard deviation of angstrom exponent over ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 2 or 3 required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
+    <Int32 name="aerosol_optical_thickness_550_count_land">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>number of retrievals used for aerosol optical thickness at 550 nm over land</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>count</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Int32>
+    <Int32 name="aerosol_optical_thickness_550_count_land_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>number of retrievals used for aerosol optical thickness at 550 nm over land and ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>count</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Int32>
+    <Int32 name="aerosol_optical_thickness_550_count_ocean">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>number of retrievals used for aerosol optical thickness at 550 nm over ocean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>count</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Confidence flag equal to 2 or 3 required.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Int32>
+    <Float32 name="aerosol_optical_thickness_550_land">
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>aerosol optical thickness estimated at 550 nm over land</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_optical_thickness_due_to_ambient_aerosol</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Arithmetic mean of data with confidence flag equal to 3.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.</Value>
+        </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
+    </Float32>
     <Float32 name="relative_azimuth_angle">
         <Dim name="/latitude"/>
         <Dim name="/longitude"/>
@@ -490,6 +544,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="scattering_angle">
         <Dim name="/latitude"/>
@@ -510,6 +566,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="solar_zenith_angle">
         <Dim name="/latitude"/>
@@ -530,6 +588,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Int32 name="time_of_measurement">
         <Dim name="/latitude"/>
@@ -546,6 +606,8 @@
         <Attribute name="standard_name" type="String">
             <Value>time</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Float32 name="viewing_zenith_angle">
         <Dim name="/latitude"/>
@@ -563,6 +625,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.4</Value>
@@ -688,6 +752,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_550_maximum_land_ocean">
             <Dim name="/latitude"/>
@@ -707,6 +773,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_550_maximum_ocean">
             <Dim name="/latitude"/>
@@ -726,6 +794,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 2 or 3 required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_550_minimum_land">
             <Dim name="/latitude"/>
@@ -745,6 +815,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_550_minimum_land_ocean">
             <Dim name="/latitude"/>
@@ -764,6 +836,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_550_minimum_ocean">
             <Dim name="/latitude"/>
@@ -783,6 +857,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 2 or 3 required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_maximum_land">
             <Dim name="/land_bands"/>
@@ -803,6 +879,9 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 required.</Value>
             </Attribute>
+            <Map name="/land_bands"/>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_maximum_ocean">
             <Dim name="/ocean_bands"/>
@@ -823,6 +902,9 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 2 or 3 required.</Value>
             </Attribute>
+            <Map name="/ocean_bands"/>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_minimum_land">
             <Dim name="/land_bands"/>
@@ -843,6 +925,9 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 required.</Value>
             </Attribute>
+            <Map name="/land_bands"/>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="aerosol_optical_thickness_minimum_ocean">
             <Dim name="/ocean_bands"/>
@@ -863,6 +948,9 @@
             <Attribute name="units" type="String">
                 <Value>1</Value>
             </Attribute>
+            <Map name="/ocean_bands"/>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="angstrom_exponent_maximum_land">
             <Dim name="/latitude"/>
@@ -882,6 +970,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="angstrom_exponent_maximum_land_ocean">
             <Dim name="/latitude"/>
@@ -901,6 +991,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="angstrom_exponent_maximum_ocean">
             <Dim name="/latitude"/>
@@ -920,6 +1012,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 2 or 3 required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="angstrom_exponent_minimum_land">
             <Dim name="/latitude"/>
@@ -939,6 +1033,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="angstrom_exponent_minimum_land_ocean">
             <Dim name="/latitude"/>
@@ -958,6 +1054,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 3 over land or 2 or 3 over ocean required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="angstrom_exponent_minimum_ocean">
             <Dim name="/latitude"/>
@@ -977,6 +1075,8 @@
             <Attribute name="comment" type="String">
                 <Value>Confidence flag equal to 2 or 3 required.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="fine_mode_volume_fraction_ocean">
             <Dim name="/latitude"/>
@@ -993,6 +1093,8 @@
             <Attribute name="units" type="String">
                 <Value>1</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="fine_mode_volume_fraction_stddev_ocean">
             <Dim name="/latitude"/>
@@ -1009,6 +1111,8 @@
             <Attribute name="units" type="String">
                 <Value>1</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
         <Float32 name="wind_speed">
             <Dim name="/latitude"/>
@@ -1025,6 +1129,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/latitude"/>
+            <Map name="/longitude"/>
         </Float32>
     </Group>
 </Dataset>

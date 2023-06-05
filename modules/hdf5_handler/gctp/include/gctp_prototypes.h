@@ -280,5 +280,14 @@ int bceainvint(double r_maj, double r_min, double center_lon,
 	       double center_lat, double false_east, double false_north);
 int bceainv(double x, double y, double *lon, double *lat);
 
+/* Added prototypes needed by modern/future C compilers 6/5/23 */
+int hfor_init(int outsys, int outzone, double *outparm, int outdatum, char *fn27, char *fn83, int *iflg, int (*hfor_trans[])(double, double, double *, double *));
+long untfz(long inunit, long outunit, double *factor);
+int init(long ipr, long jpr, char *efile, char *pfile);
+void close_file(void);
+int hinv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*hinv_trans[])(double, double, double*, double*));
+int gctp(double *incoor, long *insys, long *inzone, double *inparm, long *inunit, long *indatum, long *ipr, char *efile, long *jpr, char *pfile, double *outcoor, long *outsys, long *outzone, double *outparm, long *outunit, long *outdatum, char *fn27, char *fn83, long *iflg);
+int gctp_(double *incoor, long *insys, long *inzone, double *inparm, long *inunit, long *indatum, long *ipr, char *efile, long *jpr, char *pfile, double *outcoor, long *outsys, long *outzone, double *outparm, long *outunit, long *outdatum, char *fn27, char *fn83, long *iflg);
+
 #endif
 #endif

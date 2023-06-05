@@ -2,8 +2,9 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
+AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
@@ -68,8 +69,7 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 
 if CPPUNIT
 UNIT_TESTS =  HttpUtilsTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
-AllowedHostsTest CredentialsManagerTest NgapCredentialsTest awsv4_test CurlUtilsTest \
-HttpCacheTest
+AllowedHostsTest CredentialsManagerTest awsv4_test CurlUtilsTest HttpCacheTest
 else
 UNIT_TESTS =
 
@@ -90,6 +90,7 @@ HttpUtilsTest_SOURCES = HttpUtilsTest.cc
 HttpUtilsTest_LDADD = $(LIBADD)
 
 RemoteResourceTest_SOURCES = RemoteResourceTest.cc
+RemoteResourceTest_CXXFLAGS = -static
 RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc
@@ -109,9 +110,6 @@ AllowedHostsTest_LDADD = $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
-
-NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
-NgapCredentialsTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = ../.libs/libbes_http.a $(LIBADD)

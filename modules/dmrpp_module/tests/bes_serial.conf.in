@@ -14,12 +14,12 @@ BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.s
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/dmrpp_module
 BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
-BES.Catalog.catalog.FollowSymLinks=No
+BES.Catalog.catalog.FollowSymLinks=Yes
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
-BES.FollowSymLinks=No
+BES.FollowSymLinks=Yes
 BES.Data.RootDirectory=/dev/null
 
 BES.Info.Buffered=no

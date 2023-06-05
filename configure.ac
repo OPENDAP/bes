@@ -144,9 +144,6 @@ AM_COND_IF([WITH_NEWLOG],
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
 dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
-dnl AC_ARG_WITH([ngap], [AS_HELP_STRING([--without-ngap], [disable support for the NGAP module])],
-dnl     [AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" == xyes])],
-dnl     [AM_CONDITIONAL([WITH_NGAP], [true])])
 
 AC_ARG_WITH([ngap],
     AS_HELP_STRING([--without-ngap],
@@ -156,7 +153,19 @@ AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" != "xno"])
 AM_COND_IF([WITH_NGAP],
     [AC_MSG_NOTICE([Building support for the NGAP Module])],
     [AC_MSG_NOTICE([Disabled support for the NGAP Module])])
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+dnl Build S3 support by default or if the user provides --with-s3. Do not build the
+dnl module if the user supplies --without-s3 or --with-s3=no. jhrg 10/18/22
+
+AC_ARG_WITH([s3],
+    AS_HELP_STRING([--without-s3],
+    [Disable support for the S3 service, no s3_reader. (Built by default)])
+)
+AM_CONDITIONAL([BUILD_S3], [test "x$with_s3" != "xno"])
+AM_COND_IF([BUILD_S3],
+    [AC_MSG_NOTICE([Building support for the S3 Module])],
+    [AC_MSG_NOTICE([Disabled support for the S3 Module])])
+
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
@@ -215,7 +224,16 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 dnl AC_PROG_LEX
 
-AM_PATH_PYTHON
+dnl Look for Python3. Then set a flag if we found Python 3.9 or greater. 3.9++ is
+dnl needed to run one of the tests in http/tests. jhrg 6/5/23
+
+PYTHON=python3
+AM_PATH_PYTHON()
+python_major_version=$(echo $PYTHON_VERSION | sed 's@\([[0-9]]*\)\.\([[0-9]]*\)@\1@g')
+python_minor_version=$(echo $PYTHON_VERSION | sed 's@\([[0-9]]*\)\.\([[0-9]]*\)@\2@g')
+AC_MSG_CHECKING([Python version 3.9 or greater])
+AM_CONDITIONAL([HAVE_PYTHON_3_9], [test $python_major_version -ge  3 -a $python_minor_version -ge 9])
+AM_COND_IF([HAVE_PYTHON_3_9], [AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
 dnl Here we test for both C++11 and 14, but our code nominally requires 14.
 dnl We can use the C++11 test and CXX_STD_FLAG to build with 11 if we add a
@@ -302,6 +320,21 @@ AC_FUNC_MKTIME
 AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
+
+OPENSSL_LIBS=-lcrypto
+
+AC_SUBST([OPENSSL_LIBS])
+
+OPENSSL_INC=-I/usr/local/opt/openssl/include
+OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+
+AC_CHECK_HEADER([openssl/sha.h], [], [openssl_found=false])
+
+AS_IF([test ! $openssl_found],
+    [
+    AC_SUBST([OPENSSL_INC])
+    AC_SUBST([OPENSSL_LDFLAGS])
+    ])
 
 BES_OLD_LIBS=$LIBS
 dnl z and bz2 library?
@@ -455,8 +488,8 @@ dnl link with .libs/libdap_module.a instead if that's easier.
 BES_DAP_LIB_LDFLAGS="-L\$(top_builddir)/dap -static -ldap_module -dynamic"
 AC_SUBST(BES_DAP_LIB_LDFLAGS)
 
-BES_EXTRA_LIBS="$LIBS $openssl_libs"
-AC_SUBST(BES_EXTRA_LIBS)
+dnl jhrg 6/2/23 BES_EXTRA_LIBS="$LIBS $openssl_libs"
+dnl AC_SUBST(BES_EXTRA_LIBS)
 BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
 AC_SUBST(BES_HTTP_LIB)
 
@@ -947,6 +980,7 @@ AM_COND_IF([BUILD_HDF5], [OPTIONAL_FEATURES="hdf5 $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_NCML], [OPTIONAL_FEATURES="ncml $OPTIONAL_FEATURES"])
 AM_COND_IF([USING_GRIDFIELDS], [OPTIONAL_FEATURES="gridfields $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_STARE], [OPTIONAL_FEATURES="stare $OPTIONAL_FEATURES"])
+AM_COND_IF([BUILD_S3], [OPTIONAL_FEATURES="s3_reader $OPTIONAL_FEATURES"])
 
 AM_COND_IF([BES_DEVELOPER], [OPTIONAL_FEATURES="developer $OPTIONAL_FEATURES"])
 
@@ -1080,6 +1114,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/ngap_module/tests/atlocal
     modules/ngap_module/unit-tests/Makefile
     
+    modules/s3_reader/Makefile
+    modules/s3_reader/tests/Makefile
+    modules/s3_reader/tests/atlocal
+    modules/s3_reader/unit-tests/Makefile
+
     modules/httpd_catalog_module/Makefile
     modules/httpd_catalog_module/unit-tests/Makefile
     modules/httpd_catalog_module/tests/Makefile
@@ -1097,6 +1136,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/tests_build_dmrpp/Makefile
     modules/dmrpp_module/tests_build_dmrpp/atlocal
     modules/dmrpp_module/data/Makefile
+    modules/dmrpp_module/writer/Makefile
 
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
@@ -1174,8 +1214,10 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/w10n_handler/Makefile 
     modules/w10n_handler/unit-tests/Makefile
     modules/w10n_handler/tests/Makefile 
-    modules/w10n_handler/tests/atlocal])
-        
+    modules/w10n_handler/tests/atlocal
+
+    modules/builddmrpp_module/Makefile])
+
     dnl Move these into the autotest.at files using an autotest option.
     AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
 	[chmod +x modules/xml_data_handler/tests/generate_metadata_baseline.sh])
@@ -1201,6 +1243,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
     AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ngap_module/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/s3_reader/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])

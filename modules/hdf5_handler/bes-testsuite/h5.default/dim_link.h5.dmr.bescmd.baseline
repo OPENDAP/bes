@@ -22,6 +22,8 @@
             <Int32 name="dset">
                 <Dim name="/dim0_h"/>
                 <Dim name="/g1/dim1"/>
+                <Map name="/dim0_h"/>
+                <Map name="/g1/dim1"/>
             </Int32>
         </Group>
         <Group name="g3">

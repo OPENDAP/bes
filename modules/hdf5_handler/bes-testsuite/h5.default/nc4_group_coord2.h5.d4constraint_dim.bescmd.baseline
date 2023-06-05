@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_group_coord2.h5">
+    <Dimension name="dim1" size="1"/>
+    <Dimension name="dim2" size="2"/>
+    <Dimension name="dim3" size="3"/>
+    <Int32 name="dim3">
+        <Dim name="/dim3"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>d97c2242</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="c1">
+        <Dim name="/dim1"/>
+        <Dim name="/dim2"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>f6bf95a5</Value>
+        </Attribute>
+    </Float32>
+    <Group name="g1">
+        <Float32 name="c2">
+            <Dim name="/dim1"/>
+            <Dim name="/dim2"/>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                <Value>6bcfbe5d</Value>
+            </Attribute>
+        </Float32>
+        <Group name="g1_1">
+            <Float32 name="d2">
+                <Dim name="/dim1"/>
+                <Dim name="/dim2"/>
+                <Dim name="/dim3"/>
+                <Attribute name="coordinates" type="String">
+                    <Value>../../c1 ../c2</Value>
+                </Attribute>
+                <Attribute name="DAP4_Checksum_CRC32" type="String">
+                    <Value>863cda94</Value>
+                </Attribute>
+                <Map name="/c1"/>
+                <Map name="/g1/c2"/>
+                <Map name="/dim3"/>
+            </Float32>
+        </Group>
+    </Group>
+</Dataset>
+
+The data:
+Int32 dim3[dim3 = 3] = {3, 5, 7};
+Float32 c1[dim1 = 1][dim2 = 2] = {{10, 12}};
+Float32 c2[dim1 = 1][dim2 = 2] = {{12, 14}};
+Float32 d2[dim1 = 1][dim2 = 2][dim3 = 3] = {{{3.6, 3.8, 4},{4.4, 4.6, 4.8}}};
+

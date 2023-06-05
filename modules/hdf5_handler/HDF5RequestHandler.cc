@@ -1483,6 +1483,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             if(true ==_usecf) {// CF option
        
                 if(true == _usecfdmr) { 
+
                     cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
                     if (cf_fileid < 0){
                         string invalid_file_msg="Could not open this HDF5 file ";
@@ -1588,8 +1589,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 // hardlinks and search them when necessary.  Note we have to search hardlinks from the root.
                 // KY 2021-11-15
                 vector<link_info_t> hdf5_hls;
+                vector<string> handled_coord_names;
  
-                breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,eos5_dim_info);
+                breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_coord_names);
+  
+                if (is_eos5 == false)
+                    add_dap4_coverage_default(root_grp,handled_coord_names);
 
                 // Leave the following block until the HDF-EOS5 is fully supported.
 #if 0

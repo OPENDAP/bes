@@ -461,6 +461,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Channel_Information/Center_wavelength</Value>
         </Attribute>
+        <Map name="/Channel_Information_Channel_number"/>
     </Float64>
     <String name="Channel_Information_Channel_name">
         <Dim name="/Channel_Information_Channel_number"/>
@@ -470,6 +471,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Channel_Information/Channel_name</Value>
         </Attribute>
+        <Map name="/Channel_Information_Channel_number"/>
     </String>
     <Float64 name="Channel_Information_Effective_bandwidth">
         <Dim name="/Channel_Information_Channel_number"/>
@@ -479,6 +481,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Channel_Information/Effective_bandwidth</Value>
         </Attribute>
+        <Map name="/Channel_Information_Channel_number"/>
     </Float64>
     <Float64 name="Channel_Information_Effective_transmittance">
         <Dim name="/Channel_Information_Channel_number"/>
@@ -488,6 +491,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Channel_Information/Effective_transmittance</Value>
         </Attribute>
+        <Map name="/Channel_Information_Channel_number"/>
     </Float64>
     <Float64 name="Channel_Information_Solar_irradiance_at_1_AU">
         <Dim name="/Channel_Information_Channel_number"/>
@@ -497,6 +501,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Channel_Information/Solar_irradiance_at_1_AU</Value>
         </Attribute>
+        <Map name="/Channel_Information_Channel_number"/>
     </Float64>
     <Float32 name="_355nm_band_Glint_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -686,6 +691,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <Float32 name="_355nm_band_View_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -917,6 +923,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <Float32 name="_380nm_band_View_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -1148,6 +1155,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <Float32 name="_445nm_band_View_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -1547,6 +1555,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <Float32 name="_470nm_band_U_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -1820,6 +1829,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <Float32 name="_555nm_band_View_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -2219,6 +2229,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <Float32 name="_660nm_band_U_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -2660,6 +2671,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <Float32 name="_865nm_band_U_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -2933,6 +2945,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <Float32 name="_935nm_band_View_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -3038,6 +3051,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/UTM_projection</Value>
         </Attribute>
+        <Map name="/FakeDim2"/>
     </Int8>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

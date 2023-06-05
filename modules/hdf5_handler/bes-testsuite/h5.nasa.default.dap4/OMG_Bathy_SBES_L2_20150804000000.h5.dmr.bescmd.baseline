@@ -90,6 +90,8 @@
         <Attribute name="valid_max" type="Float64">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float64 name="Xc">
         <Dim name="/obs"/>

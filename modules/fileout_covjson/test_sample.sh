@@ -1,0 +1,13 @@
+#besstandalone -c tests/bes.conf -i tests/covjson/coads_climatology_abstract_object_METADATA.bescmd
+#besstandalone -c tests/bes.conf -i tests/covjson/TERRA_MODIS.20170109_20170116.L3m.8D.NSST.sst.4km.nc_md.h5.bescmd 
+#besstandalone -c tests/bes.default.conf -i tests/covjson/TERRA_MODIS.20170109_20170116.L3m.8D.NSST.sst.4km.nc_md.h5.bescmd 
+#besstandalone -c tests/bes.conf -i tests/covjson/TERRA_MODIS.20170109_20170116.L3m.8D.NSST.sst.4km.nc_md.bescmd 
+#besstandalone -c tests/bes.conf -i tests/covjson/nc_cf_1dllz_simple_d.nc.bescmd
+#besstandalone -c tests/bes.conf -i tests/covjson/nc_cf_1dllz_md.bescmd
+besstandalone -c tests/bes.conf -i tests/covjson/nc_cf_1dllz_md.bescmd
+#besstandalone -c tests/bes.conf -i tests/covjson/nc_cf_1dllz_simple_d.bescmd
+#besstandalone -c tests/bes.conf -i tests/covjson/nc_cf_1dllz_simple_d.bescmd
+#besstandalone -c tests/bes.default.conf -i tests/covjson/nc_cf_1dll_simple_d.bescmd
+#besstandalone -c tests/bes.conf -i tests/covjson/nc_cf_1dll_extra_d.bescmd
+#besstandalone -c tests/bes.default.conf -i tests/covjson/nc_cf_1dll_extra_d.bescmd
+#besstandalone -c tests/bes.conf -i tests/covjson/nc_cf_1dll_simple_dap4_d.bescmd

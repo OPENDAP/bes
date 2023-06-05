@@ -1,0 +1,52 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": [-180, -120, -60, 0, 60, 120]
+      },
+      "y": {
+        "values": [-90, -30, 30]
+      }
+    },
+    "referencing": [{
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    }]
+  },
+  "parameters": {
+    "prec": {
+      "type": "Parameter",
+      "description": {
+        "en": "precipitation"
+      },
+      "unit": {
+        "label": {
+          "en": "mm/hr"
+        },
+        "symbol": {
+          "value": "mm/hr",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "precipitation"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "prec": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [3, 6],
+      "values": [6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1]
+    }
+  }
+}

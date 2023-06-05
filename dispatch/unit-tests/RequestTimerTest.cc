@@ -36,6 +36,8 @@
 
 #include "BESTimeoutError.h"
 #include "BESDebug.h"
+#include "BESLog.h"
+#include "TheBESKeys.h"
 
 #include "RequestServiceTimer.h"
 
@@ -67,10 +69,12 @@ public:
     }
 
     // Called before each test
-    void setUp()
-    {
-        if(debug) cerr << endl;
+    void setUp() {
+        if (debug) cerr << endl;
         if (bes_debug) BESDebug::SetUp("cerr,bes");
+
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
+        // TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log", false);
     }
 
     // Called after each test

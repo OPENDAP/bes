@@ -344,7 +344,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
             H5T_cset_t c_set_type = H5Tget_cset(ty_id);
             if (c_set_type < 0)
                 throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
-            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == 1))
+            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
                 is_utf8_str = true;
         }
 
@@ -577,7 +577,7 @@ string get_hardlink(hid_t pgroup, const string & oname)
     if (obj_info.rc > 1) {
         string objno;
 
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR ==14)))
         char *obj_tok_str = nullptr;
         if(H5Otoken_to_str(pgroup, &(obj_info.token), &obj_tok_str) <0) {
             throw InternalErr(__FILE__, __LINE__, "H5Otoken_to_str failed.");

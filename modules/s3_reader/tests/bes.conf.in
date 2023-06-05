@@ -1,0 +1,58 @@
+#
+#  template: bes.conf.in
+#
+#
+BES.ServerAdministrator=admin.email.address@your.domain.name
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,s3,dmrpp,fonc
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.s3=@abs_top_builddir@/modules/s3_reader/.libs/libs3_reader.so
+BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/s3_reader
+BES.Data.RootDirectory=/dev/null
+
+BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.dmrpp(\.gz|\.bz2|\.Z)?$;
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.UncompressCache.dir=@abs_top_srcdir@/modules/s3_reader/tests/cache
+BES.UncompressCache.prefix=un_
+BES.UncompressCache.size=500
+
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
+
+Http.Cache.dir=@abs_top_srcdir@/modules/s3_reader/tests/cache
+Http.Cache.prefix=s3_
+Http.Cache.size=500
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+# Inject Data URLs into the dmr++  documents.
+S3.inject_data_urls=true
+
+AllowedHosts = ^https?://localhost:8080/.*$
+AllowedHosts += ^https?://test\.opendap\.org/.*$
+AllowedHosts += ^https://s3\.amazonaws\.com/cloudy(open)?dap/.*$
+AllowedHosts += ^https://s3-module-test-bucket\.s3\.us-west-2\.amazonaws\.com/.*$
+AllowedHosts += ^https://cmr\.earthdata\.nasa\.gov/.*$
+
+# For this to work with the DMR++ documents, we will have to modify the
+# RemoteResource code in the http library. jhrg 10/20/22
+
+CredentialsManager.config = ENV_CREDS
