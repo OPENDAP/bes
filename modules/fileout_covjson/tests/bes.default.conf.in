@@ -70,7 +70,7 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
-H5.EnableCF=true
+H5.EnableCF=false
 H4.EnableCF=true
 H4.EnablePassFileID=true
 H4.EnableSpecialEOS=true

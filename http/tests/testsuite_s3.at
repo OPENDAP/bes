@@ -1,0 +1,36 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/http/tests testsuite_s3])
+
+m4_define([VECHO], AS_IF([test -z "$at_verbose"], [echo $1]))
+
+# run the same command in parallel - two processes
+# $1 mock-s3 URL
+# $2 expected size
+# $3 xfail
+m4_define([AT_RETRY_TEST], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([remote_resource_tester retry])
+
+    input=$1
+    expected_size=$2
+    bes_conf=$abs_builddir/bes.conf
+
+    # AT_XFAIL_IF is always run first regardless where it appears. jhrg 5/27/22
+    AT_XFAIL_IF([test z$3 = zxfail])
+
+    AS_IF([test -z "$at_verbose"], [verbose_command="-v"], [verbose_command=""])
+
+    command="remote_resource_tester $verbose_command -r $expected_size -b $bes_conf $input cerr"
+
+    VECHO(["COMMAND: $command"])
+    #AT_CHECK([$abs_builddir/$command])
+    AT_CHECK([$abs_builddir/remote_resource_tester $verbose_command -r $expected_size -b $bes_conf $input stuff])
+
+    AT_CLEANUP
+])
+
+AT_RETRY_TEST([http://localhost:8000/200/1/test_1], [183])
+AT_RETRY_TEST([http://localhost:8000/500/1/test_2], [183])
+AT_RETRY_TEST([http://localhost:8000/500/2/test_3], [183])

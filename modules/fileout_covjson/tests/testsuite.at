@@ -3,6 +3,7 @@
 AT_INIT([bes/modules/fileout_covjson/tests ./testsuite])
 
 m4_include(../../common/handler_tests_macros.m4)
+m4_include([local_handler_tests_macros.m4])
 
 #AT_BESCMD_RESPONSE_TEST([covjson/fnoc1_abstract_object_METADATA.bescmd])
 #AT_BESCMD_RESPONSE_TEST([covjson/fnoc1_abstract_object_DATA.bescmd])
@@ -18,6 +19,10 @@ AT_BESCMD_RESPONSE_TEST([covjson/nc_point_d.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson/nc_point_series_d.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson/nc_point_scalar_d.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson/nc_single_profile_d.bescmd])
+
 #DAP2 grid
 AT_BESCMD_RESPONSE_TEST([covjson/nc_cf_1dll_simple_dap2grid_d.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson/nc_cf_1dll_extra_dap2grid_d.bescmd])
+
+#DAP4 simple grid
+AT_BESCMD_BESCONF_RESPONSE_TEST([covjson/nc_cf_1dll_simple_dap4_d.bescmd],[bes.default.conf])

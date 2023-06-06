@@ -5,7 +5,9 @@ $(NC_CPPFLAGS) $(DAP_CFLAGS)
 # Forcing the link with the static archive removes a warning about linking
 # with 'modules' not being portable. jhrg 11/30/15
 LIBADD = $(NC_LDFLAGS) $(NC_LIBS) -L$(top_builddir)/dap -ldap_module $(BES_DISPATCH_LIB) \
-$(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+
+# jhrg 6/2/23 $(BES_EXTRA_LIBS)
 
 # There actually is no AM_LDADD in automake, so we should probably get
 # rid of this and use a name that's not so confusing - makes it seem
