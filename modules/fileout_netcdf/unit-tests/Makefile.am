@@ -70,6 +70,7 @@ check-local:
 endif
 
 OBJS = ../history_utils.o
+OBJS2 = ../d4_tools.o
 LDFLAGS = -static
 
 HistoryUtilsTest_SOURCES = HistoryUtilsTest.cc
@@ -79,4 +80,4 @@ FONcArrayTest_SOURCES = FONcArrayTest.cc
 FONcArrayTest_LDADD = ../.libs/libfonc_module.a $(LIBADD)
 
 D4ToolsTest_SOURCES = D4ToolsTest.cc
-D4ToolsTest_LDADD = $(LIBADD)
+D4ToolsTest_LDADD = $(OBJS2) $(LIBADD)
