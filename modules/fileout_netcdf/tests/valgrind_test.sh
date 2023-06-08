@@ -164,7 +164,8 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_wrong_fvalue_
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_mlls_cf.h5.bescmd>d_group.nc4
 valgrind besstandalone -c tests/bes.conf -i tests/bescmd/gridT.3.compression.bescmd>d_group.nc4
 
-
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_fle_shuf_2def.h5.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_fle_shuf_2def.h5.dmrpp.bescmd >test.nc
 
 rm -rf test.nc
 rm -rf gr.nc4
