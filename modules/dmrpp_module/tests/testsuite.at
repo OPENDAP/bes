@@ -311,11 +311,20 @@ AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dmr])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.ce.dap])
 
-
 #special case to deflate twice. The second inflate input buffer size is bigger than chunk size.
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_c_c.h5.dap])
 #Also add a shuffle + deflate + deflate special case.
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_s_c_c.h5.dap])
+
+# fletcher32 + (shuffle) + deflate(including two deflates) 
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/SDS_fle_def.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/SDS_fle_shuf_def.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/SDS_fle_shuf_2def.h5.dap])
+
+#shuffle + deflate(including two deflates) + flectcher32
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/SDS_def_fle.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/SDS_shuf_def_fle.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/SDS_shuf_2def_fle.h5.dap])
 
 #############################################################################
 # Arrays of Fixed Length String tests
