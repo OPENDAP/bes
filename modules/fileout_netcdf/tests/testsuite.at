@@ -206,6 +206,12 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/swath_1_2d_xyz_special_ch
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/swath_1_2d_xyz_special_char_aug.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/swath_1_2d_xyz_special_char_aug.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/part_chunk_unlim.h5.dmrpp.bescmd)
+
+dnl Add fletcher32+shuffle+deflates tests for dmrpp and HDF5 handler 
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_fle_shuf_2def.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_fle_shuf_2def.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_fle_shuf_def.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_shuf_2def_fle.h5.dmrpp.bescmd)
  
 dnl Add test for dmrpp module that handles the fill value by the  parellel threads code.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(bescmd/test_array_dim2_whole.cf.bescmd)
