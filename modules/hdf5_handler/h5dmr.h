@@ -176,7 +176,7 @@ void obtain_ds_name_array_maps(libdap::D4Group*, std::unordered_map<std::string,
 void obtain_coord_names(libdap::Array*, std::vector<std::string>& coord_names);
 void make_coord_names_fpath(libdap::D4Group*, std::vector<std::string>& coord_names);
 bool obtain_no_path_cv(libdap::D4Group*, std::string &coord_name);
-void handle_absolute_path_cv(const libdap::D4Group*, const std::string &coord_name);
+void handle_absolute_path_cv(const libdap::D4Group*, std::string &coord_name);
 void handle_relative_path_cv(const libdap::D4Group*, std::string &coord_name);
 void remove_empty_coord_names(std::vector<std::string>&);
 void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & handled_dim_names);

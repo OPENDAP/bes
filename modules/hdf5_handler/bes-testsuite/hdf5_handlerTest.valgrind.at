@@ -722,6 +722,10 @@ AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_scalar_dset.h5.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord2.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_coverage_special.h5.dmr.bescmd])
+
+# The no-CF compliant coordinate attributes(no maps)
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord4.h5.dmr.bescmd])
+
 #Array DSG: has maps
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_single_trajectory.h5.dmr.bescmd])
 
