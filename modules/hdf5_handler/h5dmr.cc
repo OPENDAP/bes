@@ -2364,15 +2364,7 @@ void handle_relative_path_cv(const D4Group *d4_grp, string &coord_name) {
             }
         }
     }
-    string msg = "The coordinate attribute that includes the relative path ";
-    msg +="must contain at least one ../ string but this coordinate with the value <";
-    msg +=coord_name +'>'+" doesn't contain one.";
 
-#if 0
-    // This exception may be lifted if we care more on the execution of operations than the values of coordinates and the maps.
-    if (sep_count == 0)
-         throw InternalErr(__FILE__, __LINE__, msg); 
-#endif
 
     // Now we need to find the absolute path of the coordinate variable. 
     if (find_coord) {
