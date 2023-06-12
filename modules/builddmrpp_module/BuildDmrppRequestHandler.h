@@ -30,19 +30,16 @@
 #ifndef I_BuildDmrppRequestHandler_H
 #define I_BuildDmrppRequestHandler_H
 
-#include <string>
-#include <ostream>
-
 #include "BESRequestHandler.h"
 
 namespace builddmrpp {
 
     class BuildDmrppRequestHandler: public BESRequestHandler {
     public:
-        BuildDmrppRequestHandler(const std::string &name);
-        virtual ~BuildDmrppRequestHandler(void);
+        explicit BuildDmrppRequestHandler(const std::string &name);
+        ~BuildDmrppRequestHandler() override = default;
 
-        virtual void dump(std::ostream &strm) const;
+        void dump(std::ostream &strm) const override;
 
         static bool mkdmrpp_build_vers(BESDataHandlerInterface &dhi);
         static bool mkdmrpp_build_help(BESDataHandlerInterface &dhi);

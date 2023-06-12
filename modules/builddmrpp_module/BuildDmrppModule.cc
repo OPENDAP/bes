@@ -46,18 +46,10 @@ void BuildDmrppModule::initialize(const string &modname)
 {
     BESDEBUG(modname, "Initializing BuildDmrpp Module " << modname << endl);
 
-    BESDEBUG(modname, "    adding " << modname << " request handler" << endl);
     BESRequestHandlerList::TheList()->add_handler(modname, new BuildDmrppRequestHandler(modname));
 
-    BESDEBUG(modname, "    adding " << modname << " container storage" << endl);
     BESContainerStorageList::TheList()->add_persistence(new NgapBuildDmrppContainerStorage(modname));
 
-#if 0
-    BESDEBUG(modname, "    initialize the NGAP utilities and params" << endl);
-    NgapUtils::Initialize();
-#endif
-
-    BESDEBUG(modname, "    adding BuildDmrpp debug context" << endl);
     BESDebug::Register(modname);
 
     BESDEBUG(modname, "Done Initializing BuildDmrpp Module " << modname << endl);
@@ -66,19 +58,12 @@ void BuildDmrppModule::initialize(const string &modname)
 void BuildDmrppModule::terminate(const string &modname)
 {
     BESDEBUG(modname, "Cleaning BuildDmrpp module " << modname << endl);
-/*
-    BESResponseHandlerList::TheList()->remove_handler( SHOW_NGAP_PATH_INFO_RESPONSE) ;
-    BESXMLCommand::del_command( SHOW_NGAP_PATH_INFO_RESPONSE_STR) ;
 
-    BESDEBUG(modname, "    removing " << modname << " request handler" << endl);
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
-    if (rh)
-        delete rh;
+    delete rh;
 
     BESContainerStorageList::TheList()->deref_persistence(modname);
-*/
 
-    // TERM_END
     BESDEBUG(modname, "Done Cleaning BuildDmrpp module " << modname << endl);
 }
 

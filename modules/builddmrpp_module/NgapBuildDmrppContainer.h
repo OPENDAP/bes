@@ -40,8 +40,6 @@ class RemoteResource;
 
 namespace builddmrpp {
 
-enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
-
 /** @brief Container representing a remote request
  *
  * The real name of a NgapBuildDmrppContainer is the actual remote request. When the
@@ -55,34 +53,23 @@ class NgapBuildDmrppContainer : public BESContainer {
 
 private:
     std::shared_ptr<http::RemoteResource> d_data_rresource = nullptr;
-
     std::string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
 
-    virtual void initialize();
-
-    bool inject_data_url();
+    void initialize();
 
 protected:
     void _duplicate(NgapBuildDmrppContainer &copy_to);
 
-    NgapBuildDmrppContainer() = default;
-
 public:
+    NgapBuildDmrppContainer() = default;
     NgapBuildDmrppContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
-
     NgapBuildDmrppContainer(const NgapBuildDmrppContainer &copy_from);
+    ~NgapBuildDmrppContainer() override = default;
 
-#if 0
-    static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
-#endif
-
-    ~NgapBuildDmrppContainer() override;
-
-    BESContainer * ptr_duplicate() override;
+    BESContainer *ptr_duplicate() override;
 
     std::string access() override;
-
-    bool release() override;
+    bool release() override { return true; }
 
     void dump(std::ostream &strm) const override;
 };
