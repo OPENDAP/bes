@@ -25,3 +25,4 @@ export_for_tests.sh
 /misc_bescmd_files/1A.GMP.h5.dmr.bescmd
 /misc_bescmd_files/1A.GMP.h5.one_var.bescmd
 /misc_bescmd_files/1A.GMP.h5.one_var.dods.bescmd
+/testsuite_dmrpp_builder
