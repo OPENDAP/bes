@@ -56,6 +56,11 @@ void S3Module::terminate(const string &modname)
 {
     BESDEBUG(modname, "Cleaning s3 module " << modname << endl);
 
+    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
+    delete rh;
+
+    BESContainerStorageList::TheList()->deref_persistence(modname);
+
     BESDEBUG(modname, "Done Cleaning s3 module " << modname << endl);
 }
 
