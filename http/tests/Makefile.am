@@ -62,7 +62,6 @@ endif
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
-	-curl -s http://localhost:8000/exit >/dev/null
 	-rm remote_resource_tester
 
 AUTOTEST = $(AUTOM4TE) --language=autotest

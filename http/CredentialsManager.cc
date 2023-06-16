@@ -29,8 +29,8 @@
 #include <cstring>
 #include <iomanip>
 #include <sstream>
+#include <locale>
 #include <string>
-#include <memory>
 #include <sys/stat.h>
 
 #include "AllowedHosts.h"
@@ -38,15 +38,17 @@
 #include "kvp_utils.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "CurlUtils.h"
 #include "HttpNames.h"
 
-#include "AccessCredentials.h"
 #include "CredentialsManager.h"
+// jhrg 6/16/23 #include "NgapS3Credentials.h"
 
 using namespace std;
 
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
+// TODO Should this be a member in the class? jhrg 10/31/22
 #define NGAP_S3_BASE_DEFAULT "https://"
 
 namespace http {
@@ -56,11 +58,18 @@ const char *CredentialsManager::ENV_ID_KEY = "CMAC_ID";
 const char *CredentialsManager::ENV_ACCESS_KEY = "CMAC_ACCESS_KEY";
 const char *CredentialsManager::ENV_REGION_KEY = "CMAC_REGION";
 const char *CredentialsManager::ENV_URL_KEY = "CMAC_URL";
+
 const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
 
-// Static class members
-std::unique_ptr<CredentialsManager> CredentialsManager::d_instance = nullptr;
-std::once_flag CredentialsManager::d_init_once;
+/**
+ * Our singleton instance
+ */
+CredentialsManager *CredentialsManager::theMngr = nullptr;
+
+/**
+ * Run once_flag for initializing the singleton instance.
+ */
+std::once_flag d_cmac_init_once;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -81,7 +90,9 @@ std::string get_env_value(const string &key) {
         value.assign(cstr);
         BESDEBUG(HTTP_MODULE, prolog << "From system environment - " << key << ": " << value << endl);
     }
-
+    else {
+        value.clear();
+    }
     return value;
 }
 
@@ -91,18 +102,20 @@ std::string get_env_value(const string &key) {
 //
 
 /**
- * @brief Returns the singleton instance of the CredentialsManager.
+ * @brief Returns the singleton instance of the CrednetialsManager.
  * @return Returns the singleton instance of the CredentialsManager
  */
 CredentialsManager *CredentialsManager::theCM() {
-    if (d_instance == nullptr) {
-        std::call_once(d_init_once, []() {
-            d_instance.reset(new CredentialsManager);
-            d_instance->load_credentials();
-        });
-    }
 
-    return d_instance.get();
+    std::call_once(d_cmac_init_once, CredentialsManager::initialize_instance);
+    return theMngr;
+}
+
+void CredentialsManager::initialize_instance() {
+    theMngr = new CredentialsManager;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
 }
 
 /**
@@ -112,7 +125,18 @@ CredentialsManager::~CredentialsManager() {
     for (auto &item: creds) {
         delete item.second;
     }
+    creds.clear();
 }
+
+
+/**
+ * Private static function can only be called by friends and pThreads code.
+ */
+void CredentialsManager::delete_instance() {
+    delete theMngr;
+    theMngr = nullptr;
+}
+
 
 /**
  * Add the passed set of AccessCredentials to the collection, filed under key.
@@ -126,7 +150,8 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     creds.insert(std::pair<std::string, AccessCredentials *>(key, ac));
-    BESDEBUG(HTTP_MODULE, prolog << "Added AccessCredentials to CredentialsManager. credentials: " << endl << ac->to_json() << endl);
+    BESDEBUG(HTTP_MODULE,
+             prolog << "Added AccessCredentials to CredentialsManager. credentials: " << endl << ac->to_json() << endl);
 }
 
 /**
@@ -145,7 +170,7 @@ CredentialsManager::get(const shared_ptr <http::url> &url) {
     std::string best_key;
 
     if (url->protocol() == HTTP_PROTOCOL || url->protocol() == HTTPS_PROTOCOL) {
-        for (const auto &item: creds) {
+        for (auto &item: creds) {
             const std::string &key = item.first;
             if ((url->str().rfind(key, 0) == 0) && (key.size() > best_key.size())) {
                 // url starts with key
@@ -164,7 +189,7 @@ CredentialsManager::get(const shared_ptr <http::url> &url) {
  * @return true if file exists, false otherwise.
  */
 bool file_exists(const string &filename) {
-    struct stat buffer{};
+    struct stat buffer;
     return (stat(filename.c_str(), &buffer) == 0);
 }
 
@@ -214,8 +239,6 @@ bool file_is_secured(const string &filename) {
 }
 
 /**
- * Private method. Must be called inside code protected by a mutex.
- *
  * This method loads credentials from a special file identified in the bes.conf chain
  * by the key "CredentialsManager.config". If the key is missing from the bes.conf chain
  * the method will return and no credentials will be loaded.
@@ -247,8 +270,17 @@ bool file_is_secured(const string &filename) {
  */
 void CredentialsManager::load_credentials() {
 
-    string config_file = TheBESKeys::TheKeys()->read_string_key(CATALOG_MANAGER_CREDENTIALS, "");
-    if (config_file.empty()) {
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
+    bool found_key = true;
+    AccessCredentials *accessCredentials;
+    map<string, AccessCredentials *> credential_sets;
+
+    string config_file;
+    TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
+    if (!found_key) {
         BESDEBUG(HTTP_MODULE, prolog << "The BES key " << CATALOG_MANAGER_CREDENTIALS
                                      << " was not found in the BES configuration tree. No AccessCredentials were loaded"
                                      << endl);
@@ -258,7 +290,7 @@ void CredentialsManager::load_credentials() {
     // Does the configuration indicate that credentials will be submitted via the runtime environment?
     if (config_file == string(CredentialsManager::USE_ENV_CREDS_KEY_VALUE)) {
         // Apparently so...
-        auto accessCredentials = CredentialsManager::load_credentials_from_env();
+        accessCredentials = theCM()->load_credentials_from_env();
         if (accessCredentials) {
             // So if we have them, we add them to theCM() and then return without processing the configuration.
             string url = accessCredentials->get(AccessCredentials::URL_KEY);
@@ -271,6 +303,10 @@ void CredentialsManager::load_credentials() {
         return;
     }
 
+#if 0
+    load_ngap_s3_credentials();
+#endif
+    
     if (!file_exists(config_file)) {
         BESDEBUG(HTTP_MODULE, prolog << "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
                                      << " does not exist. No Access Credentials were loaded." << endl);
@@ -287,17 +323,15 @@ void CredentialsManager::load_credentials() {
     }
     BESDEBUG(HTTP_MODULE, prolog << "The config file '" << config_file << "' is secured." << endl);
 
-    // Load the credentials from the config file into 'keystore'
     map<string, vector<string>> keystore;
-    kvp::load_keys(config_file, keystore);
 
-    map<string, AccessCredentials *, std::less<>> credential_sets;
-    AccessCredentials *accessCredentials = nullptr;
+    kvp::load_keys(config_file, keystore);
 
     for (const auto &key: keystore) {
         string creds_name = key.first;
         const vector<string> &credentials_entries = key.second;
-        auto mit = credential_sets.find(creds_name);
+        map<string, AccessCredentials *>::iterator mit;
+        mit = credential_sets.find(creds_name);
         if (mit != credential_sets.end()) {  // New?
             // Nope.
             accessCredentials = mit->second;
@@ -309,7 +343,7 @@ void CredentialsManager::load_credentials() {
         }
 
         for (const auto &entry: credentials_entries) {
-            size_t index = entry.find(':');
+            size_t index = entry.find(":");
             if (index > 0) {
                 string key_name = entry.substr(0, index);
                 string value = entry.substr(index + 1);
@@ -351,34 +385,83 @@ void CredentialsManager::load_credentials() {
     BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << theCM()->size() << " AccessCredentials" << endl);
 }
 
+
 /**
- * Private method. Must be called inside code protected by a mutex.
+ * @brief Attempts to load Access Credentials from the environment variables.
  *
- * @return A pointer to AccessCredentials if successful, nullptr otherwise.
+ * WARNING: This method assumes that the Manager is located and makes no
+ * effort to lock or unlock the manager.
+ *
+ * @return A pointer to AccessCredntials of successful, nullptr otherwise.
  */
 AccessCredentials *CredentialsManager::load_credentials_from_env() {
 
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
-    // std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     AccessCredentials *ac = nullptr;
-    string env_url, env_id, env_access_key, env_region;
+    string env_url, env_id, env_access_key, env_region, env_bucket;
 
-    env_id =get_env_value(CredentialsManager::ENV_ID_KEY);
-    env_access_key = get_env_value(CredentialsManager::ENV_ACCESS_KEY);
-    env_region = get_env_value(CredentialsManager::ENV_REGION_KEY);
-    env_url = get_env_value(CredentialsManager::ENV_URL_KEY);
+    // If we are in developer mode then we compile this section which
+    // allows us to inject credentials via the system environment
 
-    if (!(env_url.empty() || env_id.empty() || env_access_key.empty() || env_region.empty())) {
+    env_id.assign(get_env_value(CredentialsManager::ENV_ID_KEY));
+    env_access_key.assign(get_env_value(CredentialsManager::ENV_ACCESS_KEY));
+    env_region.assign(get_env_value(CredentialsManager::ENV_REGION_KEY));
+    env_url.assign(get_env_value(CredentialsManager::ENV_URL_KEY));
+
+    if (env_url.size() && env_id.size() && env_access_key.size() && env_region.size()) {
         ac = new AccessCredentials();
         ac->add(AccessCredentials::URL_KEY, env_url);
         ac->add(AccessCredentials::ID_KEY, env_id);
         ac->add(AccessCredentials::KEY_KEY, env_access_key);
         ac->add(AccessCredentials::REGION_KEY, env_region);
     }
-
     return ac;
 }
+
+#if 0
+/**
+ * Read the BESKeys (from bes.conf chain) and if NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY is present builds
+ * and adds to the CredentialsManager an instance of NgapS3Credentials based on the values found in the bes.conf chain.
+ */
+void CredentialsManager::load_ngap_s3_credentials() {
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
+    string s3_distribution_endpoint_url;
+    bool found;
+    TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY, s3_distribution_endpoint_url, found);
+    if (found) {
+        string value;
+
+        long refresh_margin = 600;
+        TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_REFRESH_KEY, value, found);
+        if (found) {
+            refresh_margin = strtol(value.c_str(), nullptr, 10);
+        }
+
+        string s3_base_url = NGAP_S3_BASE_DEFAULT;
+        TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_URL_BASE_KEY, value, found);
+        if (found) {
+            s3_base_url = value;
+        }
+
+        unique_ptr<NgapS3Credentials> nsc(new NgapS3Credentials(s3_distribution_endpoint_url, refresh_margin));
+        nsc->add(AccessCredentials::URL_KEY, s3_base_url);
+        nsc->name("NgapS3Credentials");
+
+        CredentialsManager::theCM()->add(s3_base_url, nsc.release());
+        CredentialsManager::theCM()->ngaps3CredentialsLoaded = true;
+    }
+    else {
+        BESDEBUG(HTTP_MODULE, prolog << "WARNING: The BES configuration did not contain an instance of "
+                                     << NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY
+                                     << " NGAP S3 Credentials NOT loaded." << endl);
+    }
+}
+#endif
 
 } // namespace http
