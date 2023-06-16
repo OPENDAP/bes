@@ -72,6 +72,7 @@ dnl will override these values
 cxx_debug_flags=
 
 dnl Removed "-g -O2" jhrg 2/8/22
+dnl Changed -O2 to -Og for --enable-developer jhrg 6/16/23
 
 AC_ARG_ENABLE([developer],
     [AS_HELP_STRING([--enable-developer],
