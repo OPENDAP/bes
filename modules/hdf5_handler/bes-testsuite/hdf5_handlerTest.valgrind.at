@@ -751,3 +751,5 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dap.bescmd])
 
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([SDS_fle_shuf_2def.h5.dap.bescmd])
 
+AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_scale_null_space.h5.dmr.bescmd])
+

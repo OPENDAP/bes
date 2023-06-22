@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="dim_scale_null_space" space="catalog">/data/dim_scale_null_space.h5</setContainer>
+    <define name="d">
+	<container name="dim_scale_null_space" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>

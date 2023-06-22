@@ -167,6 +167,8 @@ valgrind besstandalone -c tests/bes.conf -i tests/bescmd/gridT.3.compression.bes
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_fle_shuf_2def.h5.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_fle_shuf_2def.h5.dmrpp.bescmd >test.nc
 
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/dim_scale_null_space.h5.bescmd>test.nc
+
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4

@@ -688,6 +688,10 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
 void
 read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale, bool is_eos5, eos5_dim_info_t & eos5_dim_info) {
 
+    // NULL space data, ignore.
+    if (dt_inst.ndims == -1 && dt_inst.nelmts == 0) 
+        return;
+
     switch (H5Tget_class(dt_inst.type)) {
 
     // HDF5 compound maps to DAP structure.
@@ -2067,6 +2071,7 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
                     string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
+
                 ret_value =(hsize_t)num_ele_dim;
 
                 H5Dclose(did_ref);

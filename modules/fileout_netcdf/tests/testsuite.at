@@ -212,6 +212,9 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_fle_shuf_2def.h5.besc
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_fle_shuf_2def.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_fle_shuf_def.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_shuf_2def_fle.h5.dmrpp.bescmd)
+
+dnl HDF5 Null space dimension scales
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_null_space.h5.bescmd)
  
 dnl Add test for dmrpp module that handles the fill value by the  parellel threads code.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(bescmd/test_array_dim2_whole.cf.bescmd)
