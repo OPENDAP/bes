@@ -305,7 +305,6 @@ bool check_ignored_attrs(hid_t attr_id, hid_t ty_id, const vector <char>& attr_n
 string get_dap_type(hid_t type, bool is_dap4)
 {
     size_t size = 0;
-    H5T_sign_t sign;
 
     H5T_class_t class_t = H5Tget_class(type);
     if (H5T_NO_CLASS == class_t)
