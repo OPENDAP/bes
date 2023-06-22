@@ -44,7 +44,8 @@ void close_fileid(hid_t fid);
 hid_t get_attr_info(hid_t dset, int index, bool, DSattr_t * attr_inst, bool*);
 bool check_ignored_attrs(hid_t attrid, hid_t ty_id, const vector <char>& attr_name, bool is_dap4);
 
-std::string get_dap_type(hid_t type,bool);
+std::string get_dap_type(hid_t type, bool);
+std::string get_dap_integer_type(hid_t dtype, bool);
 
 void get_dataset_dmr(const hid_t file_id, hid_t pid, const std::string &dname, DS_t * dt_inst_ptr, bool has_dimscale,
                      bool is_eos5, bool &is_pure_dims, std::vector<link_info_t> &, std::vector<std::string> &);

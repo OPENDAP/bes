@@ -315,65 +315,7 @@ string get_dap_type(hid_t type, bool is_dap4)
 
     case H5T_INTEGER:
 
-        size = H5Tget_size(type);
-        if (size == 0){
-            throw InternalErr(__FILE__, __LINE__,
-                              "size of datatype is invalid");
-        }
-
-        sign = H5Tget_sign(type);
-        if (sign < 0){
-            throw InternalErr(__FILE__, __LINE__,
-                              "sign of datatype is invalid");
-        }
-
-        BESDEBUG("h5", "=get_dap_type(): H5T_INTEGER" <<
-            " sign = " << sign <<
-            " size = " << size <<
-            endl);
-        if (size == 1){
-            // DAP2 doesn't have signed 8-bit integer, so we need map it to INT16.
-            if(true == is_dap4) {
-                if (sign == H5T_SGN_NONE)      
-                    return BYTE;
-                else
-                    return INT8;
-            }
-            else {
-                if (sign == H5T_SGN_NONE)      
-                    return BYTE;    
-                else
-                    return INT16;
-            }
-        }
-
-        if (size == 2) {
-            if (sign == H5T_SGN_NONE)
-                return UINT16;
-            else
-                return INT16;
-        }
-
-        if (size == 4) {
-            if (sign == H5T_SGN_NONE)
-                return UINT32;
-            else
-                return INT32;
-        }
-
-        if(size == 8) {
-            // DAP4 supports 64-bit integer.
-            if (true == is_dap4) {
-                if (sign == H5T_SGN_NONE)
-                    return UINT64;
-                else
-                    return INT64;
-            }
-            else
-                return INT_ELSE;
-        }
-
-        return INT_ELSE;
+        return get_dap_integer_type(type, is_dap4);
 
     case H5T_FLOAT:
         size = H5Tget_size(type);
@@ -411,6 +353,59 @@ string get_dap_type(hid_t type, bool is_dap4)
         BESDEBUG("h5", "<get_dap_type(): Unmappable Type" << endl);
         return "Unmappable Type";
     }
+}
+
+
+string get_dap_integer_type(hid_t dtype, bool is_dap4) {
+
+    string ret_value = INT_ELSE;
+    size_t dsize = H5Tget_size(dtype);
+    H5T_sign_t sign;
+
+    if (dsize == 0){
+        throw InternalErr(__FILE__, __LINE__,
+                          "size of datatype is invalid");
+    }
+
+    sign = H5Tget_sign(dtype);
+    if (sign < 0){
+        throw InternalErr(__FILE__, __LINE__,
+                          "sign of datatype is invalid");
+    }
+
+    BESDEBUG("h5", "=get_dap_dtype(): H5T_INTEGER" <<
+        " sign = " << sign <<
+        " size = " << dsize <<
+        endl);
+    
+    switch (dsize) {
+
+    case 1:
+        // DAP2 doesn't have signed 8-bit integer, so we need map it to INT16.
+        if (true == is_dap4) 
+            ret_value = (sign == H5T_SGN_NONE)?BYTE:INT8;
+        else 
+            ret_value = (sign == H5T_SGN_NONE)?BYTE:INT16;
+        break;
+
+    case 2:
+        ret_value = (sign == H5T_SGN_NONE)?UINT16:INT16;
+        break;
+
+    case 4:
+        ret_value = (sign == H5T_SGN_NONE)?UINT32:INT32;
+        break;
+
+    case 8:
+        // DAP4 supports 64-bit integer. DAP2 doesn't.
+        if (true == is_dap4) 
+            ret_value = (sign == H5T_SGN_NONE)?UINT64:INT64;
+        break;
+    default:
+        break;
+    }
+    return ret_value;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
