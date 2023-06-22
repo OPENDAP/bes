@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -18,14 +18,14 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Avenue, Suite 200,
+// Champaign, IL 61820
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5get.cc
 ///  iterates all HDF5 internals.
 /// 
-///  This file includes all the routines to search HDF5 group, dataset, links,
+///  This file includes all the routines to search HDF5 groups, datasets, links,
 ///  and attributes. since we are using HDF5 C APIs, we include all c functions
 ///  in this file.
 ///
@@ -58,15 +58,11 @@
 
 using namespace libdap;
 
-
 // H5Lvisit call back function.  After finding all the hard links, return 1. 
-static int visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *oinfo,
-    void *_op_data);
+static int visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *oinfo, void *_op_data);
 
 // H5OVISIT call back function. When finding the dimension scale attributes, return 1. 
-static int
-visit_obj_cb(hid_t o_id, const char *name, const H5O_info_t *oinfo,
-    void *_op_data);
+static int visit_obj_cb(hid_t o_id, const char *name, const H5O_info_t *oinfo, void *_op_data);
 
 // H5Aiterate2 call back function, check if having the dimension scale attributes.
 static herr_t attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata);
@@ -88,14 +84,10 @@ static herr_t attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_
 /// \return pointer to attribute structure
 /// \throw InternalError 
 ///////////////////////////////////////////////////////////////////////////////
-hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_ptr,
-                    bool *ignore_attr_ptr)
+hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_ptr, bool *ignore_attr_ptr)
 {
 
     hid_t attrid = -1;
-
-    // Always assume that we don't ignore any attributes.
-    *ignore_attr_ptr = false;
 
     if ((attrid = H5Aopen_by_idx(dset, ".", H5_INDEX_CRT_ORDER, H5_ITER_INC,(hsize_t)index, H5P_DEFAULT, H5P_DEFAULT)) < 0) {
         string msg = "unable to open attribute by index ";
@@ -129,55 +121,10 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    H5T_class_t ty_class = H5Tget_class(ty_id);
-    if (ty_class < 0) {
-        string msg = "cannot get hdf5 attribute datatype class for the attribute ";
-        string attrnamestr(attr_name.begin(),attr_name.end());
-        msg += attrnamestr;
-        H5Aclose(attrid);
-        throw InternalErr(__FILE__, __LINE__, msg);
-    }
-
-    // The following datatype will not be supported for mapping to DAS for both DAP2 and DAP4.
-    // Note:DAP4 explicitly states that the data should be defined atomic datatype(int, string).
-    // 1-D variable length of string can also be mapped to both DAS and DDS.
-    // The variable length string class is H5T_STRING rather than H5T_VLEN,
-    // So safe here. 
-    // We also ignore the mapping of integer 64 bit for DAP2 since DAP2 doesn't
-    // support 64-bit integer. In theory, DAP2 doesn't support long double
-    // (128-bit or 92-bit floating point type), since this rarely happens
-    // in DAP application, we simply don't consider here.
-    // However, DAP4 supports 64-bit integer.
-    if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
-        || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM)
-        || (ty_class == H5T_REFERENCE) ||(ty_class == H5T_COMPOUND)
-        || (ty_class == H5T_VLEN) || (ty_class == H5T_ARRAY)){ 
-        
-        *ignore_attr_ptr = true;
+    *ignore_attr_ptr = check_ignored_attrs(attrid,ty_id,attr_name,is_dap4);
+    if (*ignore_attr_ptr) {
         H5Tclose(ty_id);
         return attrid;
-    }
-
-    // Ignore 64-bit integer for DAP2.
-    // The nested if is better to understand the code. Don't combine
-    if (false == is_dap4) {
-        if((ty_class == H5T_INTEGER) && (H5Tget_size(ty_id)== 8)) {//64-bit int
-            *ignore_attr_ptr = true;
-            H5Tclose(ty_id);
-            return attrid;
-        }
-    }       
-
-    // Here we ignore netCDF-4 specific attributes for DAP4 to make filenetCDF-4 work
-    if (true == is_dap4 && HDF5RequestHandler::get_default_handle_dimension() == true) {
-        // Remove the nullptrTERM etc.
-        string attr_name_str(attr_name.begin(),attr_name.end()-1);
-        if(attr_name_str == "CLASS" || attr_name_str == "NAME" || attr_name_str == "_Netcdf4Dimid" 
-           || attr_name_str == "_nc3_strict" || attr_name_str=="_NCProperties" || attr_name_str=="_Netcdf4Coordinates") {
-            *ignore_attr_ptr = true;
-            H5Tclose(ty_id);
-            return attrid;
-        }
     }
 
     hid_t aspace_id = -1;
@@ -185,13 +132,14 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         string msg = "cannot get hdf5 dataspace id for the attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
+        H5Tclose(ty_id);
         H5Aclose(attrid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     // It is better to use the dynamic allocation of the array.
     // However, since the DODS_MAX_RANK is not big and it is also
-    // used in other location, we still keep the original code.
+    // used in other locations, we still keep the original code.
     // KY 2011-11-16
 
     int ndims = H5Sget_simple_extent_ndims(aspace_id);
@@ -199,6 +147,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         string msg = "cannot get hdf5 dataspace number of dimension for attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
+        H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
         throw InternalErr(__FILE__, __LINE__, msg);
@@ -209,6 +158,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         string msg = "number of dimensions exceeds allowed for attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
+        H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
         throw InternalErr(__FILE__, __LINE__, msg);
@@ -217,12 +167,13 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     vector<hsize_t> size(ndims);
     vector<hsize_t> maxsize(ndims);
 
-    //The HDF5 attribute should not have unlimited dimension,
+    // The HDF5 attribute should not have unlimited dimension,
     // maxsize is only a place holder.
-    if (H5Sget_simple_extent_dims(aspace_id, size.data(), maxsize.data())<0){
+    if (H5Sget_simple_extent_dims(aspace_id, size.data(), maxsize.data()) < 0){
         string msg = "cannot obtain the dim. info for the attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
+        H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
         throw InternalErr(__FILE__, __LINE__, msg);
@@ -240,6 +191,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         string msg = "cannot obtain the dtype size for the attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
+        H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
         throw InternalErr(__FILE__, __LINE__, msg);
@@ -253,9 +205,10 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         string msg = "cannot obtain the memory dtype for the attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
+        H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
-	throw InternalErr(__FILE__, __LINE__, msg);
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     // Save the information to the struct
@@ -269,13 +222,72 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     for (int j = 0; j < ndims; j++) {
         (*attr_inst_ptr).size[j] = (int)(size[j]);
     }
-   
-    if(H5Sclose(aspace_id)<0) {
+
+    if (H5Tclose(ty_id) < 0) {
+        H5Sclose(aspace_id);
+        H5Aclose(attrid);
+        throw InternalErr(__FILE__,__LINE__,"Cannot close HDF5 dataspace ");
+    }
+    if (H5Sclose(aspace_id) < 0) {
         H5Aclose(attrid);
         throw InternalErr(__FILE__,__LINE__,"Cannot close HDF5 dataspace ");
     }
 
     return attrid;
+}
+
+bool check_ignored_attrs(hid_t attr_id, hid_t ty_id, const vector <char>& attr_name, bool is_dap4) {
+
+    H5T_class_t ty_class = H5Tget_class(ty_id);
+    if (ty_class < 0) {
+        string msg = "cannot get hdf5 attribute datatype class for the attribute ";
+        string attrnamestr(attr_name.begin(),attr_name.end());
+        msg += attrnamestr;
+        H5Tclose(ty_id);
+        H5Aclose(attr_id);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // The following datatype will not be supported for mapping to DAS for both DAP2 and DAP4.
+    // Note:DAP4 explicitly states that the data should be defined atomic datatype(int, string).
+    // 1-D variable length of string can also be mapped to both DAS and DDS.
+    // The variable length string class is H5T_STRING rather than H5T_VLEN,
+    // So safe here.
+    // We also ignore the mapping of integer 64 bit for DAP2 since DAP2 doesn't
+    // support 64-bit integer. In theory, DAP2 doesn't support long double
+    // (128-bit or 92-bit floating point type), since this rarely happens
+    // in DAP application, we simply don't consider here.
+    // However, DAP4 supports 64-bit integer.
+    if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
+        || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM)
+        || (ty_class == H5T_REFERENCE) ||(ty_class == H5T_COMPOUND)
+        || (ty_class == H5T_VLEN) || (ty_class == H5T_ARRAY)) {
+        H5Tclose(ty_id);
+        return true;
+    }
+
+    // Ignore 64-bit integer for DAP2.
+    // The nested if is better to understand the code. Don't combine.
+    if ((false == is_dap4) &&
+        ((ty_class == H5T_INTEGER) && (H5Tget_size(ty_id)== 8))) {//64-bit int
+        H5Tclose(ty_id);
+        return true;
+    }
+
+    // Here we ignore netCDF-4 specific attributes for DAP4 to make filenetCDF-4 work.
+    if (true == is_dap4 && HDF5RequestHandler::get_default_handle_dimension() == true) {
+
+        // Remove the nullptrTERM etc.
+        string attr_name_str(attr_name.begin(), attr_name.end()-1);
+        if (attr_name_str == "CLASS" || attr_name_str == "NAME" || attr_name_str == "_Netcdf4Dimid"
+           || attr_name_str == "_nc3_strict" || attr_name_str=="_NCProperties" || attr_name_str=="_Netcdf4Coordinates") {
+            H5Tclose(ty_id);
+            return true;
+        }
+    }
+
+    return false;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -294,7 +306,7 @@ string get_dap_type(hid_t type, bool is_dap4)
 {
     size_t size = 0;
     H5T_sign_t sign;
-    BESDEBUG("h5", ">get_dap_type(): type="  << type << endl);
+
     H5T_class_t class_t = H5Tget_class(type);
     if (H5T_NO_CLASS == class_t)
         throw InternalErr(__FILE__, __LINE__, 
