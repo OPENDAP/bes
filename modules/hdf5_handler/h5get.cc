@@ -2177,17 +2177,10 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
 
         catch(...) {
 
-            if(atype_id != -1)
-                H5Tclose(atype_id);
-
-            if(amemtype_id != -1)
-                H5Tclose(amemtype_id);
-
-            if(aspace_id != -1)
-                H5Sclose(aspace_id);
-
-            if(attr_id != -1)
-                H5Aclose(attr_id);
+            H5Tclose(atype_id);
+            H5Tclose(amemtype_id);
+            H5Sclose(aspace_id);
+            H5Aclose(attr_id);
 
             throw;
         }
@@ -2375,8 +2368,7 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
     }
            
     // Close attribute data space ID.
-    if(aspace_id != -1)
-        H5Sclose(aspace_id);
+    H5Sclose(aspace_id);
 
     if(false == check_substr) {
         if(total_vstring == value_to_compare)
@@ -2502,8 +2494,9 @@ string handle_string_special_characters(string &s) {
     // Always start with _ if the first character is not a letter
     if (true == isdigit(s[0])) s.insert(0, insertString);
     
-    for (unsigned int i = 0; i < s.size(); i++)
-        if ((false == isalnum(s[i])) && (s[i] != '_')) s[i] = '_';
+    for (auto &se:s)
+        if ((false == isalnum(se)) && (se != '_'))
+            se= '_';
 
     return s;
 
