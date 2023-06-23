@@ -895,9 +895,12 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
 
             // the vector seems not working. use array.
             int dim_attr_mark[3];
-            for(int i = 0;i<3;i++)
+#if 0
+            for(int i = 0; i<3; i++)
                 dim_attr_mark[i] = 0;
-
+#endif
+            for (auto &dtm:dim_attr_mark)
+                dtm = 0;
             // This will check if "NAME" and "REFERENCE_LIST" exists.
             herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info_dimscale, dim_attr_mark);
             if(ret < 0) {
@@ -908,8 +911,6 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
 
-            for (int i = 0; i<3; i++)
-                BESDEBUG("h5","dim_attr_mark is "<<dim_attr_mark[i] <<endl);
             // Find the dimension scale. DIM*SCALE is a must. Then NAME=VARIABLE or (REFERENCE_LIST and not PURE DIM)
             // Here a little bias towards files created by the netCDF-4 APIs.
             // If we don't have RERERENCE_LIST in a dataset that has CLASS=DIMENSION_SCALE attribute,
@@ -958,6 +959,7 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
     }
     else if(false == is_pure_dim) //Except pure dimension,we need to save all dimension names in this dimension.
         obtain_dimnames(file_id,dset,dt_inst_ptr->ndims,dt_inst_ptr,hdf5_hls,is_eos5);
+
     return is_pure_dim;
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -976,7 +978,6 @@ bool check_h5str(hid_t h5type)
         return false;
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn print_attr(hid_t type, int loc, void *sm_buf)
 /// will get the printed representation of an attribute.
@@ -988,6 +989,7 @@ bool check_h5str(hid_t h5type)
 /// \return a string
 ///////////////////////////////////////////////////////////////////////////////
 string print_attr(hid_t type, int loc, void *sm_buf) {
+
     union {
         unsigned char* ucp;
         char *tcp;
@@ -1253,7 +1255,6 @@ D4AttributeType daptype_strrep_to_dap4_attrtype(const string & s){
 /// \param datatype datatype id
 /// \return pointer to BaseType
 ///////////////////////////////////////////////////////////////////////////////
-//static BaseType *Get_bt(const string &vname,
 BaseType *Get_bt(const string &vname,
                  const string &vpath,
                  const string &dataset,
@@ -1865,20 +1866,7 @@ static herr_t
 attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
 
-#if 0
-    //bool *countp = (bool*)opdata;
-    //bool *dimattr_p = (bool*)opdata;
-#endif
-
-    int *dimattr_p = (int*)opdata;
-
-#if 0
-    bool has_reference_list = false;
-    bool has_dimscale = false;
-    bool has_name_as_var = false;
-    bool has_name_as_nc4_purdim = false;
-#endif
-
+    auto dimattr_p = (int*)opdata;
 
     hid_t attr_id =   -1;
     hid_t atype_id =  -1;
@@ -1897,171 +1885,58 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
 
     try {
 
-//#if 0
-        // If finding the "REFERENCE_LIST", increases the countp.
-        if ((H5T_COMPOUND == H5Tget_class(atype_id)) && (strcmp(name,"REFERENCE_LIST")==0)) {
-             //(*countp)++;
+        // If finding the "REFERENCE_LIST", mark it.
+        if ((H5T_COMPOUND == H5Tget_class(atype_id)) && (strcmp(name,"REFERENCE_LIST")==0))
              *dimattr_p = 1;
-             //*dimattr_p = true;
-        }
-//#endif
+
         // Check if finding the CLASS attribute.
-        if (H5T_STRING == H5Tget_class(atype_id)) {
-            if (strcmp(name,"NAME") == 0) {
+        if (H5T_STRING == H5Tget_class(atype_id) && (strcmp(name,"NAME") == 0)) {
 
-                string pure_dimname_mark = "This is a netCDF dimension but not a netCDF variable";
-                bool is_pure_dim = check_str_attr_value(attr_id,atype_id,pure_dimname_mark,true);
+            string pure_dimname_mark = "This is a netCDF dimension but not a netCDF variable";
+            bool is_pure_dim = check_str_attr_value(attr_id,atype_id,pure_dimname_mark,true);
 
-                BESDEBUG("h5","pure dimension name yes" << is_pure_dim <<endl);
-                if(true == is_pure_dim)
-                    *(dimattr_p+1) =1;
-                    //*(dimattr_p+2) =true;
-                else {
-                    // netCDF save the variable name in the "NAME" attribute.
-                    // We need to retrieve the variable name first.
-                    ssize_t objnamelen = -1;
-                    if ((objnamelen= H5Iget_name(loc_id,nullptr,0))<=0) {
-                        string msg = "Cannot obtain the variable name length." ;
-                        throw InternalErr(__FILE__,__LINE__,msg);
-                    }
-                    vector<char> objname;
-                    objname.resize(objnamelen+1);
-                    if ((objnamelen= H5Iget_name(loc_id,objname.data(),objnamelen+1))<=0) {
-                        string msg = "Cannot obtain the variable name." ;
-                        throw InternalErr(__FILE__,__LINE__,msg);
-                    }
-
-                    string objname_str = string(objname.begin(),objname.end());
-
-                    // Must trim the string delimter.
-                    objname_str = objname_str.substr(0,objnamelen);
-                    // Remove the path
-                    string normal_dimname_mark = objname_str.substr(objname_str.find_last_of("/")+1);
-                    bool is_normal_dim = check_str_attr_value(attr_id,atype_id,normal_dimname_mark,false);
-                    if(true == is_normal_dim)
-                        *(dimattr_p+2) = 1;
-                        //*(dimattr_p+3) = true;
+            BESDEBUG("h5","pure dimension name yes" << is_pure_dim <<endl);
+            if(true == is_pure_dim)
+                *(dimattr_p+1) =1;
+            else {
+                // netCDF save the variable name in the "NAME" attribute.
+                // We need to retrieve the variable name first.
+                ssize_t objnamelen = -1;
+                if ((objnamelen= H5Iget_name(loc_id,nullptr,0))<=0) {
+                    string msg = "Cannot obtain the variable name length." ;
+                    throw InternalErr(__FILE__,__LINE__,msg);
                 }
+                vector<char> objname;
+                objname.resize(objnamelen+1);
+                if ((objnamelen= H5Iget_name(loc_id,objname.data(),objnamelen+1))<=0) {
+                    string msg = "Cannot obtain the variable name." ;
+                    throw InternalErr(__FILE__,__LINE__,msg);
+                }
+
+                string objname_str = string(objname.begin(),objname.end());
+
+                // Must trim the string delimter.
+                objname_str = objname_str.substr(0,objnamelen);
+
+                // Remove the path
+                string normal_dimname_mark = objname_str.substr(objname_str.find_last_of("/")+1);
+                bool is_normal_dim = check_str_attr_value(attr_id,atype_id,normal_dimname_mark,false);
+                if (true == is_normal_dim)
+                    *(dimattr_p+2) = 1;
             }
         }
+        // The CLASS = DIMENSION_SCALE is checked else where.
 
-#if 0
-            H5T_str_t str_pad = H5Tget_strpad(atype_id);
-
-            hid_t aspace_id = -1;
-            aspace_id = H5Aget_space(attr_id);
-            if(aspace_id < 0) 
-                throw InternalErr(__FILE__, __LINE__, "H5Aget_space fails in the attr_info call back function.");
-
-            // CLASS is a variable-length string
-            int ndims = H5Sget_simple_extent_ndims(aspace_id);
-            hsize_t nelmts = 1;
-
-            // if it is a scalar attribute, just define number of elements to be 1.
-            if (ndims != 0) {
-
-                vector<hsize_t> asize;
-                vector<hsize_t> maxsize;
-                asize.resize(ndims);
-                maxsize.resize(ndims);
-
-                // DAP applications don't care about the unlimited dimensions 
-                // since the applications only care about retrieving the data.
-                // So we don't check the maxsize to see if it is the unlimited dimension 
-                // attribute.
-                if (H5Sget_simple_extent_dims(aspace_id, asize.data(), maxsize.data())<0) {
-                    H5Sclose(aspace_id);
-                    throw InternalErr(__FILE__, __LINE__, "Cannot obtain the dim. info in the H5Aiterate2 call back function.");
-                }
-
-                // Return ndims and size[ndims]. 
-                for (int j = 0; j < ndims; j++)
-                    nelmts *= asize[j];
-            } // if(ndims != 0)
-
-            size_t ty_size = H5Tget_size(atype_id);
-            if (0 == ty_size) {
-                H5Sclose(aspace_id);
-                throw InternalErr(__FILE__, __LINE__, "Cannot obtain the type size in the H5Aiterate2 call back function.");
-            }
-
-            size_t total_bytes = nelmts * ty_size;
-            string total_vstring ="";
-            if(H5Tis_variable_str(atype_id) > 0) {
-
-                // Variable length string attribute values only store pointers of the actual string value.
-                vector<char> temp_buf;
-                temp_buf.resize(total_bytes);
-
-                if (H5Aread(attr_id, atype_id, temp_buf.data()) < 0){
-                    H5Sclose(aspace_id);
-                    throw InternalErr(__FILE__,__LINE__,"Cannot read the attribute in the H5Aiterate2 call back function");
-                }
-
-                char *temp_bp = nullptr;
-                temp_bp = temp_buf.data();
-                char* onestring = nullptr;
-
-                for (unsigned int temp_i = 0; temp_i <nelmts; temp_i++) {
-
-                    // This line will assure that we get the real variable length string value.
-                    onestring =*(char **)temp_bp;
-
-                    if(onestring!= nullptr) 
-                        total_vstring +=string(onestring);
-
-                    // going to the next value.
-                    temp_bp +=ty_size;
-                }
-
-                if ((temp_buf.data()) != nullptr) {
-                    // Reclaim any VL memory if necessary.
-                    if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,temp_buf.data()) < 0) {
-                        H5Sclose(aspace_id);
-                        throw InternalErr(__FILE__,__LINE__,"Cannot reclaim VL memory in the H5Aiterate2 call back function.");
-                    }
-                }
-
-            }
-            else {// Fixed-size string, need to retrieve the string value.
-
-                // string attribute values 
-                vector<char> temp_buf;
-                temp_buf.resize(total_bytes);
-                if (H5Aread(attr_id, atype_id, temp_buf.data()) < 0){
-                    H5Sclose(aspace_id);
-                    throw InternalErr(__FILE__,__LINE__,"Cannot read the attribute in the H5Aiterate2 call back function");
-                }
-                string temp_buf_string(temp_buf.begin(),temp_buf.end());
-                total_vstring = temp_buf_string.substr(0,total_bytes);
-
-                // Note: we need to remove the string pad or term to find DIMENSION_SCALE.
-                if(str_pad != H5T_STR_ERROR) 
-                    total_vstring = total_vstring.substr(0,total_vstring.size()-1);
-            }
-           
-            // Close attribute data space ID.
-            if(aspace_id != -1)
-                H5Sclose(aspace_id);
-            if(total_vstring == "DIMENSION_SCALE"){
-                (*countp)++;
-            }
-#endif
-        
     }
     catch(...) {
-        if(atype_id != -1)
-            H5Tclose(atype_id);
-        if(attr_id != -1)
-            H5Aclose(attr_id);
+        H5Tclose(atype_id);
+        H5Aclose(attr_id);
         throw;
     }
 
     // Close IDs.
-    if(atype_id != -1)
-        H5Tclose(atype_id);
-    if(attr_id != -1)
-        H5Aclose(attr_id);
+    H5Tclose(atype_id);
+    H5Aclose(attr_id);
 
     return 0;
 }
