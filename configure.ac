@@ -72,6 +72,7 @@ dnl will override these values
 cxx_debug_flags=
 
 dnl Removed "-g -O2" jhrg 2/8/22
+dnl Changed -O2 to -Og for --enable-developer jhrg 6/16/23
 
 AC_ARG_ENABLE([developer],
     [AS_HELP_STRING([--enable-developer],
@@ -82,7 +83,7 @@ dnl it's actually used - not all the source files include config.h. jhrg 1/30/23
 
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
-    [cxx_debug_flags="-g3 -O0 -fno-inline -Wall"
+    [cxx_debug_flags="-g3 -Og -Wall"
       AC_MSG_NOTICE([Developer Mode is enabled.]) ],
     [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
       AC_MSG_NOTICE([Developer Mode is disabled.])])
