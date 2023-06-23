@@ -355,7 +355,7 @@ string get_dap_type(hid_t type, bool is_dap4)
     }
 }
 
-
+// Obtain the corresponding DAP2/4 data types for integers.
 string get_dap_integer_type(hid_t dtype, bool is_dap4) {
 
     string ret_value = INT_ELSE;
@@ -669,7 +669,6 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
     // Here we need to handle NULL SPACE variables. Since the data with null sapce doesn't contain any value,
     // so the variable should not map to a DAP variable except for a DAP4 dimension.
     if (H5S_NULL == H5Sget_simple_extent_type(dspace)) {
-
         (*dt_inst_ptr).ndims = -1;
         (*dt_inst_ptr).nelmts = 0;
         H5Tclose(dtype);
@@ -756,7 +755,8 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
 
     // For DAP4 when dimension scales are used.
     if (true == use_dimscale) {
-
+        is_pure_dim = handle_dimscale_dmr(file_id,dset, dspace, is_eos5,dt_inst_ptr, hdf5_hls, handled_cv_names);
+#if 0
         BESDEBUG("h5", "<h5get.cc: get_dataset() use dim scale is true." << endl);
 
         // Some HDF5 datasets are dimension scale datasets; some are not. We need to distinguish.
@@ -845,6 +845,7 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
         }
         else if(false == is_pure_dim) //Except pure dimension,we need to save all dimension names in this dimension. 
             obtain_dimnames(file_id,dset,ndims,dt_inst_ptr,hdf5_hls,is_eos5);
+#endif
     }
     
     if(H5Tclose(dtype)<0) {
@@ -864,6 +865,101 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
  
 }
 
+bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
+                         DS_t * dt_inst_ptr,vector<link_info_t> &hdf5_hls,vector<string> &handled_cv_names)
+{
+    bool is_pure_dim = false;
+    BESDEBUG("h5", "<h5get.cc: handle_dimscale_dmr()." << endl);
+
+    string dname(dt_inst_ptr->name);
+
+    // Some HDF5 datasets are dimension scale datasets; some are not. We need to distinguish.
+    bool is_dimscale = false;
+    bool is_null_space = (H5Sget_simple_extent_type(dspace) == H5S_NULL);
+
+    // Dimension scales must be 1-D or the data space is NULL.
+    if (1 == dt_inst_ptr->ndims || is_null_space) {
+
+        bool has_ds_attr = false;
+
+        try{
+            has_ds_attr = has_dimscale_attr(dset);
+        }
+        catch(...) {
+            H5Sclose(dspace);
+            H5Dclose(dset);
+            throw InternalErr(__FILE__, __LINE__, "Fail to check dim. scale.");
+        }
+
+        if (true == has_ds_attr) {
+
+            // the vector seems not working. use array.
+            int dim_attr_mark[3];
+            for(int i = 0;i<3;i++)
+                dim_attr_mark[i] = 0;
+
+            // This will check if "NAME" and "REFERENCE_LIST" exists.
+            herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info_dimscale, dim_attr_mark);
+            if(ret < 0) {
+                string msg = "cannot interate the attributes of the dataset ";
+                msg += dname;
+                H5Sclose(dspace);
+                H5Dclose(dset);
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+
+            for (int i = 0; i<3; i++)
+                BESDEBUG("h5","dim_attr_mark is "<<dim_attr_mark[i] <<endl);
+            // Find the dimension scale. DIM*SCALE is a must. Then NAME=VARIABLE or (REFERENCE_LIST and not PURE DIM)
+            // Here a little bias towards files created by the netCDF-4 APIs.
+            // If we don't have RERERENCE_LIST in a dataset that has CLASS=DIMENSION_SCALE attribute,
+            // we will ignore this orphanage dimension scale since it is not associated with other datasets.
+            // However, it is an orphanage dimension scale created by the netCDF-4 APIs, we think
+            // it must have a purpose to do this way by data creator. So keep this as a dimension scale.
+            //
+            if ((dim_attr_mark[0] && !dim_attr_mark[1]) || dim_attr_mark[2])
+                is_dimscale =true;
+            else if(dim_attr_mark[1]) {
+                is_pure_dim = true;
+                // We need to remember if this dimension is unlimited dimension,maybe in the future. 2022-11-13
+            }
+        }
+    }
+
+    // Here we need to check the dimension scale that has NULL space.
+    if (true == is_dimscale && H5Sget_simple_extent_type(dspace) == H5S_NULL) {
+        is_dimscale = false;
+        is_pure_dim = true;
+    }
+
+    if (true == is_dimscale) {
+        BESDEBUG("h5", "<h5get.cc: dname is " << dname << endl);
+        BESDEBUG("h5", "<h5get.cc: get_dataset() this is  dim scale." << endl);
+        BESDEBUG("h5", "<h5get.cc: dataset storage size is: " <<H5Dget_storage_size(dset)<< endl);
+
+        // Save the dimension names and the dimension full paths.
+        // We still need the dimension full paths for distinguishing the different dimension that
+        // has the same dimension name but in the different paths.
+        // We also need to handle the special characters inside the dimension names of the HDF-EOS5 that has the dimension scales.
+
+        if (is_eos5) {
+            string temp_orig_dim_name = dname.substr(dname.find_last_of("/")+1);
+            string temp_dim_name = handle_string_special_characters(temp_orig_dim_name);
+            string temp_dim_path = handle_string_special_characters_in_path(dname);
+            (*dt_inst_ptr).dimnames.push_back(temp_dim_name);
+            (*dt_inst_ptr).dimnames_path.push_back(temp_dim_path);
+        }
+        else { // AFAIK, NASA netCDF-4 like files are following CF name conventions. So no need to carry out the special character operations.
+            (*dt_inst_ptr).dimnames.push_back(dname.substr(dname.find_last_of("/")+1));
+            (*dt_inst_ptr).dimnames_path.push_back(dname);
+            handled_cv_names.push_back(dname);
+        }
+        is_pure_dim = false;
+    }
+    else if(false == is_pure_dim) //Except pure dimension,we need to save all dimension names in this dimension.
+        obtain_dimnames(file_id,dset,dt_inst_ptr->ndims,dt_inst_ptr,hdf5_hls,is_eos5);
+    return is_pure_dim;
+}
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn check_h5str(hid_t h5type)
 /// checks if type is HDF5 string type

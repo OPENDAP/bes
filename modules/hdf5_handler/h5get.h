@@ -67,6 +67,8 @@ libdap::Structure *Get_structure(const std::string &varname, const std::string &
 bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
 void obtain_dimnames(const hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5);
+bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
+                         DS_t * dt_inst_ptr,std::vector<link_info_t> &hdf5_hls,std::vector<std::string> &handled_cv_names);
 
 void write_vlen_str_attrs(hid_t attr_id, hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr,
                           libdap::AttrTable* d2_attr, bool is_dap4);
