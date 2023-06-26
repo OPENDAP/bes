@@ -37,6 +37,19 @@
 #include "h5common.h"
 #include "h5apicompatible.h"
 
+union attr_data_ptr_t {
+        unsigned char* ucp;
+        char *tcp;
+        short *tsp;
+        unsigned short *tusp;
+        int *tip;
+        unsigned int*tuip;
+        long *tlp;
+        unsigned long*tulp;
+        float *tfp;
+        double *tdp;
+    };
+
 bool check_h5str(hid_t);
 
 void close_fileid(hid_t fid);
@@ -54,11 +67,18 @@ void get_dataset(hid_t pid, const std::string &dname, DS_t * dt_inst_ptr);
 hid_t get_fileid(const char *filename);
 
 std::string print_attr(hid_t type, int loc, void *sm_buf);
+void print_integer_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_ptr_t gp, std::vector<char> &rep ) ;
+void print_float_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_ptr_t gp, vector<char> &rep );
 
 D4AttributeType daptype_strrep_to_dap4_attrtype(const std::string & s);
 
 libdap::BaseType *Get_bt(const std::string &vname, const std::string &var_path,
                          const std::string &dataset, hid_t datatype, bool is_dap4);
+
+libdap::BaseType *Get_integer_bt(const std::string &vname, const std::string &vpath,
+                                const std::string &dataset, hid_t datatype, bool is_dap4);
+libdap::BaseType *Get_float_bt(const std::string &vname, const std::string &vpath,
+                                const std::string &dataset, hid_t datatype, bool is_dap4);
 
 //static Structure *Get_structure(const string &varname,
 libdap::Structure *Get_structure(const std::string &varname, const std::string &var_path,

@@ -55,6 +55,7 @@
 #include <BESSyntaxUserError.h>
 #include <math.h>
 #include <sstream>
+#include <memory>
 
 using namespace libdap;
 
@@ -990,18 +991,7 @@ bool check_h5str(hid_t h5type)
 ///////////////////////////////////////////////////////////////////////////////
 string print_attr(hid_t type, int loc, void *sm_buf) {
 
-    union {
-        unsigned char* ucp;
-        char *tcp;
-        short *tsp;
-        unsigned short *tusp;
-        int *tip;
-        unsigned int*tuip;
-        long *tlp;
-        unsigned long*tulp;
-        float *tfp;
-        double *tdp;
-    } gp;
+    attr_data_ptr_t gp;
 
     vector<char> rep;
 
@@ -1009,148 +999,18 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 
         case H5T_INTEGER: {
 
-            size_t size = H5Tget_size(type);
-            if (size == 0){
-                throw InternalErr(__FILE__, __LINE__,
-                                  "size of datatype is invalid");
-            }
-
-            H5T_sign_t sign = H5Tget_sign(type);
-            if (sign < 0){
-                throw InternalErr(__FILE__, __LINE__,
-                                  "sign of datatype is invalid");
-            }
-
-            BESDEBUG("h5", "=get_dap_type(): H5T_INTEGER" <<
-                        " sign = " << sign <<
-                        " size = " << size <<
-                        endl);
-
             // change void pointer into the corresponding integer datatype.
             // 32 should be long enough to hold one integer and one
             // floating point number.
             rep.resize(32);
-
-            if (size == 1){
- 
-                if(sign == H5T_SGN_NONE) {
-                    gp.ucp = (unsigned char *) sm_buf;
-                    unsigned char tuchar = *(gp.ucp + loc);
-                    snprintf(rep.data(), 32, "%u", tuchar);
-                }
-
-                else {
-                    gp.tcp = (char *) sm_buf;
-                    snprintf(rep.data(), 32, "%d", *(gp.tcp + loc));
-                }
-            }
-
-            else if (size == 2) {
-
-                if(sign == H5T_SGN_NONE) {
-                    gp.tusp = (unsigned short *) sm_buf;
-                    snprintf(rep.data(), 32, "%hu", *(gp.tusp + loc));
- 
-                }
-                else {
-                    gp.tsp = (short *) sm_buf;
-                    snprintf(rep.data(), 32, "%hd", *(gp.tsp + loc));
- 
-                }
-            }
-
-            else if (size == 4) {
-
-                if(sign == H5T_SGN_NONE) {
-                    gp.tuip = (unsigned int *) sm_buf;
-                    snprintf(rep.data(), 32, "%u", *(gp.tuip + loc));
- 
-                }
-                else {
-                    gp.tip = (int *) sm_buf;
-                    snprintf(rep.data(), 32, "%d", *(gp.tip + loc));
-                }
-            }
-            else if (size == 8) {
-
-                if(sign == H5T_SGN_NONE) {
-                    gp.tulp = (unsigned long *) sm_buf;
-                    snprintf(rep.data(), 32, "%lu", *(gp.tulp + loc));
-                }
-                else {
-                    gp.tlp = (long *) sm_buf;
-                    snprintf(rep.data(), 32, "%ld", *(gp.tlp + loc));
-                }
-            }
-            else 
-                throw InternalErr(__FILE__, __LINE__,"Unsupported integer type, check the size of datatype.");
+            print_integer_type_attr(type, loc, sm_buf, gp, rep);
 
             break;
         }
 
         case H5T_FLOAT: {
             rep.resize(32);
-            char gps[32];
-
-            if (H5Tget_size(type) == 4) {
-                
-                float attr_val = *(float*)sm_buf;
-                // Note: this comparsion is the same as isnan.
-                // However, on CentOS 7, isnan() is declared in two headers and causes conflicts.
-                if (attr_val!=attr_val) {
-                    rep.resize(3);
-                    rep[0]='N';
-                    rep[1]='a';
-                    rep[2]='N';
-                }
-                else {
-                   bool is_a_fin = isfinite(attr_val);
-                   // Represent the float number.
-                   // Some space may be wasted. But it is okay.
-                   gp.tfp = (float *) sm_buf;
-                   int ll = snprintf(gps, 30, "%.10g", *(gp.tfp + loc));
-#if 0
-                   //int ll = strlen(gps);
-#endif
-                   // Add the dot to assure this is a floating number
-                   if (!strchr(gps, '.') && !strchr(gps, 'e') && !strchr(gps,'E')
-                      && (true == is_a_fin)){
-                       gps[ll++] = '.';
-                   }
-   
-                   gps[ll] = '\0';
-                   snprintf(rep.data(), 32, "%s", gps);
-                }
-            } 
-            else if (H5Tget_size(type) == 8) {
-
-                double attr_val = *(double*)sm_buf;
-                // Note: this comparsion is the same as isnan.
-                // However, on CentOS 7, isnan() is declared in two headers and causes conflicts.
-                if (attr_val!=attr_val) {
-                    rep.resize(3);
-                    rep[0]='N';
-                    rep[1]='a';
-                    rep[2]='N';
-                }
-                else {
-                    bool is_a_fin = isfinite(attr_val);
-                    gp.tdp = (double *) sm_buf;
-                    int ll = snprintf(gps, 30, "%.17g", *(gp.tdp + loc));
-#if 0
-                    //int ll = strlen(gps);
-#endif
-                    if (!strchr(gps, '.') && !strchr(gps, 'e')&& !strchr(gps,'E')
-                       && (true == is_a_fin)) {
-                        gps[ll++] = '.';
-                    }
-                    gps[ll] = '\0';
-                    snprintf(rep.data(), 32, "%s", gps);
-                }
-            } 
-            else if (H5Tget_size(type) == 0){
-                throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
-            }
+            print_float_type_attr(type,loc,sm_buf,gp,rep);
             break;
         }
 
@@ -1207,6 +1067,139 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
     return rep_str;
 }
 
+void print_integer_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_ptr_t gp, vector<char> &rep ) {
+
+    size_t asize = H5Tget_size(atype);
+    if (asize == 0) {
+        throw InternalErr(__FILE__, __LINE__,
+                          "size of datatype is invalid");
+    }
+
+    H5T_sign_t sign = H5Tget_sign(atype);
+    if (sign < 0) {
+        throw InternalErr(__FILE__, __LINE__,
+                          "sign of datatype is invalid");
+    }
+
+    BESDEBUG("h5", "=get_dap_type(): H5T_INTEGER" <<
+                                                  " sign = " << sign <<
+                                                  " size = " << asize <<
+                                                  endl);
+
+    // change void pointer into the corresponding integer datatype.
+    // 32 should be long enough to hold one integer and one
+    // floating point number.
+
+    if (asize == 1) {
+
+        if (sign == H5T_SGN_NONE) {
+            gp.ucp = (unsigned char *) sm_buf;
+            unsigned char tuchar = *(gp.ucp + loc);
+            snprintf(rep.data(), 32, "%u", tuchar);
+        } else {
+            gp.tcp = (char *) sm_buf;
+            snprintf(rep.data(), 32, "%d", *(gp.tcp + loc));
+        }
+    } else if (asize == 2) {
+
+        if (sign == H5T_SGN_NONE) {
+            gp.tusp = (unsigned short *) sm_buf;
+            snprintf(rep.data(), 32, "%hu", *(gp.tusp + loc));
+
+        } else {
+            gp.tsp = (short *) sm_buf;
+            snprintf(rep.data(), 32, "%hd", *(gp.tsp + loc));
+
+        }
+    } else if (asize == 4) {
+
+        if (sign == H5T_SGN_NONE) {
+            gp.tuip = (unsigned int *) sm_buf;
+            snprintf(rep.data(), 32, "%u", *(gp.tuip + loc));
+
+        } else {
+            gp.tip = (int *) sm_buf;
+            snprintf(rep.data(), 32, "%d", *(gp.tip + loc));
+        }
+    } else if (asize == 8) {
+
+        if (sign == H5T_SGN_NONE) {
+            gp.tulp = (unsigned long *) sm_buf;
+            snprintf(rep.data(), 32, "%lu", *(gp.tulp + loc));
+        } else {
+            gp.tlp = (long *) sm_buf;
+            snprintf(rep.data(), 32, "%ld", *(gp.tlp + loc));
+        }
+    } else
+        throw InternalErr(__FILE__, __LINE__, "Unsupported integer type, check the size of datatype.");
+
+}
+
+void print_float_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_ptr_t gp, vector<char> &rep )  {
+
+    char gps[32];
+
+    if (H5Tget_size(atype) == 4) {
+
+        float attr_val = *(float*)sm_buf;
+        // Note: this comparsion is the same as isnan.
+        // However, on CentOS 7, isnan() is declared in two headers and causes conflicts.
+        if (attr_val!=attr_val) {
+            rep.resize(3);
+            rep[0]='N';
+            rep[1]='a';
+            rep[2]='N';
+        }
+        else {
+           bool is_a_fin = isfinite(attr_val);
+           // Represent the float number.
+           // Some space may be wasted. But it is okay.
+           gp.tfp = (float *) sm_buf;
+           int ll = snprintf(gps, 30, "%.10g", *(gp.tfp + loc));
+#if 0
+           //int ll = strlen(gps);
+#endif
+           // Add the dot to assure this is a floating number
+           if (!strchr(gps, '.') && !strchr(gps, 'e') && !strchr(gps,'E')
+              && (true == is_a_fin)){
+               gps[ll++] = '.';
+           }
+
+           gps[ll] = '\0';
+           snprintf(rep.data(), 32, "%s", gps);
+        }
+    }
+    else if (H5Tget_size(atype) == 8) {
+
+        double attr_val = *(double*)sm_buf;
+        // Note: this comparsion is the same as isnan.
+        // However, on CentOS 7, isnan() is declared in two headers and causes conflicts.
+        if (attr_val!=attr_val) {
+            rep.resize(3);
+            rep[0]='N';
+            rep[1]='a';
+            rep[2]='N';
+        }
+        else {
+            bool is_a_fin = isfinite(attr_val);
+            gp.tdp = (double *) sm_buf;
+            int ll = snprintf(gps, 30, "%.17g", *(gp.tdp + loc));
+#if 0
+            //int ll = strlen(gps);
+#endif
+            if (!strchr(gps, '.') && !strchr(gps, 'e')&& !strchr(gps,'E')
+               && (true == is_a_fin)) {
+                gps[ll++] = '.';
+            }
+            gps[ll] = '\0';
+            snprintf(rep.data(), 32, "%s", gps);
+        }
+    }
+    else if (H5Tget_size(atype) == 0){
+        throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+    }
+
+}
 D4AttributeType daptype_strrep_to_dap4_attrtype(const string & s){
     
     if (s == "Byte")
@@ -1265,189 +1258,214 @@ BaseType *Get_bt(const string &vname,
     try {
 
         BESDEBUG("h5", ">Get_bt varname=" << vname << " datatype=" << datatype
-            << endl);
+                                          << endl);
 
-        size_t size = 0;
-        H5T_sign_t sign    = H5T_SGN_ERROR;
         switch (H5Tget_class(datatype)) {
 
-        case H5T_INTEGER:
-        {
-            size = H5Tget_size(datatype);
-            sign = H5Tget_sign(datatype);
-            BESDEBUG("h5", "=Get_bt() H5T_INTEGER size = " << size << " sign = "
-                << sign << endl);
+            case H5T_INTEGER:
+                btp = Get_integer_bt(vname, vpath, dataset, datatype, is_dap4);
+                break;
 
-            if (sign == H5T_SGN_ERROR) {
-                throw InternalErr(__FILE__, __LINE__, "cannot retrieve the sign type of the integer");
-            }
-            if (size == 0) {
-                throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
-            }
-            else if (size == 1) { // Either signed char or unsigned char
-                // DAP2 doesn't support signed char, it maps to DAP int16.
-                if (sign == H5T_SGN_2) {
-                    if (false == is_dap4) // signed char to DAP2 int16
-                        btp = new HDF5Int16(vname, vpath, dataset);
-                    else
-                        btp = new HDF5Int8(vname,vpath,dataset);
-                }
-                else
-                    btp = new HDF5Byte(vname, vpath,dataset);
-            }
-            else if (size == 2) {
-                if (sign == H5T_SGN_2)
-                    btp = new HDF5Int16(vname, vpath,dataset);
-                else
-                    btp = new HDF5UInt16(vname,vpath, dataset);
-            }
-            else if (size == 4) {
-                if (sign == H5T_SGN_2){
-                    btp = new HDF5Int32(vname, vpath,dataset);
-                }
-                else
-                    btp = new HDF5UInt32(vname,vpath, dataset);
-            }
-            else if (size == 8) {
-                if(true == is_dap4) {
-                   if(sign == H5T_SGN_2) 
-                      btp = new HDF5Int64(vname,vpath, dataset);
-                   else
-                      btp = new HDF5UInt64(vname,vpath, dataset);
-                }
-                else {
-                    /*string err_msg = "Unsupported HDF5 64-bit Integer type:";
-                    throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);*/
-                    string err_msg;
-                    if(sign == H5T_SGN_2)
-                        err_msg = invalid_type_error_msg("Int64");
-                    else
-                        err_msg = invalid_type_error_msg("UInt64");
+            case H5T_FLOAT:
+                btp = Get_float_bt(vname, vpath, dataset, datatype, is_dap4);
+                break;
 
-                    throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
-                }
-            }
-        }
-            break;
+                case H5T_STRING:
+                    btp = new HDF5Str(vname, vpath, dataset);
+                break;
 
-        case H5T_FLOAT:
-        {
-            size = H5Tget_size(datatype);
-            BESDEBUG("h5", "=Get_bt() H5T_FLOAT size = " << size << endl);
-
-	    if (size == 0) {
-                throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
-            }
-            else if (size == 4) {
-                btp = new HDF5Float32(vname,vpath, dataset);
-            }
-            else if (size == 8) {
-                btp = new HDF5Float64(vname,vpath, dataset);
-            }
-        }
-            break;
-
-        case H5T_STRING:
-            btp = new HDF5Str(vname, vpath,dataset);
-            break;
-
-        // The array datatype is rarely,rarely used. So this
-        // part of code is not reviewed.
+                // The array datatype is rarely,rarely used. So this
+                // part of code is not reviewed.
 #if 0
-        case H5T_ARRAY: {
-            BaseType *ar_bt = 0;
-            try {
-                BESDEBUG("h5",
-                    "=Get_bt() H5T_ARRAY datatype = " << datatype
-                    << endl);
+                case H5T_ARRAY: {
+                    BaseType *ar_bt = 0;
+                    try {
+                        BESDEBUG("h5",
+                            "=Get_bt() H5T_ARRAY datatype = " << datatype
+                            << endl);
 
-                // Get the base datatype of the array
-                hid_t dtype_base = H5Tget_super(datatype);
-                ar_bt = Get_bt(vname, dataset, dtype_base);
-                btp = new HDF5Array(vname, dataset, ar_bt);
-                delete ar_bt; ar_bt = 0;
+                        // Get the base datatype of the array
+                        hid_t dtype_base = H5Tget_super(datatype);
+                        ar_bt = Get_bt(vname, dataset, dtype_base);
+                        btp = new HDF5Array(vname, dataset, ar_bt);
+                        delete ar_bt; ar_bt = 0;
 
-                // Set the size of the array.
-                int ndim = H5Tget_array_ndims(datatype);
-                size = H5Tget_size(datatype);
-                int nelement = 1;
+                        // Set the size of the array.
+                        int ndim = H5Tget_array_ndims(datatype);
+                        size = H5Tget_size(datatype);
+                        int nelement = 1;
 
-		if (dtype_base < 0) {
-                throw InternalErr(__FILE__, __LINE__, "cannot return the base datatype");
- 	        }
-		if (ndim < 0) {
-                throw InternalErr(__FILE__, __LINE__, "cannot return the rank of the array datatype");
+                if (dtype_base < 0) {
+                        throw InternalErr(__FILE__, __LINE__, "cannot return the base datatype");
+                     }
+                if (ndim < 0) {
+                        throw InternalErr(__FILE__, __LINE__, "cannot return the rank of the array datatype");
+                        }
+                if (size == 0) {
+                        throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+                        }
+                        BESDEBUG(cerr
+                            << "=Get_bt()" << " Dim = " << ndim
+                            << " Size = " << size
+                            << endl);
+
+                        hsize_t size2[DODS_MAX_RANK];
+                        if(H5Tget_array_dims(datatype, size2) < 0){
+                            throw
+                                InternalErr(__FILE__, __LINE__,
+                                            string("Could not get array dims for: ")
+                                              + vname);
+                        }
+
+
+                        HDF5Array &h5_ar = static_cast < HDF5Array & >(*btp);
+                        for (int dim_index = 0; dim_index < ndim; dim_index++) {
+                            h5_ar.append_dim_ll(size2[dim_index]);
+                            BESDEBUG("h5", "=Get_bt() " << size2[dim_index] << endl);
+                            nelement = nelement * size2[dim_index];
+                        }
+
+                        h5_ar.set_did(dt_inst.dset);
+                        // Assign the array datatype id.
+                        h5_ar.set_tid(datatype);
+                        h5_ar.set_memneed(size);
+                        h5_ar.set_numdim(ndim);
+                        h5_ar.set_numelm(nelement);
+                        h5_ar.set_size(nelement);
+                        h5_ar.d_type = H5Tget_class(dtype_base);
+                if (h5_ar.d_type == H5T_NO_CLASS){
+                    throw InternalErr(__FILE__, __LINE__, "cannot return the datatype class identifier");
                 }
-		if (size == 0) {
-                throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+                    }
+                    catch (...) {
+                        if( ar_bt ) delete ar_bt;
+                        if( btp ) delete btp;
+                        throw;
+                    }
+                    break;
                 }
-                BESDEBUG(cerr
-                    << "=Get_bt()" << " Dim = " << ndim
-                    << " Size = " << size
-                    << endl);
-
-                hsize_t size2[DODS_MAX_RANK];
-                if(H5Tget_array_dims(datatype, size2) < 0){
-                    throw
-                        InternalErr(__FILE__, __LINE__,
-                                    string("Could not get array dims for: ")
-                                      + vname);
-                }
-
-
-                HDF5Array &h5_ar = static_cast < HDF5Array & >(*btp);
-                for (int dim_index = 0; dim_index < ndim; dim_index++) {
-                    h5_ar.append_dim_ll(size2[dim_index]);
-                    BESDEBUG("h5", "=Get_bt() " << size2[dim_index] << endl);
-                    nelement = nelement * size2[dim_index];
-                }
-
-                h5_ar.set_did(dt_inst.dset);
-                // Assign the array datatype id.
-                h5_ar.set_tid(datatype);
-                h5_ar.set_memneed(size);
-                h5_ar.set_numdim(ndim);
-                h5_ar.set_numelm(nelement);
-                h5_ar.set_size(nelement);
-                h5_ar.d_type = H5Tget_class(dtype_base); 
-		if (h5_ar.d_type == H5T_NO_CLASS){
-		    throw InternalErr(__FILE__, __LINE__, "cannot return the datatype class identifier");
-		}
-            }
-            catch (...) {
-                if( ar_bt ) delete ar_bt;
-                if( btp ) delete btp;
-                throw;
-            }
-            break;
-        }
 #endif
 
-        // Reference map to DAP URL, check the technical note.
-        case H5T_REFERENCE:
-            btp = new HDF5Url(vname, vpath,dataset);
-            break;
-        
-        default:
-            throw InternalErr(__FILE__, __LINE__,
-                              string("Unsupported HDF5 type:  ") + vname);
+                // Reference map to DAP URL, check the technical note.
+                case H5T_REFERENCE:
+                    btp = new HDF5Url(vname, vpath, dataset);
+                break;
+
+                default:
+                    throw InternalErr(__FILE__, __LINE__,
+                                      string("Unsupported HDF5 type:  ") + vname);
+            }
         }
+        catch (...) {
+            if (btp) delete btp;
+            throw;
+        }
+
+        if (!btp)
+            throw InternalErr(__FILE__, __LINE__,
+                              string("Could not make a DAP variable for: ")
+                              + vname);
+
+        BESDEBUG("h5", "<Get_bt()" << endl);
+        return btp;
+}
+
+BaseType *Get_integer_bt(const string &vname, const string &vpath, const string &dataset,
+                        hid_t datatype, bool is_dap4) {
+
+    BaseType *btp = nullptr;
+    size_t size = H5Tget_size(datatype);
+    H5T_sign_t sign = H5Tget_sign(datatype);
+    BESDEBUG("h5", "=Get_bt() H5T_INTEGER size = " << size << " sign = "
+                                                   << sign << endl);
+
+    if (sign == H5T_SGN_ERROR) {
+        throw InternalErr(__FILE__, __LINE__, "cannot retrieve the sign type of the integer");
     }
-    catch (...) {
-        if( btp ) delete btp;
-        throw;
+    switch (size) {
+        case 1:
+            // Either signed char or unsigned char
+        // DAP2 doesn't support signed char, it maps to DAP int16.
+        if (sign == H5T_SGN_2) {
+            if (false == is_dap4) {// signed char to DAP2 int16
+                auto hdf5_int16 = make_unique<HDF5Int16>(vname,vpath,dataset);
+                btp = hdf5_int16.release();
+                //btp = new HDF5Int16(vname, vpath, dataset);
+            }
+            else {
+                auto hdf5_int8 = make_unique<HDF5Int8>(vname,vpath,dataset);
+                btp = hdf5_int8.release();
+                //btp = new HDF5Int8(vname, vpath, dataset);
+            }
+        } else {
+            auto hdf5_int8 = make_unique<HDF5Byte>(vname, vpath, dataset);
+            btp = hdf5_int8.release();
+            //btp = new HDF5Byte(vname, vpath, dataset);
+        }
+        break;
+        case 2:
+            if (sign == H5T_SGN_2)
+            btp = new HDF5Int16(vname, vpath, dataset);
+        else
+            btp = new HDF5UInt16(vname, vpath, dataset);
+            break;
+        case 4:
+            if (sign == H5T_SGN_2) {
+                auto hdf5_int32 = make_unique<HDF5Int32>(vname, vpath, dataset);
+                btp = hdf5_int32.release();
+                //btp = new HDF5Int32(vname, vpath, dataset);
+            } else {
+                auto hdf5_uint32 = make_unique<HDF5UInt32>(vname, vpath, dataset);
+                btp = hdf5_uint32.release();
+                //btp = new HDF5UInt32(vname, vpath, dataset);
+            }
+            break;
+
+        case 8: {
+            if (true == is_dap4) {
+                if (sign == H5T_SGN_2)
+                    btp = new HDF5Int64(vname, vpath, dataset);
+                else
+                    btp = new HDF5UInt64(vname, vpath, dataset);
+            } else {
+                /*string err_msg = "Unsupported HDF5 64-bit Integer type:";
+                throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);*/
+                string err_msg;
+                if (sign == H5T_SGN_2)
+                    err_msg = invalid_type_error_msg("Int64");
+                else
+                    err_msg = invalid_type_error_msg("UInt64");
+
+                throw BESSyntaxUserError(err_msg, __FILE__, __LINE__);
+            }
+        }
+        break;
+        default:
+            throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
     }
 
-    if (!btp)
-        throw InternalErr(__FILE__, __LINE__,
-                          string("Could not make a DAP variable for: ")
-                          + vname);
-                                                  
-    BESDEBUG("h5", "<Get_bt()" << endl);
     return btp;
 }
 
+BaseType *Get_float_bt(const string &vname, const string &vpath, const string &dataset,
+                        hid_t datatype, bool is_dap4) {
 
+    BaseType *btp = nullptr;
+    size_t size = H5Tget_size(datatype);
+
+    BESDEBUG("h5", "=Get_bt() H5T_FLOAT size = " << size << endl);
+
+    if (size == 0)
+        throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+    else if (size == 4)
+        btp = new HDF5Float32(vname, vpath, dataset);
+    else if (size == 8)
+        btp = new HDF5Float64(vname, vpath, dataset);
+    else
+        throw InternalErr(__FILE__, __LINE__, "the size of the float datatype ie neither 4 nor 8. ");
+
+    return btp;
+}
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn Get_structure(const string& varname, const string &dataset,
 ///     hid_t datatype)
