@@ -1706,23 +1706,22 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
 
         hsize_t size2[DODS_MAX_RANK];
         if (H5Tget_array_dims(memb_type, size2) < 0) {
-            throw
-                    InternalErr(__FILE__, __LINE__,
-                                string("Could not get array dims for: ")
-                                + string(memb_name));
+            throw InternalErr(__FILE__, __LINE__,
+                                string("Could not get array dims for: ") + memb_name);
         }
 
         H5T_class_t array_memb_cls = H5Tget_class(dtype_base);
         if (array_memb_cls == H5T_NO_CLASS) {
             throw InternalErr(__FILE__, __LINE__,
                               string("cannot get the correct class for compound type member")
-                              + string(memb_name));
+                              + memb_name);
         }
         if (H5T_COMPOUND == array_memb_cls) {
 
             s = Get_structure(memb_name, memb_name, dataset, dtype_base, is_dap4);
-            auto h5_ar = new HDF5Array(memb_name, dataset, s);
-
+            //auto h5_ar = new HDF5Array(memb_name, dataset, s);
+            auto h5_array = make_unique<HDF5Array>(memb_name,dataset,s);
+            HDF5Array *h5_ar = h5_array.get();
             for (int dim_index = 0; dim_index < ndim; dim_index++) {
                 h5_ar->append_dim_ll(size2[dim_index]);
                 nelement = nelement * size2[dim_index];
@@ -1734,7 +1733,7 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
             h5_ar->set_length(nelement);
 
             structure_ptr->add_var(h5_ar);
-            delete h5_ar;
+            //delete h5_ar;
 
         } else if (H5T_INTEGER == array_memb_cls || H5T_FLOAT == array_memb_cls || H5T_STRING == array_memb_cls) {
             ar_bt = Get_bt(memb_name, memb_name, dataset, dtype_base, is_dap4);
@@ -1753,9 +1752,9 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
             structure_ptr->add_var(h5_ar);
             delete h5_ar;
         }
-        if (ar_bt) delete ar_bt;
-        if (btp) delete btp;
-        if (s) delete s;
+        delete ar_bt;
+        delete btp;
+        delete s;
         H5Tclose(dtype_base);
 
     }
