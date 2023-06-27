@@ -89,12 +89,20 @@ void Get_structure_array_type(libdap::Structure *structure_ptr, hid_t memb_type,
 bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
 void obtain_dimnames(const hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5);
+std::string obtain_dimname_deref(hid_t ref_dset, DS_t *dt_inst_ptr);
+void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>& hdf5_hls, std::string & trim_objname);
 bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
                          DS_t * dt_inst_ptr,std::vector<link_info_t> &hdf5_hls,std::vector<std::string> &handled_cv_names);
 
 void write_vlen_str_attrs(hid_t attr_id, hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr,
                           libdap::AttrTable* d2_attr, bool is_dap4);
+bool check_if_utf8_str(hid_t ty_id, bool is_dap4);
+
 bool check_str_attr_value(hid_t attr_id, hid_t atype_id, const string & value_to_compare, bool is_substr);
+hsize_t obtain_number_elements(hid_t space_id);
+std::string obtain_vlstr_values(std::vector<char> & temp_buf, hid_t atype_id, size_t ty_size,
+                           hsize_t nelmts, hid_t aspace_id);
+
 
 std::string obtain_shortest_ancestor_path(const std::vector<std::string> &);
 
