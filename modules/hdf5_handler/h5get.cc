@@ -1267,7 +1267,7 @@ BaseType *Get_bt(const string &vname,
                 break;
 
             case H5T_FLOAT:
-                btp = Get_float_bt(vname, vpath, dataset, datatype, is_dap4);
+                btp = Get_float_bt(vname, vpath, dataset, datatype);
                 break;
             case H5T_STRING: {
                 auto hdf5_str = make_unique<HDF5Str>(vname, vpath, dataset);
@@ -1390,6 +1390,7 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
         case 1:
             // Either signed char or unsigned char
         // DAP2 doesn't support signed char, it maps to DAP int16.
+#if 0
         if (sign == H5T_SGN_2) {
             if (false == is_dap4) {// signed char to DAP2 int16
                 auto hdf5_int16 = make_unique<HDF5Int16>(vname,vpath,dataset);
@@ -1403,6 +1404,8 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
             auto hdf5_uint8 = make_unique<HDF5Byte>(vname, vpath, dataset);
             btp = hdf5_uint8.release();
         }
+#endif
+        btp = Get_byte_bt(vname, vpath, dataset, sign, is_dap4);
         break;
         case 2:
             if (sign == H5T_SGN_2) {
@@ -1452,8 +1455,27 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
     return btp;
 }
 
+BaseType *Get_byte_bt(const string &vname, const string &vpath, const string &dataset,
+                        H5T_sign_t sign, bool is_dap4)
+{
+    BaseType *btp = nullptr;
+    if (sign == H5T_SGN_2) {
+        if (false == is_dap4) {// signed char to DAP2 int16
+            auto hdf5_int16 = make_unique<HDF5Int16>(vname,vpath,dataset);
+            btp = hdf5_int16.release();
+        }
+        else {
+            auto hdf5_int8 = make_unique<HDF5Int8>(vname,vpath,dataset);
+            btp = hdf5_int8.release();
+        }
+    } else {
+        auto hdf5_uint8 = make_unique<HDF5Byte>(vname, vpath, dataset);
+        btp = hdf5_uint8.release();
+    }
+    return btp;
+}
 BaseType *Get_float_bt(const string &vname, const string &vpath, const string &dataset,
-                        hid_t datatype, bool is_dap4) {
+                        hid_t datatype) {
 
     BaseType *btp = nullptr;
     size_t size = H5Tget_size(datatype);
@@ -1536,7 +1558,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
                 delete s; s = nullptr;
             } 
             else if(memb_cls == H5T_ARRAY) {
-                string memb_name_str = string(memb_name);
+                auto memb_name_str = string(memb_name);
                 Get_structure_array_type(structure_ptr,memb_type,memb_name_str,dataset,is_dap4);
 #if 0
                 BaseType *ar_bt = nullptr;
@@ -1716,7 +1738,6 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
         if (H5T_COMPOUND == array_memb_cls) {
 
             s = Get_structure(memb_name, memb_name, dataset, dtype_base, is_dap4);
-            //auto h5_ar = new HDF5Array(memb_name, dataset, s);
             auto h5_array = make_unique<HDF5Array>(memb_name,dataset,s);
             HDF5Array *h5_ar = h5_array.get();
             for (int dim_index = 0; dim_index < ndim; dim_index++) {
@@ -2235,7 +2256,6 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
                 if(H5Dclose(ref_dset)<0) {
                     throw InternalErr(__FILE__,__LINE__,"Cannot close the HDF5 dataset in the function obtain_dimnames().");
                 }
-                //objname.clear();
             }// for (vector<Dimension *>::iterator ird is var->dims.begin()
             if(vlbuf.empty()== false) {
 
@@ -2272,7 +2292,7 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
     return ;
 }
 
-string obtain_dimname_deref(hid_t ref_dset, DS_t *dt_inst_ptr) {
+string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr) {
 
     vector<char>objname;
     ssize_t objnamelen = -1;
