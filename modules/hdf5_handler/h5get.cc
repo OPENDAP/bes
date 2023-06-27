@@ -1269,9 +1269,10 @@ BaseType *Get_bt(const string &vname,
             case H5T_FLOAT:
                 btp = Get_float_bt(vname, vpath, dataset, datatype, is_dap4);
                 break;
-
-                case H5T_STRING:
-                    btp = new HDF5Str(vname, vpath, dataset);
+            case H5T_STRING: {
+                auto hdf5_str = make_unique<HDF5Str>(vname, vpath, dataset);
+                btp = hdf5_str.release();
+            }
                 break;
 
                 // The array datatype is rarely,rarely used. So this
@@ -1347,27 +1348,30 @@ BaseType *Get_bt(const string &vname,
 #endif
 
                 // Reference map to DAP URL, check the technical note.
-                case H5T_REFERENCE:
-                    btp = new HDF5Url(vname, vpath, dataset);
+            case H5T_REFERENCE: {
+                auto hdf5_url = make_unique<HDF5Url>(vname, vpath, dataset);
+                btp = hdf5_url.release();
+            }
                 break;
 
-                default:
-                    throw InternalErr(__FILE__, __LINE__,
-                                      string("Unsupported HDF5 type:  ") + vname);
+            default: {
+                throw InternalErr(__FILE__, __LINE__, string("Unsupported HDF5 type:  ") + vname);
             }
-        }
-        catch (...) {
-            if (btp) delete btp;
-            throw;
-        }
 
-        if (!btp)
-            throw InternalErr(__FILE__, __LINE__,
-                              string("Could not make a DAP variable for: ")
-                              + vname);
+        }
+    }
+    catch (...) {
+        if (btp) delete btp;
+        throw;
+    }
 
-        BESDEBUG("h5", "<Get_bt()" << endl);
-        return btp;
+    if (!btp)
+        throw InternalErr(__FILE__, __LINE__,
+                          string("Could not make a DAP variable for: ")
+                          + vname);
+
+    BESDEBUG("h5", "<Get_bt()" << endl);
+    return btp;
 }
 
 BaseType *Get_integer_bt(const string &vname, const string &vpath, const string &dataset,
@@ -1379,9 +1383,9 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
     BESDEBUG("h5", "=Get_bt() H5T_INTEGER size = " << size << " sign = "
                                                    << sign << endl);
 
-    if (sign == H5T_SGN_ERROR) {
+    if (sign == H5T_SGN_ERROR)
         throw InternalErr(__FILE__, __LINE__, "cannot retrieve the sign type of the integer");
-    }
+
     switch (size) {
         case 1:
             // Either signed char or unsigned char
@@ -1390,46 +1394,47 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
             if (false == is_dap4) {// signed char to DAP2 int16
                 auto hdf5_int16 = make_unique<HDF5Int16>(vname,vpath,dataset);
                 btp = hdf5_int16.release();
-                //btp = new HDF5Int16(vname, vpath, dataset);
             }
             else {
                 auto hdf5_int8 = make_unique<HDF5Int8>(vname,vpath,dataset);
                 btp = hdf5_int8.release();
-                //btp = new HDF5Int8(vname, vpath, dataset);
             }
         } else {
-            auto hdf5_int8 = make_unique<HDF5Byte>(vname, vpath, dataset);
-            btp = hdf5_int8.release();
-            //btp = new HDF5Byte(vname, vpath, dataset);
+            auto hdf5_uint8 = make_unique<HDF5Byte>(vname, vpath, dataset);
+            btp = hdf5_uint8.release();
         }
         break;
         case 2:
-            if (sign == H5T_SGN_2)
-            btp = new HDF5Int16(vname, vpath, dataset);
-        else
-            btp = new HDF5UInt16(vname, vpath, dataset);
+            if (sign == H5T_SGN_2) {
+                auto hdf5_int16 = make_unique<HDF5Int16>(vname, vpath, dataset);
+                btp = hdf5_int16.release();
+            }
+            else {
+                auto hdf5_uint16 = make_unique<HDF5UInt16>(vname, vpath, dataset);
+                btp = hdf5_uint16.release();
+            }
             break;
         case 4:
             if (sign == H5T_SGN_2) {
                 auto hdf5_int32 = make_unique<HDF5Int32>(vname, vpath, dataset);
                 btp = hdf5_int32.release();
-                //btp = new HDF5Int32(vname, vpath, dataset);
             } else {
                 auto hdf5_uint32 = make_unique<HDF5UInt32>(vname, vpath, dataset);
                 btp = hdf5_uint32.release();
-                //btp = new HDF5UInt32(vname, vpath, dataset);
             }
             break;
 
         case 8: {
             if (true == is_dap4) {
-                if (sign == H5T_SGN_2)
-                    btp = new HDF5Int64(vname, vpath, dataset);
-                else
-                    btp = new HDF5UInt64(vname, vpath, dataset);
+                if (sign == H5T_SGN_2) {
+                    auto hdf5_int64 = make_unique<HDF5Int64>(vname, vpath, dataset);
+                    btp = hdf5_int64.release();
+                }
+                else {
+                    auto hdf5_uint64 = make_unique<HDF5UInt64>(vname, vpath, dataset);
+                    btp = hdf5_uint64.release();
+                }
             } else {
-                /*string err_msg = "Unsupported HDF5 64-bit Integer type:";
-                throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);*/
                 string err_msg;
                 if (sign == H5T_SGN_2)
                     err_msg = invalid_type_error_msg("Int64");
@@ -1457,10 +1462,14 @@ BaseType *Get_float_bt(const string &vname, const string &vpath, const string &d
 
     if (size == 0)
         throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
-    else if (size == 4)
-        btp = new HDF5Float32(vname, vpath, dataset);
-    else if (size == 8)
-        btp = new HDF5Float64(vname, vpath, dataset);
+    else if (size == 4) {
+        auto hdf5_float32 = make_unique<HDF5Float32>(vname, vpath, dataset);
+        btp = hdf5_float32.release();
+    }
+    else if (size == 8) {
+        auto hdf5_float64 = make_unique<HDF5Float64>(vname, vpath, dataset);
+        btp = hdf5_float64.release();
+    }
     else
         throw InternalErr(__FILE__, __LINE__, "the size of the float datatype ie neither 4 nor 8. ");
 
@@ -1526,7 +1535,9 @@ Structure *Get_structure(const string &varname,const string &vpath,
                 delete s; s = nullptr;
             } 
             else if(memb_cls == H5T_ARRAY) {
-
+                string memb_name_str = string(memb_name);
+                Get_structure_array_type(structure_ptr,memb_type,memb_name_str,dataset,is_dap4);
+#if 0
                 BaseType *ar_bt = nullptr;
                 BaseType *btp   = nullptr;
                 Structure *s    = nullptr;
@@ -1615,7 +1626,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
                     H5Tclose(dtype_base);
                     throw;
                 }
-
+#endif
             }
             else if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT || memb_cls == H5T_STRING)  {
                 BaseType *bt = Get_bt(memb_name, memb_name,dataset, memb_type,is_dap4);
@@ -1647,6 +1658,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
     return structure_ptr;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn Get_structure(const string& varname, const string &dataset,
 ///     hid_t datatype)
@@ -1664,6 +1676,97 @@ Structure *Get_structure(const string &varname,const string &vpath,
 ///
 ///////////////////////////////////////////////////////////////////////////////
 
+void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const string &memb_name,
+                              const string &dataset, bool is_dap4 ) {
+
+    BaseType *ar_bt = nullptr;
+    BaseType *btp = nullptr;
+    Structure *s = nullptr;
+    hid_t dtype_base = 0;
+
+    try {
+
+        // Get the base memb_type of the array
+        dtype_base = H5Tget_super(memb_type);
+
+        // Set the size of the array.
+        int ndim = H5Tget_array_ndims(memb_type);
+        size_t size = H5Tget_size(memb_type);
+        int64_t nelement = 1;
+
+        if (dtype_base < 0) {
+            throw InternalErr(__FILE__, __LINE__, "cannot return the base memb_type");
+        }
+        if (ndim < 0) {
+            throw InternalErr(__FILE__, __LINE__, "cannot return the rank of the array memb_type");
+        }
+        if (size == 0) {
+            throw InternalErr(__FILE__, __LINE__, "cannot return the size of the memb_type");
+        }
+
+        hsize_t size2[DODS_MAX_RANK];
+        if (H5Tget_array_dims(memb_type, size2) < 0) {
+            throw
+                    InternalErr(__FILE__, __LINE__,
+                                string("Could not get array dims for: ")
+                                + string(memb_name));
+        }
+
+        H5T_class_t array_memb_cls = H5Tget_class(dtype_base);
+        if (array_memb_cls == H5T_NO_CLASS) {
+            throw InternalErr(__FILE__, __LINE__,
+                              string("cannot get the correct class for compound type member")
+                              + string(memb_name));
+        }
+        if (H5T_COMPOUND == array_memb_cls) {
+
+            s = Get_structure(memb_name, memb_name, dataset, dtype_base, is_dap4);
+            auto h5_ar = new HDF5Array(memb_name, dataset, s);
+
+            for (int dim_index = 0; dim_index < ndim; dim_index++) {
+                h5_ar->append_dim_ll(size2[dim_index]);
+                nelement = nelement * size2[dim_index];
+            }
+
+            h5_ar->set_memneed(size);
+            h5_ar->set_numdim(ndim);
+            h5_ar->set_numelm(nelement);
+            h5_ar->set_length(nelement);
+
+            structure_ptr->add_var(h5_ar);
+            delete h5_ar;
+
+        } else if (H5T_INTEGER == array_memb_cls || H5T_FLOAT == array_memb_cls || H5T_STRING == array_memb_cls) {
+            ar_bt = Get_bt(memb_name, memb_name, dataset, dtype_base, is_dap4);
+            auto h5_ar = new HDF5Array(memb_name, dataset, ar_bt);
+
+            for (int dim_index = 0; dim_index < ndim; dim_index++) {
+                h5_ar->append_dim(size2[dim_index]);
+                nelement = nelement * size2[dim_index];
+            }
+
+            h5_ar->set_memneed(size);
+            h5_ar->set_numdim(ndim);
+            h5_ar->set_numelm(nelement);
+            h5_ar->set_length(nelement);
+
+            structure_ptr->add_var(h5_ar);
+            delete h5_ar;
+        }
+        if (ar_bt) delete ar_bt;
+        if (btp) delete btp;
+        if (s) delete s;
+        H5Tclose(dtype_base);
+
+    }
+    catch (...) {
+        if (ar_bt) delete ar_bt;
+        if (btp) delete btp;
+        if (s) delete s;
+        H5Tclose(dtype_base);
+        throw;
+    }
+}
 // Function to use H5OVISIT to check if dimension scale attributes exist.
 bool check_dimscale(hid_t fileid) {
 

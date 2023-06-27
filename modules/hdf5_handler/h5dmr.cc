@@ -937,6 +937,7 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             << dt_inst.ndims << endl);
 
         if (dt_inst.ndims != 0) {   // Array of Structure
+
             BESDEBUG("h5", "=read_objects_structure(): array of size " <<
                 dt_inst.nelmts << endl);
             BESDEBUG("h5", "=read_objects_structure(): memory needed = " <<
@@ -945,7 +946,6 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             // Create the Array of structure.
             auto ar = new HDF5Array(newvarname, filename, structure);
             delete structure; structure = nullptr;
-
 
             // These parameters are used in the data read function.
             ar->set_memneed(dt_inst.need);
@@ -964,9 +964,8 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
                                "number of dimensions: overflow");
             }
             dimnames_size = (int)(dt_inst.dimnames.size());
-                
 
-            if(dimnames_size ==dt_inst.ndims) {
+            if (dimnames_size ==dt_inst.ndims) {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                     if(dt_inst.dimnames[dim_index] !="")
                         ar->append_dim_ll(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
@@ -978,7 +977,6 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             else {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
                     ar->append_dim_ll(dt_inst.size[dim_index]);
-                    
             }
 
             // We need to transform dimension info. to DAP4 group
@@ -992,8 +990,7 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
             if (is_eos5)
                 map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
- 
-            
+
             // Add this var to DAP4 group
             if(new_var) 
                 d4_grp->add_var_nocopy(new_var);
@@ -1006,7 +1003,6 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             map_h5_dset_hardlink_to_d4(dset_id,varname,nullptr,structure,2);
             if (is_eos5)
                 map_h5_varpath_to_dap4_attr(nullptr,nullptr,structure,varname,2);
- 
 
             if(structure) 
                 d4_grp->add_var_nocopy(structure);

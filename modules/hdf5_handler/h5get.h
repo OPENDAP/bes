@@ -83,6 +83,8 @@ libdap::BaseType *Get_float_bt(const std::string &vname, const std::string &vpat
 //static Structure *Get_structure(const string &varname,
 libdap::Structure *Get_structure(const std::string &varname, const std::string &var_path,
                                 const std::string &dataset, hid_t datatype,bool is_dap4);
+void Get_structure_array_type(libdap::Structure *structure_ptr, hid_t memb_type, const std::string &memb_name,
+                              const std::string &dataset, bool is_dap4 );
 
 bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
