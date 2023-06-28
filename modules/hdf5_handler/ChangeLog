@@ -1448,7 +1448,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	HFVHANDLER-202, add another at file for testing the retrieval of common latitude/longitude values shared by a common directory and latitude/longitude not cached in the memory.
 
-2016-10-10  muqun yang  <myang6@hdfgroup.org>
+2016-10-10  Kent yang  <myang6@hdfgroup.org>
 
 	Merge branch 'master' into mem_cache
 
@@ -2192,7 +2192,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 	Merge pull request #2 from OPENDAP/hdf5_handler_local
 	Hdf5 handler local
 
-2015-09-18  muqun yang  <myang6@hdfgroup.org>
+2015-09-18  Kent yang  <myang6@hdfgroup.org>
 
 	Merge branch 'hdf5_handler_local' of https://github.com/OPENDAP/hdf5_handler into hdf5_handler_local
 
@@ -2210,7 +2210,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	Merge branch 'hdf5_handler_local' of https://github.com/opendap/hdf5_handler into hdf5_handler_local
 
-2015-09-15  muqun yang  <myang6@hdfgroup.org>
+2015-09-15  Kent yang  <myang6@hdfgroup.org>
 
 	This at file was not up-to-dated in the previous check-in.
 
@@ -2218,11 +2218,11 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	Added bes.ignore.conf.modules.in
 
-2015-09-15  muqun yang  <myang6@hdfgroup.org>
+2015-09-15  Kent yang  <myang6@hdfgroup.org>
 
 	comment out cerr debugging lines.
 
-2015-09-14  muqun yang  <myang6@hdfgroup.org>
+2015-09-14  Kent yang  <myang6@hdfgroup.org>
 
 	Forgot adding new files(both source code and testing files) for the last commit.
 
@@ -2236,7 +2236,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	Fixed package.m4 in the autoconf dirs Makefile.am files
 
-2015-06-23  muqun yang  <myang6@hdfgroup.org>
+2015-06-23  Kent yang  <myang6@hdfgroup.org>
 
 	This check-in mainly fixes and addes features for the following: For CF option: 1) Updated the code to work with the latest GPM level 3 version 2) Added the support for ASF SEASAT, LP DAAC ASTER GED products 3) Updated the code to support latest Aquarius level 3 product 4) Fixed the bug when _Fillvalue attribute datatype is not the same as variable datatype For default option: 1) Fixed the compound data type reading and added complex tests to the testsuite
 
@@ -2342,7 +2342,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 	Merge pull request #2 from OPENDAP/hdf5_handler_local
 	Hdf5 handler local
 
-2015-09-18  muqun yang  <myang6@hdfgroup.org>
+2015-09-18  Kent yang  <myang6@hdfgroup.org>
 
 	Merge branch 'hdf5_handler_local' of https://github.com/OPENDAP/hdf5_handler into hdf5_handler_local
 
@@ -2352,7 +2352,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 	Merge pull request #2 from OPENDAP/hdf5_handler_local
 	Hdf5 handler local
 
-2015-09-18  muqun yang  <myang6@hdfgroup.org>
+2015-09-18  Kent yang  <myang6@hdfgroup.org>
 
 	Merge branch 'hdf5_handler_local' of https://github.com/OPENDAP/hdf5_handler into hdf5_handler_local
 
@@ -2371,7 +2371,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 	Merge branch 'hdf5_handler_local' of
 	https://github.com/opendap/hdf5_handler into hdf5_handler_local
 
-2015-09-15  muqun yang  <myang6@hdfgroup.org>
+2015-09-15  Kent yang  <myang6@hdfgroup.org>
 
 	This at file was not up-to-dated in the previous check-in.
 
@@ -2379,11 +2379,11 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	Added bes.ignore.conf.modules.in
 
-2015-09-15  muqun yang  <myang6@hdfgroup.org>
+2015-09-15  Kent yang  <myang6@hdfgroup.org>
 
 	comment out cerr debugging lines.
 
-2015-09-14  muqun yang  <myang6@hdfgroup.org>
+2015-09-14  Kent yang  <myang6@hdfgroup.org>
 
 	Forgot adding new files(both source code and testing files) for
 	the last commit.
@@ -2403,7 +2403,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	Fixed package.m4 in the autoconf dirs Makefile.am files
 
-2015-06-23  muqun yang  <myang6@hdfgroup.org>
+2015-06-23  Kent yang  <myang6@hdfgroup.org>
 
 	This check-in mainly fixes and addes features for the following:
 	For CF option: 1) Updated the code to work with the latest GPM
@@ -2869,11 +2869,11 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	hdf5_handler: Added automated version numbers to OSX Package builds
 
-2011-03-17  muqun
+2011-03-17  Kent
 
 	Just reflect that we create a patch for 1.4.3 version for NASA.
 
-2011-03-14  muqun
+2011-03-14  Kent
 
 	1. This check-in provides the partial support of handling multiple
 	HDF-EOS5 swaths. It will only work for all swaths share the same
@@ -2919,31 +2919,31 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 	h5get.cc: bug fix for debug mode.
 	HDF5Array.cc: bug fix for debug mode.
 
-2010-09-03  muqun
+2010-09-03  Kent
 
 	Fix for the bug in the debug mode testing; s2_t is defined multiple times
 
-2010-08-30  muqun
+2010-08-30  Kent
 
 	Missed initialization added
 
-2010-08-27  muqun
+2010-08-27  Kent
 
 	Debug: Shortening dimension path
 
-2010-08-27  muqun
+2010-08-27  Kent
 
 	Added Xdim and Ydim to the name conversion map
 
-2010-08-20  muqun
+2010-08-20  Kent
 
 	MKDIR_P problem in the configure.ac is fixed
 
-2010-08-16  muqun
+2010-08-16  Kent
 
 	1.4.2 release info
 
-2010-08-16  muqun
+2010-08-16  Kent
 
 	Grid parsing tests are done only when --enable-cf is given
 
