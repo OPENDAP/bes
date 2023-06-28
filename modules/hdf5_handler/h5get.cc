@@ -1361,7 +1361,7 @@ BaseType *Get_bt(const string &vname,
         }
     }
     catch (...) {
-        if (btp) delete btp;
+        delete btp;
         throw;
     }
 
@@ -1389,23 +1389,8 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
     switch (size) {
         case 1:
             // Either signed char or unsigned char
-        // DAP2 doesn't support signed char, it maps to DAP int16.
-#if 0
-        if (sign == H5T_SGN_2) {
-            if (false == is_dap4) {// signed char to DAP2 int16
-                auto hdf5_int16 = make_unique<HDF5Int16>(vname,vpath,dataset);
-                btp = hdf5_int16.release();
-            }
-            else {
-                auto hdf5_int8 = make_unique<HDF5Int8>(vname,vpath,dataset);
-                btp = hdf5_int8.release();
-            }
-        } else {
-            auto hdf5_uint8 = make_unique<HDF5Byte>(vname, vpath, dataset);
-            btp = hdf5_uint8.release();
-        }
-#endif
-        btp = Get_byte_bt(vname, vpath, dataset, sign, is_dap4);
+            // DAP2 doesn't support signed char, it maps to DAP int16.
+            btp = Get_byte_bt(vname, vpath, dataset, sign, is_dap4);
         break;
         case 2:
             if (sign == H5T_SGN_2) {
@@ -1557,99 +1542,10 @@ Structure *Get_structure(const string &varname,const string &vpath,
                 structure_ptr->add_var(s);
                 delete s; s = nullptr;
             } 
-            else if(memb_cls == H5T_ARRAY) {
+            else if (memb_cls == H5T_ARRAY) {
                 auto memb_name_str = string(memb_name);
                 Get_structure_array_type(structure_ptr,memb_type,memb_name_str,dataset,is_dap4);
-#if 0
-                BaseType *ar_bt = nullptr;
-                BaseType *btp   = nullptr;
-                Structure *s    = nullptr;
-                hid_t     dtype_base = 0;
 
-                try {
-
-                    // Get the base memb_type of the array
-                    dtype_base = H5Tget_super(memb_type);
-
-                    // Set the size of the array.
-                    int ndim = H5Tget_array_ndims(memb_type);
-                    size_t size = H5Tget_size(memb_type);
-                    int64_t nelement = 1;
-
-                    if (dtype_base < 0) {
-                        throw InternalErr(__FILE__, __LINE__, "cannot return the base memb_type");
-                    }
-                    if (ndim < 0) {
-                        throw InternalErr(__FILE__, __LINE__, "cannot return the rank of the array memb_type");
-                    }
-                    if (size == 0) {
-                        throw InternalErr(__FILE__, __LINE__, "cannot return the size of the memb_type");
-                    }
-
-                    hsize_t size2[DODS_MAX_RANK];
-                    if(H5Tget_array_dims(memb_type, size2) < 0){
-                        throw
-                        InternalErr(__FILE__, __LINE__,
-                                    string("Could not get array dims for: ")
-                                      + string(memb_name));
-                    }
-
-                    H5T_class_t array_memb_cls = H5Tget_class(dtype_base);
-                    if(array_memb_cls == H5T_NO_CLASS) {
-                        throw InternalErr(__FILE__, __LINE__,
-                                  string("cannot get the correct class for compound type member")
-                                  + string(memb_name));
-                    }
-                    if(H5T_COMPOUND == array_memb_cls) {
-
-                        s = Get_structure(memb_name, memb_name,dataset, dtype_base,is_dap4);
-                        auto h5_ar = new HDF5Array(memb_name, dataset, s);
-                    
-                        for (int dim_index = 0; dim_index < ndim; dim_index++) {
-                            h5_ar->append_dim_ll(size2[dim_index]);
-                            nelement = nelement * size2[dim_index];
-                        }
-
-                        h5_ar->set_memneed(size);
-                        h5_ar->set_numdim(ndim);
-                        h5_ar->set_numelm(nelement);
-                        h5_ar->set_length(nelement);
-
-                        structure_ptr->add_var(h5_ar);
-                        delete h5_ar;
-	
-                    }
-                    else if (H5T_INTEGER == array_memb_cls || H5T_FLOAT == array_memb_cls || H5T_STRING == array_memb_cls) { 
-                        ar_bt = Get_bt(memb_name, memb_name,dataset, dtype_base,is_dap4);
-                        auto h5_ar = new HDF5Array(memb_name,dataset,ar_bt);
-                    
-                        for (int dim_index = 0; dim_index < ndim; dim_index++) {
-                            h5_ar->append_dim(size2[dim_index]);
-                            nelement = nelement * size2[dim_index];
-                        }
-
-                        h5_ar->set_memneed(size);
-                        h5_ar->set_numdim(ndim);
-                        h5_ar->set_numelm(nelement);
-                        h5_ar->set_length(nelement);
-
-                        structure_ptr->add_var(h5_ar);
-                        delete h5_ar;
-                    }
-                    if( ar_bt ) delete ar_bt;
-                    if( btp ) delete btp;
-                    if(s) delete s;
-                    H5Tclose(dtype_base);
-
-                }
-                catch (...) {
-                    if( ar_bt ) delete ar_bt;
-                    if( btp ) delete btp;
-                    if(s) delete s;
-                    H5Tclose(dtype_base);
-                    throw;
-                }
-#endif
             }
             else if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT || memb_cls == H5T_STRING)  {
                 BaseType *bt = Get_bt(memb_name, memb_name,dataset, memb_type,is_dap4);

@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2007-2015 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -18,8 +18,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 401 E Univeristy Avenue,
+// Suite 201, Champaign, IL 61820
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5dmr.cc
@@ -34,7 +34,7 @@
 /// The breadth-first is for the case when HDF5 dimension scales are used to generate
 /// an HDF5 file that follows the netCDF-4 data model. Using breadth-first ensures the 
 //  the correct DAP4 DMR layout(group's variables first and then the group).
-/// \author Muqun Yang    <myang6@hdfgroup.org>
+/// \author Kent Yang    <myang6@hdfgroup.org>
 ///
 
 #include <sstream>
@@ -1167,7 +1167,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                         H5Tclose(ty_id);
                         H5Aclose(attr_id);
                         delete d4_attr;
-                        throw InternalErr(__FILE__, __LINE__, "unable to convert attibute value to DAP");
+                        throw InternalErr(__FILE__, __LINE__, "unable to convert attribute value to DAP");
                     }
                 }
             } // if attr_inst.ndims != 0
@@ -1179,7 +1179,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         }
         if (H5Aclose(attr_id) < 0) {
             delete d4_attr;
-            throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
+            throw InternalErr(__FILE__, __LINE__, "unable to close attribute id");
         }
 
         if(0 == flag) // D4group
@@ -1191,8 +1191,8 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         else {
             stringstream sflag;
             sflag << flag;
-            string msg ="The add_dap4_attr flag has to be either 0,1 or 2.";
-            msg+="The current flag is "+sflag.str();
+            string msg = "The add_dap4_attr flag has to be either 0,1 or 2.";
+            msg +="The current flag is "+sflag.str();
             delete d4_attr;
             throw InternalErr(__FILE__, __LINE__, msg);
         }
