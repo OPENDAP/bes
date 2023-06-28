@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -16,8 +16,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 /////////////////////////////////////////////////////////////////////////////
 /// \file HDF5CF.h
@@ -29,7 +29,7 @@
 ///  It covers the handling of generic NASA HDF5 products and HDF-EOS5 products.
 ///
 ///
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Keng Yang <myang6@hdfgroup.org>
 ///
 /// Copyright (C) 2011-2022 The HDF Group
 ///

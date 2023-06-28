@@ -30,7 +30,7 @@
 ///  in this file.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author Muqun Yang    <myang6@hdfgroup.org>
+/// \author Kent Yang    <myang6@hdfgroup.org>
 ///
 ///////////////////////////////////////////////////////////////////////////////
 

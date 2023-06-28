@@ -18,8 +18,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5dmr.cc
@@ -34,7 +34,7 @@
 /// The breadth-first is for the case when HDF5 dimension scales are used to generate
 /// an HDF5 file that follows the netCDF-4 data model. Using breadth-first ensures the 
 //  the correct DAP4 DMR layout(group's variables first and then the group).
-/// \author Muqun Yang    <myang6@hdfgroup.org>
+/// \author Kent Yang    <myang6@hdfgroup.org>
 ///
 
 #include <sstream>

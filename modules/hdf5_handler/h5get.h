@@ -28,7 +28,7 @@
 ///
 /// 
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author Muqun Yang <ymuqun@hdfgroup.org>
+/// \author Keng Yang <myang6@hdfgroup.org>
 
 
 #ifndef _H5GET_H
