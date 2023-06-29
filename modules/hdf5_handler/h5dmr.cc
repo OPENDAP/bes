@@ -699,16 +699,17 @@ void handle_child_grp(const hid_t file_id, hid_t pid, const char *gname,
 ///// 
 /////    \param d4_group DAP4 group
 /////    \param varname Absolute name of an HDF5 dataset.  
-/////    \param filename The HDF5 dataset name that maps to the DDS dataset name. 
+/////    \param filename The HDF5 dataset name that maps to the DMR dataset name.
 ////     \param dset_id HDF5 dataset id.
 /////    \param use_dimscale boolean that indicates if dimscale is used.
 /////    \param is_eos5 boolean that indicates if this is an HDF-EOS5 file.
 /////    \param eos5_dim_info a struct to handle eos5 dimension info.
-/////    \throw error a string of error message to the dods interface. 
+/////    \throw error a string of error message to the dap interface.
 /////////////////////////////////////////////////////////////////////////////////
 //
 void
-read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale, bool is_eos5, eos5_dim_info_t & eos5_dim_info) {
+read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale,
+              bool is_eos5, eos5_dim_info_t & eos5_dim_info) {
 
     // NULL space data, ignore.
     if (dt_inst.ndims == -1 && dt_inst.nelmts == 0) 
@@ -718,9 +719,6 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 
     // HDF5 compound maps to DAP structure.
     case H5T_COMPOUND:
-#if 0
-        read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale,is_eos5,varpath_to_dims);
-#endif
         read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale,is_eos5);
         break;
 
@@ -732,20 +730,19 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
         read_objects_base_type(d4_grp,varname, filename,dset_id,use_dimscale,is_eos5,eos5_dim_info);
         break;
     }
-    // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
-    if(H5Tclose(dt_inst.type)<0) {
+    // Close the datatype obtained in the get_dataset_dmr() since the datatype is no longer used.
+    if (H5Tclose(dt_inst.type) < 0) {
         throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////// 
-///// \fn read_objects_base_type(DMR & dmr, D4Group *d4_grp, 
+///// \fn read_objects_base_type(D4Group *d4_grp,
 /////                            const string & varname, 
 /////                            const string & filename,const hid_t dset_id, bool use_dimscale) 
 ///// fills in information of a dataset (name, data type, data space) with HDF5 atomic datatypes into the dap4 
 ///// group. 
-///// 
-/////    \param dmr reference to DMR 
+/////
 /////    \param d4_grp DAP4 group
 /////    \param varname Absolute name of an HDF5 dataset.  
 /////    \param filename The HDF5 dataset name that maps to the DDS dataset name. 
@@ -757,8 +754,8 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 //
 
 void
-read_objects_base_type(D4Group * d4_grp,const string & varname,
-                       const string & filename,hid_t dset_id, bool use_dimscale, bool is_eos5, eos5_dim_info_t & eos5_dim_info)
+read_objects_base_type(D4Group * d4_grp, const string & varname, const string & filename, hid_t dset_id,
+                       bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info)
 {
 
     // Obtain the relative path of the variable name under the leaf group
@@ -772,24 +769,21 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
     if (is_eos5) 
         newvarname = handle_string_special_characters(newvarname);
 
-    // Get a base type. It should be an HDF5 atomic datatype
-    // datatype. 
+    // Get a base type. It should be an HDF5 atomic datatype.
     BaseType *bt = Get_bt(newvarname, varname,filename, dt_inst.type,true);
-    if (!bt) {
-        throw
-            InternalErr(__FILE__, __LINE__,
-                        "Unable to convert hdf5 datatype to dods basetype");
-    }
+    if (!bt)
+        throw InternalErr(__FILE__, __LINE__,"Unable to convert hdf5 datatype to dods basetype");
 
     // First deal with scalar data. 
     if (dt_inst.ndims == 0) {
 
+#if 0
         // transform the DAP2 to DAP4 for this DAP base type and add it to d4_grp
         bt->transform_to_dap4(d4_grp,d4_grp);
-        // Get it back - this may return null because the underlying type
-        // may have no DAP2 manifestation.
+
+        // Get it back
         BaseType* new_var = d4_grp->var(bt->name());
-        if(new_var){
+        if (new_var){
             // Map the HDF5 dataset attributes to DAP4
             map_h5_attrs_to_dap4(dset_id,nullptr,new_var,nullptr,1);
             // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
@@ -797,14 +791,26 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
             if (is_eos5)
                 map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
         }
-        delete bt; 
-        bt = nullptr;
+#endif
+//#if 0
+        // Map the HDF5 dataset attributes to DAP4
+            bt->set_is_dap4(true);
+            map_h5_attrs_to_dap4(dset_id,nullptr,bt,nullptr,1);
+            // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
+            map_h5_dset_hardlink_to_d4(dset_id,varname,bt,nullptr,1);
+            if (is_eos5)
+                map_h5_varpath_to_dap4_attr(nullptr,bt,nullptr,varname,1);
+            d4_grp->add_var_nocopy(bt);
+//#endif
+        //delete bt;
+        //bt = nullptr;
     }
     else {
         // Next, deal with Array data. This 'else clause' runs to
         // the end of the method. 
         auto ar = new HDF5Array(newvarname, filename, bt);
-        delete bt; bt = nullptr;
+        delete bt;
+        bt = nullptr;
 
         // set number of elements and variable name values.
         // This essentially stores in the struct.
@@ -813,77 +819,73 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         ar->set_numelm((dt_inst.nelmts));
         ar->set_varpath(varname);
 
- 
+
         // If we have dimension names(dimension scale is used.),we will see if we can add the names.       
         int dimnames_size = 0;
-        if((unsigned int)((int)(dt_inst.dimnames.size())) != dt_inst.dimnames.size())
-        {
+        if ((unsigned int) ((int) (dt_inst.dimnames.size())) != dt_inst.dimnames.size()) {
             delete ar;
             throw
-            InternalErr(__FILE__, __LINE__,
-                        "number of dimensions: overflow");
+                    InternalErr(__FILE__, __LINE__,
+                                "number of dimensions: overflow");
         }
-        dimnames_size = (int)(dt_inst.dimnames.size());
+        dimnames_size = (int) (dt_inst.dimnames.size());
 #if 0
-cerr<<"dimnames_size is "<<dimnames_size <<endl;
-cerr<<"ndims is "<<dt_inst.ndims <<endl;
+        cerr<<"dimnames_size is "<<dimnames_size <<endl;
+        cerr<<"ndims is "<<dt_inst.ndims <<endl;
 #endif
-            
+
         bool is_eos5_dims = false;
-        if(dimnames_size ==dt_inst.ndims) {
+        if (dimnames_size == dt_inst.ndims) {
 
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                if(dt_inst.dimnames[dim_index] !="") 
-                    ar->append_dim_ll(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
-                else 
+                if (dt_inst.dimnames[dim_index] != "")
+                    ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
+                else
                     ar->append_dim_ll(dt_inst.size[dim_index]);
-                    // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
+                // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc)
             }
             dt_inst.dimnames.clear();
-        }
-        else {
+        } else {
             // With using the dimension scales, the HDF5 file may still have dimension names such as HDF-EOS5.
             // We search if there are dimension names. If yes, add them here.
             vector<string> dim_names;
-            is_eos5_dims = obtain_eos5_dim(varname,eos5_dim_info.varpath_to_dims,dim_names);
+            is_eos5_dims = obtain_eos5_dim(varname, eos5_dim_info.varpath_to_dims, dim_names);
 #if 0
-cout<<"final varname is "<<varname <<endl;
-for (const auto & dname:dim_names)
-    cout<<"dname is "<<dname<<endl;
+            cout<<"final varname is "<<varname <<endl;
+            for (const auto & dname:dim_names)
+                cout<<"dname is "<<dname<<endl;
 #endif
-                       
+
             // For DAP4, no need to add dimension if no dimension name
             if (is_eos5_dims) {
-                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim_ll(dt_inst.size[dim_index],dim_names[dim_index]);
-            }
-            else {
-                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim_ll(dt_inst.size[dim_index]); 
+                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
+                    ar->append_dim_ll(dt_inst.size[dim_index], dim_names[dim_index]);
+            } else {
+                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
+                    ar->append_dim_ll(dt_inst.size[dim_index]);
             }
         }
 
         // We need to transform dimension info. to DAP4 group
-        BaseType* new_var = nullptr;
+        BaseType *new_var = nullptr;
         try {
             if (is_eos5_dims) {
 #if 0
-vector<string>test_dim_path = varpath_to_dims.at(varname);
-for (const auto &td:test_dim_path)
-cout<<"dimpath final "<<td<<endl;
+                vector<string>test_dim_path = varpath_to_dims.at(varname);
+                for (const auto &td:test_dim_path)
+                cout<<"dimpath final "<<td<<endl;
 #endif
-                new_var = ar->h5dims_transform_to_dap4(d4_grp,eos5_dim_info.varpath_to_dims.at(varname));
-            
-            }
-            else {
+                new_var = ar->h5dims_transform_to_dap4(d4_grp, eos5_dim_info.varpath_to_dims.at(varname));
+
+            } else {
 #if 0
- for (const auto td:dt_inst.dimnames_path)
-cout<<"dimpath final non-eos5 "<<td<<endl;
+                for (const auto td:dt_inst.dimnames_path)
+               cout<<"dimpath final non-eos5 "<<td<<endl;
 #endif
-                new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
+                new_var = ar->h5dims_transform_to_dap4(d4_grp, dt_inst.dimnames_path);
             }
         }
-        catch(...) {
+        catch (...) {
             delete ar;
             throw;
         }
@@ -892,19 +894,19 @@ cout<<"dimpath final non-eos5 "<<td<<endl;
         dt_inst.dimnames_path.clear();
 
         // Map HDF5 dataset attributes to DAP4
-        map_h5_attrs_to_dap4(dset_id,nullptr,new_var,nullptr,1);
+        map_h5_attrs_to_dap4(dset_id, nullptr, new_var, nullptr, 1);
 
         // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
-        map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
+        map_h5_dset_hardlink_to_d4(dset_id, varname, new_var, nullptr, 1);
         if (is_eos5)
-            map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
+            map_h5_varpath_to_dap4_attr(nullptr, new_var, nullptr, varname, 1);
 
         // Here we need to add grid_mapping information if necessary.
-        if (is_eos5_dims && !use_dimscale) {  
-            if ((eos5_dim_info.dimpath_to_cvpath.empty() == false) && (ar->get_numdim() >1)) 
-                add_possible_var_cv_info(new_var,eos5_dim_info);
-            if (eos5_dim_info.gridname_to_info.empty() == false)  
-                make_attributes_to_cf(new_var,eos5_dim_info);
+        if (is_eos5_dims && !use_dimscale) {
+            if ((eos5_dim_info.dimpath_to_cvpath.empty() == false) && (ar->get_numdim() > 1))
+                add_possible_var_cv_info(new_var, eos5_dim_info);
+            if (eos5_dim_info.gridname_to_info.empty() == false)
+                make_attributes_to_cf(new_var, eos5_dim_info);
         }
 #if 0
         // Test the attribute
@@ -914,7 +916,8 @@ cout<<"dimpath final non-eos5 "<<td<<endl;
 #endif
         // Add this var to DAP4 group.
         d4_grp->add_var_nocopy(new_var);
-        delete ar; ar = nullptr;
+        delete ar;
+        ar = nullptr;
     }
     BESDEBUG("h5", "<read_objects_base_type(dmr)" << endl);
 
