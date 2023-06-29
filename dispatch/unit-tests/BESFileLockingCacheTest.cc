@@ -162,8 +162,7 @@ public:
 
         DBG(cerr << "tearDown() - END" << endl);
     }
-
-
+    
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
@@ -312,7 +311,6 @@ public:
 
     // Multi-threaded tests.
 #if 0
-
     void test_lock_cache_write_mt() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         const int num_threads = 3;
