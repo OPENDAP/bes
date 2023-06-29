@@ -151,6 +151,17 @@ typedef struct {
 #endif
 
 bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &);
+void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, std::vector<char> &oname);
+bool check_soft_external_links(libdap::D4Group *par_grp, hid_t pid, int & slinkindex, const char *gname,
+                               const std::vector<char> &oname, bool handle_softlink);
+void handle_actual_dataset(libdap::D4Group *par_grp, hid_t pid, const string &full_path_name, const string &fname,
+                           bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info);
+void handle_pure_dimension(libdap::D4Group *par_grp, hid_t pid, const std::vector<char>& oname, bool is_eos5, const std::string &full_path_name);
+void handle_eos5_datasets(libdap::D4Group* par_grp, const char *gname, eos5_dim_info_t &eos5_dim_info);
+void handle_child_grp(const hid_t file_id, hid_t pid, const char *gname, libdap::D4Group* par_grp, const char *fname,
+                      bool use_dimscale,bool is_eos5,std::vector<link_info_t> & hdf5_hls,
+                      eos5_dim_info_t & eos5_dim_info, std::vector<std::string> & handled_cv_names,
+                      const std::vector<char>& oname);
 
 void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
 void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);

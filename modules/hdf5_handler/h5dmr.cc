@@ -19,53 +19,47 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // You can contact The HDF Group, Inc. at 401 E Univeristy Avenue,
-// Suite 201, Champaign, IL 61820
+// Suite 200, Champaign, IL 61820
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5dmr.cc
 /// \brief DMR(Data Metadata Response) request processing source
 ///
-/// This file is part of h5_dap_handler, a C++ implementation of the DAP
-/// handler for HDF5 data.
+/// This file is part of HDF5 handler, a C++ implementation of the DAP4
+/// protocol to access HDF5 data.
 ///
-/// This file contains functions which use depth-first and breadth-first search to walk through
+/// This file contains functions that use the breadth-first search to walk through
 /// an HDF5 file and build the in-memory DMR.
-/// The depth-first is for the case when HDF5 dimension scales are not used.
-/// The breadth-first is for the case when HDF5 dimension scales are used to generate
-/// an HDF5 file that follows the netCDF-4 data model. Using breadth-first ensures the 
-//  the correct DAP4 DMR layout(group's variables first and then the group).
+/// Using breadth-first ensures the correct DAP4 DMR layout(group's variables first and then the groups).
 /// \author Kent Yang    <myang6@hdfgroup.org>
 ///
 
 #include <sstream>
-#include "config_hdf5.h"
 
 #include <libdap/InternalErr.h>
-#include <BESDebug.h>
-
 #include <libdap/mime_util.h>
 #include <libdap/D4Maps.h>
+
+#include <BESDebug.h>
 
 #include "hdf5_handler.h"
 #include "HDF5Int32.h"
 #include "HDF5UInt32.h"
 #include "HDF5UInt16.h"
 #include "HDF5Int16.h"
-#include "HDF5Byte.h"
 #include "HDF5Array.h"
-#include "HDF5Str.h"
 #include "HDF5Float32.h"
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
 #include "HDF5RequestHandler.h"
+#include "h5dmr.h"
 
 // The HDF5CFUtil.h includes the utility function obtain_string_after_lastslash.
 #include "HDF5CFUtil.h"
 #include "h5commoncfdap.h"
-#include "h5dmr.h"
 
-#include "he5dds.tab.hh"
+// For HDF-EOS5 handling
 #include "HE5Parser.h"
 #include "HE5Checker.h"
 #include "HDF5CFProj.h"
@@ -74,6 +68,7 @@
 
 using namespace std;
 using namespace libdap;
+
 /// A variable for remembering visited paths to break cyclic HDF5 groups. 
 HDF5PathFinder obj_paths;
 
@@ -88,235 +83,16 @@ int he5ddsparse(HE5Parser *he5parser);
 int he5ddslex_destroy();
 
 
-#if 0
-//////////////////////////////////////////////////////////////////////////////////////////
-/// bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname)
-/// \param pid group id
-/// \param gname group name (the absolute path from the root group)
-/// \param dmr reference of DMR object
-//  \param par_grp DAP4 parent group
-/// \param fname the HDF5 file name
-///
-/// \return 0, if failed.
-/// \return 1, if succeeded.
-///
-/// \remarks hard link is treated as a dataset.
-/// \remarks will return error message to the DAP interface.
-/// \see depth_first(hid_t pid, char *gname, DDS & dds, const char *fname) in h5dds.cc
-///////////////////////////////////////////////////////////////////////////////
-
-//bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname)
-bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
-{
-    BESDEBUG("h5",
-        ">depth_first() for dmr " 
-        << " pid: " << pid
-        << " gname: " << gname
-        << " fname: " << fname
-        << endl);
-        
-    /// To keep track of soft links.
-    int slinkindex = 0;
-
-    H5G_info_t g_info; 
-    hsize_t nelems = 0;
-
-    /// Obtain the number of all links.
-    if(H5Gget_info(pid,&g_info) <0) {
-      string msg =
-            "h5_dmr handler: counting hdf5 group elements error for ";
-        msg += gname;
-        throw InternalErr(__FILE__, __LINE__, msg);
-    }
-
-    nelems = g_info.nlinks;
-        
-    ssize_t oname_size = 0;
-
-    // Iterate through the file to see the members of the group from the root.
-    for (hsize_t i = 0; i < nelems; i++) {
-
-        vector <char>oname;
-
-        // Query the length of object name.
-        oname_size =
- 	    H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
-                (size_t)DODS_NAMELEN, H5P_DEFAULT);
-        if (oname_size <= 0) {
-            string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
-            msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // Obtain the name of the object
-        oname.resize((size_t) oname_size + 1);
-
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
-            (size_t)(oname_size+1), H5P_DEFAULT) < 0){
-            string msg =
-                    "h5_dmr handler: Error getting the hdf5 object name from the group: ";
-             msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // Check if it is the hard link or the soft link
-        H5L_info_t linfo;
-        if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
-            string msg = "hdf5 link name error from: ";
-            msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-            
-        // Information of soft links are stored as attributes 
-        if(linfo.type == H5L_TYPE_SOFT) { 
-            slinkindex++;
-            size_t val_size = linfo.u.val_size;
-            get_softlink(par_grp,pid,oname.data(),slinkindex,val_size);
-            //get_softlink(par_grp,pid,gname,oname.data(),slinkindex,val_size);
-            continue;
-        }
-
-        // Ignore external links
-        if(linfo.type == H5L_TYPE_EXTERNAL) 
-            continue;
-
-        // Obtain the object type, such as group or dataset. 
-        H5O_info_t oinfo;
-
-        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT)<0) {
-            string msg = "h5_dmr handler: Error obtaining the info for the object";
-            msg += string(oname.begin(),oname.end());
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        H5O_type_t obj_type = oinfo.type;
-
-        switch (obj_type) {  
-
-            case H5O_TYPE_GROUP: 
-            {
-
-                // Obtain the full path name
-                string full_path_name =
-                    string(gname) + string(oname.begin(),oname.end()-1) + "/";
-
-                BESDEBUG("h5", "=depth_first dmr ():H5G_GROUP " << full_path_name
-                    << endl);
-
-                vector <char>t_fpn;
-                t_fpn.resize(full_path_name.size()+1);
-                copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
-                t_fpn[full_path_name.size()] = '\0';
-
-                hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
-                if (cgroup < 0){
-                     throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
-		}
-
-                string grp_name = string(oname.begin(),oname.end()-1);
-
-                // Check the hard link loop and break the loop if it exists.
-                string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
-                if (oid == "") {
-                    try {
-                        D4Group* tem_d4_cgroup = new D4Group(grp_name);
-                        // Map the HDF5 cgroup attributes to DAP4 group attributes.
-                        // Note the last flag of map_h5_attrs_to_dap4 must be 0 for the group attribute mapping.
-                        map_h5_attrs_to_dap4(cgroup,tem_d4_cgroup,nullptr,nullptr,0);
-
-                        // Add this new DAP4 group 
-                        par_grp->add_group_nocopy(tem_d4_cgroup);
-
-                        // Continue searching the objects under this group
-                        //depth_first(cgroup, t_fpn.data(), dmr, tem_d4_cgroup,fname);
-                        depth_first(cgroup, t_fpn.data(), tem_d4_cgroup,fname);
-                    }
-                    catch(...) {
-                        H5Gclose(cgroup);
-                        throw;
-                    }
-                }
-                else {
-                    // This group has been visited.  
-                    // Add the attribute table with the attribute name as HDF5_HARDLINK.
-                    // The attribute value is the name of the group when it is first visited.
-                    D4Group* tem_d4_cgroup = new D4Group(string(grp_name));
-
-                    // Note attr_str_c is the DAP4 attribute string datatype
-                    D4Attribute *d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
-
-                    d4_hlinfo->add_value(obj_paths.get_name(oid));
-                    tem_d4_cgroup->attributes()->add_attribute_nocopy(d4_hlinfo);
-                    par_grp->add_group_nocopy(tem_d4_cgroup);
-         
-                }
-
-                if (H5Gclose(cgroup) < 0){
-                    throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
-                }
-                break;
-            }
-
-            case H5O_TYPE_DATASET:
-            {
-
-                // Obtain the absolute path of the HDF5 dataset
-                string full_path_name = string(gname) + string(oname.begin(),oname.end()-1);
-
-                // TOOOODOOOO
-                // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
-                // All the metadata information in the handler is stored in dt_inst.
-                // Work on this later, redundant for dmr since dataset is opened twice. KY 2015-07-01
-                // Note: depth_first is for building DMR of an HDF5 file that doesn't use dim. scale.
-                // so passing the last parameter as false.
-                get_dataset(pid, full_path_name, &dt_inst,false);
-               
-                // Here we open the HDF5 dataset again to use the dataset id for dataset attributes.
-                // This is not necessary for DAP2 since DAS and DDS are separated.
-                hid_t dset_id = -1;
-                if((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) <0) {
-                   string msg = "cannot open the HDF5 dataset  ";
-                   msg += full_path_name;
-                   throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                try {
-                    read_objects(par_grp, full_path_name, fname,dset_id);
-                }
-                catch(...) {
-                    H5Dclose(dset_id);
-                    throw;
-                }
-                if(H5Dclose(dset_id)<0) {
-                    string msg = "cannot close the HDF5 dataset  ";
-                   msg += full_path_name;
-                   throw InternalErr(__FILE__, __LINE__, msg);
-                }
-            }
-                break;
-
-            case H5O_TYPE_NAMED_DATATYPE:
-                // ignore the named datatype
-                break;
-            default:
-                break;
-        }// switch(obj_type)
-    } // for i is 0 ... nelems
-
-    BESDEBUG("h5", "<depth_first() for dmr" << endl);
-    return true;
-}
-#endif
 //////////////////////////////////////////////////////////////////////////////////////////
 /// bool breadth_first(const hid_t file_id,hid_t pid, const char *gname, 
 ///                     D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5,
-///                     vector<link_info_t> & hdf5_hls, eos5_dim_info_t & eos5_dim_info, vector<string> & handled_cv_names)
+///                     vector<link_info_t> & hdf5_hls, eos5_dim_info_t & eos5_dim_info,
+///                     vector<string> & handled_cv_names)
 /// \param file_id file_id(this is necessary for searching the hardlinks of a dataset)
 /// \param pid group id
 /// \param gname group name (the absolute path from the root group)
-//  \param par_grp DAP4 parent group
-/// \param fname the HDF5 file name
+/// \param par_grp DAP4 parent group
+/// \param fname the HDF5 file name( necessary parameters for HDF5 Arrays)
 /// \param use_dimscale whether dimension scales are used.
 /// \param is_eos5  whether this is an HDF-EOS5 file.
 /// \param hdf5_hls the vector to save all the hardlink info.
@@ -326,15 +102,18 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 ///
 /// \remarks hard link is treated as a dataset.
 /// \remarks will return error message to the DAP interface.
-/// \remarks The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
+/// \remarks The reason to use breadth_first is that the DMR representation
+/// \remarks needs to show the dimension names and the variables under the group first and then the group names.
 ///  So we use this search. This is for the default option. 
-/// \see depth_first(hid_t pid, char *gname, DMR & dmr, const char *fname) in h5dds.cc
+/// \see depth_first(hid_t pid, char *gname, DDS & dds, const char *fname) in h5dds.cc
 ///////////////////////////////////////////////////////////////////////////////
 
 bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, 
                    D4Group* par_grp, const char *fname,
                    bool use_dimscale,bool is_eos5, 
-                   vector<link_info_t> & hdf5_hls, eos5_dim_info_t & eos5_dim_info, vector<string> & handled_cv_names)
+                   vector<link_info_t> & hdf5_hls,
+                   eos5_dim_info_t & eos5_dim_info,
+                   vector<string> & handled_cv_names)
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -349,23 +128,25 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
     // Obtain the number of objects in this group
     H5G_info_t g_info; 
     hsize_t nelems = 0;
-    if(H5Gget_info(pid,&g_info) <0) {
-      string msg =
-            "h5_dmr handler: counting hdf5 group elements error for ";
+    if (H5Gget_info(pid,&g_info) < 0) {
+        string msg =
+            "h5_dmr: counting hdf5 group elements error for ";
         msg += gname;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     nelems = g_info.nlinks;
-        
-    ssize_t oname_size;
+    // ssize_t oname_size;
 
     // First iterate through the HDF5 datasets under the group.
     for (hsize_t i = 0; i < nelems; i++) {
 
-        vector <char>oname;
-
-        // Query the length of object name.
+        vector <char> oname;
+        obtain_hdf5_object_name(pid, i, gname, oname);
+        if (true == check_soft_external_links(par_grp, pid, slinkindex,gname, oname,true))
+            continue;
+#if 0
+        // Query the length of this object name.
         oname_size =
         H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
                 (size_t)DODS_NAMELEN, H5P_DEFAULT);
@@ -385,8 +166,10 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
              msg += gname;
                 throw InternalErr(__FILE__, __LINE__, msg);
         }
+#endif
 
-        // Check if it is the hard link or the soft link
+#if 0
+        // Check if this is a hard link or a soft link
         H5L_info_t linfo;
         if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
@@ -395,9 +178,9 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
         }
             
         // Information of soft links are stored as attributes 
-        if (linfo.type == H5L_TYPE_SOFT) { 
-            slinkindex++;
+        if (linfo.type == H5L_TYPE_SOFT) {
 
+            slinkindex++;
             // Size of a soft link value
             size_t val_size = linfo.u.val_size;
             get_softlink(par_grp,pid,oname.data(),slinkindex,val_size);
@@ -407,7 +190,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
         // Ignore external links
         if (linfo.type == H5L_TYPE_EXTERNAL) 
             continue;
-
+#endif
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
 
@@ -420,22 +203,24 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
 
         H5O_type_t obj_type = oinfo.type;
 
-        if(H5O_TYPE_DATASET == obj_type) {
+        if (H5O_TYPE_DATASET == obj_type) {
 
             // Obtain the absolute path of the HDF5 dataset
             string full_path_name = string(gname) + string(oname.begin(),oname.end()-1);
 
             // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
             // All the metadata information in the handler is stored in dt_inst.
-            // Dimension scale is handled in this routine. So need to keep it. KY 2020-06-10
+            // Dimension scale is handled in this routine.  KY 2020-06-10
             bool is_pure_dim = false;
             get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_eos5,is_pure_dim,hdf5_hls,handled_cv_names);
                
             // pure dimensions are netCDF-4's dimensions only. They are not variables in the netCDF-4 term.
             if (false == is_pure_dim) {
-
+                handle_actual_dataset(par_grp, pid, full_path_name, fname, use_dimscale,
+                                      is_eos5, eos5_dim_info);
+#if 0
                 hid_t dset_id = -1;
-                if ((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) <0) {
+                if ((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) < 0) {
                     string msg = "cannot open the HDF5 dataset  ";
                     msg += full_path_name;
                     throw InternalErr(__FILE__, __LINE__, msg);
@@ -448,14 +233,17 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
                     H5Dclose(dset_id);
                     throw;
                 }
-                if(H5Dclose(dset_id)<0) {
+                if (H5Dclose(dset_id) < 0) {
                     string msg = "cannot close the HDF5 dataset  ";
                     msg += full_path_name;
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
+#endif
             }
             else {
+                handle_pure_dimension(par_grp, pid, oname, is_eos5, full_path_name);
 
+#if 0
                 //Need to add this pure dimension to the corresponding DAP4 group
                 D4Dimensions *d4_dims = par_grp->dims();
                 string d4dim_name;
@@ -472,7 +260,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
                     hsize_t nelmts = dt_inst.nelmts;
 
                     // For pure dimension, if the dimension size is 0, 
-                    // the dimension is unlimited and we need to use the object reference
+                    // the dimension is unlimited or a NULL data space, so we need to use the object reference
                     // to retrieve the variable this dimension is attached and then for the same variable retrieve
                     // the size of this dimension.
                     if (dt_inst.nelmts == 0) 
@@ -487,6 +275,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
                 if(H5Tclose(dt_inst.type)<0) {
                       throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
                 }
+#endif
             }
         } 
     }
@@ -494,6 +283,10 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
     // The attributes of this group. Doing this order to follow ncdump's way (variable,attribute then groups)
     map_h5_attrs_to_dap4(pid,par_grp,nullptr,nullptr,0);
 
+    if (is_eos5 && !use_dimscale)
+        handle_eos5_datasets(par_grp, gname, eos5_dim_info);
+
+#if 0
     // This is the ugly part. To support HDF-EOS5 grids, we have to add extra variables.
     // These variables are geo-location related variables such as latitude and longitude.
     // These geo-location variables are DAP4 coverage map variable candidates. 
@@ -506,14 +299,13 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
     if (is_eos5 && !use_dimscale) 
         add_possible_eos5_grid_vars(par_grp, eos5_dim_info);
 
-
     // For HDF-EOS5 files, We also need to add DAP4 dimensions to this group if there are HDF-EOS5 dimensions.
     if (is_eos5 && !use_dimscale) {
 
         unordered_map<string,vector<HE5Dim>> grppath_to_dims = eos5_dim_info.grppath_to_dims;
         vector<string> dim_names;
         auto par_grp_name = string(gname);
-        if (par_grp_name.size()>1)
+        if (par_grp_name.size() > 1)
             par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
 
         BESDEBUG("h5", "<h5dmr.cc: eos5 handling - parent group name: " << par_grp_name << endl);
@@ -535,7 +327,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
             }
         }
     }
-
+#endif
     // The fullnamepath of the group is not necessary since dmrpp only needs the dataset path to retrieve info.
     // It only increases the dmr file size. So comment out for now.  KY 2022-10-13
 #if 0
@@ -547,7 +339,10 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
     for (hsize_t i = 0; i < nelems; i++) {
 
         vector <char>oname;
-
+        obtain_hdf5_object_name(pid, i, gname, oname);
+        if (true == check_soft_external_links(par_grp, pid, slinkindex,gname, oname,false))
+            continue;
+#if 0
         // Query the length of object name.
         oname_size =
         H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
@@ -568,7 +363,9 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
              msg += gname;
                 throw InternalErr(__FILE__, __LINE__, msg);
         }
+#endif
 
+#if 0
         // Check if it is the hard link or the soft link
         H5L_info_t linfo;
         if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
@@ -586,7 +383,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
         // Ignore external links
         if(linfo.type == H5L_TYPE_EXTERNAL) 
             continue;
-
+#endif
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
 
@@ -599,8 +396,11 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
         H5O_type_t obj_type = oinfo.type;
 
 
-        if (obj_type == H5O_TYPE_GROUP) {  
-
+        if (obj_type == H5O_TYPE_GROUP) {
+            handle_child_grp(file_id, pid, gname, par_grp, fname, use_dimscale, is_eos5, hdf5_hls, eos5_dim_info,
+                             handled_cv_names, oname);
+        }
+#if 0
             // Obtain the full path name
             string full_path_name =
                 string(gname) + string(oname.begin(),oname.end()-1) + "/";
@@ -609,7 +409,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
                 << endl);
 
             vector <char>t_fpn;
-            t_fpn.resize(full_path_name.size()+1);
+            t_fpn.resize(full_path_name.size() + 1);
             copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
             t_fpn[full_path_name.size()] = '\0';
 
@@ -657,13 +457,233 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
             if (H5Gclose(cgroup) < 0){
                 throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
             }
-        }// end if
+#endif
+
     } // for i is 0 ... nelems
 
     BESDEBUG("h5", "<breadth_first() " << endl);
     return true;
 }
 
+void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, vector<char> &oname) {
+
+    ssize_t oname_size;
+
+        // Query the length of this object name.
+    oname_size = H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,obj_index,
+                                    nullptr,(size_t)DODS_NAMELEN, H5P_DEFAULT);
+    if (oname_size <= 0) {
+        string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
+        msg += gname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // Obtain the name of the object
+    oname.resize((size_t) oname_size + 1);
+
+    if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,obj_index,
+                           oname.data(),(size_t)(oname_size+1), H5P_DEFAULT) < 0) {
+        string msg = "h5_dmr handler: Error getting the hdf5 object name from the group: ";
+        msg += gname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+}
+
+bool check_soft_external_links(D4Group *par_grp, hid_t pid, int & slinkindex,
+                               const char *gname, const vector<char> &oname, bool handle_softlink) {
+
+    bool ret_value = false;
+
+    // Check the HDF5 link info.
+    H5L_info_t linfo;
+    if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT) < 0) {
+        string msg = "hdf5 link name error from: ";
+        msg += gname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // Information of soft links are stored as attributes
+    if (linfo.type == H5L_TYPE_SOFT) {
+        ret_value = true;
+        if (handle_softlink == false) {
+            slinkindex++;
+            // Size of a soft link value
+            size_t val_size = linfo.u.val_size;
+            get_softlink(par_grp, pid, oname.data(), slinkindex, val_size);
+        }
+    }
+    else if (linfo.type == H5L_TYPE_EXTERNAL) // Ignore external links
+        ret_value = true;
+
+    return ret_value;
+}
+
+void handle_actual_dataset(D4Group *par_grp, hid_t pid, const string &full_path_name, const string &fname,
+                           bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info) {
+
+    hid_t dset_id = -1;
+    if ((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) < 0) {
+        string msg = "cannot open the HDF5 dataset  ";
+        msg += full_path_name;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    try {
+        read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale,is_eos5,eos5_dim_info);
+    }
+    catch(...) {
+        H5Dclose(dset_id);
+        throw;
+    }
+    if (H5Dclose(dset_id) < 0) {
+        string msg = "cannot close the HDF5 dataset  ";
+        msg += full_path_name;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+}
+
+void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& oname, bool is_eos5, const string &full_path_name) {
+
+    // Need to add this pure dimension to the corresponding DAP4 group
+    D4Dimensions *d4_dims = par_grp->dims();
+    string d4dim_name;
+    if (is_eos5) {
+        auto tempdim_name = string(oname.begin(),oname.end()-1);
+        d4dim_name = handle_string_special_characters(tempdim_name);
+    }
+    else
+        d4dim_name = string(oname.begin(),oname.end()-1);
+
+    D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
+    if (d4_dim == nullptr) {
+
+        hsize_t nelmts = dt_inst.nelmts;
+
+        // For pure dimension, if the dimension size is 0,
+        // the dimension is unlimited or a NULL data space, so we need to use the object reference
+        // to retrieve the variable this dimension is attached and then for the same variable retrieve
+        // the size of this dimension.
+        if (dt_inst.nelmts == 0)
+            nelmts = obtain_unlim_pure_dim_size(pid,full_path_name);
+
+        d4_dim = new D4Dimension(d4dim_name,nelmts);
+        d4_dims->add_dim_nocopy(d4_dim);
+    }
+
+    BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name." << d4dim_name << endl);
+
+    if (H5Tclose(dt_inst.type)<0) {
+          throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");
+    }
+
+}
+
+void handle_eos5_datasets(D4Group* par_grp, const char *gname, eos5_dim_info_t &eos5_dim_info) {
+
+    // To support HDF-EOS5 grids, we have to add extra variables.
+    // These variables are geo-location related variables such as latitude and longitude.
+    // These geo-location variables are DAP4 coverage map variable candidates.
+    // And to follow the DAP4 coverage specification, we need to define map variables.
+    // The map variables need to be in *front* of all the variables that use the map variables.
+    // So here we have to insert these extra variables if an HDF-EOS5 grid is found.
+    // We may need to remember the full path of these extra variables. These will be
+    // used as the coordinates of this group's data variables. For the geographic projection,
+    // this is not necessary.
+    add_possible_eos5_grid_vars(par_grp, eos5_dim_info);
+
+    //Also need to add DAP4 dimensions to this group if there are HDF-EOS5 dimensions.
+    unordered_map<string,vector<HE5Dim>> grppath_to_dims = eos5_dim_info.grppath_to_dims;
+    vector<string> dim_names;
+    auto par_grp_name = string(gname);
+    if (par_grp_name.size() > 1)
+        par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
+
+    BESDEBUG("h5", "<h5dmr.cc: eos5 handling - parent group name: " << par_grp_name << endl);
+
+    // We need to ensure the special characters are handled.
+    bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
+
+    if (is_eos5_dims) {
+
+        vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
+        D4Dimensions *d4_dims = par_grp->dims();
+        for (unsigned grp_dim_idx = 0; grp_dim_idx < dim_names.size(); grp_dim_idx++) {
+
+            D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
+            if (d4_dim == nullptr) {
+                d4_dim = new D4Dimension(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
+                d4_dims->add_dim_nocopy(d4_dim);
+            }
+        }
+    }
+}
+
+void handle_child_grp(const hid_t file_id, hid_t pid, const char *gname,
+                      D4Group* par_grp, const char *fname,
+                      bool use_dimscale,bool is_eos5,
+                      vector<link_info_t> & hdf5_hls,
+                      eos5_dim_info_t & eos5_dim_info,
+                      vector<string> & handled_cv_names,
+                      const vector<char>& oname) {
+
+    // Obtain the full path name
+    string full_path_name =
+        string(gname) + string(oname.begin(),oname.end()-1) + "/";
+
+    BESDEBUG("h5", "=breadth_first dmr ():H5G_GROUP " << full_path_name
+        << endl);
+
+    vector <char>t_fpn;
+    t_fpn.resize(full_path_name.size() + 1);
+    copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
+    t_fpn[full_path_name.size()] = '\0';
+
+    hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
+    if (cgroup < 0){
+        throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
+    }
+
+    auto grp_name = string(oname.begin(),oname.end()-1);
+
+    // Check the hard link loop and break the loop if it exists.
+    string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
+    if (oid == "") {
+
+        try {
+            if (is_eos5)
+                grp_name = handle_string_special_characters(grp_name);
+            auto tem_d4_cgroup = new D4Group(grp_name);
+
+            // Add this new DAP4 group
+            par_grp->add_group_nocopy(tem_d4_cgroup);
+
+            // Continue searching the objects under this group
+            breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_cv_names);
+        }
+        catch(...) {
+            H5Gclose(cgroup);
+            throw;
+        }
+    }
+    else {
+        // This group has been visited.
+        // Add the attribute table with the attribute name as HDF5_HARDLINK.
+        // The attribute value is the name of the group when it is first visited.
+        auto tem_d4_cgroup = new D4Group(string(grp_name));
+
+        // Note attr_str_c is the DAP4 attribute string datatype
+        auto d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
+
+        d4_hlinfo->add_value(obj_paths.get_name(oid));
+        tem_d4_cgroup->attributes()->add_attribute_nocopy(d4_hlinfo);
+        par_grp->add_group_nocopy(tem_d4_cgroup);
+    }
+
+    if (H5Gclose(cgroup) < 0){
+        throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+    }
+}
 /////////////////////////////////////////////////////////////////////////////// 
 ///// \fn read_objects( D4Group *d4_grp, 
 /////                            const string & varname, 
