@@ -824,15 +824,10 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
         int dimnames_size = 0;
         if ((unsigned int) ((int) (dt_inst.dimnames.size())) != dt_inst.dimnames.size()) {
             delete ar;
-            throw
-                    InternalErr(__FILE__, __LINE__,
+            throw InternalErr(__FILE__, __LINE__,
                                 "number of dimensions: overflow");
         }
         dimnames_size = (int) (dt_inst.dimnames.size());
-#if 0
-        cerr<<"dimnames_size is "<<dimnames_size <<endl;
-        cerr<<"ndims is "<<dt_inst.ndims <<endl;
-#endif
 
         bool is_eos5_dims = false;
         if (dimnames_size == dt_inst.ndims) {
@@ -842,7 +837,6 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
                     ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
                 else
                     ar->append_dim_ll(dt_inst.size[dim_index]);
-                // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc)
             }
             dt_inst.dimnames.clear();
         } else {
@@ -850,13 +844,7 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
             // We search if there are dimension names. If yes, add them here.
             vector<string> dim_names;
             is_eos5_dims = obtain_eos5_dim(varname, eos5_dim_info.varpath_to_dims, dim_names);
-#if 0
-            cout<<"final varname is "<<varname <<endl;
-            for (const auto & dname:dim_names)
-                cout<<"dname is "<<dname<<endl;
-#endif
 
-            // For DAP4, no need to add dimension if no dimension name
             if (is_eos5_dims) {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
                     ar->append_dim_ll(dt_inst.size[dim_index], dim_names[dim_index]);
@@ -870,18 +858,10 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
         BaseType *new_var = nullptr;
         try {
             if (is_eos5_dims) {
-#if 0
-                vector<string>test_dim_path = varpath_to_dims.at(varname);
-                for (const auto &td:test_dim_path)
-                cout<<"dimpath final "<<td<<endl;
-#endif
+
                 new_var = ar->h5dims_transform_to_dap4(d4_grp, eos5_dim_info.varpath_to_dims.at(varname));
 
             } else {
-#if 0
-                for (const auto td:dt_inst.dimnames_path)
-               cout<<"dimpath final non-eos5 "<<td<<endl;
-#endif
                 new_var = ar->h5dims_transform_to_dap4(d4_grp, dt_inst.dimnames_path);
             }
         }
@@ -908,12 +888,7 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
             if (eos5_dim_info.gridname_to_info.empty() == false)
                 make_attributes_to_cf(new_var, eos5_dim_info);
         }
-#if 0
-        // Test the attribute
-        D4Attribute *test_attr = new D4Attribute("DAP4_test",attr_str_c);
-        test_attr->add_value("test_grp_attr");
-        new_var->attributes()->add_attribute_nocopy(test_attr);
-#endif
+
         // Add this var to DAP4 group.
         d4_grp->add_var_nocopy(new_var);
         delete ar;
