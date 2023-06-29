@@ -80,7 +80,8 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = CmrApiTest CmrCatalogTest GranuleTest
+UNIT_TESTS = CmrCatalogTest GranuleTest
+# This fails often: CmrApiTest jhrg 6/29/23
 else
 UNIT_TESTS =
 

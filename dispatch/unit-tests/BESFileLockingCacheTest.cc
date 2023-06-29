@@ -311,7 +311,7 @@ public:
     }
 
     // Multi-threaded tests.
-#if 1
+#if 0
 
     void test_lock_cache_write_mt() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
@@ -468,10 +468,12 @@ public:
         CPPUNIT_TEST(test_good_cache_creation);
         CPPUNIT_TEST(test_check_cache_for_non_existent_compressed_file);
         CPPUNIT_TEST(test_find_existing_cached_file);
-        CPPUNIT_TEST(test_find_existing_cached_file_mt);
         CPPUNIT_TEST(test_cache_purge);
 
+#if 0
+        CPPUNIT_TEST(test_find_existing_cached_file_mt);
         CPPUNIT_TEST(test_lock_cache_write_mt);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 };

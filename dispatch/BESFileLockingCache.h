@@ -49,6 +49,7 @@ typedef struct {
 
 typedef std::list<cache_entry> CacheFiles;
 
+
 /**
  * @brief Implementation of a caching mechanism for compressed data.
  *
@@ -122,8 +123,11 @@ class BESFileLockingCache: public BESObj {
     int m_find_descriptor(const std::string &file);
 #endif
 
+#if 0
     virtual void lock_cache_write();
     virtual void lock_cache_read();
+    virtual void unlock_cache();
+#endif
 
     friend class cacheT;
     friend class FileLockingCacheTest;  // This is in dispatch/tests
@@ -151,7 +155,9 @@ public:
     virtual void exclusive_to_shared_lock(int fd);
     virtual void unlock_and_close(const std::string &target);
 
+#if 0
     virtual void unlock_cache();
+#endif
 
     virtual unsigned long long update_cache_info(const std::string &target);
     virtual bool cache_too_big(unsigned long long current_size) const;

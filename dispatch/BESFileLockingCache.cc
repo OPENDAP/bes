@@ -71,7 +71,52 @@ static const unsigned long long BYTES_PER_MEG = 1048576ULL;
 // 2^64 / 2^20 == 2^44
 static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
 
-static recursive_mutex cache_mutex;
+static inline string get_errno() {
+    const char *s_err = strerror(errno);
+    return s_err ? s_err : "unknown error";
+}
+
+// Build a lock of a certain type.
+//
+// Using whence == SEEK_SET with start and len set to zero means lock the whole file.
+// jhrg 9/8/18
+static inline struct flock *advisory_lock(int type)
+{
+    static struct flock lock;
+    lock.l_type = type;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    lock.l_pid = getpid();
+
+    return &lock;
+}
+
+/// Move this to the header if it's needed elsewhere or scope needs to be contained. jhrg 6/29/23
+class AdvisoryLockGuard {
+    int d_fd; /// the descriptor to lock
+
+public:
+    AdvisoryLockGuard() = delete;
+    AdvisoryLockGuard(const AdvisoryLockGuard &) = delete;
+    /// Get an advisory file lock on a file. Use F_RDLCK or F_WRLCK for 'type.'
+    AdvisoryLockGuard(int fd, int type) : d_fd(fd) {
+        struct flock *l = advisory_lock(type);
+        if (fcntl(d_fd, F_SETLKW, l) == -1) {
+            // Removed jhrg 6/29/23 close(d_fd);
+            throw BESInternalError("fcntl: " + get_errno(), __FILE__, __LINE__);
+        }
+    }
+    AdvisoryLockGuard &operator=(const AdvisoryLockGuard &) = delete;
+
+    ~AdvisoryLockGuard() {
+        struct flock *l = advisory_lock(F_UNLCK);
+        if (fcntl(d_fd, F_SETLKW, l) == -1) {
+            // Removed jhrg 6/29/23 close(d_fd);
+            throw BESInternalError("fcntl: " + get_errno(), __FILE__, __LINE__);
+        }
+    }
+};
 
 /** @brief Make an instance of FileLockingCache
  *
@@ -100,27 +145,6 @@ BESFileLockingCache::BESFileLockingCache(string cache_dir, string prefix, unsign
     m_initialize_cache_info();
 }
 
-static inline string get_errno() {
-    const char *s_err = strerror(errno);
-    return s_err ? s_err : "unknown error";
-}
-
-// Build a lock of a certain type.
-//
-// Using whence == SEEK_SET with start and len set to zero means lock the whole file.
-// jhrg 9/8/18
-static inline struct flock *lock(int type)
-{
-    static struct flock lock;
-    lock.l_type = type;
-    lock.l_whence = SEEK_SET;
-    lock.l_start = 0;
-    lock.l_len = 0;
-    lock.l_pid = getpid();
-
-    return &lock;
-}
-
 /**
  * A blocking call to create a file locked for write.
  *
@@ -145,7 +169,7 @@ static bool createLockedFile(const string &file_name, int &ref_fd)
         }
     }
 
-    struct flock *l = lock(F_WRLCK);
+    struct flock *l = advisory_lock(F_WRLCK);
     // F_SETLKW == set lock, blocking
     if (fcntl(fd, F_SETLKW, l) == -1) {
         close(fd);
@@ -200,7 +224,13 @@ bool BESFileLockingCache::m_initialize_cache_info()
                                        __LINE__);
 
             // This leaves the d_cache_info_fd file descriptor open
+#if 0
             unlock_cache();
+#endif
+            if (fcntl(d_cache_info_fd, F_SETLK, advisory_lock(F_UNLCK)) == -1) {
+                throw BESInternalError(prolog +"An error occurred trying to unlock the cache-control file" + get_errno(), __FILE__,
+                                       __LINE__);
+            }
         }
         else {
             if ((d_cache_info_fd = open(d_cache_info.c_str(), O_RDWR)) == -1) {
@@ -336,7 +366,7 @@ static string lockStatus(const int fd)
  */
 static void unlock(int fd)
 {
-    if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
+    if (fcntl(fd, F_SETLK, advisory_lock(F_UNLCK)) == -1) {
         throw BESInternalError(prolog + "An error occurred trying to unlock the file: " + get_errno(), __FILE__, __LINE__);
     }
 
@@ -503,7 +533,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
         }
     }
 
-    struct flock *l = lock(F_RDLCK);
+    struct flock *l = advisory_lock(F_RDLCK);
     if (fcntl(fd, F_SETLKW, l) == -1) {
         close(fd);
         ostringstream oss;
@@ -539,7 +569,10 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
  */
 bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
 {
+    AdvisoryLockGuard read_alg(d_cache_info_fd, F_RDLCK);
+#if 0
     lock_cache_read();
+#endif
 
     bool status = true;
 
@@ -562,7 +595,7 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
 
     // The file might be open for writing, so setting a read lock is
     // not possible.
-    struct flock *l = lock(F_RDLCK);
+    struct flock *l = advisory_lock(F_RDLCK);
     if (fcntl(fd, F_SETLKW, l) == -1) {
         return false;   // cannot get the lock
     }
@@ -570,7 +603,9 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
     m_record_descriptor(target, fd);
 #endif
 
+#if 0
     unlock_cache();
+#endif
 
     return status;
 }
@@ -594,7 +629,10 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
  * if fcntl(2) returns an error. */
 bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
 {
+    AdvisoryLockGuard write_alg(d_cache_info_fd, F_WRLCK);
+#if 0
     lock_cache_write();
+#endif
 
     bool status = createLockedFile(target, fd);
 
@@ -602,7 +640,9 @@ bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
 
     if (status) m_record_descriptor(target, fd);
 
+#if 0
     unlock_cache();
+#endif
 
     return status;
 }
@@ -646,13 +686,12 @@ void BESFileLockingCache::exclusive_to_shared_lock(int fd)
  * @note This is intended to be used internally only but might be useful in
  * some settings.
  */
+#if 0
 void BESFileLockingCache::lock_cache_write()
 {
-    lock_guard<recursive_mutex> lock_guard(cache_mutex);
-
     BESDEBUG(LOCK, prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
 
-    if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_WRLCK)) == -1) {
+    if (fcntl(d_cache_info_fd, F_SETLKW, advisory_lock(F_WRLCK)) == -1) {
         throw BESInternalError("An error occurred trying to lock the cache-control file" + get_errno(), __FILE__,
             __LINE__);
     }
@@ -667,7 +706,7 @@ void BESFileLockingCache::lock_cache_read()
 {
     BESDEBUG(LOCK,  prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
 
-    if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_RDLCK)) == -1) {
+    if (fcntl(d_cache_info_fd, F_SETLKW, advisory_lock(F_RDLCK)) == -1) {
         throw BESInternalError(prolog + "An error occurred trying to lock the cache-control file" + get_errno(), __FILE__,
             __LINE__);
     }
@@ -678,19 +717,20 @@ void BESFileLockingCache::lock_cache_read()
 /** Unlock the cache info file.
  *
  * @note This is intended to be used internally only but might be useful in
- * some settings.
+ * some settings. Made private 6/29/23 jhrg
  */
 void BESFileLockingCache::unlock_cache()
 {
     BESDEBUG(LOCK,  prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
 
-    if (fcntl(d_cache_info_fd, F_SETLK, lock(F_UNLCK)) == -1) {
+    if (fcntl(d_cache_info_fd, F_SETLK, advisory_lock(F_UNLCK)) == -1) {
         throw BESInternalError(prolog +"An error occurred trying to unlock the cache-control file" + get_errno(), __FILE__,
             __LINE__);
     }
 
     BESDEBUG(LOCK_STATUS,  prolog << "lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
+#endif
 
 /** Unlock the named file.
  *
@@ -733,9 +773,12 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
  */
 unsigned long long BESFileLockingCache::update_cache_info(const string &target)
 {
+    AdvisoryLockGuard write_alg(d_cache_info_fd, F_WRLCK);
     unsigned long long current_size;
+#if 0
     try {
         lock_cache_write();
+#endif
 
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
             throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
@@ -760,12 +803,14 @@ unsigned long long BESFileLockingCache::update_cache_info(const string &target)
         if (write(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
             throw BESInternalError(prolog + "Could not write size info from the cache info file!", __FILE__, __LINE__);
 
-        unlock_cache();
+#if 0
+    unlock_cache();
     }
     catch (...) {
         unlock_cache();
         throw;
     }
+#endif
 
     return current_size;
 }
@@ -788,9 +833,12 @@ bool BESFileLockingCache::cache_too_big(unsigned long long current_size) const
  */
 unsigned long long BESFileLockingCache::get_cache_size()
 {
+    AdvisoryLockGuard read_alg(d_cache_info_fd, F_RDLCK);
     unsigned long long current_size;
+#if 0
     try {
         lock_cache_read();
+#endif
 
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
             throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
@@ -798,12 +846,14 @@ unsigned long long BESFileLockingCache::get_cache_size()
         if (read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
             throw BESInternalError(prolog + "Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
-        unlock_cache();
+#if 0
+    unlock_cache();
     }
     catch (...) {
         unlock_cache();
         throw;
     }
+#endif
 
     return current_size;
 }
@@ -887,7 +937,7 @@ bool BESFileLockingCache::get_exclusive_lock_nb(const string &file_name, int &re
         }
     }
 
-    struct flock *l = lock(F_WRLCK);
+    struct flock *l = advisory_lock(F_WRLCK);
     if (fcntl(fd, F_SETLK, l) == -1) {
         switch (errno) {
             case EAGAIN:
@@ -938,8 +988,11 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
         return;
     }
 
+    AdvisoryLockGuard write_alg(d_cache_info_fd, F_WRLCK);
+#if 0
     try {
         lock_cache_write();
+#endif
 
         CacheFiles contents;
         unsigned long long computed_size = m_collect_cache_dir_info(contents);
@@ -1002,12 +1055,14 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
             }
         }
 #endif
-        unlock_cache();
+#if 0
+    unlock_cache();
     }
     catch (...) {
         unlock_cache();
         throw;
     }
+#endif
 }
 
 /**
@@ -1046,7 +1101,7 @@ bool BESFileLockingCache::get_exclusive_lock(const string &file_name, int &ref_f
         }
     }
 
-    struct flock *l = lock(F_WRLCK);
+    struct flock *l = advisory_lock(F_WRLCK);
     if (fcntl(fd, F_SETLKW, l) == -1) {     // F_SETLKW == blocking lock
         close(fd);
         ostringstream oss;
@@ -1074,10 +1129,13 @@ bool BESFileLockingCache::get_exclusive_lock(const string &file_name, int &ref_f
  */
 void BESFileLockingCache::purge_file(const string &file)
 {
+    AdvisoryLockGuard write_alg(d_cache_info_fd, F_WRLCK);
     BESDEBUG(CACHE, prolog << "Starting the purge" << endl);
 
+#if 0
     try {
         lock_cache_write();
+#endif
 
         // Grab an exclusive lock on the file. SonarScan will complain about nested trys... jhrg 11/16/22
         int cfile_fd;
@@ -1115,13 +1173,14 @@ void BESFileLockingCache::purge_file(const string &file)
             if (cfile_fd != -1)
                 unlock(cfile_fd);
         }
-
+#if 0
         unlock_cache();
     }
-    catch (...) {
+catch (...) {
         unlock_cache();
         throw;
     }
+#endif
 }
 
 /**

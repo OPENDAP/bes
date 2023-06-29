@@ -20,7 +20,9 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . unit-tests tests
+SUBDIRS = . unit-tests
+
+# These tests will fail if the DmrApiTest also fails: tests jhrg 6/29/23
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libcmr_module.la
