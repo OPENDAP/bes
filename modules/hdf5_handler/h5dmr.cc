@@ -35,6 +35,7 @@
 ///
 
 #include <sstream>
+#include <memory>
 
 #include <libdap/InternalErr.h>
 #include <libdap/mime_util.h>
@@ -567,8 +568,9 @@ void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& onam
         if (dt_inst.nelmts == 0)
             nelmts = obtain_unlim_pure_dim_size(pid,full_path_name);
 
-        d4_dim = new D4Dimension(d4dim_name,nelmts);
-        d4_dims->add_dim_nocopy(d4_dim);
+        //d4_dim = new D4Dimension(d4dim_name,nelmts);
+        auto d4_dim_unique = make_unique<D4Dimension>(d4dim_name, nelmts);
+        d4_dims->add_dim_nocopy(d4_dim_unique.release());
     }
 
     BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name." << d4dim_name << endl);
@@ -612,8 +614,8 @@ void handle_eos5_datasets(D4Group* par_grp, const char *gname, eos5_dim_info_t &
 
             D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
             if (d4_dim == nullptr) {
-                d4_dim = new D4Dimension(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
-                d4_dims->add_dim_nocopy(d4_dim);
+                auto d4_dim_unique = make_unique<D4Dimension>(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
+                d4_dims->add_dim_nocopy(d4_dim_unique.release());
             }
         }
     }
