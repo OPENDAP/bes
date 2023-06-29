@@ -83,7 +83,7 @@ yy_buffer_state *he5dds_scan_string(const char *str);
 int he5ddsparse(HE5Parser *he5parser);
 int he5ddslex_destroy();
 
-
+void array_add_dimension_dimscale(HDF5Array* ar);
 //////////////////////////////////////////////////////////////////////////////////////////
 /// bool breadth_first(const hid_t file_id,hid_t pid, const char *gname, 
 ///                     D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5,
@@ -736,6 +736,19 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
     }
 }
 
+void array_add_dimensions_dimscale(HDF5Array *ar){
+
+                //
+            for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+                if (dt_inst.dimnames[dim_index] != "")
+                    ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
+                else
+                    ar->append_dim_ll(dt_inst.size[dim_index]);
+            }
+            dt_inst.dimnames.clear();
+
+}
+
 /////////////////////////////////////////////////////////////////////////////// 
 ///// \fn read_objects_base_type(D4Group *d4_grp,
 /////                            const string & varname, 
@@ -758,6 +771,7 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
                        bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info)
 {
 
+#if 0
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
     if (use_dimscale) {
@@ -768,7 +782,8 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
     }
     if (is_eos5) 
         newvarname = handle_string_special_characters(newvarname);
-
+#endif
+    string newvarname = obtain_new_varname(varname, use_dimscale, is_eos5);
     // Get a base type. It should be an HDF5 atomic datatype.
     BaseType *bt = Get_bt(newvarname, varname,filename, dt_inst.type,true);
     if (!bt)
@@ -777,6 +792,13 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
     // First deal with scalar data. 
     if (dt_inst.ndims == 0) {
 
+        // Mark this base type as an DAP4 object
+        bt->set_is_dap4(true);
+        read_objects_basetype_attr_hl(varname, bt, dset_id, is_eos5);
+
+        // Attach this object to the DAP4 group
+        d4_grp->add_var_nocopy(bt);
+    }
 #if 0
         // transform the DAP2 to DAP4 for this DAP base type and add it to d4_grp
         bt->transform_to_dap4(d4_grp,d4_grp);
@@ -792,7 +814,7 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
                 map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
         }
 #endif
-//#if 0
+#if 0
         // Map the HDF5 dataset attributes to DAP4
             bt->set_is_dap4(true);
             map_h5_attrs_to_dap4(dset_id,nullptr,bt,nullptr,1);
@@ -801,14 +823,17 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
             if (is_eos5)
                 map_h5_varpath_to_dap4_attr(nullptr,bt,nullptr,varname,1);
             d4_grp->add_var_nocopy(bt);
-//#endif
+#endif
         //delete bt;
         //bt = nullptr;
-    }
+    //}
     else {
+
         // Next, deal with Array data. This 'else clause' runs to
         // the end of the method. 
-        auto ar = new HDF5Array(newvarname, filename, bt);
+        //auto ar = new HDF5Array(newvarname, filename, bt);
+        auto ar_unique = make_unique<HDF5Array>(newvarname, filename, bt);
+        HDF5Array *ar = ar_unique.get();
         delete bt;
         bt = nullptr;
 
@@ -822,16 +847,17 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
 
         // If we have dimension names(dimension scale is used.),we will see if we can add the names.       
         int dimnames_size = 0;
-        if ((unsigned int) ((int) (dt_inst.dimnames.size())) != dt_inst.dimnames.size()) {
-            delete ar;
-            throw InternalErr(__FILE__, __LINE__,
-                                "number of dimensions: overflow");
-        }
+        if ((unsigned int) ((int) (dt_inst.dimnames.size())) != dt_inst.dimnames.size())
+            throw InternalErr(__FILE__, __LINE__,"number of dimensions: overflow");
+
         dimnames_size = (int) (dt_inst.dimnames.size());
 
         bool is_eos5_dims = false;
         if (dimnames_size == dt_inst.ndims) {
 
+            array_add_dimensions_dimscale(ar);
+            //
+#if 0
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                 if (dt_inst.dimnames[dim_index] != "")
                     ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
@@ -839,6 +865,7 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
                     ar->append_dim_ll(dt_inst.size[dim_index]);
             }
             dt_inst.dimnames.clear();
+#endif
         } else {
             // With using the dimension scales, the HDF5 file may still have dimension names such as HDF-EOS5.
             // We search if there are dimension names. If yes, add them here.
@@ -866,13 +893,14 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
             }
         }
         catch (...) {
-            delete ar;
+            //delete ar;
             throw;
         }
 
         // clear DAP4 dimnames_path vector
         dt_inst.dimnames_path.clear();
 
+#if 0
         // Map HDF5 dataset attributes to DAP4
         map_h5_attrs_to_dap4(dset_id, nullptr, new_var, nullptr, 1);
 
@@ -880,7 +908,8 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
         map_h5_dset_hardlink_to_d4(dset_id, varname, new_var, nullptr, 1);
         if (is_eos5)
             map_h5_varpath_to_dap4_attr(nullptr, new_var, nullptr, varname, 1);
-
+#endif
+        read_objects_basetype_attr_hl(varname, new_var, dset_id,  is_eos5);
         // Here we need to add grid_mapping information if necessary.
         if (is_eos5_dims && !use_dimscale) {
             if ((eos5_dim_info.dimpath_to_cvpath.empty() == false) && (ar->get_numdim() > 1))
@@ -891,12 +920,30 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
 
         // Add this var to DAP4 group.
         d4_grp->add_var_nocopy(new_var);
-        delete ar;
-        ar = nullptr;
+        //delete ar;
+        //ar = nullptr;
     }
     BESDEBUG("h5", "<read_objects_base_type(dmr)" << endl);
 
 }
+void read_objects_basetype_attr_hl(const string &varname, BaseType *bt, hid_t dset_id,  bool is_eos5) {
+
+    // Mark this base type as an DAP4 object
+    bt->set_is_dap4(true);
+
+    // Map the HDF5 dataset attributes to DAP4
+    map_h5_attrs_to_dap4(dset_id,nullptr,bt,nullptr,1);
+
+    // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
+    map_h5_dset_hardlink_to_d4(dset_id,varname,bt,nullptr,1);
+
+    // If this is an HDF-EOS5 object, we need to map the full path of this object to a DAP4 attribute.
+    if (is_eos5)
+        map_h5_varpath_to_dap4_attr(nullptr,bt,nullptr,varname,1);
+
+
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn read_objects_structure(D4Group *d4_grp,const string & varname,
@@ -916,6 +963,8 @@ void
 read_objects_structure(D4Group *d4_grp, const string & varname,
                        const string & filename,hid_t dset_id,bool use_dimscale,bool is_eos5)
 {
+    string newvarname = obtain_new_varname(varname, use_dimscale, is_eos5);
+#if 0
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
     if (use_dimscale) {
@@ -926,7 +975,7 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
     }
     if (is_eos5) 
         newvarname = handle_string_special_characters(newvarname);
-    
+#endif
 
     // Map HDF5 compound datatype to Structure
     Structure *structure = Get_structure(newvarname, varname,filename, dt_inst.type,true);
@@ -1014,6 +1063,20 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
     }
 }
 
+string obtain_new_varname(const string &varname, bool use_dimscale, bool is_eos5) {
+
+    // Obtain the relative path of the variable name under the leaf group
+    string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
+    if (use_dimscale) {
+        const string nc4_non_coord="_nc4_non_coord_";
+        size_t nc4_non_coord_size= nc4_non_coord.size();
+        if (newvarname.find(nc4_non_coord) == 0)
+            newvarname = newvarname.substr(nc4_non_coord_size,newvarname.size()-nc4_non_coord_size);
+    }
+    if (is_eos5)
+        newvarname = handle_string_special_characters(newvarname);
+    return newvarname;
+}
 
 ///////////////////////////////////////////////////////////////////////////////// 
 ///// \fn map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * d4s,int flag)

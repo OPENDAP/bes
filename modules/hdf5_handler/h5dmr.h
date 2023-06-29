@@ -165,7 +165,10 @@ void handle_child_grp(const hid_t file_id, hid_t pid, const char *gname, libdap:
 
 void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
 void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
+void read_objects_basetype_attr_hl(const std::string &varname, libdap::BaseType *bt, hid_t dset_id,  bool is_eos5);
+
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool);
+std::string obtain_new_varname(const std::string &varname, bool use_dimscale, bool is_eos5);
 #if 0
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
 #endif
