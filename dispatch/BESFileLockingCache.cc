@@ -41,6 +41,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <mutex>
 #include <cstring>
 #include <cerrno>
 
@@ -69,6 +70,8 @@ static const unsigned long long BYTES_PER_MEG = 1048576ULL;
 // Max cache size in megs, so we can check the user input and warn.
 // 2^64 / 2^20 == 2^44
 static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
+
+static recursive_mutex cache_mutex;
 
 /** @brief Make an instance of FileLockingCache
  *
@@ -427,13 +430,15 @@ static const string chars_excluded_from_filenames = R"(<>=,/()\"':? []()$)";
 
 /**
  * Returns the fully qualified file system path name for the cache file
- * associated with this particular cache resource.
+ * associated with this particular cache resource. This does not look
+ * in the cache to see if the fle is present, it just returns the name
+ * that will (or is) be used once/if the file is added to the cache.
  *
- * @note How names are mangled: ALl occurrences of the characters
- * '<', '>', '=', ',', '/', '(', ')', '"', ''', ':', '?', and ' ' with the
- * '#' character.
+ * @note Names are mangled: ALl occurrences of the characters
+ * '<', '>', '=', ',', '/', '(', ')', '"', ''', ':', '?', and ' '
+ * are replaced with the '#' character.
  *
- * @param src The source name to cache
+ * @param src The source name to (or in the) cache
  * @param mangle If True, assume the name is a file pathname and mangle it.
  * If false, do not mangle the name (assume the caller has sent a suitable
  * string) but do turn the string into a pathname located in the cache directory
@@ -643,6 +648,8 @@ void BESFileLockingCache::exclusive_to_shared_lock(int fd)
  */
 void BESFileLockingCache::lock_cache_write()
 {
+    lock_guard<recursive_mutex> lock_guard(cache_mutex);
+
     BESDEBUG(LOCK, prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
 
     if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_WRLCK)) == -1) {
