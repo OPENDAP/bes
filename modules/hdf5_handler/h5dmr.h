@@ -167,7 +167,14 @@ void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std
 void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
 void read_objects_basetype_attr_hl(const std::string &varname, libdap::BaseType *bt, hid_t dset_id,  bool is_eos5);
 
-void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool);
+void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,
+                            const hid_t, bool, bool);
+void read_objects_structure_arrays(libdap::D4Group *d4_grp, libdap::Structure *structure, const std::string & varname,
+                                   const std::string &newvarname, const std::string &filename, hid_t dset_id,
+                                   bool is_eos5);
+void read_objects_structure_scalar(libdap::D4Group *d4_grp, libdap::Structure *structure, const std::string & varname,
+                                   hid_t dset_id, bool is_eos5);
+
 std::string obtain_new_varname(const std::string &varname, bool use_dimscale, bool is_eos5);
 #if 0
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
