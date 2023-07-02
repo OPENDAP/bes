@@ -1266,14 +1266,17 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         BESDEBUG("h5", "arttr_name= " << attr_name << endl);
 
         // Create the DAP4 attribute mapped from HDF5
-        auto d4_attr = new D4Attribute(attr_name,dap4_attr_type);
+        //auto d4_attr = new D4Attribute(attr_name,dap4_attr_type);
+        auto d4_attr_unique = make_unique<D4Attribute>(attr_name, dap4_attr_type);
+        D4Attribute *d4_attr = d4_attr_unique.release();
 
-        if (dap4_attr_type == attr_str_c) {
-            
+        if (dap4_attr_type == attr_str_c && check_if_utf8_str(ty_id) ) {
+#if 0
             H5T_cset_t c_set_type = H5Tget_cset(ty_id);
             if (c_set_type < 0)
                 throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
-            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8)) 
+            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
+#endif
                 d4_attr->set_utf8_str_flag(true);
         }
 

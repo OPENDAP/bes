@@ -98,8 +98,8 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
 
 void write_vlen_str_attrs(hid_t attr_id, hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr,
                           libdap::AttrTable* d2_attr, bool is_dap4);
-bool check_if_utf8_str(hid_t ty_id, bool is_dap4);
-
+//bool check_if_utf8_str(hid_t ty_id, bool is_dap4);
+bool check_if_utf8_str(hid_t ty_id);
 bool check_str_attr_value(hid_t attr_id, hid_t atype_id, const string & value_to_compare, bool is_substr);
 hsize_t obtain_number_elements(hid_t space_id);
 std::string obtain_vlstr_values(std::vector<char> & temp_buf, hid_t atype_id, size_t ty_size,

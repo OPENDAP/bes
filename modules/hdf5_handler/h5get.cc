@@ -2322,7 +2322,12 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
     BESDEBUG("h5","attribute size " <<attr_inst_ptr->need <<endl);
     BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(ty_id))<<endl);
 
-    bool is_utf8_str = check_if_utf8_str(ty_id,is_dap4);
+    // bool is_utf8_str = check_if_utf8_str(ty_id,is_dap4);
+
+    bool is_utf8_str = false;
+    if (is_dap4 == false)
+        is_utf8_str = check_if_utf8_str(ty_id);
+
 #if 0
     bool is_utf8_str = false;
 
@@ -2399,19 +2404,19 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
     H5Sclose(temp_space_id);
 }
 
-bool check_if_utf8_str(hid_t ty_id, bool is_dap4) {
+bool check_if_utf8_str(hid_t ty_id) {
 
     bool is_utf8_str = false;
 
     // Note: We don't need to handle DAP4 here since the utf8 flag for DAP4 can be set before coming to this function
     // See h5dmr.cc around the line 956.
-    if (is_dap4 == false) {
+   // if (is_dap4 == false) {
         H5T_cset_t c_set_type = H5Tget_cset(ty_id);
         if (c_set_type < 0)
             throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
         if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
             is_utf8_str = true;
-    }
+   // }
 
     return is_utf8_str;
 }
