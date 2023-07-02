@@ -87,6 +87,8 @@ void array_add_dimensions_dimscale(HDF5Array* ar);
 bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, eos5_dim_info_t &eos5_dim_info);
 void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim_info, BaseType *new_var,HDF5Array *ar);
 void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, DSattr_t attr_inst);
+void write_dap4_attr_value(D4Attribute *d4_attr, hid_t ty_id, hsize_t nelmts, char *tempvalue,
+                           size_t elesize = 0);
 //////////////////////////////////////////////////////////////////////////////////////////
 /// bool breadth_first(const hid_t file_id,hid_t pid, const char *gname, 
 ///                     D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5,
@@ -1215,18 +1217,16 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
     }
 
     // Obtain the number of attributes
-    auto num_attr = (int)(obj_info.num_attrs);
-    if (num_attr < 0 ) {
+    auto num_attrs = (int)(obj_info.num_attrs);
+    if (num_attrs < 0 ) {
         string msg = "Fail to get the number of attributes for the HDF5 object. ";
         throw InternalErr(__FILE__, __LINE__,msg);
     }
-   
-    string print_rep;
-    vector<char>temp_buf;
 
     bool ignore_attr = false;
     hid_t attr_id = -1;
-    for (int j = 0; j < num_attr; j++) {
+
+    for (int j = 0; j < num_attrs; j++) {
 
         // Obtain attribute information.
         DSattr_t attr_inst;
@@ -1264,103 +1264,25 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         }
 
         string attr_name = attr_inst.name;
-        BESDEBUG("h5", "arttr_name= " << attr_name << endl);
+        BESDEBUG("h5", "attr_name= " << attr_name << endl);
 
         // Create the DAP4 attribute mapped from HDF5
         //auto d4_attr = new D4Attribute(attr_name,dap4_attr_type);
         auto d4_attr_unique = make_unique<D4Attribute>(attr_name, dap4_attr_type);
         D4Attribute *d4_attr = d4_attr_unique.release();
 
-        if (dap4_attr_type == attr_str_c && check_if_utf8_str(ty_id) ) {
-#if 0
-            H5T_cset_t c_set_type = H5Tget_cset(ty_id);
-            if (c_set_type < 0)
-                throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
-            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
-#endif
+        // Check if utf8 string.
+        if (dap4_attr_type == attr_str_c && check_if_utf8_str(ty_id) )
                 d4_attr->set_utf8_str_flag(true);
-        }
 
         // We have to handle variable length string differently. 
         if (H5Tis_variable_str(ty_id))  
             write_vlen_str_attrs(attr_id,ty_id,&attr_inst,d4_attr,nullptr,true);
-       
-        else {
-
+        else
             write_dap4_attr(attr_id, d4_attr, ty_id, attr_inst);
-#if 0
-            vector<char> value;
-            value.resize(attr_inst.need);
-            BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
-  
-            // Need to obtain the memtype since we still find BE data.
-            hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
-            // Read HDF5 attribute data.
-            if (H5Aread(attr_id, memtype, (void *) (value.data())) < 0) {
-                delete d4_attr;
-                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-            }
-            H5Aclose(memtype);
 
-            // For scalar data, just read data once.
-            if (attr_inst.ndims == 0) {
-                for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
-                    print_rep = print_attr(ty_id, loc, value.data());
-                    if (print_rep.c_str() != nullptr) {
-                        d4_attr->add_value(print_rep);
-                    }
-                }
-            }
-            else {// The number of dimensions is > 0
-
-                // Get the attribute datatype size
-                auto elesize = (int) H5Tget_size(ty_id);
-                if (elesize == 0) {
-                    H5Tclose(ty_id);
-                    H5Aclose(attr_id); 
-                    delete d4_attr;
-                    throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
-                }
-
-                // Due to the implementation of print_attr, the attribute value will be 
-                // written one by one.
-                char *tempvalue = value.data();
-
-                // Write this value. the "loc" can always be set to 0 since
-                // tempvalue will be moved to the next value.
-                for( hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index ++) {
-                     print_rep = print_attr(ty_id, 0, tempvalue);
-                    if (print_rep.c_str() != nullptr) {
-
-                        BESDEBUG("h5", "print_rep= " << print_rep << endl);
-
-                        d4_attr->add_value(print_rep);
-                        tempvalue = tempvalue + elesize;
-                        BESDEBUG("h5",
-                                 "tempvalue= " << tempvalue
-                                 << "elesize=" << elesize
-                                 << endl);
-
-                    }
-                    else {
-                        H5Tclose(ty_id);
-                        H5Aclose(attr_id);
-                        delete d4_attr;
-                        throw InternalErr(__FILE__, __LINE__, "unable to convert attribute value to DAP");
-                    }
-                }
-            } // if attr_inst.ndims != 0
-#endif
-        }
-        if(H5Tclose(ty_id) < 0) {
-            H5Aclose(attr_id);
-            delete d4_attr;
-            throw InternalErr(__FILE__, __LINE__, "unable to close HDF5 type id");
-        }
-        if (H5Aclose(attr_id) < 0) {
-            delete d4_attr;
-            throw InternalErr(__FILE__, __LINE__, "unable to close attribute id");
-        }
+        H5Tclose(ty_id);
+        H5Aclose(attr_id);
 
         if(0 == flag) // D4group
             d4g->attributes()->add_attribute_nocopy(d4_attr);
@@ -1383,72 +1305,68 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 
 void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, DSattr_t attr_inst) {
 
-    string print_rep;
-                vector<char> value;
-            value.resize(attr_inst.need);
-            BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
+    vector<char> value;
+    value.resize(attr_inst.need);
+    BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
 
-            // Need to obtain the memtype since we still find BE data.
-            hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
-            // Read HDF5 attribute data.
-            if (H5Aread(attr_id, memtype, (void *) (value.data())) < 0) {
-                delete d4_attr;
-                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-            }
-            H5Aclose(memtype);
+    // Need to obtain the memtype since we still find BE data.
+    hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
 
-            // For scalar data, just read data once.
-            if (attr_inst.ndims == 0) {
-                for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
-                    print_rep = print_attr(ty_id, loc, value.data());
-                    if (print_rep.c_str() != nullptr) {
-                        d4_attr->add_value(print_rep);
-                    }
-                }
-            }
-            else {// The number of dimensions is > 0
+    // Read HDF5 attribute data.
+    if (H5Aread(attr_id, memtype, (void *) (value.data())) < 0) {
+        H5Tclose(ty_id);
+        H5Aclose(attr_id);
+        delete d4_attr;
+        throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+    }
+    H5Aclose(memtype);
 
-                // Get the attribute datatype size
-                auto elesize = (int) H5Tget_size(ty_id);
-                if (elesize == 0) {
-                    H5Tclose(ty_id);
-                    H5Aclose(attr_id);
-                    delete d4_attr;
-                    throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
-                }
+    // Due to the implementation of print_attr, the attribute value will be
+    // written one by one.
+    char *tempvalue = value.data();
 
-                // Due to the implementation of print_attr, the attribute value will be
-                // written one by one.
-                char *tempvalue = value.data();
+    // For scalar data, just read data once.
+    if (attr_inst.ndims == 0)
+        write_dap4_attr_value(d4_attr,ty_id,1,tempvalue);
+    else {// The number of dimensions is > 0
 
-                // Write this value. the "loc" can always be set to 0 since
-                // tempvalue will be moved to the next value.
-                for( hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index ++) {
-                     print_rep = print_attr(ty_id, 0, tempvalue);
-                    if (print_rep.c_str() != nullptr) {
+        // Get the attribute datatype size
+        auto elesize = (int) H5Tget_size(ty_id);
+        if (elesize == 0) {
+            H5Tclose(ty_id);
+            H5Aclose(attr_id);
+            delete d4_attr;
+            throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
+        }
 
-                        BESDEBUG("h5", "print_rep= " << print_rep << endl);
-
-                        d4_attr->add_value(print_rep);
-                        tempvalue = tempvalue + elesize;
-                        BESDEBUG("h5",
-                                 "tempvalue= " << tempvalue
-                                 << "elesize=" << elesize
-                                 << endl);
-
-                    }
-                    else {
-                        H5Tclose(ty_id);
-                        H5Aclose(attr_id);
-                        delete d4_attr;
-                        throw InternalErr(__FILE__, __LINE__, "unable to convert attribute value to DAP");
-                    }
-                }
-            } // if attr_inst.ndims != 0
-
-
+        write_dap4_attr_value(d4_attr,ty_id,attr_inst.nelmts,tempvalue, elesize);
+    } // if attr_inst.ndims != 0
 }
 
+void write_dap4_attr_value(D4Attribute *d4_attr, hid_t ty_id, hsize_t nelmts, char *tempvalue, size_t elesize) {
+
+    // Write this value. the "loc" can always be set to 0 since
+    // tempvalue will be moved to the next value.
+    string print_rep;
+    for (hsize_t temp_index = 0; temp_index < nelmts; temp_index++) {
+
+        print_rep = print_attr(ty_id, 0, tempvalue);
+        if (print_rep.c_str() != nullptr) {
+
+            BESDEBUG("h5", "print_rep= " << print_rep << endl);
+            d4_attr->add_value(print_rep);
+            tempvalue = tempvalue + elesize;
+            BESDEBUG("h5",
+                     "tempvalue= " << tempvalue
+                                   << "elesize=" << elesize
+                                   << endl);
+        } else {
+            H5Tclose(ty_id);
+            delete d4_attr;
+            throw InternalErr(__FILE__, __LINE__, "unable to convert attribute value to DAP");
+        }
+    }
+}
 ///////////////////////////////////////////////////////////////////////////////// 
 ///// \fn map_h5_dset_hardlink_to_dap4(hid_t h5_dsetid,const string& full_path,BaseType* d4b,Structure * d4s,int flag)
 ///// Map HDF5 dataset hardlink info to a DAP4 attribute
@@ -1472,7 +1390,9 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
     // Find that this is a hardlink,add the hardlink info to a DAP4 attribute.
     if(false == oid.empty()) {
 
-        auto d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
+        //auto d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
+        auto d4_hlinfo_unique = make_unique<D4Attribute>("HDF5_HARDLINK",attr_str_c);
+        auto d4_hlinfo = d4_hlinfo_unique.release();
         d4_hlinfo->add_value(obj_paths.get_name(oid));
  
         if (1 == flag) 
@@ -1484,6 +1404,8 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
     }
 
 }
+
+
 //////////////////////////////////////////////////////////////////////////////// 
 ///// \fn map_h5_varpath_to_dap4_attr(D4Group* d4g,BaseType* d4b,Structure * d4s,const string & varpath,short flag)
 ///// Map HDF5 the variable full path to a DAP4 attribute 
@@ -1501,7 +1423,9 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
 
 void map_h5_varpath_to_dap4_attr(D4Group* d4g,BaseType* d4b,Structure * d4s,const string & varpath, short flag) {
 
-    auto d4_attr = new D4Attribute("fullnamepath",attr_str_c);
+    auto d4_attr_unique = make_unique<D4Attribute>("fullnamepath",attr_str_c);
+    //auto d4_attr = new D4Attribute("fullnamepath",attr_str_c);
+    auto d4_attr = d4_attr_unique.release();
     d4_attr->add_value(varpath);
 
     if (0 == flag) // D4group
@@ -1547,7 +1471,9 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 
 
     BESDEBUG("h5", "dap4->get_softlink():" << temp_varname << endl);
-    auto d4_slinfo = new D4Attribute;
+    //auto d4_slinfo = new D4Attribute;
+    auto d4_slinfo_unique = make_unique<D4Attribute>();
+    auto d4_slinfo = d4_slinfo_unique.release();
     d4_slinfo->set_name(temp_varname);
 
     // Make the type as a container
@@ -1555,16 +1481,16 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 
     string softlink_name = "linkname";
 
-    auto softlink_src = new D4Attribute(softlink_name,attr_str_c);
+    //auto softlink_src = new D4Attribute(softlink_name,attr_str_c);
+    auto softlink_src_unique = make_unique<D4Attribute>(softlink_name, attr_str_c);
+    auto softlink_src = softlink_src_unique.release();
     softlink_src->add_value(oname);
 
     d4_slinfo->attributes()->add_attribute_nocopy(softlink_src);
     string softlink_value_name ="LINKTARGET";
    
-    // Get the link target information. We always return the link value in a string format.
-    D4Attribute *softlink_tgt = nullptr;
 
-    try {
+    //try {
         vector<char> buf;
         buf.resize(val_size + 1);
 
@@ -1572,17 +1498,20 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
         if (H5Lget_val(h5obj_id, oname.c_str(), (void*) buf.data(), val_size + 1, H5P_DEFAULT) < 0) {
             throw InternalErr(__FILE__, __LINE__, "unable to get link value");
         }
-        softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);
+        auto softlink_tgt_unique = make_unique<D4Attribute>(softlink_value_name, attr_str_c);
+        auto softlink_tgt = softlink_tgt_unique.release();
+        //softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);
         auto link_target_name = string(buf.begin(), buf.end());
         softlink_tgt->add_value(link_target_name);
 
         d4_slinfo->attributes()->add_attribute_nocopy(softlink_tgt);
-    }
+    //}
+#if 0
     catch (...) {
         delete softlink_tgt;
         throw;
     }
-
+#endif
     par_grp->attributes()->add_attribute_nocopy(d4_slinfo);
 }
 
