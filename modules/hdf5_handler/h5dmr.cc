@@ -86,6 +86,7 @@ int he5ddslex_destroy();
 void array_add_dimensions_dimscale(HDF5Array* ar);
 bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, eos5_dim_info_t &eos5_dim_info);
 void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim_info, BaseType *new_var,HDF5Array *ar);
+void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, DSattr_t attr_inst);
 //////////////////////////////////////////////////////////////////////////////////////////
 /// bool breadth_first(const hid_t file_id,hid_t pid, const char *gname, 
 ///                     D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5,
@@ -1286,6 +1287,8 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
        
         else {
 
+            write_dap4_attr(attr_id, d4_attr, ty_id, attr_inst);
+#if 0
             vector<char> value;
             value.resize(attr_inst.need);
             BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
@@ -1307,7 +1310,6 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                         d4_attr->add_value(print_rep);
                     }
                 }
-
             }
             else {// The number of dimensions is > 0
 
@@ -1348,6 +1350,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                     }
                 }
             } // if attr_inst.ndims != 0
+#endif
         }
         if(H5Tclose(ty_id) < 0) {
             H5Aclose(attr_id);
@@ -1376,6 +1379,74 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
     } // for (int j = 0; j < num_attr; j++)
 
     return;
+}
+
+void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, DSattr_t attr_inst) {
+
+    string print_rep;
+                vector<char> value;
+            value.resize(attr_inst.need);
+            BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
+
+            // Need to obtain the memtype since we still find BE data.
+            hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
+            // Read HDF5 attribute data.
+            if (H5Aread(attr_id, memtype, (void *) (value.data())) < 0) {
+                delete d4_attr;
+                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+            }
+            H5Aclose(memtype);
+
+            // For scalar data, just read data once.
+            if (attr_inst.ndims == 0) {
+                for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
+                    print_rep = print_attr(ty_id, loc, value.data());
+                    if (print_rep.c_str() != nullptr) {
+                        d4_attr->add_value(print_rep);
+                    }
+                }
+            }
+            else {// The number of dimensions is > 0
+
+                // Get the attribute datatype size
+                auto elesize = (int) H5Tget_size(ty_id);
+                if (elesize == 0) {
+                    H5Tclose(ty_id);
+                    H5Aclose(attr_id);
+                    delete d4_attr;
+                    throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
+                }
+
+                // Due to the implementation of print_attr, the attribute value will be
+                // written one by one.
+                char *tempvalue = value.data();
+
+                // Write this value. the "loc" can always be set to 0 since
+                // tempvalue will be moved to the next value.
+                for( hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index ++) {
+                     print_rep = print_attr(ty_id, 0, tempvalue);
+                    if (print_rep.c_str() != nullptr) {
+
+                        BESDEBUG("h5", "print_rep= " << print_rep << endl);
+
+                        d4_attr->add_value(print_rep);
+                        tempvalue = tempvalue + elesize;
+                        BESDEBUG("h5",
+                                 "tempvalue= " << tempvalue
+                                 << "elesize=" << elesize
+                                 << endl);
+
+                    }
+                    else {
+                        H5Tclose(ty_id);
+                        H5Aclose(attr_id);
+                        delete d4_attr;
+                        throw InternalErr(__FILE__, __LINE__, "unable to convert attribute value to DAP");
+                    }
+                }
+            } // if attr_inst.ndims != 0
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////// 
