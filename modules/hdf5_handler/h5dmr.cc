@@ -3127,7 +3127,8 @@ void obtain_ds_name_array_maps(D4Group *d4_grp,unordered_map<string,Array*>&dsn_
 
         // Only Array can have maps.
         if (libdap::dods_array_c == v->type()) {
-
+            add_dimscale_maps_internal(*vi, dsn_array_maps, handled_all_cv_names);
+#if 0
             auto t_a = static_cast<Array *>(*vi);
             // Dimension scales must be 1-dimension. So we save many unnecessary operations.
             // Find the dimension scale, insert to the global unordered_map.
@@ -3136,6 +3137,7 @@ void obtain_ds_name_array_maps(D4Group *d4_grp,unordered_map<string,Array*>&dsn_
                 if (find(handled_all_cv_names.begin(),handled_all_cv_names.end(),t_a_fqn) != handled_all_cv_names.end()) 
                     dsn_array_maps.emplace(t_a_fqn,t_a);
             }
+#endif
         }
     }
 
@@ -3152,6 +3154,21 @@ for (const auto &dmap:dsn_array_maps)
 
 }
 
+void add_dimscale_maps_internal(BaseType *v, unordered_map<string,Array*>&dsn_array_maps,
+                               const vector<string>& handled_all_cv_names)
+{
+
+            auto t_a = static_cast<Array *>(v);
+            // Dimension scales must be 1-dimension. So we save many unnecessary operations.
+            // Find the dimension scale, insert to the global unordered_map.
+            if (t_a->dimensions() == 1) {
+                string t_a_fqn = t_a->FQN();
+                if (find(handled_all_cv_names.begin(),handled_all_cv_names.end(),t_a_fqn) != handled_all_cv_names.end())
+                    dsn_array_maps.emplace(t_a_fqn,t_a);
+            }
+}
+
+
 // Add the valid coordinate variables(via CF's coordinates attribute of this variable) to the var's DAP4 maps.
 void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names, 
                     unordered_map<string,Array*> & coname_array_maps, 
@@ -3164,7 +3181,9 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
         unordered_map<string, Array*>::const_iterator it_ma = coname_array_maps.find(*cv_it);
         if (it_ma != coname_array_maps.end()) {
 
-            auto d4_map = new D4Map(it_ma->first, it_ma->second);
+            auto d4_map_unique = make_unique<D4Map>(it_ma->first, it_ma->second);
+            D4Map *d4_map = d4_map_unique.release();
+            //auto d4_map = new D4Map(it_ma->first, it_ma->second);
             var->maps()->add_map(d4_map);
 
             // Obtain the dimension full paths. These dimensions are handled dimensions. The dimension scales of 

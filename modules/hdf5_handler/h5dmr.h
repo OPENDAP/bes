@@ -206,6 +206,8 @@ void remove_empty_coord_names(std::vector<std::string>&);
 void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & handled_dim_names);
 void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &coord_name, std::unordered_map<std::string,libdap::Array*> & coname_array_maps, std::unordered_set<std::string>&);
 void add_dimscale_maps(libdap::Array*, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names);
+void add_dimscale_maps_internal(libdap::BaseType *v, std::unordered_map<string,libdap::Array*>&dsn_array_maps,
+                               const std::vector<std::string>& handled_all_cv_names);
 void reorder_vars(libdap::D4Group*, const std::map<std::string,libdap::Array*> &coname_array_maps, const std::map<std::string,libdap::Array*> & dc_array_maps);
 bool is_cvar(const libdap::BaseType*, const std::unordered_map<std::string,libdap::Array*> &coname_array_maps, const std::unordered_map<std::string,libdap::Array*> & dc_array_maps);
 
