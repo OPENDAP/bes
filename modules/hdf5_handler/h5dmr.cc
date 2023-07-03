@@ -1586,19 +1586,17 @@ string read_struct_metadata(hid_t s_file_id) {
     string total_strmeta_value;
     string ecs_group = "/HDFEOS INFORMATION";
     hid_t ecs_grp_id = -1;
-    if ((ecs_grp_id = H5Gopen(s_file_id, ecs_group.c_str(),H5P_DEFAULT))<0) {
-        string msg =
-            "h5_ecs_meta: unable to open the HDF5 group  ";
-        msg +=ecs_group;
+    if ((ecs_grp_id = H5Gopen(s_file_id, ecs_group.c_str(),H5P_DEFAULT)) < 0) {
+        string msg = "h5_ecs_meta: unable to open the HDF5 group  ";
+        msg += ecs_group;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     H5G_info_t g_info;
     hsize_t nelems = 0;
 
-    if (H5Gget_info(ecs_grp_id,&g_info) <0) {
-       string msg =
-            "h5_ecs_meta: unable to obtain the HDF5 group info. for ";
+    if (H5Gget_info(ecs_grp_id,&g_info) < 0) {
+        string msg = "h5_ecs_meta: unable to obtain the HDF5 group info. for ";
         msg +=ecs_group;
         H5Gclose(ecs_grp_id);
         throw InternalErr(__FILE__, __LINE__, msg);
@@ -1608,7 +1606,7 @@ string read_struct_metadata(hid_t s_file_id) {
 
     ssize_t oname_size      = 0;
 
-    // Initalize the total number for different metadata.
+    // Initialize the total number of structure metadata.
     int strmeta_num         = -1;
     int strmeta_num_total   = 0;
         
@@ -1621,6 +1619,9 @@ string read_struct_metadata(hid_t s_file_id) {
     // We initialize the value to OtherMeta.
     vector<bool> smetatype(nelems,false);
 
+    obtain_struct_metadata_info(ecs_grp_id, s_oname, smetatype,
+                                strmeta_num_total, strmeta_no_suffix, nelems);
+#if 0
     for (hsize_t i = 0; i < nelems; i++) {
 
         // Query the length of the object name.
@@ -1700,7 +1701,7 @@ string read_struct_metadata(hid_t s_file_id) {
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
 
-            else if(strmeta_num_total >0) 
+            else if (strmeta_num_total > 0)
                 strmeta_num_total++;
             else { // either no suffix or the first time to loop the one having the suffix.   
                 if ((0 == s_one_oname.compare("StructMetadata"))||
@@ -1719,6 +1720,7 @@ else "h5","structmeta data doesn't have the suffix" <<endl;
         s_one_oname.clear();
 
     }
+#endif
 
     // Define a vector of string to hold StructMetadata.
     // StructMetadata must exist for a valid HDF-EOS5 file.
@@ -1847,7 +1849,7 @@ else "h5","structmeta data doesn't have the suffix" <<endl;
             // is this string only.
             if (-1 == strmeta_num) 
                 total_strmeta_value = finstr;
-            // strmeta_value at this point should be empty before assigning any values.
+            // strmeta_value at this point should be empty before assigning any value.
             else if (strmeta_value[strmeta_num]!="") {
                 string msg = "The structmeta value array at this index should be empty string  ";
                 H5Gclose(ecs_grp_id);
@@ -1872,6 +1874,106 @@ else "h5","structmeta data doesn't have the suffix" <<endl;
     return total_strmeta_value;
 }
 
+void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vector<bool> &smetatype,
+                                 int &strmeta_num_total, bool &strmeta_no_suffix, int nelems) {
+
+    string ecs_group = "/HDFEOS INFORMATION";
+    ssize_t oname_size      = 0;
+    for (hsize_t i = 0; i < nelems; i++) {
+
+        // Query the length of the object name.
+        oname_size = H5Lget_name_by_idx(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+                                        i, nullptr,0, H5P_DEFAULT);
+        if (oname_size <= 0) {
+            string msg = "hdf5 object name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Obtain the name of the object.
+        vector<char> oname(oname_size + 1);
+        if (H5Lget_name_by_idx(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i,
+                               oname.data(),(size_t) (oname_size + 1), H5P_DEFAULT) < 0) {
+            string msg = "hdf5 object name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Check if this object is an HDF5 dataset, not, throw an error.
+        // First, check if it is the hard link or the soft link
+        H5L_info_t linfo;
+        if (H5Lget_info(ecs_grp_id, oname.data(), &linfo, H5P_DEFAULT) < 0) {
+            string msg = "hdf5 link name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // This is the soft link.
+        if (linfo.type == H5L_TYPE_SOFT) {
+            string msg = "hdf5 link name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Obtain the object type
+        H5O_info_t oinfo;
+        if (H5OGET_INFO_BY_IDX(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+                               i, &oinfo, H5P_DEFAULT) < 0) {
+            string msg = "Cannot obtain the object info ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        if (oinfo.type != H5O_TYPE_DATASET) {
+            string msg = "hdf5 link name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // We want to remove the last '\0' character added by C .
+        string s_one_oname(oname.begin(), oname.end() - 1);
+        s_oname[i] = s_one_oname;
+
+        // Calculate how many elements we have for each category(StructMetadata, CoreMetadata, etc.)
+        if (((s_one_oname.find("StructMetadata")) == 0) ||
+            ((s_one_oname.find("structmetadata")) == 0)) {
+
+            smetatype[i] = true;
+
+            // Do we have suffix for the metadata?
+            // If this metadata doesn't have any suffix, it should only come to this loop once.
+            // That's why, when checking the first time, no_suffix is always true.
+            // If we have already found that it doesn't have any suffix,
+            // it should not go into this loop. throw an error.
+            if (false == strmeta_no_suffix) {
+                string msg = "StructMetadata/structmetadata without suffix should only appear once. ";
+                H5Gclose(ecs_grp_id);
+                throw InternalErr(__FILE__, __LINE__, msg);
+            } else if (strmeta_num_total > 0)
+                strmeta_num_total++;
+            // either no suffix or the first time to loop the one having the suffix.
+            else if ((0 == s_one_oname.compare("StructMetadata")) ||
+                    (0 == s_one_oname.compare("structmetadata")))
+                    strmeta_no_suffix = false;
+            else strmeta_num_total++;
+
+#if 0
+            "h5","strmeta_num_total= "<<strmeta_num_total <<endl;
+            if(strmeta_no_suffix) "h5","structmeta data has the suffix" <<endl;
+            else "h5","structmeta data doesn't have the suffix" <<endl;
+#endif
+        }
+        oname.clear();
+        s_one_oname.clear();
+
+    }
+}
 // Helper function for read_ecs_metadata. Get the number after metadata.
 int get_strmetadata_num(const string & meta_str) {
 
