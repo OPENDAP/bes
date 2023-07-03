@@ -3629,24 +3629,40 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
 #endif
             string ydimpath = d4_grp->FQN() + "YDim";
             ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
-            auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
+            auto d4_dim0_unique = make_unique<D4Dimension>("YDim",eg_info.ydim_size);
+            //auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
+            D4Dimension *d4_dim0 = d4_dim0_unique.release();
             (ar_lat->dim_begin())->dim = d4_dim0;
 
             // The DAP4 group needs also to store these dimensions.
             D4Dimensions *dims = d4_grp->dims();
             dims->add_dim_nocopy(d4_dim0);
 
-            ar_bt_lon = new (Float32)("XDim");
+            auto ar_bt_lon_unique = make_unique<Float32>("XDim");
+            //ar_bt_lon = new (Float32)("XDim");
+            ar_bt_lon = ar_bt_lon_unique.get();
+            auto ar_lon_unique = make_unique<HDF5MissLLArray>(
+                                    false,
+                                     1,
+                                             eg_info,
+                                          "XDim",
+                                          ar_bt_lon);
+            ar_lon = ar_lon_unique.release();
+#if 0
             ar_lon = new HDF5MissLLArray (
                                           false,
                                           1,
                                           eg_info,
                                           "XDim",
                                           ar_bt_lon);
+#endif
             string xdimpath = d4_grp->FQN() + "XDim";
             ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
 
-            auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
+            auto d4_dim1_unique = make_unique<D4Dimension>("XDim",eg_info.xdim_size);
+            D4Dimension *d4_dim1 = d4_dim1_unique.release();
+
+            //auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
             (ar_lon->dim_begin())->dim = d4_dim1;
 
             // The DAP4 group needs also to store these dimensions.
@@ -3662,13 +3678,13 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
             add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
             d4_grp->add_var_nocopy(ar_lat);
             d4_grp->add_var_nocopy(ar_lon);
-            delete ar_bt_lon;
+            //delete ar_bt_lon;
             //delete ar_bt_lat;
         }
 //#if 0
         catch (...) {
             //if (ar_bt_lat) delete ar_bt_lat;
-            if (ar_bt_lon) delete ar_bt_lon;
+            //if (ar_bt_lon) delete ar_bt_lon;
             if (ar_lat) delete ar_lat;
             if (ar_lon) delete ar_lon;
             throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
@@ -3693,7 +3709,9 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
 
         try {
             string dummy_proj_cf_name = "eos5_cf_projection";
-            dummy_proj_cf = new HDF5CFProj(dummy_proj_cf_name,dummy_proj_cf_name);
+            auto dummy_proj_cf_unique = make_unique<HDF5CFProj>(dummy_proj_cf_name,dummy_proj_cf_name);
+            //dummy_proj_cf = new HDF5CFProj(dummy_proj_cf_name,dummy_proj_cf_name);
+            dummy_proj_cf = dummy_proj_cf_unique.release();
             dummy_proj_cf->set_is_dap4(true);
 
             if (eg_info.projection == HE5_GCTP_SNSOID) {
@@ -3710,6 +3728,7 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
 
             d4_grp->add_var_nocopy(dummy_proj_cf);
 
+            // STOP here
             ar_bt_dim1 = new (Float64)("XDim");
             ar_dim1 = new HDF5CFProj1D(eg_info.point_left,eg_info.point_right,eg_info.xdim_size,"XDim",ar_bt_dim1);
 
