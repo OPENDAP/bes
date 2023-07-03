@@ -199,6 +199,9 @@ void make_coord_names_fpath(libdap::D4Group*, std::vector<std::string>& coord_na
 bool obtain_no_path_cv(libdap::D4Group*, std::string &coord_name);
 void handle_absolute_path_cv(const libdap::D4Group*, std::string &coord_name);
 void handle_relative_path_cv(const libdap::D4Group*, std::string &coord_name);
+void handle_relative_path_cvname_internal(const libdap::D4Group *d4_grp, std::string &coord_name,
+                                          unsigned short sep_count);
+
 void remove_empty_coord_names(std::vector<std::string>&);
 void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & handled_dim_names);
 void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &coord_name, std::unordered_map<std::string,libdap::Array*> & coname_array_maps, std::unordered_set<std::string>&);
@@ -210,6 +213,9 @@ bool is_cvar(const libdap::BaseType*, const std::unordered_map<std::string,libda
 string read_struct_metadata(hid_t s_file_id);
 void obtain_struct_metadata_info(hid_t ecs_grp_id, std::vector<std::string> &s_oname, std::vector<bool> &smetatype,
                                  int &strmeta_num_total, bool &strmeta_no_suffix, int nelems) ;
+int obtain_struct_metadata_value(hid_t ecs_grp_id, const std::vector<std::string> &s_oname,
+                                  const std::vector<bool> &smetatype, int strmeta_num_total, int nelems,
+                                  std::vector<std::string> &strmeta_value, std::string &total_strmeta_value) ;
 int get_strmetadata_num(const string & meta_str);
 void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &);
 void build_var_dim_path(const std::string & eos5_obj_name, const std::vector<HE5Var>& var_list, std::unordered_map<std::string, std::vector<std::string>>& varpath_to_dims, HE5_TYPE eos5_type, bool is_geo);
@@ -220,8 +226,10 @@ void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
 void build_gd_info(const HE5Grid &gd,std::unordered_map<std::string,eos5_grid_info_t>& gridname_to_info);
 bool is_eos5_grid_grp(libdap::D4Group *,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &);
 
-hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname);
-
+hsize_t obtain_unlim_pure_dim_size(hid_t pid, const std::string &dname);
+hsize_t obtain_unlim_pure_dim_size_internal(hid_t dset_id, const std::string &dname, const std::string &reference_name);
+hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, hid_t atype_id,
+                                                  const std::string &reference_name, const std::string &dname);
 void add_ps_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
 void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
 void add_possible_var_cv_info(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
