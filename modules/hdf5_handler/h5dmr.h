@@ -209,6 +209,8 @@ void add_dimscale_maps(libdap::Array*, std::unordered_map<std::string,libdap::Ar
 void add_dimscale_maps_internal(libdap::BaseType *v, std::unordered_map<string,libdap::Array*>&dsn_array_maps,
                                const std::vector<std::string>& handled_all_cv_names);
 void reorder_vars(libdap::D4Group*, const std::map<std::string,libdap::Array*> &coname_array_maps, const std::map<std::string,libdap::Array*> & dc_array_maps);
+void reorder_vars_internal(libdap::D4Group* d4_grp, const std::vector<int> &cv_pos,
+                           const std::vector<libdap::BaseType *>cv_obj_ptr,int stop_index);
 bool is_cvar(const libdap::BaseType*, const std::unordered_map<std::string,libdap::Array*> &coname_array_maps, const std::unordered_map<std::string,libdap::Array*> & dc_array_maps);
 
 /// EOS5 handling 
