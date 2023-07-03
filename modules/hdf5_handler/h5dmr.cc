@@ -3568,6 +3568,276 @@ bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array
 }
 
 void add_possible_eos5_grid_vars(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info) {
+
+    BESDEBUG("h5","coming to add_possible_eos5_grid_vars"<<endl);
+
+    eos5_grid_info_t eg_info;
+
+#if 0
+for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
+    cerr<<"grid name: "<<ed_info.first <<endl;
+    cerr<<" projection: "<<ed_info.second.projection <<endl;
+    cerr<<"           "<<"xdim fqn:" << ed_info.second.xdim_fqn <<endl;
+    cerr<<"           "<<"ydim fqn:" << ed_info.second.ydim_fqn <<endl;
+    cerr<<"           "<<"xdim size:" << ed_info.second.xdim_size <<endl;
+    cerr<<"           "<<"ydim size:" << ed_info.second.ydim_size <<endl;
+    cerr<<"           "<<"xdim point_lower:" << ed_info.second.point_lower <<endl;
+    cerr<<"           "<<"xdim point_upper:" << ed_info.second.point_upper <<endl;
+    cerr<<"           "<<"xdim point_left:" << ed_info.second.point_lower <<endl;
+    cerr<<"           "<<"xdim point_right:" << ed_info.second.point_right <<endl;
+
+}
+
+for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
+    cerr<<" dimension name 1" <<d_v_info.first.dpath0 <<endl;
+    cerr<<" dimension name 2" <<d_v_info.first.dpath1 <<endl;
+    cerr<<" cv name 1" <<d_v_info.second.vpath0 <<endl;
+    cerr<<" cv name 2" <<d_v_info.second.vpath1 <<endl;
+    cerr<<" cv name 3" <<d_v_info.second.cf_gmap_path <<endl;
+
+
+}
+#endif
+
+    bool add_grid_var = is_eos5_grid_grp(d4_grp,eos5_dim_info,eg_info);
+
+    if (add_grid_var && eg_info.projection == HE5_GCTP_GEO) {
+
+        BaseType *ar_bt_lat = nullptr;
+        BaseType *ar_bt_lon = nullptr;
+        HDF5MissLLArray *ar_lat = nullptr;
+        HDF5MissLLArray *ar_lon = nullptr;
+
+        try {
+
+            //ar_bt_lat = new (Float32)("YDim");
+            auto ar_bt_lat_unique = make_unique<Float32>("YDim");
+            ar_bt_lat = ar_bt_lat_unique.get();
+            auto ar_lat_unique = make_unique<HDF5MissLLArray>(true,
+                                          1,
+                                          eg_info,
+                                          "YDim",
+                                          ar_bt_lat);
+            ar_lat = ar_lat_unique.release();
+#if 0
+            ar_lat = new HDF5MissLLArray (
+                                          true,
+                                          1,
+                                          eg_info,
+                                          "YDim",
+                                          ar_bt_lat);
+#endif
+            string ydimpath = d4_grp->FQN() + "YDim";
+            ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
+            auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
+            (ar_lat->dim_begin())->dim = d4_dim0;
+
+            // The DAP4 group needs also to store these dimensions.
+            D4Dimensions *dims = d4_grp->dims();
+            dims->add_dim_nocopy(d4_dim0);
+
+            ar_bt_lon = new (Float32)("XDim");
+            ar_lon = new HDF5MissLLArray (
+                                          false,
+                                          1,
+                                          eg_info,
+                                          "XDim",
+                                          ar_bt_lon);
+            string xdimpath = d4_grp->FQN() + "XDim";
+            ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
+
+            auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
+            (ar_lon->dim_begin())->dim = d4_dim1;
+
+            // The DAP4 group needs also to store these dimensions.
+            dims = d4_grp->dims();
+            dims->add_dim_nocopy(d4_dim1);
+
+            // Set this variable to DAP4 is critical for DAP4 dimensions and attributes handling.
+            ar_lat->set_is_dap4(true);
+            ar_lon->set_is_dap4(true);
+
+            // Add the CF units attribute to ar_lat and ar_lon.
+            add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
+            add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
+            d4_grp->add_var_nocopy(ar_lat);
+            d4_grp->add_var_nocopy(ar_lon);
+            delete ar_bt_lon;
+            //delete ar_bt_lat;
+        }
+//#if 0
+        catch (...) {
+            //if (ar_bt_lat) delete ar_bt_lat;
+            if (ar_bt_lon) delete ar_bt_lon;
+            if (ar_lat) delete ar_lat;
+            if (ar_lon) delete ar_lon;
+            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
+        }
+//#endif
+
+    }
+    else if (add_grid_var && (eg_info.projection == HE5_GCTP_SNSOID ||
+                           eg_info.projection == HE5_GCTP_PS ||
+                           eg_info.projection == HE5_GCTP_LAMAZ)) {
+
+        HDF5CFProj *dummy_proj_cf = nullptr;
+        BaseType *ar_bt_dim0 = nullptr;
+        BaseType *ar_bt_dim1 = nullptr;
+        HDF5CFProj1D *ar_dim0 = nullptr;
+        HDF5CFProj1D *ar_dim1 = nullptr;
+
+        BaseType *ar_bt_lat = nullptr;
+        BaseType *ar_bt_lon = nullptr;
+        HDF5MissLLArray *ar_lat = nullptr;
+        HDF5MissLLArray *ar_lon = nullptr;
+
+        try {
+            string dummy_proj_cf_name = "eos5_cf_projection";
+            dummy_proj_cf = new HDF5CFProj(dummy_proj_cf_name,dummy_proj_cf_name);
+            dummy_proj_cf->set_is_dap4(true);
+
+            if (eg_info.projection == HE5_GCTP_SNSOID) {
+
+                add_var_dap4_attr(dummy_proj_cf,"grid_mapping_name",attr_str_c,"sinusoidal");
+                add_var_dap4_attr(dummy_proj_cf,"longitude_of_central_meridian",attr_float64_c,"0.0");
+                add_var_dap4_attr(dummy_proj_cf,"earth_radius", attr_float64_c, "6371007.181");
+                add_var_dap4_attr(dummy_proj_cf,"_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
+            }
+            else if (eg_info.projection == HE5_GCTP_PS)
+                add_ps_cf_grid_mapping_attrs(dummy_proj_cf,eg_info);
+            else if (eg_info.projection == HE5_GCTP_LAMAZ)
+                add_lamaz_cf_grid_mapping_attrs(dummy_proj_cf,eg_info);
+
+            d4_grp->add_var_nocopy(dummy_proj_cf);
+
+            ar_bt_dim1 = new (Float64)("XDim");
+            ar_dim1 = new HDF5CFProj1D(eg_info.point_left,eg_info.point_right,eg_info.xdim_size,"XDim",ar_bt_dim1);
+
+            // Handle dimensions
+            string xdimpath = d4_grp->FQN() + "XDim";
+            ar_dim1->append_dim_ll(eg_info.xdim_size,xdimpath);
+
+            // Need to add DAP4 dimensions
+            //auto d4_dim1 = new D4Dimension(xdimpath,eg_info.xdim_size);
+            auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
+            (ar_dim1->dim_begin())->dim = d4_dim1;
+
+            // The DAP4 group needs also to store these dimensions.
+            D4Dimensions *dims = d4_grp->dims();
+            dims->add_dim_nocopy(d4_dim1);
+
+            ar_bt_dim0 = new (Float64)("YDim");
+            ar_dim0 = new HDF5CFProj1D(eg_info.point_upper,eg_info.point_lower,eg_info.ydim_size,"XDim",ar_bt_dim0);
+            string ydimpath = d4_grp->FQN() + "YDim";
+            ar_dim0->append_dim_ll(eg_info.ydim_size,ydimpath);
+
+            // Need to add DAP4 dimensions
+            auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
+            (ar_dim0->dim_begin())->dim = d4_dim0;
+
+            // The DAP4 group needs also to store these dimensions.
+            dims = d4_grp->dims();
+            dims->add_dim_nocopy(d4_dim0);
+
+            ar_dim1->set_is_dap4(true);
+            ar_dim0->set_is_dap4(true);
+
+            add_gm_spcvs_attrs(ar_dim0,true);
+            add_gm_spcvs_attrs(ar_dim1,false);
+
+            d4_grp->add_var_nocopy(ar_dim1);
+            d4_grp->add_var_nocopy(ar_dim0);
+
+            delete ar_bt_dim1;
+            delete ar_bt_dim0;
+            ar_bt_lat = new (Float64)("Latitude");
+            ar_lat = new HDF5MissLLArray (
+                                          true,
+                                          2,
+                                          eg_info,
+                                          "Latitude",
+                                          ar_bt_lat);
+            ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
+            ar_lat->append_dim_ll(eg_info.xdim_size,xdimpath);
+
+            // Need to add DAP4 dimensions for this 2-D var.
+            Array::Dim_iter d = ar_lat->dim_begin();
+            d->dim = d4_dim0;
+            d++;
+            d->dim = d4_dim1;
+            add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
+
+            ar_bt_lon = new (Float64)("Longitude");
+            ar_lon = new HDF5MissLLArray (
+                                          false,
+                                          2,
+                                          eg_info,
+                                          "Longitude",
+                                          ar_bt_lon);
+            ar_lon->append_dim_ll(eg_info.ydim_size,ydimpath);
+            ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
+
+            add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
+
+            d = ar_lon->dim_begin();
+            d->dim = d4_dim0;
+            d++;
+            d->dim = d4_dim1;
+
+            ar_lat->set_is_dap4(true);
+            ar_lon->set_is_dap4(true);
+
+            d4_grp->add_var_nocopy(ar_lat);
+            d4_grp->add_var_nocopy(ar_lon);
+
+            delete ar_bt_lon;
+            delete ar_bt_lat;
+
+            // Now we need to add eos5 grid mapping, dimension and coordinate info to eos5_dim_info.
+            eos5_dname_info_t edname_info;
+            eos5_cname_info_t ecname_info;
+            edname_info.dpath0 = ydimpath;
+            edname_info.dpath1 = xdimpath;
+            ecname_info.vpath0 = d4_grp->FQN() + "Latitude";
+            ecname_info.vpath1 = d4_grp->FQN() + "Longitude";
+            ecname_info.cf_gmap_path = d4_grp->FQN() + dummy_proj_cf_name;
+
+            pair<eos5_dname_info_t,eos5_cname_info_t> t_pair;
+            t_pair = make_pair(edname_info,ecname_info);
+            eos5_dim_info.dimpath_to_cvpath.push_back(t_pair);
+
+#if 0
+for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
+    cerr<<" dimension name 1: " <<d_v_info.first.dpath0 <<endl;
+    cerr<<" dimension name 2: " <<d_v_info.first.dpath1 <<endl;
+    cerr<<" cv name 1: " <<d_v_info.second.vpath0 <<endl;
+    cerr<<" cv name 2: " <<d_v_info.second.vpath1 <<endl;
+    cerr<<" dummy cf projection var name: " <<d_v_info.second.cf_gmap_path <<endl;
+
+
+}
+#endif
+
+        }
+        catch (...) {
+            if (dummy_proj_cf) delete dummy_proj_cf;
+            if (ar_bt_dim0) delete ar_bt_dim0;
+            if (ar_bt_dim1) delete ar_bt_dim1;
+            if (ar_dim0) delete ar_dim0;
+            if (ar_dim1) delete ar_dim1;
+            if (ar_bt_lat) delete ar_bt_lat;
+            if (ar_bt_lon) delete ar_bt_lon;
+            if (ar_lat) delete ar_lat;
+            if (ar_lon) delete ar_lon;
+            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
+        }
+
+    }
+
+}
+
+#if 0
+void add_possible_eos5_grid_vars(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info) {
  
     BESDEBUG("h5","coming to add_possible_eos5_grid_vars"<<endl);
 
@@ -3824,7 +4094,7 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
     }
     
 }
-
+#endif
 bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &eg_info) {
 
     bool ret_value = false;
@@ -3872,6 +4142,7 @@ bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eo
 
     return ret_value;
 } 
+
 
 void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gridname_to_info) {
 
