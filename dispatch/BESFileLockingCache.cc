@@ -32,7 +32,6 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <fcntl.h>
-#include <sys/syslimits.h>
 #include <sys/stat.h>
 
 #include <string>
@@ -96,31 +95,20 @@ class AdvisoryLockGuard {
 public:
     AdvisoryLockGuard() = delete;
     AdvisoryLockGuard(const AdvisoryLockGuard &) = delete;
+    AdvisoryLockGuard &operator=(const AdvisoryLockGuard &) = delete;
+
     /// Get an advisory file lock on a file. Use F_RDLCK or F_WRLCK for 'type.'
     AdvisoryLockGuard(int fd, int type) : d_fd(fd) {
         struct flock *l = advisory_lock(type);
         if (fcntl(d_fd, F_SETLKW, l) == -1) {
-            string file_path(1024, '\0');
-            if (fcntl(d_fd, F_GETPATH, &file_path[0]) != -1) {
-                ERROR_LOG("Could not lock the advisory file '" + file_path + "' lock (fcntl: " + get_errno() + ").");
-            }
-            else {
-                ERROR_LOG("Could not lock the advisory file lock (fcntl: " + get_errno() + ").");
-            }
+            ERROR_LOG("Could not lock the advisory file lock (fcntl: " + get_errno() + ").");
         }
     }
-    AdvisoryLockGuard &operator=(const AdvisoryLockGuard &) = delete;
 
     ~AdvisoryLockGuard() {
         struct flock *l = advisory_lock(F_UNLCK);
         if (fcntl(d_fd, F_SETLKW, l) == -1) {
-            string file_path(1024, '\0');
-            if (fcntl(d_fd, F_GETPATH, &file_path[0]) != -1) {
-                ERROR_LOG("Could not unlock the advisory file '" + file_path + "' lock (fcntl: " + get_errno() + ").");
-            }
-            else {
-                ERROR_LOG("Could not unlock the advisory file lock (fcntl: " + get_errno() + ").");
-            }
+            ERROR_LOG("Could not unlock the advisory file lock (fcntl: " + get_errno() + ").");
         }
     }
 };
