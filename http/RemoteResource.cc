@@ -248,11 +248,13 @@ void RemoteResource::get_url(int fd) {
     curl::http_get_and_write_resource(d_url, fd, &d_response_headers);
     BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
 
-    // rewind the file
+    // Moved into curl::super_easy_perform(CURL*, int fd)
+#if 0
     auto status = lseek(fd, 0, SEEK_SET);
     if (-1 == status)
         throw BESInternalError("Could not seek within the response file.", __FILE__, __LINE__);
     BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
+#endif
 
     BESDEBUG(MODULE, prolog << "END" << endl);
 }

@@ -777,6 +777,10 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_2_2d_sin.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord2.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_coverage_special.h5.dmr.bescmd])
+
+# The no-CF compliant coordinate attributes(no maps)
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord4.h5.dmr.bescmd])
+
 #Array DSG: has maps
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_single_trajectory.h5.dmr.bescmd])
 
@@ -799,6 +803,12 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_coord5.h5.dmr.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dap.bescmd])
+
+# Fletcher32 + shuffle + 2 deflate filters
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([SDS_fle_shuf_2def.h5.dap.bescmd])
+
+# dimension scale with null space
+AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_scale_null_space.h5.dmr.bescmd])
 
 # These two tests check the dynamic configuration change.  The target files are identical
 # and the default configuration contains a DynamicConfig that matches the second file

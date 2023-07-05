@@ -75,7 +75,7 @@ BESUsageResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action_name = Usage_RESPONSE_STR ;
 
     // Create the DDS.
-    // NOTE: It is the responsbility of the specific request handler to set
+    // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS( NULL, "virtual" ) ;
     BESDDSResponse *bdds = new BESDDSResponse( dds ) ;

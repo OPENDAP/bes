@@ -38,122 +38,42 @@
 
 #include "config.h"
 
-static char rcsid[] not_used = {"$Id$"};
-
-#include <stdio.h>
-
-// I've added the pthread code here because this might someday move inside a
-// library as a function/object and it should be MT-safe. In the current
-// build HAVE_PTHREAD_H is set by configure; not having it makes no practical
-// difference. jhrg 6/10/05
-#ifdef HAVE_PTHREAD_H
-#include <pthread.h>
-#endif
-
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
-
-#include "BESRegex.h"
 
 #include <libdap/Array.h>
 #include <libdap/Structure.h>
 #include <libdap/Sequence.h>
 #include <libdap/Grid.h>
 #include <libdap/Ancillary.h>
-
 #include <libdap/DAS.h>
-//#include <libdap/mime_util.h>
 #include <libdap/util.h>
 
-#include <libdap/debug.h>
+#include "BESRegex.h"
 
-using namespace libdap ;
 
-#include "../usage/usage.h"
+#include "usage.h"
 
 using namespace std;
+using namespace libdap;
 using namespace dap_usage;
-
-#ifdef WIN32
-#define popen _popen
-#define pclose _pclose
-#include <io.h>
-#include <fcntl.h>
-#endif
-
-#ifdef WIN32
-#define RETURN_TYPE void
-#else
-#define RETURN_TYPE int
-#endif
 
 namespace dap_usage {
 
-// This code could use a real `kill-file' some day - about the same time that
-// the rest of the server gets a `rc' file... For the present just see if a
-// small collection of regexs match the name.
+static const BESRegex dim(".*_dim_[0-9]*", 1); // HDF dim attributes.
+static const BESRegex global("(.*global.*)|(.*dods.*)", 1);
 
-// The pthread code here is used to ensure that the static objects dim and
-// global (in name_in_kill_file() and name_is_global()) are initialized only
-// once. If the pthread package is not present when libdap++ is built, this
-// code is *not* MT-Safe.
-
-static BESRegex *dim_ptr = 0 ;
-#if HAVE_PTHREAD_H
-static pthread_once_t dim_once_control = PTHREAD_ONCE_INIT;
-#endif
-
-static void
-init_dim_regex()
-{
-    // MT-Safe if called via pthread_once or similar
-    static BESRegex dim(".*_dim_[0-9]*", 1); // HDF `dim' attributes.
-    dim_ptr = &dim;
+static bool
+name_in_kill_file(const string &name) {
+    return dim.match(name.c_str(), (int)name.size()) != -1;
 }
 
 static bool
-name_in_kill_file(const string &name)
-{
-#if HAVE_PTHREAD_H
-    pthread_once(&dim_once_control, init_dim_regex);
-#else
-    if (!dim_ptr)
-    {
-	init_dim_regex();
-    }
-#endif
-
-    bool ret = dim_ptr->match(name.c_str(), name.size()) != -1;
-    return ret ;
-}
-
-static BESRegex *global_ptr = 0 ;
-#if HAVE_PTHREAD_H
-static pthread_once_t global_once_control = PTHREAD_ONCE_INIT;
-#endif
-
-static void
-init_global_regex()
-{
-    // MT-Safe if called via pthread_once or similar
-    static BESRegex global("(.*global.*)|(.*dods.*)", 1);
-    global_ptr = &global;
-}
-
-static bool
-name_is_global(string &name)
-{
-#if HAVE_PTHREAD_H
-    pthread_once(&global_once_control, init_global_regex);
-#else
-    if (!global_ptr)
-	init_global_regex();
-#endif
-
+name_is_global(string &name) {
     downcase(name);
-    return global_ptr->match(name.c_str(), name.size()) != -1;
+    return global.match(name.c_str(), (int)name.size()) != -1;
 }
 
 // write_global_attributes and write_attributes are almost the same except
@@ -162,57 +82,54 @@ name_is_global(string &name)
 // understand. So, I'm keeping this as two separate functions even though
 // there's some duplication... 3/27/2002 jhrg
 static void
-write_global_attributes(ostringstream &oss, AttrTable *attr,
-			const string prefix = "")
-{
+write_global_attributes(ostringstream &oss, AttrTable *attr, const string &prefix = "") {
     if (attr) {
-	AttrTable::Attr_iter a;
-	for (a = attr->attr_begin(); a != attr->attr_end(); a++) {
-	    if (attr->is_container(a))
-		write_global_attributes(oss, attr->get_attr_table(a),
-					(prefix == "") ? attr->get_name(a)
-					: prefix + string(".") + attr->get_name(a));
-	    else {
-		oss << "\n<tr><td align=right valign=top><b>";
-		if (prefix != "")
-		    oss << prefix << "." << attr->get_name(a);
-		else
-		    oss << attr->get_name(a);
-		oss << "</b>:</td>\n";
+        AttrTable::Attr_iter a;
+        for (a = attr->attr_begin(); a != attr->attr_end(); a++) {
+            if (attr->is_container(a))
+                write_global_attributes(oss, attr->get_attr_table(a),
+                                        (prefix == "") ? attr->get_name(a)
+                                                       : prefix + string(".") + attr->get_name(a));
+            else {
+                oss << "\n<tr><td align=right valign=top><b>";
+                if (prefix != "")
+                    oss << prefix << "." << attr->get_name(a);
+                else
+                    oss << attr->get_name(a);
+                oss << "</b>:</td>\n";
 
-		int num_attr = attr->get_attr_num(a) - 1;
-		oss << "<td align=left>";
-		for (int i = 0; i < num_attr; ++i)
-		    oss << attr->get_attr(a, i) << ", ";
-		oss << attr->get_attr(a, num_attr) << "<br></td></tr>\n";
-	    }
-	}
+                int num_attr = attr->get_attr_num(a) - 1;
+                oss << "<td align=left>";
+                for (int i = 0; i < num_attr; ++i)
+                    oss << attr->get_attr(a, i) << ", ";
+                oss << attr->get_attr(a, num_attr) << "<br></td></tr>\n";
+            }
+        }
     }
 }
 
 static void
-write_attributes(ostringstream &oss, AttrTable *attr, const string prefix = "")
-{
+write_attributes(ostringstream &oss, AttrTable *attr, const string &prefix = "") {
     if (attr) {
-	AttrTable::Attr_iter a;
-	for (a = attr->attr_begin(); a != attr->attr_end(); a++) {
-	    if (attr->is_container(a))
-		write_attributes(oss, attr->get_attr_table(a),
-				 (prefix == "") ? attr->get_name(a)
-				 : prefix + string(".") + attr->get_name(a));
-	    else {
-		if (prefix != "")
-		    oss << prefix << "." << attr->get_name(a);
-		else
-		    oss << attr->get_name(a);
-		oss << ": ";
+        for (auto a = attr->attr_begin(); a != attr->attr_end(); a++) {
+            if (attr->is_container(a)) {
+                write_attributes(oss, attr->get_attr_table(a),
+                                 (prefix == "") ? attr->get_name(a)
+                                                : prefix + string(".") + attr->get_name(a));
+            }
+            else {
+                if (!prefix.empty())
+                    oss << prefix << "." << attr->get_name(a);
+                else
+                    oss << attr->get_name(a);
+                oss << ": ";
 
-		int num_attr = attr->get_attr_num(a) - 1 ;
-		for (int i = 0; i < num_attr; ++i)
-		    oss << attr->get_attr(a, i) << ", ";
-		oss << attr->get_attr(a, num_attr) << "<br>\n";
-	    }
-	}
+                unsigned int num_attr = attr->get_attr_num(a) - 1;
+                for (int i = 0; i < num_attr; ++i)
+                    oss << attr->get_attr(a, i) << ", ";
+                oss << attr->get_attr(a, num_attr) << "<br>\n";
+            }
+        }
     }
 }
 
@@ -229,86 +146,82 @@ write_attributes(ostringstream &oss, AttrTable *attr, const string prefix = "")
     readable form (as an HTML* document).
 */
 static string
-build_global_attributes(DAS &das, DDS &)
-{
+build_global_attributes(DAS &das, const DDS &) {
     bool found = false;
     ostringstream ga;
 
     ga << "<h3>Dataset Information</h3>\n<center>\n<table>\n";
 
-    for (AttrTable::Attr_iter p = das.var_begin(); p != das.var_end(); p++) {
-	string name = das.get_name(p);
+    for (auto p = das.var_begin(); p != das.var_end(); p++) {
+        string name = das.get_name(p);
 
-	// I used `name_in_dds' originally, but changed to `name_is_global'
-	// because aliases between groups of attributes can result in
-	// attribute group names which are not in the DDS and are *not*
-	// global attributes. jhrg. 5/22/97
-	if (!name_in_kill_file(name) )
-	{
-	    if( name_is_global(name)) {
-		AttrTable *attr = das.get_table(p);
-		found = true;
-		write_global_attributes(ga, attr, "");
-	    }
-	}
+        // I used `name_in_dds' originally, but changed to `name_is_global'
+        // because aliases between groups of attributes can result in
+        // attribute group names which are not in the DDS and are *not*
+        // global attributes. jhrg. 5/22/97
+        if (!name_in_kill_file(name)) {
+            if (name_is_global(name)) {
+                AttrTable *attr = das.get_table(p);
+                found = true;
+                write_global_attributes(ga, attr, "");
+            }
+        }
     }
 
     ga << "</table>\n</center><p>\n";
 
     if (found)
-	return ga.str();
+        return ga.str();
 
     return "";
 }
 
 static string
-fancy_typename(BaseType *v)
-{
+fancy_typename(BaseType *v) {
     string fancy;
     switch (v->type()) {
-      case dods_byte_c:
-	return "Byte";
-      case dods_int16_c:
-	return "16 bit Integer";
-      case dods_uint16_c:
-	return "16 bit Unsigned integer";
-      case dods_int32_c:
-	return "32 bit Integer";
-      case dods_uint32_c:
-	return "32 bit Unsigned integer";
-      case dods_float32_c:
-	return "32 bit Real";
-      case dods_float64_c:
-	return "64 bit Real";
-      case dods_str_c:
-	return "String";
-      case dods_url_c:
-	return "URL";
-      case dods_array_c: {
-	  ostringstream type;
-	  Array *a = (Array *)v;
-	  type << "Array of " << fancy_typename(a->var()) <<"s ";
-	  for (Array::Dim_iter p = a->dim_begin(); p != a->dim_end(); p++) {
-	      type << "[" << a->dimension_name(p) << " = 0.."
-		   << a->dimension_size(p, false)-1 << "]";
-	  }
-	  return type.str();
-      }
+        case dods_byte_c:
+            return "Byte";
+        case dods_int16_c:
+            return "16 bit Integer";
+        case dods_uint16_c:
+            return "16 bit Unsigned integer";
+        case dods_int32_c:
+            return "32 bit Integer";
+        case dods_uint32_c:
+            return "32 bit Unsigned integer";
+        case dods_float32_c:
+            return "32 bit Real";
+        case dods_float64_c:
+            return "64 bit Real";
+        case dods_str_c:
+            return "String";
+        case dods_url_c:
+            return "URL";
+        case dods_array_c: {
+            ostringstream type;
+            Array *a = (Array *) v;
+            type << "Array of " << fancy_typename(a->var()) << "s ";
+            for (Array::Dim_iter p = a->dim_begin(); p != a->dim_end(); p++) {
+                type << "[" << a->dimension_name(p) << " = 0.."
+                     << a->dimension_size(p, false) - 1 << "]";
+            }
+            return type.str();
+        }
 
-      case dods_structure_c:
-	return "Structure";
-      case dods_sequence_c:
-	return "Sequence";
-      case dods_grid_c:
-	return "Grid";
-      default:
-	return "Unknown";
+        case dods_structure_c:
+            return "Structure";
+        case dods_sequence_c:
+            return "Sequence";
+        case dods_grid_c:
+            return "Grid";
+        default:
+            return "Unknown";
     }
 }
 
 static void
-write_variable(BaseType *btp, DAS &das, ostringstream &vs)
-{
+write_variable(BaseType *btp, DAS &das, ostringstream &vs) {
     vs << "<td align=right valign=top><b>" << btp->name()
        << "</b>:</td>\n"
        << "<td align=left valign=top>" << fancy_typename(btp)
@@ -319,61 +232,59 @@ write_variable(BaseType *btp, DAS &das, ostringstream &vs)
     write_attributes(vs, attr, "");
 
     switch (btp->type()) {
-      case dods_byte_c:
-      case dods_int16_c:
-      case dods_uint16_c:
-      case dods_int32_c:
-      case dods_uint32_c:
-      case dods_float32_c:
-      case dods_float64_c:
-      case dods_str_c:
-      case dods_url_c:
-      case dods_array_c:
-	vs << "</td>\n";
-	break;
+        case dods_byte_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_float32_c:
+        case dods_float64_c:
+        case dods_str_c:
+        case dods_url_c:
+        case dods_array_c:
+            vs << "</td>\n";
+            break;
 
-      case dods_structure_c: {
-	vs << "<table>\n";
-	Structure *sp = dynamic_cast<Structure *>(btp);
-	for (Constructor::Vars_iter p = sp->var_begin(); p != sp->var_end(); p++)
-	{
-	    vs << "<tr>";
-	    write_variable((*p), das, vs);
-	    vs << "</tr>";
-	}
-	vs << "</table>\n";
-	break;
-      }
+        case dods_structure_c: {
+            vs << "<table>\n";
+            Structure *sp = dynamic_cast<Structure *>(btp);
+            for (Constructor::Vars_iter p = sp->var_begin(); p != sp->var_end(); p++) {
+                vs << "<tr>";
+                write_variable((*p), das, vs);
+                vs << "</tr>";
+            }
+            vs << "</table>\n";
+            break;
+        }
 
-      case dods_sequence_c: {
-	vs << "<table>\n";
-	Sequence *sp = dynamic_cast<Sequence *>(btp);
-	for (Constructor::Vars_iter p = sp->var_begin(); p != sp->var_end(); p++)
-	{
-	    vs << "<tr>";
-	    write_variable((*p), das, vs);
-	    vs << "</tr>";
-	}
-	vs << "</table>\n";
-	break;
-      }
+        case dods_sequence_c: {
+            vs << "<table>\n";
+            Sequence *sp = dynamic_cast<Sequence *>(btp);
+            for (Constructor::Vars_iter p = sp->var_begin(); p != sp->var_end(); p++) {
+                vs << "<tr>";
+                write_variable((*p), das, vs);
+                vs << "</tr>";
+            }
+            vs << "</table>\n";
+            break;
+        }
 
-      case dods_grid_c: {
-	  vs << "<table>\n";
-	  Grid *gp = dynamic_cast<Grid *>(btp);
-	  write_variable(gp->array_var(), das, vs);
-	  Grid::Map_iter p;
-	  for (p = gp->map_begin(); p != gp->map_end(); p++) {
-	      vs << "<tr>";
-	      write_variable((*p), das, vs);
-	      vs << "</tr>";
-	  }
-	  vs << "</table>\n";
-	  break;
-      }
+        case dods_grid_c: {
+            vs << "<table>\n";
+            Grid *gp = dynamic_cast<Grid *>(btp);
+            write_variable(gp->array_var(), das, vs);
+            Grid::Map_iter p;
+            for (p = gp->map_begin(); p != gp->map_end(); p++) {
+                vs << "<tr>";
+                write_variable((*p), das, vs);
+                vs << "</tr>";
+            }
+            vs << "</table>\n";
+            break;
+        }
 
-      default:
-	throw InternalErr(__FILE__, __LINE__, "Unknown type");
+        default:
+            throw InternalErr(__FILE__, __LINE__, "Unknown type");
     }
 }
 
@@ -386,16 +297,15 @@ write_variable(BaseType *btp, DAS &das, ostringstream &vs)
 */
 
 static string
-build_variable_summaries(DAS &das, DDS &dds)
-{
+build_variable_summaries(DAS &das, DDS &dds) {
     ostringstream vs;
     vs << "<h3>Variables in this Dataset</h3>\n<center>\n<table>\n";
     //    vs << "<tr><th>Variable</th><th>Information</th></tr>\n";
 
     for (DDS::Vars_iter p = dds.var_begin(); p != dds.var_end(); p++) {
-	vs << "<tr>";
-	write_variable((*p), das, vs);
-	vs << "</tr>";
+        vs << "<tr>";
+        write_variable((*p), das, vs);
+        vs << "</tr>";
     }
 
     vs << "</table>\n</center><p>\n";
@@ -404,14 +314,13 @@ build_variable_summaries(DAS &das, DDS &dds)
 }
 
 void
-html_header( ostream &strm )
-{
-    strm << "HTTP/1.0 200 OK\r\n" ;
-    strm << "XDODS-Server: " << PACKAGE_VERSION << "\r\n" ;
-    strm << "XDAP: " << DAP_PROTOCOL_VERSION << "\r\n" ;
-    strm << "Content-type: text/html\r\n" ;
-    strm << "Content-Description: dods_description\r\n" ;
-    strm << "\r\n" ;	// MIME header ends with a blank line
+html_header(ostream &strm) {
+    strm << "HTTP/1.0 200 OK\r\n";
+    strm << "XDODS-Server: " << PACKAGE_VERSION << "\r\n";
+    strm << "XDAP: " << DAP_PROTOCOL_VERSION << "\r\n";
+    strm << "Content-type: text/html\r\n";
+    strm << "Content-Description: dods_description\r\n";
+    strm << "\r\n";    // MIME header ends with a blank line
 }
 
 /** Build an HTML page that summarizes the information held int eh DDS/DAS.
@@ -424,8 +333,6 @@ html_header( ostream &strm )
     feature of that server. This feature was never used outside of testing,
     to the best of our knowledge.
 
-    @todo Update this to use the DDX.
-
     @param strm Write the HTML to this stream
     @param dds The DDS
     @param das THe DAS
@@ -433,46 +340,42 @@ html_header( ostream &strm )
     the provider.
     @param server_name Use this name to find server-specific info. */
 void
-write_usage_response(ostream &strm, DDS &dds, DAS &das,
-		     const string &dataset_name,
-                     const string &server_name,
-		     bool httpheader) throw(Error)
-{
-        // This will require some hacking in libdap; maybe that code should
-        // move here? jhrg
-        string user_html = get_user_supplied_docs(dataset_name, server_name);
+write_usage_response(ostream &strm, DDS &dds, DAS &das, const string &dataset_name, const string &server_name,
+                     bool httpheader) {
+    // This will require some hacking in libdap; maybe that code should
+    // move here? jhrg
+    string user_html = get_user_supplied_docs(dataset_name, server_name);
 
-        string global_attrs = build_global_attributes(das, dds);
+    string global_attrs = build_global_attributes(das, dds);
 
-        string variable_sum = build_variable_summaries(das, dds);
+    string variable_sum = build_variable_summaries(das, dds);
 
-        // Write out the HTML document.
+    // Write out the HTML document.
 
-	if( httpheader )
-	    html_header( strm );
+    if (httpheader)
+        html_header(strm);
 
-	strm << "<html><head><title>Dataset Information</title></head>"
-	     << "\n" << "<body>" << "\n" ;
+    strm << "<html><head><title>Dataset Information</title></head>"
+         << "\n" << "<body>" << "\n";
 
-        if (global_attrs.size())
-	{
-	    strm << global_attrs.c_str() << "\n" << "<hr>" << "\n" ;
-        }
+    if (global_attrs.size()) {
+        strm << global_attrs.c_str() << "\n" << "<hr>" << "\n";
+    }
 
-        strm << variable_sum.c_str() << "\n" ;
+    strm << variable_sum.c_str() << "\n";
 
-        strm << "<hr>\n" ;
+    strm << "<hr>\n";
 
-        strm << user_html.c_str() << "\n" ;
+    strm << user_html.c_str() << "\n";
 
-        strm << "</body>\n</html>\n" ;
+    strm << "</body>\n</html>\n";
 }
 
 /** Look in the CGI directory (given by \c cgi) for a per-cgi HTML* file.
-    Also look for a dataset-specific HTML* document. Catenate the documents
+    Also look for a dataset-specific HTML* document. Concatenate the documents
     and return them in a single String variable.
 
-    Similarly, to locate the dataset-specific HTML* file it catenates `.html'
+    Similarly, to locate the dataset-specific HTML* file it concatenates `.html'
     to \c name, where \c name is the name of the dataset. If the filename
     part of \c name is of the form [A-Za-z]+[0-9]*.* then this function also
     looks for a file whose name is [A-Za-z]+.html For example, if \c name is
@@ -487,12 +390,11 @@ write_usage_response(ostream &strm, DDS &dds, DAS &das,
     @brief Look for the user supplied CGI- and dataset-specific HTML*
     documents.
 
-    @return A String which contains these two documents catenated. Documents
+    @return A String which contains these two documents concatenated. Documents
     that don't exist are treated as `empty'.  */
 
 string
-get_user_supplied_docs(string name, string cgi)
-{
+get_user_supplied_docs(const string &name, const string &cgi) {
     char tmp[256];
     ostringstream oss;
     ifstream ifs((cgi + ".html").c_str());

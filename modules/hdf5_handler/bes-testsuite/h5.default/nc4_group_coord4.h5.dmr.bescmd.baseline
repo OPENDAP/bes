@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_group_coord4.h5">
+    <Dimension name="dim1" size="2"/>
+    <Dimension name="dim2" size="3"/>
+    <Group name="g2">
+        <Int32 name="c1">
+            <Dim name="/dim1"/>
+            <Dim name="/dim2"/>
+        </Int32>
+        <Int32 name="c2">
+            <Dim name="/dim1"/>
+            <Dim name="/dim2"/>
+        </Int32>
+        <Int32 name="c3">
+            <Dim name="/dim1"/>
+            <Dim name="/dim2"/>
+        </Int32>
+        <Int32 name="c4">
+            <Dim name="/dim1"/>
+            <Dim name="/dim2"/>
+        </Int32>
+    </Group>
+    <Group name="g1">
+        <Float32 name="d1">
+            <Dim name="/dim1"/>
+            <Dim name="/dim2"/>
+            <Attribute name="coordinates" type="String">
+                <Value>/g2/c1 /g2/c2</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="d2">
+            <Dim name="/dim1"/>
+            <Dim name="/dim2"/>
+            <Attribute name="coordinates" type="String">
+                <Value>g2/c3 g2/c4</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+</Dataset>

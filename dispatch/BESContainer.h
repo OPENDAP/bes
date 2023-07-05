@@ -63,7 +63,7 @@
  * @see BESContainerStorage
  */
 class BESContainer: public BESObj {
-private:
+
     std::string d_symbolic_name;     ///< The name of the container
     std::string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
     std::string d_relative_name;     ///< The name relative to the Data Root dir
@@ -76,9 +76,7 @@ private:
     std::string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
 
 protected:
-    BESContainer()
-    {
-    }
+    BESContainer() = default;
 
     /** @brief construct a container with the given symbolic name, real name
      * and container type.
@@ -92,20 +90,21 @@ protected:
      * @param type type of data represented by this container, such as netcdf
      */
     BESContainer(const std::string &sym_name, const std::string &real_name, const std::string &type) :
-        d_symbolic_name(sym_name), d_real_name(real_name), d_relative_name(""), d_container_type(type),
-        d_constraint(""), d_dap4_constraint(""), d_dap4_function(""), d_attributes("")
+        d_symbolic_name(sym_name), d_real_name(real_name), d_container_type(type)
     {
     }
 
+    // TODO Delete this copy ctor if possible. This class has an odd notion of
+    //  copying. See _duplicate() that takes an object to copy to instead of
+    //  copy from. jhrg 10/18/22
     BESContainer(const BESContainer &copy_from);
+    BESContainer& operator=(const BESContainer& other) = delete;
 
     void _duplicate(BESContainer &copy_to);
 
 public:
 
-    virtual ~BESContainer()
-    {
-    }
+    ~BESContainer() override = default;
 
     /** @brief pure abstract method to duplicate this instances of BESContainer
      */
@@ -258,7 +257,7 @@ public:
     virtual std::string  access() = 0;
     virtual bool release() = 0;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESContainer_h_

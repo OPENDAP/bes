@@ -32,12 +32,7 @@
 
 #include "config.h"
 
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
-
-#include <pthread.h>
-
+#include <cstdlib>
 #include <sstream>
 
 #include "BESCatalogList.h"
@@ -46,16 +41,9 @@
 #include "BESCatalogEntry.h"
 #include "BESInfo.h"
 
-#include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
-#include "BESNames.h"
 
 using namespace std;
-
-#if 0
-static pthread_once_t BESCatalogList_instance_control = PTHREAD_ONCE_INIT;
-#endif
-
 
 BESCatalogList *BESCatalogList::d_instance = 0;
 

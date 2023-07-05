@@ -1,0 +1,18 @@
+#
+# NEVER put the env_cred.sh file in a public repo.  It contains your credentials.
+# NEVER put credentials in this file. It is checked in to a public repo.
+# To used this, make the env_creds.sh file by hand and source it in the shell where you
+# will run the module's tests.
+
+export CMAC_ID="THE_AWS_KEY_ID"
+export CMAC_ACCESS_KEY="THE_AWS_SECRET_ACCESS_KEY"
+
+# See the Makefile.am to change the values the 'check' target expects. jhrg 5/17/23
+
+# Currently, the Makefile will only run tests for the region us-west-2. jhrg 5/17/23
+export CMAC_REGION="THE_AWS_REGION_FOR_THE_KEY"
+
+# The Makefile will only run tests for data in the bucket referenced by the URL:
+# https://s3-module-test-bucket.s3.us-west-2.amazonaws.com and that must be the literal
+# text of the URL prefix. No trailing slash. jhrg 5/17/23
+export CMAC_URL="THE_URL_PREFIX_FOR_THE_KEY"

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,19 +33,19 @@
 #ifndef BESStatus_h_
 #define BESStatus_h_ 1
 
-#include <time.h>
 #include <string>
 
-class BESStatus
-{
-    static int			_counter ;
-    static std::string	boot_time ;
+class BESStatus {
 public:
-				BESStatus();
-				BESStatus(const BESStatus &);
-  				~BESStatus();
-  	std::string	get_status() { return BESStatus::boot_time ; }
-} ;
+    BESStatus() = default;
+
+    BESStatus(const BESStatus &) = delete;
+    BESStatus &operator=(const BESStatus &) = delete;
+
+    ~BESStatus() = default;
+
+    std::string get_status() const { return "OK"; }
+};
 
 #endif // BESStatus_h_
 

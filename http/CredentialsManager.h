@@ -55,12 +55,9 @@ private:
 
     CredentialsManager() = default;   // only called here to build the singleton
     static void initialize_instance();
-
     static void delete_instance();
 
     AccessCredentials *load_credentials_from_env();
-
-    void load_ngap_s3_credentials();
 
 public:
     static CredentialsManager *theMngr;

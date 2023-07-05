@@ -688,6 +688,10 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname,
 void
 read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale, bool is_eos5, eos5_dim_info_t & eos5_dim_info) {
 
+    // NULL space data, ignore.
+    if (dt_inst.ndims == -1 && dt_inst.nelmts == 0) 
+        return;
+
     switch (H5Tget_class(dt_inst.type)) {
 
     // HDF5 compound maps to DAP structure.
@@ -2067,6 +2071,7 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
                     string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
+
                 ret_value =(hsize_t)num_ele_dim;
 
                 H5Dclose(did_ref);
@@ -2325,8 +2330,15 @@ bool obtain_no_path_cv(D4Group *d4_grp, string &coord_name) {
     return found_cv;
 }
 
-void handle_absolute_path_cv(const D4Group *d4_grp, const string &coord_name) {
+void handle_absolute_path_cv(const D4Group *d4_grp, string &coord_name) {
+
     // For the time being, we don't check if this cv with absolute path exists.
+    // However, we need to check if the coordinates are under the current group or the ancestor groups.
+    string d4_grp_fqn = d4_grp->FQN();
+    string cv_path = HDF5CFUtil::obtain_string_before_lastslash(coord_name);
+    if (d4_grp_fqn.find(cv_path) != 0) 
+        coord_name="";
+
     return;
 }
 
@@ -2357,13 +2369,7 @@ void handle_relative_path_cv(const D4Group *d4_grp, string &coord_name) {
             }
         }
     }
-    string msg = "The coordinate attribute that includes the relative path ";
-    msg +="must contain at least one ../ string but this coordinate with the value <";
-    msg +=coord_name +'>'+" doesn't contain one.";
 
-    // This exception may be lifted if we care more on the execution of operations than the values of coordinates and the maps.
-    if (sep_count == 0)
-         throw InternalErr(__FILE__, __LINE__, msg); 
 
     // Now we need to find the absolute path of the coordinate variable. 
     if (find_coord) {

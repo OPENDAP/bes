@@ -124,8 +124,10 @@ short update_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fna
      * checks if stream was opened correctly and if not creates the file and opens again
      */
     if (!sha_fstream.is_open()){
-        write_sha256_file(m_dmrpp_fname,m_h5_fname,m_sha256_fname,sha256_buf);
-        sha_fstream.open(m_sha256_fname,ifstream::in);
+        return write_sha256_file(m_dmrpp_fname,m_h5_fname,m_sha256_fname,sha256_buf);
+#if 0
+        //sha_fstream.open(m_sha256_fname,ifstream::in);
+#endif
     }
     string sha_line;
     char space_char=' ';

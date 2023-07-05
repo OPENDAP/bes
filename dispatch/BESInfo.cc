@@ -143,7 +143,7 @@ void BESInfo::begin_tag(const string &tag_name, map<string, string> */*attrs*/)
 
 void BESInfo::end_tag(const string &tag_name)
 {
-    if (_tags.size() == 0 || _tags.top() != tag_name) {
+    if (_tags.empty() || _tags.top() != tag_name) {
         string s = (string) "tag " + tag_name + " already ended or not started";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
