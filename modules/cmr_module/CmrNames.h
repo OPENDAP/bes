@@ -40,7 +40,7 @@
 #define CMR_MAX_PAGE_SIZE 2000
 #define CMR_PROVIDERS_API_ENDPOINT "ingest/providers"
 #define CMR_PROVIDERS_SEARCH_ENDPOINT "search/providers"
-#define CMR_PROVIDERS_LEGACY_API_ENDPOINT "legacy-services/rest/providers"
+// #define CMR_PROVIDERS_LEGACY_API_ENDPOINT "legacy-services/rest/providers"
 #define CMR_COLLECTIONS_SEARCH_API_ENDPOINT "search/collections.umm_json"
 #define CMR_GRANULES_SEARCH_API_ENDPOINT "search/granules.json"
 #define CMR_GRANULES_SEARCH_API_UMM_ENDPOINT "search/granules.umm_json"

@@ -74,21 +74,10 @@ CmrApi::CmrApi() {
     }
     BESDEBUG(MODULE, prolog << "d_cmr_endpoint_url: " << d_cmr_endpoint_url << endl);
 
-    d_cmr_legacy_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
-                                                                       CMR_PROVIDERS_LEGACY_API_ENDPOINT);
-    BESDEBUG(MODULE,
-             prolog << "d_cmr_legacy_providers_search_endpoint_url: " << d_cmr_legacy_providers_search_endpoint_url << endl);
-
     d_cmr_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
                                                                 CMR_PROVIDERS_SEARCH_ENDPOINT);
     BESDEBUG(MODULE,
              prolog << "d_cmr_providers_search_endpoint_url: " << d_cmr_providers_search_endpoint_url << endl);
-
-    d_cmr_providers_api_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
-                                                                CMR_PROVIDERS_API_ENDPOINT);
-    BESDEBUG(MODULE,
-             prolog << "d_cmr_providers_api_endpoint_url: " << d_cmr_providers_search_endpoint_url << endl);
-
 
     d_cmr_collections_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
                                                                   CMR_COLLECTIONS_SEARCH_API_ENDPOINT);
@@ -795,108 +784,6 @@ void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
     }
 
 }
-
-#if 0
-
-void CmrApi::get_providers_list(std::vector<std::string> &provider_ids) const
-{
-    JsonUtils json;
-
-    // https://cmr.earthdata.nasa.gov/search/providers/
-
-    BESDEBUG(MODULE, prolog << "CMR Providers List Request Url: : " << d_cmr_providers_api_endpoint_url << endl);
-
-
-    const auto &cmr_doc = json.get_as_json(d_cmr_providers_api_endpoint_url);
-
-    // We know that this CMR query returns an array of anonymous json objects, each of which
-    //  {
-    //    "provider-id": "LARC_ASDC",
-    //    "short-name": "LARC_ASDC",
-    //    "cmr-only": false,
-    //    "small": false,
-    //    "consortiums": "EOSDIS GEOSS"
-    //  },
-    // All we need is the provider-id for now.
-
-    // So we iterate over the anonymous objects
-    for (const auto &obj : cmr_doc){
-        // And the grab the internal provider object...
-        auto provider_id = json.get_str_if_present(CMR_PROVIDER_LIST_ID_KEY, obj);
-
-        if(!provider_id.empty()){
-            provider_ids.emplace_back(provider_id);
-        }
-    }
-
-}
-
-void CmrApi::get_providers_old(vector<unique_ptr<cmr::Provider>> &providers) const
-{
-    JsonUtils json;
-    BESStopWatch bsw;
-    bsw.start(prolog);
-    vector<string> provider_ids;
-    get_providers_list(provider_ids);
-    get_providers(provider_ids,providers);
-}
-
-void CmrApi::get_providers(
-        const std::vector<std::string> &provider_ids,
-        std::vector<std::unique_ptr<cmr::Provider>> &providers) const
-{
-
-    for(const auto &provider_id:provider_ids){
-        auto provider = get_provider(provider_id);
-        if(provider != nullptr)
-            providers.emplace_back(std::move(provider));
-    }
-}
-
-
-std::unique_ptr<cmr::Provider> CmrApi::get_provider(const string &provider_id) const
-{
-    JsonUtils json;
-    stringstream cmr_query_url;
-    cmr_query_url << d_cmr_providers_api_endpoint_url << "/" << provider_id;
-    BESDEBUG(MODULE, prolog << "CMR Provider Info Request Url: " << cmr_query_url.str() << endl);
-
-    const auto &provider_json = json.get_as_json(cmr_query_url.str());
-    // We know that this CMR query returns a single of anonymous json object, which is the Provider object
-
-    if(provider_json.type() == nlohmann::detail::value_t::null)
-        return  {nullptr};
-
-    return std::make_unique<Provider>(provider_json);
-}
-
-
-
-void CmrApi::get_providers_old(vector<unique_ptr<cmr::Provider>> &providers) const
-{
-    JsonUtils json;
-
-    stringstream cmr_query_url;
-    cmr_query_url << d_cmr_legacy_providers_search_endpoint_url << ".json?page_size=" << CMR_MAX_PAGE_SIZE;
-    BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: " << cmr_query_url.str() << endl);
-
-    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
-
-    // We know that this CMR query returns an array of anonymous json objects, each of which
-    // contains a single provider object (really...)
-
-    // So we iterate over the anonymous objects
-    for (const auto &obj : cmr_doc){
-        // And the grab the internal provider object...
-        auto provider_json = json.qc_get_object(CMR_LEGACY_PROVIDER_KEY, obj);
-        // And then make a new Provider and put it in the vector.
-        auto provider = std::make_unique<Provider>(provider_json);
-        providers.emplace_back(std::move(provider));
-    }
-
-}
-
-#endif
 
 void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opendap_providers) const
 {
