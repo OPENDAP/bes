@@ -68,8 +68,14 @@ class HDF5Array:public libdap::Array {
     bool m_array_in_structure();
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
     bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id);
+
     void m_intern_plain_array_data(char *convbuf,hid_t memtype);
     void m_array_of_atomic(hid_t, hid_t,int64_t ,const int64_t *,const int64_t *,const int64_t *);
+    void handle_vlen_string(hid_t dset_id, hid_t memtype, int64_t nelms, const std::vector<hsize_t>& hoffset,
+                                   const std::vector<hsize_t>& hcount, const std::vector<hsize_t>& hstep);
+    void handle_array_read_whole(hid_t dset_id, hid_t memtype, int64_t nelms);
+    void handle_array_read_slab(hid_t dset_id, hid_t memtype, int64_t nelms,
+                                const int64_t *offset, const int64_t *step, const int64_t *count);
 
     void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step);
 

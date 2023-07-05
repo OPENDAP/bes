@@ -52,7 +52,8 @@ using namespace std;
 using namespace libdap;
 
 BaseType *HDF5Array::ptr_duplicate() {
-    return new HDF5Array(*this);
+    auto HDF5Array_unique = make_unique<HDF5Array>(*this);
+    return HDF5Array_unique.release();
 }
 
 HDF5Array::HDF5Array(const string & n, const string &d, BaseType * v) :
@@ -216,8 +217,8 @@ void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,b
     
 }
 
-void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id, 
-                                   int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step)
+void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id, int64_t nelms,const int64_t* offset,
+                                   const int64_t* count, const int64_t* step)
 {
     
     hid_t memtype = -1;
@@ -239,11 +240,12 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
             hcount[i] = (hsize_t) count[i];
             hstep[i] = (hsize_t) step[i];
         }
-
+        handle_vlen_string(dset_id, memtype, nelms, hoffset, hcount, hstep);
+#if 0
         vector<string>finstrval;
         finstrval.resize(nelms);
         try {
-	    read_vlen_string(dset_id, nelms, hoffset.data(), hstep.data(), hcount.data(),finstrval);
+	        read_vlen_string(dset_id, nelms, hoffset.data(), hstep.data(), hcount.data(),finstrval);
         }
         catch(...) {
             H5Tclose(memtype);
@@ -251,12 +253,14 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
         }
         set_value_ll(finstrval,nelms);
         H5Tclose(memtype);
-	return ;
+#endif
+	    return ;
     }
 
     try {
         if (nelms == d_num_elm) {
-
+            handle_array_read_whole(dset_id, memtype, nelms);
+#if 0
 	    vector<char> convbuf(d_memneed);
 	    get_data(dset_id, (void *) convbuf.data());
 
@@ -270,10 +274,9 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 		    BESDEBUG("h5", "convbuf[" << i << "]="
 		        	<< (signed char)convbuf[i] << endl);
 		    BESDEBUG("h5", "convbuf2[" << i << "]="
-		        	<< convbuf2[i] << endl)
-		    ;
+		        	<< convbuf2[i] << endl);
 	        }
-	        // Libdap will generate the wrong output.
+
 	        m_intern_plain_array_data((char*) convbuf2.data(),memtype);
 	    }
 	    else 
@@ -281,33 +284,37 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
           }
           else 
               m_intern_plain_array_data(convbuf.data(),memtype);
+#endif
         } // end of "if (nelms == d_num_elm)"
         else {
-    	    size_t data_size = nelms * H5Tget_size(memtype);
-	    if (data_size == 0) {
-	        throw InternalErr(__FILE__, __LINE__, "get_size failed");
+            handle_array_read_slab(dset_id, memtype, nelms, offset, step, count);
+#if 0
+            size_t data_size = nelms * H5Tget_size(memtype);
+        if (data_size == 0) {
+            throw InternalErr(__FILE__, __LINE__, "get_size failed");
             }
-	    vector<char> convbuf(data_size);
-	    get_slabdata(dset_id, offset, step, count, d_num_dim, convbuf.data());
+        vector<char> convbuf(data_size);
+        get_slabdata(dset_id, offset, step, count, d_num_dim, convbuf.data());
 
-	    // Check if a Signed Byte to Int16 conversion is necessary.
+        // Check if a Signed Byte to Int16 conversion is necessary.
           if(false == is_dap4()){
             if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
-	        vector<short> convbuf2(data_size);
-	        for (int64_t i = 0; i < (int)data_size; i++) {
-	    	    convbuf2[i] = static_cast<signed char> (convbuf[i]);
-	        }
-	        m_intern_plain_array_data((char*) convbuf2.data(),memtype);
-	    }
-	    else {
-	        m_intern_plain_array_data(convbuf.data(),memtype);
-	    }
+            vector<short> convbuf2(data_size);
+            for (int64_t i = 0; i < (int)data_size; i++) {
+                convbuf2[i] = static_cast<signed char> (convbuf[i]);
+            }
+            m_intern_plain_array_data((char*) convbuf2.data(),memtype);
+        }
+        else {
+            m_intern_plain_array_data(convbuf.data(),memtype);
+        }
           }
-          else 
-	      m_intern_plain_array_data(convbuf.data(),memtype);
-
+          else
+          m_intern_plain_array_data(convbuf.data(),memtype);
+#endif
         }
         H5Tclose(memtype);
+
     }
     catch (...) {
         H5Tclose(memtype);
@@ -316,6 +323,66 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 
 }
 
+void HDF5Array::handle_array_read_whole(hid_t dset_id, hid_t memtype, int64_t nelms) {
+
+    vector<char> convbuf(d_memneed);
+    get_data(dset_id, (void *) convbuf.data());
+
+    // Check if a Signed Byte to Int16 conversion is necessary, this is only valid for DAP2.
+    if (false == is_dap4() && (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype))) {
+            vector<short> convbuf2(nelms);
+            for (int64_t i = 0; i < nelms; i++) {
+                convbuf2[i] = (signed char) (convbuf[i]);
+                BESDEBUG("h5", "convbuf[" << i << "]="
+                                          << (signed char) convbuf[i] << endl);
+                BESDEBUG("h5", "convbuf2[" << i << "]="
+                                           << convbuf2[i] << endl);
+            }
+
+            m_intern_plain_array_data((char *) convbuf2.data(), memtype);
+
+    } else
+        m_intern_plain_array_data(convbuf.data(), memtype);
+
+}
+
+void HDF5Array::handle_array_read_slab(hid_t dset_id, hid_t memtype, int64_t nelms,
+                                       const int64_t *offset, const int64_t *step, const int64_t *count)
+{
+    size_t data_size = nelms * H5Tget_size(memtype);
+	    if (data_size == 0) {
+	        throw InternalErr(__FILE__, __LINE__, "get_size failed");
+            }
+	    vector<char> convbuf(data_size);
+	    get_slabdata(dset_id, offset, step, count, d_num_dim, convbuf.data());
+
+	    // Check if a Signed Byte to Int16 conversion is necessary.
+          if(false == is_dap4() && (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype))) {
+	        vector<short> convbuf2(data_size);
+	        for (int64_t i = 0; i < (int)data_size; i++) {
+	    	    convbuf2[i] = static_cast<signed char> (convbuf[i]);
+	        }
+	        m_intern_plain_array_data((char*) convbuf2.data(),memtype);
+	    } else
+	      m_intern_plain_array_data(convbuf.data(),memtype);
+}
+
+void HDF5Array::handle_vlen_string(hid_t dset_id, hid_t memtype, int64_t nelms, const vector<hsize_t>& hoffset,
+                                   const vector<hsize_t>& hcount, const vector<hsize_t>& hstep){
+
+    vector<string>finstrval;
+        finstrval.resize(nelms);
+        try {
+	        read_vlen_string(dset_id, nelms, hoffset.data(), hstep.data(), hcount.data(),finstrval);
+        }
+        catch(...) {
+            H5Tclose(memtype);
+            throw InternalErr(__FILE__,__LINE__,"Fail to read variable-length string.");
+        }
+        set_value_ll(finstrval,nelms);
+        H5Tclose(memtype);
+
+}
 bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_values,int values_offset,
                                    int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step) {
 
