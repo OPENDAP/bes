@@ -659,6 +659,18 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
+    // Here we need to handle NULL SPACE variables. Since the data with null sapce doesn't contain any value,
+    // so the variable should not map to a DAP variable except for a DAP4 dimension.
+    if (H5S_NULL == H5Sget_simple_extent_type(dspace)) {
+
+        (*dt_inst_ptr).ndims = -1;
+        (*dt_inst_ptr).nelmts = 0;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        return;
+    }
+
     // It is better to use the dynamic allocation of the array.
     // However, since the DODS_MAX_RANK is not big and it is also
     // used in other location, we still keep the original code.
@@ -742,8 +754,8 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
         // Some HDF5 datasets are dimension scale datasets; some are not. We need to distinguish.
         bool is_dimscale = false;
 
-        // Dimension scales must be 1-D.
-        if(1 == ndims) {
+        // Dimension scales must be 1-D or the dataspace is NULL.
+        if(1 == ndims || H5Sget_simple_extent_type(dspace)== H5S_NULL) {
 
             bool has_ds_attr = false;
 
@@ -801,6 +813,12 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
                     // We need to remember if this dimension is unlimited dimension,maybe in the future. 2022-11-13
                 }
             }
+        }
+
+        // Here we need to check the dimension scale that has NULL space.
+        if (true == is_dimscale && H5Sget_simple_extent_type(dspace) == H5S_NULL) {
+            is_dimscale = false;
+            is_pure_dim = true;
         }
  
         if (true == is_dimscale) {
@@ -1575,7 +1593,7 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
         }
 
         // We only support netCDF-4 like dimension scales, that is the dimension scale dataset is 1-D dimension.
-        if(H5Sget_simple_extent_ndims(dspace) == 1) {
+        if(H5Sget_simple_extent_ndims(dspace) == 1 || H5Sget_simple_extent_type(dspace) == H5S_NULL) {
             try {
                 if(true == has_dimscale_attr(dataset)) 
                     ret_value = 1;
@@ -2231,7 +2249,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
         H5T_cset_t c_set_type = H5Tget_cset(ty_id);
         if (c_set_type < 0)
             throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
-        if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == 1))
+        if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
             is_utf8_str = true;
     }
 

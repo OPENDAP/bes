@@ -3,7 +3,9 @@
 
 # Arrange to build with the backward compatibility mode enabled.
 AM_CPPFLAGS = -I$(top_srcdir)/modules/xml_data_handler -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(XML2_LIBS)
+LIBADD = $(BES_DISPATCH_LIB) $(DAP_SERVER_LIBS) $(XML2_LIBS)
+
+# jhrg 6/2/23 $(BES_EXTRA_LIBS)
 
 AM_LDADD = $(LIBADD)
 AM_CXXFLAGS = 

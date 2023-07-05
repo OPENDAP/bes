@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="SDS_fle_shuf_2def.h5">
+    <Int32 name="IntArray">
+        <Dim size="6"/>
+        <Dim size="8"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>984d8f87</Value>
+        </Attribute>
+    </Int32>
+</Dataset>
+
+The data:
+Int32 IntArray[6][8] = {{0, 1, 2, 3, 4, 5, 6, 7},{1, 2, 3, 4, 5, 6, 7, 8},{2, 3, 4, 5, 6, 7, 8, 9},{3, 4, 5, 6, 7, 8, 9, 10},{4, 5, 6, 7, 8, 9, 10, 11},{5, 6, 7, 8, 9, 10, 11, 12}};
+

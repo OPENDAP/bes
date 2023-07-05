@@ -2,6 +2,7 @@
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## News for 3.20.13
 
+* Triggered a build to test new dependencies (hdf-4 and netcdf-4 updates).
 * Improved error messages for the response is too big, and response tool too
   much time to marshall.
 

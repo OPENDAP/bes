@@ -4,7 +4,9 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/modules/fileout_covjson $(DAP_CFLAGS)
-LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS)
+LIBADD = $(BES_DISPATCH_LIB) $(DAP_SERVER_LIBS)
+
+# jhrg 6/2/23 $(BES_EXTRA_LIBS)
 
 AM_CPPFLAGS += -Wno-vla-extension
 

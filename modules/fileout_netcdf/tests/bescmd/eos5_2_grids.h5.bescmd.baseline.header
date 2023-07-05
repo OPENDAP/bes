@@ -1,0 +1,65 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex grid_2_2d_size.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"grid_2_2d_size.h5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: GeoGrid1 {
+      dimensions:
+      	YDim = 8 ;
+      	XDim = 16 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	float Temperature(YDim, XDim) ;
+        		Temperature:units = "K" ;
+        		Temperature:fullnamepath = "/HDFEOS/GRIDS/GeoGrid1/Data Fields/Temperature" ;
+        } // group Data_Fields
+      } // group GeoGrid1
+
+    group: GeoGrid2 {
+      dimensions:
+      	YDim = 4 ;
+      	XDim = 8 ;
+      variables:
+      	float YDim(YDim) ;
+      		YDim:units = "degrees_north" ;
+      	float XDim(XDim) ;
+      		XDim:units = "degrees_east" ;
+
+      group: Data_Fields {
+        variables:
+        	float Temperature(YDim, XDim) ;
+        		Temperature:units = "K" ;
+        		Temperature:fullnamepath = "/HDFEOS/GRIDS/GeoGrid2/Data Fields/Temperature" ;
+        } // group Data_Fields
+      } // group GeoGrid2
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.13" ;
+  } // group HDFEOS_INFORMATION
+}

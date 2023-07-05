@@ -46,12 +46,15 @@ namespace builddmrpp {
  */
 class NgapBuildDmrppContainerStorage: public BESContainerStorageVolatile {
 public:
-    NgapBuildDmrppContainerStorage(const std::string &n);
-    virtual ~NgapBuildDmrppContainerStorage();
+    NgapBuildDmrppContainerStorage() = delete;
+    NgapBuildDmrppContainerStorage(const NgapBuildDmrppContainerStorage &) = delete;
+    NgapBuildDmrppContainerStorage &operator=(const NgapBuildDmrppContainerStorage &) = delete;
+    explicit NgapBuildDmrppContainerStorage(const std::string &n) : BESContainerStorageVolatile(n) { }
+    ~NgapBuildDmrppContainerStorage() override = default;
 
-    virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+    void add_container(const std::string &s_name, const std::string &r_name, const std::string &type) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace builddmrpp

@@ -557,6 +557,7 @@ void Chunk::add_tracking_query_param() {
  * @param _data Pointer to a block of byte data
  * @param _len Number of bytes to checksum
  * @return The Fletcher32 checksum
+ * Credit: The following code is adapted from the HDF5 library
  */
 uint32_t
 checksum_fletcher32(const void *_data, size_t _len)
@@ -596,7 +597,7 @@ checksum_fletcher32(const void *_data, size_t _len)
     sum2 = (sum2 & 0xffff) + (sum2 >> 16);
 
     return ((sum2 << 16) | sum1);
-} /* end H5_checksum_fletcher32() */
+} /* end checksum_fletcher32() */
 
 /**
  * @brief filter data in the chunk
@@ -698,7 +699,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                         ignore_rest_deflate = true;
                     if (ignore_rest_deflate || deflate_index == num_deflate) {
                         char* newdest = *destp;
-                        set_read_buffer(newdest, chunk_size, chunk_size, true);
+                        // Need to use the out_buf_size insted of chunk_size since the size may be bigger than chunk_size. KY 2023-06-08
+                        set_read_buffer(newdest, out_buf_size, chunk_size, true);
                     }
  
 #else
@@ -720,13 +722,14 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 dest_deflate = new char[chunk_size];
                 destp = &dest_deflate;
                 try {
-                    if (inflate(destp, chunk_size, get_rbuf(), get_rbuf_size()) ==0) {
+                    out_buf_size = inflate(destp, chunk_size, get_rbuf(), get_rbuf_size());
+                    if (out_buf_size == 0) {
                         throw BESError("inflate size should be greater than 0", BES_INTERNAL_ERROR, __FILE__, __LINE__);
                     }
                     // This replaces (and deletes) the original read_buffer with dest.
 #if DMRPP_USE_SUPER_CHUNKS
                     char* new_dest=*destp;
-                    set_read_buffer(new_dest, chunk_size, chunk_size, true);
+                    set_read_buffer(new_dest, out_buf_size, chunk_size, true);
 #else
                     set_rbuf(dest_deflate, chunk_size);
 #endif
@@ -766,6 +769,10 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             // with once computed on the data actually read? Maybe make this a bes.conf parameter?
             // jhrg 10/15/21
             uint32_t calc_checksum = checksum_fletcher32((const void *)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM);
+            
+            BESDEBUG(MODULE, prolog << "get_rbuf_size(): " << get_rbuf_size() << endl);
+            BESDEBUG(MODULE, prolog << "calc_checksum: " << calc_checksum << endl);
+            BESDEBUG(MODULE, prolog << "f_checksum: " << f_checksum << endl);
             if (f_checksum != calc_checksum) {
                 throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
                                        __FILE__, __LINE__);

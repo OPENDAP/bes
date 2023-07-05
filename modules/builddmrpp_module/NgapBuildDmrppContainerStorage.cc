@@ -36,22 +36,6 @@ using namespace std;
 
 namespace builddmrpp {
 
-/** @brief create an instance of this persistent store with the given name.
- *
- * Creates an instances of GatewayContainerStorage with the given name.
- *
- * @param n name of this persistent store
- * @see GatewayContainer
- */
-    NgapBuildDmrppContainerStorage::NgapBuildDmrppContainerStorage(const string &n) :
-            BESContainerStorageVolatile(n)
-    {
-    }
-
-    NgapBuildDmrppContainerStorage::~NgapBuildDmrppContainerStorage()
-    {
-    }
-
 /** @brief adds a container with the provided information
  *
  * @param s_name symbolic name for the container
@@ -59,15 +43,17 @@ namespace builddmrpp {
  * @param type ignored. The type of the target response is determined by the
  * request response, or could be passed in
  */
-    void NgapBuildDmrppContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
-    {
-        BESContainer *c = new NgapBuildDmrppContainer(s_name, r_name, "h5");
+void NgapBuildDmrppContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
+{
+    auto c = make_unique<NgapBuildDmrppContainer>(s_name, r_name, "h5");
 
-        NgapBuildDmrppContainer *d = dynamic_cast<NgapBuildDmrppContainer *>(c);
-        string cacheName = d->access();
+    // These line causes the Build DMR++ Container to access the contained resource.
+    // That generally means the remote resource is retrieved and a temporary file is created.
+    // jhrg 6/12/23
+    (void) c->access();
 
-        BESContainerStorageVolatile::add_container(c);
-    }
+    BESContainerStorageVolatile::add_container(c.release());
+}
 
 /** @brief dumps information about this object
  *
@@ -76,12 +62,12 @@ namespace builddmrpp {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-    void NgapBuildDmrppContainerStorage::dump(ostream &strm) const
-    {
-        strm << BESIndent::LMarg << "NgapBuildDmrppContainerStorage::dump - (" << (void *) this << ")" << endl;
-        BESIndent::Indent();
-        BESContainerStorageVolatile::dump(strm);
-        BESIndent::UnIndent();
-    }
+void NgapBuildDmrppContainerStorage::dump(ostream &strm) const
+{
+    strm << BESIndent::LMarg << "NgapBuildDmrppContainerStorage::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESContainerStorageVolatile::dump(strm);
+    BESIndent::UnIndent();
+}
 
 } // namespace builddmrpp

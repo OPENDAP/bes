@@ -151,6 +151,9 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c.d
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c_c.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_grid.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_grid.h5.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_2_grids.h5.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_ps_grp.h5.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_sin_grp.h5.bescmd >test.nc
 
 
 valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/grid_1_2d_dap2_ce_empty.h5.2.bescmd>gr.nc4
@@ -161,7 +164,10 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_wrong_fvalue_
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_mlls_cf.h5.bescmd>d_group.nc4
 valgrind besstandalone -c tests/bes.conf -i tests/bescmd/gridT.3.compression.bescmd>d_group.nc4
 
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_fle_shuf_2def.h5.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_fle_shuf_2def.h5.dmrpp.bescmd >test.nc
 
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/dim_scale_null_space.h5.bescmd>test.nc
 
 rm -rf test.nc
 rm -rf gr.nc4

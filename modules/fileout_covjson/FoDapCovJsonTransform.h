@@ -41,6 +41,8 @@ enum DSGType {
 namespace libdap {
 class BaseType;
 class DDS;
+class DMR;
+class D4Group;
 class Array;
 }
 
@@ -54,19 +56,20 @@ class BESDataHandlerInterface;
 class FoDapCovJsonTransform: public BESObj {
 private:
     libdap::DDS *_dds;
+    libdap::DMR *_dmr;
     std::string _returnAs;
-    std::string _indent_increment;
+    std::string _indent_increment = "  ";
     std::string atomicVals;
     std::string currDataType;
-    std::string domainType;
-    std::string coordRefType;
-    bool xExists;
-    bool yExists;
-    bool zExists;
-    bool tExists;
-    bool isParam;
-    bool isAxis;
-    bool canConvertToCovJson;
+    std::string domainType = "Unknown";
+    std::string coordRefType = "GeographicCRS";
+    bool xExists = false;
+    bool yExists = false;
+    bool zExists = false;
+    bool tExists = false;
+    bool isParam = false;
+    bool isAxis = false;
+    bool canConvertToCovJson = false;
 
     struct Axis {
         std::string name;
@@ -85,14 +88,14 @@ private:
         std::string values;
     };
 
-    unsigned int axisCount;
+    unsigned int axisCount = 0;
     std::vector<Axis *> axes;
     std::string axis_t_units;
     std::string axis_z_units;
     std::string axis_z_direction;
     std::string axis_z_standardName;
     
-    unsigned int parameterCount;
+    unsigned int parameterCount = 0;
     std::vector<Parameter *> parameters;
     std::vector<int> shapeVals;
 
@@ -122,7 +125,9 @@ private:
     std::vector<std::string>bnd_dim_names;
     std::vector<std::string>par_vars;
 
-    bool is_simple_cf_geographic;
+    bool is_simple_cf_geographic = false;
+    bool is_dap2_grid = false;
+    bool is_geo_dap2_grid = false;
 
     // Discrete Sampling Geometries 
     DSGType dsg_type = UNSUPPORTED_DSG;
@@ -151,19 +156,24 @@ private:
     bool check_update_simple_dsg(libdap::DDS *);
 
     void check_update_simple_geo(libdap::DDS *dds,bool sendData);
+    void check_update_simple_geo_dap4(libdap::D4Group *d4g);
     bool check_add_axis(libdap::Array *d_a, const std::string &, const std::vector<std::string> &, axisVar &, bool is_t_axis);
     void check_bounds(libdap::DDS *dds, std::map<std::string,std::string>& vname_b_name);
     void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<float>& av_bnd_val,std::string &bnd_dim_name,bool);
     void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<double>& av_bnd_val,std::string &bnd_dim_name,bool);
     libdap::Array *  obtain_bound_values_worker(libdap::DDS *dds, const std::string & bound_name, std::string &bound_dim_name);
 
-    bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
 
+    bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
+    bool obtain_valid_vars_dap4(libdap::D4Group *d4g, short axis_var_z_count, short axis_var_t_count);
 
     // Convert CF time to gregorian calendar.
     std::string cf_time_to_greg(long long time);
     void print_bound(std::ostream *strm, const std::vector<std::string> & t_bnd_val,const std::string & indent,bool is_t_axis) const;
     
+    // Check DAP2 CF units
+    bool check_geo_dap2_grid(libdap::DDS *dds, const vector<string> & dap2_grid_map_names) const;
+    short check_cf_unit_attr(libdap::Array *d_a) const;
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
      *    obtained any at all, can be used to convert to a CovJSON file. If x, y,
@@ -237,6 +247,8 @@ private:
      *    function to determine if the source DDS can be converted to CovJSON
      */
     void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, bool testOverride);
+
+    void transform(std::ostream *strm, libdap::DMR *dmr, const std::string& indent, bool sendData, bool testOverride);
     
     /**
      * @brief  Write the CovJSON representation of the passed BaseType instance. If the
@@ -578,6 +590,7 @@ public:
      *    be converted to CoverageJSON (for testing purposes) false: run normally
      */
     virtual void transform(std::ostream &ostrm, bool sendData, bool testOverride);
+    virtual void transform_dap4(std::ostream &ostrm, bool sendData, bool testOverride);
 
     /**
      * @brief Get the CovJSON encoding for a DDS
@@ -596,7 +609,8 @@ public:
      * 
      * @throw BESInternalError if the DDS* is null or if localfile is empty.
      */
-    FoDapCovJsonTransform(libdap::DDS *dds);
+    explicit FoDapCovJsonTransform(libdap::DDS *dds);
+    explicit FoDapCovJsonTransform(libdap::DMR *dmr);
 
     /**
      * @brief Destructs the FoDapCovJsonTransform object and frees all memory.

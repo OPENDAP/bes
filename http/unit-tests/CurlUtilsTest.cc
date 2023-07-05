@@ -33,6 +33,8 @@
 #include "BESCatalogList.h"
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
+#include "url_impl.h"
+#include "AccessCredentials.h"
 #include "CurlUtils.h"
 #include "CredentialsManager.h"
 #include "BESForbiddenError.h"
@@ -128,6 +130,26 @@ public:
             CPPUNIT_FAIL(msg.str());
         }
         if (debug) cerr << prolog << "END" << endl;
+    }
+
+    void filter_effective_url_test() {
+        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=Foo&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
+        string filtered_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax";
+        CPPUNIT_ASSERT_MESSAGE("The URL should have the AWS security tokens removed",
+                               filtered_url == curl::filter_effective_url(url));
+    }
+
+    void filter_effective_url_token_first_test() {
+        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?X-Amz-Security-Token=Foo&A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
+        string filtered_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc";
+        CPPUNIT_ASSERT_MESSAGE("The URL should have the AWS security tokens removed",
+                               filtered_url == curl::filter_effective_url(url));
+    }
+
+    void filter_effective_url_no_qs_test() {
+        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc";
+        CPPUNIT_ASSERT_MESSAGE("The URL has no query string and should not be changed",
+                               url == curl::filter_effective_url(url));
     }
 
 
@@ -305,33 +327,6 @@ public:
         curl_slist_free_all(headers);
     }
 
-    // Test the first version of http_get() function tht takes a fixed size buffer.
-    // If the buffer is too small, buffer overflow.
-    void http_get_test_1() {
-        const string url = "http://test.opendap.org/opendap.conf";
-        vector<char> buf(1024);
-        curl::http_get(url, buf.data(), buf.size());
-
-        // In this response, the first line is "<Proxy *>" and the last line
-        // is "ProxyPassReverse /dap ajp://localhost:8009/opendap"
-        DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(buf.data()).find("<Proxy *>") == 0);
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
-                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
-                               string::npos);
-        DBG(cerr << "buf.size() = " << buf.size() << endl);
-        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 1024);
-    }
-
-    // This should throw an exception claiming that the beffer is not big enough
-    void http_get_test_1_0() {
-        const string url = "http://test.opendap.org/opendap.conf";
-        vector<char> buf(10);   // This buffer is too small for the response
-        curl::http_get(url, buf.data(), buf.size());
-
-        CPPUNIT_FAIL("Should have thrown an exception.");
-    }
-
     // Test the http_get() function that extends as needed a vector<char>
     void http_get_test_2() {
         const string url = "http://test.opendap.org/opendap.conf";
@@ -344,7 +339,7 @@ public:
                                string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
                                string::npos);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
-        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288);
     }
 
     // Test the http_get() function that extends as needed a vector<char>.
@@ -367,7 +362,7 @@ public:
 
         DBG(cerr << "twimc.size() = " << twimc.size() << endl);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
-        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287 + twimc.size());
+        CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288 + twimc.size());
     }
 
     // This test is to an S3 bucket and must be signed. Use the ENV_CRED
@@ -384,9 +379,6 @@ public:
     // This test will read from the cloudydap bucket we own.
 
     void http_get_test_4() {
-        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
-        // s3://cloudydap/samples/README
-        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
         const string url = "https://fail.nowhere.com/README";
         vector<char> buf;
         curl::http_get(url, buf);
@@ -396,9 +388,6 @@ public:
 
     // This test will fail with a BESForbidden exception
     void http_get_test_5() {
-        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
-        // s3://cloudydap/samples/README
-        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         vector<char> buf;
         curl::http_get(url, buf);
@@ -408,9 +397,6 @@ public:
 
     // This test will also fail with a BESForbidden exception
     void http_get_test_6() {
-        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
-        // s3://cloudydap/samples/README
-        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
         setenv("CMAC_URL", "https://s3.us-east-1", 1);
         setenv("CMAC_REGION", "us-east-1", 1);
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
@@ -421,9 +407,6 @@ public:
     }
 
     void http_get_test_7() {
-        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
-        // s3://cloudydap/samples/README
-        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
         setenv("CMAC_URL", "https://s3.us-east-1", 1);
         setenv("CMAC_REGION", "us-east-1", 1);
         // If the ID and Secret key are set in the shell/environment where this test
@@ -443,7 +426,7 @@ public:
                                        != string::npos);
 
                 DBG(cerr << "buf.size() = " << buf.size() << endl);
-                CPPUNIT_ASSERT_MESSAGE("Size should be 93", buf.size() == 93);
+                CPPUNIT_ASSERT_MESSAGE("Size should be 94", buf.size() == 94);
             }
             catch(const BESError &e) {
                 CPPUNIT_FAIL(string("Did not sign the URL correctly. ").append(e.get_verbose_message()));
@@ -463,12 +446,14 @@ public:
     CPPUNIT_TEST(retrieve_effective_url_test);
     CPPUNIT_TEST(add_edl_auth_headers_test);
 
+    CPPUNIT_TEST(filter_effective_url_test);
+    CPPUNIT_TEST(filter_effective_url_token_first_test);
+    CPPUNIT_TEST(filter_effective_url_no_qs_test);
+
     CPPUNIT_TEST(sign_s3_url_test_1);
     CPPUNIT_TEST(sign_s3_url_test_2);
     CPPUNIT_TEST(sign_s3_url_test_3);
 
-    CPPUNIT_TEST(http_get_test_1);
-    CPPUNIT_TEST_EXCEPTION(http_get_test_1_0, BESInternalError);
     CPPUNIT_TEST(http_get_test_2);
     CPPUNIT_TEST(http_get_test_3);
 

@@ -85,6 +85,10 @@ FoDapCovJsonTransmitter::FoDapCovJsonTransmitter() : BESTransmitter()
     add_method(DATA_SERVICE, FoDapCovJsonTransmitter::send_data);
     add_method(DDX_SERVICE,  FoDapCovJsonTransmitter::send_metadata);
 
+    add_method(DAP4DATA_SERVICE, FoDapCovJsonTransmitter::send_dap4data);
+    add_method(DMR_SERVICE,  FoDapCovJsonTransmitter::send_dap4metadata);
+
+
     if (FoDapCovJsonTransmitter::temp_dir.empty()) {
         // Where is the temp directory for creating these files
         bool found = false;
@@ -215,4 +219,113 @@ void FoDapCovJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandl
     }
 
     BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_data - done transmitting COVJSON" << endl);
+}
+
+/** @brief The static method registered to transmit OPeNDAP data objects as
+ * a JSON file.
+ *
+ * This function takes the OPeNDAP DataDDS object, reads in the data (can be
+ * used with any data handler), transforms the data into a JSON file, and
+ * streams back that JSON file back to the requester using the stream
+ * specified in the BESDataHandlerInterface.
+ *
+ * @param obj The BESResponseObject containing the OPeNDAP DataDDS object
+ * @param dhi BESDataHandlerInterface containing information about the
+ * request and response
+ * @throws BESInternalError if the response is not an OPeNDAP DataDDS or if
+ * there are any problems reading the data, writing to a JSON file, or
+ * streaming the JSON file
+ */
+void FoDapCovJsonTransmitter::send_dap4data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+{
+    BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_dap4data - BEGIN" << endl);
+
+    try {
+        BESDapResponseBuilder responseBuilder;
+
+        BESDEBUG("focovjson", "FoCovJsonTransmitter::send_dap4data - Reading data into DMR" << endl);
+
+        // The response object will manage loaded_dds
+        // Use the DDS from the ResponseObject along with the parameters
+        // from the DataHandlerInterface to load the DDS with values.
+        // Note that the BESResponseObject will manage the loaded_dds object's
+        // memory. Make this a shared_ptr<>. jhrg 9/6/16
+
+        // TODO improve this pattern by enabling reading then transforming one varaible
+        // at a time so that the whole dataset is not loaded into memory. jhrg 6/11/20
+        DMR *loaded_dmr;
+        try {
+            // Added this try block to debug memory use issues in this handler. jhrg 6/11/20
+            loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
+        }
+        catch(std::exception &e) {
+            throw BESSyntaxUserError(string("Caught a C++ standard exception in responseBuilder.intern_dap4_data. The error was: ").append(e.what()), __FILE__, __LINE__);
+        }
+
+        ostream &o_strm = dhi.get_output_stream();
+        if (!o_strm)
+            throw BESInternalError("Output stream is not set, can not return as COVJSON", __FILE__, __LINE__);
+
+        FoDapCovJsonTransform ft(loaded_dmr);
+        ft.transform_dap4(o_strm, true, false); // Send metadata and data; Test override false
+    }
+    catch (Error &e) {
+        throw BESDapError("Failed to read dap4 data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+    }
+    catch (std::exception &e) {
+        throw BESInternalError("Failed to read dap4 data: STL Error: " + string(e.what()), __FILE__, __LINE__);
+    }
+    catch (...) {
+        throw BESInternalError("Failed to read dap4 data: Unknown exception caught", __FILE__, __LINE__);
+    }
+
+    BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_dap4data - done transmitting COVJSON" << endl);
+}
+
+/** @brief The static method registered to transmit OPeNDAP data objects as
+ * a JSON file.
+ *
+ * This function takes the OPeNDAP DataDDS object, reads in the data (can be
+ * used with any data handler), transforms the data into a JSON file, and
+ * streams back that JSON file back to the requester using the stream
+ * specified in the BESDataHandlerInterface.
+ *
+ * @param obj The BESResponseObject containing the OPeNDAP DataDDS object
+ * @param dhi BESDataHandlerInterface containing information about the
+ * request and response
+ * @throws BESInternalError if the response is not an OPeNDAP DataDDS or if
+ * there are any problems reading the data, writing to a JSON file, or
+ * streaming the JSON file
+ */
+void FoDapCovJsonTransmitter::send_dap4metadata(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+{
+    BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_dap4metadata - BEGIN transmitting COVJSON" << endl);
+
+    try {
+        BESDapResponseBuilder responseBuilder;
+
+        // processed_dds managed by response builder
+        DMR *processed_dmr = responseBuilder.process_dap4_dmr(obj, dhi);
+
+        ostream &o_strm = dhi.get_output_stream();
+        if (!o_strm)
+            throw BESInternalError("Output stream is not set, can not return as COVJSON", __FILE__, __LINE__);
+
+        FoDapCovJsonTransform ft(processed_dmr);
+
+        // Now that we are ready to start building the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        BESUtil::conditional_timeout_cancel();
+
+        ft.transform_dap4(o_strm, false, false); // Send metadata only; Test override false
+    }
+    catch (Error &e) {
+        throw BESDapError("Failed to transform data to COVJSON: " + e.get_error_message(), false, e.get_error_code(),
+            __FILE__, __LINE__);
+    }
+    catch (...) {
+        throw BESInternalError("Failed to transform to COVJSON: Unknown exception caught", __FILE__, __LINE__);
+    }
+
+    BESDEBUG("focovjson", "FoDapCovJsonTransmitter::send_dap4metadata - done transmitting COVJSON" << endl);
 }

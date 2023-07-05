@@ -42,6 +42,8 @@
 #include <BESUtil.h>
 #include <BESDebug.h>
 #include <BESError.h>
+#include <BESInternalError.h>
+#include <BESInternalFatalError.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
@@ -56,68 +58,8 @@ using namespace dmrpp;
 using namespace build_dmrpp_util;
 
 #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
-#define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
-/**
- * @brief Recreate the command invocation given argv and argc.
- * @param argc
- * @param argv
- * @return The command
- */
-static string cmdln(int argc, char *argv[])
-{
-    stringstream ss;
-    for(int i=0; i<argc; i++) {
-        if (i > 0)
-            ss << " ";
-        ss << argv[i];
-    }
-    return ss.str();
-}
 
-/**
- * @brief Write information to the the DMR++ about its provenance.
- * @param argc Used to determine how this DMR++ was built
- * @param argv Used to determine how this DMR++ was built
- * @param dmrpp Add provenance information to this instance of DMRpp
- * @note The DMRpp instance will free all memory allocated by this method.
- */
-void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp)
-{
-    dmrpp->set_version(CVER);
-
-    // Build the version attributes for the DMR++
-    auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
-
-    auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
-    build_dmrpp_version->add_value(CVER);
-    version->attributes()->add_attribute_nocopy(build_dmrpp_version);
-
-    auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
-    bes_version->add_value(CVER);
-    version->attributes()->add_attribute_nocopy(bes_version);
-
-    stringstream ldv;
-    ldv << libdap_name() << "-" << libdap_version();
-    auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
-    libdap4_version->add_value(ldv.str());
-    version->attributes()->add_attribute_nocopy(libdap4_version);
-
-    if(!TheBESKeys::ConfigFile.empty()) {
-        // What is the BES configuration in play?
-        auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
-        config->add_value(TheBESKeys::TheKeys()->get_as_config());
-        version->attributes()->add_attribute_nocopy(config);
-    }
-
-    // How was build_dmrpp invoked?
-    auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
-    invoke->add_value(cmdln(argc, argv));
-    version->attributes()->add_attribute_nocopy(invoke);
-
-    // Inject version and configuration attributes into DMR here.
-    dmrpp->root()->attributes()->add_attribute_nocopy(version);
-}
 
 void usage() {
     const char *help = R"(
@@ -125,14 +67,8 @@ void usage() {
 
     build_dmrpp -V: Show build versions for components that make up the program
 
-    build_dmrpp -c <bes.conf> -f <data file> [-u <href url>]: Build the DMR++ using the <bes.conf>
-       options to initialize the software for the <data file>. Optionally substitute the <href url>.
-       Builds the DMR using the HDF5 handler as configured using the options in the <bes.conf>.
-
-    build_dmrpp build_dmrpp -f <data file> -r <dmr file> [-u <href url>]: As above, but uses the DMR
-       read from the given file (so it does not run the HDF5 handler code and does not require the
-       Metadata Store - MDS - be configured). Note that the get_dmrpp command appears to use this
-       option and thus, the configuration options listed in the built DMR++ files lack the MDS setup.
+    build_dmrpp -f <data file> -r <dmr file> [-u <href url>]: As above, but uses the DMR
+       read from the given file.
 
     Other options:
         -v: Verbose
@@ -142,11 +78,19 @@ void usage() {
     cerr << help << endl;
 }
 
+
+/**
+ *
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     string h5_file_name;
     string h5_dset_path;
-    string dmr_name;
-    string url_name;
+    string dmr_filename;
+    string dmrpp_href_value;
+    string bes_conf_file_used_to_create_dmr;
     bool add_production_metadata = false;
 
     int option_char;
@@ -170,15 +114,15 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 'r':
-                dmr_name = optarg;
+                dmr_filename = optarg;
                 break;
 
             case 'u':
-                url_name = optarg;
+                dmrpp_href_value = optarg;
                 break;
 
             case 'c':
-                TheBESKeys::ConfigFile = optarg;
+                bes_conf_file_used_to_create_dmr = optarg;
                 break;
 
             case 'M':
@@ -194,80 +138,25 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (h5_file_name.empty()) {
-        cerr << "HDF5 file name must be given (-f <input>)." << endl;
-        return EXIT_FAILURE;
-    }
-
     try {
-        // Turn off automatic hdf5 error printing.
-        // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
 
-        // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
-        // given HDF5 dataset
-        if (!dmr_name.empty()) {
-            // Get dmr:
-            DMRpp dmrpp;
-            DmrppTypeFactory dtf;
-            dmrpp.set_factory(&dtf);
+        // Check to see if the file is hdf5 compliant
+        qc_input_file(h5_file_name);
 
-            ifstream in(dmr_name.c_str());
-            D4ParserSax2 parser;
-            parser.intern(in, &dmrpp, false);
-
-            add_chunk_information(h5_file_name, &dmrpp);
-
-            if (add_production_metadata) {
-                inject_version_and_configuration(argc, argv, &dmrpp);
-            }
-
-            XMLWriter writer;
-            dmrpp.print_dmrpp(writer, url_name);
-            cout << writer.get_doc();
-        } else {
-            string bes_data_root = TheBESKeys::TheKeys()->read_string_key(ROOT_DIRECTORY, "");
-            if (bes_data_root.empty()) {
-                cerr << "Could not find the data directory." << endl;
-                return EXIT_FAILURE;
-            }
-
-            // Use the values from the bes.conf file... jhrg 5/21/18
-            bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
-            if (!mds) {
-                cerr << "The Metadata Store (MDS) must be configured for this command to work (but see the -r option)." << endl;
-                return EXIT_FAILURE;
-            }
-
-            // Use the full path to open the file, but use the 'name' (which is the
-            // path relative to the BES Data Root) with the MDS.
-            // Changed this to utilize assemblePath() because simply concatenating the strings
-            // is fragile. - ndp 6/6/18
-            string h5_file_path = BESUtil::assemblePath(bes_data_root, h5_file_name);
-
-            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
-            if (lock()) {
-                // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp *>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
-                if (!dmrpp) {
-                    cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
-                    return EXIT_FAILURE;
-                }
-
-                add_chunk_information(h5_file_path, dmrpp.get());
-
-                dmrpp->set_href(url_name);
-
-                mds->add_dmrpp_response(dmrpp.get(), h5_file_name /*h5_file_path*/);
-
-                XMLWriter writer;
-                dmrpp->set_print_chunks(true);
-                dmrpp->print_dap4(writer);
-
-                cout << writer.get_doc();
-            } else {
-                cerr << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
-                return EXIT_FAILURE;
-            }
+        if (!dmr_filename.empty()) {
+            // Build the dmr++ from an existing DMR file.
+            build_dmrpp_from_dmr_file(
+                    dmrpp_href_value,
+                    dmr_filename,
+                    h5_file_name,
+                    add_production_metadata,
+                    bes_conf_file_used_to_create_dmr,
+                    argc,  argv);
+        }
+        else {
+            stringstream msg;
+            msg << "A DMR fully file for the granule '" << h5_file_name << " must also be provided." << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
     }
     catch (const BESError &e) {

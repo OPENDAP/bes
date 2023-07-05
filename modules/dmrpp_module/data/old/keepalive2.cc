@@ -35,7 +35,10 @@
 #include <cassert>
 #include <map>
 #include <vector>
+
+#ifdef NEVER
 #include <pthread.h>
+#endif
 #include <curl/curl.h>
 
 static bool debug = false;

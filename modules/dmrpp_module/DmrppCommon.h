@@ -33,6 +33,8 @@
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 
+#include <libdap/Type.h>
+
 namespace libdap {
 class DMR;
 class BaseType;

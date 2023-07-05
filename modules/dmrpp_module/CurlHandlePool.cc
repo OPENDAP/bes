@@ -24,21 +24,12 @@
 #include "config.h"
 
 #include <string>
-#include <locale>
 #include <sstream>
-
-#include <cstring>
-#include <unistd.h>
+#include <ctime>
 
 #include <curl/curl.h>
 
 #include "CurlUtils.h"
-#include "HttpNames.h"
-
-#include <time.h>
-
-#include <libdap/util.h>   // long_to_string()
-
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -61,46 +52,6 @@
 using namespace dmrpp;
 using namespace http;
 using namespace std;
-
-string pthread_error(unsigned int err){
-    string error_msg;
-    switch(err){
-        case EINVAL:
-            error_msg = "The mutex was either created with the "
-                        "protocol attribute having the value "
-                        "PTHREAD_PRIO_PROTECT and the calling "
-                        "thread's priority is higher than the "
-                        "mutex's current priority ceiling."
-                        "OR The value specified by mutex does not "
-                        "refer to an initialized mutex object.";
-            break;
-
-        case EBUSY:
-            error_msg = "The mutex could not be acquired "
-                        "because it was already locked.";
-            break;
-
-        case EAGAIN:
-            error_msg = "The mutex could not be acquired because "
-                        "the maximum number of recursive locks "
-                        "for mutex has been exceeded.";
-            break;
-
-        case EDEADLK:
-            error_msg = "The current thread already owns the mutex";
-            break;
-
-        case EPERM:
-            error_msg = "The current thread does not own the mutex.";
-            break;
-
-        default:
-            error_msg = "Unknown pthread error type.";
-            break;
-    }
-
-    return error_msg;
-}
 
 /**
  * @brief Build a string with hex info about stuff libcurl gets
@@ -255,7 +206,7 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_url(nullptr), d_request_headers(nullp
 #endif
 
     d_in_use = false;
-    d_chunk = 0;
+    d_chunk = nullptr;
 }
 
 dmrpp_easy_handle::~dmrpp_easy_handle() {
@@ -325,10 +276,10 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
     std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
 
-    dmrpp_easy_handle *handle = 0;
-    for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        if (!(*i)->d_in_use) {
-            handle = *i;
+    dmrpp_easy_handle *handle = nullptr;
+    for (auto & d_easy_handle : d_easy_handles) {
+        if (!d_easy_handle->d_in_use) {
+            handle = d_easy_handle;
             break;
         }
     }
@@ -447,7 +398,7 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
 
 #if KEEP_ALIVE
     handle->d_url = nullptr;
-    handle->d_chunk = 0;
+    handle->d_chunk = nullptr;
     handle->d_in_use = false;
 #else
     // This is to test the effect of libcurl Keep Alive support
@@ -468,10 +419,10 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
  * This is intended for use in error clean up code.
  * @param chunk Find the handle for this chunk and release it.
  */
-void CurlHandlePool::release_handle(Chunk *chunk) {
-    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        if ((*i)->d_chunk == chunk) {
-            release_handle(*i);
+void CurlHandlePool::release_handle(const Chunk *chunk) {
+    for (auto & d_easy_handle : d_easy_handles) {
+        if (d_easy_handle->d_chunk == chunk) {
+            release_handle(d_easy_handle);
             break;
         }
     }
@@ -485,7 +436,7 @@ void CurlHandlePool::release_handle(Chunk *chunk) {
  * retried without ending the other accesses.
  */
 void CurlHandlePool::release_all_handles() {
-    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        release_handle(*i);
+    for (auto & d_easy_handle : d_easy_handles) {
+        release_handle(d_easy_handle);
     }
 }

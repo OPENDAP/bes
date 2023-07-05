@@ -39,18 +39,13 @@ namespace builddmrpp {
 
     class BuildDmrppModule: public BESAbstractModule {
     public:
-        BuildDmrppModule()
-        {
-        }
+        BuildDmrppModule() = default;
+        ~BuildDmrppModule() override = default;
 
-        virtual ~BuildDmrppModule()
-        {
-        }
+        void initialize(const std::string &modname) override;
+        void terminate(const std::string &modname) override;
 
-        virtual void initialize(const std::string &modname);
-        virtual void terminate(const std::string &modname);
-
-        virtual void dump(std::ostream &strm) const;
+        void dump(std::ostream &strm) const override;
     };
 
 } //namespace builddmrpp
