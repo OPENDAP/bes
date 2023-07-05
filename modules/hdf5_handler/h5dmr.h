@@ -230,6 +230,7 @@ bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<s
 void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
 void add_eos5_grid_vars_geo(libdap::D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info);
 void add_eos5_grid_vars_non_geo(libdap::D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info);
+bool no_eos5_grid_vars_in_grp(libdap::D4Group *d4_group, const eos5_grid_info_t &eg_info);
 
 void build_gd_info(const HE5Grid &gd,std::unordered_map<std::string,eos5_grid_info_t>& gridname_to_info);
 bool is_eos5_grid_grp(libdap::D4Group *,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &);

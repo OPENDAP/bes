@@ -4448,9 +4448,11 @@ bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eo
 
     if (ret_value == true) {
 
+        ret_value = no_eos5_grid_vars_in_grp(d4_group, eg_info);
+#if 0
         // Even if we find the correct eos group, we need to ensure that the variables we want to add 
         // do not exist. That is: we need to check the variable names like Latitude/Longitude etc don't exist in
-        // this group. This seems unnecessary but we do observe that data producers may add CF variables by themseleves.
+        // this group. This seems unnecessary, but we do observe that data producers may add CF variables by themselves.
         // The handler needs to ensure that it will keep using the variables added by the data producers first.
     
         Constructor::Vars_iter vi = d4_group->var_begin();
@@ -4475,12 +4477,45 @@ bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eo
                 }
             }
         }
+#endif
     }
 
     return ret_value;
-} 
+}
 
+bool no_eos5_grid_vars_in_grp(D4Group *d4_group, const eos5_grid_info_t &eg_info) {
 
+    bool ret_value = true;
+
+    // Even if we find the correct eos group, we need to ensure that the variables we want to add
+    // do not exist. That is: we need to check the variable names like Latitude/Longitude etc don't exist in
+    // this group. This seems unnecessary, but we do observe that data producers may add CF variables by themselves.
+    // The handler needs to ensure that it will keep using the variables added by the data producers first.
+
+    Constructor::Vars_iter vi = d4_group->var_begin();
+    Constructor::Vars_iter ve = d4_group->var_end();
+
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+        string vname = v->name();
+        if (eg_info.projection == HE5_GCTP_GEO) {
+            if (vname == "YDim" || vname == "XDim") {
+                ret_value = false;
+                break;
+            }
+
+        }
+        else {
+            if (vname == "YDim" || vname == "XDim" || vname =="Latitude" || vname == "Longitude"
+                || vname == "eos5_cf_projection") {
+                ret_value = false;
+                break;
+            }
+        }
+    }
+    return ret_value;
+}
 void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gridname_to_info) {
 
     string grid_name = "/HDFEOS/GRIDS/"+gd.name;
