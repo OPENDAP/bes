@@ -84,9 +84,9 @@ int he5ddsparse(HE5Parser *he5parser);
 int he5ddslex_destroy();
 
 void array_add_dimensions_dimscale(HDF5Array* ar);
-bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, eos5_dim_info_t &eos5_dim_info);
-void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim_info, BaseType *new_var,HDF5Array *ar);
-void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, DSattr_t attr_inst);
+bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, const eos5_dim_info_t &eos5_dim_info);
+void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim_info, BaseType *new_var,const HDF5Array *ar);
+void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, const DSattr_t &attr_inst);
 void write_dap4_attr_value(D4Attribute *d4_attr, hid_t ty_id, hsize_t nelmts, char *tempvalue,
                            size_t elesize = 0);
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -561,7 +561,7 @@ void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& onam
     else
         d4dim_name = string(oname.begin(),oname.end()-1);
 
-    D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
+    const D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
     if (d4_dim == nullptr) {
 
         hsize_t nelmts = dt_inst.nelmts;
@@ -753,7 +753,7 @@ void array_add_dimensions_dimscale(HDF5Array *ar){
 
 }
 
-bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, eos5_dim_info_t &eos5_dim_info) {
+bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, const eos5_dim_info_t &eos5_dim_info) {
 
     // With using the dimension scales, the HDF5 file may still have dimension names such as HDF-EOS5.
     // We search if there are dimension names. If yes, add them here.
@@ -917,7 +917,7 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
 
         // We need to transform dimension info. to DAP4 group
         BaseType *new_var = nullptr;
-        try {
+ //       try {
             if (is_eos5_dims) {
 
                 new_var = ar->h5dims_transform_to_dap4(d4_grp, eos5_dim_info.varpath_to_dims.at(varname));
@@ -925,11 +925,12 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
             } else {
                 new_var = ar->h5dims_transform_to_dap4(d4_grp, dt_inst.dimnames_path);
             }
-        }
+ //       }
+#if 0
         catch (...) {
             throw;
         }
-
+#endif
         // clear DAP4 dimnames_path vector
         dt_inst.dimnames_path.clear();
 
@@ -1303,7 +1304,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
     return;
 }
 
-void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, DSattr_t attr_inst) {
+void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, const DSattr_t &attr_inst) {
 
     vector<char> value;
     value.resize(attr_inst.need);
@@ -1736,7 +1737,7 @@ else "h5","structmeta data doesn't have the suffix" <<endl;
             strmeta_value[i]="";
     }
 
-    int strmeta_num = obtain_struct_metadata_value(ecs_grp_id, s_oname,smetatype, strmeta_num_total, nelems,
+    int strmeta_num = obtain_struct_metadata_value(ecs_grp_id, s_oname,smetatype, nelems,
                                                 strmeta_value, total_strmeta_value);
 #if 0
     // Now we want to retrieve the metadata value and combine them into one string.
@@ -1978,7 +1979,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
 }
 
 int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname, const vector<bool> &smetatype,
-                                  int strmeta_num_total, hsize_t nelems, vector<string> &strmeta_value,
+                                 hsize_t nelems, vector<string> &strmeta_value,
                                   string &total_strmeta_value) {
 
     int strmeta_num = -1;
@@ -2079,7 +2080,9 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
         string finstr = tempstr.substr(0,temp_null_pos);
 
         if (true == smetatype[i]) {
-
+            strmeta_num = obtain_struct_metadata_value_internal(ecs_grp_id, s_oname, strmeta_value,total_strmeta_value,
+                                                                finstr, i);
+#if 0
             // Now obtain the corresponding value in integer type for the suffix. '0' to 0 etc.
             try {
                 strmeta_num = get_strmetadata_num(s_oname[i]);
@@ -2104,11 +2107,45 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
             // assign the string vector to this value.
             else
                 strmeta_value[strmeta_num] = finstr;
+#endif
         }
         tempstr.clear();
         finstr.clear();
     }
     return strmeta_num;
+}
+
+int obtain_struct_metadata_value_internal(hid_t ecs_grp_id, const vector<string> &s_oname,
+                                           vector<string> &strmeta_value, string &total_strmeta_value,
+                                           const string &finstr, hsize_t i)
+{
+    int strmeta_num = -1;
+            // Now obtain the corresponding value in integer type for the suffix. '0' to 0 etc.
+            try {
+                strmeta_num = get_strmetadata_num(s_oname[i]);
+            }
+            catch(...) {
+                H5Gclose(ecs_grp_id);
+                throw InternalErr(__FILE__,__LINE__,"Obtain structmetadata suffix error.");
+
+            }
+            // This is probably not necessary, since structmetadata may always have a suffix.
+            // Leave here just in case the rules change or a special non-HDF-EOS5 library generated file.
+            // when strmeta_num is -1, it means no suffix for this metadata. So the total structmetadata
+            // is this string only.
+            if (-1 == strmeta_num)
+                total_strmeta_value = finstr;
+            // strmeta_value at this point should be empty before assigning any value.
+            else if (strmeta_value[strmeta_num]!="") {
+                string msg = "The structmeta value array at this index should be empty string  ";
+                H5Gclose(ecs_grp_id);
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+            // assign the string vector to this value.
+            else
+                strmeta_value[strmeta_num] = finstr;
+
+            return strmeta_num;
 }
 // Helper function for read_ecs_metadata. Get the number after metadata.
 int get_strmetadata_num(const string & meta_str) {
@@ -3459,7 +3496,7 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
     
 }
 
-void reorder_vars_internal(D4Group* d4_grp, const vector<int> &cv_pos, const vector<BaseType *>cv_obj_ptr, int stop_index)
+void reorder_vars_internal(D4Group* d4_grp, const vector<int> &cv_pos, const vector<BaseType *>& cv_obj_ptr, int stop_index)
 {
     Constructor::Vars_iter vi = d4_grp->var_begin();
     Constructor::Vars_iter ve = d4_grp->var_end();
@@ -3532,6 +3569,8 @@ void reorder_vars_internal(D4Group* d4_grp, const vector<int> &cv_pos, const vec
             }
         }
 
+        reorder_vars_internal_final_phase(d4_grp, mov_cv_pos, mov_front_pos, mov_front_v_ptr, mov_cv_ptr);
+#if 0
         // sanity check
         if (mov_cv_pos.size() != mov_front_pos.size()) {
             string err_msg = "The number of moved coordinate variables is not the same as ";
@@ -3552,6 +3591,36 @@ void reorder_vars_internal(D4Group* d4_grp, const vector<int> &cv_pos, const vec
             d4_grp->set_var_index(mov_cv_ptr[i], mov_front_pos[i]);
             d4_grp->set_var_index(mov_front_v_ptr[i], mov_cv_pos[i]);
         }
+#endif
+}
+
+
+
+void reorder_vars_internal_final_phase(D4Group* d4_grp, const vector<int> &mov_cv_pos,
+                                       const vector<int> &mov_front_pos, const vector<BaseType *> &mov_front_v_ptr,
+                                       const vector<BaseType *> &mov_cv_ptr) {
+
+            // sanity check
+        if (mov_cv_pos.size() != mov_front_pos.size()) {
+            string err_msg = "The number of moved coordinate variables is not the same as ";
+            err_msg += "the number of moved non-coordinate variables";
+            throw InternalErr(__FILE__, __LINE__, err_msg);
+        }
+
+// Leave the following #if 0 for the time being. This is for debugging purpose. KY 2023-04-13
+#if 0
+        for (int i = 0; i <mov_cv_pos.size();i++) {
+        cerr<<"mov_front_pos: "<<mov_front_pos[i] <<endl;
+        cerr<<"mov_cv_pos: "<<mov_cv_pos[i] <<endl;
+        }
+#endif
+
+        // Move the map variables to the front, move the front non-coordinate variables to the original map variable location.
+        for (unsigned int i = 0; i < mov_front_pos.size(); i++) {
+            d4_grp->set_var_index(mov_cv_ptr[i], mov_front_pos[i]);
+            d4_grp->set_var_index(mov_front_v_ptr[i], mov_cv_pos[i]);
+        }
+
 }
 bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array_maps, const unordered_map<string,Array*> & dc_array_maps) {
 
@@ -3602,7 +3671,7 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
     bool add_grid_var = is_eos5_grid_grp(d4_grp,eos5_dim_info,eg_info);
 
     if (add_grid_var && eg_info.projection == HE5_GCTP_GEO) {
-        add_eos5_grid_vars_geo(d4_grp, eos5_dim_info, eg_info);
+        add_eos5_grid_vars_geo(d4_grp, eg_info);
 #if 0
         BaseType *ar_bt_lat = nullptr;
         BaseType *ar_bt_lon = nullptr;
@@ -3893,7 +3962,7 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
 
 }
 
-void add_eos5_grid_vars_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info) {
+void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
 
     BaseType *ar_bt_lat = nullptr;
     BaseType *ar_bt_lon = nullptr;

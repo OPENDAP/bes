@@ -210,7 +210,10 @@ void add_dimscale_maps_internal(libdap::BaseType *v, std::unordered_map<string,l
                                const std::vector<std::string>& handled_all_cv_names);
 void reorder_vars(libdap::D4Group*, const std::map<std::string,libdap::Array*> &coname_array_maps, const std::map<std::string,libdap::Array*> & dc_array_maps);
 void reorder_vars_internal(libdap::D4Group* d4_grp, const std::vector<int> &cv_pos,
-                           const std::vector<libdap::BaseType *>cv_obj_ptr,int stop_index);
+                           const std::vector<libdap::BaseType *> &cv_obj_ptr,int stop_index);
+void reorder_vars_internal_final_phase(libdap::D4Group* d4_grp, const std::vector<int> &mov_cv_pos,
+                                       const std::vector<int> &mov_front_pos, const std::vector<libdap::BaseType *> &mov_front_vptr,
+                                       const std::vector<libdap::BaseType *> &mov_cv_ptr);
 bool is_cvar(const libdap::BaseType*, const std::unordered_map<std::string,libdap::Array*> &coname_array_maps, const std::unordered_map<std::string,libdap::Array*> & dc_array_maps);
 
 /// EOS5 handling 
@@ -218,8 +221,11 @@ string read_struct_metadata(hid_t s_file_id);
 void obtain_struct_metadata_info(hid_t ecs_grp_id, std::vector<std::string> &s_oname, std::vector<bool> &smetatype,
                                  int &strmeta_num_total, bool &strmeta_no_suffix, hsize_t nelems) ;
 int obtain_struct_metadata_value(hid_t ecs_grp_id, const std::vector<std::string> &s_oname,
-                                  const std::vector<bool> &smetatype, int strmeta_num_total, hsize_t nelems,
+                                  const std::vector<bool> &smetatype, hsize_t nelems,
                                   std::vector<std::string> &strmeta_value, std::string &total_strmeta_value) ;
+int obtain_struct_metadata_value_internal(hid_t ecs_grp_id, const vector<string> &s_oname,
+                                           vector<string> &strmeta_value, string &total_strmeta_value,
+                                           const string &finstr, hsize_t i);
 int get_strmetadata_num(const string & meta_str);
 void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &);
 void build_var_dim_path(const std::string & eos5_obj_name, const std::vector<HE5Var>& var_list, std::unordered_map<std::string, std::vector<std::string>>& varpath_to_dims, HE5_TYPE eos5_type, bool is_geo);
@@ -228,7 +234,7 @@ bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
 
 void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
-void add_eos5_grid_vars_geo(libdap::D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info);
+void add_eos5_grid_vars_geo(libdap::D4Group* d4_grp,  const eos5_grid_info_t & eg_info);
 void add_eos5_grid_vars_non_geo(libdap::D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info);
 bool no_eos5_grid_vars_in_grp(libdap::D4Group *d4_group, const eos5_grid_info_t &eg_info);
 
