@@ -817,7 +817,8 @@ void CmrApi::get_providers(
 
     for(const auto &provider_id:provider_ids){
         auto provider = get_provider(provider_id);
-        providers.emplace_back(std::move(provider));
+        if(provider != nullptr)
+            providers.emplace_back(std::move(provider));
     }
 }
 
@@ -832,7 +833,10 @@ std::unique_ptr<cmr::Provider> CmrApi::get_provider(const string &provider_id) c
     const auto &provider_json = json.get_as_json(cmr_query_url.str());
     // We know that this CMR query returns a single of anonymous json object, which is the Provider object
 
-    return unique_ptr<Provider>(new Provider(provider_json));
+    if(provider_json.type() == nlohmann::detail::value_t::null)
+        return  {nullptr};
+
+    return std::make_unique<Provider>(provider_json);
 }
 
 
@@ -855,7 +859,7 @@ void CmrApi::get_providers_old(vector<unique_ptr<cmr::Provider>> &providers) con
         // And the grab the internal provider object...
         auto provider_json = json.qc_get_object(CMR_LEGACY_PROVIDER_KEY, obj);
         // And then make a new Provider and put it in the vector.
-        auto provider = unique_ptr<Provider>(new Provider(provider_json));
+        auto provider = std::make_unique<Provider>(provider_json);
         providers.emplace_back(std::move(provider));
     }
 
