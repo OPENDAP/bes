@@ -226,7 +226,11 @@ void build_var_dim_path(const std::string & eos5_obj_name, const std::vector<HE5
 void build_grp_dim_path(const std::string & eos5_obj_name, const std::vector<HE5Dim>& dim_list, std::unordered_map<std::string, std::vector<HE5Dim>>& grppath_to_dims, HE5_TYPE eos5_type);
 bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::string, vector<std::string>>& varpath_to_dims, vector<std::string> & dimnames);
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
+
 void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
+void add_eos5_grid_vars_geo(libdap::D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info);
+void add_eos5_grid_vars_non_geo(libdap::D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info);
+
 void build_gd_info(const HE5Grid &gd,std::unordered_map<std::string,eos5_grid_info_t>& gridname_to_info);
 bool is_eos5_grid_grp(libdap::D4Group *,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &);
 
