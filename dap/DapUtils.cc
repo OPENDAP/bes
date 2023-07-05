@@ -26,16 +26,21 @@
 
 #include <iostream>
 #include <sstream>
+#include <map>
 
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
+#include <libdap/D4Group.h>
 
 #include "BESUtil.h"
+#include "BESInternalError.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
 #include "DapUtils.h"
 
 using namespace libdap;
+
+#define prolog std::string("DapUtils::").append(__func__).append("() - ")
 
 namespace dap_utils {
 
@@ -164,8 +169,55 @@ void throw_if_dap4_response_too_big(DMR &dmr, const std::string &file, unsigned 
         msg <<  " kilobyte response, which is too large. ";
         msg << "The maximum response size for this server is limited to " << dmr.response_limit_kb();
         msg << " kilobytes.";
-            throw BESSyntaxUserError(msg.str(), file, line);
+        throw BESSyntaxUserError(msg.str(), file, line);
     }
+}
+
+
+u_int64_t get_response_size_and_vars_too_big(Constructor *ctr, u_int64_t variable_max, map<string,u_int64_t> &big_bad_vars)
+{
+    u_int64_t var_size;
+    u_int64_t response_size = 0;
+
+    for(auto btp : ctr->variables()){
+        if(btp->is_constructor_type()){
+            response_size += get_response_size_and_vars_too_big(dynamic_cast<Constructor *>(btp), variable_max, big_bad_vars);
+        }
+        else {
+            var_size = btp->width_ll(true);
+            response_size += var_size;
+            if(var_size > variable_max){
+                big_bad_vars.emplace(btp->FQN(),var_size);
+            }
+        }
+    }
+    return response_size;
+}
+
+void new_throw_if_dap4_response_too_big(DMR &dmr, u_int64_t variable_max, const std::string &file, unsigned int line)
+{
+    u_int64_t response_size;
+    map<string,u_int64_t> too_big_vars;
+
+    response_size = get_response_size_and_vars_too_big(dmr.root(), variable_max, too_big_vars);
+
+    stringstream msg;
+
+    if(response_size > dmr.response_limit_kb()){
+        msg << "The submitted DAP4 request will generate a " << response_size <<" kilobyte response, which is too large. ";
+        msg << "The maximum response size for this server is limited to " << dmr.response_limit_kb() << " kilobytes.";
+    }
+
+    if(!too_big_vars.empty()){
+        msg << "The following requested variables are too large for us to process. We recommend that ";
+        msg << "you subset the variables and make multiple requests for the data. You may be able to retrieve ";
+        msg << "multiple subset variables in a single request as long as the response size is less than ";
+        msg << dmr.response_limit_kb() << " kilobytes.";
+        msg << "The maximum response size for a variable on this server is limited to " << variable_max << " kilobytes.";
+    }
+
+    if(!msg.str().empty())
+        throw BESSyntaxUserError(msg.str(), file, line);
 }
 
 }   // namespace dap_utils
