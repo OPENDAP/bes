@@ -216,9 +216,9 @@ bool is_cvar(const libdap::BaseType*, const std::unordered_map<std::string,libda
 /// EOS5 handling 
 string read_struct_metadata(hid_t s_file_id);
 void obtain_struct_metadata_info(hid_t ecs_grp_id, std::vector<std::string> &s_oname, std::vector<bool> &smetatype,
-                                 int &strmeta_num_total, bool &strmeta_no_suffix, int nelems) ;
+                                 int &strmeta_num_total, bool &strmeta_no_suffix, hsize_t nelems) ;
 int obtain_struct_metadata_value(hid_t ecs_grp_id, const std::vector<std::string> &s_oname,
-                                  const std::vector<bool> &smetatype, int strmeta_num_total, int nelems,
+                                  const std::vector<bool> &smetatype, int strmeta_num_total, hsize_t nelems,
                                   std::vector<std::string> &strmeta_value, std::string &total_strmeta_value) ;
 int get_strmetadata_num(const string & meta_str);
 void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &);

@@ -1877,7 +1877,7 @@ else "h5","structmeta data doesn't have the suffix" <<endl;
 }
 
 void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vector<bool> &smetatype,
-                                 int &strmeta_num_total, bool &strmeta_no_suffix, int nelems) {
+                                 int &strmeta_num_total, bool &strmeta_no_suffix, hsize_t nelems) {
 
     string ecs_group = "/HDFEOS INFORMATION";
     ssize_t oname_size      = 0;
@@ -1978,7 +1978,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
 }
 
 int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname, const vector<bool> &smetatype,
-                                  int strmeta_num_total, int nelems, vector<string> &strmeta_value,
+                                  int strmeta_num_total, hsize_t nelems, vector<string> &strmeta_value,
                                   string &total_strmeta_value) {
 
     int strmeta_num = -1;
