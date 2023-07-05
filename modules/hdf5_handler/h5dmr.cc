@@ -617,7 +617,7 @@ void handle_eos5_datasets(D4Group* par_grp, const char *gname, eos5_dim_info_t &
         D4Dimensions *d4_dims = par_grp->dims();
         for (unsigned grp_dim_idx = 0; grp_dim_idx < dim_names.size(); grp_dim_idx++) {
 
-            D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
+            const D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
             if (d4_dim == nullptr) {
                 auto d4_dim_unique = make_unique<D4Dimension>(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
                 d4_dims->add_dim_nocopy(d4_dim_unique.release());
@@ -771,7 +771,7 @@ bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, con
 }
 
 void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim_info,
-                                                 BaseType *new_var,HDF5Array *ar) {
+                                                 BaseType *new_var,const HDF5Array *ar) {
     if ((eos5_dim_info.dimpath_to_cvpath.empty() == false) && (ar->get_numdim() > 1))
         add_possible_var_cv_info(new_var, eos5_dim_info);
     if (eos5_dim_info.gridname_to_info.empty() == false)
@@ -2955,7 +2955,8 @@ void obtain_coord_names(Array* ar, vector<string> & coord_names) {
             // From our observations, the coordinates attribute is always just one string. 
             // So this else block may never be executed.
             else {
-
+                 obtain_multi_string_coord_names(d4_attr, coord_names);
+#if 0
                 for (D4Attribute::D4AttributeIter av_i = d4_attr->value_begin(), av_e = d4_attr->value_end(); av_i != av_e; av_i++) {
                     vector <string> tempstr_vec;
                     char sep=' ';
@@ -2963,11 +2964,22 @@ void obtain_coord_names(Array* ar, vector<string> & coord_names) {
                     for (const auto &tve:tempstr_vec)
                         coord_names.push_back(tve);
                 }
+#endif
             }
         //}
     }
 }
 
+void obtain_multi_string_coord_names(D4Attribute *d4_attr, vector<string> & coord_names) {
+
+    for (D4Attribute::D4AttributeIter av_i = d4_attr->value_begin(), av_e = d4_attr->value_end(); av_i != av_e; av_i++) {
+                    vector <string> tempstr_vec;
+                    char sep=' ';
+                    HDF5CFUtil::Split_helper(tempstr_vec,*av_i,sep);
+                    for (const auto &tve:tempstr_vec)
+                        coord_names.push_back(tve);
+                }
+}
 // Generate absolute path(FQN) for all coordinate variables. Note the output is the coord_names.
 void make_coord_names_fpath(D4Group* d4_grp,  vector<string> &coord_names) {
 
