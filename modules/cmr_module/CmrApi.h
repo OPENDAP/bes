@@ -56,6 +56,7 @@ private:
     std::string d_cmr_provider_search_endpoint_url;
     std::string d_cmr_legacy_providers_search_endpoint_url;
     std::string d_cmr_providers_search_endpoint_url;
+    std::string d_cmr_providers_api_endpoint_url;
     std::string d_cmr_collections_search_endpoint_url;
     std::string d_cmr_granules_search_endpoint_url;
     std::string d_cmr_granules_umm_search_endpoint_url;
@@ -153,18 +154,19 @@ public:
                                           const std::string& r_day,
                                           const std::string& granule_id) const;
 
-    void get_providers_list(std::vector<std::string> &provider_ids) const;
-    void get_providers(const std::vector<std::string> &provider_ids, std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
-    std::unique_ptr<cmr::Provider> get_provider(const std::string &provider_id) const;
+    // void get_providers_list(std::vector<std::string> &provider_ids) const;
+    // void get_providers(const std::vector<std::string> &provider_ids, std::vector< std::unique_ptr<cmr::Provider> > &providers) const;
+    // std::unique_ptr<cmr::Provider> get_provider(const std::string &provider_id) const;
+    // void get_providers_old(std::vector< std::unique_ptr<cmr::Provider> > &providers) const;
+
+    void get_providers( std::vector<std::unique_ptr<cmr::Provider> > &providers) const;
 
 
-    void get_providers(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
-    void get_providers_old(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
-    void get_opendap_providers(std::map<std::string, std::unique_ptr<cmr::Provider>> &providers) const;
+    void get_opendap_providers(std::map< std::string, std::unique_ptr<cmr::Provider> > &providers) const;
     unsigned long int get_opendap_collections_count(const std::string &provider_id) const;
 
-    void get_collections(const std::string &provider_id, std::map<std::string, std::unique_ptr<cmr::Collection>> &collections ) const;
-    void get_opendap_collections(const std::string &provider_id, std::map<std::string, std::unique_ptr<cmr::Collection>> &collections ) const;
+    void get_collections(const std::string &provider_id, std::map< std::string, std::unique_ptr<cmr::Collection> > &collections ) const;
+    void get_opendap_collections(const std::string &provider_id, std::map<std::string, std::unique_ptr<cmr::Collection> > &collections ) const;
 
 };
 

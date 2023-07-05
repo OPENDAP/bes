@@ -542,6 +542,7 @@ public:
         CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
     }
 
+#if 0
     void get_provider_test() {
         stringstream msg;
         CmrApi cmr;
@@ -560,6 +561,19 @@ public:
             DBG(cerr << provider_id << endl);
         }
     }
+
+    void get_providers_test_old() {
+        stringstream msg;
+        CmrApi cmr;
+
+        vector<unique_ptr<Provider>> providers;
+        cmr.get_providers_old( providers);
+        DBG(cerr << "Found " << providers.size() << " Provider records." << endl);
+        for(const auto &provider:providers){
+            DBG(cerr << prolog << "          ProviderId: " << provider->id() << endl);
+        }
+    }
+#endif
 
     void get_providers_test() {
         stringstream msg;
@@ -605,9 +619,10 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( CmrApiTest );
-    CPPUNIT_TEST(get_provider_test);
-    CPPUNIT_TEST(get_providers_list_test);
+    //CPPUNIT_TEST(get_provider_test);
+    //CPPUNIT_TEST(get_providers_list_test);
     CPPUNIT_TEST(get_opendap_providers_test);
+    //CPPUNIT_TEST(get_providers_test_old);
     CPPUNIT_TEST(get_providers_test);
     CPPUNIT_TEST(get_opendap_collections_test);
     CPPUNIT_TEST(get_years_test);

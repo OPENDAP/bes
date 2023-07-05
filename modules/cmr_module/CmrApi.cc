@@ -80,9 +80,15 @@ CmrApi::CmrApi() {
              prolog << "d_cmr_legacy_providers_search_endpoint_url: " << d_cmr_legacy_providers_search_endpoint_url << endl);
 
     d_cmr_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
-                                                                       CMR_PROVIDERS_API_ENDPOINT);
+                                                                CMR_PROVIDERS_SEARCH_ENDPOINT);
     BESDEBUG(MODULE,
              prolog << "d_cmr_providers_search_endpoint_url: " << d_cmr_providers_search_endpoint_url << endl);
+
+    d_cmr_providers_api_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
+                                                                CMR_PROVIDERS_API_ENDPOINT);
+    BESDEBUG(MODULE,
+             prolog << "d_cmr_providers_api_endpoint_url: " << d_cmr_providers_search_endpoint_url << endl);
+
 
     d_cmr_collections_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
                                                                   CMR_COLLECTIONS_SEARCH_API_ENDPOINT);
@@ -769,15 +775,39 @@ const {
     return result;
 }
 
+void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
+{
+    JsonUtils json;
+    BESStopWatch bsw;
+    bsw.start(prolog);
+
+    const auto &cmr_doc = json.get_as_json(d_cmr_providers_search_endpoint_url);
+    unsigned int hits = cmr_doc["hits"];
+    BESDEBUG(MODULE, prolog << "hits: " << hits << endl);
+    if (hits == 0){
+        return;
+    }
+    for (const auto &provider_json : cmr_doc["items"]) {
+        if(provider_json.type() != nlohmann::detail::value_t::null) {
+            auto prvdr = std::make_unique<Provider>(provider_json);
+            providers.emplace_back(std::move(prvdr));
+        }
+    }
+
+}
+
+#if 0
+
 void CmrApi::get_providers_list(std::vector<std::string> &provider_ids) const
 {
     JsonUtils json;
 
-    stringstream cmr_query_url;
-    cmr_query_url << d_cmr_providers_search_endpoint_url;
-    BESDEBUG(MODULE, prolog << "CMR Providers List Request Url: : " << cmr_query_url.str() << endl);
+    // https://cmr.earthdata.nasa.gov/search/providers/
 
-    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
+    BESDEBUG(MODULE, prolog << "CMR Providers List Request Url: : " << d_cmr_providers_api_endpoint_url << endl);
+
+
+    const auto &cmr_doc = json.get_as_json(d_cmr_providers_api_endpoint_url);
 
     // We know that this CMR query returns an array of anonymous json objects, each of which
     //  {
@@ -801,8 +831,9 @@ void CmrApi::get_providers_list(std::vector<std::string> &provider_ids) const
 
 }
 
-void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
+void CmrApi::get_providers_old(vector<unique_ptr<cmr::Provider>> &providers) const
 {
+    JsonUtils json;
     BESStopWatch bsw;
     bsw.start(prolog);
     vector<string> provider_ids;
@@ -827,7 +858,7 @@ std::unique_ptr<cmr::Provider> CmrApi::get_provider(const string &provider_id) c
 {
     JsonUtils json;
     stringstream cmr_query_url;
-    cmr_query_url << d_cmr_providers_search_endpoint_url << "/" << provider_id;
+    cmr_query_url << d_cmr_providers_api_endpoint_url << "/" << provider_id;
     BESDEBUG(MODULE, prolog << "CMR Provider Info Request Url: " << cmr_query_url.str() << endl);
 
     const auto &provider_json = json.get_as_json(cmr_query_url.str());
@@ -865,6 +896,7 @@ void CmrApi::get_providers_old(vector<unique_ptr<cmr::Provider>> &providers) con
 
 }
 
+#endif
 
 void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opendap_providers) const
 {
@@ -880,17 +912,6 @@ void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opend
             opendap_providers.emplace(provider->id(), std::move(provider));
         }
     }
-}
-void foo(){
-    CmrApi cmr;
-    vector<unique_ptr<Provider>> providers;
-    cmr.get_providers( providers);
-    cerr << "Found " << providers.size() << " Provider records." << endl;
-    for(const auto &provider:providers){
-        cerr << prolog << "          ProviderId: " << provider->id() << endl;
-        //cerr << prolog << "DescriptionOfHolding: " << provider->description_of_holding() << endl;
-    }
-
 }
 
 unsigned long int CmrApi::get_opendap_collections_count(const string &provider_id) const
