@@ -32,11 +32,13 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <sys/syslimits.h>
+#include <sys/stat.h>
 
 #include <string>
 #include <sstream>
 #include <vector>
-#include <mutex>
+
 #include <cstring>
 #include <cerrno>
 
