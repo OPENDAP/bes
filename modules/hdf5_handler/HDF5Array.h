@@ -66,6 +66,7 @@ class HDF5Array:public libdap::Array {
 
     bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,const int64_t* offset,const int64_t* count,const int64_t *step);
     void m_array_of_structure_member(libdap::BaseType *field, hid_t memtype, unsigned int u,hid_t dsetid, std::vector<char>&values,bool has_values, size_t struct_elem_offset );
+
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
     void m_array_of_region_reference(hid_t d_dset_id,std::vector<std::string>& v_str,
                                              int64_t nelms, const std::vector<int64_t>& offset,
@@ -88,6 +89,15 @@ class HDF5Array:public libdap::Array {
     void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,
                        int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step);
     bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,std::vector<char>&values,bool has_values,int values_offset, int64_t at_nelms,int64_t* at_offset,int64_t*at_count,int64_t* at_step);
+    void do_h5_array_type_read_base_compound_member(hid_t dsetid, libdap::BaseType *field, hid_t child_memb_id,
+                                                       H5T_class_t child_memb_cls, vector<char>&values,
+                                           bool has_values, int values_offset, int64_t at_nelms,
+                                           int64_t at_total_nelms, size_t at_base_type_size, int64_t array_index,
+                                           int64_t at_orig_index, size_t child_memb_offset);
+    void do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t at_base_type, size_t at_base_type_size,
+                                           std::vector<char>&values, int values_offset, int64_t at_nelms,int64_t at_total_nelms,
+                                           int at_ndims, std::vector<int64_t> &at_dims, int64_t* at_offset,
+                                                    int64_t* at_step, int64_t *at_count);
 
     inline int64_t INDEX_nD_TO_1D (const std::vector < int64_t > &dims,
                                 const std::vector < int64_t > &pos) const;

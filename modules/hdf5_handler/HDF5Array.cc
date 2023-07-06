@@ -261,7 +261,7 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id, int64_t nelms,
     }
 
     try {
-        if (nelms == d_num_elm) {
+        if (nelms == (int64_t) d_num_elm) {
             handle_array_read_whole(dset_id, memtype, nelms);
 #if 0
 	    vector<char> convbuf(d_memneed);
@@ -1684,7 +1684,7 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
 	BESDEBUG("h5", "=read()<check_h5str()  element size=" << elesize
 		<< " d_num_elm=" << d_num_elm << endl);
 
-	for (int64_t strindex = 0; strindex < d_num_elm; strindex++) {
+	for (int64_t strindex = 0; strindex < (int64_t)d_num_elm; strindex++) {
 	    get_strdata(strindex, convbuf, strbuf.data(), (int)elesize);
 	    BESDEBUG("h5", "=read()<get_strdata() strbuf=" << strbuf.data() << endl);
 	    v_str[strindex] = strbuf.data();
@@ -1746,149 +1746,172 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
     }
 
     // H5 Array type, the basetype is COMPOUND.
-    if(H5T_COMPOUND == array_cls) { 
+    if(H5T_COMPOUND == array_cls) {
 
         // These vectors are used to handle subset of array datatype
-        vector<int64_t>at_end(at_ndims,0);
-        vector<int64_t>at_pos(at_ndims,0);
-        for (int i = 0; i< at_ndims; i++){
+        vector<int64_t> at_end(at_ndims, 0);
+        vector<int64_t> at_pos(at_ndims, 0);
+        for (int i = 0; i < at_ndims; i++) {
             at_pos[i] = at_offset[i];
-            at_end[i] = at_offset[i] + (at_count[i] -1)*at_step[i];
+            at_end[i] = at_offset[i] + (at_count[i] - 1) * at_step[i];
         }
-        
-        int64_t at_orig_index = INDEX_nD_TO_1D(at_dims,at_pos);
+
+        int64_t at_orig_index = INDEX_nD_TO_1D(at_dims, at_pos);
 
         // To read the array of compound (structure) in DAP, one must read one element each. set_vec is used afterwards.
-        for (int64_t array_index = 0; array_index <at_nelms; array_index++) {
+        for (int64_t array_index = 0; array_index < at_nelms; array_index++) {
 
             // The basetype of the array datatype is compound,-- check if the following line is valid.
-            HDF5Structure *h5s = dynamic_cast<HDF5Structure*>(var()->ptr_duplicate());
-            hid_t               child_memb_id;      
-            H5T_class_t         child_memb_cls;
-            int                 child_nmembs;
-            size_t              child_memb_offset;
+            HDF5Structure *h5s = dynamic_cast<HDF5Structure *>(var()->ptr_duplicate());
+            hid_t child_memb_id;
+            H5T_class_t child_memb_cls;
+            int child_nmembs;
+            size_t child_memb_offset;
 
-            if((child_nmembs = H5Tget_nmembers(at_base_type)) < 0) {
+            if ((child_nmembs = H5Tget_nmembers(at_base_type)) < 0) {
                 H5Tclose(at_base_type);
                 delete h5s;
-                throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+                throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
             }
 
-            for(unsigned child_u = 0; child_u < (unsigned)child_nmembs; child_u++) {
+            for (unsigned child_u = 0; child_u < (unsigned) child_nmembs; child_u++) {
 
                 // Get member type ID 
-                if((child_memb_id = H5Tget_member_type(at_base_type, child_u)) < 0) {
+                if ((child_memb_id = H5Tget_member_type(at_base_type, child_u)) < 0) {
                     H5Tclose(at_base_type);
                     delete h5s;
-                    throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype of an HDF5 compound datatype member.");
+                    throw InternalErr(__FILE__, __LINE__,
+                                      "Fail to obtain the datatype of an HDF5 compound datatype member.");
                 }
 
                 // Get member type class 
-                if((child_memb_cls = H5Tget_member_class (at_base_type, child_u)) < 0) {
+                if ((child_memb_cls = H5Tget_member_class(at_base_type, child_u)) < 0) {
                     H5Tclose(child_memb_id);
                     H5Tclose(at_base_type);
                     delete h5s;
-                    throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype class of an HDF5 compound datatype member.");
+                    throw InternalErr(__FILE__, __LINE__,
+                                      "Fail to obtain the datatype class of an HDF5 compound datatype member.");
                 }
 
                 // Get member offset
-                child_memb_offset= H5Tget_member_offset(at_base_type,child_u); 
+                child_memb_offset = H5Tget_member_offset(at_base_type, child_u);
 
                 // Get member name
-                char *child_memb_name = H5Tget_member_name(at_base_type,child_u);
-                if(child_memb_name == nullptr) {
+                char *child_memb_name = H5Tget_member_name(at_base_type, child_u);
+                if (child_memb_name == nullptr) {
                     H5Tclose(child_memb_id);
                     H5Tclose(at_base_type);
                     delete h5s;
-                    throw InternalErr (__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
+                    throw InternalErr(__FILE__, __LINE__,
+                                      "Fail to obtain the name of an HDF5 compound datatype member.");
                 }
 
                 BaseType *field = h5s->var(child_memb_name);
-                if (child_memb_cls == H5T_COMPOUND) {  
+                H5free_memory(child_memb_name);
+                try {
+                    do_h5_array_type_read_base_compound_member(dsetid, field, child_memb_id, child_memb_cls, values,
+                                           has_values, values_offset, at_nelms, at_total_nelms, at_base_type_size,
+                                           array_index, at_orig_index, child_memb_offset);
 
-                    HDF5Structure &memb_h5s = dynamic_cast<HDF5Structure&>(*field);
+                }
+                catch(...){
+                    delete h5s;
+                }
+#if 0
+                if (child_memb_cls == H5T_COMPOUND) {
+
+                    HDF5Structure &memb_h5s = dynamic_cast<HDF5Structure &>(*field);
                     //
                     // Call structure read when reading the whole array. sa1{sa2[100]}
                     // sa2[100] is an array datatype.
                     // If reading the whole buffer, just add the buffer.
-                    if(at_total_nelms == at_nelms) {
-                        memb_h5s.do_structure_read(dsetid,child_memb_id, values,has_values,values_offset+at_base_type_size*array_index+child_memb_offset);
+                    if (at_total_nelms == at_nelms) {
+                        memb_h5s.do_structure_read(dsetid, child_memb_id, values, has_values,
+                                                   values_offset + at_base_type_size * array_index + child_memb_offset);
                     }
-                    // Subset of sa2, sa2[10:100:2]; sa2[100] is an array datatype. The whole array sa2[100] is to be read into somewhere in buffer values.
+                        // Subset of sa2, sa2[10:100:2]; sa2[100] is an array datatype. The whole array sa2[100] is to be read into somewhere in buffer values.
                     else {// The subset should be considered. adjust memb_offset+values_offset+???,make sure only the subset is selected. 
-                          // at_total_nelms is 100 but at_nelms is (100-10)/2+1=46. The starting point of the whole array is values+memb_offset_values_offset
-                          // When the datatype is structure, we have to obtain the index one by one.  
-                        
-                        memb_h5s.do_structure_read(dsetid, child_memb_id, values,has_values,values_offset+at_base_type_size*at_orig_index+child_memb_offset);
+                        // at_total_nelms is 100 but at_nelms is (100-10)/2+1=46. The starting point of the whole array is values+memb_offset_values_offset
+                        // When the datatype is structure, we have to obtain the index one by one.
+
+                        memb_h5s.do_structure_read(dsetid, child_memb_id, values, has_values,
+                                                   values_offset + at_base_type_size * at_orig_index +
+                                                   child_memb_offset);
 
                     }
 
-                }
-                else if(child_memb_cls == H5T_ARRAY) {
+                } else if (child_memb_cls == H5T_ARRAY) {
 
                     // memb_id, obtain the number of dimensions
                     int child_at_ndims = H5Tget_array_ndims(child_memb_id);
-                    if(child_at_ndims <= 0) { 
-                         H5Tclose(at_base_type);
-                         H5Tclose(child_memb_id);
-                         H5free_memory(child_memb_name);
-                         delete h5s;
-                         throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
- 
+                    if (child_at_ndims <= 0) {
+                        H5Tclose(at_base_type);
+                        H5Tclose(child_memb_id);
+                        H5free_memory(child_memb_name);
+                        delete h5s;
+                        throw InternalErr(__FILE__, __LINE__,
+                                          "Fail to obtain number of dimensions of the array datatype.");
+
                     }
 
-                    HDF5Array &h5_array_type = dynamic_cast<HDF5Array&>(*field);
-                    vector<int64_t> child_at_offset(child_at_ndims,0);
-                    vector<int64_t> child_at_count(child_at_ndims,0);
-                    vector<int64_t> child_at_step(child_at_ndims,0);
+                    HDF5Array &h5_array_type = dynamic_cast<HDF5Array &>(*field);
+                    vector<int64_t> child_at_offset(child_at_ndims, 0);
+                    vector<int64_t> child_at_count(child_at_ndims, 0);
+                    vector<int64_t> child_at_step(child_at_ndims, 0);
 
-                    int64_t child_at_nelms = h5_array_type.format_constraint(child_at_offset.data(),child_at_step.data(),child_at_count.data());
+                    int64_t child_at_nelms = h5_array_type.format_constraint(child_at_offset.data(),
+                                                                             child_at_step.data(),
+                                                                             child_at_count.data());
 
-                    if(at_total_nelms == at_nelms) {
-                        h5_array_type.do_h5_array_type_read(dsetid,child_memb_id,values,has_values,child_memb_offset+values_offset+at_base_type_size*array_index,
-                                                        child_at_nelms,child_at_offset.data(),child_at_count.data(),child_at_step.data());
+                    if (at_total_nelms == at_nelms) {
+                        h5_array_type.do_h5_array_type_read(dsetid, child_memb_id, values, has_values,
+                                                            child_memb_offset + values_offset +
+                                                            at_base_type_size * array_index,
+                                                            child_at_nelms, child_at_offset.data(),
+                                                            child_at_count.data(), child_at_step.data());
+                    } else {// Adjust memb_offset+values_offset, basically change at_base_type_size*array_index
+                        h5_array_type.do_h5_array_type_read(dsetid, child_memb_id, values, has_values,
+                                                            child_memb_offset + values_offset +
+                                                            at_base_type_size * at_orig_index,
+                                                            child_at_nelms, child_at_offset.data(),
+                                                            child_at_count.data(), child_at_step.data());
+
                     }
-                    else {// Adjust memb_offset+values_offset, basically change at_base_type_size*array_index
-                        h5_array_type.do_h5_array_type_read(dsetid,child_memb_id,values,has_values,child_memb_offset+values_offset+at_base_type_size*at_orig_index,
-                                                        child_at_nelms,child_at_offset.data(),child_at_count.data(),child_at_step.data());
- 
-                    }
-                }
+                } else if (H5T_INTEGER == child_memb_cls || H5T_FLOAT == child_memb_cls) {
 
-                else if(H5T_INTEGER == child_memb_cls || H5T_FLOAT == child_memb_cls){
-
-                    int64_t number_index =((at_total_nelms == at_nelms)?array_index:at_orig_index);
-                    if(true == promote_char_to_short(child_memb_cls,child_memb_id)) {
-                        void *src = (void*)(values.data() + (number_index*at_base_type_size) + values_offset +child_memb_offset);
+                    int64_t number_index = ((at_total_nelms == at_nelms) ? array_index : at_orig_index);
+                    if (true == promote_char_to_short(child_memb_cls, child_memb_id)) {
+                        void *src = (void *) (values.data() + (number_index * at_base_type_size) + values_offset +
+                                              child_memb_offset);
                         char val_int8;
-                        memcpy(&val_int8,src,1);
-                        auto val_short=(short)val_int8;
+                        memcpy(&val_int8, src, 1);
+                        auto val_short = (short) val_int8;
                         field->val2buf(&val_short);
-                    }
-                    else 
-                        field->val2buf(values.data() + (number_index * at_base_type_size) + values_offset+child_memb_offset);
+                    } else
+                        field->val2buf(
+                                values.data() + (number_index * at_base_type_size) + values_offset + child_memb_offset);
 
 
-                }
-                else if(H5T_STRING == child_memb_cls){
+                } else if (H5T_STRING == child_memb_cls) {
 
-                    int64_t string_index =((at_total_nelms == at_nelms)?array_index:at_orig_index);
+                    int64_t string_index = ((at_total_nelms == at_nelms) ? array_index : at_orig_index);
 
                     // distinguish between variable length and fixed length
-                    if(true == H5Tis_variable_str(child_memb_id)) {
+                    if (true == H5Tis_variable_str(child_memb_id)) {
 
                         // Need to check if the size of variable length array type is right in HDF5 lib.
-                        void *src = (void*)(values.data()+(string_index *at_base_type_size)+values_offset+child_memb_offset);
+                        void *src = (void *) (values.data() + (string_index * at_base_type_size) + values_offset +
+                                              child_memb_offset);
                         string final_str;
-                        auto temp_bp =(char*)src;
-                        get_vlen_str_data(temp_bp,final_str);
+                        auto temp_bp = (char *) src;
+                        get_vlen_str_data(temp_bp, final_str);
                         field->val2buf(&final_str[0]);
 #if 0
-                        field->set_value(final_str);                       
+                        field->set_value(final_str);
 #endif
-                    } 
-                    else {// Obtain string
-                        void *src = (void*)(values.data()+(string_index *at_base_type_size)+values_offset+child_memb_offset);
+                    } else {// Obtain string
+                        void *src = (void *) (values.data() + (string_index * at_base_type_size) + values_offset +
+                                              child_memb_offset);
                         vector<char> str_val;
                         size_t memb_size = H5Tget_size(child_memb_id);
                         if (memb_size == 0) {
@@ -1896,43 +1919,42 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                             H5Tclose(at_base_type);
                             H5free_memory(child_memb_name);
                             delete h5s;
-                            throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 compound datatype.");
+                            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the size of HDF5 compound datatype.");
                         }
                         str_val.resize(memb_size);
-                        memcpy(str_val.data(),src,memb_size);
+                        memcpy(str_val.data(), src, memb_size);
                         field->val2buf(str_val.data());
-                    
+
                     }
-                }
-                else {
-                        H5Tclose(child_memb_id);
-                        H5Tclose(at_base_type);
-                        H5free_memory(child_memb_name);
-                        delete h5s;
-                        throw InternalErr (__FILE__, __LINE__, "Unsupported datatype class for the array base type.");
- 
+                } else {
+                    H5Tclose(child_memb_id);
+                    H5Tclose(at_base_type);
+                    H5free_memory(child_memb_name);
+                    delete h5s;
+                    throw InternalErr(__FILE__, __LINE__, "Unsupported datatype class for the array base type.");
+
 
                 }
                 field->set_read_p(true);
                 H5free_memory(child_memb_name);
                 H5Tclose(child_memb_id);
-               
+#endif
             } // end "for ( child_u = 0)"
             h5s->set_read_p(true);
 
             // Save the value of this element to DAP structure.
-            set_vec_ll((uint64_t)array_index,h5s);
+            set_vec_ll((uint64_t) array_index, h5s);
             delete h5s;
 
-            vector<int64_t>at_offsetv(at_pos.size(),0);
-            vector<int64_t>at_stepv(at_pos.size(),0);
-            for (int64_t at_index = 0; at_index<at_pos.size();at_index++){
+            vector<int64_t> at_offsetv(at_pos.size(), 0);
+            vector<int64_t> at_stepv(at_pos.size(), 0);
+            for (int64_t at_index = 0; at_index < (int64_t) (at_pos.size()); at_index++) {
                 at_offsetv[at_index] = at_offset[at_index];
                 at_stepv[at_index] = at_step[at_index];
             }
             //obtain the next position of the selected point based on the offset,end and step.
-            obtain_next_pos(at_pos,at_offsetv,at_end,at_stepv,(int)(at_pos.size()));
-            at_orig_index = INDEX_nD_TO_1D(at_dims,at_pos);
+            obtain_next_pos(at_pos, at_offsetv, at_end, at_stepv, (int) (at_pos.size()));
+            at_orig_index = INDEX_nD_TO_1D(at_dims, at_pos);
         }// end for "(array_index = 0) for array (compound)datatype"
 
 #if 0
@@ -1940,7 +1962,9 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 #endif
     }
     else if(H5T_INTEGER == array_cls|| H5T_FLOAT == array_cls) {
-
+        do_h5_array_type_read_base_atomic(array_cls, at_base_type, at_base_type_size, values, values_offset, at_nelms,
+                                          at_total_nelms,at_ndims, at_dims, at_offset, at_step, at_count);
+#if 0
         // If no subset for the array datatype, just read the whole buffer.
         if(at_total_nelms == at_nelms) {
 
@@ -1964,7 +1988,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
         }
         else { // Adjust the value for the subset of the array datatype
 
-            // Obtain the correponding DAP type of the HDF5 data type
+            // Obtain the corresponding DAP type of the HDF5 data type
             string dap_type = get_dap_type(at_base_type,is_dap4());
 
             // The total array type data is read.
@@ -2164,6 +2188,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             }
 
         }
+#endif
     }
     else if(H5T_STRING == array_cls) {
 
@@ -2256,6 +2281,342 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
     return true;
 }
+
+void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseType *field, hid_t child_memb_id,
+                                                       H5T_class_t child_memb_cls, vector<char>&values,
+                                           bool has_values, int values_offset, int64_t at_nelms,
+                                           int64_t at_total_nelms, size_t at_base_type_size, int64_t array_index,
+                                           int64_t at_orig_index, size_t child_memb_offset) {
+    if (child_memb_cls == H5T_COMPOUND) {
+        HDF5Structure &memb_h5s = dynamic_cast<HDF5Structure &>(*field);
+        //
+        // Call structure read when reading the whole array. sa1{sa2[100]}
+        // sa2[100] is an array datatype.
+        // If reading the whole buffer, just add the buffer.
+        if (at_total_nelms == at_nelms) {
+            memb_h5s.do_structure_read(dsetid, child_memb_id, values, has_values,
+                                       values_offset + at_base_type_size * array_index + child_memb_offset);
+        }
+            // Subset of sa2, sa2[10:100:2]; sa2[100] is an array datatype. The whole array sa2[100] is to be read into somewhere in buffer values.
+        else {// The subset should be considered. adjust memb_offset+values_offset+???,make sure only the subset is selected.
+            // at_total_nelms is 100 but at_nelms is (100-10)/2+1=46. The starting point of the whole array is values+memb_offset_values_offset
+            // When the datatype is structure, we have to obtain the index one by one.
+
+            memb_h5s.do_structure_read(dsetid, child_memb_id, values, has_values,
+                                       values_offset + at_base_type_size * at_orig_index +
+                                       child_memb_offset);
+
+        }
+
+    } else if (child_memb_cls == H5T_ARRAY) {
+
+        // memb_id, obtain the number of dimensions
+        int child_at_ndims = H5Tget_array_ndims(child_memb_id);
+        if (child_at_ndims <= 0) {
+            H5Tclose(child_memb_id);
+            throw InternalErr(__FILE__, __LINE__,
+                              "Fail to obtain number of dimensions of the array datatype.");
+        }
+
+        HDF5Array &h5_array_type = dynamic_cast<HDF5Array &>(*field);
+        vector<int64_t> child_at_offset(child_at_ndims, 0);
+        vector<int64_t> child_at_count(child_at_ndims, 0);
+        vector<int64_t> child_at_step(child_at_ndims, 0);
+
+        int64_t child_at_nelms = h5_array_type.format_constraint(child_at_offset.data(),
+                                                                 child_at_step.data(),
+                                                                 child_at_count.data());
+
+        if (at_total_nelms == at_nelms) {
+            h5_array_type.do_h5_array_type_read(dsetid, child_memb_id, values, has_values,
+                                                child_memb_offset + values_offset +
+                                                at_base_type_size * array_index,
+                                                child_at_nelms, child_at_offset.data(),
+                                                child_at_count.data(), child_at_step.data());
+        } else {// Adjust memb_offset+values_offset, basically change at_base_type_size*array_index
+            h5_array_type.do_h5_array_type_read(dsetid, child_memb_id, values, has_values,
+                                                child_memb_offset + values_offset +
+                                                at_base_type_size * at_orig_index,
+                                                child_at_nelms, child_at_offset.data(),
+                                                child_at_count.data(), child_at_step.data());
+
+        }
+    } else if (H5T_INTEGER == child_memb_cls || H5T_FLOAT == child_memb_cls) {
+
+        int64_t number_index = ((at_total_nelms == at_nelms) ? array_index : at_orig_index);
+        if (true == promote_char_to_short(child_memb_cls, child_memb_id)) {
+            void *src = (void *) (values.data() + (number_index * at_base_type_size) + values_offset +
+                                  child_memb_offset);
+            char val_int8;
+            memcpy(&val_int8, src, 1);
+            auto val_short = (short) val_int8;
+            field->val2buf(&val_short);
+        } else
+            field->val2buf(
+                    values.data() + (number_index * at_base_type_size) + values_offset + child_memb_offset);
+
+
+    } else if (H5T_STRING == child_memb_cls) {
+
+        int64_t string_index = ((at_total_nelms == at_nelms) ? array_index : at_orig_index);
+
+        // distinguish between variable length and fixed length
+        if (true == H5Tis_variable_str(child_memb_id)) {
+
+            // Need to check if the size of variable length array type is right in HDF5 lib.
+            void *src = (void *) (values.data() + (string_index * at_base_type_size) + values_offset +
+                                  child_memb_offset);
+            string final_str;
+            auto temp_bp = (char *) src;
+            get_vlen_str_data(temp_bp, final_str);
+            field->val2buf(&final_str[0]);
+#if 0
+            field->set_value(final_str);
+#endif
+        } else {// Obtain string
+            void *src = (void *) (values.data() + (string_index * at_base_type_size) + values_offset +
+                                  child_memb_offset);
+            vector<char> str_val;
+            size_t memb_size = H5Tget_size(child_memb_id);
+            if (memb_size == 0) {
+                H5Tclose(child_memb_id);
+                throw InternalErr(__FILE__, __LINE__, "Fail to obtain the size of HDF5 compound datatype.");
+            }
+            str_val.resize(memb_size);
+            memcpy(str_val.data(), src, memb_size);
+            field->val2buf(str_val.data());
+
+        }
+    } else {
+        H5Tclose(child_memb_id);
+        throw InternalErr(__FILE__, __LINE__, "Unsupported datatype class for the array base type.");
+
+
+    }
+    field->set_read_p(true);
+    //H5free_memory(child_memb_name);
+    H5Tclose(child_memb_id);
+}
+
+void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t at_base_type, size_t at_base_type_size,
+                                                   vector<char>&values,
+                                                    int values_offset, int64_t at_nelms,int64_t at_total_nelms,
+                                                    int at_ndims, vector<int64_t> &at_dims, int64_t* at_offset,
+                                                    int64_t* at_step, int64_t *at_count) {
+        // If no subset for the array datatype, just read the whole buffer.
+        if (at_total_nelms == at_nelms) {
+
+            // For DAP2 char should be mapped to short
+            if (true == promote_char_to_short(array_cls, at_base_type)) {
+                vector<char> val_int8;
+                val_int8.resize(at_nelms);
+                void *src = (void *) (values.data() + values_offset);
+                memcpy(val_int8.data(), src, at_nelms);
+
+                vector<short> val_short;
+                for (int64_t i = 0; i < at_nelms; i++)
+                    val_short[i] = (short) val_int8[i];
+
+                val2buf(val_short.data());
+
+            } else // short cut for others
+                val2buf(values.data() + values_offset);
+
+        } else { // Adjust the value for the subset of the array datatype
+
+            // Obtain the corresponding DAP type of the HDF5 data type
+            string dap_type = get_dap_type(at_base_type, is_dap4());
+
+            // The total array type data is read.
+            void *src = (void *) (values.data() + values_offset);
+
+            // set the original position to the starting point
+            vector<int64_t> at_pos(at_ndims, 0);
+            for (int64_t i = 0; i < at_ndims; i++)
+                at_pos[i] = at_offset[i];
+
+            if (BYTE == dap_type) {
+
+                vector<unsigned char> total_val;
+                total_val.resize(at_total_nelms);
+                memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
+
+                vector<unsigned char> final_val;
+                subset<unsigned char>(
+                        total_val.data(),
+                        at_ndims,
+                        at_dims,
+                        at_offset,
+                        at_step,
+                        at_count,
+                        &final_val,
+                        at_pos,
+                        0
+                );
+
+                set_value_ll(final_val.data(), at_nelms);
+
+
+            } else if (INT16 == dap_type) {
+
+                // promote char to short,DAP2 doesn't have "char" type
+                if (true == promote_char_to_short(array_cls, at_base_type)) {
+                    vector<char> total_val;
+                    total_val.resize(at_total_nelms);
+                    memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
+
+                    vector<char> final_val;
+                    subset<char>(
+                            total_val.data(),
+                            at_ndims,
+                            at_dims,
+                            at_offset,
+                            at_step,
+                            at_count,
+                            &final_val,
+                            at_pos,
+                            0
+                    );
+
+                    vector<short> final_val_short;
+                    final_val_short.resize(at_nelms);
+                    for (int64_t i = 0; i < at_nelms; i++)
+                        final_val_short[i] = final_val[i];
+
+                    val2buf(final_val_short.data());
+
+                } else {// short
+
+                    vector<short> total_val;
+                    total_val.resize(at_total_nelms);
+                    memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
+
+                    vector<short> final_val;
+                    subset<short>(
+                            total_val.data(),
+                            at_ndims,
+                            at_dims,
+                            at_offset,
+                            at_step,
+                            at_count,
+                            &final_val,
+                            at_pos,
+                            0
+                    );
+
+                    val2buf(final_val.data());
+
+                }
+            } else if (UINT16 == dap_type) {
+                vector<unsigned short> total_val;
+                total_val.resize(at_total_nelms);
+                memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
+
+                vector<unsigned short> final_val;
+                subset<unsigned short>(
+                        total_val.data(),
+                        at_ndims,
+                        at_dims,
+                        at_offset,
+                        at_step,
+                        at_count,
+                        &final_val,
+                        at_pos,
+                        0
+                );
+
+                val2buf(final_val.data());
+
+            } else if (UINT32 == dap_type) {
+                vector<unsigned int> total_val;
+                total_val.resize(at_total_nelms);
+                memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
+
+                vector<unsigned int> final_val;
+                subset<unsigned int>(
+                        total_val.data(),
+                        at_ndims,
+                        at_dims,
+                        at_offset,
+                        at_step,
+                        at_count,
+                        &final_val,
+                        at_pos,
+                        0
+                );
+                val2buf(final_val.data());
+
+
+            } else if (INT32 == dap_type) {
+                vector<int> total_val;
+                total_val.resize(at_total_nelms);
+                memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
+
+                vector<int> final_val;
+                subset<int>(
+                        total_val.data(),
+                        at_ndims,
+                        at_dims,
+                        at_offset,
+                        at_step,
+                        at_count,
+                        &final_val,
+                        at_pos,
+                        0
+                );
+
+                val2buf(final_val.data());
+
+            } else if (FLOAT32 == dap_type) {
+                vector<float> total_val;
+                total_val.resize(at_total_nelms);
+                memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
+
+                vector<float> final_val;
+                subset<float>(
+                        total_val.data(),
+                        at_ndims,
+                        at_dims,
+                        at_offset,
+                        at_step,
+                        at_count,
+                        &final_val,
+                        at_pos,
+                        0
+                );
+
+                val2buf(final_val.data());
+
+            } else if (FLOAT64 == dap_type) {
+                vector<double> total_val;
+                total_val.resize(at_total_nelms);
+                memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
+
+                vector<double> final_val;
+                subset<double>(
+                        total_val.data(),
+                        at_ndims,
+                        at_dims,
+                        at_offset,
+                        at_step,
+                        at_count,
+                        &final_val,
+                        at_pos,
+                        0
+                );
+#if 0
+                //field->val2buf(final_val.data());
+#endif
+                val2buf(final_val.data());
+
+            } else {
+                H5Tclose(at_base_type);
+                throw InternalErr(__FILE__, __LINE__,
+                                  "Non-supported integer or float datatypes");
+            }
+
+        }
+    }
 
 /// This inline routine will translate N dimensions into 1 dimension.
 inline int64_t
