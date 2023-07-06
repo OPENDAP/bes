@@ -152,7 +152,6 @@ public:
                                           const std::string& r_day,
                                           const std::string& granule_id) const;
 
-
     void get_providers( std::vector<std::unique_ptr<cmr::Provider> > &providers) const;
     void get_opendap_providers(std::map< std::string, std::unique_ptr<cmr::Provider> > &providers) const;
     unsigned long int get_opendap_collections_count(const std::string &provider_id) const;

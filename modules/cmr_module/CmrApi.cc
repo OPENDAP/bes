@@ -764,7 +764,7 @@ const {
     return result;
 }
 
-void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
+void CmrApi::get_providers(vector<unique_ptr<cmr::Provider> > &providers) const
 {
     JsonUtils json;
     BESStopWatch bsw;
@@ -779,7 +779,8 @@ void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
     for (const auto &provider_json : cmr_doc["items"]) {
         if(provider_json.type() != nlohmann::detail::value_t::null) {
             auto prvdr = std::make_unique<Provider>(provider_json);
-            providers.emplace_back(std::move(prvdr));
+            if(prvdr!=nullptr)
+                providers.emplace_back(std::move(prvdr));
         }
     }
 
