@@ -764,6 +764,16 @@ const {
     return result;
 }
 
+/**
+ * Uses the "new" CMR providers API to retrieve all of the Providers information using, specifically,
+ * the <cmr_host>/search/providers endpoint and NOT the <cmr_host>/ingest/providers endpoint. This is because the
+ * ingest/providers endpoint returns a metadata free list of the providers, and then to get the metadata
+ * for each provider a separate HTTP request must be made.
+ *
+ * The <cmr_host>/search/providers endpoint returns the metadata for all of the providers, so a single HTTP request
+ *
+ * @param providers The vector into which each Providers unique_ptr object will be placed.
+ */
 void CmrApi::get_providers(vector<unique_ptr<cmr::Provider> > &providers) const
 {
     JsonUtils json;
@@ -783,9 +793,14 @@ void CmrApi::get_providers(vector<unique_ptr<cmr::Provider> > &providers) const
                 providers.emplace_back(std::move(prvdr));
         }
     }
-
 }
 
+
+/**
+ * Gets the list of all of the providers and then weeds out the ones that have no collections with OPeNDAP
+ * data access URLs
+ * @param opendap_providers
+ */
 void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opendap_providers) const
 {
     vector<unique_ptr<cmr::Provider>> all_providers;
@@ -802,6 +817,13 @@ void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opend
     }
 }
 
+/**
+ * Determines the number of collections published by the "provider" that are tagged as having an opendap URL
+ * The collections search endpoint query uses the provider_id and the query parameter "has_opendap_url=true"
+ * to acheive this.
+ * @param provider_id
+ * @return
+ */
 unsigned long int CmrApi::get_opendap_collections_count(const string &provider_id) const
 {
     JsonUtils json;
