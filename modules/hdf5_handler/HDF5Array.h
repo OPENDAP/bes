@@ -65,8 +65,15 @@ class HDF5Array:public libdap::Array {
 #endif
 
     bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,const int64_t* offset,const int64_t* count,const int64_t *step);
-    bool m_array_in_structure();
+    void m_array_of_structure_member(libdap::BaseType *field, hid_t memtype, unsigned int u,hid_t dsetid, std::vector<char>&values,bool has_values, size_t struct_elem_offset );
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
+    void m_array_of_region_reference(hid_t d_dset_id,std::vector<std::string>& v_str,
+                                             int64_t nelms, const std::vector<int64_t>& offset,
+                                             const std::vector<int64_t> &count,const std::vector<int64_t> &step);
+    void m_array_of_object_reference(hid_t d_dset_id, std::vector<std::string>& v_str,
+                                             int64_t nelms, const std::vector<int64_t>& offset,
+                                            const std::vector<int64_t> &step);
+
     bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id);
 
     void m_intern_plain_array_data(char *convbuf,hid_t memtype);
@@ -77,8 +84,9 @@ class HDF5Array:public libdap::Array {
     void handle_array_read_slab(hid_t dset_id, hid_t memtype, int64_t nelms,
                                 const int64_t *offset, const int64_t *step, const int64_t *count);
 
-    void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step);
-
+    //void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step);
+    void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,
+                       int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step);
     bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,std::vector<char>&values,bool has_values,int values_offset, int64_t at_nelms,int64_t* at_offset,int64_t*at_count,int64_t* at_step);
 
     inline int64_t INDEX_nD_TO_1D (const std::vector < int64_t > &dims,
