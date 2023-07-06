@@ -164,10 +164,7 @@ string Provider::to_string(bool show_json) const {
     msg << "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #" << endl;
     msg << "# Provider" << endl;
     msg << "#              provider_id: " << id() << endl;
-//    msg << "#        organization_name: " << organization_long_name() << endl;
     msg << "#  description_of_holding: " << description_of_holding() << endl;
-//    msg << "#                 contacts: " << contacts().dump() << endl;
-//    msg << "#                rest_only: " << (rest_only()?"true":"false") << endl;
     msg << "# OPeNDAP collection count: " << d_opendap_collection_count << endl;
     msg << "#" << endl;
     if(show_json) {
