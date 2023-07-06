@@ -41,31 +41,6 @@ using json = nlohmann::json;
 
 namespace cmr {
 
-/* Response from the CMR legacy service api: https://cmr-host/legacy-services/rest/providers
-   {
-    "provider": {
-      "contacts": [
-        {
-          "email": "michael.p.morahan@nasa.gov",
-          "first_name": "Michael",
-          "last_name": "Morahan",
-          "phones": [],
-          "role": "Default Contact"
-        }
-      ],
-      "description_of_holding": "EO European and Canadian missions Earth Science Data",
-      "discovery_urls": [
-        "https://fedeo-client.ceos.org/about/"
-      ],
-      "id": "E37E931C-A94A-3F3C-8FA1-206EB96B465C",
-      "organization_name": "Federated EO missions support environment",
-      "provider_id": "FEDEO",
-      "provider_types": [
-        "CMR"
-      ],
-      "rest_only": true
-    }
- */
 
 /* Response from CMR ingest API:  https://cmr-host/ingest/providers
 
@@ -89,9 +64,8 @@ namespace cmr {
 
 
 /*
-   Response from the new Providermapi:
+   Response from the new Provider api:
    https://cmr.uat.earthdata.nasa.gov/ingest/providers/provider_id
-
 
    {
   "MetadataSpecification": {
@@ -170,16 +144,6 @@ string Provider::description_of_holding() const {
     return json.get_str_if_present(CMR_DESCRIPTION_OF_HOLDING_KEY, d_provider_json_obj);
 }
 
-
-json Provider::contacts() const {
-    JsonUtils json;
-    return json.get_str_if_present(CMR_LEGACY_PROVIDER_CONTACTS_KEY, d_provider_json_obj);
-}
-
-bool Provider::rest_only() const {
-    JsonUtils json;
-    return json.qc_boolean(CMR_LEGACY_PROVIDER_REST_ONLY_KEY, d_provider_json_obj);
-}
 void Provider::get_collections(std::map<std::string,unique_ptr<cmr::Collection>> &collections) const
 {
     CmrApi cmrApi;
@@ -200,7 +164,7 @@ string Provider::to_string(bool show_json) const {
     msg << "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #" << endl;
     msg << "# Provider" << endl;
     msg << "#              provider_id: " << id() << endl;
-//    msg << "#        organization_name: " << organization_name() << endl;
+//    msg << "#        organization_name: " << organization_long_name() << endl;
     msg << "#  description_of_holding: " << description_of_holding() << endl;
 //    msg << "#                 contacts: " << contacts().dump() << endl;
 //    msg << "#                rest_only: " << (rest_only()?"true":"false") << endl;
