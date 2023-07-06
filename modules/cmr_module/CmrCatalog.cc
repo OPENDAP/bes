@@ -114,7 +114,7 @@ bes::CatalogNode * CmrCatalog::get_providers_node() const
     for (const auto &provider : providers ) {
         auto *collection = new CatalogItem();
         collection->set_name(provider.second->id());
-        collection->set_description(provider.second->description_of_holdings());
+        collection->set_description(provider.second->description_of_holding());
         collection->set_type(CatalogItem::node);
         node->add_node(collection);
     }

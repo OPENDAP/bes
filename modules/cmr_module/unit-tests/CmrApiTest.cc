@@ -71,7 +71,13 @@ public:
         DBG2(cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl);
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
-        DBG2(cerr << "setUp() - END" << endl);
+        if (debug2) show_file(bes_conf);
+        DBG(cerr << "setUp() - END" << endl);
+    }
+
+    // Called after each test
+    void tearDown()
+    {
     }
 
     void get_years_test() {
@@ -536,23 +542,15 @@ public:
         CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
     }
 
-    // these three tests now fail with an exception. Patched. jhrg 5/2/23
-    void get_provider_test() {
-        stringstream msg;
-        CmrApi cmr;
-
-        Provider ges_disc = cmr.get_provider("GES_DISC");
-        cerr << ges_disc.to_string() << endl;
-    }
-
     void get_providers_test() {
         stringstream msg;
         CmrApi cmr;
-        std::vector<std::unique_ptr<cmr::Provider>> providers;
 
-        cmr.get_providers(providers);
-        for (auto &provider: providers){
-            cerr << provider->to_string() << endl;
+        vector<unique_ptr<Provider>> providers;
+        cmr.get_providers( providers);
+        DBG(cerr << "Found " << providers.size() << " Provider records." << endl);
+        for(const auto &provider:providers){
+            DBG(cerr << prolog << "          ProviderId: " << provider->id() << endl);
         }
     }
 
@@ -563,8 +561,11 @@ public:
 
         cmr.get_opendap_providers(providers);
 
-        for (auto &provider: providers){
-            cerr << provider.second->to_string() << endl;
+        if(debug){
+            for (auto itr = providers.begin(); itr != providers.end(); itr++){
+                cerr << prolog << "# ProviderId: " << itr->second->id() << " ";
+                cerr << "(OPeNDAP Collections: " << itr->second->get_opendap_collection_count() << ")" << endl;
+            }
         }
     }
 
@@ -585,16 +586,8 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( CmrApiTest );
-#if 1
-    // These tests now fail with an exception. Patched. jhrg 5/2/23
-    CPPUNIT_TEST_EXCEPTION(get_provider_test, BESError);
-    CPPUNIT_TEST_EXCEPTION(get_opendap_providers_test, BESError);
-    CPPUNIT_TEST_EXCEPTION(get_providers_test, BESError);
-#else
-    CPPUNIT_TEST(get_provider_test);
-    CPPUNIT_TEST(get_opendap_providers_test);
     CPPUNIT_TEST(get_providers_test);
-#endif
+    CPPUNIT_TEST(get_opendap_providers_test);
     CPPUNIT_TEST(get_opendap_collections_test);
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
@@ -614,5 +607,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CmrApiTest);
 
 int main(int argc, char*argv[])
 {
-    return bes_run_tests<cmr::CmrApiTest>(argc, argv, "cerr,cmr") ? EXIT_SUCCESS : EXIT_FAILURE;
+    return bes_run_tests<cmr::CmrApiTest>(argc, argv, "cerr,cmr,timing") ? EXIT_SUCCESS : EXIT_FAILURE;
 }

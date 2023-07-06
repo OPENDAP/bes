@@ -43,7 +43,7 @@
 
 #include "BESError.h"
 #include "BESInternalError.h"
-#include "BESSyntaxUserError.h"
+#include "BESStopWatch.h"
 #include "BESNotFoundError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -75,7 +75,7 @@ CmrApi::CmrApi() {
     BESDEBUG(MODULE, prolog << "d_cmr_endpoint_url: " << d_cmr_endpoint_url << endl);
 
     d_cmr_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
-                                                                CMR_PROVIDERS_LEGACY_API_ENDPOINT);
+                                                                CMR_PROVIDERS_SEARCH_ENDPOINT);
     BESDEBUG(MODULE,
              prolog << "d_cmr_providers_search_endpoint_url: " << d_cmr_providers_search_endpoint_url << endl);
 
@@ -764,65 +764,51 @@ const {
     return result;
 }
 
+/**
+ * Uses the "new" CMR providers API to retrieve all of the Providers information using, specifically,
+ * the <cmr_host>/search/providers endpoint and NOT the <cmr_host>/ingest/providers endpoint. This is because the
+ * ingest/providers endpoint returns a metadata free list of the providers, and then to get the metadata
+ * for each provider a separate HTTP request must be made.
+ *
+ * The <cmr_host>/search/providers endpoint returns the metadata for all of the providers, so a single HTTP request
+ *
+ * @param providers The vector into which each Providers unique_ptr object will be placed.
+ */
+void CmrApi::get_providers(vector<unique_ptr<cmr::Provider> > &providers) const
+{
+    JsonUtils json;
+    BESStopWatch bsw;
+    bsw.start(prolog);
+
+    const auto &cmr_doc = json.get_as_json(d_cmr_providers_search_endpoint_url);
+    unsigned int hits = cmr_doc["hits"];
+    BESDEBUG(MODULE, prolog << "hits: " << hits << endl);
+    if (hits == 0){
+        return;
+    }
+    for (const auto &provider_json : cmr_doc["items"]) {
+        if(provider_json.type() != nlohmann::detail::value_t::null) {
+            auto prvdr = std::make_unique<Provider>(provider_json);
+            if(prvdr!=nullptr)
+                providers.emplace_back(std::move(prvdr));
+        }
+    }
+}
+
 
 /**
- * https://cmr.earthdata.nasa.gov/legacy-services/rest/providers/LPDAAC_ECS.json
- * @param provider_id
- * @return
+ * Gets the list of all of the providers and then weeds out the ones that have no collections with OPeNDAP
+ * data access URLs
+ * @param opendap_providers
  */
-Provider CmrApi::get_provider(const std::string &provider_id) const
-{
-    JsonUtils json;
-
-    string cmr_query_url = BESUtil::pathConcat(d_cmr_providers_search_endpoint_url,provider_id);
-    cmr_query_url += ".json";
-    BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url << endl);
-
-    const auto &cmr_doc = json.get_as_json(cmr_query_url);
-
-    // We know that this CMR query returns a single anonymous json object, which
-    // in turn contains a single provider object (really...)
-
-    // Grab the internal provider object...
-    const auto &provider_json = json.qc_get_object(CMR_PROVIDER_KEY,cmr_doc);
-
-    // And then make a new provider.
-    Provider provider(provider_json);
-
-    return provider;
-}
-
-
-void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
-{
-    JsonUtils json;
-
-    stringstream cmr_query_url;
-    cmr_query_url << d_cmr_providers_search_endpoint_url << ".json?page_size=" << CMR_MAX_PAGE_SIZE;
-    BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url.str() << endl);
-
-    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
-
-    // We know that this CMR query returns an array of anonymous json objects, each of which
-    // contains a single provider object (really...)
-
-    // So we iterate over the anonymous objects
-    for (const auto &obj : cmr_doc){
-        // And the grab the internal provider object...
-        auto provider_json = json.qc_get_object(CMR_PROVIDER_KEY, obj);
-        // And then make a new Provider and put it in the vector.
-        auto provider = unique_ptr<Provider>(new Provider(provider_json));
-        providers.emplace_back(std::move(provider));
-    }
-
-}
-
 void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opendap_providers) const
 {
     vector<unique_ptr<cmr::Provider>> all_providers;
+    BESStopWatch bsw;
+    bsw.start(prolog);
     get_providers(all_providers);
     for(auto &provider: all_providers){
-        BESDEBUG(MODULE, prolog << "PROVIDER: " << provider->id() << endl);
+        BESDEBUG(MODULE, prolog << "Processing PROVIDER: " << provider->id() << endl);
         auto hits = get_opendap_collections_count(provider->id());
         if (hits > 0){
             provider->set_opendap_collection_count(hits);
@@ -831,6 +817,13 @@ void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opend
     }
 }
 
+/**
+ * Determines the number of collections published by the "provider" that are tagged as having an opendap URL
+ * The collections search endpoint query uses the provider_id and the query parameter "has_opendap_url=true"
+ * to acheive this.
+ * @param provider_id
+ * @return
+ */
 unsigned long int CmrApi::get_opendap_collections_count(const string &provider_id) const
 {
     JsonUtils json;
