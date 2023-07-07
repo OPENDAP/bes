@@ -94,11 +94,15 @@ class HDF5Array:public libdap::Array {
                                            bool has_values, int values_offset, int64_t at_nelms,
                                            int64_t at_total_nelms, size_t at_base_type_size, int64_t array_index,
                                            int64_t at_orig_index, size_t child_memb_offset);
+    void do_h5_array_type_read_base_compound_member_string(libdap::BaseType *field, hid_t child_memb_id,
+                                                            const std::vector<char> &values, size_t data_offset);
+
     void do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t at_base_type, size_t at_base_type_size,
                                            std::vector<char>&values, int values_offset, int64_t at_nelms,int64_t at_total_nelms,
                                            int at_ndims, std::vector<int64_t> &at_dims, int64_t* at_offset,
                                                     int64_t* at_step, int64_t *at_count);
-
+    void do_h5_array_type_read_base_atomic_whole_data(H5T_class_t array_cls, hid_t at_base_type,int64_t at_nelms,
+                                                             std::vector<char> &values, int values_offset)   ;
     inline int64_t INDEX_nD_TO_1D (const std::vector < int64_t > &dims,
                                 const std::vector < int64_t > &pos) const;
     bool obtain_next_pos(std::vector<int64_t>& pos, std::vector<int64_t>&start,std::vector<int64_t>&end,std::vector<int64_t>&step,int rank_change);
@@ -113,6 +117,13 @@ class HDF5Array:public libdap::Array {
             std::vector<T> *poutput,
             std::vector<int64_t>& pos,
             int index);
+
+    bool handle_one_dim(libdap::Array::Dim_iter d, libdap::D4Group *temp_grp,
+                                   libdap::D4Dimension * &d4_dim, const vector<string> &dimpath, int k);
+    void m_array_of_region_reference_point_selection(hid_t space_id, int ndim, const std::string &varname,
+                                                             std::vector<std::string> &v_str,int i);
+    void m_array_of_region_reference_hyperslab_selection(hid_t space_id, int ndim, const std::string &varname,
+                                                             std::vector<std::string> &v_str,int i);
     friend class HDF5Structure;
   public:
 
@@ -143,8 +154,7 @@ class HDF5Array:public libdap::Array {
 
     void set_varpath(const std::string& vpath) { var_path = vpath;}
     libdap::BaseType *h5dims_transform_to_dap4(libdap::D4Group *root,const std::vector<std::string> &dimpath);
-    bool handle_one_dim(libdap::Array::Dim_iter d, libdap::D4Group *temp_grp,
-                                   libdap::D4Dimension * &d4_dim, const vector<string> &dimpath, int k);
+
 };
 
 #endif

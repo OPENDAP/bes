@@ -1275,6 +1275,9 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
                         break;
 
                     case H5S_SEL_POINTS: {
+
+                        m_array_of_region_reference_point_selection(space_id, ndim,varname,v_str, i);
+#if 0
                         BESDEBUG("h5", "=read() Points selected." << endl);
                         hssize_t npoints = H5Sget_select_npoints(space_id);
                         if (npoints < 0) {
@@ -1308,10 +1311,12 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
                             }
                         }
                         v_str[i].append(expression);
-
+#endif
                         break;
                     }
                     case H5S_SEL_HYPERSLABS: {
+                        m_array_of_region_reference_hyperslab_selection(space_id, ndim, varname, v_str, i);
+#if 0
                         vector<hsize_t> start(ndim);
                         vector<hsize_t> end(ndim);
                         vector<hsize_t> stride(ndim);
@@ -1355,6 +1360,7 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
                             v_str[i].append(expression);
                         }
                         // Constraint expression. [start:1:end]
+#endif
                         break;
                     }
                     case H5S_SEL_ALL:
@@ -1373,6 +1379,94 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
             delete[] rbuf;
 }
 
+void HDF5Array:: m_array_of_region_reference_point_selection(hid_t space_id, int ndim, const string &varname,
+                                                             vector<string> &v_str,int i) {
+
+    string expression;
+                            BESDEBUG("h5", "=read() Points selected." << endl);
+                        hssize_t npoints = H5Sget_select_npoints(space_id);
+                        if (npoints < 0) {
+                            throw InternalErr(__FILE__, __LINE__,
+                                              "Cannot determine number of elements in the dataspace selection");
+                        }
+
+                        BESDEBUG("h5", "=read() npoints are " << npoints
+                                                              << endl);
+                        vector<hsize_t> buf(npoints * ndim);
+                        if (H5Sget_select_elem_pointlist(space_id, 0, npoints, buf.data()) < 0) {
+                            throw InternalErr(__FILE__, __LINE__, "H5Sget_select_elem_pointlist() failed.");
+                        }
+
+#if 0
+                        for (int j = 0; j < npoints * ndim; j++) {
+                                        "h5", "=read() npoints buf[0] =" << buf[j] <<endl;
+                        }
+#endif
+
+                        for (int64_t j = 0; j < (int) npoints; j++) {
+                            // Name of the dataset.
+                            expression.append(varname);
+                            for (int k = 0; k < ndim; k++) {
+                                ostringstream oss;
+                                oss << "[" << (int) buf[j * ndim + k] << "]";
+                                expression.append(oss.str());
+                            }
+                            if (j != (int64_t) (npoints - 1)) {
+                                expression.append(",");
+                            }
+                        }
+                        v_str[i].append(expression);
+
+}
+
+void HDF5Array:: m_array_of_region_reference_hyperslab_selection(hid_t space_id, int ndim, const string &varname,
+                                                             vector<string> &v_str,int i)
+{
+    string expression;
+                            vector<hsize_t> start(ndim);
+                        vector<hsize_t> end(ndim);
+                        vector<hsize_t> stride(ndim);
+                        vector<hsize_t> s_count(ndim);
+                        vector<hsize_t> block(ndim);
+
+                        BESDEBUG("h5", "=read() Slabs selected." << endl);
+                        BESDEBUG("h5", "=read() nblock is " <<
+                                                            H5Sget_select_hyper_nblocks(space_id) << endl);
+
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
+                        if (H5Sget_select_bounds(space_id, start.data(), end.data()) < 0) {
+                            throw InternalErr(__FILE__, __LINE__, "H5Sget_select_bounds() failed.");
+                        }
+#else
+                        if (H5Sget_regular_hyperslab(space_id, start.data(), stride.data(), s_count.data(),
+                                                     block.data()) < 0) {
+                            throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
+                        }
+#endif
+
+                        for (int j = 0; j < ndim; j++) {
+                            ostringstream oss;
+                            BESDEBUG("h5", "start " << start[j]
+                                                    << "stride " << stride[j]
+                                                    << "count " << s_count[j]
+                                                    << "block " << block[j]
+                                                    << endl);
+
+                            // Map from HDF5's start,stride,count,block to DAP's start,stride,end.
+                            end[j] = start[j] + stride[j] * (s_count[j] - 1) + (block[j] - 1);
+                            BESDEBUG("h5", "=read() start is " << start[j]
+                                                               << "=read() end is " << end[j] << endl);
+                            oss << "[" << start[j] << ":" << stride[j] << ":" << end[j] << "]";
+                            expression.append(oss.str());
+                            BESDEBUG("h5", "=read() expression is "
+                                    << expression << endl);
+                        }
+                        v_str[i] = varname;
+                        if (!expression.empty()) {
+                            v_str[i].append(expression);
+                        }
+                        // Constraint expression. [start:1:end]
+}
 void HDF5Array:: m_array_of_object_reference(hid_t d_dset_id, vector<string>& v_str,
                                              int64_t nelms, const vector<int64_t>& offset,
                                             const vector<int64_t> &step)
@@ -2359,7 +2453,10 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseTy
     } else if (H5T_STRING == child_memb_cls) {
 
         int64_t string_index = ((at_total_nelms == at_nelms) ? array_index : at_orig_index);
-
+        size_t data_offset = (size_t)string_index * at_base_type_size + values_offset +
+                                  child_memb_offset;
+        do_h5_array_type_read_base_compound_member_string(field, child_memb_id, values, data_offset);
+#if 0
         // distinguish between variable length and fixed length
         if (true == H5Tis_variable_str(child_memb_id)) {
 
@@ -2387,6 +2484,7 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseTy
             field->val2buf(str_val.data());
 
         }
+#endif
     } else {
         H5Tclose(child_memb_id);
         throw InternalErr(__FILE__, __LINE__, "Unsupported datatype class for the array base type.");
@@ -2398,6 +2496,43 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseTy
     H5Tclose(child_memb_id);
 }
 
+void HDF5Array:: do_h5_array_type_read_base_compound_member_string(BaseType *field, hid_t child_memb_id,
+                                                            const vector<char> &values, size_t data_offset)
+{
+ // distinguish between variable length and fixed length
+        auto src = (void *) (values.data() + data_offset);
+        if (true == H5Tis_variable_str(child_memb_id)) {
+
+            // Need to check if the size of variable length array type is right in HDF5 lib.
+#if 0
+            void *src = (void *) (values.data() + (string_index * at_base_type_size) + values_offset +
+                                  child_memb_offset);
+#endif
+           // void *src = (void *) (values.data() + data_offset);
+            string final_str;
+            auto temp_bp = (char *) src;
+            get_vlen_str_data(temp_bp, final_str);
+            field->val2buf(&final_str[0]);
+#if 0
+            field->set_value(final_str);
+#endif
+        } else {// Obtain string
+#if 0
+            void *src = (void *) (values.data() + (string_index * at_base_type_size) + values_offset +
+                                  child_memb_offset);
+#endif
+            vector<char> str_val;
+            size_t memb_size = H5Tget_size(child_memb_id);
+            if (memb_size == 0) {
+                H5Tclose(child_memb_id);
+                throw InternalErr(__FILE__, __LINE__, "Fail to obtain the size of HDF5 compound datatype.");
+            }
+            str_val.resize(memb_size);
+            memcpy(str_val.data(), src, memb_size);
+            field->val2buf(str_val.data());
+
+        }
+}
 void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t at_base_type, size_t at_base_type_size,
                                                    vector<char>&values,
                                                     int values_offset, int64_t at_nelms,int64_t at_total_nelms,
@@ -2405,7 +2540,8 @@ void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t a
                                                     int64_t* at_step, int64_t *at_count) {
         // If no subset for the array datatype, just read the whole buffer.
         if (at_total_nelms == at_nelms) {
-
+            do_h5_array_type_read_base_atomic_whole_data(array_cls, at_base_type, at_nelms, values, values_offset);
+#if 0
             // For DAP2 char should be mapped to short
             if (true == promote_char_to_short(array_cls, at_base_type)) {
                 vector<char> val_int8;
@@ -2421,7 +2557,7 @@ void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t a
 
             } else // short cut for others
                 val2buf(values.data() + values_offset);
-
+#endif
         } else { // Adjust the value for the subset of the array datatype
 
             // Obtain the corresponding DAP type of the HDF5 data type
@@ -2618,6 +2754,25 @@ void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t a
         }
     }
 
+void HDF5Array::do_h5_array_type_read_base_atomic_whole_data(H5T_class_t array_cls, hid_t at_base_type,int64_t at_nelms,
+                                                             vector<char> &values, int values_offset)
+{
+                // For DAP2 char should be mapped to short
+            if (true == promote_char_to_short(array_cls, at_base_type)) {
+                vector<char> val_int8;
+                val_int8.resize(at_nelms);
+                void *src = (void *) (values.data() + values_offset);
+                memcpy(val_int8.data(), src, at_nelms);
+
+                vector<short> val_short;
+                for (int64_t i = 0; i < at_nelms; i++)
+                    val_short[i] = (short) val_int8[i];
+
+                val2buf(val_short.data());
+
+            } else // short cut for others
+                val2buf(values.data() + values_offset);
+}
 /// This inline routine will translate N dimensions into 1 dimension.
 inline int64_t
 HDF5Array::INDEX_nD_TO_1D (const std::vector < int64_t > &dims,
