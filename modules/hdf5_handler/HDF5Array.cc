@@ -2752,8 +2752,9 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
 
             D4Group *temp_grp   = grp;
             D4Dimension *d4_dim = nullptr;
-            bool is_dim_nonc4_grp = false;
-
+            bool is_dim_nonc4_grp = handle_one_dim(d,temp_grp, d4_dim, dimpath, k);
+            //bool is_dim_nonc4_grp = false;
+#if 0
             while(temp_grp) {
 
                 BESDEBUG("h5", "<coming to the group  has name " << temp_grp->name()<<endl);
@@ -2812,7 +2813,7 @@ cout <<"temp_grp->FQN() " <<temp_grp->FQN() <<endl;
                     temp_grp = nullptr;
 
             }
-
+#endif
             // Not find this dimension in any of the ancestor groups, add it to this group.
             // The following block is fine, but to avoid the complaint from sonarcloud.
             // Use a bool.
@@ -2826,7 +2827,9 @@ cout <<"temp_grp->FQN() " <<temp_grp->FQN() <<endl;
 
             bool d4_dim_null = ((d4_dim==nullptr)?true:false);
             if(d4_dim_null == true) {
-                d4_dim = new D4Dimension((*d).name, (*d).size);
+                auto d4_dim_unique = make_unique<D4Dimension>((*d).name, (*d).size);
+                d4_dim = d4_dim_unique.release();
+                //d4_dim = new D4Dimension((*d).name, (*d).size);
                 D4Dimensions * dims = grp->dims();
                 BESDEBUG("h5", "<Just before adding D4 dimension to group" << grp->FQN() <<endl);
                 dims->add_dim_nocopy(d4_dim);
@@ -2840,4 +2843,69 @@ cout <<"temp_grp->FQN() " <<temp_grp->FQN() <<endl;
 
     return dest;
 
+}
+
+bool HDF5Array::handle_one_dim(Array::Dim_iter d, D4Group *temp_grp, D4Dimension * &d4_dim, const vector<string> &dimpath,
+                                int k)
+{
+    bool is_dim_nonc4_grp = false;
+            while(temp_grp) {
+
+                BESDEBUG("h5", "<coming to the group  has name " << temp_grp->name()<<endl);
+                BESDEBUG("h5", "<coming to the group  has fullpath " << temp_grp->FQN()<<endl);
+
+                //Obtain all the dimensions of this group.
+                D4Dimensions *temp_dims = temp_grp->dims();
+
+                // Check if this dimension is defined in this group
+                d4_dim = temp_dims->find_dim((*d).name);
+
+                // Need the full path of the dimension name
+                string d4_dim_path = dimpath[k].substr(0,dimpath[k].find_last_of("/")+1);
+                BESDEBUG("h5", "d4_dim_path is " << d4_dim_path<<endl);
+#if 0
+if (d4_dim_path == temp_grp->FQN()){
+cout <<"Found the dimension group" <<endl;
+cout <<"d4_dim_path " <<d4_dim_path <<endl;
+}
+else {
+cout <<"Not Found the dimension group" <<endl;
+cout <<"d4_dim_path " <<d4_dim_path <<endl;
+cout <<"temp_grp->FQN() " <<temp_grp->FQN() <<endl;
+}
+#endif
+
+                bool ancestor_grp = false;
+
+                // If the dim_path is within this group or its ancestor, this is valid.
+                if(d4_dim_path.find(temp_grp->FQN())==0 || temp_grp->FQN().find(d4_dim_path)==0)
+                    ancestor_grp = true;
+
+                // If we find this dimension and the dimension is on the ancestral path,
+                // this follows the netCDF-4/DAP4 dimension model, break.
+                if(d4_dim && (temp_grp->FQN() == d4_dim_path)) {
+                    BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
+                    (*d).dim = d4_dim;
+                    is_dim_nonc4_grp = false;
+                    break;
+                }
+                // If the dimension name is not on the ancestral path, this
+                // dimension must be on another path, mark it.
+#if 0
+                //else if( ancestor_grp == false && is_dim_nonc4_grp == false) {
+#endif
+                else if( ancestor_grp == false) {
+                    is_dim_nonc4_grp = true;
+                    break;
+                }
+                else
+                    d4_dim = nullptr;
+
+                if(temp_grp->get_parent())
+                    temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+                else
+                    temp_grp = nullptr;
+
+            }
+    return is_dim_nonc4_grp;
 }

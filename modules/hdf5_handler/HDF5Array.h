@@ -143,6 +143,8 @@ class HDF5Array:public libdap::Array {
 
     void set_varpath(const std::string& vpath) { var_path = vpath;}
     libdap::BaseType *h5dims_transform_to_dap4(libdap::D4Group *root,const std::vector<std::string> &dimpath);
+    bool handle_one_dim(libdap::Array::Dim_iter d, libdap::D4Group *temp_grp,
+                                   libdap::D4Dimension * &d4_dim, const vector<string> &dimpath, int k);
 };
 
 #endif
