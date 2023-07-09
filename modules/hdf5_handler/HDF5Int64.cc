@@ -36,6 +36,7 @@
 
 #include <string>
 #include <ctype.h>
+#include <memory>
 
 #include "config_hdf5.h"
 #include "BESDebug.h"
@@ -52,7 +53,8 @@ HDF5Int64::HDF5Int64(const string & n, const string &vpath, const string &d):Int
 
 BaseType *HDF5Int64::ptr_duplicate()
 {
-    return new HDF5Int64(*this);
+    auto HDF5Int64_unique = make_unique<HDF5Int64>(*this);
+    return HDF5Int64_unique.release();
 }
 
 bool HDF5Int64::read()

@@ -36,6 +36,7 @@
 
 #include <string>
 #include <ctype.h>
+#include <memory>
 
 #include "config_hdf5.h"
 #include "BESDebug.h"
@@ -52,7 +53,8 @@ HDF5Int8::HDF5Int8(const string & n, const string &vpath,const string &d):Int8(n
 
 BaseType *HDF5Int8::ptr_duplicate()
 {
-    return new HDF5Int8(*this);
+    auto HDF5Int8_unique = make_unique<HDF5Int8>(*this);
+    return HDF5Int8_unique.release();
 }
 
 bool HDF5Int8::read()

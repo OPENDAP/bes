@@ -37,6 +37,7 @@
 // #define DODS_DEBUG
 #include <string>
 #include <ctype.h>
+#include <memory>
 
 #include "config_hdf5.h"
 #include "BESDebug.h"
@@ -57,7 +58,8 @@ HDF5Byte::HDF5Byte(const string & n, const string &vpath, const string &d):Byte(
 
 BaseType *HDF5Byte::ptr_duplicate()
 {
-    return new HDF5Byte(*this);
+    auto HDF5Byte_unique = make_unique<HDF5Byte>(*this);
+    return HDF5Byte_unique.release();
 }
 
 bool HDF5Byte::read()

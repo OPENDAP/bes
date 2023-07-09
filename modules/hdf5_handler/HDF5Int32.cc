@@ -39,6 +39,7 @@
 
 #include <string>
 #include <ctype.h>
+#include <memory>
 
 #include <libdap/InternalErr.h>
 
@@ -55,8 +56,8 @@ HDF5Int32::HDF5Int32(const string & n, const string &vpath, const string &d) : I
 
 BaseType *HDF5Int32::ptr_duplicate()
 {
-
-    return new HDF5Int32(*this);
+    auto HDF5Int32_unique = make_unique<HDF5Int32>(*this);
+    return HDF5Int32_unique.release();
 }
 
 bool HDF5Int32::read()

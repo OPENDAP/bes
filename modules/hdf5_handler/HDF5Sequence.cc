@@ -37,6 +37,7 @@
 
 #include <string>
 #include <ctype.h>
+#include <memory>
 
 #include "HDF5Sequence.h"
 #include <libdap/InternalErr.h>
@@ -46,7 +47,8 @@ using namespace libdap;
 
 BaseType *HDF5Sequence::ptr_duplicate()
 {
-    return new HDF5Sequence(*this);
+    auto HDF5Sequence_unique = make_unique<HDF5Sequence>(*this);
+    return HDF5Sequence_unique.release();
 }
 
 

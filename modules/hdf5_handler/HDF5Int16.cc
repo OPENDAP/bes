@@ -38,6 +38,7 @@
 #include "BESDebug.h"
 #include <string>
 #include <ctype.h>
+#include <memory>
 
 #include <libdap/InternalErr.h>
 
@@ -61,8 +62,8 @@ HDF5Int16::HDF5Int16(const string & n, const string &vpath,const string &d) : In
 
 BaseType *HDF5Int16::ptr_duplicate()
 {
-
-    return new HDF5Int16(*this);
+    auto HDF5Int16_unique = make_unique<HDF5Int16>(*this);
+    return HDF5Int16_unique.release();
 }
 
 bool HDF5Int16::read()

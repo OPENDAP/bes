@@ -5,6 +5,7 @@
 // Copyright (c) 2007-2023 The HDF Group, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
 //         Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+//          Kent Yang <myang6@hdfgroup.org>
 // 
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -27,6 +28,7 @@
 
 #include <string>
 #include <ctype.h>
+#include <memory>
 #include "config_hdf5.h"
 #include "hdf5.h"
 #include "h5dds.h"
@@ -39,7 +41,8 @@ using namespace libdap;
 
 BaseType *HDF5Structure::ptr_duplicate()
 {
-    return new HDF5Structure(*this);
+    auto HDF5Structure_unique = make_unique<HDF5Structure>(*this);
+    return HDF5Structure_unique.release();
 }
 
 HDF5Structure::HDF5Structure(const string & n, const string &vpath, const string &d)
