@@ -148,6 +148,8 @@ class HDF5RequestHandler:public BESRequestHandler {
   private:
     // Loads configuration state from TheBESKeys
     void static load_config();
+    void static load_config_disk_cache();
+    void static load_config_cf_cache();
 
      //cache variables.
 

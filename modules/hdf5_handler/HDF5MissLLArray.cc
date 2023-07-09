@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <iostream>
 #include <sstream>
+#include <memory>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
 
@@ -21,7 +22,8 @@ using namespace libdap;
 
 BaseType *HDF5MissLLArray::ptr_duplicate()
 {
-    return new HDF5MissLLArray(*this);
+    auto HDF5MissLLArray_unique = make_unique<HDF5MissLLArray>(*this);
+    return HDF5MissLLArray_unique.release();
 }
 
 bool HDF5MissLLArray::read()
@@ -186,13 +188,12 @@ bool HDF5MissLLArray::read_data_geo(){
     if (rank <=  0) 
        throw InternalErr (__FILE__, __LINE__,
                           "The number of dimension of this variable should be greater than 0");
-    else {
 
-         offset.resize(rank);
-         count.resize(rank);
-         step.resize(rank);
-         nelms = format_constraint (offset.data(), step.data(), count.data());
-    }
+    offset.resize(rank);
+    count.resize(rank);
+    step.resize(rank);
+    nelms = format_constraint (offset.data(), step.data(), count.data());
+
 
     if (nelms <= 0 || nelms >DODS_INT_MAX) 
        throw InternalErr (__FILE__, __LINE__,
@@ -203,7 +204,8 @@ bool HDF5MissLLArray::read_data_geo(){
 
     vector<float>val;
     val.resize(nelms);
-    
+
+#if 0
     if (is_lat) {
         
 	if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_UR == g_info.gridorigin) {
@@ -263,16 +265,93 @@ bool HDF5MissLLArray::read_data_geo(){
 		val[i] = ((float)(offset[0]+i*step[0]) * lon_step + start) / 1000000.0F;
 	}
     }
-
+#endif
 #if 0
 for (int i =0; i <nelms; i++) 
 "h5","final data val "<< i <<" is " << val[i] <<endl;
 #endif
 
+    if (is_lat)
+        read_data_geo_lat(nelms, offset, count, step, val) ;
+    else
+        read_data_geo_lon(nelms, offset, count, step, val) ;
     set_value_ll(val.data(), nelms);
     
  
     return true;
+}
+
+void HDF5MissLLArray::read_data_geo_lat(int64_t nelms, const vector<int64_t> &offset, const vector<int64_t> &count,
+                                          const vector<int64_t> &step, vector<float> &val)
+{
+
+    float start = 0.0;
+    float end   = 0.0;
+
+	if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_UR == g_info.gridorigin) {
+
+	    start = (float)(g_info.point_upper);
+	    end   = (float)(g_info.point_lower);
+
+	}
+	else {// (gridorigin == HE5_HDFE_GD_LL || gridorigin == HE5_HDFE_GD_LR)
+
+	    start = (float)(g_info.point_lower);
+	    end = (float)(g_info.point_upper);
+	}
+
+	if(g_info.ydim_size <=0)
+	    throw InternalErr (__FILE__, __LINE__,
+			    "The number of elments should be greater than 0.");
+
+	float lat_step = (end - start) /(float)(g_info.ydim_size);
+
+	if ( HE5_HDFE_CENTER == g_info.pixelregistration ) {
+	    for (int i = 0; i < nelms; i++)
+		val[i] = (((float)(offset[0]+i*step[0]) + 0.5F) * lat_step + start) / 1000000.0F;
+	}
+	else { // HE5_HDFE_CORNER
+	    for (int i = 0; i < nelms; i++)
+		val[i] = ((float)(offset[0]+i * step[0])*lat_step + start) / 1000000.0F;
+	}
+
+}
+
+void HDF5MissLLArray::read_data_geo_lon(int64_t nelms, const vector<int64_t> &offset, const vector<int64_t> &count,
+                                          const vector<int64_t> &step, vector<float> &val) {
+
+    float start = 0.0;
+    float end   = 0.0;
+
+    if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_LL == g_info.gridorigin) {
+
+	    start = (float)(g_info.point_left);
+	    end   = (float)(g_info.point_right);
+
+	}
+	else {// (gridorigin == HE5_HDFE_GD_UR || gridorigin == HE5_HDFE_GD_LR)
+
+	    start = (float)(g_info.point_right);
+	    end = (float)(g_info.point_left);
+	}
+
+	if (g_info.xdim_size <=0)
+	    throw InternalErr (__FILE__, __LINE__,
+			"The number of elments should be greater than 0.");
+
+	float lon_step = (end - start) /(float)(g_info.xdim_size);
+
+	if (HE5_HDFE_CENTER == g_info.pixelregistration) {
+
+	    for (int i = 0; i < nelms; i++)
+		    val[i] = (((float)(offset[0] + i *step[0]) + 0.5F) * lon_step + start ) / 1000000.0F;
+
+	}
+	else { // HE5_HDFE_CORNER
+	    for (int i = 0; i < nelms; i++)
+		    val[i] = ((float)(offset[0]+i*step[0]) * lon_step + start) / 1000000.0F;
+	}
+
 }
 
 // parse constraint expr. and make hdf5 coordinate point location.
