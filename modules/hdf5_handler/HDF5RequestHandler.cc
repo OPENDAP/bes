@@ -45,7 +45,7 @@
 
 #include <libdap/DMR.h>
 #include <libdap/D4BaseTypeFactory.h>
-#include <BESDMRResponse.h>
+//#include <BESDMRResponse.h>
 #include <ObjMemCache.h>
 #include "HDF5_DMR.h"
 
@@ -613,7 +613,8 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             *das = *cached_das_ptr;
         }
         else {
-
+            hdf5_build_das_internal_no_mem_cache(filename, das, cf_fileid);
+#if 0
             bool das_from_dc = false;
             string das_cache_fname;
 
@@ -710,6 +711,7 @@ temp_table->print(cerr);
                     write_das_to_disk_cache(das_cache_fname,das);
                 }
             }
+#endif
         }
 
         bdas->clear_container() ;
@@ -753,10 +755,112 @@ temp_table->print(cerr);
     return true;
 }
 
+void HDF5RequestHandler::hdf5_build_das_internal_no_mem_cache(const string& filename, DAS *das, hid_t &cf_fileid)
+{
+            bool das_from_dc = false;
+            string das_cache_fname;
+
+            // If the use_disk_meta_cache is set, check if the cache file exists and sets the flag.
+            if(_use_disk_meta_cache == true) {
+
+                string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
+                das_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_das";
+
+                if(access(das_cache_fname.c_str(),F_OK) !=-1)
+                   das_from_dc = true;
+
+            }
+
+            // If reading DAS from the disk cache, call the corresponding function
+            if(true == das_from_dc) {
+                read_das_from_disk_cache(das_cache_fname,das);
+
+                // If the memory cache is set, adding the DAS copy to the memory cache
+                if (das_cache) {
+                    // add a copy
+                    BESDEBUG(HDF5_NAME, prolog << "HDF5 DAS reading DAS from the disk cache. For memory cache, DAS added to the cache for : " << filename << endl);
+                    das_cache->add(new DAS(*das), filename);
+                }
+            }
+
+            else {// Need to build from the HDF5 file
+                H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
+                if (true == _usecf) {//CF option
+
+                    cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                    if (cf_fileid < 0){
+                        string invalid_file_msg="Could not open this HDF5 file ";
+                        invalid_file_msg +=filename;
+                        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                        invalid_file_msg +=" distributor.";
+                        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                    }
+                    // Need to check if DAP4 DMR CF 64-bit integer mapping is on.
+                    if(HDF5RequestHandler::get_dmr_64bit_int()!=nullptr)
+                        HDF5RequestHandler::set_dmr_64bit_int(nullptr);
+                    read_cfdas( *das,filename,cf_fileid);
+                    H5Fclose(cf_fileid);
+                }
+                else {// Default option
+                    hid_t fileid = get_fileid(filename.c_str());
+                    if (fileid < 0) {
+                        string invalid_file_msg="Could not open this HDF5 file ";
+                        invalid_file_msg +=filename;
+                        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                        invalid_file_msg +=" distributor.";
+                        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+
+                    }
+
+                    find_gloattr(fileid, *das);
+                    depth_first(fileid, "/", *das);
+                    close_fileid(fileid);
+                }
+
+                Ancillary::read_ancillary_das( *das, filename ) ;
+
+#if 0
+// Dump all attribute contents
+AttrTable* top_table = das->get_top_level_attributes();
+get_attr_contents(top_table);
+
+// Dump all variable contents
+AttrTable::Attr_iter start_aiter=das->var_begin();
+AttrTable::Attr_iter it = start_aiter;
+AttrTable::Attr_iter end_aiter = das->var_end();
+while(it != end_aiter) {
+AttrTable* temp_table = das->get_table(it);
+if(temp_table!=0){
+cerr<<"var_begin"<<endl;
+temp_table->print(cerr);
+}
+++it;
+}
+#endif
+                // If the memory cache is turned on
+                if(das_cache) {
+                    // add a copy
+                    BESDEBUG(HDF5_NAME, prolog << "DAS added to the cache for : " << filename << endl);
+                    das_cache->add(new DAS(*das), filename);
+                }
+
+                // DAS disk cache fname will be set only when the metadata disk cache is turned on
+                // So if it comes here, the das cache should be generated.
+                if(das_cache_fname!="") {
+                    BESDEBUG(HDF5_NAME, prolog << "HDF5 Build DAS: Write DAS to disk cache " << das_cache_fname << endl);
+                    write_das_to_disk_cache(das_cache_fname,das);
+                }
+            }
+}
 // Convenient function that helps  build DDS and Data
 // Since this function will be used by both the DDS and Data services, we need to pass both BESDDSResponse and BESDataDDSResponse.
 // This two parameters are necessary for the future DDS disk cache feature.
-void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const string &container_name, const string& filename,const string &dds_cache_fname, const string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data)
+void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,
+                                                  const string &container_name, const string& filename,
+                                                  const string &dds_cache_fname, const string &das_cache_fname,
+                                                  bool dds_from_dc,bool das_from_dc, bool build_data)
 {
     DDS *dds;
     if(true == build_data) 
@@ -786,6 +890,8 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
             read_dds_from_disk_cache(bdds,data_bdds,build_data,container_name,filename,dds_cache_fname,das_cache_fname,-1,das_from_dc);
         }
         else {
+            read_dds_from_file(dds, filename, cf_fileid, fileid, container_name, dds_cache_fname, dds_from_dc);
+#if 0
             BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
             H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
             dds->filename(filename);
@@ -835,8 +941,10 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
             // Generate the DDS cached file if needed,currently this is always false by default
             if(dds_cache_fname!="" && dds_from_dc == false) 
                 write_dds_to_disk_cache(dds_cache_fname,dds);
-
+#endif
             // Add attributes
+            add_das_to_dds_wrapper(dds,filename,cf_fileid,fileid,container_name,das_cache_fname,das_from_dc);
+#if 0
             {
                 hid_t h5_fd = -1;
                 if(_usecf == true)
@@ -845,6 +953,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
                     h5_fd = fileid;
                 add_das_to_dds(dds,container_name,filename,das_cache_fname,h5_fd,das_from_dc);
             }
+#endif
         
             // Add memory cache if possible
             if (dds_cache) {
@@ -853,10 +962,8 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
                 dds_cache->add(new DDS(*dds), filename);
             }
 
-            if(cf_fileid != -1)
-                H5Fclose(cf_fileid);
-            if(fileid != -1)
-                H5Fclose(fileid);
+            H5Fclose(cf_fileid);
+            H5Fclose(fileid);
  
         }
     
@@ -904,6 +1011,74 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
 
 }
 
+void HDF5RequestHandler::read_dds_from_file(DDS *dds, const string &filename, hid_t &cf_fileid, hid_t &fileid,
+                                            const string &container_name, const string &dds_cache_fname, bool dds_from_dc)
+{
+            BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
+            H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
+            dds->filename(filename);
+
+            // For the time being, not mess up CF's fileID with Default's fileID
+            if(true == _usecf) {
+
+                cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                if (cf_fileid < 0){
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                }
+                // The following is for DAP4 CF(DMR) 64-bit mapping, we need to set the flag
+                // to let the handler map the 64-bit integer.
+                if(HDF5RequestHandler::get_dmr_64bit_int() != nullptr)
+                    HDF5RequestHandler::set_dmr_64bit_int(nullptr);
+                read_cfdds(*dds,filename,cf_fileid);
+            }
+            else {
+
+                fileid = get_fileid(filename.c_str());
+                if (fileid < 0) {
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                }
+
+                depth_first(fileid, (char*)"/", *dds, filename.c_str());
+
+            }
+            // Check semantics
+            if (!dds->check_semantics()) {   // DDS didn't comply with the semantics
+                dds->print(cerr);
+                throw InternalErr(__FILE__, __LINE__,
+                                  "DDS check_semantics() failed. This can happen when duplicate variable names are defined. ");
+            }
+
+            Ancillary::read_ancillary_dds( *dds, filename ) ;
+
+            // Generate the DDS cached file if needed,currently this is always false by default
+            if(dds_cache_fname!="" && dds_from_dc == false)
+                write_dds_to_disk_cache(dds_cache_fname,dds);
+
+
+}
+
+void HDF5RequestHandler::add_das_to_dds_wrapper(DDS *dds, const string &filename, hid_t &cf_fileid, hid_t &fileid,
+                                                const string &container_name, const string &das_cache_fname,
+                                                bool das_from_dc)
+        {
+    hid_t h5_fd = -1;
+                if(_usecf == true)
+                    h5_fd = cf_fileid;
+                else
+                    h5_fd = fileid;
+                add_das_to_dds(dds,container_name,filename,das_cache_fname,h5_fd,das_from_dc);
+
+        };
 void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*data_bdds,const string &container_name, const string& filename)
 {
     DDS *dds = data_bdds->get_dds();
@@ -928,6 +1103,8 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
             *dds = *cached_dds_ptr; // Copy the referenced object
         }
         else {
+             read_datadds_from_file(dds, filename, cf_fileid, fileid, container_name);
+#if 0
             BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
             H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
             dds->filename(filename);
@@ -997,7 +1174,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
                 H5Fclose(cf_fileid);
             if(fileid != -1)
                 H5Fclose(fileid);
- 
+#endif
         }
         BESDEBUG(HDF5_NAME, prolog << "Data ACCESS build_data(): set the including attribute flag to false: "<<filename << endl);
         data_bdds->set_ia_flag(false);
@@ -1049,7 +1226,80 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
 
 }
 
+void HDF5RequestHandler::read_datadds_from_file(DDS *dds, const string &filename, hid_t &cf_fileid, hid_t &fileid,
+                                            const string &container_name)
+{
+            BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
+            H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
+            dds->filename(filename);
 
+            // For the time being, not mess up CF's fileID with Default's fileID
+            if(true == _usecf) {
+
+                cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                if (cf_fileid < 0){
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                }
+                // The following is for DAP4 CF(DMR) 64-bit mapping, we need to set the flag
+                // to let the handler map the 64-bit integer.
+                if(HDF5RequestHandler::get_dmr_64bit_int() != nullptr)
+                    HDF5RequestHandler::set_dmr_64bit_int(nullptr);
+                read_cfdds(*dds,filename,cf_fileid);
+            }
+            else {
+
+                fileid = get_fileid(filename.c_str());
+                if (fileid < 0) {
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                }
+
+                depth_first(fileid, (char*)"/", *dds, filename.c_str());
+
+            }
+            // Check semantics
+            if (!dds->check_semantics()) {   // DDS didn't comply with the semantics
+                dds->print(cerr);
+                throw InternalErr(__FILE__, __LINE__,
+                                  "DDS check_semantics() failed. This can happen when duplicate variable names are defined. ");
+            }
+
+            Ancillary::read_ancillary_dds( *dds, filename ) ;
+
+#if 0
+            // Add attributes
+            {
+                hid_t h5_fd = -1;
+                if(_usecf == true)
+                    h5_fd = cf_fileid;
+                else
+                    h5_fd = fileid;
+                add_das_to_dds(dds,container_name,filename,das_cache_fname,h5_fd,das_from_dc);
+            }
+#endif
+
+            // Add memory cache if possible
+            if (datadds_cache) {
+            	// add a copy
+                BESDEBUG(HDF5_NAME, prolog << "DataDDS added to the cache for : " << filename << endl);
+                datadds_cache->add(new DDS(*dds), filename);
+            }
+
+            if(cf_fileid != -1)
+                H5Fclose(cf_fileid);
+            if(fileid != -1)
+                H5Fclose(fileid);
+
+}
 #if 0
 // OLD function: Keep it for a while
 // Convenient function that helps  build DDS and Data
@@ -1567,25 +1817,27 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             dmr->set_request_xml_base(bes_dmr_response.get_request_xml_base());
         }
         else {// No cache
-
+            if (true == hdf5_build_dmr_from_file(dhi,bes_dmr_response,dmr, filename, cf_fileid, fileid))
+                return true;
+#if 0
             H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
             D4BaseTypeFactory MyD4TypeFactory;
             dmr->set_factory(&MyD4TypeFactory);
- 
+
             if(true ==_usecf) {// CF option
-       
-                if(true == _usecfdmr) { 
+
+                if(true == _usecfdmr) {
 
                     cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-                    if (cf_fileid < 0){
-                        string invalid_file_msg="Could not open this HDF5 file ";
-                        invalid_file_msg +=filename;
-                        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
-                        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
-                        invalid_file_msg +=" distributor.";
-                        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                    if (cf_fileid < 0) {
+                        string invalid_file_msg = "Could not open this HDF5 file ";
+                        invalid_file_msg += filename;
+                        invalid_file_msg += ". It is very possible that this file is not an HDF5 file ";
+                        invalid_file_msg += " but with the .h5/.HDF5 suffix. Please check with the data";
+                        invalid_file_msg += " distributor.";
+                        throw BESInternalError(invalid_file_msg, __FILE__, __LINE__);
                     }
-                    read_cfdmr(dmr,filename,cf_fileid);
+                    read_cfdmr(dmr, filename, cf_fileid);
                     H5Fclose(cf_fileid);
                     bes_dmr_response.set_dap4_constraint(dhi);
                     bes_dmr_response.set_dap4_function(dhi);
@@ -1617,10 +1869,10 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 DAS das;
 
                 // For the CF option dmr response, we need to map 64-bit integer separately
-                // So set the flag to map 64-bit integer. 
+                // So set the flag to map 64-bit integer.
                 HDF5RequestHandler::set_dmr_64bit_int(dmr);
                 read_cfdds( dds,filename,cf_fileid);
-                if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
+                if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics
                     dds.print(cerr);
                     throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
@@ -1640,7 +1892,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             }// "if(true == _usecf)"
             else {// default option
 
-                // Obtain the HDF5 file ID. 
+                // Obtain the HDF5 file ID.
                 fileid = get_fileid(filename.c_str());
                 if (fileid < 0) {
                     string invalid_file_msg="Could not open this HDF5 file ";
@@ -1659,10 +1911,10 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 if (true == _default_handle_dimension)
                     use_dimscale = check_dimscale(fileid);
 
-                // If it is an HDF-EOS5 file but not having dimension scale, 
+                // If it is an HDF-EOS5 file but not having dimension scale,
                 // treat it as an HDF-EOS5 file, retrieve all the HDF-EOS5 info.
                 eos5_dim_info_t eos5_dim_info;
-                if (is_eos5 && !use_dimscale)  
+                if (is_eos5 && !use_dimscale)
                     obtain_eos5_dims(fileid,eos5_dim_info);
 
                 dmr->set_name(name_path(filename));
@@ -1682,9 +1934,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 // KY 2021-11-15
                 vector<link_info_t> hdf5_hls;
                 vector<string> handled_coord_names;
- 
+
                 breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_coord_names);
-  
+
                 if (is_eos5 == false)
                     add_dap4_coverage_default(root_grp,handled_coord_names);
 
@@ -1704,10 +1956,10 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 #endif
 
 #if 0
-           if(true == use_dimscale) 
+           if(true == use_dimscale)
                 //breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),true);
                 breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),true);
-           else 
+           else
                 depth_first(fileid,(char*)"/",root_grp,filename.c_str());
                 //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
 #endif
@@ -1722,6 +1974,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 BESDEBUG(HDF5_NAME, prolog << "DMR added to the cache for : " << filename << endl);
                 dmr_cache->add(new DMR(*dmr), filename);
             }
+#endif
         }// else no cache
     }// try
     catch(const BESError & e) {
@@ -1778,6 +2031,166 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     return true;
 }
 
+bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi, BESDMRResponse &bes_dmr_response,
+                                                  DMR *dmr, const string &filename,
+                                                  hid_t &cf_fileid, hid_t &fileid)
+{
+            H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
+            D4BaseTypeFactory MyD4TypeFactory;
+            dmr->set_factory(&MyD4TypeFactory);
+
+            if(true ==_usecf) {// CF option
+
+                if(true == _usecfdmr) {
+
+                    cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                    if (cf_fileid < 0){
+                        string invalid_file_msg="Could not open this HDF5 file ";
+                        invalid_file_msg +=filename;
+                        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                        invalid_file_msg +=" distributor.";
+                        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                    }
+                    read_cfdmr(dmr,filename,cf_fileid);
+                    H5Fclose(cf_fileid);
+                    bes_dmr_response.set_dap4_constraint(dhi);
+                    bes_dmr_response.set_dap4_function(dhi);
+                    dmr->set_factory(nullptr);
+
+                    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
+
+                    return true;
+                }
+
+                if(true == _pass_fileid)
+                    return hdf5_build_dmr_with_IDs(dhi);
+
+                cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                if (cf_fileid < 0){
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                }
+
+
+                BaseTypeFactory factory;
+                DDS dds(&factory, name_path(filename), "3.2");
+                dds.filename(filename);
+
+                DAS das;
+
+                // For the CF option dmr response, we need to map 64-bit integer separately
+                // So set the flag to map 64-bit integer.
+                HDF5RequestHandler::set_dmr_64bit_int(dmr);
+                read_cfdds( dds,filename,cf_fileid);
+                if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics
+                    dds.print(cerr);
+                    throw InternalErr(__FILE__, __LINE__,
+                              "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
+                }
+
+                read_cfdas(das,filename,cf_fileid);
+                Ancillary::read_ancillary_das( das, filename ) ;
+
+                dds.transfer_attributes(&das);
+
+                ////close the file ID.
+                if(cf_fileid !=-1)
+                    H5Fclose(cf_fileid);
+
+                dmr->build_using_dds(dds);
+
+            }// "if(true == _usecf)"
+            else {// default option
+
+                // Obtain the HDF5 file ID.
+                fileid = get_fileid(filename.c_str());
+                if (fileid < 0) {
+                    string invalid_file_msg="Could not open this HDF5 file ";
+                    invalid_file_msg +=filename;
+                    invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                    invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                    invalid_file_msg +=" distributor.";
+                    throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                }
+
+                // Check if this is an HDF-EOS5 file
+                bool is_eos5 = check_eos5(fileid);
+
+                // Check if dim scale is used.
+                bool use_dimscale = false;
+                if (true == _default_handle_dimension)
+                    use_dimscale = check_dimscale(fileid);
+
+                // If it is an HDF-EOS5 file but not having dimension scale,
+                // treat it as an HDF-EOS5 file, retrieve all the HDF-EOS5 info.
+                eos5_dim_info_t eos5_dim_info;
+                if (is_eos5 && !use_dimscale)
+                    obtain_eos5_dims(fileid,eos5_dim_info);
+
+                dmr->set_name(name_path(filename));
+                dmr->set_filename(name_path(filename));
+
+                // The breadth_first() function builds the variables and attributes and
+                // loads them into the root group (building child groups as needed).
+                // jhrg 4/30/20
+                D4Group* root_grp = dmr->root();
+                BESDEBUG("h5", "use_dimscale is "<< use_dimscale <<endl);
+
+                // It is possible that a dimension variable has hardlinks. To make it
+                // right for the netCDF-4 data model and the current DAP4 implementation,
+                // we need to choose the shortest path of all hardlinks as the dimension path.
+                // So to avoid iterate all HDF5 objects multiple times, save the found
+                // hardlinks and search them when necessary.  Note we have to search hardlinks from the root.
+                // KY 2021-11-15
+                vector<link_info_t> hdf5_hls;
+                vector<string> handled_coord_names;
+
+                breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_coord_names);
+
+                if (is_eos5 == false)
+                    add_dap4_coverage_default(root_grp,handled_coord_names);
+
+                // Leave the following block until the HDF-EOS5 is fully supported.
+#if 0
+                BESDEBUG("h5", "build_dmr - before obtain dimensions"<< endl);
+                D4Dimensions *root_dims = root_grp->dims();
+    for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+        //cout <<"dim size is: "<<(*di)->size()<<endl;
+        //cout <<"dim fully_qualified_name is: "<<(*di)->fully_qualified_name()<<endl;
+    }
+                BESDEBUG("h5", "build_dmr - after obtain dimensions"<< endl);
+#endif
+
+#if 0
+           if(true == use_dimscale)
+                //breadth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str(),true);
+                breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),true);
+           else
+                depth_first(fileid,(char*)"/",root_grp,filename.c_str());
+                //depth_first(fileid,(char*)"/",*dmr,root_grp,filename.c_str());
+#endif
+
+                close_fileid(fileid);
+
+            }// else (default option)
+
+            // If the cache is turned on, add the memory cache.
+            if (dmr_cache) {
+                // add a copy
+                BESDEBUG(HDF5_NAME, prolog << "DMR added to the cache for : " << filename << endl);
+                dmr_cache->add(new DMR(*dmr), filename);
+            }
+            return false;
+}
 // This function is only used when EnableCF is true.
 bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 {
@@ -1966,7 +2379,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
     ifstream mcache_config_file(mcache_config_fname.c_str());
 
     // If the configuration file is not open, return false.
-    if(mcache_config_file.is_open()==false){
+    if (mcache_config_file.is_open()==false) {
         BESDEBUG(HDF5_NAME, prolog << "The large data memory cache configure file "<<mcache_config_fname );
         BESDEBUG(HDF5_NAME, prolog << " cannot be opened."<<endl);
         return false;
@@ -1976,7 +2389,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
     while(getline(mcache_config_file,temp_line)) {
 
         // Only consider lines that is no less than 2 characters and the 2nd character is space.
-        if(temp_line.size()>1 && temp_line.at(1)==' ') {
+        if (temp_line.size() >1 && temp_line.at(1)==' ') {
             char sep=' ';
             string subline = temp_line.substr(2);
             vector<string> temp_name_list;
@@ -1999,7 +2412,8 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
             }
             // Include variable names that the server would like to store in the memory cache
             else if(temp_line.at(0)=='2') {
-                
+                obtain_lrd_common_cache_dirs_data_vars(temp_name_list, subline, sep);
+#if 0
                 // We need to handle the space case inside a variable path
                 // either "" or '' needs to be used to identify a var path
                 vector<int>dq_pos;
@@ -2035,6 +2449,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                 }
 
                 lrd_var_cache_file_list.insert(lrd_var_cache_file_list.end(),temp_name_list.begin(),temp_name_list.end());
+#endif
             }
         }
     }
@@ -2058,7 +2473,46 @@ cerr<<"lrd var cache file list is "<<lrd_var_cache_file_list[i] <<endl;
         return true;
 }
 
+void HDF5RequestHandler::obtain_lrd_common_cache_dirs_data_vars(vector<string> &temp_name_list, const string &subline,
+                                                                char sep)
+{
+                // We need to handle the space case inside a variable path
+                // either "" or '' needs to be used to identify a var path
+                vector<int>dq_pos;
+                vector<int>sq_pos;
+                for(unsigned int i = 0; i<subline.size();i++){
+                    if(subline[i]=='"') {
+                        dq_pos.push_back(i);
+                    }
+                    else if(subline[i]=='\'')
+                        sq_pos.push_back(i);
+                }
+                if(dq_pos.empty() && sq_pos.empty())
+                    HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+                else if((dq_pos.empty()==false) &&(dq_pos.size()%2==0)&& sq_pos.empty()==true) {
+                    unsigned int dq_index= 0;
+                    while(dq_index < dq_pos.size()){
+                        if(dq_pos[dq_index+1]>(dq_pos[dq_index]+1)) {
+                            temp_name_list.push_back
+                            (subline.substr(dq_pos[dq_index]+1,dq_pos[dq_index+1]-dq_pos[dq_index]-1));
+                        }
+                        dq_index = dq_index + 2;
+                    }
+                }
+                else if((sq_pos.empty()==false) &&(sq_pos.size()%2==0)&& dq_pos.empty()==true) {
+                    unsigned int sq_index= 0;
+                    while(sq_index < sq_pos.size()){
+                        if(sq_pos[sq_index+1]>(sq_pos[sq_index]+1)) {
+                            temp_name_list.push_back
+                            (subline.substr(sq_pos[sq_index]+1,sq_pos[sq_index+1]-sq_pos[sq_index]-1));
+                        }
+                        sq_index = sq_index+2;
+                    }
+                }
 
+                lrd_var_cache_file_list.insert(lrd_var_cache_file_list.end(),temp_name_list.begin(),temp_name_list.end());
+
+}
 bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,DAS *das_ptr) {
 
     BESDEBUG(HDF5_NAME, prolog << "Coming to read_das_from_disk_cache() " << cache_filename << endl);
@@ -2451,6 +2905,8 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
         if(das_from_dc == true) 
             read_das_from_disk_cache(das_cache_fname,das);       
         else {
+            read_das_from_file(das, filename, das_cache_fname, h5_fd, das_from_dc);
+#if 0
             // This bool is for the case, when DDS is read from a cache then we need to open the HDF5 file.
             bool h5_file_open = true;
             if(h5_fd == -1) 
@@ -2477,6 +2933,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
 
             if(das_cache_fname!="" && das_from_dc == false)
                 write_das_to_disk_cache(das_cache_fname,das);
+#endif
         }
 
         dds->transfer_attributes(das);
@@ -2492,6 +2949,37 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
     
 }
 
+void HDF5RequestHandler::read_das_from_file(DAS *das, const string &filename, const string &das_cache_fname,
+                                            hid_t h5_fd, bool das_from_dc)
+{
+            // This bool is for the case, when DDS is read from a cache then we need to open the HDF5 file.
+            bool h5_file_open = true;
+            if(h5_fd == -1)
+                h5_file_open = false;
+            if (true == _usecf) {
+                    // go to the CF option
+                    if(h5_file_open == false)
+                        h5_fd = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+
+                    read_cfdas( *das,filename,h5_fd);
+                    if(h5_file_open == false)
+                        H5Fclose(h5_fd);
+            }
+            else {
+                    if(h5_file_open == false)
+                        h5_fd = get_fileid(filename.c_str());
+                    find_gloattr(h5_fd, *das);
+                    depth_first(h5_fd, "/", *das);
+                    if(h5_file_open == false)
+                        close_fileid(h5_fd);
+            }
+
+            Ancillary::read_ancillary_das( *das, filename ) ;
+
+            if(das_cache_fname!="" && das_from_dc == false)
+                write_das_to_disk_cache(das_cache_fname,das);
+
+}
 bool obtain_beskeys_info(const string& key, bool & has_key) {
 
     bool ret_value = false;
