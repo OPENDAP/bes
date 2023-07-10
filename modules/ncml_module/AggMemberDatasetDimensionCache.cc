@@ -314,7 +314,9 @@ void AggMemberDatasetDimensionCache::loadDimensionCache(AggMemberDataset *amd)
              "AggMemberDatasetDimensionCache::loadDimensionCache() - cache_file_name: " << cache_file_name << endl);
 
     int fd;
+#if 0
     try {
+#endif
         // If the object in the cache is not valid, remove it. The read_lock will
         // then fail and the code will drop down to the create_and_lock() call.
         // is_valid() tests for a non-zero length cache file (cache_file_name) and
@@ -401,12 +403,14 @@ void AggMemberDatasetDimensionCache::loadDimensionCache(AggMemberDataset *amd)
         BESDEBUG("cache", "AggMemberDatasetDimensionCache::loadDimensionCache() - unlocking and closing cache file "
                 << cache_file_name << endl);
         unlock_and_close(cache_file_name);
-    }
+#if 0
+}
     catch (...) {
         BESDEBUG("cache", prolog << "caught exception, unlocking cache and re-throw." << endl);
         unlock_cache();
         throw;
     }
+#endif
 
     BESDEBUG("cache", prolog << "END (local_id=`" << local_id << "')" << endl);
 }
