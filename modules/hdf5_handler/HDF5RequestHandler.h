@@ -232,17 +232,15 @@ class HDF5RequestHandler:public BESRequestHandler {
      
      static void get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const std::string &container_name,const std::string &filename, const std::string &dds_cache_fname, const std::string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data);
      static void get_dds_without_attributes_datadds(BESDataDDSResponse*data_bdds,const std::string &container_name,const std::string &filename);
-     static void read_datadds_from_file(libdap::DDS *dds, const std::string &filename, hid_t &cf_fileid, hid_t &fileid,
-                                            const std::string &container_name);
+     static void read_datadds_from_file(libdap::DDS *dds, const std::string &filename, hid_t &cf_fileid, hid_t &fileid);
 
      static void read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const std::string & container_name,const std::string & h5_fname,
                               const std::string & dds_cache_fname,const std::string &das_cache_fname, hid_t h5_fd, bool das_from_dc);
      static void read_dds_from_file(libdap::DDS *dds, const std::string &filename, hid_t &cf_fileid, hid_t &fileid,
-                                            const std::string &container_name, const std::string &dds_cache_fname,
-                                            bool dds_from_dc);
+                                    const std::string &dds_cache_fname, bool dds_from_dc);
 
      static void add_das_to_dds(libdap::DDS *dds,const std::string &container_name, const std::string &filename, const std::string &das_cache_fname,hid_t h5_fd, bool das_from_dc);
-     static void add_das_to_dds_wrapper(libdap::DDS *dds, const std::string &filename, hid_t &cf_fileid, hid_t &fileid,
+     static void add_das_to_dds_wrapper(libdap::DDS *dds, const std::string &filename, hid_t cf_fileid, hid_t fileid,
                                                 const std::string &container_name, const std::string &das_cache_fname,
                                                 bool das_from_dc);
 
@@ -255,6 +253,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static void read_das_from_file(libdap::DAS *das, const std::string &filename, const std::string &das_cache_fname,
                                             hid_t h5_fd, bool das_from_dc);
 
+     static void close_h5_files(hid_t cf_fileid, hid_t file_id);
 };
 
 #endif

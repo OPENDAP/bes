@@ -890,7 +890,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
             read_dds_from_disk_cache(bdds,data_bdds,build_data,container_name,filename,dds_cache_fname,das_cache_fname,-1,das_from_dc);
         }
         else {
-            read_dds_from_file(dds, filename, cf_fileid, fileid, container_name, dds_cache_fname, dds_from_dc);
+            read_dds_from_file(dds, filename, cf_fileid, fileid,  dds_cache_fname, dds_from_dc);
 #if 0
             BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
             H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
@@ -970,49 +970,33 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
     }
     catch(const InternalErr & e) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-
-        if(fileid != -1)
-            H5Fclose(fileid);
-
+        close_h5_files(cf_fileid, fileid);
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(const Error & e) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
-
+        close_h5_files(cf_fileid, fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(const BESSyntaxUserError & e) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
+        close_h5_files(cf_fileid, fileid);
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(...) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
-
-       string s = "unknown exception caught building HDF5 DDS";
+        close_h5_files(cf_fileid, fileid);
+        string s = "unknown exception caught building HDF5 DDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
 }
 
 void HDF5RequestHandler::read_dds_from_file(DDS *dds, const string &filename, hid_t &cf_fileid, hid_t &fileid,
-                                            const string &container_name, const string &dds_cache_fname, bool dds_from_dc)
+                                            const string &dds_cache_fname, bool dds_from_dc)
 {
             BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
             H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
@@ -1067,7 +1051,7 @@ void HDF5RequestHandler::read_dds_from_file(DDS *dds, const string &filename, hi
 
 }
 
-void HDF5RequestHandler::add_das_to_dds_wrapper(DDS *dds, const string &filename, hid_t &cf_fileid, hid_t &fileid,
+void HDF5RequestHandler::add_das_to_dds_wrapper(DDS *dds, const string &filename, hid_t cf_fileid, hid_t fileid,
                                                 const string &container_name, const string &das_cache_fname,
                                                 bool das_from_dc)
         {
@@ -1103,7 +1087,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
             *dds = *cached_dds_ptr; // Copy the referenced object
         }
         else {
-             read_datadds_from_file(dds, filename, cf_fileid, fileid, container_name);
+             read_datadds_from_file(dds, filename, cf_fileid, fileid);
 #if 0
             BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
             H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
@@ -1184,50 +1168,32 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
 
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
-
+        close_h5_files(cf_fileid, fileid);
         throw;
     }
 
     catch(const InternalErr & e) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-
-        if(fileid != -1)
-            H5Fclose(fileid);
-
+        close_h5_files(cf_fileid, fileid);
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(const Error & e) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
-
+        close_h5_files(cf_fileid, fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(...) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
-
+       close_h5_files(cf_fileid, fileid);
        string s = "unknown exception caught building HDF5 DDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
 }
 
-void HDF5RequestHandler::read_datadds_from_file(DDS *dds, const string &filename, hid_t &cf_fileid, hid_t &fileid,
-                                            const string &container_name)
+void HDF5RequestHandler::read_datadds_from_file(DDS *dds, const string &filename, hid_t &cf_fileid, hid_t &fileid)
 {
             BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
             H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
@@ -1294,10 +1260,7 @@ void HDF5RequestHandler::read_datadds_from_file(DDS *dds, const string &filename
                 datadds_cache->add(new DDS(*dds), filename);
             }
 
-            if(cf_fileid != -1)
-                H5Fclose(cf_fileid);
-            if(fileid != -1)
-                H5Fclose(fileid);
+            close_h5_files(cf_fileid, fileid);
 
 }
 #if 0
@@ -1978,38 +1941,26 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         }// else no cache
     }// try
     catch(const BESError & e) {
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
+        close_h5_files(cf_fileid, fileid);
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(const InternalErr & e) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
+        close_h5_files(cf_fileid, fileid);
 
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(const Error & e) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
+        close_h5_files(cf_fileid, fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
     catch(...) {
 
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
+        close_h5_files(cf_fileid, fileid);
         string s = "unknown exception caught building HDF5 DMR";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
@@ -3274,4 +3225,11 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
 
 }
 
+void HDF5RequestHandler::close_h5_files(hid_t cf_fileid, hid_t fileid) {
 
+    if (cf_fileid != -1)
+        H5Fclose(cf_fileid);
+    if (fileid != -1)
+        H5Fclose(fileid);
+
+}

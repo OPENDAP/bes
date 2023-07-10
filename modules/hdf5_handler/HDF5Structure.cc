@@ -119,7 +119,7 @@ bool HDF5Structure::read()
     return true;
 }
 
-void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> &values,bool has_values, int values_offset) {
+void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> &values,bool has_values, size_t values_offset) {
 
     hid_t memtype = -1;
     hid_t mspace  = -1;
@@ -297,7 +297,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
 }
 
 void HDF5Structure::do_structure_read_string(hid_t memb_id,char *memb_name,
-                                             const vector<char> &values, int values_offset,
+                                             const vector<char> &values, size_t values_offset,
                                              size_t memb_offset) {
 
     void *src = (void *) (values.data() + values_offset + memb_offset);

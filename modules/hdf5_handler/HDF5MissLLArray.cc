@@ -199,9 +199,6 @@ bool HDF5MissLLArray::read_data_geo(){
        throw InternalErr (__FILE__, __LINE__,
                           "The number of elments for geographic lat/lon is negative or greater than 2G.");
 
-    float start = 0.0;
-    float end   = 0.0;
-
     vector<float>val;
     val.resize(nelms);
 
@@ -272,21 +269,21 @@ for (int i =0; i <nelms; i++)
 #endif
 
     if (is_lat)
-        read_data_geo_lat(nelms, offset, count, step, val) ;
+        read_data_geo_lat(nelms, offset, step, val) ;
     else
-        read_data_geo_lon(nelms, offset, count, step, val) ;
+        read_data_geo_lon(nelms, offset,  step, val) ;
     set_value_ll(val.data(), nelms);
     
  
     return true;
 }
 
-void HDF5MissLLArray::read_data_geo_lat(int64_t nelms, const vector<int64_t> &offset, const vector<int64_t> &count,
+void HDF5MissLLArray::read_data_geo_lat(int64_t nelms, const vector<int64_t> &offset,
                                           const vector<int64_t> &step, vector<float> &val)
 {
 
     float start = 0.0;
-    float end   = 0.0;
+    float end = 0.0;
 
 	if (HE5_HDFE_GD_UL == g_info.gridorigin || HE5_HDFE_GD_UR == g_info.gridorigin) {
 
@@ -317,8 +314,8 @@ void HDF5MissLLArray::read_data_geo_lat(int64_t nelms, const vector<int64_t> &of
 
 }
 
-void HDF5MissLLArray::read_data_geo_lon(int64_t nelms, const vector<int64_t> &offset, const vector<int64_t> &count,
-                                          const vector<int64_t> &step, vector<float> &val) {
+void HDF5MissLLArray::read_data_geo_lon(int64_t nelms, const vector<int64_t> &offset, const vector<int64_t> &step,
+                                        vector<float> &val) {
 
     float start = 0.0;
     float end   = 0.0;

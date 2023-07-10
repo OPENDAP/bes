@@ -64,13 +64,13 @@ class HDF5Array:public libdap::Array {
     hid_t mkstr(int size, H5T_str_t pad);
 #endif
 
-    bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,const int64_t* offset,const int64_t* count,const int64_t *step);
-    void m_array_of_structure_member(libdap::BaseType *field, hid_t memtype, unsigned int u,hid_t dsetid, std::vector<char>&values,bool has_values, size_t struct_elem_offset );
+    bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values, size_t values_offset,int64_t nelms,const int64_t* offset,const int64_t* count,const int64_t *step);
+    void m_array_of_structure_member(libdap::BaseType *field, hid_t memtype, unsigned int u,hid_t dsetid,
+                                     std::vector<char>&values,bool has_values, size_t struct_elem_offset ) const;
 
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
-    void m_array_of_region_reference(hid_t d_dset_id,std::vector<std::string>& v_str,
-                                             int64_t nelms, const std::vector<int64_t>& offset,
-                                             const std::vector<int64_t> &count,const std::vector<int64_t> &step);
+    void m_array_of_region_reference(hid_t d_dset_id,std::vector<std::string>& v_str, int64_t nelms,
+                                     const std::vector<int64_t>& offset, const std::vector<int64_t> &step);
     void m_array_of_object_reference(hid_t d_dset_id, std::vector<std::string>& v_str,
                                              int64_t nelms, const std::vector<int64_t>& offset,
                                             const std::vector<int64_t> &step);
@@ -88,21 +88,22 @@ class HDF5Array:public libdap::Array {
     //void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step);
     void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,
                        int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step);
-    bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,std::vector<char>&values,bool has_values,int values_offset, int64_t at_nelms,int64_t* at_offset,int64_t*at_count,int64_t* at_step);
+    bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,std::vector<char>&values,bool has_values,size_t values_offset,
+                               int64_t at_nelms,int64_t* at_offset,int64_t*at_count,int64_t* at_step);
     void do_h5_array_type_read_base_compound_member(hid_t dsetid, libdap::BaseType *field, hid_t child_memb_id,
                                                        H5T_class_t child_memb_cls, vector<char>&values,
-                                           bool has_values, int values_offset, int64_t at_nelms,
+                                           bool has_values, size_t values_offset, int64_t at_nelms,
                                            int64_t at_total_nelms, size_t at_base_type_size, int64_t array_index,
                                            int64_t at_orig_index, size_t child_memb_offset);
     void do_h5_array_type_read_base_compound_member_string(libdap::BaseType *field, hid_t child_memb_id,
-                                                            const std::vector<char> &values, size_t data_offset);
+                                                            const std::vector<char> &values, size_t data_offset) const;
 
     void do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t at_base_type, size_t at_base_type_size,
-                                           std::vector<char>&values, int values_offset, int64_t at_nelms,int64_t at_total_nelms,
+                                           std::vector<char>&values, size_t values_offset, int64_t at_nelms,int64_t at_total_nelms,
                                            int at_ndims, std::vector<int64_t> &at_dims, int64_t* at_offset,
                                                     int64_t* at_step, int64_t *at_count);
     void do_h5_array_type_read_base_atomic_whole_data(H5T_class_t array_cls, hid_t at_base_type,int64_t at_nelms,
-                                                             std::vector<char> &values, int values_offset)   ;
+                                                             std::vector<char> &values, size_t values_offset)   ;
     inline int64_t INDEX_nD_TO_1D (const std::vector < int64_t > &dims,
                                 const std::vector < int64_t > &pos) const;
     bool obtain_next_pos(std::vector<int64_t>& pos, std::vector<int64_t>&start,std::vector<int64_t>&end,std::vector<int64_t>&step,int rank_change);
@@ -119,11 +120,11 @@ class HDF5Array:public libdap::Array {
             int index);
 
     bool handle_one_dim(libdap::Array::Dim_iter d, libdap::D4Group *temp_grp,
-                                   libdap::D4Dimension * &d4_dim, const vector<string> &dimpath, int k);
+                                   libdap::D4Dimension * &d4_dim, const vector<string> &dimpath, int k) const;
     void m_array_of_region_reference_point_selection(hid_t space_id, int ndim, const std::string &varname,
-                                                             std::vector<std::string> &v_str,int i);
+                                                             std::vector<std::string> &v_str,int64_t i);
     void m_array_of_region_reference_hyperslab_selection(hid_t space_id, int ndim, const std::string &varname,
-                                                             std::vector<std::string> &v_str,int i);
+                                                             std::vector<std::string> &v_str,int64_t i);
     friend class HDF5Structure;
   public:
 

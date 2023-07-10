@@ -49,9 +49,9 @@ class HDF5Structure:public libdap::Structure {
         var_path = src.var_path;
     }
 
-    void do_structure_read(hid_t dsetid, hid_t dtypeid,std::vector <char> &values,bool has_values, int values_offset);
+    void do_structure_read(hid_t dsetid, hid_t dtypeid,std::vector <char> &values,bool has_values, size_t values_offset);
     void do_structure_read_string(hid_t memb_id, char *memb_name, const std::vector<char> &values,
-                                                 int values_offset, size_t memb_offset);
+                                                 size_t values_offset, size_t memb_offset);
     friend class HDF5Array;
   public:
 

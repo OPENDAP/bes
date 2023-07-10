@@ -34,9 +34,9 @@ class HDF5MissLLArray:public libdap::Array {
         eos5_grid_info_t g_info;
 
         bool read_data_geo();
-        void read_data_geo_lat(int64_t nelms, const std::vector<int64_t> &offset, const std::vector<int64_t> &count,
+        void read_data_geo_lat(int64_t nelms, const std::vector<int64_t> &offset,
                                           const std::vector<int64_t> &step, std::vector<float> &val) ;
-        void read_data_geo_lon(int64_t nelms, const std::vector<int64_t> &offset, const std::vector<int64_t> &count,
+        void read_data_geo_lon(int64_t nelms, const std::vector<int64_t> &offset,
                                           const std::vector<int64_t> &step, std::vector<float> &val) ;
         bool read_data_non_geo();
         int64_t format_constraint (int64_t *offset, int64_t *step, int64_t *count);

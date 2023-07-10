@@ -208,7 +208,7 @@ void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,
 
     H5T_class_t  tcls = H5Tget_class(dtype_id);
     bool has_values = false;
-    int values_offset = 0;
+    size_t values_offset = 0;
 
     if(H5T_COMPOUND == tcls)
         m_array_of_structure(dset_id,values,has_values,values_offset,nelms,offset,count,step);
@@ -386,7 +386,7 @@ void HDF5Array::handle_vlen_string(hid_t dset_id, hid_t memtype, int64_t nelms, 
         H5Tclose(memtype);
 
 }
-bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_values,int values_offset,
+bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_values, size_t values_offset,
                                    int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step) {
 
     BESDEBUG("h5", "=read() Array of Structure length=" << length() << endl);
@@ -644,7 +644,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
     return false;
 }
 
-void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, unsigned int u,hid_t dsetid, vector<char>&values,bool has_values, size_t struct_elem_offset )
+void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, unsigned int u, hid_t dsetid,
+                                             vector<char>&values,bool has_values, size_t struct_elem_offset ) const
 {
 
     hid_t  memb_id  = -1;
@@ -667,7 +668,7 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
 
                 if (memb_cls == H5T_COMPOUND) {
                     HDF5Structure &memb_h5s = dynamic_cast<HDF5Structure&>(*field);
-                    memb_h5s.do_structure_read(dsetid, memb_id,values,has_values,memb_offset+struct_elem_offset);
+                    memb_h5s.do_structure_read(dsetid, memb_id,values,has_values,(int)(memb_offset+struct_elem_offset));
                 }
 
                 else if(memb_cls == H5T_ARRAY) {
@@ -688,14 +689,14 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
                     int64_t at_nelms = h5_array_type.format_constraint(at_offset.data(),at_step.data(),at_count.data());
 
                     // Read the array data
-                    h5_array_type.do_h5_array_type_read(dsetid,memb_id,values,has_values,memb_offset+struct_elem_offset,
+                    h5_array_type.do_h5_array_type_read(dsetid,memb_id,values,has_values,(int)(memb_offset+struct_elem_offset),
                                                         at_nelms,at_offset.data(),at_count.data(),at_step.data());
 
                 }
                 else if(memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT) {
 
                     if(true == promote_char_to_short(memb_cls,memb_id)) {
-                        void *src = (void*)(values.data() + struct_elem_offset +memb_offset);
+                        auto src = (const void*)(values.data() + struct_elem_offset +memb_offset);
                         char val_int8;
                         memcpy(&val_int8,src,1);
                         auto val_short=(short)val_int8;
@@ -710,13 +711,13 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
 
                     // distinguish between variable length and fixed length
                     if(true == H5Tis_variable_str(memb_id)) {
-                        void *src = (void*)(values.data()+struct_elem_offset + memb_offset);
+                        auto src = (void*)(values.data()+struct_elem_offset + memb_offset);
                         string final_str;
                         get_vlen_str_data((char*)src,final_str);
                         field->val2buf(&final_str);
                     }
                     else {// Obtain fixed-size string value
-                        void *src = (void*)(values.data()+struct_elem_offset + memb_offset);
+                        auto src = (const void*)(values.data()+struct_elem_offset + memb_offset);
                         vector<char> str_val;
                         size_t memb_size = H5Tget_size(memb_id);
                         if (memb_size == 0) {
@@ -1020,7 +1021,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 	}
 
 	if (H5Tequal(dtype_id, H5T_STD_REF_DSETREG) > 0) {
-        m_array_of_region_reference(d_dset_id,v_str, nelms, offset, count, step);
+        m_array_of_region_reference(d_dset_id,v_str, nelms, offset, step);
 #if 0
 	    BESDEBUG("h5", "=read() Got regional reference. " << endl);
             // Vector doesn't work for this case. somehow it doesn't support the type.
@@ -1220,7 +1221,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 
 void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_str,
                                              int64_t nelms, const vector<int64_t>& offset,
-                                             const vector<int64_t> &count,const vector<int64_t> &step) {
+                                             const vector<int64_t> &step) {
 
             hdset_reg_ref_t *rbuf = nullptr;
     	    BESDEBUG("h5", "=read() Got regional reference. " << endl);
@@ -1380,7 +1381,7 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
 }
 
 void HDF5Array:: m_array_of_region_reference_point_selection(hid_t space_id, int ndim, const string &varname,
-                                                             vector<string> &v_str,int i) {
+                                                             vector<string> &v_str,int64_t i) {
 
     string expression;
                             BESDEBUG("h5", "=read() Points selected." << endl);
@@ -1420,7 +1421,7 @@ void HDF5Array:: m_array_of_region_reference_point_selection(hid_t space_id, int
 }
 
 void HDF5Array:: m_array_of_region_reference_hyperslab_selection(hid_t space_id, int ndim, const string &varname,
-                                                             vector<string> &v_str,int i)
+                                                             vector<string> &v_str,int64_t i)
 {
     string expression;
                             vector<hsize_t> start(ndim);
@@ -1793,7 +1794,7 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
 }
 
 
-bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&values,bool has_values,int values_offset,
+bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&values,bool has_values,size_t values_offset,
                                                    int64_t at_nelms,int64_t* at_offset,int64_t* at_count, int64_t* at_step){
     //1. Call do array first(datatype must be derived) and the value must be set. We don't support Array datatype 
     //   unless it is inside a compound datatype
@@ -2378,7 +2379,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
 void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseType *field, hid_t child_memb_id,
                                                        H5T_class_t child_memb_cls, vector<char>&values,
-                                           bool has_values, int values_offset, int64_t at_nelms,
+                                           bool has_values, size_t values_offset, int64_t at_nelms,
                                            int64_t at_total_nelms, size_t at_base_type_size, int64_t array_index,
                                            int64_t at_orig_index, size_t child_memb_offset) {
     if (child_memb_cls == H5T_COMPOUND) {
@@ -2439,7 +2440,7 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseTy
 
         int64_t number_index = ((at_total_nelms == at_nelms) ? array_index : at_orig_index);
         if (true == promote_char_to_short(child_memb_cls, child_memb_id)) {
-            void *src = (void *) (values.data() + (number_index * at_base_type_size) + values_offset +
+            auto src = (const void *) (values.data() + (number_index * at_base_type_size) + values_offset +
                                   child_memb_offset);
             char val_int8;
             memcpy(&val_int8, src, 1);
@@ -2497,7 +2498,7 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseTy
 }
 
 void HDF5Array:: do_h5_array_type_read_base_compound_member_string(BaseType *field, hid_t child_memb_id,
-                                                            const vector<char> &values, size_t data_offset)
+                                                            const vector<char> &values, size_t data_offset) const
 {
  // distinguish between variable length and fixed length
         auto src = (void *) (values.data() + data_offset);
@@ -2535,7 +2536,7 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member_string(BaseType *fie
 }
 void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t at_base_type, size_t at_base_type_size,
                                                    vector<char>&values,
-                                                    int values_offset, int64_t at_nelms,int64_t at_total_nelms,
+                                                    size_t values_offset, int64_t at_nelms,int64_t at_total_nelms,
                                                     int at_ndims, vector<int64_t> &at_dims, int64_t* at_offset,
                                                     int64_t* at_step, int64_t *at_count) {
         // If no subset for the array datatype, just read the whole buffer.
@@ -2755,7 +2756,7 @@ void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t a
     }
 
 void HDF5Array::do_h5_array_type_read_base_atomic_whole_data(H5T_class_t array_cls, hid_t at_base_type,int64_t at_nelms,
-                                                             vector<char> &values, int values_offset)
+                                                             vector<char> &values, size_t values_offset)
 {
                 // For DAP2 char should be mapped to short
             if (true == promote_char_to_short(array_cls, at_base_type)) {
@@ -3001,7 +3002,7 @@ cout <<"temp_grp->FQN() " <<temp_grp->FQN() <<endl;
 }
 
 bool HDF5Array::handle_one_dim(Array::Dim_iter d, D4Group *temp_grp, D4Dimension * &d4_dim, const vector<string> &dimpath,
-                                int k)
+                                int k) const
 {
     bool is_dim_nonc4_grp = false;
             while(temp_grp) {
