@@ -35,7 +35,11 @@ echo "time_now: ${time_now}" >&2
 
 # Build the BES snapshot record.
 BES_SNAPSHOT="bes-${bes_version} ${time_now}"
-echo "bes-snapshot record: ${BES_SNAPSHOT}" >&2
+echo "BES_SNAPSHOT: ${BES_SNAPSHOT}" >&2
+
+# Build the build_dmrpp snapshot record.
+BUILD_DMRPP_SNAPSHOT="bes-${bes_version} ${time_now}"
+echo "BUILD_DMRPP_SNAPSHOT: ${BUILD_DMRPP_SNAPSHOT}" >&2
 
 echo "Tagging bes with version: ${bes_version}"
 git tag -m "bes-${bes_version}" -a "${bes_version}"
@@ -55,6 +59,9 @@ echo "${LIBDAP4_SNAPSHOT}" > bes-snapshot
 
 # Append the BES snapshot record to the bes-snapshot file.
 echo "${BES_SNAPSHOT}" >> bes-snapshot
+
+# Append the build_dmrpp snapshot record to the bes-snapshot file.
+echo "${BUILD_DMRPP_SNAPSHOT}" >> bes-snapshot
 
 cat bes-snapshot >&2
 
