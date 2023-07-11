@@ -32,13 +32,9 @@
 /// \author James Gallagher (jgallagher@opendap.org)
 
 
-#include "config_hdf5.h"
 
 #include <iostream>
 #include <memory>
-#include <sstream>
-#include <algorithm>
-#include <ctype.h>
 
 #include <BESDebug.h>
 #include <libdap/Error.h>
@@ -1470,7 +1466,7 @@ void HDF5Array:: m_array_of_region_reference_hyperslab_selection(hid_t space_id,
 }
 void HDF5Array:: m_array_of_object_reference(hid_t d_dset_id, vector<string>& v_str,
                                              int64_t nelms, const vector<int64_t>& offset,
-                                            const vector<int64_t> &step)
+                                            const vector<int64_t> &step) const
 {
 	    BESDEBUG("h5", "=read() Got object reference. " << endl);
             vector<hobj_ref_t> orbuf;

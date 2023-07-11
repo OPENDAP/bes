@@ -73,7 +73,7 @@ class HDF5Array:public libdap::Array {
                                      const std::vector<int64_t>& offset, const std::vector<int64_t> &step);
     void m_array_of_object_reference(hid_t d_dset_id, std::vector<std::string>& v_str,
                                              int64_t nelms, const std::vector<int64_t>& offset,
-                                            const std::vector<int64_t> &step);
+                                            const std::vector<int64_t> &step) const;
 
     bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id);
 
