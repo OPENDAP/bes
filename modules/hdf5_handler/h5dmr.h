@@ -150,7 +150,7 @@ typedef struct {
 } eos5_dim_info_t;
 #endif
 
-bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &);
+bool breadth_first(hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &);
 void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, std::vector<char> &oname);
 bool check_soft_external_links(libdap::D4Group *par_grp, hid_t pid, int & slinkindex, const char *gname,
                                const std::vector<char> &oname, bool handle_softlink);
@@ -158,17 +158,17 @@ void handle_actual_dataset(libdap::D4Group *par_grp, hid_t pid, const string &fu
                            bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info);
 void handle_pure_dimension(libdap::D4Group *par_grp, hid_t pid, const std::vector<char>& oname, bool is_eos5, const std::string &full_path_name);
 void handle_eos5_datasets(libdap::D4Group* par_grp, const char *gname, eos5_dim_info_t &eos5_dim_info);
-void handle_child_grp(const hid_t file_id, hid_t pid, const char *gname, libdap::D4Group* par_grp, const char *fname,
+void handle_child_grp(hid_t file_id, hid_t pid, const char *gname, libdap::D4Group* par_grp, const char *fname,
                       bool use_dimscale,bool is_eos5,std::vector<link_info_t> & hdf5_hls,
                       eos5_dim_info_t & eos5_dim_info, std::vector<std::string> & handled_cv_names,
                       const std::vector<char>& oname);
 
-void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
-void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, eos5_dim_info_t &);
+void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename, hid_t, bool, bool, eos5_dim_info_t &);
+void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename, hid_t, bool, bool, eos5_dim_info_t &);
 void read_objects_basetype_attr_hl(const std::string &varname, libdap::BaseType *bt, hid_t dset_id,  bool is_eos5);
 
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,
-                            const hid_t, bool, bool);
+                            hid_t, bool, bool);
 void read_objects_structure_arrays(libdap::D4Group *d4_grp, libdap::Structure *structure, const std::string & varname,
                                    const std::string &newvarname, const std::string &filename, hid_t dset_id,
                                    bool is_eos5);
@@ -215,7 +215,9 @@ void reorder_vars_internal(libdap::D4Group* d4_grp, const std::vector<int> &cv_p
 void reorder_vars_internal_final_phase(libdap::D4Group* d4_grp, const std::vector<int> &mov_cv_pos,
                                        const std::vector<int> &mov_front_pos, const std::vector<libdap::BaseType *> &mov_front_vptr,
                                        const std::vector<libdap::BaseType *> &mov_cv_ptr);
+#if 0
 bool is_cvar(const libdap::BaseType*, const std::unordered_map<std::string,libdap::Array*> &coname_array_maps, const std::unordered_map<std::string,libdap::Array*> & dc_array_maps);
+#endif
 
 /// EOS5 handling 
 string read_struct_metadata(hid_t s_file_id);

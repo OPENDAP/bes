@@ -53,7 +53,7 @@
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
-#include "HDF5RequestHandler.h"
+//#include "HDF5RequestHandler.h"
 #include "h5dmr.h"
 
 // The HDF5CFUtil.h includes the utility function obtain_string_after_lastslash.
@@ -114,7 +114,7 @@ void write_dap4_attr_value(D4Attribute *d4_attr, hid_t ty_id, hsize_t nelmts, ch
 /// \see depth_first(hid_t pid, char *gname, DDS & dds, const char *fname) in h5dds.cc
 ///////////////////////////////////////////////////////////////////////////////
 
-bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, 
+bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
                    D4Group* par_grp, const char *fname,
                    bool use_dimscale,bool is_eos5, 
                    vector<link_info_t> & hdf5_hls,
@@ -626,7 +626,7 @@ void handle_eos5_datasets(D4Group* par_grp, const char *gname, eos5_dim_info_t &
     }
 }
 
-void handle_child_grp(const hid_t file_id, hid_t pid, const char *gname,
+void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
                       D4Group* par_grp, const char *fname,
                       bool use_dimscale,bool is_eos5,
                       vector<link_info_t> & hdf5_hls,
@@ -654,8 +654,8 @@ void handle_child_grp(const hid_t file_id, hid_t pid, const char *gname,
     auto grp_name = string(oname.begin(),oname.end()-1);
 
     // Check the hard link loop and break the loop if it exists.
-    string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
-    if (oid == "") {
+    string oid = get_hardlink_dmr(cgroup, full_path_name);
+    if (oid.empty()) {
 
         try {
             if (is_eos5)
@@ -713,7 +713,7 @@ void handle_child_grp(const hid_t file_id, hid_t pid, const char *gname,
 /////////////////////////////////////////////////////////////////////////////////
 //
 void
-read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale,
+read_objects( D4Group * d4_grp, const string &varname, const string &filename, hid_t dset_id,bool use_dimscale,
               bool is_eos5, eos5_dim_info_t & eos5_dim_info) {
 
     // NULL space data, ignore.
@@ -744,7 +744,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 void array_add_dimensions_dimscale(HDF5Array *ar){
 
     for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-        if (dt_inst.dimnames[dim_index] != "")
+        if (dt_inst.dimnames[dim_index].empty() == false)
             ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
         else
             ar->append_dim_ll(dt_inst.size[dim_index]);
@@ -1137,7 +1137,7 @@ void read_objects_structure_arrays(D4Group *d4_grp, Structure *structure, const 
 
     if (dimnames_size ==dt_inst.ndims) {
         for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-            if (dt_inst.dimnames[dim_index] !="")
+            if (dt_inst.dimnames[dim_index].empty() ==false)
                 ar->append_dim_ll(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
             else
                 ar->append_dim_ll(dt_inst.size[dim_index]);
@@ -1301,7 +1301,6 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         }
     } // for (int j = 0; j < num_attr; j++)
 
-    return;
 }
 
 void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, const DSattr_t &attr_inst) {
@@ -1444,7 +1443,6 @@ void map_h5_varpath_to_dap4_attr(D4Group* d4g,BaseType* d4b,Structure * d4s,cons
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    return;
 }
 
 
@@ -1565,7 +1563,7 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
         // Add this hard link to the map.
         // obj_paths is a global variable defined at the beginning of this file.
-        // it is essentially a id to obj name map. See HDF5PathFinder.h.
+        // it is essentially an id to obj name map. See HDF5PathFinder.h.
         if (!obj_paths.add(objno, oname)) {
             return objno;
         }
@@ -2136,7 +2134,7 @@ int obtain_struct_metadata_value_internal(hid_t ecs_grp_id, const vector<string>
             if (-1 == strmeta_num)
                 total_strmeta_value = finstr;
             // strmeta_value at this point should be empty before assigning any value.
-            else if (strmeta_value[strmeta_num]!="") {
+            else if (strmeta_value[strmeta_num].empty() == false) {
                 string msg = "The structmeta value array at this index should be empty string  ";
                 H5Gclose(ecs_grp_id);
                 throw InternalErr(__FILE__, __LINE__, msg);
@@ -2811,7 +2809,7 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
         // Only Array can have maps.
         if (libdap::dods_array_c == v->type()) {
 
-            auto t_a = static_cast<Array *>(*vi);
+            auto t_a = dynamic_cast<Array *>(*vi);
 
             vector<string> coord_names;
             unordered_set<string> handled_dim_names;
@@ -2901,7 +2899,7 @@ void add_dap4_coverage_default_internal(D4Group* d4_grp, unordered_map<string, A
         // Only Arrays can have maps.
         if (libdap::dods_array_c == v->type()) {
 
-            auto t_a = static_cast<Array *>(*vi);
+            auto t_a = dynamic_cast<Array *>(*vi);
 
             vector<string> coord_names;
             unordered_set<string> handled_dim_names;
@@ -2998,7 +2996,7 @@ void make_coord_names_fpath(D4Group* d4_grp,  vector<string> &coord_names) {
 
 }
 
-// This is for case when coordinates is something like "lat lon", no path is provided.
+// This is for the case when the coordinates attribute is something like "lat lon", no path is provided.
 // We then search the variable names at this group and the ancestor groups until we find them.
 // Note this function only applies to one coordinate at each time.
 bool obtain_no_path_cv(D4Group *d4_grp, string &coord_name) {
@@ -3015,7 +3013,7 @@ bool obtain_no_path_cv(D4Group *d4_grp, string &coord_name) {
         // Currently we only consider the cv that is an array.
         if (libdap::dods_array_c == v->type()) {
 
-            auto t_a = static_cast<Array *>(*vi);
+            auto t_a = dynamic_cast<Array *>(*vi);
             if (coord_name == t_a->name()) {
                 // Find the coordinate variable, But We need to return the absolute path of the variable.
                 coord_name = t_a->FQN();
@@ -3027,7 +3025,7 @@ bool obtain_no_path_cv(D4Group *d4_grp, string &coord_name) {
 
     if (found_cv == false) {
         if (d4_grp->get_parent()) {
-            auto d4_grp_par = static_cast<D4Group*>(d4_grp->get_parent());
+            auto d4_grp_par = dynamic_cast<D4Group*>(d4_grp->get_parent());
             found_cv = obtain_no_path_cv(d4_grp_par,coord_name);
         }
     }
@@ -3043,7 +3041,6 @@ void handle_absolute_path_cv(const D4Group *d4_grp, string &coord_name) {
     if (d4_grp_fqn.find(cv_path) != 0) 
         coord_name="";
 
-    return;
 }
 
 // Handle the coordinate attribute that includes relative paths such as coordinates={../../foo etc}
@@ -3207,7 +3204,7 @@ void add_dimscale_maps_internal(BaseType *v, unordered_map<string,Array*>&dsn_ar
                                const vector<string>& handled_all_cv_names)
 {
 
-            auto t_a = static_cast<Array *>(v);
+            auto t_a = dynamic_cast<Array *>(v);
             // Dimension scales must be 1-dimension. So we save many unnecessary operations.
             // Find the dimension scale, insert to the global unordered_map.
             if (t_a->dimensions() == 1) {
@@ -3249,7 +3246,7 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
     }
 
    // Now we need to search the rest of this variable's coordinates. 
-   // Note the the array of coname_array_maps is the map array. It is gradually built.
+   // Note the array of coname_array_maps is the map array. It is gradually built.
     for (auto cv_it =coord_names.begin(); cv_it != coord_names.end();) {
 
         bool found_cv = false;
@@ -3265,7 +3262,7 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
             // cannot handle such a case now. So no maps will be generated for scalar coordiates.
             if (libdap::dods_array_c == v->type()) {
     
-                auto t_a = static_cast<Array *>(*vi);
+                auto t_a = dynamic_cast<Array *>(*vi);
                 // Find it.
                 if (*cv_it == t_a->FQN()) {
     
@@ -3293,9 +3290,9 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
             ++cv_it;
     }
 
-    // Need to check the parent group and call recursively for the coordinates not found in this group..
+    // Need to check the parent group and call recursively for the coordinates not found in this group.
     if (coord_names.empty() == false && d4_grp->get_parent()) {
-        auto d4_grp_par = static_cast<D4Group*>(d4_grp->get_parent());
+        auto d4_grp_par = dynamic_cast<D4Group*>(d4_grp->get_parent());
         add_coord_maps(d4_grp_par,var,coord_names,coname_array_maps,handled_dim_names);
     }
 }
@@ -3334,7 +3331,6 @@ void add_dimscale_maps(libdap::Array* var, std::unordered_map<std::string,libdap
             }
         }
     }
-    return;
 }
 
 
@@ -3634,6 +3630,8 @@ void reorder_vars_internal_final_phase(D4Group* d4_grp, const vector<int> &mov_c
         }
 
 }
+
+#if 0
 bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array_maps, const unordered_map<string,Array*> & dc_array_maps) {
 
     bool ret_value = false;
@@ -3647,6 +3645,7 @@ bool is_cvar(const BaseType *v, const unordered_map<string,Array*> &coname_array
     }
     return ret_value;
 }
+#endif
 
 void add_possible_eos5_grid_vars(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info) {
 
@@ -4058,8 +4057,8 @@ void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
     catch (...) {
         //if (ar_bt_lat) delete ar_bt_lat;
         //if (ar_bt_lon) delete ar_bt_lon;
-        if (ar_lat) delete ar_lat;
-        if (ar_lon) delete ar_lon;
+        delete ar_lat;
+        delete ar_lon;
         throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
     }
 }
@@ -4242,15 +4241,15 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
 
     }
     catch (...) {
-        if (dummy_proj_cf) delete dummy_proj_cf;
+        delete dummy_proj_cf;
         //if (ar_bt_dim0) delete ar_bt_dim0;
         //if (ar_bt_dim1) delete ar_bt_dim1;
-        if (ar_dim0) delete ar_dim0;
-        if (ar_dim1) delete ar_dim1;
+        delete ar_dim0;
+        delete ar_dim1;
         //if (ar_bt_lat) delete ar_bt_lat;
         //if (ar_bt_lon) delete ar_bt_lon;
-        if (ar_lat) delete ar_lat;
-        if (ar_lon) delete ar_lon;
+        delete ar_lat;
+        delete ar_lon;
         throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
     }
 }
@@ -4569,7 +4568,7 @@ bool no_eos5_grid_vars_in_grp(D4Group *d4_group, const eos5_grid_info_t &eg_info
     bool ret_value = true;
 
     // Even if we find the correct eos group, we need to ensure that the variables we want to add
-    // do not exist. That is: we need to check the variable names like Latitude/Longitude etc don't exist in
+    // do not exist. That is: we need to check the variable names like Latitude/Longitude etc. don't exist in
     // this group. This seems unnecessary, but we do observe that data producers may add CF variables by themselves.
     // The handler needs to ensure that it will keep using the variables added by the data producers first.
 

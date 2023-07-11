@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf5 data handler for the OPeNDAP data server.
-// Currently it provides the missing latitude,longitude fields for the HDF-EOS5 files for the default option.
+// Currently, it provides the missing latitude,longitude fields for the HDF-EOS5 files for the default option.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _HDF5MISSLLARRAY_H

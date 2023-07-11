@@ -1860,16 +1860,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
         at_total_nelms = at_total_nelms*at_dims[i];
 
     H5T_class_t array_cls = H5Tget_class(at_base_type);
-    if(H5T_NO_CLASS == array_cls) {
-        H5Tclose(at_base_type);
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype class of the array base type.");
-    }
-
     size_t at_base_type_size = H5Tget_size(at_base_type);
-    if(0 == at_base_type_size){
-        H5Tclose(at_base_type);
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain the size  of the array base type.");
-    }
 
     // H5 Array type, the basetype is COMPOUND.
     if(H5T_COMPOUND == array_cls) {
