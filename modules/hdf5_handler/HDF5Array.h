@@ -67,6 +67,9 @@ class HDF5Array:public libdap::Array {
     bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values, size_t values_offset,int64_t nelms,const int64_t* offset,const int64_t* count,const int64_t *step);
     void m_array_of_structure_member(libdap::BaseType *field, hid_t memtype, unsigned int u,hid_t dsetid,
                                      std::vector<char>&values,bool has_values, size_t struct_elem_offset ) const;
+    void m_array_of_structure_close_hdf5_ids(std::vector<char> &values, bool has_values, hid_t mspace, hid_t dtypeid, hid_t memtype) const;
+    void m_array_of_structure_catch_close_hdf5_ids(hid_t memb_id, char * memb_name, std::vector<char> &values, bool has_values,
+                                               hid_t mspace, hid_t dtypeid, hid_t memtype) const;
 
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
     void m_array_of_region_reference(hid_t d_dset_id,std::vector<std::string>& v_str, int64_t nelms,

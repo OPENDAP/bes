@@ -1,9 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf5 data handler for the OPeNDAP data server.
-// Currently it provides the missing latitude,longitude fields for the HDF-EOS5 files for the default option.
+// Currently, it provides the missing latitude,longitude fields for the HDF-EOS5 files for the default option.
 /////////////////////////////////////////////////////////////////////////////
 
-#include "config_hdf5.h"
 #include <sys/stat.h>
 #include <iostream>
 #include <sstream>
@@ -197,7 +196,7 @@ bool HDF5MissLLArray::read_data_geo(){
 
     if (nelms <= 0 || nelms >DODS_INT_MAX) 
        throw InternalErr (__FILE__, __LINE__,
-                          "The number of elments for geographic lat/lon is negative or greater than 2G.");
+                          "The number of elements for geographic lat/lon is negative or greater than 2G.");
 
     vector<float>val;
     val.resize(nelms);
@@ -279,7 +278,7 @@ for (int i =0; i <nelms; i++)
 }
 
 void HDF5MissLLArray::read_data_geo_lat(int64_t nelms, const vector<int64_t> &offset,
-                                          const vector<int64_t> &step, vector<float> &val)
+                                          const vector<int64_t> &step, vector<float> &val) const
 {
 
     float start = 0.0;
@@ -299,7 +298,7 @@ void HDF5MissLLArray::read_data_geo_lat(int64_t nelms, const vector<int64_t> &of
 
 	if(g_info.ydim_size <=0)
 	    throw InternalErr (__FILE__, __LINE__,
-			    "The number of elments should be greater than 0.");
+			    "The number of elements should be greater than 0.");
 
 	float lat_step = (end - start) /(float)(g_info.ydim_size);
 
@@ -315,7 +314,7 @@ void HDF5MissLLArray::read_data_geo_lat(int64_t nelms, const vector<int64_t> &of
 }
 
 void HDF5MissLLArray::read_data_geo_lon(int64_t nelms, const vector<int64_t> &offset, const vector<int64_t> &step,
-                                        vector<float> &val) {
+                                        vector<float> &val) const {
 
     float start = 0.0;
     float end   = 0.0;
@@ -334,7 +333,7 @@ void HDF5MissLLArray::read_data_geo_lon(int64_t nelms, const vector<int64_t> &of
 
 	if (g_info.xdim_size <=0)
 	    throw InternalErr (__FILE__, __LINE__,
-			"The number of elments should be greater than 0.");
+			"The number of elements should be greater than 0.");
 
 	float lon_step = (end - start) /(float)(g_info.xdim_size);
 

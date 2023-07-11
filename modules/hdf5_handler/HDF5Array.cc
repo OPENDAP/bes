@@ -395,19 +395,14 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
     if((dtypeid = H5Dget_type(dsetid)) < 0) 
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain the datatype.");
 
-    if((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
+    if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
         H5Tclose(dtypeid);
         throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
     }
 
     ty_size = H5Tget_size(memtype);
-    if (ty_size == 0) {
-            H5Tclose(memtype);
-            H5Tclose(dtypeid);
-            throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 compound datatype.");
-    }
 
-    if(false == has_values) {
+    if (false == has_values) {
 
         hid_t dspace = -1;
 
@@ -601,11 +596,14 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             delete h5s;
         } // end "for (int element=0"
 
-        if(true == has_values) {
-            if(-1 == mspace) 
+        // Close HDF5-related resources
+        m_array_of_structure_close_hdf5_ids(values, has_values, mspace, dtypeid, memtype);
+#if 0
+        if (true == has_values) {
+            if (-1 == mspace)
                 throw InternalErr(__FILE__, __LINE__, "memory type and memory space for this compound datatype should be valid.");
 
-            if(H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)values.data())<0)
+            if (H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)values.data())<0)
                 throw InternalErr(__FILE__, __LINE__, "Unable to reclaim the compound datatype array.");
             H5Sclose(mspace);
         
@@ -613,16 +611,15 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
     
         H5Tclose(dtypeid);
         H5Tclose(memtype);
-
+#endif
     }
     catch(...) {
 
+#if 0
         if(memb_id != -1)
             H5Tclose(memb_id);
         if(memb_name != nullptr)
             H5free_memory(memb_name);
-        if(h5s != nullptr)
-            delete h5s;
         if(true == has_values) {
             if(H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)(values.data()))<0) {
                 H5Tclose(memtype);
@@ -632,6 +629,9 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         }
         H5Tclose(memtype);
         H5Tclose(dtypeid);
+#endif
+        m_array_of_structure_catch_close_hdf5_ids(memb_id, memb_name, values, has_values, mspace, dtypeid, memtype);
+        delete h5s;
         throw;
     }
     
@@ -639,6 +639,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
 
     return false;
 }
+
 
 void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, unsigned int u, hid_t dsetid,
                                              vector<char>&values,bool has_values, size_t struct_elem_offset ) const
@@ -739,6 +740,40 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
 
 }
 
+void HDF5Array::m_array_of_structure_close_hdf5_ids(vector<char> &values, bool has_values, hid_t mspace,
+                                                    hid_t dtypeid, hid_t memtype) const
+{
+    if (true == has_values) {
+        if (-1 == mspace)
+            throw InternalErr(__FILE__, __LINE__, "memory type and memory space for this compound datatype should be valid.");
+
+        if (H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)values.data())<0)
+            throw InternalErr(__FILE__, __LINE__, "Unable to reclaim the compound datatype array.");
+        H5Sclose(mspace);
+    }
+
+    H5Tclose(dtypeid);
+    H5Tclose(memtype);
+
+}
+
+void HDF5Array:: m_array_of_structure_catch_close_hdf5_ids(hid_t memb_id, char * memb_name, vector<char> &values, bool has_values,
+                                                             hid_t mspace, hid_t dtypeid, hid_t memtype) const {
+
+        if(memb_id != -1)
+            H5Tclose(memb_id);
+        if(memb_name != nullptr)
+            H5free_memory(memb_name);
+        if(true == has_values) {
+            if(H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)(values.data()))<0) {
+                H5Tclose(memtype);
+                H5Sclose(mspace);
+            }
+            H5Sclose(mspace);
+        }
+        H5Tclose(memtype);
+        H5Tclose(dtypeid);
+}
 #if 0
 bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_values,int values_offset,
                                    int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step) {
@@ -1853,7 +1888,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
         for (int64_t array_index = 0; array_index < at_nelms; array_index++) {
 
             // The basetype of the array datatype is compound,-- check if the following line is valid.
-            HDF5Structure *h5s = dynamic_cast<HDF5Structure *>(var()->ptr_duplicate());
+            auto h5s = dynamic_cast<HDF5Structure *>(var()->ptr_duplicate());
             hid_t child_memb_id;
             H5T_class_t child_memb_cls;
             int child_nmembs;
@@ -2767,7 +2802,7 @@ void HDF5Array::do_h5_array_type_read_base_atomic_whole_data(H5T_class_t array_c
 
                 val2buf(val_short.data());
 
-            } else // short cut for others
+            } else // shortcut for others
                 val2buf(values.data() + values_offset);
 }
 /// This inline routine will translate N dimensions into 1 dimension.
@@ -2783,12 +2818,13 @@ HDF5Array::INDEX_nD_TO_1D (const std::vector < int64_t > &dims,
     int64_t sum = 0;
     int start = 1;
 
-    for (unsigned int p = 0; p < pos.size (); p++) {
+   // for (unsigned int p = 0; p < pos.size (); p++) {
+   for (const auto &apos:pos) {
         int64_t m = 1;
 
         for (unsigned int j = start; j < dims.size (); j++)
             m *= dims[j];
-        sum += m * pos[p];
+        sum += m * apos;
         start++;
     }
     return sum;
@@ -2888,7 +2924,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
     if(grp == nullptr)
         return nullptr;
 
-    Array *dest = static_cast<HDF5Array*>(ptr_duplicate());
+    Array *dest = dynamic_cast<HDF5Array*>(ptr_duplicate());
 
     // If there is just a size, don't make
     // a D4Dimension (In DAP4 you cannot share a dimension unless it has

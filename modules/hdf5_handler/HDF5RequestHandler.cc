@@ -33,19 +33,15 @@
 
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <unordered_map>
 
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 
 #include <libdap/DMR.h>
 #include <libdap/D4BaseTypeFactory.h>
-//#include <BESDMRResponse.h>
 #include <ObjMemCache.h>
 #include "HDF5_DMR.h"
 
@@ -56,14 +52,10 @@
 #include "HDF5_DDS.h"
 
 #include <BESDASResponse.h>
-#include <BESDDSResponse.h>
-#include <BESDataDDSResponse.h>
 #include <libdap/Ancillary.h>
 #include <BESInfo.h>
 #include <BESDapNames.h>
 #include <BESResponseNames.h>
-#include <BESContainer.h>
-#include <BESResponseHandler.h>
 #include <BESVersionInfo.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
@@ -74,7 +66,6 @@
 #include <BESDebug.h>
 #include <BESStopWatch.h>
 #include "h5get.h"
-#include "config_hdf5.h"
 
 #define HDF5_NAME "h5"
 #include "h5cfdaputil.h"
@@ -184,8 +175,8 @@ bool HDF5RequestHandler::_common_cache_dirs            = false;
 
 bool HDF5RequestHandler::_use_disk_cache              =false;
 bool HDF5RequestHandler::_use_disk_dds_cache              =false;
-string HDF5RequestHandler::_disk_cache_dir            ="";
-string HDF5RequestHandler::_disk_cachefile_prefix     ="";
+string HDF5RequestHandler::_disk_cache_dir;
+string HDF5RequestHandler::_disk_cachefile_prefix;
 unsigned long long HDF5RequestHandler::_disk_cache_size    =0;
 
 
@@ -195,12 +186,12 @@ float HDF5RequestHandler::_disk_cache_comp_threshold        =1.0;
 unsigned long HDF5RequestHandler::_disk_cache_var_size    =0;
 
 bool HDF5RequestHandler::_use_disk_meta_cache        = false;
-string HDF5RequestHandler::_disk_meta_cache_path       ="";
+string HDF5RequestHandler::_disk_meta_cache_path;
 
 bool HDF5RequestHandler::_use_latlon_disk_cache        = false;
 long HDF5RequestHandler::_latlon_disk_cache_size        =0;
-string HDF5RequestHandler::_latlon_disk_cache_dir       ="";
-string HDF5RequestHandler::_latlon_disk_cachefile_prefix="";
+string HDF5RequestHandler::_latlon_disk_cache_dir;
+string HDF5RequestHandler::_latlon_disk_cachefile_prefix;
 
 bool HDF5RequestHandler::_escape_utf8_attr = true;
 
@@ -284,7 +275,7 @@ void HDF5RequestHandler::load_config()
     // In the previous releases, we required users to set BES key values. Otherwise,
     // the BES key values of true/false will always be false if the key is not found.
     // Hopefully this change will make it convenient for the general users.
-    // In the mean time, the explicit BES key settings will not be affected.
+    // In the meantime, the explicit BES key settings will not be affected.
     // KY 2021-10-13
     //
     // Check if the EnableCF key is set.
@@ -561,7 +552,7 @@ cerr<<"No specific cache info"<<endl;
                 string _comp_threshold_str(ss.str());
                 string invalid_comp_threshold ="The Compression Threshold is the total size of the variable array";
                 invalid_comp_threshold+=" divided by the storage size of compressed array. It should always be >1";
-                invalid_comp_threshold+=" The current threhold set at h5.conf is ";
+                invalid_comp_threshold+=" The current threshold set at h5.conf is ";
                 invalid_comp_threshold+=_comp_threshold_str;
                 invalid_comp_threshold+=" . Go back to h5.conf and change the H5.DiskCacheCompThreshold to a >1.0 number.";
                 throw BESInternalError(invalid_comp_threshold,__FILE__,__LINE__);
@@ -590,7 +581,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object() ;
 
     // Convert to the BES DAS response
-    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response) ;
+    auto bdas = dynamic_cast < BESDASResponse * >(response) ;
     if( !bdas )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
@@ -602,7 +593,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         DAS *cached_das_ptr = nullptr;
         bool use_das_cache = false;
         if (das_cache) 
-            cached_das_ptr = static_cast<DAS*>(das_cache->get(filename));
+            cached_das_ptr = dynamic_cast<DAS*>(das_cache->get(filename));
         if (cached_das_ptr) 
             use_das_cache = true;
         
@@ -848,7 +839,7 @@ temp_table->print(cerr);
 
                 // DAS disk cache fname will be set only when the metadata disk cache is turned on
                 // So if it comes here, the das cache should be generated.
-                if(das_cache_fname!="") {
+                if(das_cache_fname.empty() == false) {
                     BESDEBUG(HDF5_NAME, prolog << "HDF5 Build DAS: Write DAS to disk cache " << das_cache_fname << endl);
                     write_das_to_disk_cache(das_cache_fname,das);
                 }
@@ -877,7 +868,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         const DDS* cached_dds_ptr = nullptr;
         bool use_dds_cache = false;
         if (dds_cache) 
-            cached_dds_ptr = static_cast<DDS*>(dds_cache->get(filename));
+            cached_dds_ptr = dynamic_cast<DDS*>(dds_cache->get(filename));
         if (cached_dds_ptr) 
             use_dds_cache = true;
         if (true == use_dds_cache) {
@@ -1045,7 +1036,7 @@ void HDF5RequestHandler::read_dds_from_file(DDS *dds, const string &filename, hi
             Ancillary::read_ancillary_dds( *dds, filename ) ;
 
             // Generate the DDS cached file if needed,currently this is always false by default
-            if(dds_cache_fname!="" && dds_from_dc == false)
+            if(dds_cache_fname.empty() == false && dds_from_dc == false)
                 write_dds_to_disk_cache(dds_cache_fname,dds);
 
 
@@ -1077,7 +1068,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
         const DDS* cached_dds_ptr = nullptr;
         bool use_datadds_cache = false;
         if (datadds_cache) 
-            cached_dds_ptr = static_cast<DDS*>(datadds_cache->get(filename));
+            cached_dds_ptr = dynamic_cast<DDS*>(datadds_cache->get(filename));
         if (cached_dds_ptr) 
             use_datadds_cache = true;
         if (true == use_datadds_cache) {
@@ -1770,7 +1761,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         const DMR* cached_dmr_ptr = nullptr;
         if (dmr_cache){
             BESDEBUG(HDF5_NAME, prolog << "Checking DMR cache for : " << filename << endl);
-            cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename));
+            cached_dmr_ptr = dynamic_cast<DMR*>(dmr_cache->get(filename));
         }
 
         if (cached_dmr_ptr) {
@@ -2314,7 +2305,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
     lrd_config_fname = get_beskeys("H5.LargeDataMemCacheFileName");
  
     // If either the configure file path or fname is missing, won't add specific mem. cache dirs. 
-    if(lrd_config_fpath=="" || lrd_config_fname=="")
+    if(lrd_config_fpath.empty() || lrd_config_fname.empty())
         return false;
 
     // temp_line for storing info of one line in the config. file 
@@ -2429,8 +2420,8 @@ void HDF5RequestHandler::obtain_lrd_common_cache_dirs_data_vars(vector<string> &
 {
                 // We need to handle the space case inside a variable path
                 // either "" or '' needs to be used to identify a var path
-                vector<int>dq_pos;
-                vector<int>sq_pos;
+                vector<unsigned int>dq_pos;
+                vector<unsigned int>sq_pos;
                 for(unsigned int i = 0; i<subline.size();i++){
                     if(subline[i]=='"') {
                         dq_pos.push_back(i);
@@ -2491,7 +2482,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
 
         try {
 
-            struct stat sb;
+            struct stat sb{};
             if(stat(cache_filename.c_str(),&sb) != 0) {
                 string bes_error = "An error occurred trying to stat a metadata cache file size " + cache_filename;
                 throw BESInternalError( bes_error, __FILE__, __LINE__);
@@ -2599,7 +2590,7 @@ bool HDF5RequestHandler::write_das_to_disk_cache(const string & das_cache_fname,
         struct flock *l_md;
         l_md = lock(F_WRLCK);
 
-        // hold a write(exclusive) lock to write metadata to a file.
+        // hold a write-lock(exclusive lock) to write metadata to a file.
         if(fcntl(fd_md,F_SETLKW,l_md) == -1) {
             fclose(das_file);
             ostringstream oss;
@@ -2643,7 +2634,6 @@ void write_das_to_file(DAS*das_ptr,FILE* das_file) {
 
     // Add the final ending flag for retrieving the info.
     fwrite((const void*)&category_flag,1,1,das_file);
-    return;
 
 }
 
@@ -2712,9 +2702,9 @@ void write_container_name_to_file(const string& cont_name,FILE *das_file) {
     temp_pointer=copy_str(temp_pointer,cont_name);
 
     size_t bytes_to_be_written = fwrite((const void*)buf.data(),1,bytes_to_write,das_file);
-    if(bytes_to_be_written != bytes_to_write)
+    if (bytes_to_be_written != bytes_to_write)
         throw InternalErr(__FILE__, __LINE__,"Failed to write a DAS container name to a cache");
-    return;
+
 }
 
 
@@ -2732,7 +2722,7 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
         total_attr_values_size += attr_values[i].size();
     }
     // Need to add a flag, value as 0 to indicate the attribute.
-    // DAS: category flag, sizeof attirubte name, attribute name, size of attribute type, attribute type
+    // DAS: category flag, sizeof attribute name, attribute name, size of attribute type, attribute type
     size_t bytes_to_write_attr = 1 + attr_name.size() + attr_type.size() + 2* sizeof(size_t);
 
     // One unsigned int to store the number of element elements i
@@ -2762,10 +2752,9 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
         temp_attrp=copy_str(temp_attrp,(*(dtp->get_attr_vector(attr_name)))[i]);
 
     size_t bytes_to_be_written = fwrite((const void*)attr_buf.data(),1,bytes_to_write_attr,das_file);
-    if(bytes_to_be_written != bytes_to_write_attr)
+    if (bytes_to_be_written != bytes_to_write_attr)
         throw InternalErr(__FILE__, __LINE__,"Failed to write a DAS attribute to a cache");
- 
-    return;
+
 
 }
 
@@ -2800,8 +2789,7 @@ cerr<<"before tdds "<<endl;
 cache_dds->dump(cerr);
 cerr<<"after tdds "<<endl;
 #endif
-     if(dds != nullptr)
-        delete dds;
+     delete dds;
 
      Ancillary::read_ancillary_dds( *cache_dds, h5_fname ) ;
 
@@ -2831,7 +2819,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
     DAS *das = nullptr ;
     bool use_das_cache = false;
     if (das_cache) 
-        das = static_cast<DAS*>(das_cache->get(filename));
+        das = dynamic_cast<DAS*>(das_cache->get(filename));
     if (das) 
         use_das_cache = true;
  
@@ -2927,14 +2915,14 @@ void HDF5RequestHandler::read_das_from_file(DAS *das, const string &filename, co
 
             Ancillary::read_ancillary_das( *das, filename ) ;
 
-            if(das_cache_fname!="" && das_from_dc == false)
+            if (das_cache_fname.empty() == false && das_from_dc == false)
                 write_das_to_disk_cache(das_cache_fname,das);
 
 }
 bool obtain_beskeys_info(const string& key, bool & has_key) {
 
     bool ret_value = false;
-    string doset ="";
+    string doset;
     TheBESKeys::TheKeys()->get_value( key, doset, has_key ) ;
     if(has_key) {
         const string dosettrue ="true";
@@ -2976,12 +2964,13 @@ bool check_and_set_beskeys(const string key) {
 static unsigned int get_uint_key(const string &key, unsigned int def_val)
 {
     bool found = false;
-    string doset = "";
+    string doset;
 
     TheBESKeys::TheKeys()->get_value(key, doset, found);
     if (true == found) {
         // In C++11, stoi is better.
-        return atoi(doset.c_str()); // use better code TODO
+        return stoi(doset);
+        //return atoi(doset.c_str()); // use better code TODO
     }
     else {
         return def_val;
@@ -2991,12 +2980,13 @@ static unsigned int get_uint_key(const string &key, unsigned int def_val)
 static unsigned long get_ulong_key(const string &key, unsigned long def_val)
 {
     bool found = false;
-    string doset = "";
+    string doset;
 
     TheBESKeys::TheKeys()->get_value(key, doset, found);
     if (true == found) {
         // In C++11, stoull is better.
-        return atol(doset.c_str()); // use better code TODO
+        return stoul(doset);
+        //return atol(doset.c_str()); // use better code TODO
     }
     else {
         return def_val;
@@ -3005,11 +2995,12 @@ static unsigned long get_ulong_key(const string &key, unsigned long def_val)
 static float get_float_key(const string &key, float def_val)
 {
     bool found = false;
-    string doset = "";
+    string doset;
 
     TheBESKeys::TheKeys()->get_value(key, doset, found);
     if (true == found) {
-        return atof(doset.c_str()); // use better code TODO
+        return stof(doset);
+        //return atof(doset.c_str()); // use better code TODO
     }
     else {
         return def_val;
@@ -3019,7 +3010,7 @@ static float get_float_key(const string &key, float def_val)
 static string get_beskeys(const string &key) {
 
     bool found = false;
-    string ret_value ="";
+    string ret_value;
 
     TheBESKeys::TheKeys()->get_value( key, ret_value, found ) ;
     return ret_value;
@@ -3058,7 +3049,7 @@ char* obtain_str(char*temp_ptr,string & str) {
 }
 
 // For our case, there are no global attributes for DAS. 
-// The global attribures are always under HDF_GLOBAL.
+// The global attributes are always under HDF_GLOBAL.
 // The main function to obtain the DAS info. from the cache.
 char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
 
@@ -3174,8 +3165,8 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     DAS* das = nullptr;
     bool das_from_mcache = false;
     if(das_cache) {
-        das = static_cast<DAS*>(das_cache->get(filename));
-        if(das) {
+        das = dynamic_cast<DAS*>(das_cache->get(filename));
+        if (das) {
             BESDEBUG(HDF5_NAME, prolog << "DAS Cached hit for : " << filename << endl);
             dds->transfer_attributes(das); // no need to copy the cached DAS
             das_from_mcache = true;
@@ -3221,7 +3212,6 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     }
     BESDEBUG(HDF5_NAME, prolog << "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<filename << endl);
     bdds->set_ia_flag(true);
-    return;
 
 }
 
