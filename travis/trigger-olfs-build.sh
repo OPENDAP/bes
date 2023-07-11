@@ -38,7 +38,7 @@ BES_SNAPSHOT="bes-${bes_version} ${time_now}"
 echo "BES_SNAPSHOT: ${BES_SNAPSHOT}" >&2
 
 # Build the build_dmrpp snapshot record.
-BUILD_DMRPP_SNAPSHOT="bes-${bes_version} ${time_now}"
+BUILD_DMRPP_SNAPSHOT="${build_dmrpp_version} ${time_now}"
 echo "BUILD_DMRPP_SNAPSHOT: ${BUILD_DMRPP_SNAPSHOT}" >&2
 
 echo "Tagging bes with version: ${bes_version}"
