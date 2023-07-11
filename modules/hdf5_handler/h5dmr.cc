@@ -18,7 +18,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 401 E Univeristy Avenue,
+// You can contact The HDF Group, Inc. at 401 E University Avenue,
 // Suite 200, Champaign, IL 61820
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,6 @@
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
-//#include "HDF5RequestHandler.h"
 #include "h5dmr.h"
 
 // The HDF5CFUtil.h includes the utility function obtain_string_after_lastslash.
@@ -73,7 +72,6 @@ using namespace libdap;
 /// A variable for remembering visited paths to break cyclic HDF5 groups. 
 HDF5PathFinder obj_paths;
 
-
 /// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 
 
@@ -89,6 +87,7 @@ void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim
 void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, const DSattr_t &attr_inst);
 void write_dap4_attr_value(D4Attribute *d4_attr, hid_t ty_id, hsize_t nelmts, char *tempvalue,
                            size_t elesize = 0);
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// bool breadth_first(const hid_t file_id,hid_t pid, const char *gname, 
 ///                     D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5,
@@ -109,7 +108,7 @@ void write_dap4_attr_value(D4Attribute *d4_attr, hid_t ty_id, hsize_t nelmts, ch
 /// \remarks hard link is treated as a dataset.
 /// \remarks will return error message to the DAP interface.
 /// \remarks The reason to use breadth_first is that the DMR representation
-/// \remarks needs to show the dimension names and the variables under the group first and then the group names.
+/// \remarks needs to show the dimension names and the variables under the group before showing the group names.
 ///  So we use this search. This is for the default option. 
 /// \see depth_first(hid_t pid, char *gname, DDS & dds, const char *fname) in h5dds.cc
 ///////////////////////////////////////////////////////////////////////////////
@@ -142,7 +141,6 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
     }
 
     nelems = g_info.nlinks;
-    // ssize_t oname_size;
 
     // First iterate through the HDF5 datasets under the group.
     for (hsize_t i = 0; i < nelems; i++) {
@@ -151,57 +149,11 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
         obtain_hdf5_object_name(pid, i, gname, oname);
         if (true == check_soft_external_links(par_grp, pid, slinkindex,gname, oname,true))
             continue;
-#if 0
-        // Query the length of this object name.
-        oname_size =
-        H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
-                (size_t)DODS_NAMELEN, H5P_DEFAULT);
-        if (oname_size <= 0) {
-            string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
-            msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
 
-        // Obtain the name of the object
-        oname.resize((size_t) oname_size + 1);
-
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
-            (size_t)(oname_size+1), H5P_DEFAULT) < 0){
-            string msg =
-                    "h5_dmr handler: Error getting the hdf5 object name from the group: ";
-             msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-        }
-#endif
-
-#if 0
-        // Check if this is a hard link or a soft link
-        H5L_info_t linfo;
-        if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
-            string msg = "hdf5 link name error from: ";
-            msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-            
-        // Information of soft links are stored as attributes 
-        if (linfo.type == H5L_TYPE_SOFT) {
-
-            slinkindex++;
-            // Size of a soft link value
-            size_t val_size = linfo.u.val_size;
-            get_softlink(par_grp,pid,oname.data(),slinkindex,val_size);
-            continue;
-        }
-
-        // Ignore external links
-        if (linfo.type == H5L_TYPE_EXTERNAL) 
-            continue;
-#endif
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
-
         if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT)<0) {
+                              i, &oinfo, H5P_DEFAULT) <0 ) {
             string msg = "h5_dmr handler: Error obtaining the info for the object";
             msg += string(oname.begin(),oname.end());
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -218,71 +170,16 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
             // All the metadata information in the handler is stored in dt_inst.
             // Dimension scale is handled in this routine.  KY 2020-06-10
             bool is_pure_dim = false;
-            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_eos5,is_pure_dim,hdf5_hls,handled_cv_names);
+            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_eos5,
+                            is_pure_dim,hdf5_hls,handled_cv_names);
                
             // pure dimensions are netCDF-4's dimensions only. They are not variables in the netCDF-4 term.
             if (false == is_pure_dim) {
                 handle_actual_dataset(par_grp, pid, full_path_name, fname, use_dimscale,
                                       is_eos5, eos5_dim_info);
-#if 0
-                hid_t dset_id = -1;
-                if ((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) < 0) {
-                    string msg = "cannot open the HDF5 dataset  ";
-                    msg += full_path_name;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                try {
-                    read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale,is_eos5,eos5_dim_info);
-                }
-                catch(...) {
-                    H5Dclose(dset_id);
-                    throw;
-                }
-                if (H5Dclose(dset_id) < 0) {
-                    string msg = "cannot close the HDF5 dataset  ";
-                    msg += full_path_name;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-#endif
             }
-            else {
+            else
                 handle_pure_dimension(par_grp, pid, oname, is_eos5, full_path_name);
-
-#if 0
-                //Need to add this pure dimension to the corresponding DAP4 group
-                D4Dimensions *d4_dims = par_grp->dims();
-                string d4dim_name;
-                if (is_eos5) { 
-                    auto tempdim_name = string(oname.begin(),oname.end()-1);
-                    d4dim_name = handle_string_special_characters(tempdim_name);
-                }
-                else 
-                    d4dim_name = string(oname.begin(),oname.end()-1);   
-
-                D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
-                if (d4_dim == nullptr) {
-
-                    hsize_t nelmts = dt_inst.nelmts;
-
-                    // For pure dimension, if the dimension size is 0, 
-                    // the dimension is unlimited or a NULL data space, so we need to use the object reference
-                    // to retrieve the variable this dimension is attached and then for the same variable retrieve
-                    // the size of this dimension.
-                    if (dt_inst.nelmts == 0) 
-                        nelmts = obtain_unlim_pure_dim_size(pid,full_path_name);
- 
-                    d4_dim = new D4Dimension(d4dim_name,nelmts);
-                    d4_dims->add_dim_nocopy(d4_dim);
-                }
-
-                BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name." << d4dim_name << endl);
-
-                if(H5Tclose(dt_inst.type)<0) {
-                      throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
-                }
-#endif
-            }
         } 
     }
    
@@ -292,48 +189,6 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
     if (is_eos5 && !use_dimscale)
         handle_eos5_datasets(par_grp, gname, eos5_dim_info);
 
-#if 0
-    // This is the ugly part. To support HDF-EOS5 grids, we have to add extra variables.
-    // These variables are geo-location related variables such as latitude and longitude.
-    // These geo-location variables are DAP4 coverage map variable candidates. 
-    // And to follow the DAP4 coverage specification, we need to define map variables.
-    // The map variables need to be in *front* of all the variables that use the map variables.
-    // So here we have to insert these extra variables if an HDF-EOS5 grid is found.
-    // We may need to remember the full path of these extra variables. These will be
-    // used as the coordinates of this group's data variables. For the geographic projection,
-    // this is not necessary. 
-    if (is_eos5 && !use_dimscale) 
-        add_possible_eos5_grid_vars(par_grp, eos5_dim_info);
-
-    // For HDF-EOS5 files, We also need to add DAP4 dimensions to this group if there are HDF-EOS5 dimensions.
-    if (is_eos5 && !use_dimscale) {
-
-        unordered_map<string,vector<HE5Dim>> grppath_to_dims = eos5_dim_info.grppath_to_dims;
-        vector<string> dim_names;
-        auto par_grp_name = string(gname);
-        if (par_grp_name.size() > 1)
-            par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
-
-        BESDEBUG("h5", "<h5dmr.cc: eos5 handling - parent group name: " << par_grp_name << endl);
-
-        // We need to ensure the special characters are handled.
-        bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
-
-        if (is_eos5_dims) {
-
-            vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
-            D4Dimensions *d4_dims = par_grp->dims();
-            for (unsigned grp_dim_idx = 0; grp_dim_idx < dim_names.size(); grp_dim_idx++) {
-
-                D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
-                if (d4_dim == nullptr) {
-                    d4_dim = new D4Dimension(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
-                    d4_dims->add_dim_nocopy(d4_dim);
-                }
-            }
-        }
-    }
-#endif
     // The fullnamepath of the group is not necessary since dmrpp only needs the dataset path to retrieve info.
     // It only increases the dmr file size. So comment out for now.  KY 2022-10-13
 #if 0
@@ -348,123 +203,22 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
         obtain_hdf5_object_name(pid, i, gname, oname);
         if (true == check_soft_external_links(par_grp, pid, slinkindex,gname, oname,false))
             continue;
-#if 0
-        // Query the length of object name.
-        oname_size =
-        H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
-                (size_t)DODS_NAMELEN, H5P_DEFAULT);
-        if (oname_size <= 0) {
-            string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
-            msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
 
-        // Obtain the name of the object
-        oname.resize((size_t) oname_size + 1);
-
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
-            (size_t)(oname_size+1), H5P_DEFAULT) < 0){
-            string msg =
-                    "h5_dmr handler: Error getting the hdf5 object name from the group: ";
-             msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-        }
-#endif
-
-#if 0
-        // Check if it is the hard link or the soft link
-        H5L_info_t linfo;
-        if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
-            string msg = "hdf5 link name error from: ";
-            msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-            
-        // Information of soft links are handled already, the softlinks need to be ignored, otherwise
-        // the group it links will be mapped again in the block of if obj_type is H5O_TYPE_GROUP 
-        if(linfo.type == H5L_TYPE_SOFT) { 
-            continue;
-        }
-
-        // Ignore external links
-        if(linfo.type == H5L_TYPE_EXTERNAL) 
-            continue;
-#endif
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
 
         if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT)<0) {
+                              i, &oinfo, H5P_DEFAULT) < 0 ) {
             string msg = "h5_dmr handler: Error obtaining the info for the object in the breadth_first.";
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         H5O_type_t obj_type = oinfo.type;
 
-
         if (obj_type == H5O_TYPE_GROUP) {
             handle_child_grp(file_id, pid, gname, par_grp, fname, use_dimscale, is_eos5, hdf5_hls, eos5_dim_info,
                              handled_cv_names, oname);
         }
-#if 0
-            // Obtain the full path name
-            string full_path_name =
-                string(gname) + string(oname.begin(),oname.end()-1) + "/";
-
-            BESDEBUG("h5", "=breadth_first dmr ():H5G_GROUP " << full_path_name
-                << endl);
-
-            vector <char>t_fpn;
-            t_fpn.resize(full_path_name.size() + 1);
-            copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
-            t_fpn[full_path_name.size()] = '\0';
-
-            hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
-            if (cgroup < 0){
-                throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
-            }
-
-            auto grp_name = string(oname.begin(),oname.end()-1);
-
-            // Check the hard link loop and break the loop if it exists.
-            string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
-            if (oid == "") {
-
-                try {
-                    if (is_eos5)
-                        grp_name = handle_string_special_characters(grp_name);
-                    auto tem_d4_cgroup = new D4Group(grp_name);
-
-                    // Add this new DAP4 group 
-                    par_grp->add_group_nocopy(tem_d4_cgroup);
-
-                    // Continue searching the objects under this group
-                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_cv_names);
-                }
-                catch(...) {
-                    H5Gclose(cgroup);
-                    throw;
-                }
-            }
-            else {
-                // This group has been visited.  
-                // Add the attribute table with the attribute name as HDF5_HARDLINK.
-                // The attribute value is the name of the group when it is first visited.
-                auto tem_d4_cgroup = new D4Group(string(grp_name));
-
-                // Note attr_str_c is the DAP4 attribute string datatype
-                auto d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
-
-                d4_hlinfo->add_value(obj_paths.get_name(oid));
-                tem_d4_cgroup->attributes()->add_attribute_nocopy(d4_hlinfo);
-                par_grp->add_group_nocopy(tem_d4_cgroup);
-            }
-
-            if (H5Gclose(cgroup) < 0){
-                throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
-            }
-#endif
-
     } // for i is 0 ... nelems
 
     BESDEBUG("h5", "<breadth_first() " << endl);
@@ -475,7 +229,7 @@ void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, ve
 
     ssize_t oname_size;
 
-        // Query the length of this object name.
+    // Query the length of this object name.
     oname_size = H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,obj_index,
                                     nullptr,(size_t)DODS_NAMELEN, H5P_DEFAULT);
     if (oname_size <= 0) {
@@ -549,7 +303,8 @@ void handle_actual_dataset(D4Group *par_grp, hid_t pid, const string &full_path_
 
 }
 
-void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& oname, bool is_eos5, const string &full_path_name) {
+void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& oname, bool is_eos5,
+                           const string &full_path_name) {
 
     // Need to add this pure dimension to the corresponding DAP4 group
     D4Dimensions *d4_dims = par_grp->dims();
@@ -619,7 +374,8 @@ void handle_eos5_datasets(D4Group* par_grp, const char *gname, eos5_dim_info_t &
 
             const D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
             if (d4_dim == nullptr) {
-                auto d4_dim_unique = make_unique<D4Dimension>(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
+                auto d4_dim_unique =
+                        make_unique<D4Dimension>(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
                 d4_dims->add_dim_nocopy(d4_dim_unique.release());
             }
         }
@@ -666,7 +422,8 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
             par_grp->add_group_nocopy(tem_d4_cgroup);
 
             // Continue searching the objects under this group
-            breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_cv_names);
+            breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,
+                          use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_cv_names);
         }
         catch(...) {
             H5Gclose(cgroup);
@@ -697,7 +454,8 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
 /////                            const string & filename,
 /////                            const hid_t dset_id,
 /////                            bool use_dimscale
-/////                            bool is_eos5) 
+/////                            bool is_eos5
+/////                            eos5_dim_info_t eos5_dim_info)
 ///// fills in information of a dataset (name, data type, data space) into the dap4 
 ///// group. 
 ///// This is a wrapper function that calls functions to read atomic types and structure.
@@ -729,7 +487,8 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, h
 
     case H5T_ARRAY:
         H5Tclose(dt_inst.type);
-        throw InternalErr(__FILE__, __LINE__, "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");       
+        throw InternalErr(__FILE__, __LINE__,
+                          "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");
     
     default:
         read_objects_base_type(d4_grp,varname, filename,dset_id,use_dimscale,is_eos5,eos5_dim_info);
@@ -755,8 +514,8 @@ void array_add_dimensions_dimscale(HDF5Array *ar){
 
 bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, const eos5_dim_info_t &eos5_dim_info) {
 
-    // With using the dimension scales, the HDF5 file may still have dimension names such as HDF-EOS5.
-    // We search if there are dimension names. If yes, add them here.
+    // Without using the dimension scales, the HDF5 file may still have dimension names(HDF-EOS5 etc.).
+    // We search the file to see if there are dimension names. If yes, add them here.
     vector<string> dim_names;
     bool is_eos5_dims = obtain_eos5_dim(varname, eos5_dim_info.varpath_to_dims, dim_names);
 
@@ -772,6 +531,7 @@ bool array_add_dimensions_non_dimscale(HDF5Array *ar, const string &varname, con
 
 void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim_info,
                                                  BaseType *new_var,const HDF5Array *ar) {
+
     if ((eos5_dim_info.dimpath_to_cvpath.empty() == false) && (ar->get_numdim() > 1))
         add_possible_var_cv_info(new_var, eos5_dim_info);
     if (eos5_dim_info.gridname_to_info.empty() == false)
@@ -782,7 +542,8 @@ void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim
 /////////////////////////////////////////////////////////////////////////////// 
 ///// \fn read_objects_base_type(D4Group *d4_grp,
 /////                            const string & varname, 
-/////                            const string & filename,const hid_t dset_id, bool use_dimscale) 
+/////                            const string & filename,const hid_t dset_id, bool use_dimscale
+///                              bool is_eos5, eos5_dim_info_t eos5_dim_info)
 ///// fills in information of a dataset (name, data type, data space) with HDF5 atomic datatypes into the dap4 
 ///// group. 
 /////
@@ -791,6 +552,8 @@ void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim
 /////    \param filename The HDF5 dataset name that maps to the DDS dataset name. 
 ////     \param dset_id HDF5 dataset id.
 /////    \param use_dimscale boolean that indicates if dimscale is used.
+/////    \param eos5_dim_info a struct to handle eos5 dimension info.
+/////    \param is_eos5 boolean that indicates if this is an HDF-EOS5 file.
 /////    \param eos5_dim_info a struct to handle eos5 dimension info.
 /////    \throw error a string of error message to the dods interface. 
 /////////////////////////////////////////////////////////////////////////////////
@@ -801,19 +564,8 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
                        bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info)
 {
 
-#if 0
-    // Obtain the relative path of the variable name under the leaf group
-    string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
-    if (use_dimscale) {
-        const string nc4_non_coord="_nc4_non_coord_";
-        size_t nc4_non_coord_size= nc4_non_coord.size();
-        if (newvarname.find(nc4_non_coord) == 0)
-            newvarname = newvarname.substr(nc4_non_coord_size,newvarname.size()-nc4_non_coord_size);
-    }
-    if (is_eos5) 
-        newvarname = handle_string_special_characters(newvarname);
-#endif
     string newvarname = obtain_new_varname(varname, use_dimscale, is_eos5);
+
     // Get a base type. It should be an HDF5 atomic datatype.
     BaseType *bt = Get_bt(newvarname, varname,filename, dt_inst.type,true);
     if (!bt)
@@ -829,39 +581,10 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
         // Attach this object to the DAP4 group
         d4_grp->add_var_nocopy(bt);
     }
-#if 0
-        // transform the DAP2 to DAP4 for this DAP base type and add it to d4_grp
-        bt->transform_to_dap4(d4_grp,d4_grp);
-
-        // Get it back
-        BaseType* new_var = d4_grp->var(bt->name());
-        if (new_var){
-            // Map the HDF5 dataset attributes to DAP4
-            map_h5_attrs_to_dap4(dset_id,nullptr,new_var,nullptr,1);
-            // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
-            map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
-            if (is_eos5)
-                map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
-        }
-#endif
-#if 0
-        // Map the HDF5 dataset attributes to DAP4
-            bt->set_is_dap4(true);
-            map_h5_attrs_to_dap4(dset_id,nullptr,bt,nullptr,1);
-            // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
-            map_h5_dset_hardlink_to_d4(dset_id,varname,bt,nullptr,1);
-            if (is_eos5)
-                map_h5_varpath_to_dap4_attr(nullptr,bt,nullptr,varname,1);
-            d4_grp->add_var_nocopy(bt);
-#endif
-        //delete bt;
-        //bt = nullptr;
-    //}
     else {
 
         // Next, deal with Array data. This 'else clause' runs to
-        // the end of the method. 
-        //auto ar = new HDF5Array(newvarname, filename, bt);
+        // the end of the method.
         auto ar_unique = make_unique<HDF5Array>(newvarname, filename, bt);
         HDF5Array *ar = ar_unique.get();
         delete bt;
@@ -874,7 +597,6 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
         ar->set_numelm((dt_inst.nelmts));
         ar->set_varpath(varname);
 
-
         // If we have dimension names(dimension scale is used.),we will see if we can add the names.       
         int dimnames_size = 0;
         if ((unsigned int) ((int) (dt_inst.dimnames.size())) != dt_inst.dimnames.size())
@@ -883,84 +605,33 @@ read_objects_base_type(D4Group * d4_grp, const string & varname, const string & 
         dimnames_size = (int) (dt_inst.dimnames.size());
 
         bool is_eos5_dims = false;
-        if (dimnames_size == dt_inst.ndims) {
-
+        if (dimnames_size == dt_inst.ndims)
             array_add_dimensions_dimscale(ar);
-            //
-#if 0
-            for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                if (dt_inst.dimnames[dim_index] != "")
-                    ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
-                else
-                    ar->append_dim_ll(dt_inst.size[dim_index]);
-            }
-            dt_inst.dimnames.clear();
-#endif
-        } else {
-
+        else {
             // With using the dimension scales, the HDF5 file may still have dimension names such as HDF-EOS5.
             // We search if there are dimension names. If yes, add them here.
             is_eos5_dims = array_add_dimensions_non_dimscale(ar, varname, eos5_dim_info);
-#if 0
-            vector<string> dim_names;
-            is_eos5_dims = obtain_eos5_dim(varname, eos5_dim_info.varpath_to_dims, dim_names);
-
-            if (is_eos5_dims) {
-                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
-                    ar->append_dim_ll(dt_inst.size[dim_index], dim_names[dim_index]);
-            } else {
-                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
-                    ar->append_dim_ll(dt_inst.size[dim_index]);
-            }
-#endif
         }
 
         // We need to transform dimension info. to DAP4 group
         BaseType *new_var = nullptr;
- //       try {
-            if (is_eos5_dims) {
 
-                new_var = ar->h5dims_transform_to_dap4(d4_grp, eos5_dim_info.varpath_to_dims.at(varname));
+        if (is_eos5_dims)
+            new_var = ar->h5dims_transform_to_dap4(d4_grp, eos5_dim_info.varpath_to_dims.at(varname));
+        else
+            new_var = ar->h5dims_transform_to_dap4(d4_grp, dt_inst.dimnames_path);
 
-            } else {
-                new_var = ar->h5dims_transform_to_dap4(d4_grp, dt_inst.dimnames_path);
-            }
- //       }
-#if 0
-        catch (...) {
-            throw;
-        }
-#endif
         // clear DAP4 dimnames_path vector
         dt_inst.dimnames_path.clear();
 
-#if 0
-        // Map HDF5 dataset attributes to DAP4
-        map_h5_attrs_to_dap4(dset_id, nullptr, new_var, nullptr, 1);
-
-        // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
-        map_h5_dset_hardlink_to_d4(dset_id, varname, new_var, nullptr, 1);
-        if (is_eos5)
-            map_h5_varpath_to_dap4_attr(nullptr, new_var, nullptr, varname, 1);
-#endif
         read_objects_basetype_attr_hl(varname, new_var, dset_id,  is_eos5);
 
         // Here we need to add grid_mapping information if necessary.
-        if (is_eos5_dims && !use_dimscale) {
-
+        if (is_eos5_dims && !use_dimscale)
             read_objects_basetype_add_eos5_grid_mapping(eos5_dim_info, new_var, ar);
-#if 0
-            if ((eos5_dim_info.dimpath_to_cvpath.empty() == false) && (ar->get_numdim() > 1))
-                add_possible_var_cv_info(new_var, eos5_dim_info);
-            if (eos5_dim_info.gridname_to_info.empty() == false)
-                make_attributes_to_cf(new_var, eos5_dim_info);
-#endif
-        }
 
         // Add this var to DAP4 group.
         d4_grp->add_var_nocopy(new_var);
-        //delete ar;
-        //ar = nullptr;
     }
     BESDEBUG("h5", "<read_objects_base_type(dmr)" << endl);
 }
@@ -980,7 +651,6 @@ void read_objects_basetype_attr_hl(const string &varname, BaseType *bt, hid_t ds
     // If this is an HDF-EOS5 object, we need to map the full path of this object to a DAP4 attribute.
     if (is_eos5)
         map_h5_varpath_to_dap4_attr(nullptr,bt,nullptr,varname,1);
-
 
 }
 
@@ -1004,18 +674,6 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
                        const string & filename,hid_t dset_id,bool use_dimscale,bool is_eos5)
 {
     string newvarname = obtain_new_varname(varname, use_dimscale, is_eos5);
-#if 0
-    // Obtain the relative path of the variable name under the leaf group
-    string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
-    if (use_dimscale) {
-        const string nc4_non_coord="_nc4_non_coord_";
-        size_t nc4_non_coord_size= nc4_non_coord.size();
-        if (newvarname.find(nc4_non_coord) == 0)
-            newvarname = newvarname.substr(nc4_non_coord_size,newvarname.size()-nc4_non_coord_size);
-    }
-    if (is_eos5) 
-        newvarname = handle_string_special_characters(newvarname);
-#endif
 
     // Map HDF5 compound datatype to Structure
     Structure *structure = Get_structure(newvarname, varname,filename, dt_inst.type,true);
@@ -1025,81 +683,10 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
         BESDEBUG("h5", "=read_objects_structure(): Dimension is " 
             << dt_inst.ndims << endl);
 
-        if (dt_inst.ndims != 0) {   // Array of Structure
+        if (dt_inst.ndims != 0) // Array of Structure
             read_objects_structure_arrays(d4_grp, structure, varname,newvarname, filename, dset_id, is_eos5);
-#if 0
-            BESDEBUG("h5", "=read_objects_structure(): array of size " <<
-                dt_inst.nelmts << endl);
-            BESDEBUG("h5", "=read_objects_structure(): memory needed = " <<
-                dt_inst.need << endl);
-
-            // Create the Array of structure.
-            auto ar = new HDF5Array(newvarname, filename, structure);
-            delete structure; structure = nullptr;
-
-            // These parameters are used in the data read function.
-            ar->set_memneed(dt_inst.need);
-            ar->set_numdim(dt_inst.ndims);
-            ar->set_numelm(dt_inst.nelmts);
-            ar->set_length(dt_inst.nelmts);
-            ar->set_varpath(varname);
- 
-            // If having dimension names, add the dimension names to DAP.
-            int dimnames_size = 0;
-            if((unsigned int)((int)(dt_inst.dimnames.size())) != dt_inst.dimnames.size())
-            {
-                delete ar;
-                throw
-                   InternalErr(__FILE__, __LINE__,
-                               "number of dimensions: overflow");
-            }
-            dimnames_size = (int)(dt_inst.dimnames.size());
-
-            if (dimnames_size ==dt_inst.ndims) {
-                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                    if(dt_inst.dimnames[dim_index] !="")
-                        ar->append_dim_ll(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
-                    else 
-                        ar->append_dim_ll(dt_inst.size[dim_index]);
-                }
-                dt_inst.dimnames.clear();
-            }
-            else {
-                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim_ll(dt_inst.size[dim_index]);
-            }
-
-            // We need to transform dimension info. to DAP4 group
-            BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
-            dt_inst.dimnames_path.clear();
-
-            // Map HDF5 dataset attributes to DAP4
-            map_h5_attrs_to_dap4(dset_id,nullptr,new_var,nullptr,1);
-
-            // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
-            map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
-            if (is_eos5)
-                map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
-
-            // Add this var to DAP4 group
-            if(new_var) 
-                d4_grp->add_var_nocopy(new_var);
-            delete ar; ar = nullptr;
-#endif
-        }//  end if 
-        else {// A scalar structure
+        else // A scalar structure
             read_objects_structure_scalar(d4_grp, structure, varname,dset_id, is_eos5);
-#if 0
-            structure->set_is_dap4(true);
-            map_h5_attrs_to_dap4(dset_id,nullptr,nullptr,structure,2);
-            map_h5_dset_hardlink_to_d4(dset_id,varname,nullptr,structure,2);
-            if (is_eos5)
-                map_h5_varpath_to_dap4_attr(nullptr,nullptr,structure,varname,2);
-
-            if(structure) 
-                d4_grp->add_var_nocopy(structure);
-#endif
-        }
     } // try  Structure 
     catch (...) {
         delete structure;
@@ -1115,7 +702,6 @@ void read_objects_structure_arrays(D4Group *d4_grp, Structure *structure, const 
 
     // Create the Array of structure.
     auto ar_unique = make_unique<HDF5Array>(newvarname, filename, structure);
-
     HDF5Array *ar = ar_unique.get();
     delete structure; structure = nullptr;
 
@@ -1178,6 +764,7 @@ void read_objects_structure_scalar(D4Group *d4_grp, Structure *structure, const 
     if(structure)
         d4_grp->add_var_nocopy(structure);
 }
+
 string obtain_new_varname(const string &varname, bool use_dimscale, bool is_eos5) {
 
     // Obtain the relative path of the variable name under the leaf group
@@ -1247,7 +834,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         //hid_t ty_id = attr_inst.type;
 #endif
         hid_t ty_id = H5Aget_type(attr_id);
-        if(ty_id <0) {
+        if (ty_id < 0) {
             H5Aclose(attr_id);
             throw InternalErr(__FILE__, __LINE__, "Cannot retrieve HDF5 attribute datatype successfully.");
         }
@@ -1390,7 +977,6 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
     // Find that this is a hardlink,add the hardlink info to a DAP4 attribute.
     if(false == oid.empty()) {
 
-        //auto d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
         auto d4_hlinfo_unique = make_unique<D4Attribute>("HDF5_HARDLINK",attr_str_c);
         auto d4_hlinfo = d4_hlinfo_unique.release();
         d4_hlinfo->add_value(obj_paths.get_name(oid));
@@ -1460,7 +1046,7 @@ void map_h5_varpath_to_dap4_attr(D4Group* d4g,BaseType* d4b,Structure * d4s,cons
 ///////////////////////////////////////////////////////////////////////////////
 void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int index, size_t val_size)
 {
-    BESDEBUG("h5", "dap4 >get_softlink():" << oname << endl);
+    BESDEBUG("h5", "dap4 get_softlink():" << oname << endl);
 
     ostringstream oss;
     oss << string("HDF5_SOFTLINK");
@@ -1468,9 +1054,8 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
     oss << index;
     string temp_varname = oss.str();
 
+    BESDEBUG("h5", "dap4->get_softlink():link name " << temp_varname << endl);
 
-    BESDEBUG("h5", "dap4->get_softlink():" << temp_varname << endl);
-    //auto d4_slinfo = new D4Attribute;
     auto d4_slinfo_unique = make_unique<D4Attribute>();
     auto d4_slinfo = d4_slinfo_unique.release();
     d4_slinfo->set_name(temp_varname);
@@ -1487,30 +1072,21 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 
     d4_slinfo->attributes()->add_attribute_nocopy(softlink_src);
     string softlink_value_name ="LINKTARGET";
-   
 
-    //try {
-        vector<char> buf;
-        buf.resize(val_size + 1);
+    vector<char> buf;
+    buf.resize(val_size + 1);
 
-        // get link target name
-        if (H5Lget_val(h5obj_id, oname.c_str(), (void*) buf.data(), val_size + 1, H5P_DEFAULT) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "unable to get link value");
-        }
-        auto softlink_tgt_unique = make_unique<D4Attribute>(softlink_value_name, attr_str_c);
-        auto softlink_tgt = softlink_tgt_unique.release();
-        //softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);
-        auto link_target_name = string(buf.begin(), buf.end());
-        softlink_tgt->add_value(link_target_name);
-
-        d4_slinfo->attributes()->add_attribute_nocopy(softlink_tgt);
-    //}
-#if 0
-    catch (...) {
-        delete softlink_tgt;
-        throw;
+    // get link target name
+    if (H5Lget_val(h5obj_id, oname.c_str(), (void*) buf.data(), val_size + 1, H5P_DEFAULT) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "unable to get link value");
     }
-#endif
+    auto softlink_tgt_unique = make_unique<D4Attribute>(softlink_value_name, attr_str_c);
+    auto softlink_tgt = softlink_tgt_unique.release();
+    //softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);
+    auto link_target_name = string(buf.begin(), buf.end());
+    softlink_tgt->add_value(link_target_name);
+
+    d4_slinfo->attributes()->add_attribute_nocopy(softlink_tgt);
     par_grp->attributes()->add_attribute_nocopy(d4_slinfo);
 }
 
@@ -1533,9 +1109,8 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5OGET_INFO(h5obj_id, &obj_info) <0) { 
+    if (H5OGET_INFO(h5obj_id, &obj_info) <0)
         throw InternalErr(__FILE__, __LINE__, "H5OGET_INFO() failed.");
-    }
 
     // If the reference count is greater than 1,that means 
     // hard links are found. return the original object name this
@@ -1603,12 +1178,8 @@ string read_struct_metadata(hid_t s_file_id) {
 
     nelems = g_info.nlinks;
 
-    //ssize_t oname_size      = 0;
-
     // Initialize the total number of structure metadata.
-    //int strmeta_num         = -1;
     int strmeta_num_total   = 0;
-        
     bool strmeta_no_suffix  = true;
 
     // Define a vector of string to hold all dataset names.
@@ -1620,106 +1191,6 @@ string read_struct_metadata(hid_t s_file_id) {
 
     obtain_struct_metadata_info(ecs_grp_id, s_oname, smetatype,
                                 strmeta_num_total, strmeta_no_suffix, nelems);
-#if 0
-    for (hsize_t i = 0; i < nelems; i++) {
-
-        // Query the length of the object name.
-        oname_size =
-            H5Lget_name_by_idx(ecs_grp_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
-                0, H5P_DEFAULT); 
-        if (oname_size <= 0) {
-            string msg = "hdf5 object name error from: ";
-            msg += ecs_group;
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // Obtain the name of the object.
-        vector<char> oname(oname_size + 1);
-        if (H5Lget_name_by_idx(ecs_grp_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
-                (size_t)(oname_size+1), H5P_DEFAULT)<0){
-            string msg = "hdf5 object name error from: ";
-            msg += ecs_group;
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // Check if this object is an HDF5 dataset, not, throw an error.
-        // First, check if it is the hard link or the soft link
-        H5L_info_t linfo;
-        if (H5Lget_info(ecs_grp_id,oname.data(),&linfo,H5P_DEFAULT)<0) {
-            string msg = "hdf5 link name error from: ";
-            msg += ecs_group;
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // This is the soft link.
-        if (linfo.type == H5L_TYPE_SOFT){
-            string msg = "hdf5 link name error from: ";
-            msg += ecs_group;
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // Obtain the object type
-        H5O_info_t oinfo;
-        if (H5OGET_INFO_BY_IDX(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT)<0) {
-            string msg = "Cannot obtain the object info ";
-            msg += ecs_group;
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        if(oinfo.type != H5O_TYPE_DATASET) {
-            string msg = "hdf5 link name error from: ";
-            msg += ecs_group;
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
- 
-        // We want to remove the last '\0' character added by C .
-        string s_one_oname(oname.begin(),oname.end()-1);
-        s_oname[i] = s_one_oname;
-
-        // Calculate how many elements we have for each category(StructMetadata, CoreMetadata, etc.)
-        if (((s_one_oname.find("StructMetadata"))==0) ||
-           ((s_one_oname.find("structmetadata"))==0)){
-
-            smetatype[i] = true;
-
-            // Do we have suffix for the metadata?
-            // If this metadata doesn't have any suffix, it should only come to this loop once.
-            // That's why, when checking the first time, no_suffix is always true.
-            // If we have already found that it doesn't have any suffix,
-            // it should not go into this loop. throw an error.
-            if (false == strmeta_no_suffix) {
-                string msg = "StructMetadata/structmetadata without suffix should only appear once. ";
-                H5Gclose(ecs_grp_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            else if (strmeta_num_total > 0)
-                strmeta_num_total++;
-            else { // either no suffix or the first time to loop the one having the suffix.   
-                if ((0 == s_one_oname.compare("StructMetadata"))||
-                    (0 == s_one_oname.compare("structmetadata")))
-                    strmeta_no_suffix = false;
-                else strmeta_num_total++;
-            }
-#if 0
-"h5","strmeta_num_total= "<<strmeta_num_total <<endl;
-if(strmeta_no_suffix) "h5","structmeta data has the suffix" <<endl;
-else "h5","structmeta data doesn't have the suffix" <<endl;
-#endif
-        }
-
-        oname.clear();
-        s_one_oname.clear();
-
-    }
-#endif
 
     // Define a vector of string to hold StructMetadata.
     // StructMetadata must exist for a valid HDF-EOS5 file.
@@ -1737,133 +1208,6 @@ else "h5","structmeta data doesn't have the suffix" <<endl;
 
     int strmeta_num = obtain_struct_metadata_value(ecs_grp_id, s_oname,smetatype, nelems,
                                                 strmeta_value, total_strmeta_value);
-#if 0
-    // Now we want to retrieve the metadata value and combine them into one string.
-    // Here we have to remember the location of every element of the metadata if
-    // this metadata has a suffix.
-    for (hsize_t i = 0; i < nelems; i++) {
-
-        // We only read StructMetadata string.
-        // Struct Metadata is generated by the HDF-EOS5 library, so the
-        // name "StructMetadata.??" won't change for real struct metadata. 
-        //However, we still assume that somebody may not use the HDF-EOS5
-        // library to add StructMetadata, the name may be "structmetadata".
-        if (((s_oname[i].find("StructMetadata"))!=0) && 
-            ((s_oname[i].find("structmetadata"))!=0)){
-            continue; 
-        }
-        
-        // Open the dataset, dataspace, datatype, number of elements etc. for this metadata
-        hid_t s_dset_id      = -1;
-        hid_t s_space_id     = -1;
-        hid_t s_ty_id        = -1;      
-        hssize_t s_nelms     = -1;
-        size_t dtype_size    = -1;
-
-        if ((s_dset_id = H5Dopen(ecs_grp_id,s_oname[i].c_str(),H5P_DEFAULT))<0){
-            string msg = "Cannot open HDF5 dataset  ";
-            msg += s_oname[i];
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        if ((s_space_id = H5Dget_space(s_dset_id))<0) {
-            string msg = "Cannot open the data space of HDF5 dataset  ";
-            msg += s_oname[i];
-            H5Dclose(s_dset_id);
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        if ((s_ty_id = H5Dget_type(s_dset_id)) < 0) {
-            string msg = "Cannot get the data type of HDF5 dataset  ";
-            msg += s_oname[i];
-            H5Sclose(s_space_id);
-            H5Dclose(s_dset_id);
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-        if ((s_nelms = H5Sget_simple_extent_npoints(s_space_id))<0) {
-            string msg = "Cannot get the number of points of HDF5 dataset  ";
-            msg += s_oname[i];
-            H5Tclose(s_ty_id);
-            H5Sclose(s_space_id);
-            H5Dclose(s_dset_id);
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-        if ((dtype_size = H5Tget_size(s_ty_id))==0) {
-
-            string msg = "Cannot get the data type size of HDF5 dataset  ";
-            msg += s_oname[i];
-            H5Tclose(s_ty_id);
-            H5Sclose(s_space_id);
-            H5Dclose(s_dset_id);
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // Obtain the real value of the metadata
-        vector<char> s_buf(dtype_size*s_nelms +1);
-
-        if ((H5Dread(s_dset_id,s_ty_id,H5S_ALL,H5S_ALL,H5P_DEFAULT,s_buf.data()))<0) {
-
-            string msg = "Cannot read HDF5 dataset  ";
-            msg += s_oname[i];
-            H5Tclose(s_ty_id);
-            H5Sclose(s_space_id);
-            H5Dclose(s_dset_id);
-            H5Gclose(ecs_grp_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // Now we can safely close datatype, data space and dataset IDs.
-        H5Tclose(s_ty_id);
-        H5Sclose(s_space_id);
-        H5Dclose(s_dset_id);
-
-
-        // Convert from the vector<char> to a C++ string.
-        string tempstr(s_buf.begin(),s_buf.end());
-        s_buf.clear();
-        size_t temp_null_pos = tempstr.find_first_of('\0');
-
-        // temp_null_pos returns the position of nullptr,which is the last character of the string. 
-        // so the length of string before null is EQUAL to
-        // temp_null_pos since pos starts at 0.
-        string finstr = tempstr.substr(0,temp_null_pos);
-
-        if (true == smetatype[i]) {
-
-            // Now obtain the corresponding value in integer type for the suffix. '0' to 0 etc. 
-            try {
-                strmeta_num = get_strmetadata_num(s_oname[i]);
-            }
-            catch(...) {
-                H5Gclose(ecs_grp_id);
-                throw InternalErr(__FILE__,__LINE__,"Obtain structmetadata suffix error.");
-
-            }
-            // This is probably not necessary, since structmetadata may always have a suffix.           
-            // Leave here just in case the rules change or a special non-HDF-EOS5 library generated file.
-            // when strmeta_num is -1, it means no suffix for this metadata. So the total structmetadata
-            // is this string only.
-            if (-1 == strmeta_num) 
-                total_strmeta_value = finstr;
-            // strmeta_value at this point should be empty before assigning any value.
-            else if (strmeta_value[strmeta_num]!="") {
-                string msg = "The structmeta value array at this index should be empty string  ";
-                H5Gclose(ecs_grp_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-            // assign the string vector to this value.
-            else 
-                strmeta_value[strmeta_num] = finstr;
-        }
-        tempstr.clear();
-        finstr.clear();
-    }
-#endif
 
     // Now we need to handle the concatenation of the metadata
     if ((strmeta_num_total > 0) && (strmeta_num != -1) ) {
@@ -1963,22 +1307,14 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
                     (0 == s_one_oname.compare("structmetadata")))
                     strmeta_no_suffix = false;
             else strmeta_num_total++;
-
-#if 0
-            "h5","strmeta_num_total= "<<strmeta_num_total <<endl;
-            if(strmeta_no_suffix) "h5","structmeta data has the suffix" <<endl;
-            else "h5","structmeta data doesn't have the suffix" <<endl;
-#endif
         }
         oname.clear();
         s_one_oname.clear();
-
     }
 }
 
 int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname, const vector<bool> &smetatype,
-                                 hsize_t nelems, vector<string> &strmeta_value,
-                                  string &total_strmeta_value) {
+                                 hsize_t nelems, vector<string> &strmeta_value, string &total_strmeta_value) {
 
     int strmeta_num = -1;
     // Now we want to retrieve the metadata value and combine them into one string.
@@ -1991,10 +1327,8 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
         // name "StructMetadata.??" won't change for real struct metadata.
         //However, we still assume that somebody may not use the HDF-EOS5
         // library to add StructMetadata, the name may be "structmetadata".
-        if (((s_oname[i].find("StructMetadata"))!=0) &&
-            ((s_oname[i].find("structmetadata"))!=0)){
+        if (((s_oname[i].find("StructMetadata"))!=0) && ((s_oname[i].find("structmetadata"))!=0))
             continue;
-        }
 
         // Open the dataset, dataspace, datatype, number of elements etc. for this metadata
         hid_t s_dset_id      = -1;
@@ -2026,6 +1360,7 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
             H5Gclose(ecs_grp_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
+
         if ((s_nelms = H5Sget_simple_extent_npoints(s_space_id))<0) {
             string msg = "Cannot get the number of points of HDF5 dataset  ";
             msg += s_oname[i];
@@ -2035,6 +1370,7 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
             H5Gclose(ecs_grp_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
+
         if ((dtype_size = H5Tget_size(s_ty_id))==0) {
 
             string msg = "Cannot get the data type size of HDF5 dataset  ";
@@ -2066,7 +1402,6 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
         H5Sclose(s_space_id);
         H5Dclose(s_dset_id);
 
-
         // Convert from the vector<char> to a C++ string.
         string tempstr(s_buf.begin(),s_buf.end());
         s_buf.clear();
@@ -2080,32 +1415,6 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
         if (true == smetatype[i]) {
             strmeta_num = obtain_struct_metadata_value_internal(ecs_grp_id, s_oname, strmeta_value,total_strmeta_value,
                                                                 finstr, i);
-#if 0
-            // Now obtain the corresponding value in integer type for the suffix. '0' to 0 etc.
-            try {
-                strmeta_num = get_strmetadata_num(s_oname[i]);
-            }
-            catch(...) {
-                H5Gclose(ecs_grp_id);
-                throw InternalErr(__FILE__,__LINE__,"Obtain structmetadata suffix error.");
-
-            }
-            // This is probably not necessary, since structmetadata may always have a suffix.
-            // Leave here just in case the rules change or a special non-HDF-EOS5 library generated file.
-            // when strmeta_num is -1, it means no suffix for this metadata. So the total structmetadata
-            // is this string only.
-            if (-1 == strmeta_num)
-                total_strmeta_value = finstr;
-            // strmeta_value at this point should be empty before assigning any value.
-            else if (strmeta_value[strmeta_num]!="") {
-                string msg = "The structmeta value array at this index should be empty string  ";
-                H5Gclose(ecs_grp_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-            // assign the string vector to this value.
-            else
-                strmeta_value[strmeta_num] = finstr;
-#endif
         }
         tempstr.clear();
         finstr.clear();
@@ -2118,33 +1427,35 @@ int obtain_struct_metadata_value_internal(hid_t ecs_grp_id, const vector<string>
                                            const string &finstr, hsize_t i)
 {
     int strmeta_num = -1;
-            // Now obtain the corresponding value in integer type for the suffix. '0' to 0 etc.
-            try {
-                strmeta_num = get_strmetadata_num(s_oname[i]);
-            }
-            catch(...) {
-                H5Gclose(ecs_grp_id);
-                throw InternalErr(__FILE__,__LINE__,"Obtain structmetadata suffix error.");
 
-            }
-            // This is probably not necessary, since structmetadata may always have a suffix.
-            // Leave here just in case the rules change or a special non-HDF-EOS5 library generated file.
-            // when strmeta_num is -1, it means no suffix for this metadata. So the total structmetadata
-            // is this string only.
-            if (-1 == strmeta_num)
-                total_strmeta_value = finstr;
-            // strmeta_value at this point should be empty before assigning any value.
-            else if (strmeta_value[strmeta_num].empty() == false) {
-                string msg = "The structmeta value array at this index should be empty string  ";
-                H5Gclose(ecs_grp_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-            // assign the string vector to this value.
-            else
-                strmeta_value[strmeta_num] = finstr;
+    // Now obtain the corresponding value in integer type for the suffix. '0' to 0 etc.
+    try {
+        strmeta_num = get_strmetadata_num(s_oname[i]);
+    }
+    catch(...) {
+        H5Gclose(ecs_grp_id);
+        throw InternalErr(__FILE__,__LINE__,"Obtain structmetadata suffix error.");
 
-            return strmeta_num;
+    }
+    // This is probably not necessary, since structmetadata may always have a suffix.
+    // Leave here just in case the rules change or a special non-HDF-EOS5 library generated file.
+    // when strmeta_num is -1, it means no suffix for this metadata. So the total structmetadata
+    // is this string only.
+    if (-1 == strmeta_num)
+        total_strmeta_value = finstr;
+    // strmeta_value at this point should be empty before assigning any value.
+    else if (strmeta_value[strmeta_num].empty() == false) {
+        string msg = "The structmeta value array at this index should be empty string  ";
+        H5Gclose(ecs_grp_id);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+    // assign the string vector to this value.
+    else
+        strmeta_value[strmeta_num] = finstr;
+
+    return strmeta_num;
 }
+
 // Helper function for read_ecs_metadata. Get the number after metadata.
 int get_strmetadata_num(const string & meta_str) {
 
@@ -2253,7 +1564,8 @@ for (const auto &it:gridname_to_info) {
     eos5_dim_info.gridname_to_info = gridname_to_info;
 }
 
-void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_list, unordered_map<string, vector<HE5Dim>>& grppath_to_dims, HE5_TYPE e5_type) {
+void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_list, unordered_map<string,
+                        vector<HE5Dim>>& grppath_to_dims, HE5_TYPE e5_type) {
 
     string eos_name_prefix = "/HDFEOS/";
     string eos5_grp_path;
@@ -2294,7 +1606,8 @@ void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_
 
 }
 
-void build_var_dim_path(const string & eos5_obj_name, const vector<HE5Var>& var_list, unordered_map<string, vector<string>>& varpath_to_dims, HE5_TYPE e5_type, bool is_geo) {
+void build_var_dim_path(const string & eos5_obj_name, const vector<HE5Var>& var_list, unordered_map<string,
+                        vector<string>>& varpath_to_dims, HE5_TYPE e5_type, bool is_geo) {
 
     string eos_name_prefix = "/HDFEOS/";
     string eos5_data_grp_name = "/Data Fields/";
@@ -2366,7 +1679,8 @@ cout <<"var_path is "<<var_path <<endl;
 }
 
 // Obtain the dimension names of the variable with the path of varname.
-bool obtain_eos5_dim(const string & varname, const unordered_map<string, vector<string>>& varpath_to_dims, vector<string> & dimnames) {
+bool obtain_eos5_dim(const string & varname, const unordered_map<string, vector<string>>& varpath_to_dims,
+                     vector<string> & dimnames) {
 
     bool ret_value = false;
     unordered_map<string,vector<string>>::const_iterator vit = varpath_to_dims.find(varname);
@@ -2379,7 +1693,8 @@ bool obtain_eos5_dim(const string & varname, const unordered_map<string, vector<
 } 
 
 // Obtain the dimension names of DAP4 group with the path of grpname.
-bool obtain_eos5_grp_dim(const string & grpname, const unordered_map<string, vector<HE5Dim>>& grppath_to_dims, vector<string> & dimnames) {
+bool obtain_eos5_grp_dim(const string & grpname, const unordered_map<string, vector<HE5Dim>>& grppath_to_dims,
+                         vector<string> & dimnames) {
 
     bool ret_value = false;
     unordered_map<string,vector<HE5Dim>>::const_iterator vit = grppath_to_dims.find(grpname);
@@ -2395,13 +1710,6 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
 
     hsize_t ret_value = 0;
 
-#if 0
-    typedef struct s_t {
-        hobj_ref_t s_ref;
-        int s_index;
-    } s_t;
-#endif
-
     hid_t dset_id = -1;
     if((dset_id = H5Dopen(pid,dname.c_str(),H5P_DEFAULT)) <0) {
         string msg = "cannot open the HDF5 dataset  ";
@@ -2413,130 +1721,10 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
     string reference_name= "REFERENCE_LIST";
     has_reference_list = H5Aexists(dset_id,reference_name.c_str());
 
-    if (has_reference_list > 0) {
+    if (has_reference_list > 0)
         ret_value = obtain_unlim_pure_dim_size_internal(dset_id, dname, reference_name);
-#if 0
-        hid_t attr_id = H5Aopen(dset_id,reference_name.c_str(),H5P_DEFAULT);
-        if (attr_id <0 ) {
-            H5Dclose(dset_id);
-            string msg = "Cannot open the attribute " + reference_name + " of HDF5 dataset "+ dname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
 
-        hid_t atype_id = H5Aget_type(attr_id);
-        if (atype_id <0) {
-            H5Aclose(attr_id);
-            H5Dclose(dset_id);
-            string msg = "Cannot get the datatype of the attribute " + reference_name + " of HDF5 dataset "+ dname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        if (H5T_COMPOUND == H5Tget_class(atype_id)) {
-            
-            hid_t aspace_id = H5Aget_space(attr_id);
-            if (aspace_id < 0) {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                string msg = "Cannot obtain the data space ID  for the attribute  " + reference_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            hssize_t num_ele_ref = H5Sget_simple_extent_npoints(aspace_id);
-            if (num_ele_ref < 0) {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            size_t ele_size = H5Tget_size(atype_id);
-            if (ele_size == 0) {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                string msg = "Cannot obtain the datatype size of the attribute  " + reference_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            if (sizeof(s_t)!=ele_size) {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                string msg = "The data type size is not the same as the struct. ";
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-            vector<s_t> ref_list(num_ele_ref);
-
-            if (H5Aread(attr_id,atype_id,ref_list.data()) <0)  {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                string msg = "Cannot obtain the referenced object for the variable  " + dname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }            
-
-            // To obtain the dimension size, we only need to grab the first referred object. 
-            // The size is the same for all objects. KY 2022-12-14
-
-            H5O_type_t obj_type; 
-            if (H5Rget_obj_type2(dset_id, H5R_OBJECT, &((ref_list[0]).s_ref),&obj_type)<0) {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                string msg = "Cannot obtain the referenced object for the variable  " + dname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            if (obj_type == H5O_TYPE_DATASET) {
-
-                hid_t did_ref = H5Rdereference2(dset_id, H5P_DEFAULT, H5R_OBJECT, &((ref_list[0]).s_ref));
-                if (did_ref < 0) {
-                    H5Aclose(attr_id);
-                    H5Tclose(atype_id);
-                    H5Dclose(dset_id);
-                    string msg = "Cannot de-reference the object for the variable  " + dname;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                hid_t did_space = H5Dget_space(did_ref);
-                if (did_space < 0) {
-                    H5Aclose(attr_id);
-                    H5Tclose(atype_id);
-                    H5Dclose(dset_id);
-                    H5Dclose(did_ref);
-                    string msg = "Cannot open the space of the de-referenced object for the variable  " + dname;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                hssize_t num_ele_dim = H5Sget_simple_extent_npoints(did_space);
-                if (num_ele_dim < 0) {
-                    H5Aclose(attr_id);
-                    H5Tclose(atype_id);
-                    H5Dclose(dset_id);
-                    H5Dclose(did_ref);
-                    H5Sclose(did_space);
-                    string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                ret_value =(hsize_t)num_ele_dim;
-
-                H5Dclose(did_ref);
-                H5Sclose(did_space);
-            }
-
-            H5Sclose(aspace_id);
-        }
-       
-        H5Aclose(attr_id);
-        H5Tclose(atype_id);
-#endif
-
-    }
-    
-    if(H5Dclose(dset_id)<0) {
+    if (H5Dclose(dset_id) <0) {
         string msg = "cannot close the HDF5 dataset  ";
         msg += dname;
         throw InternalErr(__FILE__, __LINE__, msg);
@@ -2548,13 +1736,6 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
 hsize_t obtain_unlim_pure_dim_size_internal(hid_t dset_id, const string &dname, const string &reference_name) {
 
     hsize_t ret_value = 0;
-
-#if 0
-    typedef struct s_t {
-        hobj_ref_t s_ref;
-        int s_index;
-    } s_t;
-#endif
 
     hid_t attr_id = H5Aopen(dset_id,reference_name.c_str(),H5P_DEFAULT);
     if (attr_id <0 ) {
@@ -2573,104 +1754,6 @@ hsize_t obtain_unlim_pure_dim_size_internal(hid_t dset_id, const string &dname, 
 
     if (H5T_COMPOUND == H5Tget_class(atype_id))
         ret_value = obtain_unlim_pure_dim_size_internal_value(dset_id, attr_id, atype_id, reference_name, dname);
-#if 0
-        hid_t aspace_id = H5Aget_space(attr_id);
-        if (aspace_id < 0) {
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Dclose(dset_id);
-            string msg = "Cannot obtain the data space ID  for the attribute  " + reference_name;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        hssize_t num_ele_ref = H5Sget_simple_extent_npoints(aspace_id);
-        if (num_ele_ref < 0) {
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Dclose(dset_id);
-            string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        size_t ele_size = H5Tget_size(atype_id);
-        if (ele_size == 0) {
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Dclose(dset_id);
-            string msg = "Cannot obtain the datatype size of the attribute  " + reference_name;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        if (sizeof(s_t)!=ele_size) {
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Dclose(dset_id);
-            string msg = "The data type size is not the same as the struct. ";
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-        vector<s_t> ref_list(num_ele_ref);
-
-        if (H5Aread(attr_id,atype_id,ref_list.data()) <0)  {
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Dclose(dset_id);
-            string msg = "Cannot obtain the referenced object for the variable  " + dname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        // To obtain the dimension size, we only need to grab the first referred object.
-        // The size is the same for all objects. KY 2022-12-14
-
-        H5O_type_t obj_type;
-        if (H5Rget_obj_type2(dset_id, H5R_OBJECT, &((ref_list[0]).s_ref),&obj_type)<0) {
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Dclose(dset_id);
-            string msg = "Cannot obtain the referenced object for the variable  " + dname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        if (obj_type == H5O_TYPE_DATASET) {
-
-            hid_t did_ref = H5Rdereference2(dset_id, H5P_DEFAULT, H5R_OBJECT, &((ref_list[0]).s_ref));
-            if (did_ref < 0) {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                string msg = "Cannot de-reference the object for the variable  " + dname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            hid_t did_space = H5Dget_space(did_ref);
-            if (did_space < 0) {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                H5Dclose(did_ref);
-                string msg = "Cannot open the space of the de-referenced object for the variable  " + dname;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            hssize_t num_ele_dim = H5Sget_simple_extent_npoints(did_space);
-            if (num_ele_dim < 0) {
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Dclose(dset_id);
-                H5Dclose(did_ref);
-                H5Sclose(did_space);
-                string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            ret_value =(hsize_t)num_ele_dim;
-
-            H5Dclose(did_ref);
-            H5Sclose(did_space);
-        }
-
-        H5Sclose(aspace_id);
-#endif
-
 
     H5Aclose(attr_id);
     H5Tclose(atype_id);
@@ -2735,7 +1818,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
     // The size is the same for all objects. KY 2022-12-14
 
     H5O_type_t obj_type;
-    if (H5Rget_obj_type2(dset_id, H5R_OBJECT, &((ref_list[0]).s_ref),&obj_type)<0) {
+    if (H5Rget_obj_type2(dset_id, H5R_OBJECT, &((ref_list[0]).s_ref),&obj_type) <0) {
         H5Aclose(attr_id);
         H5Tclose(atype_id);
         H5Dclose(dset_id);
@@ -2865,7 +1948,8 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
     map<string,Array*> ordered_dc_co_array_maps;
     map<string,Array*> ordered_coname_array_maps;
 
-    // Loop through dsname_array_maps, then search coname_array_maps, if this element is not in the coname_array_maps, add this to dc_co_array_maps.
+    // Loop through dsname_array_maps, then search coname_array_maps, if this element is not in the coname_array_maps,
+    // add this to dc_co_array_maps.
     for (const auto &dsname_array_map:dsname_array_maps) {
         
         bool found_coname = false;
@@ -2879,6 +1963,7 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
         if (found_coname == false) 
             ordered_dc_co_array_maps.insert(dsname_array_map);
     }
+
     for (const auto &coname_array_map:coname_array_maps)
         ordered_coname_array_maps.insert(coname_array_map);
 
@@ -2886,7 +1971,8 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
 
 }
 
-void add_dap4_coverage_default_internal(D4Group* d4_grp, unordered_map<string, Array*> &dsname_array_maps, unordered_map<string, Array*> &coname_array_maps) {
+void add_dap4_coverage_default_internal(D4Group* d4_grp, unordered_map<string, Array*> &dsname_array_maps,
+                                        unordered_map<string, Array*> &coname_array_maps) {
 
 
     Constructor::Vars_iter vi = d4_grp->var_begin();
@@ -2922,21 +2008,14 @@ void add_dap4_coverage_default_internal(D4Group* d4_grp, unordered_map<string, A
             else 
                 add_dimscale_maps(t_a,dsname_array_maps,handled_dim_names);
 
-#if 0
-for (unsigned i = 0; i <coord_names.size();i++)
-cerr<<"coordinate name final is "<<coord_names[i] <<endl;
-cerr<<"var FQN is "<<t_a->FQN() <<endl;
-#endif
- 
         }
 
     }
 
     // Go over children groups.
-    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
-        //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
+    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi)
         add_dap4_coverage_default_internal(*gi, dsname_array_maps, coname_array_maps);
-    }
+
 }
 
 void obtain_coord_names(Array* ar, vector<string> & coord_names) {
@@ -2944,39 +2023,27 @@ void obtain_coord_names(Array* ar, vector<string> & coord_names) {
     D4Attributes *d4_attrs = ar->attributes();
     D4Attribute *d4_attr = d4_attrs->find("coordinates");
     if (d4_attr != nullptr && d4_attr->type() == attr_str_c) {
-        //if (d4_attr->type() == attr_str_c) {
-            if (d4_attr->num_values() == 1) {
-                string tempstring = d4_attr->value(0);
-                char sep=' ';
-                HDF5CFUtil::Split_helper(coord_names,tempstring,sep);
-            }
-            // From our observations, the coordinates attribute is always just one string. 
-            // So this else block may never be executed.
-            else {
-                 obtain_multi_string_coord_names(d4_attr, coord_names);
-#if 0
-                for (D4Attribute::D4AttributeIter av_i = d4_attr->value_begin(), av_e = d4_attr->value_end(); av_i != av_e; av_i++) {
-                    vector <string> tempstr_vec;
-                    char sep=' ';
-                    HDF5CFUtil::Split_helper(tempstr_vec,*av_i,sep);
-                    for (const auto &tve:tempstr_vec)
-                        coord_names.push_back(tve);
-                }
-#endif
-            }
-        //}
+        if (d4_attr->num_values() == 1) {
+            string tempstring = d4_attr->value(0);
+            char sep=' ';
+            HDF5CFUtil::Split_helper(coord_names,tempstring,sep);
+        }
+        // From our observations, the coordinates attribute is always just one string.
+        // So this else block may never be executed.
+        else
+             obtain_multi_string_coord_names(d4_attr, coord_names);
     }
 }
 
 void obtain_multi_string_coord_names(D4Attribute *d4_attr, vector<string> & coord_names) {
 
     for (D4Attribute::D4AttributeIter av_i = d4_attr->value_begin(), av_e = d4_attr->value_end(); av_i != av_e; av_i++) {
-                    vector <string> tempstr_vec;
-                    char sep=' ';
-                    HDF5CFUtil::Split_helper(tempstr_vec,*av_i,sep);
-                    for (const auto &tve:tempstr_vec)
-                        coord_names.push_back(tve);
-                }
+        vector <string> tempstr_vec;
+        char sep=' ';
+        HDF5CFUtil::Split_helper(tempstr_vec,*av_i,sep);
+        for (const auto &tve:tempstr_vec)
+            coord_names.push_back(tve);
+    }
 }
 // Generate absolute path(FQN) for all coordinate variables. Note the output is the coord_names.
 void make_coord_names_fpath(D4Group* d4_grp,  vector<string> &coord_names) {
@@ -3071,44 +2138,10 @@ void handle_relative_path_cv(const D4Group *d4_grp, string &coord_name) {
         }
     }
 
-
     // Now we need to find the absolute path of the coordinate variable. 
-    if (find_coord) {
+    if (find_coord)
         handle_relative_path_cvname_internal(d4_grp, coord_name, sep_count);
-#if 0
-        // Obtain variable's name and FQN
-        string grp_fqn  = d4_grp->FQN();
 
-        size_t co_path_pos = 0;
-            
-        size_t var_back_st_pos = grp_fqn.size()-1;
-        if (var_back_st_pos >0)
-            var_back_st_pos--;
-
-        // To find the coordinate variable path, we need to search backward and then reduce the number of "../".
-        for (size_t i =var_back_st_pos; i >=0;i--) {
-	        if (grp_fqn[i] == '/') {
-                sep_count--;
-                if(sep_count == 0) {
-                    co_path_pos = i;
-                    break;
-                }
-            }
-        }
-
-        if (sep_count > 0) { // Invalid relative paths. 
-            //We should not include this coordinate in the map. 
-            coord_name="";
-        }
-        else {//build up the coordinate variable full path
-
-            // The path includes the '/' at the end.
-            string the_path = grp_fqn.substr(0,co_path_pos+1);
-            string the_name = HDF5CFUtil::obtain_string_after_lastslash(coord_name);
-            coord_name = the_path + the_name;
-        }
-#endif
-    }
 }
 
 void handle_relative_path_cvname_internal(const D4Group *d4_grp, string &coord_name, unsigned short sep_count) {
@@ -3154,7 +2187,6 @@ void remove_empty_coord_names(vector<string> & coord_names) {
         else 
             ++it;
     }
-
 }
 
 // Obtain global dimension scale to array maps for this group for the coverage support.
@@ -3168,30 +2200,12 @@ void obtain_ds_name_array_maps(D4Group *d4_grp,unordered_map<string,Array*>&dsn_
     Constructor::Vars_iter ve = d4_grp->var_end();
 
     for (; vi != ve; vi++) {
-
         const BaseType *v = *vi;
 
         // Only Array can have maps.
-        if (libdap::dods_array_c == v->type()) {
+        if (libdap::dods_array_c == v->type())
             add_dimscale_maps_internal(*vi, dsn_array_maps, handled_all_cv_names);
-#if 0
-            auto t_a = static_cast<Array *>(*vi);
-            // Dimension scales must be 1-dimension. So we save many unnecessary operations.
-            // Find the dimension scale, insert to the global unordered_map.
-            if (t_a->dimensions() == 1) {
-                string t_a_fqn = t_a->FQN();
-                if (find(handled_all_cv_names.begin(),handled_all_cv_names.end(),t_a_fqn) != handled_all_cv_names.end()) 
-                    dsn_array_maps.emplace(t_a_fqn,t_a);
-            }
-#endif
-        }
     }
-
-#if 0
-for (const auto &dmap:dsn_array_maps) 
-    cout <<"dim map name before: " << dmap.first <<endl;
-#endif
-
 
     for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
         BESDEBUG("h5",  "In group:  " << (*gi)->name() << endl);
@@ -3203,15 +2217,15 @@ for (const auto &dmap:dsn_array_maps)
 void add_dimscale_maps_internal(BaseType *v, unordered_map<string,Array*>&dsn_array_maps,
                                const vector<string>& handled_all_cv_names)
 {
+    auto t_a = dynamic_cast<Array *>(v);
 
-            auto t_a = dynamic_cast<Array *>(v);
-            // Dimension scales must be 1-dimension. So we save many unnecessary operations.
-            // Find the dimension scale, insert to the global unordered_map.
-            if (t_a->dimensions() == 1) {
-                string t_a_fqn = t_a->FQN();
-                if (find(handled_all_cv_names.begin(),handled_all_cv_names.end(),t_a_fqn) != handled_all_cv_names.end())
-                    dsn_array_maps.emplace(t_a_fqn,t_a);
-            }
+    // Dimension scales must be 1-dimension. So we save many unnecessary operations.
+    // Find the dimension scale, insert to the global unordered_map.
+    if (t_a->dimensions() == 1) {
+        string t_a_fqn = t_a->FQN();
+        if (find(handled_all_cv_names.begin(),handled_all_cv_names.end(),t_a_fqn) != handled_all_cv_names.end())
+            dsn_array_maps.emplace(t_a_fqn,t_a);
+    }
 }
 
 
@@ -3239,7 +2253,6 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
             // Also need to remove this coordinate name from the coord_names vector since this coordinate is handled.
             // Note the coord_names is only for this variable. 
             cv_it = coord_names.erase(cv_it);
-            
         }
         else 
             ++cv_it;
@@ -3300,7 +2313,8 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
 // Add the valid coordinate variables(via dimension scales) to the var's DAP4 maps.
 // Loop through the handled dimension names(by the coordinate variables) set
 // Then check this var's dimensions. Only add this var's unhandled coordinates(dimension scales) if these dimension scales exist. 
-void add_dimscale_maps(libdap::Array* var, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names) {
+void add_dimscale_maps(libdap::Array* var, std::unordered_map<std::string,libdap::Array*> & dc_array_maps,
+                       const std::unordered_set<std::string> & handled_dim_names) {
 
     BESDEBUG("h5","Coming to add_dimscale_maps() "<<endl);
 
@@ -3312,7 +2326,7 @@ void add_dimscale_maps(libdap::Array* var, std::unordered_map<std::string,libdap
         const D4Dimension * d4_dim = var->dimension_D4dim(di);
 
         // DAP4 dimension may not exist, so need to check.
-        if(d4_dim) { 
+        if (d4_dim) {
 
             // Fully Qualified name(absolute path) needs to be used as a key for search.
             string dim_fqn = d4_dim->fully_qualified_name();
@@ -3400,220 +2414,102 @@ cerr<< "name: "<<cv_obj_p->FQN() <<endl;
 
     // If we do have coordinate/dimension variables,find those variables and re-order.
     // (We cannot assume that we always have these variables).
-    if (stop_index > 0) {
-
+    if (stop_index > 0)
         reorder_vars_internal(d4_grp, cv_pos, cv_obj_ptr, stop_index);
-#if 0
-        vi = d4_grp->var_begin();
-        ve = d4_grp->var_end();
-
-        v_index = 0;
-
-        for (; vi != ve; vi++) {
-            BaseType *v = *vi;
-            front_v_ptr.push_back(v);
-            v_index++;
-            if (v_index == stop_index)
-                break;
-        }
-
-        // Check the overlaps of cvs with the front variables. 
-        // For example, if there are 3 coordinate variables, c1,c2,c3; the first 3 variables
-        // are v1,v2,c1. In this case, c1 doesn't need to move. We only switch v1 with c2 and v2 with c3. 
-        // Usually there are only a few coordinate variables. So even the nested loops are not costly.
-
-        // First, obtain the overlapped cv and front v positions.
-        vector<int> overlap_cv_pos;
-        vector<int> overlap_front_pos;
-        for (int i = 0; i < stop_index; i++) {
-            for (int j = 0; j < stop_index; j++) {
-                if (i == cv_pos[j]) {
-                    overlap_cv_pos.push_back(cv_pos[j]);
-                    overlap_front_pos.push_back(i);
-                    break;
-                }
-            }
-        }
-
-        // No need to move a cv if this cv is in the front(overlapped with the first few vars) already.
-        // Now we need to find the cv and front variables that need to move.
-
-        // The cvs that need to be moved.
-        vector<int> mov_cv_pos;
-        vector<BaseType *> mov_cv_ptr;
-        for (int i = 0; i < stop_index; i++) {
-            bool overlapped_cv = false;
-            for (const auto &overlap_cv_p: overlap_cv_pos) {
-                if (cv_pos[i] == overlap_cv_p) {
-                    overlapped_cv = true;
-                    break;
-                }
-            }
-            if (overlapped_cv == false) {
-                mov_cv_pos.push_back(cv_pos[i]);
-                mov_cv_ptr.push_back(cv_obj_ptr[i]);
-            }
-        }
-
-        // The front non-cv variables that need to be moved.
-        vector<int> mov_front_pos;
-        vector<BaseType *> mov_front_v_ptr;
-        for (int i = 0; i < stop_index; i++) {
-            bool overlapped_front_cv = false;
-            for (const auto &overlap_front_p: overlap_front_pos) {
-                if (i == overlap_front_p) {
-                    overlapped_front_cv = true;
-                    break;
-                }
-            }
-            if (overlapped_front_cv == false) {
-                mov_front_pos.push_back(i);
-                mov_front_v_ptr.push_back(front_v_ptr[i]);
-            }
-        }
-
-        // sanity check 
-        if (mov_cv_pos.size() != mov_front_pos.size()) {
-            string err_msg = "The number of moved coordinate variables is not the same as ";
-            err_msg += "the number of moved non-coordinate variables";
-            throw InternalErr(__FILE__, __LINE__, err_msg);
-        }
-
-// Leave the following #if 0 for the time being. This is for debugging purpose. KY 2023-04-13
-#if 0
-        for (int i = 0; i <mov_cv_pos.size();i++) {
-        cerr<<"mov_front_pos: "<<mov_front_pos[i] <<endl;
-        cerr<<"mov_cv_pos: "<<mov_cv_pos[i] <<endl;
-        }
-#endif
-
-        // Move the map variables to the front, move the front non-coordinate variables to the original map variable location.
-        for (unsigned int i = 0; i < mov_front_pos.size(); i++) {
-            d4_grp->set_var_index(mov_cv_ptr[i], mov_front_pos[i]);
-            d4_grp->set_var_index(mov_front_v_ptr[i], mov_cv_pos[i]);
-        }
-#endif
-    }
 
     // Now go the children groups. Because the coordinate variables is always on the ancestor groups or this group,
     // the re-ordering routine guarantees that a map variable is in front of all other variables that use this map.
-    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
-        //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
+    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi)
         reorder_vars(*gi, coname_array_maps, dc_array_maps);
-    }   
-    
+
 }
 
-void reorder_vars_internal(D4Group* d4_grp, const vector<int> &cv_pos, const vector<BaseType *>& cv_obj_ptr, int stop_index)
-{
+void reorder_vars_internal(D4Group* d4_grp, const vector<int> &cv_pos, const vector<BaseType *>& cv_obj_ptr, int stop_index) {
     Constructor::Vars_iter vi = d4_grp->var_begin();
     Constructor::Vars_iter ve = d4_grp->var_end();
-        vi = d4_grp->var_begin();
-        ve = d4_grp->var_end();
+    vi = d4_grp->var_begin();
+    ve = d4_grp->var_end();
 
-        int v_index = 0;
-        vector<BaseType *>front_v_ptr;
+    int v_index = 0;
+    vector<BaseType *> front_v_ptr;
 
-        for (; vi != ve; vi++) {
-            BaseType *v = *vi;
-            front_v_ptr.push_back(v);
-            v_index++;
-            if (v_index == stop_index)
+    for (; vi != ve; vi++) {
+        BaseType *v = *vi;
+        front_v_ptr.push_back(v);
+        v_index++;
+        if (v_index == stop_index)
+            break;
+    }
+
+    // Check the overlaps of cvs with the front variables.
+    // For example, if there are 3 coordinate variables, c1,c2,c3; the first 3 variables
+    // are v1,v2,c1. In this case, c1 doesn't need to move. We only switch v1 with c2 and v2 with c3.
+    // Usually there are only a few coordinate variables. So even the nested loops are not costly.
+
+    // First, obtain the overlapped cv and front v positions.
+    vector<int> overlap_cv_pos;
+    vector<int> overlap_front_pos;
+    for (int i = 0; i < stop_index; i++) {
+        for (int j = 0; j < stop_index; j++) {
+            if (i == cv_pos[j]) {
+                overlap_cv_pos.push_back(cv_pos[j]);
+                overlap_front_pos.push_back(i);
                 break;
-        }
-
-        // Check the overlaps of cvs with the front variables.
-        // For example, if there are 3 coordinate variables, c1,c2,c3; the first 3 variables
-        // are v1,v2,c1. In this case, c1 doesn't need to move. We only switch v1 with c2 and v2 with c3.
-        // Usually there are only a few coordinate variables. So even the nested loops are not costly.
-
-        // First, obtain the overlapped cv and front v positions.
-        vector<int> overlap_cv_pos;
-        vector<int> overlap_front_pos;
-        for (int i = 0; i < stop_index; i++) {
-            for (int j = 0; j < stop_index; j++) {
-                if (i == cv_pos[j]) {
-                    overlap_cv_pos.push_back(cv_pos[j]);
-                    overlap_front_pos.push_back(i);
-                    break;
-                }
             }
         }
+    }
 
-        // No need to move a cv if this cv is in the front(overlapped with the first few vars) already.
-        // Now we need to find the cv and front variables that need to move.
+    // No need to move a cv if this cv is in the front(overlapped with the first few vars) already.
+    // Now we need to find the cv and front variables that need to move.
 
-        // The cvs that need to be moved.
-        vector<int> mov_cv_pos;
-        vector<BaseType *> mov_cv_ptr;
-        for (int i = 0; i < stop_index; i++) {
-            bool overlapped_cv = false;
-            for (const auto &overlap_cv_p: overlap_cv_pos) {
-                if (cv_pos[i] == overlap_cv_p) {
-                    overlapped_cv = true;
-                    break;
-                }
-            }
-            if (overlapped_cv == false) {
-                mov_cv_pos.push_back(cv_pos[i]);
-                mov_cv_ptr.push_back(cv_obj_ptr[i]);
+    // The cvs that need to be moved.
+    vector<int> mov_cv_pos;
+    vector<BaseType *> mov_cv_ptr;
+    for (int i = 0; i < stop_index; i++) {
+        bool overlapped_cv = false;
+        for (const auto &overlap_cv_p: overlap_cv_pos) {
+            if (cv_pos[i] == overlap_cv_p) {
+                overlapped_cv = true;
+                break;
             }
         }
+        if (overlapped_cv == false) {
+            mov_cv_pos.push_back(cv_pos[i]);
+            mov_cv_ptr.push_back(cv_obj_ptr[i]);
+        }
+    }
 
-        // The front non-cv variables that need to be moved.
-        vector<int> mov_front_pos;
-        vector<BaseType *> mov_front_v_ptr;
-        for (int i = 0; i < stop_index; i++) {
-            bool overlapped_front_cv = false;
-            for (const auto &overlap_front_p: overlap_front_pos) {
-                if (i == overlap_front_p) {
-                    overlapped_front_cv = true;
-                    break;
-                }
+    // The front non-cv variables that need to be moved.
+    vector<int> mov_front_pos;
+    vector<BaseType *> mov_front_v_ptr;
+    for (int i = 0; i < stop_index; i++) {
+        bool overlapped_front_cv = false;
+        for (const auto &overlap_front_p: overlap_front_pos) {
+            if (i == overlap_front_p) {
+                overlapped_front_cv = true;
+                break;
             }
-            if (overlapped_front_cv == false) {
-                mov_front_pos.push_back(i);
-                mov_front_v_ptr.push_back(front_v_ptr[i]);
-            }
         }
+        if (overlapped_front_cv == false) {
+            mov_front_pos.push_back(i);
+            mov_front_v_ptr.push_back(front_v_ptr[i]);
+        }
+    }
 
-        reorder_vars_internal_final_phase(d4_grp, mov_cv_pos, mov_front_pos, mov_front_v_ptr, mov_cv_ptr);
-#if 0
-        // sanity check
-        if (mov_cv_pos.size() != mov_front_pos.size()) {
-            string err_msg = "The number of moved coordinate variables is not the same as ";
-            err_msg += "the number of moved non-coordinate variables";
-            throw InternalErr(__FILE__, __LINE__, err_msg);
-        }
+    reorder_vars_internal_final_phase(d4_grp, mov_cv_pos, mov_front_pos, mov_front_v_ptr, mov_cv_ptr);
 
-// Leave the following #if 0 for the time being. This is for debugging purpose. KY 2023-04-13
-#if 0
-        for (int i = 0; i <mov_cv_pos.size();i++) {
-        cerr<<"mov_front_pos: "<<mov_front_pos[i] <<endl;
-        cerr<<"mov_cv_pos: "<<mov_cv_pos[i] <<endl;
-        }
-#endif
-
-        // Move the map variables to the front, move the front non-coordinate variables to the original map variable location.
-        for (unsigned int i = 0; i < mov_front_pos.size(); i++) {
-            d4_grp->set_var_index(mov_cv_ptr[i], mov_front_pos[i]);
-            d4_grp->set_var_index(mov_front_v_ptr[i], mov_cv_pos[i]);
-        }
-#endif
 }
-
-
 
 void reorder_vars_internal_final_phase(D4Group* d4_grp, const vector<int> &mov_cv_pos,
                                        const vector<int> &mov_front_pos, const vector<BaseType *> &mov_front_v_ptr,
                                        const vector<BaseType *> &mov_cv_ptr) {
 
-            // sanity check
-        if (mov_cv_pos.size() != mov_front_pos.size()) {
-            string err_msg = "The number of moved coordinate variables is not the same as ";
-            err_msg += "the number of moved non-coordinate variables";
-            throw InternalErr(__FILE__, __LINE__, err_msg);
-        }
+    // sanity check
+    if (mov_cv_pos.size() != mov_front_pos.size()) {
+        string err_msg = "The number of moved coordinate variables is not the same as ";
+        err_msg += "the number of moved non-coordinate variables";
+        throw InternalErr(__FILE__, __LINE__, err_msg);
+    }
 
 // Leave the following #if 0 for the time being. This is for debugging purpose. KY 2023-04-13
 #if 0
@@ -3623,11 +2519,11 @@ void reorder_vars_internal_final_phase(D4Group* d4_grp, const vector<int> &mov_c
         }
 #endif
 
-        // Move the map variables to the front, move the front non-coordinate variables to the original map variable location.
-        for (unsigned int i = 0; i < mov_front_pos.size(); i++) {
-            d4_grp->set_var_index(mov_cv_ptr[i], mov_front_pos[i]);
-            d4_grp->set_var_index(mov_front_v_ptr[i], mov_cv_pos[i]);
-        }
+    // Move the map variables to the front, move the front non-coordinate variables to the original map variable location.
+    for (unsigned int i = 0; i < mov_front_pos.size(); i++) {
+        d4_grp->set_var_index(mov_cv_ptr[i], mov_front_pos[i]);
+        d4_grp->set_var_index(mov_front_v_ptr[i], mov_cv_pos[i]);
+    }
 
 }
 
@@ -3681,295 +2577,12 @@ for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
 
     bool add_grid_var = is_eos5_grid_grp(d4_grp,eos5_dim_info,eg_info);
 
-    if (add_grid_var && eg_info.projection == HE5_GCTP_GEO) {
+    if (add_grid_var && eg_info.projection == HE5_GCTP_GEO)
         add_eos5_grid_vars_geo(d4_grp, eg_info);
-#if 0
-        BaseType *ar_bt_lat = nullptr;
-        BaseType *ar_bt_lon = nullptr;
-        HDF5MissLLArray *ar_lat = nullptr;
-        HDF5MissLLArray *ar_lon = nullptr;
-
-        try {
-
-            //ar_bt_lat = new (Float32)("YDim");
-            auto ar_bt_lat_unique = make_unique<Float32>("YDim");
-            ar_bt_lat = ar_bt_lat_unique.get();
-            auto ar_lat_unique = make_unique<HDF5MissLLArray>(true,
-                                          1,
-                                          eg_info,
-                                          "YDim",
-                                          ar_bt_lat);
-            ar_lat = ar_lat_unique.release();
-#if 0
-            ar_lat = new HDF5MissLLArray (
-                                          true,
-                                          1,
-                                          eg_info,
-                                          "YDim",
-                                          ar_bt_lat);
-#endif
-            string ydimpath = d4_grp->FQN() + "YDim";
-            ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
-            auto d4_dim0_unique = make_unique<D4Dimension>("YDim",eg_info.ydim_size);
-            //auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
-            D4Dimension *d4_dim0 = d4_dim0_unique.release();
-            (ar_lat->dim_begin())->dim = d4_dim0;
-
-            // The DAP4 group needs also to store these dimensions.
-            D4Dimensions *dims = d4_grp->dims();
-            dims->add_dim_nocopy(d4_dim0);
-
-            auto ar_bt_lon_unique = make_unique<Float32>("XDim");
-            //ar_bt_lon = new (Float32)("XDim");
-            ar_bt_lon = ar_bt_lon_unique.get();
-            auto ar_lon_unique = make_unique<HDF5MissLLArray>(
-                                    false,
-                                     1,
-                                             eg_info,
-                                          "XDim",
-                                          ar_bt_lon);
-            ar_lon = ar_lon_unique.release();
-#if 0
-            ar_lon = new HDF5MissLLArray (
-                                          false,
-                                          1,
-                                          eg_info,
-                                          "XDim",
-                                          ar_bt_lon);
-#endif
-            string xdimpath = d4_grp->FQN() + "XDim";
-            ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
-
-            auto d4_dim1_unique = make_unique<D4Dimension>("XDim",eg_info.xdim_size);
-            D4Dimension *d4_dim1 = d4_dim1_unique.release();
-
-            //auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
-            (ar_lon->dim_begin())->dim = d4_dim1;
-
-            // The DAP4 group needs also to store these dimensions.
-            dims = d4_grp->dims();
-            dims->add_dim_nocopy(d4_dim1);
-
-            // Set this variable to DAP4 is critical for DAP4 dimensions and attributes handling.
-            ar_lat->set_is_dap4(true);
-            ar_lon->set_is_dap4(true);
-
-            // Add the CF units attribute to ar_lat and ar_lon.
-            add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
-            add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
-            d4_grp->add_var_nocopy(ar_lat);
-            d4_grp->add_var_nocopy(ar_lon);
-            //delete ar_bt_lon;
-            //delete ar_bt_lat;
-        }
-//#if 0
-        catch (...) {
-            //if (ar_bt_lat) delete ar_bt_lat;
-            //if (ar_bt_lon) delete ar_bt_lon;
-            if (ar_lat) delete ar_lat;
-            if (ar_lon) delete ar_lon;
-            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
-        }
-//#endif
-#endif
-    }
     else if (add_grid_var && (eg_info.projection == HE5_GCTP_SNSOID ||
                             eg_info.projection == HE5_GCTP_PS ||
-                           eg_info.projection == HE5_GCTP_LAMAZ)) {
-
+                           eg_info.projection == HE5_GCTP_LAMAZ))
         add_eos5_grid_vars_non_geo(d4_grp, eos5_dim_info, eg_info);
-#if 0
-        HDF5CFProj *dummy_proj_cf = nullptr;
-        BaseType *ar_bt_dim0 = nullptr;
-        BaseType *ar_bt_dim1 = nullptr;
-        HDF5CFProj1D *ar_dim0 = nullptr;
-        HDF5CFProj1D *ar_dim1 = nullptr;
-
-        BaseType *ar_bt_lat = nullptr;
-        BaseType *ar_bt_lon = nullptr;
-        HDF5MissLLArray *ar_lat = nullptr;
-        HDF5MissLLArray *ar_lon = nullptr;
-
-        try {
-            string dummy_proj_cf_name = "eos5_cf_projection";
-            auto dummy_proj_cf_unique = make_unique<HDF5CFProj>(dummy_proj_cf_name,dummy_proj_cf_name);
-            //dummy_proj_cf = new HDF5CFProj(dummy_proj_cf_name,dummy_proj_cf_name);
-            dummy_proj_cf = dummy_proj_cf_unique.release();
-            dummy_proj_cf->set_is_dap4(true);
-
-            if (eg_info.projection == HE5_GCTP_SNSOID) {
-
-                add_var_dap4_attr(dummy_proj_cf,"grid_mapping_name",attr_str_c,"sinusoidal");
-                add_var_dap4_attr(dummy_proj_cf,"longitude_of_central_meridian",attr_float64_c,"0.0");
-                add_var_dap4_attr(dummy_proj_cf,"earth_radius", attr_float64_c, "6371007.181");
-                add_var_dap4_attr(dummy_proj_cf,"_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
-            }
-            else if (eg_info.projection == HE5_GCTP_PS)
-                add_ps_cf_grid_mapping_attrs(dummy_proj_cf,eg_info);
-            else if (eg_info.projection == HE5_GCTP_LAMAZ)
-                add_lamaz_cf_grid_mapping_attrs(dummy_proj_cf,eg_info);
-
-            d4_grp->add_var_nocopy(dummy_proj_cf);
-
-            auto ar_bt_dim1_unique = make_unique<Float64>("XDim");
-            ar_bt_dim1 = ar_bt_dim1_unique.get();
-            //ar_bt_dim1 = new (Float64)("XDim");
-
-            auto ar_dim1_unique = make_unique<HDF5CFProj1D>(eg_info.point_left,eg_info.point_right,
-                                                            eg_info.xdim_size,"XDim",ar_bt_dim1);
-            ar_dim1 = ar_dim1_unique.release();
-#if 0
-            ar_dim1 = new HDF5CFProj1D(eg_info.point_left,eg_info.point_right,
-                                       eg_info.xdim_size,"XDim",ar_bt_dim1);
-#endif
-            // Handle dimensions
-            string xdimpath = d4_grp->FQN() + "XDim";
-            ar_dim1->append_dim_ll(eg_info.xdim_size,xdimpath);
-
-            // Need to add DAP4 dimensions
-            auto d4_dim1_unique = make_unique<D4Dimension>("XDim", eg_info.xdim_size);
-            D4Dimension* d4_dim1 = d4_dim1_unique.release();
-            //auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
-            (ar_dim1->dim_begin())->dim = d4_dim1;
-
-            // The DAP4 group needs also to store these dimensions.
-            D4Dimensions *dims = d4_grp->dims();
-            dims->add_dim_nocopy(d4_dim1);
-
-            auto ar_bt_dim0_unique = make_unique<Float64>("YDim");
-            ar_bt_dim0 = ar_bt_dim0_unique.get();
-            //ar_bt_dim0 = new (Float64)("YDim");
-
-            auto ar_dim0_unique = make_unique<HDF5CFProj1D>
-                    (eg_info.point_upper,eg_info.point_lower,eg_info.ydim_size,"XDim",ar_bt_dim0);
-            ar_dim0 = ar_dim0_unique.release();
-
-            //ar_dim0 = new HDF5CFProj1D(eg_info.point_upper,eg_info.point_lower,eg_info.ydim_size,"XDim",ar_bt_dim0);
-            string ydimpath = d4_grp->FQN() + "YDim";
-            ar_dim0->append_dim_ll(eg_info.ydim_size,ydimpath);
-
-            // Need to add DAP4 dimensions
-            auto d4_dim0_unique = make_unique<D4Dimension>("YDim",eg_info.ydim_size);
-            D4Dimension *d4_dim0 = d4_dim0_unique.release();
-            //auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
-            (ar_dim0->dim_begin())->dim = d4_dim0;
-
-            // The DAP4 group needs also to store these dimensions.
-            dims = d4_grp->dims();
-            dims->add_dim_nocopy(d4_dim0);
-
-            ar_dim1->set_is_dap4(true);
-            ar_dim0->set_is_dap4(true);
-
-            add_gm_spcvs_attrs(ar_dim0,true);
-            add_gm_spcvs_attrs(ar_dim1,false);
-
-            d4_grp->add_var_nocopy(ar_dim1);
-            d4_grp->add_var_nocopy(ar_dim0);
-
-            //delete ar_bt_dim1;
-            //delete ar_bt_dim0;
-            auto ar_bt_lat_unique = make_unique<Float64>("Latitude");
-            ar_bt_lat = ar_bt_lat_unique.get();
-            //ar_bt_lat = new (Float64)("Latitude");
-
-            auto ar_lat_unique = make_unique<HDF5MissLLArray>(true, 2, eg_info,"Latitude",ar_bt_lat);
-            ar_lat = ar_lat_unique.release();
-#if 0
-            ar_lat = new HDF5MissLLArray (
-                                          true,
-                                          2,
-                                          eg_info,
-                                          "Latitude",
-                                          ar_bt_lat);
-#endif
-
-            ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
-            ar_lat->append_dim_ll(eg_info.xdim_size,xdimpath);
-
-            // Need to add DAP4 dimensions for this 2-D var.
-            Array::Dim_iter d = ar_lat->dim_begin();
-            d->dim = d4_dim0;
-            d++;
-            d->dim = d4_dim1;
-            add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
-
-            auto ar_bt_lon_unique = make_unique<Float64>("Longitude");
-            ar_bt_lon = ar_bt_lon_unique.get();
-            //ar_bt_lon = new (Float64)("Longitude");
-            auto ar_lon_unique = make_unique<HDF5MissLLArray>(false,
-                                          2,
-                                          eg_info,
-                                          "Longitude",
-                                          ar_bt_lon);
-            ar_lon= ar_lon_unique.release();
-#if 0
-            ar_lon = new HDF5MissLLArray (
-                                          false,
-                                          2,
-                                          eg_info,
-                                          "Longitude",
-                                          ar_bt_lon);
-#endif
-            ar_lon->append_dim_ll(eg_info.ydim_size,ydimpath);
-            ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
-
-            add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
-
-            d = ar_lon->dim_begin();
-            d->dim = d4_dim0;
-            d++;
-            d->dim = d4_dim1;
-
-            ar_lat->set_is_dap4(true);
-            ar_lon->set_is_dap4(true);
-
-            d4_grp->add_var_nocopy(ar_lat);
-            d4_grp->add_var_nocopy(ar_lon);
-
-            //delete ar_bt_lon;
-            //delete ar_bt_lat;
-
-            // Now we need to add eos5 grid mapping, dimension and coordinate info to eos5_dim_info.
-            eos5_dname_info_t edname_info;
-            eos5_cname_info_t ecname_info;
-            edname_info.dpath0 = ydimpath;
-            edname_info.dpath1 = xdimpath;
-            ecname_info.vpath0 = d4_grp->FQN() + "Latitude";
-            ecname_info.vpath1 = d4_grp->FQN() + "Longitude";
-            ecname_info.cf_gmap_path = d4_grp->FQN() + dummy_proj_cf_name;
-
-            pair<eos5_dname_info_t,eos5_cname_info_t> t_pair;
-            t_pair = make_pair(edname_info,ecname_info);
-            eos5_dim_info.dimpath_to_cvpath.push_back(t_pair);
-
-#if 0
-for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
-    cerr<<" dimension name 1: " <<d_v_info.first.dpath0 <<endl;
-    cerr<<" dimension name 2: " <<d_v_info.first.dpath1 <<endl;
-    cerr<<" cv name 1: " <<d_v_info.second.vpath0 <<endl;
-    cerr<<" cv name 2: " <<d_v_info.second.vpath1 <<endl;
-    cerr<<" dummy cf projection var name: " <<d_v_info.second.cf_gmap_path <<endl;
-
-
-}
-#endif
-
-        }
-        catch (...) {
-            if (dummy_proj_cf) delete dummy_proj_cf;
-            //if (ar_bt_dim0) delete ar_bt_dim0;
-            //if (ar_bt_dim1) delete ar_bt_dim1;
-            if (ar_dim0) delete ar_dim0;
-            if (ar_dim1) delete ar_dim1;
-            //if (ar_bt_lat) delete ar_bt_lat;
-            //if (ar_bt_lon) delete ar_bt_lon;
-            if (ar_lat) delete ar_lat;
-            if (ar_lon) delete ar_lon;
-            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
-        }
-#endif
-    }
 
 }
 
@@ -3982,7 +2595,6 @@ void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
 
     try {
 
-        //ar_bt_lat = new (Float32)("YDim");
         auto ar_bt_lat_unique = make_unique<Float32>("YDim");
         ar_bt_lat = ar_bt_lat_unique.get();
         auto ar_lat_unique = make_unique<HDF5MissLLArray>(true,
@@ -3991,19 +2603,12 @@ void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
                                                           "YDim",
                                                           ar_bt_lat);
         ar_lat = ar_lat_unique.release();
-#if 0
-        ar_lat = new HDF5MissLLArray (
-                                      true,
-                                      1,
-                                      eg_info,
-                                      "YDim",
-                                      ar_bt_lat);
-#endif
+
         string ydimpath = d4_grp->FQN() + "YDim";
         ar_lat->append_dim_ll(eg_info.ydim_size, ydimpath);
+
         auto d4_dim0_unique = make_unique<D4Dimension>("YDim", eg_info.ydim_size);
-        //auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
-        D4Dimension *d4_dim0 = d4_dim0_unique.release();
+        auto d4_dim0 = d4_dim0_unique.release();
         (ar_lat->dim_begin())->dim = d4_dim0;
 
         // The DAP4 group needs also to store these dimensions.
@@ -4011,7 +2616,7 @@ void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
         dims->add_dim_nocopy(d4_dim0);
 
         auto ar_bt_lon_unique = make_unique<Float32>("XDim");
-        //ar_bt_lon = new (Float32)("XDim");
+
         ar_bt_lon = ar_bt_lon_unique.get();
         auto ar_lon_unique = make_unique<HDF5MissLLArray>(
                 false,
@@ -4020,21 +2625,13 @@ void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
                 "XDim",
                 ar_bt_lon);
         ar_lon = ar_lon_unique.release();
-#if 0
-        ar_lon = new HDF5MissLLArray (
-                                      false,
-                                      1,
-                                      eg_info,
-                                      "XDim",
-                                      ar_bt_lon);
-#endif
+
         string xdimpath = d4_grp->FQN() + "XDim";
         ar_lon->append_dim_ll(eg_info.xdim_size, xdimpath);
 
         auto d4_dim1_unique = make_unique<D4Dimension>("XDim", eg_info.xdim_size);
-        D4Dimension *d4_dim1 = d4_dim1_unique.release();
+        auto d4_dim1 = d4_dim1_unique.release();
 
-        //auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
         (ar_lon->dim_begin())->dim = d4_dim1;
 
         // The DAP4 group needs also to store these dimensions.
@@ -4050,13 +2647,8 @@ void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
         add_var_dap4_attr(ar_lon, "units", attr_str_c, "degrees_east");
         d4_grp->add_var_nocopy(ar_lat);
         d4_grp->add_var_nocopy(ar_lon);
-        //delete ar_bt_lon;
-        //delete ar_bt_lat;
     }
-//#if 0
     catch (...) {
-        //if (ar_bt_lat) delete ar_bt_lat;
-        //if (ar_bt_lon) delete ar_bt_lon;
         delete ar_lat;
         delete ar_lon;
         throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
@@ -4064,6 +2656,7 @@ void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
 }
 
 void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info) {
+
     HDF5CFProj *dummy_proj_cf = nullptr;
     BaseType *ar_bt_dim0 = nullptr;
     BaseType *ar_bt_dim1 = nullptr;
@@ -4078,7 +2671,6 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
     try {
         string dummy_proj_cf_name = "eos5_cf_projection";
         auto dummy_proj_cf_unique = make_unique<HDF5CFProj>(dummy_proj_cf_name, dummy_proj_cf_name);
-        //dummy_proj_cf = new HDF5CFProj(dummy_proj_cf_name,dummy_proj_cf_name);
         dummy_proj_cf = dummy_proj_cf_unique.release();
         dummy_proj_cf->set_is_dap4(true);
 
@@ -4097,23 +2689,19 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
 
         auto ar_bt_dim1_unique = make_unique<Float64>("XDim");
         ar_bt_dim1 = ar_bt_dim1_unique.get();
-        //ar_bt_dim1 = new (Float64)("XDim");
 
         auto ar_dim1_unique = make_unique<HDF5CFProj1D>(eg_info.point_left, eg_info.point_right,
                                                         eg_info.xdim_size, "XDim", ar_bt_dim1);
         ar_dim1 = ar_dim1_unique.release();
-#if 0
-        ar_dim1 = new HDF5CFProj1D(eg_info.point_left,eg_info.point_right,
-                                   eg_info.xdim_size,"XDim",ar_bt_dim1);
-#endif
+
         // Handle dimensions
         string xdimpath = d4_grp->FQN() + "XDim";
         ar_dim1->append_dim_ll(eg_info.xdim_size, xdimpath);
 
         // Need to add DAP4 dimensions
         auto d4_dim1_unique = make_unique<D4Dimension>("XDim", eg_info.xdim_size);
-        D4Dimension *d4_dim1 = d4_dim1_unique.release();
-        //auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
+        auto d4_dim1 = d4_dim1_unique.release();
+
         (ar_dim1->dim_begin())->dim = d4_dim1;
 
         // The DAP4 group needs also to store these dimensions.
@@ -4122,20 +2710,18 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
 
         auto ar_bt_dim0_unique = make_unique<Float64>("YDim");
         ar_bt_dim0 = ar_bt_dim0_unique.get();
-        //ar_bt_dim0 = new (Float64)("YDim");
 
         auto ar_dim0_unique = make_unique<HDF5CFProj1D>
                 (eg_info.point_upper, eg_info.point_lower, eg_info.ydim_size, "XDim", ar_bt_dim0);
         ar_dim0 = ar_dim0_unique.release();
 
-        //ar_dim0 = new HDF5CFProj1D(eg_info.point_upper,eg_info.point_lower,eg_info.ydim_size,"XDim",ar_bt_dim0);
         string ydimpath = d4_grp->FQN() + "YDim";
         ar_dim0->append_dim_ll(eg_info.ydim_size, ydimpath);
 
         // Need to add DAP4 dimensions
         auto d4_dim0_unique = make_unique<D4Dimension>("YDim", eg_info.ydim_size);
-        D4Dimension *d4_dim0 = d4_dim0_unique.release();
-        //auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
+        auto d4_dim0 = d4_dim0_unique.release();
+
         (ar_dim0->dim_begin())->dim = d4_dim0;
 
         // The DAP4 group needs also to store these dimensions.
@@ -4151,23 +2737,11 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
         d4_grp->add_var_nocopy(ar_dim1);
         d4_grp->add_var_nocopy(ar_dim0);
 
-        //delete ar_bt_dim1;
-        //delete ar_bt_dim0;
         auto ar_bt_lat_unique = make_unique<Float64>("Latitude");
         ar_bt_lat = ar_bt_lat_unique.get();
-        //ar_bt_lat = new (Float64)("Latitude");
 
         auto ar_lat_unique = make_unique<HDF5MissLLArray>(true, 2, eg_info, "Latitude", ar_bt_lat);
         ar_lat = ar_lat_unique.release();
-#if 0
-        ar_lat = new HDF5MissLLArray (
-                                      true,
-                                      2,
-                                      eg_info,
-                                      "Latitude",
-                                      ar_bt_lat);
-#endif
-
         ar_lat->append_dim_ll(eg_info.ydim_size, ydimpath);
         ar_lat->append_dim_ll(eg_info.xdim_size, xdimpath);
 
@@ -4180,21 +2754,13 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
 
         auto ar_bt_lon_unique = make_unique<Float64>("Longitude");
         ar_bt_lon = ar_bt_lon_unique.get();
-        //ar_bt_lon = new (Float64)("Longitude");
+
         auto ar_lon_unique = make_unique<HDF5MissLLArray>(false,
                                                           2,
                                                           eg_info,
                                                           "Longitude",
                                                           ar_bt_lon);
         ar_lon = ar_lon_unique.release();
-#if 0
-        ar_lon = new HDF5MissLLArray (
-                                      false,
-                                      2,
-                                      eg_info,
-                                      "Longitude",
-                                      ar_bt_lon);
-#endif
         ar_lon->append_dim_ll(eg_info.ydim_size, ydimpath);
         ar_lon->append_dim_ll(eg_info.xdim_size, xdimpath);
 
@@ -4210,9 +2776,6 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
 
         d4_grp->add_var_nocopy(ar_lat);
         d4_grp->add_var_nocopy(ar_lon);
-
-        //delete ar_bt_lon;
-        //delete ar_bt_lat;
 
         // Now we need to add eos5 grid mapping, dimension and coordinate info to eos5_dim_info.
         eos5_dname_info_t edname_info;
@@ -4234,284 +2797,20 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
             cerr<<" cv name 1: " <<d_v_info.second.vpath0 <<endl;
             cerr<<" cv name 2: " <<d_v_info.second.vpath1 <<endl;
             cerr<<" dummy cf projection var name: " <<d_v_info.second.cf_gmap_path <<endl;
-
-
         }
 #endif
 
     }
     catch (...) {
         delete dummy_proj_cf;
-        //if (ar_bt_dim0) delete ar_bt_dim0;
-        //if (ar_bt_dim1) delete ar_bt_dim1;
         delete ar_dim0;
         delete ar_dim1;
-        //if (ar_bt_lat) delete ar_bt_lat;
-        //if (ar_bt_lon) delete ar_bt_lon;
         delete ar_lat;
         delete ar_lon;
         throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
     }
 }
-#if 0
-void add_possible_eos5_grid_vars(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info) {
- 
-    BESDEBUG("h5","coming to add_possible_eos5_grid_vars"<<endl);
 
-    eos5_grid_info_t eg_info;
-
-#if 0
-for (const auto & ed_info:eos5_dim_info.gridname_to_info) {
-    cerr<<"grid name: "<<ed_info.first <<endl;
-    cerr<<" projection: "<<ed_info.second.projection <<endl;
-    cerr<<"           "<<"xdim fqn:" << ed_info.second.xdim_fqn <<endl;
-    cerr<<"           "<<"ydim fqn:" << ed_info.second.ydim_fqn <<endl;
-    cerr<<"           "<<"xdim size:" << ed_info.second.xdim_size <<endl;
-    cerr<<"           "<<"ydim size:" << ed_info.second.ydim_size <<endl;
-    cerr<<"           "<<"xdim point_lower:" << ed_info.second.point_lower <<endl;
-    cerr<<"           "<<"xdim point_upper:" << ed_info.second.point_upper <<endl;
-    cerr<<"           "<<"xdim point_left:" << ed_info.second.point_lower <<endl;
-    cerr<<"           "<<"xdim point_right:" << ed_info.second.point_right <<endl;
-
-}
-
-for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
-    cerr<<" dimension name 1" <<d_v_info.first.dpath0 <<endl;
-    cerr<<" dimension name 2" <<d_v_info.first.dpath1 <<endl;
-    cerr<<" cv name 1" <<d_v_info.second.vpath0 <<endl;
-    cerr<<" cv name 2" <<d_v_info.second.vpath1 <<endl;
-    cerr<<" cv name 3" <<d_v_info.second.cf_gmap_path <<endl;
-
-
-}
-#endif
-
-    bool add_grid_var = is_eos5_grid_grp(d4_grp,eos5_dim_info,eg_info);
-
-    if (add_grid_var && eg_info.projection == HE5_GCTP_GEO) {
-    
-        BaseType *ar_bt_lat = nullptr;
-        BaseType *ar_bt_lon = nullptr;
-        HDF5MissLLArray *ar_lat = nullptr;
-        HDF5MissLLArray *ar_lon = nullptr;
-
-        try {
-
-            ar_bt_lat = new (Float32)("YDim");
-            ar_lat = new HDF5MissLLArray (
-                                          true,
-                                          1,
-                                          eg_info,
-                                          "YDim",
-                                          ar_bt_lat);
-
-            string ydimpath = d4_grp->FQN() + "YDim";
-            ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
-            auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
-            (ar_lat->dim_begin())->dim = d4_dim0;
-
-            // The DAP4 group needs also to store these dimensions.
-            D4Dimensions *dims = d4_grp->dims();
-            dims->add_dim_nocopy(d4_dim0);
- 
-            ar_bt_lon = new (Float32)("XDim");
-            ar_lon = new HDF5MissLLArray (
-                                          false,
-                                          1,
-                                          eg_info,
-                                          "XDim",
-                                          ar_bt_lon);
-            string xdimpath = d4_grp->FQN() + "XDim";
-            ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
-
-            auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
-            (ar_lon->dim_begin())->dim = d4_dim1;
-
-            // The DAP4 group needs also to store these dimensions.
-            dims = d4_grp->dims();
-            dims->add_dim_nocopy(d4_dim1);
- 
-            // Set this variable to DAP4 is critical for DAP4 dimensions and attributes handling.
-            ar_lat->set_is_dap4(true);
-            ar_lon->set_is_dap4(true);
-
-            // Add the CF units attribute to ar_lat and ar_lon.
-            add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
-            add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
-            d4_grp->add_var_nocopy(ar_lat);
-            d4_grp->add_var_nocopy(ar_lon);
-            delete ar_bt_lon;
-            delete ar_bt_lat;
-        }
-        catch (...) {
-            if (ar_bt_lat) delete ar_bt_lat;
-            if (ar_bt_lon) delete ar_bt_lon;
-            if (ar_lat) delete ar_lat;
-            if (ar_lon) delete ar_lon;
-            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
-        }
-
-    }
-    else if (add_grid_var && (eg_info.projection == HE5_GCTP_SNSOID || 
-                           eg_info.projection == HE5_GCTP_PS ||
-                           eg_info.projection == HE5_GCTP_LAMAZ)) {
-
-        HDF5CFProj *dummy_proj_cf = nullptr;
-        BaseType *ar_bt_dim0 = nullptr;
-        BaseType *ar_bt_dim1 = nullptr;
-        HDF5CFProj1D *ar_dim0 = nullptr;
-        HDF5CFProj1D *ar_dim1 = nullptr;
-
-        BaseType *ar_bt_lat = nullptr;
-        BaseType *ar_bt_lon = nullptr;
-        HDF5MissLLArray *ar_lat = nullptr;
-        HDF5MissLLArray *ar_lon = nullptr;
-
-        try {
-            string dummy_proj_cf_name = "eos5_cf_projection";
-            dummy_proj_cf = new HDF5CFProj(dummy_proj_cf_name,dummy_proj_cf_name);
-            dummy_proj_cf->set_is_dap4(true);
-            
-            if (eg_info.projection == HE5_GCTP_SNSOID) {
-
-                add_var_dap4_attr(dummy_proj_cf,"grid_mapping_name",attr_str_c,"sinusoidal");
-                add_var_dap4_attr(dummy_proj_cf,"longitude_of_central_meridian",attr_float64_c,"0.0");
-                add_var_dap4_attr(dummy_proj_cf,"earth_radius", attr_float64_c, "6371007.181");
-                add_var_dap4_attr(dummy_proj_cf,"_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
-            }
-            else if (eg_info.projection == HE5_GCTP_PS) 
-                add_ps_cf_grid_mapping_attrs(dummy_proj_cf,eg_info);
-            else if (eg_info.projection == HE5_GCTP_LAMAZ) 
-                add_lamaz_cf_grid_mapping_attrs(dummy_proj_cf,eg_info);
-    
-            d4_grp->add_var_nocopy(dummy_proj_cf);
-
-            ar_bt_dim1 = new (Float64)("XDim");
-            ar_dim1 = new HDF5CFProj1D(eg_info.point_left,eg_info.point_right,eg_info.xdim_size,"XDim",ar_bt_dim1);
-
-            // Handle dimensions
-            string xdimpath = d4_grp->FQN() + "XDim";
-            ar_dim1->append_dim_ll(eg_info.xdim_size,xdimpath);
-
-            // Need to add DAP4 dimensions
-            //auto d4_dim1 = new D4Dimension(xdimpath,eg_info.xdim_size);
-            auto d4_dim1 = new D4Dimension("XDim",eg_info.xdim_size);
-            (ar_dim1->dim_begin())->dim = d4_dim1;
-
-            // The DAP4 group needs also to store these dimensions.
-            D4Dimensions *dims = d4_grp->dims();
-            dims->add_dim_nocopy(d4_dim1);
-            
-            ar_bt_dim0 = new (Float64)("YDim");
-            ar_dim0 = new HDF5CFProj1D(eg_info.point_upper,eg_info.point_lower,eg_info.ydim_size,"XDim",ar_bt_dim0);
-            string ydimpath = d4_grp->FQN() + "YDim";
-            ar_dim0->append_dim_ll(eg_info.ydim_size,ydimpath);
-
-            // Need to add DAP4 dimensions
-            auto d4_dim0 = new D4Dimension("YDim",eg_info.ydim_size);
-            (ar_dim0->dim_begin())->dim = d4_dim0;
-
-            // The DAP4 group needs also to store these dimensions.
-            dims = d4_grp->dims();
-            dims->add_dim_nocopy(d4_dim0);
-
-            ar_dim1->set_is_dap4(true);
-            ar_dim0->set_is_dap4(true);
-
-            add_gm_spcvs_attrs(ar_dim0,true);
-            add_gm_spcvs_attrs(ar_dim1,false);
-
-            d4_grp->add_var_nocopy(ar_dim1);
-            d4_grp->add_var_nocopy(ar_dim0);
-            
-            delete ar_bt_dim1;
-            delete ar_bt_dim0;
-            ar_bt_lat = new (Float64)("Latitude");
-            ar_lat = new HDF5MissLLArray (
-                                          true,
-                                          2,
-                                          eg_info,
-                                          "Latitude",
-                                          ar_bt_lat);
-            ar_lat->append_dim_ll(eg_info.ydim_size,ydimpath);
-            ar_lat->append_dim_ll(eg_info.xdim_size,xdimpath);
-
-            // Need to add DAP4 dimensions for this 2-D var.
-            Array::Dim_iter d = ar_lat->dim_begin();
-            d->dim = d4_dim0; 
-            d++;
-            d->dim = d4_dim1;
-            add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
-
-            ar_bt_lon = new (Float64)("Longitude");
-            ar_lon = new HDF5MissLLArray (
-                                          false,
-                                          2,
-                                          eg_info,
-                                          "Longitude",
-                                          ar_bt_lon);
-            ar_lon->append_dim_ll(eg_info.ydim_size,ydimpath);
-            ar_lon->append_dim_ll(eg_info.xdim_size,xdimpath);
-
-            add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
-
-            d = ar_lon->dim_begin();
-            d->dim = d4_dim0; 
-            d++;
-            d->dim = d4_dim1;
-
-            ar_lat->set_is_dap4(true);
-            ar_lon->set_is_dap4(true);
-
-            d4_grp->add_var_nocopy(ar_lat);
-            d4_grp->add_var_nocopy(ar_lon);
-
-            delete ar_bt_lon;
-            delete ar_bt_lat;
-
-            // Now we need to add eos5 grid mapping, dimension and coordinate info to eos5_dim_info.
-            eos5_dname_info_t edname_info;
-            eos5_cname_info_t ecname_info;
-            edname_info.dpath0 = ydimpath;
-            edname_info.dpath1 = xdimpath;
-            ecname_info.vpath0 = d4_grp->FQN() + "Latitude";
-            ecname_info.vpath1 = d4_grp->FQN() + "Longitude";
-            ecname_info.cf_gmap_path = d4_grp->FQN() + dummy_proj_cf_name;
-
-            pair<eos5_dname_info_t,eos5_cname_info_t> t_pair;
-            t_pair = make_pair(edname_info,ecname_info);
-            eos5_dim_info.dimpath_to_cvpath.push_back(t_pair);
-            
-#if 0
-for (const auto & d_v_info:eos5_dim_info.dimpath_to_cvpath) {
-    cerr<<" dimension name 1: " <<d_v_info.first.dpath0 <<endl;
-    cerr<<" dimension name 2: " <<d_v_info.first.dpath1 <<endl;
-    cerr<<" cv name 1: " <<d_v_info.second.vpath0 <<endl;
-    cerr<<" cv name 2: " <<d_v_info.second.vpath1 <<endl;
-    cerr<<" dummy cf projection var name: " <<d_v_info.second.cf_gmap_path <<endl;
-
-
-}
-#endif
-
-        }
-        catch (...) {
-            if (dummy_proj_cf) delete dummy_proj_cf;
-            if (ar_bt_dim0) delete ar_bt_dim0;
-            if (ar_bt_dim1) delete ar_bt_dim1;
-            if (ar_dim0) delete ar_dim0;
-            if (ar_dim1) delete ar_dim1;
-            if (ar_bt_lat) delete ar_bt_lat;
-            if (ar_bt_lon) delete ar_bt_lon;
-            if (ar_lat) delete ar_lat;
-            if (ar_lon) delete ar_lon;
-            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
-        }
-
-    }
-    
-}
-#endif
 bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eos5_grid_info_t &eg_info) {
 
     bool ret_value = false;
@@ -4526,39 +2825,8 @@ bool is_eos5_grid_grp(D4Group *d4_group,const eos5_dim_info_t &eos5_dim_info, eo
         }
     }
 
-    if (ret_value == true) {
-
+    if (ret_value == true)
         ret_value = no_eos5_grid_vars_in_grp(d4_group, eg_info);
-#if 0
-        // Even if we find the correct eos group, we need to ensure that the variables we want to add 
-        // do not exist. That is: we need to check the variable names like Latitude/Longitude etc don't exist in
-        // this group. This seems unnecessary, but we do observe that data producers may add CF variables by themselves.
-        // The handler needs to ensure that it will keep using the variables added by the data producers first.
-    
-        Constructor::Vars_iter vi = d4_group->var_begin();
-        Constructor::Vars_iter ve = d4_group->var_end();
-    
-        for (; vi != ve; vi++) {
-    
-            const BaseType *v = *vi;
-            string vname = v->name();
-            if (eg_info.projection == HE5_GCTP_GEO) {
-                if (vname == "YDim" || vname == "XDim") {
-                    ret_value = false;
-                    break;
-                }
-    
-            }
-            else {
-                if (vname == "YDim" || vname == "XDim" || vname =="Latitude" || vname == "Longitude" 
-                    || vname == "eos5_cf_projection") {
-                    ret_value = false;
-                    break;
-                }
-            }
-        }
-#endif
-    }
 
     return ret_value;
 }
@@ -4596,6 +2864,7 @@ bool no_eos5_grid_vars_in_grp(D4Group *d4_group, const eos5_grid_info_t &eg_info
     }
     return ret_value;
 }
+
 void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gridname_to_info) {
 
     string grid_name = "/HDFEOS/GRIDS/"+gd.name;
@@ -4616,13 +2885,13 @@ void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gri
     for (const auto &dim:gd.dim_list) {
 
         if ((dim.name == "XDim" || dim.name == "Xdim") && find_xdim == false) {
-                eg_info.xdim_size = dim.size;
-                find_xdim = true;
-            }
-            else if ((dim.name == "YDim" || dim.name == "Ydim") && find_ydim == false) {
-                eg_info.ydim_size = dim.size;
-                find_ydim = true;
-            }
+            eg_info.xdim_size = dim.size;
+            find_xdim = true;
+        }
+        else if ((dim.name == "YDim" || dim.name == "Ydim") && find_ydim == false) {
+            eg_info.ydim_size = dim.size;
+            find_ydim = true;
+        }
         
         if (find_xdim == true && find_ydim == true)
             break;
@@ -4647,6 +2916,7 @@ void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gri
         gridname_to_info[grid_name] = eg_info;       
 
     }
+
     else {
        
         string dimname_list;
