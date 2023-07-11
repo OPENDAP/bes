@@ -49,6 +49,7 @@ typedef struct {
 
 typedef std::list<cache_entry> CacheFiles;
 
+
 /**
  * @brief Implementation of a caching mechanism for compressed data.
  *
@@ -84,11 +85,8 @@ typedef std::list<cache_entry> CacheFiles;
  */
 class BESFileLockingCache: public BESObj {
 
-    friend class cacheT;
-    friend class FileLockingCacheTest;
-
-private:
-    static const char DAP_CACHE_CHAR = '#';
+ private:
+    const char DAP_CACHE_CHAR = '#';
 
     // TODO Should cache_enabled be false given that cache_dir is empty? jhrg 2/18/18
     bool d_cache_enabled = true;
@@ -125,8 +123,15 @@ private:
     int m_find_descriptor(const std::string &file);
 #endif
 
+#if 0
     virtual void lock_cache_write();
     virtual void lock_cache_read();
+    virtual void unlock_cache();
+#endif
+
+    friend class cacheT;
+    friend class FileLockingCacheTest;  // This is in dispatch/tests
+    friend class BESFileLockingCacheTest;
 
 public:
     BESFileLockingCache() = default;
@@ -151,12 +156,8 @@ public:
     virtual void unlock_and_close(const std::string &target);
 
 #if 0
-
-    virtual void lock_cache_write();
-    virtual void lock_cache_read();
-
-#endif
     virtual void unlock_cache();
+#endif
 
     virtual unsigned long long update_cache_info(const std::string &target);
     virtual bool cache_too_big(unsigned long long current_size) const;
