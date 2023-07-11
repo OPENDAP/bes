@@ -783,8 +783,7 @@ void HDF5RequestHandler::add_das_to_dds_wrapper(DDS *dds, const string &filename
     add_das_to_dds(dds,container_name,filename,das_cache_fname,h5_fd,das_from_dc);
 }
 
-void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*data_bdds,const string &container_name,
-                                                            const string& filename)
+void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*data_bdds, const string& filename)
 {
     DDS *dds = data_bdds->get_dds();
 
@@ -1024,7 +1023,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         }
 #endif
 
-        get_dds_without_attributes_datadds(bdds,container_name,filename);
+        get_dds_without_attributes_datadds(bdds, filename);
 
         bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
@@ -1474,9 +1473,8 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     dmr->set_factory(&MyD4TypeFactory);
     dmr->build_using_dds(dds);
 
-    //auto hdf5_dmr = new HDF5DMR(dmr);
     auto hdf5_dmr_unique = make_unique<HDF5DMR>(dmr);
-    HDF5DMR *hdf5_dmr = hdf5_dmr_unique.release();
+    auto hdf5_dmr = hdf5_dmr_unique.release();
     hdf5_dmr->setHDF5Dataset(cf_fileid);
     delete dmr;     // The call below will make 'dmr' unreachable; delete it now to avoid a leak.
     bes_dmr.set_dmr(hdf5_dmr); // BESDMRResponse will delete hdf5_dmr
@@ -2085,7 +2083,6 @@ static unsigned int get_uint_key(const string &key, unsigned int def_val)
     if (true == found) {
         // In C++11, stoi is better.
         return stoi(doset);
-        //return atoi(doset.c_str()); // use better code TODO
     }
     else {
         return def_val;

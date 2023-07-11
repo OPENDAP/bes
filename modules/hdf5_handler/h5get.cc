@@ -1690,120 +1690,123 @@ void obtain_dimnames(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,vecto
     string dimlist_name = "DIMENSION_LIST";
     has_dimension_list = H5Aexists(dset,dimlist_name.c_str());
 
-    if (has_dimension_list > 0 && ndims > 0) {
+    if (has_dimension_list > 0 && ndims > 0)
+        obtain_dimnames_internal(file_id, dset, ndims, dt_inst_ptr,hdf5_hls, is_eos5, dimlist_name);
 
-        hobj_ref_t rbuf;
-        vector<hvl_t> vlbuf;
-        vlbuf.resize(ndims);
-
-        hid_t attr_id     = -1;
-        hid_t atype_id    = -1;
-        hid_t amemtype_id = -1;
-        hid_t aspace_id   = -1;
-        hid_t ref_dset    = -1;
-
-        try {        
-            attr_id = H5Aopen(dset,dimlist_name.c_str(),H5P_DEFAULT);
-            if (attr_id <0 ) {
-                string msg = "Cannot open the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            atype_id = H5Aget_type(attr_id);
-            if (atype_id <0) {
-                string msg = "Cannot get the datatype of the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            amemtype_id = H5Tget_native_type(atype_id, H5T_DIR_ASCEND);
-            if (amemtype_id < 0) {
-                string msg = "Cannot get the memory datatype of the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
-                throw InternalErr(__FILE__, __LINE__, msg);
- 
-            }
-
-            if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)  {
-                string msg = "Cannot obtain the referenced object for the variable  " + string(dt_inst_ptr->name);
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            vector<char> objname;
-
-            // The dimension names of variables will be the HDF5 dataset names de-referenced from the DIMENSION_LIST attribute.
-            for (int i = 0; i < ndims; i++) {
-
-                if (vlbuf[i].p == nullptr) {
-                    stringstream sindex ;
-                    sindex <<i;
-                    string msg = "For variable " + string(dt_inst_ptr->name) + "; "; 
-                    msg = msg + "the dimension of which the index is "+ sindex.str() + " doesn't exist. "; 
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
-
-                if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
-                    string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                string trim_objname = obtain_dimname_deref(ref_dset,dt_inst_ptr);
-                obtain_dimname_hardlinks(file_id,ref_dset,hdf5_hls,trim_objname);
-
-                // Need to save the dimension names
-                // If this is an HDF-EOS5 file and it is using the dimension scales, we need to change the 
-                // non-alphanumeric/underscore characters inside the path and the name to underscore.
-                if (is_eos5) {
-                    string temp_orig_dim_name = trim_objname.substr(trim_objname.find_last_of("/")+1);
-                    string temp_dim_name = handle_string_special_characters(temp_orig_dim_name);
-                    string temp_dim_path = handle_string_special_characters_in_path(trim_objname);
-                    dt_inst_ptr->dimnames.push_back(temp_dim_name);
-                    dt_inst_ptr->dimnames_path.push_back(temp_dim_path);
-                }
-                else {
-                    dt_inst_ptr->dimnames.push_back(trim_objname.substr(trim_objname.find_last_of("/")+1));
-                    dt_inst_ptr->dimnames_path.push_back(trim_objname);
-                }
-
-                if (H5Dclose(ref_dset)<0)
-                    throw InternalErr(__FILE__,__LINE__,"Cannot close the HDF5 dataset in the function obtain_dimnames().");
-
-            }// for (vector<Dimension *>::iterator ird is var->dims.begin()
-            if (vlbuf.empty()== false) {
-
-                if ((aspace_id = H5Aget_space(attr_id)) < 0) {
-                    string msg = "Cannot close the HDF5 attribute space successfully for <DIMENSION_LIST> of the variable "+string(dt_inst_ptr->name);
-                    throw InternalErr(__FILE__,__LINE__,msg);
-                }
-
-                if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0) {
-                    throw InternalErr(__FILE__,__LINE__,"Cannot reclaim the variable length memory in the function obtain_dimnames()");
-                }
-
-                H5Sclose(aspace_id);
-           
-            }
-
-            H5Tclose(atype_id);
-            H5Tclose(amemtype_id);
-            H5Aclose(attr_id);
-    
-        }
-
-        catch(...) {
-
-            H5Tclose(atype_id);
-            H5Tclose(amemtype_id);
-            H5Sclose(aspace_id);
-            H5Aclose(attr_id);
-
-            throw;
-        }
- 
-    }
     return ;
 }
 
+void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls,
+                              bool is_eos5, const string &dimlist_name)
+{
+    hobj_ref_t rbuf;
+    vector<hvl_t> vlbuf;
+    vlbuf.resize(ndims);
+
+    hid_t attr_id     = -1;
+    hid_t atype_id    = -1;
+    hid_t amemtype_id = -1;
+    hid_t aspace_id   = -1;
+    hid_t ref_dset    = -1;
+
+    try {
+        attr_id = H5Aopen(dset,dimlist_name.c_str(),H5P_DEFAULT);
+        if (attr_id <0 ) {
+            string msg = "Cannot open the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        atype_id = H5Aget_type(attr_id);
+        if (atype_id <0) {
+            string msg = "Cannot get the datatype of the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        amemtype_id = H5Tget_native_type(atype_id, H5T_DIR_ASCEND);
+        if (amemtype_id < 0) {
+            string msg = "Cannot get the memory datatype of the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
+            throw InternalErr(__FILE__, __LINE__, msg);
+
+        }
+
+        if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)  {
+            string msg = "Cannot obtain the referenced object for the variable  " + string(dt_inst_ptr->name);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        vector<char> objname;
+
+        // The dimension names of variables will be the HDF5 dataset names de-referenced from the DIMENSION_LIST attribute.
+        for (int i = 0; i < ndims; i++) {
+
+            if (vlbuf[i].p == nullptr) {
+                stringstream sindex ;
+                sindex <<i;
+                string msg = "For variable " + string(dt_inst_ptr->name) + "; ";
+                msg = msg + "the dimension of which the index is "+ sindex.str() + " doesn't exist. ";
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+
+            rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
+
+            if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
+                string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+
+            string trim_objname = obtain_dimname_deref(ref_dset,dt_inst_ptr);
+            obtain_dimname_hardlinks(file_id,ref_dset,hdf5_hls,trim_objname);
+
+            // Need to save the dimension names
+            // If this is an HDF-EOS5 file and it is using the dimension scales, we need to change the
+            // non-alphanumeric/underscore characters inside the path and the name to underscore.
+            if (is_eos5) {
+                string temp_orig_dim_name = trim_objname.substr(trim_objname.find_last_of("/")+1);
+                string temp_dim_name = handle_string_special_characters(temp_orig_dim_name);
+                string temp_dim_path = handle_string_special_characters_in_path(trim_objname);
+                dt_inst_ptr->dimnames.push_back(temp_dim_name);
+                dt_inst_ptr->dimnames_path.push_back(temp_dim_path);
+            }
+            else {
+                dt_inst_ptr->dimnames.push_back(trim_objname.substr(trim_objname.find_last_of("/")+1));
+                dt_inst_ptr->dimnames_path.push_back(trim_objname);
+            }
+
+            if (H5Dclose(ref_dset)<0)
+                throw InternalErr(__FILE__,__LINE__,"Cannot close the HDF5 dataset in the function obtain_dimnames().");
+
+        }// for (vector<Dimension *>::iterator ird is var->dims.begin()
+        if (vlbuf.empty()== false) {
+
+            if ((aspace_id = H5Aget_space(attr_id)) < 0) {
+                string msg = "Cannot close the HDF5 attribute space successfully for <DIMENSION_LIST> of the variable "+string(dt_inst_ptr->name);
+                throw InternalErr(__FILE__,__LINE__,msg);
+            }
+
+            if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0) {
+                throw InternalErr(__FILE__,__LINE__,"Cannot reclaim the variable length memory in the function obtain_dimnames()");
+            }
+
+            H5Sclose(aspace_id);
+
+        }
+
+        H5Tclose(atype_id);
+        H5Tclose(amemtype_id);
+        H5Aclose(attr_id);
+
+    }
+
+    catch(...) {
+
+        H5Tclose(atype_id);
+        H5Tclose(amemtype_id);
+        H5Sclose(aspace_id);
+        H5Aclose(attr_id);
+
+        throw;
+    }
+}
 string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr) {
 
     vector<char>objname;
@@ -1939,7 +1942,6 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
     BESDEBUG("h5","attribute size " <<attr_inst_ptr->need <<endl);
     BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(ty_id))<<endl);
 
-    // bool is_utf8_str = check_if_utf8_str(ty_id,is_dap4);
 
     bool is_utf8_str = false;
     if (is_dap4 == false)

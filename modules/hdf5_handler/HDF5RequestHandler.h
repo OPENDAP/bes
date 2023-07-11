@@ -231,8 +231,7 @@ class HDF5RequestHandler:public BESRequestHandler {
                                          const std::string &dds_cache_fname, const std::string &das_cache_fname,
                                          bool dds_from_dc,bool das_from_dc, bool build_data);
 
-    static void get_dds_without_attributes_datadds(BESDataDDSResponse*data_bdds,const std::string &container_name,
-                                                   const std::string &filename);
+    static void get_dds_without_attributes_datadds(BESDataDDSResponse*data_bdds, const std::string &filename);
     static void read_datadds_from_file(libdap::DDS *dds, const std::string &filename, hid_t &cf_fileid, hid_t &fileid);
 
     static void read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,

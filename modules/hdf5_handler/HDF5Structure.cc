@@ -25,8 +25,6 @@
 /// \brief The implementation of converting HDF5 compound type into DAP structure for the default option.
 /// \author Kent Yang
 
-
-
 #include <memory>
 #include "hdf5.h"
 #include "h5dds.h"
@@ -58,10 +56,6 @@ HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
     if (this == &rhs)
         return *this;
 
-#if 0
-    dynamic_cast < Structure & >(*this) = rhs;  // run Structure assignment
-#endif
-
     libdap::Structure::operator=(rhs);
     m_duplicate(rhs);
 
@@ -78,12 +72,12 @@ bool HDF5Structure::read()
         return true;
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
-    if(file_id < 0) {
+    if (file_id < 0) {
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
     }
    
     hid_t dset_id = -1;
-    if(true == is_dap4())
+    if (true == is_dap4())
         dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
     else
         dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
@@ -92,6 +86,7 @@ bool HDF5Structure::read()
         H5Fclose(file_id);
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
     }
+
     vector<char> values;
     hid_t dtypeid = H5Dget_type(dset_id);
     if(dtypeid < 0) {
@@ -130,11 +125,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
     }
     if (false == has_values) {
-#if 0
-        if((mspace = H5Dget_space(dsetid))<0) {
-            throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
-        }
-#endif
+
         size_t ty_size = H5Tget_size(memtype);
         values.resize(ty_size);
 
@@ -198,63 +189,11 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
 
             } else if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT || memb_cls == H5T_STRING) {
                 do_structure_read_atomic(memb_id, memb_name, memb_cls, values, values_offset, memb_offset);
-#if 0
-                else if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT) {
-                    if(true == promote_char_to_short(memb_cls,memb_id)) {
-                        void *src = (void*)(values.data() + values_offset +memb_offset);
-                        char val_int8;
-                        memcpy(&val_int8,src,1);
-                        auto val_short=(short)val_int8;
-                        var(memb_name)->val2buf(&val_short);
-                    }
-                    else {
-                        var(memb_name)->val2buf(values.data() +  values_offset +memb_offset);
-
-                    }
-                }
-                else if (memb_cls == H5T_STRING) {
-                   do_structure_read_string(memb_id, memb_name, values, values_offset,memb_offset) ;
-#if 0
-                    // distinguish between variable length and fixed length
-                    if(true == H5Tis_variable_str(memb_id)) {
-
-                        void *src = (void*)(values.data()+values_offset + memb_offset);
-                        auto temp_bp = (char*)src;
-                        string final_str ="";
-                        get_vlen_str_data(temp_bp,final_str);
-                        var(memb_name)->val2buf((void*)&final_str);
-
-                    }
-                    else {// Obtain string
-
-                        void *src = (void*)(values.data()+values_offset + memb_offset);
-                        vector<char> str_val;
-                        size_t memb_size = H5Tget_size(memb_id);
-                        if (memb_size == 0) {
-                            H5Tclose(memb_id);
-                            free(memb_name);
-                            throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 compound datatype.");
-                        }
-                        str_val.resize(memb_size);
-                        memcpy(str_val.data(),src,memb_size);
-                        string temp_string(str_val.begin(),str_val.end());
-                        var(memb_name)->val2buf(&temp_string);
-#if 0
-                      // This doesn't work either.                var(memb_name)->val2buf(str_val.data());
-
-                    // We may just pass the string, (maybe string pad is preserved.)
-                    // Probably not, DAP string may not keep the size. This doesn't work.
-                    //var(memb_name)->val2buf(values.data()+value_offset + memb_offset);
-#endif
-                    }
-#endif
-#endif
             } else {
                 free(memb_name);
                 H5Tclose(memb_id);
                 throw InternalErr(__FILE__, __LINE__,
                                   "Only support the field of compound datatype when the field type class is integer, float, string, array or compound..");
-
             }
             // Close member type ID 
             H5Tclose(memb_id);
@@ -265,24 +204,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
     }
 
     catch (...) {
-
          catch_free(memb_name, memb_id, memtype, mspace, values);
-#if 0
-        if ((memtype != -1) && (mspace != -1) &&
-            (H5Dvlen_reclaim(memtype, mspace, H5P_DEFAULT, (void *) values.data()) < 0)) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to reclaim the compound datatype array.");
-        }
-        if (memtype != -1)
-            H5Tclose(memtype);
-        if (mspace != -1)
-            H5Sclose(mspace);
-
-        if (memb_id != -1)
-            H5Tclose(memb_id);
-
-        if (memb_name != nullptr)
-            free(memb_name);
-#endif
         throw;
     }
 
@@ -303,15 +225,12 @@ void HDF5Structure::do_structure_read_atomic(hid_t memb_id, char *memb_name, H5T
         void *src = (void *) (values.data() + values_offset + memb_offset);
 
         if (true == promote_char_to_short(memb_cls, memb_id)) {
-            //void *src = (void*)(values.data() + values_offset +memb_offset);
             char val_int8;
             memcpy(&val_int8, src, 1);
             auto val_short = (short) val_int8;
             var(memb_name)->val2buf(&val_short);
         } else {
-            //void *src = (void*)(values.data() + values_offset +memb_offset);
             var(memb_name)->val2buf(src);
-
         }
     } else if (memb_cls == H5T_STRING) {
         do_structure_read_string(memb_id, memb_name, values, values_offset, memb_offset);
@@ -324,10 +243,10 @@ void HDF5Structure::do_structure_read_string(hid_t memb_id, char *memb_name,
                                              size_t memb_offset) {
 
     void *src = (void *) (values.data() + values_offset + memb_offset);
+
     // distinguish between variable length and fixed length
     if (true == H5Tis_variable_str(memb_id)) {
 
-        //void *src = (void *) (values.data() + values_offset + memb_offset);
         auto temp_bp = (char *) src;
         string final_str;
         get_vlen_str_data(temp_bp, final_str);
@@ -335,7 +254,6 @@ void HDF5Structure::do_structure_read_string(hid_t memb_id, char *memb_name,
 
     } else {// Obtain string
 
-        //void *src = (void *) (values.data() + values_offset + memb_offset);
         vector<char> str_val;
         size_t memb_size = H5Tget_size(memb_id);
         if (memb_size == 0) {
@@ -347,17 +265,11 @@ void HDF5Structure::do_structure_read_string(hid_t memb_id, char *memb_name,
         memcpy(str_val.data(), src, memb_size);
         string temp_string(str_val.begin(), str_val.end());
         var(memb_name)->val2buf(&temp_string);
-#if 0
-        // This doesn't work either.                var(memb_name)->val2buf(str_val.data());
 
-      // We may just pass the string, (maybe string pad is preserved.)
-      // Probably not, DAP string may not keep the size. This doesn't work.
-      //var(memb_name)->val2buf(values.data()+value_offset + memb_offset);
-#endif
     }
 }
 
-void HDF5Structure::catch_free(char *memb_name, hid_t memb_id, hid_t memtype, hid_t mspace, vector<char>&values) {
+void HDF5Structure::catch_free(char *memb_name, hid_t memb_id, hid_t memtype, hid_t mspace, vector<char>&values) const {
 
     if ((memtype != -1) && (mspace != -1) && (H5Dvlen_reclaim(memtype, mspace,
                                                               H5P_DEFAULT, (void *) values.data()) < 0)) {

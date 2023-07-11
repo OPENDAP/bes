@@ -86,6 +86,8 @@ void Get_structure_array_type(libdap::Structure *structure_ptr, hid_t memb_type,
 bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
 void obtain_dimnames(hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5);
+void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,std::vector<link_info_t> & hdf5_hls,
+                              bool is_eos5, const string &dimlist_name);
 std::string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr);
 void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>& hdf5_hls, std::string & trim_objname);
 bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,

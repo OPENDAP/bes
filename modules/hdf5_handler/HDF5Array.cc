@@ -271,8 +271,9 @@ void HDF5Array::handle_array_read_slab(hid_t dset_id, hid_t memtype, int64_t nel
         for (int64_t i = 0; i < (int)data_size; i++)
             convbuf2[i] = static_cast<signed char> (convbuf[i]);
         m_intern_plain_array_data((char*) convbuf2.data(),memtype);
-    } else
-    m_intern_plain_array_data(convbuf.data(),memtype);
+    }
+    else
+        m_intern_plain_array_data(convbuf.data(),memtype);
 }
 
 void HDF5Array::handle_vlen_string(hid_t dset_id, hid_t memtype, int64_t nelms, const vector<hsize_t>& hoffset,
@@ -383,9 +384,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         for (int64_t element = 0; element < nelms; ++element) { 
 
             h5s = dynamic_cast<HDF5Structure*>(var()->ptr_duplicate());
-//            H5T_class_t         memb_cls         = H5T_NO_CLASS;
             int                 nmembs           = 0;
- //           size_t              memb_offset      = 0;
             size_t              struct_elem_offset = values_offset + ty_size*element;
 
             if ((nmembs = H5Tget_nmembers(memtype)) < 0)

@@ -1010,7 +1010,6 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
 void map_h5_varpath_to_dap4_attr(D4Group* d4g,BaseType* d4b,Structure * d4s,const string & varpath, short flag) {
 
     auto d4_attr_unique = make_unique<D4Attribute>("fullnamepath",attr_str_c);
-    //auto d4_attr = new D4Attribute("fullnamepath",attr_str_c);
     auto d4_attr = d4_attr_unique.release();
     d4_attr->add_value(varpath);
 
@@ -1065,7 +1064,6 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 
     string softlink_name = "linkname";
 
-    //auto softlink_src = new D4Attribute(softlink_name,attr_str_c);
     auto softlink_src_unique = make_unique<D4Attribute>(softlink_name, attr_str_c);
     auto softlink_src = softlink_src_unique.release();
     softlink_src->add_value(oname);
@@ -1082,7 +1080,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
     }
     auto softlink_tgt_unique = make_unique<D4Attribute>(softlink_value_name, attr_str_c);
     auto softlink_tgt = softlink_tgt_unique.release();
-    //softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);
+
     auto link_target_name = string(buf.begin(), buf.end());
     softlink_tgt->add_value(link_target_name);
 
@@ -2243,7 +2241,7 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
 
             auto d4_map_unique = make_unique<D4Map>(it_ma->first, it_ma->second);
             D4Map *d4_map = d4_map_unique.release();
-            //auto d4_map = new D4Map(it_ma->first, it_ma->second);
+
             var->maps()->add_map(d4_map);
 
             // Obtain the dimension full paths. These dimensions are handled dimensions. The dimension scales of 
