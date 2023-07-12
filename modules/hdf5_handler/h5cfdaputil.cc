@@ -231,12 +231,12 @@ H5DataType
 HDF5CFDAPUtil::get_mem_dtype(H5DataType dtype,size_t mem_dtype_size ) {
 
     // Currently in addition to "char" to "int16", all other memory datatype will be the same as the datatype.
-    // So we have a short cut for this function
+    // So we have a shortcut for this function
     return ((H5INT16 == dtype) && (1 == mem_dtype_size))?H5CHAR:dtype;
 }
 
 string
-HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
+HDF5CFDAPUtil:: print_attr(H5DataType type, unsigned int loc, void *vals)
 {
     ostringstream rep;
 
@@ -271,7 +271,7 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             gp.cp = (char *) vals;
             char c;
             c = *(gp.cp+loc);
-            // Since the character may be a special character and DAP may not be able to represent so supposedly we should escape the character
+            // Since the character may be a special character and DAP may not be able to represent, so supposedly we should escape the character
             // by calling the escattr function. However, HDF5 native char maps to DAP Int16. So the mapping assumes that users will never
             // use HDF5 native char or HDF5 unsigned native char to represent characters. Instead, HDF5 string should be used to represent characters.
             // So don't do any escaping of H5CHAR for now. KY 2016-10-14

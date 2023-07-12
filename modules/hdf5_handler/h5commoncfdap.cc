@@ -654,7 +654,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
             size_t mem_dtype_size = (attr->getBufSize()) / (attr->getCount());
             H5DataType mem_dtype = HDF5CFDAPUtil::get_mem_dtype(attr->getType(), mem_dtype_size);
 
-            for (int loc = 0; loc < attr->getCount(); loc++) {
+            for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
                 string print_rep = HDF5CFDAPUtil::print_attr(mem_dtype, loc, (void*) &(attr->getValue()[0]));
                 at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(attr->getType()), print_rep);
             }
@@ -680,7 +680,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
                 size_t mem_dtype_size = (attr->getBufSize()) / (attr->getCount());
                 H5DataType mem_dtype = HDF5CFDAPUtil::get_mem_dtype(attr->getType(), mem_dtype_size);
 
-                for (int loc = 0; loc < attr->getCount(); loc++) {
+                for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
                     string print_rep = HDF5CFDAPUtil::print_attr(mem_dtype, loc, (void*) &(attr->getValue()[0]));
                     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(attr->getType()), print_rep);
                 }

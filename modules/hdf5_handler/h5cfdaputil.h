@@ -48,7 +48,7 @@ class HDF5CFDAPUtil {
     public: 
     static H5DataType get_mem_dtype(H5DataType, size_t);
     static string print_type(H5DataType h5type);
-    static string print_attr(H5DataType h5type, int loc, void *vals);
+    static string print_attr(H5DataType h5type, unsigned int loc, void *vals);
     static void replace_double_quote(string &str);
 
     /// A customized escaping function to escape special characters following OPeNDAP's escattr function
