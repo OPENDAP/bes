@@ -47,10 +47,14 @@
 
 void gen_dap_onevar_dds(libdap::DDS &dds, const HDF5CF::Var*, hid_t, const std::string &);
 void gen_dap_onevar_dds_sca_64bit_int(const HDF5CF::Var *var, const std::string &filename);
-void gen_dap_onevar_dds_sca_atomic(libdap::DDS &dds, const HDF5CF::Var *var, const std::string &filename) ;
-
+void gen_dap_onevar_dds_sca_atomic(libdap::DDS &dds, const HDF5CF::Var *var, const std::string &filename);
+void gen_dap_onevar_dds_array(libdap::DDS &dds, const HDF5CF::Var *var, hid_t file_id, const std::string &filename,
+                              const std::vector<HDF5CF::Dimension *>& dims);
 void gen_dap_oneobj_das(libdap::AttrTable*, const HDF5CF::Attribute*, const HDF5CF::Var*);
+
 void gen_dap_onevar_dmr(libdap::D4Group*, const HDF5CF::Var*, hid_t, const std::string &);
+void gen_dap_onevar_dmr_sca(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const std::string & filename);
+
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var*var,libdap::BaseType*new_var);
 void map_cfh5_grp_attr_to_dap4(libdap::D4Group*, const HDF5CF::Attribute*);
 void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *, const HDF5CF::Attribute*);
