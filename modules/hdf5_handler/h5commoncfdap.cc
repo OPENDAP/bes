@@ -30,12 +30,9 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <iostream>
-#include <sstream>
+
 #include <unordered_map>
 #include <unordered_set>
 
@@ -60,25 +57,27 @@
 #include "HDF5CFGeoCF1D.h"
 #include "HDF5CFGeoCFProj.h"
 
-//#include "HDF5Int64.h"
 #include "HDF5CFUtil.h"
 
 using namespace std;
 using namespace libdap;
 using namespace HDF5CF;
 
-// TODO In the code below, reduce duplication using a template and use unique_ptr
-//  to remove memory leak inside catch(...)/throw block. jhrg 3/9/22
+
 // Generate DDS from one variable
-void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, const string & filename)
+void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, hid_t file_id, const string & filename)
 {
 
     BESDEBUG("h5", "Coming to gen_dap_onevar_dds()  "<<endl);
     const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
 
     if (dims.empty()) {
+
         // Adding 64-bit integer support for DMR 
         if (H5INT64 == var->getType() || H5UINT64 == var->getType()){
+
+            gen_dap_onevar_dds_sca_64bit_int(var, filename);
+#if 0
             DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
             if(dmr == nullptr)
                 return;
@@ -90,7 +89,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                         sca_int64 = new HDF5CFInt64(var->getNewName(), var->getFullPath(), filename);
                     }
                     catch (...) {
-                        string error_message = "Cannot allocate the HDF5CFInt64: " + error_message;
+                        string error_message = "Cannot allocate the HDF5CFInt64:  " + var->getNewName();
                         throw InternalErr(__FILE__, __LINE__, error_message);
                     }
                     sca_int64->set_is_dap4(true);
@@ -113,8 +112,14 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                 }
 
             }
+#endif
         }
         else if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
+
+            auto sca_str_unique = make_unique<HDF5CFStr>(var->getNewName(), filename, var->getFullPath());
+            auto sca_str = sca_str_unique.get();
+            dds.add_var(sca_str);
+#if 0
             HDF5CFStr *sca_str = nullptr;
             try {
                 sca_str = new HDF5CFStr(var->getNewName(), filename, var->getFullPath());
@@ -124,8 +129,11 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             }
             dds.add_var(sca_str);
             delete sca_str;
+#endif
         }
         else {
+            gen_dap_onevar_dds_sca_atomic(dds, var, filename) ;
+#if 0
             switch (var->getType()) {
 
             case H5UCHAR: {
@@ -218,6 +226,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             default:
                 throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
             }
+#endif
         }
     }
 
@@ -292,7 +301,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         }
 
         for (const auto& dim:dims) {
-            if ("" == dim->getNewName())
+            if ((dim->getNewName()).empty())
                 ar->append_dim(dim->getSize());
             else
                 ar->append_dim(dim->getSize(), dim->getNewName());
@@ -319,6 +328,150 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
 
 }
 
+void gen_dap_onevar_dds_sca_64bit_int(const HDF5CF::Var *var, const string &filename) {
+
+    DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
+    if(dmr == nullptr)
+        return;
+    else {
+        D4Group* root_grp = dmr->root();
+        if (H5INT64 == var->getType()) {
+
+            auto sca_int64_unique =
+                    make_unique<HDF5CFInt64>(var->getNewName(), var->getFullPath(), filename);
+
+            auto sca_int64 = sca_int64_unique.release();
+            sca_int64->set_is_dap4(true);
+            map_cfh5_var_attrs_to_dap4_int64(var,sca_int64);
+            root_grp->add_var_nocopy(sca_int64);
+
+        }
+        else if(H5UINT64 == var->getType()) {
+
+            auto sca_uint64_unique =
+                    make_unique<HDF5CFUInt64>(var->getNewName(), var->getFullPath(), filename);
+
+            auto sca_uint64 = sca_uint64_unique.release();
+#if 0
+            HDF5CFUInt64 *sca_uint64 = nullptr;
+            try {
+                sca_uint64 = new HDF5CFUInt64(var->getNewName(), var->getFullPath(), filename);
+            }
+            catch (...) {
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt64.");
+            }
+#endif
+            sca_uint64->set_is_dap4(true);
+            map_cfh5_var_attrs_to_dap4_int64(var,sca_uint64);
+            root_grp->add_var_nocopy(sca_uint64);
+
+        }
+
+    }
+
+}
+
+void gen_dap_onevar_dds_sca_atomic(DDS &dds, const HDF5CF::Var *var, const string &filename) {
+
+    switch (var->getType()) {
+
+        case H5UCHAR: {
+
+            auto sca_uchar_unique =
+                    make_unique<HDF5CFByte>(var->getNewName(), var->getFullPath(), filename);
+            auto sca_uchar = sca_uchar_unique.get();
+            dds.add_var(sca_uchar);
+#if 0
+            HDF5CFByte *sca_uchar = nullptr;
+            try {
+                sca_uchar = new HDF5CFByte(var->getNewName(), var->getFullPath(), filename);
+            }
+            catch (...) {
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFByte.");
+            }
+            dds.add_var(sca_uchar);
+            delete sca_uchar;
+#endif
+        }
+            break;
+        case H5CHAR:
+        case H5INT16: {
+            HDF5CFInt16 *sca_int16 = nullptr;
+            try {
+                sca_int16 = new HDF5CFInt16(var->getNewName(), var->getFullPath(), filename);
+            }
+            catch (...) {
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt16.");
+            }
+            dds.add_var(sca_int16);
+            delete sca_int16;
+        }
+            break;
+        case H5UINT16: {
+            HDF5CFUInt16 *sca_uint16 = nullptr;
+            try {
+                sca_uint16 = new HDF5CFUInt16(var->getNewName(), var->getFullPath(), filename);
+            }
+            catch (...) {
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFUInt16.");
+            }
+            dds.add_var(sca_uint16);
+            delete sca_uint16;
+        }
+            break;
+        case H5INT32: {
+            HDF5CFInt32 *sca_int32 = nullptr;
+            try {
+                sca_int32 = new HDF5CFInt32(var->getNewName(), var->getFullPath(), filename);
+            }
+            catch (...) {
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt32.");
+            }
+            dds.add_var(sca_int32);
+            delete sca_int32;
+        }
+            break;
+        case H5UINT32: {
+            HDF5CFUInt32 *sca_uint32 = nullptr;
+            try {
+                sca_uint32 = new HDF5CFUInt32(var->getNewName(), var->getFullPath(), filename);
+            }
+            catch (...) {
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFUInt32.");
+            }
+            dds.add_var(sca_uint32);
+            delete sca_uint32;
+        }
+            break;
+        case H5FLOAT32: {
+            HDF5CFFloat32 *sca_float32 = nullptr;
+            try {
+                sca_float32 = new HDF5CFFloat32(var->getNewName(), var->getFullPath(), filename);
+            }
+            catch (...) {
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFFloat32.");
+            }
+            dds.add_var(sca_float32);
+            delete sca_float32;
+        }
+            break;
+        case H5FLOAT64: {
+            HDF5CFFloat64 *sca_float64 = nullptr;
+            try {
+                sca_float64 = new HDF5CFFloat64(var->getNewName(), var->getFullPath(), filename);
+            }
+            catch (...) {
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFFloat64.");
+            }
+            dds.add_var(sca_float64);
+            delete sca_float64;
+
+        }
+            break;
+        default:
+            throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
+    }
+}
 // Currently, only when the datatype of fillvalue is not the same as the datatype of the variable,
 // special attribute handling is needed.
 bool need_special_attribute_handling(const HDF5CF::Attribute* attr, const HDF5CF::Var* var)
@@ -501,7 +654,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
             size_t mem_dtype_size = (attr->getBufSize()) / (attr->getCount());
             H5DataType mem_dtype = HDF5CFDAPUtil::get_mem_dtype(attr->getType(), mem_dtype_size);
 
-            for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
+            for (int loc = 0; loc < attr->getCount(); loc++) {
                 string print_rep = HDF5CFDAPUtil::print_attr(mem_dtype, loc, (void*) &(attr->getValue()[0]));
                 at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(attr->getType()), print_rep);
             }
@@ -527,7 +680,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
                 size_t mem_dtype_size = (attr->getBufSize()) / (attr->getCount());
                 H5DataType mem_dtype = HDF5CFDAPUtil::get_mem_dtype(attr->getType(), mem_dtype_size);
 
-                for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
+                for (int loc = 0; loc < attr->getCount(); loc++) {
                     string print_rep = HDF5CFDAPUtil::print_attr(mem_dtype, loc, (void*) &(attr->getValue()[0]));
                     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(attr->getType()), print_rep);
                 }
@@ -538,7 +691,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
 
 // TODO Use a template function in the switch() below. jhrg 3/9/22
 // Generate DMR from one variable                                                                           
-void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const hid_t file_id, const string & filename) {
+void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, hid_t file_id, const string & filename) {
 
     BESDEBUG("h5", "Coming to gen_dap_onevar_dmr()  "<<endl);
 
@@ -752,7 +905,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
         }
 
         for (const auto &dim:dims) {
-            if ("" == dim->getNewName())
+            if ((dim->getNewName()).empty())
                 ar->append_dim_ll(dim->getSize());
             else
                 ar->append_dim_ll(dim->getSize(), dim->getNewName());
@@ -767,7 +920,6 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 
     }
 
-    return;
 }
 
 /**
@@ -870,23 +1022,23 @@ void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lowe
 
         }
         catch (...) {
-            if (bt_dim0) delete bt_dim0;
-            if (bt_dim1) delete bt_dim1;
-            if (ar_dim0) delete ar_dim0;
-            if (ar_dim1) delete ar_dim1;
+            delete bt_dim0;
+            delete bt_dim1;
+            delete ar_dim0;
+            delete ar_dim1;
             throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFEOS2GeoCF1D instance.");
         }
 
-        if (bt_dim0) delete bt_dim0;
-        if (bt_dim1) delete bt_dim1;
-        if (ar_dim0) delete ar_dim0;
-        if (ar_dim1) delete ar_dim1;
+        delete bt_dim0;
+        delete bt_dim1;
+        delete ar_dim0;
+        delete ar_dim1;
 
     }
 }
 
 // This function adds the grid mapping variables.
-void add_cf_grid_mapinfo_var(DDS & dds, const EOS5GridPCType grid_proj_code, const unsigned short g_suffix)
+void add_cf_grid_mapinfo_var(DDS & dds, EOS5GridPCType grid_proj_code, unsigned short g_suffix)
 {
 
     //Add the dummy projection variable. The attributes of this variable can be used to store the grid mapping info.
@@ -895,7 +1047,7 @@ void add_cf_grid_mapinfo_var(DDS & dds, const EOS5GridPCType grid_proj_code, con
 
     HDF5CFGeoCFProj * dummy_proj_cf = nullptr;
     if(HE5_GCTP_SNSOID == grid_proj_code)  {
-        // AFAWK, one grid_mapping variable is necessary for multi-grids. So we just leave one grid here.
+        // AFAIK, one grid_mapping variable is necessary for multi-grids. So we just leave one grid here.
         if(g_suffix == 1) {
             dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_base, cf_projection_base);
             dds.add_var(dummy_proj_cf);
@@ -908,7 +1060,8 @@ void add_cf_grid_mapinfo_var(DDS & dds, const EOS5GridPCType grid_proj_code, con
         dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_name, cf_projection_name);
         dds.add_var(dummy_proj_cf);
     }
-    if (dummy_proj_cf) delete dummy_proj_cf;
+
+    delete dummy_proj_cf;
 
 }
 
@@ -919,7 +1072,7 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
     const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params,const unsigned short g_suffix)
 #endif
 void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
-    const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params,const unsigned short g_suffix)
+    const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params, unsigned short g_suffix)
 {
 
 
@@ -1014,7 +1167,7 @@ void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<d
             ostringstream s_vert_lon_pole;
             s_vert_lon_pole << vert_lon_pole;
 
-            // I did this map is based on my best understanding. I cannot be certain about south pole. KY
+            // I did this map is based on my best understanding. I cannot be certain about value for the South Pole. KY
             // CF: straight_vertical_longitude_from_pole
             at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
             ostringstream s_lat_true_scale;
@@ -1252,7 +1405,7 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
             }
             //else 
             d4_hg_container = root_grp->attributes()->get("HDF5_GLOBAL_integer_64");
-            if(obj_name != "") {
+            if(obj_name.empty() == false) {
                 string test_obj_name = "HDF5_GLOBAL_integer_64."+obj_name;
 #if 0
                 //D4Attribute *d4_container = root_grp->attributes()->find(obj_name);
@@ -1421,7 +1574,7 @@ void add_gm_oneproj_var_dap4_attrs(BaseType *var,EOS5GridPCType cv_proj_code,con
         ostringstream s_vert_lon_pole;
         s_vert_lon_pole << vert_lon_pole;
 
-        // I did this map is based on my best understanding. I cannot be certain about south pole. KY
+        // I did this map is based on my best understanding. I cannot be certain about value for the South Pole. KY
         // CF: straight_vertical_longitude_from_pole
 #if 0
         //at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
@@ -1583,23 +1736,23 @@ void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float c
 
         }
         catch (...) {
-            if (bt_dim0) delete bt_dim0;
-            if (bt_dim1) delete bt_dim1;
-            if (ar_dim0) delete ar_dim0;
-            if (ar_dim1) delete ar_dim1;
+            delete bt_dim0;
+            delete bt_dim1;
+            delete ar_dim0;
+            delete ar_dim1;
             throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFEOS2GeoCF1D instance.");
         }
 
-        if (bt_dim0) delete bt_dim0;
-        if (bt_dim1) delete bt_dim1;
-        if (ar_dim0) delete ar_dim0;
-        if (ar_dim1) delete ar_dim1;
+        delete bt_dim0;
+        delete bt_dim1;
+        delete ar_dim0;
+        delete ar_dim1;
     }
 }
 
 // Direct CF to DAP4, 
 // add CF grid_mapping $attributes for the special dimension variables.  
-void add_gm_spcvs_attrs(libdap::BaseType *var,const bool is_dim0) {
+void add_gm_spcvs_attrs(libdap::BaseType *var, bool is_dim0) {
 
     string standard_name;
     string long_name;
@@ -1659,7 +1812,7 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
         // Only Array can have maps.
         if (libdap::dods_array_c == v->type()) {
 
-            auto t_a = static_cast<Array *>(*vi);
+            auto t_a = dynamic_cast<Array *>(*vi);
 
             // The maps are essentially coordinate variables.
             // We've sorted the coordinate variables already, so
@@ -1786,7 +1939,8 @@ string get_cf_string(string & s) {
 }
 string get_cf_string_helper(string & s) {
 
-    if ("" == s) return s;
+    if (s.empty())
+        return s;
     string insertString(1, '_');
 
     // Always start with _ if the first character is not a letter

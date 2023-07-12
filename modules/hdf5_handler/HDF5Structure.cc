@@ -208,7 +208,6 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
         throw;
     }
 
-    //if((memtype != -1) && (mspace !=-1) && (H5Dvlen_reclaim(memtype, mspace, H5P_DEFAULT, (void *) values.data()) < 0))
     if (H5Dvlen_reclaim(memtype, mspace, H5P_DEFAULT, (void *) values.data()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Unable to reclaim the compound datatype array.");
 

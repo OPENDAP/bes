@@ -26,7 +26,7 @@
 /// \brief Functions to generate DDS and DAS for one object(variable). 
 ///
 /// 
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -45,9 +45,12 @@
 #include "HDF5CF.h"
 
 
-void gen_dap_onevar_dds(libdap::DDS &dds, const HDF5CF::Var*, const hid_t, const std::string &);
+void gen_dap_onevar_dds(libdap::DDS &dds, const HDF5CF::Var*, hid_t, const std::string &);
+void gen_dap_onevar_dds_sca_64bit_int(const HDF5CF::Var *var, const std::string &filename);
+void gen_dap_onevar_dds_sca_atomic(libdap::DDS &dds, const HDF5CF::Var *var, const std::string &filename) ;
+
 void gen_dap_oneobj_das(libdap::AttrTable*, const HDF5CF::Attribute*, const HDF5CF::Var*);
-void gen_dap_onevar_dmr(libdap::D4Group*, const HDF5CF::Var*, const hid_t, const std::string &);
+void gen_dap_onevar_dmr(libdap::D4Group*, const HDF5CF::Var*, hid_t, const std::string &);
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var*var,libdap::BaseType*new_var);
 void map_cfh5_grp_attr_to_dap4(libdap::D4Group*, const HDF5CF::Attribute*);
 void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *, const HDF5CF::Attribute*);
@@ -61,13 +64,13 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
     const vector<HDF5CF::Dimension*>& dims,const vector<double>&  params,const unsigned short);
 #endif
 void add_cf_grid_cv_attrs(libdap::DAS & das, const std::vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
-    const std::vector<HDF5CF::Dimension*>& dims,const std::vector<double>&  params,const unsigned short);
+    const std::vector<HDF5CF::Dimension*>& dims,const std::vector<double>&  params, unsigned short);
 
 void add_cf_projection_attrs(libdap::DAS &,EOS5GridPCType ,const std::vector<double> &,const std::string&);
 void add_cf_grid_cvs(libdap::DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
     float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims);
 
-void add_cf_grid_mapinfo_var(libdap::DDS &dds,const EOS5GridPCType,const unsigned short);
+void add_cf_grid_mapinfo_var(libdap::DDS &dds, EOS5GridPCType, unsigned short);
 bool need_special_attribute_handling(const HDF5CF::Attribute*, const HDF5CF::Var*);
 void gen_dap_special_oneobj_das(libdap::AttrTable*, const HDF5CF::Attribute*, const HDF5CF::Var*);
 bool is_fvalue_valid(H5DataType, const HDF5CF::Attribute*);
@@ -83,15 +86,19 @@ std::string get_cf_string_helper(std::string & s);
 
 void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
     float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims);
-void add_gm_spcvs_attrs(libdap::BaseType *d4_var,const bool is_dim0);
+void add_gm_spcvs_attrs(libdap::BaseType *d4_var, bool is_dim0);
 
-void add_cf_grid_cv_dap4_attrs(libdap::D4Group *d4_root, const std::string& cf_projection, const std::vector<HDF5CF::Dimension*>&dims, const std::vector<std::string> &); 
+void add_cf_grid_cv_dap4_attrs(libdap::D4Group *d4_root, const std::string& cf_projection,
+                               const std::vector<HDF5CF::Dimension*>&dims, const std::vector<std::string> &);
 
-void add_gm_oneproj_var_dap4_attrs(libdap::BaseType *d4_var,EOS5GridPCType cv_proj_code,const std::vector<double> &eos5_proj_params); 
+void add_gm_oneproj_var_dap4_attrs(libdap::BaseType *d4_var,EOS5GridPCType cv_proj_code,
+                                   const std::vector<double> &eos5_proj_params);
 
-void add_var_dap4_attr(libdap::BaseType *d4_var,const std::string& attr_name, D4AttributeType attr_type, const std::string& attr_value);
+void add_var_dap4_attr(libdap::BaseType *d4_var,const std::string& attr_name, D4AttributeType attr_type,
+                       const std::string& attr_value);
 
-void add_grp_dap4_attr(libdap::D4Group *d4_grp,const std::string& attr_name, D4AttributeType attr_type, const std::string& attr_value);
+void add_grp_dap4_attr(libdap::D4Group *d4_grp,const std::string& attr_name, D4AttributeType attr_type,
+                       const std::string& attr_value);
 
 void add_dap4_coverage(libdap::D4Group* d4_grp, const std::vector<std::string>& map_array, bool is_coard);
 

@@ -40,11 +40,16 @@ int get_slabdata(hid_t dset, const int64_t *, const int64_t *, const int64_t *, 
 
 void get_strdata(int64_t, char *, char *, int);
 
-bool read_vlen_string(hid_t d_dset_id, const int64_t nelms, const hsize_t *offset, const hsize_t *step, const hsize_t *count,std::vector<std::string> &finstrval);
+bool read_vlen_string(hid_t d_dset_id, const int64_t nelms, const hsize_t *offset, const hsize_t *step,
+                      const hsize_t *count,std::vector<std::string> &finstrval);
+void read_vlen_string_value(const int64_t nelms, std::vector<char> &strval,std::vector<std::string>&finstrval,
+                            size_t ty_size);
+void claim_vlen_string_memory(hid_t memtype, hid_t dspace, hid_t dtypeid, hid_t mspace, std::vector<char> &strval,
+                              bool is_scalar) ;
+void get_vlen_str_data(const char*src,std::string &finalstrval);
+
 
 bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id);
-
-void get_vlen_str_data(const char*src,std::string &finalstrval);
 
 
 
