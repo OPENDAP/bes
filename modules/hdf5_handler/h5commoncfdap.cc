@@ -696,9 +696,6 @@ bool is_fvalue_valid(H5DataType var_dtype, const HDF5CF::Attribute* attr)
             return ret_value;
         }
 
-    case H5UCHAR:
-    case H5INT32:
-    case H5UINT32:
 #endif
 
     default:
@@ -938,7 +935,8 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, hid_t f
     }
 
     else {
-
+        gen_dap_onevar_dmr_array(d4_grp, var, file_id, filename, dims);
+#if 0
         BaseType *bt = nullptr;
 
         switch (var->getType()) {
@@ -991,7 +989,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, hid_t f
         map_cfh5_var_attrs_to_dap4(var,d4_var);
         d4_grp->add_var_nocopy(d4_var);
         delete ar;
-
+#endif
     }
 
 }
@@ -1019,6 +1017,7 @@ void gen_dap_onevar_dmr_sca(D4Group* d4_grp, const HDF5CF::Var* var, const strin
         d4_grp->add_var_nocopy(sca_str);
 #endif
     } else {
+
         switch (var->getType()) {
 
             case H5UCHAR: {
@@ -1253,6 +1252,72 @@ void gen_dap_onevar_dmr_sca(D4Group* d4_grp, const HDF5CF::Var* var, const strin
         }
     }
 }
+
+void gen_dap_onevar_dmr_array(D4Group* d4_grp, const HDF5CF::Var* var, hid_t file_id, const string &filename,
+                              const vector<HDF5CF::Dimension *>& dims ) {
+
+    BaseType *bt = nullptr;
+
+    switch (var->getType()) {
+#define HANDLE_CASE(tid, type)                                  \
+            case tid:                                           \
+                bt = new (type)(var->getNewName(),var->getFullPath()); \
+            break;
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
+        HANDLE_CASE(H5CHAR, HDF5CFInt8)
+        HANDLE_CASE(H5UCHAR, HDF5CFByte)
+        HANDLE_CASE(H5INT16, HDF5CFInt16)
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16)
+        HANDLE_CASE(H5INT32, HDF5CFInt32)
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32)
+        HANDLE_CASE(H5INT64, HDF5CFInt64)
+        HANDLE_CASE(H5UINT64, HDF5CFUInt64)
+        HANDLE_CASE(H5FSTRING, Str)
+        HANDLE_CASE(H5VSTRING, Str)
+        default:
+            throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
+#undef HANDLE_CASE
+    }
+
+    vector<size_t> dimsizes;
+    dimsizes.resize(var->getRank());
+    for (int i = 0; i < var->getRank(); i++)
+        dimsizes[i] = (dims[i])->getSize();
+
+    auto ar_unique = make_unique<HDF5CFArray>(var->getRank(), file_id, filename,
+                                              var->getType(),dimsizes, var->getFullPath(),
+                                              var->getTotalElems(),CV_UNSUPPORTED, false,
+                                              var->getCompRatio(), true, var->getNewName(),bt);
+    auto ar = ar_unique.release();
+#if 0
+    HDF5CFArray *ar = nullptr;
+    try {
+        ar = new HDF5CFArray(var->getRank(), file_id, filename, var->getType(), dimsizes, var->getFullPath(),
+                             var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), true, var->getNewName(),
+                             bt);
+    }
+    catch (...) {
+        delete bt;
+        throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
+    }
+#endif
+
+    for (const auto &dim: dims) {
+        if ((dim->getNewName()).empty())
+            ar->append_dim_ll(dim->getSize());
+        else
+            ar->append_dim_ll(dim->getSize(), dim->getNewName());
+    }
+
+    delete bt;
+    ar->set_is_dap4(true);
+    BaseType *d4_var = ar->h5cfdims_transform_to_dap4(d4_grp);
+    map_cfh5_var_attrs_to_dap4(var, d4_var);
+    d4_grp->add_var_nocopy(d4_var);
+
+}
+
 /**
  * @brief Transfer string attributes to a DAP2 AttrTable
  *
@@ -1283,26 +1348,15 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             string tempstring(attr->getValue().begin() + temp_start_pos, attr->getValue().begin() + temp_start_pos + strsize[loc]);
             temp_start_pos += strsize[loc];
 
-            // If the string size is longer than the current netCDF JAVA
-            // string and the "EnableDropLongString" key is turned on,
-            // No string is generated.
-            //
-            // The above statement is no longer true. The netCDF Java can handle long string
-            // attributes. The long string can be kept, and I do think the
-            // performance penalty should be small. KY 2018-02-26
-            //
-            // Here is the logic to determine if the attribute value should be escaped.
-            // Attributes named 'origname' or 'fullnamepath' are never escaped. Attributes
-            // with values that use the UTF-8 character set _are_ encoded unless the
-            // HD.EscapeUTF8Attr is set to false. If the attribute values use ASCII
-            // (i.e., attr->getCsetType() is true), they are always escaped. jhrg 3/9/22
             // Don't escape the special characters. these will be handled in the libdap4. KY 2022-08-25
-#if 0
-            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
-                && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
-                tempstring = HDF5CFDAPUtil::escattr(tempstring);
-            }
-#endif
+            // The following comments are for people to understand how utf8 string is escaped.
+            // Attributes with values that use the UTF-8 character set _are_ encoded unless the
+            // H5.EscapeUTF8Attr is set to false. If the attribute values use ASCII
+            // (i.e., attr->getCsetType() is true), they are always escaped. jhrg 3/9/22
+            // Note: Attributes named 'origname' or 'fullnamepath' will not be treated as special
+            // because the user can set H5.EscapeUTF8Attr false if the utf8 string occurs inside a variable name.
+            // KY 2023-07-13
+
             if (HDF5RequestHandler::get_escape_utf8_attr() == false && (false == attr->getCsetType())) 
                 at->append_attr(attr->getNewName(), "String", tempstring,true);
             else 
@@ -1311,13 +1365,12 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
     }
 }
 
-//#if 0
 // This function adds the 1-D horizontal coordinate variables as well as the dummy projection variable to the grid.
-// Note: Since we don't add these artificial CF variables to our main engineering at HDFEOS5CF.cc, the information
-// to handle DAS won't pass to DDS by the file pointer, we need to re-call the routines to check projection
-// and dimension. The time to retrieve this information is trivial compared with the whole translation.
+// Note: Since we don't add these artificial CF variables to our main engineering at HDFEOS5CF.cc, so we need to
+// re-call the routines to check projections and dimensions.
+// The time to retrieve this information is trivial compared with the whole translation.
 void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
-    float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims)
+                        float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims)
 {
 
     //1. Check the projection information: we first just handled the sinusoidal projection. 
@@ -1331,6 +1384,26 @@ void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lowe
         auto dim1size = (int)(dims[1]->getSize());
 
         //3. Add the 1-D CV variables and the dummy projection variable
+
+        auto bt_dim0_unique = make_unique<HDF5CFFloat64>(dim0name, dim0name);
+        auto bt_dim0 = bt_dim0_unique.get();
+        auto bt_dim1_unique = make_unique<HDF5CFFloat64>(dim1name, dim1name);
+        auto bt_dim1 = bt_dim1_unique.get();
+
+        // Note ar_dim0 is y, ar_dim1 is x.
+        auto ar_dim0_unique = make_unique<HDF5CFGeoCF1D>
+                (HE5_GCTP_SNSOID, cv_point_upper, cv_point_lower, dim0size, dim0name, bt_dim0);
+        auto ar_dim0 = ar_dim0_unique.get();
+        ar_dim0->append_dim(dim0size, dim0name);
+
+
+        auto ar_dim1_unique = make_unique<HDF5CFGeoCF1D>
+                (HE5_GCTP_SNSOID, cv_point_left, cv_point_right, dim1size, dim1name, bt_dim1);
+        auto ar_dim1 = ar_dim1_unique.get();
+        ar_dim1->append_dim(dim1size, dim1name);
+        dds.add_var(ar_dim0);
+        dds.add_var(ar_dim1);
+#if 0
         BaseType *bt_dim0 = nullptr;
         BaseType *bt_dim1 = nullptr;
 
@@ -1364,7 +1437,7 @@ void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lowe
         delete bt_dim1;
         delete ar_dim0;
         delete ar_dim1;
-
+#endif
     }
 }
 
@@ -1376,11 +1449,12 @@ void add_cf_grid_mapinfo_var(DDS & dds, EOS5GridPCType grid_proj_code, unsigned 
     // To handle multi-grid cases, we need to add suffixes to distinguish them.
     string cf_projection_base = "eos_cf_projection";
 
-    HDF5CFGeoCFProj * dummy_proj_cf = nullptr;
+    //HDF5CFGeoCFProj * dummy_proj_cf = nullptr;
     if(HE5_GCTP_SNSOID == grid_proj_code)  {
         // AFAIK, one grid_mapping variable is necessary for multi-grids. So we just leave one grid here.
         if(g_suffix == 1) {
-            dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_base, cf_projection_base);
+            auto dummy_proj_cf_unique = make_unique<HDF5CFGeoCFProj>(cf_projection_base, cf_projection_base);
+            auto dummy_proj_cf = dummy_proj_cf_unique.get();
             dds.add_var(dummy_proj_cf);
         }
     }
@@ -1388,24 +1462,17 @@ void add_cf_grid_mapinfo_var(DDS & dds, EOS5GridPCType grid_proj_code, unsigned 
         stringstream t_suffix_ss;
         t_suffix_ss << g_suffix;
         string cf_projection_name = cf_projection_base + "_" + t_suffix_ss.str();
-        dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_name, cf_projection_name);
-        dds.add_var(dummy_proj_cf);
+         auto dummy_proj_cf_unique = make_unique<HDF5CFGeoCFProj>(cf_projection_name, cf_projection_name);
+         auto dummy_proj_cf = dummy_proj_cf_unique.get();
+         dds.add_var(dummy_proj_cf);
     }
-
-    delete dummy_proj_cf;
 
 }
 
 // This function adds 1D grid mapping CF attributes to CV and data variables.
-#if 0
-void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
-    float /*cv_point_lower*/, float /*cv_point_upper*/, float /*cv_point_left*/, float /*cv_point_right*/,
-    const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params,const unsigned short g_suffix)
-#endif
 void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params, unsigned short g_suffix)
 {
-
 
     //1. Check the projection information, now, we handle sinusoidal,PS and LAMAZ projections.
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_PS == cv_proj_code || HE5_GCTP_LAMAZ== cv_proj_code) {
@@ -1446,14 +1513,14 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
         // Add the attributes for the dummy grid_mapping variable.
         string cf_projection_base = "eos_cf_projection";
         string cf_projection;
-        if(HE5_GCTP_SNSOID == cv_proj_code)
+        if (HE5_GCTP_SNSOID == cv_proj_code)
             cf_projection = cf_projection_base;
         else {
             stringstream t_suffix_ss;
             t_suffix_ss << g_suffix;
             cf_projection = cf_projection_base + "_" + t_suffix_ss.str();
         }
-	add_cf_projection_attrs(das,cv_proj_code,eos5_proj_params,cf_projection);
+	    add_cf_projection_attrs(das,cv_proj_code,eos5_proj_params,cf_projection);
 
         // Fill in the data fields that contains the dim0name and dim1name dimensions with the grid_mapping
         // We only apply to >=2D data fields.
@@ -1464,7 +1531,8 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
 
 // Add CF projection attribute
 
-void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<double> &eos5_proj_params,const string& cf_projection) {
+void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<double> &eos5_proj_params,
+                             const string& cf_projection) {
 
     AttrTable* at = das.get_table(cf_projection);
     if (!at) {// Only append attributes when the table is created.
@@ -1514,7 +1582,6 @@ void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<d
                 at->append_attr("false_easting","Float64",s_fe.str());
             }
 
-
             if(fn == 0.0) 
                 at->append_attr("false_northing","Float64","0.0");
             else { 
@@ -1523,7 +1590,6 @@ void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<d
                 at->append_attr("false_northing","Float64",s_fn.str());
             }
 
-            
             if(lat_true_scale >0) 
                 at->append_attr("latitude_of_projection_origin","Float64","+90.0");
             else 
@@ -1574,7 +1640,6 @@ void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<d
 
             at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
 
-
         }
     }
 
@@ -1584,15 +1649,8 @@ void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<d
 // This function adds the 1-D cf grid projection mapping attribute to data variables
 // it is called by the function add_cf_grid_attrs. 
 void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const string& cf_projection,
-    const string & dim0name, hsize_t dim0size, const string &dim1name, hsize_t dim1size)
+                              const string & dim0name, hsize_t dim0size, const string &dim1name, hsize_t dim1size)
 {
-
-#if 0
-    cerr<<"dim0name is "<<dim0name <<endl;
-    cerr<<"dim1name is "<<dim1name <<endl;
-    cerr<<"dim0size is "<<dim0size <<endl;
-    cerr<<"dim1size is "<<dim1size <<endl;
-#endif
 
     // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
     for (const auto &var:vars) {
@@ -1654,11 +1712,12 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
         string dap2_attrtype = HDF5CFDAPUtil::print_type(mem_dtype);
         D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
-        auto d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
-        if(dap4_attrtype == attr_str_c) {
-            if("coordinates" == attr->getNewName()) {
+        auto d4_attr_unique = make_unique<D4Attribute>(attr->getNewName(),dap4_attrtype);
+        auto d4_attr = d4_attr_unique.release();
+        if (dap4_attrtype == attr_str_c) {
+            if ("coordinates" == attr->getNewName()) {
                 bool chg_coor_value = false;
-                if((true == HDF5RequestHandler::get_enable_coord_attr_add_path()) 
+                if ((true == HDF5RequestHandler::get_enable_coord_attr_add_path())
                    &&(true == var->getCoorAttrAddPath()))
                     chg_coor_value = true;
                 string tempstring;
@@ -1673,20 +1732,10 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
                         string tempstring(attr->getValue().begin() + temp_start_pos,
                                       attr->getValue().begin() + temp_start_pos + strsize[loc]);
                         temp_start_pos += strsize[loc];
-                        //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
-#if 0
-                        //if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) 
-#endif
-
-                        // Don't escape the special characters. these will be handled in the libdap4. KY 2022-08-25
-#if 0
-                        tempstring = HDF5CFDAPUtil::escattr(tempstring);
-#endif
                         d4_attr->add_value(tempstring);
                     }
                 }
             }
-
         }
         else {
             for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
@@ -1696,78 +1745,60 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
         }
         d4_var->attributes()->add_attribute_nocopy(d4_attr);
     }
+
     // Here we add the "origname" and "fullnamepath" attributes since they are crucial to DMRPP generation.
-    auto d4_attr = new D4Attribute("origname",attr_str_c);
-    d4_attr->add_value(var->getName());
-    d4_var->attributes()->add_attribute_nocopy(d4_attr);
-    d4_attr = new D4Attribute("fullnamepath",attr_str_c);
-    d4_attr->add_value(var->getFullPath());
-    d4_var->attributes()->add_attribute_nocopy(d4_attr);
+    auto d4_attro_unique = make_unique<D4Attribute>("origname",attr_str_c);
+    auto d4_attro = d4_attro_unique.release();
+    d4_attro->add_value(var->getName());
+    d4_var->attributes()->add_attribute_nocopy(d4_attro);
+
+    auto d4_attrf_unique = make_unique<D4Attribute>("fullnamepath",attr_str_c);
+    auto d4_attrf = d4_attrf_unique.release();
+    d4_attrf->add_value(var->getFullPath());
+    d4_var->attributes()->add_attribute_nocopy(d4_attrf);
 }
 
-// A helper function for 64-bit DAP4 CF support
+// A helper function for 64-bit DAP4 CF support that converts DAP2 to DAP4
 // Note: the main part of DMR still comes from DDS and DAS.
 void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * attr) {
-    if(attr->getType() == H5INT64 || attr->getType() == H5UINT64) { 
+
+    if (attr->getType() == H5INT64 || attr->getType() == H5UINT64) {
 
         DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
-        if(dmr != nullptr) {
+        if (dmr != nullptr) {
+
             string dap2_attrtype = HDF5CFDAPUtil::print_type(attr->getType());
             D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
-            auto d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
+
+            auto d4_attr_unique = make_unique<D4Attribute>(attr->getNewName(),dap4_attrtype);
+            auto d4_attr = d4_attr_unique.release();
             for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
                 string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
                 d4_attr->add_value(print_rep);
             }
             D4Group * root_grp = dmr->root();
-            D4Attribute *d4_hg_container; 
-            if(root_grp->attributes()->empty() == true){
-#if 0
-            //D4Attribute *d4_hg_container = root_grp->attributes()->find("HDF5_GLOBAL");
-            //if(d4_hg_container == nullptr) {
-#endif
-                d4_hg_container = new D4Attribute;
+            if (root_grp->attributes()->empty() == true) {
+                auto d4_hg_container_unique = make_unique<D4Attribute>();
+                auto d4_hg_container = d4_hg_container_unique.release();
                 d4_hg_container->set_name("HDF5_GLOBAL_integer_64");
                 d4_hg_container->set_type(attr_container_c);
                 root_grp->attributes()->add_attribute_nocopy(d4_hg_container);
-#if 0
-                //root_grp->attributes()->add_attribute(d4_hg_container);
-#endif
             }
-            //else 
-            d4_hg_container = root_grp->attributes()->get("HDF5_GLOBAL_integer_64");
-            if(obj_name.empty() == false) {
+            D4Attribute *d4_hg_container = root_grp->attributes()->get("HDF5_GLOBAL_integer_64");
+            if (obj_name.empty() == false) {
                 string test_obj_name = "HDF5_GLOBAL_integer_64."+obj_name;
-#if 0
-                //D4Attribute *d4_container = root_grp->attributes()->find(obj_name);
-                //D4Attribute *d4_container = root_grp->attributes()->get(obj_name);
-#endif
                 D4Attribute *d4_container = root_grp->attributes()->get(test_obj_name);
-                // ISSUES need to search the attributes 
-                //
-#if 0
-                //D4Attribute *d4_container = d4_hg_container->attributes()->find(obj_name);
-#endif
-                if(d4_container == nullptr) {
-                    d4_container = new D4Attribute;
+                if (d4_container == nullptr) {
+                    auto d4_container_unique = make_unique<D4Attribute>();
+                    d4_container = d4_container_unique.release();
                     d4_container->set_name(obj_name);
                     d4_container->set_type(attr_container_c);
 
-#if 0
-                    //if(d4_hg_container->attributes()->empty()==true)
-                    //    cerr<<"global container is empty"<<endl;
-                    //d4_hg_container->attributes()->add_attribute_nocopy(d4_container);
-                    //cerr<<"end of d4_container "<<endl;
-#endif
                 }
                 d4_container->attributes()->add_attribute_nocopy(d4_attr);
-#if 0
-                //root_grp->attributes()->add_attribute_nocopy(d4_container);
-#endif
-//#if 0
+
                 if(d4_hg_container->attributes()->get(obj_name)==nullptr)
                     d4_hg_container->attributes()->add_attribute_nocopy(d4_container);
-//#endif
             }
             else 
                 d4_hg_container->attributes()->add_attribute_nocopy(d4_attr);
@@ -1777,7 +1808,8 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
 
 // Another helper function for 64-bit DAP4 CF support
 // Note: the main part of DMR still comes from DDS and DAS.
-void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &var_path,string &tempstring,bool chg_coor_value) {
+void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &var_path,string &tempstring,
+                                    bool chg_coor_value) {
 
     string tempstring2(attr->getValue().begin(),attr->getValue().end()); 
     if(true == chg_coor_value) {
@@ -1803,7 +1835,6 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
     for (const auto &attr:var->getAttributes()) {
-     
         D4Attribute *d4_attr = gen_dap4_attr(attr);
         d4_var->attributes()->add_attribute_nocopy(d4_attr);
     }
@@ -1829,39 +1860,27 @@ void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *d4_con,const HDF5CF::A
 D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
 
     D4AttributeType dap4_attrtype = HDF5CFDAPUtil::print_type_dap4(attr->getType());
-    auto d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
-    if(dap4_attrtype == attr_str_c) {
+    auto d4_attr_unique = make_unique<D4Attribute>(attr->getNewName(),dap4_attrtype);
+    auto d4_attr = d4_attr_unique.release();
+
+    if (dap4_attrtype == attr_str_c) {
             
         const vector<size_t>& strsize = attr->getStrSize();
-#if 0
-        if(strsize.size()  == 0)
-            cerr << "vector string size is 0" << endl;
-        for(int i = 0; i<strsize.size(); i++)
-            cerr << "attr size  is "<<strsize[i] << endl;
-#endif
+
         unsigned int temp_start_pos = 0;
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             if (strsize[loc] != 0) {
                 string tempstring(attr->getValue().begin() + temp_start_pos,
                                   attr->getValue().begin() + temp_start_pos + strsize[loc]);
                 temp_start_pos += strsize[loc];
-                // Don't escape the special characters. these will be handled in the libdap4. KY 2022-08-25
-#if 0
-                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
-                    && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
-                    tempstring = HDF5CFDAPUtil::escattr(tempstring);
-                }
-#endif
+
                 d4_attr->add_value(tempstring);
-                if (HDF5RequestHandler::get_escape_utf8_attr() == false && (false == attr->getCsetType())) 
-                    d4_attr->set_utf8_str_flag(true);
             }
         }
+        if (HDF5RequestHandler::get_escape_utf8_attr() == false && (false == attr->getCsetType()))
+                    d4_attr->set_utf8_str_flag(true);
     }
     else {
-#if 0
-        cerr << "not a string type " << endl;
-#endif
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
             d4_attr->add_value(print_rep);
@@ -1907,9 +1926,6 @@ void add_gm_oneproj_var_dap4_attrs(BaseType *var,EOS5GridPCType cv_proj_code,con
 
         // I did this map is based on my best understanding. I cannot be certain about value for the South Pole. KY
         // CF: straight_vertical_longitude_from_pole
-#if 0
-        //at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
-#endif
         add_var_dap4_attr(var,"straight_vertical_longitude_from_pole", attr_float64_c, s_vert_lon_pole.str());
 
         ostringstream s_lat_true_scale;
@@ -1932,7 +1948,7 @@ void add_gm_oneproj_var_dap4_attrs(BaseType *var,EOS5GridPCType cv_proj_code,con
             add_var_dap4_attr(var,"false_northing",attr_float64_c,s_fn.str());
         }
         
-        if(lat_true_scale >0) 
+        if (lat_true_scale >0)
             add_var_dap4_attr(var,"latitude_of_projection_origin",attr_float64_c,"+90.0");
         else 
             add_var_dap4_attr(var, "latitude_of_projection_origin",attr_float64_c,"-90.0");
@@ -1998,9 +2014,10 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
     Constructor::Vars_iter ve = d4_root->var_end();
     for (; vi != ve; vi++) {
         // Should not add grid_mapping info for the coordinate variables. 
-        if((*vi)->is_vector_type() && (cvar_name.end() == find(cvar_name.begin(), cvar_name.end(),(*vi)->name()))) {
+        if ((*vi)->is_vector_type() && (cvar_name.end() == find(cvar_name.begin(), cvar_name.end(),(*vi)->name()))) {
             auto t_a = dynamic_cast<Array*>(*vi);
-            if(t_a->dimensions() >1) {
+            if (t_a->dimensions() >1) {
+#if 0
                 Array::Dim_iter dim_i = t_a->dim_begin();
                 Array::Dim_iter dim_e = t_a->dim_end();
                 bool has_dim0 = false;
@@ -2011,7 +2028,10 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
                     else if((*dim_i).name == dim1name && (*dim_i).size == (int64_t)dim1size)                              
                         has_dim1 = true;
                 }
-
+#endif
+                bool has_dim0 = false;
+                bool has_dim1 = false;
+                add_cf_grid_cv_dap4_attrs_helper(t_a, dim0name, dim0size, has_dim0, dim1name, dim1size, has_dim1);
                 if(true == has_dim0 && true == has_dim1) 
                     add_var_dap4_attr((*vi),"grid_mapping",attr_str_c,cf_projection);
             }
@@ -2019,6 +2039,20 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
     }
 }
 
+void add_cf_grid_cv_dap4_attrs_helper(Array *t_a, const string &dim0name, hsize_t dim0size, bool &has_dim0,
+                                      const string &dim1name, hsize_t dim1size, bool &has_dim1){
+
+    Array::Dim_iter dim_i = t_a->dim_begin();
+    Array::Dim_iter dim_e = t_a->dim_end();
+
+    for(;dim_i !=dim_e;dim_i++) {
+        if((*dim_i).name == dim0name && (*dim_i).size == (int64_t)dim0size)
+            has_dim0 = true;
+        else if((*dim_i).name == dim1name && (*dim_i).size == (int64_t)dim1size)
+            has_dim1 = true;
+    }
+
+}
 
 // Direct CF to DAP4, add special CF grid_mapping variable to DAP4.  
 // These variables are dimension variables.
