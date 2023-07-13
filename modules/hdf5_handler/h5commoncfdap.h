@@ -34,6 +34,8 @@
 #define _H5COMMONCFDAP_H
 
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 #include <libdap/DMR.h>
 #include <libdap/DDS.h>
@@ -109,6 +111,14 @@ void add_grp_dap4_attr(libdap::D4Group *d4_grp,const std::string& attr_name, D4A
                        const std::string& attr_value);
 
 void add_dap4_coverage(libdap::D4Group* d4_grp, const std::vector<std::string>& map_array, bool is_coard);
-
+void add_dap4_coverage_set_up(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
+                              std::vector<libdap::Array *> &has_map_arrays, libdap::Array *t_a,
+                              const std::vector<std::string>& coord_var_names, const std::string & vname);
+void add_dap4_coverage_grid(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
+                            std::vector<libdap::Array *> &has_map_arrays);
+void add_dap4_coverage_swath(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
+                            std::vector<libdap::Array *> &has_map_arrays);
+void add_dap4_coverage_swath_coords(unordered_map<std::string, libdap::Array*> &d4map_array_maps, libdap::Array *has_map_array,
+                                    const std::vector<std::string> &coord_names, unordered_set<std::string> &coord_dim_names);
 
 #endif

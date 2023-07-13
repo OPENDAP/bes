@@ -2069,13 +2069,36 @@ void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float c
         string dim1name = dims[1]->getNewName();
         auto dim1size = (int)(dims[1]->getSize());
 
-        //3. Add the 1-D CV variables and the dummy projection variable
-        BaseType *bt_dim0 = nullptr;
-        BaseType *bt_dim1 = nullptr;
+        auto bt_dim0_unique = make_unique<HDF5CFFloat64>(dim0name, dim0name);
+        auto bt_dim0 = bt_dim0_unique.get();
+        auto bt_dim1_unique = make_unique<HDF5CFFloat64>(dim1name, dim1name);
+        auto bt_dim1 = bt_dim1_unique.get();
 
-        HDF5CFGeoCF1D * ar_dim0 = nullptr;
-        HDF5CFGeoCF1D * ar_dim1 = nullptr;
+        auto ar_dim0_unique = make_unique<HDF5CFGeoCF1D>
+                (HE5_GCTP_SNSOID, cv_point_upper, cv_point_lower, dim0size, dim0name, bt_dim0);
+        auto ar_dim0 = ar_dim0_unique.get();
+        ar_dim0->append_dim(dim0size, dim0name);
+        ar_dim0->set_is_dap4(true);
+        add_gm_spcvs_attrs(ar_dim0,true);
+        d4_root->add_var(ar_dim0);
+#if 0
+            // Note ar_dim0 is y, ar_dim1 is x.
+            ar_dim0 = new HDF5CFGeoCF1D(HE5_GCTP_SNSOID, cv_point_upper, cv_point_lower, dim0size, dim0name, bt_dim0);
+            ar_dim0->append_dim(dim0size, dim0name);
 
+            ar_dim0->set_is_dap4(true);
+
+            add_gm_spcvs_attrs(ar_dim0,true);
+#endif
+
+        auto ar_dim1_unique = make_unique<HDF5CFGeoCF1D>
+                (HE5_GCTP_SNSOID, cv_point_left, cv_point_right, dim1size, dim1name, bt_dim1);
+        auto ar_dim1 = ar_dim1_unique.get();
+        ar_dim1->append_dim(dim1size, dim1name);
+        ar_dim1->set_is_dap4(true);
+        add_gm_spcvs_attrs(ar_dim1,false);
+        d4_root->add_var(ar_dim1);
+#if 0
         try {
 
             bt_dim0 = new (HDF5CFFloat64)(dim0name, dim0name);
@@ -2112,6 +2135,7 @@ void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float c
         delete bt_dim1;
         delete ar_dim0;
         delete ar_dim1;
+#endif
     }
 }
 
@@ -2144,7 +2168,8 @@ void add_gm_spcvs_attrs(libdap::BaseType *var, bool is_dim0) {
 // Direct CF to DAP4, helper function to DAP4 group  attributes.  
 void add_grp_dap4_attr(D4Group *d4_grp,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 
-    auto d4_attr = new D4Attribute(attr_name,attr_type);
+    auto d4_attr_unique = make_unique<D4Attribute>(attr_name,attr_type);
+    auto d4_attr = d4_attr_unique.release();
     d4_attr->add_value(attr_value);
     d4_grp->attributes()->add_attribute_nocopy(d4_attr);
 
@@ -2152,7 +2177,8 @@ void add_grp_dap4_attr(D4Group *d4_grp,const string& attr_name, D4AttributeType 
 // Direct CF to DAP4, helper function to DAP4 variable  attributes.  
 void add_var_dap4_attr(BaseType *var,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 
-    auto d4_attr = new D4Attribute(attr_name,attr_type);
+    auto d4_attr_unique = make_unique<D4Attribute>(attr_name,attr_type);
+    auto d4_attr = d4_attr_unique.release();
     d4_attr->add_value(attr_value);
     var->attributes()->add_attribute_nocopy(d4_attr);
 
@@ -2178,7 +2204,8 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
         if (libdap::dods_array_c == v->type()) {
 
             auto t_a = dynamic_cast<Array *>(*vi);
-
+            add_dap4_coverage_set_up(d4map_array_maps, has_map_arrays, t_a, coord_var_names, v->name());
+#if 0
             // The maps are essentially coordinate variables.
             // We've sorted the coordinate variables already, so
             // just save them to the vector. 
@@ -2198,11 +2225,14 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
             if (is_cv == false) {
                 has_map_arrays.emplace_back(t_a);
             }
+#endif
         }
     }
 
-    // loop through has_map_arrays to add the maps.
-    if (is_coard) {// The grid case. 
+    // loop through the has_map_arrays to add the maps.
+    if (is_coard) {// The grid case.
+        add_dap4_coverage_grid(d4map_array_maps,has_map_arrays);
+#if 0
         for (auto& has_map_array:has_map_arrays) {
 
             Array::Dim_iter dim_i = has_map_array->dim_begin();
@@ -2220,9 +2250,11 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
             // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
             has_map_array = nullptr;
         }
+#endif
     }
     else { // A Swath case, need to find coordinates and retrieve the values.
-
+        add_dap4_coverage_swath(d4map_array_maps,has_map_arrays);
+#if 0
         for ( auto has_map_array:has_map_arrays) {
 
             // Find the "coordinates".
@@ -2281,6 +2313,7 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
             // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
             has_map_array = nullptr;
         }
+#endif
     }
     // We need to set the second element of the d4map_array_maps to 0 to avoid the ~Array() is called
     // when this map goes out of loop.
@@ -2289,6 +2322,153 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
  
 }
 
+void add_dap4_coverage_set_up(unordered_map<string, Array*> &d4map_array_maps, vector<Array *> &has_map_arrays,
+                              Array *t_a, const vector<string>& coord_var_names, const string & vname) {
+    // The maps are essentially coordinate variables.
+    // We've sorted the coordinate variables already, so
+    // just save them to the vector.
+    // Note: the coordinate variables we collect here are
+    // based on the understanding of the handler. We will
+    // watch if there are complicated cases down the road. KY 04-15-2022
+    bool is_cv = false;
+    for (const auto &cvar_name: coord_var_names) {
+        if (cvar_name == vname) {
+            is_cv = true;
+            d4map_array_maps.emplace(vname, t_a);
+            break;
+        }
+    }
+
+    // If this is not a map variable, it has a good chance to hold maps.
+    if (is_cv == false) {
+        has_map_arrays.emplace_back(t_a);
+    }
+}
+
+void add_dap4_coverage_grid(unordered_map<string, Array*> &d4map_array_maps, vector<Array *> &has_map_arrays) {
+
+    for (auto &has_map_array: has_map_arrays) {
+
+        Array::Dim_iter dim_i = has_map_array->dim_begin();
+        Array::Dim_iter dim_e = has_map_array->dim_end();
+        for (; dim_i != dim_e; dim_i++) {
+
+            // The dimension name is the same as a map name(A Grid case)
+            // Need to ensure the map array can be found.
+            unordered_map<string, Array *>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
+            if (it_ma != d4map_array_maps.end()) {
+                auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+                has_map_array->maps()->add_map(d4_map);
+            }
+        }
+        // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
+        has_map_array = nullptr;
+    }
+}
+
+void add_dap4_coverage_swath(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
+                            std::vector<libdap::Array *> &has_map_arrays) {
+
+    for (auto has_map_array: has_map_arrays) {
+
+        // Find the "coordinates".
+        vector<string> coord_names;
+
+        // The coord dimension names cannot be the third dimension.
+        unordered_set<string> coord_dim_names;
+
+        D4Attributes *d4_attrs = has_map_array->attributes();
+        const D4Attribute *d4_attr = d4_attrs->find("coordinates");
+        if (d4_attr != nullptr) {
+            // For all the coordinates the CF option can handle,
+            // the attribute is a one-element string.
+            if (d4_attr->type() == attr_str_c && d4_attr->num_values() == 1) {
+                string tempstring = d4_attr->value(0);
+                char sep = ' ';
+                HDF5CFUtil::Split_helper(coord_names, tempstring, sep);
+            }
+        }
+
+        add_dap4_coverage_swath_coords(d4map_array_maps, has_map_array, coord_names, coord_dim_names);
+#if 0
+        // Search if these coordiates can be found in the coordinate variable list.
+        // If yes, add maps.
+        for (const auto &cname: coord_names) {
+
+            unordered_map<string, Array *>::const_iterator it_ma = d4map_array_maps.find(cname);
+            if (it_ma != d4map_array_maps.end()) {
+
+                auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+                has_map_array->maps()->add_map(d4_map);
+
+                // We need to find the dimension names of these coordinates.
+                Array::Dim_iter dim_i = it_ma->second->dim_begin();
+                Array::Dim_iter dim_e = it_ma->second->dim_end();
+                for (; dim_i != dim_e; dim_i++)
+                    coord_dim_names.insert(dim_i->name);
+            }
+
+        }
+
+        // Some variables have the third or the fourth dimensions that don't belong to dimensions of the cvs from coordinate attribute.
+        // For these dimensions, we need to check if any real CV(like dimension scale) exists. If yes, add them to it.
+        Array::Dim_iter dim_i = has_map_array->dim_begin();
+        Array::Dim_iter dim_e = has_map_array->dim_end();
+        for (; dim_i != dim_e; dim_i++) {
+
+            // This dimension is not found among dimensions of coordiate variables. Check if it is a valid map candidate.If yes, add it.
+            if (coord_dim_names.find(dim_i->name) == coord_dim_names.end()) {
+                unordered_map<string, Array *>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
+                if (it_ma != d4map_array_maps.end()) {
+                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+                    has_map_array->maps()->add_map(d4_map);
+                }
+            }
+        }
+#endif
+        // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
+        has_map_array = nullptr;
+    }
+}
+
+void add_dap4_coverage_swath_coords(unordered_map<string, Array*> &d4map_array_maps, Array *has_map_array,
+                                    const vector<string> &coord_names, unordered_set<string> &coord_dim_names) {
+
+    // Search if these coordiates can be found in the coordinate variable list.
+    // If yes, add maps.
+    for (const auto &cname: coord_names) {
+
+        unordered_map<string, Array *>::const_iterator it_ma = d4map_array_maps.find(cname);
+        if (it_ma != d4map_array_maps.end()) {
+
+            auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+            has_map_array->maps()->add_map(d4_map);
+
+            // We need to find the dimension names of these coordinates.
+            Array::Dim_iter dim_i = it_ma->second->dim_begin();
+            Array::Dim_iter dim_e = it_ma->second->dim_end();
+            for (; dim_i != dim_e; dim_i++)
+                coord_dim_names.insert(dim_i->name);
+        }
+
+    }
+
+    // Some variables have the third or the fourth dimensions that don't belong to dimensions of the cvs from coordinate attribute.
+    // For these dimensions, we need to check if any real CV(like dimension scale) exists. If yes, add them to it.
+    Array::Dim_iter dim_i = has_map_array->dim_begin();
+    Array::Dim_iter dim_e = has_map_array->dim_end();
+    for (; dim_i != dim_e; dim_i++) {
+
+        // This dimension is not found among dimensions of coordiate variables. Check if it is a valid map candidate.If yes, add it.
+        if (coord_dim_names.find(dim_i->name) == coord_dim_names.end()) {
+            unordered_map<string, Array *>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
+            if (it_ma != d4map_array_maps.end()) {
+                auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+                has_map_array->maps()->add_map(d4_map);
+            }
+        }
+    }
+}
 // Mainly copy from HDF5CF::get_CF_string. Should be 
 // removed if we can generate DMR independently.
 string get_cf_string(string & s) {
