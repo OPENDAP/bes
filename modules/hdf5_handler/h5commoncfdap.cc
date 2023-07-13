@@ -1289,7 +1289,7 @@ void gen_dap_onevar_dmr_array(D4Group* d4_grp, const HDF5CF::Var* var, hid_t fil
                                               var->getType(),dimsizes, var->getFullPath(),
                                               var->getTotalElems(),CV_UNSUPPORTED, false,
                                               var->getCompRatio(), true, var->getNewName(),bt);
-    auto ar = ar_unique.release();
+    auto ar = ar_unique.get();
 #if 0
     HDF5CFArray *ar = nullptr;
     try {
