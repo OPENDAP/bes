@@ -1484,8 +1484,11 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
 
         //2. Add 1D CF attributes to the 1-D CV variables and the dummy grid_mapping variable
         AttrTable *at = das.get_table(dim0name);
-        if (!at) 
-            at = das.add_table(dim0name, new AttrTable);
+        if (!at) {
+            auto new_attr_table_unique = make_unique<AttrTable>();
+            auto new_attr_table = new_attr_table_unique.release();
+            at = das.add_table(dim0name, new_attr_table);
+        }
         at->append_attr("standard_name", "String", "projection_y_coordinate");
 
         string long_name = "y coordinate of projection ";
@@ -1497,8 +1500,11 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
         at->append_attr("_CoordinateAxisType", "string", "GeoY");
 
         at = das.get_table(dim1name);
-        if (!at) at = das.add_table(dim1name, new AttrTable);
-
+        if (!at) {
+            auto new_attr_table_unique = make_unique<AttrTable>();
+            auto new_attr_table = new_attr_table_unique.release();
+            at = das.add_table(dim1name, new_attr_table);
+        }
         at->append_attr("standard_name", "String", "projection_x_coordinate");
 
         long_name = "x coordinate of projection ";
@@ -1536,7 +1542,9 @@ void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<d
 
     AttrTable* at = das.get_table(cf_projection);
     if (!at) {// Only append attributes when the table is created.
-        at = das.add_table(cf_projection, new AttrTable);
+        auto new_attr_table_unique = make_unique<AttrTable>();
+        auto new_attr_table = new_attr_table_unique.release();
+        at = das.add_table(cf_projection, new_attr_table);
 
         if (HE5_GCTP_SNSOID == cv_proj_code) {
             at->append_attr("grid_mapping_name", "String", "sinusoidal");
@@ -1668,8 +1676,11 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
             }
             if (true == has_dim0 && true == has_dim1) {        // Need to add the grid_mapping attribute
                 AttrTable *at = das.get_table(var->getNewName());
-                if (!at) at = das.add_table(var->getNewName(), new AttrTable);
-
+                if (!at) {
+                    auto new_attr_table_unique = make_unique<AttrTable>();
+                    auto new_attr_table = new_attr_table_unique.release();
+                    at = das.add_table(var->getNewName(), new_attr_table);
+                }
                 // The dummy projection name is the value of the grid_mapping attribute
                 at->append_attr("grid_mapping", "String", cf_projection);
             }
@@ -2340,9 +2351,9 @@ void add_dap4_coverage_set_up(unordered_map<string, Array*> &d4map_array_maps, v
     }
 
     // If this is not a map variable, it has a good chance to hold maps.
-    if (is_cv == false) {
+    if (is_cv == false)
         has_map_arrays.emplace_back(t_a);
-    }
+
 }
 
 void add_dap4_coverage_grid(unordered_map<string, Array*> &d4map_array_maps, vector<Array *> &has_map_arrays) {
@@ -2357,7 +2368,8 @@ void add_dap4_coverage_grid(unordered_map<string, Array*> &d4map_array_maps, vec
             // Need to ensure the map array can be found.
             unordered_map<string, Array *>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
             if (it_ma != d4map_array_maps.end()) {
-                auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+                auto d4_map_unique = make_unique<D4Map>((it_ma->second)->FQN(), it_ma->second);
+                auto d4_map = d4_map_unique.release();
                 has_map_array->maps()->add_map(d4_map);
             }
         }
@@ -2441,7 +2453,8 @@ void add_dap4_coverage_swath_coords(unordered_map<string, Array*> &d4map_array_m
         unordered_map<string, Array *>::const_iterator it_ma = d4map_array_maps.find(cname);
         if (it_ma != d4map_array_maps.end()) {
 
-            auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+            auto d4_map_unique = make_unique<D4Map>((it_ma->second)->FQN(), it_ma->second);
+            auto d4_map = d4_map_unique.release();
             has_map_array->maps()->add_map(d4_map);
 
             // We need to find the dimension names of these coordinates.
@@ -2463,7 +2476,8 @@ void add_dap4_coverage_swath_coords(unordered_map<string, Array*> &d4map_array_m
         if (coord_dim_names.find(dim_i->name) == coord_dim_names.end()) {
             unordered_map<string, Array *>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
             if (it_ma != d4map_array_maps.end()) {
-                auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second);
+                auto d4_map_unique = make_unique<D4Map>((it_ma->second)->FQN(), it_ma->second);
+                auto d4_map = d4_map_unique.release();
                 has_map_array->maps()->add_map(d4_map);
             }
         }
