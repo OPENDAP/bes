@@ -54,9 +54,12 @@ private:
     std::map<std::string, AccessCredentials *> creds;
 
     CredentialsManager() = default;   // only called here to build the singleton
+
+    // These are static because they must use C-linkage.
     static void initialize_instance();
     static void delete_instance();
 
+    void load_credentials();
     AccessCredentials *load_credentials_from_env();
 
 public:
@@ -67,8 +70,6 @@ public:
     static CredentialsManager *theCM();
 
     void add(const std::string &url, AccessCredentials *ac);
-
-    void load_credentials();
 
     void clear() {
         creds.clear();
