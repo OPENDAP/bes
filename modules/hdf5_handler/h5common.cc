@@ -363,7 +363,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
 
 void read_vlen_string_value(const int64_t nelms, vector<char> &strval, vector<string>&finstrval, size_t ty_size ) {
     // For scalar, nelms is 1.
-    char *temp_bp = strval.data();
+    const char *temp_bp = strval.data();
     for (int i =0;i<nelms;i++) {
         string finalstr_val;
         get_vlen_str_data(temp_bp, finalstr_val);
@@ -416,7 +416,7 @@ bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id) {
 
 void get_vlen_str_data(const char*temp_bp,string &finalstr_val) {
 
-    const char *onestring = *(char**)temp_bp;
+    const char *onestring = *(const char**)temp_bp;
     if(onestring!=nullptr )
         finalstr_val =string(onestring);
     else // We will add a nullptr is onestring is nullptr.

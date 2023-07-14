@@ -63,6 +63,12 @@ using namespace std;
 using namespace libdap;
 using namespace HDF5CF;
 
+#if 0
+static inline AttrTable * obtain_new_attr_table() {
+    auto new_attr_table_unique = make_unique<AttrTable>();
+    return new_attr_table_unique.release();
+}
+#endif
 
 // Generate DDS from one variable
 void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, hid_t file_id, const string & filename)
@@ -577,7 +583,6 @@ void gen_dap_onevar_dds_array(DDS &dds, const HDF5CF::Var *var, hid_t file_id, c
     for (int i = 0; i < var->getRank(); i++)
         dimsizes[i] = (dims[i])->getSize();
 
-    //HDF5CFArray *ar = nullptr;
     auto ar_unique = make_unique<HDF5CFArray>(var->getRank(), file_id, filename, var->getType(), dimsizes,
                                               var->getFullPath(),
                                               var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), false,
@@ -616,7 +621,6 @@ void gen_dap_onevar_dds_array(DDS &dds, const HDF5CF::Var *var, hid_t file_id, c
         dds.add_var(ar);
 
     delete bt;
-    //delete ar;
 }
 // Currently, only when the datatype of fillvalue is not the same as the datatype of the variable,
 // special attribute handling is needed.
@@ -1449,7 +1453,7 @@ void add_cf_grid_mapinfo_var(DDS & dds, EOS5GridPCType grid_proj_code, unsigned 
     // To handle multi-grid cases, we need to add suffixes to distinguish them.
     string cf_projection_base = "eos_cf_projection";
 
-    //HDF5CFGeoCFProj * dummy_proj_cf = nullptr;
+
     if(HE5_GCTP_SNSOID == grid_proj_code)  {
         // AFAIK, one grid_mapping variable is necessary for multi-grids. So we just leave one grid here.
         if(g_suffix == 1) {
@@ -2379,7 +2383,7 @@ void add_dap4_coverage_grid(unordered_map<string, Array*> &d4map_array_maps, vec
 }
 
 void add_dap4_coverage_swath(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
-                            std::vector<libdap::Array *> &has_map_arrays) {
+                            const std::vector<libdap::Array *> &has_map_arrays) {
 
     for (auto has_map_array: has_map_arrays) {
 

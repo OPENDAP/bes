@@ -1345,7 +1345,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         vector<link_info_t> hdf5_hls;
         vector<string> handled_coord_names;
 
-        breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,
+        breadth_first(fileid, fileid,(const char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,
                       eos5_dim_info,handled_coord_names);
 
         if (is_eos5 == false)

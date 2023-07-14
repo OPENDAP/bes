@@ -30,12 +30,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <iostream>
-#include <sstream>
 
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
@@ -74,14 +70,18 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
     GMPattern  gproduct_pattern = OTHERGMS;
 
-    GMFile * f = nullptr;
+    //GMFile * f = nullptr;
 
+    auto f_unique = make_unique<GMFile>(filename.c_str(),file_id,product_type,gproduct_pattern);
+    auto f = f_unique.get();
+#if 0
     try {
         f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
     }
     catch(...) {
         throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
     }
+#endif
     // Generally don't need to handle attributes when handling DDS. 
     bool include_attr = false;
     try {
@@ -176,24 +176,21 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         f->Remove_Unused_FakeDimVars();
         f->Rename_NC4_NonCoordVars();
     }
+
+
     catch (HDF5CF::Exception &e){
-        if (f != nullptr)
-            delete f;
         throw InternalErr(e.what());
     }
-    
+
+
     // generate DDS.
     try {
         gen_gmh5_cfdds(dds,f);
     }
     catch(...) {
-        if (f != nullptr)
-            delete f;
         throw;
     }
-    
-    if (f != nullptr)
-        delete f;
+
 }
 
 // Map general HDF5 products to DAP DAS
@@ -204,14 +201,19 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
     H5GCFProduct product_type = check_product(file_id);
     GMPattern gproduct_pattern = OTHERGMS;
 
-    GMFile *f = nullptr;
+    //GMFile *f = nullptr;
+    auto f_unique = make_unique<GMFile>(filename.c_str(),file_id,product_type,gproduct_pattern);
+    auto f = f_unique.get();
 
+
+#if 0
     try {
         f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
     }
     catch(...) {
         throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
     }
+#endif
 
     bool include_attr = true;
     try {
@@ -269,8 +271,6 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         f->Update_Bounds_Attr();
     }
     catch (HDF5CF::Exception &e){
-        if (f!= nullptr)
-            delete f;
         throw InternalErr(e.what());
     }
 
@@ -279,14 +279,10 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         gen_gmh5_cfdas(das,f);
     }   
     catch (...) {
-        if (f!= nullptr)
-            delete f;
         throw;
  
     }
 
-    if (f != nullptr)
-        delete f;
 }
 
 
@@ -298,15 +294,18 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
 
     GMPattern  gproduct_pattern = OTHERGMS;
 
-    GMFile * f = nullptr;
+    // GMFile * f = nullptr;
 
+    auto f_unique = make_unique<GMFile>(filename.c_str(),file_id,product_type,gproduct_pattern);
+    auto f = f_unique.get();
+#if 0
     try {
         f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
     }
     catch(...) {
         throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
     }
-
+#endif
     //  Both variables and attributes are in DMR.
     bool include_attr = true;
     try {
@@ -401,8 +400,10 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
 
     }
     catch (HDF5CF::Exception &e){
+#if 0
         if (f != nullptr)
             delete f;
+#endif
         throw InternalErr(e.what());
     }
     
@@ -411,14 +412,17 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         gen_gmh5_cfdmr(d4_root,f);
     }
     catch(...) {
+#if 0
         if (f != nullptr)
             delete f;
+#endif
         throw;
     }
-    
+
+#if 0
     if (f != nullptr)
         delete f;
-
+#endif
 }
 
 // Generate DDS mapped from general HDF5 products
@@ -513,9 +517,11 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     if (false == root_attrs.empty()) {
 
         AttrTable *at = das.get_table(FILE_ATTR_TABLE_NAME);
-        if (nullptr == at) 
-            at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
-
+        if (nullptr == at) {
+            //auto new_attr_table_unique = make_unique<AttrTable>();
+            //auto new_attr_table = new_attr_table_unique.release();
+            at = das.add_table(FILE_ATTR_TABLE_NAME, obtain_new_attr_table());
+        }
         for (const auto &root_attr:root_attrs) {
             // Check and may update the 64-bit integer attributes in DAP4.
             check_update_int64_attr("",root_attr);
@@ -526,8 +532,13 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     if (false == grps.empty()) {
         for (const auto &grp:grps) {
             AttrTable *at = das.get_table(grp->getNewName());
-            if (nullptr == at)
-                at = das.add_table(grp->getNewName(), new AttrTable);
+            if (nullptr == at) {
+#if 0
+                auto new_attr_table_unique = make_unique<AttrTable>();
+                auto new_attr_table = new_attr_table_unique.release();
+#endif
+                at = das.add_table(grp->getNewName(), obtain_new_attr_table());
+            }
             for (const auto &grp_attr:grp->getAttributes()) {
                 check_update_int64_attr(grp->getNewName(),grp_attr);
                 gen_dap_oneobj_das(at,grp_attr,nullptr);
@@ -548,9 +559,13 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             }
 
             AttrTable *at = das.get_table(var->getNewName());
-            if (nullptr == at)
-                at = das.add_table(var->getNewName(), new AttrTable);
-
+            if (nullptr == at) {
+#if 0
+                auto new_attr_table_unique = make_unique<AttrTable>();
+                auto new_attr_table = new_attr_table_unique.release();
+#endif
+                at = das.add_table(var->getNewName(), obtain_new_attr_table());
+            }
             for (const auto &attr:var->getAttributes())
                 gen_dap_oneobj_das(at,attr,var);
 
@@ -577,9 +592,10 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             }
 
             AttrTable *at = das.get_table(cvar->getNewName());
-            if (nullptr == at)
-                at = das.add_table(cvar->getNewName(), new AttrTable);
+            if (nullptr == at) {
 
+                at = das.add_table(cvar->getNewName(), new AttrTable);
+            }
             for (const auto &attr:cvar->getAttributes())
                 gen_dap_oneobj_das(at,attr,cvar);
                     
@@ -797,7 +813,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                 // TODO: The following lines cause seg. fault in libdap4, needs to investigate
                 //if((d4_root->attributes()->find(dods_extra))==nullptr) 
         
-                    string unlimited_dim_names ="";
+                    string unlimited_dim_names;
         
                     for (const auto &cvar:cvars) {
             
@@ -1541,7 +1557,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                     throw InternalErr(__FILE__, __LINE__, "The rank of special coordinate variable  must be 1");
                 }
                 int nelem = (cvar->getDimensions()[0])->getSize();
-
+#if 0
                 HDF5GMCFSpecialCVArray * ar = nullptr;
                 ar = new HDF5GMCFSpecialCVArray(
                                                 cvar->getType(),
@@ -1550,7 +1566,14 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                                                 cvar->getPtType(),
                                                 cvar->getNewName(),
                                                 bt);
-
+#endif
+                auto ar_unique = make_unique<HDF5GMCFSpecialCVArray>(cvar->getType(),
+                                                nelem,
+                                                cvar->getFullPath(),
+                                                cvar->getPtType(),
+                                                cvar->getNewName(),
+                                                bt);
+                auto ar = ar_unique.get();
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName())
                         ar->append_dim_ll((*it_d)->getSize());
@@ -1563,7 +1586,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
                 delete bt;
-                delete ar;
+                //delete ar;
 
             }
             break;
@@ -1629,6 +1652,17 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
                                  spvar->getBitNum(),
                                  spvar->getNewName(),
                                  bt);
+            auto ar_unique = make_unique<HDF5GMSPCFArray>(spvar->getRank(),
+                                 filename,
+                                 fileid,
+                                 spvar->getType(),
+                                 spvar->getFullPath(),
+                                 spvar->getOriginalType(),
+                                 spvar->getStartBit(),
+                                 spvar->getBitNum(),
+                                 spvar->getNewName(),
+                                 bt);
+            ar = ar_unique.get();
         }
         catch(...) {
             delete bt;
@@ -1649,7 +1683,7 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
         d4_root->add_var_nocopy(d4_var);
  
         delete bt;
-        delete ar;
+        //delete ar;
     }
 
 }

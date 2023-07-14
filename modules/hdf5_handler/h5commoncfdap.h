@@ -117,8 +117,11 @@ void add_dap4_coverage_set_up(unordered_map<std::string, libdap::Array*> &d4map_
 void add_dap4_coverage_grid(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
                             std::vector<libdap::Array *> &has_map_arrays);
 void add_dap4_coverage_swath(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
-                            std::vector<libdap::Array *> &has_map_arrays);
+                            const std::vector<libdap::Array *> &has_map_arrays);
 void add_dap4_coverage_swath_coords(unordered_map<std::string, libdap::Array*> &d4map_array_maps, libdap::Array *has_map_array,
                                     const std::vector<std::string> &coord_names, unordered_set<std::string> &coord_dim_names);
-
+static inline libdap::AttrTable * obtain_new_attr_table() {
+    auto new_attr_table_unique = make_unique<libdap::AttrTable>();
+    return new_attr_table_unique.release();
+}
 #endif
