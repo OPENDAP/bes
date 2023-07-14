@@ -62,6 +62,8 @@ private:
     void load_credentials();
     AccessCredentials *load_credentials_from_env();
 
+    friend class CredentialsManagerTest;
+
 public:
     static CredentialsManager *theMngr;
 

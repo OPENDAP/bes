@@ -35,7 +35,7 @@
 #include <libdap/debug.h>
 
 #include "BESContextManager.h"
-#include "BESError.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
@@ -65,17 +65,13 @@ private:
 
 public:
     // Called once before everything gets tested
-    CredentialsManagerTest()
-    {
-    }
+    CredentialsManagerTest() = default;
 
     // Called at the end of the test
-    ~CredentialsManagerTest()
-    {
-    }
+    ~CredentialsManagerTest() = default;
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
         if(debug) cout << endl ;
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp,curl,ngap");
@@ -83,11 +79,6 @@ public:
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append(bes_conf_file);
         cm_config = string(TEST_BUILD_DIR).append("/credentials.conf");
         weak_config = string(TEST_SRC_DIR).append("/weak.conf");
-    }
-
-    // Called after each test
-    void tearDown()
-    {
     }
 
     void check_keys() {
@@ -106,12 +97,14 @@ public:
     void bad_config_file_permissions() {
         try {
             TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, weak_config);
-            CredentialsManager::theCM()->load_credentials();
-            CPPUNIT_FAIL("bad_config_file_permissions() The load_credentials() call should have failed but it did not.");
+            auto cm = CredentialsManager::theCM();
+            DBG(cerr << "bad_config_file_permissions() - After theCM()\n");
+            cm->load_credentials();
+            CPPUNIT_FAIL("The load_credentials() call should have failed but it did not.");
         }
-        catch (const BESError &e) {
-            if(debug) cout << "bad_config_file_permissions() - Unable to load keys, this is expected. Message: ";
-            if(debug) cout << e.get_message() << endl;
+        catch (const BESInternalError &e) {
+            DBG(cerr << "bad_config_file_permissions() - Caught expected exception: " << e.get_message() << endl);
+            CPPUNIT_ASSERT(true);
         }
     }
 
@@ -119,12 +112,14 @@ public:
         if(debug) cout << "load_credentials() - Loading AccessCredentials." << endl;
         try {
             TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, cm_config);
-            CredentialsManager::theCM()->load_credentials();
+            auto ac = CredentialsManager::theCM();
+            ac->load_credentials();
+            DBG(cerr << "load_credentials() - AccessCredentials loaded.\n");
+            CPPUNIT_ASSERT(true);
         }
         catch (const BESError &e) {
             CPPUNIT_FAIL("load_credentials() has failed unexpectedly. Message: "+ e.get_message());
         }
-        if(debug) cout << "load_credentials() - AccessCredentials loaded." << endl;
     }
 
     void check_credentials() {
@@ -228,7 +223,7 @@ public:
         setenv(CredentialsManager::ENV_REGION_KEY, region.c_str(), true);
         setenv(CredentialsManager::ENV_URL_KEY, url.c_str(), true);
 
-        CredentialsManager::theCM()->load_credentials();
+        CredentialsManager::theCM();    // force a load of the credentials
 
         if(debug) cout << "check_incomplete_env_credentials() - Read from ENV, found " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
@@ -240,7 +235,7 @@ public:
     void check_env_credentials() {
         CredentialsManager::theCM()->clear();
         if(debug) cout << "check_env_credentials() - CredentialsManager has been cleared, contains " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
-        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
+        CPPUNIT_ASSERT(CredentialsManager::theCM()->size() == 0);
 
         clear_cm_env();
         TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, CredentialsManager::USE_ENV_CREDS_KEY_VALUE, false);
@@ -258,7 +253,8 @@ public:
         //setenv(CMAC_ENV_BUCKET_KEY, bucket.c_str(),true);
         setenv(CredentialsManager::ENV_URL_KEY,    base_url.c_str(), true);
         if(debug) cout << "check_env_credentials() - Environment conditioned, calling CredentialsManager::load_credentials()" << endl;
-        CredentialsManager::theCM()->load_credentials();
+        auto cm = CredentialsManager::theCM();
+        cm->load_credentials(); // force a load of the credentials
 
         unsigned int expected = 1;
         if(debug)
@@ -283,7 +279,7 @@ public:
         if(debug) cout << "check_no_credentials() - CredentialsManager has been cleared, contains " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
 
-        CredentialsManager::theCM()->load_credentials();
+        CredentialsManager::theCM();   // force a load of the credentials
 
         if(CredentialsManager::theCM()->hasNgapS3Credentials()){
             unsigned int expected = 1;
