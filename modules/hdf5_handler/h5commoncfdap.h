@@ -36,6 +36,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <memory>
 
 #include <libdap/DMR.h>
 #include <libdap/DDS.h>
