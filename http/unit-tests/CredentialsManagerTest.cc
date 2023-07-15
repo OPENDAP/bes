@@ -315,9 +315,9 @@ public:
 
     CPPUNIT_TEST(check_keys);
     CPPUNIT_TEST(bad_config_file_permissions);
-#if 0
     CPPUNIT_TEST(load_credentials);
     CPPUNIT_TEST(check_credentials);
+#if 0
     CPPUNIT_TEST(check_incomplete_env_credentials);
     CPPUNIT_TEST(check_env_credentials);
 #endif
