@@ -317,8 +317,8 @@ public:
     CPPUNIT_TEST(bad_config_file_permissions);
     CPPUNIT_TEST(load_credentials);
     CPPUNIT_TEST(check_credentials);
-#if 0
     CPPUNIT_TEST(check_incomplete_env_credentials);
+#if 0
     CPPUNIT_TEST(check_env_credentials);
 #endif
     CPPUNIT_TEST(check_ngap_s3_credentials);
