@@ -104,7 +104,7 @@ CredentialsManager *CredentialsManager::theCM() {
 
 void CredentialsManager::initialize_instance() {
     theMngr = new CredentialsManager;
-    theMngr->load_credentials();
+    theMngr->load_credentials(); // Only call this here.
 #ifdef HAVE_ATEXIT
     atexit(delete_instance);
 #endif
@@ -255,11 +255,10 @@ bool file_is_secured(const string &filename) {
  * @throws BESInternalError if the file specified by the "CredentialsManager.config"
  * key is missing or if the file is not secured (permissions 600).
  *
- * @note NEVER call this method directly. It is called by the constructor.
+ * @note NEVER call this method directly. It is called using call_once() by the
+ * singleton accessor.
  */
 void CredentialsManager::load_credentials() {
-    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
-
     string config_file;
     bool found_key = true;
     TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
