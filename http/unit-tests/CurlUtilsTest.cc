@@ -414,7 +414,7 @@ public:
         // The Keys are: CMAC_ID, CMAC_ACCESS_KEY.
         if (getenv("CMAC_ID") && getenv("CMAC_ACCESS_KEY")) {
             try {
-#if 0
+#if 1
                 auto cm = http::CredentialsManager::theCM();
                 cm->load_credentials();
 #endif

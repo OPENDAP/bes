@@ -63,6 +63,7 @@ private:
     AccessCredentials *load_credentials_from_env();
 
     friend class CredentialsManagerTest;
+    friend class CurlUtilsTest;
 
 public:
     static CredentialsManager *theMngr;
