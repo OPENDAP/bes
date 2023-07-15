@@ -131,19 +131,18 @@ public:
                 " AccessCredentials. Expected: "<< expected << endl;
             CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
 
-            shared_ptr<http::url> cloudydap_dataset_url(new http::url("https://s3.amazonaws.com/cloudydap/samples/d_int.h5"));
-            shared_ptr<http::url> cloudyopendap_dataset_url(new http::url("https://s3.amazonaws.com/cloudyopendap/samples/d_int.h5"));
-            shared_ptr<http::url> someother_dataset_url(new http::url("https://ssotherone.org/opendap/data/fnoc1.nc"));
+            auto cloudydap_dataset_url = make_shared<http::url>("https://s3.amazonaws.com/cloudydap/samples/d_int.h5");
+            auto cloudyopendap_dataset_url= make_shared<http::url>("https://s3.amazonaws.com/cloudyopendap/samples/d_int.h5");
+            auto someother_dataset_url = make_shared<http::url>("https://ssotherone.org/opendap/data/fnoc1.nc");
             AccessCredentials *ac;
             string url, id, key, region, bucket;
-
-            /*
+#if 0
             cloudydap=url:https://s3.amazonaws.com/cloudydap/
             cloudydap+=id:foo
             cloudydap+=key:qwecqwedqwed
             cloudydap+=region:us-east-1
             cloudydap+=bucket:cloudydap
-            */
+#endif
 
             ac = CredentialsManager::theCM()->get(cloudydap_dataset_url);
             CPPUNIT_ASSERT( ac);
@@ -152,13 +151,14 @@ public:
             CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == "qwecqwedqwed");
             CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == "us-east-1");
 
-            /*
+#if 0
             cloudyopendap+=url:https://s3.amazonaws.com/cloudyopendap/
             cloudyopendap+=id:bar
             cloudyopendap+=key:qwedjhgvewqwedqwed
             cloudyopendap+=region:nirvana-west-0
             cloudyopendap+=bucket:cloudyopendap
-            */
+#endif
+
             ac = CredentialsManager::theCM()->get(cloudyopendap_dataset_url);
             CPPUNIT_ASSERT( ac);
             CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://s3.amazonaws.com/cloudyopendap/");
@@ -166,13 +166,14 @@ public:
             CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == "qwedjhgvewqwedqwed");
             CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == "nirvana-west-0");
 
-            /*
+#if 0
             cname_02+=url:https://ssotherone.org/opendap/
             cname_02+=id:some_other_id_string
             cname_02+=key:some_other_key_string
             cname_02+=region:oz-7
             cname_02+=bucket:cloudyotherdap
-            */
+#endif
+
             ac = CredentialsManager::theCM()->get(someother_dataset_url);
             CPPUNIT_ASSERT( ac);
             CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://ssotherone.org/opendap/");
@@ -318,9 +319,7 @@ public:
     CPPUNIT_TEST(load_credentials);
     CPPUNIT_TEST(check_credentials);
     CPPUNIT_TEST(check_incomplete_env_credentials);
-#if 1
     CPPUNIT_TEST(check_env_credentials);
-#endif
     CPPUNIT_TEST(check_ngap_s3_credentials);
 
     CPPUNIT_TEST_SUITE_END();
