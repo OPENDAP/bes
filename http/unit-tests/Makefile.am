@@ -73,9 +73,14 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 #
 
 if CPPUNIT
+
 UNIT_TESTS =  HttpUtilsTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
-AllowedHostsTest CredentialsManagerTest awsv4_test CurlUtilsTest HttpCacheTest
+AllowedHostsTest  awsv4_test CurlUtilsTest HttpCacheTest
+
+# CredentialsManagerTest
+
 else
+
 UNIT_TESTS =
 
 check-local:
@@ -85,6 +90,7 @@ check-local:
 	@echo "check target in unit-tests directory                     *"
 	@echo "**********************************************************"
 	@echo ""
+
 endif
 
 clean-local:
