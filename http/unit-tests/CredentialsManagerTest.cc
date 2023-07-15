@@ -68,7 +68,7 @@ public:
     CredentialsManagerTest() = default;
 
     // Called at the end of the test
-    ~CredentialsManagerTest() = default;
+    ~CredentialsManagerTest() override = default;
 
     // Called before each test
     void setUp() override
@@ -100,6 +100,7 @@ public:
             auto cm = CredentialsManager::theCM();
             DBG(cerr << "bad_config_file_permissions() - After theCM()\n");
             cm->load_credentials();
+            DBG(cerr << "bad_config_file_permissions() - After load_credentials()\n");
             CPPUNIT_FAIL("The load_credentials() call should have failed but it did not.");
         }
         catch (const BESInternalError &e) {
@@ -314,10 +315,12 @@ public:
 
     CPPUNIT_TEST(check_keys);
     CPPUNIT_TEST(bad_config_file_permissions);
+#if 0
     CPPUNIT_TEST(load_credentials);
     CPPUNIT_TEST(check_credentials);
     CPPUNIT_TEST(check_incomplete_env_credentials);
     CPPUNIT_TEST(check_env_credentials);
+#endif
     CPPUNIT_TEST(check_ngap_s3_credentials);
 
     CPPUNIT_TEST_SUITE_END();

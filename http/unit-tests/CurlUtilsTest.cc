@@ -414,10 +414,9 @@ public:
         // The Keys are: CMAC_ID, CMAC_ACCESS_KEY.
         if (getenv("CMAC_ID") && getenv("CMAC_ACCESS_KEY")) {
             try {
-#if 1
                 auto cm = http::CredentialsManager::theCM();
                 cm->load_credentials();
-#endif
+
                 const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
                 vector<char> buf;
                 curl::http_get(url, buf);
