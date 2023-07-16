@@ -64,20 +64,15 @@ void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var*var,libdap::BaseType*new_var);
 void map_cfh5_grp_attr_to_dap4(libdap::D4Group*, const HDF5CF::Attribute*);
 void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *, const HDF5CF::Attribute*);
 
-
 void add_cf_grid_mapping_attr(libdap::DAS &das, const std::vector<HDF5CF::Var*>& vars, const std::string& cf_projection,
     const std::string & dim0name, hsize_t dim0size, const std::string &dim1name, hsize_t dim1size);
-#if 0
-void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
-    float cv_point_lower, float cv_point_upper, float cv_point_left, float cv_point_right,
-    const vector<HDF5CF::Dimension*>& dims,const vector<double>&  params,const unsigned short);
-#endif
+
 void add_cf_grid_cv_attrs(libdap::DAS & das, const std::vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     const std::vector<HDF5CF::Dimension*>& dims,const std::vector<double>&  params, unsigned short);
 
 void add_cf_projection_attrs(libdap::DAS &,EOS5GridPCType ,const std::vector<double> &,const std::string&);
 void add_cf_grid_cvs(libdap::DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
-    float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims);
+                     float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims);
 
 void add_cf_grid_mapinfo_var(libdap::DDS &dds, EOS5GridPCType, unsigned short);
 bool need_special_attribute_handling(const HDF5CF::Attribute*, const HDF5CF::Var*);
@@ -89,12 +84,14 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var*var,libdap::BaseType*new
 bool need_attr_values_for_dap4(const HDF5CF::Var*var);
 void check_update_int64_attr(const std::string &, const HDF5CF::Attribute *);
 void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *, const std::string &,std::string&,bool);
+
 libdap::D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *);
+
 std::string get_cf_string(std::string & s);
 std::string get_cf_string_helper(std::string & s);
 
 void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
-    float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims);
+                    float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims);
 void add_gm_spcvs_attrs(libdap::BaseType *d4_var, bool is_dim0);
 
 void add_cf_grid_cv_dap4_attrs(libdap::D4Group *d4_root, const std::string& cf_projection,
@@ -119,10 +116,13 @@ void add_dap4_coverage_grid(unordered_map<std::string, libdap::Array*> &d4map_ar
                             std::vector<libdap::Array *> &has_map_arrays);
 void add_dap4_coverage_swath(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
                             const std::vector<libdap::Array *> &has_map_arrays);
-void add_dap4_coverage_swath_coords(unordered_map<std::string, libdap::Array*> &d4map_array_maps, libdap::Array *has_map_array,
-                                    const std::vector<std::string> &coord_names, unordered_set<std::string> &coord_dim_names);
+void add_dap4_coverage_swath_coords(unordered_map<std::string, libdap::Array*> &d4map_array_maps,
+                                    libdap::Array *has_map_array,const std::vector<std::string> &coord_names,
+                                    unordered_set<std::string> &coord_dim_names);
+
 static inline libdap::AttrTable * obtain_new_attr_table() {
     auto new_attr_table_unique = make_unique<libdap::AttrTable>();
     return new_attr_table_unique.release();
 }
+
 #endif
