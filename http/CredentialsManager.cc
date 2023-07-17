@@ -98,13 +98,13 @@ std::string get_env_value(const string &key) {
  * @return Returns the singleton instance of the CredentialsManager
  */
 CredentialsManager *CredentialsManager::theCM() {
-
     std::call_once(d_cmac_init_once, CredentialsManager::initialize_instance);
     return theMngr;
 }
 
 void CredentialsManager::initialize_instance() {
     theMngr = new CredentialsManager;
+    theMngr->load_credentials(); // Only call this here.
 #ifdef HAVE_ATEXIT
     atexit(delete_instance);
 #endif
@@ -251,13 +251,14 @@ bool file_is_secured(const string &filename) {
  * cname_02+=key:**************************
  * cname_02+=region:us-east-1
  * cname_02+=bucket:cloudyotherdap
-
+ *
  * @throws BESInternalError if the file specified by the "CredentialsManager.config"
- * key is missing.
+ * key is missing or if the file is not secured (permissions 600).
+ *
+ * @note NEVER call this method directly. It is called using call_once() by the
+ * singleton accessor.
  */
 void CredentialsManager::load_credentials() {
-    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
-
     string config_file;
     bool found_key = true;
     TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
@@ -271,11 +272,12 @@ void CredentialsManager::load_credentials() {
     // Does the configuration indicate that credentials will be submitted via the runtime environment?
     if (config_file == string(CredentialsManager::USE_ENV_CREDS_KEY_VALUE)) {
         // Apparently so...
-        auto *accessCredentials = theCM()->load_credentials_from_env();
+        auto *accessCredentials = load_credentials_from_env();
         if (accessCredentials) {
-            // So if we have them, we add them to theCM() and then return without processing the configuration.
+            // So if we have them, we add them to CredentialsManager object that called this method
+            // and then return without processing the configuration.
             string url = accessCredentials->get(AccessCredentials::URL_KEY);
-            theCM()->add(url, accessCredentials);
+            add(url, accessCredentials);
         }
         // Environment injected credentials override all other configuration credentials.
         // Since the value of CATALOG_MANAGER_CREDENTIALS is ENV_CREDS_VALUE, there is no
@@ -285,9 +287,9 @@ void CredentialsManager::load_credentials() {
     }
 
     if (!file_exists(config_file)) {
-        BESDEBUG(HTTP_MODULE, prolog << "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
-                                     << " does not exist. No Access Credentials were loaded." << endl);
-        return;
+        string err{"CredentialsManager config file "};
+        err += config_file + " is not present.";
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 
     if (!file_is_secured(config_file)) {
@@ -295,6 +297,7 @@ void CredentialsManager::load_credentials() {
         err += config_file + " is not secured! Set the access permissions to -rw------- (600) and try again.";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
+
     BESDEBUG(HTTP_MODULE, prolog << "The config file '" << config_file << "' is secured." << endl);
 
     map<string, vector<string>> keystore;
@@ -335,7 +338,7 @@ void CredentialsManager::load_credentials() {
         accessCredentials = acit.second;
         string url = accessCredentials->get(AccessCredentials::URL_KEY);
         if (!url.empty()) {
-            theCM()->add(url, accessCredentials);
+            add(url, accessCredentials);
         }
         else {
             bad_creds.push_back(acit.second);
@@ -357,7 +360,7 @@ void CredentialsManager::load_credentials() {
         throw BESInternalError(ss.str(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << theCM()->size() << " AccessCredentials" << endl);
+    BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << size() << " AccessCredentials" << endl);
 }
 
 
