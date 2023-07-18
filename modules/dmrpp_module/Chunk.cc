@@ -583,6 +583,8 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_s
     // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
     // The file that implements the shuffle filter is H5Zshuffle.c.
 
+    // This is just for demo purpose to directly pass the buffer downstream. KY 2023-07-18
+    return;
     if (d_is_inflated)
         return;
 

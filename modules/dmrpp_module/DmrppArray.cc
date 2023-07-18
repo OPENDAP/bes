@@ -867,8 +867,13 @@ void DmrppArray::read_contiguous()
 
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
-        reserve_value_capacity(get_size(false));
-        val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
+        //reserve_value_capacity(get_size(false));
+        //cout <<"buf size is "<< the_one_chunk->get_rbuf_size()<<endl;
+        // Demo purpose to directly pass the buffer. KY 2023-07-18
+        reserve_value_capacity(the_one_chunk->get_rbuf_size());
+        set_storagesize(the_one_chunk->get_rbuf_size());
+        val2buf_dc(the_one_chunk->get_rbuf());
+        //val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
     }
     else {                  // apply the constraint
         vector<unsigned long long> array_shape = get_shape(false);

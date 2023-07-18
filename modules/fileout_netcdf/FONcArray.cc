@@ -55,7 +55,7 @@ using namespace libdap;
 
 vector<FONcDim *> FONcArray::Dimensions;
 
-const int MAX_CHUNK_SIZE = 1024;
+const int MAX_CHUNK_SIZE = 10240;
 
 /** @brief Constructor for FONcArray that takes a DAP Array
  *
@@ -457,6 +457,9 @@ void FONcArray::define(int ncid) {
         if (isNetCDF4()) {
             BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
 
+            // Demo purpose, just to check if the buffer of a testing file can be passed downstream.
+            // The storage size and deflate level is needed. KY 2023-07-18
+            storagesize = 29325862; def_level = 1;
             if(storagesize >0 && def_level >0) { //direct chunk IO
 
                 BESDEBUG("fonc","FONcArray:: storagesize is "<<storagesize <<endl);
