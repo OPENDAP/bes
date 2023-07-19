@@ -981,10 +981,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     load_config();
 #endif
 
-    if (true ==_usecf) {
-        if (true == _pass_fileid)
+    if (_usecf && _pass_fileid) 
             return hdf5_build_data_with_IDs(dhi);
-    }
 
     string filename = dhi.container->access();
 

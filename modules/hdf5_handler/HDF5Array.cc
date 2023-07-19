@@ -1178,7 +1178,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
         total_strval.resize(at_total_nelms);
 
         if (true == H5Tis_variable_str(at_base_type)) {
-            void *src = (void*)(values.data()+values_offset);
+            auto src = (void*)(values.data()+values_offset);
             auto temp_bp =(char*)src;
             for (int64_t i = 0;i <at_total_nelms; i++){
                 string tempstrval;
@@ -1208,7 +1208,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
         }
         else {// For fixed-size string.
-            void *src = (void*)(values.data()+values_offset);
+            auto src = (void*)(values.data()+values_offset);
             for(int64_t i = 0; i <at_total_nelms; i++)
                 total_strval[i].resize(at_base_type_size);
 
@@ -1383,7 +1383,7 @@ void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t a
         string dap_type = get_dap_type(at_base_type, is_dap4());
 
         // The total array type data is read.
-        void *src = (void *) (values.data() + values_offset);
+        auto src = (void *) (values.data() + values_offset);
 
         // set the original position to the starting point
         vector<int64_t> at_pos(at_ndims, 0);
@@ -1575,7 +1575,7 @@ void HDF5Array::do_h5_array_type_read_base_atomic_whole_data(H5T_class_t array_c
 
         vector<char> val_int8;
         val_int8.resize(at_nelms);
-        void *src = (void *) (values.data() + values_offset);
+        auto src = (void *) (values.data() + values_offset);
         memcpy(val_int8.data(), src, at_nelms);
 
         vector<short> val_short;

@@ -1461,7 +1461,7 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
             auto h5_array = make_unique<HDF5Array>(memb_name,dataset,ar_bt);
             auto h5_ar = h5_array.get();
             for (int dim_index = 0; dim_index < ndim; dim_index++) {
-                h5_ar->append_dim(size2[dim_index]);
+                h5_ar->append_dim((int)(size2[dim_index]));
                 nelement = nelement * size2[dim_index];
             }
 
@@ -1646,7 +1646,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                     throw InternalErr(__FILE__,__LINE__,msg);
                 }
 
-                string objname_str = string(objname.begin(),objname.end());
+                auto objname_str = string(objname.begin(),objname.end());
 
                 // Must trim the string delimter.
                 objname_str = objname_str.substr(0,objnamelen);
@@ -1976,7 +1976,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
     for (unsigned int temp_i = 0; temp_i <attr_inst_ptr->nelmts; temp_i++) {
 
         // This line will assure that we get the real variable length string value.
-        char* onestring =*(char **)temp_bp;
+        const char* onestring =*(char **)temp_bp;
 
         // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
         if (onestring != nullptr) {
@@ -2086,10 +2086,8 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
             ret_value = true;
     }
     else {
-        if (total_vstring.size()>=value_to_compare.size()) {
-            if ( 0 == total_vstring.compare(0,value_to_compare.size(),value_to_compare))
+        if ((total_vstring.size()>=value_to_compare.size()) && ( 0 == total_vstring.compare(0,value_to_compare.size(),value_to_compare)))
                 ret_value = true;
-        }
     }
     return ret_value;
 }
@@ -2132,7 +2130,7 @@ string obtain_vlstr_values(vector<char> & temp_buf, hid_t atype_id, size_t ty_si
     for (unsigned int temp_i = 0; temp_i <nelmts; temp_i++) {
 
         // This line will assure that we get the real variable length string value.
-        char* onestring =*(char **)temp_bp;
+        const char* onestring =*(char **)temp_bp;
 
         if (onestring!= nullptr)
             total_vstring +=string(onestring);
@@ -2141,12 +2139,10 @@ string obtain_vlstr_values(vector<char> & temp_buf, hid_t atype_id, size_t ty_si
         temp_bp +=ty_size;
     }
 
-    if ((temp_buf.data()) != nullptr) {
-        // Reclaim any VL memory if necessary.
-        if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,temp_buf.data()) < 0) {
-            H5Sclose(aspace_id);
-            throw InternalErr(__FILE__,__LINE__,"Fail to reclaim VL memory.");
-        }
+    // Reclaim any VL memory if necessary.
+    if (((temp_buf.data()) != nullptr) && (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,temp_buf.data()) < 0)) {
+        H5Sclose(aspace_id);
+        throw InternalErr(__FILE__,__LINE__,"Fail to reclaim VL memory.");
     }
     return total_vstring;
 }
@@ -2226,8 +2222,8 @@ std::string obtain_shortest_ancestor_path(const std::vector<std::string> & hls) 
 
     else {
         // We just need to find the minimum size.
-        unsigned short_path_index = 0;
-        unsigned min_path_size = hls_path[0].size();
+        unsigned int short_path_index = 0;
+        size_t min_path_size = hls_path[0].size();
 
         // Find the shortest path index
         for (unsigned j = 1; j <hls_path.size();j++) {
