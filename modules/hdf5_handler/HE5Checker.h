@@ -2,7 +2,7 @@
 // data server.
 //
 // Authors: 
-// Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Keng Yang <myang6@hdfgroup.org> 
+// Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Kent Yang <myang6@hdfgroup.org> 
 //
 // Copyright (c) 2009-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 // All rights reserved.

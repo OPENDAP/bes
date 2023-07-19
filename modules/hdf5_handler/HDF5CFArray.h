@@ -23,7 +23,7 @@
 /// \file HDF5CFArray.h
 /// \brief This class includes the methods to read data array into DAP buffer from an HDF5 dataset for the CF option.
 ///
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

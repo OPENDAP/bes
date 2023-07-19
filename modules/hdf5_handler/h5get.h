@@ -24,7 +24,7 @@
 /// \file h5get.h
 /// Helper functions to generate DDS/DAS/DODS/DMR for the default option.
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 
 
 #ifndef _H5GET_H

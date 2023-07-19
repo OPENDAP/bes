@@ -26,7 +26,7 @@
 /// \brief Helper functions for generating DAS attributes and a function to check BES Key.
 ///
 ///  
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

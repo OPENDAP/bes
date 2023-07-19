@@ -27,7 +27,7 @@
 /// \brief Map and generate DDS and DAS for the CF option for generic HDF5 products 
 ///
 /// 
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -29,7 +29,7 @@
 ///  It covers the handling of generic NASA HDF5 products and HDF-EOS5 products.
 ///
 ///
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 /// Copyright (C) 2011-2022 The HDF Group
 ///

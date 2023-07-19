@@ -26,7 +26,7 @@
 /// \brief Map and generate DDS and DAS for the CF option for HDF-EOS5 products 
 ///
 /// This file also includes a function to retrieve ECS metadata in C++ string forms.
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

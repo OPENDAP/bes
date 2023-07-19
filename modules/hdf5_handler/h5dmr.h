@@ -33,7 +33,7 @@
 /// HDF5 files. 
 /// 
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

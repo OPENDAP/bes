@@ -25,7 +25,7 @@
 //  \brief This is only used to directly generate DAP4 DMR 
 ///
 /// In the future, this may be merged with the default option.
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

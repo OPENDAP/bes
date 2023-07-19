@@ -26,7 +26,7 @@
 /// \brief (0 for most platforms) fills in this dimension dataset, this will cause confusions for users.
 /// \brief So the handler will fill in index number(0,1,2,...) just as the handling of missing coordinate variables.
 ///
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

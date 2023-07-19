@@ -24,7 +24,7 @@
 /// \brief This class provides a way to map HDF5 Str to DAP Str for the CF option
 ///
 /// In the future, this may be merged with the default option.
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

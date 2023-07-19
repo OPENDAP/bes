@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Author: Keng Yang <myang6@hdfgroup.org> 
+// Author: Kent Yang <myang6@hdfgroup.org> 
 
 // Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //

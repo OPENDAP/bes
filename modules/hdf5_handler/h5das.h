@@ -32,7 +32,7 @@
 /// It defines functions that generate data attributes from HDF5 files.
 /// 
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef _h5das_H

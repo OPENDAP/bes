@@ -25,7 +25,7 @@
 /// Current supported products include MEaSUREs SeaWiFS, OZone, Aquarius level 3
 /// Old SMAP Level 2 Simulation files and ACOS level 2S(OCO2 level1B).
 ///
-/// \author Keng Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
