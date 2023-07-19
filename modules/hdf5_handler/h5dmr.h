@@ -202,8 +202,6 @@ void remove_empty_coord_names(std::vector<std::string>&);
 void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & handled_dim_names);
 void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &coord_name,
                     std::unordered_map<std::string,libdap::Array*> & coname_array_maps, std::unordered_set<std::string>&);
-bool add_coord_maps_internal(libdap::Array *t_a, libdap::Array *var, std::unordered_map<std::string,libdap::Array*> & coname_array_maps,
-                             const std::string &cvname,std::unordered_set<std::string> & handled_dim_names);
 void add_dimscale_maps(libdap::Array*, std::unordered_map<std::string,libdap::Array*> & dc_array_maps,
                        const std::unordered_set<std::string> & handled_dim_names);
 void reorder_vars(libdap::D4Group*, const std::map<std::string,libdap::Array*> &coname_array_maps,

@@ -2275,11 +2275,7 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
             if (libdap::dods_array_c == v->type()) {
     
                 auto t_a = dynamic_cast<Array *>(*vi);
-                bool found_cv = add_coord_maps_internal(t_a,var,coname_array_maps, *cv_it, handled_dim_names);
 
-                if (found_cv)
-                    break;
-#if 0
                 // Find it.
                 if (*cv_it == t_a->FQN()) {
     
@@ -2297,7 +2293,6 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
                     found_cv = true;
                     break;
                 }
-#endif
             }
         }
 
@@ -2315,29 +2310,7 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
     }
 }
 
-bool add_coord_maps_internal(Array *t_a, Array *var, unordered_map<string,Array*> & coname_array_maps,
-                             const string &cvname,unordered_set<string> & handled_dim_names) {
-    bool found_cv = false;
-    // Find it.
-    if (cvname == t_a->FQN()) {
 
-        // Add the maps
-        auto d4_map_unique = make_unique<D4Map>(t_a->FQN(), t_a);
-        auto d4_map = d4_map_unique.release();
-        var->maps()->add_map(d4_map);
-
-        // Need to add this coordinate to the coname_array_maps
-        coname_array_maps.emplace(t_a->FQN(), t_a);
-
-        // Obtain the dimension full paths. These dimensions are handled dimensions. The dimension scales of
-        // these dimensions should NOT be included in the final coverage maps.
-        obtain_handled_dim_names(t_a, handled_dim_names);
-
-        found_cv = true;
-    }
-
-    return found_cv;
-}
 // Add the valid coordinate variables(via dimension scales) to the var's DAP4 maps.
 // Loop through the handled dimension names(by the coordinate variables) set
 // Then check this var's dimensions. Only add this var's unhandled coordinates(dimension scales) if these dimension scales exist. 
