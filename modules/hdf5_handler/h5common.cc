@@ -1,6 +1,6 @@
 // data server.
 
-// Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -17,8 +17,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5common.cc
@@ -30,7 +30,7 @@
 
 #include "h5common.h"
 
-#include<string.h>
+#include <cstring>
 #include <libdap/InternalErr.h>
 #include <BESDebug.h>
 
@@ -208,8 +208,7 @@ get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64
         throw InternalErr(__FILE__, __LINE__, "could not open space");
     }
 
-    if (H5Dread(dset, memtype, memspace, dspace, H5P_DEFAULT,
-                (void *) buf) < 0) {
+    if (H5Dread(dset, memtype, memspace, dspace, H5P_DEFAULT, buf) < 0) {
         H5Tclose(dtype);
         H5Tclose(memtype);
         H5Sclose(dspace);
@@ -241,7 +240,8 @@ get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64
     return 0;
 }
 
-bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset, const hsize_t *hstep, const hsize_t *hcount,vector<string> &finstrval)
+bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset, const hsize_t *hstep,
+                      const hsize_t *hcount, vector<string> &finstrval)
 {
 
     hid_t dspace = -1;
@@ -301,14 +301,6 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
     }
 
     size_t ty_size = H5Tget_size(memtype);
-    if (ty_size == 0) {
-        if (false == is_scalar) 
-            H5Sclose(mspace);
-        H5Tclose(memtype);
-        H5Tclose(dtypeid);
-        H5Sclose(dspace);
-        throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 string.");
-    }
 
     vector <char> strval;
     strval.resize(nelms*ty_size);
@@ -327,17 +319,21 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
         throw InternalErr (__FILE__, __LINE__, "Fail to read the HDF5 variable length string dataset.");
     }
 
+#if 0
     // For scalar, nelms is 1.
     char *temp_bp = strval.data();
     for (int i =0;i<nelms;i++) {
         char *onestring = *(char**)temp_bp;
-        if(onestring!=nullptr ) 
+        if (onestring != nullptr )
             finstrval[i] =string(onestring);
         else // We will add a nullptr if onestring is nullptr.
             finstrval[i]="";
         temp_bp +=ty_size;
     }
-
+#endif
+    read_vlen_string_value(nelms, strval, finstrval, ty_size);
+    claim_vlen_string_memory(memtype, dspace, dtypeid, mspace, strval, is_scalar);
+#if 0
     if (false == strval.empty()) {
         herr_t ret_vlen_claim;
         if (true == is_scalar) 
@@ -354,7 +350,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
  
         }
     }
-
+#endif
     if (false == is_scalar) 
         H5Sclose(mspace);
     H5Tclose(memtype);
@@ -365,6 +361,45 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
 
 }
 
+void read_vlen_string_value(const int64_t nelms, vector<char> &strval, vector<string>&finstrval, size_t ty_size ) {
+    // For scalar, nelms is 1.
+    const char *temp_bp = strval.data();
+    for (int i =0;i<nelms;i++) {
+        string finalstr_val;
+        get_vlen_str_data(temp_bp, finalstr_val);
+        finstrval[i] = finalstr_val;
+#if 0
+        char *onestring = *(char**)temp_bp;
+        if (onestring != nullptr )
+            finstrval[i] =string(onestring);
+        else // We will add a nullptr if onestring is nullptr.
+            finstrval[i]="";
+#endif
+        temp_bp +=ty_size;
+    }
+
+}
+
+void claim_vlen_string_memory(hid_t memtype, hid_t dspace, hid_t dtypeid, hid_t mspace, vector<char> &strval,
+                              bool is_scalar) {
+
+    if (false == strval.empty()) {
+        herr_t ret_vlen_claim;
+        if (true == is_scalar)
+            ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)strval.data());
+        else
+            ret_vlen_claim = H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)strval.data());
+        if (ret_vlen_claim < 0){
+            if (false == is_scalar)
+                H5Sclose(mspace);
+            H5Tclose(memtype);
+            H5Tclose(dtypeid);
+            H5Sclose(dspace);
+            throw InternalErr (__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
+
+        }
+    }
+}
 bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id) {
 
     bool ret_value = false;
@@ -381,7 +416,7 @@ bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id) {
 
 void get_vlen_str_data(const char*temp_bp,string &finalstr_val) {
 
-    char *onestring = *(char**)temp_bp;
+    const char *onestring = *(const char**)temp_bp;
     if(onestring!=nullptr )
         finalstr_val =string(onestring);
     else // We will add a nullptr is onestring is nullptr.

@@ -1,10 +1,10 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Muqun Yang
+// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Kent Yang
 // <myang6@hdfgroup.org> 
 
-// Copyright (c) 2009-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2009-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -21,15 +21,15 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 /// \file HDF5Int16.cc
 /// \brief Implementation of mappign HDF5 signed 16-bit integer to DAP for the default option. 
 /// 
 ///
 /// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
-/// \author Kent Yang       (ymuqun@hdfgroup.org)
+/// \author Kent Yang       (myang6@hdfgroup.org)
 /// \author James Gallagher (jgallagher@opendap.org)
 ///
 
@@ -38,6 +38,7 @@
 #include "BESDebug.h"
 #include <string>
 #include <ctype.h>
+#include <memory>
 
 #include <libdap/InternalErr.h>
 
@@ -61,8 +62,8 @@ HDF5Int16::HDF5Int16(const string & n, const string &vpath,const string &d) : In
 
 BaseType *HDF5Int16::ptr_duplicate()
 {
-
-    return new HDF5Int16(*this);
+    auto HDF5Int16_unique = make_unique<HDF5Int16>(*this);
+    return HDF5Int16_unique.release();
 }
 
 bool HDF5Int16::read()

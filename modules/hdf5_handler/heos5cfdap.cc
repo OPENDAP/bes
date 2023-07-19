@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c)  2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c)  2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -18,25 +18,21 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file heos5cfdap.cc
 /// \brief Map and generate DDS and DAS for the CF option for HDF-EOS5 products 
 ///
 /// This file also includes a function to retrieve ECS metadata in C++ string forms.
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
-#include "config_hdf5.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <iostream>
-#include <sstream>
 
 #include <BESLog.h>
 #include <BESDebug.h>
@@ -59,12 +55,10 @@
 #include "HDFEOS5CFMissLLArray.h"
 #include "HDFEOS5CFMissNonLLCVArray.h"
 #include "HDFEOS5CFSpecialCVArray.h"
-#include "HDF5CFGeoCF1D.h"                                                             
 #include "HDF5CFGeoCFProj.h"  
 #include "HDF5RequestHandler.h"
 #include "h5apicompatible.h"
 
-#include "he5dds.tab.hh"
 #include "HE5Parser.h"
 #include "HE5Checker.h"
 #include "he5das.tab.hh"
@@ -88,13 +82,13 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS mapping function map_eos5_cfdds  "<<endl);
 
 
-    string st_str ="";
-    string core_str="";
-    string arch_str="";
-    string xml_str ="";
-    string subset_str="";
-    string product_str="";
-    string other_str ="";
+    string st_str;
+    string core_str;
+    string arch_str;
+    string xml_str;
+    string subset_str;
+    string product_str;
+    string other_str;
     bool st_only = true;
 
     // Read ECS metadata: merge them into one C++ string
@@ -168,13 +162,11 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f->Add_Dim_Name(&p);
     }
     catch (HDF5CF::Exception &e){
-        if(f!=nullptr) 
-            delete f;
+        delete f;
         throw InternalErr(e.what());
     }
     catch(...) {
-        if(f!=nullptr)
-            delete f;
+        delete f;
         throw;
     }
 
@@ -254,8 +246,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f->Handle_SpVar();
     }
     catch (HDF5CF::Exception &e){
-        if(f != nullptr)
-            delete f;
+        delete f;
         throw InternalErr(e.what());
     }
 
@@ -264,26 +255,24 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         gen_eos5_cfdds(dds,f);
     }
     catch(...) {
-        if (f!=nullptr)
-            delete f;
+        delete f;
         throw;
     }
 
-    if (f!=nullptr)
-        delete f;
+    delete f;
 }
 
 // Map EOS5 to DAP DAS
 void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DAS mapping function map_eos5_cfdas  "<<endl);
-    string st_str ="";
-    string core_str="";
-    string arch_str="";
-    string xml_str ="";
-    string subset_str="";
-    string product_str="";
-    string other_str ="";
+    string st_str;
+    string core_str;
+    string arch_str;
+    string xml_str;
+    string subset_str;
+    string product_str;
+    string other_str;
     bool st_only = true;
 
     read_ecs_metadata(file_id,st_str,core_str,arch_str,xml_str, subset_str,product_str,other_str,st_only); 
@@ -341,13 +330,11 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         f->Add_Dim_Name(&p);
     }
     catch (HDF5CF::Exception &e){
-        if(f != nullptr)
-            delete f;
+        delete f;
         throw InternalErr(e.what());
     }
     catch(...) {
-        if(f != nullptr)
-            delete f;
+        delete f;
         throw;
     }
 
@@ -393,8 +380,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         f->Handle_SpVar_Attr();
     }
     catch (HDF5CF::Exception &e){
-        if(f != nullptr)
-            delete f;
+        delete f;
         throw InternalErr(e.what());
     }
 
@@ -403,13 +389,11 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         gen_eos5_cfdas(das,file_id,f);
     }
     catch(...) {
-        if (f != nullptr)
-            delete f;
+        delete f;
         throw;
     }
 
-    if( f != nullptr) 
-        delete f;
+    delete f;
 
 }
 
@@ -862,13 +846,13 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     // To keep the backward compatiablity with the old handler,
     // we parse the special ECS metadata to DAP attributes
 
-    string st_str ="";
-    string core_str="";
-    string arch_str="";
-    string xml_str ="";
-    string subset_str="";
-    string product_str="";
-    string other_str ="";
+    string st_str;
+    string core_str;
+    string arch_str;
+    string xml_str;
+    string subset_str;
+    string product_str;
+    string other_str;
     bool st_only = false;
 
     read_ecs_metadata(file_id, st_str, core_str, arch_str, xml_str,
@@ -944,7 +928,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
 
     // XML attribute includes double quote("), this will choke netCDF Java library.
     // So we replace double_quote(") with &quote.This is currently the OPeNDAP way.
-    // XML attribute cannot parsed. So just pass the string.
+    // XML attribute cannot be parsed. So just pass the string.
     if(xml_str != ""){
         AttrTable *at = das.get_table("XMLMetadata");
         if (nullptr == at)
@@ -1816,13 +1800,13 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS mapping function map_eos5_cfdds  "<<endl);
 
-    string st_str ="";
-    string core_str="";
-    string arch_str="";
-    string xml_str ="";
-    string subset_str="";
-    string product_str="";
-    string other_str ="";
+    string st_str;
+    string core_str;
+    string arch_str;
+    string xml_str;
+    string subset_str;
+    string product_str;
+    string other_str;
     bool st_only = false;
 
     // Read ECS metadata: merge them into one C++ string
@@ -1928,13 +1912,11 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         f->Add_Dim_Name(&p);
     }
     catch (HDF5CF::Exception &e){
-        if(f!=nullptr) 
-            delete f;
+        delete f;
         throw InternalErr(e.what());
     }
     catch(...) {
-        if(f!=nullptr)
-            delete f;
+        delete f;
         throw;
     }
 
@@ -2036,8 +2018,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 #endif
     }
     catch (HDF5CF::Exception &e){
-        if(f != nullptr)
-            delete f;
+        delete f;
         throw InternalErr(e.what());
     }
 
@@ -2046,13 +2027,11 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         gen_eos5_cfdmr(d4_root,f);
     }
     catch(...) {
-        if (f!=nullptr)
-            delete f;
+        delete f;
         throw;
     }
 
-    if (f!=nullptr)
-        delete f;
+    delete f;
 
 }
 
@@ -2131,7 +2110,7 @@ void gen_eos5_cfdmr(D4Group *d4_root,  const HDF5CF::EOS5File *f) {
 #if 0
         //if((d4_root->attributes()->find(dods_extra))==nullptr) {
 #endif
-            string unlimited_dim_names ="";
+            string unlimited_dim_names;
 
             for (const auto &cvar:cvars) {
     

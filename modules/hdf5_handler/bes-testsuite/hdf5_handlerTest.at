@@ -685,10 +685,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_vl_string_cstr.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_vl_string_cstr.h5.dap.bescmd])
 
-#COMMENT OUT the following four tests until the pure-dim case is resolved.
-#HFVHANDLER-340
-
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dmr.bescmd])
 
 # Cannot generate correct DAP4 for the all data in the current DAP4 implementation. 
 # https://opendap.atlassian.net/projects/LIBDAP/issues/LIBDAP-18

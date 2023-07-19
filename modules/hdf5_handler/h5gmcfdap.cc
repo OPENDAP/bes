@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -18,24 +18,20 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file h5gmcfdap.cc
 /// \brief Map and generate DDS and DAS for the CF option for generic HDF5 products 
 ///
 /// 
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <iostream>
-#include <sstream>
 
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
@@ -74,14 +70,10 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
     GMPattern  gproduct_pattern = OTHERGMS;
 
-    GMFile * f = nullptr;
 
-    try {
-        f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
-    }
-    catch(...) {
-        throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
-    }
+    auto f_unique = make_unique<GMFile>(filename.c_str(),file_id,product_type,gproduct_pattern);
+    auto f = f_unique.get();
+
     // Generally don't need to handle attributes when handling DDS. 
     bool include_attr = false;
     try {
@@ -111,14 +103,13 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         //    f->Retrieve_H5_Supported_Attr_Values();
 #endif
 
-
         // Handle special variables
         f->Handle_SpVar();
 
         // When cv memory cache is on, the unit attributes are needed to
         // distinguish whether this is lat/lon. Generally, memory cache 
         // is not used. This snipnet will not be accessed.
-        if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
+        if ((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
            (HDF5RequestHandler::get_srdata_mem_cache() != nullptr)){
 
             // Handle unsupported datatypes including the attributes
@@ -177,23 +168,17 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         f->Rename_NC4_NonCoordVars();
     }
     catch (HDF5CF::Exception &e){
-        if (f != nullptr)
-            delete f;
         throw InternalErr(e.what());
     }
-    
+
     // generate DDS.
     try {
         gen_gmh5_cfdds(dds,f);
     }
     catch(...) {
-        if (f != nullptr)
-            delete f;
         throw;
     }
-    
-    if (f != nullptr)
-        delete f;
+
 }
 
 // Map general HDF5 products to DAP DAS
@@ -204,14 +189,8 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
     H5GCFProduct product_type = check_product(file_id);
     GMPattern gproduct_pattern = OTHERGMS;
 
-    GMFile *f = nullptr;
-
-    try {
-        f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
-    }
-    catch(...) {
-        throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
-    }
+    auto f_unique = make_unique<GMFile>(filename.c_str(),file_id,product_type,gproduct_pattern);
+    auto f = f_unique.get();
 
     bool include_attr = true;
     try {
@@ -269,8 +248,6 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         f->Update_Bounds_Attr();
     }
     catch (HDF5CF::Exception &e){
-        if (f!= nullptr)
-            delete f;
         throw InternalErr(e.what());
     }
 
@@ -279,14 +256,9 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         gen_gmh5_cfdas(das,f);
     }   
     catch (...) {
-        if (f!= nullptr)
-            delete f;
         throw;
- 
     }
 
-    if (f != nullptr)
-        delete f;
 }
 
 
@@ -298,14 +270,8 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
 
     GMPattern  gproduct_pattern = OTHERGMS;
 
-    GMFile * f = nullptr;
-
-    try {
-        f = new GMFile(filename.c_str(),file_id,product_type,gproduct_pattern);
-    }
-    catch(...) {
-        throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
-    }
+    auto f_unique = make_unique<GMFile>(filename.c_str(),file_id,product_type,gproduct_pattern);
+    auto f = f_unique.get();
 
     //  Both variables and attributes are in DMR.
     bool include_attr = true;
@@ -340,7 +306,6 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         //    f->Retrieve_H5_Supported_Attr_Values();
 #endif
 
-
         // Handle special variables
         f->Handle_SpVar();
 
@@ -368,13 +333,13 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         // Handle Object name clashings
         // Only when the check_nameclashing key is turned on or
         // general product.
-        if(General_Product == product_type ||
+        if (General_Product == product_type ||
            true == HDF5RequestHandler::get_check_name_clashing()) 
            f->Handle_Obj_NameClashing(include_attr);
 
         // Adjust Dimension name, CHECK: the das generation has a f->HaveUnlimitedDim() condition
         f->Adjust_Dim_Name();
-        if(General_Product == product_type ||
+        if (General_Product == product_type ||
             true == HDF5RequestHandler::get_check_name_clashing()) 
             f->Handle_DimNameClashing();
 
@@ -401,8 +366,6 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
 
     }
     catch (HDF5CF::Exception &e){
-        if (f != nullptr)
-            delete f;
         throw InternalErr(e.what());
     }
     
@@ -411,13 +374,8 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         gen_gmh5_cfdmr(d4_root,f);
     }
     catch(...) {
-        if (f != nullptr)
-            delete f;
         throw;
     }
-    
-    if (f != nullptr)
-        delete f;
 
 }
 
@@ -433,17 +391,10 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
     const hid_t fileid                      = f->getFileID();
 
     // Read Variable info.
-
-#if 0
-    //vector<HDF5CF::Var *>::const_iterator       it_v;
-    //vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
-    //vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
-#endif
-
     // Since we need to use dds to add das for 64-bit dmr,we need to check if
     // this case includes 64-bit integer variables and this is for dmr response.
     bool dmr_64bit_support = false;
-    if(HDF5RequestHandler::get_dmr_long_int()==true &&
+    if (HDF5RequestHandler::get_dmr_long_int()==true &&
         HDF5RequestHandler::get_dmr_64bit_int()!=nullptr) {
         for (const auto &var:vars) {
             if (H5INT64 == var->getType() || H5UINT64 == var->getType()){
@@ -499,13 +450,6 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
-#if 0
-    vector<HDF5CF::Var *>::const_iterator it_v;
-    vector<HDF5CF::GMCVar *>::const_iterator it_cv;
-    vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
-    vector<HDF5CF::Group *>::const_iterator it_g;
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
-#endif
 
     // Handling the file attributes(attributes under the root group)
     // The table name is "HDF_GLOBAL".
@@ -513,9 +457,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     if (false == root_attrs.empty()) {
 
         AttrTable *at = das.get_table(FILE_ATTR_TABLE_NAME);
-        if (nullptr == at) 
-            at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
-
+        if (nullptr == at) {
+            at = das.add_table(FILE_ATTR_TABLE_NAME, obtain_new_attr_table());
+        }
         for (const auto &root_attr:root_attrs) {
             // Check and may update the 64-bit integer attributes in DAP4.
             check_update_int64_attr("",root_attr);
@@ -526,8 +470,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     if (false == grps.empty()) {
         for (const auto &grp:grps) {
             AttrTable *at = das.get_table(grp->getNewName());
-            if (nullptr == at)
-                at = das.add_table(grp->getNewName(), new AttrTable);
+            if (nullptr == at) {
+                at = das.add_table(grp->getNewName(), obtain_new_attr_table());
+            }
             for (const auto &grp_attr:grp->getAttributes()) {
                 check_update_int64_attr(grp->getNewName(),grp_attr);
                 gen_dap_oneobj_das(at,grp_attr,nullptr);
@@ -548,9 +493,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             }
 
             AttrTable *at = das.get_table(var->getNewName());
-            if (nullptr == at)
-                at = das.add_table(var->getNewName(), new AttrTable);
-
+            if (nullptr == at) {
+                at = das.add_table(var->getNewName(), obtain_new_attr_table());
+            }
             for (const auto &attr:var->getAttributes())
                 gen_dap_oneobj_das(at,attr,var);
 
@@ -562,7 +507,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         }
 
         // GPM needs to be handled in a special way(mostly _FillValue)
-        if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
+        if (GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType()
                                           || GPM_L1 == f->getProductType()) 
             update_GPM_special_attrs(das,var,false);
         
@@ -577,9 +522,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             }
 
             AttrTable *at = das.get_table(cvar->getNewName());
-            if (nullptr == at)
-                at = das.add_table(cvar->getNewName(), new AttrTable);
-
+            if (nullptr == at) {
+                at = das.add_table(cvar->getNewName(), obtain_new_attr_table());
+            }
             for (const auto &attr:cvar->getAttributes())
                 gen_dap_oneobj_das(at,attr,cvar);
                     
@@ -597,10 +542,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
             AttrTable *at = das.get_table(spvar->getNewName());
             if (nullptr == at)
-                at = das.add_table(spvar->getNewName(), new AttrTable);
-#if 0
-            // cerr<<"spv coordinate variable name "<<spvar->getNewName() <<endl;
-#endif
+                at = das.add_table(spvar->getNewName(), obtain_new_attr_table());
 
             for (const auto &attr:spvar->getAttributes())
                 gen_dap_oneobj_das(at,attr,spvar);
@@ -633,31 +575,29 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                         break;
                     }
                 }
-                if(true == still_has_unlimited) 
+                if (true == still_has_unlimited)
                     break;
             }
  
             if (true == still_has_unlimited) {
                 AttrTable* at = das.get_table("DODS_EXTRA");
                 if (nullptr == at)
-                    at = das.add_table("DODS_EXTRA", new AttrTable);
+                    at = das.add_table("DODS_EXTRA", obtain_new_attr_table());
              
                 string unlimited_names;
     
                 for (const auto &cvar:cvars) {
-#if 0
-                    bool has_unlimited_dim = false;
-#endif
+
                     // Check unlimited dimension names.
                     for (const auto &dim:cvar->getDimensions()) {
     
                         // Currently we only check one unlimited dimension, which is the most
                         // common case. When receiving the conventions from JG, will add
                         // the support of multi-unlimited dimension. KY 2016-02-09
-                        if(dim->HaveUnlimitedDim() == true) {
-                            if(unlimited_names=="") {
+                        if (dim->HaveUnlimitedDim() == true) {
+                            if (unlimited_names=="") {
                                unlimited_names = dim->getNewName();
-                               if(at !=nullptr) 
+                               if (at !=nullptr)
                                     at->append_attr("Unlimited_Dimension","String",unlimited_names);
                             }
                             else {
@@ -744,7 +684,8 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
 
         for (const auto &grp:grps) {
 
-            auto tmp_grp = new D4Attribute;
+            auto tmp_grp_unique = make_unique<D4Attribute>();
+            auto tmp_grp = tmp_grp_unique.release();
             tmp_grp->set_name(grp->getNewName());
 
             // Make the type as a container
@@ -797,7 +738,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                 // TODO: The following lines cause seg. fault in libdap4, needs to investigate
                 //if((d4_root->attributes()->find(dods_extra))==nullptr) 
         
-                    string unlimited_dim_names ="";
+                    string unlimited_dim_names;
         
                     for (const auto &cvar:cvars) {
             
@@ -820,9 +761,11 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                         }
                     }
         
-                    if(unlimited_dim_names != "") {
-                        auto dods_extra_attr = new D4Attribute(dods_extra,attr_container_c);
-                        auto unlimited_dim_attr = new D4Attribute("Unlimited_Dimension",attr_str_c);
+                    if(unlimited_dim_names.empty() == false) {
+                        auto dods_extra_attr_unique = make_unique<D4Attribute>(dods_extra,attr_container_c);
+                        auto dods_extra_attr = dods_extra_attr_unique.release();
+                        auto unlimited_dim_attr_unique = make_unique<D4Attribute>("Unlimited_Dimension",attr_str_c);
+                        auto unlimited_dim_attr = unlimited_dim_attr_unique.release();
                         unlimited_dim_attr->add_value(unlimited_dim_names);
                         dods_extra_attr->attributes()->add_attribute_nocopy(unlimited_dim_attr);
                         d4_root->attributes()->add_attribute_nocopy(dods_extra_attr);
@@ -856,7 +799,7 @@ void gen_gmh5_cf_ignored_obj_info(DAS &das, HDF5CF::GMFile *f) {
     BESDEBUG("h5","Coming to gen_gmh5_cf_ignored_obj_info()  "<<endl);
     AttrTable *at = das.get_table("Ignored_Object_Info");
     if (nullptr == at)
-        at = das.add_table("Ignored_Object_Info", new AttrTable);
+        at = das.add_table("Ignored_Object_Info", obtain_new_attr_table());
 
     at->append_attr("Message","String",f->Get_Ignored_Msg());
 
@@ -869,6 +812,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
     if(cvar->getType() == H5INT64 || cvar->getType() == H5UINT64)
         return;
+
     BaseType *bt = nullptr;
 
     switch(cvar->getType()) {
@@ -902,10 +846,10 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
         for(int i = 0; i <cvar->getRank();i++)
             dimsizes[i] = (dims[i])->getSize();
 
-
-        if(dims.empty()) 
-            throw InternalErr(__FILE__,__LINE__,"the coordinate variable cannot be a scalar");
-            
+        if (dims.empty()) {
+            delete bt;
+            throw InternalErr(__FILE__, __LINE__, "the coordinate variable cannot be a scalar");
+        }
         switch(cvar->getCVType()) {
             
             case CV_EXIST: 
@@ -914,38 +858,31 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
                 // Need to check if this CV is lat/lon. This is necessary when data memory cache is turned on.
                 bool is_latlon = cvar->isLatLon();
-                
-                try {
-                    ar = new HDF5CFArray (
-                                    cvar->getRank(),
-                                    file_id,
-                                    filename,
-                                    cvar->getType(),
-                                    dimsizes,
-                                    cvar->getFullPath(),
-                                    cvar->getTotalElems(),
-                                    CV_EXIST,
-                                    is_latlon,
-                                    cvar->getCompRatio(),
-                                    false,
-                                    cvar->getNewName(),
-                                    bt);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5CFArray. ");
-                }
+
+                auto ar_unique = make_unique< HDF5CFArray>
+                                (cvar->getRank(),
+                                file_id,
+                                filename,
+                                cvar->getType(),
+                                dimsizes,
+                                cvar->getFullPath(),
+                                cvar->getTotalElems(),
+                                CV_EXIST,
+                                is_latlon,
+                                cvar->getCompRatio(),
+                                false,
+                                cvar->getNewName(),
+                                bt);
+                ar = ar_unique.get();
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName()) 
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim((int)((*it_d)->getSize()));
                     else 
                         ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 dds.add_var(ar);
-                delete bt;
-                delete ar;
             }
             break;
 
@@ -954,34 +891,25 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
             {
                 // Using HDF5GMCFMissLLArray
                 HDF5GMCFMissLLArray *ar = nullptr;
-                try {
-                    ar = new HDF5GMCFMissLLArray (
-                                    cvar->getRank(),
-                                    filename,
-                                    file_id,
-                                    cvar->getType(),
-                                    cvar->getFullPath(),
-                                    cvar->getPtType(),
-                                    cvar->getCVType(),
-                                    cvar->getNewName(),
-                                    bt);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissLLArray. ");
-                }
+                auto ar_unique = make_unique<HDF5GMCFMissLLArray>
+                                (cvar->getRank(),
+                                filename,
+                                file_id,
+                                cvar->getType(),
+                                cvar->getFullPath(),
+                                cvar->getPtType(),
+                                cvar->getCVType(),
+                                cvar->getNewName(),
+                                bt);
+                ar = ar_unique.get();
 
-           
-                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName()) 
+                for (it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim((int)((*it_d)->getSize()));
                     else 
                         ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
-
                 dds.add_var(ar);
-                delete bt;
-                delete ar;
             }
             break;
 
@@ -996,67 +924,49 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
                 HDF5GMCFMissNonLLCVArray *ar = nullptr;
 
-                try {
-                    ar = new HDF5GMCFMissNonLLCVArray(
-                                                      cvar->getRank(),
-                                                      nelem,
-                                                      cvar->getNewName(),
-                                                      bt);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
-                }
-
+                auto ar_unique = make_unique<HDF5GMCFMissNonLLCVArray>
+                                                (cvar->getRank(),
+                                                  nelem,
+                                                  cvar->getNewName(),
+                                                  bt);
+                ar = ar_unique.get();
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName()) 
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim((int)((*it_d)->getSize()));
                     else 
                         ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
-                delete bt;
-                delete ar;
             }
             break;
 
             case CV_FILLINDEX:
             {
-
                 if (cvar->getRank() !=1) {
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
 
                 HDF5GMCFFillIndexArray *ar = nullptr;
-  
-                try {
-                    ar = new HDF5GMCFFillIndexArray(
-                                                      cvar->getRank(),
-                                                      cvar->getType(),
-                                                      false,
-                                                      cvar->getNewName(),
-                                                      bt);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
-                }
 
+                auto ar_unique = make_unique<HDF5GMCFFillIndexArray>
+                                                    (cvar->getRank(),
+                                                  cvar->getType(),
+                                                  false,
+                                                  cvar->getNewName(),
+                                                  bt);
+                ar = ar_unique.get();
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName()) 
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim((int)((*it_d)->getSize()));
                     else 
                         ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
-                delete bt;
-                delete ar;
             }
             break;
-
 
             case CV_SPECIAL:
              {
@@ -1067,26 +977,23 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
-                HDF5GMCFSpecialCVArray * ar = nullptr;
-                ar = new HDF5GMCFSpecialCVArray(
+                auto ar_unique = make_unique<HDF5GMCFSpecialCVArray>(
                                                 cvar->getType(),
                                                 nelem,
                                                 cvar->getFullPath(),
                                                 cvar->getPtType(),
                                                 cvar->getNewName(),
                                                 bt);
+                auto ar = ar_unique.get();
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName())
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim((int)((*it_d)->getSize()));
                     else
                         ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 dds.add_var(ar);
-                delete bt;
-                delete ar;
-
             }
             break;
             case CV_MODIFY:
@@ -1095,6 +1002,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 throw InternalErr(__FILE__,__LINE__,"Coordinate variable type is not supported.");
         }
     }
+    delete bt;
 }
 
 // Generate DDS for special variable in a general product
@@ -1128,32 +1036,27 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
 
         const vector<HDF5CF::Dimension *>& dims = spvar->getDimensions();
 
-        if(dims.empty())
-            throw InternalErr(__FILE__,__LINE__,"Currently don't support scalar special variables. ");
-
-        HDF5GMSPCFArray *ar = nullptr;
- 
-        try {
-            ar = new HDF5GMSPCFArray (
-                                 spvar->getRank(),
-                                 filename,
-                                 fileid,
-                                 spvar->getType(),
-                                 spvar->getFullPath(),
-                                 spvar->getOriginalType(),
-                                 spvar->getStartBit(),
-                                 spvar->getBitNum(),
-                                 spvar->getNewName(),
-                                 bt);
-        }
-        catch(...) {
+        if (dims.empty()) {
             delete bt;
-            throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
+            throw InternalErr(__FILE__, __LINE__, "Currently don't support scalar special variables. ");
         }
+        HDF5GMSPCFArray *ar = nullptr;
 
+        auto ar_unique = make_unique<HDF5GMSPCFArray> (
+                             spvar->getRank(),
+                             filename,
+                             fileid,
+                             spvar->getType(),
+                             spvar->getFullPath(),
+                             spvar->getOriginalType(),
+                             spvar->getStartBit(),
+                             spvar->getBitNum(),
+                             spvar->getNewName(),
+                             bt);
+        ar = ar_unique.get();
 
-        for(auto const &dim:dims) {
-            if (""==dim->getNewName()) 
+        for (auto const &dim:dims) {
+            if ((dim->getNewName()).empty())
                 ar->append_dim((int)(dim->getSize()));
             else 
                 ar->append_dim((int)(dim->getSize()), dim->getNewName());
@@ -1161,7 +1064,6 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
 
         dds.add_var(ar);
         delete bt;
-        delete ar;
     }
 
 }
@@ -1180,7 +1082,7 @@ void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var,bool is_cvar) {
 
         AttrTable *at = das.get_table(var->getNewName());
         if (nullptr == at)
-            at = das.add_table(var->getNewName(), new AttrTable);
+            at = das.add_table(var->getNewName(), obtain_new_attr_table());
         bool has_fillvalue = false;
         AttrTable::Attr_iter it = at->attr_begin();
         while (it!=at->attr_end() && false==has_fillvalue) {
@@ -1261,7 +1163,7 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
 
             // If we don't find the _FillValue, according to DAP2 implementation,
             // we need to add the corresponding fill values.
-            if(!d4_attr) {
+            if (!d4_attr) {
                 bool is_cvar = false;
                 for (const auto &cvar:cvars) {
                     if (cvar->getNewName() == (*vi)->name()) {
@@ -1275,25 +1177,28 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
                     // Add a DAP4 attribute
                     D4Attribute *d4_fv = nullptr;
                     if (dods_float64_c == var_type ) {
-                        d4_fv = new D4Attribute("_FillValue",attr_float64_c);
+                        auto d4_fv_unique = make_unique<D4Attribute>("_FillValue",attr_float64_c);
+                        d4_fv = d4_fv_unique.release();
                         d4_fv->add_value("-9999.9");
                     }
                     else if (dods_float32_c == var_type) {
-                        d4_fv = new D4Attribute("_FillValue",attr_float32_c);
+                        auto d4_fv_unique = make_unique<D4Attribute>("_FillValue",attr_float32_c);
+                        d4_fv = d4_fv_unique.release();
                         d4_fv->add_value("-9999.9");
                     }
                     else if (dods_int16_c == var_type) {
-                        d4_fv = new D4Attribute("_FillValue",attr_int16_c);
+                        auto d4_fv_unique = make_unique<D4Attribute>("_FillValue",attr_int16_c);
+                        d4_fv = d4_fv_unique.release();
                         d4_fv->add_value("-9999");
                     } 
                     else if (dods_int8_c == var_type) {
-                        d4_fv = new D4Attribute("_FillValue",attr_int8_c);
+                        auto d4_fv_unique = make_unique<D4Attribute>("_FillValue",attr_int8_c);
+                        d4_fv = d4_fv_unique.release();
                         d4_fv->add_value("-99");
                     }
                     (*vi)->attributes()->add_attribute_nocopy(d4_fv);
                 }
             }
-//#if 0
             else {
                 D4Attribute *d4_fv = nullptr;
                 if (dods_float64_c == var_type ) {
@@ -1302,7 +1207,8 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
                     string fillvalue = d4_attr->value(0);
                     if((fillvalue.find(exist_fill_value_substr) == 0) && (fillvalue!= cor_fill_value)) {
                         (*vi)->attributes()->erase("_FillValue");
-                        d4_fv = new D4Attribute("_FillValue",attr_float64_c);
+                        auto d4_fv_unique = make_unique<D4Attribute>("_FillValue",attr_float64_c);
+                        d4_fv = d4_fv_unique.release();
                         d4_fv->add_value(cor_fill_value);
                         (*vi)->attributes()->add_attribute_nocopy(d4_fv);
                     }
@@ -1313,16 +1219,15 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
                     // Somehow the fillvalue changes to "-9999.90??", we want to turn it back.
                     if((fillvalue.find(cor_fill_value) == 0) && (fillvalue!= cor_fill_value)) {
                         (*vi)->attributes()->erase("_FillValue");
-                        d4_fv = new D4Attribute("_FillValue",attr_float32_c);
+                        auto d4_fv_unique = make_unique<D4Attribute>("_FillValue",attr_float32_c);
+                        d4_fv = d4_fv_unique.release();
                         d4_fv->add_value(cor_fill_value);
                         (*vi)->attributes()->add_attribute_nocopy(d4_fv);
                     }
                 }
             }
-//#endif
         }
     }
-
 }
 
 void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid, const string &filename) {              
@@ -1365,9 +1270,10 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
         for(int i = 0; i <cvar->getRank();i++)
             dimsizes[i] = (dims[i])->getSize();
 
-        if(dims.empty()) 
-            throw InternalErr(__FILE__,__LINE__,"the coordinate variable cannot be a scalar");
-            
+        if(dims.empty()) {
+            delete bt;
+            throw InternalErr(__FILE__, __LINE__, "the coordinate variable cannot be a scalar");
+        }
         switch(cvar->getCVType()) {
             
             case CV_EXIST: 
@@ -1376,32 +1282,26 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 // Need to check if this CV is lat/lon. This is necessary when data memory cache is turned on.
                 bool is_latlon = cvar->isLatLon();
-                
-                try {
 
-                    bool is_dap4 = true;
-                    ar = new HDF5CFArray (
-                                    cvar->getRank(),
-                                    fileid,
-                                    filename,
-                                    cvar->getType(),
-                                    dimsizes,
-                                    cvar->getFullPath(),
-                                    cvar->getTotalElems(),
-                                    CV_EXIST,
-                                    is_latlon,
-                                    cvar->getCompRatio(),
-                                    is_dap4,
-                                    cvar->getNewName(),
-                                    bt);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5CFArray. ");
-                }
+                bool is_dap4 = true;
+                auto ar_unique = make_unique<HDF5CFArray> (
+                                cvar->getRank(),
+                                fileid,
+                                filename,
+                                cvar->getType(),
+                                dimsizes,
+                                cvar->getFullPath(),
+                                cvar->getTotalElems(),
+                                CV_EXIST,
+                                is_latlon,
+                                cvar->getCompRatio(),
+                                is_dap4,
+                                cvar->getNewName(),
+                                bt);
+                ar = ar_unique.get();
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName()) 
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim_ll((int)((*it_d)->getSize()));
                     else 
                         ar->append_dim_ll((int)((*it_d)->getSize()), (*it_d)->getNewName());
@@ -1411,8 +1311,6 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
                 map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
-                delete bt;
-                delete ar;
             }
             break;
 
@@ -1421,25 +1319,20 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
             {
                 // Using HDF5GMCFMissLLArray
                 HDF5GMCFMissLLArray *ar = nullptr;
-                try {
-                    ar = new HDF5GMCFMissLLArray (
-                                    cvar->getRank(),
-                                    filename,
-                                    fileid,
-                                    cvar->getType(),
-                                    cvar->getFullPath(),
-                                    cvar->getPtType(),
-                                    cvar->getCVType(),
-                                    cvar->getNewName(),
-                                    bt);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissLLArray. ");
-                }
-           
+                auto ar_unique = make_unique<HDF5GMCFMissLLArray> (
+                                cvar->getRank(),
+                                filename,
+                                fileid,
+                                cvar->getType(),
+                                cvar->getFullPath(),
+                                cvar->getPtType(),
+                                cvar->getCVType(),
+                                cvar->getNewName(),
+                                bt);
+                ar = ar_unique.get();
+
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName()) 
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim_ll((*it_d)->getSize());
                     else 
                         ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
@@ -1449,8 +1342,6 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
                 map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
-                delete bt;
-                delete ar;
             }
             break;
 
@@ -1465,21 +1356,15 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 HDF5GMCFMissNonLLCVArray *ar = nullptr;
 
-                try {
-                    ar = new HDF5GMCFMissNonLLCVArray(
-                                                      cvar->getRank(),
-                                                      nelem,
-                                                      cvar->getNewName(),
-                                                      bt);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
-                }
-
+                auto ar_unique = make_unique<HDF5GMCFMissNonLLCVArray>(
+                                                  cvar->getRank(),
+                                                  nelem,
+                                                  cvar->getNewName(),
+                                                  bt);
+                ar = ar_unique.get();
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName()) 
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim_ll((*it_d)->getSize());
                     else 
                         ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
@@ -1488,8 +1373,6 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
                 map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
-                delete bt;
-                delete ar;
             }
             break;
 
@@ -1502,23 +1385,17 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 }
 
                 HDF5GMCFFillIndexArray *ar = nullptr;
-  
-                try {
-                    ar = new HDF5GMCFFillIndexArray(
-                                                     cvar->getRank(),
-                                                     cvar->getType(),
-                                                     true,
-                                                     cvar->getNewName(),
-                                                     bt);
-                }
-                catch(...) {
-                    delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
-                }
 
+                auto ar_unique = make_unique<HDF5GMCFFillIndexArray>(
+                                                 cvar->getRank(),
+                                                 cvar->getType(),
+                                                 true,
+                                                 cvar->getNewName(),
+                                                 bt);
+                ar = ar_unique.get();
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName()) 
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim_ll((*it_d)->getSize());
                     else 
                         ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
@@ -1527,11 +1404,8 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
                 map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
-                delete bt;
-                delete ar;
             }
             break;
-
 
             case CV_SPECIAL:
              {
@@ -1542,17 +1416,15 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 }
                 int nelem = (cvar->getDimensions()[0])->getSize();
 
-                HDF5GMCFSpecialCVArray * ar = nullptr;
-                ar = new HDF5GMCFSpecialCVArray(
-                                                cvar->getType(),
+                auto ar_unique = make_unique<HDF5GMCFSpecialCVArray>(cvar->getType(),
                                                 nelem,
                                                 cvar->getFullPath(),
                                                 cvar->getPtType(),
                                                 cvar->getNewName(),
                                                 bt);
-
+                auto ar = ar_unique.get();
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-                    if (""==(*it_d)->getNewName())
+                    if (((*it_d)->getNewName()).empty())
                         ar->append_dim_ll((*it_d)->getSize());
                     else
                         ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
@@ -1562,9 +1434,6 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
                 map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
-                delete bt;
-                delete ar;
-
             }
             break;
             case CV_MODIFY:
@@ -1573,8 +1442,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 throw InternalErr(__FILE__,__LINE__,"Coordinate variable type is not supported.");
         }
     }
-
-
+    delete bt;
 }
 
 void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t fileid, const string &filename) {
@@ -1610,31 +1478,26 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
 
     if (bt) {
 
-        const vector<HDF5CF::Dimension *>& dims = spvar->getDimensions();
+        const vector<HDF5CF::Dimension *> &dims = spvar->getDimensions();
 
-        if(dims.empty())
-            throw InternalErr(__FILE__,__LINE__,"Currently don't support scalar special variables. ");
-
-        HDF5GMSPCFArray *ar = nullptr;
- 
-        try {
-            ar = new HDF5GMSPCFArray (
-                                 spvar->getRank(),
-                                 filename,
-                                 fileid,
-                                 spvar->getType(),
-                                 spvar->getFullPath(),
-                                 spvar->getOriginalType(),
-                                 spvar->getStartBit(),
-                                 spvar->getBitNum(),
-                                 spvar->getNewName(),
-                                 bt);
-        }
-        catch(...) {
+        if (dims.empty()) {
             delete bt;
-            throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
+            throw InternalErr(__FILE__, __LINE__, "Currently don't support scalar special variables. ");
         }
+        
+        HDF5GMSPCFArray *ar = nullptr;
 
+        auto ar_unique = make_unique<HDF5GMSPCFArray>(spvar->getRank(),
+                             filename,
+                             fileid,
+                             spvar->getType(),
+                             spvar->getFullPath(),
+                             spvar->getOriginalType(),
+                             spvar->getStartBit(),
+                             spvar->getBitNum(),
+                             spvar->getNewName(),
+                             bt);
+        ar = ar_unique.get();
 
         for (const auto &dim:dims) {
             if (""==dim->getNewName()) 
@@ -1649,7 +1512,6 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
         d4_root->add_var_nocopy(d4_var);
  
         delete bt;
-        delete ar;
     }
 
 }
