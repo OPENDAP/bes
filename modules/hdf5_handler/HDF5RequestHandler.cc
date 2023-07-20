@@ -1085,7 +1085,9 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
 
-        auto hdds = new HDF5DDS(bdds->get_dds());
+        //auto hdds = new HDF5DDS(bdds->get_dds());
+        auto hdds_unique = make_unique<HDF5DDS>(bdds->get_dds());
+        auto hdds = hdds_unique.release();
         delete bdds->get_dds();
 
         bdds->set_dds(hdds);
@@ -1101,7 +1103,9 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
         
         Ancillary::read_ancillary_dds( *hdds, filename ) ;
 
-        auto das = new DAS ;
+        //auto das = new DAS ;
+        auto das_unique = make_unique<DAS>();
+        auto das = das_unique.release();
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
         read_cfdas( *das,filename,cf_fileid);
@@ -1954,7 +1958,9 @@ void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataD
 
      FILE *dds_file = fopen(dds_cache_fname.c_str(),"r");
      tdds.parse(dds_file);
-     auto cache_dds = new DDS(tdds);
+     //auto cache_dds = new DDS(tdds);
+     auto cache_dds_unique = make_unique<DDS>(tdds);
+     auto cache_dds = cache_dds_unique.release();
      delete dds;
 
      Ancillary::read_ancillary_dds( *cache_dds, h5_fname ) ;
@@ -1996,8 +2002,9 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
 
     else {
 
-        das = new DAS ;
-
+        //das = new DAS ;
+        auto das_unique = make_unique<DAS>();
+        das = das_unique.get();
         // The following block is commented out because the attribute containers in DDX disappear
 	    // when the container_name of DAS is added.  Without adding the container_name of DAS,
         // the attribute containers show up in DDX. This information is re-discovered while working on
@@ -2019,7 +2026,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
             BESDEBUG(HDF5_NAME, prolog << "For memory cache, DAS added to the cache for : " << filename << endl);
             das_cache->add(new DAS(*das), filename);
         }
-        delete das;
+        //delete das;
 
     }
     
@@ -2176,8 +2183,11 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
 
             // Remember the current Attribute table state
             AttrTable*temp_at_par = at_par;
-            if(at_par == nullptr)
-                at_par = das->add_table(container_name, new AttrTable);
+            if(at_par == nullptr) {
+                auto new_attr_table_unique = make_unique<libdap::AttrTable>();
+                auto new_attr_table = new_attr_table_unique.release();
+                at_par = das->add_table(container_name, new_attr_table);
+            }
             else 
                 at_par = at_par->append_container(container_name);
                 
@@ -2277,7 +2287,9 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     }
 
     if(false == das_from_mcache) {
-        das = new DAS;
+        auto das_unique = make_unique<DAS>();
+        auto das = das_unique.release();
+        //das = new DAS;
         // This looks at the 'use explicit containers' prop, and if true
         // sets the current container for the DAS.
         if (!container_name.empty()) das->container_name(container_name);
