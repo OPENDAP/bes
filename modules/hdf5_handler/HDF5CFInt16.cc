@@ -31,6 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
+#include <memory>
 #include <libdap/InternalErr.h>
 #include "HDF5CFInt16.h"
 #include <BESDebug.h>

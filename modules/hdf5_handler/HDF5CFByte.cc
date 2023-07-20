@@ -28,7 +28,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-
+#include <memory>
 #include <libdap/InternalErr.h>
 #include "HDF5CFByte.h"
 #include <BESDebug.h>

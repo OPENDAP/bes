@@ -43,6 +43,7 @@
 #include <sstream>
 #include <cassert>
 #include <algorithm>
+#include <memory>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
 

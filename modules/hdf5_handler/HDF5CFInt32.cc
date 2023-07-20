@@ -30,6 +30,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <memory>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
 #include "HDF5CFInt32.h"

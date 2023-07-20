@@ -4,6 +4,7 @@
 
 
 #include "HDF5CFGeoCFProj.h"
+#include <memory>
 
 using namespace std;
 using namespace libdap;

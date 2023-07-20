@@ -30,7 +30,7 @@
 
 #include "config_hdf5.h"
 
-
+#include <memory>
 #include <libdap/InternalErr.h>
 #include "HDF5CFUInt32.h"
 #include <BESDebug.h>
