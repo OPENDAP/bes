@@ -52,7 +52,8 @@ HDF5CFStr::HDF5CFStr(const string &n, const string &d,const string &h5_varname)
 
 BaseType *HDF5CFStr::ptr_duplicate()
 {
-    return new HDF5CFStr(*this);
+    auto HDF5CFStr_unique = make_unique<HDF5CFStr>(*this);
+    return HDF5CFStr_unique.release();
 }
 
 bool HDF5CFStr::read()

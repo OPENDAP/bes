@@ -16,7 +16,8 @@ HDF5CFProj::HDF5CFProj(const string & n, const string &d ) : Byte(n, d)
 
 BaseType *HDF5CFProj::ptr_duplicate()
 {
-    return new HDF5CFProj(*this);
+    auto HDF5CFProj_unique = make_unique<HDF5CFProj>(*this);
+    return HDF5CFProj_unique.release();
 }
 
 bool HDF5CFProj::read()

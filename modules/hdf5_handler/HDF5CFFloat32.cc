@@ -30,8 +30,6 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config_hdf5.h"
-
 #include <libdap/InternalErr.h>
 #include "HDF5CFFloat32.h"
 #include <BESDebug.h>
@@ -48,7 +46,8 @@ HDF5CFFloat32::HDF5CFFloat32(const string &n, const string &d,const string &d_f)
 }
 BaseType *HDF5CFFloat32::ptr_duplicate()
 {
-    return new HDF5CFFloat32(*this);
+    auto HDF5CFFloat32_unique = make_unique<HDF5CFFloat32>(*this);
+    return HDF5CFFloat32_unique.release();
 }
 
 bool HDF5CFFloat32::read()

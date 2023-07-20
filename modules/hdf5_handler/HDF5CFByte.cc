@@ -28,7 +28,6 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config_hdf5.h"
 
 #include <libdap/InternalErr.h>
 #include "HDF5CFByte.h"
@@ -49,7 +48,8 @@ HDF5CFByte::HDF5CFByte(const string &n, const string &d,const string &d_f) : Byt
 
 BaseType *HDF5CFByte::ptr_duplicate()
 {
-    return new HDF5CFByte(*this);
+    auto HDF5CFByte_unique = make_unique<HDF5CFByte>(*this);
+    return HDF5CFByte_unique.release();
 }
 
 bool HDF5CFByte::read()
