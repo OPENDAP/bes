@@ -39,6 +39,7 @@
 #include "h5apicompatible.h"
 #include <BESDebug.h>
 #include <algorithm>
+#include <memory>
 
 using namespace std;
 using namespace libdap;

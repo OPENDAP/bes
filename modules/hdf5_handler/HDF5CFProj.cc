@@ -5,6 +5,7 @@
 
 
 #include "HDF5CFProj.h"
+#include <memory>
 
 using namespace std;
 using namespace libdap;
