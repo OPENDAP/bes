@@ -35,6 +35,7 @@
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ///////////////////////////////////////////////////////////////////////////////
+#include <memory>
 #include "hdf5_handler.h"
 #include "HDF5RequestHandler.h"
 #include <BESDebug.h>
