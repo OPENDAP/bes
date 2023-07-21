@@ -35,14 +35,11 @@
 ///
 
 
-
+#include <memory>
 #include <string>
-#include <ctype.h>
-#include "config_hdf5.h"
 #include <libdap/InternalErr.h>
 #include "h5dds.h"
 #include "HDF5Float64.h"
-#include "BESDebug.h"
 
 using namespace std;
 using namespace libdap;

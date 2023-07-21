@@ -33,7 +33,7 @@
 /// \author Kent Yang       (myang6@hdfgroup.org)
 /// \author James Gallagher (jgallagher@opendap.org)
 
-
+#include <memory>
 #include <string>
 #include "BESDebug.h"
 #include "h5dds.h"
