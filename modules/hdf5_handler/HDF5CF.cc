@@ -1717,7 +1717,7 @@ void File::Adjust_Duplicate_FakeDim_Name2(Dimension * dim, int dup_dim_size_inde
         dim->newname = dim->name;
         Insert_One_NameSizeMap_Element(dim->name, dim->size, dim->unlimited_dim);
         // push back to the duplicate size, name vector.
-        dup_dimsize_dimname.emplace_back(make_pair(dim->size,dim->name));
+        dup_dimsize_dimname.emplace_back(dim->size,dim->name);
         addeddimindex++;
 
     }

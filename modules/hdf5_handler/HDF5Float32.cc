@@ -35,9 +35,6 @@
 
 
 #include <string>
-#include <ctype.h>
-
-#include "config_hdf5.h"
 #include "BESDebug.h"
 #include "h5dds.h"
 #include <libdap/InternalErr.h>
@@ -52,7 +49,8 @@ HDF5Float32::HDF5Float32(const string & n, const string &vpath, const string &d)
 
 BaseType *HDF5Float32::ptr_duplicate()
 {
-    return new HDF5Float32(*this);
+    auto HDF5Float32_unique = make_unique<HDF5Float32>(*this);
+    return HDF5Float32_unique.release();
 }
 
 bool HDF5Float32::read()

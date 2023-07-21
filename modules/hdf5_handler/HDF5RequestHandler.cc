@@ -1958,7 +1958,7 @@ void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataD
 
      FILE *dds_file = fopen(dds_cache_fname.c_str(),"r");
      tdds.parse(dds_file);
-     //auto cache_dds = new DDS(tdds);
+
      auto cache_dds_unique = make_unique<DDS>(tdds);
      auto cache_dds = cache_dds_unique.release();
      delete dds;
@@ -2026,7 +2026,6 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
             BESDEBUG(HDF5_NAME, prolog << "For memory cache, DAS added to the cache for : " << filename << endl);
             das_cache->add(new DAS(*das), filename);
         }
-        //delete das;
 
     }
     
@@ -2288,7 +2287,7 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
 
     if(false == das_from_mcache) {
         auto das_unique = make_unique<DAS>();
-        auto das = das_unique.release();
+        das = das_unique.release();
         //das = new DAS;
         // This looks at the 'use explicit containers' prop, and if true
         // sets the current container for the DAS.
