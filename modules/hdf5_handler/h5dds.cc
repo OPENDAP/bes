@@ -35,8 +35,7 @@
 /// \author Kent Yang    <myang6@hdfgroup.org>
 ///
 
-#include "config_hdf5.h"
-
+#include<memory>
 #include <libdap/InternalErr.h>
 #include <BESDebug.h>
 
@@ -49,15 +48,13 @@
 #include "HDF5Int16.h"
 #include "HDF5Byte.h"
 #include "HDF5Array.h"
-#include "HDF5Str.h"
 #include "HDF5Float32.h"
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
 
-//#include "h5get.h"
 #include "HDF5CFUtil.h"
-//#endif
+
 
 using namespace std;
 using namespace libdap;
@@ -278,23 +275,22 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     // First deal with scalar data. 
     if (dt_inst.ndims == 0) {
         dds_table.add_var(bt);
-        delete bt; bt = nullptr;
+        delete bt;
     }
     else {
 
         // Next, deal with Array data. This 'else clause' runs to
         // the end of the method. jhrg
-        auto ar = new HDF5Array(varname, filename, bt);
-        delete bt; bt = 0;
+        auto ar_unique = make_unique<HDF5Array>(varname, filename, bt);
+        auto ar = ar_unique.get();
+        delete bt;
         ar->set_memneed(dt_inst.need);
         ar->set_numdim(dt_inst.ndims);
         ar->set_numelm((int) (dt_inst.nelmts));
 	    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
             ar->append_dim(dt_inst.size[dim_index]); 
         dds_table.add_var(ar);
-        delete ar; ar = nullptr;
     }
-
     BESDEBUG("h5", "<read_objects_base_type(dds)" << endl);
 }
 
@@ -327,27 +323,23 @@ read_objects_structure(DDS & dds_table, const string & varname,
                 dt_inst.nelmts << endl);
             BESDEBUG("h5", "=read_objects_structure(): memory needed = " <<
                 dt_inst.need << endl);
-            auto ar = new HDF5Array(varname, filename, structure);
+            auto ar_unique = make_unique<HDF5Array>(varname, filename, structure);
+            auto ar = ar_unique.get();
             delete structure; structure = nullptr;
-            try {
-                ar->set_memneed(dt_inst.need);
-                ar->set_numdim(dt_inst.ndims);
-                ar->set_numelm((int) (dt_inst.nelmts));
-                ar->set_length((int) (dt_inst.nelmts));
 
-                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                    ar->append_dim(dt_inst.size[dim_index]);
-                    BESDEBUG("h5", "=read_objects_structure(): append_dim = " <<
-                        dt_inst.size[dim_index] << endl);
-                }
+            ar->set_memneed(dt_inst.need);
+            ar->set_numdim(dt_inst.ndims);
+            ar->set_numelm((int) (dt_inst.nelmts));
+            ar->set_length((int) (dt_inst.nelmts));
 
-                dds_table.add_var(ar);
-                delete ar; ar = nullptr;
-            } // try Array *ar
-            catch (...) {
-                delete ar;
-                throw;
+            for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+                ar->append_dim(dt_inst.size[dim_index]);
+                BESDEBUG("h5", "=read_objects_structure(): append_dim = " <<
+                    dt_inst.size[dim_index] << endl);
             }
+
+            dds_table.add_var(ar);
+
         } 
         else {// A scalar structure
 

@@ -58,11 +58,13 @@ void HDF5Module::initialize(const string & modname)
     BESDapService::handle_dap_service(modname);
 
     if (!BESCatalogList::TheCatalogList()->ref_catalog(HDF5_CATALOG)) {
-        BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(HDF5_CATALOG));
+        auto BESCatalogDirectory_unique = make_unique<BESCatalogDirectory>(HDF5_CATALOG);
+        BESCatalogList::TheCatalogList()->add_catalog(BESCatalogDirectory_unique.release());
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(HDF5_CATALOG)) {
-        auto csc = new BESFileContainerStorage(HDF5_CATALOG);
+        auto csc_unique = make_unique<BESFileContainerStorage>(HDF5_CATALOG);
+        auto csc = csc_unique.release();
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 

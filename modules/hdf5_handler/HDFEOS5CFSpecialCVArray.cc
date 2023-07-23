@@ -29,9 +29,8 @@
 ///
 /// All rights reserved.
 
-#include "config_hdf5.h"
 #include <iostream>
-#include <sstream>
+#include <memory>
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
@@ -44,7 +43,8 @@ using namespace libdap;
 
 BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
 {
-    return new HDFEOS5CFSpecialCVArray(*this);
+    auto HDFEOS5CFSpecialCVArray_unique = make_unique<HDFEOS5CFSpecialCVArray>(*this);
+    return HDFEOS5CFSpecialCVArray_unique.release();
 }
 
 bool HDFEOS5CFSpecialCVArray::read(){
