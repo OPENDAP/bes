@@ -32,6 +32,7 @@
 /// \author  Patrick West <pwest@ucar.edu>
 
 #include <iostream>
+#include <memory>
 #include "HDF5Module.h"
 #include <BESRequestHandlerList.h>
 #include "HDF5RequestHandler.h"

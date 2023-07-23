@@ -30,6 +30,7 @@
 /// All rights reserved.
 
 #include <iostream>
+#include <memory>
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>

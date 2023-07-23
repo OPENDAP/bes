@@ -37,7 +37,7 @@
 
 
 #include <string>
-
+#include <memory>
 #include "HDF5Url.h"
 #include <libdap/InternalErr.h>
 

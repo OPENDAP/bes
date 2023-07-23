@@ -30,9 +30,9 @@
 /// All rights reserved.
 
 
-#include "config_hdf5.h"
+
 #include <iostream>
-#include <sstream>
+#include <memory>
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>

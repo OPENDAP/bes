@@ -31,9 +31,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config_hdf5.h"
+#include <memory>
 #include <iostream>
-#include <sstream>
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>

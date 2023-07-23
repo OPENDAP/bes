@@ -30,6 +30,7 @@
 /// All rights reserved.
 
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <BESDebug.h>
 
