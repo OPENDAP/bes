@@ -43,7 +43,8 @@ using namespace libdap;
 
 BaseType *HDF5GMCFSpecialCVArray::ptr_duplicate()
 {
-    return new HDF5GMCFSpecialCVArray(*this);
+    auto HDF5GMCFSpecialCVArray_unique = make_unique<HDF5GMCFSpecialCVArray>(*this);
+    return HDF5GMCFSpecialCVArray_unique.release();
 }
 
 bool HDF5GMCFSpecialCVArray::read()

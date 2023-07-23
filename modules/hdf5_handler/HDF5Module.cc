@@ -50,7 +50,8 @@ void HDF5Module::initialize(const string & modname)
 {
     BESDEBUG(HDF5_NAME, prolog << "Initializing HDF5 module " << modname << endl);
 
-    auto handler = new HDF5RequestHandler(modname);
+    auto handler_unique = make_unique<HDF5RequestHandler>(modname);
+    auto handler = handler_unique.release();
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
     BESDapService::handle_dap_service(modname);

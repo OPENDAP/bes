@@ -1085,7 +1085,6 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
 
-        //auto hdds = new HDF5DDS(bdds->get_dds());
         auto hdds_unique = make_unique<HDF5DDS>(bdds->get_dds());
         auto hdds = hdds_unique.release();
         delete bdds->get_dds();
@@ -1103,7 +1102,6 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
         
         Ancillary::read_ancillary_dds( *hdds, filename ) ;
 
-        //auto das = new DAS ;
         auto das_unique = make_unique<DAS>();
         auto das = das_unique.release();
         BESDASResponse bdas( das ) ;
@@ -2002,7 +2000,6 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
 
     else {
 
-        //das = new DAS ;
         auto das_unique = make_unique<DAS>();
         das = das_unique.get();
         // The following block is commented out because the attribute containers in DDX disappear

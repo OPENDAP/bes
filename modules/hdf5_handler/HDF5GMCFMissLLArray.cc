@@ -29,9 +29,7 @@
 ///
 /// All rights reserved.
 
-#include "config_hdf5.h"
 #include <iostream>
-#include <sstream>
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
@@ -47,7 +45,8 @@ static herr_t attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo,
 
 BaseType *HDF5GMCFMissLLArray::ptr_duplicate()
 {
-    return new HDF5GMCFMissLLArray(*this);
+    auto HDF5GMCFMissLLArray_unique = make_unique<HDF5GMCFMissLLArray>(*this);
+    return HDF5GMCFMissLLArray_unique.release();
 }
 
 bool HDF5GMCFMissLLArray::read()
