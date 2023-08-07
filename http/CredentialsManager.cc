@@ -37,6 +37,7 @@
 #include "kvp_utils.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 #include "HttpNames.h"
 
 #include "CredentialsManager.h"
@@ -287,15 +288,19 @@ void CredentialsManager::load_credentials() {
     }
 
     if (!file_exists(config_file)) {
-        string err{"CredentialsManager config file "};
-        err += config_file + " is not present.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        string err{prolog + "CredentialsManager config file "};
+        err += config_file + " was specified but is not present.";
+        ERROR_LOG(err);
+        BESDEBUG(HTTP_MODULE,err);
+        return;
     }
 
     if (!file_is_secured(config_file)) {
-        string err{"CredentialsManager config file "};
+        string err{prolog + "CredentialsManager config file "};
         err += config_file + " is not secured! Set the access permissions to -rw------- (600) and try again.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        ERROR_LOG(err);
+        BESDEBUG(HTTP_MODULE,err);
+        return;
     }
 
     BESDEBUG(HTTP_MODULE, prolog << "The config file '" << config_file << "' is secured." << endl);
@@ -346,20 +351,19 @@ void CredentialsManager::load_credentials() {
     }
 
     if (!bad_creds.empty()) {
-        stringstream ss;
-
-        ss << "Encountered " << bad_creds.size() << " AccessCredentials "
+        stringstream err;
+        err << "Encountered " << bad_creds.size() << " AccessCredentials "
            << " definitions missing an associated URL. offenders: ";
 
         for (auto &bc: bad_creds) {
-            ss << bc->name() << "  ";
+            err << bc->name() << "  ";
             credential_sets.erase(bc->name());
             delete bc;
         }
-
-        throw BESInternalError(ss.str(), __FILE__, __LINE__);
+        ERROR_LOG(err.str());
+        BESDEBUG(HTTP_MODULE,err.str());
+        return;
     }
-
     BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << size() << " AccessCredentials" << endl);
 }
 
@@ -380,6 +384,7 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
     string env_region{get_env_value(CredentialsManager::ENV_REGION_KEY)};
     string env_url{get_env_value(CredentialsManager::ENV_URL_KEY)};
 
+    // evaluates to true iff none of the strings are empty. - ndp 08/07/23
     if (!(env_url.empty() || env_id.empty() || env_access_key.empty() || env_region.empty())) {
         auto ac = make_unique<AccessCredentials>();
         ac->add(AccessCredentials::URL_KEY, env_url);
@@ -388,7 +393,6 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
         ac->add(AccessCredentials::REGION_KEY, env_region);
         return ac.release();
     }
-
     return nullptr;
 }
 
