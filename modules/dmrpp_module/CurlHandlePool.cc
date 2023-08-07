@@ -380,7 +380,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             }
         }
         catch (...){
-            release_handle(handle);
+            release_handle(handle,true);
             return nullptr;
         }
     }
@@ -394,7 +394,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
  *
  * @param handle
  */
-void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
+void CurlHandlePool::release_handle(dmrpp_easy_handle *handle, bool replace) {
     // In get_easy_handle, it's possible that d_in_use could be false and d_chunk
     // could not be set to 0 (because a separate thread could be running these
     // methods). In that case, the thread running get_easy_handle could set d_chunk,
@@ -405,24 +405,26 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
     std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
 
     // TODO Add a call to curl reset() here. jhrg 9/23/20
-    curl_easy_reset(handle->d_handle);
+    //   I stuck it in the "replace" block below. ndp 08/07/23
 
-#if KEEP_ALIVE
-    handle->d_url = nullptr;
-    handle->d_chunk = nullptr;
-    handle->d_in_use = false;
-#else
-    // This is to test the effect of libcurl Keep Alive support
-    // Find the handle; erase from the vector; delete; allocate a new handle and push it back on
-    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        if (*i == handle) {
-            BESDEBUG("dmrpp:5", "Found a handle match for the " << i - d_easy_handles.begin() << "th easy handle." << endl);
-            delete handle;
-            *i = new dmrpp_easy_handle();
-            break;
+    if(replace || !KEEP_ALIVE) {
+        int i = 0;
+        for (auto & d_easy_handle : d_easy_handles) {
+            if (d_easy_handle == handle) {
+                BESDEBUG("dmrpp:5", "Found a handle match for the " << i << "th easy handle." << endl);
+                curl_easy_reset(handle->d_handle);
+                delete handle;
+                d_easy_handle = new dmrpp_easy_handle();
+                break;
+            }
+            i++;
         }
     }
-#endif
+    else {
+        handle->d_url = nullptr;
+        handle->d_chunk = nullptr;
+        handle->d_in_use = false;
+    }
 }
 
 /**

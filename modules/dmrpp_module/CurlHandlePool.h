@@ -111,7 +111,7 @@ public:
 
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
-    void release_handle(dmrpp_easy_handle *h);
+    void release_handle(dmrpp_easy_handle *h, bool replace=false);
 
     void release_handle(const Chunk *chunk);
 
