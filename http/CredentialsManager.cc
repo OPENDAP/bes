@@ -292,7 +292,6 @@ void CredentialsManager::load_credentials() {
         err += config_file + " was specified but is not present.";
         ERROR_LOG(err);
         BESDEBUG(HTTP_MODULE,err);
-        // throw BESInternalError(err, __FILE__, __LINE__);
         return;
     }
 
@@ -301,7 +300,6 @@ void CredentialsManager::load_credentials() {
         err += config_file + " is not secured! Set the access permissions to -rw------- (600) and try again.";
         ERROR_LOG(err);
         BESDEBUG(HTTP_MODULE,err);
-        // throw BESInternalError(err, __FILE__, __LINE__);
         return;
     }
 
@@ -353,20 +351,19 @@ void CredentialsManager::load_credentials() {
     }
 
     if (!bad_creds.empty()) {
-        stringstream ss;
-
-        ss << "Encountered " << bad_creds.size() << " AccessCredentials "
+        stringstream err;
+        err << "Encountered " << bad_creds.size() << " AccessCredentials "
            << " definitions missing an associated URL. offenders: ";
 
         for (auto &bc: bad_creds) {
-            ss << bc->name() << "  ";
+            err << bc->name() << "  ";
             credential_sets.erase(bc->name());
             delete bc;
         }
-
-        throw BESInternalError(ss.str(), __FILE__, __LINE__);
+        ERROR_LOG(err.str());
+        BESDEBUG(HTTP_MODULE,err.str());
+        return;
     }
-
     BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << size() << " AccessCredentials" << endl);
 }
 
