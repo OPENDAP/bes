@@ -103,7 +103,6 @@ public:
         for (auto d_easy_handle : d_easy_handles) {
             if (!d_easy_handle->d_in_use) {
                 n++;
-
             }
         }
         return n;
