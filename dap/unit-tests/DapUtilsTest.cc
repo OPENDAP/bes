@@ -107,16 +107,19 @@ public:
         fstream in(file_name.c_str(), ios::in|ios::binary);
         dp.intern(in, d_test_dmr);
 
+        uint64_t max_size = 200;
+
         std::unordered_map<std::string,int64_t> too_big;
-        dap_utils::find_too_big_vars( *d_test_dmr, 200, too_big);
+        dap_utils::find_too_big_vars( *d_test_dmr, max_size, too_big);
         if(!too_big.empty()){
-            cerr << prolog << "Rejected vars: " << endl;
+            cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
             for(auto apair:too_big){
-                cerr << prolog << apair.first << " size: " << apair.second << endl;
+                cerr << prolog << "  " << apair.first << " (size: " << apair.second << ")" <<  endl;
             }
+            CPPUNIT_ASSERT( too_big.size() == 2 );
         }
         else {
-            cerr << "No variables were deemed to big" << endl;
+            CPPUNIT_FAIL("ERROR: No variables were deemed too big!");
         }
     }
 
@@ -144,7 +147,7 @@ public:
             CPPUNIT_ASSERT(too_big.size() == 10 );
         }
         else {
-            CPPUNIT_FAIL("ERROR: No variables were deemed to big" );
+            CPPUNIT_FAIL("ERROR: No variables were deemed too big!");
         }
     }
 
