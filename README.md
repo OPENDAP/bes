@@ -2,6 +2,7 @@
   <img alt="TravisCI" src="https://travis-ci.org/OPENDAP/bes.svg?branch=master"/>
 </a> 
 
+Add a line to just trigger the BES test with a specific Hyrax dependency test.
 README for the OPeNDAP BES 
 ==========================
 # Version 3.20.13
