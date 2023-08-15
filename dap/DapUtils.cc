@@ -42,6 +42,7 @@
 #include "DapUtils.h"
 
 #define MODULE "dap_utils"
+#define MODULE_VERBOSE "dap_utils_verbose"
 #define prolog std::string("dap_utils::").append(__func__).append("() - ")
 
 using namespace libdap;
@@ -216,19 +217,19 @@ std::string get_dap_decl(libdap::BaseType *var, bool constrained=false) {
     if(var->is_vector_type()){
         auto myArray = dynamic_cast<libdap::Array *>(var);
         if(myArray) {
-            ss << myArray->prototype()->type_name() << " " << var->name();
-            ss << get_dap_array_dims_str(*myArray, true);
+            ss << myArray->prototype()->type_name() << " " << var->FQN();
+            ss << get_dap_array_dims_str(*myArray, constrained);
         }
         else {
             auto myVec = dynamic_cast<libdap::Vector *>(var);
             if(myVec){
-                ss << myVec->prototype()->type_name() << " " << var->name();
+                ss << myVec->prototype()->type_name() << " " << var->FQN();
                 ss << "[" << myVec->length() << "]";
             }
         }
     }
     else {
-        ss << var->type_name() << var->name();
+        ss << var->type_name() << var->FQN();
     }
     return ss.str();
 }
@@ -236,63 +237,77 @@ std::string get_dap_decl(libdap::BaseType *var, bool constrained=false) {
 /**
  *
  * @param constrctr
- * @param max_size
+ * @param max_var_size
  * @param too_big
  */
-void find_too_big_vars( libdap::Constructor *constrctr, const uint64_t &max_size, std::unordered_map<std::string,int64_t> &too_big)
+uint64_t compute_response_size_and_inv_big_vars( libdap::Constructor *constrctr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
 {
 
+    uint64_t response_size = 0;
     auto varitr=constrctr->var_begin();
     for(; varitr != constrctr->var_end(); varitr++){
         auto var = *varitr;
-        BESDEBUG(MODULE, prolog << "BEGIN " << var->type_name() << "(FQN: " << var->FQN() << ")" << endl);
+        BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << var->type_name() << "(FQN: " << var->FQN() << ")" << endl);
         if(var->is_constructor_type()){
             auto some_constrctr = dynamic_cast<libdap::Constructor *>(var);
             if(some_constrctr){
-                find_too_big_vars(some_constrctr, max_size,too_big);
+                response_size += compute_response_size_and_inv_big_vars(some_constrctr, max_var_size,too_big);
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "ERROR Failed to cast BaseType pointer var to Constructor type." << endl);
             }
         }
         else {
-            auto vsize = var->width_ll(true);
-            BESDEBUG(MODULE, prolog << get_dap_decl(var,true) << " (size: " << vsize  << ")" << endl);
-            if (vsize > max_size) {
-                BESDEBUG(MODULE, prolog << var->FQN() << " is bigger than max_size: " << max_size << endl);
-                too_big.emplace(pair<string, uint64_t>(get_dap_decl(var,true), vsize));
+            if (var->send_p()) {
+                uint64_t vsize = var->width_ll(true);
+                response_size += vsize;
+                string vdecl = get_dap_decl(var, true);
+                BESDEBUG(MODULE_VERBOSE, prolog << "  " << vdecl << "(" << vsize << " bytes)" << endl);
+                if (vsize > max_var_size) {
+                    BESDEBUG(MODULE,
+                             prolog << vdecl << "(" << vsize << " bytes) is bigger than the max_var_size of " << max_var_size
+                                    << " bytes." << endl);
+                    too_big.emplace(pair<string, uint64_t>(vdecl, vsize));
+                }
             }
         }
-        BESDEBUG(MODULE, prolog << "END " << var->type_name() << "(FQN: " << var->FQN() << ")" << endl);
+        BESDEBUG(MODULE_VERBOSE, prolog << "END " << var->type_name() << "(FQN: " << var->FQN() << ")" << endl);
     }
+    BESDEBUG(MODULE, prolog << "response_size: " << response_size << endl);
+    return response_size;
 }
 
 
 /**
  *
  * @param grp
- * @param max_size
+ * @param max_var_size
  * @param too_big
  */
-void find_too_big_vars( libdap::D4Group *grp, const uint64_t &max_size, std::unordered_map<std::string,int64_t> &too_big)
+uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
 {
+    uint64_t response_size = 0;
     auto cnstrctr = dynamic_cast<libdap::Constructor *>(grp);
     if (cnstrctr) {
-        find_too_big_vars(cnstrctr, max_size, too_big);
+        response_size += compute_response_size_and_inv_big_vars(cnstrctr, max_var_size, too_big);
     }
     for (auto child_grp: grp->groups()) {
-        BESDEBUG(MODULE, prolog << "BEGIN " << grp->type_name() << "(" << grp->FQN() << ")" << endl);
-        find_too_big_vars(child_grp, max_size, too_big);
-        BESDEBUG(MODULE, prolog << "END " << grp->type_name() << "(" << grp->FQN() << ")" << endl);
+        BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
+        response_size += compute_response_size_and_inv_big_vars(child_grp, max_var_size, too_big);
+        BESDEBUG(MODULE_VERBOSE, prolog << "END " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
     }
+    return response_size;
 }
 
 /**
  *
  * @param dmr
- * @param max_size
+ * @param max_var_size
  * @param too_big
  */
-void find_too_big_vars( libdap::DMR &dmr, const uint64_t &max_size, std::unordered_map<std::string,int64_t> &too_big)
+uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
 {
-    find_too_big_vars(dmr.root(), max_size,too_big);
+    return compute_response_size_and_inv_big_vars(dmr.root(), max_var_size,too_big);
 }
 
 }   // namespace dap_utils

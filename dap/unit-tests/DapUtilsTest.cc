@@ -40,7 +40,8 @@
 #include "libdap/DMR.h"
 #include "libdap/D4BaseTypeFactory.h"
 #include "libdap/D4ParserSax2.h"
-
+#include "libdap/D4ConstraintEvaluator.h"
+#include "libdap/D4Group.h"
 
 // Maybe the common testing code in modules should be moved up one level? jhrg 11/3/22
 #include "modules/common/run_tests_cppunit.h"
@@ -96,21 +97,24 @@ public:
 
     void var_too_big_test() {
 
-        DMR *d_test_dmr;
         D4BaseTypeFactory d_d4f;
+        DMR *d_test_dmr;
         d_test_dmr = new DMR(&d_d4f);
         D4ParserSax2 dp;
+        uint64_t response_size = 0;
 
         string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/test_01.dmr");
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
 
         fstream in(file_name.c_str(), ios::in|ios::binary);
         dp.intern(in, d_test_dmr);
+        d_test_dmr->root()->set_send_p(true);
 
         uint64_t max_size = 200;
-
         std::unordered_map<std::string,int64_t> too_big;
-        dap_utils::find_too_big_vars( *d_test_dmr, max_size, too_big);
+        response_size =  dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        DBG( cerr << prolog << "response_size: " << response_size << endl);
+        
         if(!too_big.empty()){
             cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
             for(auto apair:too_big){
@@ -129,16 +133,21 @@ public:
         D4BaseTypeFactory d_d4f;
         d_test_dmr = new DMR(&d_d4f);
         D4ParserSax2 dp;
+        uint64_t response_size = 0;
 
         string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
 
         fstream in(file_name.c_str(), ios::in|ios::binary);
         dp.intern(in, d_test_dmr);
+        d_test_dmr->root()->set_send_p(true);
 
         uint64_t max_size = 1000000;
         std::unordered_map<std::string,int64_t> too_big;
-        dap_utils::find_too_big_vars( *d_test_dmr, max_size, too_big);
+
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        DBG( cerr << prolog << "response_size: " << response_size << endl);
+
         if(!too_big.empty()){
             cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
             for(auto apair:too_big){
@@ -151,6 +160,82 @@ public:
         }
     }
 
+    void dmrpp_constrained_var_too_big_test() {
+
+        DMR *d_test_dmr;
+        D4BaseTypeFactory d_d4f;
+        d_test_dmr = new DMR(&d_d4f);
+        D4ParserSax2 dp;
+        uint64_t response_size = 0;
+
+        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
+        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
+
+        fstream in(file_name.c_str(), ios::in|ios::binary);
+        dp.intern(in, d_test_dmr);
+        D4ConstraintEvaluator d4ce(d_test_dmr);
+
+        uint64_t max_size = 1000000;
+        std::unordered_map<std::string,int64_t> too_big;
+
+        d4ce.parse("/support_data/gas_profile;/support_data/scattering_weights");
+
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        DBG( cerr << prolog << "response_size: " << response_size << endl);
+
+        if(!too_big.empty()){
+            cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
+            for(auto apair:too_big){
+                cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl;
+            }
+            CPPUNIT_ASSERT( too_big.size() == 2);
+        }
+        else {
+            CPPUNIT_FAIL(prolog + "ERROR: The constraint reduced the size of the variables to less than the maximum "
+                                  "when it should not have done so. No variables were deemed too big!");
+        }
+
+    }
+
+
+    void dmrpp_constrained_var_ok_test() {
+
+        DMR *d_test_dmr;
+        D4BaseTypeFactory d_d4f;
+        d_test_dmr = new DMR(&d_d4f);
+        D4ParserSax2 dp;
+        uint64_t response_size = 0;
+
+        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
+        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
+
+        fstream in(file_name.c_str(), ios::in|ios::binary);
+        dp.intern(in, d_test_dmr);
+        D4ConstraintEvaluator d4ce(d_test_dmr);
+
+        uint64_t max_size = 1000000;
+        std::unordered_map<std::string,int64_t> too_big;
+
+        d4ce.parse("/support_data/gas_profile[1][][];/support_data/scattering_weights[3][][]");
+
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        DBG( cerr << prolog << "response_size: " << response_size << endl);
+
+        if(!too_big.empty()){
+            DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
+            for(auto apair:too_big){
+                DBG( cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
+            }
+            CPPUNIT_FAIL( prolog + "ERROR The applied constraint expression should have reduced the size of the "
+                                   "requested variables so that the are no longer too big. That's not ok." );
+        }
+        else {
+            CPPUNIT_ASSERT( too_big.empty() );
+        }
+
+
+    }
+
 /* TESTS END */
 /*##################################################################################################*/
 
@@ -158,6 +243,8 @@ public:
 
     CPPUNIT_TEST(var_too_big_test);
     CPPUNIT_TEST(dmrpp_var_too_big_test);
+    CPPUNIT_TEST(dmrpp_constrained_var_too_big_test);
+    CPPUNIT_TEST(dmrpp_constrained_var_ok_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -167,5 +254,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DapUtilsTest);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::DapUtilsTest>(argc, argv, "bes,dap_utils") ? 0 : 1;
+    return bes_run_tests<http::DapUtilsTest>(argc, argv, "cerr,bes,dap_utils") ? 0 : 1;
 }
