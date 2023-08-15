@@ -114,7 +114,8 @@ public:
         std::unordered_map<std::string,int64_t> too_big;
         response_size =  dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
         DBG( cerr << prolog << "response_size: " << response_size << endl);
-        
+        CPPUNIT_ASSERT_MESSAGE("ERROR Unexpected response size!", response_size == 1016);
+
         if(!too_big.empty()){
             cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
             for(auto apair:too_big){
@@ -147,6 +148,8 @@ public:
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
         DBG( cerr << prolog << "response_size: " << response_size << endl);
+
+        CPPUNIT_ASSERT_MESSAGE("ERROR Unexpected response size!", response_size == 180356500);
 
         if(!too_big.empty()){
             cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
@@ -182,6 +185,9 @@ public:
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
         DBG( cerr << prolog << "response_size: " << response_size << endl);
+
+        CPPUNIT_ASSERT_MESSAGE("ERROR Unexpected response size!", response_size == 140378112);
+
 
         if(!too_big.empty()){
             cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
@@ -220,6 +226,8 @@ public:
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
         DBG( cerr << prolog << "response_size: " << response_size << endl);
+
+        CPPUNIT_ASSERT_MESSAGE("ERROR Unexpected response size!", response_size == 1179648);
 
         if(!too_big.empty()){
             DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
