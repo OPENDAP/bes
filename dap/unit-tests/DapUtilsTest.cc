@@ -27,6 +27,7 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 
 #include "BESError.h"
@@ -102,6 +103,9 @@ public:
         d_test_dmr = new DMR(&d_d4f);
         D4ParserSax2 dp;
         uint64_t response_size = 0;
+        stringstream msg;
+
+        uint64_t expected_response_size = 1016;
 
         string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/test_01.dmr");
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
@@ -113,8 +117,11 @@ public:
         uint64_t max_size = 200;
         std::unordered_map<std::string,int64_t> too_big;
         response_size =  dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
-        DBG( cerr << prolog << "response_size: " << response_size << endl);
-        CPPUNIT_ASSERT_MESSAGE("ERROR Unexpected response size!", response_size == 1016);
+        msg << prolog << "response_size: " << response_size << endl;
+        DBG( cerr << msg.str());
+        msg.str(string());
+        msg  << prolog << "ERROR: Unexpected response_size. expected: " << expected_response_size << " got response_size: " << response_size << endl;
+        CPPUNIT_ASSERT_MESSAGE(msg.str(), response_size == expected_response_size);
 
         if(!too_big.empty()){
             cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
