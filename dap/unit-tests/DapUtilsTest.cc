@@ -125,9 +125,9 @@ public:
         // differ from one system to the next, example OS-X: 24 bytes, centos-8: 32 bytes
 
         if(!too_big.empty()){
-            cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
+            DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
             for(auto apair:too_big){
-                cerr << prolog << "  " << apair.first << " (size: " << apair.second << ")" <<  endl;
+                DBG(cerr << prolog << "  " << apair.first << " (size: " << apair.second << ")" <<  endl);
             }
             CPPUNIT_ASSERT( too_big.size() == 2 );
         }
@@ -165,9 +165,9 @@ public:
         CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.str(), response_size, expected_response_size);
 
         if(!too_big.empty()){
-            cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
+            DBG(cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
             for(auto apair:too_big){
-                cerr << prolog << "  " << apair.first << " (size: " << apair.second << ")" <<  endl;
+                DBG(cerr << prolog << "  " << apair.first << " (size: " << apair.second << ")" <<  endl);
             }
             CPPUNIT_ASSERT(too_big.size() == 10 );
         }
@@ -208,9 +208,9 @@ public:
 
 
         if(!too_big.empty()){
-            cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
+            DBG(cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
             for(auto apair:too_big){
-                cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl;
+                DBG(cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
             }
             CPPUNIT_ASSERT( too_big.size() == 2);
         }
