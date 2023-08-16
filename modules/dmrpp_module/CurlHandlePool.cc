@@ -44,7 +44,6 @@
 #include "CredentialsManager.h"
 #include "AccessCredentials.h"
 
-#define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
@@ -407,11 +406,11 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle, bool replace) {
     // TODO Add a call to curl reset() here. jhrg 9/23/20
     //   I stuck it in the "replace" block below. ndp 08/07/23
 
-    if(replace || !KEEP_ALIVE) {
+    if(replace) {
         int i = 0;
         for (auto & d_easy_handle : d_easy_handles) {
             if (d_easy_handle == handle) {
-                BESDEBUG("dmrpp:5", "Found a handle match for the " << i << "th easy handle." << endl);
+                BESDEBUG("dmrpp:5", "Found a handle match for the " << i << "the easy handle." << endl);
                 curl_easy_reset(handle->d_handle);
                 delete handle;
                 d_easy_handle = new dmrpp_easy_handle();
