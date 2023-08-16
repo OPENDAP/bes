@@ -28,6 +28,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 #include "AttrTable.h"
 #include "DDS.h"
