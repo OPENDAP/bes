@@ -353,7 +353,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                      prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
             // If there are available credentials, and they are S3 credentials then we need to sign
             // the request
-            const std::time_t request_time = std::time(0);
+            const std::time_t request_time = std::time(nullptr);
 
             const std::string auth_header =
                     AWSV4::compute_awsv4_signature(
