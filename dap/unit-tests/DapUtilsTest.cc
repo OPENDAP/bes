@@ -79,7 +79,7 @@ public:
                 show_file(bes_conf);
             }
 
-            cerr << "Ingested debug options: " << BESDebug::GetOptionsString() << endl;
+            cerr << "Ingested BESDebug options: " << BESDebug::GetOptionsString() << endl;
         }
 
         TheBESKeys::ConfigFile = bes_conf;
@@ -102,9 +102,8 @@ public:
         DMR *d_test_dmr;
         d_test_dmr = new DMR(&d_d4f);
         D4ParserSax2 dp;
-        uint64_t response_size = 0;
         stringstream msg;
-
+        uint64_t response_size = 0;
         uint64_t expected_response_size = 1016;
 
         string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/test_01.dmr");
@@ -117,8 +116,9 @@ public:
         uint64_t max_size = 200;
         std::unordered_map<std::string,int64_t> too_big;
         response_size =  dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
-        msg << prolog << "response_size: " << response_size << endl;
+        msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
+
         msg.str(string());
         msg  << prolog << "ERROR: Unexpected response_size. expected: " << expected_response_size << " got response_size: " << response_size << endl;
         CPPUNIT_ASSERT_MESSAGE(msg.str(), response_size == expected_response_size);
@@ -141,7 +141,9 @@ public:
         D4BaseTypeFactory d_d4f;
         d_test_dmr = new DMR(&d_d4f);
         D4ParserSax2 dp;
+        stringstream msg;
         uint64_t response_size = 0;
+        uint64_t expected_response_size = 180356500;
 
         string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
@@ -154,9 +156,12 @@ public:
         std::unordered_map<std::string,int64_t> too_big;
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
-        DBG( cerr << prolog << "response_size: " << response_size << endl);
+        msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
+        DBG( cerr << msg.str());
 
-        CPPUNIT_ASSERT_MESSAGE("ERROR Unexpected response size!", response_size == 180356500);
+        msg.str(string());
+        msg  << prolog << "ERROR: Unexpected response_size. expected: " << expected_response_size << " got response_size: " << response_size << endl;
+        CPPUNIT_ASSERT_MESSAGE(msg.str(), response_size == expected_response_size);
 
         if(!too_big.empty()){
             cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl;
@@ -176,7 +181,9 @@ public:
         D4BaseTypeFactory d_d4f;
         d_test_dmr = new DMR(&d_d4f);
         D4ParserSax2 dp;
+        stringstream msg;
         uint64_t response_size = 0;
+        uint64_t expected_response_size = 140378112;
 
         string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
@@ -191,9 +198,12 @@ public:
         d4ce.parse("/support_data/gas_profile;/support_data/scattering_weights");
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
-        DBG( cerr << prolog << "response_size: " << response_size << endl);
+        msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
+        DBG( cerr << msg.str());
 
-        CPPUNIT_ASSERT_MESSAGE("ERROR Unexpected response size!", response_size == 140378112);
+        msg.str(string());
+        msg  << prolog << "ERROR: Unexpected response_size. expected: " << expected_response_size << " got response_size: " << response_size << endl;
+        CPPUNIT_ASSERT_MESSAGE(msg.str(), response_size == expected_response_size);
 
 
         if(!too_big.empty()){
@@ -217,7 +227,9 @@ public:
         D4BaseTypeFactory d_d4f;
         d_test_dmr = new DMR(&d_d4f);
         D4ParserSax2 dp;
+        stringstream msg;
         uint64_t response_size = 0;
+        uint64_t expected_response_size = 1179648;
 
         string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
@@ -232,9 +244,12 @@ public:
         d4ce.parse("/support_data/gas_profile[1][][];/support_data/scattering_weights[3][][]");
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
-        DBG( cerr << prolog << "response_size: " << response_size << endl);
+        msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
+        DBG( cerr << msg.str());
 
-        CPPUNIT_ASSERT_MESSAGE("ERROR Unexpected response size!", response_size == 1179648);
+        msg.str(string());
+        msg  << prolog << "ERROR: Unexpected response_size. expected: " << expected_response_size << " got response_size: " << response_size << endl;
+        CPPUNIT_ASSERT_MESSAGE(msg.str(), response_size == expected_response_size);
 
         if(!too_big.empty()){
             DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
