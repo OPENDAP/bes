@@ -122,6 +122,9 @@ public:
         DBG( cerr << msg.str());
         if(hack_bug) cerr << msg.str();
 
+        d_test_dmr->root()->print_decl(cerr, "", true, true, true);
+
+
         msg.str(string());
         msg  << prolog << "ERROR: Unexpected response_size. expected: " << expected_response_size << " got response_size: " << response_size << endl;
         // CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.str(), response_size, expected_response_size);
