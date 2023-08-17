@@ -258,14 +258,106 @@ public:
                 DBG( cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
             }
             CPPUNIT_FAIL( prolog + "ERROR The applied constraint expression should have reduced the size of the "
-                                   "requested variables so that the are no longer too big. That's not ok." );
+                                   "requested variables so that they are no longer too big. That's not ok." );
         }
         else {
+            DBG( cerr << prolog << "No variables larger than " << max_size << " bytes were found." << endl);
+            CPPUNIT_ASSERT( too_big.empty() );
+        }
+    }
+
+    void dmrpp_root_group_var_too_big_test() {
+
+        DMR *d_test_dmr;
+        D4BaseTypeFactory d_d4f;
+        d_test_dmr = new DMR(&d_d4f);
+        D4ParserSax2 dp;
+        stringstream msg;
+        uint64_t response_size = 0;
+        uint64_t expected_response_size = 8668;
+
+        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
+        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
+
+        fstream in(file_name.c_str(), ios::in|ios::binary);
+        dp.intern(in, d_test_dmr);
+        D4ConstraintEvaluator d4ce(d_test_dmr);
+
+        uint64_t max_size = 8000;
+        std::unordered_map<std::string,int64_t> too_big;
+
+        d4ce.parse("/xtrack;/mirror_step");
+
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
+        DBG( cerr << msg.str());
+
+        msg.str(string());
+        msg  << prolog << "ERROR: Unexpected response_size. expected: " << expected_response_size << " got response_size: " << response_size << endl;
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.str(), response_size, expected_response_size);
+
+        if(!too_big.empty()){
+            DBG(cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
+            for(auto apair:too_big){
+                DBG(cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
+            }
+            CPPUNIT_ASSERT( too_big.size() == 1);
+        }
+        else {
+            CPPUNIT_FAIL(prolog + "ERROR: The constraint reduced the size of the variables to less than the maximum "
+                                  "when it should not have done so. No variables were deemed too big!");
+        }
+
+    }
+
+
+    void dmrpp_constrained_root_group_var_ok_test() {
+
+        DMR *d_test_dmr;
+        D4BaseTypeFactory d_d4f;
+        d_test_dmr = new DMR(&d_d4f);
+        D4ParserSax2 dp;
+        stringstream msg;
+        uint64_t response_size = 0;
+        uint64_t expected_response_size = 2524;
+
+        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
+        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
+
+        fstream in(file_name.c_str(), ios::in|ios::binary);
+        dp.intern(in, d_test_dmr);
+        D4ConstraintEvaluator d4ce(d_test_dmr);
+
+        uint64_t max_size = 8000;
+        std::unordered_map<std::string,int64_t> too_big;
+
+        d4ce.parse("/xtrack[1:4:2047];/mirror_step");
+
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
+        DBG( cerr << msg.str());
+
+        msg.str(string());
+        msg  << prolog << "ERROR: Unexpected response_size. expected: " << expected_response_size << " got response_size: " << response_size << endl;
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.str(), response_size, expected_response_size);
+
+        if(!too_big.empty()){
+            DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
+            for(auto apair:too_big){
+                DBG( cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
+            }
+            CPPUNIT_FAIL( prolog + "ERROR The applied constraint expression should have reduced the size of the "
+                                   "requested variables so that they are no longer too big. That's not ok." );
+        }
+        else {
+            DBG( cerr << prolog << "No variables larger than " << max_size << " bytes were found." << endl);
             CPPUNIT_ASSERT( too_big.empty() );
         }
 
-
     }
+
+
+
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -276,6 +368,8 @@ public:
     CPPUNIT_TEST(dmrpp_var_too_big_test);
     CPPUNIT_TEST(dmrpp_constrained_var_too_big_test);
     CPPUNIT_TEST(dmrpp_constrained_var_ok_test);
+    CPPUNIT_TEST(dmrpp_root_group_var_too_big_test);
+    CPPUNIT_TEST(dmrpp_constrained_root_group_var_ok_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

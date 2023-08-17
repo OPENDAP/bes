@@ -178,7 +178,13 @@ void throw_if_dap4_response_too_big(DMR &dmr, const std::string &file, unsigned 
     }
 }
 
-std::string get_dap_array_dims_str(libdap::Array &a, bool constrained=false){
+
+/**
+ * @brief Returns a string with the square bracket notation for the arrays dimension sizes as constrained.
+ * @param a The Array to evaluate.
+ * @return A string with the square brackety business.
+ */
+std::string get_dap_array_dims_str(libdap::Array &a){
     stringstream my_dims;
     auto dim_itr = a.dim_begin();
     auto end_dim = a.dim_end();
@@ -190,7 +196,7 @@ std::string get_dap_array_dims_str(libdap::Array &a, bool constrained=false){
             if(d4dim->constrained()){
                 elements = (d4dim->c_stop() - d4dim->c_start());
                 if(d4dim->c_stride()){
-                    double num = (elements+0.0)/d4dim->c_stride();
+                    double num = (static_cast<double>(elements)) / d4dim->c_stride();
                     elements  = num;
                 }
             } else{
@@ -198,7 +204,7 @@ std::string get_dap_array_dims_str(libdap::Array &a, bool constrained=false){
             }
         }
         else {
-            double num = dim.stop - (dim.start+0.0)/dim.stride;
+            double num = dim.stop - (static_cast<double>(dim.start)) / dim.stride;
             elements  = num;
             if(!elements) elements = 1;
         }
@@ -208,14 +214,19 @@ std::string get_dap_array_dims_str(libdap::Array &a, bool constrained=false){
     return my_dims.str();
 }
 
-std::string get_dap_decl(libdap::BaseType *var, bool constrained=false) {
+/**
+ * @brief Returns the declaration of the passed variable as "TypeName VarName" followed by a the [] expression of the constrained dimension sizes is the variable is an Array.
+ * @param var The variable to evaluate
+ * @return The declaration string.
+ */
+std::string get_dap_decl(libdap::BaseType *var) {
 
     stringstream ss;
     if(var->is_vector_type()){
         auto myArray = dynamic_cast<libdap::Array *>(var);
         if(myArray) {
             ss << myArray->prototype()->type_name() << " " << var->FQN();
-            ss << get_dap_array_dims_str(*myArray, constrained);
+            ss << get_dap_array_dims_str(*myArray);
         }
         else {
             auto myVec = dynamic_cast<libdap::Vector *>(var);
@@ -266,13 +277,13 @@ uint64_t compute_response_size_and_inv_big_vars( libdap::Constructor *constrctr,
                 uint64_t vsize = var->width_ll(true);
                 response_size += vsize;
 
-                string vdecl = get_dap_decl(var, true);
+                string vdecl = get_dap_decl(var);
                 BESDEBUG(MODULE_VERBOSE, prolog << "  " << vdecl << "(" << vsize << " bytes)" << endl);
                 if (vsize > max_var_size) {
                     too_big.emplace(pair<string, uint64_t>(vdecl, vsize));
                     BESDEBUG(MODULE,
-                             prolog << vdecl << "(" << vsize << " bytes) is bigger than the max_var_size of " << max_var_size
-                                    << " bytes. too_big.size(): " << too_big.size() << endl);
+                             prolog << vdecl << "(" << vsize << " bytes) is bigger than the max_var_size of "
+                             << max_var_size << " bytes. too_big.size(): " << too_big.size() << endl);
                 }
             }
         }
@@ -333,7 +344,7 @@ uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t
     //  of a stringstream to which we just keep adding more stuff:
     //  stringstream too_big_inventory;
     //  too_big_inventory << "variable decl[dim0]...[dimN] (size: ##### bytes)" << endl;
-    
+
     return compute_response_size_and_inv_big_vars(dmr.root(), max_var_size,too_big);
 }
 
