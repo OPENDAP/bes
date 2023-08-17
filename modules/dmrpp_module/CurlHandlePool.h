@@ -103,7 +103,6 @@ public:
         for (auto d_easy_handle : d_easy_handles) {
             if (!d_easy_handle->d_in_use) {
                 n++;
-
             }
         }
         return n;
@@ -111,7 +110,7 @@ public:
 
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
-    void release_handle(dmrpp_easy_handle *h);
+    void release_handle(dmrpp_easy_handle *h, bool replace=false);
 
     void release_handle(const Chunk *chunk);
 
