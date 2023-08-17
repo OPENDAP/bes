@@ -47,9 +47,6 @@
 
 using namespace libdap;
 
-
-
-
 namespace dap_utils {
 
 /**
@@ -235,13 +232,20 @@ std::string get_dap_decl(libdap::BaseType *var, bool constrained=false) {
 }
 
 /**
+ * @brief Assesses the provided libdap::Constructor to identify a set of variables whose size is larger than the provided max_var_size, returns total response size for the Constructor.
  *
- * @param constrctr
- * @param max_var_size
- * @param too_big
+ * Assumption: The provided libdap::Constructor has had the constraint expressions applied.
+ *
+ * This code also handles the libdap::D4Group instances as they children of libdap::Constructor.
+ *
+ * @param constrctr The Constructor to evaluate
+ * @param max_var_size Size threshold for the inclusion of variables in the inventory.
+ * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
 uint64_t compute_response_size_and_inv_big_vars( libdap::Constructor *constrctr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
 {
+
+    BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << constrctr->type_name() << "(FQN: " << constrctr->FQN() << ")" << endl);
 
     uint64_t response_size = 0;
     auto varitr=constrctr->var_begin();
@@ -261,36 +265,45 @@ uint64_t compute_response_size_and_inv_big_vars( libdap::Constructor *constrctr,
             if (var->send_p()) {
                 uint64_t vsize = var->width_ll(true);
                 response_size += vsize;
+
                 string vdecl = get_dap_decl(var, true);
                 BESDEBUG(MODULE_VERBOSE, prolog << "  " << vdecl << "(" << vsize << " bytes)" << endl);
                 if (vsize > max_var_size) {
+                    too_big.emplace(pair<string, uint64_t>(vdecl, vsize));
                     BESDEBUG(MODULE,
                              prolog << vdecl << "(" << vsize << " bytes) is bigger than the max_var_size of " << max_var_size
-                                    << " bytes." << endl);
-                    too_big.emplace(pair<string, uint64_t>(vdecl, vsize));
+                                    << " bytes. too_big.size(): " << too_big.size() << endl);
                 }
             }
         }
         BESDEBUG(MODULE_VERBOSE, prolog << "END " << var->type_name() << "(FQN: " << var->FQN() << ")" << endl);
     }
-    BESDEBUG(MODULE, prolog << "response_size: " << response_size << endl);
+    BESDEBUG(MODULE_VERBOSE, prolog << "END " << constrctr->type_name() << "(FQN: " << constrctr->FQN() << ")"
+        << "response_size: " << response_size << endl);
     return response_size;
 }
 
 
 /**
+ * @brief Assesses the provided libdap::Group to identify a set of variables whose size is larger than the provided max_var_size, returns total response size for this Group.
  *
- * @param grp
- * @param max_var_size
- * @param too_big
+ * Assumption: The provided libdap::Group has had the constraint expressions applied.
+ *
+ * @param grp The Group to evaluate.
+ * @param max_var_size Size threshold for the inclusion of variables in the inventory.
+ * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
 uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
 {
     uint64_t response_size = 0;
     auto cnstrctr = dynamic_cast<libdap::Constructor *>(grp);
     if (cnstrctr) {
+        // This is basically always going to be the result since libdap::D4Group is a child of libdap::Constructor,
+        // And importantly for this code the actual size computation is handle in thie the follwing call.
         response_size += compute_response_size_and_inv_big_vars(cnstrctr, max_var_size, too_big);
     }
+
+    // Process child groups.
     for (auto child_grp: grp->groups()) {
         BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
         response_size += compute_response_size_and_inv_big_vars(child_grp, max_var_size, too_big);
@@ -300,13 +313,27 @@ uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uin
 }
 
 /**
+ * @brief Assesses the provided DMR to identify a set of variables whose size is larger than the provided max_var_size, returns total response size.
  *
- * @param dmr
- * @param max_var_size
- * @param too_big
+ * ; Assumption
+ * : The provided DMR has had the constraint expressions applied - as in parsing some ce, or calling
+ * : dmr.root()->set_send_p(true) to mark everything.
+ *
+ * @param dmr The DMR to evaluate.
+ * @param max_var_size Size threshold for the inclusion of variables in the inventory.
+ * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
 uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
 {
+    // TODO: Rather than an unordered_map, or even map, we might consider using vector like this:
+    //  std::vector<std::pair<std::string,int64_t>> foo;
+    //  Is that better? It preserves to order of addition and we don't ever need any of the map api features
+    //  in the usage of the inventory. In fact we might consider just making this a vector<string> and building
+    //  each string as "variable decl[dim0]...[dimN] (size: ##### bytes)" or even skipping the vector in favor
+    //  of a stringstream to which we just keep adding more stuff:
+    //  stringstream too_big_inventory;
+    //  too_big_inventory << "variable decl[dim0]...[dimN] (size: ##### bytes)" << endl;
+    
     return compute_response_size_and_inv_big_vars(dmr.root(), max_var_size,too_big);
 }
 
