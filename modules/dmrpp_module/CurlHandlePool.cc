@@ -44,7 +44,6 @@
 #include "CredentialsManager.h"
 #include "AccessCredentials.h"
 
-#define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
@@ -285,93 +284,103 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
     }
 
     if (handle) {
-        // Once here, d_easy_handle holds a CURL* we can use.
-        handle->d_in_use = true;
-        handle->d_url = chunk->get_data_url();
+        try {
+            // Once here, d_easy_handle holds a CURL* we can use.
+            handle->d_in_use = true;
+            handle->d_url = chunk->get_data_url();
 
-        handle->d_chunk = chunk;
+            handle->d_chunk = chunk;
 
-        CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url()->str().c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
+            CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url()->str().c_str());
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
 
-        // get the offset to offset + size bytes
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", handle->d_errbuf, __FILE__, __LINE__);
+            // get the offset to offset + size bytes
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str());
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", handle->d_errbuf, __FILE__, __LINE__);
 
-        // Pass this to chunk_header_callback as the fourth argument
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_HEADERDATA, reinterpret_cast<void *>(chunk));
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERDATA", handle->d_errbuf, __FILE__, __LINE__);
+            // Pass this to chunk_header_callback as the fourth argument
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_HEADERDATA, reinterpret_cast<void *>(chunk));
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERDATA", handle->d_errbuf, __FILE__, __LINE__);
 
-        // Pass this to chunk_write_data as the fourth argument
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(chunk));
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", handle->d_errbuf, __FILE__, __LINE__);
+            // Pass this to chunk_write_data as the fourth argument
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(chunk));
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", handle->d_errbuf, __FILE__, __LINE__);
 
-        // store the easy_handle so that we can call release_handle in multi_handle::read_data()
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void *>(handle));
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PRIVATE", handle->d_errbuf, __FILE__, __LINE__);
+            // store the easy_handle so that we can call release_handle in multi_handle::read_data()
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void *>(handle));
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PRIVATE", handle->d_errbuf, __FILE__, __LINE__);
 
-        // Enabled cookies
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", handle->d_errbuf, __FILE__, __LINE__);
+            // Enabled cookies
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", handle->d_errbuf, __FILE__, __LINE__);
 
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", handle->d_errbuf, __FILE__, __LINE__);
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", handle->d_errbuf, __FILE__, __LINE__);
 
-        // Follow 302 (redirect) responses
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", handle->d_errbuf, __FILE__, __LINE__);
+            // Follow 302 (redirect) responses
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", handle->d_errbuf, __FILE__,
+                                               __LINE__);
 
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS, curl::max_redirects());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", handle->d_errbuf, __FILE__, __LINE__);
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS, curl::max_redirects());
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", handle->d_errbuf, __FILE__, __LINE__);
 
-        // Set the user agent something otherwise TEA will never redirect to URS.
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, curl::hyrax_user_agent().c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_USERAGENT", handle->d_errbuf, __FILE__, __LINE__);
+            // Set the user agent something otherwise TEA will never redirect to URS.
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, curl::hyrax_user_agent().c_str());
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_USERAGENT", handle->d_errbuf, __FILE__, __LINE__);
 
-        // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
-        // choosing the the 'safest' one supported by the server.
-        // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", handle->d_errbuf, __FILE__, __LINE__);
+            // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
+            // choosing the the 'safest' one supported by the server.
+            // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", handle->d_errbuf, __FILE__, __LINE__);
 
-        // Enable using the .netrc credentials file.
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC", handle->d_errbuf, __FILE__, __LINE__);
+            // Enable using the .netrc credentials file.
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC", handle->d_errbuf, __FILE__, __LINE__);
 
-        // If the configuration specifies a particular .netrc credentials file, use it.
-        // TODO move this operation into constructor and stash the value.
-        string netrc_file = curl::get_netrc_filename();
-        if (!netrc_file.empty()) {
-            res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
-            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
+            // If the configuration specifies a particular .netrc credentials file, use it.
+            // TODO move this operation into constructor and stash the value.
+            string netrc_file = curl::get_netrc_filename();
+            if (!netrc_file.empty()) {
+                res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
+                curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__,
+                                                   __LINE__);
+            }
+
+            // TODO Code between here and below may have been turned into a method in AccessCredentials. jhrg 11/2/22
+            AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
+            if (credentials && credentials->is_s3_cred()) {
+                BESDEBUG(DMRPP_CURL,
+                         prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
+                // If there are available credentials, and they are S3 credentials then we need to sign
+                // the request
+                const std::time_t request_time = std::time(0);
+
+                const std::string auth_header =
+                        AWSV4::compute_awsv4_signature(
+                                handle->d_url,
+                                request_time,
+                                credentials->get(AccessCredentials::ID_KEY),
+                                credentials->get(AccessCredentials::KEY_KEY),
+                                credentials->get(AccessCredentials::REGION_KEY),
+                                "s3");
+
+
+                handle->d_request_headers = curl::append_http_header((curl_slist *) 0, "Authorization", auth_header);
+                handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
+                                                                     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+                handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date",
+                                                                     AWSV4::ISO8601_date(request_time));
+                // TODO here. jhrg 11/2/22
+                res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
+                curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__,
+                                                   __LINE__);
+            }
         }
-
-        // TODO Code between here and below may have been turned into a method in AccessCredentials. jhrg 11/2/22
-        AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
-        if (credentials && credentials->is_s3_cred()) {
-            BESDEBUG(DMRPP_CURL,
-                     prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
-            // If there are available credentials, and they are S3 credentials then we need to sign
-            // the request
-            const std::time_t request_time = std::time(nullptr);
-
-            const std::string auth_header =
-                    AWSV4::compute_awsv4_signature(
-                            handle->d_url,
-                            request_time,
-                            credentials->get(AccessCredentials::ID_KEY),
-                            credentials->get(AccessCredentials::KEY_KEY),
-                            credentials->get(AccessCredentials::REGION_KEY),
-                            "s3");
-
-
-            handle->d_request_headers = curl::append_http_header((curl_slist *)0, "Authorization", auth_header);
-            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
-                                                  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
-            // TODO here. jhrg 11/2/22
-            res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
-            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+        catch (...){
+            release_handle(handle,true);
+            return nullptr;
         }
     }
 
@@ -384,7 +393,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
  *
  * @param handle
  */
-void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
+void CurlHandlePool::release_handle(dmrpp_easy_handle *handle, bool replace) {
     // In get_easy_handle, it's possible that d_in_use could be false and d_chunk
     // could not be set to 0 (because a separate thread could be running these
     // methods). In that case, the thread running get_easy_handle could set d_chunk,
@@ -395,23 +404,26 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
     std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
 
     // TODO Add a call to curl reset() here. jhrg 9/23/20
+    //   I stuck it in the "replace" block below. ndp 08/07/23
 
-#if KEEP_ALIVE
-    handle->d_url = nullptr;
-    handle->d_chunk = nullptr;
-    handle->d_in_use = false;
-#else
-    // This is to test the effect of libcurl Keep Alive support
-    // Find the handle; erase from the vector; delete; allocate a new handle and push it back on
-    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        if (*i == handle) {
-            BESDEBUG("dmrpp:5", "Found a handle match for the " << i - d_easy_handles.begin() << "th easy handle." << endl);
-            delete handle;
-            *i = new dmrpp_easy_handle();
-            break;
+    if(replace) {
+        int i = 0;
+        for (auto & d_easy_handle : d_easy_handles) {
+            if (d_easy_handle == handle) {
+                BESDEBUG("dmrpp:5", "Found a handle match for the " << i << "the easy handle." << endl);
+                curl_easy_reset(handle->d_handle);
+                delete handle;
+                d_easy_handle = new dmrpp_easy_handle();
+                break;
+            }
+            i++;
         }
     }
-#endif
+    else {
+        handle->d_url = nullptr;
+        handle->d_chunk = nullptr;
+        handle->d_in_use = false;
+    }
 }
 
 /**
