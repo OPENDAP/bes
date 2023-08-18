@@ -253,15 +253,16 @@ std::string get_dap_decl(libdap::BaseType *var) {
  * @param max_var_size Size threshold for the inclusion of variables in the inventory.
  * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
-uint64_t compute_response_size_and_inv_big_vars( libdap::Constructor *constrctr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
+uint64_t compute_response_size_and_inv_big_vars(
+        libdap::Constructor *constrctr,
+        const uint64_t &max_var_size,
+        std::unordered_map<std::string,int64_t> &too_big)
 {
 
     BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << constrctr->type_name() << "(FQN: " << constrctr->FQN() << ")" << endl);
 
     uint64_t response_size = 0;
-    auto varitr=constrctr->var_begin();
-    for(; varitr != constrctr->var_end(); varitr++){
-        auto var = *varitr;
+    for(auto var: constrctr->variables()){
         BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << var->type_name() << "(FQN: " << var->FQN() << ")" << endl);
         if(var->is_constructor_type()){
             auto some_constrctr = dynamic_cast<libdap::Constructor *>(var);
@@ -283,7 +284,7 @@ uint64_t compute_response_size_and_inv_big_vars( libdap::Constructor *constrctr,
                     too_big.emplace(pair<string, uint64_t>(vdecl, vsize));
                     BESDEBUG(MODULE,
                              prolog << vdecl << "(" << vsize << " bytes) is bigger than the max_var_size of "
-                             << max_var_size << " bytes. too_big.size(): " << too_big.size() << endl);
+                                    << max_var_size << " bytes. too_big.size(): " << too_big.size() << endl);
                 }
             }
         }
