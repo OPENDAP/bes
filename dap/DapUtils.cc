@@ -178,6 +178,42 @@ void throw_if_dap4_response_too_big(DMR &dmr, const std::string &file, unsigned 
     }
 }
 
+/**
+ * @brief - determines the number of requested elements for the D4Dimension d4dim.
+ * @param d4dim The dimension to examine
+ * @return The number elements marked for transmission.
+ */
+uint64_t count_requested_elements(const D4Dimension *d4dim){
+    uint64_t elements = 0;
+    if(d4dim->constrained()){
+        elements = (d4dim->c_stop() - d4dim->c_start());
+        if(d4dim->c_stride()){
+            double num = (static_cast<double>(elements)) / d4dim->c_stride();
+            elements  = floor(num);
+        }
+    } else{
+        elements = d4dim->size();
+    }
+    if(!elements)
+        elements = 1;
+
+    return elements;
+}
+
+/**
+ * @brief - determines the number of requested elements for the Array::dimension dim.
+ * @param d4dim The dimension to examine
+ * @return The number elements marked for transmission.
+ */
+uint64_t count_requested_elements(const Array::dimension &dim){
+    uint64_t elements = 0;
+    double num = (static_cast<double>(dim.stop) - static_cast<double>(dim.start)) / static_cast<double>(dim.stride);
+    elements  = floor(num);
+    if(!elements)
+        elements = 1;
+
+    return elements;
+}
 
 /**
  * @brief Returns a string with the square bracket notation for the arrays dimension sizes as constrained.
@@ -193,20 +229,10 @@ std::string get_dap_array_dims_str(libdap::Array &a){
         auto d4dim = dim.dim;
         uint64_t elements = 0;
         if(d4dim){
-            if(d4dim->constrained()){
-                elements = (d4dim->c_stop() - d4dim->c_start());
-                if(d4dim->c_stride()){
-                    double num = (static_cast<double>(elements)) / d4dim->c_stride();
-                    elements  = num;
-                }
-            } else{
-                elements = d4dim->size();
-            }
+            elements = count_requested_elements(d4dim);
         }
         else {
-            double num = dim.stop - (static_cast<double>(dim.start)) / dim.stride;
-            elements  = num;
-            if(!elements) elements = 1;
+            elements  = count_requested_elements(dim);
         }
         my_dims << "[" << elements << "]";
         dim_itr++;
@@ -242,6 +268,40 @@ std::string get_dap_decl(libdap::BaseType *var) {
     return ss.str();
 }
 
+
+/**
+ * @brief Determines the number of bytes that var will contribute to the response and adds var to the inventory of too_big variables.
+ *
+ * Assumption: The provided libdap::Constructor has had the constraint expressions applied.
+ *
+ * This code also handles the libdap::D4Group instances as they children of libdap::Constructor.
+ *
+ * @param constrctr The Constructor to evaluate
+ * @param max_var_size Size threshold for the inclusion of variables in the inventory.
+ * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
+ * @return The number of bytes the variable var will conribute to the response
+ */
+uint64_t process_variable(BaseType *var, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big){
+    uint64_t response_size = 0;
+    if (var->send_p()) {
+        uint64_t vsize = var->width_ll(true);
+        response_size += vsize;
+
+        string vdecl = get_dap_decl(var);
+        BESDEBUG(MODULE_VERBOSE, prolog << "  " << vdecl << "(" << vsize << " bytes)" << endl);
+        if (vsize > max_var_size) {
+            too_big.emplace(pair<string, uint64_t>(vdecl, vsize));
+            BESDEBUG(MODULE,
+                     prolog << vdecl << "(" << vsize << " bytes) is bigger than the max_var_size of "
+                            << max_var_size << " bytes. too_big.size(): " << too_big.size() << endl);
+        }
+    }
+    return response_size;
+}
+
+
+
+
 /**
  * @brief Assesses the provided libdap::Constructor to identify a set of variables whose size is larger than the provided max_var_size, returns total response size for the Constructor.
  *
@@ -254,7 +314,7 @@ std::string get_dap_decl(libdap::BaseType *var) {
  * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
 uint64_t compute_response_size_and_inv_big_vars(
-        libdap::Constructor *constrctr,
+        const libdap::Constructor *constrctr,
         const uint64_t &max_var_size,
         std::unordered_map<std::string,int64_t> &too_big)
 {
@@ -274,7 +334,10 @@ uint64_t compute_response_size_and_inv_big_vars(
             }
         }
         else {
+            response_size += process_variable(var,  max_var_size, too_big);
+#if 0
             if (var->send_p()) {
+
                 uint64_t vsize = var->width_ll(true);
                 response_size += vsize;
 
@@ -287,6 +350,7 @@ uint64_t compute_response_size_and_inv_big_vars(
                                     << max_var_size << " bytes. too_big.size(): " << too_big.size() << endl);
                 }
             }
+#endif
         }
         BESDEBUG(MODULE_VERBOSE, prolog << "END " << var->type_name() << "(FQN: " << var->FQN() << ")" << endl);
     }
