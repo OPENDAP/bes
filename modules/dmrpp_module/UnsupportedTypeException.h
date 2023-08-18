@@ -14,7 +14,7 @@
 namespace dmrpp {
 
 /**
- * @brief Used to prevent the production of dmr++ files that contain unsupported data types.
+ * @brief Thrown to prevent the production of dmr++ files that contain unsupported data types.
  */
 class UnsupportedTypeException : public std::exception  {
 
@@ -23,7 +23,10 @@ private:
     UnsupportedTypeException() = delete;
 
 public:
-    explicit UnsupportedTypeException(std::string msg): d_msg(msg){};
+    explicit UnsupportedTypeException(std::string &msg): d_msg(msg){};
+    UnsupportedTypeException(UnsupportedTypeException &) = default;
+    ~UnsupportedTypeException() override = default;
+
     const char* what() const noexcept override { return d_msg.c_str(); };
 
 };
