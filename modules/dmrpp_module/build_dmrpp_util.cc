@@ -61,7 +61,7 @@
 #include "DmrppMetadataStore.h"
 #include "D4ParserSax2.h"
 
-#include "UnsupportedVariableLengthStringArrayException.h"
+#include "UnsupportedTypeException.h"
 
 #if 0
 #define H5S_MAX_RANK    32
@@ -354,7 +354,14 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
         case H5T_STRING: {
             // TODO: for variable length string KY 2022-12-22
             if (H5Tis_variable_str(h5_type_id)) {
-                throw UnsupportedVariableLengthStringArrayException();
+                string msg("UnsupportedTypeException: Your data granule contains an array of "
+                         "variable length strings (AVLS). This data architecture is not currently supported by the "
+                         "dmr++ creation machinery. One solution available to you is to rewrite the granule so that "
+                         "these arrays are represented as arrays of fixed length strings (AFLS). While these may not "
+                         "be as'elegant' as AVLS, the ragged ends of the AFLS compress well, so the storage penalty is "
+                         "minimal.");
+
+                throw UnsupportedTypeException(msg);
                 // return "unsupported-variable-length-string";
             }
             else {
@@ -362,14 +369,22 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                 return str_fv;
             }
         }
-        case H5T_ARRAY:
-            return "unsupported-array";
-        case H5T_COMPOUND:
-            return "unsupported-compound";
+        case H5T_ARRAY: {
+            string msg("UnsupportedTypeException: Your data granule contains an H5T_ARRAY "
+                       "which is not yet supported by the dmr++ creation machinery.");
+            throw UnsupportedTypeException(msg);
+            //return "unsupported-array";
+        }
+        case H5T_COMPOUND: {
+            string msg("UnsupportedTypeException: Your data granule contains a variable with type H5T_COMPOUND  "
+                       "which is not yet supported by the dmr++ creation machinery.");
+            throw UnsupportedTypeException(msg);
+            // return "unsupported-compound";
+        }
 
         case H5T_REFERENCE:
         default:
-            throw BESInternalError("Unable extract fill value.", __FILE__, __LINE__);
+            throw BESInternalError("Unable extract fill value from HDF5 file.", __FILE__, __LINE__);
     }
 }
 
