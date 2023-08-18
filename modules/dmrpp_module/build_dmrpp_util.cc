@@ -61,6 +61,8 @@
 #include "DmrppMetadataStore.h"
 #include "D4ParserSax2.h"
 
+#include "UnsupportedVariableLengthStringArrayException.h"
+
 #if 0
 #define H5S_MAX_RANK    32
 #define H5O_LAYOUT_NDIMS    (H5S_MAX_RANK+1)
@@ -351,8 +353,10 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
 
         case H5T_STRING: {
             // TODO: for variable length string KY 2022-12-22
-            if (H5Tis_variable_str(h5_type_id))
-                return "unsupported-variable-length-string";
+            if (H5Tis_variable_str(h5_type_id)) {
+                throw UnsupportedVariableLengthStringArrayException();
+                // return "unsupported-variable-length-string";
+            }
             else {
                 string str_fv(value.begin(),value.end());
                 return str_fv;

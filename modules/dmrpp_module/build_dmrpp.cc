@@ -92,9 +92,10 @@ int main(int argc, char *argv[]) {
     string dmrpp_href_value;
     string bes_conf_file_used_to_create_dmr;
     bool add_production_metadata = false;
+    bool ignore_avls = false; // Ignore
 
     int option_char;
-    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVM")) != -1) {
+    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVMS")) != -1) {
         switch (option_char) {
             case 'V':
                 cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-"
