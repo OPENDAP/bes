@@ -20,14 +20,16 @@ class UnsupportedTypeException : public std::exception  {
 
 private:
     std::string d_msg;
-    UnsupportedTypeException() = delete;
 
 public:
-    explicit UnsupportedTypeException(std::string &msg): d_msg(msg){};
-    UnsupportedTypeException(UnsupportedTypeException &) = default;
+    UnsupportedTypeException(std::string msg) : d_msg(std::move(msg)){};
+
+    UnsupportedTypeException() = delete;
+    UnsupportedTypeException(UnsupportedTypeException &e) { d_msg = e.d_msg; };
     ~UnsupportedTypeException() override = default;
 
     const char* what() const noexcept override { return d_msg.c_str(); };
+
 
 };
 
