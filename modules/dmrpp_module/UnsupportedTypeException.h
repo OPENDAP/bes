@@ -3,8 +3,8 @@
 //
 
 
-#ifndef BES_UNSUPPORTEDTYPE_H
-#define BES_UNSUPPORTEDTYPE_H
+#ifndef BES_UNSUPPORTEDTYPEEXCEPTION_H
+#define BES_UNSUPPORTEDTYPEEXCEPTION_H
 
 #include "config.h"
 
@@ -35,4 +35,4 @@ public:
 
 } // namespace dmrpp
 
-#endif //BES_UNSUPPORTEDTYPE_H
+#endif //BES_UNSUPPORTEDTYPEEXCEPTION_H
