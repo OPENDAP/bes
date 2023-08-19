@@ -189,7 +189,7 @@ uint64_t count_requested_elements(const D4Dimension *d4dim){
     if(d4dim->constrained()){
         elements = (d4dim->c_stop() - d4dim->c_start());
         if(d4dim->c_stride()){
-            double num = (static_cast<double>(elements)) / d4dim->c_stride();
+            auto num = elements / d4dim->c_stride();
             elements  = floor(num);
         }
     } else{
@@ -208,7 +208,7 @@ uint64_t count_requested_elements(const D4Dimension *d4dim){
  */
 uint64_t count_requested_elements(const Array::dimension &dim){
     uint64_t elements = 0;
-    double num = (static_cast<double>(dim.stop) - static_cast<double>(dim.start)) / static_cast<double>(dim.stride);
+    auto num = (dim.stop - dim.start) / dim.stride;
     elements  = floor(num);
     if(!elements)
         elements = 1;
