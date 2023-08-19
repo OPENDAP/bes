@@ -288,12 +288,11 @@ uint64_t process_variable(BaseType *var, const uint64_t &max_var_size, std::unor
         uint64_t vsize = var->width_ll(true);
         response_size += vsize;
 
-        string vdecl = get_dap_decl(var);
-        BESDEBUG(MODULE_VERBOSE, prolog << "  " << vdecl << "(" << vsize << " bytes)" << endl);
+        BESDEBUG(MODULE_VERBOSE, prolog << "  " << get_dap_decl(var) << "(" << vsize << " bytes)" << endl);
         if (vsize > max_var_size) {
-            too_big.emplace(pair<string, uint64_t>(vdecl, vsize));
+            too_big.emplace(pair<string, uint64_t>(get_dap_decl(var), vsize));
             BESDEBUG(MODULE,
-                     prolog << vdecl << "(" << vsize << " bytes) is bigger than the max_var_size of "
+                     prolog << get_dap_decl(var) << "(" << vsize << " bytes) is bigger than the max_var_size of "
                             << max_var_size << " bytes. too_big.size(): " << too_big.size() << endl);
         }
     }
