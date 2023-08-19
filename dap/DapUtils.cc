@@ -27,6 +27,7 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <cmath> /* floor */
 
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
