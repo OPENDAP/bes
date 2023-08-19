@@ -27,7 +27,6 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
-#include <cmath> /* floor */
 
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
@@ -42,8 +41,9 @@
 #include "BESSyntaxUserError.h"
 #include "DapUtils.h"
 
-#define MODULE "dap_utils"
-#define MODULE_VERBOSE "dap_utils_verbose"
+constexpr auto MODULE = "dap_utils";
+constexpr auto MODULE_VERBOSE = "dap_utils_verbose";
+
 #define prolog std::string("dap_utils::").append(__func__).append("() - ")
 
 using namespace libdap;
@@ -369,12 +369,10 @@ uint64_t compute_response_size_and_inv_big_vars(
 uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
 {
     uint64_t response_size = 0;
-    auto cnstrctr = dynamic_cast<libdap::Constructor *>(grp);
-    if (cnstrctr) {
-        // This is basically always going to be the result since libdap::D4Group is a child of libdap::Constructor,
-        // And importantly for this code the actual size computation is handle in thie the follwing call.
-        response_size += compute_response_size_and_inv_big_vars(cnstrctr, max_var_size, too_big);
-    }
+    auto cnstrctr = static_cast<libdap::Constructor *>(grp);
+    // Since Group is a child of Constructor we can use the Constructor version of this method to handle the variables
+    // in the Group. Nifty, Right?
+    response_size += compute_response_size_and_inv_big_vars(cnstrctr, max_var_size, too_big);
 
     // Process child groups.
     for (auto child_grp: grp->groups()) {
@@ -398,7 +396,7 @@ uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uin
  */
 uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
 {
-    // TODO: Rather than an unordered_map, or even map, we might consider using vector like this:
+    // Consider if something other than an unordered_map, or even map, we might consider using vector like this:
     //  std::vector<std::pair<std::string,int64_t>> foo;
     //  Is that better? It preserves to order of addition and we don't ever need any of the map api features
     //  in the usage of the inventory. In fact we might consider just making this a vector<string> and building
