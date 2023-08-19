@@ -189,8 +189,7 @@ uint64_t count_requested_elements(const D4Dimension *d4dim){
     if(d4dim->constrained()){
         elements = (d4dim->c_stop() - d4dim->c_start());
         if(d4dim->c_stride()){
-            auto num = elements / d4dim->c_stride();
-            elements  = floor(num);
+            elements =  elements / d4dim->c_stride();
         }
     } else{
         elements = d4dim->size();
@@ -207,12 +206,10 @@ uint64_t count_requested_elements(const D4Dimension *d4dim){
  * @return The number elements marked for transmission.
  */
 uint64_t count_requested_elements(const Array::dimension &dim){
-    uint64_t elements = 0;
-    auto num = (dim.stop - dim.start) / dim.stride;
-    elements  = floor(num);
+    uint64_t elements;
+    elements = (dim.stop - dim.start) / dim.stride;
     if(!elements)
         elements = 1;
-
     return elements;
 }
 
