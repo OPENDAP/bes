@@ -101,8 +101,8 @@ public:
     void var_too_big_test() {
 
         D4BaseTypeFactory d_d4f;
-        DMR *d_test_dmr;
-        d_test_dmr = new DMR(&d_d4f);
+        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
+
         D4ParserSax2 dp;
         stringstream msg;
         uint64_t response_size = 0;
@@ -112,12 +112,12 @@ public:
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
 
         fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr);
+        dp.intern(in, d_test_dmr.get());
         d_test_dmr->root()->set_send_p(true);
 
         uint64_t max_size = 200;
         std::unordered_map<std::string,int64_t> too_big;
-        response_size =  dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        response_size =  dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
 
@@ -138,9 +138,9 @@ public:
 
     void dmrpp_var_too_big_test() {
 
-        DMR *d_test_dmr;
         D4BaseTypeFactory d_d4f;
-        d_test_dmr = new DMR(&d_d4f);
+        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
+
         D4ParserSax2 dp;
         stringstream msg;
         uint64_t response_size = 0;
@@ -150,13 +150,13 @@ public:
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
 
         fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr);
+        dp.intern(in, d_test_dmr.get());
         d_test_dmr->root()->set_send_p(true);
 
         uint64_t max_size = 1000000;
         std::unordered_map<std::string,int64_t> too_big;
 
-        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
 
@@ -178,9 +178,9 @@ public:
 
     void dmrpp_constrained_var_too_big_test() {
 
-        DMR *d_test_dmr;
         D4BaseTypeFactory d_d4f;
-        d_test_dmr = new DMR(&d_d4f);
+        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
+
         D4ParserSax2 dp;
         stringstream msg;
         uint64_t response_size = 0;
@@ -190,15 +190,15 @@ public:
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
 
         fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr);
-        D4ConstraintEvaluator d4ce(d_test_dmr);
+        dp.intern(in, d_test_dmr.get());
+        D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 1000000;
         std::unordered_map<std::string,int64_t> too_big;
 
         d4ce.parse("/support_data/gas_profile;/support_data/scattering_weights");
 
-        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
 
@@ -224,9 +224,9 @@ public:
 
     void dmrpp_constrained_var_ok_test() {
 
-        DMR *d_test_dmr;
         D4BaseTypeFactory d_d4f;
-        d_test_dmr = new DMR(&d_d4f);
+        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
+
         D4ParserSax2 dp;
         stringstream msg;
         uint64_t response_size = 0;
@@ -236,15 +236,15 @@ public:
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
 
         fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr);
-        D4ConstraintEvaluator d4ce(d_test_dmr);
+        dp.intern(in, d_test_dmr.get());
+        D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 1000000;
         std::unordered_map<std::string,int64_t> too_big;
 
         d4ce.parse("/support_data/gas_profile[1][][];/support_data/scattering_weights[3][][]");
 
-        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
 
@@ -268,9 +268,9 @@ public:
 
     void dmrpp_root_group_var_too_big_test() {
 
-        DMR *d_test_dmr;
         D4BaseTypeFactory d_d4f;
-        d_test_dmr = new DMR(&d_d4f);
+        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
+
         D4ParserSax2 dp;
         stringstream msg;
         uint64_t response_size = 0;
@@ -280,15 +280,15 @@ public:
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
 
         fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr);
-        D4ConstraintEvaluator d4ce(d_test_dmr);
+        dp.intern(in, d_test_dmr.get());
+        D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 8000;
         std::unordered_map<std::string,int64_t> too_big;
 
         d4ce.parse("/xtrack;/mirror_step");
 
-        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
 
@@ -313,9 +313,9 @@ public:
 
     void dmrpp_constrained_root_group_var_ok_test() {
 
-        DMR *d_test_dmr;
         D4BaseTypeFactory d_d4f;
-        d_test_dmr = new DMR(&d_d4f);
+        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
+
         D4ParserSax2 dp;
         stringstream msg;
         uint64_t response_size = 0;
@@ -325,15 +325,15 @@ public:
         DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
 
         fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr);
-        D4ConstraintEvaluator d4ce(d_test_dmr);
+        dp.intern(in, d_test_dmr.get());
+        D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 8000;
         std::unordered_map<std::string,int64_t> too_big;
 
         d4ce.parse("/xtrack[1:4:2047];/mirror_step");
 
-        response_size = dap_utils::compute_response_size_and_inv_big_vars( *d_test_dmr, max_size, too_big);
+        response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
 
