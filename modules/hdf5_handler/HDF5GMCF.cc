@@ -2905,10 +2905,10 @@ void GMFile::Handle_CVar_GPM_L1()  {
     set<string> ll_dim_set;
     for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
         if((*irv)->rank == 2 && (*irv)->name == "Latitude") {
-            auto GMcvar_unique = make_unique<GMCVar>(*irv);
-            auto GMcvar = GMcvar_unique.release();
             size_t lat_pos = (*irv)->fullpath.rfind("Latitude");
             string lat_path = (*irv)->fullpath.substr(0,lat_pos);
+            auto GMcvar_unique = make_unique<GMCVar>(*irv);
+            auto GMcvar = GMcvar_unique.release();
             GMcvar->cfdimname = lat_path + ((*irv)->dims)[0]->name;    
             ll_dim_set.insert(((*irv)->dims)[0]->name);
             GMcvar->cvartype = CV_EXIST;
@@ -2919,10 +2919,10 @@ void GMFile::Handle_CVar_GPM_L1()  {
         }
        
         if((*irv)->rank == 2 && (*irv)->name == "Longitude") {
-            auto GMcvar_unique = make_unique<GMCVar>(*irv);
-            auto GMcvar = GMcvar_unique.release();
             size_t lon_pos = (*irv)->fullpath.rfind("Longitude");
             string lon_path = (*irv)->fullpath.substr(0,lon_pos);
+            auto GMcvar_unique = make_unique<GMCVar>(*irv);
+            auto GMcvar = GMcvar_unique.release();
             GMcvar->cfdimname = lon_path + ((*irv)->dims)[1]->name;    
             ll_dim_set.insert(((*irv)->dims)[1]->name);
             GMcvar->cvartype = CV_EXIST;
@@ -3719,9 +3719,9 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
 
             //Note: When the 2nd parameter is false in the function Is_geolatlon, it checks the lon/longitude/Longitude
             if (true == Is_geolatlon((*irv)->name,false)) {
+                latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
                 auto lon_unique = make_unique<Var>(*irv);
                 auto lon = lon_unique.release();
-                latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
                 var_2dlon.push_back(lon);
             }
             else {
@@ -3729,9 +3729,9 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
 
                     // When the third parameter of has_latlon_cf_units is set to false, it checks longitude
                     if(true == has_latlon_cf_units(attr,(*irv)->fullpath,false)) {
+                        latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
                         auto lon_unique = make_unique<Var>(*irv);
                         auto lon = lon_unique.release();
-                        latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
                         var_2dlon.push_back(lon);
                         break;
                     }
@@ -5161,10 +5161,10 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
             // Adding variable original name(origname) and full path(fullpath)
             for (auto &cvar:this->cvars) {
                 if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
-                    auto attr_unique = make_unique<Attribute>();
-                    auto attr = attr_unique.release();
                     const string varname = cvar->name;
                     const string attrname = "origname";
+                    auto attr_unique = make_unique<Attribute>();
+                    auto attr = attr_unique.release();
                     Add_Str_Attr(attr,attrname,varname);
                     cvar->attrs.push_back(attr);
                 }
@@ -5177,10 +5177,10 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
                 if(cvar->zero_storage_size == false
                    || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
                     if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
-                        auto attr_unique = make_unique<Attribute>();
-                        auto attr = attr_unique.release();
                         const string varname = cvar->fullpath;
                         const string attrname = "fullnamepath";
+                        auto attr_unique = make_unique<Attribute>();
+                        auto attr = attr_unique.release();
                         Add_Str_Attr(attr,attrname,varname);
                         cvar->attrs.push_back(attr);
                     }
@@ -5188,10 +5188,10 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
             }
 
             for (auto &spvar:this->spvars) {
-                auto attr_unique = make_unique<Attribute>();
-                auto attr = attr_unique.release();
                 const string varname = spvar->name;
                 const string attrname = "origname";
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,attrname,varname);
                 spvar->attrs.push_back(attr);
             }
@@ -5202,10 +5202,10 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
                 // KY 2020-03-23
                 if(spvar->zero_storage_size == false
                    || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
-                    auto attr_unique = make_unique<Attribute>();
-                    auto attr = attr_unique.release();
                     const string varname = spvar->fullpath;
                     const string attrname = "fullnamepath";
+                    auto attr_unique = make_unique<Attribute>();
+                    auto attr = attr_unique.release();
                     Add_Str_Attr(attr,attrname,varname);
                     spvar->attrs.push_back(attr);
                 }
@@ -5304,8 +5304,6 @@ GMFile:: Add_GPM_Attrs()  {
             
             string comment;
             const string attrname = "comment";
-            auto attr_unique = make_unique<Attribute>();
-            auto attr = attr_unique.release();
 
             {
             if(cvar->name == "nchannel1") 
@@ -5398,14 +5396,13 @@ GMFile:: Add_GPM_Attrs()  {
                 comment = "Liquid, solid."; 
             }
 
-            if(""==comment)
-                delete attr;
-            else {
+            if (!comment.empty()) { 
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,attrname,comment);
                 cvar->attrs.push_back(attr);
             }
-
-        }
+         }
       }
 
       if(product_type == GPMS_L3 || product_type == GPMM_L3) {
@@ -5413,9 +5410,6 @@ GMFile:: Add_GPM_Attrs()  {
             
             string comment;
             const string attrname = "comment";
-            auto attr_unique = make_unique<Attribute>();
-            auto attr = attr_unique.release();
-
             {
             if(cvar->name == "chn") 
                 comment = "Number of channels:Ku,Ka,KaHS,DPR.";
@@ -5453,45 +5447,43 @@ GMFile:: Add_GPM_Attrs()  {
                 comment = "Ascending or descending half of the orbit.";
             }
 
-            if(""==comment)
-                delete attr;
-            else {
+            if (comment.empty() == false) {
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,attrname,comment);
                 cvar->attrs.push_back(attr);
             }
-
-        }
+         }
       }
-
 
       if (cvar->cvartype == CV_SPECIAL) {
             if(cvar->name == "nlayer" || cvar->name == "hgt"
                || cvar->name == "nalt") {
+                string unit_value = "km";
                 auto attr_unique = make_unique<Attribute>();
                 auto attr = attr_unique.release();
-                string unit_value = "km";
                 Add_Str_Attr(attr,attr2_new_name,unit_value);
                 cvar->attrs.push_back(attr);
 
-                auto attr1_unique = make_unique<Attribute>();
-                auto attr1 = attr1_unique.release();
                 string attr1_axis="axis";
                 string attr1_value = "Z";
+                auto attr1_unique = make_unique<Attribute>();
+                auto attr1 = attr1_unique.release();
                 Add_Str_Attr(attr1,attr1_axis,attr1_value);
                 cvar->attrs.push_back(attr1);
 
-                auto attr2_unique = make_unique<Attribute>();
-                auto attr2 = attr2_unique.release();
                 string attr2_positive="positive";
                 string attr2_value = "up";
+                auto attr2_unique = make_unique<Attribute>();
+                auto attr2 = attr2_unique.release();
                 Add_Str_Attr(attr2,attr2_positive,attr2_value);
                 cvar->attrs.push_back(attr2);
 
             }
             if(cvar->name == "hgt" || cvar->name == "nalt"){
+                string comment ="Number of heights above the earth ellipsoid";
                 auto attr1_unique = make_unique<Attribute>();
                 auto attr1 = attr1_unique.release();
-                string comment ="Number of heights above the earth ellipsoid";
                 Add_Str_Attr(attr1,"comment",comment);
                 cvar->attrs.push_back(attr1);
             }
@@ -6111,7 +6103,7 @@ void GMFile:: Handle_Coor_Attr() {
                         auto attr_unique = make_unique<Attribute>();
                         auto attr = attr_unique.release();
                         Add_Str_Attr(attr,co_attrname,co_attrvalue);
-                       var->attrs.push_back(attr);
+                        var->attrs.push_back(attr);
                     }
 
                     co_attrvalue.clear();

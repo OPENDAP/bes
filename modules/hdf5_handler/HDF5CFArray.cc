@@ -1435,8 +1435,8 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
             if (d4_dim_null == true) {
 
                 auto d4_dim_unique = make_unique<D4Dimension>((*d).name, (*d).size);
-                d4_dim = d4_dim_unique.release();
                 D4Dimensions * dims = grp->dims();
+                d4_dim = d4_dim_unique.release();
                 dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;
             }

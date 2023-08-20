@@ -2099,11 +2099,11 @@ void gen_eos5_cfdmr(D4Group *d4_root,  const HDF5CF::EOS5File *f) {
             }
 
             if (unlimited_dim_names != "") {
-                auto dods_extra_attr_unique = make_unique<D4Attribute>(dods_extra,attr_container_c);
-                auto dods_extra_attr = dods_extra_attr_unique.release();
                 auto unlimited_dim_attr_unique = make_unique<D4Attribute>("Unlimited_Dimension",attr_str_c);
                 auto unlimited_dim_attr = unlimited_dim_attr_unique.release();
                 unlimited_dim_attr->add_value(unlimited_dim_names);
+                auto dods_extra_attr_unique = make_unique<D4Attribute>(dods_extra,attr_container_c);
+                auto dods_extra_attr = dods_extra_attr_unique.release();
                 dods_extra_attr->attributes()->add_attribute_nocopy(unlimited_dim_attr);
                 d4_root->attributes()->add_attribute_nocopy(dods_extra_attr);
             }

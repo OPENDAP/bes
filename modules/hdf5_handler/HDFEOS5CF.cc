@@ -2991,10 +2991,10 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const s
 
                             // Should change the attr_value from char type to float type when reading the data
                             // Here just adding a coordinate variable by using this name.
-                            auto EOS5cvar_unique = make_unique<EOS5CVar>();
-                            auto EOS5cvar = EOS5cvar_unique.release();
                             string reduced_dimname = HDF5CFUtil::obtain_string_after_lastslash(*it);
                             string orig_dimname = "nLevels";
+                            auto EOS5cvar_unique = make_unique<EOS5CVar>();
+                            auto EOS5cvar = EOS5cvar_unique.release();
                             if ("nLevels" == reduced_dimname)
                                 EOS5cvar->name = eos5_pre_attr_name + "_CV";
                             else
@@ -3691,10 +3691,10 @@ void EOS5File::Add_Supplement_Attrs(bool add_path)
         // Adding variable original name(origname) and full path(fullpath)
         for (const auto &cvar:this->cvars) {
             if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
-                auto attr_unique = make_unique<Attribute>();
-                auto attr = attr_unique.release();
                 const string varname = cvar->name;
                 const string attrname = "origname";
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr, attrname, varname);
                 cvar->attrs.push_back(attr);
             }
@@ -3707,10 +3707,10 @@ void EOS5File::Add_Supplement_Attrs(bool add_path)
                 // KY 2020-03-23
                 if(cvar->zero_storage_size==false 
                     || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
-                    auto attr_unique = make_unique<Attribute>();
-                    auto attr = attr_unique.release();
                     const string varname = cvar->fullpath;
                     const string attrname = "fullnamepath";
+                    auto attr_unique = make_unique<Attribute>();
+                    auto attr = attr_unique.release();
                     Add_Str_Attr(attr, attrname, varname);
                     cvar->attrs.push_back(attr);
                 }
@@ -3721,14 +3721,14 @@ void EOS5File::Add_Supplement_Attrs(bool add_path)
     if (true == this->iscoard) {
         for (const auto &cvar:this->cvars) {
             if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
-                auto attr_unique = make_unique<Attribute>();
-                auto attr = attr_unique.release();
                 const string attrname = "orig_dimname";
                 string orig_dimname = ((cvar->dims)[0])->name;
                 orig_dimname = HDF5CFUtil::obtain_string_after_lastslash(orig_dimname);
                 if ("" == orig_dimname)
                     throw2("wrong dimension name ", orig_dimname);
                 if (orig_dimname.find("FakeDim") != string::npos) orig_dimname = "";
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr, attrname, orig_dimname);
                 cvar->attrs.push_back(attr);
             }

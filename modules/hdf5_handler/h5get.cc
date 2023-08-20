@@ -1321,8 +1321,6 @@ Structure *Get_structure(const string &varname,const string &vpath,
                           + varname);
 
     try {
-        auto structure_unique_ptr = make_unique<HDF5Structure>(varname, vpath, dataset);
-        structure_ptr = structure_unique_ptr.release();
 
         // Retrieve member types
         int nmembs = H5Tget_nmembers(datatype);
@@ -1330,6 +1328,9 @@ Structure *Get_structure(const string &varname,const string &vpath,
         if (nmembs < 0){
             throw InternalErr(__FILE__, __LINE__, "cannot retrieve the number of elements");
         }
+        auto structure_unique_ptr = make_unique<HDF5Structure>(varname, vpath, dataset);
+        structure_ptr = structure_unique_ptr.release();
+
         for (int i = 0; i < nmembs; i++) {
             memb_name = H5Tget_member_name(datatype, i);
             H5T_class_t memb_cls = H5Tget_member_class(datatype, i);

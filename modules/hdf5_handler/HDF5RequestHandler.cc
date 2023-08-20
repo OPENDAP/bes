@@ -1086,9 +1086,9 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
 
         auto hdds_unique = make_unique<HDF5DDS>(bdds->get_dds());
-        auto hdds = hdds_unique.release();
         delete bdds->get_dds();
 
+        auto hdds = hdds_unique.release();
         bdds->set_dds(hdds);
         hdds->setHDF5Dataset(cf_fileid);
 
@@ -1958,9 +1958,9 @@ void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataD
      tdds.parse(dds_file);
 
      auto cache_dds_unique = make_unique<DDS>(tdds);
-     auto cache_dds = cache_dds_unique.release();
      delete dds;
 
+     auto cache_dds = cache_dds_unique.release();
      Ancillary::read_ancillary_dds( *cache_dds, h5_fname ) ;
 
      add_das_to_dds(cache_dds,container_name,h5_fname,das_cache_fname,h5_fd,das_from_dc);
@@ -2285,7 +2285,6 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     if(false == das_from_mcache) {
         auto das_unique = make_unique<DAS>();
         das = das_unique.release();
-        //das = new DAS;
         // This looks at the 'use explicit containers' prop, and if true
         // sets the current container for the DAS.
         if (!container_name.empty()) das->container_name(container_name);

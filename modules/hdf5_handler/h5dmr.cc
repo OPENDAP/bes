@@ -328,7 +328,6 @@ void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& onam
         if (dt_inst.nelmts == 0)
             nelmts = obtain_unlim_pure_dim_size(pid,full_path_name);
 
-        //d4_dim = new D4Dimension(d4dim_name,nelmts);
         auto d4_dim_unique = make_unique<D4Dimension>(d4dim_name, nelmts);
         d4_dims->add_dim_nocopy(d4_dim_unique.release());
     }

@@ -2059,10 +2059,10 @@ void File::Add_Supplement_Attrs(bool add_path)
         // Only when this group has attributes, the original path of the group has some values. So add it.
         if (false == grp->attrs.empty()) {
 
-            auto attr_unique = make_unique<Attribute>();
-            auto attr = attr_unique.release();
             const string varname = grp->path;
             const string attrname = "fullnamepath";
+            auto attr_unique = make_unique<Attribute>();
+            auto attr = attr_unique.release();
             Add_Str_Attr(attr, attrname, varname);
             grp->attrs.push_back(attr);
         }
