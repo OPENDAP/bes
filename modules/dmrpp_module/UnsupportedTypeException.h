@@ -24,7 +24,6 @@ private:
 
 public:
     explicit UnsupportedTypeException(const std::string &msg) : d_msg(msg){};
-    //explicit UnsupportedTypeException(const char *msg) : d_msg(msg) { d_msg = *msg; };
     UnsupportedTypeException() = delete;
     UnsupportedTypeException(const UnsupportedTypeException &e) : d_msg(e.d_msg){ };
 
