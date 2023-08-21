@@ -22,7 +22,7 @@ private:
     std::string d_msg;
 
 public:
-    explicit UnsupportedTypeException(const std::string& msg) : d_msg(std::move(msg)){};
+    explicit UnsupportedTypeException(const std::string &msg) : d_msg(msg){};
 
     UnsupportedTypeException() = delete;
     UnsupportedTypeException(UnsupportedTypeException &e) { d_msg = e.d_msg; };
