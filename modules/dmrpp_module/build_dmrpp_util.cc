@@ -361,7 +361,7 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                          "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so "
                          "the storage penalty is minimal.");
 
-                throw UnsupportedTypeException();
+                throw UnsupportedTypeException(msg);
                 // return "unsupported-variable-length-string";
             }
             else {
