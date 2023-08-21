@@ -23,13 +23,16 @@ private:
     std::string d_msg;
 
 public:
-    explicit UnsupportedTypeException(const std::string &msg) : d_msg(msg){};
+    explicit UnsupportedTypeException(std::string msg) : d_msg(std::move(msg)){};
     UnsupportedTypeException() = delete;
-    UnsupportedTypeException(const UnsupportedTypeException &e) : d_msg(e.d_msg){ };
+    UnsupportedTypeException(const UnsupportedTypeException &e) noexcept = default;
+    UnsupportedTypeException(UnsupportedTypeException &&e) noexcept = default;
     ~UnsupportedTypeException() override = default;
 
-    const char* what() const noexcept override { return d_msg.c_str(); };
+    UnsupportedTypeException& operator=(UnsupportedTypeException &&e) noexcept = default;
+    UnsupportedTypeException& operator=(const UnsupportedTypeException &e) = default;
 
+    const char* what() const noexcept override { return d_msg.c_str(); };
 };
 
 } // namespace dmrpp
