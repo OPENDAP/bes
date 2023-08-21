@@ -362,7 +362,6 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                          "the storage penalty is minimal.");
 
                 throw UnsupportedTypeException(msg);
-                // return "unsupported-variable-length-string";
             }
             else {
                 string str_fv(value.begin(),value.end());
@@ -373,13 +372,11 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             string msg("UnsupportedTypeException: Your data granule contains an H5T_ARRAY "
                        "which is not yet supported by the dmr++ creation machinery.");
             throw UnsupportedTypeException(msg);
-            //return "unsupported-array";
         }
         case H5T_COMPOUND: {
             string msg("UnsupportedTypeException: Your data granule contains a variable with type H5T_COMPOUND  "
                        "which is not yet supported by the dmr++ creation machinery.");
             throw UnsupportedTypeException(msg);
-            // return "unsupported-compound";
         }
 
         case H5T_REFERENCE:
