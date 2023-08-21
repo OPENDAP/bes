@@ -26,30 +26,18 @@
 
 #include <iostream>
 #include <sstream>
-#include <memory>
 #include <iterator>
 
 #include <unistd.h>
 #include <cstdlib>
 #include <libgen.h>
 
-#include <libdap/Array.h>
 #include <libdap/util.h>
-#include <libdap/D4Attributes.h>
-#include <libdap/D4ParserSax2.h>
 
 #include <TheBESKeys.h>
-#include <BESUtil.h>
 #include <BESDebug.h>
 #include <BESError.h>
-#include <BESInternalError.h>
 #include <BESInternalFatalError.h>
-
-#include "DMRpp.h"
-#include "DmrppTypeFactory.h"
-#include "DmrppD4Group.h"
-#include "DmrppMetadataStore.h"
-
 #include "build_dmrpp_util.h"
 
 using namespace std;
@@ -92,10 +80,9 @@ int main(int argc, char *argv[]) {
     string dmrpp_href_value;
     string bes_conf_file_used_to_create_dmr;
     bool add_production_metadata = false;
-    bool ignore_avls = false; // Ignore
 
     int option_char;
-    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVMS")) != -1) {
+    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVM")) != -1) {
         switch (option_char) {
             case 'V':
                 cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-"
@@ -144,24 +131,24 @@ int main(int argc, char *argv[]) {
         // Check to see if the file is hdf5 compliant
         qc_input_file(h5_file_name);
 
-        if (!dmr_filename.empty()) {
-            // Build the dmr++ from an existing DMR file.
-            build_dmrpp_from_dmr_file(
-                    dmrpp_href_value,
-                    dmr_filename,
-                    h5_file_name,
-                    add_production_metadata,
-                    bes_conf_file_used_to_create_dmr,
-                    argc,  argv);
-        }
-        else {
+        if (dmr_filename.empty()){
             stringstream msg;
             msg << "A DMR fully file for the granule '" << h5_file_name << " must also be provided." << endl;
             throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
+
+        // Build the dmr++ from an existing DMR file.
+        build_dmrpp_from_dmr_file(
+                dmrpp_href_value,
+                dmr_filename,
+                h5_file_name,
+                add_production_metadata,
+                bes_conf_file_used_to_create_dmr,
+                argc,  argv);
+
     }
     catch (const BESError &e) {
-        cerr << "Error: " << e.get_message() << endl;
+        cerr << "BESError: " << e.get_message() << endl;
         return EXIT_FAILURE;
     }
     catch (const std::exception &e) {
