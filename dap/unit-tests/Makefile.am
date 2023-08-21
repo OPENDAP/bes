@@ -91,7 +91,7 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 if CPPUNIT
 UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest \
-ShowPathInfoTest TemporaryFileTest GlobalMetadataStoreTest
+ShowPathInfoTest TemporaryFileTest GlobalMetadataStoreTest DapUtilsTest
 
 else
 UNIT_TESTS =
@@ -126,6 +126,10 @@ ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(LDADD)
 ShowPathInfoTest_SOURCES = ShowPathInfoTest.cc
 ShowPathInfoTest_OBJS = ../ShowPathInfoResponseHandler.o 
 ShowPathInfoTest_LDADD = $(ShowPathInfoTest_OBJS) $(LDADD)
+
+DapUtilsTest_SOURCES = DapUtilsTest.cc
+DapUtilsTest_OBJS = ../DapUtils.o
+DapUtilsTest_LDADD = $(DapUtilsTest_OBJS) $(LDADD)
 
 TemporaryFileTest_SOURCES = TemporaryFileTest.cc
 TemporaryFileTest_OBJS = ../TempFile.o
