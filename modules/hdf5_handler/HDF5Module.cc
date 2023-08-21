@@ -32,6 +32,7 @@
 /// \author  Patrick West <pwest@ucar.edu>
 
 #include <iostream>
+#include <memory>
 #include "HDF5Module.h"
 #include <BESRequestHandlerList.h>
 #include "HDF5RequestHandler.h"
@@ -50,17 +51,20 @@ void HDF5Module::initialize(const string & modname)
 {
     BESDEBUG(HDF5_NAME, prolog << "Initializing HDF5 module " << modname << endl);
 
-    auto handler = new HDF5RequestHandler(modname);
+    auto handler_unique = make_unique<HDF5RequestHandler>(modname);
+    auto handler = handler_unique.release();
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
     BESDapService::handle_dap_service(modname);
 
     if (!BESCatalogList::TheCatalogList()->ref_catalog(HDF5_CATALOG)) {
-        BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(HDF5_CATALOG));
+        auto BESCatalogDirectory_unique = make_unique<BESCatalogDirectory>(HDF5_CATALOG);
+        BESCatalogList::TheCatalogList()->add_catalog(BESCatalogDirectory_unique.release());
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(HDF5_CATALOG)) {
-        auto csc = new BESFileContainerStorage(HDF5_CATALOG);
+        auto csc_unique = make_unique<BESFileContainerStorage>(HDF5_CATALOG);
+        auto csc = csc_unique.release();
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 

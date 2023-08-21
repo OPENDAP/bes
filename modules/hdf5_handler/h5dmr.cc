@@ -328,7 +328,6 @@ void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& onam
         if (dt_inst.nelmts == 0)
             nelmts = obtain_unlim_pure_dim_size(pid,full_path_name);
 
-        //d4_dim = new D4Dimension(d4dim_name,nelmts);
         auto d4_dim_unique = make_unique<D4Dimension>(d4dim_name, nelmts);
         d4_dims->add_dim_nocopy(d4_dim_unique.release());
     }
@@ -416,7 +415,8 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
         try {
             if (is_eos5)
                 grp_name = handle_string_special_characters(grp_name);
-            auto tem_d4_cgroup = new D4Group(grp_name);
+            auto tem_d4_cgroup_ptr = make_unique<D4Group>(grp_name);
+            auto tem_d4_cgroup = tem_d4_cgroup_ptr.release();
 
             // Add this new DAP4 group
             par_grp->add_group_nocopy(tem_d4_cgroup);
@@ -434,10 +434,12 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
         // This group has been visited.
         // Add the attribute table with the attribute name as HDF5_HARDLINK.
         // The attribute value is the name of the group when it is first visited.
-        auto tem_d4_cgroup = new D4Group(string(grp_name));
+        auto tem_d4_cgroup_unique = make_unique<D4Group>(grp_name);
+        auto tem_d4_cgroup = tem_d4_cgroup_unique.release();
 
         // Note attr_str_c is the DAP4 attribute string datatype
-        auto d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
+        auto d4_hlinfo_unique = make_unique<D4Attribute>("HDF5_HARDLINK",attr_str_c);
+        auto d4_hlinfo = d4_hlinfo_unique.release();
 
         d4_hlinfo->add_value(obj_paths.get_name(oid));
         tem_d4_cgroup->attributes()->add_attribute_nocopy(d4_hlinfo);
@@ -2088,11 +2090,9 @@ bool obtain_no_path_cv(D4Group *d4_grp, string &coord_name) {
         }
     }
 
-    if (found_cv == false) {
-        if (d4_grp->get_parent()) {
-            auto d4_grp_par = dynamic_cast<D4Group*>(d4_grp->get_parent());
-            found_cv = obtain_no_path_cv(d4_grp_par,coord_name);
-        }
+    if (found_cv == false && (d4_grp->get_parent())){
+        auto d4_grp_par = dynamic_cast<D4Group*>(d4_grp->get_parent());
+        found_cv = obtain_no_path_cv(d4_grp_par,coord_name);
     }
     return found_cv;
 }
@@ -2202,7 +2202,7 @@ void obtain_ds_name_array_maps(D4Group *d4_grp,unordered_map<string,Array*>&dsn_
 
         // Only Array can have maps.
         if (libdap::dods_array_c == v->type())
-            add_dimscale_maps_internal(*vi, dsn_array_maps, handled_all_cv_names);
+            obtain_ds_name_array_maps_internal(*vi, dsn_array_maps, handled_all_cv_names);
     }
 
     for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
@@ -2212,8 +2212,8 @@ void obtain_ds_name_array_maps(D4Group *d4_grp,unordered_map<string,Array*>&dsn_
 
 }
 
-void add_dimscale_maps_internal(BaseType *v, unordered_map<string,Array*>&dsn_array_maps,
-                               const vector<string>& handled_all_cv_names)
+void obtain_ds_name_array_maps_internal(BaseType *v, unordered_map<string,Array*>&dsn_array_maps,
+                                        const vector<string>& handled_all_cv_names)
 {
     auto t_a = dynamic_cast<Array *>(v);
 
@@ -2256,8 +2256,8 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
             ++cv_it;
     }
 
-   // Now we need to search the rest of this variable's coordinates. 
-   // Note the array of coname_array_maps is the map array. It is gradually built.
+    // Now we need to search the rest of this variable's coordinates.
+    // Note the array of coname_array_maps is the map array. It is gradually built.
     for (auto cv_it =coord_names.begin(); cv_it != coord_names.end();) {
 
         bool found_cv = false;
@@ -2274,6 +2274,7 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
             if (libdap::dods_array_c == v->type()) {
     
                 auto t_a = dynamic_cast<Array *>(*vi);
+
                 // Find it.
                 if (*cv_it == t_a->FQN()) {
     
@@ -2307,6 +2308,7 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
         add_coord_maps(d4_grp_par,var,coord_names,coname_array_maps,handled_dim_names);
     }
 }
+
 
 // Add the valid coordinate variables(via dimension scales) to the var's DAP4 maps.
 // Loop through the handled dimension names(by the coordinate variables) set

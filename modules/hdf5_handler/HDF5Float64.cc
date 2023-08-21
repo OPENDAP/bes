@@ -35,14 +35,11 @@
 ///
 
 
-
+#include <memory>
 #include <string>
-#include <ctype.h>
-#include "config_hdf5.h"
 #include <libdap/InternalErr.h>
 #include "h5dds.h"
 #include "HDF5Float64.h"
-#include "BESDebug.h"
 
 using namespace std;
 using namespace libdap;
@@ -53,7 +50,8 @@ HDF5Float64::HDF5Float64(const string & n, const string & vpath,const string &d)
 
 BaseType *HDF5Float64::ptr_duplicate()
 {
-    return new HDF5Float64(*this);
+    auto HDF5Float64_unique = make_unique<HDF5Float64>(*this);
+    return HDF5Float64_unique.release();
 }
 
 bool HDF5Float64::read()

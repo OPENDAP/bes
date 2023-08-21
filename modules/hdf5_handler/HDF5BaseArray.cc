@@ -43,6 +43,7 @@
 #include <sstream>
 #include <cassert>
 #include <algorithm>
+#include <memory>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
 
@@ -52,21 +53,6 @@
 
 using namespace std;
 using namespace libdap;
-#if 0
-BaseType *HDF5BaseArray::ptr_duplicate()
-{
-    return new HDF5BaseArray(*this);
-}
-
-// Always return true. 
-// Data will be read from the missing coordinate variable class(HDF5GMCFMissNonLLCVArray etc.)
-bool HDF5BaseArray::read()
-{
-    BESDEBUG("h5","Coming to HDF5BaseArray read "<<endl);
-    return true;
-}
-
-#endif
 
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
@@ -129,7 +115,7 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int64_t tnumelm) {
 
     int64_t nelms = format_constraint(offset.data(), step.data(), count.data());
 
-    // Since we always assign the the missing Z dimension as 32-bit
+    // Since we always assign the missing Z dimension as 32-bit
     // integer, so no need to check the type. The missing Z-dim is always
     // 1-D with natural number 1,2,3,....
     vector<int>val;
@@ -553,7 +539,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
     auto mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
     if(mem_cache_ptr) {
         
-        BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
+        BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache general"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
        
         BESDEBUG("h5","Data Memory Cache hit, the variable name is "<<name() <<". The cache flag is "<< cache_flag<<endl);
@@ -589,27 +575,25 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
        
         BESDEBUG("h5","Data Memory added to the cache, the variable name is "<<name() <<". The cache flag is "<< cache_flag<<endl);
 
- 	vector <char> buf;
- 	if(total_elems == 0)
-     	    throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
+        vector <char> buf;
+        if (total_elems == 0)
+                throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
 
-       	buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(h5_dtype));
+        buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(h5_dtype));
 
         // This routine will read the data, send it to the DAP and save the buf to the cache.
-  	read_data_NOT_from_mem_cache(true,buf.data());
+        read_data_NOT_from_mem_cache(true,buf.data());
             
         // Create a new cache element.
-#if 0
-    	//HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
-#endif
-    	auto new_mem_cache_ele = new HDF5DataMemCache();
+
+        auto new_mem_cache_ele_unique = make_unique<HDF5DataMemCache>();
+        auto new_mem_cache_ele = new_mem_cache_ele_unique.release();
        	new_mem_cache_ele->set_databuf(buf);
 
         // Add this entry to the cache list
        	mem_data_cache->add(new_mem_cache_ele, cache_key);
     }
 
-    return;
 }
 
 BaseType* HDF5BaseArray::h5cfdims_transform_to_dap4(D4Group *grp) {
@@ -629,11 +613,12 @@ BaseType* HDF5BaseArray::h5cfdims_transform_to_dap4(D4Group *grp) {
             // If a D4Dimension with the name already exists, use it.
             D4Dimension *d4_dim = grp_dims->find_dim((*dap2_dim).name);
             if (!d4_dim) {
-                d4_dim = new D4Dimension((*dap2_dim).name, (*dap2_dim).size);
+                auto d4_dim_unique = make_unique<D4Dimension>((*dap2_dim).name, (*dap2_dim).size);
+                d4_dim = d4_dim_unique.release();
                 grp_dims->add_dim_nocopy(d4_dim);
             }
             // At this point d4_dim's name and size == those of (*d) so just set
-            // the D4Dimension pointer so it matches the one in the D4Group.
+            // the D4Dimension pointer, so it matches the one in the D4Group.
             (*dap2_dim).dim = d4_dim;
         }
     }

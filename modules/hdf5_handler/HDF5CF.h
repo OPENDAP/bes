@@ -160,7 +160,6 @@ public:
         return unlimited_dim;
     }
 
-protected:
     explicit Dimension(hsize_t dimsize) :
         size(dimsize)
     {
@@ -687,7 +686,7 @@ public:
 protected:
 
     void Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr);
-    void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace);
+    void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace) const;
         
     void Retrieve_H5_Attr_Value(Attribute *attr, const std::string &) const;
 
@@ -716,8 +715,8 @@ protected:
     void Add_One_FakeDim_Name(Dimension *dim) ;
     void Adjust_Duplicate_FakeDim_Name(Dimension * dim) ;
     void Adjust_Duplicate_FakeDim_Name2(Dimension * dim,int dup_dim_size_index) ;
-    void Insert_One_NameSizeMap_Element(std::string name, hsize_t size, bool unlimited) ;
-    void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, std::string name, hsize_t size,
+    void Insert_One_NameSizeMap_Element(const std::string & name, hsize_t size, bool unlimited) ;
+    void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, const std::string &name, hsize_t size,
         bool unlimited) const;
 
     virtual std::string get_CF_string(std::string);

@@ -29,11 +29,9 @@
 ///
 /// All rights reserved.
 
-#include "config_hdf5.h"
 #include <sys/stat.h>
+#include <memory>
 #include <iostream>
-#include <sstream>
-#include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
 
@@ -45,7 +43,8 @@ using namespace libdap;
 
 BaseType *HDFEOS5CFMissLLArray::ptr_duplicate()
 {
-    return new HDFEOS5CFMissLLArray(*this);
+    auto HDFEOS5CFMissLLArray_unique = make_unique<HDFEOS5CFMissLLArray>(*this);
+    return HDFEOS5CFMissLLArray_unique.release();
 }
 
 bool HDFEOS5CFMissLLArray::read()

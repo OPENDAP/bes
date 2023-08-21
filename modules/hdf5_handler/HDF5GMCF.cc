@@ -39,6 +39,7 @@
 #include "h5apicompatible.h"
 #include <BESDebug.h>
 #include <algorithm>
+#include <memory>
 
 using namespace std;
 using namespace libdap;
@@ -60,7 +61,8 @@ GMCVar::GMCVar(const Var*var) {
     coord_attr_add_path = false;
     
     for (const auto& vattr:var->attrs) {
-        auto attr= new Attribute();
+        auto attr_unique = make_unique<Attribute>();
+        auto attr = attr_unique.release();
         attr->name = vattr->name;
         attr->newname = vattr->newname;
         attr->dtype =vattr->dtype;
@@ -72,7 +74,8 @@ GMCVar::GMCVar(const Var*var) {
     } 
 
     for (const auto& vdim:var->dims) {
-        auto dim = new Dimension(vdim->size);
+        auto dim_unique = make_unique<Dimension>(vdim->size);
+        auto dim = dim_unique.release();
         dim->name = vdim->name;
         dim->newname = vdim->newname;
         dim->unlimited_dim = vdim->unlimited_dim;
@@ -82,49 +85,8 @@ GMCVar::GMCVar(const Var*var) {
     product_type = General_Product;
 
 }
-#if 0
-GMCVar::GMCVar(GMCVar*cvar) {
 
-    newname = cvar->newname;
-    name = cvar->name;
-    fullpath = cvar->fullpath;
-    rank  = cvar->rank;
-    dtype = cvar->dtype;
-    unsupported_attr_dtype = cvar->unsupported_attr_dtype;
-    unsupported_dspace = cvar->unsupported_dspace;
-    
-    for (vector<Attribute*>::iterator ira = cvar->attrs.begin();
-        ira!=cvar->attrs.end(); ++ira) {
-        Attribute* attr= new Attribute();
-        attr->name = (*ira)->name;
-        attr->newname = (*ira)->newname;
-        attr->dtype =(*ira)->dtype;
-        attr->count =(*ira)->count;
-        attr->strsize = (*ira)->strsize;
-        attr->fstrsize = (*ira)->fstrsize;
-        attr->value =(*ira)->value;
-        attrs.push_back(attr);
-    }
-
-    for (vector<Dimension*>::iterator ird = cvar->dims.begin();
-        ird!=cvar->dims.end(); ++ird) {
-        Dimension *dim = new Dimension((*ird)->size);
-//"h5","dim->name "<< (*ird)->name <<endl;
-//"h5","dim->newname "<< (*ird)->newname <<endl;
-        dim->name = (*ird)->name;
-        dim->newname = (*ird)->newname;
-        dims.push_back(dim);
-    }
-
-    GMcvar->cfdimname = latdim0;
-    GMcvar->cvartype = CV_EXIST;
-                GMcvar->product_type = product_type;
-
- 
-}
-#endif
-
-//Copier function of a special variable.
+//Copy function of a special variable.
 GMSPVar::GMSPVar(const Var*var) {
 
     BESDEBUG("h5", "Coming to GMSPVar()"<<endl);
@@ -142,7 +104,8 @@ GMSPVar::GMSPVar(const Var*var) {
     numofdbits = -1;
 
     for (const auto &vattr:var->attrs) {
-        auto attr= new Attribute();
+        auto attr_unique = make_unique<Attribute>();
+        auto attr = attr_unique.release();
         attr->name = vattr->name;
         attr->newname = vattr->newname;
         attr->dtype =vattr->dtype;
@@ -154,7 +117,8 @@ GMSPVar::GMSPVar(const Var*var) {
     } 
 
     for (const auto &vdim:var->dims) {
-        auto dim = new Dimension(vdim->size);
+        auto dim_unique = make_unique<Dimension>(vdim->size);
+        auto dim = dim_unique.release();
         dim->name = vdim->name;
         dim->newname = vdim->newname;
         dim->unlimited_dim = vdim->unlimited_dim;
@@ -192,7 +156,7 @@ string GMFile::get_CF_string(string s) {
 
     // HDF5 group or variable path always starts with '/'. When CF naming rule is applied,
     // the first '/' is always changes to "_", this is not necessary. However,
-    // to keep the backward compatiablity, I use a BES key for people to go back with the original name.
+    // to keep the backward compatability, I use a BES key for people to go back with the original name.
 
     if(s[0] !='/') 
         return File::get_CF_string(s);
@@ -230,7 +194,7 @@ void GMFile::Retrieve_H5_Info(const char *file_fullpath,
 
 // Update the product type. This is because the file structure may change across different versions of products
 // I need to handle them differently and still support different versions. The goal is to support two versions in a row.
-// Currently GPM level 3 is changed.
+// Currently, GPM level 3 is changed.
 // This routine should be called right after Retrieve_H5_Info.
 void GMFile::Update_Product_Type()  {
 
@@ -361,8 +325,8 @@ void GMFile::Retrieve_H5_Supported_Attr_Values()  {
     }
 }
 
-// Adjust attribute values. Currently this is only for ACOS and OCO2.
-// Reason: DAP2 doesn't support 64-bit integer and they have 64-bit integer data
+// Adjust attribute values. Currently, this is only for ACOS and OCO2.
+// Reason: DAP2 doesn't support 64-bit integer, and they have 64-bit integer data
 // in these files. Chop them to two 32-bit integers following the data producer's information.
 void GMFile::Adjust_H5_Attr_Value(Attribute *attr)  const{
 
@@ -415,7 +379,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             // This may need to be checked carefully in the future,
             // My current understanding is that the coordinate variable can
             // be ignored if the corresponding variable is ignored. 
-            // Currently we don't find any NASA files in this category.
+            // Currently, we don't find any NASA files in this category.
             // KY 2012-5-21
             delete (*ircv);
             ircv = this->cvars.erase(ircv);
@@ -464,7 +428,7 @@ void GMFile:: Gen_Unsupported_Dtype_Info(bool include_attr) {
 
 }
 
-// Datatype ignored information for variable ttributes
+// Datatype ignored information for variable attributes
 void GMFile:: Gen_VarAttr_Unsupported_Dtype_Info() {
 
      BESDEBUG("h5", "GMFile::Coming to Gen_Unsupported_Dtype_Info()"<<endl);
@@ -492,7 +456,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
         || (OBPG_L3 == this->product_type)) {
 
         for (const auto &cvar:this->cvars) {
-            // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
+            // If the attribute REFERENCE_LIST comes with the attribute CLASS, the
             // attribute REFERENCE_LIST is okay to ignore. No need to report.
             bool is_ignored = ignored_dimscale_ref_list(cvar);
             if (false == cvar->attrs.empty()) {
@@ -512,7 +476,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
         } 
 
         for (const auto&spvar:this->spvars) {
-            // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
+            // If the attribute REFERENCE_LIST comes with the attribute CLASS, the
             // attribute REFERENCE_LIST is okay to ignore. No need to report.
             bool is_ignored = ignored_dimscale_ref_list(spvar);
             if (false == spvar->attrs.empty()) {
@@ -591,7 +555,7 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr)  {
                 // This may need to be checked carefully in the future,
                 // My current understanding is that the coordinate variable can
                 // be ignored if the corresponding variable is ignored. 
-                // Currently we don't find any NASA files in this category.
+                // Currently, we don't find any NASA files in this category.
                 // KY 2012-5-21
                 delete (*ircv);
                 ircv = this->cvars.erase(ircv);
@@ -923,7 +887,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
 
     // No dimension, add fake dim names, this may never happen for MeaSure
     // but just for coherence and completeness.
-    // For Fake dimesnion
+    // For Fake dimension
     else {
 
         set<hsize_t> fakedimsize;
@@ -1356,11 +1320,11 @@ void GMFile::Add_Dim_Name_Aqu_L3() const
     }// end of for 
 }
 
-// Add dimension names for OSMAPL2S(note: the SMAP change their structures. The code doesn't not apply to them.)
+// Add dimension names for OSMAPL2S(note: the SMAP change their structures. The code doesn't apply to them.)
 void GMFile::Add_Dim_Name_OSMAPL2S(){
 
     BESDEBUG("h5", "Coming to Add_Dim_Name_OSMAPL2S()"<<endl);
-    string tempvarname ="";
+    string tempvarname;
     string key = "_lat";
     string osmapl2sdim0 ="YDim";
     string osmapl2sdim1 ="XDim";
@@ -1704,7 +1668,7 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
     }
 
     // We are loose here since this is just to support some NASA products in a customized way.
-    // If the first two cases don't exist, we allow to check another group"GeolocationData" and
+    // If the first two cases don't exist, we allow to check another group "GeolocationData" and
     // see if Latitude and Longitude are present. (4 years ? from the first implementation, we got this case.)
     // KY 2020-02-27
     if(false == ll_flag) {
@@ -1891,7 +1855,7 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern()  {
     BESDEBUG("h5", "Coming to Check_LatLon_With_Coordinate_Attr_General_Product_Pattern()"<<endl);
     bool ret_value = false;
     string co_attrname = "coordinates";
-    string co_attrvalue="";
+    string co_attrvalue;
     string unit_attrname = "units";
     string lat_unit_attrvalue ="degrees_north";
     string lon_unit_attrvalue ="degrees_east";
@@ -1984,13 +1948,15 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern()  {
             // Find the lat/lon candidate, save them to  temporary vectors
             if(true == var_is_lat) {
                 if(var->rank > 0) {
-                    auto lat = new Var(var);
+                    auto lat_unique = make_unique<Var>(var);
+                    auto lat = lat_unique.release();
                     tempvar_lat.push_back(lat);
                 }
             }
             else if(true == var_is_lon) {
                 if(var->rank >0) {
-                    auto lon = new Var(var);
+                    auto lon_unique = make_unique<Var>(var);
+                    auto lon = lon_unique.release();
                     tempvar_lon.push_back(lon);
                 }
             }
@@ -2883,7 +2849,7 @@ void GMFile::Handle_CVar() {
     // Currently we support the three patterns for the general products:
     // 1) Dimensions follow HDF5 dimension scale specification
     // 2) Dimensions don't follow HDF5 dimension scale specification but have 1D lat/lon
-    // 3) Dimensions don't follow HDF5 dimension scale specification bu have 2D lat/lon
+    // 3) Dimensions don't follow HDF5 dimension scale specification but have 2D lat/lon
     if (General_Product == this->product_type ||
         ACOS_L2S_OR_OCO2_L1B == this->product_type) {
         if (GENERAL_DIMSCALE == this->gproduct_pattern)
@@ -2939,9 +2905,10 @@ void GMFile::Handle_CVar_GPM_L1()  {
     set<string> ll_dim_set;
     for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
         if((*irv)->rank == 2 && (*irv)->name == "Latitude") {
-            auto GMcvar = new GMCVar(*irv);
             size_t lat_pos = (*irv)->fullpath.rfind("Latitude");
             string lat_path = (*irv)->fullpath.substr(0,lat_pos);
+            auto GMcvar_unique = make_unique<GMCVar>(*irv);
+            auto GMcvar = GMcvar_unique.release();
             GMcvar->cfdimname = lat_path + ((*irv)->dims)[0]->name;    
             ll_dim_set.insert(((*irv)->dims)[0]->name);
             GMcvar->cvartype = CV_EXIST;
@@ -2952,9 +2919,10 @@ void GMFile::Handle_CVar_GPM_L1()  {
         }
        
         if((*irv)->rank == 2 && (*irv)->name == "Longitude") {
-            auto GMcvar = new GMCVar(*irv);
             size_t lon_pos = (*irv)->fullpath.rfind("Longitude");
             string lon_path = (*irv)->fullpath.substr(0,lon_pos);
+            auto GMcvar_unique = make_unique<GMCVar>(*irv);
+            auto GMcvar = GMcvar_unique.release();
             GMcvar->cfdimname = lon_path + ((*irv)->dims)[1]->name;    
             ll_dim_set.insert(((*irv)->dims)[1]->name);
             GMcvar->cvartype = CV_EXIST;
@@ -2968,23 +2936,6 @@ void GMFile::Handle_CVar_GPM_L1()  {
         }
     }// end of for irv 
 
-#if 0
-    // Loop through all variables and create a dim set.
-    set<string> cvdimset;
-    pair<set<string>::iterator,bool> setret;
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-        for(vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-            ird != (*irv)->dims.end(); ++ird) {
-            setret = cvdimset.insert((*ird)->name);
-cerr<<"var name is "<<(*irv)->fullpath <<endl;
-            if (true == setret.second) {
-cerr<<"dim name is "<<(*ird)->name <<endl;
-                Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
-            }
-        }
-    }// for (vector<Var *>::iterator irv = this->vars.begin();...
-#endif
 
     // For each dimension, create a coordinate variable.
     // Here we just need to loop through the map dimname_to_dimsize,
@@ -2994,7 +2945,8 @@ cerr<<"dim name is "<<(*ird)->name <<endl;
         // We will not create fake coordinate variables for the
         // dimensions of latitude and longitude.
         if((ll_dim_set.find(itd->first)) == ll_dim_set.end()) {
-            auto GMcvar = new GMCVar();
+            auto GMcvar_unique = make_unique<GMCVar>();
+            auto GMcvar = GMcvar_unique.release();
             Create_Missing_CV(GMcvar,itd->first);
             this->cvars.push_back(GMcvar);
         }
@@ -3013,7 +2965,8 @@ void GMFile::Handle_CVar_GPM_L3() {
     for (map<string,hsize_t>::const_iterator itd = dimname_to_dimsize.begin();
                                             itd!=dimname_to_dimsize.end();++itd) {
 
-        auto GMcvar = new GMCVar();
+        auto GMcvar_unique = make_unique<GMCVar>();
+        auto GMcvar = GMcvar_unique.release();
         if("nlon" == itd->first || "nlat" == itd->first
            || "lnH" == itd->first || "ltH" == itd->first
            || "lnL" == itd->first || "ltL" == itd->first) {
@@ -3021,8 +2974,9 @@ void GMFile::Handle_CVar_GPM_L3() {
             GMcvar->newname = GMcvar->name;
             GMcvar->fullpath = GMcvar->name;
             GMcvar->rank = 1;
-            GMcvar->dtype = H5FLOAT32; 
-            auto gmcvar_dim = new Dimension(itd->second);
+            GMcvar->dtype = H5FLOAT32;
+            auto gmcvar_dim_unique = make_unique<Dimension>(itd->second);
+            auto gmcvar_dim = gmcvar_dim_unique.release();
             gmcvar_dim->name = GMcvar->name;
             gmcvar_dim->newname = gmcvar_dim->name;
             GMcvar->dims.push_back(gmcvar_dim); 
@@ -3043,7 +2997,8 @@ void GMFile::Handle_CVar_GPM_L3() {
             GMcvar->fullpath = GMcvar->name;
             GMcvar->rank = 1;
             GMcvar->dtype = H5FLOAT32;
-            auto gmcvar_dim = new Dimension(itd->second);
+            auto gmcvar_dim_unique = make_unique<Dimension>(itd->second);
+            auto gmcvar_dim = gmcvar_dim_unique.release();
             gmcvar_dim->name = GMcvar->name;
             gmcvar_dim->newname = gmcvar_dim->name;
             GMcvar->dims.push_back(gmcvar_dim);
@@ -3079,7 +3034,8 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() {
 
                 // Create Coordinate variables.
                 tempdimnamelist.erase(dimname);
-                auto GMcvar = new GMCVar(*irv);
+                auto GMcvar_unique = make_unique<GMCVar>(*irv);
+                auto GMcvar = GMcvar_unique.release();
                 GMcvar->cfdimname = dimname;
                 GMcvar->cvartype = CV_EXIST;
                 GMcvar->product_type = product_type;
@@ -3092,7 +3048,8 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() {
                 if (((dimname =="/natrack") && ((*irv)->fullpath == "/latitude"))
                   ||((dimname =="/nxtrack") && ((*irv)->fullpath == "/longitude"))) {
                     tempdimnamelist.erase(dimname);
-                    auto GMcvar = new GMCVar(*irv);
+                    auto GMcvar_unique = make_unique<GMCVar>(*irv);
+                    auto GMcvar = GMcvar_unique.release();
                     GMcvar->cfdimname = dimname;    
                     GMcvar->cvartype = CV_EXIST;
                     GMcvar->product_type = product_type;
@@ -3115,7 +3072,8 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() {
     // This may never happen for the current MeaSure SeaWiFS, but put it here for code coherence and completeness.
     // KY 12-30-2011
     for (auto &dimname:tempdimnamelist) {
-        auto GMcvar = new GMCVar();
+        auto GMcvar_unique = make_unique<GMCVar>();
+        auto GMcvar = GMcvar_unique.release();
         Create_Missing_CV(GMcvar,dimname);
         this->cvars.push_back(GMcvar);
     }
@@ -3151,7 +3109,8 @@ void GMFile::Handle_CVar_OSMAPL2S()  {
                 throw5("variable ",tempvarname," must have dimension ",osmapl2sdim0," , but not found ");
 
             tempdimnamelist.erase(osmapl2sdim0);
-            auto GMcvar = new GMCVar(*irv);
+            auto GMcvar_unique = make_unique<GMCVar>(*irv);
+            auto GMcvar = GMcvar_unique.release();
             GMcvar->newname = GMcvar->name; // Remove the path, just use the variable name
             GMcvar->cfdimname = osmapl2sdim0;    
             GMcvar->cvartype = CV_EXIST;
@@ -3171,7 +3130,8 @@ void GMFile::Handle_CVar_OSMAPL2S()  {
 
             tempdimnamelist.erase(osmapl2sdim1);
 
-            auto GMcvar = new GMCVar(*irv);
+            auto GMcvar_unique = make_unique<GMCVar>(*irv);
+            auto GMcvar = GMcvar_unique.release();
             GMcvar->newname = GMcvar->name;
             GMcvar->cfdimname = osmapl2sdim1;    
             GMcvar->cvartype = CV_EXIST;
@@ -3189,7 +3149,8 @@ void GMFile::Handle_CVar_OSMAPL2S()  {
 
     for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();++irs) {
 
-        auto GMcvar = new GMCVar();
+        auto GMcvar_unique = make_unique<GMCVar>();
+        auto GMcvar = GMcvar_unique.release();
         Create_Missing_CV(GMcvar,*irs);
         this->cvars.push_back(GMcvar);
     }
@@ -3205,13 +3166,16 @@ void GMFile::Handle_CVar_Aqu_L3()  {
 
         if ( "l3m_data" == var->name) { 
             for (const auto &dim:var->dims) {
-                auto GMcvar = new GMCVar();
+
+                auto GMcvar_unique = make_unique<GMCVar>();
+                auto GMcvar = GMcvar_unique.release();
                 GMcvar->name = dim->name;
                 GMcvar->newname = GMcvar->name;
                 GMcvar->fullpath = GMcvar->name;
                 GMcvar->rank = 1;
-                GMcvar->dtype = H5FLOAT32; 
-                auto gmcvar_dim = new Dimension(dim->size);
+                GMcvar->dtype = H5FLOAT32;
+                auto gmcvar_dim_unique = make_unique<Dimension>(dim->size);
+                auto gmcvar_dim = gmcvar_dim_unique.release();
                 gmcvar_dim->name = GMcvar->name;
                 gmcvar_dim->newname = gmcvar_dim->name;
                 GMcvar->dims.push_back(gmcvar_dim); 
@@ -3245,7 +3209,8 @@ void GMFile::Handle_CVar_Mea_Ozone() {
 
                 // Create Coordinate variables.
                 tempdimnamelist.erase(dimname);
-                auto GMcvar = new GMCVar(*irv);
+                auto GMcvar_unique = make_unique<GMCVar>(*irv);
+                auto GMcvar = GMcvar_unique.release();
                 GMcvar->cfdimname = dimname;
                 GMcvar->cvartype = CV_EXIST;
                 GMcvar->product_type = product_type;
@@ -3261,7 +3226,8 @@ void GMFile::Handle_CVar_Mea_Ozone() {
 
     for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();irs++) {
 
-        auto GMcvar = new GMCVar();
+        auto GMcvar_unique = make_unique<GMCVar>();
+        auto GMcvar = GMcvar_unique.release();
         Create_Missing_CV(GMcvar,*irs);
         this->cvars.push_back(GMcvar);
     }
@@ -3284,7 +3250,9 @@ void GMFile::Handle_CVar_Dimscale_General_Product()  {
 
                 // Create Coordinate variables.
                 tempdimnamelist.erase(dimname);
-                auto GMcvar = new GMCVar(*irv);
+
+                auto GMcvar_unique = make_unique<GMCVar>(*irv);
+                auto GMcvar = GMcvar_unique.release();
                 GMcvar->cfdimname = dimname;
 
                 // Check if this is just a netCDF-4 dimension. 
@@ -3315,7 +3283,8 @@ void GMFile::Handle_CVar_Dimscale_General_Product()  {
         if ((this->have_nc4_non_coord == false) ||
             (nc4_sdimv_dv_path.find(dimname) == nc4_sdimv_dv_path.end())) { 
             
-            auto GMcvar = new GMCVar();
+            auto GMcvar_unique = make_unique<GMCVar>();
+            auto GMcvar = GMcvar_unique.release();
             Create_Missing_CV(GMcvar,dimname);
             this->cvars.push_back(GMcvar);
         }
@@ -3410,8 +3379,10 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
         // We need to remember the dim names that the 2-D lat/lon CVs are associated with.
         set<string>dim_names_2d_cvs;
 
-        for(auto &cvar_lat:tempcvar_2dlat){
-            auto lat = new GMCVar(cvar_lat);
+        for (auto &cvar_lat:tempcvar_2dlat){
+
+            auto lat_unique = make_unique<GMCVar>(cvar_lat);
+            auto lat = lat_unique.release();
             // Latitude is always corresponding to the first dimension.
             lat->cfdimname = cvar_lat->getDimensions()[0]->name;
             dim_names_2d_cvs.insert(lat->cfdimname);
@@ -3419,8 +3390,10 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
             lat->product_type = product_type;
             this->cvars.push_back(lat);
         }
-        for(auto &cvar_lon:tempcvar_2dlon){
-            auto lon = new GMCVar(cvar_lon);
+        for (auto &cvar_lon:tempcvar_2dlon) {
+
+            auto lon_unique = make_unique<GMCVar>(cvar_lon);
+            auto lon = lon_unique.release();
             // Longitude is always corresponding to the second dimension.
             lon->cfdimname = cvar_lon->getDimensions()[1]->name;
             dim_names_2d_cvs.insert(lon->cfdimname);
@@ -3442,7 +3415,8 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
                     else if(CV_EXIST == (*ircv)->cvartype) {// This var exists already 
 
                         // Add this var. to the var list.
-                        auto var = new Var(*ircv);
+                        auto var_unique = make_unique<Var>(*ircv);
+                        auto var = var_unique.release();
                         this->vars.push_back(var);
 
                         // Remove this var. from the GMCVar list.
@@ -3684,7 +3658,8 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
 
                 // 1-D latitude
                 if(true == Is_Str_Attr(attr,cvar->fullpath,attr_name,lat_unit_value)) {
-                    auto lat = new GMCVar(cvar);
+                    auto lat_unique = make_unique<GMCVar>(cvar);
+                    auto lat = lat_unique.release();
                     lat->cfdimname = cvar->getDimensions()[0]->name;
                     lat->cvartype = cvar->cvartype;
                     lat->product_type = cvar->product_type;
@@ -3692,7 +3667,8 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
                 }
                 // 1-D longitude
                 else if(true == Is_Str_Attr(attr,cvar->fullpath,attr_name,lon_unit_value)){ 
-                    auto lon = new GMCVar(cvar);
+                    auto lon_unique = make_unique<GMCVar>(cvar);
+                    auto lon = lon_unique.release();
                     lon->cfdimname = cvar->getDimensions()[0]->name;
                     lon->cvartype = cvar->cvartype;
                     lon->product_type = cvar->product_type;
@@ -3715,7 +3691,8 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
                         
             //Note: When the 2nd parameter is true in the function Is_geolatlon, it checks the lat/latitude/Latitude 
             if(true == Is_geolatlon((*irv)->name,true)) {
-                auto lat = new Var(*irv);
+                auto lat_unique = make_unique<Var>(*irv);
+                auto lat = lat_unique.release();
                 var_2dlat.push_back(lat);
                 latlon2d_path_to_index[(*irv)->fullpath]= distance(this->vars.begin(),irv);
                 continue;
@@ -3727,7 +3704,8 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
 
                     // When the third parameter of has_latlon_cf_units is set to true, it checks latitude
                     if(true == has_latlon_cf_units(attr,(*irv)->fullpath,true)) {
-                        auto lat = new Var(*irv);
+                        auto lat_unique = make_unique<Var>(*irv);
+                        auto lat = lat_unique.release();
                         var_2dlat.push_back(lat);
                         latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
                         has_2dlat = true;
@@ -3740,9 +3718,10 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
             }
 
             //Note: When the 2nd parameter is false in the function Is_geolatlon, it checks the lon/longitude/Longitude
-            if(true == Is_geolatlon((*irv)->name,false)) {
-                auto lon = new Var(*irv);
+            if (true == Is_geolatlon((*irv)->name,false)) {
                 latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
+                auto lon_unique = make_unique<Var>(*irv);
+                auto lon = lon_unique.release();
                 var_2dlon.push_back(lon);
             }
             else {
@@ -3750,8 +3729,9 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
 
                     // When the third parameter of has_latlon_cf_units is set to false, it checks longitude
                     if(true == has_latlon_cf_units(attr,(*irv)->fullpath,false)) {
-                        auto lon = new Var(*irv);
                         latlon2d_path_to_index[(*irv)->fullpath] = distance(this->vars.begin(),irv);
+                        auto lon_unique = make_unique<Var>(*irv);
+                        auto lon = lon_unique.release();
                         var_2dlon.push_back(lon);
                         break;
                     }
@@ -3761,7 +3741,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
     } // for (auto irv
 }
 
-//  Sequeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
+//  Squeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
 //  The latlon2d_path_to_index map also needs to be updated.
 void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
                                                      vector<Var*> &var_2dlon, 
@@ -3966,8 +3946,9 @@ cerr<<"2-D CV longitude name is "<<(*itv)->fullpath <<endl;
     }
 }
 
-// If two vars in the 2-D lat or 2-D lon CV candidate vector share the same dim. , these two vars cannot be CVs. 
-// The group they belong to is the group candidate that the coordinates attribute of the variable under that group may be modified..
+// If two vars in the 2-D lat or 2-D lon CV candidate vector share the same dim, these two vars cannot be CVs.
+// The group they belong to is the group candidate that the coordinates attribute of the variable under that group
+// may be modified.
 void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_path_to_index){
 
     BESDEBUG("h5", "Coming to Obtain_unique_2dCV()"<<endl);
@@ -3989,7 +3970,7 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
                 // Compare var_ll_i_path and var_ll_j_path,only set the child group path be true and remember the path.
                 // The variable at the parent group can be the coordinate variable.
                 // Obtain the string size, 
-                // compare the string size, long.compare(0,shortlength,short)==0, 
+                // compare the string size, long.compare(0,short-length,short)==0,
                 // yes, save the long path(child group path), set the long path one true. Else save two paths, set both true
                 if(var_ll_i_path.size() > var_ll_j_path.size()) {
 
@@ -4061,8 +4042,8 @@ void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index)
     sort(var2d_index.begin(),var2d_index.end());
     auto it = this->vars.begin();
 
-    // This is a performance optimiziation operation.
-    // We find it is typical for swath files that have many many general variables but only have very few lat/lon CVs.
+    // This is a performance optimization operation.
+    // We find it is typical for swath files that have many general variables but only have very few lat/lon CVs.
     // To reduce the looping through all variables and comparing the fullpath(string), we use index and remember
     // the position of 2-D CVs in the iterator. In this way, only a few operations are needed.
     for (unsigned int i = 0; i <var2d_index.size();i++) {
@@ -4137,7 +4118,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var)  {
         // There is a case that the "coordinates" attribute doesn't need to be flattened.
         // We will skip this case. This is necessary since the "coordinates" may be revised
         // to add a path to follow the CF. Without skipping the case, the "coordinates" is
-        // actually not handled but "makes the impression" it is handled. That makes the 
+        // actually not handled but "makes the impression" it is handled. That makes
         // this case ignored when the EnableCoorattrAddPath BES key is supposed to work on.
         // https://bugs.earthdata.nasa.gov/browse/HDFFEATURE-45
         if((*ira)->name == co_attrname) {
@@ -4174,7 +4155,8 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var)  {
             flatten_coor_value += get_CF_string(orig_coor_value.substr(ele_start_pos));
 
         // Generate the new "coordinates" attribute.
-        auto attr = new Attribute();
+        auto attr_unique = make_unique<Attribute>();
+        auto attr = attr_unique.release();
         Add_Str_Attr(attr,co_attrname,flatten_coor_value);
         var->attrs.push_back(attr);
         var->coord_attr_add_path = false;
@@ -4609,7 +4591,8 @@ void GMFile::Handle_CVar_LatLon_General_Product()  {
             // For latitude, regardless 1D or 2D, the first dimension needs to be updated.
             // Create Coordinate variables.
             tempdimnamelist.erase(((*irv)->dims[0])->name);
-            auto GMcvar = new GMCVar(*irv);
+            auto GMcvar_unique = make_unique<GMCVar>(*irv);
+            auto GMcvar = GMcvar_unique.release();
             GMcvar->cfdimname = ((*irv)->dims[0])->name;
             GMcvar->cvartype = CV_EXIST;
             GMcvar->product_type = product_type;
@@ -4635,7 +4618,8 @@ void GMFile::Handle_CVar_LatLon_General_Product()  {
                 londimname = ((*irv)->dims[0])->name;
                
             tempdimnamelist.erase(londimname);
-            auto GMcvar = new GMCVar(*irv);
+            auto GMcvar_unique = make_unique<GMCVar>(*irv);
+            auto GMcvar = GMcvar_unique.release();
             GMcvar->cfdimname = londimname;
             GMcvar->cvartype = CV_EXIST;
             GMcvar->product_type = product_type;
@@ -4649,7 +4633,8 @@ void GMFile::Handle_CVar_LatLon_General_Product()  {
     //
     // Add other missing coordinate variables.
     for (const auto &dimname:tempdimnamelist) {
-        auto GMcvar = new GMCVar();
+        auto GMcvar_unique = make_unique<GMCVar>();
+        auto GMcvar = GMcvar_unique.release();
         Create_Missing_CV(GMcvar,dimname);
         this->cvars.push_back(GMcvar);
     }
@@ -4667,13 +4652,13 @@ void GMFile::Handle_CVar_OBPG_L3()  {
     for (const auto &var:this->vars) {
 
         // Here I try to avoid using the dimension name row and column to find the lat/lon dimension size.
-        // So I am looking for a 2-D floating-point array or a 2-D array under the group geophsical_data.
+        // So I am looking for a 2-D floating-point array or a 2-D array under the group geophysical_data.
         // This may be subject to change if OBPG level 3 change its arrangement of variables.
         // KY 2014-09-29
  
         if(var->rank == 2) {
 
-            if((var->fullpath.find("/geophsical_data") == 0) || (var->dtype == H5FLOAT32)) {
+            if((var->fullpath.find("/geophysical_data") == 0) || (var->dtype == H5FLOAT32)) {
 
                 size_t lat_size = var->getDimensions()[0]->size;
                 string lat_name = var->getDimensions()[0]->name;
@@ -4722,7 +4707,7 @@ void GMFile::Handle_CVar_OBPG_L3()  {
                 }
                 break;
 
-            } // end of if((var->fullpath.find("/geophsical_data") == 0) || (var->dtype == H5FLOAT32))
+            } // end of if((var->fullpath.find("/geophysical_data") == 0) || (var->dtype == H5FLOAT32))
         } // end of if(var->rank == 2)
     } // end of for (auto irv = this->vars.begin();
 
@@ -4781,7 +4766,8 @@ void GMFile::Handle_SpVar_ACOS_OCO2()  {
         if (H5INT64 == (*irv)->getType()) {
             
             // First: Time Part of soundingid
-            auto spvar = new GMSPVar(*irv);
+            auto spvar_unique = make_unique<GMSPVar>(*irv);
+            auto spvar = spvar_unique.release();
             spvar->name = (*irv)->name +"_Time";
             spvar->newname = (*irv)->newname+"_Time";
             spvar->dtype = H5INT32;
@@ -4793,7 +4779,8 @@ void GMFile::Handle_SpVar_ACOS_OCO2()  {
             this->spvars.push_back(spvar);
 
             // Second: Date Part of soundingid
-            auto spvar2 = new GMSPVar(*irv);
+            auto spvar2_unique = make_unique<GMSPVar>(*irv);
+            auto spvar2 = spvar2_unique.release();
             spvar2->name = (*irv)->name +"_Date";
             spvar2->newname = (*irv)->newname+"_Date";
             spvar2->dtype = H5INT32;
@@ -4943,13 +4930,13 @@ for (auto irv2 = this->vars.begin();
 
 }
 
-// Rarely object name clashings may occur. This routine makes sure
+// Rarely object name clashing may occur. This routine makes sure
 // all object names are unique.
 void GMFile::Handle_Obj_NameClashing(bool include_attr)  {
 
     BESDEBUG("h5", "GMFile::Coming to Handle_Obj_NameClashing()"<<endl);
     // objnameset will be filled with all object names that we are going to check the name clashing.
-    // For example, we want to see if there are any name clashings for all variable names in this file.
+    // For example, we want to see if there are any name clashing for all variable names in this file.
     // objnameset will include all variable names. If a name clashing occurs, we can figure out from the set operation immediately.
     set<string>objnameset;
     Handle_GMCVar_NameClashing(objnameset);
@@ -4963,19 +4950,19 @@ void GMFile::Handle_Obj_NameClashing(bool include_attr)  {
     //Handle_DimNameClashing();
 }
 
-// Name clashings for coordinate variables
+// Name clashing for coordinate variables
 void GMFile::Handle_GMCVar_NameClashing(set<string> &objnameset )  {
 
     GMHandle_General_NameClashing(objnameset,this->cvars);
 }
 
-// Name clashings for special variables(like 64-bit integer variables)
+// Name clashing for special variables(like 64-bit integer variables)
 void GMFile::Handle_GMSPVar_NameClashing(set<string> &objnameset )  {
 
     GMHandle_General_NameClashing(objnameset,this->spvars);
 }
 
-// This routine handles attribute name clashings for coordinate variables.
+// This routine handles attribute name clashing for coordinate variables.
 void GMFile::Handle_GMCVar_AttrNameClashing()  {
 
     BESDEBUG("h5", "Coming to Handle_GMCVar_AttrNameClashing()"<<endl);
@@ -4987,7 +4974,7 @@ void GMFile::Handle_GMCVar_AttrNameClashing()  {
     }
 }
 
-// Attribute name clashings for special variables
+// Attribute name clashing for special variables
 void GMFile::Handle_GMSPVar_AttrNameClashing()  {
 
     BESDEBUG("h5", "Coming to Handle_GMSPVar_AttrNameClashing()"<<endl);
@@ -5000,7 +4987,7 @@ void GMFile::Handle_GMSPVar_AttrNameClashing()  {
 }
 
 //class T must have member string newname
-// The subroutine to handle name clashings,
+// The subroutine to handle name clashing,
 // it builds up a map from original object names to clashing-free object names.
 template<class T> void
 GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objvec) {
@@ -5045,7 +5032,7 @@ GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objve
      
 }
 
-// Handle dimension name clashings
+// Handle dimension name clashing
 void GMFile::Handle_DimNameClashing() {
 
 
@@ -5170,13 +5157,14 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
     if (General_Product == product_type || true == add_path) {
         File::Add_Supplement_Attrs(add_path);   
 
-       if(true == add_path) {
+       if (true == add_path) {
             // Adding variable original name(origname) and full path(fullpath)
             for (auto &cvar:this->cvars) {
                 if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
-                    auto attr = new Attribute();
                     const string varname = cvar->name;
                     const string attrname = "origname";
+                    auto attr_unique = make_unique<Attribute>();
+                    auto attr = attr_unique.release();
                     Add_Str_Attr(attr,attrname,varname);
                     cvar->attrs.push_back(attr);
                 }
@@ -5189,9 +5177,10 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
                 if(cvar->zero_storage_size == false
                    || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
                     if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
-                        auto attr = new Attribute();
                         const string varname = cvar->fullpath;
                         const string attrname = "fullnamepath";
+                        auto attr_unique = make_unique<Attribute>();
+                        auto attr = attr_unique.release();
                         Add_Str_Attr(attr,attrname,varname);
                         cvar->attrs.push_back(attr);
                     }
@@ -5199,9 +5188,10 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
             }
 
             for (auto &spvar:this->spvars) {
-                auto attr = new Attribute();
                 const string varname = spvar->name;
                 const string attrname = "origname";
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,attrname,varname);
                 spvar->attrs.push_back(attr);
             }
@@ -5212,9 +5202,10 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
                 // KY 2020-03-23
                 if(spvar->zero_storage_size == false
                    || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
-                    auto attr = new Attribute();
                     const string varname = spvar->fullpath;
                     const string attrname = "fullnamepath";
+                    auto attr_unique = make_unique<Attribute>();
+                    auto attr = attr_unique.release();
                     Add_Str_Attr(attr,attrname,varname);
                     spvar->attrs.push_back(attr);
                 }
@@ -5313,7 +5304,6 @@ GMFile:: Add_GPM_Attrs()  {
             
             string comment;
             const string attrname = "comment";
-            auto attr = new Attribute();
 
             {
             if(cvar->name == "nchannel1") 
@@ -5406,14 +5396,13 @@ GMFile:: Add_GPM_Attrs()  {
                 comment = "Liquid, solid."; 
             }
 
-            if(""==comment)
-                delete attr;
-            else {
+            if (!comment.empty()) { 
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,attrname,comment);
                 cvar->attrs.push_back(attr);
             }
-
-        }
+         }
       }
 
       if(product_type == GPMS_L3 || product_type == GPMM_L3) {
@@ -5421,8 +5410,6 @@ GMFile:: Add_GPM_Attrs()  {
             
             string comment;
             const string attrname = "comment";
-            auto attr = new Attribute();
-
             {
             if(cvar->name == "chn") 
                 comment = "Number of channels:Ku,Ka,KaHS,DPR.";
@@ -5460,41 +5447,43 @@ GMFile:: Add_GPM_Attrs()  {
                 comment = "Ascending or descending half of the orbit.";
             }
 
-            if(""==comment)
-                delete attr;
-            else {
+            if (comment.empty() == false) {
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,attrname,comment);
                 cvar->attrs.push_back(attr);
             }
-
-        }
+         }
       }
-
 
       if (cvar->cvartype == CV_SPECIAL) {
             if(cvar->name == "nlayer" || cvar->name == "hgt"
                || cvar->name == "nalt") {
-                auto attr = new Attribute();
                 string unit_value = "km";
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,attr2_new_name,unit_value);
                 cvar->attrs.push_back(attr);
 
-                auto attr1 = new Attribute();
                 string attr1_axis="axis";
                 string attr1_value = "Z";
+                auto attr1_unique = make_unique<Attribute>();
+                auto attr1 = attr1_unique.release();
                 Add_Str_Attr(attr1,attr1_axis,attr1_value);
                 cvar->attrs.push_back(attr1);
 
-                auto attr2 = new Attribute();
                 string attr2_positive="positive";
                 string attr2_value = "up";
+                auto attr2_unique = make_unique<Attribute>();
+                auto attr2 = attr2_unique.release();
                 Add_Str_Attr(attr2,attr2_positive,attr2_value);
                 cvar->attrs.push_back(attr2);
 
             }
             if(cvar->name == "hgt" || cvar->name == "nalt"){
-                auto attr1 = new Attribute();
                 string comment ="Number of heights above the earth ellipsoid";
+                auto attr1_unique = make_unique<Attribute>();
+                auto attr1 = attr1_unique.release();
                 Add_Str_Attr(attr1,"comment",comment);
                 cvar->attrs.push_back(attr1);
             }
@@ -5527,8 +5516,8 @@ GMFile:: Add_GPM_Attrs()  {
             
             if(H5FLOAT32 == (*it_v)->dtype) {
                 Attribute* attr = new Attribute();
-                    float _FillValue = -9999.9;
-                    Add_One_Float_Attr(attr,fill_value_attr_name,_FillValue);
+                    float _FV = -9999.9;
+                    Add_One_Float_Attr(attr,fill_value_attr_name,_FV);
                (*it_v)->attrs.push_back(attr);
             }
         }
@@ -5560,8 +5549,9 @@ GMFile:: Correct_GPM_L1_LatLon_units(Var *var, const string & unit_value)  {
     }
     // Add the correct units for Latitude and Longitude 
     // Note: the reason we do this way, for some versions of GPM, units is degrees,
-    // rather than degrees_north.. So units also needs to be corrected to follow CF.
-    auto attr = new Attribute();
+    // rather than degrees_north. So units also needs to be corrected to follow CF.
+    auto attr_unique = make_unique<Attribute>();
+    auto attr = attr_unique.release();
     Add_Str_Attr(attr,unit_name,unit_value);
     var->attrs.push_back(attr);
 }
@@ -5597,7 +5587,7 @@ GMFile:: Add_Aqu_Attrs()  {
     // So add it here. KY 2012-2-16
  
     const string fill_value_attr_name = "_FillValue";
-    float _FillValue = -32767.0;
+    float _FV = -32767.0;
 
     for (ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
         if (orig_longname_attr_name == (*ira)->name) {
@@ -5655,39 +5645,43 @@ GMFile:: Add_Aqu_Attrs()  {
     for (it_v = vars.begin(); it_v != vars.end(); ++it_v) {
         if ("l3m_data" == (*it_v)->name) {
 
-            Attribute *attr = nullptr;
             // 1. Add the long_name attribute if no
             if(false == has_long_name) {
-                attr = new Attribute();
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,longname_attr_name,longname_value);
                 (*it_v)->attrs.push_back(attr);
             }
 
             // 2. Add the units attribute
             if(false == has_units) {
-                attr = new Attribute();
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_Str_Attr(attr,units_attr_name,units_value);
                 (*it_v)->attrs.push_back(attr);
             }
 
             // 3. Add the valid_min attribute
-            if(false == has_valid_min) {
-                attr = new Attribute();
+            if (false == has_valid_min) {
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_One_Float_Attr(attr,valid_min_attr_name,valid_min_value);
                 (*it_v)->attrs.push_back(attr);
             }
 
             // 4. Add the valid_max attribute
             if(false == has_valid_max) {
-                attr = new Attribute();
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
                 Add_One_Float_Attr(attr,valid_max_attr_name,valid_max_value);
                 (*it_v)->attrs.push_back(attr);
             }
 
             // 5. Add the _FillValue attribute
             if(false == has_fillvalue) {
-               attr = new Attribute();
-               Add_One_Float_Attr(attr,fill_value_attr_name,_FillValue);
+               auto attr_unique = make_unique<Attribute>();
+               auto attr = attr_unique.release();
+               Add_One_Float_Attr(attr,fill_value_attr_name,_FV);
                (*it_v)->attrs.push_back(attr);
             }
 
@@ -5704,7 +5698,7 @@ GMFile:: Add_SeaWiFS_Attrs() const {
     // The fill value is -999.0. However, No _FillValue attribute is added.
     // So add it here. KY 2012-2-16
     const string fill_value_attr_name = "_FillValue";
-    float _FillValue = -999.0;
+    float _FV = -999.0;
     const string valid_range_attr_name = "valid_range";
 
     for (auto &var:this->vars) {
@@ -5720,12 +5714,12 @@ GMFile:: Add_SeaWiFS_Attrs() const {
                     has_validrange = true;
                     break;
                 }
-
             }
             // Add the fill value
             if (has_fillvalue != true && has_validrange != true ) {
-                auto attr = new Attribute();
-                Add_One_Float_Attr(attr,fill_value_attr_name,_FillValue);
+                auto attr_unique = make_unique<Attribute>();
+                auto attr = attr_unique.release();
+                Add_One_Float_Attr(attr,fill_value_attr_name,_FV);
                 var->attrs.push_back(attr);
             }
         }
@@ -5884,7 +5878,7 @@ void GMFile:: Handle_Coor_Attr() {
 
     BESDEBUG("h5", "GMFile::Coming to Handle_Coor_Attr()"<<endl);
     string co_attrname = "coordinates";
-    string co_attrvalue="";
+    string co_attrvalue;
     string unit_attrname = "units";
     string nonll_unit_attrvalue ="level";
     string lat_unit_attrvalue ="degrees_north";
@@ -5895,17 +5889,20 @@ void GMFile:: Handle_Coor_Attr() {
     for (auto &cvar:this->cvars) {
 
         if (cvar->cvartype == CV_NONLATLON_MISS) {
-           auto attr = new Attribute();
+           auto attr_unique = make_unique<Attribute>();
+           auto attr = attr_unique.release();
            Add_Str_Attr(attr,unit_attrname,nonll_unit_attrvalue);
            cvar->attrs.push_back(attr);
         }
         else if (cvar->cvartype == CV_LAT_MISS) {
-           auto attr = new Attribute();
+           auto attr_unique = make_unique<Attribute>();
+           auto attr = attr_unique.release();
            Add_Str_Attr(attr,unit_attrname,lat_unit_attrvalue);
            cvar->attrs.push_back(attr);
         }
         else if (cvar->cvartype == CV_LON_MISS) {
-           auto attr = new Attribute();
+           auto attr_unique = make_unique<Attribute>();
+           auto attr = attr_unique.release();
            Add_Str_Attr(attr,unit_attrname,lon_unit_attrvalue);
            cvar->attrs.push_back(attr);
         }
@@ -5965,8 +5962,8 @@ void GMFile:: Handle_Coor_Attr() {
             }
 #endif
 
-            // We meet several products that miss the 2-D latitude and longitude CF units although they
-            // have the CV names like latitude/longitude, we should double check this case,
+            // We meet several products that miss the 2-D latitude and longitude CF units, although they
+            // have the CV names like latitude/longitude, we should double-check this case,
             // and add the correct CF units if possible. We will watch if this is the right way.
             //else if(true == Is_geolatlon(cvar->name,true))
             if(true == Is_geolatlon(cvar->name,true))
@@ -6103,9 +6100,10 @@ void GMFile:: Handle_Coor_Attr() {
                     }
 
                     if (false == co_attrvalue.empty()) {
-                        auto attr = new Attribute();
+                        auto attr_unique = make_unique<Attribute>();
+                        auto attr = attr_unique.release();
                         Add_Str_Attr(attr,co_attrname,co_attrvalue);
-                       var->attrs.push_back(attr);
+                        var->attrs.push_back(attr);
                     }
 
                     co_attrvalue.clear();
@@ -6116,25 +6114,25 @@ void GMFile:: Handle_Coor_Attr() {
     }
 }
 
-// Handle GPM level 1 coordiantes attributes.
+// Handle GPM level 1 coordinates attributes.
 void GMFile:: Handle_GPM_l1_Coor_Attr() const {
 
     BESDEBUG("h5", "Coming to Handle_GPM_l1_Coor_Attr()"<<endl);
     // Build a map from CFdimname to 2-D lat/lon variable name, should be something like: aa_list[cfdimname]=s1_latitude .
     // Loop all variables
     // Inner loop: for all dims of a var
-    // if(dimname matches the dim(not cfdim) name of one of 2-D lat/lon,
+    // if (dimname matches the dim(not cfdim) name) of one of 2-D lat/lon,
     // check if the variable's full path contains the path of one of 2-D lat/lon,
     // yes, build its cfdimname = path+ dimname, check this cfdimname with the cfdimname of the corresponding 2-D lat/lon
     //      If matched, save this latitude variable name as one of the coordinate variable. 
     //      else this is a 3rd-dimension cv, just use the dimension name(or the corresponding cv name maybe through a map).
 
     // Prepare 1) 2-D CVar(lat,lon) corresponding dimension name set.
-    //         2) cfdim name to cvar name map(don't need to use a map, just a holder. It should be fine. 
+    //         2) cfdim name to cvar name map(don't need to use a map, just a holder). It should be fine.
 
-    // "coordinates" attribute name and value.  We only need to provide this atttribute for variables that have 2-D lat/lon 
+    // "coordinates" attribute name and value.  We only need to provide this attribute for variables that have 2-D lat/lon
     string co_attrname = "coordinates";
-    string co_attrvalue="";
+    string co_attrvalue;
 
     // 2-D cv dimname set.
     set<string> cvar_2d_dimset;
@@ -6283,7 +6281,8 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() const {
                                 co_attrvalue = co_attrvalue + " " +dim->newname;
                         }
                     }
-                    auto attr = new Attribute();
+                    auto attr_unique = make_unique<Attribute>();
+                    auto attr = attr_unique.release();
                     Add_Str_Attr(attr,co_attrname,co_attrvalue);
                     var->attrs.push_back(attr);
                     var->coord_attr_add_path = false;
@@ -6365,7 +6364,7 @@ bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values)  {
             }
         }
     }
-    //Only when both index and the number of appearence match, we can set this be true.
+    //Only when both index and the number of appearance match, we can set this be true.
     if((match_lat_name_pair_index == match_lon_name_pair_index) && (num_match_lat ==1) && (num_match_lon ==1))
         ret_value = true;
 
@@ -6374,7 +6373,7 @@ bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values)  {
 }
 
 //Some products only store the coordinate name(not full path) in the attribute coordinates, as
-//long as it is valid, we should add the path to this coordinates.
+//long as it is valid, we should add the path to these coordinates.
 bool GMFile::Coord_Match_LatLon_NameSize_Same_Group(const string &coord_values,const string &var_path) {
 
     BESDEBUG("h5", "Coming to Coord_Match_LatLon_NameSize_Same_Group()"<<endl);
@@ -6459,7 +6458,8 @@ void GMFile:: Create_Missing_CV(GMCVar *GMcvar, const string& dimname)  {
     hsize_t gmcvar_dimsize = dimname_to_dimsize[dimname];
     bool unlimited_flag = dimname_to_unlimited[dimname];
 
-    auto gmcvar_dim = new Dimension(gmcvar_dimsize);
+    auto gmcvar_dim_unique = make_unique<Dimension>(gmcvar_dimsize);
+    auto gmcvar_dim = gmcvar_dim_unique.release();
 
     gmcvar_dim->unlimited_dim = unlimited_flag;
     gmcvar_dim->name = dimname;
@@ -6936,7 +6936,7 @@ void GMFile::Update_Bounds_Attr() {
 
 }
 
-// We will create some temporary coordinate variables. The resource allocoated
+// We will create some temporary coordinate variables. The resource allocated
 // for these variables need to be released.
 void 
 GMFile::release_standalone_GMCVar_vector(vector<GMCVar*>&tempgc_vars){
