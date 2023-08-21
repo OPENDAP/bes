@@ -35,11 +35,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "config_hdf5.h"
 
 #include <string>
-#include <ctype.h>
-
+#include <memory>
 #include "HDF5Url.h"
 #include <libdap/InternalErr.h>
 
@@ -52,7 +50,8 @@ HDF5Url::HDF5Url(const string &n, const string &vpath,const string &d) : Url(n, 
 
 BaseType *HDF5Url::ptr_duplicate()
 {
-    return new HDF5Url(*this);
+    auto HDF5Url_unique = make_unique<HDF5Url>(*this);
+    return HDF5Url_unique.release();
 }
 
 bool HDF5Url::read()

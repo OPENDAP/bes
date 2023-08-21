@@ -29,12 +29,10 @@
 ///
 /// All rights reserved.
 
-#include "config_hdf5.h"
 #include <iostream>
-#include <sstream>
+#include <memory>
 #include <cassert>
 #include <BESDebug.h>
-#include <libdap/InternalErr.h>
 
 #include "HDF5GMCFSpecialCVArray.h"
 
@@ -43,7 +41,8 @@ using namespace libdap;
 
 BaseType *HDF5GMCFSpecialCVArray::ptr_duplicate()
 {
-    return new HDF5GMCFSpecialCVArray(*this);
+    auto HDF5GMCFSpecialCVArray_unique = make_unique<HDF5GMCFSpecialCVArray>(*this);
+    return HDF5GMCFSpecialCVArray_unique.release();
 }
 
 bool HDF5GMCFSpecialCVArray::read()

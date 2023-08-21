@@ -31,9 +31,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config_hdf5.h"
+#include <memory>
 #include <iostream>
-#include <sstream>
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
@@ -46,7 +45,8 @@ using namespace libdap;
 
 BaseType *HDF5GMCFFillIndexArray::ptr_duplicate()
 {
-    return new HDF5GMCFFillIndexArray(*this);
+    auto HDF5GMCFFillIndexArray_unique = make_unique<HDF5GMCFFillIndexArray>(*this);
+    return HDF5GMCFFillIndexArray_unique.release();
 }
 
 // Read in an HDF5 Array 

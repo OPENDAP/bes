@@ -30,9 +30,9 @@
 /// All rights reserved.
 
 
-#include "config_hdf5.h"
+
 #include <iostream>
-#include <sstream>
+#include <memory>
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
@@ -45,7 +45,8 @@ using namespace libdap;
 
 BaseType *HDF5GMSPCFArray::ptr_duplicate()
 {
-    return new HDF5GMSPCFArray(*this);
+    auto HDF5GMSPCFArray_unique = make_unique<HDF5GMSPCFArray>(*this);
+    return HDF5GMSPCFArray_unique.release();
 }
 
 bool HDF5GMSPCFArray::read()

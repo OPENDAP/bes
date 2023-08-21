@@ -29,12 +29,10 @@
 ///
 /// All rights reserved.
 
-#include "config_hdf5.h"
 #include <iostream>
 #include <sstream>
-#include <cassert>
+#include <memory>
 #include <BESDebug.h>
-#include <libdap/InternalErr.h>
 
 #include "HDFEOS5CFMissNonLLCVArray.h"
 #include "HDF5RequestHandler.h"
@@ -44,7 +42,8 @@ using namespace libdap;
 
 BaseType *HDFEOS5CFMissNonLLCVArray::ptr_duplicate()
 {
-    return new HDFEOS5CFMissNonLLCVArray(*this);
+    auto HDFEOS5CFMissNonLLCVArray_unique = make_unique<HDFEOS5CFMissNonLLCVArray>(*this);
+    return HDFEOS5CFMissNonLLCVArray_unique.release();
 }
 
 bool HDFEOS5CFMissNonLLCVArray::read()

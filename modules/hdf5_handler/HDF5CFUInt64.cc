@@ -30,8 +30,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config_hdf5.h"
-
+#include <memory>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
 #include "HDF5CFUInt64.h"
@@ -49,7 +48,8 @@ HDF5CFUInt64::HDF5CFUInt64(const string &n, const string &d,const string &d_f) :
 }
 BaseType *HDF5CFUInt64::ptr_duplicate()
 {
-    return new HDF5CFUInt64(*this);
+    auto HDF5CFUInt64_unique = make_unique<HDF5CFUInt64>(*this);
+    return HDF5CFUInt64_unique.release();
 }
 
 bool HDF5CFUInt64::read()

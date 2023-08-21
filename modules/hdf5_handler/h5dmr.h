@@ -187,6 +187,8 @@ void add_dap4_coverage_default_internal(libdap::D4Group* d4_grp, std::unordered_
                                         std::unordered_map<std::string,libdap::Array*> &);
 void obtain_ds_name_array_maps(libdap::D4Group*, std::unordered_map<std::string,libdap::Array*> &,
                                 const std::vector<std::string>& handled_coord_names);
+void obtain_ds_name_array_maps_internal(libdap::BaseType *v, std::unordered_map<string,libdap::Array*>&dsn_array_maps,
+                               const std::vector<std::string>& handled_all_cv_names);
 void obtain_coord_names(libdap::Array*, std::vector<std::string>& coord_names);
 void obtain_multi_string_coord_names(libdap::D4Attribute *d4_attr, std::vector<std::string> & coord_names);
 void make_coord_names_fpath(libdap::D4Group*, std::vector<std::string>& coord_names);
@@ -202,8 +204,6 @@ void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &
                     std::unordered_map<std::string,libdap::Array*> & coname_array_maps, std::unordered_set<std::string>&);
 void add_dimscale_maps(libdap::Array*, std::unordered_map<std::string,libdap::Array*> & dc_array_maps,
                        const std::unordered_set<std::string> & handled_dim_names);
-void add_dimscale_maps_internal(libdap::BaseType *v, std::unordered_map<string,libdap::Array*>&dsn_array_maps,
-                               const std::vector<std::string>& handled_all_cv_names);
 void reorder_vars(libdap::D4Group*, const std::map<std::string,libdap::Array*> &coname_array_maps,
                   const std::map<std::string,libdap::Array*> & dc_array_maps);
 void reorder_vars_internal(libdap::D4Group* d4_grp, const std::vector<int> &cv_pos,

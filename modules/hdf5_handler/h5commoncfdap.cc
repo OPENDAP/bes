@@ -196,11 +196,9 @@ void gen_dap_onevar_dds_array(DDS &dds, const HDF5CF::Var *var, hid_t file_id, c
 
     if (true == dap4_int64) {
         if (var->getType() == H5INT64) {
-            //bt = new(HDF5CFInt64)(var->getNewName(), var->getFullPath());
             auto int64_unique = make_unique<HDF5CFInt64>(var->getNewName(), var->getFullPath());
             bt = int64_unique.release();
         } else if (var->getType() == H5UINT64) {
-            //bt = new(HDF5CFUInt64)(var->getNewName(), var->getFullPath());
             auto uint64_unique = make_unique<HDF5CFUInt64>(var->getNewName(), var->getFullPath());
             bt = uint64_unique.release();
         }

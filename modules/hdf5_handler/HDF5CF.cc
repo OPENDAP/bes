@@ -34,9 +34,9 @@
 ///
 /// All rights reserved.
 
+#include <memory>
 #include <sstream>
 #include <algorithm>
-#include <functional>
 #include <climits>
 #include "HDF5CF.h"
 #include "h5cfdaputil.h"
@@ -65,7 +65,8 @@ Var::Var(const Var *var)
     coord_attr_add_path = var->coord_attr_add_path;
 
     for (const auto &vattr:var->attrs) {
-        auto attr = new Attribute();
+        auto attr_unique = make_unique<Attribute>();
+        auto attr = attr_unique.release();
         attr->name = vattr->name;
         attr->newname = vattr->newname;
         attr->dtype = vattr->dtype;
@@ -77,7 +78,8 @@ Var::Var(const Var *var)
     }
 
     for (const auto &vdim:var->dims) {
-        auto dim = new Dimension(vdim->size);
+        auto dim_unique = make_unique<Dimension>(vdim->size);
+        auto dim = dim_unique.release();
         dim->name = vdim->name;
         dim->newname = vdim->newname;
         dim->unlimited_dim = vdim->unlimited_dim;
@@ -208,7 +210,8 @@ void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_a
         bool temp_unsup_attr_dspace = false;
 
         for (int j = 0; j < num_attrs; j++) {
-            auto attr = new Attribute();
+            auto attr_unique = make_unique<Attribute>();
+            auto attr = attr_unique.release();
             try {
                 this->Retrieve_H5_Attr_Info(attr, root_id, j, temp_unsup_attr_atype, temp_unsup_attr_dspace);
             }
@@ -307,9 +310,10 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 
                 cgroup = H5Gopen(grp_id, full_path_name.c_str(), H5P_DEFAULT);
                 if (cgroup < 0)
-                throw2("Error opening the group ", full_path_name);
+                    throw2("Error opening the group ", full_path_name);
 
-                group = new Group();
+                auto group_unique = make_unique<Group>();
+                group = group_unique.release();
                 group->path = full_path_name;
                 group->newname = full_path_name;
 
@@ -322,7 +326,8 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 
                     for (int j = 0; j < num_attrs; j++) {
 
-                        attr = new Attribute();
+                        auto attr_unique = make_unique<Attribute>();
+                        attr = attr_unique.release();
                         Retrieve_H5_Attr_Info(attr, cgroup, j, temp_unsup_attr_dtype, temp_unsup_attr_dspace);
                         group->attrs.push_back(attr);
                         attr = nullptr;
@@ -346,7 +351,8 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                         (string(gname) + "/" + temp_oname.substr(0, temp_oname.size() - 1)) :
                         ("/" + temp_oname.substr(0, temp_oname.size() - 1)));
 
-                var = new Var();
+                auto var_unique = make_unique<Var>();
+                var = var_unique.release();
                 var->name = temp_oname.substr(0, temp_oname.size() - 1);
                 var->fullpath = full_path_name;
 
@@ -384,7 +390,8 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 
                     for (int j = 0; j < num_attrs; j++) {
 
-                        attr = new Attribute();
+                        auto attr_unique = make_unique<Attribute>();
+                        attr = attr_unique.release();
 
                         Retrieve_H5_Attr_Info(attr, cdset, j, temp_unsup_attr_dtype, temp_unsup_attr_dspace);
                         var->attrs.push_back(attr);
@@ -467,7 +474,7 @@ float File::Retrieve_H5_VarCompRatio(const Var *var, const hid_t dset_id) const
             if ((ty_id = H5Dget_type(dset_id)) < 0)
             throw1("unable to obtain hdf5 datatype for the dataset ");
             size_t type_size = H5Tget_size(ty_id);
-            comp_ratio = ((float)((var->total_elems) * type_size))/dstorage_size;
+            comp_ratio = ((float)((var->total_elems) * type_size))/(float)dstorage_size;
             H5Tclose(ty_id);
         }
 
@@ -495,7 +502,7 @@ void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, 
 
     // Note: H5T_REFERENCE H5T_COMPOUND and H5T_ARRAY can be mapped to DAP2 DDS for the default option.
     // H5T_COMPOUND, H5T_ARRAY can be mapped to DAP2 DAS for the default option.
-    // 1-D variable length of string can also be mapped for the CF option..
+    // 1-D variable length of string can also be mapped for the CF option.
     // The variable length string class is H5T_STRING rather than H5T_VLEN,
     // We also ignore the mapping of integer 64 bit since DAP2 doesn't
     // support 64-bit integer. In theory, DAP2 doesn't support long double
@@ -554,7 +561,8 @@ void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, b
                     throw2("Cannot obtain the dim. info for the variable ", varname);
 
                 for (int i = 0; i < ndims; i++) {
-                    auto dim = new Dimension(dsize[i]);
+                    auto dim_unique = make_unique<Dimension>(dsize[i]);
+                    auto dim = dim_unique.release();
                     if (maxsize[i] == H5S_UNLIMITED) {
                         dim->unlimited_dim = true;
                         if (false == have_udim) 
@@ -584,7 +592,7 @@ void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, b
 
 // Retrieve the HDF5 attribute information.
 void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bool &unsup_attr_dtype,
-    bool &unsup_attr_dspace)
+    bool &unsup_attr_dspace) const
 
 {
 
@@ -625,7 +633,7 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
 
         // Note: H5T_REFERENCE H5T_COMPOUND and H5T_ARRAY can be mapped to DAP2 DDS for the default option.
         // H5T_COMPOUND, H5T_ARRAY can be mapped to DAP2 DAS for the default option.
-        // 1-D variable length of string can also be mapped for the CF option..
+        // 1-D variable length of string can also be mapped for the CF option.
         // The variable length string class is H5T_STRING rather than H5T_VLEN,
         // We also ignore the mapping of integer 64 bit since DAP2 doesn't
         // support 64-bit integer. In theory, DAP2 doesn't support long double
@@ -798,7 +806,7 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, const string & obj_name) cons
             const char *ptr_1stvlen_ptr = temp_buf.data();
             temp_bp = temp_buf.data();
             const char* onestring = nullptr;
-            string total_vstring = "";
+            string total_vstring;
 
             attr->strsize.resize(attr->count);
 
@@ -1124,7 +1132,7 @@ void File::Gen_Var_Unsupported_Dtype_Info()
 
 }
 
-// Handling unsupported datatypes for variable(HDF5 dataset) and the correponding attributes.
+// Handling unsupported datatypes for variable(HDF5 dataset) and the corresponding attributes.
 void File::Handle_VarAttr_Unsupported_Dtype() 
 {
     if (false == this->vars.empty()) {
@@ -1173,7 +1181,7 @@ void File::Gen_VarAttr_Unsupported_Dtype_Info()
 // Generated unsupported datatype information for HDF5 dimension scales. 
 // The datatypes of HDF5 dimension scales("DIMENSION_LIST" and "REFERENCE_LIST")
 // are not supported. However, the information
-// are retrieved by the handlers so we don't want to report them as ignored objects.
+// are retrieved by the handlers, so we don't want to report them as ignored objects.
 void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() 
 {
 
@@ -1405,11 +1413,11 @@ void File::Handle_Group_NameClashing(set<string> &objnameset)
 
     pair<set<string>::iterator, bool> setret;
 
-    // Now for DAS, we need to handle name clashings for
-    // DAS tables. Namely we need to make sure the global attribute
+    // Now for DAS, we need to handle name clashing for
+    // DAS tables, namely we need to make sure the global attribute
     // table(HDF5_GLOBAL) and the attribute tables mapped from 
-    // HDF5 groups will not have name clashings with the variable name
-    // lists. If having the name clashings, the global attribute table and the
+    // HDF5 groups will not have name clashing with the variable name
+    // lists. If having the name clashing, the global attribute table and
     // the attribute tables generated from the groups will be changed.
     // The file attribute name clashing
 
@@ -1431,10 +1439,10 @@ void File::Handle_Group_NameClashing(set<string> &objnameset)
 void File::Handle_Obj_AttrNameClashing() 
 {
 
-    // Now handling the possible name clashings for attributes
-    // For attribute clashings, we only need to resolve the name clashings 
+    // Now handling the possible name clashing for attributes
+    // For attribute clashing, we only need to resolve the name clashing
     // for attributes within each variable, file attributes and attributes
-    // within each group. The name clashings for attributes should be very rare.
+    // within each group. The name clashing for attributes should be very rare.
     // Potentially the checking and the correcting may be costly.
     // This is another reason for special products, we may not even need to check
     // the name clashings. KY 2011-12-24
@@ -1531,7 +1539,7 @@ string File::get_CF_string(string s)
 }
 
 // For the connection of variable dimensions. Build dimname to dimsize(unlimited) maps
-void File::Insert_One_NameSizeMap_Element(string name, hsize_t size, bool unlimited) 
+void File::Insert_One_NameSizeMap_Element(const string &name, hsize_t size, bool unlimited)
 {
     pair<map<string, hsize_t>::iterator, bool> mapret;
     mapret = dimname_to_dimsize.insert(pair<string, hsize_t>(name, size));
@@ -1547,7 +1555,7 @@ void File::Insert_One_NameSizeMap_Element(string name, hsize_t size, bool unlimi
 
 // Similar to Inset_One_NameSizeMap_Element but the maps are provided as parameters.
 void File::Insert_One_NameSizeMap_Element2(map<string, hsize_t>& name_to_size, map<string, bool>& name_to_unlimited,
-    string name, hsize_t size, bool unlimited) const
+    const string &name, hsize_t size, bool unlimited) const
 {
     pair<map<string, hsize_t>::iterator, bool> mapret;
     mapret = name_to_size.insert(pair<string, hsize_t>(name, size));
@@ -1572,7 +1580,7 @@ void File::Insert_One_NameSizeMap_Element2(map<string, hsize_t>& name_to_size, m
 // instead of foo2[Fakedim3][Fakedim4]. However, that may impose
 // another problem. Suppose Int Foosame[100][100] becomes
 // Int Foosame[FakeDim1][FakeDim1]. This doesn't make sense for some
-// applications. The fuction Adjust_Duplicate_FakeDim_Name will make sure 
+// applications. The function Adjust_Duplicate_FakeDim_Name will make sure
 // this case will not happen. 
 void File::Add_One_FakeDim_Name(Dimension *dim) 
 {
@@ -1709,7 +1717,7 @@ void File::Adjust_Duplicate_FakeDim_Name2(Dimension * dim, int dup_dim_size_inde
         dim->newname = dim->name;
         Insert_One_NameSizeMap_Element(dim->name, dim->size, dim->unlimited_dim);
         // push back to the duplicate size, name vector.
-        dup_dimsize_dimname.push_back(make_pair(dim->size,dim->name));
+        dup_dimsize_dimname.emplace_back(dim->size,dim->name);
         addeddimindex++;
 
     }
@@ -1934,7 +1942,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var) const
         break;
     case H5FLOAT32: {
         float num_sf = strtof(&(attr->value[0]), nullptr);
-        // Don't think it is necessary to check if floating-point is oveflowed for this routine. ignore it now. KY 2014-09-22
+        // Don't think it is necessary to check if floating-point is overflowed for this routine. ignore it now. KY 2014-09-22
         attr->dtype = H5FLOAT32;
         attr->value.resize(sizeof(float));
         memcpy(&(attr->value[0]), (void*) (&num_sf), sizeof(float));
@@ -1942,7 +1950,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var) const
         break;
     case H5FLOAT64: {
         double num_sd = strtod(&(attr->value[0]), nullptr);
-        // Don't think it is necessary to check if floating-point is oveflowed for this routine. ignore it now. KY 2014-09-22
+        // Don't think it is necessary to check if floating-point is overflowed for this routine. ignore it now. KY 2014-09-22
         attr->dtype = H5FLOAT64;
         attr->value.resize(sizeof(double));
         memcpy(&(attr->value[0]), (void*) (&num_sd), sizeof(double));
@@ -1985,13 +1993,14 @@ void File::Replace_Var_Str_Attr(Var* var, const string &attr_name, const string&
 
     // Add the attribute with strvalue
     if (true == rep_attr) {
-        auto attr = new Attribute();
+        auto attr_unique = make_unique<Attribute>();
+        auto attr = attr_unique.release();
         Add_Str_Attr(attr, attr_name, strvalue);
         var->attrs.push_back(attr);
     }
 }
 
-// Check if this variable if latitude,longitude.We check the three name pairs(lat,lon),(latitude,longitude),(Latitude,Longitude)
+// Check if this variable is latitude,longitude.We check the three name pairs(lat,lon),(latitude,longitude),(Latitude,Longitude)
 bool File::Is_geolatlon(const string & var_name, bool is_lat) const
 {
 
@@ -2022,7 +2031,8 @@ void File::Add_Supplement_Attrs(bool add_path)
 
     // Adding variable original name(origname) and full path(fullpath)
     for (auto &var:this->vars) {
-        auto attr = new Attribute();
+        auto attr_unique = make_unique<Attribute>();
+        auto attr = attr_unique.release();
         const string varname = var->name;
         const string attrname = "origname";
         Add_Str_Attr(attr, attrname, varname);
@@ -2035,7 +2045,8 @@ void File::Add_Supplement_Attrs(bool add_path)
         // KY 2020-03-23
         if (var->zero_storage_size==false 
            || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
-            auto attr = new Attribute();
+            auto attr_unique = make_unique<Attribute>();
+            auto attr = attr_unique.release();
             const string varname = var->fullpath;
             const string attrname = "fullnamepath";
             Add_Str_Attr(attr, attrname, varname);
@@ -2048,9 +2059,10 @@ void File::Add_Supplement_Attrs(bool add_path)
         // Only when this group has attributes, the original path of the group has some values. So add it.
         if (false == grp->attrs.empty()) {
 
-            auto attr = new Attribute();
             const string varname = grp->path;
             const string attrname = "fullnamepath";
+            auto attr_unique = make_unique<Attribute>();
+            auto attr = attr_unique.release();
             Add_Str_Attr(attr, attrname, varname);
             grp->attrs.push_back(attr);
         }
@@ -2107,7 +2119,8 @@ void File::Replace_Var_Info(const Var *src, Var *target)
 #endif
 
     for (const auto& sdim:src->dims) {
-        auto dim = new Dimension(sdim->size);
+        auto dim_unique = make_unique<Dimension>(sdim->size);
+        auto dim = dim_unique.release();
         dim->name = sdim->name;
         dim->newname = sdim->newname;
         target->dims.push_back(dim);
@@ -2131,7 +2144,8 @@ void File::Replace_Var_Attrs(const Var *src, Var *target)
         ira = target->attrs.erase(ira);
     }
     for (const auto &sattr:src->attrs) {
-        auto attr = new Attribute();
+        auto attr_unique = make_unique<Attribute>();
+        auto attr = attr_unique.release();
         attr->name = sattr->name;
         attr->newname = sattr->newname;
         attr->dtype = sattr->dtype;
@@ -2144,9 +2158,9 @@ void File::Replace_Var_Attrs(const Var *src, Var *target)
 
 }
 
-// Check if a variable with a var name is under a specific group with groupname
+// Check if a variable with a var name is under a specific group with group name
 // note: the variable's size at each dimension is also returned. The user must allocate the 
-// memory for the dimension sizes(an array(vector is perferred).
+// memory for the dimension sizes of an array(vector is preferred).
 bool File::is_var_under_group(const string &varname, const string &grpname, const int var_rank,
     vector<size_t> & var_size) const
 {
@@ -2768,10 +2782,8 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
 // Provide if the long string is dropped.
 void File::add_ignored_grp_longstr_info(const string& grp_path, const string & attr_name)
 {
-
     ignored_msg += "The HDF5 group: " + grp_path + " has an empty-set string attribute: " + attr_name + "\n";
 
-    return;
 }
 
 // Provide if the long variable string is dropped.
@@ -2784,7 +2796,7 @@ void File::add_ignored_var_longstr_info(const Var *var, const Attribute *attr)
         ignored_msg += "The variable: " + var->fullpath + " has an empty-set string attribute: " + attr->name + "\n";
 
     }
-    return;
+
 }
 
 // The warnings of the drop of the long string header
