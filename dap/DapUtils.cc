@@ -41,14 +41,17 @@
 #include "BESSyntaxUserError.h"
 #include "DapUtils.h"
 
-constexpr auto MODULE = "dap_utils";
-constexpr auto MODULE_VERBOSE = "dap_utils_verbose";
-
+// Because prolog evaluates to a string it cannot be part of a constexpr, so we continue with the macro version.
 #define prolog std::string("dap_utils::").append(__func__).append("() - ")
 
 using namespace libdap;
 
 namespace dap_utils {
+
+// We want MODULE and MODULE_VERBOSE to be in the namespace in order to isolate them from potential overlap between
+// different bes/modules
+constexpr auto MODULE = "dap_utils";
+constexpr auto MODULE_VERBOSE = "dap_utils_verbose";
 
 /**
  *
@@ -181,6 +184,7 @@ void throw_if_dap4_response_too_big(DMR &dmr, const std::string &file, unsigned 
 
 /**
  * @brief - determines the number of requested elements for the D4Dimension d4dim.
+ * This assumes that integer division truncates the fractiona part of the result.
  * @param d4dim The dimension to examine
  * @return The number elements marked for transmission.
  */
@@ -202,6 +206,7 @@ uint64_t count_requested_elements(const D4Dimension *d4dim){
 
 /**
  * @brief - determines the number of requested elements for the Array::dimension dim.
+ * This assumes that integer division truncates the fractiona part of the result.
  * @param d4dim The dimension to examine
  * @return The number elements marked for transmission.
  */
@@ -239,7 +244,7 @@ std::string get_dap_array_dims_str(libdap::Array &a){
 }
 
 /**
- * @brief Returns the declaration of the passed variable as "TypeName VarName" followed by a the [] expression of the constrained dimension sizes is the variable is an Array.
+ * @brief Returns the declaration of the passed variable as "TypeName VarName" and constrained Array dimensions, if any.
  * @param var The variable to evaluate
  * @return The declaration string.
  */
@@ -274,12 +279,17 @@ std::string get_dap_decl(libdap::BaseType *var) {
  *
  * This code also handles the libdap::D4Group instances as they children of libdap::Constructor.
  *
- * @param constrctr The Constructor to evaluate
+ * @param var The BaseType to evaluate
  * @param max_var_size Size threshold for the inclusion of variables in the inventory.
  * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  * @return The number of bytes the variable var will conribute to the response
  */
-uint64_t process_variable(BaseType *var, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big){
+uint64_t crsaibv_process_variable(
+        BaseType *var,
+        const uint64_t &max_var_size,
+        std::unordered_map<std::string,int64_t> &too_big
+){
+
     uint64_t response_size = 0;
     if (var->send_p()) {
         uint64_t vsize = var->width_ll(true);
@@ -331,7 +341,7 @@ uint64_t compute_response_size_and_inv_big_vars(
             }
         }
         else {
-            response_size += process_variable(var,  max_var_size, too_big);
+            response_size += crsaibv_process_variable(var,  max_var_size, too_big);
 #if 0
             if (var->send_p()) {
 
@@ -366,7 +376,10 @@ uint64_t compute_response_size_and_inv_big_vars(
  * @param max_var_size Size threshold for the inclusion of variables in the inventory.
  * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
-uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
+uint64_t compute_response_size_and_inv_big_vars(
+        libdap::D4Group *grp,
+        const uint64_t &max_var_size,
+        std::unordered_map<std::string,int64_t> &too_big)
 {
     uint64_t response_size = 0;
     auto cnstrctr = static_cast<libdap::Constructor *>(grp);
@@ -394,7 +407,10 @@ uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uin
  * @param max_var_size Size threshold for the inclusion of variables in the inventory.
  * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
-uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big)
+uint64_t compute_response_size_and_inv_big_vars(
+        libdap::DMR &dmr,
+        const uint64_t &max_var_size,
+        std::unordered_map<std::string,int64_t> &too_big)
 {
     // Consider if something other than an unordered_map, or even map, we might consider using vector like this:
     //  std::vector<std::pair<std::string,int64_t>> foo;
