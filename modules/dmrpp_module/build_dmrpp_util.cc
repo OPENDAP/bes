@@ -1075,14 +1075,15 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
 
     // variables in the group
-    for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+
+    for(auto btp : group->variables()) {
         VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
 
         // if this variable has a 'fullnamepath' attribute, use that and not the
         // FQN value.
-        D4Attributes *d4_attrs = (*btp)->attributes();
+        D4Attributes *d4_attrs = btp->attributes();
         if (!d4_attrs)
-            throw BESInternalError("Expected to find an attribute table for " + (*btp)->name() + " but did not.",
+            throw BESInternalError("Expected to find an attribute table for " + btp->name() + " but did not.",
                                    __FILE__, __LINE__);
 
         // Look for the full name path for this variable
@@ -1102,7 +1103,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             if (attr->num_values() == 1)
                 FQN = attr->value(0);
             else
-                FQN = (*btp)->FQN();
+                FQN = btp->FQN();
 
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
@@ -1119,11 +1120,11 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             // doesn't exist in the file _if_ there's no 'fullnamepath' because
             // that variable was synthesized (likely for CF compliance)
             H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
-            string FQN = (*btp)->FQN();
-            if (nc4_non_coord_candidate.find((*btp)->name()) != nc4_non_coord_candidate.end()) {
-                string real_name_candidate = "_nc4_non_coord_" + (*btp)->name();
-                size_t fqn_last_fslash_pos = (*btp)->FQN().find_last_of("/");
-                string real_path_candidate = (*btp)->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
+            string FQN = btp->FQN();
+            if (nc4_non_coord_candidate.find(btp->name()) != nc4_non_coord_candidate.end()) {
+                string real_name_candidate = "_nc4_non_coord_" + btp->name();
+                size_t fqn_last_fslash_pos = btp->FQN().find_last_of("/");
+                string real_path_candidate = btp->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
                 dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
             }
             
@@ -1139,12 +1140,17 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         }
 
         try {
-            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(*btp) << endl);
-            get_variable_chunk_info(dataset, *btp);
+            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
+            get_variable_chunk_info(dataset, btp);
 
-            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(*btp) << endl);
-            add_string_array_info(dataset, *btp);
+            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
+            add_string_array_info(dataset, btp);
             H5Dclose(dataset);
+        }
+        catch (UnsupportedTypeException &uste){
+            // TODO - If we are going to elide a variable because it is an unsupported type, I think
+            //  that this would be the place to do it.
+            throw;
         }
         catch (...) {
             H5Dclose(dataset);
