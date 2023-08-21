@@ -61,6 +61,8 @@
 #include "DmrppMetadataStore.h"
 #include "D4ParserSax2.h"
 
+#include "UnsupportedTypeException.h"
+
 #if 0
 #define H5S_MAX_RANK    32
 #define H5O_LAYOUT_NDIMS    (H5S_MAX_RANK+1)
@@ -351,21 +353,35 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
 
         case H5T_STRING: {
             // TODO: for variable length string KY 2022-12-22
-            if (H5Tis_variable_str(h5_type_id))
-                return "unsupported-variable-length-string";
+            if (H5Tis_variable_str(h5_type_id)) {
+                 string msg("UnsupportedTypeException: Your data granule contains an array of "
+                         "variable length strings (AVLS). This data architecture is not currently supported by "
+                         "the dmr++ creation machinery. One solution available to you is to rewrite the granule "
+                         "so that these arrays are represented as arrays of fixed length strings (AFLS). While "
+                         "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so "
+                         "the storage penalty is minimal.");
+
+                throw UnsupportedTypeException(msg);
+            }
             else {
                 string str_fv(value.begin(),value.end());
                 return str_fv;
             }
         }
-        case H5T_ARRAY:
-            return "unsupported-array";
-        case H5T_COMPOUND:
-            return "unsupported-compound";
+        case H5T_ARRAY: {
+            string msg("UnsupportedTypeException: Your data granule contains an H5T_ARRAY "
+                       "which is not yet supported by the dmr++ creation machinery.");
+            throw UnsupportedTypeException(msg);
+        }
+        case H5T_COMPOUND: {
+            string msg("UnsupportedTypeException: Your data granule contains a variable with type H5T_COMPOUND  "
+                       "which is not yet supported by the dmr++ creation machinery.");
+            throw UnsupportedTypeException(msg);
+        }
 
         case H5T_REFERENCE:
         default:
-            throw BESInternalError("Unable extract fill value.", __FILE__, __LINE__);
+            throw BESInternalError("Unable extract fill value from HDF5 file.", __FILE__, __LINE__);
     }
 }
 
@@ -1056,14 +1072,15 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
 
     // variables in the group
-    for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+
+    for(auto btp : group->variables()) {
         VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
 
         // if this variable has a 'fullnamepath' attribute, use that and not the
         // FQN value.
-        D4Attributes *d4_attrs = (*btp)->attributes();
+        D4Attributes *d4_attrs = btp->attributes();
         if (!d4_attrs)
-            throw BESInternalError("Expected to find an attribute table for " + (*btp)->name() + " but did not.",
+            throw BESInternalError("Expected to find an attribute table for " + btp->name() + " but did not.",
                                    __FILE__, __LINE__);
 
         // Look for the full name path for this variable
@@ -1083,7 +1100,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             if (attr->num_values() == 1)
                 FQN = attr->value(0);
             else
-                FQN = (*btp)->FQN();
+                FQN = btp->FQN();
 
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
@@ -1100,11 +1117,11 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             // doesn't exist in the file _if_ there's no 'fullnamepath' because
             // that variable was synthesized (likely for CF compliance)
             H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
-            string FQN = (*btp)->FQN();
-            if (nc4_non_coord_candidate.find((*btp)->name()) != nc4_non_coord_candidate.end()) {
-                string real_name_candidate = "_nc4_non_coord_" + (*btp)->name();
-                size_t fqn_last_fslash_pos = (*btp)->FQN().find_last_of("/");
-                string real_path_candidate = (*btp)->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
+            string FQN = btp->FQN();
+            if (nc4_non_coord_candidate.find(btp->name()) != nc4_non_coord_candidate.end()) {
+                string real_name_candidate = "_nc4_non_coord_" + btp->name();
+                size_t fqn_last_fslash_pos = btp->FQN().find_last_of("/");
+                string real_path_candidate = btp->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
                 dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
             }
             
@@ -1120,12 +1137,18 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         }
 
         try {
-            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(*btp) << endl);
-            get_variable_chunk_info(dataset, *btp);
+            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
+            get_variable_chunk_info(dataset, btp);
 
-            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(*btp) << endl);
-            add_string_array_info(dataset, *btp);
+            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
+            add_string_array_info(dataset, btp);
             H5Dclose(dataset);
+        }
+        catch (UnsupportedTypeException &uste){
+            // TODO - If we are going to elide a variable because it is an unsupported type, I think
+            //  that this would be the place to do it.
+            cerr << prolog << "Caught UnsupportedTypeException for variable " << btp->FQN() << " message: " << uste.what() << endl;
+            throw;
         }
         catch (...) {
             H5Dclose(dataset);

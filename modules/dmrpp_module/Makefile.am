@@ -48,7 +48,7 @@ DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 DmrppMetadataStore.h DmrppNames.h byteswap_compat.h  \
-SuperChunk.h Base64.h DMZ.h  DmrppChunkOdometer.h
+SuperChunk.h Base64.h DMZ.h  DmrppChunkOdometer.h UnsupportedTypeException.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 
