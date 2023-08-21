@@ -1147,6 +1147,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         catch (UnsupportedTypeException &uste){
             // TODO - If we are going to elide a variable because it is an unsupported type, I think
             //  that this would be the place to do it.
+            cerr << prolog << "Caught UnsupportedTypeException for variable " << btp->FQN() << " message: " << uste.what() << endl;
             throw;
         }
         catch (...) {
