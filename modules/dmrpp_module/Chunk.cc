@@ -211,7 +211,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
  * @param src The source buffer
  * @param src_len The number of bytes to inflate
  */
-static void inflate_sanity_check(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
+static void inflate_sanity_check(char **destp, unsigned long long dest_len, const char *src, unsigned long long src_len) {
     if (src_len == 0) {
         string msg = prolog + "ERROR! The number of bytes to inflate is zero.";
         BESDEBUG(MODULE, msg << endl);

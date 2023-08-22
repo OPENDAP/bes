@@ -159,7 +159,7 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
     return future_finished;
 }
 
-static void one_child_chunk_thread_new_sanity_check(const unique_ptr<one_child_chunk_args_new> &args) {
+static void one_child_chunk_thread_new_sanity_check(const one_child_chunk_args_new *args) {
     if (!args->the_one_chunk->get_rbuf()) {
         throw BESInternalError("one_child_chunk_thread_new_sanity_check() - the_one_chunk->get_rbuf() is NULL!", __FILE__, __LINE__);
     }
@@ -181,11 +181,11 @@ static void one_child_chunk_thread_new_sanity_check(const unique_ptr<one_child_c
  *
  * @param arg_list A pointer to a one_child_chunk_args
  */
-bool one_child_chunk_thread_new(unique_ptr<one_child_chunk_args_new> args)
+bool one_child_chunk_thread_new(const unique_ptr<one_child_chunk_args_new> &args)
 {
     args->child_chunk->read_chunk();
 
-    one_child_chunk_thread_new_sanity_check(args);
+    one_child_chunk_thread_new_sanity_check(args.get());
 
     // the_one_chunk offset \/
     // the_one_chunk:  mmmmmmmmmmmmmmmm
@@ -211,7 +211,7 @@ bool one_child_chunk_thread_new(unique_ptr<one_child_chunk_args_new> args)
  * @param args A unique_ptr to an instance of one_super_chunk_args.
  * @return True unless an exception is throw in which case neither true or false apply.
  */
-bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
+bool one_super_chunk_transfer_thread(const unique_ptr<one_super_chunk_args> &args)
 {
 
 #if DMRPP_ENABLE_THREAD_TIMERS
@@ -231,7 +231,7 @@ bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
  * @param args A unique_ptr to an instance of one_super_chunk_args.
  * @return True unless an exception is throw in which case neither true or false apply.
  */
-bool one_super_chunk_unconstrained_transfer_thread(unique_ptr<one_super_chunk_args> args)
+bool one_super_chunk_unconstrained_transfer_thread(const unique_ptr<one_super_chunk_args> &args)
 {
 
 #if DMRPP_ENABLE_THREAD_TIMERS
@@ -252,7 +252,7 @@ bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<o
     std::unique_lock<std::mutex> lck (transfer_thread_pool_mtx);
     if (transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
         transfer_thread_counter++;
-        futures.push_back( std::async(std::launch::async, one_child_chunk_thread_new, std::move(args)));
+        futures.push_back(std::async(std::launch::async, one_child_chunk_thread_new, std::move(args)));
         retval = true;
         BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
                                  "' from std::async for " << args->child_chunk->to_string() << endl);
@@ -385,9 +385,6 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
         throw;
     }
 }
-
-
-
 
 /**
  * @brief Uses std::async and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
