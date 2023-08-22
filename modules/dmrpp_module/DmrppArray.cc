@@ -159,7 +159,17 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
     return future_finished;
 }
 
-
+static void one_child_chunk_thread_new_sanity_check(const unique_ptr<one_child_chunk_args_new> &args) {
+    if (!args->the_one_chunk->get_rbuf()) {
+        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - the_one_chunk->get_rbuf() is NULL!", __FILE__, __LINE__);
+    }
+    if (!args->child_chunk->get_rbuf()) {
+        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - child_chunk->get_rbuf() is NULL!", __FILE__, __LINE__);
+    }
+    if (args->child_chunk->get_bytes_read() != args->child_chunk->get_size()) {
+        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - child_chunk->get_bytes_read() != child_chunk->get_size()!", __FILE__, __LINE__);
+    }
+}
 
 /**
  * @brief Manage parallel transfer for contiguous data
@@ -173,12 +183,9 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
  */
 bool one_child_chunk_thread_new(unique_ptr<one_child_chunk_args_new> args)
 {
-
     args->child_chunk->read_chunk();
 
-    assert(args->the_one_chunk->get_rbuf());
-    assert(args->child_chunk->get_rbuf());
-    assert(args->child_chunk->get_bytes_read() == args->child_chunk->get_size());
+    one_child_chunk_thread_new_sanity_check(args);
 
     // the_one_chunk offset \/
     // the_one_chunk:  mmmmmmmmmmmmmmmm
@@ -198,8 +205,6 @@ bool one_child_chunk_thread_new(unique_ptr<one_child_chunk_args_new> args)
 
     return true;
 }
-
-
 
 /**
  * @brief A single argument wrapper for process_super_chunk() for use with std::async().
@@ -489,7 +494,9 @@ void read_super_chunks_concurrent(queue< shared_ptr<SuperChunk> > &super_chunks,
 static unsigned long long
 get_index(const vector<unsigned long long> &address_in_target, const vector<unsigned long long> &target_shape)
 {
-    assert(address_in_target.size() == target_shape.size());    // ranks must be equal
+    if (address_in_target.size() != target_shape.size()) {  // ranks must be equal
+        throw BESInternalError("get_index: address_in_target != target_shape", __FILE__, __LINE__);
+    }
 
     auto shape_index = target_shape.rbegin();
     auto index = address_in_target.rbegin(), index_end = address_in_target.rend();
@@ -498,7 +505,9 @@ get_index(const vector<unsigned long long> &address_in_target, const vector<unsi
     unsigned long long offset = *index++;
 
     while (index != index_end) {
-        assert(*index < *shape_index); // index < shape for each dim
+        if (*index >= *shape_index) {
+            throw BESInternalError("get_index: index >= shape_index", __FILE__, __LINE__);
+        }
 
         offset += multiplier_var * *index++;
         multiplier_var *= *shape_index++;
@@ -525,8 +534,9 @@ get_index(const vector<unsigned long long> &address_in_target, const vector<unsi
  */
 static unsigned long long multiplier(const vector<unsigned long long> &shape, unsigned int k)
 {
-    assert(shape.size() > 1);
-    assert(shape.size() > k + 1);
+    if (!(shape.size() > k + 1)) {
+        throw BESInternalError("multiplier: !(shape.size() > k + 1)", __FILE__, __LINE__);
+    }
 
     vector<unsigned long long>::const_iterator i = shape.begin(), e = shape.end();
     advance(i, k + 1);
@@ -615,7 +625,9 @@ vector<unsigned long long> DmrppArray::get_shape(bool constrained)
  */
 DmrppArray::dimension DmrppArray::get_dimension(unsigned int i)
 {
-    assert(i <= (dim_end() - dim_begin()));
+    if (i > (dim_end() - dim_begin())) {
+        throw BESInternalError("get_dimension: i > (dim_end() - dim_begin())", __FILE__, __LINE__);
+    }
     return *(dim_begin() + i);
 }
 
@@ -1912,7 +1924,6 @@ public:
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
         }
         else if (d.use_sdim_for_slice) {
-            assert(!name.empty());
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "name",
                                             (const xmlChar *) name.c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
