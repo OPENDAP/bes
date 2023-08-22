@@ -25,7 +25,6 @@
 
 #include <sstream>
 #include <cstring>
-#include <cassert>
 
 #include <zlib.h>
 
@@ -205,6 +204,37 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
 }
 
 /**
+ * @brief Throws an exception if the information sent to the inflate function is invalid.
+ *
+ * @param destp The destination buffer
+ * @param dest_len The number of bytes to inflate into
+ * @param src The source buffer
+ * @param src_len The number of bytes to inflate
+ */
+static void inflate_sanity_check(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
+    if (src_len == 0) {
+        string msg = prolog + "ERROR! The number of bytes to inflate is zero.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (dest_len == 0) {
+        string msg = prolog + "ERROR! The number of bytes to inflate into is zero.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (!destp || !*destp) {
+        string msg = prolog + "ERROR! The destination buffer is NULL.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (!src) {
+        string msg = prolog + "ERROR! The source buffer is NULL.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+}
+
+/**
  * @brief Deflate data. This is the zlib algorithm.
  *
  * @note Stolen from the HDF5 library and hacked to fit.
@@ -216,13 +246,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
  * @return The number of bytes of the inflated data
  */
 unsigned long long inflate(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
-
-    /* Sanity check */
-    assert(src_len > 0);
-    assert(src);
-    assert(dest_len > 0);
-    assert(destp);
-    assert(*destp);
+    inflate_sanity_check(destp, dest_len, src, src_len);
 
     /* Input; uncompress */
     z_stream z_strm; /* zlib parameters */
@@ -343,8 +367,8 @@ void unshuffle(char *dest, const char *src, unsigned long long src_size, unsigne
                 size_t duffs_index = (elems + 7) / 8;   /* Counting index for Duff's device */
                 switch (elems % 8) {
                     default:
-                        assert(0 && "This Should never be executed!");
-                        break;
+                        throw BESError("Internal error in unshuffle().", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
                     case 0:
                         do {
                             // This macro saves repeating the same line 8 times
@@ -552,6 +576,20 @@ void Chunk::add_tracking_query_param() {
     }
 }
 
+static void checksum_fletcher32_sanity_check(const void *_data, size_t _len) {
+    // Sanity check
+    if (!_data) {
+        string msg = prolog + "ERROR! checksum_fletcher32_sanity_check: _data is NULL";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+
+    }
+    if (_len == 0) {
+        string msg = prolog + "ERROR! checksum_fletcher32_sanity_check: _len is 0";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+}
 /**
  * @brief Compute the Fletcher32 checksum for a block of bytes
  * @param _data Pointer to a block of byte data
@@ -562,13 +600,11 @@ void Chunk::add_tracking_query_param() {
 uint32_t
 checksum_fletcher32(const void *_data, size_t _len)
 {
+    checksum_fletcher32_sanity_check(_data, _len);
+
     const auto *data = (const uint8_t *)_data;  // Pointer to the data to be summed
     size_t len = _len / 2;                      // Length in 16-bit words
     uint32_t sum1 = 0, sum2 = 0;
-
-    // Sanity check
-    assert(_data);
-    assert(_len > 0);
 
     // Compute checksum for pairs of bytes
     // (the magic "360" value is the largest number of sums that can be performed without numeric overflow)
@@ -761,8 +797,10 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 #if ACTUALLY_USE_FLETCHER32_CHECKSUM
             // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
             // integer fletcher32 checksum. jhrg 10/15/21
-            assert(get_rbuf_size() > FLETCHER32_CHECKSUM);
-            //assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0); //probably wrong
+            if (get_rbuf_size() <= FLETCHER32_CHECKSUM) {
+                throw BESInternalError("fletcher32 filter: buffer size is less than the size of the checksum", __FILE__, __LINE__);
+            }
+
             auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
 
             // If the code should actually use the checksum (they can be expensive to compute), does it match
