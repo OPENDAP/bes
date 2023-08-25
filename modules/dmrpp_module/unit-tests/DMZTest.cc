@@ -45,6 +45,7 @@
 #include "BESInternalError.h"
 
 #include "DMZ.h"
+#include "DMRpp.h"
 #include "Chunk.h"
 #include "DmrppCommon.h"
 #include "DmrppTypeFactory.h"
@@ -75,6 +76,7 @@ private:
     const string coads_climatology_dmrpp = string(TEST_SRC_DIR).append("/input-files/coads_climatology.dmrpp");
     const string test_array_6_1_dmrpp = string(TEST_SRC_DIR).append("/input-files/test_array_6.1.xml");
     const string test_simple_6_dmrpp = string(TEST_SRC_DIR).append("/input-files/test_simple_6.xml");
+    const string unsupported_type_dmrpp = string(TEST_SRC_DIR).append("/input-files/unsupported_type.dmrpp");
 
 public:
     // Called once before everything gets tested
@@ -993,7 +995,41 @@ public:
         }
     }
 
-    CPPUNIT_TEST_SUITE( DMZTest );
+    void unsupported_type_test() {
+        try {
+            d_dmz.reset(new DMZ(unsupported_type_dmrpp));
+            DmrppTypeFactory factory;
+            DMRpp dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << prolog << "DMR: " << xml.get_doc() << endl);
+
+            d_dmz->load_all_attributes(&dmr);
+
+            XMLWriter xml2;
+            dmr.print_dap4(xml2);
+            DBG(cerr << prolog << "DMR: " << xml2.get_doc() << endl);
+
+
+            auto test_var = dmr.root()->find_var("/scalar_big_string");
+            CPPUNIT_ASSERT(test_var);
+            try {
+                d_dmz->load_chunks(test_var);
+                CPPUNIT_FAIL(prolog + "Failed to detect unsupported data type!!!");
+            }
+            catch(BESInternalError &bie){
+                DBG(cerr << prolog << "Successfully intercepted an unsupported data type. " << bie.get_verbose_message() << endl);
+            }
+
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+    }
+
+CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
     CPPUNIT_TEST(test_DMZ_ctor_2);
@@ -1047,6 +1083,7 @@ public:
     CPPUNIT_TEST(test_load_chunks_2);
 
     CPPUNIT_TEST(test_load_all_attributes_1);
+    CPPUNIT_TEST(unsupported_type_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

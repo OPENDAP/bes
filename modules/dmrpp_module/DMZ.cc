@@ -81,7 +81,6 @@ using namespace libdap;
 
 #define SUPPORT_FILL_VALUE_CHUNKS 1
 
-#define PARSER "dmz"
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
 
 namespace dmrpp {
@@ -1110,19 +1109,27 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
         }
         else if (is_eq(attr.name(), "fillValue")) {
 
+            string aval(attr.value());
+            if (aval.find("unsupported") != std::string::npos) {
+                throw BESInternalError(prolog + "Encountered Unsupported Data Type: " + aval , __FILE__, __LINE__);
+            }
+
             has_fill_value = true;
 
             // Fill values are only supported for Arrays and scalar numeric datatypes (7/12/22)
             if (btp->type()==dods_url_c || btp->type()== dods_structure_c 
-               || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
-                throw BESInternalError("Fill Value chunks are only supported for Arrays and numeric datatypes.", __FILE__, __LINE__);
+               || btp->type() == dods_sequence_c || btp->type() == dods_grid_c) {
+                throw BESInternalError("Fill Value chunks are only supported for Arrays and numeric datatypes.",
+                                       __FILE__, __LINE__);
+            }
 
             if (btp->type() == dods_array_c) {
                 auto array = dynamic_cast<libdap::Array*>(btp);
-                add_fill_value_information(dc(btp), attr.value(), array->var()->type());
+                add_fill_value_information(dc(btp), aval, array->var()->type());
             }
-            else 
+            else {
                 add_fill_value_information(dc(btp), attr.value(), btp->type());
+            }
         }
         else if (is_eq(attr.name(), "byteOrder")) 
             dc(btp)->ingest_byte_order(attr.value());
