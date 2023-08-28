@@ -81,7 +81,6 @@ using namespace libdap;
 
 #define SUPPORT_FILL_VALUE_CHUNKS 1
 
-#define PARSER "dmz"
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
 
 namespace dmrpp {

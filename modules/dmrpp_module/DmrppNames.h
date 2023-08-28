@@ -32,8 +32,7 @@
 #define DMRPP_NAME "dmrpp"
 
 #define MODULE DMRPP_NAME
-#define PARSER "dmrpp:parser"
-#define CREDS  "dmrpp:creds"
+#define PARSER "dmz"
 #define DMRPP_CURL  "dmrpp:curl"
 
 #define DMRPP_USE_TRANSFER_THREADS_KEY "DMRPP.UseParallelTransfers"
