@@ -51,6 +51,7 @@
 #include "DmrppD4Opaque.h"
 
 #include "DmrppArray.h"
+#include "DmrppArrayDC.h"
 #include "DmrppStructure.h"
 
 #include "DmrppD4Sequence.h"
@@ -250,7 +251,8 @@ DmrppTypeFactory::NewEnum(const string &name, Type type) const
 Array *
 DmrppTypeFactory::NewArray(const string &n, BaseType *v) const
 {
-	return new DmrppArray(n, v, d_dmz);
+	return new DmrppArrayDC(n,v,d_dmz);
+    //return new DmrppArray(n, v, d_dmz);
 }
 
 Structure *
