@@ -1073,6 +1073,8 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
     else {
         dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
     }
+
+    dc->accumlate_storage_size(stoull(size));
 }
 
 /**
@@ -1264,6 +1266,7 @@ void DMZ::load_chunks(BaseType *btp)
     if (child) {
         chunks_found = 1;
         process_chunks(btp, child);
+cerr<<"storage size is "<<dc(btp)->get_storage_size()<<endl;
         auto array = dynamic_cast<Array*>(btp);
         // It's possible to have a chunk, but not have a chunk dimension sizes element
         // when there is only one chunk (e.g., with HDF5 Contiguous storage). jhrg 5/5/22

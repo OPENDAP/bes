@@ -133,6 +133,9 @@ class DmrppCommon {
     std::shared_ptr<DMZ> d_dmz;
     pugi::xml_node d_xml_node;
 
+
+    unsigned long long var_storage_size = 0;
+
 protected:
     virtual char *read_atomic(const std::string &name);
 
@@ -307,6 +310,8 @@ public:
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
 
+    void accumlate_storage_size(unsigned long long chunk_storage_size) {var_storage_size += chunk_storage_size; }
+    unsigned long long get_storage_size() {return var_storage_size; }
     virtual void dump(std::ostream & strm) const;
 };
 
