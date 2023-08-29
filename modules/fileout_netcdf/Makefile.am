@@ -15,7 +15,7 @@ M_VER=1.5.4
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/rapidjson -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src $(NC_CPPFLAGS) $(DAP_CFLAGS)
 #LIBADD = -L$(top_builddir)/modules/dmrpp_module/.libs/ -ldmrpp_module $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-LIBADD = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) 
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 

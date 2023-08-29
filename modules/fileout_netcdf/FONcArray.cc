@@ -50,7 +50,7 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 //#include "../dmrpp_module/DmrppArrayDC.h"
-#include <DmrppArrayDC.h>
+#include "DmrppArrayDC.h"
 //#include "/Users/myang6/work/opendap/direct_chunk_buffer/bes/modules/dmrpp_module/DmrppArray_dc.h"
 using namespace libdap;
 
@@ -78,7 +78,8 @@ const int NORMAL_1D_MAX_CHUNK_SIZES = 65536;
  * @throws BESInternalError if the BaseType is not an Array
  */
 FONcArray::FONcArray(BaseType *b) : FONcBaseType() {
-    auto d_a_dc= dynamic_cast<DmrppArrayDC *>(b);
+    auto d_a_temp = dynamic_cast<Array *>(b);
+    auto d_a_dc= dynamic_cast<DmrppArrayDC *>(d_a_temp);
     bool dc_flag = true;
     if (d_a_dc) {
         dc_flag = d_a_dc->get_dio_flag();
