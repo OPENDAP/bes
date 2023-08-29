@@ -80,8 +80,15 @@ const int NORMAL_1D_MAX_CHUNK_SIZES = 65536;
 FONcArray::FONcArray(BaseType *b) : FONcBaseType() {
     auto d_a_dc= dynamic_cast<DmrppArrayDC *>(b);
     bool dc_flag = true;
-    if (d_a_dc)
+    if (d_a_dc) {
         dc_flag = d_a_dc->get_dio_flag();
+        if (dc_flag == false) 
+            BESDEBUG("fonc", "FONcArray() - dc_flag is false " << endl);
+    }
+    else {
+            BESDEBUG("fonc", "FONcArray() - d_a_dc is null. " << endl);
+
+    }
     d_a = dynamic_cast<Array *>(b);
     if (!d_a) {
         string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
