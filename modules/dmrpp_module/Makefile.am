@@ -5,7 +5,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
     -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
-AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override
+AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override -fpic
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
 OPENSSL_LIBS=-lcrypto
