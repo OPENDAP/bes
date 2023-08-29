@@ -501,7 +501,8 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
     BaseType *btp = build_variable(dmr, group, t, var_node);
 
     // Transform the scalar to an array
-    auto *array = static_cast<DmrppArrayDC*>(dmr->factory()->NewVariable(dods_array_c, btp->name()));
+    auto *array = static_cast<DmrppArray*>(dmr->factory()->NewVariable(dods_array_c, btp->name()));
+    //auto *array = static_cast<DmrppArrayDC*>(dmr->factory()->NewVariable(dods_array_c, btp->name()));
     array->set_is_dap4(true);
     array->add_var_nocopy(btp);
 
