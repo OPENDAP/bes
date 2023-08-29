@@ -82,6 +82,7 @@ private:
     // In the dmr++ XML:
     //   <dmrpp:vStringArray>0:1084,1025:653,65523:8746,9750:100,84660:122, ... ,98466:12</dmrpp:vStringArray>
 
+    bool direct_io_flag = false;
     std::string d_vlen_ons_str;
     bool is_variable_length_string_array = false;
 
@@ -165,6 +166,7 @@ public:
     libdap::BaseType *ptr_duplicate() override { return new DmrppArray(*this); }
 
     bool read() override;
+    bool get_dio_flag() { return direct_io_flag; };
     void set_send_p(bool state) override;
 
     virtual unsigned long long get_size(bool constrained = false);
