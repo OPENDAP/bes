@@ -134,7 +134,7 @@ void BESXMLGetCommand::parse_basic_get(const string &type, map<string, string> &
         throw BESSyntaxUserError("get command: Must specify definition", __FILE__, __LINE__);
 
     // TODO Lookup the definition and get the container. Then lookup the container and
-    // get the path and constraint. jhrg 11/14/17
+    //   get the path and constraint. jhrg 11/14/17
     d_cmd_log_info.append(" for ").append(_definition);
 
     _space = props["space"];

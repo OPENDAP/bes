@@ -44,15 +44,15 @@ using namespace std;
 
 static const std::string CACHE_PREFIX = string("bes_cache");
 static const std::string MATCH_PREFIX = string(CACHE_PREFIX) + string("#");
-static const string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+static const string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache"); // TODO SRC to BUILD? jhrg 6/26/23
 
 #define prolog std::string("BESFileLockingCacheTest::").append(__func__).append("() - ")
 
-namespace http {
+// namespace http {
 
 class BESFileLockingCacheTest : public CppUnit::TestFixture {
-    string d_data_dir = TEST_DATA_DIR;
-    string d_build_dir = TEST_BUILD_DIR;
+    string d_data_dir = TEST_DATA_DIR;  // TODO Never used jhrg 6/26/23
+    string d_build_dir = TEST_BUILD_DIR;    // TODO Used on ly in the MT test jheg 6/26/23
 
     static void purge_cache(const string &cache_dir, const string &cache_prefix) {
         if (!(cache_dir.empty() && cache_prefix.empty())) {
@@ -89,6 +89,7 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
             (void)system(cmd.c_str());
 
             // This is a hack. The cache should be in the build dir, not the src dir.
+            // TODO FIX jhrg 6/26/23
             cmd = "chmod a+w " + s.str();
             (void)system(cmd.c_str());
         }
@@ -96,8 +97,9 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
+    /// Print all the things in cache_dir that match match_prefix.
     static string show_cache(const string &cache_dir, const string &match_prefix) {
-        map<string, string> contents;
+        map<string, string> contents;   // TODO Remove jhrg 6/26/23
         ostringstream oss;
         DIR *dip = opendir(cache_dir.c_str());
         CPPUNIT_ASSERT(dip);
@@ -106,7 +108,7 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
             string dirEntry = dit->d_name;
             if (dirEntry.compare(0, match_prefix.size(), match_prefix) == 0) {
                 oss << dirEntry << endl;
-                contents[dirEntry] = dirEntry;
+                contents[dirEntry] = dirEntry; // TODO Remove jhrg 6/26/23
             }
         }
 
@@ -160,8 +162,7 @@ public:
 
         DBG(cerr << "tearDown() - END" << endl);
     }
-
-
+    
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
@@ -307,8 +308,115 @@ public:
 
         DBG(cerr << __func__ << "() - END " << endl);
     }
-    // Multithreaded test.
+
+    // Multi-threaded tests.
 #if 0
+    void test_lock_cache_write_mt() {
+        DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
+        const int num_threads = 3;
+
+        // All the threads should be able to get the cache_file_name
+        BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
+        vector<future<bool>> lock_cache_write_futures;
+        for (int i = 0; i < num_threads; ++i) {
+            lock_cache_write_futures.push_back(async(launch::async, [&cache]() {
+                cache.lock_cache_write();
+                return true;
+            }));
+        }
+
+        DBG(cerr << "I'm doing my own work!" << endl);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        DBG(cerr << "I'm done with my own work!" << endl);
+
+        DBG(cerr << "Start querying. Only one thread should be ready" << endl);
+        vector<int> ready_indices;
+        do {
+            for (int i = 0; i < num_threads; ++i) {
+                std::chrono::milliseconds span (100);
+                if (lock_cache_write_futures[i].wait_for(span) == std::future_status::ready) {
+                    ready_indices.push_back(i);
+                }
+            }
+            // Only one thread should be ready at a time.
+            DBG(cerr << "Threads ready: " << ready_indices.size() << endl);
+            CPPUNIT_ASSERT_MESSAGE("At most one thread calling lock_write_cache() should return at any time",
+                                   ready_indices.size() <= 1);
+
+            for (auto index: ready_indices) {
+                DBG(cerr << "Future " << index << " is ready\n");
+                CPPUNIT_ASSERT_MESSAGE("The future should return true", lock_cache_write_futures[index].get());
+            }
+        } while (!ready_indices.empty());
+
+        DBG(cerr << __func__ << "() - END " << endl);
+    }
+
+    // This test might be bogus. I'll leave it in for now. jhrg 6/26/23
+    void test_find_existing_cached_file_mt()
+    {
+        DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
+
+        const int num_threads = 3;
+
+        // All the threads should be able to get the cache_file_name
+        BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
+        string file_name = "/usr/local/data/template01.txt";
+        vector<future<string>> cache_file_names_futures;
+        for (int i = 0; i < num_threads; ++i) {
+            cache_file_names_futures.push_back(async(launch::async, [&cache, &file_name]() {
+                return cache.get_cache_file_name(file_name);
+            }));
+        }
+
+        DBG(cerr << "I'm doing my own work!" << endl);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        DBG(cerr << "I'm done with my own work!" << endl);
+
+        DBG(cerr << "Start querying" << endl);
+        string cache_file_name; // used later; just take the last value
+        for (int i = 0; i < num_threads; ++i) {
+            cache_file_names_futures[i].wait();
+            cache_file_name = cache_file_names_futures[i].get();
+            DBG(cerr << __func__ << "() - cache_file_name[" << i << "] = " << cache_file_name << endl);
+        }
+
+        // ... but only one threads should be able to lock that cached file
+        vector<future<bool>> lock_futures;
+        for (int i = 0; i < num_threads; ++i) {
+            lock_futures.push_back(async(launch::async, [&cache, &cache_file_name]() {
+                int fd; // not used
+                return cache.get_read_lock(cache_file_name, fd);
+            }));
+        }
+
+        DBG(cerr << "I'm doing my own work!" << endl);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        DBG(cerr << "I'm done with my own work!" << endl);
+
+        DBG(cerr << "Start querying" << endl);
+        int locked = 0;
+        for (int i = 0; i < num_threads; ++i) {
+            lock_futures[i].wait();
+            if (lock_futures[i].get()) {
+                locked++;
+                DBG(cerr << __func__ << "() - cache_file_name[" << i << "] locked\n");
+            }
+            else {
+                DBG(cerr << __func__ << "() - cache_file_name[" << i << "] NOT locked\n");
+            }
+        }
+
+        DBG(cerr << __func__ << "Locks on entry: " << locked << endl);
+        CPPUNIT_ASSERT(locked >= 1);
+        if (locked >= 1) {
+            cache.unlock_and_close(cache_file_name);
+        }
+
+        DBG(cerr << __func__ << "() - END " << endl);
+    }
+#endif
+#if NEVER
     void get_cache_file_name_test_4_2() {
         DBG(cerr << endl);
         DBG(cerr << prolog << "BEGIN" << endl);
@@ -319,9 +427,10 @@ public:
         vector<future<string>> futures;
 
         for (size_t i = 0; i < 3; ++i) {
-            futures.emplace_back(std::async(std::launch::async, [cache](const string &url) {
-                return cache->get_cache_file_name("bob", url);
-            }, url));
+            futures.emplace_back(std::async(std::launch::async,
+                                            [cache](const string &url) {
+                                                return cache->get_cache_file_name("bob", url);
+                                            }, url));
         }
 
         DBG(cerr << "I'm doing my own work!" << endl);
@@ -359,13 +468,18 @@ public:
         CPPUNIT_TEST(test_find_existing_cached_file);
         CPPUNIT_TEST(test_cache_purge);
 
+#if 0
+        CPPUNIT_TEST(test_find_existing_cached_file_mt);
+        CPPUNIT_TEST(test_lock_cache_write_mt);
+#endif
+
     CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BESFileLockingCacheTest);
 
-} // namespace http
+// } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::BESFileLockingCacheTest>(argc, argv, "cerr,cache,cache-lock,cache-lock-status") ? 0 : 1;
+    return bes_run_tests</*http::*/BESFileLockingCacheTest>(argc, argv, "cerr,cache,cache-lock,cache-lock-status") ? 0 : 1;
 }

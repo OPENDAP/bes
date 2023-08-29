@@ -47,7 +47,6 @@
 #define HTTP_MAX_REDIRECTS_KEY "Http.MaxRedirects"
 #define HTTP_MAX_REDIRECTS_DEFAULT 20
 
-
 #define HTTP_CACHE_DIR_KEY "Http.Cache.dir"
 #define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"
 #define HTTP_CACHE_SIZE_KEY "Http.Cache.size"
@@ -80,6 +79,8 @@
 #define EDL_ECHO_TOKEN_KEY "edl_echo_token"
 #define EDL_UID_KEY "uid"
 
+#define REMOTE_RESOURCE_TMP_DIR_KEY "Http.RemoteResource.TmpDir"    // default is /tmp/bes_rr_tmp
+#define REMOTE_RESOURCE_DELETE_TMP_FILE "Http.RemoteResource.TmpFile.Delete"    // default is true
 
 #define HTTP_MODULE "http"
 

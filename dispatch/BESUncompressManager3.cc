@@ -187,8 +187,10 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
     // it makes it).
     cache_file = cache->get_cache_file_name(src);
 
+#if 0
     try {
         BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - is cached? " << src << endl );
+#endif
 
         int fd;
         if (cache->get_read_lock(cache_file, fd)) {
@@ -227,6 +229,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
         }
 
         return false;
+#if 0
     }
     catch (...) {
     	BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - caught exception, unlocking cache and re-throw." << endl );
@@ -235,6 +238,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
     }
 
     return false;   // gcc warns without this
+#endif
 }
 
 /** @brief dumps information about this object

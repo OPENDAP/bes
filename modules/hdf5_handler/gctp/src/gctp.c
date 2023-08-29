@@ -69,6 +69,9 @@ static long NAD83[134] = {101,102,5010,5300,201,202,203,301,302,401,402,403,
                 4502,4601,4602,4701,4702,4801,4802,4803,4901,4902,4903,4904,
                 5001,5002,5003,5004,5005,5006,5007,5008,5009,5200,0000,5400};
 */
+
+/* Added explicit return type. 6/5/23 */
+int
 gctp(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,outcoor,
      outsys,outzone,outparm,outunit,outdatum,fn27,fn83,iflg)
 

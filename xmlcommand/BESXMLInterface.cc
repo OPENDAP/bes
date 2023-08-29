@@ -35,8 +35,6 @@
 #include <iostream>
 #include <sstream>
 
-using namespace std;
-
 #include "BESXMLInterface.h"
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
@@ -44,7 +42,6 @@ using namespace std;
 #include "BESResponseNames.h"
 #include "BESContextManager.h"
 
-#include "BESResponseHandler.h"
 #include "BESReturnManager.h"
 #include "BESInfo.h"
 #include "BESStopWatch.h"
@@ -53,6 +50,9 @@ using namespace std;
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
+#include "RequestServiceTimer.h"
+
+using namespace std;
 
 #define LOG_ONLY_GET_COMMANDS
 #define MODULE "bes"
@@ -315,12 +315,10 @@ void BESXMLInterface::log_the_command()
  */
 void BESXMLInterface::execute_data_request_plan()
 {
-    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
-    for (; i != e; i++) {
-        (*i)->prep_request();
+    for(auto bescmd : d_xml_cmd_list){
+        bescmd->prep_request();
 
-        d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
+        d_dhi_ptr = &bescmd->get_xmlcmd_dhi();
 
         log_the_command();
 
@@ -336,6 +334,10 @@ void BESXMLInterface::execute_data_request_plan()
             __LINE__);
 
         d_dhi_ptr->response_handler->execute(*d_dhi_ptr);
+
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(
+                prolog + "The BES ran out of time before the data could be transmitted.",
+                __FILE__,__LINE__);
 
         transmit_data();    // TODO move method body in here? jhrg 11/8/17
 

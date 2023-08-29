@@ -83,8 +83,8 @@ if test "$nc_ready" = "no"; then
   ac_nc_save_LIBS=$LIBS
   ac_check_nc_func_checked='ncopen'
   ac_check_nc_interface=
-dnl the interface number isn't quoted with "" otherwise a newline 
-dnl following the number isn't stripped.
+dnl the interface number is not quoted with "" otherwise a newline
+dnl following the number is not stripped.
   m4_if([$3],[],[ac_check_nc_interface=2],[ac_check_nc_interface=$3])
   AS_IF([test "z$ac_check_nc_interface" = 'z3'],
     [ac_check_nc_func_checked='nc_open'])
@@ -92,12 +92,12 @@ dnl following the number isn't stripped.
     [
       NC_LDFLAGS="-L$NC_PATH_LIBDIR"
       LDFLAGS="$LDFLAGS $NC_LDFLAGS"
-dnl the autoconf internal cache isn't avoided because we really check for
+dnl the autoconf internal cache is not avoided because we really check for
 dnl libnetcdf, other libraries that implement the same api have other names
 dnl  AC_LINK_IFELSE([AC_LANG_CALL([],[$ac_check_func_checked])],
       AC_CHECK_LIB([netcdf],[$ac_check_nc_func_checked],
-        [NC_LIBS='-lnetcdf -lcurl -lhdf5_hl -lhdf5 -ldl'; ac_netcdf_ok='yes'], [],
-	[-lcurl -lhdf5_hl -lhdf5 -ldl -lz -lm])
+       [NC_LIBS='-lnetcdf -lcurl -lhdf5_hl -lhdf5 -ldl -lxml2'; ac_netcdf_ok='yes'], [],
+       [-lcurl -lhdf5_hl -lhdf5 -ldl -lz -lm -lxml2])
     ],
     [
       for ac_netcdf_libdir in "" \

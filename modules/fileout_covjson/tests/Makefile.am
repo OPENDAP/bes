@@ -12,16 +12,17 @@ LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf bes.default.conf
 
-CLEANFILES = bes.conf
+CLEANFILES = bes.conf bes.default.conf
 
 EXTRA_DIST = covjson $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 $(BES_CONF_IN)
+$(srcdir)/package.m4 $(BES_CONF_IN) $(BES_DEFAULT_CONF_IN)
 
 DISTCLEANFILES = atconfig
 
 BES_CONF_IN = bes.conf.in
+BES_DEFAULT_CONF_IN = bes.default.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using
@@ -30,6 +31,11 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
+bes.default.conf: $(BES_DEFAULT_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.default.conf
 
 
 ############## Autotest follows #####################

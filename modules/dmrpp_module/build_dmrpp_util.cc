@@ -21,6 +21,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <iostream>
 #include <sstream>
 #include <memory>
@@ -46,11 +48,20 @@
 #include <BESDebug.h>
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
+#include <BESInternalFatalError.h>
+
+#include <TheBESKeys.h>
+#include <BESContextManager.h>
+#include <BESUtil.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppArray.h"
+#include "DmrppMetadataStore.h"
+#include "D4ParserSax2.h"
+
+#include "UnsupportedTypeException.h"
 
 #if 0
 #define H5S_MAX_RANK    32
@@ -85,6 +96,8 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
 #define prolog std::string("# build_dmrpp::").append(__func__).append("() - ")
+
+#define INVOCATION_CONTEXT "invocation"
 
 // FYI: Filter IDs
 // H5Z_FILTER_ERROR         (-1) no filter
@@ -340,21 +353,35 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
 
         case H5T_STRING: {
             // TODO: for variable length string KY 2022-12-22
-            if (H5Tis_variable_str(h5_type_id))
-                return "unsupported-variable-length-string";
+            if (H5Tis_variable_str(h5_type_id)) {
+                 string msg("UnsupportedTypeException: Your data granule contains an array of "
+                         "variable length strings (AVLS). This data architecture is not currently supported by "
+                         "the dmr++ creation machinery. One solution available to you is to rewrite the granule "
+                         "so that these arrays are represented as arrays of fixed length strings (AFLS). While "
+                         "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so "
+                         "the storage penalty is minimal.");
+
+                throw UnsupportedTypeException(msg);
+            }
             else {
                 string str_fv(value.begin(),value.end());
                 return str_fv;
             }
         }
-        case H5T_ARRAY:
-            return "unsupported-array";
-        case H5T_COMPOUND:
-            return "unsupported-compound";
+        case H5T_ARRAY: {
+            string msg("UnsupportedTypeException: Your data granule contains an H5T_ARRAY "
+                       "which is not yet supported by the dmr++ creation machinery.");
+            throw UnsupportedTypeException(msg);
+        }
+        case H5T_COMPOUND: {
+            string msg("UnsupportedTypeException: Your data granule contains a variable with type H5T_COMPOUND  "
+                       "which is not yet supported by the dmr++ creation machinery.");
+            throw UnsupportedTypeException(msg);
+        }
 
         case H5T_REFERENCE:
         default:
-            throw BESInternalError("Unable extract fill value.", __FILE__, __LINE__);
+            throw BESInternalError("Unable extract fill value from HDF5 file.", __FILE__, __LINE__);
     }
 }
 
@@ -1045,14 +1072,15 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
 
     // variables in the group
-    for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+
+    for(auto btp : group->variables()) {
         VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
 
         // if this variable has a 'fullnamepath' attribute, use that and not the
         // FQN value.
-        D4Attributes *d4_attrs = (*btp)->attributes();
+        D4Attributes *d4_attrs = btp->attributes();
         if (!d4_attrs)
-            throw BESInternalError("Expected to find an attribute table for " + (*btp)->name() + " but did not.",
+            throw BESInternalError("Expected to find an attribute table for " + btp->name() + " but did not.",
                                    __FILE__, __LINE__);
 
         // Look for the full name path for this variable
@@ -1072,7 +1100,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             if (attr->num_values() == 1)
                 FQN = attr->value(0);
             else
-                FQN = (*btp)->FQN();
+                FQN = btp->FQN();
 
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
@@ -1089,11 +1117,11 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             // doesn't exist in the file _if_ there's no 'fullnamepath' because
             // that variable was synthesized (likely for CF compliance)
             H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
-            string FQN = (*btp)->FQN();
-            if (nc4_non_coord_candidate.find((*btp)->name()) != nc4_non_coord_candidate.end()) {
-                string real_name_candidate = "_nc4_non_coord_" + (*btp)->name();
-                size_t fqn_last_fslash_pos = (*btp)->FQN().find_last_of("/");
-                string real_path_candidate = (*btp)->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
+            string FQN = btp->FQN();
+            if (nc4_non_coord_candidate.find(btp->name()) != nc4_non_coord_candidate.end()) {
+                string real_name_candidate = "_nc4_non_coord_" + btp->name();
+                size_t fqn_last_fslash_pos = btp->FQN().find_last_of("/");
+                string real_path_candidate = btp->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
                 dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
             }
             
@@ -1109,12 +1137,18 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         }
 
         try {
-            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(*btp) << endl);
-            get_variable_chunk_info(dataset, *btp);
+            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
+            get_variable_chunk_info(dataset, btp);
 
-            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(*btp) << endl);
-            add_string_array_info(dataset, *btp);
+            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
+            add_string_array_info(dataset, btp);
             H5Dclose(dataset);
+        }
+        catch (UnsupportedTypeException &uste){
+            // TODO - If we are going to elide a variable because it is an unsupported type, I think
+            //  that this would be the place to do it.
+            cerr << prolog << "Caught UnsupportedTypeException for variable " << btp->FQN() << " message: " << uste.what() << endl;
+            throw;
         }
         catch (...) {
             H5Dclose(dataset);
@@ -1153,5 +1187,245 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
         throw;
     }
 }
+
+
+/**
+ * @brief Performs a quality control check on the user supplied data file.
+ *
+ * The supplied file is going to be used by build_dmrpp as the source of variable/dataset chunk information.
+ * At the time of this writing only netcdf-4 and hdf5 file encodings are supported (Note that netcdf-4 is a subset of
+ * hdf5 and all netcdf-4 files are defacto hdf5 files.)
+ *
+ * To that end this function will:
+ * * Test that the file exists and can be read from.
+ * * The first few bytes of the file will be checked to ensure that it is an hdf5 file.
+ * * If it's not an hdf5 file the head bytes will checked to see if the file is a netcdf-3 file, as that is common
+ *   mistake.
+ *
+ * @param file_name
+ */
+void qc_input_file(const string &file_fqn)
+{
+    //Use an ifstream file to run a check on the provided file's signature
+    // to see if it is an HDF5 file. - kln 5/18/23
+
+    if (file_fqn.empty()) {
+        stringstream msg;
+        msg << "HDF5 input file name must be provided (-f <input>) and be a fully qualified path name." << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    std::ifstream file(file_fqn, ios::binary);
+    auto errnum = errno;
+    if (!file)  // This is same as if(file.fail()){...}
+    {
+        stringstream msg;
+        msg << "Encountered a Read/writing error when attempting to open the file: " << file_fqn << endl;
+        msg << "*  strerror(errno): " << strerror(errnum) << endl;
+        msg << "*          failbit: " << (((file.rdstate() & std::ifstream::failbit) != 0) ? "true" : "false") << endl;
+        msg << "*           badbit: " << (((file.rdstate() & std::ifstream::badbit) != 0) ? "true" : "false") << endl;
+        msg << "Things to check:" << endl;
+        msg << "* Does the file exist at expected location?" << endl;
+        msg << "* Does your user have permission to read the file?" << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    //HDF5 and NetCDF3 signatures:
+    const char hdf5Signature[] = {'\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n'};
+    const char netcdf3Signature[] = {'C', 'D', 'F'};
+
+    //Read the first 8 bytes (file signature) from the file
+    string signature;
+    signature.resize(8);
+    file.read(&signature[0], signature.size());
+
+    //First check if file is NOT an HDF5 file, then, if it is not, check if it is netcdf3
+    bool isHDF5 = memcmp(&signature[0], hdf5Signature, sizeof(hdf5Signature)) == 0;
+    if (!isHDF5) {
+        //Reset the file stream to read from the beginning
+        file.clear();
+        file.seekg(0);
+
+        char newSignature[3];
+        file.read(&signature[0], signature.size());
+
+        bool isNetCDF3 = memcmp(newSignature, netcdf3Signature, sizeof(netcdf3Signature)) == 0;
+        if (isNetCDF3) {
+            stringstream msg;
+            msg << "The file submitted, " << file_fqn << ", ";
+            msg << "is a NetCDF-3 classic file and is not compatible with dmr++ production at this time." << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+        }
+        else {
+            stringstream msg;
+            msg << "The provided file: " << file_fqn << " - ";
+            msg << "is neither an HDF5 or a NetCDF-4 file, currently only HDF5 and NetCDF-4 files ";
+            msg << "are supported for dmr++ production" << endl;
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+        }
+    }
+}
+
+
+/**
+ * @brief Recreate the command invocation given argv and argc.
+ *
+ * @param argc
+ * @param argv
+ * @return The command
+ */
+static string recreate_cmdln_from_args(int argc, char *argv[])
+{
+    stringstream ss;
+    for(int i=0; i<argc; i++) {
+        if (i > 0)
+            ss << " ";
+        ss << argv[i];
+    }
+    return ss.str();
+}
+
+
+/**
+ * @brief This worker method provides a SSOT for how the version and configuration information are added to the DMR++
+ *
+ * @param dmrpp The DMR++ to annotate
+ * @param bes_conf_doc The BES configuration document used to produce the source DMR.
+ * @param invocation The invocation of the build_dmrpp program, or the request URL if the running server was used to
+ * create the DMR file that is being annotated into a DMR++.
+ */
+void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
+{
+    dmrpp->set_version(CVER);
+
+    // Build the version attributes for the DMR++
+    auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+
+    auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
+    build_dmrpp_version->add_value(CVER);
+    version->attributes()->add_attribute_nocopy(build_dmrpp_version);
+
+    auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
+    bes_version->add_value(CVER);
+    version->attributes()->add_attribute_nocopy(bes_version);
+
+    stringstream ldv;
+    ldv << libdap_name() << "-" << libdap_version();
+    auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
+    libdap4_version->add_value(ldv.str());
+    version->attributes()->add_attribute_nocopy(libdap4_version);
+
+    if(!bes_conf_doc.empty()) {
+        // Add the BES configuration used to create the base DMR
+        auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
+        config->add_value(bes_conf_doc);
+        version->attributes()->add_attribute_nocopy(config);
+    }
+
+    if(!invocation.empty()) {
+        // How was build_dmrpp invoked?
+        auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+        invoke->add_value(invocation);
+        version->attributes()->add_attribute_nocopy(invoke);
+    }
+    // Inject version and configuration attributes into DMR here.
+    dmrpp->root()->attributes()->add_attribute_nocopy(version);
+}
+
+
+/**
+ * @brief Injects software version, runtime configuration, and program invocation into DMRpp as attributes.
+ *
+ * This method assumes that it is being called outside of a running besd and thus requires a the configuration
+ * used to create the DMR be supplied, along with the program parameters as invoked.
+ *
+ * @param argc The number of program arguments in the invocation.
+ * @param argv The program arguments for the invocation.
+ * @param bes_conf_file_used_to_create_dmr  The bes.conf configuration file used to create the DMR which is being
+ * annotated as a DMR++
+ * @param dmrpp The DMR++ instance to anontate.
+ * @note The DMRpp instance will free all memory allocated by this method.
+*/
+ void inject_version_and_configuration(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
+{
+    string bes_configuration;
+    string invocation;
+    if(!bes_conf_file_used_to_create_dmr.empty()) {
+        // Add the BES configuration used to create the base DMR
+        TheBESKeys::ConfigFile = bes_conf_file_used_to_create_dmr;
+        bes_configuration = TheBESKeys::TheKeys()->get_as_config();
+    }
+
+    invocation = recreate_cmdln_from_args(argc, argv);
+
+    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+
+}
+
+/**
+ * @brief Injects the DMR++ provenance information: software version, runtime configuration, into the DMR++ as attributes.
+ *
+ * This method assumes that it is being called from inside running besd. To obtain the configuration state of the BES
+ * it interrogates TheBESKeys. The invocation string consists of the request URL which is recovered from the BES Context
+ * key "invocation". This value would typically be set in the BES command transmitted by the OLFS
+ *
+ * @param dmrpp The DMRpp instance to annotate.
+ * @note The DMRpp instance will free all memory allocated by this method.
+*/
+void inject_version_and_configuration(DMRpp *dmrpp)
+{
+    bool found;
+
+    string bes_configuration;
+    string invocation;
+    if(!TheBESKeys::ConfigFile.empty()) {
+        // Add the BES configuration used to create the base DMR
+        bes_configuration = TheBESKeys::TheKeys()->get_as_config();
+    }
+
+    // How was build_dmrpp invoked?
+    invocation = BESContextManager::TheManager()->get_context(INVOCATION_CONTEXT, found);
+
+    // Do the work now...
+    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+}
+
+
+/**
+ * @brief Builds a DMR++ from an existing DMR file in conjunction with source granule file.
+ *
+ * @param granule_url The value to use for the XML attribute dap4:Dataset/@dmrpp:href This may be a template string,
+ * or it may be the actual URL location of the source granule file.
+ * @param dmr_filename The name of the file from which to read the DMR.
+ * @param h5_file_fqn The granule filename.
+ * @param add_production_metadata If true the production metadata (software version, configuration, and invocation) will
+ * be added to the DMR++.
+ * @param argc The number of arguments supplied to build_dmrpp
+ * @param argv The arguments for build_dmrpp.
+ */
+void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h5_file_fqn,
+        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, int argc, char *argv[])
+{
+    // Get dmr:
+    DMRpp dmrpp;
+    DmrppTypeFactory dtf;
+    dmrpp.set_factory(&dtf);
+
+    ifstream in(dmr_filename.c_str());
+    D4ParserSax2 parser;
+    parser.intern(in, &dmrpp, false);
+
+    add_chunk_information(h5_file_fqn, &dmrpp);
+
+    if (add_production_metadata) {
+        inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+    }
+
+    XMLWriter writer;
+    dmrpp.print_dmrpp(writer, dmrpp_href_value);
+    cout << writer.get_doc();
+
+}
+
 
 } // namespace build_dmrpp_util

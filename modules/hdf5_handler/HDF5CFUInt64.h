@@ -16,15 +16,15 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDF5CFUInt64.h
 /// \brief This class provides a way to map HDF5 64-bit unsigned integer to DAP4 UInt64 for the CF option
 ///
 /// In the future, this may be merged with the default option.
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

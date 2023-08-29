@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -16,8 +16,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 /////////////////////////////////////////////////////////////////////////////
 /// \file HDFEOS5CFSpecialCVArray.cc
@@ -25,13 +25,12 @@
 ///
 /// \author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2016 The HDF Group
+/// Copyright (C) 2011-2023 The HDF Group
 ///
 /// All rights reserved.
 
-#include "config_hdf5.h"
 #include <iostream>
-#include <sstream>
+#include <memory>
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
@@ -44,7 +43,8 @@ using namespace libdap;
 
 BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
 {
-    return new HDFEOS5CFSpecialCVArray(*this);
+    auto HDFEOS5CFSpecialCVArray_unique = make_unique<HDFEOS5CFSpecialCVArray>(*this);
+    return HDFEOS5CFSpecialCVArray_unique.release();
 }
 
 bool HDFEOS5CFSpecialCVArray::read(){

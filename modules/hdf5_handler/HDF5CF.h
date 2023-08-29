@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -16,8 +16,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 /////////////////////////////////////////////////////////////////////////////
 /// \file HDF5CF.h
@@ -29,7 +29,7 @@
 ///  It covers the handling of generic NASA HDF5 products and HDF-EOS5 products.
 ///
 ///
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 /// Copyright (C) 2011-2022 The HDF Group
 ///
@@ -160,7 +160,6 @@ public:
         return unlimited_dim;
     }
 
-protected:
     explicit Dimension(hsize_t dimsize) :
         size(dimsize)
     {
@@ -687,7 +686,7 @@ public:
 protected:
 
     void Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr);
-    void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace);
+    void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace) const;
         
     void Retrieve_H5_Attr_Value(Attribute *attr, const std::string &) const;
 
@@ -716,8 +715,8 @@ protected:
     void Add_One_FakeDim_Name(Dimension *dim) ;
     void Adjust_Duplicate_FakeDim_Name(Dimension * dim) ;
     void Adjust_Duplicate_FakeDim_Name2(Dimension * dim,int dup_dim_size_index) ;
-    void Insert_One_NameSizeMap_Element(std::string name, hsize_t size, bool unlimited) ;
-    void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, std::string name, hsize_t size,
+    void Insert_One_NameSizeMap_Element(const std::string & name, hsize_t size, bool unlimited) ;
+    void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, const std::string &name, hsize_t size,
         bool unlimited) const;
 
     virtual std::string get_CF_string(std::string);

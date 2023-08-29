@@ -53,6 +53,11 @@ public:
 
     static void send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
     static void send_metadata(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+
+    static void send_dap4data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+    static void send_dap4metadata(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+
+
 };
 
 #endif // A_FoDapCovJsonTransmitter_h

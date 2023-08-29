@@ -1,0 +1,79 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": []
+      },
+      "y": {
+        "values": []
+      }
+    },
+    "referencing": [{
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    }]
+  },
+  "parameters": {
+    "sst": {
+      "type": "Parameter",
+      "description": {
+        "en": "sst"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "sst"
+        }
+      }
+    },
+    "qual_sst": {
+      "type": "Parameter",
+      "description": {
+        "en": "qual_sst"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "qual_sst"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "sst": {
+      "type": "NdArray",
+      "dataType": "integer", 
+      "axisNames": ["y", "x"],
+      "shape": [4320, 8640],
+      "values": []
+    },
+    "qual_sst": {
+      "type": "NdArray",
+      "dataType": "string", 
+      "axisNames": ["y", "x"],
+      "shape": [4320, 8640],
+      "values": []
+    }
+  }
+}

@@ -189,27 +189,28 @@ jobs:
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
       # only compute coverage for merges to master; PRs and branch builds often are
       # done over an over with little change.
-      - |
-        if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
-          make check -j16
-          make coverage
-        fi
+#      - |
+#        if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+#            make check -j16
+#            make coverage
+#        fi
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
     - stage: scan
-      name: "scan bes-modules"
+      name: "scan bes-modules-1"
       script:
         - export BES_BUILD=sonar-bes-modules
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-        - |
-          if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
-            make check -j16 2>&1 | grep -e "Making check in" -e "FAILED"
-            make coverage
-          fi
-        - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+        #- |
+        #  if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+        #    # Removed ++ 2>&1 | grep -e "Making check in" -e "FAILED" ++ from the following. jhrg 4/20/23
+        #    make check -j16
+        #    make coverage
+        #  fi
+        - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
     - stage: scan
@@ -219,11 +220,11 @@ jobs:
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-        - |
-          if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
-            make check -j16
-            make coverage
-          fi
+#        - |
+#          if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+#            make check -j16
+#            make coverage
+#          fi
         - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"

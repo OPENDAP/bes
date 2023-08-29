@@ -18,20 +18,19 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDF5CFInt64.cc
 /// \brief The implementation of mapping HDF5 64-bit integer to DAP4 Int64 for the CF option 
 ///
 /// In the future, this may be merged with the default option.
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config_hdf5.h"
-
+#include <memory>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
 #include "HDF5CFInt64.h"
@@ -48,7 +47,8 @@ HDF5CFInt64::HDF5CFInt64(const string &n, const string &d,const string &d_f) : I
 }
 BaseType *HDF5CFInt64::ptr_duplicate()
 {
-    return new HDF5CFInt64(*this);
+    auto HDF5CFInt64_unique = make_unique<HDF5CFInt64>(*this);
+    return HDF5CFInt64_unique.release();
 }
 
 bool HDF5CFInt64::read()

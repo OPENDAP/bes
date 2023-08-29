@@ -756,7 +756,9 @@ string BESStoredDapResultCache::store_dap4_result(DMR &dmr, const string &constr
     string cache_file_name = get_cache_file_name(local_id, /*mangle*/false);
     BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - cache_file_name: "<< cache_file_name << endl);
     int fd;
+#if 0
     try {
+#endif
         // If the object in the cache is not valid, remove it. The read_lock will
         // then fail and the code will drop down to the create_and_lock() call.
         // is_valid() tests for a non-zero object and for d_dateset newer than
@@ -813,7 +815,8 @@ string BESStoredDapResultCache::store_dap4_result(DMR &dmr, const string &constr
         BESDEBUG("cache",
             "BESStoredDapResultCache::store_dap4_result() - unlocking and closing cache file "<< cache_file_name << endl);
         unlock_and_close(cache_file_name);
-    }
+#if 0
+}
     catch (...) {
         BESDEBUG("cache",
             "BESStoredDapResultCache::store_dap4_result() - caught exception, unlocking cache and re-throw." << endl);
@@ -822,8 +825,8 @@ string BESStoredDapResultCache::store_dap4_result(DMR &dmr, const string &constr
         throw;
     }
 
+#endif
+
     BESDEBUG("cache", "BESStoredDapResultCache::store_dap4_result() - END (local_id=`"<< local_id << "')" << endl);
     return local_id;
-
 }
-

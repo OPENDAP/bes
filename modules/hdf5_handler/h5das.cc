@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2007-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -18,8 +18,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5das.cc
@@ -32,9 +32,10 @@
 ///  HDF5 attribute of an hdf5 data file.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ///////////////////////////////////////////////////////////////////////////////
+#include <memory>
 #include "hdf5_handler.h"
 #include "HDF5RequestHandler.h"
 #include <BESDebug.h>
@@ -184,7 +185,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 // The attribute value is the name of the group when it is first visited.
                 AttrTable *at = das.get_table(full_path_name);
                 if (!at) {
-                    at = das.add_table(full_path_name, new AttrTable);
+                    auto new_attr_table_unique = make_unique<libdap::AttrTable>();
+                    at = das.add_table(full_path_name, new_attr_table_unique.release());
                 }
 
                 // Note that "paths" is a global object to find the visited path. 
@@ -253,7 +255,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 // Add attribute table with HARDLINK
                 AttrTable *at = das.get_table(full_path_name);
                 if (!at) {
-                    at = das.add_table(full_path_name, new AttrTable);
+                    auto new_attr_table_unique = make_unique<libdap::AttrTable>();
+                    at = das.add_table(full_path_name, new_attr_table_unique.release());
                 }
 
                 // Note that "paths" is a global object to find the visited path. 
@@ -306,7 +309,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     AttrTable *attr_table_ptr = das.get_table(varname);
     if (!attr_table_ptr) {
         BESDEBUG("h5", "=read_objects(): adding a table with name " << varname << endl);
-        attr_table_ptr = das.add_table(varname, new AttrTable);
+        auto new_attr_table_unique = make_unique<libdap::AttrTable>();
+        attr_table_ptr = das.add_table(varname, new_attr_table_unique.release());
     }
 
     // Add a DAP attribute that stores the HDF5 absolute path 
@@ -344,7 +348,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
             H5T_cset_t c_set_type = H5Tget_cset(ty_id);
             if (c_set_type < 0)
                 throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
-            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == 1))
+            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
                 is_utf8_str = true;
         }
 
@@ -449,8 +453,9 @@ void find_gloattr(hid_t file, DAS & das)
         // HDF5 file structure(group hierarchy) will be mapped to 
         // a DAP attribute HDF5_ROOT_GROUP. In a sense, this created
         // attribute can be treated as an HDF5 attribute under the root group,
-        // so to say, a global attribute. 
-        das.add_table("HDF5_ROOT_GROUP", new AttrTable);
+        // so to say, a global attribute.
+        auto new_attr_table_unique = make_unique<libdap::AttrTable>();
+        das.add_table("HDF5_ROOT_GROUP", new_attr_table_unique.release());
 
         // Since the root group is the first HDF5 object to visit(in HDF5RequestHandler.cc, find_gloattr() 
         // is before the depth_first()), it will always be not visited. However, to find the cyclic groups 
@@ -528,8 +533,10 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
 
     BESDEBUG("h5", "=get_softlink():" << temp_varname << endl);
     AttrTable *attr_table_ptr = das.get_table(gname);
-    if (!attr_table_ptr) attr_table_ptr = das.add_table(gname, new AttrTable);
-
+    if (!attr_table_ptr) {
+        auto new_attr_table_unique = make_unique<libdap::AttrTable>();
+        attr_table_ptr = das.add_table(gname, new_attr_table_unique.release());
+    }
     AttrTable *attr_softlink_ptr;
     attr_softlink_ptr = attr_table_ptr->append_container(temp_varname);
 
@@ -634,7 +641,10 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
 
         // Insert this comment into the das table.
         AttrTable *at = das.get_table(varname);
-        if (!at) at = das.add_table(varname, new AttrTable);
+        if (!at) {
+            auto new_attr_table_unique = make_unique<libdap::AttrTable>();
+            at = das.add_table(varname, new_attr_table_unique.release());
+        }
         at->append_attr("HDF5_COMMENT", STRING, comment.data());
 
     }

@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -18,15 +18,15 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file h5cfdaputil.h
 /// \brief Helper functions for generating DAS attributes and a function to check BES Key.
 ///
 ///  
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +48,7 @@ class HDF5CFDAPUtil {
     public: 
     static H5DataType get_mem_dtype(H5DataType, size_t);
     static string print_type(H5DataType h5type);
-    static string print_attr(H5DataType h5type, int loc, void *vals);
+    static string print_attr(H5DataType h5type, unsigned int loc, void *vals);
     static void replace_double_quote(string &str);
 
     /// A customized escaping function to escape special characters following OPeNDAP's escattr function

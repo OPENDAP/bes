@@ -167,14 +167,14 @@ public:
 
 class CurlHandlePoolTest : public CppUnit::TestFixture {
 private:
-    CurlHandlePool *chp;
+    CurlHandlePool *chp = nullptr;
 
 public:
     // Called once before everything gets tested
-    CurlHandlePoolTest(): chp(0){ }
-
-    // Called at the end of the test
-    ~CurlHandlePoolTest(){}
+    CurlHandlePoolTest() = default;
+    ~CurlHandlePoolTest() override = default;
+    CurlHandlePoolTest(const CurlHandlePoolTest &other) = delete;
+    CurlHandlePoolTest &operator=(const CurlHandlePoolTest &other) = delete;
 
     // Called before each test
     void setUp() override
@@ -190,7 +190,7 @@ public:
     void tearDown() override
     {
         delete chp;
-        chp = 0;
+        chp = nullptr;
     }
 
     void process_one_chunk_test()

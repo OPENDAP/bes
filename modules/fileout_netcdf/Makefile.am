@@ -37,7 +37,8 @@ FONC_SRC = FONcTransform.cc FONcTransmitter.cc FONcRequestHandler.cc	\
 	FONcFloat.cc FONcDouble.cc FONcStructure.cc FONcArray.cc	\
 	FONcGrid.cc FONcSequence.cc FONcByte.cc FONcBaseType.cc		\
 	FONcDim.cc FONcMap.cc FONcAttributes.cc FONcUShort.cc FONcUInt.cc	\
-	FONcUByte.cc FONcInt64.cc FONcUInt64.cc FONcInt8.cc history_utils.cc
+	FONcUByte.cc FONcInt64.cc FONcUInt64.cc FONcInt8.cc history_utils.cc \
+	d4_tools.cc
 
 FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcModule.h FONcUtils.h FONcStr.h FONcShort.h FONcInt.h	\
@@ -45,7 +46,7 @@ FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
 	FONcDim.h FONcMap.h FONcAttributes.h FONcUShort.h FONcUInt.h	\
 	FONcUByte.h FONcInt64.h FONcUInt64.h FONcInt8.h history_utils.h \
-	FONcNames.h
+	FONcNames.h d4_tools.h
 
 EXTRA_DIST = data fonc.conf.in
 

@@ -1,0 +1,80 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": []
+      },
+      "y": {
+        "values": []
+      }
+    },
+    "referencing": [{
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    }]
+  },
+  "parameters": {
+    "qual_sst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Quality Levels, Sea Surface Temperature"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "Quality Levels, Sea Surface Temperature"
+        }
+      }
+    },
+    "sst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Sea Surface Temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "degree_C"
+        },
+        "symbol": {
+          "value": "degree_C",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/sea_surface_temperature/",
+        "label": {
+          "en": "Sea Surface Temperature"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "qual_sst": {
+      "type": "NdArray",
+      "dataType": "string", 
+      "axisNames": ["y", "x"],
+      "shape": [4320, 8640],
+      "values": []
+    },
+    "sst": {
+      "type": "NdArray",
+      "dataType": "integer", 
+      "axisNames": ["y", "x"],
+      "shape": [4320, 8640],
+      "values": []
+    }
+  }
+}

@@ -135,6 +135,37 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
     AT_CLEANUP
 ])
 
+# @brief Run the given bes command file.
+#
+# @param $1 The command file, assumes that the baseline is $1.baseline
+# @param $2 If not null, 'xfail' means the test is expected to fail, 'xpass' ... pass
+
+m4_define([AT_BESCMD_RESPONSE_SCRUB_BES_CONF_LINES_TEST], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
+
+    AS_IF([test -z "$at_verbose"],[echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_BES_CONF_LINES([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_BES_CONF_LINES([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        ])
+
+    AT_CLEANUP
+])
+
 dnl Simple pattern test. The baseline file holds a set of patterns, one per line,
 dnl and the test will pass if any pattern matches with the test result.
 dnl In many ways it is just a better version of _AT_BESCMD_ERROR_TEST below
@@ -537,8 +568,21 @@ m4_define([REMOVE_ERROR_FILE], [dnl
 
 m4_define([REMOVE_ERROR_LINE], [dnl
     sed -e 's@<Line>[[0-9]]*</Line>@removed line@g' \
-        -e 's@Line:.*@removed line@g'< $1 > $1.sed
+        -e 's@Line:.*@removed line@g' < $1 > $1.sed
     dnl '
+    mv $1.sed $1
+])
+
+dnl Remove BES.Catalog.catalog.RootDirectory and BES.module.* from the baseline or returned
+dnl DMR++ response. jhrg 6/12/23
+dnl
+dnl Note: Using '$@' in a macro definition confuses M $@ is replaced with a list of all arguments
+dnl where each argument is quoted ($* does not quote the arguments). So, I switched to using '|'
+dnl as the delimiter for the sed expressions in the macro below. jhrg 6/12/23
+dnl
+m4_define([REMOVE_BES_CONF_LINES], [dnl
+    sed -e 's|^BES\.Catalog\.catalog\.RootDirectory=.*$|removed line|g' \
+        -e 's|^BES\.module\..*=.*$|removed line|g' < $1 > $1.sed
     mv $1.sed $1
 ])
 

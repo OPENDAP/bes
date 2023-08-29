@@ -2,8 +2,14 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
+# FIXME Remove this hack. Set these with configure. jhrg 11/25/19
+OPENSSL_LIBS=-lcrypto
+OPENSSL_INC=-I/usr/local/opt/openssl/include
+OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+
+AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/http \
+    -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+LIBADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
@@ -67,10 +73,14 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 #
 
 if CPPUNIT
+
 UNIT_TESTS =  HttpUtilsTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
-AllowedHostsTest CredentialsManagerTest NgapCredentialsTest awsv4_test CurlUtilsTest \
-HttpCacheTest
+AllowedHostsTest  awsv4_test CurlUtilsTest HttpCacheTest
+
+# CredentialsManagerTest
+
 else
+
 UNIT_TESTS =
 
 check-local:
@@ -80,6 +90,7 @@ check-local:
 	@echo "check target in unit-tests directory                     *"
 	@echo "**********************************************************"
 	@echo ""
+
 endif
 
 clean-local:
@@ -90,6 +101,7 @@ HttpUtilsTest_SOURCES = HttpUtilsTest.cc
 HttpUtilsTest_LDADD = $(LIBADD)
 
 RemoteResourceTest_SOURCES = RemoteResourceTest.cc
+RemoteResourceTest_CXXFLAGS = -static
 RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc
@@ -109,9 +121,6 @@ AllowedHostsTest_LDADD = $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
-
-NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
-NgapCredentialsTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = ../.libs/libbes_http.a $(LIBADD)

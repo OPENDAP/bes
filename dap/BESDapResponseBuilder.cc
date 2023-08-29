@@ -1611,6 +1611,18 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     return dmr.release();
 }
 
+libdap::DMR *
+BESDapResponseBuilder::process_dap4_dmr(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+{
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+    BESDEBUG(MODULE , prolog << "BEGIN" << endl);
+
+    unique_ptr<DMR> dmr = setup_dap4_intern_data(obj, dhi);
+
+    return dmr.release();
+}
+
 unique_ptr<DMR>
 BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {

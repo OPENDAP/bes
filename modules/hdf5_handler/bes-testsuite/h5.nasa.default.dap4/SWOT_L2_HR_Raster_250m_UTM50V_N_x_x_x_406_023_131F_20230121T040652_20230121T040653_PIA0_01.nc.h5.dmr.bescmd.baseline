@@ -1,0 +1,1586 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5">
+    <Dimension name="y" size="672"/>
+    <Dimension name="x" size="673"/>
+    <Float64 name="y">
+        <Dim name="/y"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>9.969209968386869e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>y coordinate of projection</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-20000000.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>20000000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>UTM northing coordinate of the pixel.</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="x">
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>9.969209968386869e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>x coordinate of projection</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-10000000.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>10000000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>UTM easting coordinate of the pixel.</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="water_area_uncert">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>uncertainty in the water surface area</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m^2</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>2000000000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>1-sigma uncertainty in the water surface area.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="iono_cor_gim_ka">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>ionosphere vertical correction</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Global Ionosphere Maps</Value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <Value>JPL</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-0.5</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Equivalent vertical correction due to ionosphere delay. The reported water surface elevation, latitude and longitude are computed after adding negative media corrections to uncorrected range along slant-range paths, accounting for the differential delay between the two KaRIn antennas. The equivalent vertical correction is computed by applying obliquity factors to the slant-path correction. Adding the reported correction to the reported water surface elevation results in the uncorrected pixel height.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="height_cor_xover">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>height correction from KaRIn crossovers</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-10.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Height correction from KaRIn crossover calibration. The correction is applied before geolocation but reported as an equivalent height correction.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="wse_uncert">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>uncertainty in the water surface elevation</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>999999.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>1-sigma uncertainty in the water surface elevation.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <UInt32 name="sig0_qual_bitwise">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>4294967295</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>bitwise quality indicator for the sigma0</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>sig0_qual_suspect classification_qual_suspect geolocation_qual_suspect large_uncert_suspect bright_land few_pixels far_range_suspect near_range_suspect sig0_qual_degraded classification_qual_degraded geolocation_qual_degraded value_bad no_pixels outside_scene_bounds inner_swath missing_karin_data</Value>
+        </Attribute>
+        <Attribute name="flag_masks" type="UInt32">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>4</Value>
+            <Value>32</Value>
+            <Value>128</Value>
+            <Value>4096</Value>
+            <Value>8192</Value>
+            <Value>16384</Value>
+            <Value>131072</Value>
+            <Value>262144</Value>
+            <Value>524288</Value>
+            <Value>16777216</Value>
+            <Value>268435456</Value>
+            <Value>536870912</Value>
+            <Value>1073741824</Value>
+            <Value>2147483648</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="UInt32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="UInt32">
+            <Value>4044255399</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Bitwise quality indicator for the sigma0 quantities. If this word is interpreted as an unsigned integer, a value of 0 indicates good data, positive values less than 32768 represent suspect data, values greater than or equal to 32768 but less than 8388608 represent degraded data, and values greater than or equal to 8388608 represent bad data.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </UInt32>
+    <UInt32 name="n_sig0_pix">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>4294967295</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>number of sigma0 pixels</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>l</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="UInt32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="UInt32">
+            <Value>999999</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Number of pixel cloud samples used in sigma0 aggregation.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </UInt32>
+    <Float32 name="pole_tide">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>geocentric pole tide height</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Wahr (1985) and Desai et al. (2015)</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-0.200000003</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>0.200000003</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Geocentric pole tide height. The total of the contribution from the solid-Earth (body) pole tide height and the load pole tide height (i.e., the effect of the ocean pole tide loading of the Earth\342\200\231s crust).</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="model_dry_tropo_cor">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>dry troposphere vertical correction</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>European Centre for Medium-Range Weather Forecasts</Value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <Value>ECMWF</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-3.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>-1.5</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Equivalent vertical correction due to dry troposphere delay. The reported water surface elevation, latitude and longitude are computed after adding negative media corrections to uncorrected range along slant-range paths, accounting for the differential delay between the two KaRIn antennas. The equivalent vertical correction is computed by applying obliquity factors to the slant-path correction. Adding the reported correction to the reported water surface elevation results in the uncorrected pixel height.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float64 name="illumination_time_tai">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>9.969209968386869e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>time of illumination of each pixel (TAI)</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="calendar" type="String">
+            <Value>gregorian</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2000-01-01 00:00:00.000</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Time of measurement in seconds in the TAI time scale since 1 Jan 2000 00:00:00 TAI. This time scale contains no leap seconds. The difference (in seconds) with time in UTC is given by the attribute [illumination_time:tai_utc_difference].</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float64>
+    <Float32 name="water_frac_uncert">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>uncertainty in the water fraction</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>999999.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>1-sigma uncertainty in the water fraction.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <UInt32 name="n_water_area_pix">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>4294967295</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>number of water surface area pixels</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>l</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="UInt32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="UInt32">
+            <Value>999999</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Number of pixel cloud samples used in water surface area and water fraction aggregation.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </UInt32>
+    <Byte name="sig0_qual">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>summary quality indicator for the sigma0</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>good suspect degraded bad</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Byte">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Byte">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Byte">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Summary quality indicator for the sigma0 quantities. A value of 0 indicates a nominal measurement, 1 indicates a suspect measurement, 2 indicates a degraded measurement, and 3 indicates a bad measurement.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Byte>
+    <Byte name="ice_dyn_flag">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>dynamic ice cover flag</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>UNC</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>no_ice_cover partial_ice_cover full_ice_cover</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Byte">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Byte">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Byte">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data.  Values of 0, 1, and 2 indicate that the pixel is not ice covered, partially ice covered, and fully ice covered, respectively.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Byte>
+    <Float64 name="illumination_time">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>9.969209968386869e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>time of illumination of each pixel (UTC)</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="calendar" type="String">
+            <Value>gregorian</Value>
+        </Attribute>
+        <Attribute name="tai_utc_difference" type="Float64">
+            <Value>37.</Value>
+        </Attribute>
+        <Attribute name="leap_second" type="String">
+            <Value>0000-00-00T00:00:00Z</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2000-01-01 00:00:00.000</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Time of measurement in seconds in the UTC time scale since 1 Jan 2000 00:00:00 UTC. [tai_utc_difference] is the difference between TAI and UTC reference time (seconds) for the first measurement of the data set. If a leap second occurs within the data set, the attribute leap_second is set to the UTC time at which the leap second occurs.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float64>
+    <Float64 name="longitude">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>9.969209968386869e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>longitude (degrees East)</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-180.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>180.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Geodetic longitude [-180,180) (east of the Greenwich meridian) of the pixel.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float64>
+    <Float64 name="latitude">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>9.969209968386869e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>latitude (positive N, negative S)</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-80.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>80.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Geodetic latitude [-80,80] (degrees north of equator) of the pixel.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float64>
+    <UInt32 name="water_area_qual_bitwise">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>4294967295</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>bitwise quality indicator for the water surface area</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>classification_qual_suspect geolocation_qual_suspect water_fraction_suspect large_uncert_suspect bright_land few_pixels far_range_suspect near_range_suspect classification_qual_degraded geolocation_qual_degraded value_bad no_pixels outside_scene_bounds inner_swath missing_karin_data</Value>
+        </Attribute>
+        <Attribute name="flag_masks" type="UInt32">
+            <Value>2</Value>
+            <Value>4</Value>
+            <Value>8</Value>
+            <Value>32</Value>
+            <Value>128</Value>
+            <Value>4096</Value>
+            <Value>8192</Value>
+            <Value>16384</Value>
+            <Value>262144</Value>
+            <Value>524288</Value>
+            <Value>16777216</Value>
+            <Value>268435456</Value>
+            <Value>536870912</Value>
+            <Value>1073741824</Value>
+            <Value>2147483648</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="UInt32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="UInt32">
+            <Value>4044124334</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Bitwise quality indicator for the water surface area and water fraction quantities. If this word is interpreted as an unsigned integer, a value of 0 indicates good data, positive values less than 32768 represent suspect data, values greater than or equal to 32768 but less than 8388608 represent degraded data, and values greater than or equal to 8388608 represent bad data.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </UInt32>
+    <Float32 name="sig0_uncert">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>uncertainty in sigma0</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>1-sigma uncertainty in sigma0. The value is provided in linear units. This value is a one-sigma additive (not multiplicative) uncertainty term, which can be added to or subtracted from sigma0.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="solid_earth_tide">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>solid Earth tide height</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Cartwright and Taylor (1971) and Cartwright and Edden (1973)</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-1.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Solid-Earth (body) tide height. The zero-frequency permanent tide component is not included.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="load_tide_got">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>geocentric load tide height (GOT)</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>GOT4.10c (Ray, 2013)</Value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <Value>GSFC</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-0.200000003</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>0.200000003</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Geocentric load tide height. The effect of the ocean tide loading of the Earth\342\200\231s crust. This value is reported for reference but is not applied to the reported height.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Byte name="wse_qual">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>summary quality indicator for the water surface elevation</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>good suspect degraded bad</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Byte">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Byte">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Byte">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Summary quality indicator for the water surface elevation quantities. A value of 0 indicates a nominal measurement, 1 indicates a suspect measurement, 2 indicates a degraded measurement, and 3 indicates a bad measurement.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Byte>
+    <Float32 name="layover_impact">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>layover impact</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-999999.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>999999.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Estimate of the water surface elevation error caused by layover.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="model_wet_tropo_cor">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>wet troposphere vertical correction</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>European Centre for Medium-Range Weather Forecasts</Value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <Value>ECMWF</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-1.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Equivalent vertical correction due to wet troposphere delay. The reported water surface elevation, latitude and longitude are computed after adding negative media corrections to uncorrected range along slant-range paths, accounting for the differential delay between the two KaRIn antennas. The equivalent vertical correction is computed by applying obliquity factors to the slant-path correction. Adding the reported correction to the reported water surface elevation results in the uncorrected pixel height.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="dark_frac">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>fractional area of dark water</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>l</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-1000.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Fraction of pixel water surface area covered by dark water.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="geoid">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>geoid height</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>geoid_height_above_reference_ellipsoid</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>EGM2008 (Pavlis et al., 2012)</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-150.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>150.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Geoid height above the reference ellipsoid with a correction to refer the value to the mean tide system, i.e. includes the permanent tide (zero frequency).</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="sig0_cor_atmos_model">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>two-way atmospheric correction to sigma0 from model</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>European Centre for Medium-Range Weather Forecasts</Value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <Value>ECMWF</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Atmospheric correction to sigma0 from weather model data as a linear power multiplier (not decibels). sig0_cor_atmos_model is already applied in computing sig0.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Byte name="ice_clim_flag">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>climatological ice cover flag</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>UNC</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>no_ice_cover uncertain_ice_cover full_ice_cover</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Byte">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Byte">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Byte">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Climatological ice cover flag indicating whether the pixel is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement). Values of 0, 1, and 2 indicate that the pixel is likely not ice covered, may or may not be partially or fully ice covered, and likely fully ice covered, respectively.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Byte>
+    <Float32 name="cross_track">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>approximate cross-track location</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-75000.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>75000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Approximate cross-track location of the pixel.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="load_tide_fes">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>geocentric load tide height (FES)</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>FES2014b (Carrere et al., 2016)</Value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <Value>LEGOS/CNES</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-0.200000003</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>0.200000003</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Geocentric load tide height. The effect of the ocean tide loading of the Earth\342\200\231s crust.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="water_frac">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>water fraction</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="quality_flag" type="String">
+            <Value>water_area_qual</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-1000.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Fraction of the pixel that is water.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="sig0">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sigma0</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="quality_flag" type="String">
+            <Value>sig0_qual</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-1000.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10000000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Normalized radar cross section (sigma0) in real, linear units (not decibels). The value may be negative due to noise subtraction.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <UInt32 name="wse_qual_bitwise">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>4294967295</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>bitwise quality indicator for the water surface elevation</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>classification_qual_suspect geolocation_qual_suspect large_uncert_suspect bright_land few_pixels far_range_suspect near_range_suspect classification_qual_degraded geolocation_qual_degraded value_bad no_pixels outside_scene_bounds inner_swath missing_karin_data</Value>
+        </Attribute>
+        <Attribute name="flag_masks" type="UInt32">
+            <Value>2</Value>
+            <Value>4</Value>
+            <Value>32</Value>
+            <Value>128</Value>
+            <Value>4096</Value>
+            <Value>8192</Value>
+            <Value>16384</Value>
+            <Value>262144</Value>
+            <Value>524288</Value>
+            <Value>16777216</Value>
+            <Value>268435456</Value>
+            <Value>536870912</Value>
+            <Value>1073741824</Value>
+            <Value>2147483648</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="UInt32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="UInt32">
+            <Value>4044124326</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Bitwise quality indicator for the water surface elevation quantities. If this word is interpreted as an unsigned integer, a value of 0 indicates good data, positive values less than 32768 represent suspect data, values greater than or equal to 32768 but less than 8388608 represent degraded data, and values greater than or equal to 8388608 represent bad data.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </UInt32>
+    <Float32 name="water_area">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>water surface area</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m^2</Value>
+        </Attribute>
+        <Attribute name="quality_flag" type="String">
+            <Value>water_area_qual</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-2000000.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>2000000000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Surface area of the water pixels.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Float32 name="wse">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>water surface elevation above geoid</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="quality_flag" type="String">
+            <Value>wse_qual</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-1500.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>15000.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Water surface elevation of the pixel above the geoid and after using models to subtract the effects of tides (solid_earth_tide, load_tide_fes, pole_tide).</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Byte name="water_area_qual">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>summary quality indicator for the water surface area</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>good suspect degraded bad</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Byte">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Byte">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Byte">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Summary quality indicator for the water surface area and water fraction quantities. A value of 0 indicates a nominal measurement, 1 indicates a suspect measurement, 2 indicates a degraded measurement, and 3 indicates a bad measurement.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Byte>
+    <String name="crs">
+        <Attribute name="_FillValue" type="String">
+            <Value>*</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>CRS Definition</Value>
+        </Attribute>
+        <Attribute name="grid_mapping_name" type="String">
+            <Value>transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="projected_crs_name" type="String">
+            <Value>WGS 84 / UTM zone 50N</Value>
+        </Attribute>
+        <Attribute name="geographic_crs_name" type="String">
+            <Value>WGS 84</Value>
+        </Attribute>
+        <Attribute name="reference_ellipsoid_name" type="String">
+            <Value>WGS 84</Value>
+        </Attribute>
+        <Attribute name="horizontal_datum_name" type="String">
+            <Value>WGS_1984</Value>
+        </Attribute>
+        <Attribute name="prime_meridian_name" type="String">
+            <Value>Greenwich</Value>
+        </Attribute>
+        <Attribute name="false_easting" type="Float64">
+            <Value>500000.</Value>
+        </Attribute>
+        <Attribute name="false_northing" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="longitude_of_central_meridian" type="Float64">
+            <Value>117.</Value>
+        </Attribute>
+        <Attribute name="longitude_of_prime_meridian" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="latitude_of_projection_origin" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor_at_central_meridian" type="Float64">
+            <Value>0.99960000000000004</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="crs_wkt" type="String">
+            <Value>PROJCS[&quot;WGS 84 / UTM zone 50N&quot;,GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.0174532925199433,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]],PROJECTION[&quot;Transverse_Mercator&quot;],PARAMETER[&quot;latitude_of_origin&quot;,0],PARAMETER[&quot;central_meridian&quot;,117],PARAMETER[&quot;scale_factor&quot;,0.9996],PARAMETER[&quot;false_easting&quot;,500000],PARAMETER[&quot;false_northing&quot;,0],UNIT[&quot;metre&quot;,1,AUTHORITY[&quot;EPSG&quot;,&quot;9001&quot;]],AXIS[&quot;Easting&quot;,EAST],AXIS[&quot;Northing&quot;,NORTH],AUTHORITY[&quot;EPSG&quot;,&quot;32650&quot;]]</Value>
+        </Attribute>
+        <Attribute name="spatial_ref" type="String">
+            <Value>PROJCS[&quot;WGS 84 / UTM zone 50N&quot;,GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.0174532925199433,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]],PROJECTION[&quot;Transverse_Mercator&quot;],PARAMETER[&quot;latitude_of_origin&quot;,0],PARAMETER[&quot;central_meridian&quot;,117],PARAMETER[&quot;scale_factor&quot;,0.9996],PARAMETER[&quot;false_easting&quot;,500000],PARAMETER[&quot;false_northing&quot;,0],UNIT[&quot;metre&quot;,1,AUTHORITY[&quot;EPSG&quot;,&quot;9001&quot;]],AXIS[&quot;Easting&quot;,EAST],AXIS[&quot;Northing&quot;,NORTH],AUTHORITY[&quot;EPSG&quot;,&quot;32650&quot;]]</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>UTM zone coordinate reference system.</Value>
+        </Attribute>
+    </String>
+    <UInt32 name="n_other_pix">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>4294967295</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>number of other pixels</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>l</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="UInt32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="UInt32">
+            <Value>999999</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Number of pixel cloud samples used in aggregation of quantities not related to water surface elevation, water surface area, water fraction or sigma0.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </UInt32>
+    <UInt32 name="n_wse_pix">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>4294967295</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>number of water surface elevation pixels</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>l</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="UInt32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="UInt32">
+            <Value>999999</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Number of pixel cloud samples used in water surface elevation aggregation.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </UInt32>
+    <Float32 name="inc">
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>incidence angle</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>x y</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Incidence angle.</Value>
+        </Attribute>
+        <Map name="/x"/>
+        <Map name="/y"/>
+    </Float32>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.7</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>Level 2 KaRIn High Rate Raster Data Product</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>Ka-band radar interferometer</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>2023-02-01T22:02:00Z : Creation</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>SWOT</Value>
+    </Attribute>
+    <Attribute name="reference_document" type="String">
+        <Value>JPL D-56416 - Revision A - September 19, 2022</Value>
+    </Attribute>
+    <Attribute name="contact" type="String">
+        <Value>alexander.t.corben[at]jpl.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="cycle_number" type="Int16">
+        <Value>406</Value>
+    </Attribute>
+    <Attribute name="pass_number" type="Int16">
+        <Value>23</Value>
+    </Attribute>
+    <Attribute name="scene_number" type="Int16">
+        <Value>131</Value>
+    </Attribute>
+    <Attribute name="tile_numbers" type="Int16">
+        <Value>262</Value>
+        <Value>263</Value>
+        <Value>262</Value>
+        <Value>263</Value>
+    </Attribute>
+    <Attribute name="tile_names" type="String">
+        <Value>023_262L, 023_263L, 023_262R, 023_263R</Value>
+    </Attribute>
+    <Attribute name="tile_polarizations" type="String">
+        <Value>V, V, H, H</Value>
+    </Attribute>
+    <Attribute name="coordinate_reference_system" type="String">
+        <Value>Universal Transverse Mercator</Value>
+    </Attribute>
+    <Attribute name="resolution" type="Float32">
+        <Value>250.</Value>
+    </Attribute>
+    <Attribute name="short_name" type="String">
+        <Value>L2_HR_Raster</Value>
+    </Attribute>
+    <Attribute name="descriptor_string" type="String">
+        <Value>250m_UTM50V_N_x_x_x</Value>
+    </Attribute>
+    <Attribute name="crid" type="String">
+        <Value>PIA0</Value>
+    </Attribute>
+    <Attribute name="pge_name" type="String">
+        <Value>PGE_L2_HR_RASTER</Value>
+    </Attribute>
+    <Attribute name="pge_version" type="String">
+        <Value>3.4.7</Value>
+    </Attribute>
+    <Attribute name="time_granule_start" type="String">
+        <Value>2023-01-21T04:06:52.479549Z</Value>
+    </Attribute>
+    <Attribute name="time_granule_end" type="String">
+        <Value>2023-01-21T04:06:53.829347Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>2023-01-21T04:06:52.480036Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>2023-01-21T04:06:53.301788Z</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_min" type="Float64">
+        <Value>116.02051205842589</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_max" type="Float64">
+        <Value>119.05193749019136</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_min" type="Float64">
+        <Value>59.373431818490204</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_max" type="Float64">
+        <Value>60.885660398392851</Value>
+    </Attribute>
+    <Attribute name="left_first_longitude" type="Float64">
+        <Value>116.02051205842589</Value>
+    </Attribute>
+    <Attribute name="left_first_latitude" type="Float64">
+        <Value>59.824152170441806</Value>
+    </Attribute>
+    <Attribute name="left_last_longitude" type="Float64">
+        <Value>116.91466749665749</Value>
+    </Attribute>
+    <Attribute name="left_last_latitude" type="Float64">
+        <Value>60.885660398392851</Value>
+    </Attribute>
+    <Attribute name="right_first_longitude" type="Float64">
+        <Value>118.10549258059865</Value>
+    </Attribute>
+    <Attribute name="right_first_latitude" type="Float64">
+        <Value>59.373431818490225</Value>
+    </Attribute>
+    <Attribute name="right_last_longitude" type="Float64">
+        <Value>119.05193749019136</Value>
+    </Attribute>
+    <Attribute name="right_last_latitude" type="Float64">
+        <Value>60.417688333215878</Value>
+    </Attribute>
+    <Attribute name="xref_l2_hr_pixc_files" type="String">
+        <Value>SWOT_L2_HR_PIXC_406_023_262L_20230121T040652_20230121T040653_PIA0_27.nc, SWOT_L2_HR_PIXC_406_023_263L_20230121T040652_20230121T040703_PIA0_27.nc, SWOT_L2_HR_PIXC_406_023_262R_20230121T040652_20230121T040653_PIA0_27.nc, SWOT_L2_HR_PIXC_406_023_263R_20230121T040652_20230121T040703_PIA0_27.nc</Value>
+    </Attribute>
+    <Attribute name="xref_l2_hr_pixcvec_files" type="String">
+        <Value>SWOT_L2_HR_PIXCVec_406_023_262L_20230121T040652_20230121T040653_PIA0_01.nc, SWOT_L2_HR_PIXCVec_406_023_263L_20230121T040652_20230121T040703_PIA0_01.nc, SWOT_L2_HR_PIXCVec_406_023_262R_20230121T040652_20230121T040653_PIA0_01.nc, SWOT_L2_HR_PIXCVec_406_023_263R_20230121T040652_20230121T040703_PIA0_01.nc</Value>
+    </Attribute>
+    <Attribute name="xref_param_l2_hr_raster_file" type="String">
+        <Value>SWOT_Param_L2_HR_Raster_20000101T000000_21000101T000000_20220913T100000_v201.rdf</Value>
+    </Attribute>
+    <Attribute name="xref_reforbittrack_files" type="String">
+        <Value>SWOT_RefOrbitTrackTileBoundary_Cal_20000101T000000_21000101T000000_20200617T193054_v101.txt, SWOT_RefOrbitTrack125mPass1_Cal_20000101T000000_21000101T000000_20200617T193054_v101.txt, SWOT_RefOrbitTrack125mPass2_Cal_20000101T000000_21000101T000000_20200617T193054_v101.txt</Value>
+    </Attribute>
+    <Attribute name="utm_zone_num" type="Int16">
+        <Value>50</Value>
+    </Attribute>
+    <Attribute name="mgrs_latitude_band" type="String">
+        <Value>V</Value>
+    </Attribute>
+    <Attribute name="x_min" type="Float64">
+        <Value>445000.</Value>
+    </Attribute>
+    <Attribute name="x_max" type="Float64">
+        <Value>613000.</Value>
+    </Attribute>
+    <Attribute name="y_min" type="Float64">
+        <Value>6582250.</Value>
+    </Attribute>
+    <Attribute name="y_max" type="Float64">
+        <Value>6750000.</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>CNES</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>V0.5</Value>
+    </Attribute>
+    <Attribute name="product_version" type="String">
+        <Value>01</Value>
+    </Attribute>
+</Dataset>

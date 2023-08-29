@@ -1,10 +1,10 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
 
-// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Muqun Yang
+// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Kent Yang
 // <myang6@hdfgroup.org> 
 
-// Copyright (c) 2009-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2009-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -21,8 +21,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 #ifndef _HDF5Structure_h
 #define _HDF5Structure_h 
@@ -49,7 +49,12 @@ class HDF5Structure:public libdap::Structure {
         var_path = src.var_path;
     }
 
-    void do_structure_read(hid_t dsetid, hid_t dtypeid,std::vector <char> &values,bool has_values, int values_offset);
+    void do_structure_read(hid_t dsetid, hid_t dtypeid,std::vector <char> &values,bool has_values, size_t values_offset);
+    void do_structure_read_atomic( hid_t memb_id, char *memb_name, H5T_class_t memb_cls,
+                                   const std::vector<char> &values, size_t values_offset, size_t memb_offset);
+    void do_structure_read_string(hid_t memb_id, char *memb_name, const std::vector<char> &values,
+                                                 size_t values_offset, size_t memb_offset);
+    void catch_free(char *memb_name, hid_t memb_id, hid_t memtype, hid_t mspace, std::vector<char>&values) const;
     friend class HDF5Array;
   public:
 

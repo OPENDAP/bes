@@ -23,7 +23,7 @@
 dnl Check and see if we are building on RHEL8 or the equivalent and if so,
 dnl is the tirpc library available and set up correctly.
 AC_DEFUN([OX_RHEL8_TIRPC], [
-AS_IF([test -f /etc/redhat-release && grep -q '8\.' /etc/redhat-release],
+AS_IF([test -f /etc/redhat-release && grep -q '8' /etc/redhat-release],
     dnl if this is RHEL8, then we need the tirpc library on CPPFLAGS and LDFLAGS
     [
         AC_MSG_NOTICE([Found a RHEL 8 or equivalent system...])

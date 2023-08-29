@@ -246,21 +246,6 @@ group: Data_40HZ {
     dimensions:
     	d_UTCTime_40 = 43920 ;
     variables:
-    	int i_shot_count(DS_UTCTime_40) ;
-    		i_shot_count:hertz = "40" ;
-    		i_shot_count:long_name = "GLAS Pulse Index" ;
-    		i_shot_count:description = "Identifies each laser shot within a record index.  A combination of i_rec_ndx and i_shot_count can be used to uniquely identify each GLAS laser shot." ;
-    		i_shot_count:source = "Rel 34 GLAS Binary Data" ;
-    		i_shot_count:coordinates = "DS_UTCTime_40" ;
-    		i_shot_count:valid_min = 1 ;
-    		i_shot_count:valid_max = 40 ;
-    	int i_rec_ndx(DS_UTCTime_40) ;
-    		i_rec_ndx:hertz = "40" ;
-    		i_rec_ndx:long_name = "GLAS Record Index" ;
-    		i_rec_ndx:description = "Unique index that relates this record to the corresponding record(s) in each GLAS data product." ;
-    		i_rec_ndx:source = "Rel 34 GLAS Binary Data" ;
-    		i_rec_ndx:coordinates = "DS_UTCTime_40" ;
-    		i_rec_ndx:valid_min = 0 ;
     	double d_UTCTime_40(d_UTCTime_40) ;
     		d_UTCTime_40:units = "seconds since removed date-time" ;
     		d_UTCTime_40:hertz = "40" ;
@@ -269,6 +254,21 @@ group: Data_40HZ {
     		d_UTCTime_40:description = "The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds." ;
     		d_UTCTime_40:source = "Rel 34 GLAS Binary Data" ;
     		d_UTCTime_40:HDF5_HARDLINK = "/Data_40HZ/DS_UTCTime_40" ;
+    	int i_rec_ndx(DS_UTCTime_40) ;
+    		i_rec_ndx:hertz = "40" ;
+    		i_rec_ndx:long_name = "GLAS Record Index" ;
+    		i_rec_ndx:description = "Unique index that relates this record to the corresponding record(s) in each GLAS data product." ;
+    		i_rec_ndx:source = "Rel 34 GLAS Binary Data" ;
+    		i_rec_ndx:coordinates = "DS_UTCTime_40" ;
+    		i_rec_ndx:valid_min = 0 ;
+    	int i_shot_count(DS_UTCTime_40) ;
+    		i_shot_count:hertz = "40" ;
+    		i_shot_count:long_name = "GLAS Pulse Index" ;
+    		i_shot_count:description = "Identifies each laser shot within a record index.  A combination of i_rec_ndx and i_shot_count can be used to uniquely identify each GLAS laser shot." ;
+    		i_shot_count:source = "Rel 34 GLAS Binary Data" ;
+    		i_shot_count:coordinates = "DS_UTCTime_40" ;
+    		i_shot_count:valid_min = 1 ;
+    		i_shot_count:valid_max = 40 ;
 
     // group attributes:
     		:Description = "This group contains the 40HZ index and time-related parameters" ;

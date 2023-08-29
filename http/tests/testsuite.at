@@ -2,61 +2,58 @@
 
 AT_INIT([bes/http/tests testsuite])
 
-dnl m4_include([modules/handler_tests_macros.m4])
-
-# Start out with these test macros defined here, then migrate to the common file
+m4_define([VECHO], AS_IF([test -z "$at_verbose"], [echo $1]))
 
 # run the same command in parallel - two processes
-m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
+# $1 URL
+# $2 xfail
+m4_define([AT_PARALLEL_TEST], [dnl
 
     AT_SETUP([$1])
-    AT_KEYWORDS([bescmd])
+    AT_KEYWORDS([remote_resource_tester parallel])
 
-    dnl input is a URL
     input=$1
     bes_conf=$abs_builddir/bes.conf
 
     # AT_XFAIL_IF is always run first regardless where it appears. jhrg 5/27/22
     AT_XFAIL_IF([test z$2 = zxfail])
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMANDS: remote_resource_tester $bes_conf $input d1 or d2&"])
+    VECHO(["COMMANDS: remote_resource_tester $input d1 or d2&"])
 
-    dnl Clean up the cache
-    dnl This can lead to "No such file or directory" because cache does not exist. jhrg 11/16/22
-    dnl rm -rf $abs_builddir/cache
-
-    $abs_builddir/remote_resource_tester $bes_conf $input $abs_builddir/d1-$$ > $abs_builddir/tmp1-$$ &
+    # The special variable $$ is the process id of the current (shell) process,
+    # not the process running remote_resource_tester. jhrg 5/10/23
+    $abs_builddir/remote_resource_tester -b $bes_conf $input $abs_builddir/d1-$$ > $abs_builddir/tmp1-$$ &
     p1=$!
     AS_IF([test -z "$at_verbose"], [echo "Started 1: $p1"])
 
-    $abs_builddir/remote_resource_tester $bes_conf $input $abs_builddir/d2-$$ > $abs_builddir/tmp2-$$ &
+    $abs_builddir/remote_resource_tester -b $bes_conf $input $abs_builddir/d2-$$ > $abs_builddir/tmp2-$$ &
     p2=$!
-    AS_IF([test -z "$at_verbose"], [echo "Started 2: $p2"])
+    VECHO(["Started 2: $p2"])
 
     wait $p1
     s1=$?
-    AS_IF([test -z "$at_verbose"], [echo "Caught $p1: $s1"])
+    VECHO(["Caught $p1: $s1"])
     wait $p2
     s2=$?
-    AS_IF([test -z "$at_verbose"], [echo "Caught $p2: $s2"])
+    VECHO(["Caught $p2: $s2"])
 
     dnl  AT_CHECK (commands, [status = ‘0’], [stdout], [stderr], [run-if-fail], [run-if-pass])
     AT_CHECK([test $s1 -eq 0])
     AT_CHECK([test $s2 -eq 0])
 
-    dnl cleanup
-    rm -f d1-* d2-* tmp1-* tmp2-*
+    # Clean up the temporary files
+    rm -f $abs_builddir/{d1-$$,d2-$$,tmp1-$$,tmp2-$$}
 
     AT_CLEANUP
 ])
 
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
-AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])

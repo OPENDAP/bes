@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -18,17 +18,17 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file h5cfdaputil.cc
 /// \brief Helper functions for generating DAS attributes and a function to check BES Key.
 ///
 ///  
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2016 The HDF Group
+/// Copyright (C) 2011-2023 The HDF Group
 ///
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
@@ -231,12 +231,12 @@ H5DataType
 HDF5CFDAPUtil::get_mem_dtype(H5DataType dtype,size_t mem_dtype_size ) {
 
     // Currently in addition to "char" to "int16", all other memory datatype will be the same as the datatype.
-    // So we have a short cut for this function
+    // So we have a shortcut for this function
     return ((H5INT16 == dtype) && (1 == mem_dtype_size))?H5CHAR:dtype;
 }
 
 string
-HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
+HDF5CFDAPUtil:: print_attr(H5DataType type, unsigned int loc, void *vals)
 {
     ostringstream rep;
 
@@ -271,7 +271,7 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             gp.cp = (char *) vals;
             char c;
             c = *(gp.cp+loc);
-            // Since the character may be a special character and DAP may not be able to represent so supposedly we should escape the character
+            // Since the character may be a special character and DAP may not be able to represent, so supposedly we should escape the character
             // by calling the escattr function. However, HDF5 native char maps to DAP Int16. So the mapping assumes that users will never
             // use HDF5 native char or HDF5 unsigned native char to represent characters. Instead, HDF5 string should be used to represent characters.
             // So don't do any escaping of H5CHAR for now. KY 2016-10-14

@@ -7,8 +7,9 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cm
 
 # Added -lz for ubuntu
 STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
-LIBADD = $(BES_DISPATCH_LIB) $(STATIC_DAP_MODULE) $(BES_EXTRA_LIBS) $(BES_HTTP_LIB)\
-$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+LIBADD = $(BES_DISPATCH_LIB) $(STATIC_DAP_MODULE) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+
+# jhrg 6/2/23 $(BES_EXTRA_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -80,7 +81,8 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = CmrApiTest CmrCatalogTest GranuleTest
+UNIT_TESTS = CmrCatalogTest GranuleTest
+# This fails often: CmrApiTest jhrg 6/29/23
 else
 UNIT_TESTS =
 

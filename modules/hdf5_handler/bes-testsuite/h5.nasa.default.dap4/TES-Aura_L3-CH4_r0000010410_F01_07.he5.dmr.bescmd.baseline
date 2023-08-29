@@ -85,9 +85,21 @@
         </Group>
         <Group name="GRIDS">
             <Group name="NadirGrid">
-                <Dimension name="XDim" size="90"/>
                 <Dimension name="YDim" size="83"/>
+                <Dimension name="XDim" size="90"/>
                 <Dimension name="nLevels" size="15"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/NadirGrid/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/NadirGrid/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
                 <Attribute name="Projection" type="String">
                     <Value>Geographic</Value>
                 </Attribute>

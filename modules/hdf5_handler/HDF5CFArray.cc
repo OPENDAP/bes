@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -16,22 +16,19 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street,
-// Suite 203, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDF5CFArray.cc
 /// \brief The implementation of  methods to read data array into DAP buffer from an HDF5 dataset for the CF option.
 ///
-/// In the future, this may be merged with the dddefault option.
-/// \author Muqun Yang <myang6@hdfgroup.org>
+/// In the future, this may be merged with the default option.
+/// \author Kent Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "config_hdf5.h"
 #include <iostream>
-#include <sstream>
-#include <cassert>
 #include <BESDebug.h>
 #include <sys/stat.h>
 #include <libdap/InternalErr.h>
@@ -48,7 +45,8 @@ using namespace libdap;
 
 BaseType *HDF5CFArray::ptr_duplicate()
 {
-    return new HDF5CFArray(*this);
+    auto HDF5CFArray_unique = make_unique<HDF5CFArray>(*this);
+    return HDF5CFArray_unique.release();
 }
 
 // Read in an HDF5 Array 
@@ -78,14 +76,14 @@ bool HDF5CFArray::read()
         }
     }
 
-    // If this varible doesn't fit the small data cache, let's check if it fits the large data cache.
+    // If this variable doesn't fit the small data cache, let's check if it fits the large data cache.
     if(use_cache_flag !=1) {
 
         if(HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) {
 
             // This is the trival case. 
             // If no information is provided in the configuration file of large data cache,
-            // just cache the lat/lon varible per file.
+            // just cache the lat/lon variable per file.
             if(HDF5RequestHandler::get_common_cache_dirs() == false) {
 		        if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS 
                     || (cvtype == CV_EXIST && islatlon == true)) {
@@ -117,7 +115,7 @@ bool HDF5CFArray::read()
                     }
                 }
                 // Here we allow all the variable names to be cached. 
-                // The file path that includes the variables can also included.
+                // The file path that includes the variables can also be included.
                 vector<string> cur_lrd_var_cache_file_list;
                 HDF5RequestHandler::get_lrd_var_cache_file_list(cur_lrd_var_cache_file_list);
                 if(cur_lrd_var_cache_file_list.empty() == false){
@@ -818,8 +816,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
     H5Sclose(dspace);
     H5Dclose(dsetid);
     HDF5CFUtil::close_fileid(fileid,pass_fileid);
-    
-    return;
+
 }
 
 bool HDF5CFArray::valid_disk_cache() const {
@@ -865,7 +862,7 @@ bool HDF5CFArray::valid_disk_cache() const {
             }
 
             short dtype_size = HDF5CFUtil::H5_numeric_atomic_type_size(dtype);
-            // Check if we only need to cache the specific compressed dat
+            // Check if we only need to cache the specific compressed data
             if(true == HDF5RequestHandler::get_disk_cache_comp_data()){ 
                 BESDEBUG("h5","Compression disk cache key is true"<<endl);
                 ret_value = valid_disk_cache_for_compressed_data(dtype_size);
@@ -885,7 +882,7 @@ bool HDF5CFArray::valid_disk_cache() const {
 bool HDF5CFArray:: valid_disk_cache_for_compressed_data(short dtype_size) const {
 
     bool ret_value = false;
-    // The compression ratio should be smaller then the threshold(hard to compress)
+    // The compression ratio should be smaller than the threshold(hard to compress)
     // and the total var size should be bigger than the defined size(bigger)
 #if 0
     size_t total_byte = total_elems*dtype_size;
@@ -1392,295 +1389,7 @@ HDF5CFArray::write_data_to_cache(hid_t dset_id, hid_t /*dspace_id*/, hid_t /*msp
     }
 }
 
-#if 0
-void HDF5CFArray::read_data_from_mem_cache(void*buf) {
 
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
-    int nelms = format_constraint (offset.data(), step.data(), count.data());
-    // set the original position to the starting point
-    vector<int>at_pos(at_ndims,0);
-    for (int i = 0; i< rank; i++)
-        at_pos[i] = at_offset[i];
-
-
-    switch (dtype) {
-
-        case H5UCHAR:
-                
-        {
-            vector<unsigned char> val;
-            val.resize(nelms);
-            subset<unsigned char>(
-                                      total_val.data(),
-                                      rank,
-                                      dimsizes,
-                                      offset,
-                                      step,
-                                      count,
-                                      &final_val,
-                                      at_pos,
-                                      0
-                                     );
-                
-
-            set_value ((dods_byte *) val.data(), nelms);
-        } // case H5UCHAR
-            break;
-
-
-        case H5CHAR:
-        {
-
-            vector<char> val;
-            val.resize(nelms);
-
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,val.data());
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,val.data());
-
-            if (read_ret < 0) {
-
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_CHAR "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
-
-            vector<short>newval;
-            newval.resize(nelms);
-
-            for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (short) (val[counter]);
-
-            set_value ((dods_int16 *) newval.data(), nelms);
-        } // case H5CHAR
-           break;
-
-
-        case H5INT16:
-        {
-            vector<short>val;
-            val.resize(nelms);
-                
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,val.data());
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,val.data());
-
-            if (read_ret < 0) {
-
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                //H5Fclose(fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_SHORT "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
-            set_value ((dods_int16 *) val.data(), nelms);
-        }// H5INT16
-            break;
-
-
-        case H5UINT16:
-            {
-                vector<unsigned short> val;
-                val.resize(nelms);
-                if (0 == rank) 
-                   read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,val.data());
-                else 
-                   read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,val.data());
-
-                if (read_ret < 0) {
-
-                    if (rank > 0) H5Sclose(mspace);
-                    H5Tclose(memtype);
-                    H5Tclose(dtypeid);
-                    H5Sclose(dspace);
-                    H5Dclose(dsetid);
-                    HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                    ostringstream eherr;
-                    eherr << "Cannot read the HDF5 dataset " << varname
-                        << " with the type of H5T_NATIVE_USHORT "<<endl;
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-                }
-                set_value ((dods_uint16 *) val.data(), nelms);
-            } // H5UINT16
-            break;
-
-
-        case H5INT32:
-        {
-            vector<int>val;
-            val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,val.data());
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,val.data());
-
-            if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_INT "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
-            set_value ((dods_int32 *) val.data(), nelms);
-        } // case H5INT32
-            break;
-
-        case H5UINT32:
-        {
-            vector<unsigned int>val;
-            val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,val.data());
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,val.data());
-
-            if (read_ret < 0) {
-
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_UINT "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
-            set_value ((dods_uint32 *) val.data(), nelms);
-        }
-            break;
-
-        case H5FLOAT32:
-        {
-
-            vector<float>val;
-            val.resize(nelms);
-
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,val.data());
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,val.data());
-
-            if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_FLOAT "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
-            set_value ((dods_float32 *) val.data(), nelms);
-        }
-            break;
-
-
-        case H5FLOAT64:
-        {
-
-            vector<double>val;
-            val.resize(nelms);
-            if (0 == rank) 
-                read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,val.data());
-            else 
-                read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,val.data());
-
-            if (read_ret < 0) {
-                if (rank > 0) 
-                    H5Sclose(mspace);
-                H5Tclose(memtype);
-                H5Tclose(dtypeid);
-                H5Sclose(dspace);
-                H5Dclose(dsetid);
-                HDF5CFUtil::close_fileid(fileid,pass_fileid);
-                ostringstream eherr;
-                eherr << "Cannot read the HDF5 dataset " << varname
-                      << " with the type of H5T_NATIVE_DOUBLE "<<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
-            }
-            set_value ((dods_float64 *) val.data(), nelms);
-        } // case H5FLOAT64
-            break;
-
-
-
-    // Just see if it works.
-    val2buf(buf);
-    set_read_p(true);
-    return;
-}
-#endif
-
-#if 0
-// We don't inherit libdap Array Class's transform_to_dap4 method since it also transforms attributes.
-BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
-
-    if(grp == nullptr)
-        return nullptr;
-    Array *dest = static_cast<HDF5CFArray*>(ptr_duplicate());
-
-    // If there is just a size, don't make
-    // a D4Dimension (In DAP4 you cannot share a dimension unless it has
-    // a name). jhrg 3/18/14
-
-    D4Dimensions *grp_dims = grp->dims();
-    for (Array::Dim_iter dap2_dim = dest->dim_begin(), e = dest->dim_end(); dap2_dim != e; ++dap2_dim) {
-        if (!(*dap2_dim).name.empty()) {
-
-            // If a D4Dimension with the name already exists, use it.
-            D4Dimension *d4_dim = grp_dims->find_dim((*dap2_dim).name);
-            if (!d4_dim) {
-                d4_dim = new D4Dimension((*dap2_dim).name, (*dap2_dim).size);
-                grp_dims->add_dim_nocopy(d4_dim);
-            }
-            // At this point d4_dim's name and size == those of (*d) so just set
-            // the D4Dimension pointer so it matches the one in the D4Group.
-            (*dap2_dim).dim = d4_dim;
-        }
-    }
-
-    return dest;
-
-}
-#endif
 
 // We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
 // This function is used for 64-bit integer mapping to DAP4 for the CF option. largely borrowed from
@@ -1689,7 +1398,7 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
 
     if(grp == nullptr)
         return nullptr;
-    Array *dest = static_cast<HDF5CFArray*>(ptr_duplicate());
+    Array *dest = dynamic_cast<HDF5CFArray*>(ptr_duplicate());
 
     // If there is just a size, don't make
     // a D4Dimension (In DAP4 you cannot share a dimension unless it has
@@ -1706,12 +1415,12 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
 
                 // Check if the dimension is defined in this group
                 d4_dim = temp_dims->find_dim((*d).name);
-                if(d4_dim) { 
+                if (d4_dim) {
                   (*d).dim = d4_dim;
                   break;
                 }
 
-                if(temp_grp->get_parent()) 
+                if (temp_grp->get_parent())
                     temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
                 else 
                     temp_grp = nullptr;
@@ -1722,14 +1431,12 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
             // The following block is fine, but to avoid the complaint from sonarcloud.
             // Use a bool.
             bool d4_dim_null = ((d4_dim==nullptr)?true:false);
-#if 0
-            //if(d4_dim == nullptr) {
-#endif
             // Not find this dimension in any of the ancestor groups, add it to this group.
-            if(d4_dim_null == true) {
+            if (d4_dim_null == true) {
 
-                d4_dim = new D4Dimension((*d).name, (*d).size);
+                auto d4_dim_unique = make_unique<D4Dimension>((*d).name, (*d).size);
                 D4Dimensions * dims = grp->dims();
+                d4_dim = d4_dim_unique.release();
                 dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;
             }
@@ -1741,50 +1448,3 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
     return dest;
 
 }
-#if 0
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
-int
-HDF5CFArray::format_constraint (int *offset, int *step, int *count)
-{
-
-        long nels = 1;
-        int id = 0;
-
-        Dim_iter p = dim_begin ();
-
-        while (p != dim_end ()) {
-
-                int start = dimension_start (p, true);
-                int stride = dimension_stride (p, true);
-                int stop = dimension_stop (p, true);
-
-                // Check for illegal  constraint
-                if (start > stop) {
-                   ostringstream oss;
-
-                   oss << "Array/Grid hyperslab start point "<< start <<
-                         " is greater than stop point " <<  stop <<".";
-                   throw Error(malformed_expr, oss.str());
-                }
-
-                offset[id] = start;
-                step[id] = stride;
-                count[id] = ((stop - start) / stride) + 1;      // count of elements
-                nels *= count[id];              // total number of values for variable
-
-                BESDEBUG ("h5",
-                         "=format_constraint():"
-                         << "id=" << id << " offset=" << offset[id]
-                         << " step=" << step[id]
-                         << " count=" << count[id]
-                         << endl);
-
-                id++;
-                p++;
-        }
-
-        return nels;
-}
-
-#endif

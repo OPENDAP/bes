@@ -47,8 +47,7 @@ public:
     explicit Provider(nlohmann::json provider_obj): d_provider_json_obj(std::move(provider_obj)){}
 
     std::string id() const;
-    std::string description_of_holdings() const;
-    std::string organization_name() const;
+    std::string description_of_holding() const;
     nlohmann::json contacts() const;
     bool rest_only() const;
 
@@ -59,7 +58,7 @@ public:
     void get_opendap_collections(std::map<std::string, std::unique_ptr<cmr::Collection>> &collections) const;
 
 
-    std::string to_string() const;
+    std::string to_string(bool show_json=true) const;
 };
 
 } // cmr
