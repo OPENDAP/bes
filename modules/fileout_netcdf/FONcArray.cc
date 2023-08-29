@@ -78,8 +78,12 @@ const int NORMAL_1D_MAX_CHUNK_SIZES = 65536;
  * @throws BESInternalError if the BaseType is not an Array
  */
 FONcArray::FONcArray(BaseType *b) : FONcBaseType() {
+#if 0
     auto d_a_temp = dynamic_cast<Array *>(b);
-    auto d_a_dc= dynamic_cast<DmrppArrayDC *>(d_a_temp);
+#endif
+   BESDEBUG("fonc", "FONcArray() - before dynamic cast" << endl);
+#if 0
+    auto d_a_dc= dynamic_cast<DmrppArrayDC *>(b);
     bool dc_flag = true;
     if (d_a_dc) {
         dc_flag = d_a_dc->get_dio_flag();
@@ -90,6 +94,7 @@ FONcArray::FONcArray(BaseType *b) : FONcBaseType() {
             BESDEBUG("fonc", "FONcArray() - d_a_dc is null. " << endl);
 
     }
+#endif
     d_a = dynamic_cast<Array *>(b);
     if (!d_a) {
         string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
