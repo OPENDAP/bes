@@ -291,7 +291,20 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long offset,
         const vector<unsigned long long> &position_in_array)
 {
-    shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, position_in_array));
+    shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset,  position_in_array));
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        unsigned int filter_mask,
+        const vector<unsigned long long> &position_in_array)
+{
+    shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, filter_mask, position_in_array));
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
@@ -359,9 +372,27 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunks", NULL) < 0)
         throw BESInternalError("Could not start chunks element.", __FILE__, __LINE__);
 
-    if (!d_filters.empty())
+    if (!d_filters.empty()) {
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) d_filters.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
+        if (!deflate_levels.empty()) {
+
+            ostringstream dls;
+            for (unsigned int i = 0; i <deflate_levels.size(); i++) {
+                if ( i != deflate_levels.size()-1)
+                    dls<<deflate_levels[i]<<" ";
+                else 
+                    dls<<deflate_levels[i];
+
+            }
+            BESDEBUG(dmrpp_3, "Variable deflate levels: " << dls.str()<<endl);
+#if 1
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "deflateLevel", (const xmlChar*) dls.str().c_str()) < 0)
+                throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
+ 
+#endif
+        }
+    }
 
     if (d_uses_fill_value && !d_fill_value_str.empty()) {
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "fillValue", (const xmlChar*) d_fill_value_str.c_str()) < 0)
@@ -410,6 +441,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
                                             (const xmlChar *) nBytes.str().c_str()) < 0)
                 throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
 
+
         if (chunk->get_position_in_array().size() > 0) {
             // Get position in array string:
             vector<unsigned long long> pia = chunk->get_position_in_array();
@@ -423,6 +455,17 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             if (pia.size() > 0) pia_str.replace(pia_str.size() - 1, 1, "]"); // replace the trailing ',' with ']'
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) pia_str.c_str()) < 0)
                 throw BESInternalError("Could not write attribute position in array", __FILE__, __LINE__);
+
+            // Filter mask only applies to the chunking storage. So check here. Get the filter mask string if the filter mask is not zero.
+            if (chunk->get_filter_mask() != 0) {
+                ostringstream fm;
+                fm << chunk->get_filter_mask();
+#if 1
+                if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "fm", (const xmlChar*) fm.str().c_str()) < 0)
+                    throw BESInternalError("Could not write attribute fm(filter mask)", __FILE__, __LINE__);
+#endif
+            }
+
         }
 
         // End element "chunk":
@@ -468,9 +511,11 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)bt.type_name().c_str()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not write " + bt.type_name() + " element");
 
-    if (!bt.name().empty())
+    if (!bt.name().empty()) {
+        BESDEBUG(dmrpp_3, "Variable full path: " << bt.FQN() <<endl);
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)bt.name().c_str()) < 0)
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+    }
 
     if (bt.is_dap4())
         bt.attributes()->print_dap4(xml);

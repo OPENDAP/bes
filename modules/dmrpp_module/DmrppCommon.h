@@ -135,6 +135,7 @@ class DmrppCommon {
 
 
     unsigned long long var_storage_size = 0;
+    std::vector<unsigned int> deflate_levels;
 
 protected:
     virtual char *read_atomic(const std::string &name);
@@ -162,6 +163,10 @@ public:
     }
 
     void set_filter(const std::string &value);
+    void set_deflate_levels(const std::vector<unsigned int>& def_levels){
+         for(const auto &def_level:def_levels)
+            deflate_levels.push_back(def_level);
+    }
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();
@@ -302,6 +307,15 @@ public:
             unsigned long long size,
             unsigned long long offset,
             const std::vector<unsigned long long> &position_in_array);
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            unsigned int filter_mask,
+            const std::vector<unsigned long long> &position_in_array);
+
+
 
     virtual unsigned long add_chunk(
             const std::string &byte_order,

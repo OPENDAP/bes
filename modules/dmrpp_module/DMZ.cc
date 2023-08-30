@@ -1266,7 +1266,7 @@ void DMZ::load_chunks(BaseType *btp)
     if (child) {
         chunks_found = 1;
         process_chunks(btp, child);
-cerr<<"storage size is "<<dc(btp)->get_storage_size()<<endl;
+        BESDEBUG(PARSER, prolog << "This variable's storage size is: " << dc(btp)->get_storage_size() << endl);
         auto array = dynamic_cast<Array*>(btp);
         // It's possible to have a chunk, but not have a chunk dimension sizes element
         // when there is only one chunk (e.g., with HDF5 Contiguous storage). jhrg 5/5/22
