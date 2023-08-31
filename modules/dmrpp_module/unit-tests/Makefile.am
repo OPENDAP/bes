@@ -12,7 +12,7 @@ OPENSSL_LD=-L/usr/local/opt/openssl/lib
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)  -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
     -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/modules/common \
-    -I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS) $(OPENSSL_INC)
+    -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/modules/dmrpp_module/types $(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
