@@ -325,7 +325,7 @@ public:
             const std::vector<unsigned long long> &position_in_array);
 
     void accumlate_storage_size(unsigned long long chunk_storage_size) {var_storage_size += chunk_storage_size; }
-    unsigned long long get_storage_size() {return var_storage_size; }
+    unsigned long long get_storage_size() const {return var_storage_size; }
     virtual void dump(std::ostream & strm) const;
 };
 
