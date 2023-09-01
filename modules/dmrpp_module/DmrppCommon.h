@@ -289,11 +289,27 @@ public:
             unsigned long long offset,
             const std::string &position_in_array);
 
+     virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            unsigned int filter_mask,
+            const std::string &position_in_array);
+
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
             const std::string &byte_order,
             unsigned long long size,
             unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array);
+
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            unsigned int filter_mask,
             const std::vector<unsigned long long> &position_in_array);
 
     virtual unsigned long add_chunk(
