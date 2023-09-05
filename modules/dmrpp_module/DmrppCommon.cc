@@ -386,11 +386,9 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
 
             }
             BESDEBUG(dmrpp_3, "Variable deflate levels: " << dls.str()<<endl);
-#if 0
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "deflateLevel", (const xmlChar*) dls.str().c_str()) < 0)
                 throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
  
-#endif
         }
     }
 
@@ -460,10 +458,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             if (chunk->get_filter_mask() != 0) {
                 ostringstream fm;
                 fm << chunk->get_filter_mask();
-#if 0
                 if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "fm", (const xmlChar*) fm.str().c_str()) < 0)
                     throw BESInternalError("Could not write attribute fm(filter mask)", __FILE__, __LINE__);
-#endif
             }
 
         }

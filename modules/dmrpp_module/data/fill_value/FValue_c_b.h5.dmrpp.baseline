@@ -3,14 +3,14 @@
     <Int32 name="chunks_all_fill">
         <Dim size="16"/>
         <Dim size="16"/>
-        <dmrpp:chunks compressionType="deflate" fillValue="-99">
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="-99">
             <dmrpp:chunkDimensionSizes>8 8</dmrpp:chunkDimensionSizes>
         </dmrpp:chunks>
     </Int32>
     <Int32 name="chunks_some_fill">
         <Dim size="16"/>
         <Dim size="16"/>
-        <dmrpp:chunks compressionType="deflate" fillValue="-99" byteOrder="LE">
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="-99" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>8 8</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4288" nBytes="69" chunkPositionInArray="[0,0]"/>
             <dmrpp:chunk offset="4357" nBytes="16" chunkPositionInArray="[0,8]"/>

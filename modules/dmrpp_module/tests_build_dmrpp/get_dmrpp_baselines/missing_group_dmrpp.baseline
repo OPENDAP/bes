@@ -53,7 +53,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="units" type="String">
                         <Value>degrees_north</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>8</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="7937" nBytes="33" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -63,7 +63,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="units" type="String">
                         <Value>degrees_east</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>16</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="7970" nBytes="54" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -92,7 +92,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="units" type="String">
                         <Value>degrees_north</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12216" nBytes="22" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -102,7 +102,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="units" type="String">
                         <Value>degrees_east</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>8</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12238" nBytes="33" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>

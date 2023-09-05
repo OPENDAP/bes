@@ -3,7 +3,7 @@
     <Int32 name="Compressed_Data">
         <Dim size="1000"/>
         <Dim size="200"/>
-        <dmrpp:chunks compressionType="shuffle deflate" fillValue="0" byteOrder="LE">
+        <dmrpp:chunks compressionType="shuffle deflate" deflateLevel="6" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>200 200</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4016" nBytes="486" chunkPositionInArray="[0,0]"/>
             <dmrpp:chunk offset="4502" nBytes="486" chunkPositionInArray="[200,0]"/>

@@ -689,7 +689,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
         }
 
         VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
-        dc->add_chunk(byte_order, size, addr, (unsigned int)filter_mask, chunk_coords);
+        dc->add_chunk(byte_order, size, addr, filter_mask, chunk_coords);
     }
 }
 
