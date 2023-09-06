@@ -163,6 +163,8 @@ public:
     }
 
     void set_filter(const std::string &value);
+
+    const std::vector<unsigned int> & get_deflate_levels() { return deflate_levels;}
     void set_deflate_levels(const std::vector<unsigned int>& def_levels){
          for(const auto &def_level:def_levels)
             deflate_levels.push_back(def_level);

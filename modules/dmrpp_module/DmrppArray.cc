@@ -1790,6 +1790,24 @@ bool DmrppArray::read()
     this->set_dio_flag();
     Array::var_storage_info dmrpp_vs_info;
     dmrpp_vs_info.filter = this->get_filters();
+
+    for (const auto &def_lev:this->get_deflate_levels())
+        dmrpp_vs_info.deflate_levels.push_back(def_lev);
+    
+    for (const auto &chunk_dim:this->get_chunk_dimension_sizes())
+        dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
+    
+    auto chunks = this->get_immutable_chunks();
+    for (const auto &chunk:chunks) {
+        Array::var_chunk_info_t vci_t;
+        vci_t.filter_mask = chunk->get_filter_mask();
+        vci_t.chunk_buffer_size = chunk->get_size();
+
+        for (const auto &chunk_coord:chunk->get_position_in_array())
+            vci_t.chunk_coords.push_back(chunk_coord);           
+        dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+    }
+    this->set_var_storage_info(dmrpp_vs_info);
     
 
     DmrppArray *array_to_read = this;
