@@ -211,6 +211,8 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool(d_max_transfer_threads);
 
+    dmr_cache = new ObjMemCache(100, 0.2);
+
     // This and the matching cleanup function can be called many times as long as
     // they are called in balanced pairs. jhrg 9/3/20
     // TODO 10/8/21 move this into the http at the top level of the BES. That is, all
@@ -251,7 +253,18 @@ handle_exception(const string &file, int line)
         throw BESInternalFatalError("Unknown exception caught building DAP4 Data response", file, line);
     }
 
-
+/**
+ * @brief Get (maybe, if it's remote), parse, and build a DMR from a DMR++ XML file.
+ *
+ * Because this method can perform expensive transfers of fairly large files, it
+ * should be called only when needed. An improvement to the server would be to
+ * cache the DMR* (which is really a DMR++).
+ *
+ * @param container When run in the NASA Cloud, this is likely a NgapContainer; It can
+ * be any container that references a DMR++ XML file. In the NGAP case, the server will
+ * use the RemoteResources class to pull the DMR++ document into the local host.
+ * @param dmr Value-result parameter. The DMR is built from the DMR++ XML file.
+ */
 void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
 {
     string data_pathname = container->access();
@@ -302,8 +315,28 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     auto bdmr = dynamic_cast<BESDMRResponse *>(response);
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
+    string filename = dhi.container->get_real_name();
     try {
-        build_dmr_from_file(dhi.container, bdmr->get_dmr());
+
+        const DMR* cached_dmr = nullptr;
+        if (dmr_cache) {
+            cached_dmr = dynamic_cast<DMR*>(dmr_cache->get(filename));
+        }
+
+        if (cached_dmr) {
+            // copy the cached DMR into the BES response object
+            DMR *dmr = bdmr->get_dmr();
+            *dmr = *cached_dmr; // Copy the cached object
+            dmr->set_request_xml_base(bdmr->get_request_xml_base());
+        }
+        else {// Not cached (or maybe no cache)
+            build_dmr_from_file(dhi.container, bdmr->get_dmr());
+            if (dmr_cache) {
+                // Cache a copy of the DMR.
+                dmr_cache->add(new DMR(*(bdmr->get_dmr())), filename);
+            }
+        }
+
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
     }
