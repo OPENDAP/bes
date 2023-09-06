@@ -133,6 +133,10 @@ class DmrppCommon {
     std::shared_ptr<DMZ> d_dmz;
     pugi::xml_node d_xml_node;
 
+
+    unsigned long long var_storage_size = 0;
+    std::vector<unsigned int> deflate_levels;
+
 protected:
     virtual char *read_atomic(const std::string &name);
 
@@ -159,6 +163,10 @@ public:
     }
 
     void set_filter(const std::string &value);
+    void set_deflate_levels(const std::vector<unsigned int>& def_levels){
+         for(const auto &def_level:def_levels)
+            deflate_levels.push_back(def_level);
+    }
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();
@@ -281,11 +289,27 @@ public:
             unsigned long long offset,
             const std::string &position_in_array);
 
+     virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            unsigned int filter_mask,
+            const std::string &position_in_array);
+
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
             const std::string &byte_order,
             unsigned long long size,
             unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array);
+
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            unsigned int filter_mask,
             const std::vector<unsigned long long> &position_in_array);
 
     virtual unsigned long add_chunk(
@@ -302,11 +326,22 @@ public:
 
     virtual unsigned long add_chunk(
             const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            unsigned int filter_mask,
+            const std::vector<unsigned long long> &position_in_array);
+
+
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
             const std::string &fill_value,
             libdap::Type fv_type,
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
 
+    void accumlate_storage_size(unsigned long long chunk_storage_size) {var_storage_size += chunk_storage_size; }
+    unsigned long long get_storage_size() const {return var_storage_size; }
     virtual void dump(std::ostream & strm) const;
 };
 

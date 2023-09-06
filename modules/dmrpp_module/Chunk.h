@@ -82,6 +82,7 @@ private:
     std::string d_fill_value;
     unsigned long long d_size{0};
     unsigned long long d_offset{0};
+    unsigned int d_filter_mask{0};
     bool d_uses_fill_value{false};
     libdap::Type d_fill_value_type{libdap::dods_null_c};
 
@@ -124,6 +125,7 @@ protected:
     {
         d_size = bs.d_size;
         d_offset = bs.d_offset;
+        d_filter_mask = bs.d_filter_mask;
         d_data_url = bs.d_data_url;
         d_byte_order = bs.d_byte_order;
         d_fill_value = bs.d_fill_value;
@@ -204,7 +206,15 @@ public:
         set_position_in_array(pia_vec);
     }
 
-
+    Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size, unsigned long long offset,
+          unsigned int filter_mask, const std::vector<unsigned long long> &pia_vec) :
+            d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
+            d_size(size), d_offset(offset), d_filter_mask(filter_mask)  {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_vec);
+    }
     /**
      * @brief Get a chunk initialized with values, the data URl will not be set.
      *
@@ -216,6 +226,15 @@ public:
      * of unsigned ints.
      */
     Chunk(std::string order, unsigned long long size, unsigned long long offset,
+          unsigned int filter_mask, const std::vector<unsigned long long> &pia_vec) :
+            d_byte_order(std::move(order)), d_size(size), d_offset(offset), d_filter_mask(filter_mask) {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_vec);
+    }
+
+    Chunk(std::string order, unsigned long long size, unsigned long long offset,
           const std::vector<unsigned long long> &pia_vec) :
             d_byte_order(std::move(order)), d_size(size), d_offset(offset) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
@@ -223,7 +242,6 @@ public:
 #endif
         set_position_in_array(pia_vec);
     }
-
     Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long chunk_size, std::vector<unsigned long long> pia) :
             d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_size(chunk_size),
             d_uses_fill_value(true), d_fill_value_type(fv_type), d_chunk_position_in_array(std::move(pia)) {
@@ -287,6 +305,13 @@ public:
     {
         return d_offset;
     }
+
+    virtual unsigned int get_filter_mask() const
+    {
+        return d_filter_mask;
+    }
+
+   
 
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }

@@ -79,7 +79,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="_CoordinateAxisType" type="String">
                         <Value>GeoX</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12301" nBytes="25" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -98,7 +98,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="_CoordinateAxisType" type="String">
                         <Value>GeoY</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12326" nBytes="24" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -109,7 +109,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="units" type="String">
                         <Value>degrees_north</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12350" nBytes="28" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -120,7 +120,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="units" type="String">
                         <Value>degrees_east</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12378" nBytes="41" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -181,7 +181,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="_CoordinateAxisType" type="String">
                         <Value>GeoX</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12420" nBytes="43" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -200,7 +200,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="_CoordinateAxisType" type="String">
                         <Value>GeoY</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12463" nBytes="40" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -211,7 +211,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="units" type="String">
                         <Value>degrees_north</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12503" nBytes="46" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
@@ -222,7 +222,7 @@ H5.EnableCheckNameClashing=true
                     <Attribute name="units" type="String">
                         <Value>degrees_east</Value>
                     </Attribute>
-                    <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
                         <dmrpp:chunk offset="12549" nBytes="139" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
                     </dmrpp:chunks>
