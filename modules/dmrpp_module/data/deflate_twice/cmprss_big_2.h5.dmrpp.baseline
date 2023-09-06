@@ -1,10 +1,9 @@
-
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="cmprss_big_2.h5">
     <Int32 name="Compressed_Data">
         <Dim size="1000"/>
         <Dim size="200"/>
-        <dmrpp:chunks compressionType="shuffle deflate deflate" fillValue="0" byteOrder="LE">
+        <dmrpp:chunks compressionType="shuffle deflate deflate" deflateLevel="6 1" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>200 200</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4016" nBytes="143" chunkPositionInArray="[0,0]"/>
             <dmrpp:chunk offset="4159" nBytes="143" chunkPositionInArray="[200,0]"/>

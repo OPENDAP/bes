@@ -2135,10 +2135,12 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) var()->type_name().c_str()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
 
-    if (!name().empty())
+    if (!name().empty()) {
+        BESDEBUG(MODULE, prolog << "variable full path: " << FQN() <<endl);
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "name", (const xmlChar *) name().c_str()) <
             0)
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+    }
 
     // Hack job... Copied from D4Enum::print_xml_writer. jhrg 11/12/13
     if (var()->type() == dods_enum_c) {
