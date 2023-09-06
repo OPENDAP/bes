@@ -668,6 +668,11 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
     else
         d_a->intern_data(*get_eval(), *get_dds());
 
+    bool d_io_flag = d_a->get_dio_flag();
+    if (d_io_flag)
+        BESDEBUG("fonc", "d_io_flag is true"<<endl);
+    else
+        BESDEBUG("fonc", "d_io_flag is false"<<endl);
     int stax;
 
     switch (var_type) {

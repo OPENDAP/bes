@@ -1786,6 +1786,12 @@ bool DmrppArray::read()
     // does not explicitly appear in this method as it is handled by the parser.
     if (read_p()) return true;
 
+    // CHECK: the direct_chunk_io_flag should be checked before the following line.
+    this->set_dio_flag();
+    Array::var_storage_info dmrpp_vs_info;
+    dmrpp_vs_info.filter = this->get_filters();
+    
+
     DmrppArray *array_to_read = this;
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         if (is_flsa()) {
