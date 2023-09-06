@@ -296,6 +296,58 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
 }
 
 /**
+ * @brief Get (maybe, if it's remote), parse, and build a DMR from a DMR++ XML file.
+ *
+ * @param container When run in the NASA Cloud, this is likely a NgapContainer; It can
+ * be any container that references a DMR++ XML file. In the NGAP case, the server will
+ * use the RemoteResources class to pull the DMR++ document into the local host.
+ * @param request_xml_base The base URL for the request. Used when pulling the DMR++
+ * from a cache.
+ * @param dmr Value-result parameter. The DMR either built from the DMR++ XML file or
+ * copied from the object cache.
+ */
+void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *container,
+                                                            const string &request_xml_base,
+                                                            DMR *dmr)
+{
+    try {
+        string filename = container->get_real_name();
+        DMR* cached_dmr = nullptr;
+        if (dmr_cache && (cached_dmr = dynamic_cast<DMR*>(dmr_cache->get(filename)))) {
+            // copy the cached DMR into the BES response object
+            *dmr = *cached_dmr; // Copy the cached object
+            dmr->set_request_xml_base(request_xml_base);
+        }
+        else {  // Not cached (or maybe no cache)
+            string data_pathname = container->access();
+
+            dmr->set_filename(data_pathname);
+            dmr->set_name(name_path(data_pathname));
+
+            // this shared_ptr is held by the DMRpp BaseType instances
+            dmz = shared_ptr<DMZ>(new DMZ);
+
+            // Enable adding the DMZ to the BaseTypes built by the factory
+            DmrppTypeFactory factory(dmz);
+            dmr->set_factory(&factory);
+
+            dmz->parse_xml_doc(data_pathname);
+            dmz->build_thin_dmr(dmr);
+
+            dmz->load_all_attributes(dmr);
+
+            if (dmr_cache) {
+                // Cache a copy of the DMR.
+                dmr_cache->add(new DMR(*dmr), filename);
+            }
+        }
+    }
+    catch (...) {
+        handle_exception(__FILE__, __LINE__);
+    }
+}
+
+/**
  * Given a request for the DMR response, look at the data source and
  * parse it's DMR/XML information. If the data source is a .dmr or .xml
  * file, assume that's all the data source contains and that the plain
@@ -309,33 +361,11 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
  */
 bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 {
-    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-
-    auto response = dhi.response_handler->get_response_object();
-    auto bdmr = dynamic_cast<BESDMRResponse *>(response);
+    auto bdmr = dynamic_cast<BESDMRResponse *>(dhi.response_handler->get_response_object());
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
-    string filename = dhi.container->get_real_name();
     try {
-
-        const DMR* cached_dmr = nullptr;
-        if (dmr_cache) {
-            cached_dmr = dynamic_cast<DMR*>(dmr_cache->get(filename));
-        }
-
-        if (cached_dmr) {
-            // copy the cached DMR into the BES response object
-            DMR *dmr = bdmr->get_dmr();
-            *dmr = *cached_dmr; // Copy the cached object
-            dmr->set_request_xml_base(bdmr->get_request_xml_base());
-        }
-        else {// Not cached (or maybe no cache)
-            build_dmr_from_file(dhi.container, bdmr->get_dmr());
-            if (dmr_cache) {
-                // Cache a copy of the DMR.
-                dmr_cache->add(new DMR(*(bdmr->get_dmr())), filename);
-            }
-        }
+        get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_request_xml_base(), bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -343,8 +373,6 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     catch (...) {
         handle_exception(__FILE__, __LINE__);
     }
-
-    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return true;
 }
@@ -361,17 +389,11 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 #endif
 
-    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-
-    BESResponseObject *response = dhi.response_handler->get_response_object();
-    auto *bdmr = dynamic_cast<BESDMRResponse *>(response);
+    auto bdmr = dynamic_cast<BESDMRResponse *>(dhi.response_handler->get_response_object());
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
     try {
-        build_dmr_from_file(dhi.container, bdmr->get_dmr());
-
-        // We don't need all the attributes, so use the lazy-load feature implemented
-        // using overloads of the BaseType::set_send_p() method.
+        get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_request_xml_base(), bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -379,8 +401,6 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     catch (...) {
         handle_exception(__FILE__, __LINE__);
     }
-
-    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return true;
 }

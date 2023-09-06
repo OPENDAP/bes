@@ -59,6 +59,8 @@ private:
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
+    static void get_dmrpp_from_container_or_cache(BESContainer *container, const std::string &request_xml_base,
+                                                  libdap::DMR *dmr);
     template <class T> static void get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds);
 
     // Allocate a new DMZ for each request? This should work, but may result in more
