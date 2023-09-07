@@ -27,16 +27,32 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 #
 # Set UseParallelTransfers to no or false to use serial transfers of data
 
-# DMRPP.UseParallelTransfers=yes
+# DMRPP.UseParallelTransfers = yes
 
 # Set maxParallelTransfers to N where N is the number of parallel data
 # transfers at any given time. These will be run using the libcurl 'multi'
 # API which uses a round-robin scheme. Eight is the default; more often
 # reduces throughput
 
-# DMRPP.MaxParallelTransfers=8
+# DMRPP.MaxParallelTransfers = 8
 
-CredentialsManager.config=/etc/bes/credentials.conf
+# These three keys control the object memory caches.
+#
+# The DMR++ handler uas three caches for recently computed/used binary objects;
+# one for the DMR++ objects themselves and one each for the DDS and DAS objects.
+# The values shown here  are the compiled-in default values. Uncomment and change
+# them to override those values. The first key turns the cache on or off. The
+# second key controls how many objects each of the caches holds. The third key
+# controls the fraction of a full cache is removed when the cache fills up. The
+# cache uses a first in, first out purge strategy.
+
+# DMRPP.UseObjectCache = yes
+# DMRPP.ObjectCacheEntries = 100
+# DMRPP.ObjectCachePurgeLevel = 0.2
+
+# NB: Defining this causes the DMR++ module to try and load this file. It
+# will fail if the file does not exist.
+# CredentialsManager.config=/etc/bes/credentials.conf
 
 Http.cache.effective.urls=true
 Http.cache.effective.urls.skip.regex.pattern=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$

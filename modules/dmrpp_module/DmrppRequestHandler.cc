@@ -63,12 +63,9 @@
 
 #include "DapUtils.h"
 
-
-#if 1
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
-#endif
 
 #include "DmrppNames.h"
 #include "DmrppTypeFactory.h"
@@ -87,20 +84,25 @@ using namespace std;
 #endif
 
 #define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
+#define dmrpp_cache "dmrpp:cache"
 
 #define USE_DMZ_TO_MANAGE_XML 1
 
 namespace dmrpp {
 
-ObjMemCache *DmrppRequestHandler::das_cache = nullptr;
-ObjMemCache *DmrppRequestHandler::dds_cache = nullptr;
-ObjMemCache *DmrppRequestHandler::dmr_cache = nullptr;
+unique_ptr<ObjMemCache> DmrppRequestHandler::das_cache{nullptr};
+unique_ptr<ObjMemCache> DmrppRequestHandler::dds_cache{nullptr};
+unique_ptr<ObjMemCache> DmrppRequestHandler::dmr_cache{nullptr};
 
 shared_ptr<DMZ> DmrppRequestHandler::dmz(nullptr);
 
 // This is used to maintain a pool of reusable curl handles that enable connection
 // reuse. jhrg
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = nullptr;
+
+bool DmrppRequestHandler::d_use_object_cache = true;
+unsigned int DmrppRequestHandler::d_object_cache_entries = 100;
+float DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
 bool DmrppRequestHandler::d_use_transfer_threads = true;
 unsigned int DmrppRequestHandler::d_max_transfer_threads = 8;
@@ -204,14 +206,13 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
         ERROR_LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
 #endif
 
-#if 0
-    CredentialsManager::theCM()->load_credentials();
-#endif
-
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool(d_max_transfer_threads);
 
-    dmr_cache = new ObjMemCache(100, 0.2);
+    // dmr_cache = new ObjMemCache(100, 0.2);
+    dmr_cache = make_unique<ObjMemCache>(100, 0.2);
+    dds_cache = make_unique<ObjMemCache>(100, 0.2);
+    das_cache = make_unique<ObjMemCache>(100, 0.2);
 
     // This and the matching cleanup function can be called many times as long as
     // they are called in balanced pairs. jhrg 9/3/20
@@ -256,48 +257,6 @@ handle_exception(const string &file, int line)
 /**
  * @brief Get (maybe, if it's remote), parse, and build a DMR from a DMR++ XML file.
  *
- * Because this method can perform expensive transfers of fairly large files, it
- * should be called only when needed. An improvement to the server would be to
- * cache the DMR* (which is really a DMR++).
- *
- * @param container When run in the NASA Cloud, this is likely a NgapContainer; It can
- * be any container that references a DMR++ XML file. In the NGAP case, the server will
- * use the RemoteResources class to pull the DMR++ document into the local host.
- * @param dmr Value-result parameter. The DMR is built from the DMR++ XML file.
- */
-void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
-{
-    string data_pathname = container->access();
-
-    dmr->set_filename(data_pathname);
-    dmr->set_name(name_path(data_pathname));
-
-#if USE_DMZ_TO_MANAGE_XML
-    dmz = shared_ptr<DMZ>(new DMZ);
-
-    // Enable adding the DMZ to the BaseTypes built by the factory
-    DmrppTypeFactory BaseFactory(dmz);
-    dmr->set_factory(&BaseFactory);
-
-    dmz->parse_xml_doc(data_pathname);
-    dmz->build_thin_dmr(dmr);
-
-    dmz->load_all_attributes(dmr);
-#else
-    DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
-    dmr->set_factory(&BaseFactory);
-
-    DmrppParserSax2 parser;
-    ifstream in(data_pathname.c_str(), ios::in);
-    parser.intern(in, dmr);
-
-    dmr->set_factory(0);
-#endif
-}
-
-/**
- * @brief Get (maybe, if it's remote), parse, and build a DMR from a DMR++ XML file.
- *
  * @param container When run in the NASA Cloud, this is likely a NgapContainer; It can
  * be any container that references a DMR++ XML file. In the NGAP case, the server will
  * use the RemoteResources class to pull the DMR++ document into the local host.
@@ -314,11 +273,13 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
         string filename = container->get_real_name();
         DMR* cached_dmr = nullptr;
         if (dmr_cache && (cached_dmr = dynamic_cast<DMR*>(dmr_cache->get(filename)))) {
+            BESDEBUG(dmrpp_cache, prolog << "DMR Cache hit for : " << filename << endl);
             // copy the cached DMR into the BES response object
             *dmr = *cached_dmr; // Copy the cached object
             dmr->set_request_xml_base(request_xml_base);
         }
         else {  // Not cached (or maybe no cache)
+            BESDEBUG(dmrpp_cache, prolog << "DMR Cache miss for : " << filename << endl);
             string data_pathname = container->access();
 
             dmr->set_filename(data_pathname);
@@ -348,6 +309,45 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
 }
 
 /**
+ * @brief Build a DDS that is loaded with attributes
+ * @tparam T BESResponseObject specialization (limited to BESDataDDSResponse, BESDDSResponse)
+ * @param dhi The Data handler interface object
+ * @param bdds A pointer to a BESDDSResponse or BESDataDDSResponse
+ */
+template <class T>
+void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESContainer *container, T *bdds) {
+    string container_name_str = bdds->get_explicit_containers() ? container->get_symbolic_name() : "";
+
+    DDS *dds = bdds->get_dds();
+    if (!container_name_str.empty()) dds->container_name(container_name_str);
+
+    // Inserted new code here
+    string filename = container->get_real_name();
+    DDS *cached_dds = nullptr;
+    if (dds_cache && (cached_dds = dynamic_cast<DDS *>(dds_cache->get(filename)))) {
+        BESDEBUG(dmrpp_cache, prolog << "DDS Cache hit for : " << filename << endl);
+        // copy the cached DMR into the BES response object
+        *dds = *cached_dds; // Copy the cached object
+    }
+    else {
+        BESDEBUG(dmrpp_cache, prolog << "DDS Cache miss for : " << filename << endl);
+        DMR dmr;
+        get_dmrpp_from_container_or_cache(container, bdds->get_request_xml_base(), &dmr);
+
+        delete dds;                         // delete the current one;
+        dds = dmr.getDDS();                 // assign the new one.
+
+        // Stuff it into the response.
+        bdds->set_dds(dds);
+
+        // Cache it, if the cache is active.
+        if (dds_cache) {
+            dds_cache->add(new DDS(*dds), filename);
+        }
+    }
+}
+
+/**
  * Given a request for the DMR response, look at the data source and
  * parse it's DMR/XML information. If the data source is a .dmr or .xml
  * file, assume that's all the data source contains and that the plain
@@ -361,6 +361,8 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
  */
 bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 {
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+
     auto bdmr = dynamic_cast<BESDMRResponse *>(dhi.response_handler->get_response_object());
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
@@ -374,6 +376,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
         handle_exception(__FILE__, __LINE__);
     }
 
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
 }
 
@@ -389,6 +392,8 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 #endif
 
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+
     auto bdmr = dynamic_cast<BESDMRResponse *>(dhi.response_handler->get_response_object());
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
@@ -402,62 +407,29 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         handle_exception(__FILE__, __LINE__);
     }
 
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
 }
 
-/**
- * @brief Build a DDS that is loaded with attributes
- * @tparam T BESResponseObject specialization (BESDataDDSResponse, BESDDSResponse)
- * @param dhi The Data handler interface object
- * @param bdds A pointer to a BESDDSResponse or BESDataDDSResponse
- */
-template <class T>
-void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds) {
-    string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
-
-    DDS *dds = bdds->get_dds();
-    if (!container_name_str.empty()) dds->container_name(container_name_str);
-    string accessed = dhi.container->access();
-
-    // Look in memory cache, if it's initialized
-    const DDS *cached_dds_ptr = nullptr;
-    if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
-        BESDEBUG(MODULE, prolog << "DDS Cached hit for : " << accessed << endl);
-        *dds = *cached_dds_ptr;
-    }
-    else {
-        DMR dmr;
-        build_dmr_from_file(dhi.container, &dmr);
-
-        delete dds;                         // delete the current one;
-        dds = dmr.getDDS();                 // assign the new one.
-
-        // Stuff it into the response.
-        bdds->set_dds(dds);
-
-        // Cache it, if the cache is active.
-        if (dds_cache) {
-            dds_cache->add(new DDS(*dds), accessed);
-        }
-    }
-}
 
 /**
  * Produce a DAP2 Data Response (.dods) response from a DMRPP file.
  */
 bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 {
+#ifndef NDEBUG
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+#endif
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
-    auto response = dhi.response_handler->get_response_object();
-    auto bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    auto bdds = dynamic_cast<BESDataDDSResponse *>(dhi.response_handler->get_response_object());
     if (!bdds) throw BESInternalError("Cast error, expected a BESDataDDSResponse object.", __FILE__, __LINE__);
 
     try {
-        get_dds_from_dmr_or_cache<BESDataDDSResponse>(dhi, bdds);
+        get_dds_from_dmr_or_cache<BESDataDDSResponse>(dhi.container, bdds);
+
         bdds->set_constraint(dhi);
         bdds->clear_container();
     }
@@ -475,17 +447,13 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
  */
 bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
-
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
-    BESResponseObject *response = dhi.response_handler->get_response_object();
-    auto bdds = dynamic_cast<BESDDSResponse *>(response);
+    auto bdds = dynamic_cast<BESDDSResponse *>(dhi.response_handler->get_response_object());
     if (!bdds) throw BESInternalError("Cast error, expected a BESDDSResponse object.", __FILE__, __LINE__);
 
     try {
-        get_dds_from_dmr_or_cache<BESDDSResponse>(dhi, bdds);
+        get_dds_from_dmr_or_cache<BESDDSResponse>(dhi.container, bdds);
 
         bdds->set_constraint(dhi);
         bdds->clear_container();
@@ -499,40 +467,37 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 }
 
 /**
- * Produce a DAP2 DAS response from a DMRPP data set.
+ * Produce a DAP2 DAS response from a DMRPP data set. This is a little messy.
  *
  */
 bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
-    BESResponseObject *response = dhi.response_handler->get_response_object();
-    auto bdas = dynamic_cast<BESDASResponse *>(response);
+    auto bdas = dynamic_cast<BESDASResponse *>(dhi.response_handler->get_response_object());
     if (!bdas) throw BESInternalError("Cast error, expected a BESDASResponse object.", __FILE__, __LINE__);
 
     try {
-        string container_name_str = bdas->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
+        string container_name = bdas->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
 
         DAS *das = bdas->get_das();
-        if (!container_name_str.empty()) das->container_name(container_name_str);
-        string accessed = dhi.container->access();
+        if (!container_name.empty()) das->container_name(container_name);
 
+        string filename = dhi.container->get_real_name();
         // Look in memory cache (if it's initialized)
-        const DAS *cached_das_ptr = nullptr;
-        if (das_cache && (cached_das_ptr = static_cast<DAS*>(das_cache->get(accessed)))) {
+        const DAS *cached_das = nullptr;
+        if (das_cache && (cached_das = static_cast<DAS*>(das_cache->get(filename)))) {
+            BESDEBUG(dmrpp_cache, prolog << "DAS Cache hit for : " << filename << endl);
             // copy the cached DAS into the BES response object
-            *das = *cached_das_ptr;
+            *das = *cached_das;
         }
         else {
+            BESDEBUG(dmrpp_cache, prolog << "DAS Cache miss for : " << filename << endl);
             DMR dmr;
-            build_dmr_from_file(dhi.container, &dmr);
+            get_dmrpp_from_container_or_cache(dhi.container, bdas->get_request_xml_base(), &dmr);
 
             // Get a DDS from the DMR, getDDS() allocates all new objects. Use unique_ptr
             // to ensure this is deleted. jhrg 11/12/21
-            // TODO Add a getDAS() method to DMR so we don't have to go the long way?
-            //  Or not and drop the DAP2 stuff until the code is higher up the chain?
-            //  jhrg 11/12/21
             unique_ptr<DDS> dds(dmr.getDDS());
 
             dds->mark_all(true);
@@ -540,13 +505,14 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
 
             // Load the BESDASResponse DAS from the DDS
             dds->get_das(das);
-            Ancillary::read_ancillary_das(*das, accessed);
+
+            // I'm not sure that this makes much sense, but there could be a local DMR++ and
+            // it could have ancillary das info.
+            Ancillary::read_ancillary_das(*das, filename);
             
             // Add to cache if cache is active
             if (das_cache) {
-                // copy because the BES deletes the DAS held by the DHI.
-                // TODO Change the DHI to use shared_ptr objects. I think ... jhrg 11/12/21
-                das_cache->add(new DAS(*das), accessed);
+                 das_cache->add(new DAS(*das), filename);
             }
         }
 

@@ -332,11 +332,13 @@ void process_chunks_unconstrained_concurrent(
     list<future<bool>> futures;
     try {
         bool done = false;
+#if 0
         bool future_finished = true;
+#endif
         while (!done) {
 
             if(!futures.empty())
-                future_finished = get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+                /*future_finished =*/ get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
             // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
@@ -366,7 +368,9 @@ void process_chunks_unconstrained_concurrent(
                 if(futures.empty())
                     done = true;
             }
+#if 0
             future_finished = false;
+#endif
         }
     }
     catch (...) {
