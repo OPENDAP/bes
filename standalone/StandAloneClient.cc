@@ -241,7 +241,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 
 			*_strm << flush;
 
-			// Put the call to finish() here beacuse we're not sending chunked responses back
+			// Put the call to finish() here because we're not sending chunked responses back
 			// to a client over PPT. In the BESServerHandler.cc code, we must do that and hence,
 			// break up the call to finish() for the error and no-error cases.
 			status = interface->finish(status);
@@ -277,6 +277,10 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 			}
 
 			_strm->flush();
+
+            if (repeat > 1) {
+                *_strm << '\n' << "Next-Response:\n" << flush;
+            }
 		}
 	}
 }
@@ -343,13 +347,18 @@ void StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 	for (int i = 0; i < repeat; i++) {
 		istrm.clear();
 		istrm.seekg(0, ios::beg);
+
 		string cmd;
 		string line;
 		while (getline(istrm, line)) {
 			cmd += line;
 		}
 		this->executeCommand(cmd, 1);
-	}
+
+        if (repeat > 1) {
+            *_strm << '\n' << "Next-Response ***:\n" << flush;
+        }
+    }
 }
 
 /** @brief An interactive BES client that takes BES requests on the command line.
