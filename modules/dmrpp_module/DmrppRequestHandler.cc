@@ -102,7 +102,7 @@ CurlHandlePool *DmrppRequestHandler::curl_handle_pool = nullptr;
 
 bool DmrppRequestHandler::d_use_object_cache = true;
 unsigned int DmrppRequestHandler::d_object_cache_entries = 100;
-float DmrppRequestHandler::d_object_cache_purge_level = 0.2;
+double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
 bool DmrppRequestHandler::d_use_transfer_threads = true;
 unsigned int DmrppRequestHandler::d_max_transfer_threads = 8;
@@ -271,7 +271,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
 {
     try {
         string filename = container->get_real_name();
-        DMR* cached_dmr = nullptr;
+        const DMR* cached_dmr = nullptr;
         if (dmr_cache && (cached_dmr = dynamic_cast<DMR*>(dmr_cache->get(filename)))) {
             BESDEBUG(dmrpp_cache, prolog << "DMR Cache hit for : " << filename << endl);
             // copy the cached DMR into the BES response object
@@ -323,7 +323,7 @@ void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESContainer *container, T *
 
     // Inserted new code here
     string filename = container->get_real_name();
-    DDS *cached_dds = nullptr;
+    const DDS *cached_dds = nullptr;
     if (dds_cache && (cached_dds = dynamic_cast<DDS *>(dds_cache->get(filename)))) {
         BESDEBUG(dmrpp_cache, prolog << "DDS Cache hit for : " << filename << endl);
         // copy the cached DMR into the BES response object

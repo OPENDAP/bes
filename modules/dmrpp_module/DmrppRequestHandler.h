@@ -60,7 +60,7 @@ private:
 
     static bool d_use_object_cache;
     static unsigned int d_object_cache_entries;
-    static float d_object_cache_purge_level;
+    static double d_object_cache_purge_level;
 
 
     static void get_dmrpp_from_container_or_cache(BESContainer *container, const std::string &request_xml_base,
