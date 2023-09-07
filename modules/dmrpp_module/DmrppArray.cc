@@ -1786,6 +1786,17 @@ bool DmrppArray::read()
     // does not explicitly appear in this method as it is handled by the parser.
     if (read_p()) return true;
 
+    // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
+    // Direct io offset is only necessary when the direct IO operation is possible.
+    // MUST DO LATER: add other check in the future. Now we only check if this is a netCDF-4 response.
+    if (DmrppRequestHandler::is_netcdf4_response == true) {
+        auto chunks = this->get_chunks();
+        for (unsigned int i = 0; i<chunks.size();i++) {
+            if (i > 0) 
+               chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
+            BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
+        }
+    }
     // CHECK: the direct_chunk_io_flag should be checked before the following line.
     this->set_dio_flag();
     Array::var_storage_info dmrpp_vs_info;
@@ -1801,6 +1812,7 @@ bool DmrppArray::read()
     for (const auto &chunk:chunks) {
         Array::var_chunk_info_t vci_t;
         vci_t.filter_mask = chunk->get_filter_mask();
+        vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
         vci_t.chunk_buffer_size = chunk->get_size();
 
         for (const auto &chunk_coord:chunk->get_position_in_array())

@@ -119,6 +119,8 @@ bool DmrppRequestHandler::d_require_chunks = false;
 // See the comment in the header for more about this kludge. jhrg 11/9/21
 bool DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
 
+bool DmrppRequestHandler::is_netcdf4_response = false;
+
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
     bool key_found = false;
@@ -259,6 +261,7 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     dmr->set_filename(data_pathname);
     dmr->set_name(name_path(data_pathname));
 
+
 #if USE_DMZ_TO_MANAGE_XML
     dmz = shared_ptr<DMZ>(new DMZ);
 
@@ -267,7 +270,7 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     dmr->set_factory(&BaseFactory);
 
     dmz->parse_xml_doc(data_pathname);
-    dmz->build_thin_dmr(dmr);
+    dmz->build_thin_dmr(dmr,DmrppRequestHandler::is_netcdf4_response);
 
     dmz->load_all_attributes(dmr);
 #else
@@ -335,6 +338,13 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
     try {
+
+        DmrppRequestHandler::is_netcdf4_response =(dhi.data["return_command"]=="netcdf-4");
+        if (DmrppRequestHandler::is_netcdf4_response) 
+            BESDEBUG(MODULE, prolog << "netcdf-4 response" << endl);
+        else
+            BESDEBUG(MODULE, prolog << "NOT netcdf-4 response" << endl);
+        
         build_dmr_from_file(dhi.container, bdmr->get_dmr());
 
         // We don't need all the attributes, so use the lazy-load feature implemented

@@ -82,6 +82,7 @@ private:
     std::string d_fill_value;
     unsigned long long d_size{0};
     unsigned long long d_offset{0};
+    unsigned long long direct_io_offset{0};
     unsigned int d_filter_mask{0};
     bool d_uses_fill_value{false};
     libdap::Type d_fill_value_type{libdap::dods_null_c};
@@ -125,6 +126,7 @@ protected:
     {
         d_size = bs.d_size;
         d_offset = bs.d_offset;
+        direct_io_offset = bs.direct_io_offset;
         d_filter_mask = bs.d_filter_mask;
         d_data_url = bs.d_data_url;
         d_byte_order = bs.d_byte_order;
@@ -304,6 +306,15 @@ public:
     virtual unsigned long long get_offset() const
     {
         return d_offset;
+    }
+
+    virtual unsigned long long get_direct_io_offset() const
+    {
+        return direct_io_offset;
+    }
+
+    virtual void set_direct_io_offset(unsigned long long dio_offset) {
+        direct_io_offset = dio_offset;
     }
 
     virtual unsigned int get_filter_mask() const

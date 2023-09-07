@@ -206,6 +206,8 @@ public:
         return d_chunks;
     }
 
+    std::vector<std::shared_ptr<Chunk>> get_chunks() { return d_chunks; }
+
     /// @brief Use this when the number of chunks is needed
     /// @return the number of Chunk objects for this variable
     virtual size_t get_chunks_size() const { return d_chunks.size(); }

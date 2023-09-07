@@ -673,6 +673,27 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
         BESDEBUG("fonc", "d_io_flag is true"<<endl);
     else
         BESDEBUG("fonc", "d_io_flag is false"<<endl);
+    
+    if (d_io_flag) {
+        Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+        for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
+            BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
+
+        for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
+            BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
+
+        for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
+            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
+            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
+            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
+            
+            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
+            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
+                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
+        }
+ 
+    }
+    
     int stax;
 
     switch (var_type) {
