@@ -84,6 +84,7 @@ public:
     ~StandAloneClient();
 
     void setOutput(std::ostream *strm, bool created);
+    [[nodiscard]] std::ostream &getOutput() const { return *_strm; }
 
     void executeClientCommand(const std::string &cmd);
 

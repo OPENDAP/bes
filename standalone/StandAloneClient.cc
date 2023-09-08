@@ -278,7 +278,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 
 			_strm->flush();
 
-            if (repeat > 1) {
+            if (repeat > 1 && i < repeat - 1) {
                 *_strm << '\n' << "Next-Response:\n" << flush;
             }
 		}
@@ -353,10 +353,11 @@ void StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 		while (getline(istrm, line)) {
 			cmd += line;
 		}
-		this->executeCommand(cmd, 1);
 
-        if (repeat > 1) {
-            *_strm << '\n' << "Next-Response ***:\n" << flush;
+        executeCommand(cmd, 1);
+
+        if (repeat > 1 && i < repeat - 1) {
+            *_strm << '\n' << "Next-Response:\n" << flush;
         }
     }
 }
@@ -387,7 +388,7 @@ void StandAloneClient::interact()
 	while (!done) {
 		string message;
 		size_t len = this->readLine(message);
-		if ( /*len == -1 || */message == "exit" || message == "exit;") {
+		if (message == "exit" || message == "exit;") {
 			done = true;
 		}
 		else if (message == "help" || message == "help;" || message == "?") {
@@ -423,7 +424,7 @@ void StandAloneClient::interact()
 size_t StandAloneClient::readLine(string & msg)
 {
 	size_t len = 0;
-	char *buf = (char *) nullptr;
+	char *buf = nullptr;
 	buf = ::readline("BESClient> ");
 	if (buf && *buf) {
 		len = strlen(buf);
@@ -432,7 +433,7 @@ size_t StandAloneClient::readLine(string & msg)
 #endif
 		if (len > SIZE_COMMUNICATION_BUFFER) {
 			cerr << __FILE__ << __LINE__ <<
-			": incoming data buffer exceeds maximum capacity with lenght " << len << endl;
+			": incoming data buffer exceeds maximum capacity with length " << len << endl;
 			exit(1);
 		}
 		else {
@@ -449,10 +450,12 @@ size_t StandAloneClient::readLine(string & msg)
 			len = -1;
 		}
 	}
+
 	if (buf) {
 		free(buf);
-		buf = (char *) nullptr;
+		buf = nullptr;
 	}
+
 	return len;
 }
 
