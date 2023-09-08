@@ -164,8 +164,8 @@ public:
 
     void set_filter(const std::string &value);
 
-    const std::vector<unsigned int> & get_deflate_levels() { return deflate_levels;}
-    void set_deflate_levels(const std::vector<unsigned int>& def_levels){
+    const std::vector<unsigned int> & get_deflate_levels() const { return deflate_levels;}
+    void set_deflate_levels(const std::vector<unsigned int>& def_levels) {
          for(const auto &def_level:def_levels)
             deflate_levels.push_back(def_level);
     }
@@ -206,7 +206,7 @@ public:
         return d_chunks;
     }
 
-    std::vector<std::shared_ptr<Chunk>> get_chunks() { return d_chunks; }
+    std::vector<std::shared_ptr<Chunk>> get_chunks() const { return d_chunks; }
 
     /// @brief Use this when the number of chunks is needed
     /// @return the number of Chunk objects for this variable
