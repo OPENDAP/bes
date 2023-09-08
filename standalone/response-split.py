@@ -22,7 +22,7 @@ def process_input(f, args):
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Read from a besstandalone response file and separate different "
+    parser = argparse.ArgumentParser(description="Read from a besstandalone 'response file' and separate different "
                                                  "responses using the 'Next-Response:' delimiter. Each response is "
                                                  "stored in a separate file so that getdap/4 can be used to parse "
                                                  "the response for testing.")

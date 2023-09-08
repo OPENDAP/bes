@@ -26,6 +26,13 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
+# This installs the script
+noinst_SCRIPTS = response-split.py
+
+# This byte-compiles the script and installs the result in lib/python-3.9.
+# Since this code cannot function as a library, I'm going to leave it out.
+# python_PYTHON = response-split.py
+
 bin_PROGRAMS = besstandalone
 
 besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \

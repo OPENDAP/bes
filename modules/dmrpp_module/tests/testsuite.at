@@ -4,6 +4,8 @@ AT_INIT([bes/modules/dmrpp_module/tests testsuite])
 
 m4_include([../../common/handler_tests_macros.m4])
 
+m4_include([multi_input_tests.m4])
+
 dnl Using the file:/... URLs
 AT_BESCMD_RESPONSE_TEST([contiguous/t_int_scalar.h5.dmr])
 AT_BESCMD_RESPONSE_TEST([contiguous/t_int_scalar.h5.das])
@@ -334,3 +336,12 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_compact.h5.dmrpp.dap
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cont.h5.dmrpp.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cstr.h5.dmrpp.dap])
 
+#############################################################################
+# multi input tests
+AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_oneD.h5.dmr], repeat, xpass)
+
+AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_fourD.h5.2.dmr], repeat, xpass)
+AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_fourD.h5.2.dds], repeat, xpass)
+AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_fourD.h5.2.das], repeat, xpass)
+
+# AT_BINARY_DAP4_MULTI_RESPONSE_TEST([chunked/chunked_oneD.h5.dap], repeat, xpass)
