@@ -3,9 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-AM_CPPFLAGS = -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/cmdln -I$(top_srcdir)/dispatch
-
-#$(XML2_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/cmdln -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
