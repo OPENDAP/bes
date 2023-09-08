@@ -278,8 +278,8 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 
 			_strm->flush();
 
-            if (repeat > 1) {
-                *_strm << '\n' << "Next-Response:\n" << flush;
+            if (repeat > 1 && i < repeat - 1) {
+                *_strm << "\nNext-Response:\n" << flush;
             }
 		}
 	}
@@ -355,8 +355,8 @@ void StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 		}
 		this->executeCommand(cmd, 1);
 
-        if (repeat > 1) {
-            *_strm << '\n' << "Next-Response ***:\n" << flush;
+        if (repeat > 1 && i < repeat - 1) {
+            *_strm << "\nNext-Response:\n" << flush;
         }
     }
 }
