@@ -301,39 +301,40 @@ string
 get_value_as_string(hid_t h5_type_id, vector<char> &value)
 {
     H5T_class_t class_type = H5Tget_class(h5_type_id);
-    int sign;
     switch (class_type) {
-        case H5T_INTEGER:
+        case H5T_INTEGER: {
+            int sign;
             sign = H5Tget_sign(h5_type_id);
             switch (H5Tget_size(h5_type_id)) {
                 case 1:
                     if (sign == H5T_SGN_2)
-                        return to_string(*(int8_t *)(value.data()));
+                        return to_string(*(int8_t *) (value.data()));
                     else
-                        return to_string(*(uint8_t *)(value.data()));
-                    
+                        return to_string(*(uint8_t *) (value.data()));
+
                 case 2:
                     if (sign == H5T_SGN_2)
-                        return to_string(*(int16_t *)(value.data()));
+                        return to_string(*(int16_t *) (value.data()));
                     else
-                        return to_string(*(uint16_t *)(value.data()));
-                    
+                        return to_string(*(uint16_t *) (value.data()));
+
                 case 4:
                     if (sign == H5T_SGN_2)
-                        return to_string(*(int32_t *)(value.data()));
+                        return to_string(*(int32_t *) (value.data()));
                     else
-                        return to_string(*(uint32_t *)(value.data()));
-                    
+                        return to_string(*(uint32_t *) (value.data()));
+
                 case 8:
                     if (sign == H5T_SGN_2)
-                        return to_string(*(int64_t *)(value.data()));
+                        return to_string(*(int64_t *) (value.data()));
                     else
-                        return to_string(*(uint64_t *)(value.data()));
-                    
+                        return to_string(*(uint64_t *) (value.data()));
+
                 default:
                     throw BESInternalError("Unable extract integer fill value.", __FILE__, __LINE__);
             }
-            
+            break;
+        }
 
         case H5T_FLOAT: {
             ostringstream oss;
@@ -349,7 +350,12 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                 default:
                     throw BESInternalError("Unable extract float fill value.", __FILE__, __LINE__);
             }
+            break;
         }
+
+        // @TODO Move this logic for unsupported types into the get_chunks_for_all_variables() function.
+        //   But then what? What should be happening for these unsupported types down here where we map an
+        //   hdf5 fillValue into a string?
 
         case H5T_STRING: {
             // TODO: for variable length string KY 2022-12-22
@@ -361,27 +367,35 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                          "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so "
                          "the storage penalty is minimal.");
 
-                throw UnsupportedTypeException(msg);
+                string str_fv(value.begin(),value.end());
+                return str_fv;
+                //throw UnsupportedTypeException(msg);
             }
             else {
                 string str_fv(value.begin(),value.end());
                 return str_fv;
             }
+            break;
         }
         case H5T_ARRAY: {
             string msg("UnsupportedTypeException: Your data granule contains an H5T_ARRAY "
                        "which is not yet supported by the dmr++ creation machinery.");
-            throw UnsupportedTypeException(msg);
+            string str_fv(value.begin(),value.end());
+            return str_fv;
+            //throw UnsupportedTypeException(msg);
         }
         case H5T_COMPOUND: {
             string msg("UnsupportedTypeException: Your data granule contains a variable with type H5T_COMPOUND  "
                        "which is not yet supported by the dmr++ creation machinery.");
-            throw UnsupportedTypeException(msg);
+            string str_fv(value.begin(),value.end());
+            return str_fv;
+            //throw UnsupportedTypeException(msg);
         }
 
         case H5T_REFERENCE:
-        default:
+        default: {
             throw BESInternalError("Unable extract fill value from HDF5 file.", __FILE__, __LINE__);
+        }
     }
 }
 
@@ -1033,21 +1047,22 @@ string get_type_decl(BaseType *btp){
 }
 
 /**
- *
- * @param dataset_id
- * @param btp
+ * @brief Examines the hdf5 dataset, dataset_id, and returns true if the dataset is encoded as an unsupported type.
+ * @param dataset_id The dataset to examine
+ * @param btp The associated libdap::BaseType variable for this hdf5 dataset.
+ * @param msg If an unsupported type is encountered a message about it will be returned in the msg return value
+ * parameter.
+ * @return True if the type of dataset_id is unsupported, false otherwise.
  */
-bool check_for_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
+bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     VERBOSE(cerr << prolog << "BEGIN " << get_type_decl(btp) << endl);
 
-    bool unsupported = false;
+    bool is_unsupported = false;
     hid_t h5_type_id = H5Dget_type(dataset_id);
     H5T_class_t class_type = H5Tget_class(h5_type_id);
 
     // @TODO Should we check to see if this is actually an array type: btp->type() == dods_array_c;
-    //   I'm not sure if we need to perform this check for atomic unsupported types...
-
-    int sign;
+    //   I'm not sure if we need to perform this check for atomic is_unsupported types...
     switch (class_type) {
         case H5T_STRING: {
             if (H5Tis_variable_str(h5_type_id)) {
@@ -1061,7 +1076,7 @@ bool check_for_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
                 msgs << "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so ";
                 msgs << "the storage penalty is minimal.";
                 msg = msgs.str();
-                unsupported = true;
+                is_unsupported = true;
             }
             break;
         }
@@ -1072,7 +1087,7 @@ bool check_for_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
             msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of H5T_ARRAY.";
             msgs << "This is not yet supported by the dmr++ creation machinery.";
             msg = msgs.str();
-            unsupported = true;
+            is_unsupported = true;
             break;
         }
         case H5T_COMPOUND: {
@@ -1082,15 +1097,14 @@ bool check_for_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
             msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of H5T_COMPOUND.";
             msgs << "This is not yet supported by the dmr++ creation machinery.";
             msg = msgs.str();
-            unsupported = true;
+            is_unsupported = true;
             break;
         }
 
         default:
             break;
     }
-    return unsupported;
-
+    return is_unsupported;
 }
 
 /**
@@ -1198,8 +1212,13 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
         try {
             string msg;
-            if(check_for_unsupported_type(dataset, btp, msg)){
-                // @TODO Whut do here? Exception? elide var? Demote dataset/var to Attritbute?
+            if(is_unsupported_type(dataset, btp, msg)){
+                // @TODO What should really happen in this case?
+                //   - Throw an exception?
+                //   - Elide the variable from the dmr++?
+                //   - Demote dataset/var to Attribute?
+                //   - Mark the variable as "unsupported" so that it's metadata are transmitted but
+                //     it's data cannot be read.
                 throw UnsupportedTypeException(msg);
             }
 
