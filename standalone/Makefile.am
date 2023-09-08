@@ -29,4 +29,4 @@ besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
     $(top_srcdir)/cmdln/CmdTranslation.h
 
 besstandalone_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la \
-    $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS)
+    $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
