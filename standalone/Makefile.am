@@ -25,8 +25,9 @@ noinst_SCRIPTS = response-split.py
 bin_PROGRAMS = besstandalone
 
 besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
-    StandAloneApp.h StandAloneClient.h $(top_srcdir)/cmdln/CmdTranslation.cc \
-    $(top_srcdir)/cmdln/CmdTranslation.h
+    StandAloneApp.h StandAloneClient.h
 
-besstandalone_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la \
+# This depends on building in bes/cmdln first. It's not a good way to write
+# teh Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
+besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
     $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
