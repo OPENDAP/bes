@@ -354,6 +354,8 @@ void StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 			cmd += line;
 		}
 
+        this->executeCommand(cmd, 1);
+        
         if (repeat > 1 && i < repeat - 1) {
             *_strm << "\nNext-Response:\n" << flush;
         }
