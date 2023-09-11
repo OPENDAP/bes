@@ -73,7 +73,7 @@
 #define AT_EXIT(x)
 #endif
 
-/// If SYMETRIC_ADD_RESPONSES is defined and a true value, then add_responses()
+/// If SYMMETRIC_ADD_RESPONSES is defined and a true value, then add_responses()
 /// will add all of DDS, DAS and DMR when called with _either_ the DDS or DMR
 /// objects. If it is not defined (or false), add_responses() called with a DDS
 /// will add only the DDS and DAS and add_responses() called with a DMR will add
@@ -82,7 +82,7 @@
 /// There are slight differences in the DAS objects build by the DMR and DDS,
 /// especially when the underlying dataset contains types that can be encoded
 /// in the DMR (DAP4) but not the DDS (DAP2). jhrg 3/20/18
-#undef SYMETRIC_ADD_RESPONSES
+#undef SYMMETRIC_ADD_RESPONSES
 
 #define prolog std::string("GlobalMetadataStore::").append(__func__).append("() - ")
 
@@ -640,7 +640,7 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
  * @brief Add the DAP2 metadata responses using a DDS
  *
  * This method adds only the DDS and DAS unless the code was compiled with
- * the symbol SYMETRIC_ADD_RESPONSES defined.
+ * the symbol SYMMETRIC_ADD_RESPONSES defined.
  *
  * @param name The granule name or identifier
  * @param dds A DDS built from the granule
@@ -664,14 +664,14 @@ GlobalMetadataStore::add_responses(DDS *dds, const string &name)
     StreamDAS write_the_das_response(dds);
     bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
 
-#if SYMETRIC_ADD_RESPONSES
+#if SYMMETRIC_ADD_RESPONSES
     StreamDMR write_the_dmr_response(dds);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
 #endif
 
     write_ledger(); // write the index line
 
-#if SYMETRIC_ADD_RESPONSES
+#if SYMMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
 #else
     return (stored_dds && stored_das);
@@ -682,7 +682,7 @@ GlobalMetadataStore::add_responses(DDS *dds, const string &name)
  * @brief Add the DAP4 metadata responses using a DMR
  *
  * This method adds only the DMR unless the code was compiled with
- * the symbol SYMETRIC_ADD_RESPONSES defined.
+ * the symbol SYMMETRIC_ADD_RESPONSES defined.
  *
  * @param name The granule name or identifier
  * @param dmr A DMR built from the granule
@@ -700,7 +700,7 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
     //
     // The helper() also updates the ledger string.
-#if SYMETRIC_ADD_RESPONSES
+#if SYMMETRIC_ADD_RESPONSES
     StreamDDS write_the_dds_response(dmr);
     bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
 
@@ -713,7 +713,7 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 
     write_ledger(); // write the index line
 
-#if SYMETRIC_ADD_RESPONSES
+#if SYMMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
 #else
     return(stored_dmr /* && stored_dmrpp */);
@@ -1193,7 +1193,7 @@ GlobalMetadataStore::remove_responses(const string &name)
 
      write_ledger(); // write the index line
 
-#if SYMETRIC_ADD_RESPONSES
+#if SYMMETRIC_ADD_RESPONSES
      return  (removed_dds && removed_das && removed_dmr);
 #else
      return  (removed_dds || removed_das || removed_dmr || removed_dmrpp);

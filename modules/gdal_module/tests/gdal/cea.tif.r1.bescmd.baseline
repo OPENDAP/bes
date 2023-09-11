@@ -7,6 +7,8 @@ Dataset {
         Float64 easting[easting = 514];
     } band_1;
 } cea.tif;
+
+Next-Response:
 Dataset {
     Grid {
       Array:
@@ -16,6 +18,8 @@ Dataset {
         Float64 easting[easting = 514];
     } band_1;
 } cea.tif;
+
+Next-Response:
 Dataset {
     Grid {
       Array:
