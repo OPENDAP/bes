@@ -293,13 +293,13 @@ static void throw_access_error(const string &pathname, long error_number)
     switch(error_number) {
         case ENOENT:
         case ENOTDIR: {
-            string message = string("Failed to locate '").append(pathname).append("'");
+            string message = string("Failed to locate '").append(pathname).append("'\n");
             INFO_LOG(message);
             throw BESNotFoundError(message, __FILE__, __LINE__);
         }
 
         default: {
-            string message = string("Not allowed to access '").append(pathname).append("'");
+            string message = string("Not allowed to access '").append(pathname).append("'\n");
             INFO_LOG(message);
             throw BESForbiddenError(message, __FILE__, __LINE__);
         }
