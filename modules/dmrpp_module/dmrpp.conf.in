@@ -50,8 +50,11 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 # DMRPP.ObjectCacheEntries = 100
 # DMRPP.ObjectCachePurgeLevel = 0.2
 
-# NB: Defining this causes the DMR++ module to try and load this file. It
-# will fail if the file does not exist.
+# NB: Providing/Defining CredentialsManager.config will cause the CredentialsManager
+# to locate and read from that file. If the file does not exist, or if it cannot be
+# read from, the CredentialsManager will write a message to the ErrorLog and it will
+# not attempt again until the service is restarted. Saying "It Will Fail" if the file
+# doesn't exist makes it sound like the server will not start, which is not the case.
 # CredentialsManager.config=/etc/bes/credentials.conf
 
 Http.cache.effective.urls=true
