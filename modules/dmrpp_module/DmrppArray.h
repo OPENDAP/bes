@@ -139,6 +139,8 @@ private:
             std::shared_ptr<Chunk> chunk,
             const vector<unsigned long long> &constrained_array_shape);
 
+    bool use_direct_io_opt();
+
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v) :
             libdap::Array(n, v, true /*is dap4*/), DmrppCommon()

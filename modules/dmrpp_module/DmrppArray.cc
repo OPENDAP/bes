@@ -43,6 +43,7 @@
 #include <libdap/D4Maps.h>
 #include <libdap/D4Group.h>
 #include <libdap/Byte.h>
+#include <libdap/util.h>
 
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
@@ -1789,16 +1790,40 @@ bool DmrppArray::read()
     // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
     // Direct io offset is only necessary when the direct IO operation is possible.
     // MUST DO LATER: add other check in the future. Now we only check if this is a netCDF-4 response.
-    if (DmrppRequestHandler::is_netcdf4_response == true) {
+    //if (DmrppRequestHandler::is_netcdf4_response == true) {
+    if (this->use_direct_io_opt()) { 
+        this->set_dio_flag();
         auto chunks = this->get_chunks();
         for (unsigned int i = 0; i<chunks.size();i++) {
             if (i > 0) 
                chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
             BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
         }
+        Array::var_storage_info dmrpp_vs_info;
+        dmrpp_vs_info.filter = this->get_filters();
+    
+        for (const auto &def_lev:this->get_deflate_levels())
+            dmrpp_vs_info.deflate_levels.push_back(def_lev);
+        
+        for (const auto &chunk_dim:this->get_chunk_dimension_sizes())
+            dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
+        
+        auto im_chunks = this->get_immutable_chunks();
+        for (const auto &chunk:im_chunks) {
+            Array::var_chunk_info_t vci_t;
+            vci_t.filter_mask = chunk->get_filter_mask();
+            vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
+            vci_t.chunk_buffer_size = chunk->get_size();
+    
+            for (const auto &chunk_coord:chunk->get_position_in_array())
+                vci_t.chunk_coords.push_back(chunk_coord);           
+            dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+        }
+        this->set_var_storage_info(dmrpp_vs_info);
     }
-    // CHECK: the direct_chunk_io_flag should be checked before the following line.
-    this->set_dio_flag();
+    
+
+#if 0
     Array::var_storage_info dmrpp_vs_info;
     dmrpp_vs_info.filter = this->get_filters();
 
@@ -1820,6 +1845,7 @@ bool DmrppArray::read()
         dmrpp_vs_info.var_chunk_info.push_back(vci_t);
     }
     this->set_var_storage_info(dmrpp_vs_info);
+#endif
     
 
     DmrppArray *array_to_read = this;
@@ -2342,10 +2368,73 @@ unsigned int DmrppArray::buf2val(void **val){
     return Vector::buf2val(val);
 
 
-
-
-
 }
+
+bool DmrppArray::use_direct_io_opt() {
+
+    bool ret_value = false;
+    bool is_netcdf4_response = false;
+    if (DmrppRequestHandler::is_netcdf4_response == true) 
+        is_netcdf4_response = true;
+
+    bool is_integer_le_float = false;
+
+    if (is_netcdf4_response && this->is_filters_empty() == false) {
+        Type t = this->var()->type();
+        if (libdap::is_simple_type(t) && t != dods_str_c && t != dods_url_c && t!= dods_enum_c && t!=dods_opaque_c) {
+
+            is_integer_le_float = true;
+            if(is_integer_type(t) && this->get_byte_order() =="BE")
+                is_integer_le_float = false;
+
+        }
+    }
+
+    bool no_constraint = false;
+
+    // Check if it requires a subset of this variable.
+    if (is_integer_le_float) {
+        no_constraint = true;
+        if (this->is_projected())
+            no_constraint = false;
+    }
+
+    bool has_deflate_filter = false;
+
+    // Check if having the deflate filters.
+    if (no_constraint) {
+        string filters_string = this->get_filters();
+        if (filters_string.find("deflate")!=string::npos)
+            has_deflate_filter = true;
+    }
+
+    bool is_data_all_fvalues = false;
+    // This is the final check for a rare case: the variable data just contains fillvalues.
+    // The safest way to figure out this corner case is to check if the chunk size for every chunk is 0. 
+    // If the chunk size for every chunk is 0 when the deflate filter is used, we cannot handle this with direct IO.
+    // However, if some chunks are filled with filled values when a compression filter is applied, a chunk size
+    // can be 0 only if the whole var data is filled with the fill value. So we don't need to loop through every chunk,
+    // we just need to find the first chunk that has a 0 chunk size. 
+    if (has_deflate_filter && this->get_uses_fill_value()) {
+
+        bool has_zero_chunk_size = true;
+        for (const auto &chunk: this->get_immutable_chunks()){
+            if (chunk->get_size() != 0) {
+
+                BESDEBUG(MODULE, prolog << "chunk size is: " << chunk->get_size() << endl);
+                has_zero_chunk_size = false;
+                break;
+            }
+        }
+        if (has_zero_chunk_size)
+            is_data_all_fvalues = true;
+    }
+
+    if (has_deflate_filter && !is_data_all_fvalues)
+        ret_value = true;
+    
+    return ret_value;
+} 
 
 
 } // namespace dmrpp
