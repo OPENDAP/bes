@@ -2415,20 +2415,8 @@ bool DmrppArray::use_direct_io_opt() {
     // However, if some chunks are filled with filled values when a compression filter is applied, a chunk size
     // can be 0 only if the whole var data is filled with the fill value. So we don't need to loop through every chunk,
     // we just need to find the first chunk that has a 0 chunk size. 
-    if (has_deflate_filter && this->get_uses_fill_value()) {
-
-        bool has_zero_chunk_size = true;
-        for (const auto &chunk: this->get_immutable_chunks()){
-            if (chunk->get_size() != 0) {
-
-                BESDEBUG(MODULE, prolog << "chunk size is: " << chunk->get_size() << endl);
-                has_zero_chunk_size = false;
-                break;
-            }
-        }
-        if (has_zero_chunk_size)
+    if (has_deflate_filter && this->get_uses_fill_value() && this->get_storage_size() == 0) 
             is_data_all_fvalues = true;
-    }
 
     if (has_deflate_filter && !is_data_all_fvalues)
         ret_value = true;
