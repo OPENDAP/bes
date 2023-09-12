@@ -1,0 +1,40 @@
+netcdf test {
+dimensions:
+	dim1 = 6 ;
+	dim2 = 4 ;
+variables:
+	int dset(dim1, dim2) ;
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.configuration = "\n",
+			"# TheBESKeys::get_as_config()\n",
+			"AllowedHosts=^https?:\\/\\/\n",
+			"BES.Catalog.catalog.FollowSymLinks=Yes\n",
+			"BES.Catalog.catalog.RootDirectory=.\n",
+			"BES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\n",
+			"BES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\n",
+			"BES.Data.RootDirectory=/dev/null\n",
+			"BES.LogName=./bes.log\n",
+			"BES.UncompressCache.dir=/tmp/hyrax_ux\n",
+			"BES.UncompressCache.prefix=ux_\n",
+			"BES.UncompressCache.size=500\n",
+			"BES.module.cmd=/Users/myang6/work/opendap/hyrax-1159/bes/xmlcommand/.libs/libdap_xml_module.so\n",
+			"BES.module.dap=/Users/myang6/work/opendap/hyrax-1159/bes/dap/.libs/libdap_module.so\n",
+			"BES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1159/bes/modules/dmrpp_module/.libs/libdmrpp_module.so\n",
+			"BES.module.fonc=/Users/myang6/work/opendap/hyrax-1159/bes/modules/fileout_netcdf/.libs/libfonc_module.so\n",
+			"BES.module.h5=/Users/myang6/work/opendap/hyrax-1159/bes/modules/hdf5_handler/.libs/libhdf5_module.so\n",
+			"BES.module.nc=/Users/myang6/work/opendap/hyrax-1159/bes/modules/netcdf_handler/.libs/libnc_module.so\n",
+			"BES.modules=dap,cmd,h5,dmrpp,nc,fonc\n",
+			"FONc.ClassicModel=false\n",
+			"FONc.NoGlobalAttrs=true\n",
+			"H5.EnableCF=false\n",
+			"H5.EnableCheckNameClashing=true\n",
+			"" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.ZRKJDRiJ -f ./Two_chunks_deflate.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.fnRZegBE -u data/Two_chunks_deflate.h5 -M" ;
+		:history = "removed date-timex Two_chunks_deflate.h5.dmrpp\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"Two_chunks_deflate.h5.dmrpp\"}]}]" ;
+}
