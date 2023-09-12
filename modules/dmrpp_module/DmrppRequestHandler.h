@@ -24,6 +24,7 @@
 #define I_DmrppRequestHandler_H
 
 #include <string>
+#include <memory>
 #include <ostream>
 
 #include "BESRequestHandler.h"
@@ -53,13 +54,18 @@ private:
     // as XML, and the DMR++ is XML, so the difference is negligible. In the case
     // of the memory cache, the size of the DMZ in memory may be an issue.
     // jhrg 11/12/21
-    static ObjMemCache *das_cache;
-    static ObjMemCache *dds_cache;
-    static ObjMemCache *dmr_cache;
+    static std::unique_ptr<ObjMemCache> das_cache;
+    static std::unique_ptr<ObjMemCache> dds_cache;
+    static std::unique_ptr<ObjMemCache> dmr_cache;
 
-	// These are static because they are used by the static public methods.
-	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
-    template <class T> static void get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds);
+    static bool d_use_object_cache;
+    static unsigned int d_object_cache_entries;
+    static double d_object_cache_purge_level;
+
+
+    static void get_dmrpp_from_container_or_cache(BESContainer *container, const std::string &request_xml_base,
+                                                  libdap::DMR *dmr);
+    template <class T> static void get_dds_from_dmr_or_cache(BESContainer *container, T *bdds);
 
     // Allocate a new DMZ for each request? This should work, but may result in more
     // cycling of data in and out of memory. The shared_ptr<> will be passed into
