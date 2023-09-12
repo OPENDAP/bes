@@ -86,8 +86,6 @@ using namespace std;
 #define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
 #define dmrpp_cache "dmrpp:cache"
 
-#define USE_DMZ_TO_MANAGE_XML 1
-
 namespace dmrpp {
 
 unique_ptr<ObjMemCache> DmrppRequestHandler::das_cache{nullptr};
@@ -100,7 +98,7 @@ shared_ptr<DMZ> DmrppRequestHandler::dmz(nullptr);
 // reuse. jhrg
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = nullptr;
 
-bool DmrppRequestHandler::d_use_object_cache = true;
+bool DmrppRequestHandler::d_use_object_cache = false;
 unsigned int DmrppRequestHandler::d_object_cache_entries = 100;
 double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
@@ -143,6 +141,17 @@ static void read_key_value(const std::string &key_name, unsigned int &key_value)
     }
 }
 static void read_key_value(const std::string &key_name, unsigned long long &key_value)
+{
+    bool key_found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
+    if (key_found) {
+        istringstream iss(value);
+        iss >> key_value;
+    }
+}
+
+static void read_key_value(const std::string &key_name, double &key_value)
 {
     bool key_found = false;
     string value;
@@ -209,10 +218,16 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool(d_max_transfer_threads);
 
-    // dmr_cache = new ObjMemCache(100, 0.2);
-    dmr_cache = make_unique<ObjMemCache>(100, 0.2);
-    dds_cache = make_unique<ObjMemCache>(100, 0.2);
-    das_cache = make_unique<ObjMemCache>(100, 0.2);
+    // This can be set to true using the bes conf file; the default value is false
+    read_key_value(DMRPP_USE_OBJECT_CACHE_KEY, d_use_object_cache);
+    if (d_use_object_cache) {
+        read_key_value(DMRPP_OBJECT_CACHE_ENTRIES_KEY, d_object_cache_entries);
+        read_key_value(DMRPP_OBJECT_CACHE_PURGE_LEVEL_KEY, d_object_cache_purge_level);
+        // The default value of these is nullptr
+        dmr_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
+        dds_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
+        das_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
+    }
 
     // This and the matching cleanup function can be called many times as long as
     // they are called in balanced pairs. jhrg 9/3/20
