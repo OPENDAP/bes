@@ -224,7 +224,9 @@ int StandAloneApp::run()
         }
         else if (!_command_file_names.empty()) {
             BESDEBUG(MODULE, prolog << "Found " << _command_file_names.size() << " command files." << endl);
+            unsigned int commands = 0;
             for (auto &command_filename: _command_file_names) {
+                commands++;
                 BESDEBUG(MODULE, prolog << "Processing BES command file: " << command_filename<< endl);
                 if (!command_filename.empty()) {
                     ifstream cmdStrm(command_filename);
@@ -234,6 +236,9 @@ int StandAloneApp::run()
                     else {
                         try {
                             sac.executeCommands(cmdStrm, _repeat);
+                            if (commands < _command_file_names.size()) {
+                                sac.getOutput() << "\nNext-Response:\n" << flush;
+                            }
                         }
                         catch (BESError &e) {
                             cerr << prolog << "Error processing commands. Message: " << e.get_message() << endl;

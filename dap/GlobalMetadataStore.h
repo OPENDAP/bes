@@ -126,7 +126,7 @@ protected:
      * two protocol versions that make it hard to produce identical responses
      * using both the DDS or DMR from the same dataset. This made testing hard
      * and meant that the result was 'unpredictable' for some edge cases. The symbol
-     * SYMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
+     * SYMMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
      * is turned off.
      */
     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
