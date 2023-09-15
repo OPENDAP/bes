@@ -136,20 +136,20 @@ public:
         string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=Foo&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
         string filtered_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax";
         CPPUNIT_ASSERT_MESSAGE("The URL should have the AWS security tokens removed",
-                               filtered_url == curl::filter_effective_url(url));
+                               filtered_url == curl::filter_aws_url(url));
     }
 
     void filter_effective_url_token_first_test() {
         string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?X-Amz-Security-Token=Foo&A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
         string filtered_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc";
         CPPUNIT_ASSERT_MESSAGE("The URL should have the AWS security tokens removed",
-                               filtered_url == curl::filter_effective_url(url));
+                               filtered_url == curl::filter_aws_url(url));
     }
 
     void filter_effective_url_no_qs_test() {
         string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc";
         CPPUNIT_ASSERT_MESSAGE("The URL has no query string and should not be changed",
-                               url == curl::filter_effective_url(url));
+                               url == curl::filter_aws_url(url));
     }
 
 
