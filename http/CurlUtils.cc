@@ -669,7 +669,7 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
  * @param eff_url
  * @return The URL with the tokens removed
  */
-string filter_effective_url(const string &eff_url) {
+string filter_aws_url(const string &eff_url) {
     // It seems unlikely that the X-Amz prefix will be in the first part of the query string
     // and the first part will likely be useful for the error message, so looking for the first
     // '&' is a good start.
@@ -757,7 +757,7 @@ static bool eval_curl_easy_perform_code(
         stringstream msg;
         msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: ";
         msg << error_message(curl_code, error_buffer) << ". ";
-        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")."
+        msg << "A retry may be possible for: " << filter_aws_url(eff_req_url) << " (attempt: " << attempt << ")."
             << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
@@ -767,7 +767,7 @@ static bool eval_curl_easy_perform_code(
         stringstream msg;
         msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. Message: ";
         msg << error_message(curl_code, error_buffer) << ". ";
-        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")."
+        msg << "A retry may be possible for: " << filter_aws_url(eff_req_url) << " (attempt: " << attempt << ")."
             << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
@@ -780,7 +780,7 @@ static bool eval_curl_easy_perform_code(
         stringstream msg;
         msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: ";
         msg << error_message(curl_code, error_buffer) << ". ";
-        msg << "A retry may be possible for: " << filter_effective_url(eff_req_url) << " (attempt: " << attempt << ")."
+        msg << "A retry may be possible for: " << filter_aws_url(eff_req_url) << " (attempt: " << attempt << ")."
             << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
@@ -789,7 +789,7 @@ static bool eval_curl_easy_perform_code(
     else if (curl_code != CURLE_OK) {
         stringstream msg;
         msg << "ERROR - Problem with data transfer. Message: " << error_message(curl_code, error_buffer);
-        msg << " CURLINFO_EFFECTIVE_URL: " << filter_effective_url(eff_req_url);
+        msg << " CURLINFO_EFFECTIVE_URL: " << filter_aws_url(eff_req_url);
         BESDEBUG(MODULE, prolog << msg.str() << endl);
         ERROR_LOG(msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -813,7 +813,7 @@ static void process_http_code_helper(long http_code, const string &requested_url
     stringstream msg;
     if (http_code >= 400) {
         msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << filter_effective_url(last_accessed_url) << " ";
+        msg << "CURLINFO_EFFECTIVE_URL: " << filter_aws_url(last_accessed_url) << " ";
         BESDEBUG(MODULE, prolog << msg.str() << endl);
     }
 
@@ -933,7 +933,7 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
         default:
             string last_accessed_url = get_effective_url(ceh, requested_url);
             BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): "
-                                    << filter_effective_url(last_accessed_url) << endl);
+                                    << filter_aws_url(last_accessed_url) << endl);
 
             // process_http_code_helper() _only_ returns if the request can be retried, otherwise
             // it throws an exception. Pass the unfiltered last_accessed_url because the
@@ -977,7 +977,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     do {
         ++attempts;
         BESDEBUG(MODULE,
-                 prolog << "Requesting URL: " << filter_effective_url(target_url) << " attempt: " << attempts << endl);
+                 prolog << "Requesting URL: " << filter_aws_url(target_url) << " attempt: " << attempts << endl);
 
         CURLcode curl_code = curl_easy_perform(c_handle);
         success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
@@ -988,16 +988,25 @@ static void super_easy_perform(CURL *c_handle, int fd) {
         // If the curl_easy_perform failed, or if the http request failed then
         // we keep trying until we have exceeded the retry_limit.
         if (!success) {
+            string effective_url;
+            try {
+                effective_url = filter_aws_url(get_effective_url(c_handle, target_url));
+            }
+            catch ( BESInternalError &bie){
+                effective_url = "Unable_Determine_CURLINFO_EFFECTIVE_URL";
+            }
             if (attempts == retry_limit) {
                 stringstream msg;
                 msg << prolog << "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL "
-                    << filter_effective_url(target_url) << " The retry limit has been exceeded. Giving up!";
+                    << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
+                msg << "CURLINFO_EFFECTIVE_URL: " << effective_url;
                 ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             else {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
-                                 << filter_effective_url(target_url) << " attempt: " << attempts << ")." << endl);
+                                 << filter_aws_url(target_url) << " attempt: " << attempts << "). "
+                                 << "CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
                 usleep(retry_time);
                 retry_time *= 2;
 
@@ -1491,7 +1500,7 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
 
         INFO_LOG(prolog << "Source URL: '" << starting_point_url->str() << "("
                         << (starting_point_url->is_trusted() ? "" : "NOT ") << "trusted)" <<
-                        "' CURLINFO_EFFECTIVE_URL: '" << filter_effective_url(eurl->str()) << "'" << "("
+                        "' CURLINFO_EFFECTIVE_URL: '" << filter_aws_url(eurl->str()) << "'" << "("
                         << (eurl->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
 
         if (request_headers)
