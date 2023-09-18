@@ -898,10 +898,10 @@ static void process_http_code_helper(long http_code, const string &requested_url
  * @return true if at all worked out, false if it didn't and a retry is reasonable.
  * @throws BESInternalError When something really bad happens.
 */
-static bool eval_http_get_response(CURL *ceh, const string &requested_url) {
+static bool eval_http_get_response(CURL *ceh, const string &requested_url, long &http_code) {
     BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
 
-    long http_code = 0;
+    http_code = 0;
     CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
     if (curl_code != CURLE_OK)
         throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
@@ -974,6 +974,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     unsigned int attempts = 0;
     useconds_t retry_time = url_retry_time; // 0.25 seconds
     bool success;
+    long http_code;
     do {
         ++attempts;
         BESDEBUG(MODULE,
@@ -983,7 +984,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
         success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
         if (success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
-            success = eval_http_get_response(c_handle, target_url);
+            success = eval_http_get_response(c_handle, target_url, http_code);
         }
         // If the curl_easy_perform failed, or if the http request failed then
         // we keep trying until we have exceeded the retry_limit.
@@ -997,16 +998,18 @@ static void super_easy_perform(CURL *c_handle, int fd) {
             }
             if (attempts == retry_limit) {
                 stringstream msg;
-                msg << prolog << "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL "
-                    << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
+                msg << prolog << "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL ";
+                msg << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
                 msg << "CURLINFO_EFFECTIVE_URL: " << effective_url;
+                msg << "Returned HTTP_STATUS: " << http_code;
                 ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             else {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
                                  << filter_aws_url(target_url) << " attempt: " << attempts << "). "
-                                 << "CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
+                                  << "CURLINFO_EFFECTIVE_URL: " << effective_url << " "
+                                  << "Returned HTTP_STATUS: " << http_code << endl);
                 usleep(retry_time);
                 retry_time *= 2;
 
