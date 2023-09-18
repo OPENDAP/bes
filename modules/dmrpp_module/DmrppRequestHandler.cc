@@ -122,6 +122,7 @@ bool DmrppRequestHandler::d_require_chunks = false;
 bool DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
 
 bool DmrppRequestHandler::is_netcdf4_response = false;
+bool DmrppRequestHandler::is_netcdf4_classic_response = false;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
@@ -202,6 +203,11 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     read_key_value(DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY, d_contiguous_concurrent_threshold);
     msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
     INFO_LOG(msg.str() );
+
+    // Is this response a netCDF-4 classic from fileout netCDF
+    // We will check if FONc.ClassicModel is set to true.
+    // STOP HERE
+    read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
 
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_transfer_threads)
@@ -295,7 +301,13 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             dmr->set_factory(&factory);
 
             dmz->parse_xml_doc(data_pathname);
-            dmz->build_thin_dmr(dmr,DmrppRequestHandler::is_netcdf4_response);
+
+            bool is_netcdf4_enhanced_response = DmrppRequestHandler::is_netcdf4_response;
+            if (DmrppRequestHandler::is_netcdf4_response &&  
+                DmrppRequestHandler::is_netcdf4_classic_response)
+                is_netcdf4_enhanced_response = false;
+
+            dmz->build_thin_dmr(dmr,is_netcdf4_enhanced_response);
 
             dmz->load_all_attributes(dmr);
 
@@ -407,6 +419,11 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         else
             BESDEBUG(MODULE, prolog << "NOT netcdf-4 response" << endl);
         
+        if (DmrppRequestHandler::is_netcdf4_classic_response) 
+            BESDEBUG(MODULE, prolog << "netcdf-4 classic response" << endl);
+        else
+            BESDEBUG(MODULE, prolog << "NOT netcdf-4 classic response" << endl);
+ 
         get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_request_xml_base(), bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);

@@ -23,7 +23,12 @@
 #define FONC_CHUNK_SIZE 4096
 #define FONC_CHUNK_SIZE_KEY "FONc.ChunkSize"
 
-#define FONC_CLASSIC_MODEL true
+// In fonc.conf.in, the FONC_CLASSIC_MODEL is set to false, which is
+// default setting in distribution. So here we change the FONC_CLASSIC_MODEL 
+// to false. That means, if FONc.ClassicModel is not set, the fileout netCDF
+// will follow netCDF4-enhanced instead of netCDF-4 classic to generate 
+// netCDF-4 files.
+#define FONC_CLASSIC_MODEL false
 #define FONC_CLASSIC_MODEL_KEY "FONc.ClassicModel"
 
 #define FONC_NO_GLOBAL_ATTRS false

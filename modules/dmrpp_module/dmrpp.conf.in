@@ -5,7 +5,12 @@
 #-----------------------------------------------------------------------#
 # Require dap configuration to be loaded first                          #
 #-----------------------------------------------------------------------#
-BES.Include=dap.conf
+BES.Include=dap.conf 
+
+# To support the direct IO feature, We need to check the value of 
+# the BES key FONc.ClassicModel, which is defined in fonc.conf.
+# So the following line is added.
+BES.Include=fonc.conf
 
 #-----------------------------------------------------------------------#
 # modules to load, includes data modules and command modules            #

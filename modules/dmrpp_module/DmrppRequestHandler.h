@@ -104,6 +104,7 @@ public:
     static bool d_emulate_original_filter_order_behavior;
 
     static bool is_netcdf4_response;
+    static bool is_netcdf4_classic_response;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);

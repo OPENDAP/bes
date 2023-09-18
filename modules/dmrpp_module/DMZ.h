@@ -123,7 +123,7 @@ public:
     // This is not virtual because we call it from a ctor
     void parse_xml_doc(const std::string &filename);
 
-    virtual void build_thin_dmr(libdap::DMR *dmr,bool is_netcdf4_response);
+    virtual void build_thin_dmr(libdap::DMR *dmr,bool is_netcdf4_enhanced_response);
 
     virtual void load_attributes(libdap::BaseType *btp);
     virtual void load_attributes(libdap::Constructor *constructor);

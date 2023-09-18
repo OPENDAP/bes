@@ -5,13 +5,13 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_DATA = bes.conf
 
-CLEANFILES = bes.conf bes.log bes_serial.conf
+CLEANFILES = bes.conf bes.log bes_serial.conf bes_dio.conf
 
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
 EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays \
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3) $(TESTSUITE_S3).at $(TESTSUITE_DMRPP_BUILDER) \
-$(TESTSUITE_DMRPP_BUILDER).at atlocal.in bes.conf.in bes_serial.conf.in $(srcdir)/package.m4 \
+$(TESTSUITE_DMRPP_BUILDER).at atlocal.in bes.conf.in bes_serial.conf.in bes_dio.conf.in $(srcdir)/package.m4 \
 multi_input_tests.m4
 
 DISTCLEANFILES = atconfig
@@ -28,6 +28,8 @@ bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in
 
 bes_serial.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_serial.conf.in
 
+bes_dio.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_dio.conf.in
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
@@ -39,7 +41,7 @@ TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
 
 TESTSUITE_DMRPP_BUILDER = $(srcdir)/testsuite_dmrpp_builder
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf bes_dio.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
