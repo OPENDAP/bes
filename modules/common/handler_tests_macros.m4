@@ -337,45 +337,6 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
     AT_CLEANUP
 ])
 
-m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_CONF],  [dnl
-
-    AT_SETUP([$1 $2])
-    AT_KEYWORDS([bescmd data dap4 DAP4])
-
-    input=$abs_srcdir/$1
-    bes_conf=$abs_builddir/$2
-
-    baseline=$abs_srcdir/$1.$2.baseline
-    #AT_XFAIL_IF([test z$3 = zxfail])
-    pass=$3
-    repeat=$4
-
-    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
-
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
-
-    AS_IF([test -n "$baselines" -a x$baselines = xyes],
-        [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
-        PRINT_DAP4_DATA_RESPONSE([stdout])
-        REMOVE_DAP4_CHECKSUM([stdout])
-        REMOVE_DATE_TIME([stdout])
-        REMOVE_VERSIONS([stdout])
-        AT_CHECK([mv stdout $baseline.tmp])
-        ],
-        [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
-        PRINT_DAP4_DATA_RESPONSE([stdout])
-        REMOVE_DAP4_CHECKSUM([stdout])
-        REMOVE_DATE_TIME([stdout])
-        REMOVE_VERSIONS([stdout])
-        AT_CHECK([diff -b -B $baseline stdout])
-        ])
-
-    AT_CLEANUP
-])
-
-
 dnl This is similar to the "binary data" macro above, but instead assumes the
 dnl output of besstandalone is a netcdf3 file. The binary stream is read using
 dnl ncdump and the output of that is compared to a baseline. Of course, this
