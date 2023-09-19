@@ -46,8 +46,8 @@ m4_define([AT_BESCMD_MULTI_RESPONSE_TEST], [dnl
 
         # Check that caching was used
         # NB: 'miss' will be 1 for dmr, but two for dds or das.
-        AT_CHECK([test $(grep -c 'Cache miss' ${baseline}_r.debug) -le 2])
-        AT_CHECK([test $(grep -c 'Cache hit' ${baseline}_r.debug) -eq 2])
+        AT_CHECK([test $(grep -c 'Cache miss' stderr) -le 2])
+        AT_CHECK([test $(grep -c 'Cache hit' stderr) -eq 2])
         ])
 
     AT_CLEANUP
@@ -103,11 +103,8 @@ m4_define([AT_BINARY_DAP4_MULTI_RESPONSE_TEST],  [dnl
 
         # Check that caching was used
         # NB: 'miss' will be 1 for dmr, but two for dds or das.
-        AT_CHECK([test $(grep -c 'Cache miss' ${baseline}_r.debug) -le 2])
-        AT_CHECK([test $(grep -c 'Cache hit' ${baseline}_r.debug) -eq 2])
-
-        # AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
-        # AT_CHECK([diff -b -B $baseline stdout])
+        AT_CHECK([test $(grep -c 'Cache miss' stderr) -le 2])
+        AT_CHECK([test $(grep -c 'Cache hit' stderr) -eq 2])
         ])
 
     AT_CLEANUP
@@ -174,8 +171,8 @@ m4_define([AT_BINARY_DAP4_ENUMERATED_RESPONSE_TEST],  [dnl
 
         # Check that caching was used
         # NB: 'miss' will be 1 for dmr, but two for dds or das.
-        AT_CHECK([test $(grep -c 'Cache miss' ${baseline_1}_e.debug) -le 2])
-        AT_CHECK([test $(grep -c 'Cache hit' ${baseline_1}_e.debug) -eq 2])
+        AT_CHECK([test $(grep -c 'Cache miss' stderr) -le 2])
+        AT_CHECK([test $(grep -c 'Cache hit' stderr) -eq 2])
         ])
 
     AT_CLEANUP
@@ -239,11 +236,8 @@ m4_define([AT_BINARY_DAP2_MULTI_RESPONSE_TEST],  [dnl
 
         # Check that caching was used
         # NB: 'miss' will be 1 for dmr, but two for dds or das.
-        AT_CHECK([test $(grep -c 'Cache miss' ${baseline}_r.debug) -le 2])
-        AT_CHECK([test $(grep -c 'Cache hit' ${baseline}_r.debug) -eq 2])
-
-        # AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
-        # AT_CHECK([diff -b -B $baseline stdout])
+        AT_CHECK([test $(grep -c 'Cache miss' stderr) -le 2])
+        AT_CHECK([test $(grep -c 'Cache hit' stderr) -eq 2])
         ])
 
     AT_CLEANUP
