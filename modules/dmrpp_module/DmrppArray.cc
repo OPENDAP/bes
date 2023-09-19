@@ -1789,7 +1789,6 @@ bool DmrppArray::read()
 
     // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
     // Direct io offset is only necessary when the direct IO operation is possible.
-    // MUST DO LATER: add other check in the future. Now we only check if this is a netCDF-4 response.
     if (this->use_direct_io_opt()) { 
         this->set_dio_flag();
         auto chunks = this->get_chunks();
@@ -1820,31 +1819,6 @@ bool DmrppArray::read()
         }
         this->set_var_storage_info(dmrpp_vs_info);
     }
-    
-
-#if 0
-    Array::var_storage_info dmrpp_vs_info;
-    dmrpp_vs_info.filter = this->get_filters();
-
-    for (const auto &def_lev:this->get_deflate_levels())
-        dmrpp_vs_info.deflate_levels.push_back(def_lev);
-    
-    for (const auto &chunk_dim:this->get_chunk_dimension_sizes())
-        dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
-    
-    auto chunks = this->get_immutable_chunks();
-    for (const auto &chunk:chunks) {
-        Array::var_chunk_info_t vci_t;
-        vci_t.filter_mask = chunk->get_filter_mask();
-        vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
-        vci_t.chunk_buffer_size = chunk->get_size();
-
-        for (const auto &chunk_coord:chunk->get_position_in_array())
-            vci_t.chunk_coords.push_back(chunk_coord);           
-        dmrpp_vs_info.var_chunk_info.push_back(vci_t);
-    }
-    this->set_var_storage_info(dmrpp_vs_info);
-#endif
     
 
     DmrppArray *array_to_read = this;
@@ -2369,6 +2343,7 @@ unsigned int DmrppArray::buf2val(void **val){
 
 }
 
+// Check if direct chunk IO can be used. 
 bool DmrppArray::use_direct_io_opt() {
 
     bool ret_value = false;
@@ -2378,11 +2353,9 @@ bool DmrppArray::use_direct_io_opt() {
     if (DmrppRequestHandler::is_netcdf4_enhanced_response && this->is_filters_empty() == false) {
         Type t = this->var()->type();
         if (libdap::is_simple_type(t) && t != dods_str_c && t != dods_url_c && t!= dods_enum_c && t!=dods_opaque_c) {
-
             is_integer_le_float = true;
             if(is_integer_type(t) && this->get_byte_order() =="BE")
                 is_integer_le_float = false;
-
         }
     }
 
@@ -2405,13 +2378,9 @@ bool DmrppArray::use_direct_io_opt() {
     }
 
     bool is_data_all_fvalues = false;
-    // This is the final check for a rare case: the variable data just contains fillvalues.
-    // The safest way to figure out this corner case is to check if the chunk size for every chunk is 0. 
-    // If the chunk size for every chunk is 0 when the deflate filter is used, we cannot handle this with direct IO.
-    // However, if some chunks are filled with filled values when a compression filter is applied, a chunk size
-    // can be 0 only if the whole var data is filled with the fill value. So we don't need to loop through every chunk,
-    // we just need to find the first chunk that has a 0 chunk size. 
-    if (has_deflate_filter && this->get_uses_fill_value() && this->get_storage_size() == 0) 
+    // This is the final check for a rare case: the variable data just contains the filled values.
+    // If this var's storage size is 0. Then it should be filled with the filled values.
+    if (has_deflate_filter && this->get_uses_fill_value() && this->get_var_chunks_storage_size() == 0) 
             is_data_all_fvalues = true;
 
     if (has_deflate_filter && !is_data_all_fvalues)
