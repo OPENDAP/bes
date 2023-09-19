@@ -429,15 +429,9 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
                 DmrppRequestHandler::is_netcdf4_classic_response)
             DmrppRequestHandler::is_netcdf4_enhanced_response = false;
 
-        if (DmrppRequestHandler::is_netcdf4_enhanced_response) 
-            BESDEBUG(MODULE, prolog << "netcdf-4 enhanced response" << endl);
-        else
-            BESDEBUG(MODULE, prolog << "NOT netcdf-4 enhanced response" << endl);
+        BESDEBUG(MODULE, prolog << "netcdf4_enhanced_response: "<<DmrppRequestHandler::is_netcdf4_enhanced_response<<endl);
         
-        if (is_netcdf4_response && DmrppRequestHandler::is_netcdf4_classic_response) 
-            BESDEBUG(MODULE, prolog << "netcdf-4 classic response" << endl);
-        else
-            BESDEBUG(MODULE, prolog << "NOT netcdf-4 classic response" << endl);
+        BESDEBUG(MODULE, prolog << "netcdf4_classic_response: "<<(is_netcdf4_response && DmrppRequestHandler::is_netcdf4_classic_response) <<endl);
  
         get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_request_xml_base(), bdmr->get_dmr());
 
