@@ -426,6 +426,7 @@ public:
     void set_position_in_array(const std::vector<unsigned long long> &pia);
 
     virtual void read_chunk();
+    virtual void read_chunk_dio();
     virtual void load_fill_values();
 
     virtual void filter_chunk(const std::string &filters, unsigned long long chunk_size, unsigned long long elem_width);

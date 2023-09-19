@@ -86,6 +86,12 @@ public:
         process_child_chunks_unconstrained();
     }
 
+    virtual void read_unconstrained_dio() {
+        retrieve_data();    // TODO process_child_chunks_unconstrained() also calls retrieve_data(). jhrg 5/9/22
+        process_child_chunks_unconstrained();
+    }
+
+
     virtual void retrieve_data();
     virtual void process_child_chunks();
     virtual void process_child_chunks_unconstrained();

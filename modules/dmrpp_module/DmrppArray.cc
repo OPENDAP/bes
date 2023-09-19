@@ -247,6 +247,21 @@ bool one_super_chunk_unconstrained_transfer_thread(const unique_ptr<one_super_ch
     return true;
 }
 
+bool one_super_chunk_unconstrained_transfer_thread_dio(const unique_ptr<one_super_chunk_args> &args)
+{
+
+#if DMRPP_ENABLE_THREAD_TIMERS
+    stringstream timer_tag;
+    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
+    " parent_tid: 0x" << std::hex << args->parent_thread_id  << " sc_id: " << args->super_chunk->id();
+    BESStopWatch sw(TRANSFER_THREADS);
+    sw.start(timer_tag.str());
+#endif
+
+    args->super_chunk->read_unconstrained_dio();
+    return true;
+}
+
 
 bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<one_child_chunk_args_new> args) {
     bool retval = false;
@@ -290,6 +305,19 @@ bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_
  * reached the maximum allowable size.
  */
 bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &futures, unique_ptr<one_super_chunk_args> args) {
+    bool retval = false;
+    std::unique_lock<std::mutex> lck (transfer_thread_pool_mtx);
+    if(transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
+        transfer_thread_counter++;
+        futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread, std::move(args)));
+        retval = true;
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
+                                            "' from std::async, transfer_thread_counter: " << transfer_thread_counter << endl);
+    }
+    return retval;
+}
+
+bool start_super_chunk_unconstrained_transfer_thread_dio(list<std::future<bool>> &futures, unique_ptr<one_super_chunk_args> args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (transfer_thread_pool_mtx);
     if(transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
@@ -386,6 +414,71 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
         throw;
     }
 }
+
+void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>> &super_chunks, DmrppArray *array)
+{
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
+
+    // Parallel version based on read_chunks_unconstrained(). There is
+    // substantial duplication of the code in read_chunks_unconstrained(), but
+    // wait to remove that when we move to C++11 which has threads integrated.
+
+    // We maintain a list  of futures to track our parallel activities.
+    list<future<bool>> futures;
+    try {
+        bool done = false;
+        bool future_finished = true;
+        while (!done) {
+
+            if(!futures.empty())
+                future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+            BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
+
+            if (!super_chunks.empty()){
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
+                bool thread_started = true;
+                while(thread_started && !super_chunks.empty()) {
+                    auto super_chunk = super_chunks.front();
+                    BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
+
+                    auto args = unique_ptr<one_super_chunk_args>(new one_super_chunk_args(super_chunk, array));
+                    thread_started = start_super_chunk_unconstrained_transfer_thread_dio(futures, std::move(args));
+
+                    if (thread_started) {
+                        super_chunks.pop();
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
+                    } else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                            " transfer_thread_counter: " << transfer_thread_counter <<
+                                                            " futures.size(): " << futures.size() << endl);
+                    }
+                }
+            }
+            else {
+                // No more Chunks and no futures means we're done here.
+                if(futures.empty())
+                    done = true;
+            }
+            future_finished = false;
+        }
+    }
+    catch (...) {
+        // Complete all the futures, otherwise we'll have threads out there using up resources
+        while(!futures.empty()){
+            if(futures.back().valid())
+                futures.back().get();
+            futures.pop_back();
+        }
+        // re-throw the exception
+        throw;
+    }
+}
+
 
 /**
  * @brief Uses std::async and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
@@ -877,6 +970,24 @@ void DmrppArray::read_contiguous()
     set_read_p(true);
 }
 
+void DmrppArray::read_one_chunk_dio() {
+
+    // Get the single chunk that makes up this CONTIGUOUS variable.
+    if (get_chunks_size() != 1)
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
+
+    // This is the original chunk for this 'contiguous' variable.
+    auto the_one_chunk = get_immutable_chunks()[0];
+
+    unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
+    unsigned long long the_one_chunk_size = the_one_chunk->get_size();
+
+    // For this version, we just read the whole chunk all at once.
+    the_one_chunk->read_chunk_dio();
+
+
+}
+
 /**
  * @brief Insert a chunk into an unconstrained Array
  *
@@ -1011,6 +1122,76 @@ void DmrppArray::read_chunks_unconstrained()
         sw.start(timer_name.str());
 #endif
         read_super_chunks_unconstrained_concurrent(super_chunks, this);
+    }
+    set_read_p(true);
+}
+
+//KENT: handle direct chunk IO
+void DmrppArray::read_chunks_dio_unconstrained()
+{
+
+    if (get_chunks_size() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
+    // made using a debugger easier. However, order does not matter, AFAIK.
+
+    unsigned long long sc_count=0;
+    stringstream sc_id;
+    sc_id << name() << "-" << sc_count++;
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this)) ;
+    super_chunks.push(current_super_chunk);
+
+    // Make the SuperChunks using all the chunks.
+    for(const auto& chunk: get_immutable_chunks()) {
+        bool added = current_super_chunk->add_chunk(chunk);
+        if (!added) {
+            sc_id.str(std::string());
+            sc_id << name() << "-" << sc_count++;
+            current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this));
+            super_chunks.push(current_super_chunk);
+            if (!current_super_chunk->add_chunk(chunk)) {
+                stringstream msg ;
+                msg << prolog << "Failed to add Chunk to new SuperChunk. chunk: " << chunk->to_string();
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        }
+    }
+
+    // KENT: Change to the total storage buffer size.
+    reserve_value_capacity_ll(get_size());
+
+
+    // The size in element of each of the array's dimensions
+    const vector<unsigned long long> array_shape = get_shape(true);
+    // The size, in elements, of each of the chunk's dimensions
+    const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+
+    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
+
+    if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
+#if DMRPP_ENABLE_THREAD_TIMERS
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog + "Serial SuperChunk Processing.");
+#endif
+        while(!super_chunks.empty()) {
+            auto super_chunk = super_chunks.front();
+            super_chunks.pop();
+            BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
+            //super_chunk->read_unconstrained();
+            super_chunk->read_unconstrained_dio();
+        }
+    }
+    else {      // Parallel transfers
+#if DMRPP_ENABLE_THREAD_TIMERS
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
+#endif
+        read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
     }
     set_read_p(true);
 }
@@ -1836,12 +2017,21 @@ bool DmrppArray::read()
         // Single chunk and 'contiguous' are the same for this code.
         if (array_to_read->get_chunks_size() == 1) {
             BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
-            array_to_read->read_contiguous();    // Throws on various errors
+            // KENT: here we need to add the handling of direct chunk IO for one chunk. 
+            if (0)
+                array_to_read->read_one_chunk_dio();
+            else 
+                array_to_read->read_contiguous();    // Throws on various errors
         }
         else {  // Handle the more complex case where the data is chunked.
             if (!array_to_read->is_projected()) {
                 BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
-                array_to_read->read_chunks_unconstrained();
+                 // KENT: Only here we need to consider the direct buffer IO.
+                // The best way is to hold another function but with direct buffer
+                if (0)
+                    array_to_read->read_chunks_dio_unconstrained();
+                else 
+                    array_to_read->read_chunks_unconstrained();
             }
             else {
                 BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);

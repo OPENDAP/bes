@@ -100,6 +100,7 @@ private:
                                        const std::vector<unsigned long long> &array_shape, char *data);
 
     void read_contiguous();
+    void read_one_chunk_dio();
     void read_contiguous_string();
 
 #ifdef USE_READ_SERIAL
@@ -127,6 +128,7 @@ private:
 
     void read_chunks();
     void read_chunks_unconstrained();
+    void read_chunks_dio_unconstrained();
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
