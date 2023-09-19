@@ -212,7 +212,7 @@ public:
             d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -241,7 +241,7 @@ public:
             d_dmz.reset(new DMZ(grid_2_2d_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -273,7 +273,7 @@ public:
             d_dmz.reset(new DMZ(coads_climatology_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -305,7 +305,7 @@ public:
             d_dmz.reset(new DMZ(test_simple_6_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -335,7 +335,7 @@ public:
             d_dmz.reset(new DMZ(test_array_6_1_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -377,7 +377,7 @@ public:
         d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
-        d_dmz->build_thin_dmr(&dmr, false);
+        d_dmz->build_thin_dmr(&dmr);
         BaseType *btp = dmr.root()->find_var("/d_16_chunks");
 
         stack<BaseType*> bt;
@@ -389,7 +389,7 @@ public:
         d_dmz.reset(new DMZ(grid_2_2d_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
-        d_dmz->build_thin_dmr(&dmr, false);
+        d_dmz->build_thin_dmr(&dmr);
         BaseType *btp = dmr.root()->find_var("/HDFEOS/GRIDS/GeoGrid2/Data Fields/temperature");
 
         stack<BaseType*> bt;
@@ -407,7 +407,7 @@ public:
         d_dmz.reset(new DMZ(test_array_6_1_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
-        d_dmz->build_thin_dmr(&dmr, false);
+        d_dmz->build_thin_dmr(&dmr);
 
         BaseType *btp = dmr.root()->find_var("/a.j");
         CPPUNIT_ASSERT(btp);
@@ -427,7 +427,7 @@ public:
         d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
-        d_dmz->build_thin_dmr(&dmr, false);
+        d_dmz->build_thin_dmr(&dmr);
         BaseType *btp = *(dmr.root()->var_begin());
         CPPUNIT_ASSERT(btp);
         pugi::xml_node node = d_dmz->get_variable_xml_node(btp);
@@ -441,7 +441,7 @@ public:
         d_dmz.reset(new DMZ(grid_2_2d_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
-        d_dmz->build_thin_dmr(&dmr, false);
+        d_dmz->build_thin_dmr(&dmr);
 
         BaseType *btp = dmr.root()->find_var("/HDFEOS/GRIDS/GeoGrid2/Data Fields/temperature");
         pugi::xml_node node = d_dmz->get_variable_xml_node(btp);
@@ -455,7 +455,7 @@ public:
         d_dmz.reset(new DMZ(coads_climatology_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
-        d_dmz->build_thin_dmr(&dmr, false);
+        d_dmz->build_thin_dmr(&dmr);
 
         BaseType *btp = dmr.root()->find_var("/TIME");
         pugi::xml_node node = d_dmz->get_variable_xml_node(btp);
@@ -469,7 +469,7 @@ public:
         d_dmz.reset(new DMZ(test_array_6_1_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
-        d_dmz->build_thin_dmr(&dmr, false);
+        d_dmz->build_thin_dmr(&dmr);
 
         BaseType *btp = dmr.root()->find_var("/a.j");
         CPPUNIT_ASSERT(btp);
@@ -485,7 +485,7 @@ public:
             d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -513,7 +513,7 @@ public:
             d_dmz.reset(new DMZ(grid_2_2d_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -541,7 +541,7 @@ public:
             d_dmz.reset(new DMZ(test_array_6_1_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -569,7 +569,7 @@ public:
             d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -891,7 +891,7 @@ public:
             d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -936,7 +936,7 @@ public:
             d_dmz.reset(new DMZ(coads_climatology_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);
@@ -969,7 +969,7 @@ public:
             d_dmz.reset(new DMZ(coads_climatology_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr, false);
+            d_dmz->build_thin_dmr(&dmr);
 
             XMLWriter xml;
             dmr.print_dap4(xml);

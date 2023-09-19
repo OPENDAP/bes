@@ -1790,7 +1790,6 @@ bool DmrppArray::read()
     // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
     // Direct io offset is only necessary when the direct IO operation is possible.
     // MUST DO LATER: add other check in the future. Now we only check if this is a netCDF-4 response.
-    //if (DmrppRequestHandler::is_netcdf4_response == true) {
     if (this->use_direct_io_opt()) { 
         this->set_dio_flag();
         auto chunks = this->get_chunks();
@@ -2373,13 +2372,10 @@ unsigned int DmrppArray::buf2val(void **val){
 bool DmrppArray::use_direct_io_opt() {
 
     bool ret_value = false;
-    bool is_netcdf4_response = false;
-    if (DmrppRequestHandler::is_netcdf4_response == true) 
-        is_netcdf4_response = true;
 
     bool is_integer_le_float = false;
 
-    if (is_netcdf4_response && this->is_filters_empty() == false) {
+    if (DmrppRequestHandler::is_netcdf4_enhanced_response && this->is_filters_empty() == false) {
         Type t = this->var()->type();
         if (libdap::is_simple_type(t) && t != dods_str_c && t != dods_url_c && t!= dods_enum_c && t!=dods_opaque_c) {
 

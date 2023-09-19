@@ -103,7 +103,7 @@ public:
     // that makes it easy to identify them and not apply this hack. jhrg 11/9/21
     static bool d_emulate_original_filter_order_behavior;
 
-    static bool is_netcdf4_response;
+    static bool is_netcdf4_enhanced_response;
     static bool is_netcdf4_classic_response;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);

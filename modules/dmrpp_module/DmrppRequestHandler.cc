@@ -121,7 +121,7 @@ bool DmrppRequestHandler::d_require_chunks = false;
 // See the comment in the header for more about this kludge. jhrg 11/9/21
 bool DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
 
-bool DmrppRequestHandler::is_netcdf4_response = false;
+bool DmrppRequestHandler::is_netcdf4_enhanced_response = false;
 bool DmrppRequestHandler::is_netcdf4_classic_response = false;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
@@ -302,12 +302,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
 
             dmz->parse_xml_doc(data_pathname);
 
-            bool is_netcdf4_enhanced_response = DmrppRequestHandler::is_netcdf4_response;
-            if (DmrppRequestHandler::is_netcdf4_response &&  
-                DmrppRequestHandler::is_netcdf4_classic_response)
-                is_netcdf4_enhanced_response = false;
-
-            dmz->build_thin_dmr(dmr,is_netcdf4_enhanced_response);
+            dmz->build_thin_dmr(dmr);
 
             dmz->load_all_attributes(dmr);
 
@@ -413,13 +408,19 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 
     try {
 
-        DmrppRequestHandler::is_netcdf4_response =(dhi.data["return_command"]=="netcdf-4");
-        if (DmrppRequestHandler::is_netcdf4_response) 
-            BESDEBUG(MODULE, prolog << "netcdf-4 response" << endl);
+        bool is_netcdf4_response =(dhi.data["return_command"]=="netcdf-4");
+
+        DmrppRequestHandler::is_netcdf4_enhanced_response = is_netcdf4_response;
+        if (DmrppRequestHandler::is_netcdf4_enhanced_response &&  
+                DmrppRequestHandler::is_netcdf4_classic_response)
+            DmrppRequestHandler::is_netcdf4_enhanced_response = false;
+
+        if (DmrppRequestHandler::is_netcdf4_enhanced_response) 
+            BESDEBUG(MODULE, prolog << "netcdf-4 enhanced response" << endl);
         else
-            BESDEBUG(MODULE, prolog << "NOT netcdf-4 response" << endl);
+            BESDEBUG(MODULE, prolog << "NOT netcdf-4 enhanced response" << endl);
         
-        if (DmrppRequestHandler::is_netcdf4_classic_response) 
+        if (is_netcdf4_response && DmrppRequestHandler::is_netcdf4_classic_response) 
             BESDEBUG(MODULE, prolog << "netcdf-4 classic response" << endl);
         else
             BESDEBUG(MODULE, prolog << "NOT netcdf-4 classic response" << endl);

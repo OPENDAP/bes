@@ -598,7 +598,7 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, const xml_node &var_node)
  * @note Assume the DMZ holds valid DMR++ metadata.
  * @param dmr Pointer to a DMR instance that should be populated
  */
-void DMZ::build_thin_dmr(DMR *dmr, bool is_netcdf4_enhanced_response)
+void DMZ::build_thin_dmr(DMR *dmr)
 {
     auto xml_root_node = d_xml_doc.first_child();
 
