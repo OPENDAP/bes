@@ -215,7 +215,6 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     // Is this response a netCDF-4 classic from fileout netCDF
     // We will check if FONc.ClassicModel is set to true.
-    // STOP HERE
     read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
 
 #if !HAVE_CURL_MULTI_API

@@ -133,8 +133,9 @@ class DmrppCommon {
     std::shared_ptr<DMZ> d_dmz;
     pugi::xml_node d_xml_node;
 
-
-    unsigned long long var_storage_size = 0;
+    // var_chunks_storage_size only applies to the chunking storage. 
+    // For compact and contiguous storages, this variable is always 0 since there are no chunks.
+    unsigned long long var_chunks_storage_size = 0;
     std::vector<unsigned int> deflate_levels;
 
 protected:
@@ -344,8 +345,8 @@ public:
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
 
-    void accumlate_storage_size(unsigned long long chunk_storage_size) {var_storage_size += chunk_storage_size; }
-    unsigned long long get_storage_size() const {return var_storage_size; }
+    void accumlate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
+    unsigned long long get_var_chunks_storage_size() const {return var_chunks_storage_size; }
     virtual void dump(std::ostream & strm) const;
 };
 
