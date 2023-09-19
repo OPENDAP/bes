@@ -133,8 +133,9 @@ class DmrppCommon {
     std::shared_ptr<DMZ> d_dmz;
     pugi::xml_node d_xml_node;
 
-
-    unsigned long long var_storage_size = 0;
+    // var_chunks_storage_size only applies to the chunking storage. 
+    // For compact and contiguous storages, this variable is always 0 since there are no chunks.
+    unsigned long long var_chunks_storage_size = 0;
     std::vector<unsigned int> deflate_levels;
 
 protected:
@@ -163,7 +164,9 @@ public:
     }
 
     void set_filter(const std::string &value);
-    void set_deflate_levels(const std::vector<unsigned int>& def_levels){
+
+    const std::vector<unsigned int> & get_deflate_levels() const { return deflate_levels;}
+    void set_deflate_levels(const std::vector<unsigned int>& def_levels) {
          for(const auto &def_level:def_levels)
             deflate_levels.push_back(def_level);
     }
@@ -203,6 +206,8 @@ public:
     virtual const std::vector<std::shared_ptr<Chunk>> &get_immutable_chunks() const {
         return d_chunks;
     }
+
+    std::vector<std::shared_ptr<Chunk>> get_chunks() const { return d_chunks; }
 
     /// @brief Use this when the number of chunks is needed
     /// @return the number of Chunk objects for this variable
@@ -340,8 +345,8 @@ public:
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
 
-    void accumlate_storage_size(unsigned long long chunk_storage_size) {var_storage_size += chunk_storage_size; }
-    unsigned long long get_storage_size() const {return var_storage_size; }
+    void accumlate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
+    unsigned long long get_var_chunks_storage_size() const {return var_chunks_storage_size; }
     virtual void dump(std::ostream & strm) const;
 };
 

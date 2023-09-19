@@ -119,6 +119,9 @@ bool DmrppRequestHandler::d_require_chunks = false;
 // See the comment in the header for more about this kludge. jhrg 11/9/21
 bool DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
 
+bool DmrppRequestHandler::is_netcdf4_enhanced_response = false;
+bool DmrppRequestHandler::is_netcdf4_classic_response = false;
+
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
     bool key_found = false;
@@ -209,6 +212,10 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     read_key_value(DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY, d_contiguous_concurrent_threshold);
     msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
     INFO_LOG(msg.str() );
+
+    // Is this response a netCDF-4 classic from fileout netCDF
+    // We will check if FONc.ClassicModel is set to true.
+    read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
 
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_transfer_threads)
@@ -308,6 +315,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             dmr->set_factory(&factory);
 
             dmz->parse_xml_doc(data_pathname);
+
             dmz->build_thin_dmr(dmr);
 
             dmz->load_all_attributes(dmr);
@@ -413,6 +421,18 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
     try {
+
+        bool is_netcdf4_response =(dhi.data["return_command"]=="netcdf-4");
+
+        DmrppRequestHandler::is_netcdf4_enhanced_response = is_netcdf4_response;
+        if (DmrppRequestHandler::is_netcdf4_enhanced_response &&  
+                DmrppRequestHandler::is_netcdf4_classic_response)
+            DmrppRequestHandler::is_netcdf4_enhanced_response = false;
+
+        BESDEBUG(MODULE, prolog << "netcdf4_enhanced_response: "<<DmrppRequestHandler::is_netcdf4_enhanced_response<<endl);
+        
+        BESDEBUG(MODULE, prolog << "netcdf4_classic_response: "<<(is_netcdf4_response && DmrppRequestHandler::is_netcdf4_classic_response) <<endl);
+ 
         get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_request_xml_base(), bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
