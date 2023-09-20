@@ -61,6 +61,7 @@
 #include "DmrppChunkOdometer.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESUtil.h"
 
 using namespace pugi;
 using namespace std;
@@ -1042,6 +1043,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
     string offset;
     string size;
     string chunk_position_in_array;
+    string filter_mask;
     bool href_trusted = false;
 
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -1060,18 +1062,28 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         else if (is_eq(attr.name(), "chunkPositionInArray")) {
             chunk_position_in_array = attr.value();
         }
+        else if (is_eq(attr.name(), "fm")) {
+            filter_mask = attr.value();
+        }
     }
 
     if (offset.empty() || size.empty())
         throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
-
     if (!href.empty()) {
         shared_ptr<http::url> data_url(new http::url(href, href_trusted));
-        dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
+        if (filter_mask.empty())
+            dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
+        else
+            dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), stoul(filter_mask), chunk_position_in_array);
     }
     else {
-        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
+        if (filter_mask.empty())
+            dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset),   chunk_position_in_array);
+        else
+            dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), stoul(filter_mask),  chunk_position_in_array);
     }
+
+    dc->accumlate_storage_size(stoull(size));
 }
 
 /**
@@ -1106,6 +1118,15 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
             dc(btp)->set_filter(attr.value());
+        }
+        else if (is_eq(attr.name(), "deflateLevel")) {
+            string def_lev_str = attr.value();
+            // decompose the string.
+            vector<string> def_lev_str_vec = BESUtil::split(def_lev_str, ' ' );
+            vector<unsigned int> def_levels;
+            for (const auto &def_lev:def_lev_str_vec)
+                def_levels.push_back(stoul(def_lev));
+            dc(btp)->set_deflate_levels(def_levels);
         }
         else if (is_eq(attr.name(), "fillValue")) {
 
@@ -1263,6 +1284,7 @@ void DMZ::load_chunks(BaseType *btp)
     if (child) {
         chunks_found = 1;
         process_chunks(btp, child);
+        BESDEBUG(PARSER, prolog << "This variable's storage size is: " << dc(btp)->get_storage_size() << endl);
         auto array = dynamic_cast<Array*>(btp);
         // It's possible to have a chunk, but not have a chunk dimension sizes element
         // when there is only one chunk (e.g., with HDF5 Contiguous storage). jhrg 5/5/22

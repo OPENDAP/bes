@@ -3,36 +3,31 @@
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/cmdln -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/cmdln -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-#lib_LTLIBRARIES = libbes_standalone.la
-#libbes_standalone_la_SOURCES = $(besstandalone_SOURCES)
-#libbes_standalone_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
-#libbes_standalone_la_LIBADD = $(DAP_LIBS) $(XML2_LIBS) $(BES_ZLIB_LIBS) \
-#    $(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
-
-
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
-
 AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
+EXTRA_DIST = response-split.py
+
+# This installs the script
+noinst_SCRIPTS = response-split.py
+
+# This byte-compiles the script and installs the result in lib/python-3.9.
+# Since this code cannot function as a library, I'm going to leave it out.
+# python_PYTHON = response-split.py
+
 bin_PROGRAMS = besstandalone
 
 besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
-StandAloneApp.h StandAloneClient.h
+    StandAloneApp.h StandAloneClient.h
 
-besstandalone_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
-
-besstandalone_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la  $(top_builddir)/http/libbes_http.la  \
-$(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/cmdln/CmdTranslation.o \
-$(READLINE_LIBS) $(XML2_LIBS)
+# This depends on building in bes/cmdln first. It's not a good way to write
+# teh Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
+besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
+    $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)

@@ -213,22 +213,27 @@ DmrppArray *toDA(BaseType *btp){
  * @param dc A pointer to the DmrppCommon instance for that dataset_id
  */
 static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
+
     hid_t plist_id = create_h5plist(dataset_id);
 
     try {
         int numfilt = H5Pget_nfilters(plist_id);
         VERBOSE(cerr << prolog << "Number of filters associated with dataset: " << numfilt << endl);
         string filters;
+        size_t nelmts = 20;
+        unsigned int cd_values[20];
+        vector<unsigned int> deflate_levels;
 
         for (int filter = 0; filter < numfilt; filter++) {
-            size_t nelmts = 0;
-            unsigned int flags, filter_info;
+            unsigned int flags;
             H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts,
-                                                      nullptr, 0, nullptr, &filter_info);
+                                                      cd_values, 0, nullptr, nullptr);
             VERBOSE(cerr << prolog << "Found H5 Filter Type: " << h5_filter_name(filter_type) << " (" << filter_type << ")" << endl);
             switch (filter_type) {
                 case H5Z_FILTER_DEFLATE:
                     filters.append("deflate ");
+                    VERBOSE(cerr << prolog << "Deflate compression level: " << cd_values[0] << endl);
+                    deflate_levels.push_back(cd_values[0]);
                     break;
                 case H5Z_FILTER_SHUFFLE:
                     filters.append("shuffle ");
@@ -248,6 +253,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
         //trimming trailing space from compression (aka filter) string
         filters = filters.substr(0, filters.size() - 1);
         dc->set_filter(filters);
+        dc->set_deflate_levels(deflate_levels);
     }
     catch (...) {
         H5Pclose(plist_id);
@@ -673,15 +679,17 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
         haddr_t addr = 0;
         hsize_t size = 0;
 
+        unsigned filter_mask = 0;
+
         status = H5Dget_chunk_info(dataset, fspace_id, i, chunk_coords.data(),
-                                   nullptr, &addr, &size);
+                                   &filter_mask, &addr, &size);
         if (status < 0) {
             VERBOSE(cerr << "ERROR" << endl);
             throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
         }
 
         VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
-        dc->add_chunk(byte_order, size, addr, chunk_coords);
+        dc->add_chunk(byte_order, size, addr, filter_mask, chunk_coords);
     }
 }
 

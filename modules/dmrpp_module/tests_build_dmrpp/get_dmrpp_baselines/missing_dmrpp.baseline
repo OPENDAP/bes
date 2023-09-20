@@ -7,7 +7,7 @@
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+        <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>8</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="3218" nBytes="33" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
         </dmrpp:chunks>
@@ -17,7 +17,7 @@
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+        <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="5347" nBytes="22" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
         </dmrpp:chunks>

@@ -408,6 +408,8 @@ dnl jhrg 10/14/15 BES_CHECK_OPENSSL
 dnl BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.18.0], [AM_CONDITIONAL([LIBDAP], [true])], [AM_CONDITIONAL([LIBDAP], [false])])
+AC_MSG_CHECKING([on libdap])
+AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
 
 AC_MSG_CHECKING([on libdap])
 AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
@@ -423,7 +425,7 @@ AC_ARG_WITH(libwrap,
         [
             AC_MSG_RESULT(yes)
             AC_CHECK_LIB(wrap, request_init, [LIBS="-lwrap $LIBS" AC_DEFINE([HAVE_LIBWRAP], [1], [Description])],
-                [AC_MSG_ERROR(Could not find libwrap library. You have to insall tcp-wrappers before using --with-libwrap.)])
+                [AC_MSG_ERROR(Could not find libwrap library. You have to install tcp-wrappers before using --with-libwrap.)])
         ],
         [AC_MSG_RESULT(no)])],  dnl The default case (!= yes) is no.
     [AC_MSG_RESULT(no)])

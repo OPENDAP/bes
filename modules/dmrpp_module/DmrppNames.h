@@ -32,8 +32,14 @@
 #define DMRPP_NAME "dmrpp"
 
 #define MODULE DMRPP_NAME
-#define PARSER "dmz"
+
+#define PARSER "dmrpp:dmz"
+#define CREDS  "dmrpp:creds"
 #define DMRPP_CURL  "dmrpp:curl"
+
+#define DMRPP_USE_OBJECT_CACHE_KEY "DMRPP.UseObjectCache"
+#define DMRPP_OBJECT_CACHE_ENTRIES_KEY "DMRPP.ObjectCacheEntries"
+#define DMRPP_OBJECT_CACHE_PURGE_LEVEL_KEY "DMRPP.ObjectCachePurgeLevel"
 
 #define DMRPP_USE_TRANSFER_THREADS_KEY "DMRPP.UseParallelTransfers"
 #define DMRPP_MAX_TRANSFER_THREADS_KEY "DMRPP.MaxParallelTransfers"
