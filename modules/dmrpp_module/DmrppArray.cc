@@ -322,7 +322,7 @@ bool start_super_chunk_unconstrained_transfer_thread_dio(list<std::future<bool>>
     std::unique_lock<std::mutex> lck (transfer_thread_pool_mtx);
     if(transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
         transfer_thread_counter++;
-        futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread, std::move(args)));
+        futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread_dio, std::move(args)));
         retval = true;
         BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
                                             "' from std::async, transfer_thread_counter: " << transfer_thread_counter << endl);
@@ -972,19 +972,15 @@ void DmrppArray::read_contiguous()
 
 void DmrppArray::read_one_chunk_dio() {
 
-    // Get the single chunk that makes up this CONTIGUOUS variable.
+    // Get the single chunk that makes up this one-chunk compressed variable.
     if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
-    // This is the original chunk for this 'contiguous' variable.
+    // This is the chunk for this variable.
     auto the_one_chunk = get_immutable_chunks()[0];
-
-    unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
-    unsigned long long the_one_chunk_size = the_one_chunk->get_size();
 
     // For this version, we just read the whole chunk all at once.
     the_one_chunk->read_chunk_dio();
-
 
 }
 
@@ -1126,7 +1122,7 @@ void DmrppArray::read_chunks_unconstrained()
     set_read_p(true);
 }
 
-//KENT: handle direct chunk IO
+//KENT: handle direct chunk IO, mostly copy from the general IO handling routines.
 void DmrppArray::read_chunks_dio_unconstrained()
 {
 
@@ -1159,8 +1155,10 @@ void DmrppArray::read_chunks_dio_unconstrained()
         }
     }
 
-    // KENT: Change to the total storage buffer size.
-    reserve_value_capacity_ll(get_size());
+    // KENT: Change to the total storage buffer size to just the compressed buffer size. 
+    reserve_value_capacity_ll(get_var_chunks_storage_size());
+    //d_buf.resize(get_var_chunks_storage_size());
+    //reserve_value_capacity_ll(get_size());
 
 
     // The size in element of each of the array's dimensions
