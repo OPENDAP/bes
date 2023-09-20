@@ -362,7 +362,8 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
         case H5T_STRING: {
             if (H5Tis_variable_str(h5_type_id)) {
                  string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_STRING as a fillValue "
-                                     "type. This is not yet supported by the dmr++ creation machinery.");
+                                     "type. This is not yet supported by the dmr++ creation machinery. "
+                                     "The variable/dataset type screening code should intercepted this prior.");
                  throw UnsupportedTypeException(msg);
             }
             else {
@@ -373,7 +374,8 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
         }
         case H5T_ARRAY: {
             string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_ARRAY as a fillValue type. "
-                       "This is not yet supported by the dmr++ creation machinery.");
+                                "This is not yet supported by the dmr++ creation machinery."
+                                "The variable/dataset type screening code should intercepted this prior.");
             string str_fv(value.begin(),value.end());
             throw UnsupportedTypeException(msg);
         }
