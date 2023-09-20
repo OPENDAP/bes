@@ -29,8 +29,6 @@
 #include <iterator>
 #include <unordered_set>
 
-#include <cstdlib>
-
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
 #include <H5Epublic.h>
@@ -41,24 +39,20 @@
 #include "h5common.h"   // This is in the hdf5 handler
 
 #include <libdap/Str.h>
-#include <libdap/Array.h>
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
 
-#include <BESDebug.h>
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
 
 #include <TheBESKeys.h>
 #include <BESContextManager.h>
-#include <BESUtil.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppArray.h"
-#include "DmrppMetadataStore.h"
 #include "D4ParserSax2.h"
 
 #include "UnsupportedTypeException.h"
@@ -307,39 +301,40 @@ string
 get_value_as_string(hid_t h5_type_id, vector<char> &value)
 {
     H5T_class_t class_type = H5Tget_class(h5_type_id);
-    int sign;
     switch (class_type) {
-        case H5T_INTEGER:
+        case H5T_INTEGER: {
+            int sign;
             sign = H5Tget_sign(h5_type_id);
             switch (H5Tget_size(h5_type_id)) {
                 case 1:
                     if (sign == H5T_SGN_2)
-                        return to_string(*(int8_t *)(value.data()));
+                        return to_string(*(int8_t *) (value.data()));
                     else
-                        return to_string(*(uint8_t *)(value.data()));
-                    
+                        return to_string(*(uint8_t *) (value.data()));
+
                 case 2:
                     if (sign == H5T_SGN_2)
-                        return to_string(*(int16_t *)(value.data()));
+                        return to_string(*(int16_t *) (value.data()));
                     else
-                        return to_string(*(uint16_t *)(value.data()));
-                    
+                        return to_string(*(uint16_t *) (value.data()));
+
                 case 4:
                     if (sign == H5T_SGN_2)
-                        return to_string(*(int32_t *)(value.data()));
+                        return to_string(*(int32_t *) (value.data()));
                     else
-                        return to_string(*(uint32_t *)(value.data()));
-                    
+                        return to_string(*(uint32_t *) (value.data()));
+
                 case 8:
                     if (sign == H5T_SGN_2)
-                        return to_string(*(int64_t *)(value.data()));
+                        return to_string(*(int64_t *) (value.data()));
                     else
-                        return to_string(*(uint64_t *)(value.data()));
-                    
+                        return to_string(*(uint64_t *) (value.data()));
+
                 default:
                     throw BESInternalError("Unable extract integer fill value.", __FILE__, __LINE__);
             }
-            
+            break;
+        }
 
         case H5T_FLOAT: {
             ostringstream oss;
@@ -355,39 +350,40 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                 default:
                     throw BESInternalError("Unable extract float fill value.", __FILE__, __LINE__);
             }
+            break;
         }
 
         case H5T_STRING: {
-            // TODO: for variable length string KY 2022-12-22
             if (H5Tis_variable_str(h5_type_id)) {
-                 string msg("UnsupportedTypeException: Your data granule contains an array of "
-                         "variable length strings (AVLS). This data architecture is not currently supported by "
-                         "the dmr++ creation machinery. One solution available to you is to rewrite the granule "
-                         "so that these arrays are represented as arrays of fixed length strings (AFLS). While "
-                         "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so "
-                         "the storage penalty is minimal.");
-
-                throw UnsupportedTypeException(msg);
+                 string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_STRING as a fillValue "
+                                     "type. This is not yet supported by the dmr++ creation machinery. "
+                                     "The variable/dataset type screening code should intercepted this prior.");
+                 throw UnsupportedTypeException(msg);
             }
             else {
                 string str_fv(value.begin(),value.end());
                 return str_fv;
             }
+            break;
         }
         case H5T_ARRAY: {
-            string msg("UnsupportedTypeException: Your data granule contains an H5T_ARRAY "
-                       "which is not yet supported by the dmr++ creation machinery.");
+            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_ARRAY as a fillValue type. "
+                                "This is not yet supported by the dmr++ creation machinery."
+                                "The variable/dataset type screening code should intercepted this prior.");
+            string str_fv(value.begin(),value.end());
             throw UnsupportedTypeException(msg);
         }
         case H5T_COMPOUND: {
-            string msg("UnsupportedTypeException: Your data granule contains a variable with type H5T_COMPOUND  "
-                       "which is not yet supported by the dmr++ creation machinery.");
+            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as fillValue type. "
+                       "This is not yet supported by the dmr++ creation machinery. ");
+            string str_fv(value.begin(),value.end());
             throw UnsupportedTypeException(msg);
         }
 
         case H5T_REFERENCE:
-        default:
+        default: {
             throw BESInternalError("Unable extract fill value from HDF5 file.", __FILE__, __LINE__);
+        }
     }
 }
 
@@ -772,7 +768,7 @@ void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
             if (H5Tis_variable_str(dtypeid) > 0) {
                 vector<string> finstrval;   // passed by reference to read_vlen_string
                 // @TODO Why push an empty string into the first array position? WHY?
-                finstrval.push_back("");
+                finstrval.emplace_back("");
                 read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                 string vlstr = finstrval[0];
                 str->set_value(vlstr);
@@ -883,7 +879,7 @@ void process_compact_layout_array(hid_t dataset, BaseType *btp) {
                 // Variable length string case.
                 vector<string> finstrval;   // passed by reference to read_vlen_string
                 // @TODO Why push an empty string into the first array position? WHY?
-                finstrval.push_back("");
+                finstrval.emplace_back("");
                 read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                 array->set_value(finstrval, (int) finstrval.size());
                 array->set_read_p(true);
@@ -1040,6 +1036,54 @@ string get_type_decl(BaseType *btp){
     return type_decl.str();
 }
 
+/**
+ * @brief Examines the hdf5 dataset, dataset_id, and returns true if the dataset is encoded as an unsupported type.
+ * @param dataset_id The dataset to examine
+ * @param btp The associated libdap::BaseType variable for this hdf5 dataset.
+ * @param msg If an unsupported type is encountered a message about it will be returned in the msg return value
+ * parameter.
+ * @return True if the type of dataset_id is unsupported, false otherwise.
+ */
+bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
+    VERBOSE(cerr << prolog << "BEGIN " << get_type_decl(btp) << endl);
+
+    bool is_unsupported = false;
+    hid_t h5_type_id = H5Dget_type(dataset_id);
+    H5T_class_t class_type = H5Tget_class(h5_type_id);
+
+    switch (class_type) {
+        case H5T_STRING: {
+            if (H5Tis_variable_str(h5_type_id)) {
+                stringstream msgs;
+                msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
+                msgs << get_type_decl(btp) << " ";
+                msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of ";
+                msgs << "variable length strings (AVLS). This data architecture is not currently supported by ";
+                msgs << "the dmr++ creation machinery. One solution available to you is to rewrite the granule ";
+                msgs << "so that these arrays are represented as arrays of fixed length strings (AFLS). While ";
+                msgs << "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so ";
+                msgs << "the storage penalty is minimal.";
+                msg = msgs.str();
+                is_unsupported = true;
+            }
+            break;
+        }
+        case H5T_ARRAY: {
+            stringstream msgs;
+            msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
+            msgs << get_type_decl(btp) << " ";
+            msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of H5T_ARRAY. ";
+            msgs << "This is not yet supported by the dmr++ creation machinery.";
+            msg = msgs.str();
+            is_unsupported = true;
+            break;
+        }
+
+        default:
+            break;
+    }
+    return is_unsupported;
+}
 
 /**
  * @brief Iterate over all the variables in a DMR and get their chunk info
@@ -1066,11 +1110,11 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     D4Dimensions *grp_dims = group->dims();
     
     if (grp_dims) {
-        for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) 
+        for (auto di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di)
             dimname_list.insert((*di)->name());
     }
 
-    if (dimname_list.empty() == false) {
+    if (!dimname_list.empty()) {
         // Then find the nc4_non_coord candidate variables,
         for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
             if (dimname_list.find((*btp)->name())!=dimname_list.end())   
@@ -1145,6 +1189,17 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         }
 
         try {
+            string msg;
+            if(is_unsupported_type(dataset, btp, msg)){
+                // @TODO What should really happen in this case?
+                //   - Throw an exception?
+                //   - Elide the variable from the dmr++?
+                //   - Demote dataset/var to Attribute?
+                //   - Mark the variable as "unsupported" so that it's metadata are transmitted but
+                //     it's data cannot be read.
+                throw UnsupportedTypeException(msg);
+            }
+
             VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
             get_variable_chunk_info(dataset, btp);
 
