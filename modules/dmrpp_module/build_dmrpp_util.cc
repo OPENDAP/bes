@@ -353,23 +353,11 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             break;
         }
 
-        // @TODO Move this logic for unsupported types into the get_chunks_for_all_variables() function.
-        //   But then what? What should be happening for these unsupported types down here where we map an
-        //   hdf5 fillValue into a string?
-
         case H5T_STRING: {
-            // TODO: for variable length string KY 2022-12-22
             if (H5Tis_variable_str(h5_type_id)) {
-                 string msg("UnsupportedTypeException: Your data granule contains an array of "
-                         "variable length strings (AVLS). This data architecture is not currently supported by "
-                         "the dmr++ creation machinery. One solution available to you is to rewrite the granule "
-                         "so that these arrays are represented as arrays of fixed length strings (AFLS). While "
-                         "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so "
-                         "the storage penalty is minimal.");
-
-                string str_fv(value.begin(),value.end());
-                return str_fv;
-                //throw UnsupportedTypeException(msg);
+                 string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_STRING as a fillValue "
+                                     "type. This is not yet supported by the dmr++ creation machinery.");
+                 throw UnsupportedTypeException(msg);
             }
             else {
                 string str_fv(value.begin(),value.end());
@@ -378,18 +366,16 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             break;
         }
         case H5T_ARRAY: {
-            string msg("UnsupportedTypeException: Your data granule contains an H5T_ARRAY "
-                       "which is not yet supported by the dmr++ creation machinery.");
+            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_ARRAY as a fillValue type. "
+                       "This is not yet supported by the dmr++ creation machinery.");
             string str_fv(value.begin(),value.end());
-            return str_fv;
-            //throw UnsupportedTypeException(msg);
+            throw UnsupportedTypeException(msg);
         }
         case H5T_COMPOUND: {
-            string msg("UnsupportedTypeException: Your data granule contains a variable with type H5T_COMPOUND  "
-                       "which is not yet supported by the dmr++ creation machinery.");
+            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as fillValue type. "
+                       "This is not yet supported by the dmr++ creation machinery. ");
             string str_fv(value.begin(),value.end());
-            return str_fv;
-            //throw UnsupportedTypeException(msg);
+            throw UnsupportedTypeException(msg);
         }
 
         case H5T_REFERENCE:
@@ -1061,8 +1047,6 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     hid_t h5_type_id = H5Dget_type(dataset_id);
     H5T_class_t class_type = H5Tget_class(h5_type_id);
 
-    // @TODO Should we check to see if this is actually an array type: btp->type() == dods_array_c;
-    //   I'm not sure if we need to perform this check for atomic is_unsupported types...
     switch (class_type) {
         case H5T_STRING: {
             if (H5Tis_variable_str(h5_type_id)) {
@@ -1084,17 +1068,7 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
             stringstream msgs;
             msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
             msgs << get_type_decl(btp) << " ";
-            msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of H5T_ARRAY.";
-            msgs << "This is not yet supported by the dmr++ creation machinery.";
-            msg = msgs.str();
-            is_unsupported = true;
-            break;
-        }
-        case H5T_COMPOUND: {
-            stringstream msgs;
-            msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
-            msgs << get_type_decl(btp) << " ";
-            msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of H5T_COMPOUND.";
+            msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of H5T_ARRAY. ";
             msgs << "This is not yet supported by the dmr++ creation machinery.";
             msg = msgs.str();
             is_unsupported = true;
