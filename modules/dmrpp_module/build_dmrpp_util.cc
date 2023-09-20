@@ -29,8 +29,6 @@
 #include <iterator>
 #include <unordered_set>
 
-#include <cstdlib>
-
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
 #include <H5Epublic.h>
@@ -41,24 +39,20 @@
 #include "h5common.h"   // This is in the hdf5 handler
 
 #include <libdap/Str.h>
-#include <libdap/Array.h>
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
 
-#include <BESDebug.h>
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
 
 #include <TheBESKeys.h>
 #include <BESContextManager.h>
-#include <BESUtil.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppArray.h"
-#include "DmrppMetadataStore.h"
 #include "D4ParserSax2.h"
 
 #include "UnsupportedTypeException.h"
@@ -774,7 +768,7 @@ void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
             if (H5Tis_variable_str(dtypeid) > 0) {
                 vector<string> finstrval;   // passed by reference to read_vlen_string
                 // @TODO Why push an empty string into the first array position? WHY?
-                finstrval.push_back("");
+                finstrval.emplace_back("");
                 read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                 string vlstr = finstrval[0];
                 str->set_value(vlstr);
@@ -885,7 +879,7 @@ void process_compact_layout_array(hid_t dataset, BaseType *btp) {
                 // Variable length string case.
                 vector<string> finstrval;   // passed by reference to read_vlen_string
                 // @TODO Why push an empty string into the first array position? WHY?
-                finstrval.push_back("");
+                finstrval.emplace_back("");
                 read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                 array->set_value(finstrval, (int) finstrval.size());
                 array->set_read_p(true);
@@ -1116,11 +1110,11 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     D4Dimensions *grp_dims = group->dims();
     
     if (grp_dims) {
-        for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) 
+        for (auto di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di)
             dimname_list.insert((*di)->name());
     }
 
-    if (dimname_list.empty() == false) {
+    if (!dimname_list.empty()) {
         // Then find the nc4_non_coord candidate variables,
         for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
             if (dimname_list.find((*btp)->name())!=dimname_list.end())   
