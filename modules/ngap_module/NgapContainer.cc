@@ -86,6 +86,9 @@ void NgapContainer::initialize()
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
+    // TODO This could use the ObjMemCache (or just a unordered_map<string,string>) to
+    //  keep from hitting CMR every time Not a huge savings, but a cheap, easy, and thread-safe
+    //  cache. jhrg 9/20/23
     NgapApi ngap_api;
     string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
 
@@ -192,6 +195,10 @@ string NgapContainer::access() {
     if (type == "ngap")
         type = "";
 
+    // TODO These Container::access() methods are called by the framework, during the initial stages
+    //  of plan execution, and by the handlers, when they are looking for data. Make the second, ...,
+    //  time here as efficient as possible. Move this test that the thing has been retrieved up to
+    //  eliminate the overhead of the above string operations when possible. jhrg 9/20/23
     if (!d_dmrpp_rresource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
         map<string,string> content_filters;

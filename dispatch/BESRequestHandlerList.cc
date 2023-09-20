@@ -276,6 +276,7 @@ void BESRequestHandlerList::execute_once(BESDataHandlerInterface &dhi)
  */
 void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
 {
+    // TODO Why is there a mutex here? Is this part of the framework multi-threaded? jhrg 9/20/23
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     if (dhi.container) {

@@ -37,6 +37,7 @@
 namespace ngap {
 
     class NgapRequestHandler: public BESRequestHandler {
+        unordered_map<std::string, std::string> translated_urls;
     public:
         NgapRequestHandler(const std::string &name);
         virtual ~NgapRequestHandler(void);
