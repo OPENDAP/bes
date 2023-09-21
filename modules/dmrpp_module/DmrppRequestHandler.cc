@@ -421,11 +421,10 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
     try {
-
         bool is_netcdf4_response =(dhi.data["return_command"]=="netcdf-4");
 
         DmrppRequestHandler::is_netcdf4_enhanced_response = is_netcdf4_response;
-        if (DmrppRequestHandler::is_netcdf4_enhanced_response &&  
+        if (DmrppRequestHandler::is_netcdf4_enhanced_response &&
                 DmrppRequestHandler::is_netcdf4_classic_response)
             DmrppRequestHandler::is_netcdf4_enhanced_response = false;
 

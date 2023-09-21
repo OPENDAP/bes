@@ -438,10 +438,12 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(
     auto cmr_query_url_ptr = make_shared<http::url>(cmr_query_url);
     http::RemoteResource cmr_query(cmr_query_url_ptr, uid);
     {
-#ifndef NDEBUG
+#if 0
+        // I moved this into NgapContainer::initialize() although that code might get moved
+        // in the future. jhrg 9/20/23
         BESStopWatch besTimer;
         if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
-            besTimer.start("CMR Query: " + cmr_query_url);
+            besTimer.start("Cache miss, CMR Query: " + cmr_query_url);
         }
 #endif
         cmr_query.retrieve_resource();

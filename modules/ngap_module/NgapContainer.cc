@@ -61,6 +61,7 @@ namespace ngap {
  *
  * The real_name is the remote request URL.
  *
+ * @todo move to the header jhrg 9/20/23
  * @param sym_name symbolic name representing this remote container
  * @param real_name The NGAP restified path.
  * @throws BESSyntaxUserError if the url does not validate
@@ -69,49 +70,10 @@ namespace ngap {
 NgapContainer::NgapContainer(const string &sym_name,
                              const string &real_name,
                              const string &type) :
-        BESContainer(sym_name, real_name, type) {
+        BESContainer(sym_name, real_name, "ngap"), d_ngap_path(real_name) {
+#if 0
     initialize();
-}
-
-void NgapContainer::initialize()
-{
-    BESDEBUG(MODULE, prolog << "BEGIN (obj_addr: "<< (void *) this << ")" << endl);
-    BESDEBUG(MODULE, prolog << "sym_name: "<< get_symbolic_name() << endl);
-    BESDEBUG(MODULE, prolog << "real_name: "<< get_real_name() << endl);
-    BESDEBUG(MODULE, prolog << "type: "<< get_container_type() << endl);
-
-    if (get_container_type().empty())
-        set_container_type("ngap");
-
-    bool found;
-    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
-    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
-
-    string url_key = get_real_name() + '.' + uid;
-    if (NgapRequestHandler::d_use_cmr_cache
-        && NgapRequestHandler::d_translated_urls.find(url_key) != NgapRequestHandler::d_translated_urls.end()) {
-        set_real_name(NgapRequestHandler::d_translated_urls[url_key]);
-        set_relative_name(get_real_name());
-        BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
-        BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
-        return;
-    }
-
-    NgapApi ngap_api;
-    string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
-
-    set_real_name(data_access_url);
-
-    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
-    // So we set it to be the same as "name"
-    set_relative_name(data_access_url);
-
-    if (NgapRequestHandler::d_use_cmr_cache) {
-        NgapRequestHandler::d_translated_urls[url_key] = data_access_url;
-        BESDEBUG(NGAP_CACHE, prolog << "Cached translated URL: " << get_real_name() << endl);
-    }
-
-    BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
+#endif
 }
 
 void NgapContainer::_duplicate(NgapContainer &copy_to) {
@@ -119,6 +81,7 @@ void NgapContainer::_duplicate(NgapContainer &copy_to) {
         throw BESInternalError("The Container has already been accessed, cannot duplicate.", __FILE__, __LINE__);
     }
     copy_to.d_dmrpp_rresource = d_dmrpp_rresource;
+    copy_to.d_ngap_path = d_ngap_path;
     BESContainer::_duplicate(copy_to);
 }
 
@@ -130,6 +93,7 @@ NgapContainer::ptr_duplicate() {
     return container;
 }
 
+// TODO Move this to the header and set it as default;
 NgapContainer::~NgapContainer() {
     BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
 #if 0
@@ -138,6 +102,63 @@ NgapContainer::~NgapContainer() {
     }
 #endif
     BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
+}
+
+/**
+ * @brief Set the real name of the container using the CMR or cache.
+ *
+ * This uses CMR to translate a 'restified' path to a true NGAP URL for the granule.
+ * Once this is done, the result is cached in an unordered_map keyed using the the
+ * restified path and the UID. The restified path is initially the value of the
+ * real_name property of the Container, but the action of performing the translation
+ * changes the name of the real_name property to the true NGAP URL. The restified
+ * path is stored in the d_ngap_path property of the NgapContainer instance.
+ *
+ * @note: The cache is global to the NgapRequestHandler class. This is a per-process
+ * cache and it is not thread-safe.
+ */
+void NgapContainer::set_real_name_using_cmr_or_cache()
+{
+    BESDEBUG(MODULE, prolog << "BEGIN (obj_addr: "<< (void *) this << ")" << endl);
+    BESDEBUG(MODULE, prolog << "sym_name: "<< get_symbolic_name() << endl);
+    BESDEBUG(MODULE, prolog << "real_name: "<< get_real_name() << endl);
+    BESDEBUG(MODULE, prolog << "type: "<< get_container_type() << endl);
+
+#ifndef NDEBUG
+    BESStopWatch besTimer;
+    if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
+        besTimer.start(prolog + get_real_name());
+    }
+#endif
+
+    bool found;
+    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
+    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+
+    string url_key = d_ngap_path + '.' + uid;
+    if (NgapRequestHandler::d_use_cmr_cache
+        && NgapRequestHandler::d_translated_urls.find(url_key) != NgapRequestHandler::d_translated_urls.end()) {
+        set_real_name(NgapRequestHandler::d_translated_urls[url_key]);
+        set_relative_name(get_real_name());
+        BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
+        BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
+        return;
+    }
+
+    NgapApi ngap_api;
+    string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
+    set_real_name(data_access_url);
+
+    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
+    // So we set it to be the same as "name"
+    set_relative_name(get_real_name());
+
+    if (NgapRequestHandler::d_use_cmr_cache) {
+        NgapRequestHandler::d_translated_urls[url_key] = get_real_name();
+        BESDEBUG(NGAP_CACHE, prolog << "Cache miss, cached translated URL: " << get_real_name() << endl);
+    }
+
+    BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
 }
 
 /**
@@ -166,7 +187,36 @@ void NgapContainer::filter_response(const map<string, string> &content_filters) 
 }
 
 /**
+ * Build the content filters if needed
+ * @param content_filters Value-result parameter
+ * @return True if the filters were built, false otherwise
+ */
+bool
+NgapContainer::get_content_filters(map<string,string> &content_filters) const
+{
+    if (inject_data_url()) {
+        string data_access_url_str = get_real_name();
+        string missing_data_url_str = data_access_url_str + ".missing";
+        string href=R"(href=")";
+        string trusted_url_hack=R"(" dmrpp:trust="true")";
+        string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
+        string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
+        string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
+        string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+        content_filters.insert(pair<string,string>(data_access_url_key, data_access_url_with_trusted_attr_str));
+        content_filters.insert(pair<string,string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * @brief access the remote target response by making the remote request
+ *
+ * @note The Container::access() methods are called by the framework when it
+ * runs execute_commands() and then, often, a second time in the RequestHandler
+ * code when it is looking for data.
  *
  * @return full path to the remote request response data file
  * @throws BESError if there is a problem making the remote request
@@ -174,51 +224,13 @@ void NgapContainer::filter_response(const map<string, string> &content_filters) 
 string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "BEGIN  (obj_addr: "<< (void *) this << ")" << endl);
 
-    // Since this the ngap we know that the real_name is a URL.
-    string data_access_url_str = get_real_name();
-
-    // And we know that the dmr++ file should "right next to it" (side-car)
-    string dmrpp_url_str = data_access_url_str + ".dmrpp";
-
-    // And if there's a missing data file (side-car) it should be "right there" too.
-    string missing_data_url_str = data_access_url_str + ".missing";
-
-    BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);
-    BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url_str << endl);
-    BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
-
-    string href=R"(href=")";
-
-    // Yes, the value below really does begin with a " which is unbalanced. This is correct. LEAVE IT BE.
-    string trusted_url_hack=R"(" dmrpp:trust="true")"; 
-
-    string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
-    BESDEBUG(MODULE, prolog << "                   data_access_url_key: " << data_access_url_key << endl);
-
-    string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
-    BESDEBUG(MODULE, prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
-
-    string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
-    BESDEBUG(MODULE, prolog << "           missing_data_access_url_key: " << missing_data_access_url_key << endl);
-
-    string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
-    BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
-
-    string type = get_container_type();
-    if (type == "ngap")
-        type = "";
-
-    // TODO These Container::access() methods are called by the framework, during the initial stages
-    //  of plan execution, and by the handlers, when they are looking for data. Make the second, ...,
-    //  time here as efficient as possible. Move this test that the thing has been retrieved up to
-    //  eliminate the overhead of the above string operations when possible. jhrg 9/20/23
     if (!d_dmrpp_rresource) {
-        BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
-        map<string,string> content_filters;
-        if (inject_data_url()) {
-            content_filters.insert(pair<string,string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-            content_filters.insert(pair<string,string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
-        }
+        set_real_name_using_cmr_or_cache();
+
+        string data_access_url_str = get_real_name();
+
+        // Assume the DMR++ is a sidecar file to the granule. jhrg 9/0/23
+        string dmrpp_url_str = data_access_url_str + ".dmrpp";
         auto dmrpp_url = make_shared<http::url>(dmrpp_url_str, true);
         {
             // TODO unique_ptr. Needs work in the release() method, too. jhrg 3/9/23
@@ -231,21 +243,22 @@ string NgapContainer::access() {
 #endif
             d_dmrpp_rresource->retrieve_resource();
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
-            filter_response(content_filters);
+            map<string,string> content_filters;
+            if (get_content_filters(content_filters))
+                filter_response(content_filters);
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url->str() << endl);
     }
 
-    string cachedResource = d_dmrpp_rresource->get_filename();
-    BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
+    string dmrpp_file_name = d_dmrpp_rresource->get_filename();
+    BESDEBUG(MODULE, prolog << "Using local temporary file: " << dmrpp_file_name << endl);
 
-    type = d_dmrpp_rresource->get_type();
-    set_container_type(type);
-    BESDEBUG(MODULE, prolog << "Type: " << type << endl);
-    BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url_str << " returning cached file " << cachedResource << endl);
+    set_container_type(d_dmrpp_rresource->get_type());
+
+    BESDEBUG(MODULE, prolog << "Type: " << get_container_type() << endl);
     BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
 
-    return cachedResource;    // this should return the dmr++ file name from the NgapCache
+    return dmrpp_file_name;    // this should return the dmr++ file name from the NgapCache
 }
 
 

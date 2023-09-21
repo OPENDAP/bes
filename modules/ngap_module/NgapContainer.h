@@ -49,8 +49,10 @@ class NgapContainer: public BESContainer {
 
 private:
     std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
+    std::string d_ngap_path;    // The (in)famous restified path
 
-    void initialize();
+    void set_real_name_using_cmr_or_cache();
+    bool get_content_filters(std::map<std::string,std::string> &content_filters) const;
     void filter_response(const std::map<std::string, std::string> &content_filters) const;
 
     static bool inject_data_url();
