@@ -1109,6 +1109,57 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
     dc->set_uses_fill_value(true);
  }
 
+
+
+ // The original unsupported fillValue flags from 4/22
+#define UNSUPPORTED_STRING "unsupported-string"
+#define UNSUPPORTED_ARRAY "unsupported-array"
+#define UNSUPPORTED_COMPOUND "unsupported-compound"
+
+// Added when Arrays Of Fixed Length Strings. The unsupported-string value was dropped at that time.
+#define UNSUPPORTED_VARIABLE_LENGTH_STRING "unsupported-variable-length-string"
+
+/**
+ * @brief Checks the value of the passed attribute to see if it matches one of the know bad values and if found throws BESInternalError
+ *
+ * The original unsupported fillValue flags from 4/22 were :
+ *  - "unsupported-string"
+ *  - "unsupported-array"
+ *  - "unsupported-compound"
+ *
+ * When Arrays Of Fixed Length Strings were implemented, the "unsupported-string" value was dropped and replaced
+ * with "unsupported-variable-length-string"
+ *
+ * @param attr The attribute to evaluate.
+ */
+void check_fillValue_attribute_for_unsupported_types(xml_attribute attr){
+    stringstream msg;
+    string unsupported_type;
+
+    if(is_eq(attr.value(),UNSUPPORTED_STRING)){
+        unsupported_type = UNSUPPORTED_STRING;
+    }
+    else if(is_eq(attr.value(),UNSUPPORTED_VARIABLE_LENGTH_STRING)){
+        unsupported_type = UNSUPPORTED_VARIABLE_LENGTH_STRING;
+    }
+    else if(is_eq(attr.value(),UNSUPPORTED_ARRAY)){
+        unsupported_type = UNSUPPORTED_ARRAY;
+    }
+    else if(is_eq(attr.value(),UNSUPPORTED_COMPOUND)){
+        unsupported_type = UNSUPPORTED_COMPOUND;
+    }
+    if(!unsupported_type.empty()){
+        msg << prolog << "Found a dmrpp:chunk/@fillValue with a value of ";
+        msg << "'" << unsupported_type << "' this means that ";
+        msg << "the Hyrax service is unable to process this variable/dataset. This is also an indication that";
+        msg << "the metadata representation (aka the dmr++) for this granule needs to be regenerated.";
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+}
+
+
+
+
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
 void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
@@ -1129,6 +1180,9 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
             dc(btp)->set_deflate_levels(def_levels);
         }
         else if (is_eq(attr.name(), "fillValue")) {
+
+            // Throws BESInternalError
+            check_fillValue_attribute_for_unsupported_types(attr);
 
             has_fill_value = true;
 
