@@ -27,10 +27,14 @@
 #define NgapContainer_h_ 1
 
 #include <string>
-#include <map>  // TODO unordered_map jhrg 3/9/23
+#include <map>
+#include <memory>
 
 #include "BESContainer.h"
-#include "RemoteResource.h"
+
+namespace http {
+class RemoteResource;
+}
 
 namespace ngap {
 
@@ -48,6 +52,7 @@ enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 class NgapContainer: public BESContainer {
 
 private:
+    // Make this shared so containers can be copied. jhrg 9/20/23
     std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
     std::string d_ngap_path;    // The (in)famous restified path
 

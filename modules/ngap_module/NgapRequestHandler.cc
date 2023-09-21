@@ -40,6 +40,11 @@
 #include "BESDASResponse.h"
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
+
+#if 0
+#include <BESFileLockingCache.h>
+#endif
+
 #include <BESUtil.h>
 
 #include "NgapRequestHandler.h"
@@ -52,11 +57,22 @@ using namespace ngap;
 unordered_map<std::string, std::string> NgapRequestHandler::d_translated_urls;
 bool NgapRequestHandler::d_use_cmr_cache = true;
 
+#if 0
+BESFileLockingCache NgapRequestHandler::d_dmrpp_file_cache;
+bool NgapRequestHandler::d_use_dmrpp_file_cache = true;
+#endif
+
+
 NgapRequestHandler::NgapRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
     add_method(VERS_RESPONSE, NgapRequestHandler::ngap_build_vers);
     add_method(HELP_RESPONSE, NgapRequestHandler::ngap_build_help);
+
+#if 0
+    // TODO Replace these hard-coded values jhrg 9/20/23
+    NgapRequestHandler::d_dmrpp_file_cache.initialize("/tmp/ngap-dmrpp", "dmrpp:", 100 /* MB */);
+#endif
 }
 
 NgapRequestHandler::~NgapRequestHandler()

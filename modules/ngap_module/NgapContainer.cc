@@ -69,7 +69,7 @@ namespace ngap {
  */
 NgapContainer::NgapContainer(const string &sym_name,
                              const string &real_name,
-                             const string &type) :
+                             const string &) :
         BESContainer(sym_name, real_name, "ngap"), d_ngap_path(real_name) {
 #if 0
     initialize();
@@ -172,7 +172,7 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
  * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
  * resource will be replaced with its associated value.
  */
-void NgapContainer::filter_response(const map<string, string> &content_filters) const {
+void NgapContainer::filter_response(const map<string, string, std::less<string>> &content_filters) const {
 
     string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
 
@@ -192,17 +192,18 @@ void NgapContainer::filter_response(const map<string, string> &content_filters) 
  * @return True if the filters were built, false otherwise
  */
 bool
-NgapContainer::get_content_filters(map<string,string> &content_filters) const
+NgapContainer::get_content_filters(map<string,string, std::less<string>> &content_filters) const
 {
     if (inject_data_url()) {
-        string data_access_url_str = get_real_name();
-        string missing_data_url_str = data_access_url_str + ".missing";
-        string href=R"(href=")";
-        string trusted_url_hack=R"(" dmrpp:trust="true")";
-        string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
-        string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
-        string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
-        string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+        const string data_access_url_str = get_real_name();
+        const string missing_data_url_str = data_access_url_str + ".missing";
+        const string href=R"(href=")";
+        const string trusted_url_hack=R"(" dmrpp:trust="true")";
+        const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
+        const string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
+        const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
+        const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+
         content_filters.insert(pair<string,string>(data_access_url_key, data_access_url_with_trusted_attr_str));
         content_filters.insert(pair<string,string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
         return true;
@@ -227,13 +228,10 @@ string NgapContainer::access() {
     if (!d_dmrpp_rresource) {
         set_real_name_using_cmr_or_cache();
 
-        string data_access_url_str = get_real_name();
-
-        // Assume the DMR++ is a sidecar file to the granule. jhrg 9/0/23
-        string dmrpp_url_str = data_access_url_str + ".dmrpp";
+        // Assume the DMR++ is a sidecar file to the granule. jhrg 9/20/23
+        string dmrpp_url_str = get_real_name() + ".dmrpp";
         auto dmrpp_url = make_shared<http::url>(dmrpp_url_str, true);
         {
-            // TODO unique_ptr. Needs work in the release() method, too. jhrg 3/9/23
             d_dmrpp_rresource = make_shared<http::RemoteResource>(dmrpp_url);
 #ifndef NDEBUG
             BESStopWatch besTimer;
@@ -243,7 +241,7 @@ string NgapContainer::access() {
 #endif
             d_dmrpp_rresource->retrieve_resource();
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
-            map<string,string> content_filters;
+            map<string,string, std::less<string>> content_filters;
             if (get_content_filters(content_filters))
                 filter_response(content_filters);
         }
