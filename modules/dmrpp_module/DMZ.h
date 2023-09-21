@@ -132,6 +132,7 @@ public:
     virtual void load_chunks(libdap::BaseType *btp);
 
     virtual void load_all_attributes(libdap::DMR *dmr);
+
 };
 
 } // namespace dmrpp
