@@ -99,10 +99,6 @@ class DmrppCommon {
     friend class DmrppParserTest;
     friend class DMZTest;
 
-    // We use this to "turn-off" a variable. If this is set to true,
-    // Then the variable will
-    bool d_is_elided = false;
-
     bool d_compact = false;
 	std::string d_filters;
 	std::string d_byte_order;
@@ -258,9 +254,6 @@ public:
     /// @return Return true if this variable contains one chunk and the data are all 'fill value.'
     virtual bool get_one_chunk_fill_value() const { return d_one_chunk_fill_value; }
 
-    void set_elided(bool is_eilided) { d_is_elided = is_eilided; }
-    bool get_elided() { return d_is_elided; }
-    bool is_elided() { return d_is_elided; }
 
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 

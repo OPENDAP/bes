@@ -212,21 +212,21 @@ std::string check_for_unsupported_types(const char *type_str){
 }
 
 
-bool is_supported_type(xml_node var_node) {
+bool flagged_as_unsupported_type(xml_node var_node) {
     if (var_node == nullptr) {
         throw BESInternalError(prolog + "Received null valued xml_node in the DMR++ XML document.", __FILE__, __LINE__);
     }
-    bool retVal = true;
+    bool is_unsupported_type = false;
     auto chunks = var_node.child("dmrpp:chunks");
     if (chunks) {
         for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
             if (is_eq(attr.name(), "fillValue")) {
                 string unsupported_type = check_for_unsupported_types(attr.value());
-                retVal = unsupported_type.empty();
+                is_unsupported_type = !unsupported_type.empty();
             }
         }
     }
-    return retVal;
+    return is_unsupported_type;
 }
 
 
@@ -432,12 +432,16 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
 {
     assert(group);
 
+    if(flagged_as_unsupported_type(var_node)){
+        // And in this way we elided the unsupported types
+        return;
+    }
+
     // Variables are declared using nodes with type names (e.g., <Float32...>)
     // Variables are arrays if they have one or more <Dim...> child nodes.
     Type t = get_type(var_node.name());
 
     assert(t != dods_group_c);  // Groups are special and handled elsewhere
-
 
     bool is_array_type = has_dim_nodes(var_node);
     BaseType *btp;
@@ -450,9 +454,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
             assert(parent);
             for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
-                    if(is_supported_type(child)) {
-                        process_variable(dmr, group, parent, child);
-                    }
+                    process_variable(dmr, group, parent, child);
             }
         }
     }
@@ -464,9 +466,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
             assert(parent);
             for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
-                    if(is_supported_type(var_node)){
-                        process_variable(dmr, group, parent, child);
-                    }
+                    process_variable(dmr, group, parent, child);
             }
         }
     }
@@ -659,9 +659,7 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, const xml_node &var_node)
             process_group(dmr, new_group, child);
         }
         else if (member_of(variable_elements, child.name())) {
-            if(is_supported_type(child)){
-                process_variable(dmr, new_group, nullptr, child);
-            }
+            process_variable(dmr, new_group, nullptr, child);
         }
     }
 }
@@ -694,9 +692,7 @@ void DMZ::build_thin_dmr(DMR *dmr)
         }
         // TODO Add EnumDef
         else if (member_of(variable_elements, child.name())) {
-            if(is_supported_type(child)){
-                process_variable(dmr, dg, nullptr, child);
-            }
+            process_variable(dmr, dg, nullptr, child);
         }
     }
 }
@@ -1184,9 +1180,6 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
     dc->set_uses_fill_value(true);
  }
 
-
-
-
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
 void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
@@ -1241,7 +1234,7 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
     }
 
     // reset one_chunk_fillvalue to false if has_fill_value = false
-    if ( !has_fill_value && dc(btp)->get_one_chunk_fill_value() ) // reset fillvalue
+    if (has_fill_value == false && dc(btp)->get_one_chunk_fill_value() == true) // reset fillvalue
         dc(btp)->set_one_chunk_fill_value(false);
 
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
@@ -1347,8 +1340,6 @@ void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map
     } while (odometer.next());
 }
 
-
-
 /**
  * @brief Load the chunk information into a variable
  *
@@ -1357,9 +1348,8 @@ void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map
  *
  * @param btp The variable
  */
-void DMZ::load_chunks(libdap::BaseType *btp) {
-
-
+void DMZ::load_chunks(BaseType *btp)
+{
     if (dc(btp)->get_chunks_loaded())
         return;
 
