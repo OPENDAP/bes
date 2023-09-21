@@ -31,13 +31,18 @@
 
 #include <string>
 #include <ostream>
+#include <unordered_map>
 
 #include "BESRequestHandler.h"
 
 namespace ngap {
 
     class NgapRequestHandler: public BESRequestHandler {
-        unordered_map<std::string, std::string> translated_urls;
+        static std::unordered_map<std::string, std::string> d_translated_urls;
+        static bool d_use_cmr_cache;
+
+        friend class NgapContainer;   // give NgapContainer access to d_translated_urls, etc.
+
     public:
         NgapRequestHandler(const std::string &name);
         virtual ~NgapRequestHandler(void);

@@ -43,6 +43,7 @@
 #include "CurlUtils.h"
 #include "RemoteResource.h"
 
+#include "NgapRequestHandler.h"
 #include "NgapContainer.h"
 #include "NgapApi.h"
 #include "NgapNames.h"
@@ -86,9 +87,16 @@ void NgapContainer::initialize()
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
-    // TODO This could use the ObjMemCache (or just a unordered_map<string,string>) to
-    //  keep from hitting CMR every time Not a huge savings, but a cheap, easy, and thread-safe
-    //  cache. jhrg 9/20/23
+    string url_key = get_real_name() + '.' + uid;
+    if (NgapRequestHandler::d_use_cmr_cache
+        && NgapRequestHandler::d_translated_urls.find(url_key) != NgapRequestHandler::d_translated_urls.end()) {
+        set_real_name(NgapRequestHandler::d_translated_urls[url_key]);
+        set_relative_name(get_real_name());
+        BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
+        BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
+        return;
+    }
+
     NgapApi ngap_api;
     string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
 
@@ -97,6 +105,11 @@ void NgapContainer::initialize()
     // Because we know the name is really a URL, then we know the "relative_name" is meaningless
     // So we set it to be the same as "name"
     set_relative_name(data_access_url);
+
+    if (NgapRequestHandler::d_use_cmr_cache) {
+        NgapRequestHandler::d_translated_urls[url_key] = data_access_url;
+        BESDEBUG(NGAP_CACHE, prolog << "Cached translated URL: " << get_real_name() << endl);
+    }
 
     BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
 }

@@ -45,11 +45,12 @@
 #include "NgapRequestHandler.h"
 #include "NgapNames.h"
 
-using std::endl;
-using std::map;
-using std::list;
+using namespace std;
 using namespace libdap;
 using namespace ngap;
+
+unordered_map<std::string, std::string> NgapRequestHandler::d_translated_urls;
+bool NgapRequestHandler::d_use_cmr_cache = true;
 
 NgapRequestHandler::NgapRequestHandler(const string &name) :
         BESRequestHandler(name)

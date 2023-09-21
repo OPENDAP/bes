@@ -29,6 +29,9 @@
 #ifndef E_NgapNames_H
 #define E_NgapNames_H 1
 
+// This could be a 'global' debug key. jhrg 9/20/23
+#define NGAP_CACHE "cache"
+
 #define NGAP_NAME "ngap"
 
 
