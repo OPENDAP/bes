@@ -57,6 +57,8 @@ private:
     std::string d_ngap_path;    // The (in)famous restified path
 
     void set_real_name_using_cmr_or_cache();
+    void cache_dmrpp_contents(std::shared_ptr<http::RemoteResource> &d_dmrpp_rresource);
+
     bool get_content_filters(std::map<std::string,std::string> &content_filters) const;
     void filter_response(const std::map<std::string, std::string> &content_filters) const;
 
@@ -75,7 +77,11 @@ public:
 
     BESContainer * ptr_duplicate() override;
 
+    bool access_returns_cached_content() const; // hack jhrg 9/20/23
     std::string access() override;
+
+    bool get_cached_dmrpp_string(std::string &dmrpp_string) const;
+    bool is_dmrpp_cached() const;
 
     bool release() override;
 

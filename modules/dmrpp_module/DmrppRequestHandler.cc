@@ -61,6 +61,8 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
+#include "NgapContainer.h"
+
 #include "DapUtils.h"
 
 #define PUGIXML_NO_XPATH
@@ -291,6 +293,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
                                                             const string &request_xml_base,
                                                             DMR *dmr)
 {
+#if 0
     try {
         string filename = container->get_real_name();
         const DMR* cached_dmr = nullptr;
@@ -324,6 +327,47 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
                 // Cache a copy of the DMR.
                 dmr_cache->add(new DMR(*dmr), filename);
             }
+        }
+    }
+#endif
+    try {
+        string container_attributes = container->get_attributes();
+        if (container_attributes == "cached") {
+            dmr->set_filename(container_attributes);
+            dmr->set_name(name_path(container_attributes));
+
+            // this shared_ptr is held by the DMRpp BaseType instances
+            dmz = shared_ptr<DMZ>(new DMZ);
+
+            // Enable adding the DMZ to the BaseTypes built by the factory
+            DmrppTypeFactory factory(dmz);
+            dmr->set_factory(&factory);
+
+            string dmrpp_content = container->access();
+
+            dmz->parse_xml_string(dmrpp_content);
+
+            dmz->build_thin_dmr(dmr);
+
+            dmz->load_all_attributes(dmr);
+        }
+        else {
+            string data_pathname = container->access();
+            dmr->set_filename(data_pathname);
+            dmr->set_name(name_path(data_pathname));
+
+            // this shared_ptr is held by the DMRpp BaseType instances
+            dmz = shared_ptr<DMZ>(new DMZ);
+
+            // Enable adding the DMZ to the BaseTypes built by the factory
+            DmrppTypeFactory factory(dmz);
+            dmr->set_factory(&factory);
+
+            dmz->parse_xml_doc(data_pathname);
+
+            dmz->build_thin_dmr(dmr);
+
+            dmz->load_all_attributes(dmr);
         }
     }
     catch (...) {

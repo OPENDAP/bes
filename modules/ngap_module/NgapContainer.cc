@@ -137,8 +137,8 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
 
     string url_key = d_ngap_path + '.' + uid;
     if (NgapRequestHandler::d_use_cmr_cache
-        && NgapRequestHandler::d_translated_urls.find(url_key) != NgapRequestHandler::d_translated_urls.end()) {
-        set_real_name(NgapRequestHandler::d_translated_urls[url_key]);
+        && NgapRequestHandler::d_cmr_cache.find(url_key) != NgapRequestHandler::d_cmr_cache.end()) {
+        set_real_name(NgapRequestHandler::d_cmr_cache[url_key]);
         set_relative_name(get_real_name());
         BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
         BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
@@ -154,7 +154,7 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
     set_relative_name(get_real_name());
 
     if (NgapRequestHandler::d_use_cmr_cache) {
-        NgapRequestHandler::d_translated_urls[url_key] = get_real_name();
+        NgapRequestHandler::d_cmr_cache[url_key] = get_real_name();
         BESDEBUG(NGAP_CACHE, prolog << "Cache miss, cached translated URL: " << get_real_name() << endl);
     }
 
@@ -212,6 +212,30 @@ NgapContainer::get_content_filters(map<string,string, std::less<string>> &conten
     return false;
 }
 
+// Write a simple file --> string and string --> file set of functions.
+
+void
+NgapContainer::cache_dmrpp_contents(shared_ptr<http::RemoteResource> &d_dmrpp_rresource) {
+    string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
+    NgapRequestHandler::d_dmrpp_cache[get_real_name()] = resource_content;
+    set_attributes("cached");    // This means access() returns cache content and not a filename. hack. jhrg 9/22/23
+    // TODO Added cache purge code here. jhrg 9/22/23
+}
+
+bool
+NgapContainer::get_cached_dmrpp_string(string &dmrpp_string) const {
+    if (NgapRequestHandler::d_dmrpp_cache.find(get_real_name()) != NgapRequestHandler::d_dmrpp_cache.end()) {
+        dmrpp_string = NgapRequestHandler::d_dmrpp_cache[get_real_name()];
+        return true;
+    }
+    return false;
+}
+
+bool
+NgapContainer::is_dmrpp_cached() const {
+    return NgapRequestHandler::d_dmrpp_cache.find(get_real_name()) != NgapRequestHandler::d_dmrpp_cache.end();
+}
+
 /**
  * @brief access the remote target response by making the remote request
  *
@@ -225,9 +249,27 @@ NgapContainer::get_content_filters(map<string,string, std::less<string>> &conten
 string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "BEGIN  (obj_addr: "<< (void *) this << ")" << endl);
 
-    if (!d_dmrpp_rresource) {
-        set_real_name_using_cmr_or_cache();
+    set_real_name_using_cmr_or_cache();
 
+#ifndef NDEBUG
+    BESStopWatch besTimer;
+    if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
+        besTimer.start("NGAP Container access: " + get_real_name());
+    }
+#endif
+
+    if (is_dmrpp_cached()) {
+        // set_container_type() because access() is called from within the framework and the DMR++ handler
+        BESDEBUG(MODULE, prolog << "NGAP Container access: cache hit\n");
+        set_container_type("dmrpp");
+        set_attributes("cached");
+        string dmrpp_string;
+        get_cached_dmrpp_string(dmrpp_string);
+        return dmrpp_string;
+    }
+
+    BESDEBUG(MODULE, prolog << "NGAP Container access: cache miss\n");
+    if (!d_dmrpp_rresource) {
         // Assume the DMR++ is a sidecar file to the granule. jhrg 9/20/23
         string dmrpp_url_str = get_real_name() + ".dmrpp";
         auto dmrpp_url = make_shared<http::url>(dmrpp_url_str, true);
@@ -244,6 +286,8 @@ string NgapContainer::access() {
             map<string,string, std::less<string>> content_filters;
             if (get_content_filters(content_filters))
                 filter_response(content_filters);
+
+            cache_dmrpp_contents(d_dmrpp_rresource);
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url->str() << endl);
     }

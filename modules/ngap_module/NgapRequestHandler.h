@@ -42,8 +42,11 @@
 namespace ngap {
 
     class NgapRequestHandler: public BESRequestHandler {
-        static std::unordered_map<std::string, std::string> d_translated_urls;
+        static std::unordered_map<std::string, std::string> d_cmr_cache;
         static bool d_use_cmr_cache;
+
+        static std::unordered_map<std::string, std::string> d_dmrpp_cache;
+        static bool d_use_dmrpp_cache;
 
 #if 0
         static BESFileLockingCache d_dmrpp_file_cache;

@@ -54,14 +54,16 @@ using namespace std;
 using namespace libdap;
 using namespace ngap;
 
-unordered_map<std::string, std::string> NgapRequestHandler::d_translated_urls;
+unordered_map<string, string> NgapRequestHandler::d_cmr_cache;
 bool NgapRequestHandler::d_use_cmr_cache = true;
+
+unordered_map<string, string> NgapRequestHandler::d_dmrpp_cache;
+bool NgapRequestHandler::d_use_dmrpp_cache = true;
 
 #if 0
 BESFileLockingCache NgapRequestHandler::d_dmrpp_file_cache;
 bool NgapRequestHandler::d_use_dmrpp_file_cache = true;
 #endif
-
 
 NgapRequestHandler::NgapRequestHandler(const string &name) :
         BESRequestHandler(name)
@@ -69,6 +71,7 @@ NgapRequestHandler::NgapRequestHandler(const string &name) :
     add_method(VERS_RESPONSE, NgapRequestHandler::ngap_build_vers);
     add_method(HELP_RESPONSE, NgapRequestHandler::ngap_build_help);
 
+    // Read BES keys to determine if the caches should be used. jhrg 9/22/23
 #if 0
     // TODO Replace these hard-coded values jhrg 9/20/23
     NgapRequestHandler::d_dmrpp_file_cache.initialize("/tmp/ngap-dmrpp", "dmrpp:", 100 /* MB */);

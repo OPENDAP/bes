@@ -147,7 +147,7 @@ DMZ::DMZ(const string &file_name)
  * @param file_name
  */
 void
-DMZ::parse_xml_doc(const std::string &file_name)
+DMZ::parse_xml_doc(const string &file_name)
 {
     std::ifstream stream(file_name);
 
@@ -157,6 +157,18 @@ DMZ::parse_xml_doc(const std::string &file_name)
     // parse_ws_pcdata_single will include the space when it appears in a <Value> </Value>
     // DAP Attribute element. jhrg 11/3/21
     pugi::xml_parse_result result = d_xml_doc.load(stream,  pugi::parse_default | pugi::parse_ws_pcdata_single);
+
+    if (!result)
+        throw BESInternalError(string("DMR++ parse error: ").append(result.description()), __FILE__, __LINE__);
+
+    if (!d_xml_doc.document_element())
+        throw BESInternalError("No DMR++ data present.", __FILE__, __LINE__);
+}
+
+void
+DMZ::parse_xml_string(const string &source)
+{
+    pugi::xml_parse_result result = d_xml_doc.load_string(source.c_str());
 
     if (!result)
         throw BESInternalError(string("DMR++ parse error: ").append(result.description()), __FILE__, __LINE__);
