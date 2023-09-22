@@ -260,7 +260,7 @@ string NgapContainer::access() {
 
     if (is_dmrpp_cached()) {
         // set_container_type() because access() is called from within the framework and the DMR++ handler
-        BESDEBUG(MODULE, prolog << "NGAP Container access: cache hit\n");
+        BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
         set_container_type("dmrpp");
         set_attributes("cached");
         string dmrpp_string;
@@ -268,7 +268,7 @@ string NgapContainer::access() {
         return dmrpp_string;
     }
 
-    BESDEBUG(MODULE, prolog << "NGAP Container access: cache miss\n");
+    BESDEBUG(NGAP_CACHE, prolog << "Cache miss, translated URL: " << get_real_name() << endl);
     if (!d_dmrpp_rresource) {
         // Assume the DMR++ is a sidecar file to the granule. jhrg 9/20/23
         string dmrpp_url_str = get_real_name() + ".dmrpp";
@@ -277,7 +277,7 @@ string NgapContainer::access() {
             d_dmrpp_rresource = make_shared<http::RemoteResource>(dmrpp_url);
 #ifndef NDEBUG
             BESStopWatch besTimer;
-            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
                 besTimer.start("DMR++ retrieval: "+ dmrpp_url->str());
             }
 #endif
