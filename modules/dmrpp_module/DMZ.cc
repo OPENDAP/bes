@@ -256,11 +256,12 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
     }
 
     xml_attribute *fillValue = nullptr;
-    for (xml_attribute attr = chunks.first_attribute(); attr && !fillValue; attr = attr.next_attribute()) {
+    for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "fillValue")) {
             fillValue = &attr;
         }
     }
+
     if(!fillValue) {
         // No fillValue attribute? Then we can be done, it's supported.
         return is_unsupported_type;
