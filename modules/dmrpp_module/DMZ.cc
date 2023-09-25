@@ -59,7 +59,7 @@
 #include "Base64.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppChunkOdometer.h"
-#include "BESInternalError.h"
+#include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
 
@@ -105,6 +105,9 @@ const std::set<std::string> DMZ::variable_elements{"Byte", "Int8", "Int16", "Int
                                               "Enum", "Opaque"};
 #endif
 
+constexpr static const auto ELIDE_UNSUPPORTED_KEY = "Dmrpp_Elide_unsupported";
+
+
 /// @brief Are the C-style strings equal?
 static inline bool is_eq(const char *value, const char *key)
 {
@@ -143,6 +146,28 @@ static inline DmrppCommon *dc(BaseType *btp)
     return dc;
 }
 
+
+/**
+ * Loads configuration state from TheBESKeys
+ *
+ */
+void DMZ::load_config_from_keys()
+{
+    // ########################################################################
+    // Loads the ELIDE_UNSUPPORTED_KEY (see top of file for key definition)
+    // And if it's set, and set to true, then we set the eliding machine to true.
+    d_elide_unsupported = false;
+    string elide_unsupported;
+    bool found;
+    TheBESKeys::TheKeys()->get_value(ELIDE_UNSUPPORTED_KEY,elide_unsupported,found);
+    if(found){
+        string test_val = BESUtil::lowercase(elide_unsupported);
+        if(test_val == "true" || test_val == "yes" || test_val == "10-4") {
+            d_elide_unsupported = true;
+        }
+    }
+}
+
 /**
  * @brief Build a DMZ object and initialize it using a DMR++ XML document
  * @param file_name The DMR++ XML document to parse.
@@ -150,6 +175,7 @@ static inline DmrppCommon *dc(BaseType *btp)
  */
 DMZ::DMZ(const string &file_name)
 {
+    load_config_from_keys();
     parse_xml_doc(file_name);
 }
 
@@ -234,12 +260,12 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
         return is_unsupported_type;
     }
 
-    //const char *fillValue;
     xml_attribute fillValue;
     bool found_fillValue = false;
     for (xml_attribute attr = chunks.first_attribute(); attr && !found_fillValue; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "fillValue")) {
             fillValue = attr;
+            found_fillValue = true;
         }
     }
     if(!fillValue) {
@@ -249,10 +275,10 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
 
     // We found th fillValue attribute, So now we have to deal with its various tragic values...
     if(is_eq(fillValue.value(),UNSUPPORTED_STRING)){
-        // UNSUPPORTED_STRING is the older, indeterminate, tag which might be labeling a truly
-        // unsupported VariableLengthString it could be a working FixedLengthString.
+        // UNSUPPORTED_STRING is the older, indeterminate, tag which might label a truly
+        // unsupported VariableLengthString or it could be a labeling FixedLengthString.
         // In order to find out we need to look in XML DOM to determine if this is an Array, and
-        // is so, to see if it's the FixedLengthString case:
+        // if so, to see if it's the FixedLengthString case:
         //    <dmrpp:FixedLengthStringArray string_length ... />
         // This should be a child of var_node.
 
@@ -267,6 +293,7 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
             is_unsupported_type = false;
         }
         else {
+            // It's an array, so is it a FixedLengthStringArray??
             auto flsa_node = var_node.child("dmrpp:FixedLengthStringArray");
             if(flsa_node){
                 // FixedLengthStringArray arrays work!
@@ -495,8 +522,8 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
     assert(group);
 
     string type_name;
-    if(flagged_as_unsupported_type(var_node, type_name)){
-        // And in this way we elided the unsupported types - we don't process the DAP object
+    if(d_elide_unsupported && flagged_as_unsupported_type(var_node, type_name)){
+        // And in this way we elide the unsupported types - we don't process the DAP object
         // if it's got the unsupported bits in fillValue
         return;
     }

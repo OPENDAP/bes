@@ -75,9 +75,15 @@ private:
     pugi::xml_document d_xml_doc;
     std::shared_ptr<http::url> d_dataset_elem_href;
 
+    // Controls if teh parser will drop variables that have been flagged
+    // with a dmrpp:chunks/@fillValue attribute value of "unsupported-*"
+    // This is set from TheBESKeys in the DMZ's constructor.
+    static bool d_elide_unsupported;
+
     /// Holds names of the XML elements that define variables (e.g., Byte)
     static const std::set<std::string> variable_elements;
 
+    static void load_config_from_keys();
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     static pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
@@ -96,7 +102,7 @@ private:
     static void build_basetype_chain(libdap::BaseType *btp, std::stack<libdap::BaseType*> &bt);
 
     static void process_group(libdap::DMR *dmr, libdap::D4Group *parent, const pugi::xml_node &var_node);
-    static void  process_dimension(libdap::D4Group *grp, const pugi::xml_node &dimension_node);
+    static void process_dimension(libdap::D4Group *grp, const pugi::xml_node &dimension_node);
     static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, const pugi::xml_node &var_node);
     static void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, const pugi::xml_node &dim_node);
     static void process_map(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, const pugi::xml_node &map_node);
