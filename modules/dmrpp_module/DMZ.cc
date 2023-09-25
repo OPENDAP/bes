@@ -220,20 +220,14 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
         return is_unsupported_type;
     }
 
-    xml_attribute *fillValue = nullptr;
-    for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
-        if (is_eq(attr.name(), "fillValue")) {
-            fillValue = &attr;
-        }
-    }
-
-    if(!fillValue) {
+    xml_attribute fillValue_attr  = chunks.attribute("fillValue");
+    if(!fillValue_attr) {
         // No fillValue attribute? Then we can be done, it's supported.
         return is_unsupported_type;
     }
 
     // We found th fillValue attribute, So now we have to deal with its various tragic values...
-    if(is_eq(fillValue->value(),UNSUPPORTED_STRING)){
+    if(is_eq(fillValue_attr.value(), UNSUPPORTED_STRING)){
         // UNSUPPORTED_STRING is the older, indeterminate, tag which might label a truly
         // unsupported VariableLengthString or it could be a labeling FixedLengthString.
         // In order to find out we need to look in XML DOM to determine if this is an Array, and
@@ -248,7 +242,7 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
         if(!dim_node) {
             // No dims? Then this is a scalar String and it's cool.
             // We dump the BS fillValue for one that makes some sense in Stringville
-            fillValue->set_value("");
+            fillValue_attr.set_value("");
             is_unsupported_type = false;
         }
         else {
@@ -257,22 +251,22 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
             if(flsa_node){
                 // FixedLengthStringArray arrays work!
                 // We dump the BS fillValue for one that makes some sense in Stringville
-                fillValue->set_value("");
+                fillValue_attr.set_value("");
                 is_unsupported_type = false;
             }
         }
     }
-    else if(is_eq(fillValue->value(),UNSUPPORTED_VARIABLE_LENGTH_STRING)) {
+    else if(is_eq(fillValue_attr.value(),UNSUPPORTED_VARIABLE_LENGTH_STRING)) {
         is_unsupported_type = true;
     }
-    else if(is_eq(fillValue->value(),UNSUPPORTED_ARRAY)){
+    else if(is_eq(fillValue_attr.value(),UNSUPPORTED_ARRAY)){
         is_unsupported_type =  true;
     }
-    else if(is_eq(fillValue->value(),UNSUPPORTED_COMPOUND)){
+    else if(is_eq(fillValue_attr.value(),UNSUPPORTED_COMPOUND)){
         is_unsupported_type =  true;
     }
 
-    if(is_unsupported_type) { unsupported_flag = fillValue->value(); }
+    if(is_unsupported_type) { unsupported_flag = fillValue_attr.value(); }
 
     return is_unsupported_type;
 }
