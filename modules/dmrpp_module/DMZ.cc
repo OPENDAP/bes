@@ -89,7 +89,6 @@ using namespace libdap;
 #define UNSUPPORTED_STRING "unsupported-string"
 #define UNSUPPORTED_ARRAY "unsupported-array"
 #define UNSUPPORTED_COMPOUND "unsupported-compound"
-
 // Added when Arrays Of Fixed Length Strings. The unsupported-string value was dropped at that time.
 #define UNSUPPORTED_VARIABLE_LENGTH_STRING "unsupported-variable-length-string"
 
@@ -99,13 +98,15 @@ namespace dmrpp {
 
 using shape = std::vector<unsigned long long>;
 
+bool DMZ::d_elide_unsupported = true;
+
 #if 1
 const std::set<std::string> DMZ::variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
                                               "UInt64", "Float32", "Float64", "String", "Structure", "Sequence",
                                               "Enum", "Opaque"};
 #endif
 
-constexpr static const auto ELIDE_UNSUPPORTED_KEY = "Dmrpp_Elide_unsupported";
+constexpr static const auto ELIDE_UNSUPPORTED_KEY = "DMRPP.Elide.Unsupported";
 
 
 /// @brief Are the C-style strings equal?
@@ -156,16 +157,7 @@ void DMZ::load_config_from_keys()
     // ########################################################################
     // Loads the ELIDE_UNSUPPORTED_KEY (see top of file for key definition)
     // And if it's set, and set to true, then we set the eliding machine to true.
-    d_elide_unsupported = false;
-    string elide_unsupported;
-    bool found;
-    TheBESKeys::TheKeys()->get_value(ELIDE_UNSUPPORTED_KEY,elide_unsupported,found);
-    if(found){
-        string test_val = BESUtil::lowercase(elide_unsupported);
-        if(test_val == "true" || test_val == "yes" || test_val == "10-4") {
-            d_elide_unsupported = true;
-        }
-    }
+    d_elide_unsupported = TheBESKeys::TheKeys()->read_bool_key(ELIDE_UNSUPPORTED_KEY,false);
 }
 
 /**
@@ -519,7 +511,11 @@ void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_
  */
 void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const xml_node &var_node)
 {
-    assert(group);
+    if(group == nullptr){
+        stringstream msg;
+        throw BESInternalError(prolog + "Received a null valued Group pointer. That's not ok.",
+                               __FILE__,__LINE__);
+    }
 
     string type_name;
     if(d_elide_unsupported && flagged_as_unsupported_type(var_node, type_name)){
@@ -1301,20 +1297,15 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
         else if (is_eq(attr.name(), "fillValue")) {
 
-#if 1
-            // @TODO Decide to skip this and depend on the code in processVariable() to handle this situation. Whut Do?
-
             // Throws BESInternalError when unsupported types detected.
             string unsupported_type;
             if(flagged_as_unsupported_type(var_node,unsupported_type)){
                 stringstream msg;
                 msg << prolog << "Found a dmrpp:chunk/@fillValue with a value of ";
                 msg << "'" << unsupported_type << "' this means that ";
-                msg << "the Hyrax service is unable to process this variable/dataset. This is also an indication that ";
-                msg << "the metadata representation (aka the dmr++) for this granule needs to be regenerated.";
+                msg << "the Hyrax service is unable to process this variable/dataset.";
                 throw BESInternalError(msg.str(),__FILE__,__LINE__);
             }
-#endif
 
             has_fill_value = true;
 

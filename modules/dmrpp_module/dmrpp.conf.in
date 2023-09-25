@@ -55,6 +55,12 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 # DMRPP.ObjectCacheEntries = 100
 # DMRPP.ObjectCachePurgeLevel = 0.2
 
+####################################################################################
+# By default the BES will attempt to elide unsupported types.
+# Disable at your own risk.
+# DMRPP.Elide.Unsupported = false
+
+
 # NB: Providing/Defining CredentialsManager.config will cause the CredentialsManager
 # to locate and read from that file. If the file does not exist, or if it cannot be
 # read from, the CredentialsManager will write a message to the ErrorLog and it will
