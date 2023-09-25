@@ -105,19 +105,36 @@ NgapContainer::~NgapContainer() {
 }
 
 void NgapContainer::purge_cmr_cache() {
+    BESDEBUG(NGAP_CACHE, prolog << "start\n");
     // if number of elements > threshold, purge
     for (int entries = 0; entries < NgapRequestHandler::d_cmr_cache_space; ++entries) {
-        string entry = NgapRequestHandler::d_cmr_cache_entries.front();
-        if (NgapRequestHandler::d_cmr_cache.erase(entry) == 0)
-            throw BESInternalError(prolog + "Failed to purge entry (" + entry + ") from the CMR cache", __FILE__, __LINE__);
+        string key = NgapRequestHandler::d_cmr_cache_entries.front();
+        NgapRequestHandler::d_cmr_cache_entries.pop();
+        if (NgapRequestHandler::d_cmr_cache.erase(key) == 0)
+            throw BESInternalError(prolog + "Failed to purge entry (" + key + ") from the cmr cache", __FILE__, __LINE__);
     }
+    BESDEBUG(NGAP_CACHE, prolog << "end (keys: " << NgapRequestHandler::d_cmr_cache_entries.size() << ")\n");
 }
 
+/**
+ * Put the key/value pair in the cache and record the key in the key values. 
+ * If the cache is purged, key/value pairs will be removed oldest-first.
+ * 
+ * @param url_key 
+ * @param real_name 
+ */
 void NgapContainer::put_cmr_cache(const string &url_key, const string &real_name) {
-    NgapRequestHandler::d_cmr_cache[url_key] = real_name;
-    NgapRequestHandler::d_cmr_cache_entries.push(real_name);
-    if (NgapRequestHandler::d_cmr_cache_entries.size() > NgapRequestHandler::d_cmr_cache_threshold)
+    if (NgapRequestHandler::d_cmr_cache_entries.size() >= NgapRequestHandler::d_cmr_cache_threshold)
         purge_cmr_cache();
+
+    // only add key to the queue of entries if key is not in the cache
+    if (NgapRequestHandler::d_cmr_cache.find(url_key) == NgapRequestHandler::d_cmr_cache.end())
+        NgapRequestHandler::d_cmr_cache_entries.push(url_key);
+
+    // add or overwrite/update the value associated with key
+    NgapRequestHandler::d_cmr_cache[url_key] = real_name;
+
+    BESDEBUG(NGAP_CACHE, prolog << "Cache addition: " << url_key << "\n");
 }
 
 /**
@@ -129,12 +146,66 @@ void NgapContainer::put_cmr_cache(const string &url_key, const string &real_name
 bool NgapContainer::get_cmr_cache(const string &url_key, string &real_name) {
     if (NgapRequestHandler::d_cmr_cache.find(url_key) != NgapRequestHandler::d_cmr_cache.end()) {
         real_name = NgapRequestHandler::d_cmr_cache[url_key];
+        BESDEBUG(NGAP_CACHE, prolog << "Cache hit: " << url_key << "\n");
         return true;
     }
     else {
+        BESDEBUG(NGAP_CACHE, prolog << "Cache miss: " << url_key << "\n");
         return false;
     }
 }
+
+void NgapContainer::purge_dmrpp_cache() {
+    BESDEBUG(NGAP_CACHE, prolog << "start\n");
+    // if number of elements > threshold, purge
+    for (int entries = 0; entries < NgapRequestHandler::d_dmrpp_cache_space; ++entries) {
+        string key = NgapRequestHandler::d_dmrpp_cache_entries.front();
+        NgapRequestHandler::d_dmrpp_cache_entries.pop();
+        if (NgapRequestHandler::d_dmrpp_cache.erase(key) == 0)
+            throw BESInternalError(prolog + "Failed to purge entry (" + key + ") from the dmrpp cache", __FILE__, __LINE__);
+    }
+    BESDEBUG(NGAP_CACHE, prolog << "end (keys: " << NgapRequestHandler::d_dmrpp_cache_entries.size() << ")\n");
+}
+
+/**
+ * Put the key/value pair in the cache and record the key in the key values. 
+ * If the cache is purged, key/value pairs will be removed oldest-first.
+ * 
+ * @param url_key 
+ * @param real_name 
+ */
+void NgapContainer::put_dmrpp_cache(const string &url_key, const string &real_name) {
+    if (NgapRequestHandler::d_dmrpp_cache_entries.size() >= NgapRequestHandler::d_dmrpp_cache_threshold)
+        purge_dmrpp_cache();
+
+    // only add key to the queue of entries if key is not in the cache
+    if (NgapRequestHandler::d_dmrpp_cache.find(url_key) == NgapRequestHandler::d_dmrpp_cache.end())
+        NgapRequestHandler::d_dmrpp_cache_entries.push(url_key);
+
+    // add or overwrite/update the value associated with key
+    NgapRequestHandler::d_dmrpp_cache[url_key] = real_name;
+
+    BESDEBUG(NGAP_CACHE, prolog << "Cache addition: " << url_key << "\n");
+}
+
+/**
+ *
+ * @param url_key The key to look for in the cache
+ * @param real_name If the key is found, return the mathing value in this parameter
+ * @return return true if the key was found in the cache, false otherwise
+ */
+bool NgapContainer::get_dmrpp_cache(const string &url_key, string &real_name) {
+    if (NgapRequestHandler::d_dmrpp_cache.find(url_key) != NgapRequestHandler::d_dmrpp_cache.end()) {
+        real_name = NgapRequestHandler::d_dmrpp_cache[url_key];
+        BESDEBUG(NGAP_CACHE, prolog << "Cache hit: " << url_key << "\n");
+        return true;
+    }
+    else {
+        BESDEBUG(NGAP_CACHE, prolog << "Cache miss: " << url_key << "\n");
+        return false;
+    }
+}
+
 
 /**
  * @brief Set the real name of the container using the CMR or cache.
@@ -251,11 +322,17 @@ NgapContainer::get_content_filters(map<string,string, std::less<string>> &conten
 void
 NgapContainer::cache_dmrpp_contents(shared_ptr<http::RemoteResource> &d_dmrpp_rresource) {
     string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
+
+    put_dmrpp_cache(get_real_name(), resource_content);
+
+#if 0
     NgapRequestHandler::d_dmrpp_cache[get_real_name()] = resource_content;
+#endif
+
     set_attributes("cached");    // This means access() returns cache content and not a filename. hack. jhrg 9/22/23
-    // TODO Added cache purge code here. jhrg 9/22/23
 }
 
+#if 0
 bool
 NgapContainer::get_cached_dmrpp_string(string &dmrpp_string) const {
     if (NgapRequestHandler::d_dmrpp_cache.find(get_real_name()) != NgapRequestHandler::d_dmrpp_cache.end()) {
@@ -269,6 +346,7 @@ bool
 NgapContainer::is_dmrpp_cached() const {
     return NgapRequestHandler::d_dmrpp_cache.find(get_real_name()) != NgapRequestHandler::d_dmrpp_cache.end();
 }
+#endif
 
 /**
  * @brief access the remote target response by making the remote request
@@ -292,13 +370,16 @@ string NgapContainer::access() {
     }
 #endif
 
-    if (is_dmrpp_cached()) {
+    string dmrpp_string;
+    if (get_dmrpp_cache(get_real_name(), dmrpp_string) /*is_dmrpp_cached()*/) {
         // set_container_type() because access() is called from within the framework and the DMR++ handler
         BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
         set_container_type("dmrpp");
         set_attributes("cached");
+#if 0
         string dmrpp_string;
         get_cached_dmrpp_string(dmrpp_string);
+#endif
         return dmrpp_string;
     }
 

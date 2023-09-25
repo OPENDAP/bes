@@ -63,6 +63,10 @@ private:
 
     void set_real_name_using_cmr_or_cache();
 
+    void purge_dmrpp_cache();
+    void put_dmrpp_cache(const std::string &url_key, const std::string &real_name);
+    bool get_dmrpp_cache(const std::string &url_key, std::string &real_name);
+
     void cache_dmrpp_contents(std::shared_ptr<http::RemoteResource> &d_dmrpp_rresource);
 
     bool get_content_filters(std::map<std::string,std::string> &content_filters) const;
