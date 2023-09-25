@@ -159,7 +159,7 @@ void DMZ::load_config_from_keys()
 {
     // ########################################################################
     // Loads the ELIDE_UNSUPPORTED_KEY (see top of file for key definition)
-    // And if it's set, and set to true, then we set the eliding machine to true.
+    // And if it's set, and set to true, then we set the eliding flag to true.
     d_elide_unsupported = TheBESKeys::TheKeys()->read_bool_key(ELIDE_UNSUPPORTED_KEY,false);
 }
 
@@ -198,41 +198,6 @@ DMZ::parse_xml_doc(const std::string &file_name)
 }
 
 
-
-#if 0
-/**
- * @brief Checks the value of the passed attribute to see if it matches one of the know bad values and if found throws BESInternalError
- *
- * The original unsupported fillValue flags from 4/22 were :
- *  - "unsupported-string"
- *  - "unsupported-array"
- *  - "unsupported-compound"
- *
- * When Arrays Of Fixed Length Strings were implemented, the "unsupported-string" value was dropped and replaced
- * with "unsupported-variable-length-string"
- *
- * @param attr The attribute to evaluate.
- */
-std::string check_for_unsupported_types(const xml_attribute &attr){
-    stringstream msg;
-    string unsupported_type;
-    auto value = attr.value();
-
-    if(is_eq(value,UNSUPPORTED_STRING)){
-        unsupported_type = UNSUPPORTED_STRING;
-    }
-    else if(is_eq(value,UNSUPPORTED_VARIABLE_LENGTH_STRING)){
-        unsupported_type = UNSUPPORTED_VARIABLE_LENGTH_STRING;
-    }
-    else if(is_eq(value,UNSUPPORTED_ARRAY)){
-        unsupported_type = UNSUPPORTED_ARRAY;
-    }
-    else if(is_eq(value,UNSUPPORTED_COMPOUND)){
-        unsupported_type = UNSUPPORTED_COMPOUND;
-    }
-    return unsupported_type;
-}
-#endif
 
 /**
  *
@@ -513,11 +478,7 @@ void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_
  */
 void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const xml_node &var_node)
 {
-    if(group == nullptr){
-        stringstream msg;
-        throw BESInternalError(prolog + "Received a null valued Group pointer. That's not ok.",
-                               __FILE__,__LINE__);
-    }
+    assert(group);
 
     string type_name;
     if(d_elide_unsupported && flagged_as_unsupported_type(var_node, type_name)){
@@ -532,9 +493,9 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
 
     assert(t != dods_group_c);  // Groups are special and handled elsewhere
 
-    bool is_array_type = has_dim_nodes(var_node);
     BaseType *btp;
-    if (is_array_type) {
+    if (has_dim_nodes(var_node)) {
+        // If it has Dim nodes then it's an array!
         btp = add_array_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
             assert(btp->type() == dods_array_c && btp->var()->type() == t);
@@ -548,6 +509,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         }
     }
     else {
+        // Things not arrays must be scalars...
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
             assert(btp->type() == t);
