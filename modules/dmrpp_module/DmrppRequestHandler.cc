@@ -233,7 +233,9 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
         read_key_value(DMRPP_OBJECT_CACHE_ENTRIES_KEY, d_object_cache_entries);
         read_key_value(DMRPP_OBJECT_CACHE_PURGE_LEVEL_KEY, d_object_cache_purge_level);
         // The default value of these is nullptr
+#if 0
         dmr_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
+#endif
         dds_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
         das_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
     }
@@ -281,7 +283,16 @@ handle_exception(const string &file, int line)
 /**
  * @brief Get (maybe, if it's remote), parse, and build a DMR from a DMR++ XML file.
  *
- * @param container When run in the NASA Cloud, this is likely a NgapContainer; It can
+ * This method builds the DMR++ in memory using the DMZ parser and a DMR++ document
+ * that has been either read from a local file, a remote file or from a local cache.
+ * When the contents are cached, they are cached as a string, and not a file. We did
+ * that to avoid issues with multiple processes and threads and our existing cache
+ * code. However, caching the DMR++ XML content as a string is also very performant.
+ *
+ * @note caching the DMR++ as a string may be only a stop-gap measure since caching
+ * the DMR++ object would be faster still. jhrg 9/25/23
+ *
+ * @param container When run in the NASA Cloud, this is likely a NgapContainer; it can
  * be any container that references a DMR++ XML file. In the NGAP case, the server will
  * use the RemoteResources class to pull the DMR++ document into the local host.
  * @param request_xml_base The base URL for the request. Used when pulling the DMR++
@@ -293,43 +304,6 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
                                                             const string &request_xml_base,
                                                             DMR *dmr)
 {
-#if 0
-    try {
-        string filename = container->get_real_name();
-        const DMR* cached_dmr = nullptr;
-        if (dmr_cache && (cached_dmr = dynamic_cast<DMR*>(dmr_cache->get(filename)))) {
-            BESDEBUG(dmrpp_cache, prolog << "DMR Cache hit for : " << filename << endl);
-            // copy the cached DMR into the BES response object
-            *dmr = *cached_dmr; // Copy the cached object
-            dmr->set_request_xml_base(request_xml_base);
-        }
-        else {  // Not cached (or maybe no cache)
-            BESDEBUG(dmrpp_cache, prolog << "DMR Cache miss for : " << filename << endl);
-            string data_pathname = container->access();
-
-            dmr->set_filename(data_pathname);
-            dmr->set_name(name_path(data_pathname));
-
-            // this shared_ptr is held by the DMRpp BaseType instances
-            dmz = shared_ptr<DMZ>(new DMZ);
-
-            // Enable adding the DMZ to the BaseTypes built by the factory
-            DmrppTypeFactory factory(dmz);
-            dmr->set_factory(&factory);
-
-            dmz->parse_xml_doc(data_pathname);
-
-            dmz->build_thin_dmr(dmr);
-
-            dmz->load_all_attributes(dmr);
-
-            if (dmr_cache) {
-                // Cache a copy of the DMR.
-                dmr_cache->add(new DMR(*dmr), filename);
-            }
-        }
-    }
-#endif
     try {
         string container_attributes = container->get_attributes();
         if (container_attributes == "cached") {
@@ -343,6 +317,10 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             DmrppTypeFactory factory(dmz);
             dmr->set_factory(&factory);
 
+            // When the container get_attributes() method returns "cached," the
+            // container access() method returns the cached contents of the DMR++
+            // document, not a pathname to a file that holds those contents.
+            // jhrg 9/25/23
             string dmrpp_content = container->access();
 
             dmz->parse_xml_string(dmrpp_content);
@@ -377,6 +355,9 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
 
 /**
  * @brief Build a DDS that is loaded with attributes
+ *
+ * @note The type of T should only ever be BESDDSResponse or BESDataDDSResponse!
+ *
  * @tparam T BESResponseObject specialization (limited to BESDataDDSResponse, BESDDSResponse)
  * @param dhi The Data handler interface object
  * @param bdds A pointer to a BESDDSResponse or BESDataDDSResponse
@@ -385,6 +366,8 @@ template <class T>
 void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESContainer *container, T *bdds) {
     string container_name_str = bdds->get_explicit_containers() ? container->get_symbolic_name() : "";
 
+    // Since this must be a BESDDSResponse or BESDataDDSResponse, we know that a DDS
+    // can be accessed.
     DDS *dds = bdds->get_dds();
     if (!container_name_str.empty()) dds->container_name(container_name_str);
 
@@ -404,7 +387,7 @@ void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESContainer *container, T *
         delete dds;                         // delete the current one;
         dds = dmr.getDDS();                 // assign the new one.
 
-        // Stuff it into the response.
+        // Stuff it into the response so that the BESDDSResponse instances manages the storage.
         bdds->set_dds(dds);
 
         // Cache it, if the cache is active.

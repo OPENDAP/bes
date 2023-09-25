@@ -165,6 +165,15 @@ DMZ::parse_xml_doc(const string &file_name)
         throw BESInternalError("No DMR++ data present.", __FILE__, __LINE__);
 }
 
+/**
+ * @brief Build a DOM tree for a DMR++ using content from a string.
+ * @note This method was added to support parsing DMR++ 'documents'
+ * that are cached as strings. The caching nominally takes place in
+ * the NgapContainer code over in the ngap_module (but it doesn't
+ * have to). See DmrppRequestHandler.cc for places where this method
+ * is called.
+ * @param source The string that contains the DMR++ content.
+ */
 void
 DMZ::parse_xml_string(const string &source)
 {

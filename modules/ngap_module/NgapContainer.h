@@ -56,7 +56,13 @@ private:
     std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
     std::string d_ngap_path;    // The (in)famous restified path
 
+    // If we keep this, then make a class, et cetera. jhrg 9/25/23
+    void purge_cmr_cache();
+    void put_cmr_cache(const std::string &url_key, const std::string &real_name);
+    bool get_cmr_cache(const std::string &url_key, std::string &real_name);
+
     void set_real_name_using_cmr_or_cache();
+
     void cache_dmrpp_contents(std::shared_ptr<http::RemoteResource> &d_dmrpp_rresource);
 
     bool get_content_filters(std::map<std::string,std::string> &content_filters) const;

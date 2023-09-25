@@ -31,6 +31,7 @@
 
 #include <string>
 #include <ostream>
+#include <queue>
 #include <unordered_map>
 
 #include "BESRequestHandler.h"
@@ -42,10 +43,18 @@
 namespace ngap {
 
     class NgapRequestHandler: public BESRequestHandler {
+        static unsigned int d_cmr_cache_threshold;  // max number of entries
+        static unsigned int d_cmr_cache_space;      // remove this many during purge
+
         static std::unordered_map<std::string, std::string> d_cmr_cache;
+        static std::queue<std::string> d_cmr_cache_entries;
         static bool d_use_cmr_cache;
 
+        static unsigned int d_dmrpp_cache_threshold;  // max number of entries
+        static unsigned int d_dmrpp_cache_space;      // remove this many during purge
+
         static std::unordered_map<std::string, std::string> d_dmrpp_cache;
+        static std::queue<std::string> d_dmrpp_cache_entries;
         static bool d_use_dmrpp_cache;
 
 #if 0

@@ -54,10 +54,20 @@ using namespace std;
 using namespace libdap;
 using namespace ngap;
 
+// CMR caching
+unsigned int NgapRequestHandler::d_cmr_cache_threshold = 100;
+unsigned int NgapRequestHandler::d_cmr_cache_space = 20;
+
 unordered_map<string, string> NgapRequestHandler::d_cmr_cache;
+queue<string> NgapRequestHandler::d_cmr_cache_entries;
 bool NgapRequestHandler::d_use_cmr_cache = true;
 
+// DMR++ caching
+unsigned int NgapRequestHandler::d_dmrpp_cache_threshold = 100;
+unsigned int NgapRequestHandler::d_dmrpp_cache_space = 20;
+
 unordered_map<string, string> NgapRequestHandler::d_dmrpp_cache;
+queue<string> NgapRequestHandler::d_dmrpp_cache_entries;
 bool NgapRequestHandler::d_use_dmrpp_cache = true;
 
 #if 0

@@ -104,6 +104,38 @@ NgapContainer::~NgapContainer() {
     BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
 }
 
+void NgapContainer::purge_cmr_cache() {
+    // if number of elements > threshold, purge
+    for (int entries = 0; entries < NgapRequestHandler::d_cmr_cache_space; ++entries) {
+        string entry = NgapRequestHandler::d_cmr_cache_entries.front();
+        if (NgapRequestHandler::d_cmr_cache.erase(entry) == 0)
+            throw BESInternalError(prolog + "Failed to purge entry (" + entry + ") from the CMR cache", __FILE__, __LINE__);
+    }
+}
+
+void NgapContainer::put_cmr_cache(const string &url_key, const string &real_name) {
+    NgapRequestHandler::d_cmr_cache[url_key] = real_name;
+    NgapRequestHandler::d_cmr_cache_entries.push(real_name);
+    if (NgapRequestHandler::d_cmr_cache_entries.size() > NgapRequestHandler::d_cmr_cache_threshold)
+        purge_cmr_cache();
+}
+
+/**
+ *
+ * @param url_key The key to look for in the cache
+ * @param real_name If the key is found, return the mathing value in this parameter
+ * @return return true if the key was found in the cache, false otherwise
+ */
+bool NgapContainer::get_cmr_cache(const string &url_key, string &real_name) {
+    if (NgapRequestHandler::d_cmr_cache.find(url_key) != NgapRequestHandler::d_cmr_cache.end()) {
+        real_name = NgapRequestHandler::d_cmr_cache[url_key];
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 /**
  * @brief Set the real name of the container using the CMR or cache.
  *
@@ -135,26 +167,28 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
+    // If using the cache, look there.
     string url_key = d_ngap_path + '.' + uid;
-    if (NgapRequestHandler::d_use_cmr_cache
-        && NgapRequestHandler::d_cmr_cache.find(url_key) != NgapRequestHandler::d_cmr_cache.end()) {
-        set_real_name(NgapRequestHandler::d_cmr_cache[url_key]);
-        set_relative_name(get_real_name());
+    string real_name;
+    if (NgapRequestHandler::d_use_cmr_cache && get_cmr_cache(url_key, real_name)) {
+        set_real_name(real_name);
+        set_relative_name(real_name);
         BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
         BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
         return;
     }
 
     NgapApi ngap_api;
-    string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
-    set_real_name(data_access_url);
+    real_name = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
+    set_real_name(real_name);
 
     // Because we know the name is really a URL, then we know the "relative_name" is meaningless
     // So we set it to be the same as "name"
-    set_relative_name(get_real_name());
+    set_relative_name(real_name);
 
+    // If using the CMR cache, cache the response.
     if (NgapRequestHandler::d_use_cmr_cache) {
-        NgapRequestHandler::d_cmr_cache[url_key] = get_real_name();
+        put_cmr_cache(url_key, real_name);
         BESDEBUG(NGAP_CACHE, prolog << "Cache miss, cached translated URL: " << get_real_name() << endl);
     }
 
