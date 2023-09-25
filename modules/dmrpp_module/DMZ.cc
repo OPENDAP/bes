@@ -85,12 +85,6 @@ using namespace libdap;
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
 
 
-// The original unsupported fillValue flags from 4/22
-#define UNSUPPORTED_STRING "unsupported-string"
-#define UNSUPPORTED_ARRAY "unsupported-array"
-#define UNSUPPORTED_COMPOUND "unsupported-compound"
-// Added when Arrays Of Fixed Length Strings. The unsupported-string value was dropped at that time.
-#define UNSUPPORTED_VARIABLE_LENGTH_STRING "unsupported-variable-length-string"
 
 
 
@@ -98,7 +92,17 @@ namespace dmrpp {
 
 using shape = std::vector<unsigned long long>;
 
+// The original unsupported fillValue flags from 4/22
+constexpr static const auto UNSUPPORTED_STRING = "unsupported-string";
+constexpr static const auto UNSUPPORTED_ARRAY = "unsupported-array";
+constexpr static const auto UNSUPPORTED_COMPOUND = "unsupported-compound";
+// Added when Arrays Of Fixed Length Strings. The unsupported-string value was dropped at that time.
+constexpr static const auto UNSUPPORTED_VARIABLE_LENGTH_STRING = "unsupported-variable-length-string";
+
+constexpr static const auto ELIDE_UNSUPPORTED_KEY = "DMRPP.Elide.Unsupported";
+
 bool DMZ::d_elide_unsupported = true;
+
 
 #if 1
 const std::set<std::string> DMZ::variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
@@ -106,7 +110,6 @@ const std::set<std::string> DMZ::variable_elements{"Byte", "Int8", "Int16", "Int
                                               "Enum", "Opaque"};
 #endif
 
-constexpr static const auto ELIDE_UNSUPPORTED_KEY = "DMRPP.Elide.Unsupported";
 
 
 /// @brief Are the C-style strings equal?
@@ -252,12 +255,10 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
         return is_unsupported_type;
     }
 
-    xml_attribute fillValue;
-    bool found_fillValue = false;
-    for (xml_attribute attr = chunks.first_attribute(); attr && !found_fillValue; attr = attr.next_attribute()) {
+    xml_attribute *fillValue = nullptr;
+    for (xml_attribute attr = chunks.first_attribute(); attr && !fillValue; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "fillValue")) {
-            fillValue = attr;
-            found_fillValue = true;
+            fillValue = &attr;
         }
     }
     if(!fillValue) {
@@ -266,7 +267,7 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
     }
 
     // We found th fillValue attribute, So now we have to deal with its various tragic values...
-    if(is_eq(fillValue.value(),UNSUPPORTED_STRING)){
+    if(is_eq(fillValue->value(),UNSUPPORTED_STRING)){
         // UNSUPPORTED_STRING is the older, indeterminate, tag which might label a truly
         // unsupported VariableLengthString or it could be a labeling FixedLengthString.
         // In order to find out we need to look in XML DOM to determine if this is an Array, and
@@ -281,7 +282,7 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
         if(!dim_node) {
             // No dims? Then this is a scalar String and it's cool.
             // We dump the BS fillValue for one that makes some sense in Stringville
-            fillValue.set_value("");
+            fillValue->set_value("");
             is_unsupported_type = false;
         }
         else {
@@ -290,22 +291,22 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
             if(flsa_node){
                 // FixedLengthStringArray arrays work!
                 // We dump the BS fillValue for one that makes some sense in Stringville
-                fillValue.set_value("");
+                fillValue->set_value("");
                 is_unsupported_type = false;
             }
         }
     }
-    else if(is_eq(fillValue.value(),UNSUPPORTED_VARIABLE_LENGTH_STRING)) {
+    else if(is_eq(fillValue->value(),UNSUPPORTED_VARIABLE_LENGTH_STRING)) {
         is_unsupported_type = true;
     }
-    else if(is_eq(fillValue.value(),UNSUPPORTED_ARRAY)){
+    else if(is_eq(fillValue->value(),UNSUPPORTED_ARRAY)){
         is_unsupported_type =  true;
     }
-    else if(is_eq(fillValue.value(),UNSUPPORTED_COMPOUND)){
+    else if(is_eq(fillValue->value(),UNSUPPORTED_COMPOUND)){
         is_unsupported_type =  true;
     }
 
-    if(is_unsupported_type) { unsupported_flag = fillValue.value(); }
+    if(is_unsupported_type) { unsupported_flag = fillValue->value(); }
 
     return is_unsupported_type;
 }
