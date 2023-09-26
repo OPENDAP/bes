@@ -92,7 +92,6 @@ namespace dmrpp {
 
 unique_ptr<ObjMemCache> DmrppRequestHandler::das_cache{nullptr};
 unique_ptr<ObjMemCache> DmrppRequestHandler::dds_cache{nullptr};
-unique_ptr<ObjMemCache> DmrppRequestHandler::dmr_cache{nullptr};
 
 shared_ptr<DMZ> DmrppRequestHandler::dmz(nullptr);
 
@@ -100,7 +99,11 @@ shared_ptr<DMZ> DmrppRequestHandler::dmz(nullptr);
 // reuse. jhrg
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = nullptr;
 
-bool DmrppRequestHandler::d_use_object_cache = false;
+// These now only affect the DDS and DAS ObjMemCaches; the DMR++
+// is cached in the NGAP module. Once issues with the DMR++ object's
+// copy constructor are solved, the ObjMemCache can be used again.
+// jhrg 9/26/23
+bool DmrppRequestHandler::d_use_object_cache = true;
 unsigned int DmrppRequestHandler::d_object_cache_entries = 100;
 double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
@@ -124,6 +127,8 @@ bool DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
 bool DmrppRequestHandler::is_netcdf4_enhanced_response = false;
 bool DmrppRequestHandler::is_netcdf4_classic_response = false;
 
+// There are methods in TheBESKeys that should be used instead of these.
+// jhrg 9/26/23
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
     bool key_found = false;
@@ -233,9 +238,6 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
         read_key_value(DMRPP_OBJECT_CACHE_ENTRIES_KEY, d_object_cache_entries);
         read_key_value(DMRPP_OBJECT_CACHE_PURGE_LEVEL_KEY, d_object_cache_purge_level);
         // The default value of these is nullptr
-#if 0
-        dmr_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
-#endif
         dds_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
         das_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
     }

@@ -56,7 +56,6 @@ private:
     // jhrg 11/12/21
     static std::unique_ptr<ObjMemCache> das_cache;
     static std::unique_ptr<ObjMemCache> dds_cache;
-    static std::unique_ptr<ObjMemCache> dmr_cache;
 
     static bool d_use_object_cache;
     static unsigned int d_object_cache_entries;
