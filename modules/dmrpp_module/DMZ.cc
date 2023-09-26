@@ -62,6 +62,7 @@
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
+#include "BESLog.h"
 
 using namespace pugi;
 using namespace std;
@@ -257,17 +258,18 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
         }
     }
     else if(is_eq(fillValue_attr.value(),UNSUPPORTED_VARIABLE_LENGTH_STRING)) {
+        unsupported_flag=fillValue_attr.value();
         is_unsupported_type = true;
     }
     else if(is_eq(fillValue_attr.value(),UNSUPPORTED_ARRAY)){
+        unsupported_flag=fillValue_attr.value();
         is_unsupported_type =  true;
     }
     else if(is_eq(fillValue_attr.value(),UNSUPPORTED_COMPOUND)){
+        unsupported_flag=fillValue_attr.value();
         is_unsupported_type =  true;
     }
-
-    if(is_unsupported_type) { unsupported_flag = fillValue_attr.value(); }
-
+    
     return is_unsupported_type;
 }
 
@@ -478,6 +480,9 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
     if(d_elide_unsupported && flagged_as_unsupported_type(var_node, type_name)){
         // And in this way we elide the unsupported types - we don't process the DAP object
         // if it's got the unsupported bits in fillValue
+        auto var_name = var_node.attribute("name");
+        auto var_type = var_node.name();
+        INFO_LOG(prolog << "Unsupported Type Encountered: " << var_type << " " << var_name.value() << " flag: " << type_name << "\n");
         return;
     }
 
