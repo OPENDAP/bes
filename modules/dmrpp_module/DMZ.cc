@@ -521,7 +521,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         // Things not arrays must be scalars...
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
-            if(btp->var()->type() != t){
+            if(btp->type() != t){
                 throw BESInternalError(
                         prolog + "Failed to create a scalar variable for " + var_node.name(), __FILE__, __LINE__);
             }
