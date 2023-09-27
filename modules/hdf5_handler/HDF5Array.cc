@@ -466,7 +466,9 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
     }
     else if(memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT) {
 
-        if (true == promote_char_to_short(memb_cls,memb_id)) {
+
+        if (true == promote_char_to_short(memb_cls,memb_id) && (field->is_dap4() == false)) {
+
             auto src = (const void*)(values.data() + struct_elem_offset +memb_offset);
             char val_int8;
             memcpy(&val_int8,src,1);
@@ -1315,7 +1317,7 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseTy
     else if (H5T_INTEGER == child_memb_cls || H5T_FLOAT == child_memb_cls) {
 
         int64_t number_index = ((at_total_nelms == at_nelms) ? array_index : at_orig_index);
-        if (true == promote_char_to_short(child_memb_cls, child_memb_id)) {
+        if (true == promote_char_to_short(child_memb_cls, child_memb_id) && (field->is_dap4() == false)) {
             auto src = (const void *) (values.data() + (number_index * at_base_type_size) + values_offset +
                                   child_memb_offset);
             char val_int8;
@@ -1414,7 +1416,7 @@ void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t a
         } else if (INT16 == dap_type) {
 
             // promote char to short,DAP2 doesn't have "char" type
-            if (true == promote_char_to_short(array_cls, at_base_type)) {
+            if (true == promote_char_to_short(array_cls, at_base_type) && (is_dap4() == false)) {
                 vector<char> total_val;
                 total_val.resize(at_total_nelms);
                 memcpy(total_val.data(), src, at_total_nelms * at_base_type_size);
@@ -1571,7 +1573,7 @@ void HDF5Array::do_h5_array_type_read_base_atomic_whole_data(H5T_class_t array_c
                                                              vector<char> &values, size_t values_offset)
 {
     // For DAP2 char should be mapped to short
-    if (true == promote_char_to_short(array_cls, at_base_type)) {
+    if (true == promote_char_to_short(array_cls, at_base_type) && is_dap4() == false) {
 
         vector<char> val_int8;
         val_int8.resize(at_nelms);

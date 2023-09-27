@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_more_types.h5">
+    <Structure name="Compound_more_types">
+        <Int32 name="a_name"/>
+        <String name="b_name">
+            <Dim size="4"/>
+        </String>
+        <String name="c_name"/>
+        <String name="s_name">
+            <Dim size="6"/>
+        </String>
+        <Int16 name="d_name">
+            <Dim size="5"/>
+            <Dim size="6"/>
+        </Int16>
+        <Float32 name="e_name"/>
+        <Float64 name="f_name">
+            <Dim size="10"/>
+        </Float64>
+        <Int8 name="g_name"/>
+        <Dim size="6"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>dc546d98</Value>
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Int32 a_name;
+    String b_name[4];
+    String c_name;
+    String s_name[6];
+    Int16 d_name[5][6];
+    Float32 e_name;
+    Float64 f_name[10];
+    Int8 g_name;
+} Compound_more_types[6] = {{ 0, {"A fight is a contract that takes two people to honor.", "A combative stance means that you've accepted the contract.", "In which case, you deserve what you get.", "  --  Professor Cheng Man-ch'ing"}, "Hello!", {"a1\000", "a2\000", "a3\000", "a4\000", "a5\000", "a6\000"}, {{0, 1, 2, 3, 4, 5},{1, 2, 3, 4, 5, 6},{2, 3, 4, 5, 6, 7},{3, 4, 5, 6, 7, 8},{4, 5, 6, 7, 8, 9}}, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 109 }, { 1, {"A fight is a contract that takes two people to honor.", "A combative stance means that you've accepted the contract.", "In which case, you deserve what you get.", "  --  Professor Cheng Man-ch'ing"}, "Hello!", {"b1\000", "b2\000", "b3\000", "b4\000", "b5\000", "b6\000"}, {{1, 2, 3, 4, 5, 6},{2, 3, 4, 5, 6, 7},{3, 4, 5, 6, 7, 8},{4, 5, 6, 7, 8, 9},{5, 6, 7, 8, 9, 10}}, 0.96, {1024.9637, 1024.9637, 1024.9637, 1024.9637, 1024.9637, 1024.9637, 1024.9637, 1024.9637, 1024.9637, 1024.9637}, 109 }, { 2, {"A fight is a contract that takes two people to honor.", "A combative stance means that you've accepted the contract.", "In which case, you deserve what you get.", "  --  Professor Cheng Man-ch'ing"}, "Hello!", {"c1\000", "c2\000", "c3\000", "c4\000", "c5\000", "c6\000"}, {{2, 3, 4, 5, 6, 7},{3, 4, 5, 6, 7, 8},{4, 5, 6, 7, 8, 9},{5, 6, 7, 8, 9, 10},{6, 7, 8, 9, 10, 11}}, 1.92, {2049.9274, 2049.9274, 2049.9274, 2049.9274, 2049.9274, 2049.9274, 2049.9274, 2049.9274, 2049.9274, 2049.9274}, 109 }, { 3, {"A fight is a contract that takes two people to honor.", "A combative stance means that you've accepted the contract.", "In which case, you deserve what you get.", "  --  Professor Cheng Man-ch'ing"}, "Hello!", {"d1\000", "d2\000", "d3\000", "d4\000", "d5\000", "d6\000"}, {{3, 4, 5, 6, 7, 8},{4, 5, 6, 7, 8, 9},{5, 6, 7, 8, 9, 10},{6, 7, 8, 9, 10, 11},{7, 8, 9, 10, 11, 12}}, 2.88, {3074.8911, 3074.8911, 3074.8911, 3074.8911, 3074.8911, 3074.8911, 3074.8911, 3074.8911, 3074.8911, 3074.8911}, 109 }, { 4, {"A fight is a contract that takes two people to honor.", "A combative stance means that you've accepted the contract.", "In which case, you deserve what you get.", "  --  Professor Cheng Man-ch'ing"}, "Hello!", {"e1\000", "e2\000", "e3\000", "e4\000", "e5\000", "e6\000"}, {{4, 5, 6, 7, 8, 9},{5, 6, 7, 8, 9, 10},{6, 7, 8, 9, 10, 11},{7, 8, 9, 10, 11, 12},{8, 9, 10, 11, 12, 13}}, 3.84, {4099.8548, 4099.8548, 4099.8548, 4099.8548, 4099.8548, 4099.8548, 4099.8548, 4099.8548, 4099.8548, 4099.8548}, 109 }, { 5, {"A fight is a contract that takes two people to honor.", "A combative stance means that you've accepted the contract.", "In which case, you deserve what you get.", "  --  Professor Cheng Man-ch'ing"}, "Hello!", {"f1\000", "f2\000", "f3\000", "f4\000", "f5\000", "f6\000"}, {{5, 6, 7, 8, 9, 10},{6, 7, 8, 9, 10, 11},{7, 8, 9, 10, 11, 12},{8, 9, 10, 11, 12, 13},{9, 10, 11, 12, 13, 14}}, 4.8, {5124.8185, 5124.8185, 5124.8185, 5124.8185, 5124.8185, 5124.8185, 5124.8185, 5124.8185, 5124.8185, 5124.8185}, 109 }};
+

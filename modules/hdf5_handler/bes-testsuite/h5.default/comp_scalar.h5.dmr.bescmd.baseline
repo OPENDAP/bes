@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="comp_scalar.h5">
+    <Structure name="ArrayOfStructures">
+        <Int8 name="a_name"/>
+        <Byte name="b_name"/>
+        <Int16 name="c_name"/>
+        <UInt16 name="d_name"/>
+        <Int32 name="e_name"/>
+        <UInt32 name="f_name"/>
+        <String name="vs_name"/>
+        <String name="s_name"/>
+        <Float32 name="g_name"/>
+        <Float64 name="h_name"/>
+    </Structure>
+</Dataset>
