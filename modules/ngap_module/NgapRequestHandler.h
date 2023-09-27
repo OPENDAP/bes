@@ -53,7 +53,8 @@ namespace ngap {
         static std::queue<std::string> d_dmrpp_cache_entries;
         static bool d_use_dmrpp_cache;
 
-        friend class NgapContainer;   // give NgapContainer access to d_translated_urls, etc.
+        friend class NgapContainer;   // give NgapContainer access to the cache parameters
+        friend class NgapRequestHandlerTest;
 
     public:
         NgapRequestHandler(const std::string &name);
