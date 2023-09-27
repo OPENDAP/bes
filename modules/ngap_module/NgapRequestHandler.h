@@ -36,10 +36,6 @@
 
 #include "BESRequestHandler.h"
 
-#if 0
-#include "BESFileLockingCache.h"
-#endif
-
 namespace ngap {
 
     class NgapRequestHandler: public BESRequestHandler {
@@ -56,11 +52,6 @@ namespace ngap {
         static std::unordered_map<std::string, std::string> d_dmrpp_cache;
         static std::queue<std::string> d_dmrpp_cache_entries;
         static bool d_use_dmrpp_cache;
-
-#if 0
-        static BESFileLockingCache d_dmrpp_file_cache;
-        static bool d_use_dmrpp_file_cache;
-#endif
 
         friend class NgapContainer;   // give NgapContainer access to d_translated_urls, etc.
 

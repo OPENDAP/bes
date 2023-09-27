@@ -36,7 +36,7 @@ m4_define([AT_BESCMD_MULTI_RESPONSE_TEST], [dnl
         AT_CHECK([mv stderr ${baseline}_r.debug.tmp])
         ],
         [
-        AT_CHECK([besstandalone -r 3 -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone -d cerr,dmrpp:cache -r 3 -c $abs_builddir/$bes_conf -i $input], [], [stdout], [stderr])
         AT_CHECK([$response_split -i stdout -o response])
 
         # Check the individual responses

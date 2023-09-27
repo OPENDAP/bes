@@ -311,6 +311,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
         if (container_attributes == "cached") {
             dmr->set_filename(container_attributes);
             dmr->set_name(name_path(container_attributes));
+            BESDEBUG(dmrpp_cache, prolog << "DMR Cache hit for : " << container->get_real_name() << endl);
 
             // this shared_ptr is held by the DMRpp BaseType instances
             dmz = shared_ptr<DMZ>(new DMZ);
@@ -335,6 +336,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             string data_pathname = container->access();
             dmr->set_filename(data_pathname);
             dmr->set_name(name_path(data_pathname));
+            BESDEBUG(dmrpp_cache, prolog << "DMR Cache miss for : " << container->get_real_name() << endl);
 
             // this shared_ptr is held by the DMRpp BaseType instances
             dmz = shared_ptr<DMZ>(new DMZ);

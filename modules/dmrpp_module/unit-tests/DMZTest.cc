@@ -42,6 +42,7 @@
 
 #include "url_impl.h"
 #include "TheBESKeys.h"
+#include "BESUtil.h"
 #include "BESInternalError.h"
 
 #include "DMZ.h"
@@ -142,6 +143,15 @@ public:
         catch (const BESInternalError &e) {
             CPPUNIT_ASSERT("Caught BESInternalError with xml pathname fail");
         }
+    }
+
+    void test_parse_xml_string() {
+        d_dmz = make_unique<DMZ>();
+        CPPUNIT_ASSERT(d_dmz);
+        string chunked_fourD_dmrpp_string = BESUtil::file_to_string(chunked_fourD_dmrpp);
+        d_dmz->parse_xml_string(chunked_fourD_dmrpp_string);
+        DBG(cerr << "d_dmz->d_xml_doc.document_element().name(): " << d_dmz->d_xml_doc.document_element().name() << endl);
+        CPPUNIT_ASSERT(strcmp(d_dmz->d_xml_doc.document_element().name(), "Dataset") == 0);
     }
 
     // This shows how to test the processing of different XML elements w/o first
@@ -999,6 +1009,8 @@ public:
     CPPUNIT_TEST(test_DMZ_ctor_2);
     CPPUNIT_TEST(test_DMZ_ctor_3);
     CPPUNIT_TEST(test_DMZ_ctor_4);
+
+    CPPUNIT_TEST(test_parse_xml_string);
 
     CPPUNIT_TEST(test_process_dataset_0);
     CPPUNIT_TEST(test_process_dataset_1);
