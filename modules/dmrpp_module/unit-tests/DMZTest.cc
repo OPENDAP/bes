@@ -148,13 +148,27 @@ public:
     void test_parse_xml_string() {
         d_dmz = make_unique<DMZ>();
         CPPUNIT_ASSERT(d_dmz);
-        string chunked_fourD_dmrpp_string = BESUtil::file_to_string(chunked_fourD_dmrpp);
+        const string chunked_fourD_dmrpp_string = BESUtil::file_to_string(chunked_fourD_dmrpp);
         d_dmz->parse_xml_string(chunked_fourD_dmrpp_string);
         DBG(cerr << "d_dmz->d_xml_doc.document_element().name(): " << d_dmz->d_xml_doc.document_element().name() << endl);
         CPPUNIT_ASSERT(strcmp(d_dmz->d_xml_doc.document_element().name(), "Dataset") == 0);
     }
 
-    // This shows how to test the processing of different XML elements w/o first
+    void test_parse_xml_string_bad_input() {
+        try {
+            d_dmz = make_unique<DMZ>();
+            CPPUNIT_ASSERT(d_dmz);
+            const string bad_input = "<?xml version='1.0' encoding='UTF-8'?> BARF";
+            d_dmz->parse_xml_string(bad_input);
+            CPPUNIT_FAIL("DMZ ctor should not succeed with bad string input");
+        }
+        catch (const BESInternalError &e) {
+            CPPUNIT_ASSERT("Caught BESInternalError with bad string input");
+        }
+    }
+
+
+// This shows how to test the processing of different XML elements w/o first
     // parsing a whole DMR++. jhrg 5/2/22
     // TODO Adopt this pattern throughout this file? jhrg 5/2/22
     void test_process_dataset_0() {
@@ -1011,6 +1025,7 @@ public:
     CPPUNIT_TEST(test_DMZ_ctor_4);
 
     CPPUNIT_TEST(test_parse_xml_string);
+    CPPUNIT_TEST(test_parse_xml_string_bad_input);
 
     CPPUNIT_TEST(test_process_dataset_0);
     CPPUNIT_TEST(test_process_dataset_1);
