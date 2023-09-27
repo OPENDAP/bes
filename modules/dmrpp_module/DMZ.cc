@@ -385,8 +385,6 @@ void DMZ::process_dimension(D4Group *grp, const xml_node &dimension_node)
  */
 void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_node)
 {
-    assert(array->is_vector_type());
-
     string name_value;
     string size_value;
     for (xml_attribute attr = dim_node.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -426,8 +424,6 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_
 
 void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_node)
 {
-    assert(array->is_vector_type());
-
     string name_value;
     string size_value;
     for (xml_attribute attr = map_node.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -474,7 +470,10 @@ void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_
  */
 void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const xml_node &var_node)
 {
-    assert(group);
+    if(!group){
+        throw BESInternalError(
+                prolog + "Received a null valued Group pointer!", __FILE__, __LINE__);
+    }
 
     string unsupported_flag;
     if(d_elide_unsupported && flagged_as_unsupported_type(var_node, unsupported_flag)){
@@ -490,17 +489,28 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
     // Variables are arrays if they have one or more <Dim...> child nodes.
     Type t = get_type(var_node.name());
 
-    assert(t != dods_group_c);  // Groups are special and handled elsewhere
+    if(t == dods_group_c){  // Groups are special and handled elsewhere
+        throw BESInternalError(
+                prolog + "ERROR - The variable node to process is a Group type! "
+                         "This is handled elsewhere, not here. Parser State Issue!!", __FILE__, __LINE__);
+    }
 
     BaseType *btp;
     if (has_dim_nodes(var_node)) {
         // If it has Dim nodes then it's an array!
         btp = add_array_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
-            assert(btp->type() == dods_array_c && btp->var()->type() == t);
+            if(btp->type() != dods_array_c || btp->var()->type() != t){
+                throw BESInternalError(
+                        prolog + "Failed to create an array variable for " + var_node.name(), __FILE__, __LINE__);
+            }
             // NB: For an array of a Constructor, add children to the Constructor, not the array
             parent = dynamic_cast<Constructor*>(btp->var());
-            assert(parent);
+            if(!parent){
+                throw BESInternalError(
+                        prolog + "Failed to cast  " + btp->var()->type_name() + " " + btp->name() +
+                        " to an instance of Constructor." , __FILE__, __LINE__);
+            }
             for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
                     process_variable(dmr, group, parent, child);
@@ -511,9 +521,16 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         // Things not arrays must be scalars...
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
-            assert(btp->type() == t);
+            if(btp->var()->type() != t){
+                throw BESInternalError(
+                        prolog + "Failed to create a scalar variable for " + var_node.name(), __FILE__, __LINE__);
+            }
             parent = dynamic_cast<Constructor*>(btp);
-            assert(parent);
+            if(!parent){
+                throw BESInternalError(
+                        prolog + "Failed to cast  " + btp->var()->type_name() + " " + btp->name() +
+                        " to an instance of Constructor." , __FILE__, __LINE__);
+            }
             for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
                     process_variable(dmr, group, parent, child);
@@ -533,7 +550,9 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
  */
 BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &var_node)
 {
-    assert(dmr->factory());
+    if(!dmr->factory()){
+        throw BESInternalError(prolog + "ERROR - Received a DMR without a class factory!", __FILE__, __LINE__);
+    }
 
     string name_value;
     string enum_value;
@@ -586,7 +605,9 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
  */
 BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, const xml_node &var_node)
 {
-    assert(group);
+    if(!group){
+        throw BESInternalError(prolog + "ERROR - Received a null valued Group pointer!", __FILE__, __LINE__);
+    }
 
     BaseType *btp = build_variable(dmr, group, t, var_node);
 
@@ -616,7 +637,9 @@ BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent
  */
 BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, const xml_node &var_node)
 {
-    assert(group);
+    if(!group){
+        throw BESInternalError(prolog + "ERROR - Received a null valued Group pointer!", __FILE__, __LINE__);
+    }
 
     BaseType *btp = build_variable(dmr, group, t, var_node);
 
@@ -992,7 +1015,11 @@ DMZ::load_attributes(Constructor *constructor)
     load_attributes(constructor,  get_variable_xml_node(constructor));
     for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
         // Groups are not allowed inside a Constructor
-        assert((*i)->type() != dods_group_c);
+        if((*i)->type() == dods_group_c){
+            throw BESInternalError(
+                    prolog + "Found a Group as a member of a " + constructor->type_name() + " data type. " +
+                    "This violates the DAP4 data model and cannot be processed!", __FILE__, __LINE__);
+        }
         load_attributes(*i);
     }
 }
@@ -1015,7 +1042,11 @@ DMZ::load_attributes(D4Group *group) {
         // Groups are kept under a separate container from variables because they
         // have a different function than the Structure and Sequence types (Groups
         // never hold data).
-        assert((*i)->type() != dods_group_c);
+        if((*i)->type() == dods_group_c){
+            throw BESInternalError(
+                    prolog + "Found a Group instance in the variables collection for Group " + group->name() + ". " +
+                    "This violates the DAP4 data model and cannot be processed!", __FILE__, __LINE__);
+        }
         load_attributes(*i);
     }
 
@@ -1026,7 +1057,9 @@ DMZ::load_attributes(D4Group *group) {
 
 void DMZ::load_all_attributes(libdap::DMR *dmr)
 {
-    assert(d_xml_doc != nullptr);
+    if(d_xml_doc == nullptr){
+        throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
+    }
     load_attributes(dmr->root());
 }
 
