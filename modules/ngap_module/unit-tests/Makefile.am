@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/modules/common -I$(top_srcdir)/modules/ngap_module \
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common -I$(top_srcdir)/modules/ngap_module \
     -I$(top_srcdir)/dispatch  -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 LIBADD = -L$(top_builddir)/modules/common -lmodules_common $(BES_DISPATCH_LIB) \
