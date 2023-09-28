@@ -23,15 +23,15 @@ include $(top_srcdir)/coverage.mk
 
 DISTCLEANFILES = test_config.h *.Po
 
-CLEANFILES = bes.conf *.dbg *.log 
+CLEANFILES = bes.conf bes.cache.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in bes.conf.in 
+EXTRA_DIST = test_config.h.in bes.conf.in bes.cache.conf.in
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf bes.cache.conf
 # See target below. jhrg
 # $(abs_builddir)/static-cache
 
@@ -48,15 +48,14 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
-BES_CONF_IN = bes.conf.in
+bes.conf: $(top_srcdir)/configure.ac
+bes.cache.conf: $(top_srcdir)/configure.ac
 
-# Build the bes.conf used for testing so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using
-# configure's value for the parameter when running the distcheck target.
-bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+%.conf: %.conf.in
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
+
 
 # This may be useful at some point, but the NGAP module does not use
 # it currently. jhrg 3/11/20
@@ -76,8 +75,7 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS =  NgapApiTest
-# NgapRequestHandlerTest
+UNIT_TESTS =  NgapApiTest NgapRequestHandlerTest
 else
 UNIT_TESTS =
 
@@ -96,6 +94,6 @@ clean-local:
 NgapApiTest_SOURCES = NgapApiTest.cc
 NgapApiTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
 
-# NgapRequestHandlerTest_SOURCES = NgapRequestHandlerTest.cc
-# NgapRequestHandlerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
+NgapRequestHandlerTest_SOURCES = NgapRequestHandlerTest.cc
+NgapRequestHandlerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
 

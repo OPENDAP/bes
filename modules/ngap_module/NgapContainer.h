@@ -67,7 +67,7 @@ private:
     void put_dmrpp_cache(const std::string &key, const std::string &value) const;
     bool get_dmrpp_cache(const std::string &key, std::string &value) const;
 
-    void cache_dmrpp_contents(/*std::shared_ptr<http::RemoteResource> &d_dmrpp_rresource*/);
+    void cache_dmrpp_contents();
 
     bool get_content_filters(std::map<std::string, std::string, std::less<>> &content_filters) const;
     void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters) const;
@@ -101,11 +101,6 @@ public:
     BESContainer * ptr_duplicate() override;
 
     std::string access() override;
-
-#if 0
-    bool get_cached_dmrpp_string(std::string &dmrpp_string) const;
-    bool is_dmrpp_cached() const;
-#endif
 
     bool release() override;
 

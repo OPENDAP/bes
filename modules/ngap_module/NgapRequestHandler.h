@@ -57,10 +57,13 @@ namespace ngap {
         friend class NgapRequestHandlerTest;
 
     public:
-        NgapRequestHandler(const std::string &name);
-        virtual ~NgapRequestHandler(void);
+        explicit NgapRequestHandler(const std::string &name);
+        NgapRequestHandler() = delete;
+        ~NgapRequestHandler() override = default;
+        NgapRequestHandler(const NgapRequestHandler &src) = delete;
+        NgapRequestHandler &operator=(const NgapRequestHandler &rhs) = delete;
 
-        virtual void dump(std::ostream &strm) const;
+        void dump(std::ostream &strm) const override;
 
         static bool ngap_build_vers(BESDataHandlerInterface &dhi);
         static bool ngap_build_help(BESDataHandlerInterface &dhi);

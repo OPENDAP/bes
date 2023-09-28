@@ -55,29 +55,6 @@ using namespace bes;
 
 namespace ngap {
 
-#if 0
-/**
- * @brief Creates an instances of NgapContainer with symbolic name and real
- * name, which is the remote request.
- *
- * The real_name is the remote request URL.
- *
- * @todo move to the header jhrg 9/20/23
- * @param sym_name symbolic name representing this remote container
- * @param real_name The NGAP restified path.
- * @throws BESSyntaxUserError if the url does not validate
- * @see NgapUtils
- */
-NgapContainer::NgapContainer(const string &sym_name,
-                             const string &real_name,
-                             const string &) :
-        BESContainer(sym_name, real_name, "ngap"), d_ngap_path(real_name) {
-#if 0
-    initialize();
-#endif
-}
-#endif
-
 void NgapContainer::_duplicate(NgapContainer &copy_to) {
     if (copy_to.d_dmrpp_rresource) {
         throw BESInternalError("The Container has already been accessed, cannot duplicate.", __FILE__, __LINE__);
@@ -94,19 +71,6 @@ NgapContainer::ptr_duplicate() {
     BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << " to: " << (void *)container << endl);
     return container;
 }
-
-#if 0
-// TODO Move this to the header and set it as default;
-NgapContainer::~NgapContainer() {
-    BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
-#if 0
-    if (d_dmrpp_rresource) {
-        release();
-    }
-#endif
-    BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
-}
-#endif
 
 void NgapContainer::purge_cmr_cache() const {
     BESDEBUG(NGAP_CACHE, prolog << "start (keys: " << NgapRequestHandler::d_cmr_cache_entries.size() << ") ...");

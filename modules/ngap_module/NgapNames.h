@@ -30,7 +30,7 @@
 #define E_NgapNames_H 1
 
 // This could be a 'global' debug key. jhrg 9/20/23
-constexpr static auto NGAP_CACHE = "cache";
+constexpr static auto const NGAP_CACHE = "cache";
 
 #define NGAP_NAME "ngap"
 
