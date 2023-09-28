@@ -302,9 +302,7 @@ handle_exception(const string &file, int line)
  * @param dmr Value-result parameter. The DMR either built from the DMR++ XML file or
  * copied from the object cache.
  */
-void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *container,
-                                                            const string &request_xml_base,
-                                                            DMR *dmr)
+void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *container, DMR *dmr)
 {
     try {
         string container_attributes = container->get_attributes();
@@ -314,7 +312,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             BESDEBUG(dmrpp_cache, prolog << "DMR Cache hit for : " << container->get_real_name() << endl);
 
             // this shared_ptr is held by the DMRpp BaseType instances
-            dmz = shared_ptr<DMZ>(new DMZ);
+            dmz = make_shared<DMZ>();
 
             // Enable adding the DMZ to the BaseTypes built by the factory
             DmrppTypeFactory factory(dmz);
@@ -339,7 +337,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             BESDEBUG(dmrpp_cache, prolog << "DMR Cache miss for : " << container->get_real_name() << endl);
 
             // this shared_ptr is held by the DMRpp BaseType instances
-            dmz = shared_ptr<DMZ>(new DMZ);
+            dmz = make_shared<DMZ>();
 
             // Enable adding the DMZ to the BaseTypes built by the factory
             DmrppTypeFactory factory(dmz);
@@ -386,7 +384,7 @@ void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESContainer *container, T *
     else {
         BESDEBUG(dmrpp_cache, prolog << "DDS Cache miss for : " << filename << endl);
         DMR dmr;
-        get_dmrpp_from_container_or_cache(container, bdds->get_request_xml_base(), &dmr);
+        get_dmrpp_from_container_or_cache(container, &dmr);
 
         delete dds;                         // delete the current one;
         dds = dmr.getDDS();                 // assign the new one.
@@ -421,7 +419,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
     try {
-        get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_request_xml_base(), bdmr->get_dmr());
+        get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -463,7 +461,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         
         BESDEBUG(MODULE, prolog << "netcdf4_classic_response: "<<(is_netcdf4_response && DmrppRequestHandler::is_netcdf4_classic_response) <<endl);
  
-        get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_request_xml_base(), bdmr->get_dmr());
+        get_dmrpp_from_container_or_cache(dhi.container, bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -559,7 +557,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
         else {
             BESDEBUG(dmrpp_cache, prolog << "DAS Cache miss for : " << filename << endl);
             DMR dmr;
-            get_dmrpp_from_container_or_cache(dhi.container, bdas->get_request_xml_base(), &dmr);
+            get_dmrpp_from_container_or_cache(dhi.container, &dmr);
 
             // Get a DDS from the DMR, getDDS() allocates all new objects. Use unique_ptr
             // to ensure this is deleted. jhrg 11/12/21

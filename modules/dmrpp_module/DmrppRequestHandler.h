@@ -62,8 +62,7 @@ private:
     static double d_object_cache_purge_level;
 
 
-    static void get_dmrpp_from_container_or_cache(BESContainer *container, const std::string &request_xml_base,
-                                                  libdap::DMR *dmr);
+    static void get_dmrpp_from_container_or_cache(BESContainer *container, libdap::DMR *dmr);
     template <class T> static void get_dds_from_dmr_or_cache(BESContainer *container, T *bdds);
 
     // Allocate a new DMZ for each request? This should work, but may result in more

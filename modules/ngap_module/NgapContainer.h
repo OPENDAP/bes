@@ -57,20 +57,20 @@ private:
     std::string d_ngap_path;    // The (in)famous restified path
 
     // If we keep this, then make a class, et cetera. jhrg 9/25/23
-    void purge_cmr_cache();
-    void put_cmr_cache(const std::string &url_key, const std::string &real_name);
-    bool get_cmr_cache(const std::string &url_key, std::string &real_name);
+    void purge_cmr_cache() const;
+    void put_cmr_cache(const std::string &key, const std::string &value) const;
+    bool get_cmr_cache(const std::string &key, std::string &value) const;
 
     void set_real_name_using_cmr_or_cache();
 
-    void purge_dmrpp_cache();
-    void put_dmrpp_cache(const std::string &url_key, const std::string &real_name);
-    bool get_dmrpp_cache(const std::string &url_key, std::string &real_name);
+    void purge_dmrpp_cache() const;
+    void put_dmrpp_cache(const std::string &key, const std::string &value) const;
+    bool get_dmrpp_cache(const std::string &key, std::string &value) const;
 
-    void cache_dmrpp_contents(std::shared_ptr<http::RemoteResource> &d_dmrpp_rresource);
+    void cache_dmrpp_contents(/*std::shared_ptr<http::RemoteResource> &d_dmrpp_rresource*/);
 
-    bool get_content_filters(std::map<std::string,std::string> &content_filters) const;
-    void filter_response(const std::map<std::string, std::string> &content_filters) const;
+    bool get_content_filters(std::map<std::string, std::string, std::less<>> &content_filters) const;
+    void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters) const;
 
     static bool inject_data_url();
 
@@ -79,19 +79,33 @@ protected:
 
 public:
     NgapContainer() = default;
-    NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
     NgapContainer(const NgapContainer &copy_from) = delete;
+    ~NgapContainer() override = default;
 
-    ~NgapContainer() override;
     NgapContainer &operator=(const NgapContainer &rhs) = delete;
+
+    /**
+     * @brief Creates an instances of NgapContainer with symbolic name and real
+     * name, which is the remote request.
+     *
+     * The real_name is the remote request URL.
+     *
+     * @param sym_name symbolic name representing this remote container
+     * @param real_name The NGAP restified path.
+     * @throws BESSyntaxUserError if the url does not validate
+     * @see NgapUtils
+     */
+    NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type)
+            : BESContainer(sym_name, real_name, "ngap"), d_ngap_path(real_name) {}
 
     BESContainer * ptr_duplicate() override;
 
-    bool access_returns_cached_content() const; // hack jhrg 9/20/23
     std::string access() override;
 
+#if 0
     bool get_cached_dmrpp_string(std::string &dmrpp_string) const;
     bool is_dmrpp_cached() const;
+#endif
 
     bool release() override;
 
