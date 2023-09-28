@@ -245,23 +245,19 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
  *
  * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
  * resource will be replaced with its associated value.
+ * @param content A reference to the C++ string to filter
  */
-void NgapContainer::filter_response(const map<string, string, std::less<>> &content_filters) const {
-
-    string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
-
+void NgapContainer::filter_response(const map<string, string, std::less<>> &content_filters, string &content) const {
     for (const auto &apair: content_filters) {
-        unsigned int replace_count = BESUtil::replace_all(resource_content, apair.first, apair.second);
+        unsigned int replace_count = BESUtil::replace_all(content, apair.first, apair.second);
         BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
                                 apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
     }
-
-    // This call will invalidate the file descriptor of the RemoteResource. jhrg 3/9/23
-    BESUtil::string_to_file(d_dmrpp_rresource->get_filename(), resource_content);
 }
 
 /**
  * Build the content filters if needed
+ * @note If the filters are built, clear the content_filters value/result parameter first.
  * @param content_filters Value-result parameter
  * @return True if the filters were built, false otherwise
  */
@@ -278,6 +274,7 @@ NgapContainer::get_content_filters(map<string, string, std::less<>> &content_fil
         const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
         const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
 
+        content_filters.clear();
         content_filters.insert(pair<string,string>(data_access_url_key, data_access_url_with_trusted_attr_str));
         content_filters.insert(pair<string,string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
         return true;
@@ -344,8 +341,12 @@ string NgapContainer::access() {
             d_dmrpp_rresource->retrieve_resource();
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
             map<string,string, std::less<>> content_filters;
-            if (get_content_filters(content_filters))
-                filter_response(content_filters);
+            if (get_content_filters(content_filters)) {
+                string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
+                filter_response(content_filters, resource_content);
+                // This call will invalidate the file descriptor of the RemoteResource. jhrg 3/9/23
+                BESUtil::string_to_file(d_dmrpp_rresource->get_filename(), resource_content);
+            }
 
             cache_dmrpp_contents();
         }
@@ -371,15 +372,7 @@ string NgapContainer::access() {
  * @return true if the resource is released successfully and false otherwise
  */
 bool NgapContainer::release() {
-#if 0
-    if (d_dmrpp_rresource) {
-        BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
-        delete d_dmrpp_rresource;
-        d_dmrpp_rresource = nullptr;
-    }
-#endif
-
-    BESDEBUG(MODULE, prolog << "Done releasing Ngap response" << endl);
+    BESDEBUG(MODULE, prolog << "no-op" << endl);
     return true;
 }
 
@@ -411,13 +404,7 @@ void NgapContainer::dump(ostream &strm) const {
  * code should inject the data URL, false otherwise.
  */
 bool NgapContainer::inject_data_url() {
-    bool result = false;
-    bool found;
-    string key_value;
-    TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY, key_value, found);
-    if (found && key_value == "true") {
-        result = true;
-    }
+    bool result = TheBESKeys::TheKeys()->read_bool_key(NGAP_INJECT_DATA_URL_KEY, false);
     BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
     return result;
 }

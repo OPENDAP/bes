@@ -137,7 +137,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(NgapRequestHandlerTest);
 
 int main(int argc, char*argv[])
 {
-    bool status = bes_run_tests<ngap::NgapRequestHandlerTest>(argc, argv, "cerr,ngap,http");
+    bool status = bes_run_tests<ngap::NgapRequestHandlerTest>(argc, argv, "cerr,ngap,cache");
 
     return status ? 0 : 1;
 }

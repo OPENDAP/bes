@@ -70,9 +70,11 @@ private:
     void cache_dmrpp_contents();
 
     bool get_content_filters(std::map<std::string, std::string, std::less<>> &content_filters) const;
-    void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters) const;
+    void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content) const;
 
     static bool inject_data_url();
+
+    friend class NgapContainerTest;
 
 protected:
     void _duplicate(NgapContainer &copy_to);

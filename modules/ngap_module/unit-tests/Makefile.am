@@ -56,7 +56,6 @@ bes.cache.conf: $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
-
 # This may be useful at some point, but the NGAP module does not use
 # it currently. jhrg 3/11/20
 $(abs_builddir)/static-cache:
@@ -75,7 +74,7 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS =  NgapApiTest NgapRequestHandlerTest
+UNIT_TESTS =  NgapApiTest NgapRequestHandlerTest NgapContainerTest
 else
 UNIT_TESTS =
 
@@ -96,4 +95,7 @@ NgapApiTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(
 
 NgapRequestHandlerTest_SOURCES = NgapRequestHandlerTest.cc
 NgapRequestHandlerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
+
+NgapContainerTest_SOURCES = NgapContainerTest.cc
+NgapContainerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
 
