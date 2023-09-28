@@ -97,7 +97,7 @@ public:
      * @throws BESSyntaxUserError if the url does not validate
      * @see NgapUtils
      */
-    NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type)
+    NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &)
             : BESContainer(sym_name, real_name, "ngap"), d_ngap_path(real_name) {}
 
     BESContainer * ptr_duplicate() override;

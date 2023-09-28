@@ -122,7 +122,7 @@ bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi)
 
     list<string> services;
     BESServiceRegistry::TheRegistry()->services_handled(NGAP_NAME, services);
-    if (services.size() != 0) {
+    if (!services.empty()) {
         string handles = BESUtil::implode(services, ',');
         attrs["handles"] = handles;
     }
