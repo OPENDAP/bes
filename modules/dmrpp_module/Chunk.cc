@@ -995,13 +995,6 @@ void Chunk::read_chunk() {
     d_is_read = true;
 }
 
-void Chunk::read_chunk_dio() {
-
-    // KENT: Read chunk for dio - use read_chunk() as a reference.
-
-
-}
-
 /**
  *  unsigned long long d_size;
  *  unsigned long long d_offset;
