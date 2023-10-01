@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_more_types.h5">
+    <Structure name="Compound_more_types">
+        <Int32 name="a_name"/>
+        <String name="b_name">
+            <Dim size="4"/>
+        </String>
+        <String name="c_name"/>
+        <String name="s_name">
+            <Dim size="6"/>
+        </String>
+        <Int16 name="d_name">
+            <Dim size="5"/>
+            <Dim size="6"/>
+        </Int16>
+        <Float32 name="e_name"/>
+        <Float64 name="f_name">
+            <Dim size="10"/>
+        </Float64>
+        <Int8 name="g_name"/>
+        <Dim size="6"/>
+    </Structure>
+</Dataset>
