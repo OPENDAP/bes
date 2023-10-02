@@ -177,7 +177,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
 
-        const string uid_value = "jhrguat";
+        const string uid_value = "bugsbunny";
         BESContextManager::TheManager()->set_context("uid", uid_value);
 
         // this ctor sets ngap_path, needed by set_real_name_using_cmr_or_cache().
@@ -204,7 +204,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
 
-        const string uid_value = "jhrguat";
+        const string uid_value = "bugsbunny";
         BESContextManager::TheManager()->set_context("uid", uid_value);
 
         // this ctor does not set ngap_path, so use the setter.
@@ -233,9 +233,9 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
 
-        const string uid_value = "jhrguat";
+        const string uid_value = "bugsbunny";
         BESContextManager::TheManager()->set_context("uid", uid_value);
-        const string token_value = "Bearer never checkin a token";
+        const string token_value = "Bearer XYZ";
         BESContextManager::TheManager()->set_context("edl_auth_token", token_value);
 
         NgapContainer container;
@@ -243,10 +243,8 @@ public:
         container.set_real_name(resty_path);
         string file_name;
         CPPUNIT_ASSERT_THROW_MESSAGE("Expected NGAP to balk, requiring auth", file_name = container.access(), BESError);
-
 #if 0
         CPPUNIT_ASSERT_MESSAGE("The first call to Container::access() should return a pathname to a file", ::access(file_name.c_str(), F_OK) == 0);
-        CPPUNIT_FAIL("The access() test should not get this far.");
 #endif
     }
 
