@@ -792,7 +792,10 @@ static bool eval_curl_easy_perform_code(
         msg << " CURLINFO_EFFECTIVE_URL: " << filter_aws_url(eff_req_url);
         BESDEBUG(MODULE, prolog << msg.str() << endl);
         ERROR_LOG(msg.str() << endl);
+        return false;
+#if 0
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
+#endif
     }
 
     return true;
