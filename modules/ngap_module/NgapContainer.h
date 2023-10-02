@@ -102,6 +102,9 @@ public:
 
     BESContainer * ptr_duplicate() override;
 
+    void set_ngap_path(const std::string &ngap_path) { d_ngap_path = ngap_path; }
+    std::string get_ngap_path() const { return d_ngap_path; }
+
     std::string access() override;
 
     bool release() override;

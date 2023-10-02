@@ -24,7 +24,7 @@ AllowedHosts = ^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov\/.*$
 
 NGAP.inject_data_urls = true
 
-# These are here so that for unit tests change these values; the bes.conf file
+# These are here for unit tests that change these values; the bes.conf file
 # does not list these so that we can test the defaults compiled into the code.
 # jhrg 9/28/23
 

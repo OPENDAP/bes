@@ -10,7 +10,7 @@ AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+AM_LDFLAGS = -shared-libsan
 include $(top_srcdir)/coverage.mk
 
 EXTRA_DIST = response-split.py

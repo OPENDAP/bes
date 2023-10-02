@@ -1,4 +1,8 @@
 
+BES.LogName = ./bes.log
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/ngap_module
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+
 BES.modules+=ngap
 BES.module.ngap=@abs_top_builddir@/modules/ngap/.libs/libngap_module.so
 
