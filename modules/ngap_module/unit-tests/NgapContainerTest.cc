@@ -30,6 +30,7 @@
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
+#include "BESInternalError.h"
 
 #include "NgapNames.h"
 #include "NgapContainer.h"
@@ -220,6 +221,35 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Expected URL from CMR not cached", cache_value == expected);
     }
 
+    void test_access() {
+        const string provider_name = "GHRC_DAAC";
+        const string collection_concept_id ="C1996541017-GHRC_DAAC";
+        const string granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
+
+        const string resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
+
+        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
+        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+
+        const string uid_value = "jhrguat";
+        BESContextManager::TheManager()->set_context("uid", uid_value);
+        const string token_value = "Bearer never checkin a token";
+        BESContextManager::TheManager()->set_context("edl_auth_token", token_value);
+
+        NgapContainer container;
+        container.set_ngap_path(resty_path);
+        container.set_real_name(resty_path);
+        string file_name;
+        CPPUNIT_ASSERT_THROW_MESSAGE("Expected NGAP to balk, requiring auth", file_name = container.access(), BESError);
+
+#if 0
+        CPPUNIT_ASSERT_MESSAGE("The first call to Container::access() should return a pathname to a file", ::access(file_name.c_str(), F_OK) == 0);
+        CPPUNIT_FAIL("The access() test should not get this far.");
+#endif
+    }
+
     CPPUNIT_TEST_SUITE( NgapContainerTest );
 
     CPPUNIT_TEST(test_inject_data_url_default);
@@ -232,6 +262,8 @@ public:
     CPPUNIT_TEST(test_set_real_name_using_cmr_or_cache_using_cmr);
     CPPUNIT_TEST(test_set_real_name_using_cmr_or_cache_using_cache);
     CPPUNIT_TEST(test_set_real_name_using_cmr_or_cache_using_cache_default_ctor);
+
+    CPPUNIT_TEST(test_access);
 
     CPPUNIT_TEST_SUITE_END();
 };
