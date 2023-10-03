@@ -50,6 +50,14 @@ constexpr static auto const DEFAULT_CMR_ENDPOINT_URL = "https://cmr.earthdata.na
 constexpr static auto const DEFAULT_CMR_SEARCH_ENDPOINT_PATH = "/search/granules.umm_json_v1_4";
 constexpr static auto const CMR_URL_TYPE_GET_DATA = "GET DATA";
 
+constexpr static auto const USE_CMR_CACHE = "NGAP.UseCMRCache";
+constexpr static auto const CMR_CACHE_THRESHOLD = "NGAP.CMRCacheThreshold";
+constexpr static auto const CMR_CACHE_SPACE = "NGAP.CMRCacheSpace";
+
+constexpr static auto const USE_DMRPP_CACHE = "NGAP.UseDMRppCache";
+constexpr static auto const DMRPP_CACHE_THRESHOLD = "NGAP.DMRppCacheThreshold";
+constexpr static auto const DMRPP_CACHE_SPACE = "NGAP.DMRppCacheSpace";
+
 // These are used only in NgapApiTest.cc. jhrg 9/28/23
 #define CMR_PROVIDER "provider"
 #define CMR_ENTRY_TITLE "entry_title"

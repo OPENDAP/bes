@@ -34,6 +34,7 @@
 
 #include "NgapNames.h"
 #include "NgapContainer.h"
+#include "NgapRequestHandler.h"
 
 #include "test_config.h"
 
@@ -156,6 +157,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        NgapRequestHandler::d_use_cmr_cache = true;
 
         NgapContainer container;
         container.set_real_name(resty_path);
@@ -176,6 +178,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        NgapRequestHandler::d_use_cmr_cache = true;
 
         const string uid_value = "bugsbunny";
         BESContextManager::TheManager()->set_context("uid", uid_value);
@@ -203,6 +206,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        NgapRequestHandler::d_use_cmr_cache = true;
 
         const string uid_value = "bugsbunny";
         BESContextManager::TheManager()->set_context("uid", uid_value);
@@ -232,6 +236,8 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        NgapRequestHandler::d_use_cmr_cache = true;
+        NgapRequestHandler::d_use_dmrpp_cache = true;
 
         const string uid_value = "bugsbunny";
         BESContextManager::TheManager()->set_context("uid", uid_value);

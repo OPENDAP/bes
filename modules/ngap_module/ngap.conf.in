@@ -10,3 +10,15 @@ NGAP.inject_data_urls=true
 # Use this CMR endpoint URL for CMR queries.
 # NGAP.cmr_host_url=https://cmr.uat.earthdata.nasa.gov
 # NGAP.cmr_search_endpoint_path=/search/granules.umm_json_v1_4
+
+NGAP.UseDMRppCache = true
+
+# Defaults: 100 entries and purge 20 entries when the threshold is exceeded.
+# NGAP.DMRppCacheThreshold = 100
+# NGAP.DMRppCacheSpace = 20
+
+NGAP.UseCMRCache = true
+
+# Same defaults and meaning as for the CMR cache
+# NGAP.CMRCacheThreshold = 100
+# NGAP.CMRCacheSpace = 20

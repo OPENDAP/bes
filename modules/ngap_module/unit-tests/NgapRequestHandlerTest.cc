@@ -56,8 +56,9 @@ public:
     // tearDown; Called after each test; not used.
 
     void test_compiled_default_cache_keys() {
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache to be used by default", NgapRequestHandler::d_use_cmr_cache);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache to be used by default", NgapRequestHandler::d_use_dmrpp_cache);
+        // Test the values without any conf file loaded.
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache to not be used by default", !NgapRequestHandler::d_use_cmr_cache);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache to not be used by default", !NgapRequestHandler::d_use_dmrpp_cache);
 
         CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 100", NgapRequestHandler::d_cmr_cache_threshold == 100);
         CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 100", NgapRequestHandler::d_dmrpp_cache_threshold == 100);

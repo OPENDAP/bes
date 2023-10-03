@@ -24,7 +24,18 @@ Http.Cache.size=500
 Http.Cache.expires.time=3600
 #-----------------------------------------------------------------------#
 
-AllowedHosts=^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov\/.*$
+AllowedHosts = ^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov\/.*$
 
-NGAP.inject_data_urls=true
+NGAP.inject_data_urls = true
 
+NGAP.UseDMRppCache = true
+
+# Defaults: 100 entries and purge 20 entries when the threshold is exceeded.
+# NGAP.DMRppCacheThreshold = 100
+# NGAP.DMRppCacheSpace = 20
+
+NGAP.UseCMRCache = true
+
+# Same defaults and meaning as for the CMR cache
+# NGAP.CMRCacheThreshold = 100
+# NGAP.CMRCacheSpace = 20

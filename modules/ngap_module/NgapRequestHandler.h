@@ -54,6 +54,8 @@ namespace ngap {
         static bool d_use_dmrpp_cache;
 
         friend class NgapContainer;   // give NgapContainer access to the cache parameters
+
+        friend class NgapContainerTest;
         friend class NgapRequestHandlerTest;
 
     public:

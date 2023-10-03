@@ -54,25 +54,17 @@ using namespace ngap;
 unsigned int NgapRequestHandler::d_cmr_cache_threshold = 100;
 unsigned int NgapRequestHandler::d_cmr_cache_space = 20;
 
-constexpr static auto USE_CMR_CACHE = "NGAP.UseCMRCache";
-constexpr static auto CMR_CACHE_THRESHOLD = "NGAP.CMRCacheThreshold";
-constexpr static auto CMR_CACHE_SPACE = "NGAP.CMRCacheSpace";
-
 unordered_map<string, string> NgapRequestHandler::d_cmr_cache;
 queue<string> NgapRequestHandler::d_cmr_cache_entries;
-bool NgapRequestHandler::d_use_cmr_cache = true;
+bool NgapRequestHandler::d_use_cmr_cache = false;
 
 // DMR++ caching
 unsigned int NgapRequestHandler::d_dmrpp_cache_threshold = 100;
 unsigned int NgapRequestHandler::d_dmrpp_cache_space = 20;
 
-constexpr static auto USE_DMRPP_CACHE = "NGAP.UseDMRppCache";
-constexpr static auto DMRPP_CACHE_THRESHOLD = "NGAP.DMRppCacheThreshold";
-constexpr static auto DMRPP_CACHE_SPACE = "NGAP.DMRppCacheSpace";
-
 unordered_map<string, string> NgapRequestHandler::d_dmrpp_cache;
 queue<string> NgapRequestHandler::d_dmrpp_cache_entries;
-bool NgapRequestHandler::d_use_dmrpp_cache = true;
+bool NgapRequestHandler::d_use_dmrpp_cache = false;
 
 NgapRequestHandler::NgapRequestHandler(const string &name) :
         BESRequestHandler(name)
