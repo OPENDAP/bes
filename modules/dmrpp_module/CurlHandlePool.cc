@@ -26,6 +26,7 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#include <mutex>
 
 #include <curl/curl.h>
 
@@ -42,7 +43,6 @@
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "CredentialsManager.h"
-#include "AccessCredentials.h"
 
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
@@ -51,6 +51,8 @@
 using namespace dmrpp;
 using namespace http;
 using namespace std;
+
+std::recursive_mutex CurlHandlePool::d_dmrpp_easy_handle_mutex;
 
 /**
  * @brief Build a string with hex info about stuff libcurl gets
@@ -236,12 +238,39 @@ void dmrpp_easy_handle::read_data() {
     d_chunk->set_is_read(true);
 }
 
-CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
-#if 0
-    for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
-        d_easy_handles.push_back(new dmrpp_easy_handle());
-    }
+
+CurlHandlePool::CurlHandlePool(unsigned int) {
+    d_cookies_filename = curl::get_cookie_filename();
+    d_hyrax_user_agent = curl::hyrax_user_agent();
+    d_max_redirects = curl::max_redirects();
+    d_netrc_file = curl::get_netrc_filename();
+
+    // For this modification, the code that managed the curl handle pool (the original
+    // code) processed data from 20 requests for 2 variables with contiguous storage in
+    // 222ms. Removing the 'handle reuse' of the pool saw that time change to 351ms.
+    // Using the sharing feature of curl (and the blunt force trauma lock functions)
+    // and that time becomes 227ms. So our self-managed and the libcurl scheme are
+    // effectively equal, with the latter having some room for better performance if
+    // the lock functions are improved. jhrg 10/6/23
+
+    // See https://curl.se/libcurl/c/curl_share_init.html
+    d_share = curl_share_init();
+
+    // See https://curl.se/libcurl/c/curl_share_setopt.html
+    curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
+    curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
+    curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
+    curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
+
+#if 1
+    curl_share_setopt(d_share, CURLSHOPT_LOCKFUNC, lock_cb);
+    curl_share_setopt(d_share, CURLSHOPT_UNLOCKFUNC, unlock_cb);
 #endif
+}
+
+CurlHandlePool::~CurlHandlePool() {
+    // See https://curl.se/libcurl/c/curl_share_cleanup.html
+    curl_share_cleanup(d_share);
 }
 
 /**
@@ -270,18 +299,6 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
     }
 
-#if 0
-    std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
-
-    dmrpp_easy_handle *handle = nullptr;
-    for (auto & d_easy_handle : d_easy_handles) {
-        if (!d_easy_handle->d_in_use) {
-            handle = d_easy_handle;
-            break;
-        }
-    }
-#endif
-
     auto handle = make_unique<dmrpp_easy_handle>();
 
     if (handle) {
@@ -293,6 +310,9 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url()->str().c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
+
+        res = curl_easy_setopt(handle->d_handle, CURLOPT_SHARE, d_share);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_SHARE", handle->d_errbuf, __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str());
@@ -307,26 +327,26 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", handle->d_errbuf, __FILE__, __LINE__);
 
         // store the easy_handle so that we can call release_handle in multi_handle::read_data()
+        // TODO Still needed? jhrg 10/6/23
         res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void *>(handle.get()));
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PRIVATE", handle->d_errbuf, __FILE__, __LINE__);
 
         // Enabled cookies
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
+        res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, d_cookies_filename.c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", handle->d_errbuf, __FILE__, __LINE__);
 
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
+        res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, d_cookies_filename.c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", handle->d_errbuf, __FILE__, __LINE__);
 
         // Follow 302 (redirect) responses
         res = curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", handle->d_errbuf, __FILE__,
-                                           __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", handle->d_errbuf, __FILE__, __LINE__);
 
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS, curl::max_redirects());
+        res = curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS, d_max_redirects);
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", handle->d_errbuf, __FILE__, __LINE__);
 
         // Set the user agent something otherwise TEA will never redirect to URS.
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, curl::hyrax_user_agent().c_str());
+        res = curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, d_hyrax_user_agent.c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_USERAGENT", handle->d_errbuf, __FILE__, __LINE__);
 
         // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
@@ -340,20 +360,16 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC", handle->d_errbuf, __FILE__, __LINE__);
 
         // If the configuration specifies a particular .netrc credentials file, use it.
-        string netrc_file = curl::get_netrc_filename();
-        if (!netrc_file.empty()) {
-            res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
-            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__,
-                                               __LINE__);
+        if (!d_netrc_file.empty()) {
+            res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, d_netrc_file.c_str());
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
         }
 
         // TODO Code between here and below may have been turned into a method in AccessCredentials. jhrg 11/2/22
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if (credentials && credentials->is_s3_cred()) {
-            BESDEBUG(DMRPP_CURL,
-                     prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
-            // If there are available credentials, and they are S3 credentials then we need to sign
-            // the request
+            BESDEBUG(DMRPP_CURL, prolog << "Got AccessCredentials instance:\n" << credentials->to_json() << '\n');
+            // If there are available credentials, and they are S3 credentials then we need to sign the request
             const std::time_t request_time = std::time(0);
 
             const std::string auth_header =
@@ -386,77 +402,13 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
  *
  * @param handle
  */
-void CurlHandlePool::release_handle(dmrpp_easy_handle *handle, bool ) {
+void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
 
+#if 0
     handle->d_url = nullptr;
     handle->d_chunk = nullptr;
     handle->d_in_use = false;
+#endif
 
     delete handle;
-
-#if 0
-    // In get_easy_handle, it's possible that d_in_use could be false and d_chunk
-    // could not be set to 0 (because a separate thread could be running these
-    // methods). In that case, the thread running get_easy_handle could set d_chunk,
-    // and then this thread could clear it (... unlikely, but an optimizing compiler is
-    // free to reorder statements so long as they don't alter the function's behavior).
-    // Timing tests indicate this lock does not cost anything that can be measured.
-    // jhrg 8/21/18
-    std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
-
-    // TODO Add a call to curl reset() here. jhrg 9/23/20
-    //   I stuck it in the "replace" block below. ndp 08/07/23
-
-    if(replace) {
-        int i = 0;
-        for (auto & d_easy_handle : d_easy_handles) {
-            if (d_easy_handle == handle) {
-                BESDEBUG("dmrpp:5", "Found a handle match for the " << i << "the easy handle." << endl);
-                curl_easy_reset(handle->d_handle);
-                delete handle;
-                d_easy_handle = new dmrpp_easy_handle();
-                break;
-            }
-            i++;
-        }
-    }
-    else {
-        handle->d_url = nullptr;
-        handle->d_chunk = nullptr;
-        handle->d_in_use = false;
-    }
-#endif
-}
-
-#if 0
-
-/**
- * @brief Release the handle associated with a given chunk
- * This is intended for use in error clean up code.
- * @param chunk Find the handle for this chunk and release it.
- */
-void CurlHandlePool::release_handle(const Chunk *chunk) {
-    for (auto & d_easy_handle : d_easy_handles) {
-        if (d_easy_handle->d_chunk == chunk) {
-            release_handle(d_easy_handle);
-            break;
-        }
-    }
-}
-
-#endif
-
-/**
- * @breif release all outstanding curl handles
- * If one access in a multi-transfer fails because of an error such as
- * Access Denied, end the entire process and free all curl handles. This
- * is different from an Internal Server Error response, which should be
- * retried without ending the other accesses.
- */
-void CurlHandlePool::release_all_handles() {
-#if 0
-    for (auto & d_easy_handle : d_easy_handles) {
-        release_handle(d_easy_handle);
-    }
-#endif
 }

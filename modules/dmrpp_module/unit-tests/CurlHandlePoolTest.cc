@@ -180,9 +180,9 @@ public:
     void setUp() override
     {
         DBG(cerr << endl);
-        chp = new CurlHandlePool(4);
         TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/curl_handle_pool_keys.conf";
         // The following will show threads joined after an exception was thrown by a thread
+        chp = new CurlHandlePool(4);
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp:3");
     }
 

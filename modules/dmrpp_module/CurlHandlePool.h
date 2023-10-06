@@ -49,6 +49,7 @@ class dmrpp_easy_handle {
     std::shared_ptr<http::url> d_url;  ///< The libcurl handle reads from this URL.
     Chunk *d_chunk = nullptr;     ///< This easy_handle reads the data for \arg chunk.
     char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+
     CURL *d_handle = nullptr;     ///< The libcurl handle object.
     curl_slist *d_request_headers = nullptr; ///< Holds the list of authorization headers, if needed.
 
@@ -76,56 +77,34 @@ public:
  */
 class CurlHandlePool {
 private:
-    unsigned int d_max_easy_handles;
-    std::vector<dmrpp_easy_handle *> d_easy_handles;
-    std::recursive_mutex d_get_easy_handle_mutex;
+    std::string d_cookies_filename;
+    std::string d_hyrax_user_agent;
+    unsigned long d_max_redirects = 3;
+    std::string d_netrc_file;
+
+    CURLSH *d_share = nullptr;
+    static std::recursive_mutex d_dmrpp_easy_handle_mutex;
+
+    static void lock_cb(CURL *handle, curl_lock_data data, curl_lock_access access, void *userptr)
+    {
+        d_dmrpp_easy_handle_mutex.lock();
+        // pthread_mutex_lock(&lock[data]); /* uses a global lock array */
+    }
+
+    static void unlock_cb(CURL *handle, curl_lock_data data, void *userptr) {
+        d_dmrpp_easy_handle_mutex.unlock();
+    }
 
     friend class Lock;
 
 public:
     CurlHandlePool() = delete;
-    explicit CurlHandlePool(unsigned int max_handles);
-
-    ~CurlHandlePool() = default;
-
-#if 0
-    {
-        for (auto & d_easy_handle : d_easy_handles) {
-            delete d_easy_handle;
-        }
-    }
-#endif
-
-#if 0
-
-    /// @brief Get the number of handles in the pool.
-    unsigned int get_max_handles() const
-    { return d_max_easy_handles; }
-
-    unsigned int get_handles_available() const
-    {
-        unsigned int n = 0;
-        for (auto d_easy_handle : d_easy_handles) {
-            if (!d_easy_handle->d_in_use) {
-                n++;
-            }
-        }
-        return n;
-    }
-
-#endif
+    explicit CurlHandlePool(unsigned int);
+    ~CurlHandlePool();
 
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
-    void release_handle(dmrpp_easy_handle *h, bool replace=false);
-
-#if 0
-
-    void release_handle(const Chunk *chunk);
-
-#endif
-
-    void release_all_handles();
+    void release_handle(dmrpp_easy_handle *h);
 };
 
 } // namespace dmrpp

@@ -191,7 +191,9 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: "
             << nbytes << " is larger than the target buffer size: " << chunk->get_rbuf_size();
         BESDEBUG(MODULE, msg.str() << endl);
+#if 0
         DmrppRequestHandler::curl_handle_pool->release_all_handles();
+#endif
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
