@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // Retrieves the latitude and longitude of  the HDF-EOS2 Swath without using dimension maps
 //
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2020 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 //For the swath using the multiple dimension maps,
 // Latitude/longitude will be interpolated accordingly.

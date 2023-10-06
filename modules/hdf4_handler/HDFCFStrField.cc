@@ -2,8 +2,8 @@
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 // It retrieves the HDF4 DFNT_CHAR >1D array and then send to DAP as a DAP string array. 
 // This file is used when the CF option of the handler is turned on.
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>  
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>  
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config.h"

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Retrieves the latitude and longitude of  the HDF-EOS2 Swath with dimension map
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 // Currently the handling of swath data fields with dimension maps is the same as other data fields(HDFEOS2Array_RealField.cc etc)

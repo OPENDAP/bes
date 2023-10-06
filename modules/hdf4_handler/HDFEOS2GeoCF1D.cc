@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2009 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #ifdef USE_HDFEOS2_LIB
 

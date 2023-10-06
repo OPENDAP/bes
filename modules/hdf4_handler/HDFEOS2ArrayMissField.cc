@@ -5,8 +5,8 @@
 // What we do here is to provide natural number series(1,2,3, ...) for
 // these missing values. It doesn't make sense to visualize or analyze
 // with vertical cross-section. One can check the data level by level.
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2009 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #ifdef USE_HDFEOS2_LIB
 

@@ -26,7 +26,7 @@
 ///
 /// @author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2010-2012 The HDF Group
+/// Copyright (C) The HDF Group
 ///
 /// All rights reserved.
 

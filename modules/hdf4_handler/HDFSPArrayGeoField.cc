@@ -4,8 +4,8 @@
 // The products include TRMML2_V6,TRMML3B_V6,CER_AVG,CER_ES4,CER_CDAY,CER_CGEO,CER_SRB,CER_SYN,CER_ZAVG,OBPGL2,OBPGL3
 // To know more information about these products,check HDFSP.h.
 // Each product stores lat/lon in different way, so we have to retrieve them differently.
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #include "HDFSPArrayGeoField.h"

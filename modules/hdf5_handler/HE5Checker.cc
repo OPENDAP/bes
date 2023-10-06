@@ -2,7 +2,7 @@
 //  This file is part of the hdf5 data handler for the OPeNDAP data server.
 //
 // Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-//           MuQun Yang <myang6@hdfgroup.org>
+//           Kent Yang <myang6@hdfgroup.org>
 //
 // Copyright (c) 2007-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 ///
@@ -32,7 +32,7 @@
 /// and prepares the Vector structure that other functions reference.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author MuQun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 #include <map>
 #include <math.h>
 #include <BESDebug.h>

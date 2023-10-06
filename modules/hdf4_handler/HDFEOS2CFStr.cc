@@ -2,8 +2,8 @@
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 // It retrieves the HDF-EOS2 swath or grid DFNT_CHAR 1D array field and
 // then send to DAP as DAP string for the CF option.
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>  
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>  
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef USE_HDFEOS2_LIB

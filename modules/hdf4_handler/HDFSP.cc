@@ -22,7 +22,7 @@
 ///
 /// @author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2010-2012 The HDF Group
+/// Copyright (C) The HDF Group
 ///
 /// All rights reserved.
 
@@ -47,6 +47,7 @@ using namespace std;
 #define ERR_LOC1(x) #x
 #define ERR_LOC2(x) ERR_LOC1(x)
 #define ERR_LOC __FILE__ " : " ERR_LOC2(__LINE__)
+
 // Convenient function to handle exceptions
 template < typename T, typename U, typename V, typename W, typename X > static void
 _throw5 (const char *fname, int line, int numarg,
@@ -114,25 +115,10 @@ File::~File ()
         // No need to close SD interface.
         // it is handled(opened/closed) at the top level(HDF4RequestHandler.cc)
         //  KY 2014-02-18
-#if 0
-        //SDend (this->sdfd);
-#endif
     }
 
     // Close V interface IDs and release vdata resources
     if (this->fileid != -1) {
-
-#if 0
-        for (vector < VDATA * >::const_iterator i = this->vds.begin ();
-	     i != this->vds.end (); ++i) {
-             delete *i;
-        }
-
-        for (vector < AttrContainer * >::const_iterator i = this->vg_attrs.begin ();
-             i != this->vg_attrs.end (); ++i) {
-             delete *i;
-        }
-#endif
 
         std::for_each (this->vds.begin (), this->vds.end (), delete_elem ());
         std::for_each (this->vg_attrs.begin (), this->vg_attrs.end (), delete_elem ());
@@ -140,9 +126,6 @@ File::~File ()
         Vend (this->fileid);
         // No need to close H interface  
         // it is handled(opened/closed) at the top level(HDF4RequestHandler.cc) 
-#if 0
-        //Hclose (this->fileid);
-#endif
     }
 }
 
@@ -183,7 +166,7 @@ SDField::~SDField ()
     std::for_each (this->dims_info.begin (), this->dims_info.end (), delete_elem ());
 }
 
-// Vdata field constructors, nothing needs to do here. We don't provide vdata dimensions.
+// Vdata field constructors, nothing needs to be done here. We don't provide vdata dimensions.
 // Only when mapping to DDS (at hdfdesc.cc,search VDFDim0), we add the dimension info. to DDS. The addition
 // may not be in a good place, however, the good part is that we don't need to allocate dimension resources
 //  for vdata.
@@ -211,26 +194,15 @@ File::Read (const char *path, int32 mysdid, int32 myfileid)
     // Allocate a new file object.
     auto file = new File (path);
  
-#if 0
-    int32 mysdid = -1;
-
-    // Obtain the SD ID.
-    if ((mysdid =
-        SDstart (const_cast < char *>(file->path.c_str ()),
-                 DFACC_READ)) == -1) {
-        delete file;
-        throw2 ("SDstart", path);
-    }
-#endif
-
     // Old comments just for reminders(KY 2014-02-18)
     // A strange compiling bug was found if we don't pass the file id to this fuction.
-    // It will always give 0 number as the ID and the HDF4 library doesn't complain!! 
+    // It will always give  number zero(0) as the ID and the HDF4 library doesn't complain!! 
     // Will try dumplicating the problem and submit a bug report. KY 2010-7-14
+
     file->sdfd = mysdid;
     file->fileid = myfileid;
 
-    if(myfileid != -1) {
+    if (myfileid != -1) {
         // Start V interface
         int32 status = Vstart (file->fileid);
         if (status == FAIL)  {
@@ -245,7 +217,7 @@ File::Read (const char *path, int32 mysdid, int32 myfileid)
 
         // Handle lone vdatas, non-lone vdatas will be handled in Prepare().
         // Read lone vdata.
-        if(myfileid != -1) 
+        if (myfileid != -1) 
             file->ReadLoneVdatas(file);
     }
     catch(...) {
@@ -263,23 +235,8 @@ File::Read_Hybrid (const char *path, int32 mysdid, int32 myfileid)
 {
     // New File 
     auto file = new File (path);
-    if(file == nullptr)
+    if (file == nullptr)
         throw1("Memory allocation for file class failed. ");
-
-#if 0
-//cerr<<"File is opened for HDF4 "<<endl;
-#endif
-
-#if 0
-    // Obtain SD interface
-    int32 mysdid = -1;
-    if ((mysdid =
-        SDstart (const_cast < char *>(file->path.c_str ()),
-		  DFACC_READ)) == -1) {
-        delete file;
-        throw2 ("SDstart", path);
-    }
-#endif
 
     // Old comments just for reminders. The HDF4 issue may still exist. KY 2014-02-18
     // A strange compiling bug was found if we don't pass the file id to this fuction.
@@ -294,10 +251,6 @@ File::Read_Hybrid (const char *path, int32 mysdid, int32 myfileid)
         delete file;
         throw2 ("Cannot start vdata/vgroup interface", path);
     }
-
-#if 0
-    //if(file != nullptr) {// Coverity doesn't recongize the throw macro, see if this makes it happy.
-#endif
 
     try {
 
@@ -314,10 +267,6 @@ File::Read_Hybrid (const char *path, int32 mysdid, int32 myfileid)
         delete file;
         throw;
     }
-
-#if 0
-    //}
-#endif
          
     return file;
 }
@@ -327,13 +276,6 @@ void
 File::ReadLoneVdatas(File *file) const {
 
     int status = -1;
-    // No need to start V interface again
-#if 0
-    // Start V interface
-    int status = Vstart (file->fileid);
-    if (status == FAIL)
-        throw2 ("Cannot start vdata/vgroup interface", path);
-#endif
 
     // Obtain number of lone vdata.
     int num_lone_vdata = VSlone (file->fileid, nullptr, 0);
@@ -406,7 +348,7 @@ File::ReadLoneVdatas(File *file) const {
                     throw;
                 }
 
-                // We want to map fields of vdata with more than 10 records to DAP variables
+                // We want to map vdata fields that have more than 10 records to DAP variables
                 // and we need to add the path and vdata name to the new vdata field name
                 if (!vdataobj->getTreatAsAttrFlag ()) {
                     for (const auto &vdf:vdataobj->getFields ()) {
@@ -535,9 +477,9 @@ File::ReadLoneVdatas(File *file) const {
                                 file->sptype = CER_ZAVG;
                         
 cleanFail:
-                            if(data_buf_err == true || VS_fun_err == true) {
+                            if (data_buf_err == true || VS_fun_err == true) {
                                 VSdetach(vdata_id);
-                                if(data_buf_err == true) 
+                                if (data_buf_err == true) 
                                     throw1(err_msg);
                                 else {
                                     free(databuf);
@@ -567,12 +509,6 @@ File::ReadHybridNonLoneVdatas(const File *file) {
     int32 vgroup_id      = -1;
     int32 vdata_id       = -1;
 
-#if 0
-    //int32 vgroup_ref     = -1;
-    //int32 obj_index      = -1;
-    //int32 num_of_vg_objs = -1;
-#endif
-
     int32 obj_tag        = -1;
     int32 obj_ref        = -1;
 
@@ -596,14 +532,6 @@ File::ReadHybridNonLoneVdatas(const File *file) {
 
     // Obtain H interface ID
     file_id = file->fileid;
-
-    // No need to start V interface again.
-#if 0
-    // Start V interface
-    status = Vstart (file_id);
-    if (status == FAIL) 
-        throw2 ("Cannot start vdata/vgroup interface", path);
-#endif
 
     // No NASA HDF4 files have the vgroup that forms a ring; so ignore this case.
     // First, call Vlone with num_of_lones set to 0 to get the number of
@@ -687,11 +615,6 @@ File::ReadHybridNonLoneVdatas(const File *file) {
                 err_msg = "No enough memory to allocate the buffer for full_path.";
                 VS_or_mem_err = true;
                 goto cleanFail;
-#if 0
-                //Vdetach (vgroup_id);
-                //throw;
-                //throw1 ("No enough memory to allocate the buffer.");
-#endif
             }
             else
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -709,10 +632,6 @@ File::ReadHybridNonLoneVdatas(const File *file) {
                 err_msg = "No enough memory to allocate the buffer for cfull_path.";
                 VS_or_mem_err = true;
                 goto cleanFail;
-#if 0
-                //throw;
-                //throw1 ("No enough memory to allocate the buffer.");
-#endif
             }
             else 
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -727,13 +646,6 @@ File::ReadHybridNonLoneVdatas(const File *file) {
                     err_msg = "Vgettagref failed";
                     VS_or_mem_err = true;
                     goto cleanFail;
-#if 0
-                    //Vdetach (vgroup_id);
-                    //free (full_path);
-                    //free (cfull_path);
-                    //throw5 ("Vgettagref failed ", "vgroup_name is ",
-                    //         vgroup_name, " reference number is ", obj_ref);
-#endif
                 }
 
                 // If the object is a vgroup,always pass the original full path to its decendant vgroup
@@ -810,11 +722,11 @@ File::ReadHybridNonLoneVdatas(const File *file) {
                             throw;
                         }
 
-                        if(full_path != nullptr)//Make coverity happy since it doesn't understand the throw macro
+                        if (full_path != nullptr)//Make coverity happy since it doesn't understand the throw macro
                             vdataobj->newname = full_path +vdataobj->name;
 
-                        //We want to map fields of vdata with more than 10 records to DAP variables
-                        // and we need to add the path and vdata name to the new vdata field name
+                        //We want to map vdata fields that have more than 10 records to DAP variables
+                        // and we need to add the path and vdata name to the new vdata field name.
                         if (!vdataobj->getTreatAsAttrFlag ()) {
                             for (const auto &vdf:vdataobj->getFields ()) {
 
@@ -846,24 +758,19 @@ File::ReadHybridNonLoneVdatas(const File *file) {
                 }
 
                 //Ignore the handling of SDS objects. They are handled elsewhere. 
-#if 0
-                else{
-
-                }
-#endif
             }
 
 cleanFail:            
-            if(full_path != nullptr)
+            if (full_path != nullptr)
                 free (full_path);
-            if(cfull_path != nullptr)
+            if (cfull_path != nullptr)
                 free (cfull_path);
 
             status = Vdetach (vgroup_id);
             if (status == FAIL) {
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
-            if(true == VS_or_mem_err) 
+            if (true == VS_or_mem_err) 
                 throw3(err_msg,"vgroup_name is ",vgroup_name);
 
         }//end of the for loop
@@ -903,7 +810,7 @@ File::Check_update_special(const string& grid_name) const {
     for (const auto &sdf:this->sd->getFields ()) {
 
         for (const auto &dim:sdf->getDimensions()) {
-            if(dim->getName() !=FullXDim && dim->getName()!=FullYDim)
+            if (dim->getName() !=FullXDim && dim->getName()!=FullYDim)
                dimnameset.insert(dim->getName());
         }
 
@@ -925,14 +832,14 @@ File::Check_update_special(const string& grid_name) const {
 
     for (const auto &fld:fldset) {
         size_t dim_size = (fld->getDimensions())[0]->getName().size();
-        if( dim_size > grid_name_size){
+        if ( dim_size > grid_name_size){
            reduced_dimname = (fld->getDimensions())[0]->getName().substr(0,dim_size-grid_name_size-1);
            if (fld->getName() == reduced_dimname)
                 total_num_dims++;
         }
     }
  
-    if((size_t)total_num_dims != (dimnameset.size()+2))
+    if ((size_t)total_num_dims != (dimnameset.size()+2))
         return false;
 
     // Updated dimension names for all variables: removing the grid_name prefix.
@@ -941,7 +848,7 @@ File::Check_update_special(const string& grid_name) const {
         for (const auto &dim:sdf->getDimensions ()) {
 
              size_t dim_size = dim->getName().size();
-             if( dim_size > grid_name_size){
+             if ( dim_size > grid_name_size){
                 reduced_dimname = dim->getName().substr(0,dim_size-grid_name_size-1);
                 dim->name = reduced_dimname;
              }
@@ -956,19 +863,19 @@ File::Check_update_special(const string& grid_name) const {
 
            if (fld->getName() == (fld->getDimensions())[0]->getName()) {
  
-            if("XDim" == fld->getName()){
+            if ("XDim" == fld->getName()){
                 std::string tempunits = "degrees_east";
                 fld->setUnits (tempunits); 
                 fld->fieldtype = 2;
             }
 
-            else if("YDim" == fld->getName()){
+            else if ("YDim" == fld->getName()){
                 std::string tempunits = "degrees_north";
                 fld->setUnits (tempunits); 
                 fld->fieldtype = 1;
             }
 
-            else if("Pressure_Level" == fld->getName()) {
+            else if ("Pressure_Level" == fld->getName()) {
                 std::string tempunits = "hPa";
                 fld->setUnits (tempunits);
                 fld->fieldtype = 3;
@@ -985,41 +892,13 @@ File::Check_update_special(const string& grid_name) const {
 
 }
 
-#if 0
-// This routine is used to check if this grid is a special MOD08M3-like grid in DDS-build. 
-// Check_if_special is used when building DAS. The reason to separate is that we pass the 
-// File pointer from DAS to DDS to reduce the building time.
-// How to check: 
-// 1) 
-
-bool
-File::Check_if_special(const string& grid_name) {
-
-
-     bool xdim_is_lon = false;
-     bool ydim_is_lat = false;
-     bool pre_unit_hpa = true;
-     for (vector < SDField * >::const_iterator i =
-        this->sd->getFields ().begin ();
-        i != this->sd->getFields ().end (); ++i) {
-        if (1==(*i)->getRank()) {
-            if(1 == ((*i)->fieldtype)) {
-                if("YDim" == (*j)->getName()
-
-            }
-
-        }
-    }
-}
-#endif
-
 void
 File::Handle_AIRS_L23() {
 
     File *file = this;
 
     bool airs_l3 = true;
-    if(basename(file->path).find(".L2.")!=string::npos)
+    if (basename(file->path).find(".L2.")!=string::npos)
         airs_l3 = false;
 
     // set of names of dimensions that have dimension scales.
@@ -1038,36 +917,27 @@ File::Handle_AIRS_L23() {
 
         string tempname = sdf->name;
         size_t found_colon = tempname.find_first_of(':');
-        if(found_colon!=string::npos) 
+        if (found_colon!=string::npos) 
             sdf->newname = tempname.substr(0,found_colon);
 
         for (const auto &dim:sdf->getDimensions()) {
 
             tempname = dim->name;
             found_colon = tempname.find_first_of(':');
-            if(found_colon!=string::npos) 
+            if (found_colon!=string::npos) 
                 dim->name = tempname.substr(0,found_colon);
 
-            if(0==dim->getType()) {
+            if (0==dim->getType()) {
                 ret = non_scaled_dname_set.insert(dim->name);
                 if (true == ret.second)
                     non_scaled_dname_to_size[dim->name] = dim->dimsize;
             }
             else
                 scaled_dname_set.insert(dim->name);
-            
                       
         }
 
     }
-#if 0
-for(set<string>::const_iterator sdim_it = scaled_dname_set.begin();
-                                    sdim_it !=scaled_dname_set.end();
-                                    ++sdim_it) {
-cerr<<"scaled dim. name "<<*sdim_it <<endl;
-
-}
-#endif
 
     // For AIRS level 3 only ****
     // 2. Remove potential redundant CVs
@@ -1077,7 +947,7 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
 
     // Make a copy of the scaled-dim name set:scaled-dim-marker
 
-    if(true == airs_l3) {
+    if (true == airs_l3) {
 
         set<string>scaled_dname_set_marker = scaled_dname_set;
   
@@ -1090,9 +960,9 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
         //     remove the variable from the variable vector.
         for (std::vector < SDField * >::iterator i =
                 file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ) {
-            if(1 == (*i)->getRank()) {
-                if(scaled_dname_set.find((*i)->getNewName())!=scaled_dname_set.end()) {
-                    if(scaled_dname_set_marker.find((*i)->getNewName())!=scaled_dname_set_marker.end()) {
+            if (1 == (*i)->getRank()) {
+                if (scaled_dname_set.find((*i)->getNewName())!=scaled_dname_set.end()) {
+                    if (scaled_dname_set_marker.find((*i)->getNewName())!=scaled_dname_set_marker.end()) {
                         scaled_dname_set_marker.erase((*i)->getNewName());
                         ++i;
                     }
@@ -1107,7 +977,7 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
                 }
             }
             // Remove Latitude and Longitude 
-            else if( 2 == (*i)->getRank()) {
+            else if ( 2 == (*i)->getRank()) {
                 if ("Latitude" == (*i)->getNewName() ||  "Longitude" == (*i)->getNewName()) {
                     delete(*i);
                     i = file->sd->sdfields.erase(i);
@@ -1121,21 +991,12 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
         }
     }
 
-#if 0
-for(set<string>::const_iterator sdim_it = scaled_dname_set.begin();
-                                    sdim_it !=scaled_dname_set.end();
-                                    ++sdim_it) {
-cerr<<"new scaled dim. name "<<*sdim_it <<endl;
-
-}
-#endif
-
     //3. Add potential missing CVs
     
     // 3.1 Find the true dimensions that don't have dimension scales.
     set<string>final_non_scaled_dname_set;
     for (const auto &non_sdim:non_scaled_dname_set) {
-        if(scaled_dname_set.find(non_sdim)==scaled_dname_set.end())
+        if (scaled_dname_set.find(non_sdim)==scaled_dname_set.end())
             final_non_scaled_dname_set.insert(non_sdim);
     }
 
@@ -1164,7 +1025,7 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
     if (true == airs_l3) {
         for (const auto &sdf:file->sd->sdfields) {
     
-            if(1 ==sdf->getRank()){
+            if (1 ==sdf->getRank()){
                 if ("XDim" == sdf->newname)
                     sdf->newname = "Longitude";
                 else if ("YDim" == sdf->newname)
@@ -1172,7 +1033,7 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
             }
     
             for (const auto &dim:sdf->getDimensions()) {
-                if("XDim" == dim->name)
+                if ("XDim" == dim->name)
                     dim->name = "Longitude";
                 else if ("YDim" == dim->name)
                     dim->name = "Latitude";
@@ -1182,7 +1043,7 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
     }
   
     // For AIRS level 2 only
-    if(false == airs_l3) {
+    if (false == airs_l3) {
 
         bool change_lat_unit = false;
         bool change_lon_unit = false;
@@ -1193,8 +1054,8 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
         // 2. Obtain dimension names of lat/lon.
         for (const auto &sdf:file->sd->sdfields) {
 
-            if(2 == sdf->getRank()) {
-                if("Latitude" == sdf->newname){
+            if (2 == sdf->getRank()) {
+                if ("Latitude" == sdf->newname){
                     sdf->fieldtype = 1;
                     change_lat_unit = true;
                     string tempunits = "degrees_north";
@@ -1203,13 +1064,13 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
                     ll_dimname2 = sdf->getDimensions()[1]->getName();
 
                 }
-                else if("Longitude" == sdf->newname) {
+                else if ("Longitude" == sdf->newname) {
                     sdf->fieldtype = 2;
                     change_lon_unit = true;
                     string tempunits = "degrees_east";
                     sdf->setUnits(tempunits);
                 }
-                if((true == change_lat_unit) && (true == change_lon_unit))
+                if ((true == change_lat_unit) && (true == change_lon_unit))
                     break;
             }
         }
@@ -1235,18 +1096,18 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
                 bool has_lldim1 = false;
                 bool has_lldim2 = false;
                 for (const auto &dim:sdf->getDimensions ()) {
-                    if(dim->name == ll_dimname1)
+                    if (dim->name == ll_dimname1)
                         has_lldim1 = true;
                     else if (dim->name == ll_dimname2)
                         has_lldim2 = true;
-                    if((true == has_lldim1) && (true == has_lldim2))
+                    if ((true == has_lldim1) && (true == has_lldim2))
                         break;
  
                 }
                
                 if ((true == has_lldim1) && (true == has_lldim2)) {
                     for (const auto &dim:sdf->getDimensions ()) { 
-                        if(dim->name == ll_dimname1)
+                        if (dim->name == ll_dimname1)
                             tempfieldname = "Latitude";
                         else if (dim->name == ll_dimname2)
                             tempfieldname = "Longitude";
@@ -1316,11 +1177,11 @@ File::CheckSDType ()
         }
 
         
-        if(3 == trmm_single_gridflag) 
+        if (3 == trmm_single_gridflag) 
             this->sptype = TRMML3S_V7;
-        else if(3 == trmm_swathflag) 
+        else if (3 == trmm_swathflag) 
             this->sptype = TRMML2_V7;
-        else if(trmm_multi_gridflag >3)
+        else if (trmm_multi_gridflag >3)
             this->sptype = TRMML3M_V7;
             
     }
@@ -1428,13 +1289,6 @@ File::CheckSDType ()
             }
         }
     }
-
-#if 0
-if(this->sptype == TRMML3A_V6) 
-cerr<<"3A46 products "<<endl;
-if(this->sptype == TRMML3C_V6) 
-cerr<<"CSH products "<<endl;
-#endif
 
     // Check the OBPG case
     // OBPG includes SeaWIFS,OCTS,CZCS,MODISA,MODIST
@@ -1612,17 +1466,11 @@ SD::Read (int32 sdfd, int32 fileid)
     // Otherwise, this dimension type is the datatype of this dimension scale.
     int32  dim_type      = 0; 
 
-#if 0
-    // Number of dimension attributes(This is almost never used)
-    //int32  num_dim_attrs = 0;
-#endif
-
     // Attribute value count
     int32  attr_value_count = 0;
 
     // Obtain a SD instance
     auto sd = new SD ();
-
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL) {
@@ -1751,7 +1599,7 @@ SD::Read (int32 sdfd, int32 fileid)
         // Find dimensions that have no dimension scales, 
         // add attribute for this whole field ???_dim0, ???_dim1 etc.
 
-        if( true == dim_no_dimscale) {
+        if ( true == dim_no_dimscale) {
 
             for (int dimindex = 0; dimindex < field->rank; dimindex++) {
 
@@ -1853,7 +1701,7 @@ SD::Read (int32 sdfd, int32 fileid)
                 throw3 ("SDattrinfo failed ", "SDS name ", sds_name);
             }
 
-           if(attr != nullptr) {//Make coverity happy(it doesn't understand the throw macro.
+           if (attr != nullptr) {//Make coverity happy(it doesn't understand the throw macro.
             string tempname4 (attr_name);
             attr->name = tempname4;
             tempname4 = HDFCFUtil::get_CF_string(tempname4);
@@ -1889,23 +1737,25 @@ SD::Read (int32 sdfd, int32 fileid)
             delete sd;
             throw3 ("SDattrinfo failed ", "SD id ", sdfd);
         }
-       if(attr != nullptr) {//Make coverity happy because it doesn't understand throw3
-        std::string tempname5 (attr_name);
-        attr->name = tempname5;
 
-        // Checking and handling the special characters for the SDS attribute name.
-        tempname5 = HDFCFUtil::get_CF_string(tempname5);
-        attr->newname = tempname5;
-        attr->count = attr_value_count;
-        attr->value.resize (attr_value_count * DFKNTsize (attr->type));
-        if (SDreadattr (sdfd, attrindex, &attr->value[0]) == -1) {
-            delete attr;
-            delete sd;
-            throw3 ("Cannot read SD attribute", " Attribute name ",
-                     attr_name);
+        if (attr != nullptr) {//Make coverity happy because it doesn't understand throw3
+
+            std::string tempname5 (attr_name);
+            attr->name = tempname5;
+    
+            // Checking and handling the special characters for the SDS attribute name.
+            tempname5 = HDFCFUtil::get_CF_string(tempname5);
+            attr->newname = tempname5;
+            attr->count = attr_value_count;
+            attr->value.resize (attr_value_count * DFKNTsize (attr->type));
+            if (SDreadattr (sdfd, attrindex, &attr->value[0]) == -1) {
+                delete attr;
+                delete sd;
+                throw3 ("Cannot read SD attribute", " Attribute name ",
+                         attr_name);
+            }
+            sd->attrs.push_back (attr);
         }
-        sd->attrs.push_back (attr);
-       }
     }
 
     return sd;
@@ -1992,18 +1842,16 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
 
     // full path of an object
     char *full_path = nullptr;
-   // char full_path[MAX_FULL_PATH_LEN];
 
     // copy of the full path
     char *cfull_path = nullptr;
-//    char cfull_path[MAX_FULL_PATH_LEN];
 
     // Obtain a SD instance
     SD *sd = new SD ();
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL) {
-        if(sd != nullptr)
+        if (sd != nullptr)
             delete sd;
         throw2 ("SDfileinfo failed ", sdfd);
     }
@@ -2011,10 +1859,12 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
     // Loop through all SDS objects to obtain the SDS reference numbers.
     // Then save the reference numbers into the SD instance sd.
     for (sds_index = 0; sds_index < n_sds; sds_index++) {
+
         sds_id = SDselect (sdfd, sds_index);
 
         if (sds_id == FAIL) {
-            if(sd != nullptr)
+
+            if (sd != nullptr)
                 delete sd;
             // We only need to close SDS ID. SD ID will be closed when 
             // the destructor is called.
@@ -2024,7 +1874,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
 
         sds_ref = SDidtoref (sds_id);
         if (sds_ref == FAIL) {
-            if(sd != nullptr)
+            if (sd != nullptr)
                 delete sd;
             SDendaccess (sds_id);
             throw3 ("Cannot obtain SDS reference number", " SDS ID is ",
@@ -2042,7 +1892,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
 
     num_of_lones = Vlone (fileid, nullptr, 0);
     if (num_of_lones == FAIL){
-        if(sd != nullptr)
+        if (sd != nullptr)
             delete sd;
         throw3 ("Fail to obtain lone vgroup number", "file id is", fileid);
     }
@@ -2059,7 +1909,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
         // the buffer ref_array.
         num_of_lones = Vlone (fileid, ref_array.data(), num_of_lones);
         if (num_of_lones == FAIL) {
-            if(sd != nullptr)
+            if (sd != nullptr)
                 delete sd;
             throw3 ("Cannot obtain lone vgroup reference arrays ",
                     "file id is ", fileid);
@@ -2072,7 +1922,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
             // Attach to the current vgroup 
             vgroup_id = Vattach (fileid, ref_array[lone_vg_number], "r");
             if (vgroup_id == FAIL) {
-                if(sd != nullptr)
+                if (sd != nullptr)
                     delete sd;
                 throw3 ("Vattach failed ", "Reference number is ",
                          ref_array[lone_vg_number]);
@@ -2080,7 +1930,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
 
             status = Vgetname (vgroup_id, vgroup_name);
             if (status == FAIL) {
-                if(sd != nullptr)
+                if (sd != nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vgetname failed ", "vgroup_id is ", vgroup_id);
@@ -2088,7 +1938,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
 
             status = Vgetclass (vgroup_id, vgroup_class);
             if (status == FAIL) {
-                if(sd != nullptr)
+                if (sd != nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vgetclass failed ", "vgroup_name is ", vgroup_name);
@@ -2109,7 +1959,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
             // Obtain the number of objects of this vgroup
             num_gobjects = Vntagrefs (vgroup_id);
             if (num_gobjects < 0) {
-                if(sd != nullptr)
+                if (sd != nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
@@ -2127,22 +1977,23 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
             
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == nullptr) {
-                if(sd!= nullptr)
+                if (sd!= nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
                 throw1 ("No enough memory to allocate the buffer.");
             }
             else 
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
+
             strncpy(full_path,_BACK_SLASH,strlen(_BACK_SLASH));
             strncat(full_path, vgroup_name,strlen(vgroup_name));
 
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (cfull_path == nullptr) {
-                if(sd != nullptr)
+                if (sd != nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
-                if(full_path != nullptr)
+                if (full_path != nullptr)
                     free (full_path);
                 throw1 ("No enough memory to allocate the buffer.");
             }
@@ -2155,12 +2006,12 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
 
                 // Obtain the object reference and tag of this object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
-                    if(sd != nullptr)
+                    if (sd != nullptr)
                         delete sd;
                     Vdetach (vgroup_id);
-                    if(full_path != nullptr)
+                    if (full_path != nullptr)
                         free (full_path);
-                    if(cfull_path != nullptr)
+                    if (cfull_path != nullptr)
                         free (cfull_path);
                     throw5 ("Vgettagref failed ", "vgroup_name is ",
                              vgroup_name, " reference number is ", obj_ref);
@@ -2182,7 +2033,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
                     // If the object is an EOS object, we will remove the sds 
                     // reference number from the list.
                     auto temp_str = string(full_path);
-                    if((temp_str.find("Data Fields") != std::string::npos)||
+                    if ((temp_str.find("Data Fields") != std::string::npos)||
                         (temp_str.find("Geolocation Fields") != std::string::npos))                                   
                         sd->sds_ref_list.remove(obj_ref);
 
@@ -2195,7 +2046,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
             status = Vdetach (vgroup_id);
 
             if (status == FAIL) {
-                if(sd != nullptr)
+                if (sd != nullptr)
                     delete sd;
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
@@ -2204,14 +2055,10 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
     }// end of the if loop
 
     // Loop through the sds reference list; now the list should only include non-EOS SDS objects.
-#if 0
-    for(std::list<int32>::iterator sds_ref_it = sd->sds_ref_list.begin(); 
-        sds_ref_it!=sd->sds_ref_list.end();++sds_ref_it) {
-#endif
     for (const auto &sds_ref:sd->sds_ref_list) {
 
         extra_sds_index = SDreftoindex(sdfd,sds_ref);
-        if(extra_sds_index == FAIL) { 
+        if (extra_sds_index == FAIL) { 
             delete sd;
             throw3("SDreftoindex Failed ","SDS reference number ", sds_ref);
         }
@@ -2246,6 +2093,7 @@ SD::Read_Hybrid (int32 sdfd, int32 fileid)
 
         // Handle dimensions with original dimension names
         for (int dimindex = 0; dimindex < field->rank; dimindex++) {
+
             int dimid = SDgetdimid (sds_id, dimindex);
             if (dimid == FAIL) {
                 delete field;
@@ -2403,7 +2251,7 @@ VDATA::Read (int32 vdata_id, int32 obj_ref)
 
         auto field = new VDField ();
 
-        if(field == nullptr) {
+        if (field == nullptr) {
             delete vdata;
             throw1("Memory allocation for field class failed.");
 
@@ -2444,7 +2292,7 @@ VDATA::Read (int32 vdata_id, int32 obj_ref)
                      temp_vdata_name, " index is ", i);
         }
 
-        if(fieldname !=nullptr) // Only make coverity happy
+        if (fieldname !=nullptr) // Only make coverity happy
             field->name = fieldname;
         field->newname = HDFCFUtil::get_CF_string(field->name);
         field->type = fieldtype;
@@ -2453,28 +2301,23 @@ VDATA::Read (int32 vdata_id, int32 obj_ref)
         field->rank = 1;
         field->numrec = num_record;
 
-#if 0
-//cerr<<"vdata field name is "<<field->name <<endl;
-//cerr<<"vdata field type is "<<field->type <<endl;
-#endif
-
         
         if (vdata->getTreatAsAttrFlag () && num_record > 0) {	// Currently we only save small size vdata to attributes
 
             field->value.resize (num_record * fieldsize);
             if (VSseek (vdata_id, 0) == FAIL) {
-                if(field != nullptr)
+                if (field != nullptr)
                     delete field;
-                if(vdata != nullptr)
+                if (vdata != nullptr)
                     delete vdata;
                 throw5 ("vdata ", vdata_name, "field ", fieldname,
                         " VSseek failed.");
             }
 
             if (VSsetfields (vdata_id, fieldname) == FAIL) {
-                if(field != nullptr)
+                if (field != nullptr)
                     delete field;
-                if(vdata != nullptr)
+                if (vdata != nullptr)
                     delete vdata;
                 throw3 ("vdata field ", fieldname, " VSsetfields failed.");
             }
@@ -2482,16 +2325,16 @@ VDATA::Read (int32 vdata_id, int32 obj_ref)
             if (VSread
                 (vdata_id, (uint8 *) & field->value[0], num_record,
                  FULL_INTERLACE) == FAIL){
-                if(field != nullptr)
+                if (field != nullptr)
                     delete field;
-                if(vdata != nullptr)
+                if (vdata != nullptr)
                     delete vdata;
                 throw3 ("vdata field ", fieldname, " VSread failed.");
             }
 
         }
 
-       if(field != nullptr) {// Coverity doesn't know the throw macro. See if this makes it happy.
+       if (field != nullptr) {// Coverity doesn't know the throw macro. See if this makes it happy.
         try {
             // Read field attributes
             field->ReadAttributes (vdata_id, i);
@@ -2522,7 +2365,7 @@ void
 VDATA::ReadAttributes (int32 vdata_id)
 {
     // Vdata attribute name
-     // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
+    // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
     // Documented in a jira ticket HFRHANDLER-168. 
     char attr_name[H4_MAX_NC_NAME];
 
@@ -2537,12 +2380,6 @@ VDATA::ReadAttributes (int32 vdata_id)
 
     // Number of vdata attributes
     nattrs = VSfnattrs (vdata_id, _HDF_VDATA);
-
-//  This is just to check if the weird MacOS portability issue go away.KY 2011-3-31
-#if 0
-    if (nattrs == FAIL)
-        throw3 ("VSfnattrs failed ", "vdata id is ", vdata_id);
-#endif
 
     if (nattrs > 0) {
 
@@ -2561,7 +2398,7 @@ VDATA::ReadAttributes (int32 vdata_id)
 
             // Checking and handling the special characters for the vdata attribute name.
             string tempname(attr_name);
-            if(attr != nullptr) {
+            if (attr != nullptr) {
                 attr->name = tempname;
                 attr->newname = HDFCFUtil::get_CF_string(attr->name);
                 attr->value.resize (attrsize);
@@ -2599,13 +2436,6 @@ VDField::ReadAttributes (int32 vdata_id, int32 fieldindex)
     // Obtain 
     nattrs = VSfnattrs (vdata_id, fieldindex);
 
-// This is just to check if the weird MacOS portability issue go away.KY 2011-3-9
-#if 0
-    if (nattrs == FAIL)
-        throw5 ("VSfnattrs failed ", "vdata id is ", vdata_id,
-                "Field index is ", fieldindex);
-#endif
-
     if (nattrs > 0) {
 
         // Obtain vdata field attributes
@@ -2637,7 +2467,7 @@ VDField::ReadAttributes (int32 vdata_id, int32 fieldindex)
                              fieldindex, " attr index is ", i);
                 }
                 attrs.push_back (attr);
-           }
+            }
         }
     }
 }
@@ -2646,14 +2476,13 @@ void
 File::ReadVgattrs(int32 vgroup_id,const char*fullpath) {
 
     intn status_n;
-    //int  n_attr_value = 0;
     char attr_name[H4_MAX_NC_NAME];
     AttrContainer *vg_attr = nullptr;
 
     intn n_attrs = Vnattrs(vgroup_id);
-    if(n_attrs == FAIL) 
+    if (n_attrs == FAIL) 
         throw1("Vnattrs failed");
-    if(n_attrs > 0) {
+    if (n_attrs > 0) {
         vg_attr = new AttrContainer();
         string temp_container_name(fullpath);
         vg_attr->name = HDFCFUtil::get_CF_string(temp_container_name);
@@ -2665,30 +2494,30 @@ File::ReadVgattrs(int32 vgroup_id,const char*fullpath) {
         int32 value_size_32 = 0;
         status_n = Vattrinfo(vgroup_id, attr_index, attr_name, &attr->type, 
                             &attr->count, &value_size_32);
-        if(status_n == FAIL) {
+        if (status_n == FAIL) {
             delete attr;
             throw1("Vattrinfo failed.");
         }
         int value_size = value_size_32;
 
 	string tempname (attr_name);
-        if(attr != nullptr) {// See if I can make coverity happy
+        if (attr != nullptr) {// See if I can make coverity happy
             attr->name = tempname;
             tempname = HDFCFUtil::get_CF_string(tempname);
             attr->newname = tempname;
             attr->value.resize (value_size);
 
-        status_n = Vgetattr(vgroup_id,(intn)attr_index,&attr->value[0]);
-        if(status_n == FAIL) {
-            if(attr!=nullptr)
-                delete attr;
-            throw3("Vgetattr failed. ","The attribute name is ",attr->name);
-        }
-        vg_attr->attrs.push_back(attr);
+            status_n = Vgetattr(vgroup_id,(intn)attr_index,&attr->value[0]);
+            if (status_n == FAIL) {
+                if (attr!=nullptr)
+                    delete attr;
+                throw3("Vgetattr failed. ","The attribute name is ",attr->name);
+            }
+            vg_attr->attrs.push_back(attr);
         }
     }
 
-    if(vg_attr !=nullptr)
+    if (vg_attr !=nullptr)
         vg_attrs.push_back(vg_attr);
 
 
@@ -2990,7 +2819,7 @@ File::InsertOrigFieldPath_ReadVgVdata ()
                         // coverity cannot recognize the macro of throw(throw1,2,3..), so
                         // it claims that full_path is freed. The coverity is wrong. 
                         // To make coverity happy, here I will have a check.
-                        if(full_path != nullptr) {
+                        if (full_path != nullptr) {
                               this->sd->sdfields[this->sd->refindexlist[obj_ref]]->newname =
                               full_path +
                               this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name;
@@ -3198,6 +3027,7 @@ File::obtain_path (int32 file_id, int32 sd_id, char *full_path,
         }
         else if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG
                  || obj_tag == DFTAG_SD) {
+
             if (this->sd->refindexlist.find (obj_ref) !=
                 this->sd->refindexlist.end ())
                 this->sd->sdfields[this->sd->refindexlist[obj_ref]]->newname =
@@ -3212,14 +3042,12 @@ File::obtain_path (int32 file_id, int32 sd_id, char *full_path,
                 goto cleanFail;
             }
         }
-        else{
 
-        }
     }
     vdata_id = -1;
 cleanFail:
     free (cfull_path);
-    if(vdata_id != -1) {
+    if (vdata_id != -1) {
         status = VSdetach(vdata_id);
         if (status == FAIL) {
             Vdetach(vgroup_pid);
@@ -3227,19 +3055,19 @@ cleanFail:
             err_msg = err_msg + err_msg2;
             throw1(err_msg);
         }
-        else if(true == unexpected_fail)
+        else if (true == unexpected_fail)
             throw1(err_msg);
 
     }
 
-    if(vgroup_pid != -1) {
+    if (vgroup_pid != -1) {
         status = Vdetach(vgroup_pid);
         if (status == FAIL) {
             string err_msg2 = "In the cleanup " + string(ERR_LOC) + " VSdetached failed. ";
             err_msg = err_msg + err_msg2;
             throw1(err_msg);
         }
-        else if(true == unexpected_fail)
+        else if (true == unexpected_fail)
             throw1(err_msg);
 
     }
@@ -3328,24 +3156,21 @@ SD::obtain_noneos2_sds_path (int32 file_id, char *full_path, int32 pobj_ref)
             // If the object is an EOS object, we will remove it from the list.
 
             string temp_str = string(cfull_path);
-            if((temp_str.find("Data Fields") != std::string::npos)||
+            if ((temp_str.find("Data Fields") != std::string::npos)||
                (temp_str.find("Geolocation Fields") != std::string::npos))
                 sds_ref_list.remove(obj_ref);
-            }
-            else{
-
-            }
-        }
+         }
+    }
 cleanFail:
     free (cfull_path);
-    if(vgroup_cid != -1) {
+    if (vgroup_cid != -1) {
         status = Vdetach(vgroup_cid);
         if (status == FAIL) {
             string err_msg2 = "In the cleanup " + string(ERR_LOC) + " Vdetached failed. ";
             err_msg = err_msg + err_msg2;
             throw1(err_msg);
         }
-        else if(true == unexpected_fail)
+        else if (true == unexpected_fail)
             throw1(err_msg);
     }
 
@@ -3400,7 +3225,6 @@ File::obtain_vdata_path (int32 file_id,  char *full_path, int32 pobj_ref)
         unexpected_fail = true;
         err_msg = string(ERR_LOC)+"Vattach failed";
         goto cleanFail;
-        //throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
     }
 
     if (Vgetname (vgroup_cid, cvgroup_name) == FAIL) {
@@ -3424,7 +3248,7 @@ File::obtain_vdata_path (int32 file_id,  char *full_path, int32 pobj_ref)
     temp_str = string(cfull_path);
 
     if (temp_str.find("Geolocation Fields") != string::npos) {
-            if(false == this->EOS2Swathflag) 
+            if (false == this->EOS2Swathflag) 
                 this->EOS2Swathflag = true;
     }
  
@@ -3553,25 +3377,20 @@ File::obtain_vdata_path (int32 file_id,  char *full_path, int32 pobj_ref)
                 }
             }
         }
-        else{
-
-        }
     }
 
 cleanFail:
     free (cfull_path);
-    if(vgroup_cid != -1) {
+    if (vgroup_cid != -1) {
         status = Vdetach(vgroup_cid);
         if (status == FAIL) {
             string err_msg2 = "In the cleanup " + string(ERR_LOC) + " Vdetached failed. ";
             err_msg = err_msg + err_msg2;
             throw3(err_msg,"vgroup name is ",cvgroup_name);
         }
-        else if(true == unexpected_fail)
+        else if (true == unexpected_fail)
             throw3(err_msg,"vgroup name is ",cvgroup_name);
     }
-
-
 }
 
 // Handle SDS fakedim names: make the dimensions with the same dimension size 
@@ -3776,7 +3595,6 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
 
 
     }
-
         
     vector<string>sd_data_fieldnamelist;
     vector<string>sd_latlon_fieldnamelist;
@@ -3849,7 +3667,6 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
                         }
                     }
                 }
-
                 else {	
                     // When rank = 1, must follow COARD conventions. 
                     // Here we don't check name clashing for the performance
@@ -3858,7 +3675,6 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
                         sdf->getCorrectedDimensions ()[0]->getName ();
                     HDFCFUtil::insert_map(file->sd->dimcvarlist, sdf->getCorrectedDimensions()[0]->getName(), sdf->newname);
                     COARDFLAG = true;
-
                 }
             }
         }
@@ -3884,8 +3700,9 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
         // set a flag
 
         if (sdf->fieldtype != 0) {
-            if (sdf->fieldtype != 1 && sdf->fieldtype != 2) {	
+
             // "Missing" coordinate variables or coordinate variables having dimensional scale data
+            if (sdf->fieldtype != 1 && sdf->fieldtype != 2) {	
 
                 sdf->newname = sd_nollcv_fieldnamelist[total_nollcv_counter];
                 total_nollcv_counter++;
@@ -3897,19 +3714,7 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
                 // The current OTHERHDF case we support(MERRA and SDS dimension scale)
                 // follow COARDS conventions. Panoply fail to display the data,
                 // if we just follow CF conventions. So following COARD. KY-2011-3-4
-#if 0
-                if (COARDFLAG || file->sptype == OTHERHDF)//  Follow COARD Conventions
-                    sdf->newname =
-                        sdf->getCorrectedDimensions ()[0]->getName ();
-	        else 
-                // It seems that netCDF Java stricts following COARDS conventions, so change the dimension name back. KY 2012-5-4
-                    sdf->newname =
-                                   sdf->getCorrectedDimensions ()[0]->getName ();
-//				sdf->newname =
-//				sdf->getCorrectedDimensions ()[0]->getName () + "_d";
-#endif
                 sdf->newname = sdf->getCorrectedDimensions ()[0]->getName ();
-
 	        HDFCFUtil::insert_map(file->sd->dimcvarlist, sdf->getCorrectedDimensions()[0]->getName(), sdf->newname);
 
             }
@@ -3923,7 +3728,7 @@ File::handle_sds_coords(bool COARDFLAG,const std::string & lldimname1, const std
 
     File *file = this;
 
-    // 9. Generate "coordinates " attribute
+    // Generate "coordinates " attribute
 
     std::map < std::string, std::string >::iterator tempmapit;
 
@@ -3979,9 +3784,9 @@ File::handle_sds_coords(bool COARDFLAG,const std::string & lldimname1, const std
                 bool has_lldim1 = false;
                 bool has_lldim2 = false;
                 for (const auto &dim:sdf->getCorrectedDimensions()) {
-                    if(lldimname1 == dim->name)
+                    if (lldimname1 == dim->name)
                         has_lldim1 = true;
-                    else if(lldimname2 == dim->name)
+                    else if (lldimname2 == dim->name)
                         has_lldim2 = true;
                 }
 
@@ -4210,17 +4015,15 @@ void File:: Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) {
             break;
         }
     }
-
 }
 
 bool File:: Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize, 
                                        const int lonsize, string& latname, string& lonname) {
 
-
     int latname_index = -1;
     int lonname_index = -1;
     for (int temp_index = 0; temp_index <sdfield->getRank(); ++temp_index) {
-        if(-1==latname_index && sdfield->getCorrectedDimensions()[temp_index]->getSize() == latsize) { 
+        if (-1==latname_index && sdfield->getCorrectedDimensions()[temp_index]->getSize() == latsize) { 
             latname_index = temp_index;
             latname = sdfield->getCorrectedDimensions()[temp_index]->getName();
         }
@@ -4233,6 +4036,7 @@ bool File:: Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize
     return (latname_index + lonname_index == 1);
 
 }
+
 void File::PrepareTRMML2_V7() {
 
     File *file = this;
@@ -4272,8 +4076,8 @@ void File::PrepareTRMML2_V7() {
 
     for (const auto &sdf:file->sd->sdfields) {
 
-        if(sdf->getName() == "Latitude") {
-            if(sdf->getRank() ==2) {
+        if (sdf->getName() == "Latitude") {
+            if (sdf->getRank() ==2) {
 
                 tempnewdimname1 =
                     (sdf->getCorrectedDimensions ())[0]->getName ();
@@ -4302,15 +4106,14 @@ void File::PrepareTRMML2_V7() {
                         dim->name = tempdimsizenamelist[dim->getSize ()];// Change the dimension name
                 }
             }
-        
         }
     }
 
     // Create the <dimname,coordinate variable> map from the corresponding dimension names to the latitude and the longitude
-    if(tempnewdimname1.empty()!=true)
+    if (tempnewdimname1.empty()!=true)
         file->sd->nonmisscvdimnamelist.insert (tempnewdimname1);
 
-    if(tempnewdimname2.empty()!=true)
+    if (tempnewdimname2.empty()!=true)
         file->sd->nonmisscvdimnamelist.insert (tempnewdimname2);
 
     string base_filename;
@@ -4331,7 +4134,7 @@ void File::PrepareTRMML2_V7() {
     
             for (const auto &sdim:sdf->getDimensions()) {
     
-                if(sdim->getSize() == 28 && sdim->name == nlayer_name) {
+                if (sdim->getSize() == 28 && sdim->name == nlayer_name) {
                      
                     nlayer = new SDField();
                     nlayer->name = nlayer_name;
@@ -4351,16 +4154,15 @@ void File::PrepareTRMML2_V7() {
                 }
             }
     
-            if(true == has_nlayer)
+            if (true == has_nlayer)
               break;
         }
     
-        if(nlayer !=nullptr) {
+        if (nlayer !=nullptr) {
             file->sd->sdfields.push_back(nlayer);
             file->sd->nonmisscvdimnamelist.insert (nlayer_name);
         }
     }
- 
 }
 
 void
@@ -4371,15 +4173,15 @@ File::PrepareTRMML3S_V7() {
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ) {
 
         //According to GES DISC, the next three variables should be removed from the list.
-        if((*i)->name == "InputFileNames") {
+        if ((*i)->name == "InputFileNames") {
             delete (*i);
             i = file->sd->sdfields.erase(i); 
         }
-        else if((*i)->name == "InputAlgorithmVersions") {
+        else if ((*i)->name == "InputAlgorithmVersions") {
             delete (*i);
             i = file->sd->sdfields.erase(i);
         }
-        else if((*i)->name == "InputGenerationDateTimes") {
+        else if ((*i)->name == "InputGenerationDateTimes") {
             delete (*i);
             i = file->sd->sdfields.erase(i);
         }
@@ -4399,7 +4201,7 @@ File::PrepareTRMML3S_V7() {
 
         for (const auto &sdim:sdf->getDimensions()) {
 
-            if(sdim->getSize() == 28 && sdim->name == nlayer_name) {
+            if (sdim->getSize() == 28 && sdim->name == nlayer_name) {
                  
                 nlayer = new SDField();
                 nlayer->name = nlayer_name;
@@ -4420,11 +4222,11 @@ File::PrepareTRMML3S_V7() {
 
         }
 
-        if(true == has_nlayer)
+        if (true == has_nlayer)
           break;
     }
 
-    if(nlayer !=nullptr) {
+    if (nlayer !=nullptr) {
         file->sd->sdfields.push_back(nlayer);
         file->sd->nonmisscvdimnamelist.insert (nlayer_name);
     }
@@ -4440,7 +4242,7 @@ File::PrepareTRMML3S_V7() {
     bool llname_found = false;
     for (const auto &sdf:file->sd->sdfields) {
 
-        if(2 == sdf->getRank()) {
+        if (2 == sdf->getRank()) {
 
             llname_found = Obtain_TRMM_V7_latlon_name(sdf,latsize,lonsize,latname,lonname);
             if (true == llname_found)
@@ -4486,9 +4288,9 @@ File::PrepareTRMML3S_V7() {
     // Now we want to handle the special CVs for 3A26 products. Since these special CVs only apply to the 3A26 products,
     //  we don't want to find them from other products to reduce the performance cost. So here I simply check the filename
     string base_filename;
-    if(path.find_last_of("/") != string::npos) 
+    if (path.find_last_of("/") != string::npos) 
         base_filename = path.substr(path.find_last_of("/")+1);
-    if(base_filename.find("3A26")!=string::npos) {
+    if (base_filename.find("3A26")!=string::npos) {
 
         bool ZOflag = false;
         bool SRTflag = false;
@@ -4504,11 +4306,11 @@ File::PrepareTRMML3S_V7() {
         
         for (const auto &sdf:file->sd->sdfields) {
 
-            if(ZOflag != true) {
-                if(sdf->name.find("Order")!=string::npos) {
+            if (ZOflag != true) {
+                if (sdf->name.find("Order")!=string::npos) {
                     for (const auto &sdim:sdf->getDimensions()) {
-                        if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
-                            if(nthrsh_zo == nullptr) {// Not necessary for this product, this only makes coverity scan happy.
+                        if (sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                            if (nthrsh_zo == nullptr) {// Not necessary for this product, this only makes coverity scan happy.
                                 nthrsh_zo = new SDField();
                                 nthrsh_zo->name = nthrsh_zo_name;
                                 nthrsh_zo->rank = 1;
@@ -4531,13 +4333,13 @@ File::PrepareTRMML3S_V7() {
                 
             }
 
-            else if(SRTflag != true) {
-                if(sdf->name.find("2A25")!=string::npos) {
+            else if (SRTflag != true) {
+                if (sdf->name.find("2A25")!=string::npos) {
 
                     for (const auto &sdim:sdf->getDimensions ()) {
 
-                        if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
-                            if(nthrsh_srt == nullptr) { // Not necessary for this product, this only makes coverity scan happy.
+                        if (sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                            if (nthrsh_srt == nullptr) { // Not necessary for this product, this only makes coverity scan happy.
                                 nthrsh_srt = new SDField();
                                 nthrsh_srt->name = nthrsh_srt_name;
                                 nthrsh_srt->rank = 1;
@@ -4553,19 +4355,18 @@ File::PrepareTRMML3S_V7() {
 
                             	SRTflag = true;
                             }
- 
                         }
                     }
                 }
             }
-            else if(HBflag != true) {
-                if(sdf->name.find("hb")!=string::npos || sdf->name.find("HB")!=string::npos) {
+            else if (HBflag != true) {
+                if (sdf->name.find("hb")!=string::npos || sdf->name.find("HB")!=string::npos) {
 
                     for (const auto &sdim:sdf->getDimensions ()) {
 
-                        if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                        if (sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
 
-                            if(nthrsh_hb == nullptr) {// Not necessary for this product, only makes coverity scan happy.
+                            if (nthrsh_hb == nullptr) {// Not necessary for this product, only makes coverity scan happy.
                                 nthrsh_hb = new SDField();
                                 nthrsh_hb->name = nthrsh_hb_name;
                                 nthrsh_hb->rank = 1;
@@ -4590,16 +4391,16 @@ File::PrepareTRMML3S_V7() {
 
         for (const auto &sdf:file->sd->sdfields) {
 
-            if(sdf->name.find("Order")!=string::npos && ZOflag == true) {
+            if (sdf->name.find("Order")!=string::npos && ZOflag == true) {
                 for (const auto &sdim:sdf->getDimensions()) {
-                    if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                    if (sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
                        sdim->name = nthrsh_zo_name;
                        break;
                     }
                 }
 
                 for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
-                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                    if (cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
                        cor_dim->name = nthrsh_zo_name;
                        break;
                     }
@@ -4607,32 +4408,32 @@ File::PrepareTRMML3S_V7() {
  
             }
 
-            else if((sdf->name.find("hb")!=string::npos || sdf->name.find("HB")!=string::npos)&& HBflag == true) {
+            else if ((sdf->name.find("hb")!=string::npos || sdf->name.find("HB")!=string::npos)&& HBflag == true) {
                 for (const auto &sdim:sdf->getDimensions()) {
-                    if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                    if (sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
                        sdim->name = nthrsh_hb_name;
                        break;
                     }
                 }
 
                 for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
-                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                    if (cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
                        cor_dim->name = nthrsh_hb_name;
                        break;
                     }
                 }
  
             }
-            else if((sdf->name.find("2A25")!=string::npos) && SRTflag == true) {
+            else if ((sdf->name.find("2A25")!=string::npos) && SRTflag == true) {
                 for (const auto &sdim:sdf->getDimensions()) {
-                    if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                    if (sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
                        sdim->name = nthrsh_srt_name;
                        break;
                     }
                 }
 
                 for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
-                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                    if (cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
                        cor_dim->name = nthrsh_srt_name;
                        break;
                     }
@@ -4640,17 +4441,17 @@ File::PrepareTRMML3S_V7() {
             }
         }
 
-        if(nthrsh_zo !=nullptr) {
+        if (nthrsh_zo !=nullptr) {
             file->sd->sdfields.push_back(nthrsh_zo);
             file->sd->nonmisscvdimnamelist.insert (nthrsh_zo_name);
         }
 
-        if(nthrsh_hb !=nullptr) {
+        if (nthrsh_hb !=nullptr) {
             file->sd->sdfields.push_back(nthrsh_hb);
             file->sd->nonmisscvdimnamelist.insert (nthrsh_hb_name);
         }
 
-        if(nthrsh_srt !=nullptr) {
+        if (nthrsh_srt !=nullptr) {
             file->sd->sdfields.push_back(nthrsh_srt);
             file->sd->nonmisscvdimnamelist.insert (nthrsh_srt_name);
         }
@@ -4665,15 +4466,15 @@ File::PrepareTRMML3M_V7()  {
     for (std::vector < SDField * >::iterator i =
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ) {
 
-        if((*i)->name == "InputFileNames") {
+        if ((*i)->name == "InputFileNames") {
             delete (*i);
             i = file->sd->sdfields.erase(i); 
         }
-        else if((*i)->name == "InputAlgorithmVersions") {
+        else if ((*i)->name == "InputAlgorithmVersions") {
             delete (*i);
             i = file->sd->sdfields.erase(i);
         }
-        else if((*i)->name == "InputGenerationDateTimes") {
+        else if ((*i)->name == "InputGenerationDateTimes") {
             delete (*i);
             i = file->sd->sdfields.erase(i);
         }
@@ -4684,7 +4485,7 @@ File::PrepareTRMML3M_V7()  {
     }
 
     
-#if 0
+/*
     NOTE for programming: 
     1. Outer loop: loop global attribute for GridHeader?. Retrieve ? as a number for index.
     1.5. Obtain the lat/lon sizes for this grid.
@@ -4699,7 +4500,7 @@ File::PrepareTRMML3M_V7()  {
                      the lat/lon name for this grid as the single grid.
                      change the newname to name.
             }
-#endif
+*/
     
     // The following code tries to be performance-friendly by looping through the fields and handling the operations
     // as less as I can.
@@ -4743,7 +4544,7 @@ File::PrepareTRMML3M_V7()  {
             for (const auto &sdf:file->sd->sdfields) {
  
                 // Just loop the 2-D fields to find the lat/lon size
-                if(2 == sdf->getRank()) {
+                if (2 == sdf->getRank()) {
 
                     // If a grid has not been visited, we will check the fields attached to this grid.
                     if (sdf->newname !=sdf->name) {
@@ -4751,8 +4552,8 @@ File::PrepareTRMML3M_V7()  {
                         string temp_field_full_path = sdf->getNewName();
                         size_t last_path_pos = temp_field_full_path.find_last_of('/');
                         char str_index = temp_field_full_path[last_path_pos-1];
-                        if(grid_index ==(int)(str_index - '0')) {
-                            if(llname_found != true) 
+                        if (grid_index ==(int)(str_index - '0')) {
+                            if (llname_found != true) 
                                 llname_found = Obtain_TRMM_V7_latlon_name(sdf,latsize,lonsize,latname,lonname);
                             sdf->newname = sdf->name;
                         }
@@ -4887,7 +4688,7 @@ File::PrepareTRMML2_V6 ()
                 latitude->correcteddims.push_back (lat_cdim2);
             }
 
-            if(longitude == nullptr) {
+            if (longitude == nullptr) {
                 longitude = new SDField ();
                 longitude->name = "longitude";
                 longitude->rank = 2;
@@ -4981,7 +4782,7 @@ File::PrepareTRMML3B_V6 ()
                 // KY 2010-7-13
                 if (sdim->getSize () == 1440 && sdim->getType () == 0) {//No dimension scale
 
-                    if(longitude == nullptr) { // Not necessary for this product, only makes coverity happy.
+                    if (longitude == nullptr) { // Not necessary for this product, only makes coverity happy.
                         longitude = new SDField ();
                         longitude->name = "longitude";
                         longitude->rank = 1;
@@ -5000,7 +4801,7 @@ File::PrepareTRMML3B_V6 ()
 
                 if (sdim->getSize () == 400 && sdim->getType () == 0) {
 
-                    if(latitude == nullptr) {
+                    if (latitude == nullptr) {
                         latitude = new SDField ();
                         latitude->name = "latitude";
                         latitude->rank = 1;
@@ -5011,13 +4812,14 @@ File::PrepareTRMML3B_V6 ()
                         latitude->dims.push_back (dim);
                         tempnewdimname1 = sdim->getName ();
 
-#if 0
                         // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
                         // Leave here just as a reference.
+#if 0
                         // std::string uniquedimname = sdim->getName() +temppath;
                         //  tempnewdimname1 = uniquedimname;
                         //   dim = new Dimension(uniquedimname,sdim->getSize(),sdf->getType());
 #endif
+
                         auto cdim = new Dimension (sdim->getName (), sdim->getSize (), 0);
                         latitude->correcteddims.push_back (cdim);
                         latflag++;
@@ -5039,9 +4841,9 @@ File::PrepareTRMML3B_V6 ()
     }
 
     if (latflag != 1 || lonflag != 1) {
-        if(latitude != nullptr)
+        if (latitude != nullptr)
             delete latitude;
-        if(longitude != nullptr)
+        if (longitude != nullptr)
             delete longitude;
         throw5 ("Either latitude or longitude doesn't exist.", "lat. flag= ",
                  latflag, "lon. flag= ", lonflag);
@@ -5095,7 +4897,7 @@ File::PrepareTRMML3A_V6 ()
             // KY 2010-7-13
             if (sdim->getSize () == 360 && sdim->getType () == 0) {//No dimension scale
 
-                if(longitude == nullptr) {
+                if (longitude == nullptr) {
                     longitude = new SDField ();
                     longitude->name = "longitude";
                     longitude->rank = 1;
@@ -5115,7 +4917,7 @@ File::PrepareTRMML3A_V6 ()
 
             if (sdim->getSize () == 180 && sdim->getType () == 0) {
 
-                if(latitude == nullptr) {
+                if (latitude == nullptr) {
                     latitude = new SDField ();
                     latitude->name = "latitude";
                     latitude->rank = 1;
@@ -5127,19 +4929,11 @@ File::PrepareTRMML3A_V6 ()
                     latitude->dims.push_back (dim);
                     tempnewdimname1 = latitude->getName ();
 
-#if 0
-                    // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                    // Leave here just as a reference.
-                    // std::string uniquedimname = sdim->getName() +temppath;
-                    //  tempnewdimname1 = uniquedimname;
-                    //   dim = new Dimension(uniquedimname,sdim->getSize(),sdf->getType());
-#endif
                     auto cdim = new Dimension (latitude->getName (), sdim->getSize (), 0);
                     latitude->correcteddims.push_back (cdim);
                     latflag = true;
                 }
             }
-        
 
             if (latflag == true && lonflag == true)
                 break;
@@ -5155,15 +4949,16 @@ File::PrepareTRMML3A_V6 ()
     }
 
     if (latflag !=true  || lonflag != true) {
-        if(latitude != nullptr)
+        if (latitude != nullptr)
             delete latitude;
-        if(longitude != nullptr)
+        if (longitude != nullptr)
             delete longitude;
         throw5 ("Either latitude or longitude doesn't exist.", "lat. flag= ",
                  latflag, "lon. flag= ", lonflag);
     }
 
     else {// Without else this is fine since throw5 will go before this. This is just make Coverity happy.KY 2015-10-23
+
         for (const auto &sdf:file->sd->sdfields) {
 
             for (const auto &dim:sdf->getDimensions()) {
@@ -5227,7 +5022,7 @@ File::PrepareTRMML3C_V6 ()
             if (sdim->getSize () == 720 && sdim->getType () == 0) {//No dimension scale
 
                 // TRMM only has one longitude and latitude. The following if only makes coverity happy.
-                if(longitude == nullptr) {
+                if (longitude == nullptr) {
                     longitude = new SDField ();
                     longitude->name = "longitude";
                     longitude->rank = 1;
@@ -5247,7 +5042,7 @@ File::PrepareTRMML3C_V6 ()
 
             if (sdim->getSize () == 148 && sdim->getType () == 0) {
 
-                if(latitude == nullptr) {
+                if (latitude == nullptr) {
                     latitude = new SDField ();
                     latitude->name = "latitude";
                     latitude->rank = 1;
@@ -5259,13 +5054,6 @@ File::PrepareTRMML3C_V6 ()
                     latitude->dims.push_back (dim);
                     tempnewdimname1 = latitude->getName ();
 
-#if 0
-                    // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                    // Leave here just as a reference.
-                    // std::string uniquedimname = sdim->getName() +temppath;
-                    //  tempnewdimname1 = uniquedimname;
-                    //   dim = new Dimension(uniquedimname,sdim->getSize(),sdf->getType());
-#endif
                     auto cdim =  new Dimension (latitude->getName (), sdim->getSize (), 0);
                     latitude->correcteddims.push_back (cdim);
                     latflag = true;
@@ -5274,7 +5062,7 @@ File::PrepareTRMML3C_V6 ()
 
             if (sdim->getSize () == 19 && sdim->getType () == 0) {
 
-                if(height == nullptr) {
+                if (height == nullptr) {
                     height = new SDField ();
                     height->name = "height";
                     height->rank = 1;
@@ -5304,15 +5092,15 @@ File::PrepareTRMML3C_V6 ()
     }
 
     if (latflag != true || lonflag != true) {
-        if(latitude != nullptr)
+        if (latitude != nullptr)
             delete latitude;
-        if(longitude != nullptr)
+        if (longitude != nullptr)
             delete longitude;
         throw5 ("Either latitude or longitude doesn't exist.", "lat. flag= ",
                  latflag, "lon. flag= ", lonflag);
     }
 
-    if(height!=nullptr && heiflag !=true) {
+    if (height!=nullptr && heiflag !=true) {
        delete height;
        throw1("Height is allocated but the flag is not true");
     }
@@ -5321,9 +5109,9 @@ File::PrepareTRMML3C_V6 ()
     file->sd->sdfields.push_back (latitude);
     file->sd->sdfields.push_back (longitude);
 
-    if(height!=nullptr) {
+    if (height!=nullptr) {
 
-        if(heiflag != true) {
+        if (heiflag != true) {
             delete height;
             throw1("Height is allocated but the flag is not true");
         }
@@ -5338,6 +5126,7 @@ File::PrepareTRMML3C_V6 ()
     file->sd->nonmisscvdimnamelist.insert (tempnewdimname2);
 
 }
+
 // This applies to all OBPG level 2 products include SeaWIFS, MODISA, MODIST,OCTS, CZCS
 // A formula similar to swath dimension map needs to apply to this file.
 void
@@ -5454,7 +5243,7 @@ File::PrepareOBPGL3 ()
 
     // Longitude
     auto longitude = new SDField ();
-    if(longitude == nullptr)
+    if (longitude == nullptr)
         throw1("Allocate memory for longitude failed .");
 
     longitude->name = "longitude";
@@ -5470,7 +5259,7 @@ File::PrepareOBPGL3 ()
     }
 
     auto lon_dim = new Dimension (num_lon_name, num_lon, 0);
-    if(lon_dim == nullptr) {
+    if (lon_dim == nullptr) {
         delete longitude;
         throw1("Allocate memory for longitude dim failed .");
     }
@@ -5479,7 +5268,7 @@ File::PrepareOBPGL3 ()
 
     // Add the corrected dimension name only to be consistent with general handling of other cases.
     auto lon_cdim = new Dimension (num_lon_name, num_lon, 0);
-    if(lon_cdim == nullptr) {
+    if (lon_cdim == nullptr) {
         delete longitude;
         throw1("Allocate memory for corrected longitude dim failed .");
     }
@@ -5487,7 +5276,7 @@ File::PrepareOBPGL3 ()
 
     // Latitude
     auto latitude = new SDField ();
-    if(latitude == nullptr) {
+    if (latitude == nullptr) {
         delete latitude;
         throw1("Allocate memory for dim failed .");
     }
@@ -5505,18 +5294,18 @@ File::PrepareOBPGL3 ()
     }
             
     auto lat_dim = new Dimension (num_lat_name, num_lat, 0);
-    if( lat_dim == nullptr) {
+    if ( lat_dim == nullptr) {
         delete longitude;
         delete latitude;
         throw1("Allocate memory for latitude dim failed .");
     }
     
-    if(latitude != nullptr) 
+    if (latitude != nullptr) 
         latitude->dims.push_back (lat_dim);
 
     // Add the corrected dimension name only to be consistent with general handling of other cases.
     auto lat_cdim = new Dimension (num_lat_name, num_lat, 0);
-    if(lat_cdim == nullptr) {
+    if (lat_cdim == nullptr) {
         delete longitude;
         delete latitude;
         throw1("Allocate memory for dim failed .");
@@ -5869,7 +5658,7 @@ File::PrepareCERSAVGID ()
     file->sd->nonmisscvdimnamelist.insert (tempdimname1);
     file->sd->nonmisscvdimnamelist.insert (tempdimname2);
         
-    if(file->sptype == CER_CDAY) {
+    if (file->sptype == CER_CDAY) {
 
         string odddimname1= "1.0 deg. regional Colat. zones";
 	string odddimname2 = "1.0 deg. regional Long. zones";
@@ -6012,7 +5801,7 @@ File::PrepareOTHERHDF ()
 
         for (const auto &attr:file->sd->getAttributes()) {
             // CHeck if this MERRA file is an HDF-EOS2 or not.
-            if((attr->getName().compare(0, 14, "StructMetadata" )== 0) ||
+            if ((attr->getName().compare(0, 14, "StructMetadata" )== 0) ||
                 (attr->getName().compare(0, 14, "structmetadata" )== 0)) {
                 merra_is_eos2 = true;
                 break;
@@ -6020,7 +5809,7 @@ File::PrepareOTHERHDF ()
         }
     }
 
-    if( true == merra_is_eos2) {
+    if ( true == merra_is_eos2) {
         vector <string> noneos_newnamelist; 
 
         // 1. Remove EOSGRID from the added-non-EOS field names(XDim:EOSGRID to XDim)

@@ -2,7 +2,7 @@
 //  This file is part of the hdf4 data handler for the OPeNDAP data server.
 //
 // Author:   Kent Yang,Choonghwan Lee <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 //#include <libdap/InternalErr.h>
@@ -57,7 +57,7 @@
 ///
 /// @author Kent Yang, Choonghwan Lee <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2010-2012 The HDF Group
+/// Copyright (C) The HDF Group
 ///
 /// All rights reserved.
 namespace HDFEOS2

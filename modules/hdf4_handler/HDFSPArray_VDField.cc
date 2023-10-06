@@ -4,8 +4,8 @@
 // Each Vdata will be decomposed into individual Vdata fields.
 // Each field will be mapped to A DAP variable.
 
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #include "HDFSPArray_VDField.h"
