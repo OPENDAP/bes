@@ -45,12 +45,12 @@ class Chunk;
  * for serial data access or parallel (round robin) data transfers.
  */
 class dmrpp_easy_handle {
-    bool d_in_use;      ///< Is this easy_handle in use?
+    bool d_in_use = false;      ///< Is this easy_handle in use?
     std::shared_ptr<http::url> d_url;  ///< The libcurl handle reads from this URL.
-    Chunk *d_chunk;     ///< This easy_handle reads the data for \arg chunk.
+    Chunk *d_chunk = nullptr;     ///< This easy_handle reads the data for \arg chunk.
     char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
-    CURL *d_handle;     ///< The libcurl handle object.
-    curl_slist *d_request_headers; ///< Holds the list of authorization headers, if needed.
+    CURL *d_handle = nullptr;     ///< The libcurl handle object.
+    curl_slist *d_request_headers = nullptr; ///< Holds the list of authorization headers, if needed.
 
     friend class CurlHandlePool;
 
@@ -64,7 +64,7 @@ public:
 
 /**
  * Get a CURL easy handle, assign a URL and other values, use the handler, return
- * it to the pool. This class helps take advantage of libculr's built-in reuse
+ * it to the pool. This class helps take advantage of libcurl's built-in reuse
  * capabilities (connection keep-alive, DNS pooling, etc.).
  *
  * @note It may be that TCP Keep Alive is not supported in libcurl versions
@@ -86,12 +86,17 @@ public:
     CurlHandlePool() = delete;
     explicit CurlHandlePool(unsigned int max_handles);
 
-    ~CurlHandlePool()
+    ~CurlHandlePool() = default;
+
+#if 0
     {
         for (auto & d_easy_handle : d_easy_handles) {
             delete d_easy_handle;
         }
     }
+#endif
+
+#if 0
 
     /// @brief Get the number of handles in the pool.
     unsigned int get_max_handles() const
@@ -108,11 +113,17 @@ public:
         return n;
     }
 
+#endif
+
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
     void release_handle(dmrpp_easy_handle *h, bool replace=false);
 
+#if 0
+
     void release_handle(const Chunk *chunk);
+
+#endif
 
     void release_all_handles();
 };

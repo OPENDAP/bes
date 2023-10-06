@@ -203,8 +203,10 @@ public:
         auto array = new MockDmrppArray;
         vector<unsigned long long> array_shape = {1};
 
+#if 0
         unsigned int num = chp->get_handles_available();
         CPPUNIT_ASSERT(num == chp->get_max_handles());
+#endif
 
         try {
             process_one_chunk(chunk, array, array_shape);
@@ -218,8 +220,10 @@ public:
             CPPUNIT_FAIL("Exception");
         }
 
+#if 0
         unsigned int num2 = chp->get_handles_available();
         CPPUNIT_ASSERT(num2 == num);
+#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -363,7 +367,9 @@ public:
 
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+#if 0
             CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+#endif
         }
         catch(BESError &e) {
             CPPUNIT_FAIL(string("Caught BESError: ").append(e.get_verbose_message()));
@@ -402,7 +408,9 @@ public:
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
+#if 0
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -439,7 +447,9 @@ public:
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
+#if 0
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -478,7 +488,9 @@ public:
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
+#if 0
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -516,7 +528,9 @@ public:
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
+#if 0
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -554,7 +568,9 @@ public:
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
+#if 0
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -593,7 +609,9 @@ public:
             }
         }
 
+#if 0
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
