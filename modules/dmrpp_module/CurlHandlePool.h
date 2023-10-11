@@ -83,16 +83,78 @@ private:
     std::string d_netrc_file;
 
     CURLSH *d_share = nullptr;
-    static std::recursive_mutex d_dmrpp_easy_handle_mutex;
 
-    static void lock_cb(CURL *handle, curl_lock_data data, curl_lock_access access, void *userptr)
-    {
-        d_dmrpp_easy_handle_mutex.lock();
-        // pthread_mutex_lock(&lock[data]); /* uses a global lock array */
+    static std::recursive_mutex d_share_mutex;
+    
+    static std::recursive_mutex d_cookie_mutex;
+    static std::recursive_mutex d_dns_mutex;
+    static std::recursive_mutex d_ssl_session_mutex;
+    static std::recursive_mutex d_connect_mutex;
+    static std::recursive_mutex d_psl_mutex;
+    static std::recursive_mutex d_hsts_mutex;
+
+    static void lock_cb(CURL */*handle*/, curl_lock_data data, curl_lock_access /*access*/, void */*userptr*/) {
+        switch (data) {
+            case CURL_LOCK_DATA_NONE:
+            case CURL_LOCK_DATA_SHARE: // CURL_LOCK_DATA_SHARE is used internally
+            case CURL_LOCK_DATA_LAST:
+                d_share_mutex.lock();
+                break;
+
+            case CURL_LOCK_DATA_COOKIE:
+                d_cookie_mutex.lock();
+                break;
+
+            case CURL_LOCK_DATA_DNS:
+                d_dns_mutex.lock();
+                break;
+            case CURL_LOCK_DATA_SSL_SESSION:
+                d_ssl_session_mutex.lock();
+                break;
+            case CURL_LOCK_DATA_CONNECT:
+                d_connect_mutex.lock();
+                break;
+            case CURL_LOCK_DATA_PSL:
+                d_psl_mutex.lock();
+                break;
+            case CURL_LOCK_DATA_HSTS:
+                d_hsts_mutex.lock();
+                break;
+            default:
+                break;
+        }
     }
 
-    static void unlock_cb(CURL *handle, curl_lock_data data, void *userptr) {
-        d_dmrpp_easy_handle_mutex.unlock();
+    static void unlock_cb(CURL */*handle*/, curl_lock_data data, void * /*userptr*/) {
+        switch (data) {
+            case CURL_LOCK_DATA_NONE:
+            case CURL_LOCK_DATA_SHARE: // CURL_LOCK_DATA_SHARE is used internally
+            case CURL_LOCK_DATA_LAST:
+                d_share_mutex.unlock();
+                break;
+
+            case CURL_LOCK_DATA_COOKIE:
+                d_cookie_mutex.unlock();
+                break;
+
+            case CURL_LOCK_DATA_DNS:
+                d_dns_mutex.unlock();
+                break;
+            case CURL_LOCK_DATA_SSL_SESSION:
+                d_ssl_session_mutex.unlock();
+                break;
+            case CURL_LOCK_DATA_CONNECT:
+                d_connect_mutex.unlock();
+                break;
+            case CURL_LOCK_DATA_PSL:
+                d_psl_mutex.unlock();
+                break;
+            case CURL_LOCK_DATA_HSTS:
+                d_hsts_mutex.unlock();
+                break;
+            default:
+                break;
+        }
     }
 
     friend class Lock;

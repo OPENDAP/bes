@@ -52,7 +52,14 @@ using namespace dmrpp;
 using namespace http;
 using namespace std;
 
-std::recursive_mutex CurlHandlePool::d_dmrpp_easy_handle_mutex;
+std::recursive_mutex CurlHandlePool::d_share_mutex;
+
+std::recursive_mutex CurlHandlePool::d_cookie_mutex;
+std::recursive_mutex CurlHandlePool::d_dns_mutex;
+std::recursive_mutex CurlHandlePool::d_ssl_session_mutex;
+std::recursive_mutex CurlHandlePool::d_connect_mutex;
+std::recursive_mutex CurlHandlePool::d_psl_mutex;
+std::recursive_mutex CurlHandlePool::d_hsts_mutex;
 
 /**
  * @brief Build a string with hex info about stuff libcurl gets
@@ -262,10 +269,8 @@ CurlHandlePool::CurlHandlePool(unsigned int) {
     curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
     curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
 
-#if 1
     curl_share_setopt(d_share, CURLSHOPT_LOCKFUNC, lock_cb);
     curl_share_setopt(d_share, CURLSHOPT_UNLOCKFUNC, unlock_cb);
-#endif
 }
 
 CurlHandlePool::~CurlHandlePool() {
