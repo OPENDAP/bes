@@ -31,13 +31,8 @@ HDFEOS2ArraySwathGeoField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathGeoField read "<<endl);
 
-    if(length() == 0)
+    if (length() == 0)
         return true; 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
@@ -88,7 +83,7 @@ HDFEOS2ArraySwathGeoField::read ()
     int32 sfid = -1;
     int32 swathid = -1;
 
-    if(false == check_pass_fileid_key) {
+    if (false == check_pass_fileid_key) {
         sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sfid < 0) {
             ostringstream eherr;
@@ -313,15 +308,6 @@ HDFEOS2ArraySwathGeoField::read ()
     }
 
     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-
-#if 0
-    r = closefunc (sfid);
-    if (r != 0) {
-        ostringstream eherr;
-        eherr << "Swath " << filename.c_str () << " cannot be closed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-#endif
 
     return false;
 }

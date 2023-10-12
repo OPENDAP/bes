@@ -31,7 +31,7 @@ HDFEOS2Array_RealField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFEOS2_Array_RealField read "<<endl);
-    if(length() == 0)
+    if (length() == 0)
         return true;
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
@@ -117,7 +117,7 @@ HDFEOS2Array_RealField::read ()
     }
 
     bool is_modis_l1b = false;
-    if("MODIS_SWATH_Type_L1B" == swathname)
+    if ("MODIS_SWATH_Type_L1B" == swathname)
         is_modis_l1b = true;
 
     bool is_modis_vip = false;
@@ -203,7 +203,7 @@ HDFEOS2Array_RealField::read ()
         // "radiance_scales" etc exist.
         // For the time being, I won't do this, due to the performance reason and code simplicity and also the
         // very small chance of real FAIL for SDfindattr.
-        if(SDfindattr(sdsid, "Key")!=FAIL) 
+        if (SDfindattr(sdsid, "Key")!=FAIL) 
             has_Key_attr = true;
 
         // Close the interfaces
@@ -214,7 +214,7 @@ HDFEOS2Array_RealField::read ()
 
     // USE a try-catch block to release the resources.
     try {
-        if((false == is_modis_l1b) && (false == is_modis_vip)
+        if ((false == is_modis_l1b) && (false == is_modis_vip)
            &&(false == has_Key_attr) && (true == HDF4RequestHandler::get_disable_scaleoffset_comp()))
             write_dap_data_disable_scale_comp(gridid,nelms,offset32.data(),count32.data(),step32.data());
         else 
@@ -236,7 +236,7 @@ HDFEOS2Array_RealField::read ()
     }
 
 
-    if(true == isgeofile || false == check_pass_fileid_key) {
+    if (true == isgeofile || false == check_pass_fileid_key) {
         r = closefunc (gfid);
         if (r != 0) {
             ostringstream eherr;
@@ -364,7 +364,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
     bool  has_Key_attr = false;
 
     int32 sdfileid = -1;
-    if(sotype!=SOType::DEFAULT_CF_EQU) {
+    if (sotype!=SOType::DEFAULT_CF_EQU) {
 
         bool field_is_vdata = false;
 
@@ -391,20 +391,6 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             if (1 == tmp_rank) 
                 field_is_vdata = true;
         }
-/// DEL LATER
-#if 0
-r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
-if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-}
-
-cerr<<"tmp_rank is "<<tmp_rank <<endl;
-#endif
- 
 
         // For swath, we don't see any MODIS 1-D fields that have scale,offset 
         // and fill value attributes that need to be changed.
@@ -413,13 +399,13 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
         // of the SDS attribute handlings. That may be too costly. 
         // KY 2012-07-31
 
-        if( false == field_is_vdata) {
+        if ( false == field_is_vdata) {
 
             char attrname[H4_MAX_NC_NAME + 1];
             vector<char>  attrbuf;
 
             // Obtain attribute values.
-            if(false == isgeofile || false == check_pass_fileid_key) 
+            if (false == isgeofile || false == check_pass_fileid_key) 
                 sdfileid = sdfd;
             else {
                 sdfileid = SDstart(filename.c_str (), DFACC_READ);
@@ -435,7 +421,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             int32 sdsid;
 	    sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
             if (FAIL == sdsindex) {
-                if(true == isgeofile || false == check_pass_fileid_key) 
+                if (true == isgeofile || false == check_pass_fileid_key) 
                     SDend(sdfileid);
                 ostringstream eherr;
                 eherr << "Cannot obtain the index of " << fieldname;
@@ -464,14 +450,14 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             cf_general_attrindex2 = SDfindattr(sdsid, "radiance_offsets");
 
             // Obtain the values of radiance_scales and radiance_offsets if they are available.
-            if(cf_general_attrindex!=FAIL && cf_general_attrindex2!=FAIL)
+            if (cf_general_attrindex!=FAIL && cf_general_attrindex2!=FAIL)
             {
                 intn ret = -1;
                 ret = SDattrinfo(sdsid, cf_general_attrindex, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if (true == isgeofile)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () << " cannot be obtained.";
@@ -495,7 +481,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if (true == isgeofile)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
@@ -508,7 +494,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if (true == isgeofile)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
@@ -543,7 +529,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             // Obtain attribute values of reflectance_scales and reflectance_offsets if they are available.
             cf_general_attrindex = SDfindattr(sdsid, "reflectance_scales");
             cf_general_attrindex2 = SDfindattr(sdsid, "reflectance_offsets");
-            if(cf_general_attrindex!=FAIL && cf_general_attrindex2!=FAIL)
+            if (cf_general_attrindex!=FAIL && cf_general_attrindex2!=FAIL)
             {
                 intn ret = -1;
                 ret = SDattrinfo(sdsid, cf_general_attrindex, attrname, &attr_dtype, &temp_attrcount);
@@ -551,7 +537,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if (true == isgeofile)
                        SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_scales' in " << fieldname.c_str () << " cannot be obtained.";
@@ -564,7 +550,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if (true == isgeofile)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_scales' in " << fieldname.c_str () << " cannot be obtained.";
@@ -576,7 +562,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if (true == isgeofile)
                        SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
@@ -589,7 +575,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile)
+                    if (true == isgeofile)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
@@ -621,7 +607,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 #endif
             // Obtain the value of attribute scale_factor.
             scale_factor_attr_index = SDfindattr(sdsid, "scale_factor");
-            if(scale_factor_attr_index!=FAIL)
+            if (scale_factor_attr_index!=FAIL)
             {
                 intn ret = -1;
                 ret = SDattrinfo(sdsid, scale_factor_attr_index, attrname, 
@@ -629,7 +615,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'scale_factor' in " 
@@ -642,7 +628,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -680,7 +666,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 
             // Obtain the value of attribute add_offset
             add_offset_attr_index = SDfindattr(sdsid, "add_offset");
-            if(add_offset_attr_index!=FAIL)
+            if (add_offset_attr_index!=FAIL)
             {
                 intn ret;
                 ret = SDattrinfo(sdsid, add_offset_attr_index, attrname, 
@@ -688,7 +674,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -702,7 +688,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -739,14 +725,14 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 
             // Obtain the value of the attribute _FillValue
             cf_fv_attrindex = SDfindattr(sdsid, "_FillValue");
-            if(cf_fv_attrindex!=FAIL)
+            if (cf_fv_attrindex!=FAIL)
             {
                 intn ret;
                 ret = SDattrinfo(sdsid, cf_fv_attrindex, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -760,7 +746,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -797,14 +783,14 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             // for non-CF scale and offset rules, the data is always float. So we only
             // need to change the data type to float.
             cf_vr_attrindex = SDfindattr(sdsid, "valid_range");
-            if(cf_vr_attrindex!=FAIL)
+            if (cf_vr_attrindex!=FAIL)
             {
                 intn ret;
                 ret = SDattrinfo(sdsid, cf_vr_attrindex, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -818,7 +804,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
 
                     ostringstream eherr;
@@ -841,23 +827,18 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                         
                         if (string::npos == found){
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
                             throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
                         }
                         if (found != found_from_end){
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
                             throw InternalErr(__FILE__,__LINE__,
                                               "Only one separator , should be available.");
                         }
 
-#if 0
-                        //istringstream(attrbuf_str.substr(0,found))>> orig_valid_min;
-                        //istringstream(attrbuf_str.substr(found+1))>> orig_valid_max;
-#endif
-                        
                         orig_valid_min = (float)(atof((attrbuf_str.substr(0,found)).c_str()));
                         orig_valid_max = (float)(atof((attrbuf_str.substr(found+1)).c_str()));
                     
@@ -880,22 +861,17 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 
                             if (string::npos == found){
                                 SDendaccess(sdsid);
-                                if(true == isgeofile || false == check_pass_fileid_key)
+                                if (true == isgeofile || false == check_pass_fileid_key)
                                     SDend(sdfileid);
                                 throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
                             }
                             if (found != found_from_end){
                                 SDendaccess(sdsid);
-                                if(true == isgeofile || false == check_pass_fileid_key)
+                                if (true == isgeofile || false == check_pass_fileid_key)
                                     SDend(sdfileid);
                                 throw InternalErr(__FILE__,__LINE__,
                                                   "Only one separator , should be available.");
                             }
-
-#if 0
-                            //istringstream(attrbuf_str.substr(0,found))>> orig_valid_min;
-                            //istringstream(attrbuf_str.substr(found+1))>> orig_valid_max;
-#endif
 
                             orig_valid_min = (float)(atof((attrbuf_str.substr(0,found)).c_str()));
                             orig_valid_max = (float)(atof((attrbuf_str.substr(found+1)).c_str()));
@@ -907,7 +883,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                         }
                         else {
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
                             throw InternalErr(__FILE__,__LINE__,
                                              "The number of attribute count should be greater than 1.");
@@ -921,7 +897,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -938,7 +914,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -955,7 +931,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -972,7 +948,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -989,7 +965,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -1006,7 +982,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     {
                         if (temp_attrcount != 2) {
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -1023,7 +999,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     {
                         if (temp_attrcount != 2){
                             SDendaccess(sdsid);
-                            if(true == isgeofile || false == check_pass_fileid_key)
+                            if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
  
                             throw InternalErr(__FILE__,__LINE__,
@@ -1042,7 +1018,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     break;
                     default: {
                         SDendaccess(sdsid);
-                        if(true == isgeofile || false == check_pass_fileid_key)
+                        if (true == isgeofile || false == check_pass_fileid_key)
                             SDend(sdfileid);
                         throw InternalErr(__FILE__,__LINE__,"Unsupported data type.");
                     }
@@ -1056,7 +1032,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             // outside the original valid range. KY 2013-02-25
             int32 cf_mod_key_attrindex = SUCCEED;
             cf_mod_key_attrindex = SDfindattr(sdsid, "Key");
-            if(cf_mod_key_attrindex !=FAIL) {
+            if (cf_mod_key_attrindex !=FAIL) {
                 has_Key_attr = true;
             }
 
@@ -1073,7 +1049,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             cf_modl1b_rr_attrindex2 = SDfindattr(sdsid, "radiance_offsets");
 
             // Obtain the values of radiance_scales and radiance_offsets if they are available.
-            if(cf_modl1b_rr_attrindex!=FAIL && cf_modl1b_rr_attrindex2!=FAIL)
+            if (cf_modl1b_rr_attrindex!=FAIL && cf_modl1b_rr_attrindex2!=FAIL)
             {
                 intn ret = -1;
                 ret = SDattrinfo(sdsid, cf_modl1b_rr_attrindex, attrname, 
@@ -1081,7 +1057,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () 
@@ -1106,7 +1082,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_offsets' in " 
@@ -1119,7 +1095,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'radiance_offsets' in " 
@@ -1161,7 +1137,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             // and reflectance_offsets if they are available.
             cf_modl1b_rr_attrindex = SDfindattr(sdsid, "reflectance_scales");
             cf_modl1b_rr_attrindex2 = SDfindattr(sdsid, "reflectance_offsets");
-            if(cf_modl1b_rr_attrindex!=FAIL && cf_modl1b_rr_attrindex2!=FAIL)
+            if (cf_modl1b_rr_attrindex!=FAIL && cf_modl1b_rr_attrindex2!=FAIL)
             {
                 intn ret = -1;
                 ret = SDattrinfo(sdsid, cf_modl1b_rr_attrindex, attrname, 
@@ -1171,7 +1147,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
                                       radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                        SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_scales' in " 
@@ -1186,7 +1162,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
                                       radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_scales' in " 
@@ -1201,7 +1177,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
                                       radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                        SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_offsets' in " 
@@ -1216,7 +1192,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
                                       radiance_scales,radiance_offsets);
                     SDendaccess(sdsid);
-                    if(true == isgeofile || false == check_pass_fileid_key)
+                    if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
                     ostringstream eherr;
                     eherr << "Attribute 'reflectance_offsets' in " 
@@ -1285,7 +1261,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
     if (SOType::MODIS_EQ_SCALE == sotype || SOType::MODIS_MUL_SCALE == sotype) {
         if (scale > 1) {
             bool need_change_scale = true;           
-            if(gridname!="") {
+            if (gridname!="") {
               
                 string temp_filename;
                 if (filename.find("#") != string::npos)
@@ -1299,14 +1275,14 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                         need_change_scale = false;
                 }
                 // MOD16A2
-                else if((temp_filename.size() >7)&&
+                else if ((temp_filename.size() >7)&&
                         ((temp_filename.compare(0,7,"MOD16A2") == 0)|| (temp_filename.compare(0,7,"MYD16A2")==0)||
                          (temp_filename.compare(0,7,"MOD16A3") == 0)|| (temp_filename.compare(0,7,"MYD16A3")==0)))
                         need_change_scale = false;
                 
  
             }
-            if(true == need_change_scale) { 
+            if (true == need_change_scale) { 
                 sotype = SOType::MODIS_DIV_SCALE;
                 (*BESLog::TheLog())
                  << "The field " << fieldname << " scale factor is "
@@ -1328,133 +1304,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                << " Now change it to MODIS_MUL_SCALE. "<<endl;
         }
     }
-#if 0
- /// DEL LATER
-r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
-if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-}
-
-cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
-#endif
     
-#if 0
-// We need to loop through all datatpes to allocate the memory buffer for the data.
-// It is hard to add comments to the macro. We may need to change them to general routines in the future.
-// Some MODIS products use both valid_range(valid_min, valid_max) and fillvalues for data fields. When do recalculating,
-// I check fillvalue first, then check valid_min and valid_max if they are available. 
-// The middle check is_special_value addresses the MODIS L1B special value. 
-// ////////////////////////////////////////////////////////////////////////////////////
-/*    if((float)tmptr[l] != fillvalue ) \
-//                    { \
-//                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
-//                        { \
-//                            if (orig_valid_min<tmpval[l] && orig_valid_max>tmpval[l] \
-//                            if(sotype==MODIS_MUL_SCALE) \
-//                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
-//                            else if(sotype==MODIS_EQ_SCALE) \
-//                                tmpval[l] = tmptr[l]*scale + field_offset; \
-//                            else if(sotype==MODIS_DIV_SCALE) \
-//                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
-//                        } \
-*/
-#define RECALCULATE(CAST, DODS_CAST, VAL) \
-{ \
-    bool change_data_value = false; \
-    if(sotype!=DEFAULT_CF_EQU) \
-    { \
-        vector<float>tmpval; \
-        tmpval.resize(nelms); \
-        CAST tmptr = (CAST)VAL; \
-        for(int l=0; l<nelms; l++) \
-            tmpval[l] = (float)tmptr[l]; \
-        bool special_case = false; \
-        if(scale_factor_attr_index==FAIL) \
-            if(num_eles_of_an_attr==1) \
-                if(radiance_scales!=nullptr && radiance_offsets!=nullptr) \
-                { \
-                    scale = radiance_scales[0]; \
-                    field_offset = radiance_offsets[0];\
-                    special_case = true; \
-                } \
-        if((scale_factor_attr_index!=FAIL && !(scale==1 && field_offset==0)) || special_case)  \
-        { \
-            for(int l=0; l<nelms; l++) \
-            { \
-                if(cf_vr_attrindex!=FAIL) \
-                { \
-                    if((float)tmptr[l] != fillvalue ) \
-                    { \
-                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
-                        { \
-                            if ((orig_valid_min<=tmpval[l] && orig_valid_max>=tmpval[l]) || (true==has_Key_attr))\
-                            { \
-                                if(sotype==MODIS_MUL_SCALE) \
-                                        tmpval[l] = (tmptr[l]-field_offset)*scale; \
-                                else if(sotype==MODIS_EQ_SCALE) \
-                                        tmpval[l] = tmptr[l]*scale + field_offset; \
-                                else if(sotype==MODIS_DIV_SCALE) \
-                                        tmpval[l] = (tmptr[l]-field_offset)/scale;\
-                           } \
-                        } \
-                    } \
-                } \
-            } \
-            change_data_value = true; \
-            set_value((dods_float32 *)tmpval.data(), nelms); \
-        } else 	if(num_eles_of_an_attr>1 && (radiance_scales!=nullptr && radiance_offsets!=nullptr) || (reflectance_scales!=nullptr && reflectance_offsets!=nullptr)) \
-        { \
-            size_t dimindex=0; \
-            if( num_eles_of_an_attr!=tmp_dims[dimindex]) \
-            { \
-                ostringstream eherr; \
-                eherr << "The number of Z-Dimension scale attribute is not equal to the size of the first dimension in " << fieldname.c_str() << ". These two values must be equal."; \
-                throw InternalErr (__FILE__, __LINE__, eherr.str ()); \
-            } \
-            size_t start_index, end_index; \
-            size_t nr_elems = nelms/count32[dimindex]; \
-            start_index = offset32[dimindex]; \
-            end_index = start_index+step32[dimindex]*(count32[dimindex]-1); \
-            size_t index = 0;\
-            for(size_t k=start_index; k<=end_index; k+=step32[dimindex]) \
-            { \
-                float tmpscale = (fieldname.find("Emissive")!=string::npos)? radiance_scales[k]: reflectance_scales[k]; \
-                float tmpoffset = (fieldname.find("Emissive")!=string::npos)? radiance_offsets[k]: reflectance_offsets[k]; \
-                for(size_t l=0; l<nr_elems; l++) \
-                { \
-                    if(cf_vr_attrindex!=FAIL) \
-                    { \
-                        if(((float)tmptr[index])!=fillvalue) \
-                        { \
-                            if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[index]))\
-                            { \
-                                if(sotype==MODIS_MUL_SCALE) \
-                                    tmpval[index] = (tmptr[index]-tmpoffset)*tmpscale; \
-                                else if(sotype==MODIS_EQ_SCALE) \
-                                    tmpval[index] = tmptr[index]*tmpscale+tmpoffset; \
-                                else if(sotype==MODIS_DIV_SCALE) \
-                                    tmpval[index] = (tmptr[index]-tmpoffset)/tmpscale; \
-                            } \
-                        } \
-                    } \
-                    index++; \
-                } \
-            } \
-            change_data_value = true; \
-            set_value((dods_float32 *)tmpval.data(), nelms); \
-        } \
-    } \
-    if(!change_data_value) \
-    { \
-        set_value ((DODS_CAST)VAL, nelms); \
-    } \
-}
-#endif
-
 // We need to loop through all datatpes to allocate the memory buffer for the data.
 // It is hard to add comments to the macro. We may need to change them to general 
 // routines in the future.
@@ -1469,16 +1319,16 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 // the valid data values. KY 2014-02-19
 //
 #if 0
-/*    if((float)tmptr[l] != fillvalue ) \
+/*    if ((float)tmptr[l] != fillvalue ) \
 //                    { \
 //          f(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
 //                       { \
 //                            if (orig_valid_min<tmpval[l] && orig_valid_max>tmpval[l] \
-//                            if(sotype==MODIS_MUL_SCALE) \
+//                            if (sotype==MODIS_MUL_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
-//                            else if(sotype==MODIS_EQ_SCALE) \
+//                            else if (sotype==MODIS_EQ_SCALE) \
 //                                tmpval[l] = tmptr[l]*scale + field_offset; \
-//                            else if(sotype==MODIS_DIV_SCALE) \
+//                            else if (sotype==MODIS_DIV_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 //                        } \
 */
@@ -1486,7 +1336,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \
-    if(sotype!=SOType::DEFAULT_CF_EQU) \
+    if (sotype!=SOType::DEFAULT_CF_EQU) \
     { \
         vector<float>tmpval; \
         tmpval.resize(nelms); \
@@ -1494,19 +1344,19 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
         for(int l=0; l<nelms; l++) \
             tmpval[l] = (float)tmptr[l]; \
         bool special_case = false; \
-        if(scale_factor_attr_index==FAIL) \
-            if(num_eles_of_an_attr==1) \
-                if((radiance_scales!=nullptr) && (radiance_offsets!=nullptr)) \
+        if (scale_factor_attr_index==FAIL) \
+            if (num_eles_of_an_attr==1) \
+                if ((radiance_scales!=nullptr) && (radiance_offsets!=nullptr)) \
                 { \
                     scale = radiance_scales[0]; \
                     field_offset = radiance_offsets[0];\
                     special_case = true; \
                 } \
-        if(((scale_factor_attr_index!=FAIL) && !((scale==1) && (field_offset==0))) || special_case)  \
+        if (((scale_factor_attr_index!=FAIL) && !((scale==1) && (field_offset==0))) || special_case)  \
         { \
             float temp_scale = scale; \
             float temp_offset = field_offset; \
-            if(sotype==SOType::MODIS_MUL_SCALE) \
+            if (sotype==SOType::MODIS_MUL_SCALE) \
                 temp_offset = -1. *field_offset*temp_scale;\
             else if (sotype==SOType::MODIS_DIV_SCALE) \
             {\
@@ -1515,11 +1365,11 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
             }\
             for(int l=0; l<nelms; l++) \
             { \
-                if(cf_vr_attrindex!=FAIL) \
+                if (cf_vr_attrindex!=FAIL) \
                 { \
-                    if((float)tmptr[l] != fillvalue ) \
+                    if ((float)tmptr[l] != fillvalue ) \
                     { \
-                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
+                        if (false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
                         { \
                             if (((orig_valid_min<=tmpval[l]) && (orig_valid_max>=tmpval[l])) || (true==has_Key_attr))\
                             { \
@@ -1531,10 +1381,10 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
             } \
             change_data_value = true; \
             set_value((dods_float32 *)tmpval.data(), nelms); \
-        } else 	if((num_eles_of_an_attr>1) && (((radiance_scales!=nullptr) && (radiance_offsets!=nullptr)) || ((reflectance_scales!=nullptr) && (reflectance_offsets!=nullptr)))) \
+        } else 	if ((num_eles_of_an_attr>1) && (((radiance_scales!=nullptr) && (radiance_offsets!=nullptr)) || ((reflectance_scales!=nullptr) && (reflectance_offsets!=nullptr)))) \
         { \
             size_t dimindex=0; \
-            if( num_eles_of_an_attr!=tmp_dims[dimindex]) \
+            if ( num_eles_of_an_attr!=tmp_dims[dimindex]) \
             { \
                 release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets); \
                 ostringstream eherr; \
@@ -1552,17 +1402,17 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
                 float tmpoffset = (fieldname.find("Emissive")!=string::npos)? radiance_offsets[k]: reflectance_offsets[k]; \
                 for(size_t l=0; l<nr_elems; l++) \
                 { \
-                    if(cf_vr_attrindex!=FAIL) \
+                    if (cf_vr_attrindex!=FAIL) \
                     { \
-                        if(((float)tmptr[index])!=fillvalue) \
+                        if (((float)tmptr[index])!=fillvalue) \
                         { \
-                            if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[index]))\
+                            if (false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[index]))\
                             { \
-                                if(sotype==SOType::MODIS_MUL_SCALE) \
+                                if (sotype==SOType::MODIS_MUL_SCALE) \
                                     tmpval[index] = (tmptr[index]-tmpoffset)*tmpscale; \
-                                else if(sotype==SOType::MODIS_EQ_SCALE) \
+                                else if (sotype==SOType::MODIS_EQ_SCALE) \
                                     tmpval[index] = tmptr[index]*tmpscale+tmpoffset; \
-                                else if(sotype==SOType::MODIS_DIV_SCALE) \
+                                else if (sotype==SOType::MODIS_DIV_SCALE) \
                                     tmpval[index] = (tmptr[index]-tmpoffset)/tmpscale; \
                             } \
                         } \
@@ -1574,7 +1424,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
             set_value((dods_float32 *)tmpval.data(), nelms); \
         } \
     } \
-    if(!change_data_value) \
+    if (!change_data_value) \
     { \
         set_value ((DODS_CAST)VAL, nelms); \
     } \
@@ -1653,23 +1503,6 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
         {
             vector<uint16>val;
             val.resize(nelms);
-#if 0
-cerr<<"gridid is "<<gridid <<endl;
-int32 tmp_rank = 0;
-char tmp_dimlist[1024];
-int32 tmp_dims[rank];
-int32 field_dtype = 0;
-intn r = 0;
-
-r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
-if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-}
-#endif
 
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
                 offset32.data(), step32.data(), count32.data(), val.data());
@@ -1769,19 +1602,6 @@ if (r != 0) {
     }
 
     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
-#if 0
-    if(reflectance_scales!=nullptr)
-    {
-        delete[] reflectance_offsets;
-        delete[] reflectance_scales;
-    }
-
-    if(radiance_scales!=nullptr)
-    {
-        delete[] radiance_offsets;
-        delete[] radiance_scales;
-    }
-#endif
 
     // Somehow the macro RECALCULATE causes the interaction between gridid and sdfileid. SO
     // If I close the sdfileid earlier, gridid becomes invalid. So close the sdfileid now. KY 2014-10-24
@@ -1991,28 +1811,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
     }
     return 0;
 }
-#if 0
-    r = detachfunc (gridid);
-    if (r != 0) {
-        closefunc(gfid);
-        ostringstream eherr;
-
-        eherr << "Grid/Swath " << datasetname.c_str () << " cannot be detached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-
-
-    r = closefunc (gfid);
-    if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-
-    return false;
-}
-#endif
 
 // Standard way to pass the coordinates of the subsetted region from the client to the handlers
 // Return the number of elements to read.
@@ -2059,13 +1857,13 @@ HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 
 void HDFEOS2Array_RealField::close_fileid(const int gsfileid, const int sdfileid) const{
 
-    if(true == isgeofile || false == HDF4RequestHandler::get_pass_fileid()) {
+    if (true == isgeofile || false == HDF4RequestHandler::get_pass_fileid()) {
 
-        if(sdfileid != -1)
+        if (sdfileid != -1)
             SDend(sdfileid);
 
-        if(gsfileid != -1){
-            if(""==gridname) 
+        if (gsfileid != -1){
+            if (""==gridname) 
                 SWclose(gsfileid);
             if (""==swathname)
                 GDclose(gsfileid);
@@ -2080,13 +1878,13 @@ void HDFEOS2Array_RealField::release_mod1b_res(float*ref_scale,
                                                float*rad_scale,
                                                float*rad_offset) {
 
-    if(ref_scale != nullptr)
+    if (ref_scale != nullptr)
         delete[] ref_scale;
-    if(ref_offset != nullptr)
+    if (ref_offset != nullptr)
         delete[] ref_offset;
-    if(rad_scale != nullptr)
+    if (rad_scale != nullptr)
         delete[] rad_scale;
-    if(rad_offset != nullptr)
+    if (rad_offset != nullptr)
         delete[] rad_offset;
 
 }

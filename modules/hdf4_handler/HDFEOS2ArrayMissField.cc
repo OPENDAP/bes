@@ -27,7 +27,7 @@ using namespace std;
 bool HDFEOS2ArrayMissGeoField::read()
 {
 
-    if(length() == 0)
+    if (length() == 0)
         return true;
     // Declaration of offset,count and step
     vector<int> offset;

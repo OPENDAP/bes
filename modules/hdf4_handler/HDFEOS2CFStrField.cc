@@ -32,7 +32,7 @@ HDFEOS2CFStrField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2CFStrField read "<<endl);
 
-    if(length() == 0)
+    if (length() == 0)
         return true; 
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
@@ -82,7 +82,7 @@ HDFEOS2CFStrField::read ()
 
 
     // Define function pointers to handle the swath
-    if(grid_or_swath == 0) {
+    if (grid_or_swath == 0) {
         openfunc = GDopen;
         closefunc = GDclose;
         attachfunc = GDattach;
@@ -117,7 +117,7 @@ HDFEOS2CFStrField::read ()
 
     int32 gsid = attachfunc (gfid, const_cast < char *>(objname.c_str ()));
     if (gsid < 0) {
-        if(false == check_pass_fileid_key)
+        if (false == check_pass_fileid_key)
             closefunc(gfid);
         ostringstream eherr;
         eherr << "Grid/Swath " << objname.c_str () << " cannot be attached.";
@@ -135,7 +135,7 @@ HDFEOS2CFStrField::read ()
                 &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
     if (r != 0) {
         detachfunc(gsid);
-        if(false == check_pass_fileid_key)
+        if (false == check_pass_fileid_key)
             closefunc(gfid);
         ostringstream eherr;
         eherr << "Field " << varname.c_str () << " information cannot be obtained.";
@@ -155,7 +155,7 @@ HDFEOS2CFStrField::read ()
 
     if (r != 0) {
         detachfunc(gsid);
-        if(false == check_pass_fileid_key)
+        if (false == check_pass_fileid_key)
             closefunc(gfid);
         ostringstream eherr;
         eherr << "swath or grid readdata failed.";
@@ -177,7 +177,7 @@ HDFEOS2CFStrField::read ()
     set_value(final_val.data(),nelms);
 
     detachfunc(gsid);
-    if(false == check_pass_fileid_key)
+    if (false == check_pass_fileid_key)
         closefunc(gfid);
 
     return false;

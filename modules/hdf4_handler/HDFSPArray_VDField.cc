@@ -30,14 +30,9 @@ HDFSPArray_VDField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFSPArray_VDField read "<<endl);
-    if(length() == 0)
+    if (length() == 0)
         return true; 
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declaration of offset,count and step
@@ -385,16 +380,6 @@ HDFSPArray_VDField::read ()
         throw;
 
    }
-
-#if 0
-    if (Hclose (file_id) == -1) {
-
-        ostringstream eherr;
-
-        eherr << "VSdetach failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-#endif
 
     return true;
 }
