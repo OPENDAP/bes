@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file includes cache handling routines for the HDF4 handler.
 // The skeleton of the code is adapted from BESDapResponseCache.cc under bes/dap 
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>  
-// Copyright (c) 2014 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>  
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config.h"

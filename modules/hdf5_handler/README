@@ -585,6 +585,6 @@ gets installed too.
   Finally, every time you install or reinstall handlers, make sure to 
 restart the BES and OLFS.
 
-Muqun Yang (myang6@hdfgroup.org)
+Kent Yang (myang6@hdfgroup.org)
 Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 

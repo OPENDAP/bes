@@ -2,7 +2,7 @@
 //  This file is part of the hdf4 data handler for the OPeNDAP data server.
 //
 // Author:   Kent Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2014 The HDF Group
+// Copyright (c) The HDF Group
 // The idea is borrowed from GDAL OPeNDAP handler that is implemented by
 // James Gallagher<jgallagher@opendap.org>
 
@@ -63,9 +63,6 @@ public:
         if (this == &rhs)
             return *this;
 
-#if 0
-        dynamic_cast<libdap::DMR &>(*this) = rhs;
-#endif
         libdap::DMR::operator=(rhs);
         m_duplicate(rhs);
 

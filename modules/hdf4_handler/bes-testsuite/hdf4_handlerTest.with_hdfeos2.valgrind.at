@@ -25,7 +25,7 @@
 # See also hdf4_hadnler.cf.at file.
 #
 # Author: Hyo-Kyung Lee (hyoklee@hdfgroup.org)
-#         MuQun Yang(myang6@hdfgroup.org)
+#         Kent Yang(myang6@hdfgroup.org)
 # Last Update: Mar 10, 2016
 # -----------------------------------------------------------------------------
 AT_INIT([bes.conf besstandalone getdap])

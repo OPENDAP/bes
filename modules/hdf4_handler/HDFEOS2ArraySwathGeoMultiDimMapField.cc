@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // Retrieves the latitude and longitude of  the HDF-EOS2 Swath without using dimension maps
 //
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2020 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 //For the swath using the multiple dimension maps,
 // Latitude/longitude will be interpolated accordingly.
@@ -28,10 +28,10 @@ HDFEOS2ArraySwathGeoMultiDimMapField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathGeoMultiDimMapField read "<<endl);
 
-    if(length() == 0)
+    if (length() == 0)
         return true; 
 
-    if(rank !=2) 
+    if (rank !=2) 
         throw InternalErr (__FILE__, __LINE__, "The field rank must be 2 for swath multi-dimension map reading.");
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
@@ -86,7 +86,7 @@ HDFEOS2ArraySwathGeoMultiDimMapField::read ()
     dm_incs.resize(rank);
     bool no_interpolation = true;
 
-    if(dim0inc != 0 || dim1inc !=0 || dim0offset != 0 || dim1offset != 0) {
+    if (dim0inc != 0 || dim1inc !=0 || dim0offset != 0 || dim1offset != 0) {
         dm_dimsizes[0] = dim0size;
         dm_dimsizes[1] = dim1size;
         dm_offsets[0] = dim0offset;
@@ -102,7 +102,7 @@ HDFEOS2ArraySwathGeoMultiDimMapField::read ()
     int32 sfid = -1;
     int32 swathid = -1;
 
-    if(false == check_pass_fileid_key) {
+    if (false == check_pass_fileid_key) {
         sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sfid < 0) {
             ostringstream eherr;
@@ -112,20 +112,6 @@ HDFEOS2ArraySwathGeoMultiDimMapField::read ()
     }
     else 
         sfid = swathfd;
-
-#if 0
-cerr<<"swath name is "<<datasetname <<endl;
-cerr<<"swath rank is "<<rank <<endl;
-cerr<<"swath field name is "<<fieldname <<endl;
-cerr<<"swath field new name is "<<name() <<endl;
-
-cerr<<"datadim0size "<<dim0size <<endl;
-cerr<<"datadim1size "<<dim1size <<endl;
-cerr<<"datadim0offset "<<dim0offset <<endl;
-cerr<<"datadim1offset "<<dim1offset <<endl;
-cerr<<"datadim0inc "<<dim0inc <<endl;
-cerr<<"datadim1inc "<<dim1inc <<endl;
-#endif
 
     swathid = attachfunc (sfid, const_cast < char *>(datasetname.c_str ()));
 
@@ -160,7 +146,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
     switch (type) {
         case DFNT_INT8:
         {
-            if(true == no_interpolation) {
+            if (true == no_interpolation) {
                 vector<int8>val;
                 val.resize(nelms);
                 r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
@@ -217,7 +203,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
         case DFNT_UINT8:
         case DFNT_UCHAR8:
         {
-            if(no_interpolation == false) {
+            if (no_interpolation == false) {
                 vector <uint8> total_val_uint8;
                 r = GetFieldValue (swathid, fieldname, dm_dimsizes,dm_offsets,dm_incs, total_val_uint8, newdims);
 
@@ -256,7 +242,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
 
         case DFNT_INT16:
         {
-            if(no_interpolation == false) {
+            if (no_interpolation == false) {
                 vector <int16> total_val_int16;
                 r = GetFieldValue (swathid, fieldname, dm_dimsizes,dm_offsets,dm_incs, total_val_int16, newdims);
 
@@ -294,7 +280,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
 
         case DFNT_UINT16:
         {
-            if(no_interpolation == false) {
+            if (no_interpolation == false) {
                 vector <uint16> total_val_uint16;
                 r = GetFieldValue (swathid, fieldname, dm_dimsizes,dm_offsets,dm_incs, total_val_uint16, newdims);
 
@@ -333,7 +319,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
 
         case DFNT_INT32:
         {
-            if(no_interpolation == false) {
+            if (no_interpolation == false) {
                 vector <int32> total_val_int32;
                 r = GetFieldValue (swathid, fieldname, dm_dimsizes,dm_offsets,dm_incs, total_val_int32, newdims);
 
@@ -371,7 +357,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
 
         case DFNT_UINT32:
         {
-            if(no_interpolation == false) {
+            if (no_interpolation == false) {
                 vector <uint32> total_val_uint32;
                 r = GetFieldValue (swathid, fieldname, dm_dimsizes,dm_offsets,dm_incs, total_val_uint32, newdims);
 
@@ -408,7 +394,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
             break;
         case DFNT_FLOAT32:
         {
-            if(no_interpolation == false) {
+            if (no_interpolation == false) {
                 vector <float32> total_val_f32;
                 r = GetFieldValue (swathid, fieldname, dm_dimsizes,dm_offsets,dm_incs, total_val_f32, newdims);
 
@@ -444,7 +430,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
             break;
         case DFNT_FLOAT64:
         {
-            if(no_interpolation == false) {
+            if (no_interpolation == false) {
                 vector <float64> total_val_f64;
                 r = GetFieldValue (swathid, fieldname, dm_dimsizes,dm_offsets,dm_incs, total_val_f64, newdims);
 
@@ -494,15 +480,6 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
     }
 
     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-
-#if 0
-    r = closefunc (sfid);
-    if (r != 0) {
-        ostringstream eherr;
-        eherr << "Swath " << filename.c_str () << " cannot be closed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-#endif
 
     return false;
 }
@@ -560,9 +537,7 @@ bool HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset (T * outlatlon,
                                                   const int32 * count,
                                                   const int32 * step) const
 {
-#if 0
-    T (*templatlonptr)[majordim][minordim] = (T *[][]) latlon;
-#endif
+
     int	i = 0;
     int j = 0; 
 
@@ -586,9 +561,6 @@ bool HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset (T * outlatlon,
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
-#if 0
-            outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
-#endif
             outlatlon[k] = *(latlon + (dim0index[i] * minordim) + dim1index[j]);
             k++;
         }
@@ -619,7 +591,7 @@ GetFieldValue (int32 swathid, const string & geofieldname,
     if (ret != 0)
         return -1;
 
-    if(sw_rank !=2)
+    if (sw_rank !=2)
         return -1;
 
     size = 1;
@@ -638,11 +610,6 @@ GetFieldValue (int32 swathid, const string & geofieldname,
 
     for (int i = 0; i < sw_rank; i++) {
 
-#if 0       
-cerr<<"dimsizes["<<i<<"]: " <<dimsizes[i]<<endl;
-cerr<<"offset["<<i<<"]: " <<offset[i]<<endl;
-cerr<<"inc["<<i<<"]: " <<inc[i]<<endl;
-#endif
         int r;
         r = _expand_dimmap_field (&vals, sw_rank, dims, i, dimsizes[i], offset[i], inc[i]);
         if (r != 0)
@@ -723,12 +690,6 @@ HDFEOS2ArraySwathGeoMultiDimMapField::_expand_dimmap_field (vector < T >
                     int32 j1 = 0;
                     int32 j2 = 0; 
 
-#if 0
-                    if (i <= 0) {
-                        //i1 = 0;
-                        i2 = 1;
-                    }
-#endif
                     if ((unsigned int) i + 1 >= v.size ()) {
                         i1 = v.size () - 2;
                         i2 = v.size () - 1;

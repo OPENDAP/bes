@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Retrieves the latitude and longitude of  the HDF-EOS2 Swath with dimension map
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 // Currently the handling of swath data fields with dimension maps is the same as other data fields(HDFEOS2Array_RealField.cc etc)
@@ -39,24 +39,6 @@ class HDFEOS2ArraySwathDimMapField:public libdap::Array
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-#if 0
-        // Obtain Field value
-        template < class T > int GetFieldValue (int32, const std::string &,std::vector < struct dimmap_entry >&, std::vector < T > &, std::vector<int32>&);
-
-        // The internal routine to do the interpolation
-        template < class T > int _expand_dimmap_field (std::vector < T > *pvals, int32 rank, int32 dimsa[], int dimindex, int32 ddimsize, int32 offset, int32 inc); 
-
-        // subsetting routine to ensure the subsetted field to be returned.
-        template < class T > bool FieldSubset (T * outlatlon, std::vector<int32>&newdims, T * latlon, int32 * offset, int32 * count, int32 * step);
-        // subsetting routine to ensure the subsetted 1D field to be returned.
-        template < class T > bool Field1DSubset (T * outlatlon, int majordim, T * latlon, int32 * offset, int32 * count, int32 * step);
-
-        // subsetting routine to ensure the subsetted 2D field to be returned.
-        template < class T > bool Field2DSubset (T * outlatlon, int majordim, int minordim, T * latlon, int32 * offset, int32 * count, int32 * step);
-         // subsetting routine to ensure the subsetted 2D field to be returned.
-        template < class T > bool Field3DSubset (T * outlatlon, std::vector<int32>& newdims, T * latlon, int32 * offset, int32 * count, int32 * step);
-
-#endif
         libdap::BaseType *ptr_duplicate () override
         {
             return new HDFEOS2ArraySwathDimMapField (*this);

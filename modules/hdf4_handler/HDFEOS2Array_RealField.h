@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 // It retrieves the real field values.
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>  Eunsoo Seo
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>  Eunsoo Seo
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef USE_HDFEOS2_LIB
