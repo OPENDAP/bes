@@ -93,11 +93,11 @@ namespace dmrpp {
 unique_ptr<ObjMemCache> DmrppRequestHandler::das_cache{nullptr};
 unique_ptr<ObjMemCache> DmrppRequestHandler::dds_cache{nullptr};
 
-shared_ptr<DMZ> DmrppRequestHandler::dmz(nullptr);
+shared_ptr<DMZ> DmrppRequestHandler::dmz{nullptr};
 
 // This is used to maintain a pool of reusable curl handles that enable connection
 // reuse. jhrg
-CurlHandlePool *DmrppRequestHandler::curl_handle_pool = nullptr;
+unique_ptr<CurlHandlePool> DmrppRequestHandler::curl_handle_pool{nullptr};
 
 // These now only affect the DDS and DAS ObjMemCaches; the DMR++
 // is cached in the NGAP module. Once issues with the DMR++ object's
@@ -229,8 +229,10 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
         ERROR_LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
 #endif
 
-    if (!curl_handle_pool)
-        curl_handle_pool = new CurlHandlePool(d_max_transfer_threads);
+    if (!curl_handle_pool) {
+        curl_handle_pool = make_unique<CurlHandlePool>();
+        curl_handle_pool->initialize();
+    }
 
     // This can be set to true using the bes conf file; the default value is false
     read_key_value(DMRPP_USE_OBJECT_CACHE_KEY, d_use_object_cache);
@@ -252,7 +254,6 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
 DmrppRequestHandler::~DmrppRequestHandler()
 {
-    delete curl_handle_pool;
     curl_global_cleanup();
 }
 

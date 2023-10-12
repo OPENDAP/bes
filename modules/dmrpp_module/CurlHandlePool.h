@@ -90,8 +90,8 @@ private:
     static std::recursive_mutex d_dns_mutex;
     static std::recursive_mutex d_ssl_session_mutex;
     static std::recursive_mutex d_connect_mutex;
-    static std::recursive_mutex d_psl_mutex;
-    static std::recursive_mutex d_hsts_mutex;
+
+    static std::recursive_mutex d_mutex;    // Use this for the default case.
 
     static void lock_cb(CURL */*handle*/, curl_lock_data data, curl_lock_access /*access*/, void */*userptr*/) {
         switch (data) {
@@ -114,13 +114,8 @@ private:
             case CURL_LOCK_DATA_CONNECT:
                 d_connect_mutex.lock();
                 break;
-            case CURL_LOCK_DATA_PSL:
-                d_psl_mutex.lock();
-                break;
-            case CURL_LOCK_DATA_HSTS:
-                d_hsts_mutex.lock();
-                break;
             default:
+                d_mutex.lock();
                 break;
         }
     }
@@ -146,24 +141,17 @@ private:
             case CURL_LOCK_DATA_CONNECT:
                 d_connect_mutex.unlock();
                 break;
-            case CURL_LOCK_DATA_PSL:
-                d_psl_mutex.unlock();
-                break;
-            case CURL_LOCK_DATA_HSTS:
-                d_hsts_mutex.unlock();
-                break;
             default:
+                d_mutex.unlock();
                 break;
         }
     }
 
-    friend class Lock;
-
 public:
-    CurlHandlePool() = delete;
-    explicit CurlHandlePool(unsigned int);
+    CurlHandlePool() = default;
     ~CurlHandlePool();
 
+    void initialize();
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
     void release_handle(dmrpp_easy_handle *h);

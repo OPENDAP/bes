@@ -182,7 +182,8 @@ public:
         DBG(cerr << endl);
         TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/curl_handle_pool_keys.conf";
         // The following will show threads joined after an exception was thrown by a thread
-        chp = new CurlHandlePool(4);
+        chp = new CurlHandlePool();
+        chp->initialize();
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp:3");
     }
 
@@ -203,11 +204,6 @@ public:
         auto array = new MockDmrppArray;
         vector<unsigned long long> array_shape = {1};
 
-#if 0
-        unsigned int num = chp->get_handles_available();
-        CPPUNIT_ASSERT(num == chp->get_max_handles());
-#endif
-
         try {
             process_one_chunk(chunk, array, array_shape);
         }
@@ -220,10 +216,6 @@ public:
             CPPUNIT_FAIL("Exception");
         }
 
-#if 0
-        unsigned int num2 = chp->get_handles_available();
-        CPPUNIT_ASSERT(num2 == num);
-#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -235,123 +227,12 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
-#if 0
-    // This is a general proxy for the DmrppArray code that controls the parallel transfers.
-    void dmrpp_array_pthread_control(queue<shared_ptr<Chunk>> &chunks_to_read, MockDmrppArray *array,
-                                    const vector<unsigned int> &array_shape) {
-        DBG(cerr << prolog << "BEGIN" << endl);
-        // This pipe is used by the child threads to indicate completion
-        int fds[2];
-        if (pipe(fds) < 0)
-            throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)),
-                                   __FILE__, __LINE__);
-
-        // Start the max number of processing pipelines
-        //pthread_t threads[chp->get_max_handles()];
-        vector<pthread_t> threads(chp->get_max_handles());
-        memset(threads.data(), 0, sizeof(pthread_t) * chp->get_max_handles());
-
-        try {
-            unsigned int num_threads = 0;
-            for (unsigned int i = 0; i < (unsigned int) chp->get_max_handles() && !chunks_to_read.empty(); ++i) {
-                auto chunk = chunks_to_read.front();
-                chunks_to_read.pop();
-
-                // thread number is 'i'
-                auto args = new one_chunk_args(fds, i, chunk, array, array_shape);
-                int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_thread, (void *) args);
-                if (0 == status) {
-                    ++num_threads;
-                    DBG(cerr << prolog << "started thread: " << i << endl);
-                }
-                else {
-                    ostringstream oss("Could not start thread for chunk ", ios::ate);
-                    oss << i << ": " << strerror(status);
-                    DBG(cerr << prolog << oss.str());
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-            }
-
-            DBG(cerr << prolog << "Gathering threads..." << endl);
-            // Now join the child threads, creating replacement threads if needed
-            while (num_threads > 0) {
-                DBG(cerr << prolog << num_threads << " threads to process..." << endl);
-                unsigned char tid;   // bytes can be written atomically
-                // Block here until a child thread writes to the pipe, then read the byte
-                int bytes = read(fds[0], &tid, sizeof(tid));
-                if (bytes != sizeof(tid))
-                    throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__,
-                                           __LINE__);
-
-                if (tid >= chp->get_max_handles()) {
-                    ostringstream oss("Invalid thread id read after thread exit: ", ios::ate);
-                    oss << tid;
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-
-                string *error;
-                int status = pthread_join(threads[tid], (void **) &error);
-                --num_threads;
-                DBG(cerr << prolog << "joined thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
-
-                if (status != 0) {
-                    ostringstream oss("Could not join thread for chunk ", ios::ate);
-                    oss << tid << ": " << strerror(status);
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-                else if (error != 0) {
-                    DBG(cerr << prolog << "Thread exception: " << (unsigned int) tid << endl);
-                    BESInternalError e(*error, __FILE__, __LINE__);
-                    delete error;
-                    throw e;
-                }
-                else if (!chunks_to_read.empty()) {
-                    auto chunk = chunks_to_read.front();
-                    chunks_to_read.pop();
-
-                    // thread number is 'tid,' the number of the thread that just completed
-                    auto args = new one_chunk_args(fds, tid, chunk, array, array_shape);
-                    status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_thread, (void *) args);
-                    if (status != 0) {
-                        ostringstream oss("Could not start thread for chunk ", ios::ate);
-                        oss << tid << ": " << strerror(status);
-                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                    }
-                    ++num_threads;
-                    DBG(cerr << prolog << "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
-                }
-            }
-
-            // Once done with the threads, close the communication pipe.
-            close(fds[0]);
-            close(fds[1]);
-        }
-        catch (...) {
-            // cancel all the threads, otherwise we'll have threads out there using up resources
-            // defined in DmrppCommon.cc
-            join_threads(threads.data(), chp->get_max_handles());
-            // close the pipe used to communicate with the child threads
-            close(fds[0]);
-            close(fds[1]);
-            // re-throw the exception
-            throw;
-        }
-        DBG(cerr << prolog << "END" << endl);
-    }
-#endif
-
     // This replicates the code in DmrppArray::read_chunks() to orgainize and process_one_chunk()
     // using several threads.
     void process_one_chunk_threaded_test_0()
     {
         DBG(cerr << prolog << "BEGIN" << endl);
-#if 0
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-#endif
+
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -367,9 +248,6 @@ public:
 
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
-#if 0
-            CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
-#endif
         }
         catch(BESError &e) {
             CPPUNIT_FAIL(string("Caught BESError: ").append(e.get_verbose_message()));
@@ -383,13 +261,6 @@ public:
     // One of the threads throw an exception
     void process_one_chunk_threaded_test_1()
     {
-#if 0
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
-#endif
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -407,26 +278,12 @@ public:
         catch(BESInternalError &e) {
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
-
-#if 0
-        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
-#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
     // One thread not in the initial batch of threads throws.
     void process_one_chunk_threaded_test_2()
     {
-#if 0
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
-#endif
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -446,27 +303,12 @@ public:
         catch(BESInternalError &e) {
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
-
-#if 0
-        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
-#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
     // Two threads in the initial set throw
     void process_one_chunk_threaded_test_3()
     {
-#if 0
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-#endif
-
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -488,25 +330,12 @@ public:
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
-#if 0
-        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
-#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
     // two in the second set throw
     void process_one_chunk_threaded_test_4()
     {
-#if 0
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
-#endif
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -528,25 +357,12 @@ public:
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
-#if 0
-        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
-#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
     // One in the first set and one in the second set throw
     void process_one_chunk_threaded_test_5()
     {
-#if 0
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-#endif
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -568,9 +384,6 @@ public:
             DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
-#if 0
-        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
-#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -580,15 +393,6 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         for (int i = 0; i < 5; ++i) {
-#if 0
-            chunks_to_read.push(new MockChunk(chp, false));
-            chunks_to_read.push(new MockChunk(chp, false));
-            chunks_to_read.push(new MockChunk(chp, false));
-            chunks_to_read.push(new MockChunk(chp, true));
-            chunks_to_read.push(new MockChunk(chp, true));
-            chunks_to_read.push(new MockChunk(chp, false));
-            chunks_to_read.push(new MockChunk(chp, false));
-#endif
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -609,9 +413,6 @@ public:
             }
         }
 
-#if 0
-        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
-#endif
         DBG(cerr << prolog << "END" << endl);
     }
 

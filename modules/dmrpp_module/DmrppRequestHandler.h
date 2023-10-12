@@ -71,12 +71,11 @@ private:
     // jhrg 11/3/21
     static std::shared_ptr<DMZ> dmz;
 
-
 public:
 	explicit DmrppRequestHandler(const std::string &name);
 	~DmrppRequestHandler() override;
 
-    static CurlHandlePool *curl_handle_pool;
+    static std::unique_ptr<CurlHandlePool> curl_handle_pool;
 
     static bool d_use_transfer_threads;
     static unsigned int d_max_transfer_threads;

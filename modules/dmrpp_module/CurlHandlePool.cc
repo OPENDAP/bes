@@ -58,8 +58,7 @@ std::recursive_mutex CurlHandlePool::d_cookie_mutex;
 std::recursive_mutex CurlHandlePool::d_dns_mutex;
 std::recursive_mutex CurlHandlePool::d_ssl_session_mutex;
 std::recursive_mutex CurlHandlePool::d_connect_mutex;
-std::recursive_mutex CurlHandlePool::d_psl_mutex;
-std::recursive_mutex CurlHandlePool::d_hsts_mutex;
+std::recursive_mutex CurlHandlePool::d_mutex;
 
 /**
  * @brief Build a string with hex info about stuff libcurl gets
@@ -245,8 +244,7 @@ void dmrpp_easy_handle::read_data() {
     d_chunk->set_is_read(true);
 }
 
-
-CurlHandlePool::CurlHandlePool(unsigned int) {
+void CurlHandlePool::initialize() {
     d_cookies_filename = curl::get_cookie_filename();
     d_hyrax_user_agent = curl::hyrax_user_agent();
     d_max_redirects = curl::max_redirects();
