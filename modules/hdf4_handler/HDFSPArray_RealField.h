@@ -53,18 +53,6 @@ class HDFSPArray_RealField:public libdap::Array
         void write_data_to_cache(int32,const std::string&,short,const std::vector<char>&, int);
         bool obtain_cached_data(BESH4Cache*,const std::string&, int,std::vector<int>&, std::vector<int>&,size_t,short);
         template<typename T> int subset(const T input[],int,std::vector<int32>&,std::vector<int>&,std::vector<int>&,std::vector<int>&,std::vector<T>*,std::vector<int32>&,int);
-#if 0
-int subset(
-    const T input[],
-    int rank,
-    vector<int> & dim,
-    vector<int> & start,
-    vector<int> & stride,
-    vector<int> & edge,
-    std::vector<T> *poutput,
-    vector<int>& pos,
-    int index);
-#endif
 };
 
 
