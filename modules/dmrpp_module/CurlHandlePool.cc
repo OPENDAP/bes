@@ -330,7 +330,6 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", handle->d_errbuf, __FILE__, __LINE__);
 
         // store the easy_handle so that we can call release_handle in multi_handle::read_data()
-        // TODO Still needed? jhrg 10/6/23
         res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void *>(handle.get()));
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PRIVATE", handle->d_errbuf, __FILE__, __LINE__);
 
@@ -406,12 +405,5 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
  * @param handle
  */
 void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
-
-#if 0
-    handle->d_url = nullptr;
-    handle->d_chunk = nullptr;
-    handle->d_in_use = false;
-#endif
-
     delete handle;
 }

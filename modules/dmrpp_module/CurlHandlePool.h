@@ -95,9 +95,7 @@ private:
 
     static void lock_cb(CURL */*handle*/, curl_lock_data data, curl_lock_access /*access*/, void */*userptr*/) {
         switch (data) {
-            case CURL_LOCK_DATA_NONE:
             case CURL_LOCK_DATA_SHARE: // CURL_LOCK_DATA_SHARE is used internally
-            case CURL_LOCK_DATA_LAST:
                 d_share_mutex.lock();
                 break;
 
@@ -122,9 +120,7 @@ private:
 
     static void unlock_cb(CURL */*handle*/, curl_lock_data data, void * /*userptr*/) {
         switch (data) {
-            case CURL_LOCK_DATA_NONE:
             case CURL_LOCK_DATA_SHARE: // CURL_LOCK_DATA_SHARE is used internally
-            case CURL_LOCK_DATA_LAST:
                 d_share_mutex.unlock();
                 break;
 
