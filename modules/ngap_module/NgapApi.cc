@@ -451,41 +451,47 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
         // But if there's an AWS Date we'll parse that and compute the time
         string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
         if (!aws_date.empty()) {
-            string date = aws_date; // 20200624T175046Z
-            string year = date.substr(0, 4);
-            string month = date.substr(4, 2);
-            string day = date.substr(6, 2);
-            string hour = date.substr(9, 2);
-            string minute = date.substr(11, 2);
-            string second = date.substr(13, 2);
+            string year = aws_date.substr(0, 4);
+            string month = aws_date.substr(4, 2);
+            string day = aws_date.substr(6, 2);
+            string hour = aws_date.substr(9, 2);
+            string minute = aws_date.substr(11, 2);
+            string second = aws_date.substr(13, 2);
 
-            BESDEBUG(MODULE, prolog << "date: " << date <<
+            BESDEBUG(MODULE, prolog << "date: " << aws_date <<
                                     " year: " << year << " month: " << month << " day: " << day <<
                                     " hour: " << hour << " minute: " << minute << " second: " << second << endl);
+            // FIXME Do we need to call gmtime()? (I switch the code to the reentrant version, regardless) jhrg 10/13/23
+            struct tm ti{};
+            if (gmtime_r(&now, &ti) == nullptr)
+                throw BESInternalError("Could not get the current time, gmtime_r() failed!", __FILE__, __LINE__);
+            ti.tm_year = stoll(year) - 1900;
+            ti.tm_mon = stoll(month) - 1;
+            ti.tm_mday = stoll(day);
+            ti.tm_hour = stoll(hour);
+            ti.tm_min = stoll(minute);
+            ti.tm_sec = stoll(second);
 
-            struct tm *ti = gmtime(&now);
-            ti->tm_year = stoll(year) - 1900;
-            ti->tm_mon = stoll(month) - 1;
-            ti->tm_mday = stoll(day);
-            ti->tm_hour = stoll(hour);
-            ti->tm_min = stoll(minute);
-            ti->tm_sec = stoll(second);
+            BESDEBUG(MODULE, prolog << "ti.tm_year: " << ti.tm_year <<
+                                    " ti.tm_mon: " << ti.tm_mon <<
+                                    " ti.tm_mday: " << ti.tm_mday <<
+                                    " ti.tm_hour: " << ti.tm_hour <<
+                                    " ti.tm_min: " << ti.tm_min <<
+                                    " ti.tm_sec: " << ti.tm_sec << endl);
 
-            BESDEBUG(MODULE, prolog << "ti->tm_year: " << ti->tm_year <<
-                                    " ti->tm_mon: " << ti->tm_mon <<
-                                    " ti->tm_mday: " << ti->tm_mday <<
-                                    " ti->tm_hour: " << ti->tm_hour <<
-                                    " ti->tm_min: " << ti->tm_min <<
-                                    " ti->tm_sec: " << ti->tm_sec << endl);
-
-
-            start_time = mktime(ti);
+            start_time = mktime(&ti);
             BESDEBUG(MODULE, prolog << "AWS (computed) start_time: " << start_time << endl);
         }
+
         expires = start_time + stoll(aws_expires);
         BESDEBUG(MODULE, prolog << "Using " << AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
                                 " (expires: " << expires << ")" << endl);
     }
+
+    // FIXME If both cf_expires and aws_expires are empty, what do we do? In that case, 'expires' == 'now' and
+    //  'remaining' is 0 so this code returns false. Maybe we should test for that at the top and call it out
+    //  explicitly? jhrg 10/13/23
+
     time_t remaining = expires - now;
     BESDEBUG(MODULE, prolog << "expires_time: " << expires <<
                             "  remaining_time: " << remaining <<
