@@ -31,17 +31,41 @@
 
 #include <string>
 #include <ostream>
+#include <queue>
+#include <unordered_map>
 
 #include "BESRequestHandler.h"
 
 namespace ngap {
 
     class NgapRequestHandler: public BESRequestHandler {
-    public:
-        NgapRequestHandler(const std::string &name);
-        virtual ~NgapRequestHandler(void);
+        static unsigned int d_cmr_cache_threshold;  // max number of entries
+        static unsigned int d_cmr_cache_space;      // remove this many during purge
 
-        virtual void dump(std::ostream &strm) const;
+        static std::unordered_map<std::string, std::string> d_cmr_cache;
+        static std::queue<std::string> d_cmr_cache_entries;
+        static bool d_use_cmr_cache;
+
+        static unsigned int d_dmrpp_cache_threshold;  // max number of entries
+        static unsigned int d_dmrpp_cache_space;      // remove this many during purge
+
+        static std::unordered_map<std::string, std::string> d_dmrpp_cache;
+        static std::queue<std::string> d_dmrpp_cache_entries;
+        static bool d_use_dmrpp_cache;
+
+        friend class NgapContainer;   // give NgapContainer access to the cache parameters
+
+        friend class NgapContainerTest;
+        friend class NgapRequestHandlerTest;
+
+    public:
+        explicit NgapRequestHandler(const std::string &name);
+        NgapRequestHandler() = delete;
+        ~NgapRequestHandler() override = default;
+        NgapRequestHandler(const NgapRequestHandler &src) = delete;
+        NgapRequestHandler &operator=(const NgapRequestHandler &rhs) = delete;
+
+        void dump(std::ostream &strm) const override;
 
         static bool ngap_build_vers(BESDataHandlerInterface &dhi);
         static bool ngap_build_help(BESDataHandlerInterface &dhi);

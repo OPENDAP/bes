@@ -129,6 +129,8 @@ public:
     // This is not virtual because we call it from a ctor
     void parse_xml_doc(const std::string &filename);
 
+    void parse_xml_string(const std::string &contents);
+
     virtual void build_thin_dmr(libdap::DMR *dmr);
 
     virtual void load_attributes(libdap::BaseType *btp);

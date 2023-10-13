@@ -51,10 +51,23 @@ Http.Cache.size=500
 #-----------------------------------------------------------------------#
 
 # Inject Data URLs into the dmr++  documents.
-NGAP.inject_data_urls=true
+NGAP.inject_data_urls = true
 
-# Use this CMR endpopint URL for CMR queries.
-NGAP.cmr_host_url=https://cmr.earthdata.nasa.gov
+# Use this CMR endpoint URL for CMR queries.
+NGAP.cmr_host_url = https://cmr.earthdata.nasa.gov
+
+NGAP.UseDMRppCache = true
+
+# Defaults: 100 entries and purge 20 entries when the threshold is exceeded.
+# NGAP.DMRppCacheThreshold = 100
+# NGAP.DMRppCacheSpace = 20
+
+NGAP.UseCMRCache = true
+
+# Same defaults and meaning as for the CMR cache
+# NGAP.CMRCacheThreshold = 100
+# NGAP.CMRCacheSpace = 20
+
 
 AllowedHosts = ^https?:\/\/localhost(:8080)?\/.*$
 AllowedHosts+= ^http:\/\/test\.opendap\.org\/.*$

@@ -40,44 +40,70 @@
 #include "BESDASResponse.h"
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
+#include <TheBESKeys.h>
 #include <BESUtil.h>
 
 #include "NgapRequestHandler.h"
 #include "NgapNames.h"
 
-using std::endl;
-using std::map;
-using std::list;
+using namespace std;
 using namespace libdap;
 using namespace ngap;
+
+// CMR caching
+unsigned int NgapRequestHandler::d_cmr_cache_threshold = 100;
+unsigned int NgapRequestHandler::d_cmr_cache_space = 20;
+
+unordered_map<string, string> NgapRequestHandler::d_cmr_cache;
+queue<string> NgapRequestHandler::d_cmr_cache_entries;
+bool NgapRequestHandler::d_use_cmr_cache = false;
+
+// DMR++ caching
+unsigned int NgapRequestHandler::d_dmrpp_cache_threshold = 100;
+unsigned int NgapRequestHandler::d_dmrpp_cache_space = 20;
+
+unordered_map<string, string> NgapRequestHandler::d_dmrpp_cache;
+queue<string> NgapRequestHandler::d_dmrpp_cache_entries;
+bool NgapRequestHandler::d_use_dmrpp_cache = false;
 
 NgapRequestHandler::NgapRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
     add_method(VERS_RESPONSE, NgapRequestHandler::ngap_build_vers);
     add_method(HELP_RESPONSE, NgapRequestHandler::ngap_build_help);
-}
 
-NgapRequestHandler::~NgapRequestHandler()
-{
+    // Read BES keys to determine if the caches should be used. jhrg 9/22/23
+    NgapRequestHandler::d_use_cmr_cache 
+        = TheBESKeys::TheKeys()->read_bool_key(USE_CMR_CACHE, NgapRequestHandler::d_use_cmr_cache);
+    if (NgapRequestHandler::d_use_cmr_cache) {
+        NgapRequestHandler::d_cmr_cache_threshold
+                = TheBESKeys::TheKeys()->read_int_key(CMR_CACHE_THRESHOLD, NgapRequestHandler::d_cmr_cache_threshold);
+        NgapRequestHandler::d_cmr_cache_space
+                = TheBESKeys::TheKeys()->read_int_key(CMR_CACHE_SPACE, NgapRequestHandler::d_cmr_cache_space);
+    }
+
+    NgapRequestHandler::d_use_dmrpp_cache
+            = TheBESKeys::TheKeys()->read_bool_key(USE_DMRPP_CACHE, NgapRequestHandler::d_use_dmrpp_cache);
+    if (NgapRequestHandler::d_use_dmrpp_cache) {
+        NgapRequestHandler::d_dmrpp_cache_threshold
+                = TheBESKeys::TheKeys()->read_int_key(DMRPP_CACHE_THRESHOLD,  NgapRequestHandler::d_dmrpp_cache_threshold);
+        NgapRequestHandler::d_dmrpp_cache_space
+                = TheBESKeys::TheKeys()->read_int_key(DMRPP_CACHE_SPACE, NgapRequestHandler::d_dmrpp_cache_space);
+    }
 }
 
 bool NgapRequestHandler::ngap_build_vers(BESDataHandlerInterface &dhi)
 {
-    bool ret = true;
-    BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
+    auto info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESVersionInfo instance");
-#if 0
-    info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
-#endif
+
     info->add_module(MODULE_NAME, MODULE_VERSION);
-    return ret;
+    return true;
 }
 
 bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi)
 {
-    bool ret = true;
-    BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
+    auto info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESInfo instance");
 
     // This is an example. If you had a help file you could load it like
@@ -85,21 +111,17 @@ bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi)
     map<string, string> attrs;
     attrs["name"] = MODULE_NAME;
     attrs["version"] = MODULE_VERSION;
-#if 0
-    attrs["name"] = PACKAGE_NAME;
-    attrs["version"] = PACKAGE_VERSION;
-#endif
+
     list<string> services;
     BESServiceRegistry::TheRegistry()->services_handled(NGAP_NAME, services);
-    if (services.size() > 0) {
+    if (!services.empty()) {
         string handles = BESUtil::implode(services, ',');
         attrs["handles"] = handles;
     }
     info->begin_tag("module", &attrs);
-    //info->add_data_from_file( "Ngap.Help", "Ngap Help" ) ;
     info->end_tag("module");
 
-    return ret;
+    return true;
 }
 
 void NgapRequestHandler::dump(ostream &strm) const

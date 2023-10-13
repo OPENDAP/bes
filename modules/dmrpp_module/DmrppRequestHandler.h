@@ -56,15 +56,13 @@ private:
     // jhrg 11/12/21
     static std::unique_ptr<ObjMemCache> das_cache;
     static std::unique_ptr<ObjMemCache> dds_cache;
-    static std::unique_ptr<ObjMemCache> dmr_cache;
 
     static bool d_use_object_cache;
     static unsigned int d_object_cache_entries;
     static double d_object_cache_purge_level;
 
 
-    static void get_dmrpp_from_container_or_cache(BESContainer *container, const std::string &request_xml_base,
-                                                  libdap::DMR *dmr);
+    static void get_dmrpp_from_container_or_cache(BESContainer *container, libdap::DMR *dmr);
     template <class T> static void get_dds_from_dmr_or_cache(BESContainer *container, T *bdds);
 
     // Allocate a new DMZ for each request? This should work, but may result in more
@@ -73,12 +71,11 @@ private:
     // jhrg 11/3/21
     static std::shared_ptr<DMZ> dmz;
 
-
 public:
 	explicit DmrppRequestHandler(const std::string &name);
 	~DmrppRequestHandler() override;
 
-    static CurlHandlePool *curl_handle_pool;
+    static std::unique_ptr<CurlHandlePool> curl_handle_pool;
 
     static bool d_use_transfer_threads;
     static unsigned int d_max_transfer_threads;

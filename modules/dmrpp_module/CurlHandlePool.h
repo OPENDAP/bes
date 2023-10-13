@@ -45,12 +45,13 @@ class Chunk;
  * for serial data access or parallel (round robin) data transfers.
  */
 class dmrpp_easy_handle {
-    bool d_in_use;      ///< Is this easy_handle in use?
+    bool d_in_use = false;      ///< Is this easy_handle in use?
     std::shared_ptr<http::url> d_url;  ///< The libcurl handle reads from this URL.
-    Chunk *d_chunk;     ///< This easy_handle reads the data for \arg chunk.
+    Chunk *d_chunk = nullptr;     ///< This easy_handle reads the data for \arg chunk.
     char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
-    CURL *d_handle;     ///< The libcurl handle object.
-    curl_slist *d_request_headers; ///< Holds the list of authorization headers, if needed.
+
+    CURL *d_handle = nullptr;     ///< The libcurl handle object.
+    curl_slist *d_request_headers = nullptr; ///< Holds the list of authorization headers, if needed.
 
     friend class CurlHandlePool;
 
@@ -64,7 +65,7 @@ public:
 
 /**
  * Get a CURL easy handle, assign a URL and other values, use the handler, return
- * it to the pool. This class helps take advantage of libculr's built-in reuse
+ * it to the pool. This class helps take advantage of libcurl's built-in reuse
  * capabilities (connection keep-alive, DNS pooling, etc.).
  *
  * @note It may be that TCP Keep Alive is not supported in libcurl versions
@@ -76,45 +77,80 @@ public:
  */
 class CurlHandlePool {
 private:
-    unsigned int d_max_easy_handles;
-    std::vector<dmrpp_easy_handle *> d_easy_handles;
-    std::recursive_mutex d_get_easy_handle_mutex;
+    std::string d_cookies_filename;
+    std::string d_hyrax_user_agent;
+    unsigned long d_max_redirects = 3;
+    std::string d_netrc_file;
 
-    friend class Lock;
+    CURLSH *d_share = nullptr;
+
+    static std::recursive_mutex d_share_mutex;
+    
+    static std::recursive_mutex d_cookie_mutex;
+    static std::recursive_mutex d_dns_mutex;
+    static std::recursive_mutex d_ssl_session_mutex;
+    static std::recursive_mutex d_connect_mutex;
+
+    static std::recursive_mutex d_mutex;    // Use this for the default case.
+
+    static void lock_cb(CURL */*handle*/, curl_lock_data data, curl_lock_access /*access*/, void */*userptr*/) {
+        switch (data) {
+            case CURL_LOCK_DATA_SHARE: // CURL_LOCK_DATA_SHARE is used internally
+                d_share_mutex.lock();
+                break;
+
+            case CURL_LOCK_DATA_COOKIE:
+                d_cookie_mutex.lock();
+                break;
+
+            case CURL_LOCK_DATA_DNS:
+                d_dns_mutex.lock();
+                break;
+            case CURL_LOCK_DATA_SSL_SESSION:
+                d_ssl_session_mutex.lock();
+                break;
+            case CURL_LOCK_DATA_CONNECT:
+                d_connect_mutex.lock();
+                break;
+            default:
+                d_mutex.lock();
+                break;
+        }
+    }
+
+    static void unlock_cb(CURL */*handle*/, curl_lock_data data, void * /*userptr*/) {
+        switch (data) {
+            case CURL_LOCK_DATA_SHARE: // CURL_LOCK_DATA_SHARE is used internally
+                d_share_mutex.unlock();
+                break;
+
+            case CURL_LOCK_DATA_COOKIE:
+                d_cookie_mutex.unlock();
+                break;
+
+            case CURL_LOCK_DATA_DNS:
+                d_dns_mutex.unlock();
+                break;
+            case CURL_LOCK_DATA_SSL_SESSION:
+                d_ssl_session_mutex.unlock();
+                break;
+            case CURL_LOCK_DATA_CONNECT:
+                d_connect_mutex.unlock();
+                break;
+            default:
+                d_mutex.unlock();
+                break;
+        }
+    }
 
 public:
-    CurlHandlePool() = delete;
-    explicit CurlHandlePool(unsigned int max_handles);
+    CurlHandlePool() = default;
+    ~CurlHandlePool();
 
-    ~CurlHandlePool()
-    {
-        for (auto & d_easy_handle : d_easy_handles) {
-            delete d_easy_handle;
-        }
-    }
-
-    /// @brief Get the number of handles in the pool.
-    unsigned int get_max_handles() const
-    { return d_max_easy_handles; }
-
-    unsigned int get_handles_available() const
-    {
-        unsigned int n = 0;
-        for (auto d_easy_handle : d_easy_handles) {
-            if (!d_easy_handle->d_in_use) {
-                n++;
-            }
-        }
-        return n;
-    }
-
+    void initialize();
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
-    void release_handle(dmrpp_easy_handle *h, bool replace=false);
-
-    void release_handle(const Chunk *chunk);
-
-    void release_all_handles();
+    void release_handle(dmrpp_easy_handle *h);
 };
 
 } // namespace dmrpp

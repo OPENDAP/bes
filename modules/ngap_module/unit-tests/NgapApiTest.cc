@@ -246,9 +246,9 @@ public:
 
 
     /**
-     * This test exercises the new (12/2020) 2 component restified path model with the optional shirtname and version
+     * This test exercises the new (12/2020) 2 component restified path model with the optional shortname and version
      * /collections/<collection_concept_id>[/short_name.version]/granules/<granule_ur>
-     * Exsmple:
+     * Example:
      * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
      */
     void resty_path_to_cmr_query_test_03() {
