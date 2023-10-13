@@ -49,7 +49,6 @@
 #define prolog std::string("NgapBuildDmrppContainer::").append(__func__).append("() - ")
 
 using namespace std;
-using namespace bes;
 using namespace ngap;
 
 namespace builddmrpp {
@@ -80,8 +79,7 @@ void NgapBuildDmrppContainer::initialize()
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
-    ngap::NgapApi ngap_api;
-    string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
+    string data_access_url = ngap::NgapApi::convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
 
     set_real_name(data_access_url);
 
