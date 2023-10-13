@@ -367,7 +367,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
                 // Because a member of RelatedUrls may contain a URL of Type GET DATA with the s3:// protocol
                 // as well as a Type GET DATA URL which uses https:// or http://
                 string candidate_url = r_url.GetString();
-                if (candidate_url.compare(0, 8, "https://") || candidate_url.compare(0, 7, "http://")) {
+                if (candidate_url.compare(0, 8, "https://") == 0 || candidate_url.compare(0, 7, "http://") == 0) {
                     data_access_url = candidate_url;
                 }
             }
@@ -428,7 +428,6 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
     return data_access_url;
 }
 
-
 bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
     bool is_expired;
     time_t now;
@@ -449,25 +448,22 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
         //
         // By default we'll use the time we made the URL object, ingest_time
         time_t start_time = ingest_time;
-        // But if there's an AWS Date we'll parse that and compute the time from that.
+        // But if there's an AWS Date we'll parse that and compute the time
         string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
         if (!aws_date.empty()) {
-#if 0
             string date = aws_date; // 20200624T175046Z
-#endif
-            string year = aws_date.substr(0, 4);
-            string month = aws_date.substr(4, 2);
-            string day = aws_date.substr(6, 2);
-            string hour = aws_date.substr(9, 2);
-            string minute = aws_date.substr(11, 2);
-            string second = aws_date.substr(13, 2);
+            string year = date.substr(0, 4);
+            string month = date.substr(4, 2);
+            string day = date.substr(6, 2);
+            string hour = date.substr(9, 2);
+            string minute = date.substr(11, 2);
+            string second = date.substr(13, 2);
 
-            BESDEBUG(MODULE, prolog << "aws_date: " << aws_date <<
+            BESDEBUG(MODULE, prolog << "date: " << date <<
                                     " year: " << year << " month: " << month << " day: " << day <<
                                     " hour: " << hour << " minute: " << minute << " second: " << second << endl);
 
-            struct tm *ti = nullptr;
-            struct tm *ti = gmtime_r(&now, ti);
+            struct tm *ti = gmtime(&now);
             ti->tm_year = stoll(year) - 1900;
             ti->tm_mon = stoll(month) - 1;
             ti->tm_mday = stoll(day);
