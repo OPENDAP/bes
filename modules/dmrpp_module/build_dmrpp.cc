@@ -140,6 +140,8 @@ int main(int argc, char *argv[]) {
 
     try {
 
+        cerr << "TESTING QC" << endl;
+
         // Check to see if the file is hdf5 compliant
         qc_input_file(h5_file_name);
 

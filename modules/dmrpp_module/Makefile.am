@@ -58,7 +58,7 @@ libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIB
     $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types \
     -Lwriter -ldmrpp_writer
 
-bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
+bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf check_input_file
 
 BUILT_SOURCES = h5common.cc h5common.h
 
@@ -90,6 +90,10 @@ merge_dmrpp_SOURCES = merge_dmrpp.cc
 reduce_mdf_CPPFLAGS = $(AM_CPPFLAGS)
 reduce_mdf_SOURCES = reduce_mdf.cc
 reduce_mdf_LDADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
+
+# check_input_file config
+check_input_file_CPPFLAGS = $(AM_CPPFLAGS)
+check_input_file_SOURCES = check_input_file.cc build_dmrpp_util.cc
 
 EXTRA_PROGRAMS =
 

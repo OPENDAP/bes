@@ -827,6 +827,9 @@ function mk_dmrpp() {
 
     local full_data_path="${BES_DATA_ROOT}/${datafile}"
 
+    # Test the file to see if it is a supported format
+    check_input_file ${datafile}
+
     if test -n "${VERBOSE}"; then
         echo "# BEGIN mk_dmrpp() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "#" >&2
