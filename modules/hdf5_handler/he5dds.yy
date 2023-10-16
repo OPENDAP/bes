@@ -3,9 +3,9 @@
 
 // Authors: 
 // Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-// MuQun Yang <myang6@hdfgroup.org> 
+// Kent Yang <myang6@hdfgroup.org> 
 //
-// Copyright (c) 2011-2017 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1800 South Oak Street, Champaign, 
-// IL 61821
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign IL 61820
 
 %code requires {
 

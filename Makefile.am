@@ -120,3 +120,9 @@ rpm: dist
 all-static-rpm: dist
 	cp @PACKAGE@-@VERSION@.tar.gz ~/rpmbuild/SOURCES
 	rpmbuild -bb $(RPM_OPTIONS) bes.spec.all_static
+
+.PHONY: clion-source-discovery
+clion-source-discovery:
+	$(MAKE) $(MFLAGS)
+	$(MAKE) $(MFLAGS) check
+

@@ -25,6 +25,7 @@
 #include "HDFFloat64.h"
 #include "HDFStr.h"
 #include "HDF4RequestHandler.h"
+
 //
 using namespace std;
 using namespace libdap;
@@ -33,31 +34,6 @@ using namespace libdap;
 #define ERR_LOC2(x) ERR_LOC1(x)
 #define ERR_LOC __FILE__ " : " ERR_LOC2(__LINE__)
 
-// Check the BES key. 
-// This function will check a BES key specified at the file h4.conf.in.
-// If the key's value is either true or yes. The handler claims to find
-// a key and will do some operations. Otherwise, will do different operations.
-// For example, One may find a line H4.EnableCF=true at h4.conf.in.
-// That means, the HDF4 handler will handle the HDF4 files by following CF conventions.
-#if 0
-bool 
-HDFCFUtil::check_beskeys(const string& key) {
-
-    bool found = false;
-    string doset ="";
-    const string dosettrue ="true";
-    const string dosetyes = "yes";
-
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( true == found ) {
-        doset = BESUtil::lowercase( doset ) ;
-        if( dosettrue == doset  || dosetyes == doset )
-            return true;
-    }
-    return false;
-
-}
-#endif
 
 /**
  * Copied from stack overflow because valgrind finds the code
@@ -83,18 +59,6 @@ HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &nam
 {
     names.clear();
     split_helper(names, string(s, len), sep);
-#if 0
-    // Replaced with the above since valgrind reports errors
-    // with this code. jhrg 6/22/15
-    for (int i = 0, j = 0; j <= len; ++j) {
-        if ((j == len && len) || s[j] == sep) {
-            string elem(s + i, j - i);
-            names.push_back(elem);
-            i = j + 1;
-            continue;
-        }
-    }
-#endif
 }
 
 // Assume sz is Null terminated string.
@@ -108,38 +72,8 @@ HDFCFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
     DBG(std::cerr << "HDFCFUtil::Split: sz: <" << sz << ">, sep: <" << sep << ">" << std::endl);
 
     split_helper(names, string(sz), sep);
-#if 0
-    // Replaced with a direct call to the new helper code.
-    // jhrg 6/22/15
-    Split(sz, (int)strlen(sz), sep, names);
-#endif
 }
 
-#if 0
-// From a string separated by a separator to a list of string,
-// for example, split "ab,c" to {"ab","c"}
-void 
-HDFCFUtil::Split(const char *s, int len, char sep, std::vector<std::string> &names)
-{
-    names.clear();
-    for (int i = 0, j = 0; j <= len; ++j) {
-        if ((j == len && len) || s[j] == sep) {
-            string elem(s + i, j - i);
-            names.push_back(elem);
-            i = j + 1;
-            continue;
-        }
-    }
-}
-
-// Assume sz is Null terminated string.
-void 
-HDFCFUtil::Split(const char *sz, char sep, std::vector<std::string> &names)
-{
-    Split(sz, (int)strlen(sz), sep, names);
-}
-
-#endif
 
 // This is a safer way to insert and update a c++ map value.
 // Otherwise, the local testsuite at The HDF Group will fail for HDF-EOS2 data
@@ -307,10 +241,6 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
     case DFNT_UCHAR:
     case DFNT_CHAR:
         {
-#if 0
-            // Use the customized escattr function. Don't escape \n,\t and \r. KY 2013-10-14
-            return escattr(static_cast<const char*>(vals));
-#endif
             string tmp_str = static_cast<const char*>(vals);
             return tmp_str;
         }
@@ -454,7 +384,6 @@ short
 HDFCFUtil::obtain_type_size(int32 type)
 {
 
-    // .
     switch (type) {
 
     case DFNT_CHAR:
@@ -510,12 +439,6 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
                                 const int32 * step)
 {
 
-#if 0
-    //  float64 templatlon[majordim][minordim];
-    // --std=c++11 on OSX causes 'typeof' to fail. This is a GNU gcc-specific
-    // keyword. jhrg 3/28/19
-    T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
-#endif
     T (*templatlonptr)[majordim][minordim] = (T *) latlon;
     int i;
     int j; 
@@ -597,13 +520,6 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
                         stringstream convert_str;
                         convert_str << fillvalue_int;
-#if 0
-                        if(fillvalue_int <0 || fillvalue_int >255)
-                            throw InternalErr(__FILE__,__LINE__,
-                            "If the fillvalue is a char type, the value must be between 0 and 255.");
-#endif
-
-
                         at->append_attr("_FillValue",var_type,convert_str.str());               
                     }
                 }
@@ -817,12 +733,6 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
         tempdimmap.inc    = origdimmap->getIncrement();
         dimmaps.push_back(tempdimmap);
     }
-
-#if 0
-    string check_modis_geofile_key ="H4.EnableCheckMODISGeoFile";
-    bool check_geofile_key = false;
-    check_geofile_key = HDFCFUtil::check_beskeys(check_modis_geofile_key);
-#endif
 
     // Only when there is dimension map, we need to consider the additional MODIS geolocation files.
     // Will check if the check modis_geo_location file key is turned on.
@@ -1324,11 +1234,6 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                         vector<string> *avalue = at->get_attr_vector(it);
                         for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
                             temp_var_val = (float)(atof((*ait).c_str())); 
-#if 0
-                        // Check if this works in the future.
-                        for (const auto &avalue_ele:*avalue) {
-                            temp_var_val = (float)(atof((avalue_ele).c_str())); 
-#endif
                             if (temp_var_val > scale_max) 
                                 scale_max = temp_var_val;
                             if (temp_var_val < scale_min)
@@ -1555,10 +1460,6 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
     if (found != found_from_end)
         throw InternalErr(__FILE__,__LINE__,"There should be only one separator.");
                         
-#if 0
-    //istringstream(valid_range_value.substr(0,found))>>orig_valid_min;
-    //istringstream(valid_range_value.substr(found+1))>>orig_valid_max;
-#endif
 
     vip_orig_valid_min = (short) (atoi((valid_range_value.substr(0,found)).c_str()));
     vip_orig_valid_max = (short) (atoi((valid_range_value.substr(found+1)).c_str()));
@@ -2375,12 +2276,9 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                         at->append_attr("references","String",references);
 
                     }
-
                 }
             }
-
         }
-
     }
 
     // TRMM level 2 swath
@@ -2395,10 +2293,8 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
         bool t2b31_flag = ((base_filename.find("2B31")!=string::npos)?true:false);
         bool t2a21_flag = ((base_filename.find("2A21")!=string::npos)?true:false);
         bool t2a12_flag = ((base_filename.find("2A12")!=string::npos)?true:false);
+
         // 2A23 is temporarily not supported perhaps due to special fill values
-#if 0
-        //bool t2a23_flag = ((base_filename.find("2A23")!=string::npos)?true:false);
-#endif
         bool t2a25_flag = ((base_filename.find("2A25")!=string::npos)?true:false);
         bool t1c21_flag = ((base_filename.find("1C21")!=string::npos)?true:false);
         bool t1b21_flag = ((base_filename.find("1B21")!=string::npos)?true:false);
@@ -2479,11 +2375,9 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                         at->append_attr("_FillValue","Int32","-99");
 
                     }
-
                 }
             }
 
- 
             // for all 2A12,2A21 and 2B31
             // Add fillvalues for float32 and int32.
             for (const auto & fd:spsds){
@@ -2500,7 +2394,6 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
 
             for (const auto &fd:spsds){
 
-         
                 if(fd->getFieldType() == 0 && fd->getType()==DFNT_INT16) {
 
                     AttrTable *at = das.get_table(fd->getNewName());
@@ -2512,7 +2405,6 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
 
                 }
             }
-
         }
 
         // group 2: 2A21 and 2A25.
@@ -2588,8 +2480,6 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                                 at->append_attr("scale_factor", scale_factor_type,print_rep3);
     
                             }
-    
-    
                         }
 
                         if(2 == handle_scale)
@@ -2685,7 +2575,6 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                         at = das.add_table(fd->getNewName(), new AttrTable);
                     AttrTable::Attr_iter it = at->attr_begin();
 
-
                     while (it!=at->attr_end()) {
 
                         if(at->get_name(it)=="scale_factor")
@@ -2710,7 +2599,6 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                                 at->del_attr("scale_factor");
                                 string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
                                 at->append_attr("scale_factor", scale_factor_type,print_rep);
-
                             }
 
                             break;
@@ -2778,15 +2666,9 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(const HDFSP::File *f, DAS
 #endif
 
     bool merra_is_eos2 = false;
-    if(0== (base_filename.compare(0,5,"MERRA"))) {
+    if (0== (base_filename.compare(0,5,"MERRA"))) {
 
-#if 0
-         for (vector < HDFSP::Attribute * >::const_iterator i = 
-            f->getSD()->getAttributes ().begin ();
-            i != f->getSD()->getAttributes ().end (); ++i) {
-#endif
         for (const auto & fd:f->getSD()->getAttributes()) {
-
             // Check if this MERRA file is an HDF-EOS2 or not.
             if((fd->getName().compare(0, 14, "StructMetadata" )== 0) ||
                 (fd->getName().compare(0, 14, "structmetadata" )== 0)) {
@@ -2812,9 +2694,7 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(const HDFSP::File *f, DAS
             at->append_attr("fullpath","String",fd->getSpecFullPath());
 
         }
-
     }
-
 }
 
 
@@ -2887,9 +2767,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
 
                         string tempstring2(va->getValue().begin(),va->getValue().end());
                         string tempfinalstr= string(tempstring2.c_str());
-#if 0
-                        at->append_attr(VDattrprefix+va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
-#endif
                         at->append_attr(VDattrprefix+va->getNewName(), "String" , tempfinalstr);
                     }
                     else {
@@ -2924,9 +2801,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
 
                                     string tempstring2(va->getValue().begin(),va->getValue().end());
                                     string tempfinalstr= string(tempstring2.c_str());
-#if 0
-                                    at_v->append_attr(va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
-#endif
                                     at_v->append_attr(va->getNewName(), "String" , tempfinalstr);
                                 }
                                 else {
@@ -2952,9 +2826,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                             string tempfinalstr;
                             tempfinalstr.resize(vdf->getValue().size());
                             copy(vdf->getValue().begin(),vdf->getValue().end(),tempfinalstr.begin());
-#if 0
-                            at->append_attr(VDfieldprefix+vdf->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
-#endif
                             at->append_attr(VDfieldprefix+vdf->getNewName(), "String" , tempfinalstr);
                         }
                         else {
@@ -2974,9 +2845,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                             if(vdf->getType()==DFNT_UCHAR || vdf->getType() == DFNT_CHAR){
                                 string tempstring2(vdf->getValue().begin(),vdf->getValue().end());
                                 auto tempfinalstr= string(tempstring2.c_str());
-#if 0
-                                at->append_attr(VDfieldprefix+vdf->getNewName(),"String",HDFCFUtil::escattr(tempfinalstr));
-#endif
                                 at->append_attr(VDfieldprefix+vdf->getNewName(),"String",tempfinalstr);
                             }
                             else {
@@ -2997,9 +2865,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                                     string tempstring2(tempit,tempit+vdf->getFieldOrder());
                                     auto tempfinalstr= string(tempstring2.c_str());
                                     string tempoutstring = "'"+tempfinalstr+"'";
-#if 0
-                                    at->append_attr(VDfieldprefix+vdf->getNewName(),"String",HDFCFUtil::escattr(tempoutstring));
-#endif
                                     at->append_attr(VDfieldprefix+vdf->getNewName(),"String",tempoutstring);
                                 }
                             }
@@ -3025,9 +2890,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
 
                                 string tempstring2(va->getValue().begin(),va->getValue().end());
                                 auto tempfinalstr= string(tempstring2.c_str());
-#if 0
-                                at->append_attr(VDfieldattrprefix+va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
-#endif
                                 at->append_attr(VDfieldattrprefix+va->getNewName(), "String" , tempfinalstr);
                             }
                             else {
@@ -3309,9 +3171,6 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                     string tempstring(vdata_value.begin(),vdata_value.end());
                     // Remove the nullptr term
                     auto tempstring2 = string(tempstring.c_str());
-#if 0
-                    at->append_attr(vdataname_cfstr,"String",HDFCFUtil::escattr(tempstring2));
-#endif
                     at->append_attr(vdataname_cfstr,"String",tempstring2);
                 }
                 else {
@@ -4080,26 +3939,3 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
 }
 
 
-#if 0
-void HDFCFUtil::close_fileid(int32 sdfd, int32 fileid,int32 gridfd, int32 swathfd) {
-
-    if(sdfd != -1)
-        SDend(sdfd);
-    if(fileid != -1)
-        Hclose(fileid);
-    if(gridfd != -1)
-        GDclose(gridfd);
-    if(swathfd != -1)
-        SWclose(swathfd);
-
-}
-
-void HDFCFUtil::reset_fileid(int& sdfd, int& fileid,int& gridfd, int& swathfd) {
-
-    sdfd   = -1;
-    fileid = -1;
-    gridfd = -1;
-    swathfd = -1;
-
-}
-#endif

@@ -75,9 +75,6 @@ namespace ngap {
 
 class NgapApiTest: public CppUnit::TestFixture {
 private:
-
-    // char curl_error_buf[CURL_ERROR_SIZE];
-
     void show_file(string filename)
     {
         ifstream t(filename.c_str());
@@ -118,17 +115,13 @@ private:
 
 public:
     // Called once before everything gets tested
-    NgapApiTest()
-    {
-    }
+    NgapApiTest() = default;
 
     // Called at the end of the test
-    ~NgapApiTest()
-    {
-    }
+    ~NgapApiTest() = default;
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
         if(debug) cerr << endl;
         if(Debug) cerr << "setUp() - BEGIN" << endl;
@@ -146,11 +139,6 @@ public:
         if(Debug) cerr << "setUp() - END" << endl;
     }
 
-    // Called after each test
-    void tearDown()
-    {
-    }
-
     void show_vector(vector<string> v){
         cerr << "show_vector(): Found " << v.size() << " elements." << endl;
         // vector<string>::iterator it = v.begin();
@@ -158,7 +146,6 @@ public:
             cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
         }
     }
-
 
     void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
         if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
@@ -175,14 +162,12 @@ public:
 
     }
 
-
     /**
      * This test exercises the legacy 3 component restified path model
      * /providers/<provider_id>/collections/<entry_title>/granules/<granule_ur>
      */
     void resty_path_to_cmr_query_test_01() {
         if(debug) cerr << prolog << "BEGIN" << endl;
-        NgapApi ngapi;
 
         string resty_path("providers/POCLOUD"
                           "/collections/Sentinel-6A MF/Jason-CS L2 Advanced Microwave Radiometer (AMR-C) NRT Geophysical Parameters"
@@ -197,7 +182,7 @@ public:
         );
         try {
             string cmr_query_url;
-            cmr_query_url = ngapi.build_cmr_query_url(resty_path);
+            cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
             if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
             if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
@@ -210,7 +195,6 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
-
     /**
      * This test exercises the new (12/2020) 2 component restified path model
      * /collections/<collection_concept_id>/granules/<granule_ur>
@@ -219,7 +203,6 @@ public:
      */
     void resty_path_to_cmr_query_test_02() {
         if(debug) cerr << prolog << "BEGIN" << endl;
-        NgapApi ngapi;
 
         string resty_path("/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
         if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
@@ -231,7 +214,7 @@ public:
         );
         try {
             string cmr_query_url;
-            cmr_query_url = ngapi.build_cmr_query_url(resty_path);
+            cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
             if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
             if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
@@ -241,19 +224,16 @@ public:
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
         }
-
     }
 
-
     /**
-     * This test exercises the new (12/2020) 2 component restified path model with the optional shirtname and version
+     * This test exercises the new (12/2020) 2 component restified path model with the optional shortname and version
      * /collections/<collection_concept_id>[/short_name.version]/granules/<granule_ur>
-     * Exsmple:
+     * Example:
      * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
      */
     void resty_path_to_cmr_query_test_03() {
         if(debug) cerr << prolog << "BEGIN" << endl;
-        NgapApi ngapi;
 
         string resty_path("/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
         if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
@@ -265,7 +245,7 @@ public:
         );
         try {
             string cmr_query_url;
-            cmr_query_url = ngapi.build_cmr_query_url(resty_path);
+            cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
             if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
             if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
@@ -275,13 +255,10 @@ public:
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
         }
-
     }
-
 
     void cmr_access_entry_title_test() {
         if(debug) cerr << prolog << "BEGIN" << endl;
-        NgapApi ngapi;
         string provider_name;
         string collection_name;
         string granule_name;
@@ -295,7 +272,7 @@ public:
         if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
 
         try {
-            data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
+            data_access_url = NgapApi::convert_ngap_resty_path_to_data_access_url(resty_path);
             if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
         }
         catch(BESError &e){
@@ -310,7 +287,6 @@ public:
 
     void cmr_access_collection_concept_id_test() {
         if(debug) cerr << prolog << "BEGIN" << endl;
-        NgapApi ngapi;
         string provider_name;
         string collection_concept_id;
         string granule_name;
@@ -324,7 +300,7 @@ public:
         resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
         if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
         try {
-            data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
+            data_access_url = NgapApi::convert_ngap_resty_path_to_data_access_url(resty_path);
             if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
         }
         catch(BESError &e){
@@ -335,7 +311,6 @@ public:
         compare_results(granule_name, data_access_url, expected);
         if(debug) cerr << prolog << "END" << endl;
     }
-
 
     void signed_url_is_expired_test(){
         if(debug) cerr << prolog << "BEGIN" << endl;
@@ -367,7 +342,7 @@ public:
 
         signed_url.set_ingest_time(then);
         is_expired = NgapApi::signed_url_is_expired(signed_url);
-        CPPUNIT_ASSERT(is_expired == true );
+        CPPUNIT_ASSERT(is_expired == true);
         if(debug) cerr << prolog << "END" << endl;
 
     }

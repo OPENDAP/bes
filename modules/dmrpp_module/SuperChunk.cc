@@ -732,7 +732,7 @@ void SuperChunk::retrieve_data_dio() {
  * @param target_array The array into which to write the data.
  */
 void SuperChunk::process_child_chunks() {
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
     retrieve_data();
 
     vector<unsigned long long> constrained_array_shape = d_parent_array->get_shape(true);
@@ -744,7 +744,7 @@ void SuperChunk::process_child_chunks() {
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog+"Serial Chunk Processing. id: " + d_id);
 #endif
-        for(const auto &chunk :get_chunks()){
+        for(const auto &chunk: get_chunks()){
             process_one_chunk(chunk,d_parent_array,constrained_array_shape);
         }
     }
@@ -756,7 +756,7 @@ void SuperChunk::process_child_chunks() {
         sw.start(timer_name.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for(const auto &chunk:get_chunks())
+        for(const auto &chunk: get_chunks())
             chunks_to_process.push(chunk);
 
         process_chunks_concurrent(d_id, chunks_to_process, d_parent_array, constrained_array_shape);
@@ -771,7 +771,7 @@ void SuperChunk::process_child_chunks() {
  */
 void SuperChunk::process_child_chunks_unconstrained() {
 
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
     retrieve_data();
 
     // The size in element of each of the array's dimensions
@@ -779,12 +779,12 @@ void SuperChunk::process_child_chunks_unconstrained() {
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
 
-    if(!DmrppRequestHandler::d_use_compute_threads){
+    if (!DmrppRequestHandler::d_use_compute_threads) {
 #if DMRPP_ENABLE_THREAD_TIMERS
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
 #endif
-        for(auto &chunk :get_chunks()){
+        for(auto &chunk: get_chunks()){
             process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape);
         }
     }
@@ -796,12 +796,11 @@ void SuperChunk::process_child_chunks_unconstrained() {
         sw.start(timer_name.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for (auto &chunk:get_chunks())
+        for (auto &chunk: get_chunks())
             chunks_to_process.push(chunk);
 
-        process_chunks_unconstrained_concurrent(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
+        process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
     }
-
 }
 
 

@@ -94,7 +94,7 @@ AC_ARG_ENABLE([asan],
 
 AM_CONDITIONAL([USE_ASAN], [test "x$enable_asan" = "xyes"])
 AM_COND_IF([USE_ASAN],
-    [cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"
+    [cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer -fno-common"
         AC_MSG_NOTICE([Address Sanitizer (ASAN) is enabled.])],
     [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])])
 

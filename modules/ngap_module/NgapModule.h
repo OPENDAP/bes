@@ -36,21 +36,15 @@
 
 namespace ngap {
 
-    class NgapModule: public BESAbstractModule {
-    public:
-        NgapModule()
-        {
-        }
+class NgapModule : public BESAbstractModule {
+public:
+    NgapModule() = default;
+    ~NgapModule() override = default;
 
-        virtual ~NgapModule()
-        {
-        }
-
-        virtual void initialize(const std::string &modname);
-        virtual void terminate(const std::string &modname);
-
-        virtual void dump(std::ostream &strm) const;
-    };
+    void initialize(const std::string &modname) override;
+    void terminate(const std::string &modname) override;
+    void dump(std::ostream &strm) const override;
+};
 
 } //namespace ngap
 

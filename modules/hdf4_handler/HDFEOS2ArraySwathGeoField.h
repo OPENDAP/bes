@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // Retrieves the latitude and longitude of  the HDF-EOS2 Swath without using dimension maps
 
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 // For the swath without using dimension maps, for most cases, the retrieving of latitude and 
 // longitude is the same as retrieving other fields. Some MODIS latitude and longitude need

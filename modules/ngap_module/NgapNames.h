@@ -29,36 +29,39 @@
 #ifndef E_NgapNames_H
 #define E_NgapNames_H 1
 
-#define NGAP_NAME "ngap"
+// This could be a 'global' debug key. jhrg 9/20/23
+constexpr static auto const NGAP_CACHE = "cache";
 
-
-#define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
-#define MISSING_DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"
-#define NGAP_INJECT_DATA_URL_KEY "NGAP.inject_data_urls"
-#define NGAP_CMR_HOSTNAME_KEY "NGAP.cmr_host_url"
-#define NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY "NGAP.cmr_search_endpoint_path"
-
+constexpr static auto const NGAP_NAME = "ngap";
 #define MODULE NGAP_NAME
 
+constexpr static auto const DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_DATA_ACCESS_URL";
+constexpr static auto const MISSING_DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL";
+constexpr static auto const NGAP_INJECT_DATA_URL_KEY = "NGAP.inject_data_urls";
+constexpr static auto const NGAP_CMR_HOSTNAME_KEY = "NGAP.cmr_host_url";
+constexpr static auto const NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY = "NGAP.cmr_search_endpoint_path";
 
-#define NGAP_PROVIDERS_KEY "/providers/"
-#define NGAP_COLLECTIONS_KEY "/collections/"
-#define NGAP_CONCEPTS_KEY "/concepts/"
-#define NGAP_GRANULES_KEY "/granules/"
+constexpr static auto const NGAP_PROVIDERS_KEY = "/providers/";
+constexpr static auto const NGAP_COLLECTIONS_KEY = "/collections/";
+constexpr static auto const NGAP_CONCEPTS_KEY = "/concepts/";
+constexpr static auto const NGAP_GRANULES_KEY = "/granules/";
 
-#define DEFAULT_CMR_ENDPOINT_URL "https://cmr.earthdata.nasa.gov"
-#define DEFAULT_CMR_SEARCH_ENDPOINT_PATH "/search/granules.umm_json_v1_4"
+constexpr static auto const DEFAULT_CMR_ENDPOINT_URL = "https://cmr.earthdata.nasa.gov";
+constexpr static auto const DEFAULT_CMR_SEARCH_ENDPOINT_PATH = "/search/granules.umm_json_v1_4";
+constexpr static auto const CMR_URL_TYPE_GET_DATA = "GET DATA";
+
+constexpr static auto const USE_CMR_CACHE = "NGAP.UseCMRCache";
+constexpr static auto const CMR_CACHE_THRESHOLD = "NGAP.CMRCacheThreshold";
+constexpr static auto const CMR_CACHE_SPACE = "NGAP.CMRCacheSpace";
+
+constexpr static auto const USE_DMRPP_CACHE = "NGAP.UseDMRppCache";
+constexpr static auto const DMRPP_CACHE_THRESHOLD = "NGAP.DMRppCacheThreshold";
+constexpr static auto const DMRPP_CACHE_SPACE = "NGAP.DMRppCacheSpace";
+
+// These are used only in NgapApiTest.cc. jhrg 9/28/23
 #define CMR_PROVIDER "provider"
 #define CMR_ENTRY_TITLE "entry_title"
 #define CMR_COLLECTION_CONCEPT_ID "collection_concept_id"
 #define CMR_GRANULE_UR "granule_ur"
-#define CMR_URL_TYPE_GET_DATA "GET DATA"
-
-#define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
-#define AWS_DATE_HEADER_KEY "X-Amz-Date"
-#define AWS_DATE_FORMAT "%Y%m%dT%H%MS"
-#define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
-#define INGEST_TIME_KEY "GET ingest_time"
-
 
 #endif // E_NgapNames_H

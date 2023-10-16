@@ -6,19 +6,16 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 # using .cc files above this dir seems to break 'subdir-objects' jhrg 5/5/22
 
 # TODO set these with configure. jhrg 11/26/19
-OPENSSL_LIBS=-lcrypto
-OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LD=-L/usr/local/opt/openssl/lib
+# OPENSSL_LIBS=-lcrypto
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)  -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
     -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/modules/common \
-    -I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS) $(OPENSSL_INC)
+    -I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
     -L$(top_builddir)/modules/common -lmodules_common $(H5_LDFLAGS) \
-    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LD) $(OPENSSL_LIBS) \
-    $(XML2_LIBS) -lz
+    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
 

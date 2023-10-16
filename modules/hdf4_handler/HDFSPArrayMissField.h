@@ -8,8 +8,8 @@
 // these missing values. It doesn't make sense to visualize or analyze
 // with vertical cross-section. One can check the data level by level.
 
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef HDFSPARRAY_MISSFIELD_H

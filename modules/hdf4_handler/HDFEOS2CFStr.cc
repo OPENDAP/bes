@@ -2,8 +2,8 @@
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 // It retrieves the HDF-EOS2 swath or grid DFNT_CHAR 1D array field and
 // then send to DAP as DAP string for the CF option.
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>  
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>  
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef USE_HDFEOS2_LIB
@@ -53,11 +53,6 @@ HDFEOS2CFStr::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2CFStr read "<<endl);
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
 
@@ -70,7 +65,7 @@ HDFEOS2CFStr::read ()
 
 
     // Define function pointers to handle the swath
-    if(grid_or_swath == 0) {
+    if (grid_or_swath == 0) {
         openfunc = GDopen;
         closefunc = GDclose;
         attachfunc = GDattach;
@@ -105,7 +100,7 @@ HDFEOS2CFStr::read ()
 
     int32 gsid = attachfunc (gfid, const_cast < char *>(objname.c_str ()));
     if (gsid < 0) {
-        if(false == check_pass_fileid_key)
+        if (false == check_pass_fileid_key)
             closefunc(gfid);
         ostringstream eherr;
         eherr << "Grid/Swath " << objname.c_str () << " cannot be attached.";
@@ -123,7 +118,7 @@ HDFEOS2CFStr::read ()
                 &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
     if (r != 0) {
         detachfunc(gsid);
-        if(false == check_pass_fileid_key)
+        if (false == check_pass_fileid_key)
             closefunc(gfid);
         ostringstream eherr;
         eherr << "Field " << varname.c_str () << " information cannot be obtained.";
@@ -149,7 +144,7 @@ HDFEOS2CFStr::read ()
 
     if (r != 0) {
         detachfunc(gsid);
-        if(false == check_pass_fileid_key)
+        if (false == check_pass_fileid_key)
             closefunc(gfid);
         ostringstream eherr;
         eherr << "swath or grid readdata failed.";
@@ -159,7 +154,7 @@ HDFEOS2CFStr::read ()
     string final_str(val.begin(),val.end());
     set_value(final_str);
     detachfunc(gsid);
-    if(false == check_pass_fileid_key)
+    if (false == check_pass_fileid_key)
         closefunc(gfid);
     return false;
 }

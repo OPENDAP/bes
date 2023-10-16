@@ -31,25 +31,8 @@
 #include "NgapContainer.h"
 
 using namespace std;
-// using namespace gateway;
-
 
 namespace ngap {
-    /** @brief create an instance of this persistent store with the given name.
- *
- * Creates an instances of GatewayContainerStorage with the given name.
- *
- * @param n name of this persistent store
- * @see GatewayContainer
- */
-    NgapContainerStorage::NgapContainerStorage(const string &n) :
-            BESContainerStorageVolatile(n)
-    {
-    }
-
-    NgapContainerStorage::~NgapContainerStorage()
-    {
-    }
 
 /** @brief adds a container with the provided information
  *
@@ -58,11 +41,10 @@ namespace ngap {
  * @param type ignored. The type of the target response is determined by the
  * request response, or could be passed in
  */
-    void NgapContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
-    {
-        BESContainer *c = new NgapContainer(s_name, r_name, type);
-        BESContainerStorageVolatile::add_container(c);
-    }
+void NgapContainerStorage::add_container(const string &s_name, const string &r_name, const string &type) {
+    BESContainer *c = new NgapContainer(s_name, r_name, type);
+    BESContainerStorageVolatile::add_container(c);
+}
 
 /** @brief dumps information about this object
  *
@@ -71,12 +53,11 @@ namespace ngap {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-    void NgapContainerStorage::dump(ostream &strm) const
-    {
-        strm << BESIndent::LMarg << "NgapContainerStorage::dump - (" << (void *) this << ")" << endl;
-        BESIndent::Indent();
-        BESContainerStorageVolatile::dump(strm);
-        BESIndent::UnIndent();
-    }
+void NgapContainerStorage::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "NgapContainerStorage::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESContainerStorageVolatile::dump(strm);
+    BESIndent::UnIndent();
+}
 
 } // namespace ngap

@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // Helper functions for handling dimension maps,clear memories and separating namelist
 //
-//  Authors:   MuQun Yang <myang6@hdfgroup.org> Eunsoo Seo
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org> Eunsoo Seo
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #ifndef HDFCFUTIL_H
 #define HDFCFUTIL_H
@@ -69,20 +69,7 @@ struct HDFCFUtil
     /// for one operation(DDS,DAS or DATA). In case of exceptions, these IDs need to be closed.
     static void close_fileid(int32 sdfd,int32 file_id,int32 gridfd,int32 swathfd,bool pass_fileid_key);
 
-
-    // Remove the following function later because the functionality is acheieved in libdap4. KY 2022-11-22 
-#if 0
-    /// A customized escaping function to escape special characters following OPeNDAP's escattr function
-    /// that can be found at escaping.cc and escaping.h. i
-    /// Note: the customized version will not treat
-    /// \n(new line),\t(tab),\r(Carriage return) as special characters since NASA HDF files
-    /// use this characters to make the attribute easy to read. Escaping these characters in the attributes
-    /// will use \012 etc to replace \n etc. in these attributes and make attributes hard to read.
-    static std::string escattr(std::string  s);
-#endif
-
     static std::string escattr_fvalue(std::string  s);
-
 
     /// From a string separated by a separator to a list of string,
     /// for example, split "ab,c" to {"ab","c"}
@@ -253,10 +240,6 @@ struct HDFCFUtil
     static std::string get_int_str(int);
      
    
-#if 0
-    static size_t write_vector_to_file(const std::string &,const vector<double> &,size_t);
-    static ssize_t write_vector_to_file2(const std::string &,const vector<double> &,size_t);
-#endif
     // Read double-type data from a file to a vector of double type
     static ssize_t read_vector_from_file(int fd,vector<double> &,size_t);
      
@@ -274,6 +257,7 @@ inline int32
 INDEX_nD_TO_1D (const std::vector < int32 > &dims,
                                 const std::vector < int32 > &pos)
 {
+// Leave this #if 0 #endif since this illustrates how this function works. KY 2023-10-12
 #if 0
     /*
      int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
@@ -314,43 +298,5 @@ static inline string get_errno() {
         else
                 return "Unknown error.";
 }
-
-//! Getting a subset of a variable
-//
-//      \param input Input variable
-//       \param dim dimension info of the input
-//       \param start start indexes of each dim
-//       \param stride stride of each dim
-//       \param edge count of each dim
-//       \param poutput output variable
-//      \parrm index dimension index
-//       \return 0 if successful. -1 otherwise.
-//
-#if 0
-template<typename T>
-int subset(
-    const T input[],
-    int rank,
-    vector<int> & dim,
-    vector<int> & start,
-    vector<int> & stride,
-    vector<int> & edge,
-    std::vector<T> *poutput,
-    vector<int>& pos,
-    int index)
-{
-    for(int k=0; k<edge[index]; k++)
-    {
-        pos[index] = start[index] + k*stride[index];
-        if(index+1<rank)
-            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);
-        if(index==rank-1)
-        {
-            poutput->push_back(input[INDEX_nD_TO_1D( dim, pos)]);
-        }
-    } // end of for
-    return 0;
-} // end of template<typename T> static int subset
-#endif
 
 #endif

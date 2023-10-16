@@ -8,8 +8,8 @@
 // these missing values. It doesn't make sense to visualize or analyze
 // with vertical cross-section. One can check the data level by level.
 
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 #include "HDFSPArrayAddCVField.h"
@@ -31,7 +31,7 @@ HDFSPArrayAddCVField::read ()
 
     BESDEBUG("h4","Coming to HDFSPArrayAddCVField read "<<endl);
 
-    if(length() == 0)
+    if (length() == 0)
         return true; 
 
     // Declaration of offset,count and step
@@ -45,14 +45,14 @@ HDFSPArrayAddCVField::read ()
     // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint(offset.data(),step.data(),count.data());
 
-    if(sptype == TRMML3C_V6) {
+    if (sptype == TRMML3C_V6) {
 
-        if(dtype != DFNT_FLOAT32) {
+        if (dtype != DFNT_FLOAT32) {
             throw InternalErr (__FILE__, __LINE__,
                 "The Height datatype of TRMM CSH product should be float.");
         }
 
-        if(tnumelm != 19) {
+        if (tnumelm != 19) {
             throw InternalErr (__FILE__, __LINE__,
                 "The number of elements should be 19.");
         }
@@ -64,31 +64,31 @@ HDFSPArrayAddCVField::read ()
             total_val[i] = (float)i;
 
 
-    if (nelms == tnumelm) {
-        set_value ((dods_float32 *) total_val.data(), nelms);
+        if (nelms == tnumelm) {
+            set_value ((dods_float32 *) total_val.data(), nelms);
+        }
+        else {
+    
+            vector<float>val;
+            val.resize(nelms);
+            
+            for (int i = 0; i < nelms; i++)
+                val[i] = total_val[offset[0] + step[0] * i];
+            set_value ((dods_float32 *) val.data(), nelms);
+        }
     }
-    else {
 
-        vector<float>val;
-        val.resize(nelms);
+    if (sptype == TRMML3S_V7) {
+
         
-        for (int i = 0; i < nelms; i++)
-            val[i] = total_val[offset[0] + step[0] * i];
-        set_value ((dods_float32 *) val.data(), nelms);
-    }
-    }
-
-    if(sptype == TRMML3S_V7) {
-
-        
-        if(dtype != DFNT_FLOAT32) {
+        if (dtype != DFNT_FLOAT32) {
             throw InternalErr (__FILE__, __LINE__,
                 "The Height datatype of TRMM CSH product should be float.");
         }
 
-        if(tnumelm == 28)
+        if (tnumelm == 28)
             Obtain_trmm_v7_layer(nelms,offset,step);
-        else if(tnumelm == 6)
+        else if (tnumelm == 6)
             Obtain_trmml3s_v7_nthrash(nelms,offset,step);
         else {
             throw InternalErr (__FILE__, __LINE__,
@@ -97,15 +97,14 @@ HDFSPArrayAddCVField::read ()
 
     }
 
-    if(sptype == TRMML2_V7) {
+    if (sptype == TRMML2_V7) {
 
-        
-        if(dtype != DFNT_FLOAT32) {
+        if (dtype != DFNT_FLOAT32) {
             throw InternalErr (__FILE__, __LINE__,
                 "The Height datatype of TRMM CSH product should be float.");
         }
 
-        if(tnumelm == 28 && name =="nlayer")
+        if (tnumelm == 28 && name =="nlayer")
             Obtain_trmm_v7_layer(nelms,offset,step);
         else {
             throw InternalErr (__FILE__, __LINE__,
@@ -116,44 +115,6 @@ HDFSPArrayAddCVField::read ()
         
     return true;
 }
-
-
-
-#if 0
-        if(tnumelm != 28) {
-            throw InternalErr (__FILE__, __LINE__,
-                "The number of elements should be 19.");
-        }
-
-        vector<float>total_val;
-        total_val.resize(tnumelm);
-        for (int i = 0; i<20;i++)
-            total_val[i] = 0.5*(i+1);
-
-        for (int i = 20; i<28;i++)
-            total_val[i] = total_val[19]+(i-19);
-
-
-
-    // Since we always assign the the missing Z dimension as 32-bit
-    // integer, so no need to check the type. The missing Z-dim is always
-    // 1-D with natural number 1,2,3,....
-    if (nelms == tnumelm) {
-        set_value ((dods_float32 *) total_val.data(), nelms);
-    }
-    else {
-
-        vector<float>val;
-        val.resize(nelms);
-        
-        for (int i = 0; i < nelms; i++)
-            val[i] = total_val[offset[0] + step[0] * i];
-        set_value ((dods_float32 *) val.data(), nelms);
-    }
-    }
-
-#endif
-
 
 void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,vector<int>&step) {
 
@@ -167,13 +128,11 @@ void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,v
             total_val[i] = total_val[19]+(i-19);
 
 
-
     // Since we always assign the the missing Z dimension as 32-bit
     // integer, so no need to check the type. The missing Z-dim is always
     // 1-D with natural number 1,2,3,....
-    if (nelms == tnumelm) {
+    if (nelms == tnumelm) 
         set_value ((dods_float32 *) total_val.data(), nelms);
-    }
     else {
 
         vector<float>val;
@@ -191,7 +150,7 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
     vector<float>total_val;
     total_val.resize(tnumelm);
 
-    if(name =="nthrshZO") {
+    if (name =="nthrshZO") {
         
         total_val[0] = 0.1f;
         total_val[1] = 0.2f;
@@ -211,7 +170,7 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
         total_val[5] = 0.9999f;
     }
 
-    else if(name =="nthrshSRT") {
+    else if (name =="nthrshSRT") {
 
         total_val[0] = 1.5f;
         total_val[1] = 1.0f;

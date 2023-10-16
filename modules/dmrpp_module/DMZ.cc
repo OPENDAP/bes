@@ -59,9 +59,10 @@
 #include "Base64.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppChunkOdometer.h"
-#include "BESInternalError.h"
+#include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
+#include "BESLog.h"
 
 using namespace pugi;
 using namespace std;
@@ -84,15 +85,33 @@ using namespace libdap;
 
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
 
+
+
+
+
 namespace dmrpp {
 
 using shape = std::vector<unsigned long long>;
+
+// The original unsupported fillValue flags from 4/22
+constexpr static const auto UNSUPPORTED_STRING = "unsupported-string";
+constexpr static const auto UNSUPPORTED_ARRAY = "unsupported-array";
+constexpr static const auto UNSUPPORTED_COMPOUND = "unsupported-compound";
+// Added when Arrays Of Fixed Length Strings. The unsupported-string value was dropped at that time.
+constexpr static const auto UNSUPPORTED_VARIABLE_LENGTH_STRING = "unsupported-variable-length-string";
+
+constexpr static const auto ELIDE_UNSUPPORTED_KEY = "DMRPP.Elide.Unsupported";
+
+bool DMZ::d_elide_unsupported = true;
+
 
 #if 1
 const std::set<std::string> DMZ::variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
                                               "UInt64", "Float32", "Float64", "String", "Structure", "Sequence",
                                               "Enum", "Opaque"};
 #endif
+
+
 
 /// @brief Are the C-style strings equal?
 static inline bool is_eq(const char *value, const char *key)
@@ -132,6 +151,19 @@ static inline DmrppCommon *dc(BaseType *btp)
     return dc;
 }
 
+
+/**
+ * Loads configuration state from TheBESKeys
+ *
+ */
+void DMZ::load_config_from_keys()
+{
+    // ########################################################################
+    // Loads the ELIDE_UNSUPPORTED_KEY (see top of file for key definition)
+    // And if it's set, and set to true, then we set the eliding flag to true.
+    d_elide_unsupported = TheBESKeys::TheKeys()->read_bool_key(ELIDE_UNSUPPORTED_KEY,false);
+}
+
 /**
  * @brief Build a DMZ object and initialize it using a DMR++ XML document
  * @param file_name The DMR++ XML document to parse.
@@ -139,6 +171,7 @@ static inline DmrppCommon *dc(BaseType *btp)
  */
 DMZ::DMZ(const string &file_name)
 {
+    load_config_from_keys();
     parse_xml_doc(file_name);
 }
 
@@ -147,7 +180,7 @@ DMZ::DMZ(const string &file_name)
  * @param file_name
  */
 void
-DMZ::parse_xml_doc(const std::string &file_name)
+DMZ::parse_xml_doc(const string &file_name)
 {
     std::ifstream stream(file_name);
 
@@ -157,6 +190,104 @@ DMZ::parse_xml_doc(const std::string &file_name)
     // parse_ws_pcdata_single will include the space when it appears in a <Value> </Value>
     // DAP Attribute element. jhrg 11/3/21
     pugi::xml_parse_result result = d_xml_doc.load(stream,  pugi::parse_default | pugi::parse_ws_pcdata_single);
+
+    if (!result)
+        throw BESInternalError(string("DMR++ parse error: ").append(result.description()), __FILE__, __LINE__);
+
+    if (!d_xml_doc.document_element())
+        throw BESInternalError("No DMR++ data present.", __FILE__, __LINE__);
+}
+
+
+
+/**
+ *
+ * @param var_node
+ * @param unsupported_flag
+ * @return
+ */
+bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
+    if (var_node == nullptr) {
+        throw BESInternalError(prolog + "Received null valued xml_node in the DMR++ XML document.", __FILE__, __LINE__);
+    }
+
+    // We'll start assuming it's not flagged as unsupported
+    bool is_unsupported_type = false;
+
+    // We know the unsupported flag is held in the fillValue attribute of the dmrpp:chunks element.
+    auto chunks = var_node.child("dmrpp:chunks");
+    if(!chunks) {
+        // No dmrpp:chunks? Then no fillValue and we can be done, it's supported.
+        return is_unsupported_type;
+    }
+
+    xml_attribute fillValue_attr  = chunks.attribute("fillValue");
+    if(!fillValue_attr) {
+        // No fillValue attribute? Then we can be done, it's supported.
+        return is_unsupported_type;
+    }
+
+    // We found th fillValue attribute, So now we have to deal with its various tragic values...
+    if(is_eq(fillValue_attr.value(), UNSUPPORTED_STRING)){
+        // UNSUPPORTED_STRING is the older, indeterminate, tag which might label a truly
+        // unsupported VariableLengthString or it could be a labeling FixedLengthString.
+        // In order to find out we need to look in XML DOM to determine if this is an Array, and
+        // if so, to see if it's the FixedLengthString case:
+        //    <dmrpp:FixedLengthStringArray string_length ... />
+        // This should be a child of var_node.
+
+        // Start by making it unsupported and then check each of the exceptions.
+        is_unsupported_type = true;
+
+        auto dim_node = var_node.child("Dim");
+        if(!dim_node) {
+            // No dims? Then this is a scalar String and it's cool.
+            // We dump the BS fillValue for one that makes some sense in Stringville
+            fillValue_attr.set_value("");
+            is_unsupported_type = false;
+        }
+        else {
+            // It's an array, so is it a FixedLengthStringArray??
+            auto flsa_node = var_node.child("dmrpp:FixedLengthStringArray");
+            if(flsa_node){
+                // FixedLengthStringArray arrays work!
+                // We dump the BS fillValue for one that makes some sense in Stringville
+                fillValue_attr.set_value("");
+                is_unsupported_type = false;
+            }
+        }
+    }
+    else if(is_eq(fillValue_attr.value(),UNSUPPORTED_VARIABLE_LENGTH_STRING)) {
+        unsupported_flag=fillValue_attr.value();
+        is_unsupported_type = true;
+    }
+    else if(is_eq(fillValue_attr.value(),UNSUPPORTED_ARRAY)){
+        unsupported_flag=fillValue_attr.value();
+        is_unsupported_type =  true;
+    }
+    else if(is_eq(fillValue_attr.value(),UNSUPPORTED_COMPOUND)){
+        unsupported_flag=fillValue_attr.value();
+        is_unsupported_type =  true;
+    }
+
+    return is_unsupported_type;
+}
+
+
+
+/**
+ * @brief Build a DOM tree for a DMR++ using content from a string.
+ * @note This method was added to support parsing DMR++ 'documents'
+ * that are cached as strings. The caching nominally takes place in
+ * the NgapContainer code over in the ngap_module (but it doesn't
+ * have to). See DmrppRequestHandler.cc for places where this method
+ * is called.
+ * @param source The string that contains the DMR++ content.
+ */
+void
+DMZ::parse_xml_string(const string &source)
+{
+    pugi::xml_parse_result result = d_xml_doc.load_string(source.c_str());
 
     if (!result)
         throw BESInternalError(string("DMR++ parse error: ").append(result.description()), __FILE__, __LINE__);
@@ -275,8 +406,6 @@ void DMZ::process_dimension(D4Group *grp, const xml_node &dimension_node)
  */
 void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_node)
 {
-    assert(array->is_vector_type());
-
     string name_value;
     string size_value;
     for (xml_attribute attr = dim_node.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -316,8 +445,6 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_
 
 void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_node)
 {
-    assert(array->is_vector_type());
-
     string name_value;
     string size_value;
     for (xml_attribute attr = map_node.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -364,23 +491,47 @@ void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_
  */
 void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const xml_node &var_node)
 {
-    assert(group);
+    if(!group){
+        throw BESInternalError(
+                prolog + "Received a null valued Group pointer!", __FILE__, __LINE__);
+    }
+
+    string unsupported_flag;
+    if(d_elide_unsupported && flagged_as_unsupported_type(var_node, unsupported_flag)){
+        // And in this way we elide the unsupported types - we don't process the DAP object
+        // if it's got the unsupported bits in fillValue
+        auto var_name = var_node.attribute("name");
+        auto var_type = var_node.name();
+        INFO_LOG(prolog << "Unsupported Type Encountered: " << var_type << " " << var_name.value() << "; flag: '" << unsupported_flag << "'\n");
+        return;
+    }
 
     // Variables are declared using nodes with type names (e.g., <Float32...>)
     // Variables are arrays if they have one or more <Dim...> child nodes.
     Type t = get_type(var_node.name());
 
-    assert(t != dods_group_c);  // Groups are special and handled elsewhere
+    if(t == dods_group_c){  // Groups are special and handled elsewhere
+        throw BESInternalError(
+                prolog + "ERROR - The variable node to process is a Group type! "
+                         "This is handled elsewhere, not here. Parser State Issue!!", __FILE__, __LINE__);
+    }
 
-    bool is_array_type = has_dim_nodes(var_node);
     BaseType *btp;
-    if (is_array_type) {
+    if (has_dim_nodes(var_node)) {
+        // If it has Dim nodes then it's an array!
         btp = add_array_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
-            assert(btp->type() == dods_array_c && btp->var()->type() == t);
+            if(btp->type() != dods_array_c || btp->var()->type() != t){
+                throw BESInternalError(
+                        prolog + "Failed to create an array variable for " + var_node.name(), __FILE__, __LINE__);
+            }
             // NB: For an array of a Constructor, add children to the Constructor, not the array
             parent = dynamic_cast<Constructor*>(btp->var());
-            assert(parent);
+            if(!parent){
+                throw BESInternalError(
+                        prolog + "Failed to cast  " + btp->var()->type_name() + " " + btp->name() +
+                        " to an instance of Constructor." , __FILE__, __LINE__);
+            }
             for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
                     process_variable(dmr, group, parent, child);
@@ -388,11 +539,19 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         }
     }
     else {
+        // Things not arrays must be scalars...
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
-            assert(btp->type() == t);
+            if(btp->type() != t){
+                throw BESInternalError(
+                        prolog + "Failed to create a scalar variable for " + var_node.name(), __FILE__, __LINE__);
+            }
             parent = dynamic_cast<Constructor*>(btp);
-            assert(parent);
+            if(!parent){
+                throw BESInternalError(
+                        prolog + "Failed to cast  " + btp->var()->type_name() + " " + btp->name() +
+                        " to an instance of Constructor." , __FILE__, __LINE__);
+            }
             for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
                     process_variable(dmr, group, parent, child);
@@ -412,7 +571,9 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
  */
 BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &var_node)
 {
-    assert(dmr->factory());
+    if(!dmr->factory()){
+        throw BESInternalError(prolog + "ERROR - Received a DMR without a class factory!", __FILE__, __LINE__);
+    }
 
     string name_value;
     string enum_value;
@@ -465,7 +626,9 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
  */
 BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, const xml_node &var_node)
 {
-    assert(group);
+    if(!group){
+        throw BESInternalError(prolog + "ERROR - Received a null valued Group pointer!", __FILE__, __LINE__);
+    }
 
     BaseType *btp = build_variable(dmr, group, t, var_node);
 
@@ -495,7 +658,9 @@ BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent
  */
 BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, const xml_node &var_node)
 {
-    assert(group);
+    if(!group){
+        throw BESInternalError(prolog + "ERROR - Received a null valued Group pointer!", __FILE__, __LINE__);
+    }
 
     BaseType *btp = build_variable(dmr, group, t, var_node);
 
@@ -871,7 +1036,11 @@ DMZ::load_attributes(Constructor *constructor)
     load_attributes(constructor,  get_variable_xml_node(constructor));
     for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
         // Groups are not allowed inside a Constructor
-        assert((*i)->type() != dods_group_c);
+        if((*i)->type() == dods_group_c){
+            throw BESInternalError(
+                    prolog + "Found a Group as a member of a " + constructor->type_name() + " data type. " +
+                    "This violates the DAP4 data model and cannot be processed!", __FILE__, __LINE__);
+        }
         load_attributes(*i);
     }
 }
@@ -894,7 +1063,11 @@ DMZ::load_attributes(D4Group *group) {
         // Groups are kept under a separate container from variables because they
         // have a different function than the Structure and Sequence types (Groups
         // never hold data).
-        assert((*i)->type() != dods_group_c);
+        if((*i)->type() == dods_group_c){
+            throw BESInternalError(
+                    prolog + "Found a Group instance in the variables collection for Group " + group->name() + ". " +
+                    "This violates the DAP4 data model and cannot be processed!", __FILE__, __LINE__);
+        }
         load_attributes(*i);
     }
 
@@ -905,7 +1078,9 @@ DMZ::load_attributes(D4Group *group) {
 
 void DMZ::load_all_attributes(libdap::DMR *dmr)
 {
-    assert(d_xml_doc != nullptr);
+    if(d_xml_doc == nullptr){
+        throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
+    }
     load_attributes(dmr->root());
 }
 
@@ -1109,11 +1284,20 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
     dc->set_uses_fill_value(true);
  }
 
-// a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
-// nodes, and they have to be in that order.
-void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
+ /**
+  * A 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
+  * nodes, and they have to be in that order.
+  *
+  * @param btp
+  * @param var_node
+  * @return True when the dmrpp:chunks element was located, false otherwise.
+  */
+bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
 {
-    
+    auto chunks = var_node.child("dmrpp:chunks");
+    if(!chunks)
+        return false;
+
     bool has_fill_value = false;
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
@@ -1130,26 +1314,36 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
         }
         else if (is_eq(attr.name(), "fillValue")) {
 
+            // Throws BESInternalError when unsupported types detected.
+            string unsupported_type;
+            if(flagged_as_unsupported_type(var_node,unsupported_type)){
+                stringstream msg;
+                msg << prolog << "Found a dmrpp:chunk/@fillValue with a value of ";
+                msg << "'" << unsupported_type << "' this means that ";
+                msg << "the Hyrax service is unable to process this variable/dataset.";
+                throw BESInternalError(msg.str(),__FILE__,__LINE__);
+            }
+
             has_fill_value = true;
 
             // Fill values are only supported for Arrays and scalar numeric datatypes (7/12/22)
-            if (btp->type()==dods_url_c || btp->type()== dods_structure_c 
-               || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
+            if (btp->type()==dods_url_c || btp->type()== dods_structure_c
+                || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
                 throw BESInternalError("Fill Value chunks are only supported for Arrays and numeric datatypes.", __FILE__, __LINE__);
 
             if (btp->type() == dods_array_c) {
                 auto array = dynamic_cast<libdap::Array*>(btp);
                 add_fill_value_information(dc(btp), attr.value(), array->var()->type());
             }
-            else 
+            else
                 add_fill_value_information(dc(btp), attr.value(), btp->type());
         }
-        else if (is_eq(attr.name(), "byteOrder")) 
+        else if (is_eq(attr.name(), "byteOrder"))
             dc(btp)->ingest_byte_order(attr.value());
     }
 
     // reset one_chunk_fillvalue to false if has_fill_value = false
-    if (has_fill_value == false && dc(btp)->get_one_chunk_fill_value() == true) // reset fillvalue 
+    if (has_fill_value == false && dc(btp)->get_one_chunk_fill_value() == true) // reset fillvalue
         dc(btp)->set_one_chunk_fill_value(false);
 
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
@@ -1161,7 +1355,11 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
             process_chunk(dc(btp), chunk);
         }
     }
+
+    return true;
+
 }
+
 
 /**
  * @brief Get a vector describing the shape and size of an Array
@@ -1280,10 +1478,8 @@ void DMZ::load_chunks(BaseType *btp)
     int compact_found = 0;
 
     // Chunked data
-    auto child = var_node.child("dmrpp:chunks");
-    if (child) {
+    if (process_chunks(btp, var_node)) {
         chunks_found = 1;
-        process_chunks(btp, child);
         BESDEBUG(PARSER, prolog << "This variable's chunks storage size is: " << dc(btp)->get_var_chunks_storage_size() << endl);
         auto array = dynamic_cast<Array*>(btp);
         // It's possible to have a chunk, but not have a chunk dimension sizes element

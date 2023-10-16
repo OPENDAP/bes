@@ -50,19 +50,8 @@ void NgapModule::initialize(const string &modname)
     BESDEBUG(modname, "    adding " << modname << " container storage" << endl);
     BESContainerStorageList::TheList()->add_persistence(new NgapContainerStorage(modname));
 
-#if 0
-    BESDEBUG(modname, "    initialize the NGAP utilities and params" << endl);
-    NgapUtils::Initialize();
-#endif
-
     BESDEBUG(modname, "    adding NGAP debug context" << endl);
     BESDebug::Register(modname);
-
-    //BESDEBUG( modname, "    adding " << SHOW_NGAP_PATH_INFO_RESPONSE_STR << " command" << endl ) ;
-    //BESXMLCommand::add_command( SHOW_NGAP_PATH_INFO_RESPONSE_STR, NgapPathInfoCommand::CommandBuilder ) ;
-
-    //BESDEBUG(modname, "    adding " << SHOW_NGAP_PATH_INFO_RESPONSE << " response handler" << endl ) ;
-    //BESResponseHandlerList::TheList()->add_handler( SHOW_NGAP_PATH_INFO_RESPONSE, NgapPathInfoResponseHandler::NgapPathInfoResponseBuilder ) ;
 
     BESDEBUG(modname, "Done Initializing NGAP Module " << modname << endl);
 }
@@ -70,19 +59,13 @@ void NgapModule::initialize(const string &modname)
 void NgapModule::terminate(const string &modname)
 {
     BESDEBUG(modname, "Cleaning NGAP module " << modname << endl);
-/*
-    BESResponseHandlerList::TheList()->remove_handler( SHOW_NGAP_PATH_INFO_RESPONSE) ;
-    BESXMLCommand::del_command( SHOW_NGAP_PATH_INFO_RESPONSE_STR) ;
 
     BESDEBUG(modname, "    removing " << modname << " request handler" << endl);
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
-    if (rh)
-        delete rh;
+    delete rh;
 
     BESContainerStorageList::TheList()->deref_persistence(modname);
-*/
 
-    // TERM_END
     BESDEBUG(modname, "Done Cleaning NGAP module " << modname << endl);
 }
 

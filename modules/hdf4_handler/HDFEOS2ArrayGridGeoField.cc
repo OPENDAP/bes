@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // retrieves the latitude and longitude of  the HDF-EOS2 Grid
-//  Authors:   MuQun Yang <myang6@hdfgroup.org> 
-// Copyright (c) 2009-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org> 
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #ifdef USE_HDFEOS2_LIB
 
@@ -44,7 +44,7 @@ bool
 HDFEOS2ArrayGridGeoField::read ()
 {
     BESDEBUG("h4","Coming to HDFEOS2ArrayGridGeoField read "<<endl);
-    if(length() == 0)
+    if (length() == 0)
         return true; 
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
@@ -60,7 +60,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
     if (true == condenseddim)
         final_rank = 1;
-    else if(4 == specialformat)// For the SOM projection, the final output of latitude/longitude rank should be 3.
+    else if (4 == specialformat)// For the SOM projection, the final output of latitude/longitude rank should be 3.
         final_rank = 3;
     else 
         final_rank = rank;
@@ -113,7 +113,7 @@ HDFEOS2ArrayGridGeoField::read ()
     bool use_cache = false;
 
     // Check if passing file IDs to data
-    if(true == check_pass_fileid_key)
+    if (true == check_pass_fileid_key)
         gfid = gridfd;
     else {
         gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -133,13 +133,13 @@ HDFEOS2ArrayGridGeoField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    if(false == llflag) {
+    if (false == llflag) {
 
         // Cache
         // Check if a BES key H4.EnableEOSGeoCacheFile is true, if yes, we will check
         // if a lat/lon cache file exists and if we can read lat/lon from this file.
 
-        if(true == HDF4RequestHandler::get_enable_eosgeo_cachefile()) {
+        if (true == HDF4RequestHandler::get_enable_eosgeo_cachefile()) {
 
             use_cache = true;
             BESH4Cache *llcache = BESH4Cache::get_instance();
@@ -151,13 +151,13 @@ HDFEOS2ArrayGridGeoField::read ()
             string bescacheprefix = HDF4RequestHandler::get_cache_latlon_prefix();
             long cachesize = HDF4RequestHandler::get_cache_latlon_size();
 
-            if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
+            if (("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                 throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is nullptr or the cache size is not set.");
             }
             else {
                 struct stat sb;
-                if(stat(bescachedir.c_str(),&sb) !=0) {
+                if (stat(bescachedir.c_str(),&sb) !=0) {
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     string err_mesg="The cached directory " + bescachedir;
                     err_mesg = err_mesg + " doesn't exist.  ";
@@ -165,11 +165,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     
                 }
                 else { 
-                     if(true == S_ISDIR(sb.st_mode)) {
-                        if(access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
-#if 0
-                        //if(access(bescachedir.c_str(),R_OK) == -1) 
-#endif
+                     if (true == S_ISDIR(sb.st_mode)) {
+                        if (access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
                             HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                             string err_mesg="The cached directory " + bescachedir;
                             err_mesg = err_mesg + " can NOT be read,written or executable.";
@@ -238,7 +235,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
             // Xdimsize and ydimsize. Although it is rare, need to consider dim major.
             // Whether latlon is ydim,xdim or xdim,ydim.
-            if(ydimmajor) { 
+            if (ydimmajor) { 
                 cache_fname +=HDFCFUtil::get_int_str(ydim);
                 cache_fname +=HDFCFUtil::get_int_str(xdim);
                     
@@ -261,34 +258,20 @@ HDFEOS2ArrayGridGeoField::read ()
             
             
             cache_fpath = bescachedir + "/"+ cache_fname;
-#if 0
-cerr<<"cache file path is  "<<cache_fpath <<endl;
-cerr<<"obtain file path from BESMCache "<<endl;
-cerr<<"Name is "<<llcache->get_cache_file_name_h4(cache_fpath,false) <<endl;
-int fd;
-llcache->get_read_lock(cache_fpath,fd);
-cerr<<"after testing get_read_lock"<<endl;
-#endif
             
             try {
                 do  { // do while(0) is a trick to handle break; so ignore solarcloud's warning.
                     int expected_file_size = 0;
-                    if(GCTP_CEA == projcode || GCTP_GEO == projcode) 
+                    if (GCTP_CEA == projcode || GCTP_GEO == projcode) 
                         expected_file_size = (xdim+ydim)*sizeof(double);
-                    else if(GCTP_SOM == projcode)
+                    else if (GCTP_SOM == projcode)
                         expected_file_size = xdim*ydim*NBLOCK*2*sizeof(double);
                     else
                         expected_file_size = xdim*ydim*2*sizeof(double);
 
                     int fd = 0;
                     bool latlon_from_cache = llcache->get_data_from_cache(cache_fpath, expected_file_size,fd);
-#if 0
-if(true == latlon_from_cache)
-    cerr<<"the cached file exists: "<<endl;
-else
-    cerr<<"the cached file doesn't exist "<< endl;
-#endif
-                    if(false == latlon_from_cache) 
+                    if (false == latlon_from_cache) 
                         break;
  
                     // Get the offset of lat/lon in the cached file. Since lat is stored first and lon is stored second, 
@@ -301,24 +284,16 @@ else
                     // last points. The total count for the data point is bigger than the production of count and step.
                     int count_1d = 1;
 
-                    if(GCTP_CEA == projcode|| GCTP_GEO== projcode) { 
+                    if (GCTP_CEA == projcode|| GCTP_GEO== projcode) { 
 
-                        // It seems that for 1-D lat/lon, regardless of xdimmajor or ydimmajor. It is always Lat[YDim],Lon[XDim}, check getCorrectSubset
+                        // It seems that for 1-D lat/lon, regardless of xdimmajor or ydimmajor. It is always Lat[YDim],Lon[XDim], check getCorrectSubset
                         // So we don't need to consider the dimension major case.
                         offset_1d = (fieldtype == 1) ?offset[0] :(ydim+offset[0]);
-#if 0
-                        if(true == ydimmajor) {
-                            offset_1d = (fieldtype == 1) ?offset[0] :(ydim*sizeof(double)+offset[0]);
-                        }
-                        else {
-                            offset_1d = (fieldtype == 1) ?offset[0] :(xdim*sizeof(double)+offset[0]);
-                        }
-#endif
                         count_1d = 1+(count[0]-1)*step[0];
                     }
                     else if (GCTP_SOM == projcode) {
 
-                        if(true == ydimmajor) {
+                        if (true == ydimmajor) {
                             offset_1d = (fieldtype == 1)?(offset[0]*xdim*ydim+offset[1]*xdim+offset[2])
                                                         :(offset[0]*xdim*ydim+offset[1]*xdim+offset[2]+expected_file_size/2/sizeof(double));
                         }
@@ -357,56 +332,23 @@ else
                     vector<double> latlon_1d;
                     latlon_1d.resize(count_1d);
                     
-                   // Read lat/lon from the file. 
-                   //int fd;
-                   //fd = open(cache_fpath.c_str(),O_RDONLY,0666);
-                   // TODO: Use BESLog to report that the cached file cannot be read.
-                   off_t fpos = lseek(fd,sizeof(double)*offset_1d,SEEK_SET);
-                   if (-1 == fpos) {
-                       llcache->unlock_and_close(cache_fpath);
-                       llcache->purge_file(cache_fpath);
-                       break;
-                   }
-                   ssize_t read_size = HDFCFUtil::read_vector_from_file(fd,latlon_1d,sizeof(double));
-                   llcache->unlock_and_close(cache_fpath);
-                   if((-1 == read_size) || ((size_t)read_size != count_1d*sizeof(double))) {
-                       llcache->purge_file(cache_fpath);
-                       break;
-                   }
-                    
-// Leave the debugging comments for the time being.
-#if 0
-                    // ONLY READ the subset
-                    FILE *pFile;
-                    pFile = fopen(cache_fpath.c_str(),"rb");
-                    if(nullptr == pFile)
-                        break;
-                    
-                    int ret_value = fseek(pFile,sizeof(double)*offset_1d,SEEK_SET);
-                    if(ret_value != 0) {
-                        // fall back to the original calculation.
-                        fclose(pFile);
+                    // Read lat/lon from the file. 
+                    //int fd;
+                    //fd = open(cache_fpath.c_str(),O_RDONLY,0666);
+                    // TODO: Use BESLog to report that the cached file cannot be read.
+                    off_t fpos = lseek(fd,sizeof(double)*offset_1d,SEEK_SET);
+                    if (-1 == fpos) {
+                        llcache->unlock_and_close(cache_fpath);
+                        llcache->purge_file(cache_fpath);
                         break;
                     }
-cerr<<"field name is "<<fieldname <<endl;
-cerr<<"fread is checked "<<endl;
-cerr<<"offset_1d is "<<offset_1d <<endl;
-cerr<<"count_1d is "<<count_1d <<endl;
- 
-                    
-                    ret_value = fread(latlon_1d.data(),sizeof(double),count_1d,pFile);
-                    if(0 == ret_value) {
-                        // fall back to the original calculation
- cerr<<"fread fails "<<endl;
-                        fclose(pFile);
+                    ssize_t read_size = HDFCFUtil::read_vector_from_file(fd,latlon_1d,sizeof(double));
+                    llcache->unlock_and_close(cache_fpath);
+                    if ((-1 == read_size) || ((size_t)read_size != count_1d*sizeof(double))) {
+                        llcache->purge_file(cache_fpath);
                         break;
                     }
-#endif
-#if 0
-for(int i =0;i<count_1d;i++)
-cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
-#endif
-
+                    
                     int total_count = 1;
                     for (int i_rank = 0; i_rank<final_rank;i_rank++) 
                         total_count = total_count*count[i_rank];
@@ -415,7 +357,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     // one-big-block. Actually this is the most common case. If we find
                     // such a case, we simply read the whole data into the latlon buffer and
                     // send it to BES.
-                    if(total_count == count_1d) {
+                    if (total_count == count_1d) {
                         set_value((dods_float64*)latlon_1d.data(),nelms);
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
@@ -426,7 +368,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     latlon.resize(total_count);
 
                     // Retrieve latlon according to the projection 
-                    if(GCTP_CEA == projcode|| GCTP_GEO== projcode) { 
+                    if (GCTP_CEA == projcode|| GCTP_GEO== projcode) { 
                         for (int i = 0; i <total_count;i++)
                             latlon[i] = latlon_1d[i*step[0]];
 
@@ -462,15 +404,13 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                 throw;
             }
-                
         }
-        
     }
 
 
     // In this step, if use_cache is true, we always need to write the lat/lon into the cache.
     // SOM projection should be calculated differently. If turning on the lat/lon cache feature, it also needs to be handled  differently. 
-    if(specialformat == 4) {// SOM projection
+    if (specialformat == 4) {// SOM projection
         try {
             CalculateSOMLatLon(gridid, offset.data(), count.data(), step.data(), nelms,cache_fpath,use_cache);
         }
@@ -514,7 +454,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
         // If projection code etc. is not retrieved, retrieve them.
         // When specialformat is 3, the file is a file of which the project code is set to -1, we need to skip it. KY 2014-09-11
-        if(projcode == -1 && specialformat !=3) {
+        if (projcode == -1 && specialformat !=3) {
 
             
             intn r = 0;
@@ -542,7 +482,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 latlon_all.resize(xdim*ydim*2);
 
                 CalculateLAMAZLatLon(gridid, fieldtype, latlon.data(), latlon_all.data(),offset.data(), count.data(), step.data(), use_cache);
-                if(true == use_cache) {
+                if (true == use_cache) {
 
                     BESH4Cache *llcache = BESH4Cache::get_instance();
                     llcache->write_cached_data(cache_fpath,xdim*ydim*2*sizeof(double),latlon_all);
@@ -568,19 +508,11 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 latlon_all.resize(xdim+ydim);
 
                 CalculateLargeGeoLatLon(gridid, fieldtype,latlon.data(), latlon_all.data(),offset.data(), count.data(), step.data(), nelms,use_cache);
-                if(true == use_cache) {
+                if (true == use_cache) {
 
                     BESH4Cache *llcache = BESH4Cache::get_instance();
                     llcache->write_cached_data(cache_fpath,(xdim+ydim)*sizeof(double),latlon_all);
 
-#if 0
-//                    if(HDFCFUtil::write_vector_to_file(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim))) 
-                    if(HDFCFUtil::write_vector_to_file2(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim)*sizeof(double))) {
-                        if(remove(cache_fpath.c_str()) !=0) {
-                            throw InternalErr(__FILE__,__LINE__,"Cannot remove the cached file.");
-                        }
-                    }
-#endif
                 }
 
             }
@@ -615,7 +547,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
             // Cache: check the flag and decide whether to calculate the lat/lon.
             vector<double>latlon_all;
 
-            if(GCTP_GEO == projcode || GCTP_CEA == projcode) 
+            if (GCTP_GEO == projcode || GCTP_CEA == projcode) 
                 latlon_all.resize(xdim+ydim);
             else
                 latlon_all.resize(xdim*ydim*2);
@@ -623,9 +555,9 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
             CalculateLatLon (gridid, fieldtype, specialformat, latlon.data(),latlon_all.data(),
                              offset32.data(), count32.data(), step32.data(), nelms,use_cache);
 
-            if(true == use_cache) {
+            if (true == use_cache) {
                 size_t num_item_expected = 0;
-                if(GCTP_GEO == projcode || GCTP_CEA == projcode) 
+                if (GCTP_GEO == projcode || GCTP_CEA == projcode) 
                     num_item_expected = xdim + ydim;
                 else
                     num_item_expected = xdim*ydim*2;
@@ -746,7 +678,6 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
             break;
 
         case DFNT_INT16:
-
             {
                 vector<int16> val;
                 val.resize(nelms);
@@ -766,8 +697,8 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
             }
             break;
-        case DFNT_UINT16:
 
+        case DFNT_UINT16:
             {
                 vector<uint16> val;
                 val.resize(nelms);
@@ -786,8 +717,8 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 set_value ((dods_uint16 *) val.data(), nelms);
             }
             break;
-        case DFNT_INT32:
 
+        case DFNT_INT32:
             {
                 vector<int32> val;
                 val.resize(nelms);
@@ -806,8 +737,8 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 set_value ((dods_int32 *) val.data(), nelms);
             }
             break;
-        case DFNT_UINT32:
 
+        case DFNT_UINT32:
             {
                 vector<uint32> val;
                 val.resize(nelms);
@@ -825,8 +756,8 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 set_value ((dods_uint32 *) val.data(), nelms);
             }
             break;
-        case DFNT_FLOAT32:
 
+        case DFNT_FLOAT32:
             {
                 vector<float32> val;
                 val.resize(nelms);
@@ -845,6 +776,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 set_value ((dods_float32 *) val.data(), nelms);
             }
             break;
+
         case DFNT_FLOAT64:
 
             {
@@ -865,6 +797,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 set_value ((dods_float64 *) val.data(), nelms);
             }
             break;
+
         default: 
             {
                 detachfunc(gridid);
@@ -1077,6 +1010,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 set_value ((dods_int16 *) val.data(), nelms);
             }
             break;
+
         case DFNT_UINT16:
             {
                 uint16  fillvalue = 0;
@@ -1199,8 +1133,8 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
             }
             break;
-        case DFNT_UINT32:
 
+        case DFNT_UINT32:
             {
                 vector<uint32> val;
                 val.resize(nelms);
@@ -1260,8 +1194,8 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
             }
             break;
-        case DFNT_FLOAT32:
 
+        case DFNT_FLOAT32:
             {
                 vector<float32> val;
                 val.resize(nelms);
@@ -1323,6 +1257,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
             }
             break;
+
         case DFNT_FLOAT64:
 
             {
@@ -1587,8 +1522,8 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
     }
 
     // ADDING CACHE file routine,save lon and lat to a cached file. lat first, lon second.
-    if(true == write_latlon_cache) {
-        if(GCTP_CEA == projcode || GCTP_GEO == projcode) {
+    if (true == write_latlon_cache) {
+        if (GCTP_CEA == projcode || GCTP_GEO == projcode) {
             vector<double>temp_lat;
             vector<double>temp_lon;
             int32 temp_offset[2];
@@ -1598,7 +1533,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
             temp_offset[1] = 0;
             temp_step[0]   = 1;
             temp_step[1]   = 1;
-            if(ydimmajor) {
+            if (ydimmajor) {
                 // Latitude 
                 temp_count[0] = ydim;
                 temp_count[1] = 1;
@@ -1617,7 +1552,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
                 // Longitude values for the simple projections are mapped to 0 to 360 and we need to map them between -180 and 180.
                 // The routine need to be called before the latlon_all to make sure the longitude value is changed. 
                 // KY 2016-03-09, HFVHANDLER-301
-                if(speciallon == true) {//Must also apply to the latitude case since the lat/lon is stored in one cached file
+                if (speciallon == true) {//Must also apply to the latitude case since the lat/lon is stored in one cached file
                     CorSpeLon(temp_lon.data(),xdim);
                 }
 
@@ -1644,7 +1579,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
                 // Longitude values for the simple projections are mapped to 0 to 360 and we need to map them between -180 and 180.
                 // The routine need to be called before the latlon_all to make sure the longitude value is changed. 
                 // KY 2016-03-09, HFVHANDLER-301
-                if(speciallon == true) //Must also apply to the latitude case since the lat/lon is stored in one cached file
+                if (speciallon == true) //Must also apply to the latitude case since the lat/lon is stored in one cached file
                     CorSpeLon(temp_lon.data(),xdim);
 
                 for(i = 0; i<xdim;i++)
@@ -1655,7 +1590,6 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
         else {
             memcpy((char*)(&latlon_all[0]),lat.data(),xdim*ydim*sizeof(double));
             memcpy((char*)(&latlon_all[0])+xdim*ydim*sizeof(double),lon.data(),xdim*ydim*sizeof(double));
-        //    memcpy(latlon_all.data()+xdim*ydim*sizeof(double),lon.data(),xdim*ydim*sizeof(double));
            
         }
     }
@@ -1695,9 +1629,6 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int /*majordim */,
                                           const int32 * offset, const int32 * count,
                                           const int32 * step) const
 {
-#if 0
-    T (*templatlonptr)[majordim][minordim] = reinterpret_cast<T *[majordim][minordim]>(latlon);
-#endif
     int i = 0;
     int j = 0;
 
@@ -1721,9 +1652,6 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int /*majordim */,
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
 
-#if 0
-            outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
-#endif
             outlatlon[k] = *(latlon + (dim0index[i] * minordim) + dim1index[j]);
             k++;
 
@@ -2030,7 +1958,7 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int gf_fieldtype,
     // the default HDF-EOS2 cell center as the origin of the coordinate. See the HDF-EOS2 user's guide
     // for details. KY 2012-09-10
 
-    if(0 == xdim || 0 == ydim) 
+    if (0 == xdim || 0 == ydim) 
         throw InternalErr(__FILE__,__LINE__,"xdim or ydim cannot be zero");
 
     if (gf_fieldtype == 1) {
@@ -2077,13 +2005,13 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
     bool is_block_180 = false;
     for(int i=0; i<MAXNDIM; i++)
     {
-        if(dim[i]==NBLOCK)
+        if (dim[i]==NBLOCK)
         {
             is_block_180 = true;
             break;
         }
     }
-    if(false == is_block_180) {
+    if (false == is_block_180) {
         ostringstream eherr;
         eherr <<"Number of Block is not " << NBLOCK ;
         throw InternalErr(__FILE__,__LINE__,eherr.str());
@@ -2102,17 +2030,17 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
     float32 offset[NOFFSET]; 
     char som_rw_code[]="r";
     r = GDblkSOMoffset(gridid, offset, NOFFSET, som_rw_code);
-    if(r!=0) 
+    if (r!=0) 
         throw InternalErr(__FILE__,__LINE__,"GDblkSOMoffset doesn't return the correct values");
 
     int status = misr_init(NBLOCK, xdim, ydim, offset, ulc, lrc);
-    if(status!=0) 
+    if (status!=0) 
         throw InternalErr(__FILE__,__LINE__,"misr_init doesn't return the correct values");
 
     int iflg = 0;
     int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
     inv_init((int)projcode, (int)zone, (double*)params, (int)sphere, nullptr, nullptr, (int*)&iflg, inv_trans);
-    if(iflg) 
+    if (iflg) 
         throw InternalErr(__FILE__,__LINE__,"inv_init doesn't return correct values");
 
     // Change to vector in the future. KY 2012-09-20
@@ -2130,10 +2058,10 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
 
     // Seems setting blockdim = 0 always, need to understand this more. KY 2012-09-20
     int blockdim=0; //20; //84.2115,84.2018, 84.192, ... //0 for all
-    if(blockdim==0) //66.2263, 66.224, ....
+    if (blockdim==0) //66.2263, 66.224, ....
     {
 
-        if(true == write_latlon_cache) {
+        if (true == write_latlon_cache) {
             vector<double>latlon_all;
             latlon_all.resize(xdim*ydim*NBLOCK*2);
             for(i =1; i <NBLOCK+1;i++)
@@ -2150,16 +2078,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
                 npts++;
             
             }
-#if 0
-             // Not necessary here, it will be handled by the cached class.
-            // Need to remove the file if the file size is not the size of the latlon array.
-            //if(HDFCFUtil::write_vector_to_file(cache_fpath,latlon_all,sizeof(double)) != (xdim*ydim*NBLOCK*2)) {
-            if(HDFCFUtil::write_vector_to_file2(cache_fpath,latlon_all,sizeof(double)) != (xdim*ydim*NBLOCK*2)*sizeof(double)) {
-                if(remove(cache_fpath.c_str()) !=0) {
-                    throw InternalErr(__FILE__,__LINE__,"Cannot remove the cached file.");
-                }
-            }
-#endif
+
             BESH4Cache *llcache = BESH4Cache::get_instance();           
             llcache->write_cached_data(cache_fpath,xdim*ydim*NBLOCK*2*sizeof(double),latlon_all);
 
@@ -2183,7 +2102,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
                 for(j=0; j<count[1]; j++)//j=0; j<xdim; j++)
                     for(k=0; k<count[2]; k++)//k=0; k<ydim; k++)
             {
-                if(fieldtype == 1) {
+                if (fieldtype == 1) {
                     latlon[npts] = latlon_all[start[0]*ydim*xdim+start[1]*ydim+start[2]+
                                                  i*ydim*xdim*step[0]+j*ydim*step[1]+k*step[2]];
                 }
@@ -2215,7 +2134,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
                         s = k;
                         misrinv(b, l, s, &somx, &somy); /* (b,l.l,s.s) -> (X,Y) */
                         sominv(somx, somy, &lon_r, &lat_r); /* (X,Y) -> (lat,lon) */
-                        if(fieldtype==1)
+                        if (fieldtype==1)
                             latlon[npts] = lat_r*R2D;
                         else
                             latlon[npts] = lon_r*R2D;
@@ -2224,10 +2143,6 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
                     set_value ((dods_float64 *) latlon.data(), nelms); //(180*xdim*ydim)); //nelms);
         }
     } 
-#if 0
-    //if (latlon != nullptr)
-    //   delete [] latlon;
-#endif
 }
 
 // The following code aims to handle large MCD Grid(GCTP_GEO projection) such as 21600*43200 lat and lon.
@@ -2267,7 +2182,7 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int gf_fieldtyp
     float lat_step = (float)(lowright[1] - upleft[1])/ydim;
     float lon_step = (float)(lowright[0] - upleft[0])/xdim;
 
-    if(true == write_latlon_cache) {
+    if (true == write_latlon_cache) {
 
         for(int i = 0;i<ydim;i++)
             latlon_all[i] = upleft[1] + i*lat_step + lat_step/2;       
@@ -2318,7 +2233,7 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int gf_fieldtype, f
 	
     CalculateLatLon (gridid, gf_fieldtype, specialformat, tmp1.data(), latlon_all, tmp2, tmp3, tmp4, xdim*ydim,write_latlon_cache);
 
-    if(write_latlon_cache == true) {
+    if (write_latlon_cache == true) {
 
         vector<float64> temp_lat_all;
         vector<float64> lat_all;
@@ -2338,25 +2253,25 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int gf_fieldtype, f
         }
 
         // If we find infinite number among lat or lon values, we use the nearest neighbor method to calculate lat or lon.
-        if(ydimmajor) {
+        if (ydimmajor) {
             for(int i=0; i<ydim; i++)//Lat
                 for(int j=0; j<xdim; j++)
-                    if(isundef_lat(lat_all[i*xdim+j]))
+                    if (isundef_lat(lat_all[i*xdim+j]))
                         lat_all[i*xdim+j]=nearestNeighborLatVal(temp_lat_all.data(), i, j, ydim, xdim);
             for(int i=0; i<ydim; i++)
                 for(int j=0; j<xdim; j++)
-                    if(isundef_lon(lon_all[i*xdim+j]))
+                    if (isundef_lon(lon_all[i*xdim+j]))
                         lon_all[i*xdim+j]=nearestNeighborLonVal(temp_lon_all.data(), i, j, ydim, xdim);
         }
         else { 
             for(int i=0; i<xdim; i++)
                 for(int j=0; j<ydim; j++)
-                    if(isundef_lat(lat_all[i*ydim+j]))
+                    if (isundef_lat(lat_all[i*ydim+j]))
                         lat_all[i*ydim+j]=nearestNeighborLatVal(temp_lat_all.data(), i, j, xdim, ydim);
          
             for(int i=0; i<xdim; i++)
                 for(int j=0; j<ydim; j++)
-                    if(isundef_lon(lon_all[i*ydim+j]))
+                    if (isundef_lon(lon_all[i*ydim+j]))
                         lon_all[i*ydim+j]=nearestNeighborLonVal(temp_lon_all.data(), i, j, xdim, ydim);
         
         }
@@ -2376,28 +2291,28 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int gf_fieldtype, f
         tmp5[w] = tmp1[w];
 
     // If we find infinite number among lat or lon values, we use the nearest neighbor method to calculate lat or lon.
-    if(ydimmajor) {
-        if(gf_fieldtype==1) {// Lat.
+    if (ydimmajor) {
+        if (gf_fieldtype==1) {// Lat.
             for(int i=0; i<ydim; i++)
                 for(int j=0; j<xdim; j++)
-                    if(isundef_lat(tmp1[i*xdim+j]))
+                    if (isundef_lat(tmp1[i*xdim+j]))
                         tmp1[i*xdim+j]=nearestNeighborLatVal(tmp5.data(), i, j, ydim, xdim);
-        } else if(gf_fieldtype==2){ // Lon.
+        } else if (gf_fieldtype==2){ // Lon.
             for(int i=0; i<ydim; i++)
                 for(int j=0; j<xdim; j++)
-                    if(isundef_lon(tmp1[i*xdim+j]))
+                    if (isundef_lon(tmp1[i*xdim+j]))
                         tmp1[i*xdim+j]=nearestNeighborLonVal(tmp5.data(), i, j, ydim, xdim);
         }
-    } else { // end if(ydimmajor)
-        if(gf_fieldtype==1) {
+    } else { // end if (ydimmajor)
+        if (gf_fieldtype==1) {
             for(int i=0; i<xdim; i++)
                 for(int j=0; j<ydim; j++)
-                    if(isundef_lat(tmp1[i*ydim+j]))
+                    if (isundef_lat(tmp1[i*ydim+j]))
                         tmp1[i*ydim+j]=nearestNeighborLatVal(tmp5.data(), i, j, xdim, ydim);
-            } else if(gf_fieldtype==2) {
+            } else if (gf_fieldtype==2) {
                 for(int i=0; i<xdim; i++)
                     for(int j=0; j<ydim; j++)
-                        if(isundef_lon(tmp1[i*ydim+j]))
+                        if (isundef_lon(tmp1[i*ydim+j]))
                             tmp1[i*ydim+j]=nearestNeighborLonVal(tmp5.data(), i, j, xdim, ydim);
             }
     }

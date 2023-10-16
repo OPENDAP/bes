@@ -2,7 +2,7 @@
 //  This file is part of the hdf4 data handler for the OPeNDAP data server.
 //
 // Author:   Kent Yang,Choonghwan Lee <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
 //#include <libdap/InternalErr.h>
@@ -57,7 +57,7 @@
 ///
 /// @author Kent Yang, Choonghwan Lee <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2010-2012 The HDF Group
+/// Copyright (C) The HDF Group
 ///
 /// All rights reserved.
 namespace HDFEOS2
@@ -430,19 +430,6 @@ namespace HDFEOS2
                 return this->dmap;
             }
 
-//No need to check field_cache in the DDS level. 
-//May remove the debugging info. totally in the next release.
-//KY 2014-10-23
-#if 0
-            /// Have field cache or not
-            // 2 exactly cached 
-            // 1 maybe cached, need to check the 
-            // file size when accessing the data
-            const short UseFieldCache () const
-            {
-                return this->field_cache;
-            }
-#endif
         private:
             // field name
             std::string name;
@@ -536,18 +523,6 @@ namespace HDFEOS2
         friend class File;
     };
 
-#if 0
-    // For future improvement of the modulization
-    class GeoField:public Field
-    {
-
-        protected:
-            bool condenseddim;
-            bool ydimmajor;
-            bool speciallon;
-
-    };
-#endif
 
     /// Representing one attribute in grid or swath
     class Attribute
@@ -844,11 +819,6 @@ namespace HDFEOS2
                     /// We follow C-major convention. Normally YDim is major.
                     /// Sometimes it is not. .
                     bool isYDimMajor () ;
-#if 0
-                    /// The projection can be either 1-D or 2-D. For 1-D, the method
-                    /// returns true. Otherwise, return false.
-                    /// bool isOrthogonal () ;
-#endif
 
                 protected:
 
@@ -1095,11 +1065,6 @@ namespace HDFEOS2
                 /// Not used.
                 void ReadIndexMaps (std::vector < IndexMap * >&indexmaps) ;
 
-#if 0
-                /// TODO: may move the check of GeoDim_in_vars(check_dm_geo_dims_in_vars) for
-                ///  every swath here. 
-                /// void check_dm_geo_dims_in_vars();
-#endif
                 
                 /// dimension map list.
                 std::vector < DimensionMap * >dimmaps;
@@ -1196,16 +1161,6 @@ namespace HDFEOS2
                 { 
                     return this->grids[0]->getName();
                 }
-
-#if 0
-                /// Get the scale and offset type  
-                /// const SOType getScaleType () const
-                /// Move to the group level since I found that 
-                /// the different Scale-offset fuctions was used.
-                /// {
-                ///    return this->scaletype;
-                /// }
-#endif
 
 
             protected:

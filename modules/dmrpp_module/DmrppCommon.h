@@ -254,7 +254,7 @@ public:
     /// @return Return true if this variable contains one chunk and the data are all 'fill value.'
     virtual bool get_one_chunk_fill_value() const { return d_one_chunk_fill_value; }
 
-    
+
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
     void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "");
