@@ -1047,6 +1047,14 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
     }
 }
 
+
+void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
+
+    char *source_buffer = chunk->get_rbuf();
+    char *target_buffer = get_buf();
+    memcpy(target_buffer + chunk->get_direct_io_offset(), source_buffer,chunk->get_size());
+ 
+}
 /**
  * @brief Read data for an unconstrained chunked array
  *
@@ -1156,7 +1164,7 @@ void DmrppArray::read_chunks_dio_unconstrained()
     }
 
     // KENT: Change to the total storage buffer size to just the compressed buffer size. 
-    reserve_value_capacity_ll(get_var_chunks_storage_size());
+    reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
     //d_buf.resize(get_var_chunks_storage_size());
     //reserve_value_capacity_ll(get_size());
 

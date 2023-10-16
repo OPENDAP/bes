@@ -132,6 +132,8 @@ private:
                                     unsigned long long chunk_offset, const std::vector<unsigned long long> &chunk_shape,
                                     const std::vector<unsigned long long> &chunk_origin);
 
+    virtual void insert_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk);
+   
     void read_chunks();
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();

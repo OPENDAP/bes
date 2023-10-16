@@ -140,10 +140,7 @@ void process_one_chunk_unconstrained_dio(shared_ptr<Chunk> chunk, const vector<u
     chunk->read_chunk();
 
     if(array){
-        if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
-
-        array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
+        array->insert_chunk_unconstrained_dio(chunk);
     }
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
@@ -199,7 +196,7 @@ bool one_chunk_unconstrained_compute_thread_dio(unique_ptr<one_chunk_unconstrain
     sw.start(timer_tag.str());
 #endif
 
-    process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
+    process_one_chunk_unconstrained_dio(args->chunk, args->chunk_shape, args->array, args->array_shape);
     return true;
 }
 /**
@@ -253,7 +250,7 @@ bool start_one_chunk_unconstrained_compute_thread_dio(list<std::future<bool>> &f
     bool retval = false;
     std::unique_lock<std::mutex> lck (chunk_processing_thread_pool_mtx);
     if (chunk_processing_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
-        futures.push_back(std::async(std::launch::async, one_chunk_unconstrained_compute_thread, std::move(args)));
+        futures.push_back(std::async(std::launch::async, one_chunk_unconstrained_compute_thread_dio, std::move(args)));
         chunk_processing_thread_counter++;
         retval = true;
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Got std::future '" << futures.size() <<
@@ -452,7 +449,7 @@ void process_chunks_unconstrained_concurrent_dio(
 
                     auto args = unique_ptr<one_chunk_unconstrained_args>(
                             new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape) );
-                    thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args));
+                    thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args));
 
                     if (thread_started) {
                         chunks.pop();
@@ -716,10 +713,7 @@ void SuperChunk::retrieve_data_dio() {
     // and utilize our friend cURL to stuff the bytes into d_read_buffer
     //
     // TODO Replace or improve this way of handling fill value chunks. jhrg 5/7/22
-    if (d_uses_fill_value)
-        read_fill_value_chunk();
-    else
-        read_aggregate_bytes();
+    read_aggregate_bytes();
 
     // TODO Check if Chunk::read() sets these. jhrg 5/9/22
     // Set each Chunk's read state to true.
@@ -873,7 +867,7 @@ void SuperChunk::read_unconstrained_dio() {
         for (auto &chunk:get_chunks())
             chunks_to_process.push(chunk);
 
-        process_chunks_unconstrained_concurrent(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
+        process_chunks_unconstrained_concurrent_dio(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
     }
 
 
