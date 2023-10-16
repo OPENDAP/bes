@@ -1071,7 +1071,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 #endif
     }
 
-    dap_utils::log_request_and_memory_size(dds);
+    dap_utils::log_response_and_memory_size(prolog, dds);
 
 #if 0
     // This change addresses an issue on OSX where the size returned by getrusage() is in bytes, not kb.
@@ -1191,7 +1191,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 #endif
     }
 
-    dap_utils::log_request_and_memory_size(dds);
+    dap_utils::log_response_and_memory_size(prolog,dds);
 
 #if 0
     struct rusage usage;
@@ -1358,7 +1358,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
         dmr.root()->set_send_p(true);
     }
 
-    dap_utils::log_request_and_memory_size(dmr);
+    dap_utils::log_response_and_memory_size(prolog, dmr);
     dap_utils::throw_if_dap4_response_too_big(dmr, __FILE__, __LINE__);
 
     // The following block is for debugging purpose. KY 05/13/2020
