@@ -64,13 +64,4 @@ constexpr static auto const DMRPP_CACHE_SPACE = "NGAP.DMRppCacheSpace";
 #define CMR_COLLECTION_CONCEPT_ID "collection_concept_id"
 #define CMR_GRANULE_UR "granule_ur"
 
-#if 0
-// These override constants/defines of the same name in HttpNames.h. jhrg 9/28/23
-constexpr static auto const AMS_EXPIRES_HEADER_KEY = "X-Amz-Expires";
-constexpr static auto const AWS_DATE_HEADER_KEY = "X-Amz-Date";
-constexpr static auto const AWS_DATE_FORMAT = "%Y%m%dT%H%MS";
-constexpr static auto const CLOUDFRONT_EXPIRES_HEADER_KEY = "Expires";
-constexpr static auto const INGEST_TIME_KEY = "GET ingest_time";
-#endif
-
 #endif // E_NgapNames_H

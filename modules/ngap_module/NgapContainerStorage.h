@@ -33,23 +33,23 @@ class BESCatalogUtils;
 namespace ngap {
 
 /** @brief implementation of BESContainerStorageVolatile that represents a
- * list of remote requests
- *
- * Each of the containers stored in the GatewayContainerStorage represents
- * a remote request. When accessed the container will make the remote
- * request in order to create the target response.
+ * resource managed by the NASA NGAP/EOSDIS cloud-based data system. These
+ * resources are stored in S3 and must be transferred to the server before
+ * they can be used. In the Hyrax server, these are DMR++ (i.e., XML) files,
+ * not the actual data files. The data files are stored in S3 but are subset
+ * directly from S3 using information in the (much smaller) DMR++ files
  *
  * @see BESContainerStorageVolatile
  * @see GatewayContainer
  */
 class NgapContainerStorage: public BESContainerStorageVolatile {
 public:
-    NgapContainerStorage(const std::string &n);
-    virtual ~NgapContainerStorage();
+    explicit NgapContainerStorage(const std::string &n) : BESContainerStorageVolatile(n) {}
+    ~NgapContainerStorage() override = default;
 
-    virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+    void add_container(const std::string &s_name, const std::string &r_name, const std::string &type) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace ngap
