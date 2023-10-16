@@ -40,12 +40,28 @@ namespace ngap {
 
 enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
-/** @brief Container representing a remote request
+/**
+ * @brief Container representing a remote request to information stored in
+ * the NASA NGAP/EOSDIS cloud-based data management system.
  *
- * The real name of a NgapContainer is the actual remote request. When the
- * access method is called the remote request is made, the response
- * saved to file if successful, and the target response returned as the real
- * container that a data handler would then open.
+ * This container nominally stores the 'restified' URL to a NASA granule.
+ * The container handles the two operations needed to access a DMR++ file
+ * that can _then_ be used to read data from that granule.
+ *
+ * THe first operation is to ask the CMR subsystem to translate the restified
+ * path to a true URL that references the actual data granule in S3. We
+ * assume that the DMR++ for that granule is 'next to' the granule and is
+ * found by appending '.dmrpp' to the granule URL.
+ *
+ * The second operation is to then retrieve that DMR++ file and store it in
+ * a cache as text (DMR++ files are XML).
+ *
+ * The NgapContainer::access() method performs the two operations the first
+ * time it is called. Subsequent calls to NgapContainer::access() will return
+ * cached XML text and not the filename of the DMR++ local file.
+ *
+ * @note in the future, we may want to store the DMR++ _only_ as a string.
+ * jhrg 10/16/23
  *
  * @see NgapContainerStorage
  */

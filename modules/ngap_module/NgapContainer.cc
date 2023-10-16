@@ -218,8 +218,7 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
         return;
     }
 
-    NgapApi ngap_api;
-    real_name = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
+    real_name = NgapApi::convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
     set_real_name(real_name);
 
     // Because we know the name is really a URL, then we know the "relative_name" is meaningless
@@ -292,6 +291,18 @@ NgapContainer::cache_dmrpp_contents() {
     put_dmrpp_cache(get_real_name(), resource_content);
 
     set_attributes("cached");    // This means access() returns cache content and not a filename. hack. jhrg 9/22/23
+}
+
+/**
+ * @brief Should the server inject the data URL into DMR++ documents?
+ *
+ * @return True if the NGAP_INJECT_DATA_URL_KEY key indicates that the
+ * code should inject the data URL, false otherwise.
+ */
+bool NgapContainer::inject_data_url() {
+    bool result = TheBESKeys::TheKeys()->read_bool_key(NGAP_INJECT_DATA_URL_KEY, false);
+    BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
+    return result;
 }
 
 /**
@@ -395,18 +406,6 @@ void NgapContainer::dump(ostream &strm) const {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }
     BESIndent::UnIndent();
-}
-
-/**
- * @brief Should the server inject the data URL into DMR++ documents?
- *
- * @return True if the NGAP_INJECT_DATA_URL_KEY key indicates that the
- * code should inject the data URL, false otherwise.
- */
-bool NgapContainer::inject_data_url() {
-    bool result = TheBESKeys::TheKeys()->read_bool_key(NGAP_INJECT_DATA_URL_KEY, false);
-    BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
-    return result;
 }
 
 } // namespace ngap

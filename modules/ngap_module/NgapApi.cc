@@ -428,6 +428,14 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
     return data_access_url;
 }
 
+/**
+ * @brief Has the signed S3 URL expired?
+ * If neither the CloudFront Expires header nor the AWS Expires header are present, then
+ * this function returns true.
+ * @note This function is ony used in unit tests (jhrg 10/16/23)
+ * @param signed_url
+ * @return True if the signed URL has expired, false otherwise.
+ */
 bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
     bool is_expired;
     time_t now;
@@ -439,6 +447,7 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
     string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
     time_t ingest_time = signed_url.ingest_time();
 
+    // If both cf_expires and aws_expires are empty, this code returns true. jhrg 10/13/23
     if (!cf_expires.empty()) { // CloudFront expires header?
         expires = stoll(cf_expires);
         BESDEBUG(MODULE, prolog << "Using " << CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
@@ -461,7 +470,8 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
             BESDEBUG(MODULE, prolog << "date: " << aws_date <<
                                     " year: " << year << " month: " << month << " day: " << day <<
                                     " hour: " << hour << " minute: " << minute << " second: " << second << endl);
-            // FIXME Do we need to call gmtime()? (I switch the code to the reentrant version, regardless) jhrg 10/13/23
+            // FIXME Do we need to call gmtime()? (I switched the code to the reentrant version, regardless)
+            //  jhrg 10/13/23
             struct tm ti{};
             if (gmtime_r(&now, &ti) == nullptr)
                 throw BESInternalError("Could not get the current time, gmtime_r() failed!", __FILE__, __LINE__);
@@ -488,10 +498,8 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
                                 " (expires: " << expires << ")" << endl);
     }
 
-    // FIXME If both cf_expires and aws_expires are empty, what do we do? In that case, 'expires' == 'now' and
-    //  'remaining' is 0 so this code returns false. Maybe we should test for that at the top and call it out
-    //  explicitly? jhrg 10/13/23
-
+    // If both cf_expires and aws_expires are empty, 'expires' == 'now' and 'remaining' is 0 so
+    // this code returns true. jhrg 10/13/23
     time_t remaining = expires - now;
     BESDEBUG(MODULE, prolog << "expires_time: " << expires <<
                             "  remaining_time: " << remaining <<
