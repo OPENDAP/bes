@@ -49,6 +49,7 @@
 using namespace std;
 
 #define MODULE "euc"
+#define MODULE_TIMER "euc:timer"
 #define MODULE_DUMPER "euc:dump"
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
@@ -146,7 +147,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
         {
 #ifndef NDEBUG
             BESStopWatch sw;
-            if (BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY))
+            if (BESDebug::IsSet(MODULE_TIMER) || BESDebug::IsSet(TIMING_LOG_KEY))
                 sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url->str());
 #endif
             effective_url = curl::retrieve_effective_url(source_url);

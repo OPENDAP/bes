@@ -59,6 +59,7 @@
 #include "url_impl.h"
 
 #define MODULE "curl"
+#define CURL_TIMING "curl:timing"
 
 using namespace AWSV4;
 using namespace http;
@@ -1471,6 +1472,13 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
+#ifndef NDEBUG
+    BESStopWatch moo;
+    if( BESDebug::IsSet(CURL_TIMING) ) {
+        moo.start(prolog + "Retrieve effective url for starting_point_url: " + starting_point_url->str());
+    }
+#endif
+
     // Add the authorization headers
     request_headers = add_edl_auth_headers(request_headers);
 
@@ -1503,14 +1511,12 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
 
         BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << eurl->str() <<
                                 "(" << (eurl->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
-
-#if 0
+#ifndef NDEBUG
         INFO_LOG(prolog << "Source URL: '" << starting_point_url->str() << "("
                         << (starting_point_url->is_trusted() ? "" : "NOT ") << "trusted)" <<
                         "' CURLINFO_EFFECTIVE_URL: '" << filter_aws_url(eurl->str()) << "'" << "("
                         << (eurl->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
 #endif
-
         if (request_headers)
             curl_slist_free_all(request_headers);
         if (ceh)
