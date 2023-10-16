@@ -43,8 +43,8 @@
 
 #include "BESObj.h"
 
-const std::string TIMING_LOG_KEY = "timing";
-const std::string MISSING_LOG_PARAM;
+static const std::string TIMING_LOG_KEY = "timing";
+static const std::string MISSING_LOG_PARAM;
 
 class BESStopWatch;
 
