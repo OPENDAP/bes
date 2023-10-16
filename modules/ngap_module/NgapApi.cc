@@ -470,17 +470,16 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
             BESDEBUG(MODULE, prolog << "date: " << aws_date <<
                                     " year: " << year << " month: " << month << " day: " << day <<
                                     " hour: " << hour << " minute: " << minute << " second: " << second << endl);
-            // FIXME Do we need to call gmtime()? (I switched the code to the reentrant version, regardless)
-            //  jhrg 10/13/23
-            struct tm ti{};
+
+            struct tm ti{}; // NB: Calling gmtime_r() is an initialization hack since some fields are not set here.
             if (gmtime_r(&now, &ti) == nullptr)
                 throw BESInternalError("Could not get the current time, gmtime_r() failed!", __FILE__, __LINE__);
-            ti.tm_year = stoll(year) - 1900;
-            ti.tm_mon = stoll(month) - 1;
-            ti.tm_mday = stoll(day);
-            ti.tm_hour = stoll(hour);
-            ti.tm_min = stoll(minute);
-            ti.tm_sec = stoll(second);
+            ti.tm_year = stoi(year) - 1900;
+            ti.tm_mon = stoi(month) - 1;
+            ti.tm_mday = stoi(day);
+            ti.tm_hour = stoi(hour);
+            ti.tm_min = stoi(minute);
+            ti.tm_sec = stoi(second);
 
             BESDEBUG(MODULE, prolog << "ti.tm_year: " << ti.tm_year <<
                                     " ti.tm_mon: " << ti.tm_mon <<
