@@ -1504,10 +1504,12 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
         BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << eurl->str() <<
                                 "(" << (eurl->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
 
+#if 0
         INFO_LOG(prolog << "Source URL: '" << starting_point_url->str() << "("
                         << (starting_point_url->is_trusted() ? "" : "NOT ") << "trusted)" <<
                         "' CURLINFO_EFFECTIVE_URL: '" << filter_aws_url(eurl->str()) << "'" << "("
                         << (eurl->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
+#endif
 
         if (request_headers)
             curl_slist_free_all(request_headers);
