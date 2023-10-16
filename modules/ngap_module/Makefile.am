@@ -32,16 +32,16 @@ NGAP_SRC =  NgapRequestHandler.cc \
             NgapModule.cc \
             NgapContainer.cc \
             NgapContainerStorage.cc \
-            NgapApi.cc
+            NgapApi.cc \
+            MemoryCache.cc
 
 NGAP_HDR =  NgapNames.h \
             NgapRequestHandler.h \
             NgapModule.h \
             NgapContainer.h \
             NgapContainerStorage.h \
-            NgapApi.h
-
-# Not used. jhrg 3/30/22 NgapError.h
+            NgapApi.h \
+            MemoryCache.h
 
 EXTRA_DIST = ngap.conf.in data
 
