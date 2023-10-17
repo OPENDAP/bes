@@ -41,17 +41,17 @@ namespace ngap {
 
 class NgapRequestHandler : public BESRequestHandler {
 
-    static unsigned int d_cmr_cache_threshold;  // max number of entries
-    static unsigned int d_cmr_cache_space;      // remove this many during purge
+    static unsigned int d_cmr_cache_size;  // max number of entries
+    static unsigned int d_cmr_cache_purge;      // remove this many during purge
 
     static bool d_use_cmr_cache;
     static MemoryCache<std::string> d_new_cmr_cache;
 
-    static unsigned int d_dmrpp_cache_threshold;  // max number of entries
-    static unsigned int d_dmrpp_cache_space;      // remove this many during purge
-    static std::unordered_map<std::string, std::string> d_dmrpp_cache;
-    static std::queue<std::string> d_dmrpp_cache_entries;
+    static unsigned int d_dmrpp_cache_size;  // max number of entries
+    static unsigned int d_dmrpp_cache_purge;      // remove this many during purge
+
     static bool d_use_dmrpp_cache;
+    static MemoryCache<std::string> d_new_dmrpp_cache;
 
     friend class NgapContainer;   // give NgapContainer access to the cache parameters
 

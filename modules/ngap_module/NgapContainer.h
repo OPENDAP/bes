@@ -74,12 +74,6 @@ private:
 
     void set_real_name_using_cmr_or_cache();
 
-#if 1
-    void purge_dmrpp_cache() const;
-    void put_dmrpp_cache(const std::string &key, const std::string &value) const;
-    bool get_dmrpp_cache(const std::string &key, std::string &value) const;
-#endif
-
     void cache_dmrpp_contents();
 
     bool get_content_filters(std::map<std::string, std::string, std::less<>> &content_filters) const;

@@ -31,11 +31,11 @@ NGAP.inject_data_urls = true
 NGAP.UseDMRppCache = true
 
 # Defaults: 100 entries and purge 20 entries when the threshold is exceeded.
-# NGAP.DMRppCacheThreshold = 100
-# NGAP.DMRppCacheSpace = 20
+# NGAP.DMRppCacheSize = 100
+# NGAP.DMRppCachePurge = 20
 
 NGAP.UseCMRCache = true
 
 # Same defaults and meaning as for the CMR cache
-# NGAP.CMRCacheThreshold = 100
-# NGAP.CMRCacheSpace = 20
+# NGAP.CMRCacheSize = 100
+# NGAP.CMRCachePurge = 20

@@ -36,6 +36,7 @@
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <TheBESKeys.h>
+#include <BESLog.h>
 #include <BESUtil.h>
 
 #include "NgapRequestHandler.h"
@@ -46,19 +47,18 @@ using namespace libdap;
 using namespace ngap;
 
 // CMR caching
-unsigned int NgapRequestHandler::d_cmr_cache_threshold = 100;
-unsigned int NgapRequestHandler::d_cmr_cache_space = 20;
+unsigned int NgapRequestHandler::d_cmr_cache_size = 100;
+unsigned int NgapRequestHandler::d_cmr_cache_purge = 20;
 
 bool NgapRequestHandler::d_use_cmr_cache = false;
 MemoryCache<std::string> NgapRequestHandler::d_new_cmr_cache;
 
 // DMR++ caching
-unsigned int NgapRequestHandler::d_dmrpp_cache_threshold = 100;
-unsigned int NgapRequestHandler::d_dmrpp_cache_space = 20;
+unsigned int NgapRequestHandler::d_dmrpp_cache_size = 100;
+unsigned int NgapRequestHandler::d_dmrpp_cache_purge = 20;
 
-unordered_map<string, string> NgapRequestHandler::d_dmrpp_cache;
-queue<string> NgapRequestHandler::d_dmrpp_cache_entries;
 bool NgapRequestHandler::d_use_dmrpp_cache = false;
+MemoryCache<std::string> NgapRequestHandler::d_new_dmrpp_cache;
 
 NgapRequestHandler::NgapRequestHandler(const string &name) :
         BESRequestHandler(name)
@@ -70,21 +70,25 @@ NgapRequestHandler::NgapRequestHandler(const string &name) :
     NgapRequestHandler::d_use_cmr_cache 
         = TheBESKeys::TheKeys()->read_bool_key(USE_CMR_CACHE, NgapRequestHandler::d_use_cmr_cache);
     if (NgapRequestHandler::d_use_cmr_cache) {
-        d_new_cmr_cache.initialize(d_cmr_cache_threshold, d_cmr_cache_space);
-
-        NgapRequestHandler::d_cmr_cache_threshold
-                = TheBESKeys::TheKeys()->read_int_key(CMR_CACHE_THRESHOLD, NgapRequestHandler::d_cmr_cache_threshold);
-        NgapRequestHandler::d_cmr_cache_space
-                = TheBESKeys::TheKeys()->read_int_key(CMR_CACHE_SPACE, NgapRequestHandler::d_cmr_cache_space);
+        NgapRequestHandler::d_cmr_cache_size
+                = TheBESKeys::TheKeys()->read_int_key(CMR_CACHE_THRESHOLD, NgapRequestHandler::d_cmr_cache_size);
+        NgapRequestHandler::d_cmr_cache_purge
+                = TheBESKeys::TheKeys()->read_int_key(CMR_CACHE_SPACE, NgapRequestHandler::d_cmr_cache_purge);
+        if (!d_new_cmr_cache.initialize(d_cmr_cache_size, d_cmr_cache_purge)) {
+            ERROR_LOG("NgapRequestHandler::NgapRequestHandler() - failed to initialize CMR cache");
+        }
     }
 
     NgapRequestHandler::d_use_dmrpp_cache
             = TheBESKeys::TheKeys()->read_bool_key(USE_DMRPP_CACHE, NgapRequestHandler::d_use_dmrpp_cache);
     if (NgapRequestHandler::d_use_dmrpp_cache) {
-        NgapRequestHandler::d_dmrpp_cache_threshold
-                = TheBESKeys::TheKeys()->read_int_key(DMRPP_CACHE_THRESHOLD,  NgapRequestHandler::d_dmrpp_cache_threshold);
-        NgapRequestHandler::d_dmrpp_cache_space
-                = TheBESKeys::TheKeys()->read_int_key(DMRPP_CACHE_SPACE, NgapRequestHandler::d_dmrpp_cache_space);
+        NgapRequestHandler::d_dmrpp_cache_size
+                = TheBESKeys::TheKeys()->read_int_key(DMRPP_CACHE_THRESHOLD,  NgapRequestHandler::d_dmrpp_cache_size);
+        NgapRequestHandler::d_dmrpp_cache_purge
+                = TheBESKeys::TheKeys()->read_int_key(DMRPP_CACHE_SPACE, NgapRequestHandler::d_dmrpp_cache_purge);
+        if (!d_new_dmrpp_cache.initialize(d_dmrpp_cache_size, d_dmrpp_cache_purge)) {
+            ERROR_LOG("NgapRequestHandler::NgapRequestHandler() - failed to initialize DMR++ cache");
+        }
     }
 }
 
