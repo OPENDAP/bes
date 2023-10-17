@@ -33,11 +33,6 @@
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
 #include <BESVersionInfo.h>
-#include <BESTextInfo.h>
-#include "BESDapNames.h"
-#include "BESDataDDSResponse.h"
-#include "BESDDSResponse.h"
-#include "BESDASResponse.h"
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <TheBESKeys.h>
@@ -54,9 +49,8 @@ using namespace ngap;
 unsigned int NgapRequestHandler::d_cmr_cache_threshold = 100;
 unsigned int NgapRequestHandler::d_cmr_cache_space = 20;
 
-unordered_map<string, string> NgapRequestHandler::d_cmr_cache;
-queue<string> NgapRequestHandler::d_cmr_cache_entries;
 bool NgapRequestHandler::d_use_cmr_cache = false;
+MemoryCache<std::string> NgapRequestHandler::d_new_cmr_cache;
 
 // DMR++ caching
 unsigned int NgapRequestHandler::d_dmrpp_cache_threshold = 100;
@@ -76,6 +70,8 @@ NgapRequestHandler::NgapRequestHandler(const string &name) :
     NgapRequestHandler::d_use_cmr_cache 
         = TheBESKeys::TheKeys()->read_bool_key(USE_CMR_CACHE, NgapRequestHandler::d_use_cmr_cache);
     if (NgapRequestHandler::d_use_cmr_cache) {
+        d_new_cmr_cache.initialize(d_cmr_cache_threshold, d_cmr_cache_space);
+
         NgapRequestHandler::d_cmr_cache_threshold
                 = TheBESKeys::TheKeys()->read_int_key(CMR_CACHE_THRESHOLD, NgapRequestHandler::d_cmr_cache_threshold);
         NgapRequestHandler::d_cmr_cache_space
