@@ -435,6 +435,8 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
  * @note This function is ony used in unit tests (jhrg 10/16/23)
  * @param signed_url
  * @return True if the signed URL has expired, false otherwise.
+ * @todo Remove this since it is only used by tests and duplicates http::url::is_expired(). jhrg 10/18/23
+ * @see http::url::is_expired()
  */
 bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
     bool is_expired;
