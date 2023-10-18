@@ -221,7 +221,7 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
         return is_unsupported_type;
     }
 
-    xml_attribute fillValue_attr  = chunks.attribute("fillValue");
+    xml_attribute fillValue_attr = chunks.attribute("fillValue");
     if(!fillValue_attr) {
         // No fillValue attribute? Then we can be done, it's supported.
         return is_unsupported_type;
@@ -259,7 +259,17 @@ bool flagged_as_unsupported_type(xml_node var_node, string &unsupported_flag) {
     }
     else if(is_eq(fillValue_attr.value(),UNSUPPORTED_VARIABLE_LENGTH_STRING)) {
         unsupported_flag=fillValue_attr.value();
-        is_unsupported_type = true;
+
+        auto dim_node = var_node.child("Dim");
+        if(!dim_node) {
+            // No dims? Then this is a scalar String and it's cool.
+            // We dump the BS fillValue for one that makes some sense in Stringville
+            fillValue_attr.set_value("");
+            is_unsupported_type = false;
+        }
+        else {
+            is_unsupported_type = true;
+        }
     }
     else if(is_eq(fillValue_attr.value(),UNSUPPORTED_ARRAY)){
         unsupported_flag=fillValue_attr.value();
