@@ -363,13 +363,13 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                 stringstream msg(prolog);
                 msg << "UnsupportedTypeException: Your data granule contains a variable length H5T_STRING ";
                 msg << "as a fillValue type. This is not yet supported by the dmr++ creation machinery. ";
-                msg << "The variable/dataset type screening code should intercepted this prior. ";
+                msg << "The variable/dataset type screening code should have intercepted this prior. ";
                 msg  <<  "fillValue(" + to_string(fv_str.length()) +" chars): 0x";
                 for(auto c : fv_str){
                     msg << std::hex << +c ;
                 }
-                return fv_str;
-                //throw UnsupportedTypeException(msg.str());
+                //return fv_str;
+                throw UnsupportedTypeException(msg.str());
             }
             else {
                 string str_fv(value.begin(),value.end());
@@ -612,43 +612,14 @@ string byte_order_str(hid_t dataset){
 }
 
 
-void process_compact_layout_scalar(hid_t dataset, BaseType *btp);
+
 /**
  * Processes the hdf5 storage information for a variable whose data is stored in the H5D_CONTIGUOUS storage layout.
  * @param dataset The hdf5 dataset that is mate to the BaseType instance btp.
  * @param btp The dap BaseType variable which is to hold the information gleand from the hdf5 dataset.
  */
 void process_contiguous_layout_dariable(hid_t dataset, BaseType *btp){
-
     VERBOSE(cerr << prolog << "  Storage: contiguous" << endl);
-
-    if(btp->type() == dods_str_c){
-        if (H5Tis_variable_str(dataset) > 0) {
-            VERBOSE(cerr << prolog << "  Processing variable length string." << endl);
-            auto str = dynamic_cast<libdap::Str *>(btp);
-            vector<string> finstrval;   // passed by reference to read_vlen_string
-            // @TODO Why push an empty string into the first array position? WHY?
-            finstrval.emplace_back("");
-            read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-            string vlstr = finstrval[0];
-            VERBOSE(cerr << prolog << "           vlstr: " << vlstr << endl);
-        }
-        else {
-            VERBOSE(cerr << prolog << "  Checking fixed length string access as used in compact." << endl);
-
-            hid_t dtypeid = H5Dget_type(dataset);
-            VERBOSE(cerr << prolog << "   H5Dget_type(): " << dtypeid << endl);
-
-            auto memRequired = H5Tget_size(dtypeid);
-            VERBOSE(cerr << prolog << "   H5Tget_size(): " << memRequired << " (The size of the datatype in bytes)" << endl);
-
-            vector<uint8_t> values;
-            values.resize(memRequired);
-            get_data(dataset, reinterpret_cast<void *>(values.data()));
-            string fstr(values.begin(), values.end());
-            VERBOSE(cerr << prolog << "            fstr: '" << fstr << "'" << endl);
-        }
-    }
 
     haddr_t cont_addr = H5Dget_offset(dataset);
     hsize_t cont_size = H5Dget_storage_size(dataset);
@@ -1076,14 +1047,6 @@ string get_type_decl(BaseType *btp){
     return type_decl.str();
 }
 
-bool is_array(BaseType *btp){
-    bool its_an_array = false;
-    if(btp->is_vector_type()){
-
-
-    }
-    return its_an_array;
-}
 
 /**
  * @brief Examines the hdf5 dataset, dataset_id, and returns true if the dataset is encoded as an unsupported type.
@@ -1104,12 +1067,15 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
 
     switch (class_type) {
         case H5T_STRING: {
-            if (H5Tis_variable_str(h5_type_id) && isArray) {
+            if (H5Tis_variable_str(h5_type_id)) {
                 stringstream msgs;
                 msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
                 msgs << get_type_decl(btp) << " ";
-                msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of ";
-                msgs << "variable length strings (AVLS). This data architecture is not currently supported by ";
+                msgs << "which the underlying HDF5/NetCDF-4 file has stored as a";
+                msgs << (isArray?"n array of ":" ");
+                msgs << "variable length string";
+                msgs << (isArray?"s (AVLS). ":". ");
+                msgs << "This data architecture is not currently supported by ";
                 msgs << "the dmr++ creation machinery. One solution available to you is to rewrite the granule ";
                 msgs << "so that these arrays are represented as arrays of fixed length strings (AFLS). While ";
                 msgs << "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so ";
@@ -1242,6 +1208,13 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         try {
             string msg;
             if(is_unsupported_type(dataset, btp, msg)){
+
+                vector<string> finstrval;   // passed by reference to read_vlen_string
+                finstrval.emplace_back("");
+                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+                string vlstr = finstrval[0];
+                msg += " read_vlen_string(): " + vlstr + "\n";
+
                 // @TODO What should really happen in this case?
                 //   - Throw an exception?
                 //   - Elide the variable from the dmr++?
