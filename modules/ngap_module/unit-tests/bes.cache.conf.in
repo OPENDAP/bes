@@ -31,7 +31,7 @@ NGAP.inject_data_urls = true
 NGAP.UseCMRCache = true
 NGAP.UseDMRppCache = true
 
-NGAP.CMRCacheThreshold = 100
-NGAP.CMRCacheSpace = 20
-NGAP.DMRppCacheThreshold = 100
-NGAP.DMRppCacheSpace = 20
+NGAP.CMRCacheSize = 100
+NGAP.CMRCachePurge = 20
+NGAP.DMRppCacheSize = 100
+NGAP.DMRppCachePurge = 20

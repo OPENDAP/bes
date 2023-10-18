@@ -74,7 +74,7 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS =  NgapApiTest NgapRequestHandlerTest NgapContainerTest
+UNIT_TESTS =  MemoryCacheTest NgapApiTest NgapRequestHandlerTest NgapContainerTest
 else
 UNIT_TESTS =
 
@@ -99,3 +99,5 @@ NgapRequestHandlerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lnga
 NgapContainerTest_SOURCES = NgapContainerTest.cc
 NgapContainerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
 
+MemoryCacheTest_SOURCES = MemoryCacheTest.cc
+MemoryCacheTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
