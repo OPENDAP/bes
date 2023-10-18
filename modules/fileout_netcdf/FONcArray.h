@@ -110,6 +110,11 @@ private:
     void write_string_array(int ncid);
     void write_equal_length_string_array(int ncid);
 
+    void define_direct_io_filters(int ncid, int d_varid);
+    void obtain_filters_order(const string&,bool &,bool &, bool &, bool &, bool &);
+    void allocate_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &); 
+    void write_direct_io_data(int, int);
+
     FONcArray() = default;      // Used in some unit tests
     friend class FONcArrayTest;
 

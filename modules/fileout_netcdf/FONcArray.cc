@@ -41,6 +41,7 @@
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
+#include <BESUtil.h>
 
 #include "FONcRequestHandler.h" // For access to the handler's keys
 #include "FONcArray.h"
@@ -374,10 +375,12 @@ for( const auto &chunk_size:d_chunksizes)
         // order to define the variable for the netCDF file, we need to read
         // string data long before we actually write it out. Kind of a drag,
         // but not the end of the world. jhrg 5/18/21
+//#if 0
         if (d_is_dap4)
             d_a->intern_data();
         else
             d_a->intern_data(*get_eval(), *get_dds());
+//#endif
 
         // get the data from the dap array
         int array_length = d_a->length();
@@ -592,9 +595,47 @@ void FONcArray::define(int ncid) {
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
+// Add direct IO check
+    if (d_is_dap4)
+        d_a->intern_data();
+    else    
+        d_a->intern_data(*get_eval(), *get_dds());
+
+    bool d_io_flag = d_a->get_dio_flag();
+    BESDEBUG("fonc", "d_io_flag: "<<d_io_flag<<endl);
+    
+    if (d_io_flag) {
+        Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+        BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
+        for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
+            BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
+
+        for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
+            BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
+
+        for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
+            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
+            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
+            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
+            
+            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
+            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
+                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
+        }
+ 
+    }
+
+    // KENT: Debugging only
+    d_io_flag = false;
+
         BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << d_ncVersion << endl);
         if (isNetCDF4()) {
             BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
+
+          if (d_io_flag) {
+                define_direct_io_filters(ncid, d_varid);     
+          }
+          else {
             if (FONcRequestHandler::chunk_size == 0)
                 // I have no idea if chunksizes is needed in this case.
                 stax = nc_def_var_chunking(ncid, d_varid, NC_CONTIGUOUS, d_chunksizes.data());
@@ -629,6 +670,7 @@ void FONcArray::define(int ncid) {
                 }
             }
         }
+      }
 
         // Largely revised the fillvalue check code and add the check for the DAP4 case. KY 2021-05-10
         if (d_is_dap4) {
@@ -663,14 +705,16 @@ void FONcArray::define(int ncid) {
  * @param ncid The ID of the open netCDF file.
  */
 void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
+#if 0
     if (d_is_dap4)
         d_a->intern_data();
     else
         d_a->intern_data(*get_eval(), *get_dds());
+#endif
 
     // TODO: the ifndef NDEBUG #endif should be removed when direct IO is supported.
-#ifndef NDEBUG
     bool d_io_flag = d_a->get_dio_flag();
+#ifndef NDEBUG
     BESDEBUG("fonc", "d_io_flag: "<<d_io_flag<<endl);
     
     if (d_io_flag) {
@@ -693,7 +737,15 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
  
     }
 #endif
+ 
     
+    // Kent: debugging only
+    d_io_flag = false;
+    if (d_io_flag) {
+        write_direct_io_data(ncid,d_varid);
+        return;
+    }
+
     int stax;
 
     switch (var_type) {
@@ -848,10 +900,12 @@ void FONcArray::write_for_nc3_types(int ncid) {
             // detects the original variable was of type Byte and typecasts
             // each data value to a short.
             if (element_type == dods_byte_c || element_type == dods_uint8_c) {
+#if 0
                 if (d_is_dap4)
                     d_a->intern_data();
                 else
                     d_a->intern_data(*get_eval(), *get_dds());
+#endif
 
                 // There's no practical way to get rid of the value copy, be here we
                 // read directly from libdap::Array object's memory.
@@ -897,10 +951,12 @@ void FONcArray::write_for_nc3_types(int ncid) {
             }
 
             if (element_type == dods_uint16_c) {
+#if 0
                 if (d_is_dap4)
                     d_a->intern_data();
                 else
                     d_a->intern_data(*get_eval(), *get_dds());
+#endif
 
                 vector<int> data(d_nelements);
                 for (size_t d_i = 0; d_i < d_nelements; d_i++)
@@ -1096,4 +1152,181 @@ void FONcArray::write_for_nc4_types(int ncid) {
             throw BESInternalError(err, __FILE__, __LINE__);
     }
 }
+
+void FONcArray::define_direct_io_filters(int ncid, int d_varid) {
+
+    Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+    BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
+
+    string filters_string = dmrpp_vs_info.filter;
+    
+    bool has_fletcher_first = false;
+    bool has_fletcher_last = false;
+    bool has_shuffle = false;
+    bool has_2deflates = false;
+    bool has_1deflate = false;
+
+    obtain_filters_order(filters_string, has_fletcher_first, has_fletcher_last, has_shuffle, has_2deflates, has_1deflate);
+
+    int stax = 0;
+    stax = nc_def_var_chunking_direct_write(ncid, d_varid, NC_CHUNKED, dmrpp_vs_info.chunk_dims.data());
+    if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define direct_io chunking for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+    }
+
+    allocate_nc4_def_filters(ncid, d_varid, has_fletcher_first, has_fletcher_last, has_shuffle, has_2deflates, has_1deflate, dmrpp_vs_info.deflate_levels);
+
+
+        for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
+            BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
+
+        for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
+            BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
+
+        for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
+            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
+            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
+            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
+            
+            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
+            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
+                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
+        }
+
+}
+
+
+void FONcArray::obtain_filters_order(const string & filters, bool &has_fle_first, bool &has_fle_last, bool &has_shuffle, bool &has_2defs, bool &has_1def) {
+
+    vector<string> filter_array = BESUtil::split(filters, ' ' );
+
+    short num_defs = 0;
+    for (unsigned int i = 0; i <filter_array.size(); i++) {
+        if (filter_array[i] == "shuffle") 
+            has_shuffle = true;
+        else if (filter_array[i] == "deflate") 
+            num_defs++;
+        else if (filter_array[i] == "fletcher32") {
+            if (i ==0)
+                has_fle_first = true;
+            else 
+                has_fle_last = true;
+        }
+    }
+
+    if (num_defs == 1)
+        has_1def = true;
+    else if (num_defs == 2)
+        has_2defs = true;
+    else if (num_defs >2)
+        throw BESInternalError("Currently we don't support more than 2 deflate filters", __FILE__, __LINE__);
+
+}
+
+
+void FONcArray::allocate_nc4_def_filters(int ncid, int d_varid, bool has_fle_first, bool has_fle_last, bool has_shuffle, 
+                                         bool has_2defs, bool has_1def, const vector<unsigned int>& def_levs) {
+
+    int stax = 0;
+
+    if (has_1def && def_levs.size() !=1)
+        throw BESInternalError("The size of def_levs should be 1 for one deflate filter", __FILE__, __LINE__);
+
+    if (has_2defs && def_levs.size() !=2)
+        throw BESInternalError("The size of def_levs should be 2 for two deflate filters", __FILE__, __LINE__);
+
+    if (has_fle_first) {
+
+        stax = nc_def_var_fletcher32(ncid, d_varid, 1);
+        if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the fletcher32 filter for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+    }
+
+    if (has_shuffle) {
+        if (has_1def) {
+            stax = nc_def_var_deflate(ncid, d_varid, 1, 1, def_levs[0]);
+            if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the deflate filter for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+        else if (has_2defs) {
+            stax = nc_def_var_two_deflates(ncid, d_varid, 1, 1, def_levs[0], def_levs[1]);
+            if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the two deflate filters for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+    }
+    else {
+        if (has_1def) {
+            stax = nc_def_var_deflate(ncid, d_varid, 0, 1, def_levs[0]);
+            if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the deflate filter for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+        else if (has_2defs) {
+            stax = nc_def_var_two_deflates(ncid, d_varid, 0, 1, def_levs[0], def_levs[1]);
+            if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the two deflate filters for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+    }
+
+    if (has_fle_last) {
+        stax = nc_def_var_fletcher32(ncid, d_varid,1);   
+        if (stax != NC_NOERR) {
+            string err = "fileout.netcdf - Failed to define the filter fletcher32 for variable " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+    }
+
+}
+
+void FONcArray::write_direct_io_data(int ncid, int d_varid) {
+
+    char dummy_buffer[1];
+    int stax = nc_put_var(ncid, d_varid, dummy_buffer);
+    if (stax != NC_NOERR) {
+        string err = "fileout.netcdf - the direct IO version of nc_put_var error for variable " + d_varname;
+        FONcUtils::handle_error(stax , err, __FILE__, __LINE__);
+    }
+
+
+    Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+    for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
+
+            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
+            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
+            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
+            
+            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
+            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
+                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
+
+        Array::var_chunk_info_t vci = dmrpp_vs_info.var_chunk_info[i];
+
+        char *chunk_buf = new char[vci.chunk_buffer_size];
+
+        
+        // Use the vector later. 
+        memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);
+        stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(vci.chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);
+        if (stax != NC_NOERR) {
+            string err = "fileout.netcdf - nc4_write_chunk error for variable " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+
+        }
+        delete[] chunk_buf;
+    }
+ 
+}
+
 
