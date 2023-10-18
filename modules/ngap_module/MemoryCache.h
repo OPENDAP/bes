@@ -105,7 +105,7 @@ public:
     MemoryCache() = default;    // this makes testing easier
     MemoryCache(const MemoryCache *src) = delete;
     MemoryCache(unsigned int t, unsigned int s): d_max_items(t), d_purge_items(s) {}
-    ~MemoryCache() = default;
+    virtual ~MemoryCache() = default;
     MemoryCache &operator=(const MemoryCache *src) = delete;
 
     /**
@@ -160,7 +160,7 @@ public:
     }
 
     /// @brief How many items are in the cache
-    virtual unsigned int size() const { return d_cache.size(); }
+    virtual unsigned long size() const { return d_cache.size(); }
 
     /// @brief Clear the cache
     virtual void clear() { d_cache.clear(); d_fifo_keys.clear(); }
