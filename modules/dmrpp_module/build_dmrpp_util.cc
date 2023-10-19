@@ -1193,6 +1193,19 @@ hid_t get_h5_dataset_id(hid_t file, BaseType *btp, const unordered_set<string> &
     return dataset;
 }
 
+/**
+ * netCDF-4 variable can share the same name as a pure dimension name.
+ * When this case happens, the netCDF-4 will add "_nc4_non_coord_" to the variable name to
+ * distinguish the variable name from the correponding dimension name when storing in the HDF5.
+ * To emulate netCDF-4 model, the HDF5 handler will remove the "_nc4_non_coord_" from the variable in dmr.
+ * When obtaining this variable's information, we need to use the real HDF5 variable name.
+ * KY 2022-09-11
+ * When the above case occurs, a dimension name of this group must share with a variable name.
+ * So we will find these variables and put them into an unodered set.
+ *
+ * @param group
+ * @param nc4_non_coord_candidate
+ */
 void mk_nc4_non_coord_candidates(D4Group *group, unordered_set<string> &nc4_non_coord_candidate){
 
     // First obtain  dimension names.
@@ -1223,15 +1236,6 @@ void mk_nc4_non_coord_candidates(D4Group *group, unordered_set<string> &nc4_non_
  * to process all the variables in the DMR
  */
 void get_chunks_for_all_variables(hid_t file, D4Group *group) {
-
-    // netCDF-4 variable can share the same name as a pure dimension name. 
-    // When this case happens, the netCDF-4 will add "_nc4_non_coord_" to the variable name to
-    // distinguish the variable name from the correponding dimension name when storing in the HDF5. 
-    // To emulate netCDF-4 model, the HDF5 handler will remove the "_nc4_non_coord_" from the variable in dmr.
-    // When obtaining this variable's information, we need to use the real HDF5 variable name.
-    // KY 2022-09-11
-    // When the above case occurs, a dimension name of this group must share with a variable name.
-    // So we will find these variables and put them into an unodered set. 
 
     unordered_set<string> nc4_non_coord_candidate;
     mk_nc4_non_coord_candidates(group,nc4_non_coord_candidate);

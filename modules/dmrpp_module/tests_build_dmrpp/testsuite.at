@@ -5,7 +5,6 @@ AT_INIT([bes/modules/dmrpp_module/tests_build_dmrpp testsuite_dmrpp_tests])
 
 m4_include([build_dmrpp_macros.m4])
 
-
 ################################################################################
 # Test get_dmrpp using command line options
 #
@@ -107,4 +106,9 @@ AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_cont.h5])
 AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_chunk.h5])
 AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_compact.h5])
 
+
+################################################################################
+# Test variable length string scalar (vlss)
+#
+AT_GET_DMRPP_3_20([VariableLengthStringScalar - VLSS], [Scalar_contiguous_vlstr.h5],[vlss.baseline] )
 
