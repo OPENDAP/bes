@@ -1103,34 +1103,43 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
 }
 
 /**
+ * @brief Identifies, reads, and then stores a vlss in a DAP dmr++ variable using the compact representation
  *
  * @param dataset The HDF5 dataset id.
  * @param btp The BaseType pointer to the sister DAP class
  * @return Returns true if the variable was processed, false otherwise.
  */
 bool process_variable_length_string_scalar(const hid_t dataset, BaseType *btp){
-    // Do the vlss case as a compact variable.
-    // btp->type() == dods_str_c means a scalar string, if it was an array of strings it would be dods_array_c
-    if(btp->type() == dods_str_c && H5Tis_variable_str(H5Dget_type(dataset)) > 0) {
-        vector<string> finstrval;   // passed by reference to read_vlen_string
-        finstrval.emplace_back(""); // initialize array for it's trip to Cville
 
-        // Read the scalar string.
-        read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-        string vlstr = finstrval[0];
-        VERBOSE(cerr << prolog << " read_vlen_string(): " << vlstr << endl);
+    // btp->type() == dods_str_c means a scalar string, if it was an
+    // array of strings the type would be dods_array_c
 
-        // Convert variable to a compact representation
-        // so that its value can be stored in the dmr++
-        auto dc = toDC(btp);
-        dc->set_compact(true);
+    // I added the nested calls to the if statement so that they would
+    // only be executed for the scalar string case.
 
-        // And then set the value.
-        auto str = dynamic_cast<libdap::Str *>(btp);
-        str->set_value(vlstr);
-        str->set_read_p(true);
+    if(btp->type() == dods_str_c) {
+        auto h5_type_id = H5Dget_type(dataset);
+        if(H5Tis_variable_str(h5_type_id) > 0) {
+            vector<string> finstrval;   // passed by reference to read_vlen_string
+            finstrval.emplace_back(""); // initialize array for it's trip to Cville
 
-        return true;
+            // Read the scalar string.
+            read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+            string vlstr = finstrval[0];
+            VERBOSE(cerr << prolog << " read_vlen_string(): " << vlstr << endl);
+
+            // Convert variable to a compact representation
+            // so that its value can be stored in the dmr++
+            auto dc = toDC(btp);
+            dc->set_compact(true);
+
+            // And then set the value.
+            auto str = dynamic_cast<libdap::Str *>(btp);
+            str->set_value(vlstr);
+            str->set_read_p(true);
+
+            return true;
+        }
     }
     return false;
 }
@@ -1238,15 +1247,8 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         }
 
         try {
-            string msg;
+            string msg; // Return value parameter of is_unsupported_type()
             if(is_unsupported_type(dataset, btp, msg)){
-
-                // @TODO What should really happen in this case?
-                //   - Throw an exception?
-                //   - Elide the variable from the dmr++?
-                //   - Demote dataset/var to Attribute?
-                //   - Mark the variable as "unsupported" so that it's metadata are transmitted but
-                //     it's data cannot be read.
                 throw UnsupportedTypeException(msg);
             }
 
@@ -1259,12 +1261,6 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                 add_string_array_info(dataset, btp);
             }
             H5Dclose(dataset);
-        }
-        catch (UnsupportedTypeException &uste){
-            // TODO - If we are going to elide a variable because it is an unsupported type, I think
-            //  that this would be the place to do it.
-            cerr << prolog << "Caught UnsupportedTypeException for variable " << btp->FQN() << " message: " << uste.what() << endl;
-            throw;
         }
         catch (...) {
             H5Dclose(dataset);
