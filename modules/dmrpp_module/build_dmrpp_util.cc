@@ -1112,11 +1112,7 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
 bool process_variable_length_string_scalar(const hid_t dataset, BaseType *btp){
 
     // btp->type() == dods_str_c means a scalar string, if it was an
-    // array of strings the type would be dods_array_c
-
-    // I added the nested calls to the if statement so that they would
-    // only be executed for the scalar string case.
-
+    // array of strings then btp->type() == dods_array_c would be true
     if(btp->type() == dods_str_c) {
         auto h5_type_id = H5Dget_type(dataset);
         if(H5Tis_variable_str(h5_type_id) > 0) {
