@@ -65,15 +65,15 @@ public:
     }
 
     void test_inject_data_url_set() {
-        NgapContainer container;
         TheBESKeys::TheKeys()->set_key(NGAP_INJECT_DATA_URL_KEY, "true");
+        NgapContainer container;
         CPPUNIT_ASSERT_MESSAGE("The default value should be true", container.inject_data_url());
     }
 
     void test_get_content_filters_default() {
         TheBESKeys::TheKeys()->set_key(NGAP_INJECT_DATA_URL_KEY, "false"); // clear this to the default
-        map<string, string, std::less<>> content_filters;
         NgapContainer container;
+        map<string, string, std::less<>> content_filters;
         bool do_content_filtering = container.get_content_filters(content_filters);
         CPPUNIT_ASSERT_MESSAGE("The without setting the key, 'do_content_filtering' should be false", !do_content_filtering);
         CPPUNIT_ASSERT_MESSAGE("The content_filters v/r parameter should be empty (unaltered)", content_filters.empty());

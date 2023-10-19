@@ -47,7 +47,8 @@ namespace ngap {
 class NgapApi {
 private:
     static std::string get_cmr_search_endpoint_url();
-    static std::string find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response);
+    static std::string find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path,
+                                                                   rapidjson::Document &cmr_granule_response);
     static std::string build_cmr_query_url(const std::string &restified_path);
     static std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
 
@@ -60,7 +61,7 @@ public:
     NgapApi &operator=(const NgapApi &other) = delete;
 
     static std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path,
-                                                           const std::string &uid = "");
+                                                                  const std::string &uid = "");
 
     static bool signed_url_is_expired(const http::url &signed_url) ;
 };

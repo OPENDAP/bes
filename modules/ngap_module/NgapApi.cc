@@ -25,7 +25,6 @@
 #include "config.h"
 
 #include <sstream>
-#include <memory>
 #include <ctime>
 
 #include <curl/curl.h>
@@ -37,8 +36,8 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
+#include "CurlUtils.h"
 #include "url_impl.h"
-#include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
@@ -411,17 +410,6 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
     string cmr_query_url = build_cmr_query_url(restified_path);
 
     BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
-
-#if 0
-    BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-    auto cmr_query_url_ptr = make_shared<http::url>(cmr_query_url);
-    http::RemoteResource cmr_query(cmr_query_url_ptr, uid);
-    cmr_query.retrieve_resource();
-
-    rapidjson::Document cmr_response;
-    string cmr_json_string = BESUtil::file_to_string(cmr_query.get_filename());
-    cmr_response.Parse(cmr_json_string.c_str());
-#endif
 
     vector<char> buffer;
     curl::http_get(cmr_query_url, buffer);

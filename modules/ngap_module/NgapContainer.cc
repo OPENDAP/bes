@@ -42,7 +42,6 @@
 #include "BESContextManager.h"
 #include "CurlUtils.h"
 #include "HttpUtils.h"
-#include "RemoteResource.h"
 
 #include "NgapRequestHandler.h"
 #include "NgapContainer.h"
@@ -57,12 +56,6 @@ using namespace bes;
 namespace ngap {
 
 void NgapContainer::_duplicate(NgapContainer &copy_to) {
-#if 0
-    if (copy_to.d_dmrpp_rresource) {
-        throw BESInternalError("The Container has already been accessed, cannot duplicate.", __FILE__, __LINE__);
-    }
-    copy_to.d_dmrpp_rresource = d_dmrpp_rresource;
-#endif
     copy_to.d_ngap_path = d_ngap_path;
     BESContainer::_duplicate(copy_to);
 }
@@ -181,19 +174,6 @@ NgapContainer::get_content_filters(map<string, string, std::less<>> &content_fil
     return false;
 }
 
-#if 0
-
-void
-NgapContainer::cache_dmrpp_contents() {
-    string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
-
-    NgapRequestHandler::d_new_dmrpp_cache.put(get_real_name(), resource_content);
-
-    set_attributes("cached");    // This means access() returns cache content and not a filename. hack. jhrg 9/22/23
-}
-
-#endif
-
 /**
  * @brief Should the server inject the data URL into DMR++ documents?
  *
@@ -201,7 +181,7 @@ NgapContainer::cache_dmrpp_contents() {
  * code should inject the data URL, false otherwise.
  */
 bool NgapContainer::inject_data_url() {
-    static bool result = TheBESKeys::TheKeys()->read_bool_key(NGAP_INJECT_DATA_URL_KEY, false);
+    bool result = TheBESKeys::TheKeys()->read_bool_key(NGAP_INJECT_DATA_URL_KEY, false);
     BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
     return result;
 }
@@ -273,65 +253,7 @@ string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
 
     return dmrpp_string;    // this should return the dmr++ file name from the NgapCache
-
-#if 0
-    auto dmrpp_url = make_shared<http::url>(dmrpp_url_str, true);
-
-    BESDEBUG(NGAP_CACHE, prolog << "Cache miss, translated URL: " << get_real_name() << endl);
-    if (!d_dmrpp_rresource) {
-        // Assume the DMR++ is a sidecar file to the granule. jhrg 9/20/23
-        string dmrpp_url_str = get_real_name() + ".dmrpp";
-        auto dmrpp_url = make_shared<http::url>(dmrpp_url_str, true);
-        {
-            d_dmrpp_rresource = make_shared<http::RemoteResource>(dmrpp_url);
-#ifndef NDEBUG
-            BESStopWatch besTimer2;
-            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
-                besTimer2.start("DMR++ retrieval: "+ dmrpp_url->str());
-            }
-#endif
-            d_dmrpp_rresource->retrieve_resource();
-            // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
-            map<string,string, std::less<>> content_filters;
-            if (get_content_filters(content_filters)) {
-                string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
-                filter_response(content_filters, resource_content);
-                // This call will invalidate the file descriptor of the RemoteResource. jhrg 3/9/23
-                BESUtil::string_to_file(d_dmrpp_rresource->get_filename(), resource_content);
-            }
-
-            cache_dmrpp_contents();
-        }
-        BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url->str() << endl);
-    }
-
-    string dmrpp_file_name = d_dmrpp_rresource->get_filename();
-    BESDEBUG(MODULE, prolog << "Using local temporary file: " << dmrpp_file_name << endl);
-
-    set_container_type(d_dmrpp_rresource->get_type());
-
-    BESDEBUG(MODULE, prolog << "Type: " << get_container_type() << endl);
-    BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
-
-    return dmrpp_file_name;    // this should return the dmr++ file name from the NgapCache
-#endif
 }
-
-
-#if 0
-
-/** @brief release the resources
- *
- * Release the resource
- *
- * @return true if the resource is released successfully and false otherwise
- */
-bool NgapContainer::release() {
-    BESDEBUG(MODULE, prolog << "no-op" << endl);
-    return true;
-}
-
-#endif
 
 /** @brief dumps information about this object
  *
@@ -345,14 +267,6 @@ void NgapContainer::dump(ostream &strm) const {
          << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
-#if 0
-    if (d_dmrpp_rresource) {
-        strm << BESIndent::LMarg << "RemoteResource.get_filename(): " << d_dmrpp_rresource->get_filename()
-             << endl;
-    } else {
-        strm << BESIndent::LMarg << "response not yet obtained" << endl;
-    }
-#endif
     BESIndent::UnIndent();
 }
 
