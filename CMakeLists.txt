@@ -1632,6 +1632,8 @@ add_executable(
 	modules/ngap_module/NgapRequestHandler.cc
     modules/ngap_module/NgapRequestHandler.h
     modules/ngap_module/unit-tests/NgapApiTest.cc
+	modules/ngap_module/unit-tests/MemoryCacheTest.cc
+
 
     modules/ugrid_functions/unit-tests/BindTest.cc
     modules/ugrid_functions/unit-tests/GFTests.cc
