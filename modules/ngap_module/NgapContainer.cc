@@ -41,6 +41,7 @@
 #include "BESUtil.h"
 #include "BESContextManager.h"
 #include "CurlUtils.h"
+#include "HttpUtils.h"
 #include "RemoteResource.h"
 
 #include "NgapRequestHandler.h"
@@ -56,10 +57,12 @@ using namespace bes;
 namespace ngap {
 
 void NgapContainer::_duplicate(NgapContainer &copy_to) {
+#if 0
     if (copy_to.d_dmrpp_rresource) {
         throw BESInternalError("The Container has already been accessed, cannot duplicate.", __FILE__, __LINE__);
     }
     copy_to.d_dmrpp_rresource = d_dmrpp_rresource;
+#endif
     copy_to.d_ngap_path = d_ngap_path;
     BESContainer::_duplicate(copy_to);
 }
@@ -178,7 +181,7 @@ NgapContainer::get_content_filters(map<string, string, std::less<>> &content_fil
     return false;
 }
 
-// Write a simple file --> string and string --> file set of functions.
+#if 0
 
 void
 NgapContainer::cache_dmrpp_contents() {
@@ -189,6 +192,8 @@ NgapContainer::cache_dmrpp_contents() {
     set_attributes("cached");    // This means access() returns cache content and not a filename. hack. jhrg 9/22/23
 }
 
+#endif
+
 /**
  * @brief Should the server inject the data URL into DMR++ documents?
  *
@@ -196,19 +201,19 @@ NgapContainer::cache_dmrpp_contents() {
  * code should inject the data URL, false otherwise.
  */
 bool NgapContainer::inject_data_url() {
-    bool result = TheBESKeys::TheKeys()->read_bool_key(NGAP_INJECT_DATA_URL_KEY, false);
+    static bool result = TheBESKeys::TheKeys()->read_bool_key(NGAP_INJECT_DATA_URL_KEY, false);
     BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
     return result;
 }
 
 /**
- * @brief access the remote target response by making the remote request
+ * @brief Get the DMR++ from a remote source or a local cache
  *
  * @note The Container::access() methods are called by the framework when it
  * runs execute_commands() and then, often, a second time in the RequestHandler
  * code when it is looking for data.
  *
- * @return full path to the remote request response data file
+ * @return The DMR++ as a string.
  * @throws BESError if there is a problem making the remote request
  */
 string NgapContainer::access() {
@@ -218,19 +223,59 @@ string NgapContainer::access() {
 
 #ifndef NDEBUG
     BESStopWatch besTimer;
-    if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
+    if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
         besTimer.start("NGAP Container access: " + get_real_name());
     }
 #endif
 
     string dmrpp_string;
-    if (NgapRequestHandler::d_new_dmrpp_cache.get(get_real_name(), dmrpp_string) /*is_dmrpp_cached()*/) {
+    if (NgapRequestHandler::d_use_dmrpp_cache && NgapRequestHandler::d_new_dmrpp_cache.get(get_real_name(), dmrpp_string)) {
         // set_container_type() because access() is called from within the framework and the DMR++ handler
-        BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
+        BESDEBUG(NGAP_CACHE, prolog << "Cache hit, DMR++: " << get_real_name() << endl);
         set_container_type("dmrpp");
-        set_attributes("cached");
+        set_attributes("as-string");
         return dmrpp_string;
     }
+
+    // It's not in the cache, so get the DMR++ as a string.
+    string dmrpp_url_str = get_real_name() + ".dmrpp";
+
+    // Get the DMR++ as a string. jhrg 10/19/23
+#ifndef NDEBUG
+    BESStopWatch besTimer2;
+    if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
+        besTimer2.start("DMR++ retrieval: " + dmrpp_url_str);
+    }
+#endif
+
+    vector<char> buffer;
+    curl::http_get(dmrpp_url_str, buffer);
+    copy(buffer.begin(), buffer.end(), back_inserter(dmrpp_string));
+    buffer.clear(); // keep the original for as little time as possible.
+
+    map<string,string, std::less<>> content_filters;
+    if (get_content_filters(content_filters)) {
+        filter_response(content_filters, dmrpp_string);
+    }
+
+    if (NgapRequestHandler::d_use_dmrpp_cache) {
+        NgapRequestHandler::d_new_dmrpp_cache.put(get_real_name(), dmrpp_string);
+        BESDEBUG(NGAP_CACHE, prolog << "Cache miss, cached DMR++: " << get_real_name() << endl);
+    }
+
+    set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
+
+    string type;
+    http::get_type_from_url(dmrpp_url_str, type);   // lookup the URL in the BES Catalog (uses TypeMatch)
+    set_container_type(type);
+
+    BESDEBUG(MODULE, prolog << "Type: " << get_container_type() << endl);
+    BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
+
+    return dmrpp_string;    // this should return the dmr++ file name from the NgapCache
+
+#if 0
+    auto dmrpp_url = make_shared<http::url>(dmrpp_url_str, true);
 
     BESDEBUG(NGAP_CACHE, prolog << "Cache miss, translated URL: " << get_real_name() << endl);
     if (!d_dmrpp_rresource) {
@@ -269,8 +314,11 @@ string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
 
     return dmrpp_file_name;    // this should return the dmr++ file name from the NgapCache
+#endif
 }
 
+
+#if 0
 
 /** @brief release the resources
  *
@@ -282,6 +330,8 @@ bool NgapContainer::release() {
     BESDEBUG(MODULE, prolog << "no-op" << endl);
     return true;
 }
+
+#endif
 
 /** @brief dumps information about this object
  *
@@ -295,12 +345,14 @@ void NgapContainer::dump(ostream &strm) const {
          << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
+#if 0
     if (d_dmrpp_rresource) {
         strm << BESIndent::LMarg << "RemoteResource.get_filename(): " << d_dmrpp_rresource->get_filename()
              << endl;
     } else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }
+#endif
     BESIndent::UnIndent();
 }
 
