@@ -981,6 +981,10 @@ void DmrppArray::read_one_chunk_dio() {
 
     // For this version, we just read the whole chunk all at once.
     the_one_chunk->read_chunk_dio();
+    reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
+    char *source_buffer = the_one_chunk->get_rbuf();
+    char *target_buffer = get_buf();
+    memcpy(target_buffer, source_buffer , the_one_chunk->get_size());
 
 }
 
@@ -2579,9 +2583,10 @@ bool DmrppArray::use_direct_io_opt() {
     if (has_deflate_filter && this->get_uses_fill_value() && this->get_var_chunks_storage_size() == 0) 
             is_data_all_fvalues = true;
 
-    if (has_deflate_filter && !is_data_all_fvalues)
-        ret_value = true;
-    
+    if (has_deflate_filter && !is_data_all_fvalues) {
+        if (this->get_deflate_levels().empty() == false)
+            ret_value = true;
+    }
     return ret_value;
 } 
 

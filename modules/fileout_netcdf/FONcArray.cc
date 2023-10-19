@@ -629,7 +629,7 @@ void FONcArray::define(int ncid) {
 
     // KENT: Debugging only
     // KENT: Need to get the indentations corrected.
-    d_io_flag = false;
+    //d_io_flag = false;
 
         BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << d_ncVersion << endl);
         if (isNetCDF4()) {
@@ -747,7 +747,7 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
  
     
     // KENT: debugging only
-    d_io_flag = false;
+    //d_io_flag = false;
     if (d_io_flag) {
         write_direct_io_data(ncid,d_varid);
         return;
@@ -1322,9 +1322,12 @@ void FONcArray::write_direct_io_data(int ncid, int d_varid) {
 
         // KENT: may use the vector to replace new later. 
         char *chunk_buf = new char[vci.chunk_buffer_size];
+            BESDEBUG("fonc", "before memory copy" <<endl);
         memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);
+            BESDEBUG("fonc", "after memcpy: "<<endl);
 
         stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(vci.chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);
+            BESDEBUG("fonc", "after nc4_write_chunk: "<<endl);
         if (stax != NC_NOERR) {
             string err = "fileout.netcdf - nc4_write_chunk error for variable " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
