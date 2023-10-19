@@ -2024,7 +2024,7 @@ bool DmrppArray::read()
         if (array_to_read->get_chunks_size() == 1) {
             BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
             // KENT: here we need to add the handling of direct chunk IO for one chunk. 
-            if (0)
+            if (this->get_dio_flag())
                 array_to_read->read_one_chunk_dio();
             else 
                 array_to_read->read_contiguous();    // Throws on various errors
@@ -2034,7 +2034,7 @@ bool DmrppArray::read()
                 BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
                  // KENT: Only here we need to consider the direct buffer IO.
                 // The best way is to hold another function but with direct buffer
-                if (0)
+                if (this->get_dio_flag())
                     array_to_read->read_chunks_dio_unconstrained();
                 else 
                     array_to_read->read_chunks_unconstrained();
