@@ -1067,7 +1067,7 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
 
     switch (class_type) {
         case H5T_STRING: {
-            if (H5Tis_variable_str(h5_type_id)) {
+            if (H5Tis_variable_str(h5_type_id) && isArray) {
                 stringstream msgs;
                 msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
                 msgs << get_type_decl(btp) << " ";
@@ -1102,6 +1102,38 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     return is_unsupported;
 }
 
+/**
+ *
+ * @param dataset The HDF5 dataset id.
+ * @param btp The BaseType pointer to the sister DAP class
+ * @return Returns true if the variable was processed, false otherwise.
+ */
+bool process_variable_length_string_scalar(const hid_t dataset, BaseType *btp){
+    // Do the vlss case as a compact variable.
+    // btp->type() == dods_str_c means a scalar string, if it was an array of strings it would be dods_array_c
+    if(btp->type() == dods_str_c && H5Tis_variable_str(H5Dget_type(dataset)) > 0) {
+        vector<string> finstrval;   // passed by reference to read_vlen_string
+        finstrval.emplace_back(""); // initialize array for it's trip to Cville
+
+        // Read the scalar string.
+        read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+        string vlstr = finstrval[0];
+        VERBOSE(cerr << prolog << " read_vlen_string(): " << vlstr << endl);
+
+        // Convert variable to a compact representation
+        // so that its value can be stored in the dmr++
+        auto dc = toDC(btp);
+        dc->set_compact(true);
+
+        // And then set the value.
+        auto str = dynamic_cast<libdap::Str *>(btp);
+        str->set_value(vlstr);
+        str->set_read_p(true);
+
+        return true;
+    }
+    return false;
+}
 /**
  * @brief Iterate over all the variables in a DMR and get their chunk info
  *
@@ -1209,12 +1241,6 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             string msg;
             if(is_unsupported_type(dataset, btp, msg)){
 
-                vector<string> finstrval;   // passed by reference to read_vlen_string
-                finstrval.emplace_back("");
-                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-                string vlstr = finstrval[0];
-                msg += " read_vlen_string(): " + vlstr + "\n";
-
                 // @TODO What should really happen in this case?
                 //   - Throw an exception?
                 //   - Elide the variable from the dmr++?
@@ -1224,11 +1250,14 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                 throw UnsupportedTypeException(msg);
             }
 
-            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
-            get_variable_chunk_info(dataset, btp);
+            if(!process_variable_length_string_scalar(dataset,btp)) {
 
-            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
-            add_string_array_info(dataset, btp);
+                VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
+                get_variable_chunk_info(dataset, btp);
+
+                VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
+                add_string_array_info(dataset, btp);
+            }
             H5Dclose(dataset);
         }
         catch (UnsupportedTypeException &uste){
@@ -1244,6 +1273,9 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     }
 
     // all groups in the group
+    // for(auto g:group->groups())
+    //     get_chunks_for_all_variables(file, g);
+
     for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
         get_chunks_for_all_variables(file, *g);
     }
