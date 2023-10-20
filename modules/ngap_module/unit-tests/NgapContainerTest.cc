@@ -36,8 +36,6 @@
 #include "NgapContainer.h"
 #include "NgapRequestHandler.h"
 
-#include "test_config.h"
-
 #include "run_tests_cppunit.h"
 
 using namespace std;
@@ -272,7 +270,6 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(NgapContainerTest);
 
 } // namespace dmrpp
-
 
 int main(int argc, char*argv[])
 {
