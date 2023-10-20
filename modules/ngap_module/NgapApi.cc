@@ -24,40 +24,23 @@
 
 #include "config.h"
 
-//#include <cstdio>
-//#include <cstring>
-#include <iostream>
 #include <sstream>
-#include <memory>
-#include <time.h>
+#include <ctime>
+
 #include <curl/curl.h>
-
-//#include <libdap/util.h>
-//#include <libdap/debug.h>
-
 #include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-//#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
 
-//#include "BESError.h"
 #include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
 #include "BESInternalError.h"
-
 #include "BESDebug.h"
 #include "BESUtil.h"
-#include "BESStopWatch.h"
-#include "BESLog.h"
 #include "TheBESKeys.h"
-//#include "CurlUtils.h"
+#include "CurlUtils.h"
 #include "url_impl.h"
-#include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
-// #include "NgapError.h"
 
 using namespace std;
 
@@ -67,34 +50,28 @@ namespace ngap {
 
 const unsigned int REFRESH_THRESHOLD = 3600; // An hour
 
-
-NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL),
-                     d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
-    bool found;
-    string cmr_hostname;
-    TheBESKeys::TheKeys()->get_value(NGAP_CMR_HOSTNAME_KEY, cmr_hostname, found);
-    if (found) {
-        d_cmr_hostname = cmr_hostname;
-    }
-
-    string cmr_search_endpoint_path;
-    TheBESKeys::TheKeys()->get_value(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY, cmr_search_endpoint_path, found);
-    if (found) {
-        d_cmr_search_endpoint_path = cmr_search_endpoint_path;
-    }
-
-
-}
-
+/**
+ * @brief Get the CMR search endpoint URL using information from the BES Keys.
+ * This method only reads the BES keys once and caches the results, including
+ * the assembled URL.
+ * @return The URL used to access CMR.
+ */
 std::string NgapApi::get_cmr_search_endpoint_url() {
-    return BESUtil::assemblePath(d_cmr_hostname, d_cmr_search_endpoint_path);
-}
+    static string cmr_search_endpoint_url;
+    if (cmr_search_endpoint_url.empty()) {
+        string cmr_hostname = TheBESKeys::TheKeys()->read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
+        string cmr_search_endpoint_path = TheBESKeys::TheKeys()->read_string_key(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY,
+                                                                            DEFAULT_CMR_SEARCH_ENDPOINT_PATH);
+        cmr_search_endpoint_url = BESUtil::assemblePath(cmr_hostname, cmr_search_endpoint_path);
+    }
 
+    return cmr_search_endpoint_url;
+}
 
 /**
  * @brief Converts an NGAP restified path into the corresponding CMR query URL.
  *
- * @param restified_path The resitified path to convert
+ * @param restified_path The restified path to convert
  * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
  * granule specified in the restified path.
  */
@@ -146,7 +123,6 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
     collection_index += use_collection_concept_id ? string(NGAP_CONCEPTS_KEY).size() : string(
             NGAP_COLLECTIONS_KEY).size();
 
-
     size_t granule_index = r_path.find(NGAP_GRANULES_KEY);
     if (granule_index == string::npos) {
         stringstream msg;
@@ -197,6 +173,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
 
         curl_easy_cleanup(ceh);
     }
+
     return cmr_url;
 }
 
@@ -212,7 +189,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
  *
  * More Info Here: https://wiki.earthdata.nasa.gov/display/DUTRAIN/Feature+analysis%3A+Restified+URL+for+OPENDAP+Data+Access
  *
- * @param restified_path The resitified path to convert
+ * @param restified_path The restified path to convert
  * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
  * granule specified in the restified path.
  */
@@ -315,10 +292,7 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
  */
 std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path,
                                                                  rapidjson::Document &cmr_granule_response) {
-
-    string data_access_url;
-
-    rapidjson::Value &val = cmr_granule_response["hits"];
+    const rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
     if (hits < 1) {
         throw BESNotFoundError(string("The specified path '").append(restified_path).append(
@@ -326,9 +300,14 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
     }
 
     rapidjson::Value &items = cmr_granule_response["items"];
-    if (items.IsArray()) {
-        stringstream ss;
-        if (BESDebug::IsSet(MODULE)) {
+    if (!items.IsArray()) {
+        throw BESInternalError(string("ERROR! The CMR response did not contain the data URL information: ")
+                                        + restified_path, __FILE__, __LINE__);
+    }
+    else {
+        // Search the items array for the first item that contains a RelatedUrls array
+        if (BESISDEBUG(MODULE)) {
+            stringstream ss;
             const string RJ_TYPE_NAMES[] = {string("kNullType"), string("kFalseType"), string("kTrueType"),
                                             string("kObjectType"), string("kArrayType"), string("kStringType"),
                                             string("kNumberType")};
@@ -338,7 +317,6 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
         }
 
         rapidjson::Value &items_obj = items[0];
-        //  rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember("umm");
         auto mitr = items_obj.FindMember("umm");
 
         rapidjson::Value &umm = mitr->value;
@@ -355,7 +333,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
 
         BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
 
-        bool noSubtype;
+        string data_access_url;
         for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
             rapidjson::Value &obj = related_urls[i];
             mitr = obj.FindMember("URL");
@@ -364,7 +342,8 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
                 err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
                 throw BESInternalError(err.str(), __FILE__, __LINE__);
             }
-            rapidjson::Value &r_url = mitr->value;
+
+            const rapidjson::Value &r_url = mitr->value;
 
             mitr = obj.FindMember("Type");
             if (mitr == obj.MemberEnd()) {
@@ -372,9 +351,10 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
                 err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
                 throw BESInternalError(err.str(), __FILE__, __LINE__);
             }
-            rapidjson::Value &r_type = mitr->value;
 
-            noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
+            const rapidjson::Value &r_type = mitr->value;
+
+            bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
 
             BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
                                     " URL: '" << r_url.GetString() << "'" <<
@@ -386,19 +366,19 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
                 // Because a member of RelatedUrls may contain a URL of Type GET DATA with the s3:// protocol
                 // as well as a Type GET DATA URL which uses https:// or http://
                 string candidate_url = r_url.GetString();
-                if (candidate_url.substr(0, 8) == "https://" || candidate_url.substr(0, 7) == "http://") {
+                if (candidate_url.compare(0, 8, "https://") == 0 || candidate_url.compare(0, 7, "http://") == 0) {
                     data_access_url = candidate_url;
                 }
             }
         }
-    }
 
-    if (data_access_url.empty()) {
-        throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
-                               __FILE__, __LINE__);
-    }
+        if (data_access_url.empty()) {
+            throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
+                                   __FILE__, __LINE__);
+        }
 
-    return data_access_url;
+        return data_access_url;
+    }
 }
 
 /**
@@ -423,10 +403,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
  *
  * @param restified_path The name to decompose.
  */
-string NgapApi::convert_ngap_resty_path_to_data_access_url(
-        const std::string &restified_path,
-        const std::string &uid
-) {
+string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &restified_path) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     string data_access_url;
 
@@ -434,28 +411,13 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(
 
     BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
-    BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-    auto cmr_query_url_ptr = make_shared<http::url>(cmr_query_url);
-    http::RemoteResource cmr_query(cmr_query_url_ptr, uid);
-    {
-#ifndef NDEBUG
-        BESStopWatch besTimer;
-        if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
-            besTimer.start("CMR Query: " + cmr_query_url);
-        }
-#endif
-        cmr_query.retrieve_resource();
-    }
+    vector<char> buffer;
+    curl::http_get(cmr_query_url, buffer);
+    string cmr_json_string(buffer.begin(), buffer.end());
+    buffer.clear(); // keep the original for as little time as possible.
 
     rapidjson::Document cmr_response;
-    string cmr_json_string = BESUtil::file_to_string(cmr_query.get_filename());
     cmr_response.Parse(cmr_json_string.c_str());
-
-#if 0
-    string cmr_json = BESUtil::file_to_string(cmr_query.get_filename());
-    //rapidjson::Document cmr_response = cmr_query.get_as_json();
-#endif
-
     data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
 
     BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ")" << endl);
@@ -463,7 +425,16 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(
     return data_access_url;
 }
 
-
+/**
+ * @brief Has the signed S3 URL expired?
+ * If neither the CloudFront Expires header nor the AWS Expires header are present, then
+ * this function returns true.
+ * @note This function is ony used in unit tests (jhrg 10/16/23)
+ * @param signed_url
+ * @return True if the signed URL has expired, false otherwise.
+ * @todo Remove this since it is only used by tests and duplicates http::url::is_expired(). jhrg 10/18/23
+ * @see http::url::is_expired()
+ */
 bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
     bool is_expired;
     time_t now;
@@ -475,6 +446,7 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
     string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
     time_t ingest_time = signed_url.ingest_time();
 
+    // If both cf_expires and aws_expires are empty, this code returns true. jhrg 10/13/23
     if (!cf_expires.empty()) { // CloudFront expires header?
         expires = stoll(cf_expires);
         BESDEBUG(MODULE, prolog << "Using " << CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
@@ -485,44 +457,47 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
         // By default we'll use the time we made the URL object, ingest_time
         time_t start_time = ingest_time;
         // But if there's an AWS Date we'll parse that and compute the time
-        // @TODO move to NgapApi::decompose_url() and add the result to the map
         string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
         if (!aws_date.empty()) {
-            string date = aws_date; // 20200624T175046Z
-            string year = date.substr(0, 4);
-            string month = date.substr(4, 2);
-            string day = date.substr(6, 2);
-            string hour = date.substr(9, 2);
-            string minute = date.substr(11, 2);
-            string second = date.substr(13, 2);
+            string year = aws_date.substr(0, 4);
+            string month = aws_date.substr(4, 2);
+            string day = aws_date.substr(6, 2);
+            string hour = aws_date.substr(9, 2);
+            string minute = aws_date.substr(11, 2);
+            string second = aws_date.substr(13, 2);
 
-            BESDEBUG(MODULE, prolog << "date: " << date <<
+            BESDEBUG(MODULE, prolog << "date: " << aws_date <<
                                     " year: " << year << " month: " << month << " day: " << day <<
                                     " hour: " << hour << " minute: " << minute << " second: " << second << endl);
 
-            struct tm *ti = gmtime(&now);
-            ti->tm_year = stoll(year) - 1900;
-            ti->tm_mon = stoll(month) - 1;
-            ti->tm_mday = stoll(day);
-            ti->tm_hour = stoll(hour);
-            ti->tm_min = stoll(minute);
-            ti->tm_sec = stoll(second);
+            struct tm ti{}; // NB: Calling gmtime_r() is an initialization hack since some fields are not set here.
+            if (gmtime_r(&now, &ti) == nullptr)
+                throw BESInternalError("Could not get the current time, gmtime_r() failed!", __FILE__, __LINE__);
+            ti.tm_year = stoi(year) - 1900;
+            ti.tm_mon = stoi(month) - 1;
+            ti.tm_mday = stoi(day);
+            ti.tm_hour = stoi(hour);
+            ti.tm_min = stoi(minute);
+            ti.tm_sec = stoi(second);
 
-            BESDEBUG(MODULE, prolog << "ti->tm_year: " << ti->tm_year <<
-                                    " ti->tm_mon: " << ti->tm_mon <<
-                                    " ti->tm_mday: " << ti->tm_mday <<
-                                    " ti->tm_hour: " << ti->tm_hour <<
-                                    " ti->tm_min: " << ti->tm_min <<
-                                    " ti->tm_sec: " << ti->tm_sec << endl);
+            BESDEBUG(MODULE, prolog << "ti.tm_year: " << ti.tm_year <<
+                                    " ti.tm_mon: " << ti.tm_mon <<
+                                    " ti.tm_mday: " << ti.tm_mday <<
+                                    " ti.tm_hour: " << ti.tm_hour <<
+                                    " ti.tm_min: " << ti.tm_min <<
+                                    " ti.tm_sec: " << ti.tm_sec << endl);
 
-
-            start_time = mktime(ti);
+            start_time = mktime(&ti);
             BESDEBUG(MODULE, prolog << "AWS (computed) start_time: " << start_time << endl);
         }
+
         expires = start_time + stoll(aws_expires);
         BESDEBUG(MODULE, prolog << "Using " << AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
                                 " (expires: " << expires << ")" << endl);
     }
+
+    // If both cf_expires and aws_expires are empty, 'expires' == 'now' and 'remaining' is 0 so
+    // this code returns true. jhrg 10/13/23
     time_t remaining = expires - now;
     BESDEBUG(MODULE, prolog << "expires_time: " << expires <<
                             "  remaining_time: " << remaining <<

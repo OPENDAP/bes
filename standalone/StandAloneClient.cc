@@ -241,7 +241,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 
 			*_strm << flush;
 
-			// Put the call to finish() here beacuse we're not sending chunked responses back
+			// Put the call to finish() here because we're not sending chunked responses back
 			// to a client over PPT. In the BESServerHandler.cc code, we must do that and hence,
 			// break up the call to finish() for the error and no-error cases.
 			status = interface->finish(status);
@@ -277,6 +277,10 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 			}
 
 			_strm->flush();
+
+            if (repeat > 1 && i < repeat - 1) {
+                *_strm << "\nNext-Response:\n" << flush;
+            }
 		}
 	}
 }
@@ -343,13 +347,19 @@ void StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 	for (int i = 0; i < repeat; i++) {
 		istrm.clear();
 		istrm.seekg(0, ios::beg);
+
 		string cmd;
 		string line;
 		while (getline(istrm, line)) {
 			cmd += line;
 		}
-		this->executeCommand(cmd, 1);
-	}
+
+        this->executeCommand(cmd, 1);
+
+        if (repeat > 1 && i < repeat - 1) {
+            *_strm << "\nNext-Response:\n" << flush;
+        }
+    }
 }
 
 /** @brief An interactive BES client that takes BES requests on the command line.
@@ -378,7 +388,7 @@ void StandAloneClient::interact()
 	while (!done) {
 		string message;
 		size_t len = this->readLine(message);
-		if ( /*len == -1 || */message == "exit" || message == "exit;") {
+		if (message == "exit" || message == "exit;") {
 			done = true;
 		}
 		else if (message == "help" || message == "help;" || message == "?") {
@@ -414,7 +424,7 @@ void StandAloneClient::interact()
 size_t StandAloneClient::readLine(string & msg)
 {
 	size_t len = 0;
-	char *buf = (char *) nullptr;
+	char *buf = nullptr;
 	buf = ::readline("BESClient> ");
 	if (buf && *buf) {
 		len = strlen(buf);
@@ -423,7 +433,7 @@ size_t StandAloneClient::readLine(string & msg)
 #endif
 		if (len > SIZE_COMMUNICATION_BUFFER) {
 			cerr << __FILE__ << __LINE__ <<
-			": incoming data buffer exceeds maximum capacity with lenght " << len << endl;
+			": incoming data buffer exceeds maximum capacity with length " << len << endl;
 			exit(1);
 		}
 		else {
@@ -440,10 +450,12 @@ size_t StandAloneClient::readLine(string & msg)
 			len = -1;
 		}
 	}
+
 	if (buf) {
 		free(buf);
-		buf = (char *) nullptr;
+		buf = nullptr;
 	}
+
 	return len;
 }
 

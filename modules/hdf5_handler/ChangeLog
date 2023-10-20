@@ -154,7 +154,7 @@
 
 	Added support for code coverage
 
-2020-12-21  Muqun Yang  <myang6@hdfgroup.org>
+2020-12-21  Kent Yang  <myang6@hdfgroup.org>
 
 	Merge branch 'master' of https://github.com/opendap/hdf5_handler
 
@@ -164,7 +164,7 @@
 
 	HFVHANDLER-346, ESDIS-576, update default dap4 valgrind .at file.
 
-2020-12-11  Muqun Yang  <myang6@hdfgroup.org>
+2020-12-11  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-346, improve the code a bit according to sonar cloud.
 
@@ -172,20 +172,20 @@
 	the code quality: mainly remove potential memory leak and use
 	virtual and const for some functions according to the hints.
 
-2020-11-25  Muqun Yang  <myang6@hdfgroup.org>
+2020-11-25  Kent Yang  <myang6@hdfgroup.org>
 
 	HK-711, add the shell script for fileout netCDF NASA tests.
 
 	HFVHANDLER-346, add a few python scripts that generate files
 	related to dimension scales.
 
-2020-11-24  Muqun Yang  <myang6@hdfgroup.org>
+2020-11-24  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-340, handle pure netCDF-4-like dimensions and
 	also use the native datatype for H5 attribute conversion.
 	(We find a BE attribute)
 
-2020-11-13  Muqun Yang  <myang6@hdfgroup.org>
+2020-11-13  Kent Yang  <myang6@hdfgroup.org>
 
 	HK-703, add source files that can generate scalar and string
 	variables under groups. These are used by filenetCDF-4 DAP4 response.
@@ -250,7 +250,7 @@
 
 	Prototype dynamic-config implementation.
 
-2020-07-02  Muqun Yang  <myang6@hdfgroup.org>
+2020-07-02  Kent Yang  <myang6@hdfgroup.org>
 
 	Remove netcdf4 predefined _Netcdf4Coordinates attribute,
 	this will cause duplicate name with filenetCDF
@@ -264,7 +264,7 @@
 
 	Catch BESError in HDF5RequestHandler dap methods.
 
-2020-06-25  Muqun Yang  <myang6@hdfgroup.org>
+2020-06-25  Kent Yang  <myang6@hdfgroup.org>
 
 	Make sure the hash key is updated.
 
@@ -272,31 +272,31 @@
 	pure ddim as a variable to avoid the missing of dimensions.
 	The improvement is delayed to HFVHANDER-340.
 
-2020-06-15  Muqun Yang  <myang6@hdfgroup.org>
+2020-06-15  Kent Yang  <myang6@hdfgroup.org>
 
 	HYRAX-198,update the besscmd baseline files for the default
 	option when removing netcdf predefined attributes etc.
 
-2020-06-10  Muqun Yang  <myang6@hdfgroup.org>
+2020-06-10  Kent Yang  <myang6@hdfgroup.org>
 
 	HYRAX-198, update the HDF5 handler to handle pure netCDF dimensions.
 
-2020-06-09  Muqun Yang  <myang6@hdfgroup.org>
+2020-06-09  Kent Yang  <myang6@hdfgroup.org>
 
 	HYRAX-198, update the HDF5 handler to remove netCDF predefined
 	attributes and add dimension name path to distinguish the
 	different dimensions.
 
-2020-05-27  Muqun Yang  <myang6@hdfgroup.org>
+2020-05-27  Kent Yang  <myang6@hdfgroup.org>
 
 	HK-681, use DAP4 dimensions for variables and remove netCDF-4
 	specific attributes.
 
-2020-05-19  Muqun Yang  <myang6@hdfgroup.org>
+2020-05-19  Kent Yang  <myang6@hdfgroup.org>
 
 	Update README for the future Hyrax release.
 
-2020-05-18  Muqun Yang  <myang6@hdfgroup.org>
+2020-05-18  Kent Yang  <myang6@hdfgroup.org>
 
 	HK-666, flatten and add path for 64-bit integer variables.
 	This is a temp. fix. In the future, separate functions should
@@ -308,7 +308,7 @@
 	2. Update NASA testsuite.
 	3. Update BES configuration files.
 
-2020-05-15  Muqun Yang  <myang6@hdfgroup.org>
+2020-05-15  Kent Yang  <myang6@hdfgroup.org>
 
 	HK-666, add code to flatten the coordinate attribute for
 	ATL. Need to add a BES key.
@@ -335,51 +335,51 @@
 	Added insertion of current xml:base context into the DMR
 	after a DMR copy is retrieved from cache.
 
-2020-04-30  Muqun Yang  <myang6@hdfgroup.org>
+2020-04-30  Kent Yang  <myang6@hdfgroup.org>
 
 	remove the attributes when their datatypes are not supported
 	by CF/DAP2 (except for 64-bit integer when DMR and BES enable
 	DMR 64-bit integer key are true
 
-2020-04-20  Muqun Yang  <myang6@hdfgroup.org>
+2020-04-20  Kent Yang  <myang6@hdfgroup.org>
 
 	ESDIS-573, Improve the README file.
 
 	 ESDIS-573, update HDF5 handler documents for Hyrax 1.16.2
 
-2020-03-23  Muqun Yang  <myang6@hdfgroup.org>
+2020-03-23  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-332, add a BES key H5.NoZeroSizeFullnameAttr not to
 	generate fullnamepath for zero storage size HDF5 dataset.
-2020-03-23 Muqun Yang <myang6@hdfgroup.org>
+2020-03-23 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-332, add a BES key H5.NoZeroSizeFullnameAttr
 	not to generate fullnamepath for zero storage size HDF5 dataset.
 
-2020-03-20 Muqun Yang <myang6@hdfgroup.org>
+2020-03-20 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-332, add the check for zero storage size
 	variables. This is legal in HDF5 and we see some
 	NASA files that have it.
 
-2020-03-19 Muqun Yang <myang6@hdfgroup.org>
+2020-03-19 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-330, add two more test cases. One to check
 	if the handler corrects the wrong fillvalue for the
 	CF option. Another one is to check if the multiple
 	FakeDim dim. scales are handled correctly.
 
-2020-03-19 Muqun Yang <myang6@hdfgroup.org>
+2020-03-19 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-330, add the python script to create the
 	HDF5 file with the different fillvalue datatype.
 
-2020-02-29 Muqun Yang <myang6@hdfgroup.org>
+2020-02-29 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-327, add the tests to handle the general
 	2D lat/lon under specific geo-location groups.
 
-2020-02-27 Muqun Yang <myang6@hdfgroup.org>
+2020-02-27 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-327, to make OMPS-NPP files follow CF,
 	the code is enhanced with treating this file as one
@@ -387,50 +387,50 @@
 	and Longitude are corrected to follow CF. Tested with
 	CentOS and verified with Panoply.
 
-2020-02-26 Muqun Yang <myang6@hdfgroup.org>
+2020-02-26 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-325, Don't add the fullnamepath and origname
 	attributes for coordinate variables when Enable BES key
 	is turned off
 
-2020-02-25 Muqun Yang <myang6@hdfgroup.org>
+2020-02-25 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-322, provide a BES key so that users can turn on the
 	64-bit integer support in the DMR output for the CF option. By default,
 	this key is turned off to make it consistent with DDS and DAS output.
 
-2020-02-24 Muqun Yang <myang6@hdfgroup.org>
+2020-02-24 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-323, add fullnamepath and origname attributes to
 	64-bit integer variables in the DMR output for the CF option.
 	Testsuie is updated.
 
-2020-02-20 Muqun Yang <myang6@hdfgroup.org>
+2020-02-20 Kent Yang <myang6@hdfgroup.org>
 
 	HFVHANDLER-320, make sure that the dimension of the HDF5 points
 	to HDF5 dimension scale as the netCDF-4 like file. New tests
 	are added.
 
-2020-02-06  Muqun Yang <myang6@hdfgroup.org>
+2020-02-06  Kent Yang <myang6@hdfgroup.org>
 
 	ESDIS-572, update ChangeLog,INSTALL,NEWS,README and Makefile.am
 	for the 1.16.1 release.
 
-2019-12-24  Muqun Yang  <myang6@hdfgroup.org>
+2019-12-24  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-316, remove one debugging line.
 
-2019-12-23  Muqun Yang  <myang6@hdfgroup.org>
+2019-12-23  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-316,correct the unlimited dimension path for GPM
 	level 3-like case.
 
-2019-12-13  Muqun Yang  <myang6@hdfgroup.org>
+2019-12-13  Kent Yang  <myang6@hdfgroup.org>
 
 	Add besstandalone debugging commands for modules used to access
 	the HDF5 files.
 
-2019-12-12  Muqun Yang  <myang6@hdfgroup.org>
+2019-12-12  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-315, forgot adding the fake HDF5 files that tests
 	the new NAME handling.
@@ -441,7 +441,7 @@
 	All the tested files with the NAME attribute can successfully
 	generate netCDF-4 files via fileout netcdf.
 
-2019-12-11  Muqun Yang  <myang6@hdfgroup.org>
+2019-12-11  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-315, remove the NAME attribute for dimennsion scale and
 	coordinate variables. This makes the netCDF-4 happy.
@@ -455,12 +455,12 @@
 
 	HK-459 - suppressing error msgs in .yy files
 
-2019-11-04  Muqun Yang  <myang6@hdfgroup.org>
+2019-11-04  Kent Yang  <myang6@hdfgroup.org>
 
 	HK-508, add memory cache for dds in the data access(datadds). This is
 	 necessary since DDS in the data access may not include attributes.
 
-2019-11-01  Muqun Yang  <myang6@hdfgroup.org>
+2019-11-01  Kent Yang  <myang6@hdfgroup.org>
 
 	HK-508, check in code skeleton for the data access without attribute
 	feature. Not tested yet.
@@ -468,12 +468,12 @@
 	HK-508, adding the server-side function tests for the feature of the
 	data access without attributes.
 
-2019-10-04  Muqun Yang  <myang6@hdfgroup.org>
+2019-10-04  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-309, add code to remove group path of the CF conventions
 	 attribute. Subject to change per comments on this topic.
 
-2019-10-03  Muqun Yang  <myang6@hdfgroup.org>
+2019-10-03  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-309, add code to remove the path of important CF global
 	attributes.
@@ -483,7 +483,7 @@
 	removed 'using' statement from BESIndent.h causing errors
 	resolved errors in header files in HDF5
 
-2019-09-25  Muqun Yang  <myang6@hdfgroup.org>
+2019-09-25  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-307, add a script to fill in the testing files at the
 	server
@@ -492,18 +492,18 @@
 	HFVHANDLER-307, add nccopy to access HDF5 file tests for default
 	and NASA files.
 
-2019-09-24  Muqun Yang  <myang6@hdfgroup.org>
+2019-09-24  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-307, Add scripts to compare the nccopy results.
 	HFVHANDLER-307, check in the skeleton of nccopy testing scripts.
 
-2019-09-13  Muqun Yang  <myang6@hdfgroup.org>
+2019-09-13  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-257, add README.
 	HFVHANDLER-257, update the nccopy shell script. Will handle this in
 	another ticket.
 
-2019-09-12  Muqun Yang  <myang6@hdfgroup.org>
+2019-09-12  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-257, check in the shell script for Mac. need special string
 	and sed handling.
@@ -513,40 +513,40 @@
 	check the output.
 	HFVHANDLER-257, add testing scripts for nccopy and fileout netcdf.
 
-2019-09-11  Muqun Yang  <myang6@hdfgroup.org>
+2019-09-11  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-257, adding the skeleton of test.sh and two bescmd for fileout netcdf.
 
-2019-08-20  Muqun Yang  <myang6@hdfgroup.org>
+2019-08-20  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-304, add commented code to prepare for the attribute-turning off in
 	the data access. Will add the implementation after discussing with the team if
 	function_check routines can be moved to BES layer.
 
-2019-08-09  Muqun Yang  <myang6@hdfgroup.org>
+2019-08-09  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-288, revise the BES key description.
 
-2019-08-08  Muqun Yang  <myang6@hdfgroup.org>
+2019-08-08  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-288, continue editing the HDF5 BES key configuration file.
 	HFVHANDLER-288, continue editing the configuration file.
 
-2019-08-06  Muqun Yang  <myang6@hdfgroup.org>
+2019-08-06  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-288, revising the BES key description in the configuration file
 
-2019-08-05  Muqun Yang  <myang6@hdfgroup.org>
+2019-08-05  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-288, update the BES key information at h5.conf.in.
 
-2019-05-17  Muqun Yang  <myang6@hdfgroup.org>
+2019-05-17  Kent Yang  <myang6@hdfgroup.org>
 
 	ESDIS-560, remove unused catch block.
 
 	ESDIS-560, change some macros to constant.
 
-2019-05-16  Muqun Yang  <myang6@hdfgroup.org>
+2019-05-16  Kent Yang  <myang6@hdfgroup.org>
 
 	ESDIS-560, go over sonarcloud issues. Correct the obvious ones and
 	the ones that make sense.
@@ -555,7 +555,7 @@
 
 	ESDIS-560, improve coding style, fix a minor bug.
 
-2019-05-01  Muqun Yang  <myang6@hdfgroup.org>
+2019-05-01  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-298, add OCO2 testing files to the handler.
 
@@ -569,7 +569,7 @@
 
 	ESDIS-560, improve code by following sonar cloud analysis.
 
-2019-04-18  Muqun Yang  <myang6@hdfgroup.org>
+2019-04-18  Kent Yang  <myang6@hdfgroup.org>
 
 	ESDIS-560, improve the code by following sonarcloud analysis.
 
@@ -595,7 +595,7 @@
 
 	ESDIS-560, remove unused parameters.
 
-2019-04-03  Muqun Yang  <myang6@hdfgroup.org>
+2019-04-03  Kent Yang  <myang6@hdfgroup.org>
 
 	ESDIS-560, reduce some warnings from solarcloud.
 
@@ -605,7 +605,7 @@
 
 	ESDIS-560, remove a comment.
 
-2019-04-01  Muqun Yang  <myang6@hdfgroup.org>
+2019-04-01  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-296, add code to ensure the UTF-8 string attribute won't be
 	escaped for the CF option.
@@ -614,7 +614,7 @@
 
 	Two fixes from sonar cloud: sprintf --> snprintf
 
-2019-02-21  Muqun Yang  <myang6@hdfgroup.org>
+2019-02-21  Kent Yang  <myang6@hdfgroup.org>
 
 	ESDIS-559, clean up some issues from sonarcloud.
 
@@ -630,7 +630,7 @@
 
 	ESDIS-559, fix warnings/issues discovered by solarcloud.
 
-2019-02-13  Muqun Yang  <myang6@hdfgroup.org>
+2019-02-13  Kent Yang  <myang6@hdfgroup.org>
 
 	Address issues discovered by sonarclound.
 
@@ -668,13 +668,13 @@
 
 	Updated test bes.conf to preserve behavior.
 
-2018-10-16  Muqun Yang  <myang6@hdfgroup.org>
+2018-10-16  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-283, generate the error message when the dimension
 	name doesn't exist in the dimension list. Previously the seg.
 	fault is generated.
 
-2018-10-15  Muqun Yang  <myang6@hdfgroup.org>
+2018-10-15  Kent Yang  <myang6@hdfgroup.org>
 
 	HK-96,HFVHANDLER-282, first check-in to make the default
 	option to handle the DAP4 DMR request by not handling the
@@ -712,7 +712,7 @@
 	H5.EnableDropLongString and H5.ForceFlattenNDCoorAttr are
 	updated.
 
-2018-08-22  Muqun Yang  <myang6@hdfgroup.org>
+2018-08-22  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-276, fix issues discovered by coverity scan
 
@@ -722,23 +722,23 @@
 
 	HFVHANDLER-276, update the curl output for the memory cache tests.
 
-2018-08-10  Muqun Yang  <myang6@hdfgroup.org>
+2018-08-10  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-276, add comments, fix issues when checking the
 	ignored objects, updated the .bescmd.baseline files for the
 	ignored object checks.
 
-2018-08-07  Muqun Yang  <myang6@hdfgroup.org>
+2018-08-07  Kent Yang  <myang6@hdfgroup.org>
 
 	Merge branch 'master' of https://github.com/OPENDAP/hdf5_handler
 
 	HFVHANDLER-272, update the README file.
 
-2018-08-06  Muqun (Kent) Yang  <myang6@nene.ad.hdfgroup.org>
+2018-08-06  Kent Yang  <myang6@nene.ad.hdfgroup.org>
 
 	HFVHANDLER-272, correct typos.
 
-2018-08-03  Muqun Yang  <myang6@hdfgroup.org>
+2018-08-03  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-272, update bescmd files. Make sure that the
 	handler behave correctly when the Force_Flatten_Coordinate BES
@@ -758,26 +758,26 @@
 	This can be reverted by turning off the BES key
 	ForceFlattenNDCoorAttr. By default, this key is turned on.
 
-2018-08-01  Muqun Yang  <myang6@hdfgroup.org>
+2018-08-01  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-275, add comments to the python code.
 
-2018-07-13  Muqun Yang  <myang6@hdfgroup.org>
+2018-07-13  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-275, add two HDF5 files that emulate OMI and
 	TROP-OMI swath as well as the python scripts that generate
 	them.
 
-2018-07-09  Muqun Yang  <myang6@hdfgroup.org>
+2018-07-09  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-274, add a BES key to turn off all the ECS metadata.
 
-2018-04-23  Muqun Yang  <myang6@hdfgroup.org>
+2018-04-23  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-267, adding the dmr/dap tests for 64-bit integer of
 	the CF option.
 
-2018-04-16  Muqun Yang  <myang6@hdfgroup.org>
+2018-04-16  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-267, forgot adding test files.
 
@@ -791,31 +791,31 @@
 	CVs that hold 64-bit integers for both generic and HDF-EOS5
 	files.
 
-2018-04-13  Muqun Yang  <myang6@hdfgroup.org>
+2018-04-13  Kent Yang  <myang6@hdfgroup.org>
 
 	Add a testing HDF5 file and the C source that include the
 	64-bit integer attributes/datasets. This can be used to test
 	the 64-bit integer support for the CF option.
 
-2018-03-28  Muqun Yang  <myang6@hdfgroup.org>
+2018-03-28  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-267, change code to prepare the 64-bit integer
 	mapping to DMR for the CF option.
 
-2018-03-27  Muqun Yang  <myang6@hdfgroup.org>
+2018-03-27  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-267, clean up the indentation of some source code first
 
-2018-03-21  Muqun Yang  <myang6@hdfgroup.org>
+2018-03-21  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-255, update gctp package to support ellipsoidal
 	earth model for Sinusodial projection.
 
-2018-03-19  Muqun Yang  <myang6@hdfgroup.org>
+2018-03-19  Kent Yang  <myang6@hdfgroup.org>
 
 	Add the NASA URL test.
 
-2018-03-17  Muqun Yang  <myang6@hdfgroup.org>
+2018-03-17  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-266, add pydap client test python scripts, expected
 	testfiles and shell scripts. The test includes one simple
@@ -824,12 +824,12 @@
 	use their own Hyrax servers to test by changing the URLs at
 	the shell scripts.
 
-2018-03-02  Muqun Yang  <myang6@hdfgroup.org>
+2018-03-02  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-262, update the ignored object reporting contents
 	and testsuite.
 
-2018-03-01  Muqun Yang  <myang6@hdfgroup.org>
+2018-03-01  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-265, add source code and the HDF5 files to test
 	the drop of long string.
@@ -841,53 +841,53 @@
 
 	HFVHANDLER-265, update the at. file.
 
-2018-02-21  Muqun Yang  <myang6@hdfgroup.org>
+2018-02-21  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-260, add bes keys to specify HDF-EOS5 grid lat/lon
 	caches. By default, they are turned off.
 
 	HFVHANADLER-260, forgot adding Arctas testing das and dds files.
 
-2018-02-20  Muqun Yang  <myang6@hdfgroup.org>
+2018-02-20  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-260, adding code to read and write a disk cache for
 	eos5 grid lat/lon.
 
-2018-02-09  Muqun Yang  <myang6@hdfgroup.org>
+2018-02-09  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-259, adding the code to generate eos5 lat/lon cache
 	file. Compiled and first-level checked.
 
-2018-01-30  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-30  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-254, add the ArcTas-car file to the testsuite.
 
 	HFVHANDLER-254, remove the netcdf-4 internal dimensions.
 
-2018-01-18  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-18  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-256, remove the netCDF reserved attribute _NCProperties.
 
-2018-01-17  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-17  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-256, add code to remove nc3_strict and NetCDFDimid
 	in the DAS.
 
-2018-01-16  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-16  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-256, remove NAME and CLASS netCDF-4 internal
 	attributes; update the testsuite.
 
-2018-01-15  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-15  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-256, add the removal of reserved netCDF-4 attributes
 	to make file netCDF-4 work for all CF supported NASA products.
 
-2018-01-12  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-12  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLE-234, add OMPS-level 3 to the testsuite.
 
-2018-01-11  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-11  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-241, update the baseline files to reflect the correction
 	of wrong dimension size
@@ -895,20 +895,20 @@
 	HFVHANDLER-241, fix the EOS object wrong dimension size when
 	unlimited dimension is used.
 
-2018-01-10  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-10  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-234, adding code to remove the unneeded objects(inputFilePointers)
 	in the OMPS-NPP files.
 
-2018-01-09  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-09  Kent Yang  <myang6@hdfgroup.org>
 
 	minor formatting
 
-2018-01-08  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-08  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-241, add som
 
-2018-01-04  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-04  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-174, change the product name of the old SMAP level2
 	simulation handling routines from SMAP to OSMAPL2S to avoid
@@ -920,7 +920,7 @@
 	HFVHANDLER-191, updated comments/cleaned up debugging info and
 	fixed a typo.
 
-2018-01-03  Muqun Yang  <myang6@hdfgroup.org>
+2018-01-03  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-191, clean up comments.
 
@@ -931,7 +931,7 @@
 	Merge pull request #11 from OPENDAP/cf_grid
 	Cf grid
 
-2017-12-22  Muqun Yang  <myang6@hdfgroup.org>
+2017-12-22  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-235, HFVHANDLER-245 add the EOS5 LAMAZ and PS files to the
 	testsuite.
@@ -944,11 +944,11 @@
 	lat/lon to the valid_range for the off-earth case. 2) Add the
 	LAMAZ and PS to the testing suite.
 
-2017-12-19  Muqun Yang  <myang6@hdfgroup.org>
+2017-12-19  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-251,Rename some function names to avoid confusion.
 
-2017-12-13  Muqun Yang  <myang6@hdfgroup.org>
+2017-12-13  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-247, change the gctp's inv_init,inv_trans etc
 	function names so that these functions will not accidently
@@ -966,25 +966,25 @@
 
 	Add the "What's new" information for the Hyrax 1.14.0 release.
 
-2017-11-27  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-27  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-245, update the testing file
 
 	HFVHANDLER-245, check in code to generate dummy grid_mapping CF
 	variables.
 
-2017-11-20  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-20  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-245, add grid_mapping attributes to LAMAZ and PS
 	projections. Add Sinusoidal projection tests.
 
-2017-11-19  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-19  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-245, adding LAMAZ and PS projection grid_mapping
 	code. Mostly follow the sinusoidal projection. The code is not
 	compiled yet.
 
-2017-11-12  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-12  Kent Yang  <myang6@hdfgroup.org>
 
 	Merge branch 'master' into cf_grid Include the latest change in the
 	 master.
@@ -994,7 +994,7 @@
 	Merge pull request #10 from OPENDAP/utm_nc4
 	Utm nc4
 
-2017-11-09  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-09  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, add the NASA Airsm UTM file at the testing suite.
 
@@ -1010,23 +1010,23 @@
 	for hybrid eos and FakeDim for unsupported datatype arrays.
 	Update .at files.
 
-2017-11-08  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-08  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, add the python script and the hybrid eos5 files.
 
-2017-11-07  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-07  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, adding coordinates and grid_mapping attributes to
 	the script.
 
-2017-11-03  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-03  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, add the python script to generate hybrid EOS5 files.
 
 	HDFHANDLER-239, add the removal of HDFEOS information from the
 	coordinate attribute.
 
-2017-11-02  Muqun Yang  <myang6@hdfgroup.org>
+2017-11-02  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, HFVHANDLER-243, 1) Handle grid_mapping
 	attributes. If the grid_mapping includes the fullpath or just
@@ -1034,29 +1034,29 @@
 	names that follow the CF. 2) Remove unnecessary FakeDim?
 	coordinate variable added by the unsupported datatype array.
 
-2017-10-27  Muqun Yang  <myang6@hdfgroup.org>
+2017-10-27  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, adjust the dimension and var names by removing
 	specific HDFEOS path. Also add code to handle grid_mapping
 	attribute. Not compiled yet.
 
-2017-10-20  Muqun Yang  <myang6@hdfgroup.org>
+2017-10-20  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, adding code to remove HDF-EOS5 marks
 
-2017-10-19  Muqun Yang  <myang6@hdfgroup.org>
+2017-10-19  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-237, some leftover to check the support of UTM
 	projection. Mostly some comments are added for future
 	enhancements.
 
-2017-10-17  Muqun Yang  <myang6@hdfgroup.org>
+2017-10-17  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, using H5Gget_info to check if the member is an
 	HDF5 dataset. The DAp output can be plotted by Panoply.
 	Dimensions and coordinates are all right.
 
-2017-10-16  Muqun Yang  <myang6@hdfgroup.org>
+2017-10-16  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-239, add the function to check if this file is a
 	file that can be handled by the HDF-EOS5 module of the HDF5
@@ -1077,19 +1077,19 @@
 	Merge pull request #9 from OPENDAP/omi_l2
 	HFVHANDLER-232, make new OMI level 2 products parsed correctly.
 
-2017-10-05  Muqun Yang  <myang6@hdfgroup.org>
+2017-10-05  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-232, make new OMI level 2 products parsed correctly.
 
-2017-09-29  Muqun Yang  <myang6@hdfgroup.org>
+2017-09-29  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-214, adding code to generate latitude/longitude for LAMAZ and PS.
 
-2017-09-28  Muqun Yang  <myang6@hdfgroup.org>
+2017-09-28  Kent Yang  <myang6@hdfgroup.org>
 
 	Merge branch 'master' into cf_grid
 
-2017-09-27  Muqun Yang  <myang6@hdfgroup.org>
+2017-09-27  Kent Yang  <myang6@hdfgroup.org>
 
 	Merge branch 'master' into cf_grid Use the latest code that
 	get rid of some compiler warnings.
@@ -1102,11 +1102,11 @@
 	Merge pull request #8 from OPENDAP/fix_warnings
 	Fixed a number of compiler warnings in the hdf5 handler.
 
-2017-09-13  Muqun Yang  <myang6@hdfgroup.org>
+2017-09-13  Kent Yang  <myang6@hdfgroup.org>
 
 	ESDIS-535, update the ftp address that stores NASA HDF5 files.
 
-2017-09-07  Muqun Yang  <myang6@hdfgroup.org>
+2017-09-07  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-228, Makefile.am was removed from gctp/include.
 	configure.ac needs to be updated.
@@ -1147,11 +1147,11 @@
 
 	Added 'include' to gctp/Makefile.am SUBDIRS
 
-2017-05-16  Muqun Yang  <myang6@hdfgroup.org>
+2017-05-16  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-206, Update ChangeLog,NEWS,README and the configuration file
 
-2017-05-15  Muqun (Kent) Yang  <myang6@nene.ad.hdfgroup.org>
+2017-05-15  Kent Yang  <myang6@nene.ad.hdfgroup.org>
 
 	HFVHANDLER-206, remove warnings detected by MacOS 10.12. We have to add
 	another datatype checking function to make sure only numeric atomic
@@ -1161,11 +1161,11 @@
 
 	Added gctp lib to .gitignore
 
-2017-05-15  Muqun Yang  <myang6@hdfgroup.org>
+2017-05-15  Kent Yang  <myang6@hdfgroup.org>
 
 	Code cleanup a bit. Remove one test from the valgrind.cf.ingore.at
 	file since the test is no longer valid.
-2017-05-15 Muqun (Kent) Yang <myang6@hdfgroup.org>
+2017-05-15 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-206, remove warnings detected by MacOS 10.12. We have to
     add another datatype checking function to make sure only numeric atomic
@@ -1176,18 +1176,18 @@ Date:   Mon May 15 16:54:52 2017 -0700
 
     Added gctp lib to .gitignore
 
-2017-05-15 Muqun Yang <myang6@hdfgroup.org>
+2017-05-15 Kent Yang <myang6@hdfgroup.org>
 
     Code cleanup a bit. Remove one test from the valgrind.cf.ingore.at
     file since the test is no longer valid.
 
-2017-05-15 Muqun Yang <myang6@hdfgroup.org>
+2017-05-15 Kent Yang <myang6@hdfgroup.org>
 Date:   Mon May 15 11:48:41 2017 -0500
 
     HFVHANDLER-206, fix an issue found by coverity. No need to check if an
     unsigned integer is <0
 
-2017-05-14 Muqun Yang <myang6@hdfgroup.org>
+2017-05-14 Kent Yang <myang6@hdfgroup.org>
 
     Fixed several issues caught by coverity scan. Issues are: 1) Error handling:
     Forgot checking the returned value of the stat() 2) EOS5 projection parameters:
@@ -1195,7 +1195,7 @@ Date:   Mon May 15 11:48:41 2017 -0500
     still add it to make coverity happen. 3) Forget copying comp_ratio in a copy
     function. Good catch.
 
-2017-05-12 Muqun Yang <myang6@hdfgroup.org>
+2017-05-12 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-206, 1) clean up code in HDF5RequestHandler.cc 2) Add the
     projection check for EOS5. Now only GEO and SNSOID are supported. 3) Tested
@@ -1215,7 +1215,7 @@ Merge: 716f53b 0fc8851
 
     First cut a updating the use of transform_to_dap4(). Next step is chan return to void.
 
-2017-05-08 Muqun Yang <myang6@hdfgroup.org>
+2017-05-08 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-211, A new DAS object needs to be added for the DAS memory cache
 
@@ -1227,36 +1227,36 @@ Merge: 716f53b 0fc8851
 
     Merge remote-tracking branch 'origin/cf_grid'
 
-2017-04-28 Muqun Yang <myang6@hdfgroup.org>
+2017-04-28 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-211, check in the DAS disk cache implementation code.
     Tested fake and NASA testsuites at CentOS6,7 and MacOS10.12.
     valgrind tests on CentOS 6 and 7.
 
-2017-04-28 Muqun Yang <myang6@hdfgroup.org>
+2017-04-28 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-211, update bes.conf.in to reflect the disk metadata feature.
 
-2017-04-27 Muqun Yang <myang6@hdfgroup.org>
+2017-04-27 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-211, add the implementation code to generate/read disk cache file from DAS.
 
-2017-04-20 Muqun Yang <myang6@hdfgroup.org>
+2017-04-20 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-211, check in some code to generate the DAS attributes in type,name and values.
     This will be used to write the parsing code of the DAP DAS. The current parsing code DAP
     provides cannot handle special cases.
 
-2017-04-17 Muqun Yang <myang6@hdfgroup.org>
+2017-04-17 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLEER-211, using the parse function in the libdap to read the
     cached dds and das files. Data reading still has some issues.
 
-2017-04-13 Muqun Yang <myang6@hdfgroup.org>
+2017-04-13 Kent Yang <myang6@hdfgroup.org>
 
     Adding DDS disk cache testing code. The simple test works.
 
-2017-03-03 Muqun Yang <myang6@hdfgroup.org>
+2017-03-03 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-208, clean up debugging comments.
 
@@ -1264,51 +1264,51 @@ Merge: 716f53b 0fc8851
 
     HFVHANDLER-208, make the cf projection variable unique for the multi-grid case.
 
-2017-03-02 Muqun Yang <myang6@hdfgroup.org>
+2017-03-02 Kent Yang <myang6@hdfgroup.org>
 
     Add CF projection handling code. One grid sinusoidal projection passes besstandalone and valgrind.
 
-2017-02-27 Muqun Yang <myang6@hdfgroup.org>
+2017-02-27 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-208,
     1) Add lat/lon handling routines. gctp library is used.
     2) Correct non-geographic projection lat/lon. Tested with the sinusoidal projection.
     3) Add template to handle CF.
 
-2017-02-24 Muqun Yang <myang6@hdfgroup.org>
+2017-02-24 Kent Yang <myang6@hdfgroup.org>
 
     Add disk cache debug info. to HDF5CFArray.cc. Change the disk cache to be false by default.
 
-2017-01-25 Muqun Yang <myang6@hdfgroup.org>
+2017-01-25 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-205, fix a bug on to calculate compression ratio. Need to consider the datatype size.
 
-2017-01-25 Muqun Yang <myang6@hdfgroup.org>
+2017-01-25 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-205, adding the BES options to only cache compressed dataset. Need more tests.
 
-2017-01-24 Muqun Yang <myang6@hdfgroup.org>
+2017-01-24 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-205, adding all the code to write data via disk cache. Also adding BES keys to only cache the compressed floating bigger array.
 
-2017-01-23 Muqun Yang <myang6@hdfgroup.org>
+2017-01-23 Kent Yang <myang6@hdfgroup.org>
 
     EED-176, adding code to generate a cached file per variable.
 
-2017-01-20 Muqun Yang <myang6@hdfgroup.org>
+2017-01-20 Kent Yang <myang6@hdfgroup.org>
 
     HFVHANDLER-205, Add the disk cache code(HDF5DiskCache.cc and HDF5DiskCache.h) that will talk to BES. Modify HDF5RequestHandler to
     add the retrieval of BES keys. Also update Makefile.am and h5.conf.in to include the disk cache.
 
     EED-176, add the gctp library to the source release.
 
-2017-01-19  Muqun Yang <myang6@hdfgroup.org>
+2017-01-19  Kent Yang <myang6@hdfgroup.org>
 Date:   Thu Jan 19 20:39:02 2017 -0600
 
     EED-176, add the code to calculate lat/lon for grid projections.
     This follows the HDF-EOS5 library to use the gctp library to do the job.
 
-2017-01-17 Muqun Yang <myang6@hdfgroup.org>
+2017-01-17 Kent Yang <myang6@hdfgroup.org>
 
     EED-175, parse the HDF-EOS5 grid projection parameters, zone and sphere information
     in the structure metadata to the handler.
@@ -1370,7 +1370,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	Hyrax 1.13.2
 
-2016-11-01  Muqun Yang  <myang6@hdfgroup.org>
+2016-11-01  Kent Yang  <myang6@hdfgroup.org>
 
 	HFVHANDLER-202, fix a typo in h5.conf.in.Add other comments.
 
@@ -1396,7 +1396,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	HFVHANDLER-202, change string.back to use index since back() is only supported by C11.
 
-2016-10-17  Muqun (Kent) Yang  <myang6@idap.ad.hdfgroup.org>
+2016-10-17  Kent Yang  <myang6@idap.ad.hdfgroup.org>
 
 	resolved merge conflicts
 
@@ -2063,7 +2063,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	Adding more code to check the 2-D lat/lon case.
 
-2015-12-15  Muqun (Kent) Yang  <myang6@wenruo.ad.hdfgroup.org>
+2015-12-15  Kent Yang  <myang6@wenruo.ad.hdfgroup.org>
 
 	Add a zonal-average netCDF-4 like HDF5 file for testing.
 
@@ -2083,7 +2083,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 
 	Add the function to check if the file only contains 1-D CVs. The current code will not work for 2-D lat/lon CV case. Just check in the code to make sure we don't lose them.
 
-2015-12-11  Muqun (Kent) Yang  <myang6@wenruo.ad.hdfgroup.org>
+2015-12-11  Kent Yang  <myang6@wenruo.ad.hdfgroup.org>
 
 	HFVHANDLER-169, add code to see if this netCDF-4 like file doesn't need to check 2-D lat/lon general variables.
 
@@ -2500,7 +2500,7 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 2014-10-29  Kent Yang  <myang6@hdfgroup.org>
 
 	HDF5-handler 2.2.3 release: check in the code from HDF5 handler at local svn to opendap svn
-2014-10-27  MuQun Yang <myang6@hdfgroup.org>
+2014-10-27  Kent Yang <myang6@hdfgroup.org>
         * HDF5CF.cc
         * HDF5CF.h
         * HDF5CFArray.cc
@@ -2618,14 +2618,14 @@ Date:   Thu Jan 19 20:39:02 2017 -0600
 	* HDFEOS5CFSpecialCVArray.cc:
 	edited to match the new, sane, sematics for for BaseType::read().
 
-2013-10-14  MuQun Yang <myang6@hdfgroup.org>
+2013-10-14  Kent Yang <myang6@hdfgroup.org>
 
 	* h5cfdaputil.cc
 	* h5cfdaputil.h
 	* h5commoncfdap.cc:
 	escaped special characters.
 
-2013-09-06  MuQun Yang <myang6@hdfgroup.org>
+2013-09-06  Kent Yang <myang6@hdfgroup.org>
 
 	* HDF5UInt32.cc
 	* HDF5UInt16.cc

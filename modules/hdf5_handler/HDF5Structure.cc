@@ -223,7 +223,7 @@ void HDF5Structure::do_structure_read_atomic(hid_t memb_id, char *memb_name, H5T
     if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT) {
         void *src = (void *) (values.data() + values_offset + memb_offset);
 
-        if (true == promote_char_to_short(memb_cls, memb_id)) {
+        if (true == promote_char_to_short(memb_cls, memb_id) && is_dap4() == false) {
             char val_int8;
             memcpy(&val_int8, src, 1);
             auto val_short = (short) val_int8;

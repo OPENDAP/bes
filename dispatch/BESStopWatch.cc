@@ -74,7 +74,7 @@ BESStopWatch::start(const string &name) {
  * information to the BESDebug::GetStrm() stream.
  * @param name The name of the timer.
  * @param reqID The client's request ID associated with this activity.
- * Available from the DataHandlerInterfact object. 
+ * Available from the DataHandlerInterface object.
  */
 bool
 BESStopWatch::start(const string &name, const string &reqID) {
@@ -95,6 +95,7 @@ BESStopWatch::start(const string &name, const string &reqID) {
         msg << d_timer_name << endl;
         TIMING_LOG(msg.str());
     }
+#if 0
     if (BESDebug::GetStrm()) {
         msg << get_debug_log_line_prefix();
         msg << "[" << d_log_name << "]";
@@ -103,7 +104,7 @@ BESStopWatch::start(const string &name, const string &reqID) {
         msg << "[" << d_timer_name << "]" << endl;
         *(BESDebug::GetStrm()) << msg.str();
     }
-
+#endif
     // either we started the stop watch, or failed to start it. Either way,
     // no timings are available, so set stopped to false.
     d_stopped = false;

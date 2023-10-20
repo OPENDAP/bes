@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
 // Retrieves the latitude and longitude of  the HDF-EOS2 Swath having dimension maps
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 // SOME MODIS products provide the latitude and longitude files for
-// swaths using dimension map. The files are still HDF-EOS2 files.
-// The file name is determined at the hdfdesc.cc.
+// swaths that use dimension maps. The files are still HDF-EOS2 files.
+// The name of such a file is determined at the hdfdesc.cc.
 // Since the latitude and longitude fields are stored as 
 // the real data fields in an HDF-EOS2 file, 
 // The read function is essentially the same as retrieving the data value of a
@@ -35,7 +35,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathGeoDimMapExtraField read "<<endl);
 
-    if(length() == 0)
+    if (length() == 0)
         return true;
 
     // Declare offset, count and step

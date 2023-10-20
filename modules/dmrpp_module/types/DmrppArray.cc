@@ -43,6 +43,7 @@
 #include <libdap/D4Maps.h>
 #include <libdap/D4Group.h>
 #include <libdap/Byte.h>
+#include <libdap/util.h>
 
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
@@ -1786,6 +1787,40 @@ bool DmrppArray::read()
     // does not explicitly appear in this method as it is handled by the parser.
     if (read_p()) return true;
 
+    // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
+    // Direct io offset is only necessary when the direct IO operation is possible.
+    if (this->use_direct_io_opt()) { 
+        this->set_dio_flag();
+        auto chunks = this->get_chunks();
+        for (unsigned int i = 0; i<chunks.size();i++) {
+            if (i > 0) 
+               chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
+            BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
+        }
+        Array::var_storage_info dmrpp_vs_info;
+        dmrpp_vs_info.filter = this->get_filters();
+    
+        for (const auto &def_lev:this->get_deflate_levels())
+            dmrpp_vs_info.deflate_levels.push_back(def_lev);
+        
+        for (const auto &chunk_dim:this->get_chunk_dimension_sizes())
+            dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
+        
+        auto im_chunks = this->get_immutable_chunks();
+        for (const auto &chunk:im_chunks) {
+            Array::var_chunk_info_t vci_t;
+            vci_t.filter_mask = chunk->get_filter_mask();
+            vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
+            vci_t.chunk_buffer_size = chunk->get_size();
+    
+            for (const auto &chunk_coord:chunk->get_position_in_array())
+                vci_t.chunk_coords.push_back(chunk_coord);           
+            dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+        }
+        this->set_var_storage_info(dmrpp_vs_info);
+    }
+    
+
     DmrppArray *array_to_read = this;
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         if (is_flsa()) {
@@ -2306,10 +2341,53 @@ unsigned int DmrppArray::buf2val(void **val){
     return Vector::buf2val(val);
 
 
-
-
-
 }
+
+// Check if direct chunk IO can be used. 
+bool DmrppArray::use_direct_io_opt() {
+
+    bool ret_value = false;
+
+    bool is_integer_le_float = false;
+
+    if (DmrppRequestHandler::is_netcdf4_enhanced_response && this->is_filters_empty() == false) {
+        Type t = this->var()->type();
+        if (libdap::is_simple_type(t) && t != dods_str_c && t != dods_url_c && t!= dods_enum_c && t!=dods_opaque_c) {
+            is_integer_le_float = true;
+            if(is_integer_type(t) && this->get_byte_order() =="BE")
+                is_integer_le_float = false;
+        }
+    }
+
+    bool no_constraint = false;
+
+    // Check if it requires a subset of this variable.
+    if (is_integer_le_float) {
+        no_constraint = true;
+        if (this->is_projected())
+            no_constraint = false;
+    }
+
+    bool has_deflate_filter = false;
+
+    // Check if having the deflate filters.
+    if (no_constraint) {
+        string filters_string = this->get_filters();
+        if (filters_string.find("deflate")!=string::npos)
+            has_deflate_filter = true;
+    }
+
+    bool is_data_all_fvalues = false;
+    // This is the final check for a rare case: the variable data just contains the filled values.
+    // If this var's storage size is 0. Then it should be filled with the filled values.
+    if (has_deflate_filter && this->get_uses_fill_value() && this->get_var_chunks_storage_size() == 0) 
+            is_data_all_fvalues = true;
+
+    if (has_deflate_filter && !is_data_all_fvalues)
+        ret_value = true;
+    
+    return ret_value;
+} 
 
 
 } // namespace dmrpp

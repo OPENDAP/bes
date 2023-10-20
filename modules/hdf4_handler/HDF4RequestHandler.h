@@ -142,9 +142,4 @@ class HDF4RequestHandler:public BESRequestHandler {
 };
 
 
-#if 0
-void close_fileid(const int sdfd, const int fileid,const int gridfd, const int swathfd); 
-void close_hdf4_fileid(const int sdfd,const int fileid);
-#endif
-
 #endif

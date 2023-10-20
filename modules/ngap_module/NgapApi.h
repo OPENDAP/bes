@@ -22,7 +22,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
 /*
  * NgapApi.h
  *
@@ -36,47 +35,34 @@
 #include <string>
 #include <vector>
 #include <map>
+
 #include "rapidjson/document.h"
-#include "BESCatalogUtils.h"
-#include "url_impl.h"
+
+namespace http {
+class url;
+}
 
 namespace ngap {
 
 class NgapApi {
 private:
-    std::string d_cmr_hostname;
-    std::string d_cmr_search_endpoint_path;
-
-    std::string get_cmr_search_endpoint_url();
-    std::string find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response);
-    std::string build_cmr_query_url(const std::string &restified_path);
-    std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
+    static std::string get_cmr_search_endpoint_url();
+    static std::string find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path,
+                                                                   rapidjson::Document &cmr_granule_response);
+    static std::string build_cmr_query_url(const std::string &restified_path);
+    static std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
 
     friend class NgapApiTest;
 
 public:
+    NgapApi() = default;
+    ~NgapApi() = default;
+    NgapApi(const NgapApi &other) = delete;
+    NgapApi &operator=(const NgapApi &other) = delete;
 
-    NgapApi();
-
-    std::string convert_ngap_resty_path_to_data_access_url(
-            const std::string &restified_path,
-            const std::string &uid="");
+    static std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path);
 
     static bool signed_url_is_expired(const http::url &signed_url) ;
-
-#if 0
-    void get_years(std::string collection_name, std::vector<std::string> &years_result);
-    void get_months(std::string collection_name, std::string year, std::vector<std::string> &months_result);
-    void get_days(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
-    void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<std::string> &granules_result);
-    void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &granules_result);
-    void get_granules(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<ngap::Granule *> &granules);
-    void get_collection_ids(std::vector<std::string> &collection_ids);
-    unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
-    ngap::Granule *get_granule(const std::string path);
-    ngap::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
-};
-#endif
 };
 
 } // namespace ngap

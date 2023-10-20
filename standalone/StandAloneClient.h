@@ -85,6 +85,8 @@ public:
 
     void setOutput(std::ostream *strm, bool created);
 
+    [[nodiscard]] std::ostream &getOutput() const { return *_strm; }
+
     void executeClientCommand(const std::string &cmd);
 
     void executeCommands(const std::string &cmd_list, int repeat);

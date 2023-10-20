@@ -49,7 +49,6 @@
 #define prolog std::string("NgapBuildDmrppContainer::").append(__func__).append("() - ")
 
 using namespace std;
-using namespace bes;
 using namespace ngap;
 
 namespace builddmrpp {
@@ -76,12 +75,18 @@ void NgapBuildDmrppContainer::initialize()
     BESDEBUG(MODULE, prolog << "real_name: "<< get_real_name() << endl);
     BESDEBUG(MODULE, prolog << "type: "<< get_container_type() << endl);
 
+#if 0
+    // Removed jhrg 10/20/23
+    // I removed this becase the uid was used by convert_ngap_resty_...() only as part of
+    // the key for cached data. The cache has been moved out of that code and into the
+    // NgapContainer class.
+    
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+#endif
 
-    ngap::NgapApi ngap_api;
-    string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
+    string data_access_url = ngap::NgapApi::convert_ngap_resty_path_to_data_access_url(get_real_name());
 
     set_real_name(data_access_url);
 

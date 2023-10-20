@@ -79,12 +79,13 @@ namespace libdap {
  * oldest and remove them. After d_entries_threshold, this will
  * even itself out and the cache will correctly purge the oldest
  * entries.
- *
  */
 class ObjMemCache {
+    // TODO Make this a template or make a new version of this that is a
+    //  template so it's typesafe. jhrg 9/6/23
 private:
     struct Entry {
-        libdap::DapObj *d_obj; // A weak pointer - we do not manage this storage
+        libdap::DapObj *d_obj;
         const std::string d_name;
 
         // We need the string so that we can erase the index entry easily
@@ -93,7 +94,11 @@ private:
         ~Entry() { delete d_obj; d_obj = 0;}
     };
 
-    unsigned long long d_age;           // When obj was add or last accessed
+    // TODO Since d_age is used for both the cache and the index, as the 'int'
+    //  it should be an unsigned int or those should be u long longs. It's
+    //  unlikely we will ever run a process long enough to need 64-bits. jhrg 9/6/23
+
+    unsigned long long d_age;           // When obj was added or last accessed
     unsigned int d_entries_threshold;   // no more than this num of entries
     float d_purge_threshold;            // free up this fraction of the cache
 
@@ -124,7 +129,7 @@ public:
      *
      * The purge() method will be automatically run whenever the threshold
      * value is exceeded and add() is called.
-     * @param entries_threashold Purge the cache when this number of
+     * @param entries_threshold Purge the cache when this number of
      * items are exceeded.
      * @param purge_threshold When purging items, remove this fraction of
      * the LRU items (e.g., 0.2 --> the oldest 20% items are removed)

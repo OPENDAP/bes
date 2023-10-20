@@ -37,7 +37,7 @@
 /// and prepares the Vector structure that other functions reference.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author MuQun Yang <myang6@hdfgroup.org>
+/// \author Kent Yang <myang6@hdfgroup.org>
 class HE5Checker {
  public:
 

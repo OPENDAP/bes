@@ -26,7 +26,7 @@
 ///
 /// @author Kent Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2010-2012 The HDF Group
+/// Copyright (C) The HDF Group
 ///
 /// All rights reserved.
 
@@ -245,13 +245,7 @@ namespace HDFSP
             }
 
             /// No need to have the newname since we will make the name follow CF conventions
-            /// Get the new name of this field
-#if 0
-            // const std::string & getNewName () const
-            //{
-            //       return this->newname;
-            //}
-#endif
+
             const std::vector < Attribute * >&getAttributes () const
             {
                 return this->attrs;
@@ -465,10 +459,6 @@ namespace HDFSP
             /// SDS reference number. This and the object tag are a key to identify a SDS object.
             int32 fieldref = -1;
 
-#if 0
-            /// condenseddim is to condense 2-D lat/lon to 1-D lat/lon for geographic projections. This can greatly reduce the access time of visualization clients.
-            bool condenseddim = false;
-#endif
 
             /// Some fields have dimensions but don't have dimension scales. In HDF4, such dimension appears as a field but no data. So this kind of field
             /// needs special treatments. This flag is to identify such a field.
@@ -548,14 +538,6 @@ namespace HDFSP
             /// Read the information of all hybrid SDS objects from the HDF4 file.
             static SD *Read_Hybrid (int32 sdfileid, int32 hfileid) ;
 
-            /// Redundant member function.
-#if 0
-            /// Retrieve the absolute path of the file(full file name).
-            const std::string & getPath () const
-            {
-                return this->path;
-            }
-#endif
 
             /// Public interface to obtain information of all SDS vectors(objects).
             const std::vector < SDField * >&getFields () const
@@ -577,12 +559,6 @@ namespace HDFSP
             ~SD ();
 
             SD() = default;
-#if 0
-            SD (int32 sdfileid, int32 hfileid)
-                : sdfd (sdfileid), fileid (hfileid)
-            {
-            }
-#endif
 
         private:
             /// SDS objects stored in vectors
@@ -615,14 +591,6 @@ namespace HDFSP
             /// dimension name to coordinate variable name list: the key list to generate CF "coordinates" attributes.
             std::map < std::string, std::string > dimcvarlist;
 
-#if 0
-        private:
-
-            /// SD ID
-            int32 sdfd;
-            /// HDF4 file ID. We need to use this ID to retrieve the absolute path
-            int32 fileid;
-#endif
         friend class File;
     };
 
@@ -677,11 +645,6 @@ namespace HDFSP
                 return vdref;
             }
 
-#if 0
-            VDATA (int32 vdata_myid, int32 obj_ref)
-                :vdref(obj_ref),vdata_id (vdata_myid) {
-            }
-#endif
             VDATA (int32 obj_ref)
                 :vdref(obj_ref){
             }
@@ -704,11 +667,6 @@ namespace HDFSP
 
             /// Flag to map vdata fields to DAP variables or DAP attributes.
             bool TreatAsAttrFlag = true;
-
-#if 0
-            /// Vdata ID
-            int32 vdata_id;
-#endif
 
         friend class File;
     };
@@ -785,20 +743,6 @@ namespace HDFSP
             {
             }
 
-
-#if 0
-            /// The absolute path of the file
-            std::string path;
-
-            /// Pointer to the SD instance. There is only one SD instance in an HDF4 file.
-            SD *sd;
-
-            /// Vdata objects in this file
-            std::vector < VDATA * >vds;
-
-            ///  Vgroup attribute information. See the description of the class AttrContainer.
-            std::vector<AttrContainer *>vg_attrs;
-#endif
 
             /// Handle SDS fakedim names: make the dimensions with the same dimension size 
             /// share the same dimension name. In this way, we can reduce many fakedims.

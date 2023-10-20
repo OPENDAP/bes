@@ -43,8 +43,8 @@
 
 #include "BESObj.h"
 
-const std::string TIMING_LOG_KEY = "timing";
-const std::string MISSING_LOG_PARAM;
+static const std::string TIMING_LOG_KEY = "timing";
+static const std::string MISSING_LOG_PARAM;
 
 class BESStopWatch;
 
@@ -106,7 +106,7 @@ class BESStopWatch : public BESObj {
      * name of the timer. 
      *
      * @param reqID The client's request ID associated with this
-     * activity. Available from the DataHandlerInterfact object.
+     * activity. Available from the DataHandlerInterface object.
      */
     virtual bool start(const std::string &name, const std::string &reqID);
 

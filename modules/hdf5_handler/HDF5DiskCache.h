@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //// This file includes header files of the cache handling routines for the HDF4 handler.
 //// The skeleton of the code is adapted from BESDapResponseCache.cc under bes/dap 
-////  Authors:   MuQun Yang <myang6@hdfgroup.org>  
+////  Authors:   Kent Yang <myang6@hdfgroup.org>  
 //// Copyright (c) 2017 The HDF Group
 ///////////////////////////////////////////////////////////////////////////////
 //

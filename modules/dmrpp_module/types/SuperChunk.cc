@@ -332,11 +332,10 @@ void process_chunks_unconstrained_concurrent(
     list<future<bool>> futures;
     try {
         bool done = false;
-        bool future_finished = true;
         while (!done) {
 
             if(!futures.empty())
-                future_finished = get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+                get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
             // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
@@ -366,11 +365,10 @@ void process_chunks_unconstrained_concurrent(
                 if(futures.empty())
                     done = true;
             }
-            future_finished = false;
         }
     }
     catch (...) {
-        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        // Complete all the futures, otherwise we'll have threads out there using up resources
         while(!futures.empty()){
             if(futures.back().valid())
                 futures.back().get();
@@ -591,7 +589,7 @@ void SuperChunk::retrieve_data() {
  * @param target_array The array into which to write the data.
  */
 void SuperChunk::process_child_chunks() {
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
     retrieve_data();
 
     vector<unsigned long long> constrained_array_shape = d_parent_array->get_shape(true);
@@ -603,7 +601,7 @@ void SuperChunk::process_child_chunks() {
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog+"Serial Chunk Processing. id: " + d_id);
 #endif
-        for(const auto &chunk :get_chunks()){
+        for(const auto &chunk: get_chunks()){
             process_one_chunk(chunk,d_parent_array,constrained_array_shape);
         }
     }
@@ -615,7 +613,7 @@ void SuperChunk::process_child_chunks() {
         sw.start(timer_name.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for(const auto &chunk:get_chunks())
+        for(const auto &chunk: get_chunks())
             chunks_to_process.push(chunk);
 
         process_chunks_concurrent(d_id, chunks_to_process, d_parent_array, constrained_array_shape);
@@ -630,7 +628,7 @@ void SuperChunk::process_child_chunks() {
  */
 void SuperChunk::process_child_chunks_unconstrained() {
 
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
     retrieve_data();
 
     // The size in element of each of the array's dimensions
@@ -638,12 +636,12 @@ void SuperChunk::process_child_chunks_unconstrained() {
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
 
-    if(!DmrppRequestHandler::d_use_compute_threads){
+    if (!DmrppRequestHandler::d_use_compute_threads) {
 #if DMRPP_ENABLE_THREAD_TIMERS
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
 #endif
-        for(auto &chunk :get_chunks()){
+        for(auto &chunk: get_chunks()){
             process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape);
         }
     }
@@ -655,12 +653,11 @@ void SuperChunk::process_child_chunks_unconstrained() {
         sw.start(timer_name.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for (auto &chunk:get_chunks())
+        for (auto &chunk: get_chunks())
             chunks_to_process.push(chunk);
 
-        process_chunks_unconstrained_concurrent(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
+        process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
     }
-
 }
 
 

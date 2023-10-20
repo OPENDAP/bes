@@ -32,9 +32,14 @@
 #define DMRPP_NAME "dmrpp"
 
 #define MODULE DMRPP_NAME
-#define PARSER "dmrpp:parser"
+
+#define PARSER "dmrpp:dmz"
 #define CREDS  "dmrpp:creds"
 #define DMRPP_CURL  "dmrpp:curl"
+
+#define DMRPP_USE_OBJECT_CACHE_KEY "DMRPP.UseObjectCache"
+#define DMRPP_OBJECT_CACHE_ENTRIES_KEY "DMRPP.ObjectCacheEntries"
+#define DMRPP_OBJECT_CACHE_PURGE_LEVEL_KEY "DMRPP.ObjectCachePurgeLevel"
 
 #define DMRPP_USE_TRANSFER_THREADS_KEY "DMRPP.UseParallelTransfers"
 #define DMRPP_MAX_TRANSFER_THREADS_KEY "DMRPP.MaxParallelTransfers"
@@ -42,6 +47,7 @@
 #define DMRPP_USE_COMPUTE_THREADS_KEY "DMRPP.UseComputeThreads"
 #define DMRPP_MAX_COMPUTE_THREADS_KEY "DMRPP.MaxComputeThreads"
 
+#define DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF "FONc.ClassicModel"
 #define DMRPP_WAIT_FOR_FUTURE_MS 1
 
 #define DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD  (2*1024*1024)

@@ -33,11 +33,11 @@ int main(int argc, char **argv)
         StandAloneApp app;
         return app.main(argc, argv);
     }
-    catch (BESError &e) {
+    catch (const BESError &e) {
         std::cerr << "Caught BES Error while starting the command processor: " << e.get_message() << std::endl;
         return 1;
     }
-    catch (std::exception &e) {
+    catch (const std::exception &e) {
         std::cerr << "Caught C++ error while starting the command processor: " << e.what() << std::endl;
         return 2;
     }

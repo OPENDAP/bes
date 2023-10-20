@@ -27,50 +27,91 @@
 #define NgapContainer_h_ 1
 
 #include <string>
-#include <map>  // TODO unordered_map jhrg 3/9/23
+#include <map>
+#include <memory>
 
 #include "BESContainer.h"
-#include "RemoteResource.h"
+
+namespace http {
+class RemoteResource;
+}
 
 namespace ngap {
 
 enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
-/** @brief Container representing a remote request
+/**
+ * @brief Container representing a remote request to information stored in
+ * the NASA NGAP/EOSDIS cloud-based data management system.
  *
- * The real name of a NgapContainer is the actual remote request. When the
- * access method is called the remote request is made, the response
- * saved to file if successful, and the target response returned as the real
- * container that a data handler would then open.
+ * This container nominally stores the 'restified' URL to a NASA granule.
+ * The container handles the two operations needed to access a DMR++ file
+ * that can _then_ be used to read data from that granule.
+ *
+ * THe first operation is to ask the CMR subsystem to translate the restified
+ * path to a true URL that references the actual data granule in S3. We
+ * assume that the DMR++ for that granule is 'next to' the granule and is
+ * found by appending '.dmrpp' to the granule URL.
+ *
+ * The second operation is to then retrieve that DMR++ file and store it in
+ * a cache as text (DMR++ files are XML).
+ *
+ * The NgapContainer::access() method performs the two operations the first
+ * time it is called. Subsequent calls to NgapContainer::access() will return
+ * cached XML text and not the filename of the DMR++ local file.
+ *
+ * @note in the future, we may want to store the DMR++ _only_ as a string.
+ * jhrg 10/16/23
  *
  * @see NgapContainerStorage
  */
 class NgapContainer: public BESContainer {
 
-private:
-    std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
+    std::string d_ngap_path;    // The (in)famous restified path
 
-    void initialize();
-    void filter_response(const std::map<std::string, std::string> &content_filters) const;
+    void set_real_name_using_cmr_or_cache();
+
+    bool get_content_filters(std::map<std::string, std::string, std::less<>> &content_filters) const;
+    void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content) const;
 
     static bool inject_data_url();
+
+    friend class NgapContainerTest;
 
 protected:
     void _duplicate(NgapContainer &copy_to);
 
 public:
     NgapContainer() = default;
-    NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
     NgapContainer(const NgapContainer &copy_from) = delete;
+    ~NgapContainer() override = default;
 
-    ~NgapContainer() override;
     NgapContainer &operator=(const NgapContainer &rhs) = delete;
+
+    /**
+     * @brief Creates an instances of NgapContainer with symbolic name and real
+     * name, which is the remote request.
+     *
+     * The real_name is the remote request URL.
+     *
+     * @param sym_name symbolic name representing this remote container
+     * @param real_name The NGAP restified path.
+     * @throws BESSyntaxUserError if the url does not validate
+     * @see NgapUtils
+     */
+    NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &)
+            : BESContainer(sym_name, real_name, "ngap"), d_ngap_path(real_name) {}
 
     BESContainer * ptr_duplicate() override;
 
+    void set_ngap_path(const std::string &ngap_path) { d_ngap_path = ngap_path; }
+    std::string get_ngap_path() const { return d_ngap_path; }
+
     std::string access() override;
 
-    bool release() override;
+    bool release() override {
+        return true;
+    }
 
     void dump(std::ostream &strm) const override;
 };

@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 // It retrieves the real SDS field values for special HDF4 data products.
-//  Authors:   MuQun Yang <myang6@hdfgroup.org>  Eunsoo Seo
-// Copyright (c) 2010-2012 The HDF Group
+//  Authors:   Kent Yang <myang6@hdfgroup.org>  Eunsoo Seo
+// Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #include "HDFSPArray_RealField.h"
 #include <iostream>
@@ -30,7 +30,7 @@ HDFSPArray_RealField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFSPArray_RealField read "<<endl);
-    if(length() == 0)
+    if (length() == 0)
         return true; 
     
     // Declare offset, count and step
@@ -47,11 +47,6 @@ HDFSPArray_RealField::read ()
     // Cache
     // Check if a BES key H4.EnableDataCacheFile is true, if yes, we will check
     // if we can read the data from this file.
-#if 0
-    string check_data_cache_key = "H4.EnableDataCacheFile";
-    bool enable_check_data_cache_key = false;
-    enable_check_data_cache_key = HDFCFUtil::check_beskeys(check_data_cache_key);
-#endif
 
     bool data_from_cache = false;
     bool data_to_cache = false;
@@ -71,29 +66,24 @@ HDFSPArray_RealField::read ()
         // Here we have a sanity check for the cached parameters:Cached directory,file prefix and cached directory size.
         // Supposedly Hyrax BES cache feature should check this and the code exists. However, the
         // current hyrax 1.9.7 doesn't provide this feature. KY 2014-10-24
-#if 0
-        string bescachedir= llcache->getCacheDirFromConfig();
-        string bescacheprefix = llcache->getCachePrefixFromConfig();
-        unsigned int cachesize = llcache->getCacheSizeFromConfig();
-#endif
 
         // Make it simple, the data cache parameters also shares with the HDF-EOS2 grid lat/lon cache
         string bescachedir = HDF4RequestHandler::get_cache_latlon_path();
         string bescacheprefix = HDF4RequestHandler::get_cache_latlon_prefix();
         long cachesize = HDF4RequestHandler::get_cache_latlon_size();
 
-        if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0))
+        if (("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0))
             throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is NULL or the cache size is not set.");
         else {
             struct stat sb;
-            if(stat(bescachedir.c_str(),&sb) !=0) {
+            if (stat(bescachedir.c_str(),&sb) !=0) {
                 string err_mesg="The cached directory " + bescachedir;
                 err_mesg = err_mesg + " doesn't exist.  ";
                 throw InternalErr(__FILE__,__LINE__,err_mesg);
             }
             else { 
-                if(true == S_ISDIR(sb.st_mode)) {
-                        if(access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
+                if (true == S_ISDIR(sb.st_mode)) {
+                        if (access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
                             string err_mesg="The cached directory " + bescachedir;
                             err_mesg = err_mesg + " can NOT be read,written or executable.";
                             throw InternalErr(__FILE__,__LINE__,err_mesg);
@@ -114,14 +104,14 @@ HDFSPArray_RealField::read ()
         for (unsigned int i = 0; i <dimsizes.size();i++)
             total_elems = total_elems*dimsizes[i];
         dtype_size = HDFCFUtil::obtain_type_size(dtype);
-        if(-1 == dtype_size) {
+        if (-1 == dtype_size) {
             string err_mesg = "Wrong data type size for the variable ";
             err_mesg += name();
             throw InternalErr(__FILE__,__LINE__,err_mesg);
         }
         int expected_file_size = dtype_size *total_elems;
         int fd = 0;
-        if( true == llcache->get_data_from_cache(cache_fpath, expected_file_size,fd)) {
+        if ( true == llcache->get_data_from_cache(cache_fpath, expected_file_size,fd)) {
 
             vector<int32>offset32;
             offset32.resize(offset.size());
@@ -147,18 +137,13 @@ HDFSPArray_RealField::read ()
 
         }
 
-        if(true == data_from_cache)
+        if (true == data_from_cache)
             return true;
         else 
             data_to_cache = true;
 
      }
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Just declare offset,count and step in the int32 type.
@@ -179,7 +164,7 @@ HDFSPArray_RealField::read ()
     int32 sdid = -1;
 
     // Obtain SD ID.
-    if(false == check_pass_fileid_key) {
+    if (false == check_pass_fileid_key) {
         sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sdid < 0) {
             ostringstream eherr;
@@ -190,13 +175,8 @@ HDFSPArray_RealField::read ()
     else {
         // This code will make sure that the file ID is not passed when H4.EnableMetaDataCacheFile key is set.
         // We will wait to see if Hyrax core supports the cache and then make improvement. KY 2015-04-30
-#if 0
-        string check_enable_mcache_key="H4.EnableMetaDataCacheFile";
-        bool turn_on_enable_mcache_key= false;
-        turn_on_enable_mcache_key = HDFCFUtil::check_beskeys(check_enable_mcache_key);
-#endif
 
-        if(true == HDF4RequestHandler::get_enable_metadata_cachefile()) {
+        if (true == HDF4RequestHandler::get_enable_metadata_cachefile()) {
 
             sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
             if (sdid < 0) {
@@ -263,7 +243,7 @@ HDFSPArray_RealField::read ()
 
             set_value ((dods_int32 *) newval.data(), nelms);
 #endif
-             if(true == data_to_cache) {
+             if (true == data_to_cache) {
                 try {
                     write_data_to_cache(sdsid,cache_fpath,dtype_size,buf,nelms);
                 }
@@ -284,10 +264,10 @@ HDFSPArray_RealField::read ()
 #if 0
         // --------------------------------------------------------
         // HANDLE this later if necessary. KY 2010-8-17
-        //if(sptype == TRMML2_V6) 
+        //if (sptype == TRMML2_V6) 
         // Find scale_factor, add_offset attributes
         // create a new val to float32, remember to change int16 at HDFSP.cc to float32
-        // if(sptype == OBPGL3) 16-bit unsigned integer 
+        // if (sptype == OBPGL3) 16-bit unsigned integer 
         // Find slope and intercept, 
         // CZCS: also find base. data = base**((slope*l3m_data)+intercept)
         // Others : slope*data+intercept
@@ -321,7 +301,7 @@ HDFSPArray_RealField::read ()
             set_read_p(true);
 
             // write data to cache if cache is set.
-            if(true == data_to_cache) {
+            if (true == data_to_cache) {
                 try {
                     write_data_to_cache(sdsid,cache_fpath,dtype_size,buf,nelms);
                 }
@@ -351,16 +331,6 @@ HDFSPArray_RealField::read ()
     }
     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
 
-#if 0
-    // Close the SD interface
-    r = SDend (sdid);
-    if (r != 0) {
-        ostringstream eherr;
-        eherr << "SDend failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
-#endif
-
     return true;
 }
 
@@ -371,7 +341,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
     buf.resize(total_read);
     ret_read_val = HDFCFUtil::read_buffer_from_file(fd,(void*)buf.data(),total_read);
     llcache->unlock_and_close(cache_fpath);
-    if((-1 == ret_read_val) || (ret_read_val != (ssize_t)total_read)) {
+    if ((-1 == ret_read_val) || (ret_read_val != (ssize_t)total_read)) {
         llcache->purge_file(cache_fpath);
         return false;
     }
@@ -380,7 +350,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
         for(int i = 0; i<rank;i++) 
             nele_to_read *=cd_count[i];
 
-        if(nele_to_read == (total_read/dtype_size)) {
+        if (nele_to_read == (total_read/dtype_size)) {
             val2buf(buf.data());
             set_read_p(true);
         }
@@ -629,14 +599,14 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
         total_nelem = total_nelem*dimsizes[i];
     }
     vector<char>val;
-    if(DFNT_INT8 == dtype) {
+    if (DFNT_INT8 == dtype) {
 
 #ifndef SIGNED_BYTE_TO_INT32
-        if(total_nelem == nelms) 
+        if (total_nelem == nelms) 
             llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)buf.data());
         else {
             val.resize(dtype_size*total_nelem);
-            if(SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val.data())<0)
+            if (SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val.data())<0)
                 throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
             llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)val.data());
         }
@@ -644,7 +614,7 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
 #else 
         vector<int>newval;
         newval.resize(total_nelem);
-        if(total_nelem == nelms) {
+        if (total_nelem == nelms) {
             for (int i = 0; i < total_nelem;i++)
                 newval[i] = (int)buf[i];
             llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)newval.data());
@@ -652,7 +622,7 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
         else {
             vector<char>val2;
             val2.resize(total_nelem);
-            if(SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val2.data())<0)
+            if (SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val2.data())<0)
                 throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
             for (int i = 0; i < total_nelem;i++)
                 newval[i] = (int)val2[i];
@@ -661,12 +631,12 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
 #endif
     }
     else {
-        if(total_nelem == nelms) {
+        if (total_nelem == nelms) {
             llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)buf.data());
         }
         else {
             val.resize(dtype_size*total_nelem);
-            if(SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val.data())<0)
+            if (SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val.data())<0)
                 throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
 
             llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)val.data());
@@ -742,9 +712,9 @@ HDFSPArray_RealField::subset(
     for(int k=0; k<edge[index]; k++)
     {
         pos[index] = start[index] + k*stride[index];
-        if(index+1<sf_rank)
+        if (index+1<sf_rank)
             subset(input, sf_rank, dim, start, stride, edge, poutput,pos,index+1);
-        if(index==sf_rank-1)
+        if (index==sf_rank-1)
         {
             poutput->push_back(input[INDEX_nD_TO_1D( dim, pos)]);
         }

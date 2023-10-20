@@ -289,7 +289,7 @@ void CredentialsManager::load_credentials() {
 
     if (!file_exists(config_file)) {
         string err{prolog + "CredentialsManager config file "};
-        err += config_file + " was specified but is not present.";
+        err += config_file + " was specified but is not present.\n";    // Bjarne says to use \n not endl. jhrg 8/25/23
         ERROR_LOG(err);
         BESDEBUG(HTTP_MODULE,err);
         return;
@@ -297,7 +297,7 @@ void CredentialsManager::load_credentials() {
 
     if (!file_is_secured(config_file)) {
         string err{prolog + "CredentialsManager config file "};
-        err += config_file + " is not secured! Set the access permissions to -rw------- (600) and try again.";
+        err += config_file + " is not secured! Set the access permissions to -rw------- (600) and try again.\n";
         ERROR_LOG(err);
         BESDEBUG(HTTP_MODULE,err);
         return;

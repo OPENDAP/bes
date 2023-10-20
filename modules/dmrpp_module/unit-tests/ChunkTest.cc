@@ -60,7 +60,10 @@ class mock_url: public url {
 public:
     mock_url(): url() {
     }
-    string str() const { return "http://test.url.tld/"; }
+    string str() const { return "http://test.url.tld/file.ext?aws-token=secret_stuff"; }
+    string protocol() const { return "http"; }
+    string host() const { return "test.url.tld"; }
+    string path() const { return "/file.ext"; }
 };
 }
 
@@ -112,6 +115,8 @@ public:
         }
         catch(BESError &e) {
             DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
+                                  e.get_verbose_message().find("aws-token") == string::npos);
             CPPUNIT_ASSERT("Correctly caught a BESError");
         }
     }
@@ -134,6 +139,8 @@ public:
         }
         catch(BESError &e) {
             DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
+                                  e.get_verbose_message().find("aws-token") == string::npos);
             CPPUNIT_ASSERT("Correctly caught a BESError");
         }
     }
@@ -150,6 +157,8 @@ public:
         }
         catch(BESError &e) {
             DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
+                                  e.get_verbose_message().find("aws-token") == string::npos);
             CPPUNIT_ASSERT("Correctly caught a BESError");
         }
     }
@@ -170,6 +179,8 @@ public:
         }
         catch(BESError &e) {
             DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
+                                  e.get_verbose_message().find("aws-token") == string::npos);
             CPPUNIT_ASSERT("Correctly caught a BESError");
         }
     }

@@ -114,16 +114,17 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
 
     if (code == "AccessDenied") {
         stringstream msg;
-        msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
-        msg << data_url->str() << " Object Store Message: " << message;
+        msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: "
+            << data_url->protocol() << "://" << data_url->host() << data_url->path() << ") Object Store Message: "
+            << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str() << endl);
         throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
     }
     else {
         stringstream msg;
-        msg << prolog << "ERROR - The underlying object store returned an error. ";
-        msg << "(Tried: " << data_url->str() << ") Object Store Message: " << message;
+        msg << prolog << "The underlying object store returned an error. " << "(Tried: " << data_url->protocol()
+            << "://" << data_url->host() << data_url->path() << ") Object Store Message: " << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -191,7 +192,6 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: "
             << nbytes << " is larger than the target buffer size: " << chunk->get_rbuf_size();
         BESDEBUG(MODULE, msg.str() << endl);
-        DmrppRequestHandler::curl_handle_pool->release_all_handles();
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
