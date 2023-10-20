@@ -626,8 +626,7 @@ chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
 
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
-DATA_DIR="modules/dmrpp_module/data/dmrpp"
-BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
+BES_DATA_ROOT=$(readlink -f "${abs_builddir}")
 
 test_name="$1"
 input_file="$2"
@@ -642,10 +641,6 @@ then
     # We're here because it's an S3 Test
     # Only run the S3 tests if specifically instructed to do so.
     AT_SKIP_IF([test x$s3tests = xno])
-else
-    # It's a file test so we need to amend the input_file
-    # name to reference the correct thing.
-    input_file="${DATA_DIR}/${input_file}"
 fi
 
 if test -n "${output_file}"
