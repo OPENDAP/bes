@@ -1630,9 +1630,12 @@ add_executable(
 	modules/ngap_module/NgapModule.h
 	modules/ngap_module/NgapNames.h
 	modules/ngap_module/NgapRequestHandler.cc
-    modules/ngap_module/NgapRequestHandler.h
-    modules/ngap_module/unit-tests/NgapApiTest.cc
+  modules/ngap_module/NgapRequestHandler.h
+  modules/ngap_module/unit-tests/NgapApiTest.cc
+	modules/ngap_module/unit-tests/NgapContainerTest.cc
 	modules/ngap_module/unit-tests/MemoryCacheTest.cc
+	modules/ngap_module/unit-tests/NgapRequestHandlerTest.cc
+
 
 
     modules/ugrid_functions/unit-tests/BindTest.cc
