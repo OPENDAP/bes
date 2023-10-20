@@ -5,6 +5,7 @@ AT_INIT([bes/modules/dmrpp_module/tests_build_dmrpp testsuite_dmrpp_tests])
 
 m4_include([build_dmrpp_macros.m4])
 
+
 ################################################################################
 # Test get_dmrpp using command line options
 #

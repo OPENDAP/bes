@@ -1150,7 +1150,13 @@ hid_t get_h5_dataset_id(hid_t file, BaseType *btp, const unordered_set<string> &
     // If one was not given via an attribute, use BaseType::FQN() which
     // relies on the variable's position in the DAP dataset hierarchy.
     const D4Attribute *attr = d4_attrs->get("fullnamepath");
-
+        // I believe the logic is more clear in this way:
+        // If fullnamepath exists and the H5Dopen2 fails to open, it should throw an error.
+        // If fullnamepath doesn't exist, we should ignore the error as the reason described below:
+        // (However, we should suppress the HDF5 dataset open error message.)  KY 2019-12-02
+        // It's not an error if a DAP variable in a DMR from the hdf5 handler
+        // doesn't exist in the file _if_ there's no 'fullnamepath' because
+        // that variable was synthesized (likely for CF compliance)
     hid_t dataset = -1;
     if (attr) {
         string FQN;
@@ -1164,7 +1170,8 @@ hid_t get_h5_dataset_id(hid_t file, BaseType *btp, const unordered_set<string> &
         if (dataset < 0) {
             throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
         }
-    } else {
+    }
+    else {
         // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
         // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
         //
@@ -1249,25 +1256,36 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         VERBOSE(cerr << endl);
 
         auto dataset  = get_h5_dataset_id(file, btp, nc4_non_coord_candidate);
-        try {
-            string msg;
-            if(is_unsupported_type(dataset, btp, msg)){
-                throw UnsupportedTypeException(msg);
+        if(dataset > 0) {
+            // If we have a valid dataset then we have a variable with data. I think.
+            // If it's not valid we skip it, I think because the associated BaseType,
+            // btp, may be a semantic object, like a dimension,  with no data
+            // associated with it.
+            try {
+                string msg;
+                if (is_unsupported_type(dataset, btp, msg)) {
+                    throw UnsupportedTypeException(msg);
+                }
+
+                if (!process_variable_length_string_scalar(dataset, btp)) {
+
+                    VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
+                    get_variable_chunk_info(dataset, btp);
+
+                    VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
+                    add_string_array_info(dataset, btp);
+                }
+                H5Dclose(dataset);
             }
-
-            if(!process_variable_length_string_scalar(dataset,btp)) {
-
-                VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
-                get_variable_chunk_info(dataset, btp);
-
-                VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
-                add_string_array_info(dataset, btp);
+            catch (...) {
+                H5Dclose(dataset);
+                throw;
             }
-            H5Dclose(dataset);
         }
-        catch (...) {
-            H5Dclose(dataset);
-            throw;
+        else {
+            VERBOSE(cerr << prolog << "Unable to open " << btp->FQN()
+            << " with the hdf5 api. Skipping chunk production. "
+            << "Everything will be ok." << endl);
         }
     }
 
