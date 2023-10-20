@@ -178,6 +178,18 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The cache should have returned 'six_6'", value == "six_6");
     }
 
+    void test_no_initialize() {
+        MemoryCache<string> local_cache;
+        string value;
+        bool status = local_cache.get("one", value);
+        CPPUNIT_ASSERT_MESSAGE("The cache should have returned false - the item is not in the cache", status == false);
+        CPPUNIT_ASSERT_MESSAGE("The cache should have returned the empty string", value == "");
+
+        local_cache.put("one", "one");
+        CPPUNIT_ASSERT_MESSAGE("The cache should have one item", local_cache.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("The cache invariant should be true", local_cache.invariant());
+    }
+
     CPPUNIT_TEST_SUITE( MemoryCacheTest );
 
     CPPUNIT_TEST(test_zero_items);
@@ -193,6 +205,8 @@ public:
     CPPUNIT_TEST(test_get_one_item);
     CPPUNIT_TEST(test_get_one_item_not_in_cache);
     CPPUNIT_TEST(test_get_one_item_purged);
+
+    CPPUNIT_TEST(test_no_initialize);
 
     CPPUNIT_TEST_SUITE_END();
 };
