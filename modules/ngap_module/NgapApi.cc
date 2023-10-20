@@ -403,7 +403,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
  *
  * @param restified_path The name to decompose.
  */
-string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &restified_path, const std::string &uid) {
+string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &restified_path) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     string data_access_url;
 

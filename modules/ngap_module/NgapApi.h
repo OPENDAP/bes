@@ -60,8 +60,7 @@ public:
     NgapApi(const NgapApi &other) = delete;
     NgapApi &operator=(const NgapApi &other) = delete;
 
-    static std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path,
-                                                                  const std::string &uid = "");
+    static std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path);
 
     static bool signed_url_is_expired(const http::url &signed_url) ;
 };

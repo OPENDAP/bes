@@ -99,8 +99,8 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
-    // If using the cache, look there.
-    string url_key = d_ngap_path + '.' + uid;
+    // If using the cache, look there. Note that the UID is part of the key to the cached data.
+    string url_key = d_ngap_path + ':' + uid;
     string real_name;
     if (NgapRequestHandler::d_use_cmr_cache && NgapRequestHandler::d_new_cmr_cache.get(url_key, real_name)) {
         set_real_name(real_name);
@@ -110,7 +110,7 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
         return;
     }
 
-    real_name = NgapApi::convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
+    real_name = NgapApi::convert_ngap_resty_path_to_data_access_url(get_real_name());
     set_real_name(real_name);
 
     // Because we know the name is really a URL, then we know the "relative_name" is meaningless
