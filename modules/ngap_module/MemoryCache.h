@@ -62,8 +62,8 @@ namespace ngap {
  */
 template <typename VALUE>
 class MemoryCache {
-    unsigned int d_max_items;       //< Max number of items to cache (not bytes, but items)
-    unsigned int d_purge_items;     //< When purging, remove this many items
+    unsigned int d_max_items = 100;       //< Max number of items to cache (not bytes, but items)
+    unsigned int d_purge_items = 20;     //< When purging, remove this many items
     
     std::deque<std::string> d_fifo_keys; //< FIFO queue of keys; used by purge()
     std::unordered_map<std::string, VALUE> d_cache;
@@ -104,7 +104,11 @@ class MemoryCache {
 public:
     MemoryCache() = default;    // this makes testing easier
     MemoryCache(const MemoryCache *src) = delete;
+
+#if 0
     MemoryCache(unsigned int t, unsigned int s): d_max_items(t), d_purge_items(s) {}
+#endif
+
     virtual ~MemoryCache() = default;
     MemoryCache &operator=(const MemoryCache *src) = delete;
 
