@@ -368,7 +368,6 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                 for(auto c : fv_str){
                     msg << std::hex << +c ;
                 }
-                //return fv_str;
                 throw UnsupportedTypeException(msg.str());
             }
             else {
