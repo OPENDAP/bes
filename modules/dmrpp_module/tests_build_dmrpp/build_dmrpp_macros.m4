@@ -627,6 +627,7 @@ ls -l "${GET_DMRPP}"
 
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
+BUILD_DIR=$(readlink -f "${abs_top_builddir}")
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
 test_name="$1"
@@ -650,6 +651,7 @@ fi
 
 if test -n "${output_file}"
 then
+    output_file="${BUILD_DIR}/modules/dmrpp_module/${output_file}}"
     params="${params} -o ${output_file}"
 else
     output_file=stdout
