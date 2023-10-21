@@ -2,7 +2,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = $(DAP_CFLAGS) $(H5_CPPFLAGS) \
-    -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
+    -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
     -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/modules/dmrpp_module/types
 
 AM_CXXFLAGS =
