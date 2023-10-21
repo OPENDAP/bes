@@ -651,7 +651,7 @@ fi
 
 if test -n "${output_file}"
 then
-    output_file="${BUILD_DIR}/modules/dmrpp_module/${output_file}}"
+    output_file="${BUILD_DIR}/modules/dmrpp_module/tests_build_dmrpp/${output_file}"
     params="${params} -o ${output_file}"
 else
     output_file=stdout

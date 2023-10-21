@@ -1401,7 +1401,8 @@ function dmrpp_inventory_test() {
     fi
 
     if [[ ${output_filename} == ${BES_DATA_ROOT}* ]]; then
-        target_file=$(echo "${output_filename}" | sed -e "s+${BES_DATA_ROOT}++")
+        # target_file=$(echo "${output_filename}" | sed -e "s+${BES_DATA_ROOT}++")
+        target_file="${output_filename}"
     else
         test_file="${BES_DATA_ROOT}/"$(basename ${output_filename})
         if test ! -f ${test_file}; then
