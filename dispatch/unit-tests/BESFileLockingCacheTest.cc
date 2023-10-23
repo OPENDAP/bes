@@ -52,7 +52,7 @@ static const string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache"
 
 class BESFileLockingCacheTest : public CppUnit::TestFixture {
     string d_data_dir = TEST_DATA_DIR;  // TODO Never used jhrg 6/26/23
-    string d_build_dir = TEST_BUILD_DIR;    // TODO Used on ly in the MT test jheg 6/26/23
+    string d_build_dir = TEST_BUILD_DIR;    // TODO Used only in the MT test jhrg 6/26/23
 
     static void purge_cache(const string &cache_dir, const string &cache_prefix) {
         if (!(cache_dir.empty() && cache_prefix.empty())) {

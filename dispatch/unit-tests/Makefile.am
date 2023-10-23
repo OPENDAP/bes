@@ -35,7 +35,7 @@ reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test \
-RequestTimerTest BESFileLockingCacheTest
+RequestTimerTest BESFileLockingCacheTest FileCacheTest
 
 # removed cacheT jhrg 1/11/23
 # FIXME keysT removed to see if it's the only blocker. jhrg 2/2/23
@@ -184,3 +184,5 @@ ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
 RequestTimerTest_SOURCES = RequestTimerTest.cc
 
 BESFileLockingCacheTest_SOURCES = BESFileLockingCacheTest.cc
+
+FileCacheTest_SOURCES = FileCacheTest.cc

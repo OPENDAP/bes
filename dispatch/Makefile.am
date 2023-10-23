@@ -157,7 +157,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogResponseHandler.h ShowNodeResponseHandler.h \
 	CatalogNode.h CatalogItem.h \
 	RequestServiceTimer.h \
-	ServerAdministrator.h
+	ServerAdministrator.h FileCache.h
 
 #	BESAggFactory.h BESAggregationServer.h BESContainerStorageCatalog.h
 
