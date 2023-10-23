@@ -108,3 +108,8 @@ AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_chunk.h5])
 AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_compact.h5])
 
 
+################################################################################
+# Test variable length string scalar (vlss)
+#
+AT_GET_DMRPP_3_20([VariableLengthStringScalar - VLSS], [Scalar_contiguous_vlstr.h5],[vlss.baseline] )
+
