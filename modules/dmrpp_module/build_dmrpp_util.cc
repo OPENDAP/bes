@@ -1289,12 +1289,10 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     }
 
     // all groups in the group
-    // for(auto g:group->groups())
-    //     get_chunks_for_all_variables(file, g);
-
-    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
-        get_chunks_for_all_variables(file, *g);
+    for(auto g:group->groups()) {
+        get_chunks_for_all_variables(file, g);
     }
+
 }
 
 /**
