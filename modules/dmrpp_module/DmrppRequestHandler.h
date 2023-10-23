@@ -72,6 +72,8 @@ private:
     static std::shared_ptr<DMZ> dmz;
 
 public:
+    DmrppRequestHandler() = delete;
+
 	explicit DmrppRequestHandler(const std::string &name);
 	~DmrppRequestHandler() override;
 

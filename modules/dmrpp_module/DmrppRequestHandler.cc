@@ -98,7 +98,7 @@ shared_ptr<DMZ> DmrppRequestHandler::dmz{nullptr};
 
 // This is used to maintain a pool of reusable curl handles that enable connection
 // reuse. jhrg
-unique_ptr<CurlHandlePool> DmrppRequestHandler::curl_handle_pool{nullptr};
+unique_ptr<CurlHandlePool> DmrppRequestHandler::curl_handle_pool = std::make_unique<CurlHandlePool>();
 
 // These now only affect the DDS and DAS ObjMemCaches; the DMR++
 // is cached in the NGAP module. Once issues with the DMR++ object's
