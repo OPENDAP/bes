@@ -31,5 +31,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/GLAH06_634
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/S-MODE_PFC_OC2108A_adcp_os75nb.h5.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/test_ba_grp_dim_whole.h5.deflev.dmrpp.bescmd >nasa_dap4_default_test.nc
 
 
