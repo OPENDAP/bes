@@ -32,6 +32,7 @@
 
 #include <sstream>
 #include <algorithm>
+#include <cstring>
 
 #include <netcdf.h>
 
