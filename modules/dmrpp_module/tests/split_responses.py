@@ -1,4 +1,5 @@
-
+#!/usr/bin/env python3
+#
 # These files from besstandalone cannot be treated as text files
 # The different responses are written to 'fn'_response_n where n = 1, ..., N
 #

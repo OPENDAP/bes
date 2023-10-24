@@ -51,12 +51,12 @@ constexpr static auto const DEFAULT_CMR_SEARCH_ENDPOINT_PATH = "/search/granules
 constexpr static auto const CMR_URL_TYPE_GET_DATA = "GET DATA";
 
 constexpr static auto const USE_CMR_CACHE = "NGAP.UseCMRCache";
-constexpr static auto const CMR_CACHE_THRESHOLD = "NGAP.CMRCacheThreshold";
-constexpr static auto const CMR_CACHE_SPACE = "NGAP.CMRCacheSpace";
+constexpr static auto const CMR_CACHE_THRESHOLD = "NGAP.CMRCacheSize";
+constexpr static auto const CMR_CACHE_SPACE = "NGAP.CMRCachePurge";
 
 constexpr static auto const USE_DMRPP_CACHE = "NGAP.UseDMRppCache";
-constexpr static auto const DMRPP_CACHE_THRESHOLD = "NGAP.DMRppCacheThreshold";
-constexpr static auto const DMRPP_CACHE_SPACE = "NGAP.DMRppCacheSpace";
+constexpr static auto const DMRPP_CACHE_THRESHOLD = "NGAP.DMRppCacheSize";
+constexpr static auto const DMRPP_CACHE_SPACE = "NGAP.DMRppCachePurge";
 
 // These are used only in NgapApiTest.cc. jhrg 9/28/23
 #define CMR_PROVIDER "provider"

@@ -67,23 +67,9 @@ enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
  */
 class NgapContainer: public BESContainer {
 
-private:
-    // Make this shared so containers can be copied. jhrg 9/20/23
-    std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
     std::string d_ngap_path;    // The (in)famous restified path
 
-    // If we keep this, then make a class, et cetera. jhrg 9/25/23
-    void purge_cmr_cache() const;
-    void put_cmr_cache(const std::string &key, const std::string &value) const;
-    bool get_cmr_cache(const std::string &key, std::string &value) const;
-
     void set_real_name_using_cmr_or_cache();
-
-    void purge_dmrpp_cache() const;
-    void put_dmrpp_cache(const std::string &key, const std::string &value) const;
-    bool get_dmrpp_cache(const std::string &key, std::string &value) const;
-
-    void cache_dmrpp_contents();
 
     bool get_content_filters(std::map<std::string, std::string, std::less<>> &content_filters) const;
     void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content) const;
@@ -123,7 +109,9 @@ public:
 
     std::string access() override;
 
-    bool release() override;
+    bool release() override {
+        return true;
+    }
 
     void dump(std::ostream &strm) const override;
 };
