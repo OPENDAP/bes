@@ -39,10 +39,9 @@ using namespace std;
 namespace dmrpp {
 
 DmrppStr &
-DmrppStr::operator=(const DmrppStr &rhs)
-{
+DmrppStr::operator=(const DmrppStr &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
     Str::operator=(rhs);
     DmrppCommon::operator=(rhs);
@@ -51,8 +50,7 @@ DmrppStr::operator=(const DmrppStr &rhs)
 }
 
 bool
-DmrppStr::read()
-{
+DmrppStr::read() {
     if (!get_chunks_loaded())
         load_chunks(this);
 
@@ -68,34 +66,32 @@ DmrppStr::read()
 
     auto chunk = get_immutable_chunks()[0];
     chunk->read_chunk();
-    auto chunk_size= chunk->get_size();
+    auto chunk_size = chunk->get_size();
     char *data = chunk->get_rbuf();
 
     // It is possible that the string data is not null terminated and/or
     // Does not span the full width of the chunk.
     // This should correct those issues.
-    unsigned long long str_len=0;
+    unsigned long long str_len = 0;
     bool done = false;
-    while(!done){
+    while (!done) {
         done = (data[str_len] == 0) || (str_len >= chunk_size);
-        if(!done) str_len++;
+        if (!done) str_len++;
     }
-    string value(data,str_len);
+    string value(data, str_len);
     set_value(value);   // sets read_p too
     return true;
 }
 
 void
-DmrppStr::set_send_p(bool state)
-{
+DmrppStr::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
     Str::set_send_p(state);
 }
 
-void DmrppStr::dump(ostream & strm) const
-{
+void DmrppStr::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "DmrppStr::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);

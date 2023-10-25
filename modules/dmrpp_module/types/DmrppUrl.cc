@@ -24,8 +24,6 @@
 
 #include "config.h"
 
-#include <string>
-
 #include <BESError.h>
 #include <BESDebug.h>
 
@@ -37,10 +35,9 @@ using namespace std;
 namespace dmrpp {
 
 DmrppUrl &
-DmrppUrl::operator=(const DmrppUrl &rhs)
-{
+DmrppUrl::operator=(const DmrppUrl &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
     Url::operator=(rhs);
     DmrppCommon::operator=(rhs);
@@ -49,8 +46,7 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 }
 
 bool
-DmrppUrl::read()
-{
+DmrppUrl::read() {
     if (!get_chunks_loaded())
         load_chunks(this);
 
@@ -65,16 +61,14 @@ DmrppUrl::read()
 }
 
 void
-DmrppUrl::set_send_p(bool state)
-{
+DmrppUrl::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
     Url::set_send_p(state);
 }
 
-void DmrppUrl::dump(ostream & strm) const
-{
+void DmrppUrl::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);

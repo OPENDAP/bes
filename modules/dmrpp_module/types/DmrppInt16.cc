@@ -38,10 +38,9 @@ using namespace std;
 namespace dmrpp {
 
 DmrppInt16 &
-DmrppInt16::operator=(const DmrppInt16 &rhs)
-{
+DmrppInt16::operator=(const DmrppInt16 &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
     Int16::operator=(rhs);
     DmrppCommon::operator=(rhs);
@@ -50,9 +49,8 @@ DmrppInt16::operator=(const DmrppInt16 &rhs)
 }
 
 bool
-DmrppInt16::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+DmrppInt16::read() {
+    BESDEBUG("dmrpp", "Entering " << __PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -60,9 +58,9 @@ DmrppInt16::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_int16*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_int16 *>(read_atomic(name())));
 
-    if ( this->twiddle_bytes() ) {
+    if (this->twiddle_bytes()) {
         d_buf = bswap_16(d_buf);
     }
 
@@ -72,16 +70,14 @@ DmrppInt16::read()
 }
 
 void
-DmrppInt16::set_send_p(bool state)
-{
+DmrppInt16::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
     Int16::set_send_p(state);
 }
 
-void DmrppInt16::dump(ostream & strm) const
-{
+void DmrppInt16::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "DmrppInt16::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);

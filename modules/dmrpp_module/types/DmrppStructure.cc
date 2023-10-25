@@ -39,10 +39,9 @@ using namespace std;
 namespace dmrpp {
 
 DmrppStructure &
-DmrppStructure::operator=(const DmrppStructure &rhs)
-{
+DmrppStructure::operator=(const DmrppStructure &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
     Structure::operator=(rhs);
     DmrppCommon::operator=(rhs);
@@ -50,8 +49,7 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
     return *this;
 }
 
-void DmrppStructure::dump(ostream & strm) const
-{
+void DmrppStructure::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "DmrppStructure::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);

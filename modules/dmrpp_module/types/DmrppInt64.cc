@@ -38,10 +38,9 @@ using namespace std;
 namespace dmrpp {
 
 DmrppInt64 &
-DmrppInt64::operator=(const DmrppInt64 &rhs)
-{
+DmrppInt64::operator=(const DmrppInt64 &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
     Int64::operator=(rhs);
     DmrppCommon::operator=(rhs);
@@ -50,9 +49,8 @@ DmrppInt64::operator=(const DmrppInt64 &rhs)
 }
 
 bool
-DmrppInt64::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+DmrppInt64::read() {
+    BESDEBUG("dmrpp", "Entering " << __PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -60,9 +58,9 @@ DmrppInt64::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_int64*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_int64 *>(read_atomic(name())));
 
-    if ( this->twiddle_bytes() ) {
+    if (this->twiddle_bytes()) {
         d_buf = bswap_64(d_buf);
     }
     set_read_p(true);
@@ -72,16 +70,14 @@ DmrppInt64::read()
 }
 
 void
-DmrppInt64::set_send_p(bool state)
-{
+DmrppInt64::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
     Int64::set_send_p(state);
 }
 
-void DmrppInt64::dump(ostream & strm) const
-{
+void DmrppInt64::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "DmrppInt64::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
