@@ -42,10 +42,8 @@ DmrppD4Enum::operator=(const DmrppD4Enum &rhs)
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<D4Enum &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    D4Enum::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }

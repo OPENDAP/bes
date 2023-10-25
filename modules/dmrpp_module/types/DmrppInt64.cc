@@ -43,10 +43,8 @@ DmrppInt64::operator=(const DmrppInt64 &rhs)
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<Int64 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Int64::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }

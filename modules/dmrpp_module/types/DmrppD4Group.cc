@@ -26,15 +26,12 @@
 
 #include <string>
 
-//#include <libdap/D4Enum.h>
-//#include <libdap/D4EnumDefs.h>
 #include <libdap/D4Attributes.h>
 #include <libdap/D4Maps.h>
 #include <libdap/D4Group.h>
 #include <libdap/XMLWriter.h>
 
 #include <BESError.h>
-//#include <BESDebug.h>
 
 #include "DmrppD4Group.h"
 
@@ -49,9 +46,8 @@ DmrppD4Group::operator=(const DmrppD4Group &rhs)
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<D4Group &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    D4Group::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }

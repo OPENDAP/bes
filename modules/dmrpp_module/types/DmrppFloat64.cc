@@ -42,10 +42,8 @@ DmrppFloat64::operator=(const DmrppFloat64 &rhs)
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<Float64 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Float64::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }

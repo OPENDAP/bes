@@ -49,10 +49,8 @@ DmrppD4Opaque::operator=(const DmrppD4Opaque &rhs)
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<D4Opaque &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    // FIXME Remove DmrppCommon::m_duplicate_common(rhs);
+    D4Opaque::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }

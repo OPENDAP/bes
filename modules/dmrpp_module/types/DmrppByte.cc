@@ -43,10 +43,8 @@ DmrppByte::operator=(const DmrppByte &rhs)
     if (this == &rhs)
 	return *this;
 
-    dynamic_cast<Byte &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    // DmrppCommon::m_duplicate_common(rhs);
+    Byte::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }

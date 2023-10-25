@@ -167,6 +167,7 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 dmrpp_easy_handle::dmrpp_easy_handle() {
 
     CURLcode res;
+    memset(d_errbuf, '\0', sizeof(d_errbuf));
 
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
@@ -306,7 +307,9 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
     if (handle) {
         // Once here, d_easy_handle holds a CURL* we can use.
+#if 0
         handle->d_in_use = true;
+#endif
         handle->d_url = chunk->get_data_url();
 
         handle->d_chunk = chunk;

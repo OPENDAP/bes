@@ -557,10 +557,12 @@ DmrppArray::operator=(const DmrppArray &rhs)
 {
     if (this == &rhs) return *this;
 
-    dynamic_cast<Array &>(*this) = rhs; // run Constructor=
+    Array::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    // Removed DmrppCommon::m_duplicate_common(rhs); jhrg 11/12/21
+    // TODO Should these be copied here? jhrg 10/25/23
+    // d_compact_str_buf
+    // d_vlen_ons_str
 
     return *this;
 }

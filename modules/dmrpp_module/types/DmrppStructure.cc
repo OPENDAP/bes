@@ -44,9 +44,8 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<Structure &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    Structure::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }

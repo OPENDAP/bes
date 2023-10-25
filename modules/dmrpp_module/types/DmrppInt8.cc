@@ -42,10 +42,8 @@ DmrppInt8::operator=(const DmrppInt8 &rhs)
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<Int8 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Int8::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
