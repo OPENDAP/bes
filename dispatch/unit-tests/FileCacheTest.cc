@@ -92,8 +92,41 @@ public:
 
     void test_unintialized_cache() {
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open with initialization",
-                               !fc.invariant());
+        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
+    }
+
+    void test_open_cache_info() {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
+
+        fc.d_cache_dir = cache_dir;
+        CPPUNIT_ASSERT_MESSAGE("The cache file should be opened", fc.open_cache_info());
+
+        string cache_info_filename = BESUtil::pathConcat(cache_dir, CACHE_INFO_FILE_NAME);
+        DBG(cerr << prolog << "cache_info_filename: " << cache_info_filename << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The cache file should exist", access(cache_info_filename.c_str(), F_OK) == 0);
+
+        struct stat cifsb{0};
+        if (stat(cache_info_filename.c_str(), &cifsb) != 0)
+            CPPUNIT_FAIL("stat() failed on cached file");
+        CPPUNIT_ASSERT_MESSAGE("The cache file should be 8 bytes", cifsb.st_size == 8);
+    }
+
+    void test_open_cache_info_cache_dir_not_set() {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
+
+        CPPUNIT_ASSERT_MESSAGE("The cache file should not be opened", !fc.open_cache_info());
+    }
+
+    void test_get_cache_info_size_0() {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
+
+        fc.d_cache_dir = cache_dir;
+        CPPUNIT_ASSERT_MESSAGE("The cache file should be opened", fc.open_cache_info());
+
+        CPPUNIT_ASSERT_MESSAGE("Initially, the cache info size should be zero", fc.get_cache_info_size() == 0);
     }
 
     void test_intialized_cache() {
@@ -131,6 +164,9 @@ public:
     CPPUNIT_TEST_SUITE(FileCacheTest);
 
     CPPUNIT_TEST(test_unintialized_cache);
+    CPPUNIT_TEST(test_open_cache_info);
+    CPPUNIT_TEST(test_open_cache_info_cache_dir_not_set);
+    CPPUNIT_TEST(test_get_cache_info_size_0);
     CPPUNIT_TEST(test_intialized_cache);
     CPPUNIT_TEST(test_put_single_file);
 

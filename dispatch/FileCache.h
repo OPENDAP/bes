@@ -116,9 +116,12 @@ class FileCache {
         return true;
     }
 
-    // open the cache info file and write a zero to it.
+    // Open the cache info file and write a zero to it.
     // Assign the file descriptor to d_cache_info_fd.
+    // d_cache_dir must be set.
     bool open_cache_info() {
+        if (d_cache_dir.empty())
+            return false;
         if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT, 0666)) < 0)
             return false;
         unsigned long long size = 0;
@@ -139,12 +142,12 @@ class FileCache {
 
     // Return the size of the cache as recorded in the cache info file.
     // Return zero on error or if there's nothing in the cache.
-    unsigned long long get_cache_size() {
+    unsigned long long get_cache_info_size() {
         if (d_cache_info_fd == -1)
             return 0;
-        unsigned long long size = 0;
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
             return 0;
+        unsigned long long size = 0;
         if (read(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
             return 0;
         return size;
