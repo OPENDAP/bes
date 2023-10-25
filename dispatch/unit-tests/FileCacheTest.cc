@@ -67,14 +67,27 @@ public:
 
     void tearDown() override {
         // Remove the cache directory
-#if 0
-        string rm_cmd = "exec rm -rf " + cache_dir;
-        DBG(cerr << prolog << "rm_cmd: " << rm_cmd << '\n');
-        if (system(cache_dir.c_str()) != 0) {
-            DBG(cerr << prolog << "Failed to remove cache directory: " << cache_dir << '\n');
-            CPPUNIT_FAIL("Failed to remove cache directory in tearDown()");
+        DIR *dir = nullptr;
+        struct dirent *ent{0};
+        if ((dir = opendir (cache_dir.c_str())) != nullptr) {
+            /* print all the files and directories within directory */
+            while ((ent = readdir (dir)) != nullptr) {
+                // Skip the . and .. files and the cache info file
+                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+                    continue;
+                string cache_file = BESUtil::pathConcat(cache_dir, ent->d_name);
+                DBG(cerr << prolog << "Removing cache file: " << cache_file << '\n');
+                if (remove(cache_file.c_str()) != 0) {
+                    CPPUNIT_FAIL(string("Error removing ") + ent->d_name + " from cache directory (" + cache_dir + ")");
+                }
+            }
+            closedir (dir);
+            if (remove(cache_dir.c_str()) != 0) {
+                CPPUNIT_FAIL("Error removing cache directory:" + cache_dir);
+            }
+        } else {
+            CPPUNIT_FAIL("Failed to open cache directory in tearDown()");
         }
-#endif
     }
 
     void test_unintialized_cache() {

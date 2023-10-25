@@ -5,9 +5,8 @@
 // Copied to libdap. This is used to cache responses built from
 // functional CE expressions.
 
-// Copyright (c) 2012 OPeNDAP, Inc
-// Author: James Gallagher <jgallagher@opendap.org>,
-// Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Copyright (c) 2023 OPeNDAP, Inc
+// Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,29 +30,19 @@
 
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <sys/stat.h>
 
 #include "BESUtil.h"
 #include "BESLog.h"
 
-#define USE_GET_SHARED_LOCK 1
-
-// These typedefs are used to record information about the files in the cache.
-// See FileCache.cc and look at the purge() method.
-typedef struct {
-    std::string name;
-    unsigned long long size;
-    time_t time;
-} cache_entry;
-
-typedef std::list<cache_entry> CacheFiles;
-
-const std::string cache_info_file_name = "cache_info";
-
 static inline std::string get_errno() {
     const char *s_err = strerror(errno);
     return s_err ? s_err : "unknown error";
 }
+
+// Name of the file that tracks the size of the cache
+#define CACHE_INFO_FILE_NAME "cache_info"
 
 // Build a lock of a certain type. Locks the entire file.
 //
@@ -106,7 +95,6 @@ static inline struct flock *advisory_lock(int type)
  */
 class FileCache {
 
- private:
     // pathname of the cache directory
     std::string d_cache_dir;
 
@@ -126,6 +114,40 @@ class FileCache {
         if (d_cache_info_fd < 0)
             return false;
         return true;
+    }
+
+    // open the cache info file and write a zero to it.
+    // Assign the file descriptor to d_cache_info_fd.
+    bool open_cache_info() {
+        if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT, 0666)) < 0)
+            return false;
+        unsigned long long size = 0;
+        if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
+            return false;
+        return true;
+    }
+
+    bool update_cache_info_size(long long size) {
+        if (d_cache_info_fd == -1)
+            return false;
+        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+            return false;
+        if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
+            return false;
+        return true;
+    }
+
+    // Return the size of the cache as recorded in the cache info file.
+    // Return zero on error or if there's nothing in the cache.
+    unsigned long long get_cache_size() {
+        if (d_cache_info_fd == -1)
+            return 0;
+        unsigned long long size = 0;
+        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+            return 0;
+        if (read(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
+            return 0;
+        return size;
     }
 
     friend class cacheT;
@@ -160,7 +182,7 @@ public:
 
         d_cache_dir = cache_dir;
 
-        if ((d_cache_info_fd = open(BESUtil::pathConcat(cache_dir, cache_info_file_name).c_str(), O_RDWR | O_CREAT, 0666)) < 0)
+        if (!open_cache_info())
             return false;
 
         d_max_cache_size_in_bytes = (unsigned long long)size;
@@ -227,8 +249,39 @@ public:
     // Remove a Value from the Cache
     void del(const std::string &key);
 
-    // Remove all entries from the Cache
-    void clear();
+    /**
+     * @brief Remove all files from the cache. Zero the cache info file.
+     * @return false if the cache directory could not be opened or a file
+     * in the cache could not be removed, true otherwise.
+     */
+    bool clear() {
+        // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
+        DIR *dir = nullptr;
+        struct dirent *ent{0};
+        if ((dir = opendir (d_cache_dir.c_str())) != nullptr) {
+            /* print all the files and directories within directory */
+            while ((ent = readdir (dir)) != nullptr) {
+                // Skip the . and .. files and the cache info file
+                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0
+                    || strcmp(ent->d_name, CACHE_INFO_FILE_NAME) == 0)
+                    continue;
+                if (remove(BESUtil::pathConcat(d_cache_dir, ent->d_name).c_str()) != 0) {
+                    ERROR_LOG("Error removing " << ent->d_name << " from cache directory (" << d_cache_dir << ") - " << get_errno());
+                    return false;
+                }
+            }
+            closedir (dir);
+
+            // Zero the cache info file
+            if (!update_cache_info_size(0))
+                return false;
+
+            return true;
+        } else {
+            ERROR_LOG("Error clearing the cache directory (" << d_cache_dir << ") - " << get_errno());
+            return false;
+        }
+    }
 };
 
 #endif // FileCache_h_
