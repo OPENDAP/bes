@@ -227,7 +227,7 @@ public:
     // Remove a Value from the Cache
     void del(const std::string &key);
 
-    // Remove all entries from the Cache
+    // Remove all entries from the Cache. This will leave the cache directory and the cache_info file
     void clear();
 };
 

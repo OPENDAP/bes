@@ -67,14 +67,7 @@ public:
 
     void tearDown() override {
         // Remove the cache directory
-#if 0
-        string rm_cmd = "exec rm -rf " + cache_dir;
-        DBG(cerr << prolog << "rm_cmd: " << rm_cmd << '\n');
-        if (system(cache_dir.c_str()) != 0) {
-            DBG(cerr << prolog << "Failed to remove cache directory: " << cache_dir << '\n');
-            CPPUNIT_FAIL("Failed to remove cache directory in tearDown()");
-        }
-#endif
+
     }
 
     void test_unintialized_cache() {
