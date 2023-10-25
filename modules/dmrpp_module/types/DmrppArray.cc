@@ -2012,7 +2012,7 @@ unsigned long long DmrppArray::set_fixed_string_length(const string &length_str)
     try {
         d_fixed_str_length = stoull(length_str);
     }
-    catch(std::invalid_argument e){
+    catch(const std::invalid_argument &e){
         stringstream err_msg;
         err_msg << "The value of the length string could not be parsed. Message: " << e.what();
         throw BESInternalError(err_msg.str(),__FILE__,__LINE__);
