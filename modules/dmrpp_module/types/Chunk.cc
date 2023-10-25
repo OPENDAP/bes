@@ -52,8 +52,8 @@ using http::EffectiveUrlCache;
 
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
-#define FLETCHER32_CHECKSUM 4               // Bytes in the fletcher32 checksum
-#define ACTUALLY_USE_FLETCHER32_CHECKSUM 1  // Computing checksums takes time...
+constexpr auto FLETCHER32_CHECKSUM = 4;               // Bytes in the fletcher32 checksum
+constexpr auto ACTUALLY_USE_FLETCHER32_CHECKSUM = 1;  // Computing checksums takes time...
 
 namespace dmrpp {
 

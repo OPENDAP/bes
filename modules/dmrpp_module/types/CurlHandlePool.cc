@@ -307,9 +307,6 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
     if (handle) {
         // Once here, d_easy_handle holds a CURL* we can use.
-#if 0
-        handle->d_in_use = true;
-#endif
         handle->d_url = chunk->get_data_url();
 
         handle->d_chunk = chunk;
