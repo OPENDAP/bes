@@ -28,9 +28,9 @@
 #ifndef FileCache_h_
 #define FileCache_h_ 1
 
-#include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/file.h>
 #include <sys/stat.h>
 
 #include "BESUtil.h"
@@ -86,12 +86,13 @@ static inline struct flock *advisory_lock(int type)
  * close + unlock operations are performed atomically. Other methods that operate
  * on the cache info file must only be called when the lock has been obtained.
  *
- * @note The locking mechanism uses Unix fcntl(2) and so is _per process_. That
- * means that while getting an exclusive lock in one process will keep other
- * processes from also getting an exclusive lock, it _will not_ prevent other
- * threads in the same process from getting another 'exclusive lock.' We could
- * switch to flock(2) and get thread-safe locking, but we would trade off the
- * ability to work with files on NFS volumes.
+ * @note The locking mechanism uses Unix flock(2) and so is _per file_.
+ * Using flock(2) instead of fcntl(2) means that the locking is thread-safe. On
+ * older linux kernels (< 2.6.12) flock(2) does not work with NFSv4. Based on
+ * stackoverflow[0, it should work with an AWS EFS volume and newer NFS implementations.
+ * (YMMV).
+ *
+ * [0]: stackoverflow.com/questions/53177938/is-it-safe-to-use-flock-on-aws-efs-to-emulate-a-critical-section
  */
 class FileCache {
 
@@ -116,6 +117,14 @@ class FileCache {
         return true;
     }
 
+    // Return the size of the file in bytes. Return zero on error.
+    unsigned long long get_file_size(int fd) {
+        struct stat sb{0};
+        if (fstat(fd, &sb) != 0)
+            return 0;
+        return sb.st_size;
+    }
+
     // Open the cache info file and write a zero to it.
     // Assign the file descriptor to d_cache_info_fd.
     // d_cache_dir must be set.
@@ -125,16 +134,6 @@ class FileCache {
         if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT, 0666)) < 0)
             return false;
         unsigned long long size = 0;
-        if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
-            return false;
-        return true;
-    }
-
-    bool update_cache_info_size(long long size) {
-        if (d_cache_info_fd == -1)
-            return false;
-        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-            return false;
         if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
             return false;
         return true;
@@ -153,8 +152,16 @@ class FileCache {
         return size;
     }
 
-    friend class cacheT;
-    friend class FileLockingCacheTest;  // This is in dispatch/tests
+    bool update_cache_info_size(long long size) {
+        if (d_cache_info_fd == -1)
+            return false;
+        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+            return false;
+        if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
+            return false;
+        return true;
+    }
+
     friend class FileCacheTest;
 
 public:
@@ -214,11 +221,9 @@ public:
         }
         fd_wrapper fdw(fd);
 
-        // Lock the file for writing
-        struct flock *l = advisory_lock(F_WRLCK);
-        if (fcntl(fd, F_SETLKW, l) == -1) {     // F_SETLKW == set blocking write lock
-            close(fd);
-            ERROR_LOG("Error write locking the just created key/file: " << key << " " << get_errno());
+        // Lock the file for writing; released when ... read more about flock(2)
+        if (flock(fd, LOCK_EX) == -1) {
+            ERROR_LOG("Error locking the just created key/file: " << key << " " << get_errno());
             return false;
         }
 
@@ -231,13 +236,15 @@ public:
         fd_wrapper fdw2(fd2);
 
         int n;
-        char buf[4096]; // TODO Could make this a function of the size of file_name (use stat). jhrg 10/23/23
+        char buf[4096]; // TODO Could make this a function of the size of file_name. jhrg 10/23/23
         while ((n = read(fd2, buf, sizeof(buf))) > 0) {
             if (write(fd, buf, n) != n) {
                 ERROR_LOG("Error writing to destination file: " << key << " " << get_errno());
                 return false;
             }
         }
+
+        update_cache_info_size(get_cache_info_size() + get_file_size(fd));
 
         // The fd_wrapper instances will take care of closing (and thus unlocking) the files.
         return true;
@@ -280,7 +287,8 @@ public:
                 return false;
 
             return true;
-        } else {
+        }
+        else {
             ERROR_LOG("Error clearing the cache directory (" << d_cache_dir << ") - " << get_errno());
             return false;
         }

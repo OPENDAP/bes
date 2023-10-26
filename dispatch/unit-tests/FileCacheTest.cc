@@ -90,11 +90,23 @@ public:
         }
     }
 
+    // a cache that has not been initialized should fail the invariant test
     void test_unintialized_cache() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
     }
 
+    void test_intialized_cache() {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize("/tmp/", 100, 20));
+        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be true - cache initialized", fc.invariant());
+        CPPUNIT_ASSERT_MESSAGE("d_cache_info_fd should not be -1 - cache initialized", fc.d_cache_info_fd != -1);
+        CPPUNIT_ASSERT_MESSAGE("d_purge_size should be 20 - cache initialized", fc.d_purge_size == 20);
+        CPPUNIT_ASSERT_MESSAGE("d_max_cache_size_in_bytes should be 100 - cache initialized", fc.d_max_cache_size_in_bytes == 100);
+        CPPUNIT_ASSERT_MESSAGE("d_cache_dir should be \"/tmp/\" - cache initialized", fc.d_cache_dir == "/tmp/");
+    }
+
+    // test the private open_cache_into() method
     void test_open_cache_info() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
@@ -119,7 +131,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The cache file should not be opened", !fc.open_cache_info());
     }
 
-    void test_get_cache_info_size_0() {
+    void test_get_cache_info_size() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
 
@@ -129,14 +141,22 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Initially, the cache info size should be zero", fc.get_cache_info_size() == 0);
     }
 
-    void test_intialized_cache() {
+    void test_update_cache_info_size() {
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize("/tmp/", 100, 20));
-        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be true - cache initialized", fc.invariant());
-        CPPUNIT_ASSERT_MESSAGE("d_cache_info_fd should not be -1 - cache initialized", fc.d_cache_info_fd != -1);
-        CPPUNIT_ASSERT_MESSAGE("d_purge_size should be 20 - cache initialized", fc.d_purge_size == 20);
-        CPPUNIT_ASSERT_MESSAGE("d_max_cache_size_in_bytes should be 100 - cache initialized", fc.d_max_cache_size_in_bytes == 100);
-        CPPUNIT_ASSERT_MESSAGE("d_cache_dir should be \"/tmp/\" - cache initialized", fc.d_cache_dir == "/tmp/");
+        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
+
+        fc.d_cache_dir = cache_dir;
+        CPPUNIT_ASSERT_MESSAGE("The cache file should be opened", fc.open_cache_info());
+
+        CPPUNIT_ASSERT_MESSAGE("Initially, the cache info size should be zero", fc.get_cache_info_size() == 0);
+
+        CPPUNIT_ASSERT_MESSAGE("The cache info size should be updated", fc.update_cache_info_size(10));
+        CPPUNIT_ASSERT_MESSAGE("The cache info size should be 10", fc.get_cache_info_size() == 10);
+
+        CPPUNIT_ASSERT_MESSAGE("The cache info size should be updated",
+                               fc.update_cache_info_size(fc.get_cache_info_size() + 17));
+        CPPUNIT_ASSERT_MESSAGE("The cache info size should be 10", fc.get_cache_info_size() == 27);
+
     }
 
     void test_put_single_file() {
@@ -147,28 +167,77 @@ public:
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
         bool status = fc.put("key1", source_file);
-        struct stat sb{0};
-        if (stat(source_file.c_str(), &sb) != 0)
-            CPPUNIT_FAIL("stat() failed on cached file");
-
         CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
+
+        // cached file is really there
         string raw_cached_file_path = cache_dir + "/key1";
         CPPUNIT_ASSERT_MESSAGE("Should see cached file", access(raw_cached_file_path.c_str(), F_OK) == 0);
 
+        // Now check the size of the cached file - same as the source file?
+        struct stat sb{0};
+        if (stat(source_file.c_str(), &sb) != 0)
+            CPPUNIT_FAIL("stat() failed on cached file");
         struct stat rcfp_b{0};
         if (stat(raw_cached_file_path.c_str(), &rcfp_b) != 0)
             CPPUNIT_FAIL("stat() failed on cached file");
         CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file", sb.st_size == rcfp_b.st_size);
+
+        // Was cache_info_size updated correctly?
+        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file",
+                               fc.get_cache_info_size() == rcfp_b.st_size);
+    }
+
+    void test_put_two_files() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        bool status = fc.put("key1", source_file);
+        CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
+        status = fc.put("key2", source_file);
+        CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
+
+        // We cache the same source file twice, so the cache info file size should be 2 * source file size
+        struct stat sb{0};
+        if (stat(source_file.c_str(), &sb) != 0)
+            CPPUNIT_FAIL("stat() failed on cached file");
+
+        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of these two files",
+                               fc.get_cache_info_size() == sb.st_size * 2);
+    }
+
+    void test_put_duplicate_key() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        bool status = fc.put("key1", source_file);
+        CPPUNIT_ASSERT_MESSAGE("first put() should return true", status);
+
+        status = fc.put("key2", source_file);
+        CPPUNIT_ASSERT_MESSAGE("second put() should return true", status);
+
+        status = fc.put("key1", source_file);
+        CPPUNIT_ASSERT_MESSAGE("third put() with duplicate key name should return false", !status);
     }
 
     CPPUNIT_TEST_SUITE(FileCacheTest);
 
     CPPUNIT_TEST(test_unintialized_cache);
+    CPPUNIT_TEST(test_intialized_cache);
+
     CPPUNIT_TEST(test_open_cache_info);
     CPPUNIT_TEST(test_open_cache_info_cache_dir_not_set);
-    CPPUNIT_TEST(test_get_cache_info_size_0);
-    CPPUNIT_TEST(test_intialized_cache);
+    CPPUNIT_TEST(test_get_cache_info_size);
+    CPPUNIT_TEST(test_update_cache_info_size);
+
     CPPUNIT_TEST(test_put_single_file);
+    CPPUNIT_TEST(test_put_two_files);
+    CPPUNIT_TEST(test_put_duplicate_key);
 
     CPPUNIT_TEST_SUITE_END();
 };
