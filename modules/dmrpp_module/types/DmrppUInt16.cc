@@ -29,31 +29,28 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "DmrppFloat32.h"
+#include "byteswap_compat.h"
+#include "DmrppUInt16.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppFloat32 &
-DmrppFloat32::operator=(const DmrppFloat32 &rhs)
-{
+DmrppUInt16 &
+DmrppUInt16::operator=(const DmrppUInt16 &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<Float32 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    UInt16::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppFloat32::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+DmrppUInt16::read() {
+    BESDEBUG("dmrpp", "Entering " << __PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -61,8 +58,11 @@ DmrppFloat32::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_float32*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_uint16 *>(read_atomic(name())));
 
+    if (this->twiddle_bytes()) {
+        d_buf = bswap_16(d_buf);
+    }
     set_read_p(true);
 
     return true;
@@ -70,22 +70,22 @@ DmrppFloat32::read()
 }
 
 void
-DmrppFloat32::set_send_p(bool state)
-{
+DmrppUInt16::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    Float32::set_send_p(state);
+    UInt16::set_send_p(state);
 }
 
-void DmrppFloat32::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "DmrppFloat32::dump - (" << (void *) this << ")" << endl;
+void DmrppUInt16::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "DmrppUInt16::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
+
     DmrppCommon::dump(strm);
-    Float32::dump(strm);
+    UInt16::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }
 
-} //namespace dmrpp
+} // namespace dmrpp
+

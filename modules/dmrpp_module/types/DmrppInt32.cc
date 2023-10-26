@@ -38,23 +38,19 @@ using namespace std;
 namespace dmrpp {
 
 DmrppInt32 &
-DmrppInt32::operator=(const DmrppInt32 &rhs)
-{
+DmrppInt32::operator=(const DmrppInt32 &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<Int32 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Int32::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppInt32::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+DmrppInt32::read() {
+    BESDEBUG("dmrpp", "Entering " << __PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -62,9 +58,9 @@ DmrppInt32::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_int32*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_int32 *>(read_atomic(name())));
 
-    if ( this->twiddle_bytes() ) {
+    if (this->twiddle_bytes()) {
         d_buf = bswap_32(d_buf);
     }
     set_read_p(true);
@@ -73,16 +69,14 @@ DmrppInt32::read()
 }
 
 void
-DmrppInt32::set_send_p(bool state)
-{
+DmrppInt32::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
     Int32::set_send_p(state);
 }
 
-void DmrppInt32::dump(ostream & strm) const
-{
+void DmrppInt32::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "DmrppInt32::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);

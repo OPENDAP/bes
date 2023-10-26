@@ -650,10 +650,12 @@ DmrppArray::operator=(const DmrppArray &rhs)
 {
     if (this == &rhs) return *this;
 
-    dynamic_cast<Array &>(*this) = rhs; // run Constructor=
+    Array::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    // Removed DmrppCommon::m_duplicate_common(rhs); jhrg 11/12/21
+    // TODO Should these be copied here? jhrg 10/25/23
+    // d_compact_str_buf
+    // d_vlen_ons_str
 
     return *this;
 }
@@ -2210,7 +2212,7 @@ unsigned long long DmrppArray::set_fixed_string_length(const string &length_str)
     try {
         d_fixed_str_length = stoull(length_str);
     }
-    catch(std::invalid_argument e){
+    catch(const std::invalid_argument &e){
         stringstream err_msg;
         err_msg << "The value of the length string could not be parsed. Message: " << e.what();
         throw BESInternalError(err_msg.str(),__FILE__,__LINE__);

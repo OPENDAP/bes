@@ -259,7 +259,7 @@ public:
 
     void get_hdf5_fill_value_test_chunks_fill_notdefined() {
         CPPUNIT_ASSERT_THROW_MESSAGE(string(__func__).append(": Expected -99"),
-                               get_fill_value_test_helper(fill_value_file, "/chunks_fill_notdefined", __func__) == "-99", BESInternalError);
+                               get_fill_value_test_helper(fill_value_file, "/chunks_fill_notdefined", __func__), BESInternalError);
     }
 
     void get_hdf5_fill_value_test_chunks_some_fill() {

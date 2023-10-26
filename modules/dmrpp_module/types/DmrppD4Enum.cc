@@ -25,35 +25,33 @@
 #include "config.h"
 
 #include <string>
-#include <memory>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "DmrppByte.h"
+#include "DmrppD4Enum.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppByte &
-DmrppByte::operator=(const DmrppByte &rhs)
+DmrppD4Enum &
+DmrppD4Enum::operator=(const DmrppD4Enum &rhs)
 {
     if (this == &rhs)
-	return *this;
+    return *this;
 
-    dynamic_cast<Byte &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    // DmrppCommon::m_duplicate_common(rhs);
+    D4Enum::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
-bool DmrppByte::read()
+bool
+DmrppD4Enum::read()
 {
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -61,28 +59,29 @@ bool DmrppByte::read()
     if (read_p())
         return true;
 
-     set_value(*reinterpret_cast<dods_byte*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_enum*>(read_atomic(name())));
 
     set_read_p(true);
 
     return true;
+
 }
 
 void
-DmrppByte::set_send_p(bool state)
+DmrppD4Enum::set_send_p(bool state)
 {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    Byte::set_send_p(state);
+    D4Enum::set_send_p(state);
 }
 
-void DmrppByte::dump(ostream & strm) const
+void DmrppD4Enum::dump(ostream & strm) const
 {
-    strm << BESIndent::LMarg << "DmrppByte::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "DmrppD4Enum::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    Byte::dump(strm);
+    D4Enum::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }

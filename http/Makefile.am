@@ -68,11 +68,11 @@ module_DATA = http.conf
 http.conf: http.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > http.conf
 
-C4_DB=$(C4_DIR)/http.db
-C4_HTML=$(C4_dir)/http.html
-C4_XM=$(C4_dir)/http.xml
+C4_DB = $(C4_DIR)/http.db
+C4_HTML = $(C4_dir)/http.html
+C4_XM = $(C4_dir)/http.xml
 
-C4_DIR=./cccc
+C4_DIR = ./cccc
 .PHONY: cccc
 cccc:	
 	-mkdir $(C4_DIR)

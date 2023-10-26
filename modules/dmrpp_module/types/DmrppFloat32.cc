@@ -29,29 +29,27 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "DmrppD4Enum.h"
+#include "DmrppFloat32.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppD4Enum &
-DmrppD4Enum::operator=(const DmrppD4Enum &rhs)
+DmrppFloat32 &
+DmrppFloat32::operator=(const DmrppFloat32 &rhs)
 {
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<D4Enum &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Float32::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppD4Enum::read()
+DmrppFloat32::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
@@ -61,7 +59,7 @@ DmrppD4Enum::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_enum*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_float32*>(read_atomic(name())));
 
     set_read_p(true);
 
@@ -70,22 +68,22 @@ DmrppD4Enum::read()
 }
 
 void
-DmrppD4Enum::set_send_p(bool state)
+DmrppFloat32::set_send_p(bool state)
 {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    D4Enum::set_send_p(state);
+    Float32::set_send_p(state);
 }
 
-void DmrppD4Enum::dump(ostream & strm) const
+void DmrppFloat32::dump(ostream & strm) const
 {
-    strm << BESIndent::LMarg << "DmrppD4Enum::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "DmrppFloat32::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    D4Enum::dump(strm);
+    Float32::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }
 
-} // namespace dmrpp
+} //namespace dmrpp

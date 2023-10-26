@@ -39,20 +39,17 @@ using namespace std;
 namespace dmrpp {
 
 DmrppStructure &
-DmrppStructure::operator=(const DmrppStructure &rhs)
-{
+DmrppStructure::operator=(const DmrppStructure &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<Structure &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    Structure::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
-void DmrppStructure::dump(ostream & strm) const
-{
+void DmrppStructure::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "DmrppStructure::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);

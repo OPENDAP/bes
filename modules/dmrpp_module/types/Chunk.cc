@@ -52,8 +52,8 @@ using http::EffectiveUrlCache;
 
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
-#define FLETCHER32_CHECKSUM 4               // Bytes in the fletcher32 checksum
-#define ACTUALLY_USE_FLETCHER32_CHECKSUM 1  // Computing checksums takes time...
+constexpr auto FLETCHER32_CHECKSUM = 4;               // Bytes in the fletcher32 checksum
+constexpr auto ACTUALLY_USE_FLETCHER32_CHECKSUM = 1;  // Computing checksums takes time...
 
 namespace dmrpp {
 
@@ -166,12 +166,12 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         try {
             process_s3_error_response(data_url, xml_message);   // throws a BESError
         }
-        catch (BESError) {
+        catch (const BESError &) {
             // re-throw any BESError - added for the future if we make BESError a child
             // of std::exception as it should be. jhrg 12/30/19
             throw;
         }
-        catch (std::exception &e) {
+        catch (const std::exception &e) {
             stringstream msg;
             msg << prolog << "Caught std::exception when accessing object store data.";
             msg << " (Tried: " << data_url->str() << ")" << " Message: " << e.what();

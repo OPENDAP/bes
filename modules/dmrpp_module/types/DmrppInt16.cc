@@ -26,84 +26,65 @@
 
 #include <string>
 
-#include "BESError.h"
-#include "BESInternalError.h"
-#include "BESDebug.h"
+#include <BESError.h>
+#include <BESDebug.h>
 
-#include "Chunk.h"
-#include "DmrppStr.h"
+#include "byteswap_compat.h"
+#include "DmrppInt16.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppStr &
-DmrppStr::operator=(const DmrppStr &rhs)
-{
+DmrppInt16 &
+DmrppInt16::operator=(const DmrppInt16 &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<Str &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Int16::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppStr::read()
-{
+DmrppInt16::read() {
+    BESDEBUG("dmrpp", "Entering " << __PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
     if (!get_chunks_loaded())
         load_chunks(this);
 
     if (read_p())
         return true;
 
-    // The following replaces a call to DmrppCommon::read_atomic() because the
-    // string code requires special processing of the data array and requires information
-    // about the chunk size to produce correct answers.
+    set_value(*reinterpret_cast<dods_int16 *>(read_atomic(name())));
 
-    if (get_chunks_size() != 1)
-        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
-
-    auto chunk = get_immutable_chunks()[0];
-    chunk->read_chunk();
-    auto chunk_size= chunk->get_size();
-    char *data = chunk->get_rbuf();
-
-    // It is possible that the string data is not null terminated and/or
-    // Does not span the full width of the chunk.
-    // This should correct those issues.
-    unsigned long long str_len=0;
-    bool done = false;
-    while(!done){
-        done = (data[str_len] == 0) || (str_len >= chunk_size);
-        if(!done) str_len++;
+    if (this->twiddle_bytes()) {
+        d_buf = bswap_16(d_buf);
     }
-    string value(data,str_len);
-    set_value(value);   // sets read_p too
+
+    set_read_p(true);
+
     return true;
 }
 
 void
-DmrppStr::set_send_p(bool state)
-{
+DmrppInt16::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    Str::set_send_p(state);
+    Int16::set_send_p(state);
 }
 
-void DmrppStr::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "DmrppStr::dump - (" << (void *) this << ")" << endl;
+void DmrppInt16::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "DmrppInt16::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    Str::dump(strm);
+    Int16::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }
 
 } // namespace dmrpp
+

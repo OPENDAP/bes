@@ -25,36 +25,33 @@
 #include "config.h"
 
 #include <string>
+#include <memory>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "byteswap_compat.h"
-#include "DmrppUInt64.h"
+#include "DmrppByte.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppUInt64 &
-DmrppUInt64::operator=(const DmrppUInt64 &rhs)
+DmrppByte &
+DmrppByte::operator=(const DmrppByte &rhs)
 {
     if (this == &rhs)
-    return *this;
+	return *this;
 
-    dynamic_cast<UInt64 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Byte::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
-bool
-DmrppUInt64::read()
+bool DmrppByte::read()
 {
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -62,32 +59,28 @@ DmrppUInt64::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_uint64*>(read_atomic(name())));
+     set_value(*reinterpret_cast<dods_byte*>(read_atomic(name())));
 
-    if ( this->twiddle_bytes() ) {
-        d_buf = bswap_64(d_buf);
-    }
     set_read_p(true);
 
     return true;
-
 }
 
 void
-DmrppUInt64::set_send_p(bool state)
+DmrppByte::set_send_p(bool state)
 {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    UInt64::set_send_p(state);
+    Byte::set_send_p(state);
 }
 
-void DmrppUInt64::dump(ostream & strm) const
+void DmrppByte::dump(ostream & strm) const
 {
-    strm << BESIndent::LMarg << "DmrppUInt64::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "DmrppByte::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    UInt64::dump(strm);
+    Byte::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }
