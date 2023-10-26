@@ -2583,11 +2583,43 @@ bool DmrppArray::use_direct_io_opt() {
     if (has_deflate_filter && this->get_uses_fill_value() && this->get_var_chunks_storage_size() == 0) 
             is_data_all_fvalues = true;
 
+    bool has_dio_filters = false;
     if (has_deflate_filter && !is_data_all_fvalues) {
         if (this->get_deflate_levels().empty() == false)
-            ret_value = true;
+            has_dio_filters = true; 
     }
+
+    // Check if the chunk size is greater than the dimension size for any dimension.
+    // If this is the case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
+    // TODO later, if the dimension is unlimited, this restriction can be lifted. Current dmrpp doesn't store the
+    // unlimited dimension information.
+    if (has_dio_filters) {
+
+        vector <unsigned long long>chunk_dim_sizes = this->get_chunk_dimension_sizes();
+        vector <unsigned long long>dim_sizes;
+        Dim_iter p = dim_begin();
+        while (p != dim_end()) {
+            dim_sizes.push_back((unsigned long long)dimension_size_ll(p));
+            p++;
+        }
+
+        bool chunk_less_dim = true;
+        if (chunk_dim_sizes.size() == dim_sizes.size()) {
+            for (unsigned int i = 0; i<dim_sizes.size(); i++) {
+                if (chunk_dim_sizes[i] > dim_sizes[i]) {
+                     chunk_less_dim = false;
+                     break;
+                }
+            }
+        }
+        else
+            chunk_less_dim = false;
+
+        ret_value = chunk_less_dim;
+    }
+         
     return ret_value;
+
 } 
 
 
