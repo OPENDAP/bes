@@ -37,6 +37,7 @@
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
 #include "BESForbiddenError.h"
+#include "BESSyntaxUserError.h"
 #include "DapUtils.h"
 #include "libdap/DMR.h"
 #include "libdap/D4BaseTypeFactory.h"
@@ -52,7 +53,11 @@ using namespace libdap;
 
 #define prolog std::string("DapUtilsTest::").append(__func__).append("() - ")
 
-namespace http {
+namespace dap_utils {
+constexpr auto BES_KEYS_MAX_RESPONSE_SIZE_KEY = "BES.MaxResponseSize.bytes";
+constexpr auto BES_KEYS_MAX_VAR_SIZE_KEY = "BES.MaxVariableSize.bytes";
+constexpr auto BES_CONTEXT_MAX_RESPONSE_SIZE_KEY = "max_response_size";
+constexpr auto BES_CONTEXT_MAX_VAR_SIZE_KEY = "max_var_size";
 
 class DapUtilsTest : public CppUnit::TestFixture {
 
@@ -98,6 +103,120 @@ public:
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
+    void throw_if_too_big_test_RV() {
+
+        D4BaseTypeFactory d_d4f;
+        auto d_test_dmr = std::make_unique<DMR>(&d_d4f);
+
+        D4ParserSax2 dp;
+
+        string file_name = BESUtil::pathConcat(TEST_SRC_DIR, "input-files/test_01.dmr");
+        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
+
+        fstream in(file_name.c_str(), ios::in | ios::binary);
+        dp.intern(in, d_test_dmr.get());
+        d_test_dmr->root()->set_send_p(true);
+
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY,"20");
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_VAR_SIZE_KEY,"20");
+
+        try {
+            dap_utils::throw_if_too_big(*(d_test_dmr.get()), __FILE__, __LINE__);
+            CPPUNIT_FAIL("ERROR: Failed to throw exception for test dmr '" + file_name + "'");
+        }
+        catch (BESSyntaxUserError &bsue) {
+            DBG(cerr << prolog <<"SUCCESS: Caught BESSyntaxUserError. message: \n" + bsue.get_message() + '\n');
+        }
+
+    }
+
+    void throw_if_too_big_test_rV() {
+
+        D4BaseTypeFactory d_d4f;
+        auto d_test_dmr = std::make_unique<DMR>(&d_d4f);
+
+        D4ParserSax2 dp;
+
+        string file_name = BESUtil::pathConcat(TEST_SRC_DIR, "input-files/test_01.dmr");
+        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
+
+        fstream in(file_name.c_str(), ios::in | ios::binary);
+        dp.intern(in, d_test_dmr.get());
+        d_test_dmr->root()->set_send_p(true);
+
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY,"1024");
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_VAR_SIZE_KEY,"100");
+
+        try {
+            dap_utils::throw_if_too_big(*(d_test_dmr.get()), __FILE__, __LINE__);
+            CPPUNIT_FAIL("ERROR: Failed to throw exception for test dmr '" + file_name + "'");
+        }
+        catch (BESSyntaxUserError &bsue) {
+            DBG(cerr << prolog << "SUCCESS: Caught BESSyntaxUserError. message: \n" + bsue.get_message() + '\n');
+        }
+    }
+
+
+    void throw_if_too_big_test_Rv() {
+
+        D4BaseTypeFactory d_d4f;
+        auto d_test_dmr = std::make_unique<DMR>(&d_d4f);
+
+        D4ParserSax2 dp;
+
+        string file_name = BESUtil::pathConcat(TEST_SRC_DIR, "input-files/test_01.dmr");
+        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
+
+        fstream in(file_name.c_str(), ios::in | ios::binary);
+        dp.intern(in, d_test_dmr.get());
+        d_test_dmr->root()->set_send_p(true);
+
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY,"20");
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_VAR_SIZE_KEY,"10000");
+
+        try {
+            dap_utils::throw_if_too_big(*(d_test_dmr.get()), __FILE__, __LINE__);
+            CPPUNIT_FAIL("ERROR: Failed to throw exception for test dmr '" + file_name + "'");
+        }
+        catch (BESSyntaxUserError &bsue) {
+            DBG(cerr << prolog << "SUCCESS: Caught BESSyntaxUserError. message: \n" + bsue.get_message() + '\n');
+        }
+    }
+
+    void throw_if_too_big_test_rv() {
+
+        D4BaseTypeFactory d_d4f;
+        auto d_test_dmr = std::make_unique<DMR>(&d_d4f);
+
+        D4ParserSax2 dp;
+
+        string file_name = BESUtil::pathConcat(TEST_SRC_DIR, "input-files/test_01.dmr");
+        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
+
+        fstream in(file_name.c_str(), ios::in | ios::binary);
+        dp.intern(in, d_test_dmr.get());
+        d_test_dmr->root()->set_send_p(true);
+
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY,"10000");
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_VAR_SIZE_KEY,"10000");
+
+        try {
+            dap_utils::throw_if_too_big(*(d_test_dmr.get()), __FILE__, __LINE__);
+            DBG(cerr << prolog << "SUCCESS: The response was deemed acceptable.\n");
+        }
+        catch (BESSyntaxUserError &bsue) {
+            DBG( cerr << prolog << "ERROR: Caught BESSyntaxUserError " + bsue.get_message() + '\n');
+            CPPUNIT_FAIL("ERROR: throw_if_too_big() threw BESSyntaxUserError "
+                         "and it shouldn't have. msg: "+bsue.get_message());
+        }
+    }
+
+
+
+
+
+
+
     void var_too_big_test() {
 
         D4BaseTypeFactory d_d4f;
@@ -135,6 +254,7 @@ public:
             CPPUNIT_FAIL("ERROR: No variables were deemed too big!");
         }
     }
+
 
     void dmrpp_var_too_big_test() {
 
@@ -365,6 +485,10 @@ public:
     CPPUNIT_TEST_SUITE(DapUtilsTest);
 
     CPPUNIT_TEST(var_too_big_test);
+    CPPUNIT_TEST(throw_if_too_big_test_rv);
+    CPPUNIT_TEST(throw_if_too_big_test_Rv);
+    CPPUNIT_TEST(throw_if_too_big_test_rV);
+    CPPUNIT_TEST(throw_if_too_big_test_RV);
     CPPUNIT_TEST(dmrpp_var_too_big_test);
     CPPUNIT_TEST(dmrpp_constrained_var_too_big_test);
     CPPUNIT_TEST(dmrpp_constrained_var_ok_test);
@@ -379,5 +503,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DapUtilsTest);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::DapUtilsTest>(argc, argv, "cerr,bes,dap_utils") ? 0 : 1;
+    return bes_run_tests<dap_utils::DapUtilsTest>(argc, argv, "cerr,bes,dap_utils") ? 0 : 1;
 }

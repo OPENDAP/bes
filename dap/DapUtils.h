@@ -52,9 +52,11 @@ void throw_if_dap2_response_too_big(libdap::DDS *dds, const std::string &file, u
 void throw_if_dap4_response_too_big(libdap::DMR &dmr, const std::string &file, unsigned int line);
 
 
-uint64_t compute_response_size_and_inv_big_vars(const libdap::Constructor *constrctr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big);
+uint64_t compute_response_size_and_inv_big_vars(const libdap::Constructor *ctr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big);
 uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big);
 uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t &max_var_size, std::unordered_map<std::string,int64_t> &too_big);
+
+void throw_if_too_big(libdap::DMR &dmr, const std::string &file, unsigned int line);
 
 }
 #endif //BES_DAPUTILS_H

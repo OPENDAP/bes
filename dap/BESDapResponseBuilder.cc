@@ -1359,7 +1359,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     }
 
     dap_utils::log_response_and_memory_size(prolog, dmr);
-    dap_utils::throw_if_dap4_response_too_big(dmr, __FILE__, __LINE__);
+    dap_utils::throw_if_too_big(dmr, __FILE__, __LINE__);
 
     // The following block is for debugging purpose. KY 05/13/2020
 #if !NDEBUG
@@ -1410,7 +1410,7 @@ void BESDapResponseBuilder::dap4_process_ce_for_intern_data(DMR &dmr)
         dmr.set_ce_empty(true);
         dmr.root()->set_send_p(true);
     }
-    dap_utils::throw_if_dap4_response_too_big(dmr, __FILE__, __LINE__);
+    dap_utils::throw_if_too_big(dmr, __FILE__, __LINE__);
 }
 
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
