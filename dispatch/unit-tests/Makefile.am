@@ -176,7 +176,7 @@ BESCatalogListTest_SOURCES  = BESCatalogListTest.cc
 
 # complete_catalog_lister_SOURCES = complete_catalog_lister.cc
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
-# complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
+# complete_catalog_lister_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
 
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
@@ -186,3 +186,5 @@ RequestTimerTest_SOURCES = RequestTimerTest.cc
 BESFileLockingCacheTest_SOURCES = BESFileLockingCacheTest.cc
 
 FileCacheTest_SOURCES = FileCacheTest.cc
+FileCacheTest_CPPFLAGS = $(AM_CPPFLAGS) $(OPENSSL_INC)
+FileCacheTest_LDADD = $(LDADD) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)

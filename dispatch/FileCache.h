@@ -28,6 +28,9 @@
 #ifndef FileCache_h_
 #define FileCache_h_ 1
 
+#include <vector>
+#include <algorithm>
+
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/file.h>
@@ -44,11 +47,15 @@ static inline std::string get_errno() {
 // Name of the file that tracks the size of the cache
 #define CACHE_INFO_FILE_NAME "cache_info"
 
+constexpr const unsigned long long MEGABYTE = 1048576;
+
+#if 0
+
 // Build a lock of a certain type. Locks the entire file.
 //
 // Using whence == SEEK_SET with start and len set to zero means lock the whole file.
 // jhrg 9/8/18
-static inline struct flock *advisory_lock(int type)
+static inline struct flock *advisory_lock(short type)
 {
     static struct flock lock{0};
     lock.l_type = type;
@@ -59,6 +66,8 @@ static inline struct flock *advisory_lock(int type)
 
     return &lock;
 }
+
+#endif
 
 /**
  * @brief Implementation of a caching mechanism for compressed data.
@@ -95,6 +104,21 @@ static inline struct flock *advisory_lock(int type)
  * [0]: stackoverflow.com/questions/53177938/is-it-safe-to-use-flock-on-aws-efs-to-emulate-a-critical-section
  */
 class FileCache {
+
+    /// Manage the Cache-level locking
+    class Lock {
+    private:
+        int d_fd;
+    public:
+        Lock() = default;
+        Lock(const Lock &) = default;
+        Lock(int fd) : d_fd(fd) {}
+        Lock &operator=(const Lock &) = default;
+        ~Lock() {
+            if (flock(d_fd, LOCK_UN) < 0)
+                ERROR_LOG("Could not unlock the FileCache.\n");
+        }
+    };
 
     // pathname of the cache directory
     std::string d_cache_dir;
@@ -152,7 +176,7 @@ class FileCache {
         return size;
     }
 
-    bool update_cache_info_size(long long size) {
+    bool update_cache_info_size(unsigned long long size) {
         if (d_cache_info_fd == -1)
             return false;
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
@@ -165,6 +189,25 @@ class FileCache {
     friend class FileCacheTest;
 
 public:
+    /// Used to return an open file descriptor to a cached item
+    class Item {
+        int d_fd;
+
+    public:
+        Item() = default;
+        Item(const Item &) = default;
+        explicit Item(int fd) : d_fd(fd) { }
+        Item &operator=(const Item &) = default;
+        virtual ~Item() {
+            if (d_fd != -1)
+                close(d_fd);
+        }
+
+        int get_fd() const {
+            return d_fd;
+        }
+    };
+
     FileCache() = default;
     FileCache(const FileCache &) = delete;
     FileCache &operator=(const FileCache &rhs) = delete;
@@ -202,11 +245,15 @@ public:
 
     // Add a Value to the Cache, locks the cache while adding
     bool put(const std::string &key, const std::string &file_name) {
-        struct fd_wrapper {
-            int fd;
-            fd_wrapper(int fd) : fd(fd) {}
-            ~fd_wrapper() { close(fd); }
-        };
+        // Lock the cache
+        int status = flock(d_cache_info_fd, LOCK_EX);
+        if (status < 0) {
+            ERROR_LOG("Error locking the cache in put for: " << key << " " << get_errno() << '\n');
+            return false;
+        }
+
+        // Ensure the cache is unlocked no matter how we exit
+        Lock lock(d_cache_info_fd);
 
         // Create the new cache entry
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
@@ -215,31 +262,31 @@ public:
             if  (errno == EEXIST)
                 return false;
             else {
-                ERROR_LOG("Error creating key/file: " << key << " " << get_errno());
+                ERROR_LOG("Error creating key/file: " << key << " " << get_errno() << '\n');
                 return false;
             }
         }
-        fd_wrapper fdw(fd);
+        Item fdw(fd);
 
         // Lock the file for writing; released when ... read more about flock(2)
         if (flock(fd, LOCK_EX) == -1) {
-            ERROR_LOG("Error locking the just created key/file: " << key << " " << get_errno());
+            ERROR_LOG("Error locking the just created key/file: " << key << " " << get_errno() << '\n');
             return false;
         }
 
         // Copy yhe contents of the file_name to the new file
         int fd2;
         if ((fd2 = open(file_name.c_str(), O_RDONLY)) < 0) {
-            ERROR_LOG("Error reading from source file: " << file_name << " " << get_errno());
+            ERROR_LOG("Error reading from source file: " << file_name << " " << get_errno() << '\n');
             return false;
         }
-        fd_wrapper fdw2(fd2);
+        Item fdw2(fd2);
 
-        int n;
-        char buf[4096]; // TODO Could make this a function of the size of file_name. jhrg 10/23/23
-        while ((n = read(fd2, buf, sizeof(buf))) > 0) {
-            if (write(fd, buf, n) != n) {
-                ERROR_LOG("Error writing to destination file: " << key << " " << get_errno());
+        std::vector<char> buf(std::min(MEGABYTE, get_file_size(fd2)));
+        size_t n;
+        while ((n = read(fd2, buf.data(), buf.size())) > 0) {
+            if (write(fd, buf.data(), n) != n) {
+                ERROR_LOG("Error writing to destination file: " << key << " " << get_errno() << '\n');
                 return false;
             }
         }
@@ -250,14 +297,33 @@ public:
         return true;
     }
 
+#if 0
     void put(const std::string &key, int fd);
 
-    // Get a Value from the Cache, locks the cache while getting then return s locked object.
-    /*CachedFileAsName*/ void get(const std::string &key);
-    /*CachedFileAsDescriptor*/ void get_fd(const std::string &key);
+    // Get a Value from the Cache, locks the cache while getting then returns locked object.
+    void get(const std::string &key);
+#endif
 
+    Item get_fd(const std::string &key) {
+        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
+
+        // open the file
+        int fd = open(key_file_name.c_str(), O_RDONLY, 0666);
+        if (fd < 0)
+            return Item(fd);
+
+        // blocking call to get a shared lock
+        int status = flock(fd, LOCK_SH);
+        if (status < 0)
+            return Item(status);
+
+        return Item(fd);
+    }
+
+#if 0
     // Remove a Value from the Cache
     void del(const std::string &key);
+#endif
 
     /**
      * @brief Remove all files from the cache. Zero the cache info file.
@@ -276,7 +342,7 @@ public:
                     || strcmp(ent->d_name, CACHE_INFO_FILE_NAME) == 0)
                     continue;
                 if (remove(BESUtil::pathConcat(d_cache_dir, ent->d_name).c_str()) != 0) {
-                    ERROR_LOG("Error removing " << ent->d_name << " from cache directory (" << d_cache_dir << ") - " << get_errno());
+                    ERROR_LOG("Error removing " << ent->d_name << " from cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
                     return false;
                 }
             }
@@ -289,7 +355,7 @@ public:
             return true;
         }
         else {
-            ERROR_LOG("Error clearing the cache directory (" << d_cache_dir << ") - " << get_errno());
+            ERROR_LOG("Error clearing the cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
             return false;
         }
     }

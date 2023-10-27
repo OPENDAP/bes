@@ -35,7 +35,10 @@
 #include <dirent.h>
 #include <sys/wait.h>
 
+#include <openssl/sha.h>
+
 #include "FileCache.h"
+#include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESDebug.h"
 
@@ -46,6 +49,34 @@
 using namespace std;
 
 #define prolog string("FileCacheTest::").append(__func__).append("() - ")
+
+string sha256(const string &filename)
+{
+    fstream file(filename, ios::in);
+    if (!file)
+        CPPUNIT_FAIL("Tried to open a file to compute the SHA256 hash of its contents");
+
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+
+    file.seekg (0, file.end);
+    int length = file.tellg();
+    file.seekg (0, file.beg);
+
+    char *buffer = new char[length];
+    file.read (buffer, length);
+
+    SHA256_Update(&sha256, buffer, length);
+    SHA256_Final(hash, &sha256);
+
+    stringstream ss;
+    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    {
+        ss << hex << setw(2) << setfill('0') << (int)hash[i];
+    }
+    return ss.str();
+}
 
 class FileCacheTest : public CppUnit::TestFixture {
     std::string cache_dir = string(TEST_BUILD_DIR) + "/test_cache";
@@ -61,6 +92,8 @@ public:
     // Called before each test
     void setUp() override
     {
+        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
+        TheBESKeys::TheKeys()->set_key("BES.LogVerbose", "yes");
         // Create the cache directory
         if (mkdir(cache_dir.c_str(), 0755) != 0) {
             if (errno != EEXIST) {
@@ -200,6 +233,9 @@ public:
         // Was cache_info_size updated correctly?
         CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file",
                                fc.get_cache_info_size() == rcfp_b.st_size);
+
+        CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
+                               sha256(source_file) == sha256(raw_cached_file_path));
     }
 
     void test_put_two_files()
@@ -270,6 +306,9 @@ public:
             bool xor_status = (status && WEXITSTATUS(child_status) != 0) || (!status && WEXITSTATUS(child_status) == 0);
             CPPUNIT_ASSERT_MESSAGE("one status should be true and one false", xor_status);
         }
+
+        CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
+                               sha256(source_file) == sha256(BESUtil::pathConcat(cache_dir, "key1")));
     }
 
     void test_put_duplicate_key_three_threads()
@@ -311,6 +350,102 @@ public:
                           (!f1_status && f2_status && !f3_status) ||
                           (!f1_status && !f2_status && f3_status);
         CPPUNIT_ASSERT_MESSAGE("Only one status should be true", xor_status);
+
+        CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
+                               sha256(source_file) == sha256(BESUtil::pathConcat(cache_dir, "key1")));
+    }
+
+    void test_put_duplicate_key_two_processes_three_threads_each()
+    {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        if (fork() == 0) {
+            // child process
+            // sleep here to give the parent a head start, not much use.
+            auto f1 = async(launch::async,
+                            [source_file, &fc](const string &key) -> bool {
+                                // give the other threads a head start
+                                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                                bool status = fc.put(key, source_file);
+                                return status;
+                            },
+                            "key1");
+            auto f2 = async(launch::async,
+                            [source_file, &fc](const string &key) -> bool {
+                                bool status = fc.put(key, source_file);
+                                return status;
+                            },
+                            "key1");
+            auto f3 = async(launch::async,
+                            [source_file, &fc](const string &key) -> bool {
+                                bool status = fc.put(key, source_file);
+                                return status;
+                            },
+                            "key1");
+
+            DBG(cerr << "Start querying\n" );
+
+            bool f1_status = f1.get();
+            bool f2_status = f2.get();
+            bool f3_status = f3.get();
+            DBG(cerr << "f1_status: " << f1_status << '\n');
+            DBG(cerr << "f2_status: " << f2_status << '\n');
+            DBG(cerr << "f3_status: " << f3_status << '\n');
+            bool xor_status = (f1_status && !f2_status && !f3_status) ||
+                              (!f1_status && f2_status && !f3_status) ||
+                              (!f1_status && !f2_status && f3_status);
+
+            DBG(cerr << prolog << "child process put() status: " << xor_status << '\n');
+            exit(xor_status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
+        }
+        else {
+            // parent process - generally faster. I used std::this_thread::sleep_for() but this is
+            // not multi-threaded code. It's just a way to sleep for a short time.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            auto f1 = async(launch::async,
+                            [source_file, &fc](const string &key) -> bool {
+                                // give the other threads a head start
+                                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                                bool status = fc.put(key, source_file);
+                                return status;
+                            },
+                            "key1");
+            auto f2 = async(launch::async,
+                            [source_file, &fc](const string &key) -> bool {
+                                bool status = fc.put(key, source_file);
+                                return status;
+                            },
+                            "key1");
+            auto f3 = async(launch::async,
+                            [source_file, &fc](const string &key) -> bool {
+                                bool status = fc.put(key, source_file);
+                                return status;
+                            },
+                            "key1");
+
+            DBG(cerr << "Start querying\n" );
+
+            bool f1_status = f1.get();
+            bool f2_status = f2.get();
+            bool f3_status = f3.get();
+            DBG(cerr << "f1_status: " << f1_status << '\n');
+            DBG(cerr << "f2_status: " << f2_status << '\n');
+            DBG(cerr << "f3_status: " << f3_status << '\n');
+            bool xor_status = (f1_status && !f2_status && !f3_status) ||
+                              (!f1_status && f2_status && !f3_status) ||
+                              (!f1_status && !f2_status && f3_status);
+
+            int child_status;
+            wait(&child_status);
+            DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');
+            // exit status for a process: 0 is true, 1 is false
+            bool xor_parent_child_status = (xor_status && WEXITSTATUS(child_status) != 0) || (!xor_status && WEXITSTATUS(child_status) == 0);
+            CPPUNIT_ASSERT_MESSAGE("one status should be true and one false", xor_parent_child_status);
+        }
     }
 
     CPPUNIT_TEST_SUITE(FileCacheTest);
@@ -328,6 +463,7 @@ public:
     CPPUNIT_TEST(test_put_duplicate_key);
     CPPUNIT_TEST(test_put_duplicate_key_two_processes);
     CPPUNIT_TEST(test_put_duplicate_key_three_threads);
+    CPPUNIT_TEST(test_put_duplicate_key_two_processes_three_threads_each);
 
     CPPUNIT_TEST_SUITE_END();
 };
