@@ -998,13 +998,13 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 effective_url = filter_aws_url(get_effective_url(c_handle, target_url));
             }
             catch ( BESInternalError &bie){
-                effective_url = "Unable_Determine_CURLINFO_EFFECTIVE_URL";
+                effective_url = "Unable_To_Determine_CURLINFO_EFFECTIVE_URL: " + bie.get_message();
             }
             if (attempts == retry_limit) {
                 stringstream msg;
                 msg << prolog << "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL ";
                 msg << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
-                msg << "CURLINFO_EFFECTIVE_URL: " << effective_url;
+                msg << "CURLINFO_EFFECTIVE_URL: " << effective_url << " ";
                 msg << "Returned HTTP_STATUS: " << http_code;
                 ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);

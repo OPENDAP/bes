@@ -688,7 +688,7 @@ AS_IF([test -z "$at_verbose"], [
     echo "#           arg #4: "$4
     echo "#           arg #5: "$5
     echo "#           arg #6: "$6
-    echo "#       test_name: ${test_name}"
+    echo "#        test_name: ${test_name}"
     echo "#       input_file: ${input_file}"
     echo "#         baseline: ${baseline}"
     echo "#      xfail_param: ${xfail_param}"
