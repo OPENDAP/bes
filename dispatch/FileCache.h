@@ -49,26 +49,6 @@ static inline std::string get_errno() {
 
 constexpr const unsigned long long MEGABYTE = 1048576;
 
-#if 0
-
-// Build a lock of a certain type. Locks the entire file.
-//
-// Using whence == SEEK_SET with start and len set to zero means lock the whole file.
-// jhrg 9/8/18
-static inline struct flock *advisory_lock(short type)
-{
-    static struct flock lock{0};
-    lock.l_type = type;
-    lock.l_whence = SEEK_SET;
-    lock.l_start = 0;
-    lock.l_len = 0;
-    lock.l_pid = getpid();
-
-    return &lock;
-}
-
-#endif
-
 /**
  * @brief Implementation of a caching mechanism for compressed data.
  *
@@ -112,7 +92,7 @@ class FileCache {
     public:
         Lock() = default;
         Lock(const Lock &) = default;
-        Lock(int fd) : d_fd(fd) {}
+        explicit Lock(int fd) : d_fd(fd) {}
         Lock &operator=(const Lock &) = default;
         ~Lock() {
             if (flock(d_fd, LOCK_UN) < 0)
@@ -133,16 +113,18 @@ class FileCache {
     // Name of the file that tracks the size of the cache
     int d_cache_info_fd = -1;
 
+#if 0
     void purge();
+#endif
 
-    bool invariant(bool expensive = true) const {
+    bool invariant() const {
         if (d_cache_info_fd < 0)
             return false;
         return true;
     }
 
     // Return the size of the file in bytes. Return zero on error.
-    unsigned long long get_file_size(int fd) {
+    static unsigned long long get_file_size(int fd) {
         struct stat sb{0};
         if (fstat(fd, &sb) != 0)
             return 0;
@@ -165,7 +147,7 @@ class FileCache {
 
     // Return the size of the cache as recorded in the cache info file.
     // Return zero on error or if there's nothing in the cache.
-    unsigned long long get_cache_info_size() {
+    unsigned long long get_cache_info_size() const {
         if (d_cache_info_fd == -1)
             return 0;
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
@@ -176,7 +158,7 @@ class FileCache {
         return size;
     }
 
-    bool update_cache_info_size(unsigned long long size) {
+    bool update_cache_info_size(unsigned long long size) const {
         if (d_cache_info_fd == -1)
             return false;
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
@@ -199,12 +181,17 @@ public:
         explicit Item(int fd) : d_fd(fd) { }
         Item &operator=(const Item &) = default;
         virtual ~Item() {
-            if (d_fd != -1)
+            if (d_fd != -1) {
                 close(d_fd);
+                d_fd = -1;
+            }
         }
 
         int get_fd() const {
             return d_fd;
+        }
+        void set_fd(int fd) {
+            d_fd = fd;
         }
     };
 
@@ -300,27 +287,36 @@ public:
         return true;
     }
 
-#if 0
-    void put(const std::string &key, int fd);
-
-    // Get a Value from the Cache, locks the cache while getting then returns locked object.
-    void get(const std::string &key);
-#endif
-    
-    Item get_fd(const std::string &key) {
+    bool get(const std::string &key, Item &item) {
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
+
+        // Get a shared lock on the cache; prevents simultaneous get and put operations
+        int status = flock(d_cache_info_fd, LOCK_SH);
+        if (status < 0) {
+            ERROR_LOG("Error locking the cache in get for: " << key << " " << get_errno() << '\n');
+            return false;
+        }
+
+        // Ensure the cache is unlocked no matter how we exit
+        Lock lock(d_cache_info_fd);
 
         // open the file
         int fd = open(key_file_name.c_str(), O_RDONLY, 0666);
-        if (fd < 0)
-            return Item(fd);
+        if (fd < 0) {
+            ERROR_LOG("Error opening the cache item in get for: " << key << " " << get_errno() << '\n');
+            return false;
+        }
 
         // blocking call to get a shared lock. When fd is closed, the lock is released
-        int status = flock(fd, LOCK_SH);
-        if (status < 0)
-            return Item(status);
+        status = flock(fd, LOCK_SH);
+        if (status < 0) {
+            ERROR_LOG("Error locking the cache item in get for: " << key << " " << get_errno() << '\n');
+            return false;
+        }
 
-        return Item(fd);
+        item.set_fd(fd);
+
+        return true;
     }
 
 #if 0
