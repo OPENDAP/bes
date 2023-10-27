@@ -266,7 +266,9 @@ public:
                 return false;
             }
         }
-        Item fdw(fd);
+
+        // The Item instance will take care of closing (and thus unlocking) the file.
+        Item fdl(fd);
 
         // Lock the file for writing; released when ... read more about flock(2)
         if (flock(fd, LOCK_EX) == -1) {
@@ -280,7 +282,8 @@ public:
             ERROR_LOG("Error reading from source file: " << file_name << " " << get_errno() << '\n');
             return false;
         }
-        Item fdw2(fd2);
+
+        Item fdl2(fd2);
 
         std::vector<char> buf(std::min(MEGABYTE, get_file_size(fd2)));
         size_t n;
@@ -303,7 +306,7 @@ public:
     // Get a Value from the Cache, locks the cache while getting then returns locked object.
     void get(const std::string &key);
 #endif
-
+    
     Item get_fd(const std::string &key) {
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
 
@@ -312,7 +315,7 @@ public:
         if (fd < 0)
             return Item(fd);
 
-        // blocking call to get a shared lock
+        // blocking call to get a shared lock. When fd is closed, the lock is released
         int status = flock(fd, LOCK_SH);
         if (status < 0)
             return Item(status);
