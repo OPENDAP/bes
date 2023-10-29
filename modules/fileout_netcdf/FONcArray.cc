@@ -599,10 +599,13 @@ void FONcArray::define(int ncid) {
         }
 
 // Add direct IO check
+
+    if (d_array_type !=NC_CHAR) {
     if (d_is_dap4)
         d_a->intern_data();
     else    
         d_a->intern_data(*get_eval(), *get_dds());
+    }
 
     bool d_io_flag = d_a->get_dio_flag();
     BESDEBUG("fonc", "d_io_flag: "<<d_io_flag<<endl);
