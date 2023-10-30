@@ -304,7 +304,7 @@ uint64_t crsaibv_process_variable(
         auto some_constrctr = dynamic_cast<libdap::Constructor *>(var);
         if (some_constrctr) {
             for(auto dap_var:some_constrctr->variables()) {
-                response_size += crsaibv_process_variable(some_constrctr, max_var_size, too_big);
+                response_size += crsaibv_process_variable(dap_var, max_var_size, too_big);
             }
         } else {
             BESDEBUG(MODULE,
