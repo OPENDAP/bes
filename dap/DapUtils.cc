@@ -104,8 +104,6 @@ void log_response_and_memory_size(const std::string &caller_id, /*const*/ DMR &d
     log_response_and_memory_size_helper(caller_id, response_size);
 }
 
-
-
 /**
  * @brief Throws an exception if the projected variables and or attributes of the DDS have dap4 types.
  * @param dds The DDS to examine.
@@ -178,6 +176,7 @@ void throw_if_dap2_response_too_big(DDS *dds, const std::string &file, unsigned 
     }
 }
 
+#if 0
 void throw_if_dap4_response_too_big(DMR &dmr, const std::string &file, unsigned int line)
 {
     if (dmr.too_big()) {
@@ -189,6 +188,8 @@ void throw_if_dap4_response_too_big(DMR &dmr, const std::string &file, unsigned 
         throw BESSyntaxUserError(msg.str(), file, line);
     }
 }
+#endif
+
 
 /**
  * @brief - determines the number of requested elements for the D4Dimension d4dim.
@@ -350,12 +351,6 @@ uint64_t compute_response_size_and_inv_big_vars(
     for(auto dap_var:grp->variables()){
         response_size += crsaibv_process_variable(dap_var,max_var_size, too_big);
     }
-#if 0
-    auto cnstrctr = static_cast<libdap::Constructor *>(grp);
-    // Since Group is a child of Constructor we can use the Constructor
-    // version of this method to handle the variables in the Group. Nifty, Right?
-    response_size += compute_response_size_and_inv_big_vars(cnstrctr, max_var_size, too_big);
-#endif
 
     // Process child groups.
     for (auto child_grp: grp->groups()) {
@@ -382,15 +377,6 @@ uint64_t compute_response_size_and_inv_big_vars(
         const uint64_t &max_var_size,
         std::vector< pair<std::string,int64_t> > &too_big)
 {
-    // Consider if something other than an unordered_map, or even map, we might consider using vector like this:
-    //  std::vector<std::pair<std::string,int64_t>> foo;
-    //  Is that better? It preserves to order of addition and we don't ever need any of the map api features
-    //  in the usage of the inventory. In fact we might consider just making this a vector<string> and building
-    //  each string as "variable decl[dim0]...[dimN] (size: ##### bytes)" or even skipping the vector in favor
-    //  of a stringstream to which we just keep adding more stuff:
-    //  stringstream too_big_inventory;
-    //  too_big_inventory << "variable decl[dim0]...[dimN] (size: ##### bytes)" << endl;
-
     return compute_response_size_and_inv_big_vars(dmr.root(), max_var_size,too_big);
 }
 

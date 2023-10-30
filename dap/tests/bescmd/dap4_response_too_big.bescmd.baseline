@@ -18,8 +18,8 @@ https://github.com/OPENDAP/dap4-specification/blob/main/01_data-model-and-serial
 </Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                <File>BESDapResponseBuilder.cc</File>
-                <Line>1362</Line>
+                removed file
+                removed line
             </Location>
         </BESError>
     </getDAP>
