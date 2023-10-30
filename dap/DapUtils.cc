@@ -295,7 +295,7 @@ std::string get_dap_decl(libdap::BaseType *var) {
 uint64_t crsaibv_process_variable(
         BaseType *var,
         const uint64_t &max_var_size,
-        std::unordered_map<std::string,int64_t> &too_big
+        std::vector< pair<std::string,int64_t> > &too_big
 ){
 
     uint64_t response_size = 0;
@@ -319,7 +319,7 @@ uint64_t crsaibv_process_variable(
 
             BESDEBUG(MODULE_VERBOSE, prolog << "  " << get_dap_decl(var) << "(" << vsize << " bytes)" << endl);
             if (max_var_size > 0 && vsize > max_var_size) {
-                too_big.emplace(pair<string, uint64_t>(get_dap_decl(var), vsize));
+                too_big.emplace_back(pair<string, uint64_t>(get_dap_decl(var), vsize));
                 BESDEBUG(MODULE,
                          prolog << get_dap_decl(var) << "(" << vsize << " bytes) is bigger than the max_var_size of "
                                 << max_var_size << " bytes. too_big.size(): " << too_big.size() << endl);
@@ -343,7 +343,7 @@ uint64_t crsaibv_process_variable(
 uint64_t compute_response_size_and_inv_big_vars(
         libdap::D4Group *grp,
         const uint64_t &max_var_size,
-        std::unordered_map<std::string,int64_t> &too_big)
+        std::vector< pair<std::string,int64_t> > &too_big)
 {
     uint64_t response_size = 0;
     // Process Child Variables.
@@ -380,7 +380,7 @@ uint64_t compute_response_size_and_inv_big_vars(
 uint64_t compute_response_size_and_inv_big_vars(
         libdap::DMR &dmr,
         const uint64_t &max_var_size,
-        std::unordered_map<std::string,int64_t> &too_big)
+        std::vector< pair<std::string,int64_t> > &too_big)
 {
     // Consider if something other than an unordered_map, or even map, we might consider using vector like this:
     //  std::vector<std::pair<std::string,int64_t>> foo;
@@ -448,7 +448,7 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
     stringstream msg;
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;
-    std::unordered_map<std::string,int64_t> too_big_vars;
+    std::vector< pair<std::string,int64_t> > too_big_vars;
 
     get_max_sizes_bytes(max_var_size_bytes, max_response_size_bytes);
 

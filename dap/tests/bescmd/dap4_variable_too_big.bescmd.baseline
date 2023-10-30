@@ -11,11 +11,11 @@ The following is a list of variables, identified in the request,
 that are individually Too Large for the service to process.
 
 Oversized Variables: 
-    Float32 /VWND[12][90][180] (777600 bytes)
-    Float32 /AIRT[12][90][180] (777600 bytes)
-    Float32 /SST[12][90][180] (777600 bytes)
-    Float32 /UWND[12][90][180] (777600 bytes)
     Float64 /COADSX[180] (1440 bytes)
+    Float32 /SST[12][90][180] (777600 bytes)
+    Float32 /AIRT[12][90][180] (777600 bytes)
+    Float32 /UWND[12][90][180] (777600 bytes)
+    Float32 /VWND[12][90][180] (777600 bytes)
 
 You can resolve these issues by requesting less.
  - Consider asking for fewer variables (do you need them all?)
