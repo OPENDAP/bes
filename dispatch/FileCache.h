@@ -45,7 +45,7 @@ static inline std::string get_errno() {
 }
 
 // Name of the file that tracks the size of the cache
-#define CACHE_INFO_FILE_NAME "cache_info"
+constexpr auto const CACHE_INFO_FILE_NAME = "cache_info";
 
 constexpr const unsigned long long MEGABYTE = 1048576;
 
