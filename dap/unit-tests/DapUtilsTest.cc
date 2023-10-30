@@ -235,7 +235,7 @@ public:
         d_test_dmr->root()->set_send_p(true);
 
         uint64_t max_size = 200;
-        std::unordered_map<std::string,int64_t> too_big;
+        std::vector< pair<std::string,int64_t> > too_big;
         response_size =  dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
@@ -274,7 +274,7 @@ public:
         d_test_dmr->root()->set_send_p(true);
 
         uint64_t max_size = 1000000;
-        std::unordered_map<std::string,int64_t> too_big;
+        std::vector< pair<std::string,int64_t> > too_big;
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
@@ -314,7 +314,7 @@ public:
         D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 1000000;
-        std::unordered_map<std::string,int64_t> too_big;
+        std::vector< pair<std::string,int64_t> > too_big;
 
         d4ce.parse("/support_data/gas_profile;/support_data/scattering_weights");
 
@@ -360,7 +360,7 @@ public:
         D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 1000000;
-        std::unordered_map<std::string,int64_t> too_big;
+        std::vector< pair<std::string,int64_t> > too_big;
 
         d4ce.parse("/support_data/gas_profile[1][][];/support_data/scattering_weights[3][][]");
 
@@ -404,7 +404,7 @@ public:
         D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 8000;
-        std::unordered_map<std::string,int64_t> too_big;
+        std::vector< pair<std::string,int64_t> > too_big;
 
         d4ce.parse("/xtrack;/mirror_step");
 
@@ -449,7 +449,7 @@ public:
         D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 8000;
-        std::unordered_map<std::string,int64_t> too_big;
+        std::vector< pair<std::string,int64_t> > too_big;
 
         d4ce.parse("/xtrack[1:4:2047];/mirror_step");
 
