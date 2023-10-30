@@ -84,22 +84,6 @@ constexpr const unsigned long long MEGABYTE = 1048576;
  * [0]: stackoverflow.com/questions/53177938/is-it-safe-to-use-flock-on-aws-efs-to-emulate-a-critical-section
  */
 class FileCache {
-
-    /// Manage the Cache-level locking
-    class Lock {
-    private:
-        int d_fd;
-    public:
-        Lock() = default;
-        Lock(const Lock &) = default;
-        explicit Lock(int fd) : d_fd(fd) {}
-        Lock &operator=(const Lock &) = default;
-        ~Lock() {
-            if (flock(d_fd, LOCK_UN) < 0)
-                ERROR_LOG("Could not unlock the FileCache.\n");
-        }
-    };
-
     // pathname of the cache directory
     std::string d_cache_dir;
 
@@ -112,6 +96,40 @@ class FileCache {
 
     // Name of the file that tracks the size of the cache
     int d_cache_info_fd = -1;
+
+    static std::string get_lock_type_string(int lock_type) {
+        return (lock_type == LOCK_EX) ? "Exclusive": "Shared";
+    }
+
+    /// Manage the Cache-level locking. Each instance has to be initialized with d_cache_info_fd.
+    class CacheLock {
+    private:
+        int d_fd = -1;
+    public:
+        CacheLock() = default;
+        CacheLock(const CacheLock &) = default;
+        explicit CacheLock(int fd) : d_fd(fd) {}
+        CacheLock &operator=(const CacheLock &) = default;
+        ~CacheLock() {
+            if (flock(d_fd, LOCK_UN) < 0)
+                ERROR_LOG("Could not unlock the FileCache.\n");
+        }
+
+        bool lock_the_cache(int lock_type, const std::string &msg = "") const {
+            if (d_fd < 0) {
+                ERROR_LOG("Call to CacheLock::lock_the_cache with uninitialized lock object\n");
+                return false;
+            }
+            if (flock(d_fd, lock_type) < 0) {
+                if (msg.empty())
+                    ERROR_LOG(msg << get_lock_type_string(lock_type) << get_errno() << '\n');
+                else
+                    ERROR_LOG(msg << get_errno() << '\n');
+                return false;
+            }
+            return true;
+        }
+    };
 
 #if 0
     void purge();
@@ -171,9 +189,9 @@ class FileCache {
     friend class FileCacheTest;
 
 public:
-    /// Used to return an open file descriptor to a cached item
+    /// Used to mange the state of an open file descriptor for a cached item.
     class Item {
-        int d_fd;
+        int d_fd = -1;
 
     public:
         Item() = default;
@@ -182,7 +200,7 @@ public:
         Item &operator=(const Item &) = default;
         virtual ~Item() {
             if (d_fd != -1) {
-                close(d_fd);
+                close(d_fd);    // Also releases any locks
                 d_fd = -1;
             }
         }
@@ -192,6 +210,22 @@ public:
         }
         void set_fd(int fd) {
             d_fd = fd;
+        }
+
+        bool lock_the_item(int lock_type, const std::string &msg = "") const {
+            if (d_fd < 0) {
+                ERROR_LOG("Call to Item::lock_the_item() with uninitialized item file descriptor.\n");
+                return false;
+            }
+            if (flock(d_fd, lock_type) < 0) {
+                if (msg.empty())
+                    ERROR_LOG("Could not get " << get_lock_type_string(lock_type) << " lock: " << get_errno() << '\n');
+                else
+                    ERROR_LOG(msg << ": " << get_errno() << '\n');
+                return false;
+            }
+
+            return true;
         }
     };
 
@@ -232,15 +266,10 @@ public:
 
     // Add a Value to the Cache, locks the cache while adding
     bool put(const std::string &key, const std::string &file_name) {
-        // Lock the cache
-        int status = flock(d_cache_info_fd, LOCK_EX);
-        if (status < 0) {
-            ERROR_LOG("Error locking the cache in put for: " << key << " " << get_errno() << '\n');
+        // Lock the cache. Ensure the cache is unlocked no matter how we exit
+        CacheLock lock(d_cache_info_fd);
+        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in put() for: " + key))
             return false;
-        }
-
-        // Ensure the cache is unlocked no matter how we exit
-        Lock lock(d_cache_info_fd);
 
         // Create the new cache entry
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
@@ -254,23 +283,21 @@ public:
             }
         }
 
-        // The Item instance will take care of closing (and thus unlocking) the file.
+        // The Item instance will take care of closing the file.
         Item fdl(fd);
 
-        // Lock the file for writing; released when ... read more about flock(2)
-        if (flock(fd, LOCK_EX) == -1) {
-            ERROR_LOG("Error locking the just created key/file: " << key << " " << get_errno() << '\n');
+        // Lock the file for writing; released when the file descriptor is closed.
+        if (!fdl.lock_the_item(LOCK_EX, "Error locking the just created key/file: " + key))
             return false;
-        }
 
-        // Copy yhe contents of the file_name to the new file
+        // Copy the contents of the file_name to the new file
         int fd2;
         if ((fd2 = open(file_name.c_str(), O_RDONLY)) < 0) {
             ERROR_LOG("Error reading from source file: " << file_name << " " << get_errno() << '\n');
             return false;
         }
 
-        Item fdl2(fd2);
+        Item fdl2(fd2);     // The 'source' file is not locked; the Item ensures it is closed.
 
         std::vector<char> buf(std::min(MEGABYTE, get_file_size(fd2)));
         size_t n;
@@ -281,6 +308,7 @@ public:
             }
         }
 
+        // NB: The cache_info file ws locked on entry to this method.
         update_cache_info_size(get_cache_info_size() + get_file_size(fd));
 
         // The fd_wrapper instances will take care of closing (and thus unlocking) the files.
@@ -288,33 +316,24 @@ public:
     }
 
     bool get(const std::string &key, Item &item) {
-        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
-
-        // Get a shared lock on the cache; prevents simultaneous get and put operations
-        int status = flock(d_cache_info_fd, LOCK_SH);
-        if (status < 0) {
-            ERROR_LOG("Error locking the cache in get for: " << key << " " << get_errno() << '\n');
+        // Lock the cache. Ensure the cache is unlocked no matter how we exit
+        CacheLock lock(d_cache_info_fd);
+        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in get() for: " + key))
             return false;
-        }
-
-        // Ensure the cache is unlocked no matter how we exit
-        Lock lock(d_cache_info_fd);
 
         // open the file
+        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd = open(key_file_name.c_str(), O_RDONLY, 0666);
         if (fd < 0) {
             ERROR_LOG("Error opening the cache item in get for: " << key << " " << get_errno() << '\n');
             return false;
         }
 
-        // blocking call to get a shared lock. When fd is closed, the lock is released
-        status = flock(fd, LOCK_SH);
-        if (status < 0) {
-            ERROR_LOG("Error locking the cache item in get for: " << key << " " << get_errno() << '\n');
-            return false;
-        }
-
         item.set_fd(fd);
+        if (!item.lock_the_item(LOCK_SH, "locking the cache item in get() for: " + key))
+            return false;
+
+        // Here's where we should update the info about the item in the cache_info file
 
         return true;
     }
@@ -332,7 +351,7 @@ public:
     bool clear() {
         // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
         DIR *dir = nullptr;
-        struct dirent *ent{0};
+        struct dirent *ent = nullptr;
         if ((dir = opendir (d_cache_dir.c_str())) != nullptr) {
             /* print all the files and directories within directory */
             while ((ent = readdir (dir)) != nullptr) {

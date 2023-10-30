@@ -71,8 +71,7 @@ string sha256(const string &filename)
     SHA256_Final(hash, &sha256);
 
     stringstream ss;
-    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-    {
+    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
         ss << hex << setw(2) << setfill('0') << (int)hash[i];
     }
     return ss.str();
@@ -448,6 +447,142 @@ public:
         }
     }
 
+    void test_get_a_file_not_cached() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        FileCache::Item item;
+        bool status = fc.get("key1", item);
+        CPPUNIT_ASSERT_MESSAGE("get() should return false", !status);
+        CPPUNIT_ASSERT_MESSAGE("Item::get_fd() should return -1", item.get_fd() == -1);
+      }
+
+    void test_get_a_file() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        CPPUNIT_ASSERT_MESSAGE("put() should return true", fc.put("key1", source_file));
+
+        FileCache::Item item;
+        bool status = fc.get("key1", item);
+        CPPUNIT_ASSERT_MESSAGE("get() should return true", status);
+        CPPUNIT_ASSERT_MESSAGE("Item::get_fd() should not return -1", item.get_fd() != -1);
+    }
+
+    void test_get_a_file_two_processes() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        CPPUNIT_ASSERT_MESSAGE("put() should return true", fc.put("key1", source_file));
+
+        if (fork() == 0) {
+            // child process
+            FileCache::Item item;
+            bool status = fc.get("key1", item);
+            DBG(cerr << prolog << "child process put() status: " << status << '\n');
+            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
+        }
+        else {
+            // parent process - generally faster. I used std::this_thread::sleep_for() but this is
+            // not multi-threaded code. It's just a way to sleep for a short time.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            FileCache::Item item;
+            bool status = fc.get("key1", item);
+            DBG(cerr << prolog << "parent process put() status: " << status << '\n');
+            CPPUNIT_ASSERT_MESSAGE("get() in the parent should return true", status);
+
+            int child_status;
+            wait(&child_status);
+            DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');
+            // exit status for a process: 0 is true, 1 is false
+            CPPUNIT_ASSERT_MESSAGE("get() in the child should return true", WEXITSTATUS(child_status) == 0);
+        }
+
+        CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
+                               sha256(source_file) == sha256(BESUtil::pathConcat(cache_dir, "key1")));
+
+        FileCache::Item item;
+        bool status = fc.get("key1", item);
+        CPPUNIT_ASSERT_MESSAGE("get() should return false", status);
+        CPPUNIT_ASSERT_MESSAGE("Item::get_fd() should not return -1", item.get_fd() != -1);
+    }
+
+    void test_get_and_put_duplicate_key_two_processes()
+    {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+        struct stat sb{0};
+        if (stat(source_file.c_str(), &sb) != 0)
+            CPPUNIT_FAIL("stat() failed on test data file");
+        size_t source_file_size = sb.st_size;
+
+            if (fork() == 0) {
+            // child process
+            // sleep here to give the parent a head start, not much use.
+            bool status = fc.put("key1", source_file);
+            DBG(cerr << prolog << "child process put() status: " << status << '\n');
+            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
+        }
+        else {
+            // parent process - generally faster. I used std::this_thread::sleep_for() but this is
+            // not multi-threaded code. It's just a way to sleep for a short time.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            FileCache::Item item;
+            bool status = fc.get("key1", item);
+            DBG(cerr << prolog << "parent process get() status: " << status << '\n');
+
+            int child_status;
+            wait(&child_status);
+            DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');
+            // exit status for a process: 0 is true, 1 is false
+
+            // Because we use blocking locks for access to the cache, if the get and put functions are
+            // both called at the same time by two processes, the put() always works if the file does
+            // not already exist (because the get always fails if it is run first).
+            CPPUNIT_ASSERT_MESSAGE("Child process (which ran put()) should exit with success.",
+                                   WEXITSTATUS(child_status) == 0);
+
+            if (status) {
+                struct stat cb{0};
+                if (fstat(item.get_fd(), &cb) != 0)
+                    CPPUNIT_FAIL("fstat() failed on cached file");
+
+                DBG(cerr << prolog << "parent process get() status: " << status << '\n');
+                CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of the source file (first get() call)",
+                                       cb.st_size == source_file_size);
+            }
+            else {
+                // if the get operation failed, it might have run into the put operation. Since we know the
+                // put has finished, get should work now. And the put operation should have worked
+                status = fc.get("key1", item);
+                DBG(cerr << prolog << "parent process second call to get() status: " << status << '\n');
+                CPPUNIT_ASSERT_MESSAGE("The second call to get() should work.", status);
+                struct stat cb{0};
+                if (fstat(item.get_fd(), &cb) != 0)
+                    CPPUNIT_FAIL("fstat() failed on cached file");
+
+                CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of the source file (second get() call)",
+                                       cb.st_size == source_file_size);
+            }
+        }
+
+        CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
+                               sha256(source_file) == sha256(BESUtil::pathConcat(cache_dir, "key1")));
+    }
+
+
     CPPUNIT_TEST_SUITE(FileCacheTest);
 
     CPPUNIT_TEST(test_unintialized_cache);
@@ -464,6 +599,11 @@ public:
     CPPUNIT_TEST(test_put_duplicate_key_two_processes);
     CPPUNIT_TEST(test_put_duplicate_key_three_threads);
     CPPUNIT_TEST(test_put_duplicate_key_two_processes_three_threads_each);
+
+    CPPUNIT_TEST(test_get_a_file_not_cached);
+    CPPUNIT_TEST(test_get_a_file);
+    CPPUNIT_TEST(test_get_a_file_two_processes);
+    CPPUNIT_TEST(test_get_and_put_duplicate_key_two_processes);
 
     CPPUNIT_TEST_SUITE_END();
 };
