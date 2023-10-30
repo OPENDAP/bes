@@ -421,7 +421,7 @@ void get_max_sizes_bytes(uint64_t &max_var_size_bytes, uint64_t &max_response_si
     uint64_t config_var_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_VAR_SIZE_KEY, 0);
     uint64_t context_var_size=0;
     found = false;
-    context_var_size = BESContextManager::TheManager()->get_context_uint64(BES_KEYS_MAX_VAR_SIZE_KEY, found);
+    context_var_size = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_VAR_SIZE_KEY, found);
     if (found) {
         if(config_var_size == context_var_size){
             // If they're the same then use one.
