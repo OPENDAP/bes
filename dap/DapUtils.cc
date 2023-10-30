@@ -301,19 +301,18 @@ uint64_t crsaibv_process_variable(
 
     uint64_t response_size = 0;
 
-    if (var->is_constructor_type() && var->send_p()) {
-        auto some_constrctr = dynamic_cast<libdap::Constructor *>(var);
-        if (some_constrctr) {
-            for(auto dap_var:some_constrctr->variables()) {
-                response_size += crsaibv_process_variable(dap_var, max_var_size, too_big);
+    if(var->send_p()) {
+        if (var->is_constructor_type()) {
+            auto some_constrctr = dynamic_cast<libdap::Constructor *>(var);
+            if (some_constrctr) {
+                for (auto dap_var: some_constrctr->variables()) {
+                    response_size += crsaibv_process_variable(dap_var, max_var_size, too_big);
+                }
+            } else {
+                BESDEBUG(MODULE,
+                         prolog << "ERROR Failed to cast BaseType pointer var to Constructor type." << endl);
             }
         } else {
-            BESDEBUG(MODULE,
-                     prolog << "ERROR Failed to cast BaseType pointer var to Constructor type." << endl);
-        }
-    }
-    else {
-        if (var->send_p()) {
             // width_ll() returns the number of bytes needed to hold the data
             uint64_t vsize = var->width_ll(true);
             response_size += vsize;
@@ -322,7 +321,8 @@ uint64_t crsaibv_process_variable(
             if (max_var_size > 0 && vsize > max_var_size) {
                 too_big.emplace_back(pair<string, uint64_t>(get_dap_decl(var), vsize));
                 BESDEBUG(MODULE,
-                         prolog << get_dap_decl(var) << "(" << vsize << " bytes) is bigger than the max_var_size of "
+                         prolog << get_dap_decl(var) << "(" << vsize
+                                << " bytes) is bigger than the max_var_size of "
                                 << max_var_size << " bytes. too_big.size(): " << too_big.size() << endl);
             }
         }
@@ -346,23 +346,25 @@ uint64_t compute_response_size_and_inv_big_vars(
         const uint64_t &max_var_size,
         std::vector< pair<std::string,int64_t> > &too_big)
 {
+    BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << grp->type_name() << " " << grp->FQN() << endl);
+
     uint64_t response_size = 0;
     // Process Child Variables.
     for(auto dap_var:grp->variables()){
-        response_size += crsaibv_process_variable(dap_var,max_var_size, too_big);
+        response_size += crsaibv_process_variable(dap_var, max_var_size, too_big);
     }
 
     // Process child groups.
     for (auto child_grp: grp->groups()) {
         if (child_grp->send_p()) {
-            BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
             response_size += compute_response_size_and_inv_big_vars(child_grp, max_var_size, too_big);
-            BESDEBUG(MODULE_VERBOSE, prolog << "END " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
         }
         else {
-            BESDEBUG(MODULE_VERBOSE, prolog << "SKIPPING: No child selected. " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
+            BESDEBUG(MODULE_VERBOSE, prolog << "SKIPPING: " << grp->type_name() <<
+            " " << child_grp->FQN() << " (No child selected.)" << endl);
         }
     }
+    BESDEBUG(MODULE_VERBOSE, prolog << "END " << grp->type_name() << " " << grp->FQN() << endl);
     return response_size;
 }
 
@@ -388,27 +390,53 @@ uint64_t compute_response_size_and_inv_big_vars(
 
 
 /**
- * @brief Determines the values of max_var_size and max_response_size by checking the command context and TheBESKeys
+ * @brief Determines the values of max_var_size and max_response_size by checking the TheBESKeys and the command context
+ * Priority is given to the BES configuration. A request that sets the BESContexts for these values can
+ * only decrease the size values from the ones set in the BES configuration.
  * @param max_var_size The maximum allowable size, in bytes, for a constrained variable.
  * @param max_response_size The maximum allowable total response size, in bytes.
  */
 void get_max_sizes_bytes(uint64_t &max_var_size_bytes, uint64_t &max_response_size_bytes){
-
+    // The BES configuration is help in TheBESKeys, so we read from there.
+    uint64_t config_resp_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY, 0);
+    uint64_t context_resp_size=0;
     bool found = false;
-    max_var_size_bytes = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_VAR_SIZE_KEY, found);
-    if (!found) {
-        // It wasn't in the BESContextManager, so we check TheBESKeys. Note that we pass the default value of 0
-        // which means no maximum size will be enforced.
-        max_var_size_bytes = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_VAR_SIZE_KEY, 0);
+    context_resp_size = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_RESPONSE_SIZE_KEY, found);
+    if (found) {
+        if(config_resp_size == context_resp_size){
+            // If they're the same then use one.
+            max_response_size_bytes = config_resp_size;
+        }
+        else if( context_resp_size < config_resp_size || config_resp_size == 0 ){
+            // If the context value is effectively less than the config value, use the context value.
+            max_response_size_bytes = context_resp_size;
+        }
+        else {
+            // Otherwise use the config value.
+            max_response_size_bytes = config_resp_size;
+        }
     }
 
+    // The BES configuration is help in TheBESKeys, so we read from there.
+    uint64_t config_var_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_VAR_SIZE_KEY, 0);
+    uint64_t context_var_size=0;
     found = false;
-    max_response_size_bytes = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_RESPONSE_SIZE_KEY,found);
-    if(!found){
-        // It wasn't in the BESContextManager, so we check TheBESKeys. Note that we pass the default value of 0
-        // which means no maximum size will be enforced.
-        max_response_size_bytes = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY, 0);
+    context_var_size = BESContextManager::TheManager()->get_context_uint64(BES_KEYS_MAX_VAR_SIZE_KEY, found);
+    if (found) {
+        if(config_var_size == context_var_size){
+            // If they're the same then use one.
+            max_var_size_bytes = config_var_size;
+        }
+        else if( context_var_size < config_var_size || config_var_size == 0 ){
+            // If the context value is effectively less than the config value, use the context value.
+            max_var_size_bytes = context_var_size;
+        }
+        else {
+            // Otherwise use the config value.
+            max_var_size_bytes = config_var_size;
+        }
     }
+
 }
 
 std::string too_big_opener(uint64_t max_response_size_bytes, uint64_t max_var_size_bytes){
