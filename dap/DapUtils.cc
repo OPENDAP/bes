@@ -301,7 +301,7 @@ uint64_t crsaibv_process_variable(
 
     uint64_t response_size = 0;
 
-    if (var->is_constructor_type()) {
+    if (var->is_constructor_type() && var->send_p()) {
         auto some_constrctr = dynamic_cast<libdap::Constructor *>(var);
         if (some_constrctr) {
             for(auto dap_var:some_constrctr->variables()) {
@@ -354,9 +354,14 @@ uint64_t compute_response_size_and_inv_big_vars(
 
     // Process child groups.
     for (auto child_grp: grp->groups()) {
-        BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
-        response_size += compute_response_size_and_inv_big_vars(child_grp, max_var_size, too_big);
-        BESDEBUG(MODULE_VERBOSE, prolog << "END " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
+        if (child_grp->send_p()) {
+            BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
+            response_size += compute_response_size_and_inv_big_vars(child_grp, max_var_size, too_big);
+            BESDEBUG(MODULE_VERBOSE, prolog << "END " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
+        }
+        else {
+            BESDEBUG(MODULE_VERBOSE, prolog << "SKIPPING: No child selected. " << grp->type_name() << "(" << child_grp->FQN() << ")" << endl);
+        }
     }
     return response_size;
 }
