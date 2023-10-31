@@ -31,7 +31,21 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/GLAH06_634
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/S-MODE_PFC_OC2108A_adcp_os75nb.h5.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dmrpp.bescmd >nasa_dap4_default_test.nc
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/OMG_Bathy_SBES_L2_20150804000000.h5.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5.bescmd >nasa_dap4_default_test.nc
+
+#direct IO check
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/test_ba_grp_dim_whole.h5.deflev.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/ATL13_20190330212241_00250301_002_01.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/OMG_Bathy_SBES_L2_20150804000000.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/daymet_v4_daily_na_prcp_2010.nc.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/SMAP_L3_SM_P_20150406_R14010_001.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/big_1d_shuf.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/d_dset_4d.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+
 
 
