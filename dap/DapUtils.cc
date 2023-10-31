@@ -355,7 +355,7 @@ uint64_t compute_response_size_and_inv_big_vars(
     }
 
     // Process child groups.
-    for (auto child_grp: grp->groups()) {
+    for (const auto child_grp: grp->groups()) {
         if (child_grp->send_p()) {
             response_size += compute_response_size_and_inv_big_vars(child_grp, max_var_size, too_big);
         }
