@@ -29,6 +29,7 @@
 #include <iterator>
 #include <unordered_set>
 
+#if 0
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
 #include <H5Epublic.h>
@@ -37,6 +38,7 @@
 #include <H5Tpublic.h>
 
 #include "h5common.h"   // This is in the hdf5 handler
+#endif
 
 #include <libdap/Str.h>
 #include <libdap/util.h>
@@ -93,6 +95,7 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 
 #define INVOCATION_CONTEXT "invocation"
 
+#if 0
 // FYI: Filter IDs
 // H5Z_FILTER_ERROR         (-1) no filter
 // H5Z_FILTER_NONE          0   reserved indefinitely
@@ -1452,7 +1455,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
     // Do the work now...
     inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
 }
-
+#endif
 
 /**
  * @brief Builds a DMR++ from an existing DMR file in conjunction with source granule file.
@@ -1478,11 +1481,13 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
+#if 0
     add_chunk_information(h5_file_fqn, &dmrpp);
 
     if (add_production_metadata) {
         inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
+#endif
 
     XMLWriter writer;
     dmrpp.print_dmrpp(writer, dmrpp_href_value);

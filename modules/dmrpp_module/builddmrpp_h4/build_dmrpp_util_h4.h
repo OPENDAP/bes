@@ -33,10 +33,8 @@ class DMRpp;
 
 namespace build_dmrpp_util {
 
+#if 0
 void add_chunk_information(const std::string &h5_file_name, dmrpp::DMRpp *dmrpp);
-
-void build_dmrpp_from_dmr_file(const std::string &dmrpp_href_value, const std::string &dmr_filename, const std::string &h5_file_fqn,
-                               bool add_production_metadata, const std::string &bes_conf_file_used_to_create_dmr, int argc, char *argv[]);
 
 void qc_input_file(const std::string &file_name);
 
@@ -44,6 +42,10 @@ void qc_input_file(const std::string &file_name);
 void inject_version_and_configuration(int argc, char **argv, const std::string &bes_conf_file_used_to_create_dmr, dmrpp::DMRpp *dmrpp);
 
 void inject_version_and_configuration(dmrpp::DMRpp *dmrpp);
+#endif
+
+void build_dmrpp_from_dmr_file(const std::string &dmrpp_href_value, const std::string &dmr_filename, const std::string &h5_file_fqn,
+                               bool add_production_metadata, const std::string &bes_conf_file_used_to_create_dmr, int argc, char *argv[]);
 
 extern bool verbose;
 }
