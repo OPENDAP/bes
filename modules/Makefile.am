@@ -21,7 +21,7 @@ SUBDIRS += debug_functions
 endif
 
 if BUILD_HDF4
-SUBDIRS += hdf4_handler
+SUBDIRS += hdf4_handler builddmrpp_h4_module
 endif
 
 if BUILD_HDF5
@@ -40,7 +40,7 @@ SUBDIRS += netcdf_handler fileout_netcdf fileout_covjson
 endif
 
 # Why are these here? Because they have tests that depend on netcdf.
-SUBDIRS +=  httpd_catalog_module ngap_module s3_reader fileout_json w10n_handler gateway_module xml_data_handler builddmrpp_module
+SUBDIRS += httpd_catalog_module ngap_module s3_reader fileout_json w10n_handler gateway_module xml_data_handler builddmrpp_module
 
 if BUILD_GDAL
 SUBDIRS += gdal_module

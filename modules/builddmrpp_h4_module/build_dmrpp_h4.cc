@@ -38,16 +38,21 @@
 #include <BESDebug.h>
 #include <BESError.h>
 #include <BESInternalFatalError.h>
+
+#if 0
+
 #include "build_dmrpp_util.h"
+
+#endif
 
 using namespace std;
 using namespace libdap;
+#if 0
 using namespace dmrpp;
 using namespace build_dmrpp_util;
+#endif
 
 #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
-
-
 
 void usage() {
     const char *help = R"(
@@ -66,7 +71,6 @@ void usage() {
     cerr << help << endl;
 }
 
-
 /**
  *
  * @param argc
@@ -74,8 +78,8 @@ void usage() {
  * @return
  */
 int main(int argc, char *argv[]) {
-    string h5_file_name;
-    string h5_dset_path;
+    string h4_file_name;
+    string h4_dset_path;
     string dmr_filename;
     string dmrpp_href_value;
     string bes_conf_file_used_to_create_dmr;
@@ -90,7 +94,9 @@ int main(int argc, char *argv[]) {
                 return 0;
 
             case 'v':
+#if 0
                 build_dmrpp_util::verbose = true; // verbose hdf5 errors
+#endif
                 break;
 
             case 'd':
@@ -98,7 +104,7 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 'f':
-                h5_file_name = optarg;
+                h4_file_name = optarg;
                 break;
 
             case 'r':
@@ -128,24 +134,27 @@ int main(int argc, char *argv[]) {
 
     try {
 
+#if 0
         // Check to see if the file is hdf5 compliant
         qc_input_file(h5_file_name);
+#endif
 
         if (dmr_filename.empty()){
             stringstream msg;
-            msg << "A DMR fully file for the granule '" << h5_file_name << " must also be provided." << endl;
+            msg << "A DMR file for the granule '" << h4_file_name << "' must also be provided." << endl;
             throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
 
         // Build the dmr++ from an existing DMR file.
+#if 0
         build_dmrpp_from_dmr_file(
                 dmrpp_href_value,
                 dmr_filename,
-                h5_file_name,
+                h4_file_name,
                 add_production_metadata,
                 bes_conf_file_used_to_create_dmr,
                 argc,  argv);
-
+#endif
     }
     catch (const BESError &e) {
         cerr << "BESError: " << e.get_message() << endl;

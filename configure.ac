@@ -1198,7 +1198,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/hdf4_handler/hdfclass/Makefile
     modules/hdf4_handler/bes-testsuite/Makefile
     modules/hdf4_handler/bes-testsuite/atlocal
-    
+
+    modules/builddmrpp_h4_module/Makefile
+
     modules/hdf5_handler/Makefile
     modules/hdf5_handler/bes-testsuite/Makefile
     modules/hdf5_handler/bes-testsuite/atlocal
