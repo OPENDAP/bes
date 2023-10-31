@@ -7,10 +7,10 @@
 You asked for too much! 
     Maximum allowed response size: unlimited
     Maximum allowed variable size: 1024 bytes.
-The following is a list of variables, identified in the request,
+The following is a list of variable(s), identified in the request,
 that are individually Too Large for the service to process.
 
-Oversized Variables: 
+Oversized Variable(s): 
     Float64 /COADSX[180] (1440 bytes)
     Float32 /SST[12][90][180] (777600 bytes)
     Float32 /AIRT[12][90][180] (777600 bytes)
