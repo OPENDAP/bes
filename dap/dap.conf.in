@@ -95,3 +95,18 @@ DAP.StoredResultsCache.size=20000
 
 DAP.Async.StyleSheet.Ref=/opendap/xsl/asyncResponse.xsl
 
+#-----------------------------------------------------------------------#
+# Response size controls                                                #
+#
+# BES.MaxVariableSize.bytes - Used to limit runtime memory footprint by
+# limiting the size of any single variable in the data granule.
+# default: 0 which indicates no limit.
+BES.MaxVariableSize.bytes = 0
+#
+# BES.MaxResponseSize.bytes - Limits the total response size. This can
+# used as a proxy to control response processing time. Reducing this
+# limit will reduce the time it takes fileout_netcdf responses to
+# begin transmitting.
+# default: 0 which indicates no limit.
+#-----------------------------------------------------------------------#
+BES.MaxResponseSize.bytes = 0

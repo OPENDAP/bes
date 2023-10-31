@@ -281,6 +281,9 @@ std::string get_dap_decl(libdap::BaseType *var) {
     return ss.str();
 }
 
+/**
+ * Forward declaration
+ */
 uint64_t crsaibv_process_ctor(const libdap::Constructor *ctor,
                                const uint64_t &max_var_size,
                                std::vector< pair<std::string,int64_t> > &too_big );
