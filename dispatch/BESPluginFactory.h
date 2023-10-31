@@ -37,7 +37,7 @@
 
 #include <string>
 #include <map>
-#include <algorithm>
+#include <memory>
 
 #include "BESPlugin.h"
 
@@ -53,82 +53,38 @@
  */
 
 template<typename C>
-class BESPluginFactory: public BESObj
-{
-private:
-	std::map<std::string, BESPlugin<C> *> d_children;
-
-    /** The Copy constructor is not supported. In the current implementation,
-     this class uses pointers to BESPlugin<C> held in an instance of \b
-     std::map. I'm not sure how \b std::map will handle the pointers when
-     it is destroyed (if it will call their destructor or not), so I'm
-     making this private. 07/18/02 jhrg It won't! 11/05/02 jhrg */
-
-    // I just removed these impls entirely. jhrg 5/13/15
-    BESPluginFactory(const BESPluginFactory &); // throw (BESInternalError)
-#if 0
-    {
-        throw BESInternalError("Unimplemented method.", __FILE__, __LINE__);
-    }
-#endif
-
-    /** The assignment operator is not supported.
-     @see BESPluginFactory(const BESPluginFactory &pf)
-     */
-    const BESPluginFactory &operator=(const BESPluginFactory &); // throw (BESInternalError)
-#if 0
-    {
-        throw BESInternalError("Unimplemented method.", __FILE__, __LINE__);
-    }
-#endif
-
-    struct DeletePlugins: public std::unary_function<std::pair<std::string, BESPlugin<C> *>, void>
-    {
-
-        void operator()(std::pair<std::string, BESPlugin<C> *> elem)
-        {
-            delete elem.second;
-        }
-    };
+class BESPluginFactory : public BESObj {
+    std::map<std::string, std::unique_ptr<BESPlugin<C>> > d_children;
 
 public:
-    /** Create a BESPluginFactory and set up a single entry. configure other
-     entries using the add_mapping() method.
+    BESPluginFactory() = default;
 
-     @param name Use \b name to get an instance of the child defined in
-     \b library_name.
-     @param library_name The name of the library which contains the child
-     class implementation.
-     @see add_mapping.
+    /**
+     * Make a BESPluginFactory and set up a single entry. configure other entries using the add_mapping() method.
+     * @param name Use \b name to get an instance of the child defined in \b library_name.
+     * @param library_name The name of the library which contains the child class implementation.
+     * @see add_mapping.
      */
-    BESPluginFactory(const std::string &name, const std::string &library_name)
-    {
+    BESPluginFactory(const std::string &name, const std::string &library_name) {
         add_mapping(name, library_name);
     }
 
-    /** Create an empty BESPluginFactory.
-     */
-    BESPluginFactory()
-    {
-    }
+    BESPluginFactory(const BESPluginFactory &) = delete;
 
-    virtual ~BESPluginFactory()
-    {
-        for_each(d_children.begin(), d_children.end(), DeletePlugins());
-    }
+    ~BESPluginFactory() override = default;
+
+    const BESPluginFactory &operator=(const BESPluginFactory &) = delete;
 
     /** Add a mapping of \b name to \b library_name to the BESPluginFactory.
      @param name The child object's name.
      @param library_name The name of the library which holds its
      implementation.
      */
-    void add_mapping(const std::string &name, const std::string &library_name)
-    {
-        BESPlugin<C> *child_class = new BESPlugin<C>(library_name);
-        d_children.insert(std::make_pair(name, child_class));
+    void add_mapping(const std::string &name, const std::string &library_name) {
+        d_children.emplace(name, std::make_unique<BESPlugin<C>>(library_name));
     }
 
-    /** Use the BESPlugingFactory to get an instance of the class
+    /** Use the BESPluginFactory to get an instance of the class
      \b C matched to \b name. Once the name \b name has been bound to a
      SO library \b library_name, this method can be used to get an
      instance of the object whose implementation is in the SO file
@@ -139,29 +95,17 @@ public:
      method.
 
      @exception NoSuchObject thrown if name has not been registered.
-
-     @exception NoSuchLibrary thrown if the library matched to \b name
-     cannot be found.
      */
-    C *get(const std::string &name) throw (NoSuchObject, NoSuchLibrary)
-    {
-        BESPlugin<C> *child_implementation = d_children[name];
-        if (!child_implementation) throw NoSuchObject(std::string("No class is bound to ") + name, __FILE__, __LINE__);
-        return child_implementation->instantiate();
+    C *get(const std::string &name) {
+        auto plugin_it = d_children.find(name);
+        if (plugin_it == d_children.end()) {
+            throw NoSuchObject(std::string("No class is bound to ") + name, __FILE__, __LINE__);
+        }
+        return plugin_it->second->instantiate();
     }
 
-    virtual void dump(std::ostream &strm) const
-    {
-        strm << "BESPluginFactory::dump - (" << (void *) this << ")" << std::endl;
-        /*
-         typedef map<string, BESPlugin<C> *>::const_iterator Plugin_citer ;
-         BESPluginFactory::Plugin_citer i = d_children.begin() ;
-         BESPluginFactory::Plugin_citer ie = d_children.end() ;
-         for( ; i != ie; i++ )
-         {
-         strm << i.second ;
-         }
-         */
+    void dump(std::ostream &strm) const override {
+        strm << "BESPluginFactory::dump - (" << std::ios::hex << this << ")" << std::endl;
     }
 };
 
