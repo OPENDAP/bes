@@ -1,0 +1,1963 @@
+2017-02-01  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* testsuite/hmap/hmap.1.stderr.baseline: added -o and -u options.
+	* hmap.c (usage): removed the provisional 'C' option.
+
+2016-08-03  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_mattrs):
+	fixed the bug of skipping metadata for TRMM products.
+	* odl.lex:
+	handled ODL error case that has empty value.
+
+2016-08-02  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.h: included unistd.h.
+	* xml.h (write_uuid): added.
+	* h4_vdata.c (VSmapping): removed ISO C90 warning.
+	* xml_an.c (write_group_attrs_an, write_pal_attrs_an):
+	removed ISO C90 warning.
+	* xml_sds.c (get_consistent_metadata_name): added.
+	* xml_sds.c (write_map_sds, write_mattrs, write_verify_array_values):
+	removed ISO C90 warning.
+	* xml_vdata.c (write_map_vdata, write_verify_table_values_row):
+	removed ISO C90 warning.
+
+
+2016-08-01  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c (write_uuid):
+	moved variable declaration outside for loop to pass Linux build.
+
+2016-07-27  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* odl.y: handled list values. added uuid generator.
+	* xml_sds.c (write_mattrs):
+	checked attribute content before calling ODL parser.
+	added metadata attribute name as group.
+	* xml_vg.c (write_group): added uuid generator.
+
+
+2016-07-26  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* odl.lex: added.
+	* odl.y: added.
+	* Makefile.am: added rule and files for flex/bison.
+	* xml_sds.c (write_mattrs): added scanner and parser.
+
+2016-07-21  Hyo-Kyung Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c (write_attr_data, write_byte_stream):
+	added uuid function call.
+	* xml_pal.c (write_map_pals): added uuid function call.
+	* xml_ris.c (write_ris_byte_stream): added uuid function call.
+	* xml_sds.c (write_attr_data_meta): added uuid function call.
+
+2016-07-20 Hyo-Kyung Joe Lee   <hyoklee@hdfgroup.org>
+
+	* hmap.h: added uuid extern variable.
+	* hmap.c: added -u option for uuid and md5 checksum on chunks.
+	* xml_sds.c (write_array_chunks_byte_stream): added uuid function.
+	* xml_hmap.c (write_byte_stream): added uuid function.
+	* xml_hmap.c (write_uuid): added.
+
+2014-10-07 Hyo-Kyung Joe Lee   <hyoklee@hdfgroup.org>
+
+	* README: fixed a typo and improved readability.
+	* NEWS
+	* VERSION
+	* INSTALL
+	* configure.ac
+	* h4mapwriter.spec
+	* doc/h4mapwriter-user-guide.pdf
+	* testsuite/package.m4:
+	updated version.
+	* h4mapwriter.1:updated copyright URL.
+	* hmap.h: removed unused define statement.
+	* h4.h: updated documentation for Doxygen.
+	* doc/Doxyfile: upgraded configruation file.
+	* h4_sds.c
+	* xml_sds.c:
+	replaced MAX_NC_NAME to H4_MAX_NC_NAME
+	replaced MAX_VAR_DIMS to H4_MAX_VAR_DIMS
+
+
+2013-10-14  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* NEWS
+	* VERSION
+	* TODO
+	* configure.ac
+	* h4mapwriter.spec
+	* doc/h4mapwriter-user-guide.pdf
+	* testsuite/package.m4:
+	 updated version.
+	* h4mapwriter.1:
+	updated ignore tag lists to match the current writer's behavior.
+	* hmap.c:
+	updated release date.
+	* hmap.c (write_gzip):
+	added error handling for fwrite() functions.
+
+2013-10-11 Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.c (read_all_refs, check_tag_expected)
+	* h4.h (check_tag_expected):
+	updated to match the current behavior of mapped/unmapped objects.
+	* hmap.c (main)
+	* xml_sds.c (write_map_sds)
+	* xml_ris.c (write_map_lone_ris, write_map_ris)
+	* xml_vdata.c (write_map_vdata):
+	added tag/ref information for error message.
+	* h4.c (set_mattr)
+	* h4_sds.c (SDmapping, read_chunk)
+	* xml_an.c (write_file_attrs_an, write_pal_attrs_an)
+	* xml_sds.c (set_cv_list, set_did2sid_list, set_dn_list)
+	* xml_sds.c (set_dn2id_list_id, write_array_chunks_byte_stream)
+	* xml_sds.c (write_file_attrs)
+	* xml_vdata.c (write_column_attr)
+	* xml_hmap.c (ref_count)
+	* xml_ris.c (write_raster_attrs)
+	* h4_ris.c (RISget_refs):
+	made error message consistent.
+	* xml_an.c: replaced free() with HDfree().
+
+
+2013-04-08  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* COPYING: updated copyright year.
+	* NEWS: updated version.
+	* INSTALL: updated copyright year and HDF4 version.
+	* VERSION: updated version to 1.0.5.
+	* configure.ac: updated version.
+	* h4mapwriter.1: updated version and date.
+	* hmap.c (main): updated release date and copyright year.
+	* doc/h4mapwriter-user-guide.pdf: updated version and date.
+	* testsuite/package.m4: updated version.
+
+2012-10-15  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* ChangeLog: cleaned up.
+	* INSTALL: updated version.
+	* NEWS: updated version.
+	* VERSION: updated version.
+	* configure.ac: updated version.
+	* h4mapwriter.1: updated version.
+	* hmap.c (main): updated release date.
+	* doc/h4mapwriter-user-guide.pdf: updated version and date.
+	* testsuite/package.m4: updated version.
+
+2012-07-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_ris.c (pr2id_list): removed the extern declaration.
+
+2012-07-19 Ruth Aydt  <aydt@hdfgroup.org>
+
+	* h4.h (N_PAL_ENTRIES, N_PAL_COMPONENTS): deleted.
+	* h4.h (PAL_info_t): split into PAL_DD_info_t and PAL_DE_info_t.
+	* h4.h (pal_visited): split into palIP8_visited and palLUT_visited.
+	* h4.h (read_all_refs): changed declaration due to pal_visited change.
+	* h4.h (read_pal): replaced with read_pals().
+	* h4.h (free_pal_arrays): added.
+	* xml.h (write_pal_attrs_an): changed parameters.
+	* xml.h (write_map_pals): changed parameters.
+	* xml.h (free_pr2id_list, get_pr2id_list, set_pr2id_list): deleted.
+	* xml.h (palRef_to_palMapID): added.
+	* h4.c:
+	updated to support 2 palette visited lists.
+	added comment regarding limitations of is_ref_visited check.
+	* h4_pal.c:
+	rewritten to handle IP8 and LUT DDs with same ref and different
+	offsets.
+	used new HDF4 function GRgetpalinfo().
+	* h4_pal.c (pal_DDs, pal_DEs): added.
+	* h4_pal.c (read_pal): replaced with read_pals().
+	* h4_pal.c (free_pal_arrays):added.
+	* h4_ris.c
+	changed map_info->pal.ref to map_info->pal_ref.
+	replaced grgetcomptype() with GRgetcomptype().
+	* hmap.c:
+	replaced pal_visited with palIP8_visited and palLUT_visited.
+	removed call to free_pr2id_list().
+	added call to free_pal_arrays().
+	moved declarations of path_ptr, fd_cs, and filep to top of
+	function rather than inline with code to quiet compiler warnings.
+	* xml_an.c
+	added tag to calling parameters for write_pal_attrs_an() to
+	accommodate new palette handling.
+	* xml_pal.c:
+	changed the data structures and logic significantly for finding,
+	storing, and processing palettes.
+	added external declaration of pal_DDs and pal_DEs(defined in h4_pal.c).
+	used fixed values for the attributes that can't vary.
+	It's now clear that HDF4 doc and code comments indicated more
+	flexibility than what was actually implemented so simplify code
+	accordingly.
+	* xml_pal.c (ID_P): deleted. added palID that is local to
+	write_map_pals().
+	* xml_pal.c (N_PAL_ENTRIES, N_PAL_COMPONENTS): added.
+	* xml_pal.c (free_pr2id_list, get_pr2id_list, set_pr2id_list): deleted.
+	* xml_pal.c (write_map_pals):
+	changed the number of arguments.
+	modified significantly.
+	* xml_pal.c (palRef_to_palMapI): added to return the Palette Element
+	ID in the map file given  the palette reference.  added error checking
+	in case 2 palette DDs with same  ref and unequal palette data.
+	* xml_ris.c: replaced call to get_pr2id_list() with call to
+	palRef_to_palMapID()
+	* xml_ris.c (ID_P): deleted.
+	* xml_ris.c (map_info->pal.ref): replaced with map_info->pal_ref.
+
+2012-05-31  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (XML_HEAD_SCHEMA): corrected xsi:schemaLocation.
+
+2012-04-02  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* NEWS: updated version.
+	* VERSION: updated version.
+	* configure.ac: updated version.
+	* h4mapwriter.1: updated version.
+	* testsuite/package.m4: updated version.
+	* README: updated copyright year.
+	* hmap.c (main): updated version date.
+	* xml_risc.c (write_map_ris): removed compiler %d format warning.
+
+2012-03-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_map_sds): relaxed condition that fillValue element
+	appears whenever user-defined fill value is defined. fillValue element
+	will no longer appear if rank > 0 and one of dimensions is unlimited
+	(i.e. 0). This check is done by SDreaddata() return call.
+
+2012-02-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_dimension_data):
+	merged offset and length information if consecutive.
+
+2012-02-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c (write_map_datum):
+	changed uchar8 to char8 because schema doesn't have uchar8 type.
+
+2012-02-08  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_pal.c (set_pr2id_list): updated documentation.
+	* xml_ris.c (write_map_ris): added more debugging information.
+
+2012-02-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+	* xml_ris.c (write_raster_attrs, write_file_attrs_gr):
+	filtered reserved XML character	from the attribute name.
+	* xml_sds.c (write_array_attrs):
+	added error handling for memory allocation failure.
+	* xml_sds.c (write_dimension_attrs, write_file_attrs):
+	filtered reserved XML character	from the attribute name.
+	* xml_vdata.c (write_VSattrs, write_column_attr):
+	filtered reserved XML character	from the attribute name.
+	* xml_vdata.c (write_verify_table_values_row):
+	filtered reserved XML character from the variable name in the
+	verification values comment block.
+
+
+2012-02-03  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.c (set_mattr):
+	rephrased the warning message for meatdatas that are not in sequence.
+	* xml_vdata.c (write_map_vdata):
+	filtered reserved XML character	from the field name.
+
+2011-10-25  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	updated the following files to set new version 1.0.2.
+	* NEWS
+	* README
+	* VERSION
+	* configure.ac
+	* testsuite/package.m4
+	* xml.h (XML_INSTRUCTION): updated instruction to match schema 1.0.1
+	* hmap.c (main): updated version date.
+
+2011-10-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (XML_HEAD): changed version from 1.0.0 to 1.0.1
+	* xml_sds.c (write_map_sds):
+	handled rank 0 with user defined value case.
+	handled rank 0 with no user defined value case.
+	* testsuite: updated for schema version change.
+
+
+2011-10-19  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_map_sds):
+	changed the condition if(map_info->is_empty != 1 && rank != 0) to
+	if(map_info->is_empty == 1 && rank != 0) because SDcheckempty()
+	is updated by Binh-Minh on October 9, 2011.
+	does not return failure on SDreaddata() call for rank=1 and
+	size=unlimited case.
+	* xml_sds.c (write_array_data):
+	added the rank > 0 condition for fastestVaryingDimensionIndex.
+
+2011-10-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_map_sds):
+	"dataDimensionSizes" will appear only if rank > 0.
+
+2011-10-06  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_map_sds):
+	initialized rank, ref, data_type, num_attrs to -1.
+	added condition for checking rank != 0 before SDreaddata() for getting
+	fill value.
+	changed nDimensions = 1 to 0 if (rank == 0).
+	added condition for checking rank > 0 for writing verificaiton values.
+
+2011-08-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main): updated version date.
+
+2011-08-16  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	updated the following files to set new version 1.0.1.
+	* README
+	* VERSION
+	* NEWS
+	* configure.ac
+	* testsuite/package.m4
+
+2011-08-15  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c (write_attr_value):
+	changed output format for uint8, uint16, and uint32 data type.
+
+2011-07-06  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_vg.c (write_vgroup_noroot):
+	corrected the indentation level for Group element (1 to indent).
+	* xml_sds.c (write_dimension_data):
+	added byteStreamSet element if number of block > 1.
+
+2011-07-01  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (XML_HEAD_SCHEMA):
+	corrected the schema location with real one available on the Internet.
+
+2011-06-30  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.h: added has_extf extern variable.
+	* xml.h (XML_INSTRUCTION): updated to increase readability.
+	* h4.c (read_all_refs): added extra check for external file.
+	* hmap.c (main): skipped map generation if externa file is used.
+	* xml_vdata.c (write_map_vdata):
+	skipped generating tableData element and verification values if
+	no data is involved.
+	* xml_hmap.c (write_map_datum):
+	added error handler for littleEndian.
+	* xml_hmap.c (write_missing_objects):
+	removed the count of objects since tag/ref indicates a unique object.
+	The reference alone is not sufficient.
+	* testsuite:
+	updated cases that are affected by littleEndian error.
+	removed unnecessary files.
+
+2011-06-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: added TAG_FLOC, TAG_FLOC_T, and TAG_FLOC_V.
+	* xml.h (XML_INSTRUCTION): updated to include note about offset/scale.
+	* xml.h (write_map_header):
+	added no_full_path argument to insert absolute full path.
+	* h4_ris.c: cleaned up to-do comment.
+	* hmap.c: added limits.h for PATH_MAX.
+	* hmap.c (main):
+	changed no-full-path option to filename-only.
+	replaced fixed 256 to PATH_MAX+1.
+	added real_path() to supply absolute file name to write_map_header().
+	changed check-sum to checksum.
+	* hmap.c (help):
+	updated -f option description.
+	changed check-sum to checksum.
+	* xml_an.c: cleaned up to-do comment.
+	* xml_hamp.c:
+	added libgen.h for basename() and dirname().
+	cleaned up to-do comment.
+	* xml_hmap.c (write_map_header):
+	added no_full_path argument to insert absolute full path.
+	added fileLocation element.
+	* xml_sds.c (write_verify_array_values):
+	removed #if RELEASE macro for random number generator.
+	* xml_vdata.c: cleaned up to-do comment.
+	* h4mapwriter.1:
+	updated -f option description.
+	changed check-sum to checksum.
+	* testsuite:
+	updated to match schema version 1.0.0 instruction and header.
+
+2011-06-16  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.h: added config.h.
+	* hmap.c (main, help, usage): added '-V' and '-f' option.
+	* hmap.c (main): added '\n' for open file error message.
+	* h4mapwriter.1: added description for '-V' and '-f' option.
+	* INSTALL: updated HDF4 info and distribution URL.
+	* VERSION: updated to 1.0.0.
+	* configure.ac: updated to 1.0.0.
+	* testsuite/package.m4: updated to 1.0.0.
+	* testsuite/hmapTest.at: added '-f' option for testing.
+	* h4mapwriter.spec: updated to 1.0.0.
+
+2011-06-15  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* NEWS: added 1.0.0.
+	* xml.h (XML_HEAD_SCHEMA): changed 0.9 to 1.0.
+	* testsuite/schema: updated to version 1.0.
+
+2011-06-13  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_pal.c (write_map_pals): increased indentation level to 2.
+	* xml_ris.c (write_file_attrs_gr): fixed dropping MSB in nt_type.
+	* xml_ris.c (write_raster_attrs): fixed dropping MSB in nt_type.
+	* xml_sds.c (write_array_attrs): fixed dropping MSB in nt_type.
+	* xml_sds.c (write_dimension_attrs): fixed dropping MSB in nt_type.
+	* xml_sds.c (write_file_attrs): fixed dropping MSB in nt_type.
+	* xml_vdata.c (write_VSattrs): fixed dropping MSB in nt_type.
+	* xml_vdata.c (write_column_attr): fixed dropping MSB in nt_type.
+	* xml_vg.c (write_group_attrs): fixed dropping MSB in nt_type.
+
+2011-05-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (is_diff): return -1 when type is not expected.
+
+2011-05-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (XML_WARNING): split into three lines.
+
+2011-05-23  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: removed XML_TEND_LE and XML_TEND_BE.
+	* hmap.c (help): corrected the description for '-c' option.
+	* hmap.c (main): printed the log message for -c option.
+	* h4mapwriter.1: corrected the description for '-c' and '-l' option.
+	* doc/h4mapwriter-user-guide.docx:
+	updated the section 3.2 for "-c" and "-l" option.
+	corrected Figure 4.
+	updated section 5.1.
+
+2011-05-13  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: added -lcrypto for Mac OS X support.
+	* h4.c (check_nt_unexpected):
+	added newline character at the end of reference number printing.
+	replaced "class:=" with "class=".
+	* h4_sds.c (read_compression):
+	cleaned up code surrounded by #ifdef SCHEMA.
+
+
+2011-05-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* testsuite.local: added external file for Arrays.hdf
+
+2011-05-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* INSTALL: updated SVN trunk info.
+	* NEWS: updated to 0.9.1.
+	* README: updated to 0.9.1.
+	* VERSION: updated to 0.9.1.
+	* configure.ac: updated to 0.9.1.
+	* testsuite/package.m4: updated to 0.9.1.
+	* h4mapwriter.1: updated to 0.9.1.
+	* xml.h (write_ignored_tags): added.
+	* hmap.c (main):
+	inserted the warning message at the map for -i option.
+	printed the log message for -i option.
+	* xml_hmap.c (write_ignored_tags): added.
+	* testsuite/: updated gr2.hdf and storm130.hdf test case.
+
+2011-05-09  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (write_ris_byte_stream):
+	added ri_id argument.
+	changed return type from void to intn.
+	* xml.h (XML_INSTRUCTION)
+	modified RLE part.
+	* h4.c (read_all_refs)
+	removed code for checking palette dimension DD related to GR image.
+	* h4_ris.c (RISmapping):
+	handled the case when map_info->nblocks = 0, which means the data is
+	empty with fill values.
+	* xml_ris.c (write_map_ris):
+	added error handling for write_ris_byte_stream().
+	* xml_ris.c (write_raster_datum):
+	added conditions for DFNT_(U)INT8 cases.
+	* xml_ris.c (write_ris_byte_stream):
+	handled the case when map_info->nblocks = 0, which means the data is
+	empty  with fill values.
+	added ri_id argument.
+	changed return type from void to intn.
+	* testsuite/data: added GR8_fill_value.hdf.
+
+2011-05-08  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* testsuite/schema: updated to may06-pm version.
+
+2011-05-05  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* configure.ac (AC_CHECK_HEADERS): addded openssl/md5.h.
+	* h4.h (check_tag_expected): added the function header.
+	* h4.c (check_tag_expected):removed checking Rasters under Vgroup.
+	* h4_ris.c (RISmapping):
+	changed flog to ferr to redirect UNMAPPABLE errors.
+	added error handler after GRgetdatainfo() call.
+	* testsuite.local: added GR8_rle_attribute.hdf.
+
+2011-05-04  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (XML_INSTRUCTION):
+	updated with the reference to compression algorithms.
+	* h4_ris.c (RISmapping):
+	Changed the ERROR to UNMAPPABLE for unsupported number of components
+	and palettes.
+
+2011-05-03  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (XML_WARN): added.
+	* hmap.c (main): replaced detailed warning message to simple one.
+	* xml_ris.c (write_map_lone_ris): increased the indentation.
+	* xml_sds.c (write_map_lone_sds): increased the indentation.
+	* xml_sds.c (write_map_dimensions): increased the indentation.
+	* xml_sds.c (write_map_dimensions_no_data):
+	increased the indentation.
+	* xml_vdata.c (write_map_lone_vdatas): increased the indentation.
+
+2011-05-02  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (XML_HEAD_SCHEMA):
+	added "version=0.9".
+	* hmap.c (main):
+	applied HDmemset() on MD5 string buufer.
+	* testsuite:
+	updated to meet the new schema spec.
+	* testsuite.local:
+	updated to meet the new schema spec.
+
+2011-05-01  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c (write_map_header):
+	removed quotes from filename.
+
+2011-04-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+	* xml.h:
+	changed XML_HEAD_SCHEMA.
+	changed XML_INSTRUCTION.
+	added XML_FILEINFO.
+	added TAG_FINFO.
+	added TAG_FCNT.
+	added TAG_FNAME.
+	added TAG_FSIZE.
+	added TAG_MD5.
+	* hmap.c (help): added -n and -s option message for MD5 checksum.
+	* hmap.c (main): added -n and -s option message for MD5 checksum.
+	* hmap.c (usage): added -n and -s option message for MD5 checksum.
+	* xml_hmap.c (write_map_header):
+	added file size and md5 string arguments.
+
+2011-04-28  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (read_fill_value): removed.
+	* h4_sds.c (read_fill_value): removed.
+	* xml_sds.c (write_map_sds):
+	fixed return value for empty SDS case with no fill values.
+	* testsuite.local:
+	added error test for failed cases.
+
+2011-04-27  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (SD_mapping_info_t):
+	added "data_type" member.
+	* xml_sds.c (write_array_chunks_byte_stream):
+	removed the use of read_fill_value() function.
+	* xml_sds.c (write_array_data):
+	removed the use of read_fill_value() function.
+	* xml_sds.c (write_map_lone_sds):
+	filtered out arrays that are visited already.
+	* xml_sds.c (write_map_sds):
+	allowed an array to appear twice under different groups.
+	* xml_vdata.c (write_map_lone_vdata):
+	filtered out tables that are visited already.
+	* xml_vdata.c (write_map_vdata):
+	allowed a table to appear twice under different groups.
+	* testsuite.local/data/:
+	added test files for duplicate entries under different groups.
+
+2011-04-26  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (SD_mapping_info_t):   added "is_empty" and "fill_value".
+	* h4_sds.c: added extern unsigned int ID_D.
+	* h4_sds.c (SDfree_mapping_info):
+	added a line for resetting nblocks to 0.
+	* xml_ris.c (write_map_ris): removed INFO message for duplicate raster.
+	* xml_sds.c (write_array_chunks_byte_stream):
+	updated error message for read_fill_value() failure.
+	* xml_sds.c (write_dimension_no_data):
+	removed useless arguments.
+	renamed to set_dimension_no_data().
+
+2011-04-25  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main):
+	placed palette processing before group processing to map raster
+	under group correctly.
+	* xml_ris.c (write_map_lone_ris): filtered rasters that are mapped
+	under groups.
+	* xml_ris.c (write_map_ris): allowed a raster to appear twice under
+	different groups.
+	* testsuite.local: added MYD/MOD14 data files to test empty, unlimited
+	dimension SDS dataset.
+
+2011-04-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main): added MD5 digest and file size calculation.
+	* Makefile.am: added linker flag to include OpenSSL library for MD5.
+
+2011-04-13  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_array_attrs):
+	attr_name is escaped with get_string_xml().
+
+2011-04-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: removed warn.h.
+	* Makfile.orig: removed.
+	* README: updated note about SDS gzip compression.
+
+
+2011-04-01  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c (get_string_xml):
+	replaced isspace() with the specific valid XML character set.
+
+2011-03-30  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4_pal.c: removed mfhdf.h.
+	* h4_sds.c: removed mfhdf.h.
+	* hmap.c: removed mfhdf.h.
+	* xml_pal.c: removed mfhdf.h.
+	* xml_ris.c: removed mfhdf.h.
+	* xml_sds.c: removed mfhdf.h.
+	* xml_vdata.c: removed mfhdf.h.
+	* xml_vg.c: removed mfhdf.h.
+
+2011-03-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.h: removed useless headers and definitions.
+
+2011-03-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (XML_INSTRUCTION): updated the instruction.
+	* xml_ris.c (write_raster_datum): added.
+	* testsuite/schema/HDF4map_groups.xsd: updated.
+	* doc/h4mapwriter-user-guide.pdf: added.
+	* doc/h4mapwriter-user-guide.doc:
+	updated error messages in the Figure 4.
+
+2011-03-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* COPYING: updated copyright year.
+	* INSTALL: updated for 0.9.0.
+	* NEWS: updated to 0.9.0.
+	* README: updated for 0.9.0.
+	* VERSION: updated to 0.9.0.
+	* configure.ac:
+	updated version to 0.9.0.
+	added fts.h and libgen.h for header check.
+	* h4.h (RIS_mapping_info_t):
+	added is_r8.
+	changed type of is_mappable to intn.
+	* h4_ris.c (RISmapping):
+	updated GR2bmapped() function with more args.
+	documented to-do list.
+	* xml.h (XML_HEAD_SCHEMA): renamed schema to "HDF4map.xsd".
+	* xml_hmap.c (get_string_xml): cleaned up error message.
+	* xml_hmap.c (write_map_datum): documented to-do list and remark.
+	* xml.pal.c (write_map_pals):
+	removed storageOrder due to schema change.
+	replaced component(s) to value(s) in verification part.
+	removed // comment for MacOS X.
+	* xml_ris.c (write_map_ris):
+	added (long) casting for 64-bit warning.
+	suppressed names for RIS8 case.
+	* xml_sds.c (write_array_attrs):
+	removed // comment for MacOS X.
+	* xml_vg.c (write_group_attrs):
+	removed // comment for MacOS X.
+	* testsuite/schema:
+	removed old schemas.
+	renamed schemas.
+	updated palette schema.
+	* testsuite/README:
+	updated documentation about testsuite.
+	* testsuite/package.m4:
+	updated version.
+	* testsuite/hmap: renamed schema to "HDF4map.xsd".
+	* testsuite.local: copied from the original testsuite/ for release.
+
+
+2011-03-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (RIS_mapping_info_t): added num_attrs.
+	* hmap.h (GOTO_ERROR): removed.
+	* xml.h (TAG_RATTR): added raster attribute definition.
+	* xml.h (ref_count_init): changed return type.
+	* xml.h (write_raster_attrs): added.
+	* h4.c (check_tag_expected):
+	replaced NUMBER_TYPE with DATATYPE because type can be character.
+	* h4_ris.c (RISmapping):
+	checked the number of components.
+	removed local num_attrs and saved the number of attributes in map_info.
+	removed HEclear().
+	replaced map_info->nblocks = 1 with GRgetatainfo() call to fix
+	potential memory errors reported by valgrind.
+	* hmap.c (main):
+	made gzip work if -c is active.
+	added error handler for ref_count calls.
+	relaxed ignore tag list range.
+	changed error message for Hopen() call failure.
+	added exit_errs to distinguish system/HDF4 call errors from mapping
+	errors.
+	* xml_hmap.c (ref_count): added memory error handlers.
+	* xml_hmap.c (ref_count_init):
+	added error handler for memory allocation.
+	changed the return type.
+	* xml_hmap.c (write_map_datum):
+	changed the return type.
+	* xml_pal.c (set_pr2id_list):
+	changed the return type to signal memory error.
+	* xml_ris.c (ID_RA): added Raster attribute id.
+	* xml_ris.c (write_map_ris):
+	swapped width and height to match the pink lines in RasterCode.docx.
+	added error handler for invalid palette XML ID.
+	added error handler for write_map_datum().
+	added image name for verification values.
+	added image attribute handling.
+	cleaned up error messages for GRendaccess().
+	changed dimensionStorageOrder to "row,column" according to new schema.
+        replaced fixed data type with write_map_datum().
+	* xml_ris.c (write_raster_attrs):
+	created.
+	* xml_ris.c (write_ris_byte_stream):
+	changed return type to void.
+	corrected %d to %ld in fprintf to match type.
+	* testsuite/hmap:
+	updated stderr output for palette annotation cases - 32, 52, 110, 114.
+	* testsuite/schema (Draft14_rasters):
+	updated with Ruth's new version.
+
+2011-03-16  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.c (check_tag_expected):
+	errors are redirected so that they can be added into the final map.
+	* h4.c (check_nt_expected):
+	errors are redirected so that they can be added into the final map.
+	* h4.c (read_all_refs):
+	errors are redirected so that they can be added into the final map.
+	cleared checker module error for palette annotation.
+	* h4_vdata.c (VSmapping):
+	handled case for Vdata with 0 rows.
+	* xml_ris.c (write_map_ris):
+	reformatted output according Ruth's document.
+	* xml_vdata.c (write_map_vdata):
+	handled case for Vdata with 0 rows.
+	* xml_vdata.c (write_verify_table_values):
+	handled case for Vdata with 0 rows.
+	* testsuite
+	added more raster image examples.
+	removed temporary xml files under data directory.
+
+2011-03-15  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+	* hmap.h (CHECK_ERROR): removed num_errs++; line.
+	* warn.h (GRgetattdatainfo, Vgetattdatainfo, VSgetattdatainfo): added.
+	* hmap.c (main):
+	changed return type and error message for write_map_lone_sds().
+	cleaned up error handlers to make them consistent.
+	forced to run ddChecker module always.
+	* h4_sds.c (SDmapping):
+	cleaned up error handlers.
+	* h4_sds.c (read_fill_value):
+	added more error handlers.
+	* h4_vdata.c (VSmapping):
+	cleaned up error messages.
+	corrected the usage of is_old_attr.
+	removed the use of local old flag.
+	added more error checking.
+	* xml_sds.c (write_array_attrs):
+	added error handlers.
+	* xml_sds.c (write_array_attribute):
+	changed return type to void.
+	* xml_sds.c (write_map_dimensions):
+	changed return type.
+	added more error handlers.
+	removed local num_errs variable.
+	* xml_sds.c (write_map_lone_sds):
+	corrected error handler for write_map_sds() call.
+	* xml_sds.c (write_map_sds):
+	added more error handlers.
+	* xml_sds.c (write_dimension):
+	cleaned up error messages.
+	 added more error handlers.
+	* xml_sds.c (write_dimension_attrs):
+	cleaned up error messages.
+	added more error handlers.
+	* xml_sds.c (write_verify_array_values):
+	cleaned up error messages.
+	fixed memory leaks.
+	* xml_vdata.c (write_map_lone_vdata):
+	changed return type.
+	cleaned up error messages.
+	added more error handlers.
+	removed local num_errs variable.
+	* xml_vdata.c (write_map_vdata):
+	changed return type.
+	removed num_errs local variable.
+	added more error handlers.
+	* xml_vdata.c (write_verify_table_values_row):
+	cleaned up error messages.
+	* xml_vg.c (write_vgroup_noroot):
+	cleaned up error messages.
+	removed internal vgroup checking borrowed from h4toh5 tool.
+	* testsuite/hmapTest.at:
+	defined AT_HMAP_TEST_NOREAD and skipped tests that give hread failure.
+
+2011-03-14  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (RIS_mapping_info_t): added is_mappable.
+	* hmap.c (main): added more error handlers.
+	* h4_ris.c (RISmapping):
+	replaced GRgetcompinfo() with grgetcomptype() since GRgetcompinfo()
+	cannot detect COMP_IMCOMP.
+	removed cinfo variable.
+	changed type of comp_type variable to int32.
+	* xml_an.c (write_group_attrs_an): corrected return type.
+	* xml_hmap.c (depth_first):
+	corrected return type.
+	redirected cycle error to ferr.
+	moved cycle error below name processing.
+	* xml_pal.c (write_map_pals):
+	added more error handling.
+	added unmappable objects handling.
+	* xml_ris.c (write_map_ris):
+	added unmappable case handling.
+	changed return type.
+	removed local num_errs variable.
+	* xml_ris.c (write_map_lone_ris):
+	changed return type.
+	* xml_vdata.c (write_map_vdata):
+	redirected unmappable object to ferr.
+	* xml_vg.c (write_group): added FAIL case.
+	* xml_vg.c (write_group_attrs):
+	corrected return type.
+	added more error handlers.
+	* testsuite/hmapTest.at:
+	added -c option for Groups.hdf test.
+	added -c option for chknbit.hdf test.
+	added -c option for hmap_chkcmp.hdf test.
+	added tgrgetcomptype.hdf.
+
+2011-03-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: removed hdatainfo.h. rerun autoreconf.
+
+2011-03-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (write_file_attrs_GR):
+	renamed as write_file_attrs_gr().
+	moved SDgetanndatainfo() and SDidtoref() into warn.h.
+	* xml_vg.h: documented in Doxygen.
+	* h4.c (read_all_refs):
+	replaced malloc() with HDmalloc() and calloc() with HDcalloc().
+	* h4_pal.c (read_pal):
+	replaced stderr with flog.
+	cleaned up error messages.
+	* h4_sds.c (read_compression):
+	 cleaned up error message.
+	 copied UNMAPPABLE:(reason) into map_info->comp_info.
+	* h4_ris.c (RISget_refs): cleaned up error handling.
+	* hmap.c (main):
+	moved output file opening function toward the end.
+	* xml_an.c (write_pal_attrs_an): added memory error handlers.
+	* xml_pal.c (write_map_pals):
+	cleaned up error handling.
+	removed the use of num_errs.
+	* xml_ris.c (write_file_attrs_GR): renamed as write_file_attrs_gr().
+	* xml_sds.c (write_dimension_no_data):
+	replaced return 1 with return SUCCEED.
+	cleaned up error handling.
+	* xml_sds.c (write_map_lone_sds):
+	changed return type to either FAIL or SUCCEED.
+	cleaned up error messages.
+	removed num_errs variable.
+	* xml_sds.c (write_map_sds):
+	moved checking compression information from write_array_data().
+	changed return type to SUCCEED and FAIL.
+	cleaned up error handling.
+	removed num_errs variable.
+	* testsuite/hmapTest.at: added AT_HMAP_TEST_OPTION.
+
+2011-03-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* AUTHORS: changed the order of authors.
+	* Makefile.am: removed hdatainfo.h.
+	* hmap.h: added ERRX_HDF4_FAIL().
+	* xml.h: removed #define PROFILE_EXT "map.xml".
+	* xml_sds.h (write_map_dimensions):
+	changed return type from intn to int.
+	* hmap.c (main):
+	replaced ofptr to tmpfp.
+	added suggestion message for -c and -i option.
+	added temporary file for error accumulation.
+	* hmap.c (help): changed message for -i option as suggested by Ruth.
+	* xml_hmap.c (write_map_header): added system error handling.
+	* xml_ris.c (write_map_ris): exit() when memory error occurred.
+	* xml_ris.c: removed NPOINTS_PERLINE 20.
+	* xml_sds.c (write_map_dimensions): changed return type and value.
+	* xml_sds.c (write_map_dimensions_no_data):
+	replaced return 1 with exit().
+	* xml_sds.c (write_file_attrs):
+	added error handling.
+	* xml_vdata.c (write_map_vdata):
+	checked column storage order at the beginning to return error
+	if column storage is used.
+
+
+2011-03-08  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_vg.h: renamed write_vgroup_attrs() to write_group_attrs().
+	* hmap.c: added temp file.
+	* xml_sds.c (write_map_dimension_no_data): corrected the return number.
+	* xml_vg.c: renamed write_vgroup_attrs() to write_group_attrs().
+
+2011-03-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.c: added (long) casting to remove 64-bit format warning.
+	* h4_pal.c: added (long) casting to remove 64-bit format warning.
+	* h4_vdata.c: added (long) casting to remove 64-bit format warning.
+	* xml_hmap.c: added (long) casting to remove 64-bit format warning.
+	* xml_pal.c: added (long) casting to remove 64-bit format warning.
+	* xml_sds.c: added (long) casting to remove 64-bit format warning.
+	* xml_vdata.c: added (long) casting to remove 64-bit format warning.
+	* xml_ris.c (write_file_attrs_GR):
+	removed NULL argument from GRgetattdatainfo().
+	added (long) casting to remove 64-bit format warning.
+
+2011-03-04  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (help): updated the message with more options.
+	* hmap.c (usage): updated the message with more options.
+
+2011-03-03  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: removed vgint.h.
+	* h4.h (read_all_refs): added pal_visited argument.
+	* xml.h (write_map_pals): changed return type from intn to int.
+	added pal_visited argument for write_map_pals().
+	* h4.c (read_all_refs):
+	added pal_visited.
+	added arguments related to ignore tags.
+	* h4.c (is_ignored): added.
+	* hmap.c (main):
+	handled errors from write_map_pals().
+	added ignore_tags array and -i argument parser.
+	added gzip level.
+	* xml_pal.c (write_map_pals):
+	added error handler.
+	added pal_visited list.
+	* xml_sds.c (write_map_lone_sds): cleaned up code.
+	* xml_ris.c (write_map_ris): replaced : with = for verification values.
+	* testsuite: added Abe's sample files.
+
+2011-03-02  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (VS_mapping_info_t):added forders.
+	* h4_ris.c (RISmapping): added GR2bmapped() function.
+	* hmap.h: removed #include <vgint.h>.
+	* xml_hmap.c (ref_count): added memory error.
+	* xml_hmap.c (depth_first):
+	added RISfree_mapping_info().
+	added error handler for VSdetach().
+	* xml_ris.c (write_map_ris):
+	removed RISfree_mapping_info().
+	added quotes for verification values.
+	* xml_ris.c (write_map_lone_ris):
+	put HDmemset() and RISfree_mapping_info() inside for() loop.
+	* xml_vdata.c (write_map_lone_vdata): removed "w" mode for VSattach().
+	* xml_vdata.c (write_map_vdata):
+        replaced map_info->vs->wlist.name[i] with map_info->fnames[i].
+	replaced map_info->vs->wlist.order[i] with map_info->forders[i].
+	replaced map_info->vs->wlist.type[i] with map_info->ftypes[i].
+	changed fprintf format "%ld" from "%d" for field order.
+	* xml_vdata.c (write_verify_table_values):
+	added return status.
+	* xml_vdata.c (write_verify_table_values_row):
+	added return status.
+	* xml_vdata.c (write_map_lone_vdata):
+	moved HDmemset and VSfree_mapping_info inside the for loop.
+	* vgint.h: removed /mnt/scr1/hyoklee/src/hdf4_current/hdf/src/vgint.h
+	* testsuite:
+	added gr2.hdf for unsupported raster file.
+	added Abe's files.
+
+2011-02-25  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.h: renamed hmap to h4mapwriter.
+	* h4.h (VS_mapping_info_t):added sorder.
+	* xml_vdata.c (write_map_vdata):
+	replaced map_info->vs->interlace with map_info->sorder.
+        replaced map_info->vs->wlist.name[i] with fname.
+        replaced map_info->vs->wlist.order[i] with order.
+	replaced map_info->vs->wlist.type[i] with type.
+
+2011-02-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (VS_mapping_info_t):added name, class, ncols, and nrows.
+	* h4_vdata.c (VSmapping):
+	added filter for class="Attr0.0" and column=1.
+	removed HAatom_group(vdata_id)!=VSIDGROUP line.
+	* xml_hmap.c (get_string_xml): added "Out of Memory" error checking.
+	* xml_vdata.c (write_map_vdata):
+	replaced map_info->vs->vsname with map_info->name.
+	replaced map_info->vs->vsclass with map_info->class.
+	replaced old ad-hoc name cleaning function with get_string_xml().
+	replaced map_info->vs->wlist.n with map_info->ncols.
+	replaced map_info->vs->nvertices with map_info->nrows.
+	* testsuite: updated for new Palette / Raster code.
+
+2011-02-23  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (RIS_mapping_info_t): added number of palettes.
+	* xml.h:
+	added free_pr2id_list(), get_pr2id_list(), and set_pr2id_list().
+	* h4_ris.c:
+	subtracted palette mapping routine.
+	added palette ref look-up routine.
+	removed #define MFGR_MASTER.
+	replaced  Hoffset/Hlength with GRgetdatainfo().
+	* hmap.c (main): placed write_map_pals() before write_map_lone_ris().
+	* xml_pal.c:
+	added pr2id_list.
+	added free_pr2id_list(), get_pr2id_list(), and set_pr2id_list().
+
+2011-02-22  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: XML_INTERLACE_PIXEL is changed from "pixel" to "by entry"
+	* h4.c: replaced "Out of Memory" to "Out of memory"
+	* h4_sds.c:
+	replaced "Out of Memory" to "Out of memory"
+	added message "adaptive Huffman compression type is not supported."
+	* xml_ris.c (write_file_attrs_GR):
+	added GRgetattdatainfo() function.
+	added HDF4 call error handling.
+	added verification values.
+	added compression type handler.
+	* xml_sds.c:replaced "Out of Memory" to "Out of memory"
+
+2011-02-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: renamed RIS to Raster. added TAG_PREF tag.
+	* h4_ris.c (RISmapping): removed HDF42r1_ONLY.
+	* xml_ris.c (write_map_ris):
+	strInterlace, path is not used any more.
+	updated the tags and formats based on Ruth's example.
+	added ID_R ID counter.
+
+2011-02-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main):
+	added character pointer for -i option.
+	* xml_vg.c (write_vgroup_attrs):
+	added more arguments for Vattrinfo2().
+
+2011-02-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main):
+	replaced Vnattrs with Vnattrs2.
+	added --ignore {n1,n2,...,n3} option for tag lists.
+	* h4.c: updated with the latest ddChecker.
+
+2011-02-16  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h: added palette definitions.
+	* xml.h:
+	added TAG_PATTR: palette attribute.
+	added write_pal_attrs_an().
+	* h4.c: updated with the 02/16/2011 ddChecker.
+	* h4_pal.c (read_pal): added file_id argument.
+	* xml_an.c (write_pal_attrs_an): added.
+	* xml_pal.c (ID_P): moved it from xml_ris.c.
+	* xml_pal.c (write_map_pals):
+	added file_id argument.
+	added an_id argument.
+	* xml_ris.c (ID_P): made it external.
+	* xml_ris.c (write_map_ris): removed palette codes.
+
+2011-02-15  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c: added write_map_pals().
+	* h4.h (PAL_info_t): added offset and length.
+
+2011-02-14  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h: added read_pal().
+	* xml.h: added write_map_pals().
+	* xml_hmap.c (write_old_vgroup_attr): removed.
+	* xml_pal.c: added for palette writing.
+
+2011-02-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4_pal.c: added for palette reading.
+
+2011-02-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.c (read_all_refs): updated to ignore Vgroup annotation.
+	* h4.c (check_tag_expected): updated to ignore Vgroup annotation.
+	* xml_vg.c (write_vgroup_attrs):
+	corrected error message for Vgetattr2() call failure.
+
+2011-02-08  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_vg.c (write_vgroup_attrs):
+	added HDfree(attr_nt_desc) after Vgetattr2() call failure.
+
+2011-02-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4_sds.c (read_fill_value):
+	added HDmemset(fill_value, 0, eltsz) to prevent memory error.
+	* xml_hmap.c (depth_first): replaced Vnattrs() to Vnattrs2().
+	* xml_sds.c (write_map_dimensions):
+	changed return type int to intn.
+	added error handling.
+	added HDmemset(obj_name, 0, H4_MAX_NC_NAME) to prevent memory error.
+	* xml_sds.c (set_dn2id_list_id):
+	added HDmemset(p->elmt.name, 0, H4_MAX_NC_NAME) to prevent memory
+	error.
+	* xml_sds.c (read_chunk):
+	added SDfree_mapping_info() before memset() to fix memory leak.
+	* xml_sds.c (write_map_lone_sds):
+	moved SDfree_mapping_info() inside the for loop.
+	* xml_sds.c (write_verify_array_values):
+	added HDmemset(data_value, 0, eltsz) to prevent memory error.
+	* xml_vg.c (write_vgroup_attrs):
+	replaced Vattrinfo() to Vattrinfo2().
+	replaced Vgetattr() to Vgetattr2().
+	added HDfree(attr_nt_desc) to fix memory leak.
+	* xml_vg.c (write_vgroup_noroot): added HDfree(vgname).
+
+2011-02-04  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main): added long option names.
+	* h4.c (check_tag_expected):
+	redirect ddChecker output to stderr according to writer requirements.
+	* h4_ris.c (RISmapping): added more error messages.
+	* xml_vg.c (write_vgroup_attrs):
+	added error message after Vgetattr().
+	* xml_hmap.c (depth_first):
+	added more descriptive error message for cycle detection.
+	added error messages after Vgetname() and Vgetclass() call.
+	* xml_ris.c (write_map_lone_ris)
+	added error message for RISget_refs().
+
+2011-02-03  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4mapwriter.1: corrected grammar errors. updated the address.
+	* h4.c (check_tag_expected):
+	added case 703-707, 731.
+	added 4 more arguments for annotation checking.
+	commented out printf for DIA 105 + tag 700.
+	* h4_sds.c (read_compression): throws an error on szip compression.
+	* hmap.c (help):
+	removed the default output file name.
+	renamed hmap to h4mapwriter.
+	* xml_vdata.c (write_map_vdata): added column storage error message.
+	* testsuite/hmap: updated for byteOrder removal and palette change.
+	* testsuite/hmapTest.at: added test case for help message.
+
+
+2011-02-02  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* configure.ac: renamed hmap to h4mapwriter.
+	* testsuite/hmapTest.at: renamed hmap to h4mapwriter.
+	* h4.c (read_all_refs): removed DFTAG_DIA 700 annotation alert.
+
+2011-02-01  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: renamed hmap to h4mapwriter.
+	* hmap.1: renamed to h4mapwriter.1.
+	* hmap.spec: renamed to h4mapwriter.spec.
+
+2011-01-31  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c (write_map_datum): removed byteOrder if the size of type
+	is byte.
+	* xml_ris.c (write_map_ris):
+	moved palette outside of RIS.
+	fixed palette datatype to uint8.
+	* xml_ris.c (write_map_lone_ris): corrected the indentation level to 1.
+
+
+2011-01-28  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.1: ddChecker = 1 by default.
+	* xml.h: added TAG_PDATA.
+	* xml_ris.c (write_map_ris):
+	removed ref attribute.
+	added error checking for palettes.
+	added TAG_PDATA.
+	added "component(s) for verification; csv format".
+	added unique palette ID.
+	reformatted verification values.
+	* hmap.c (main): ddChecker = 1 by default.
+	* hmap.c (help): ddChecker = 1 by default.
+
+2011-01-27  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* testsuite/schema/Draft14: added Draft14 schema.
+	* testsuite/hmapTest.at: changed Draft13.xsd to Draft14.xsd.
+	* xml.h: changed Draft13.xsd to Draft14.xsd.
+
+2011-01-26  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: used lower case letters for XML_INTERFACE_* definitions.
+	* xml_ris.c (write_map_ris): removed ref attribute.
+	* testsuite: updated with the following expected failures.
+	- schema validation errors: 6,17,69,75,91,92,95,101,144.
+	- little endian issue: 19.
+	- map reader n-bit issue: 20, 55, 145.
+	- map reader szip issue: 21.
+	- SDS object annotations (remark-1 attribute): 22.
+
+2011-01-25  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (TAG_PAL): renamed "fPalette" to "Palette".
+	* h4_sds.c (read_compression):
+	added a message that n-bit compression is not supported.
+	* xml_ris.c (write_map_ris): updated output format.
+	* xml_sds.c (write_map_sds): commented out SDfree_mapping_info since
+	it is called in xml_hmap.c.
+	* testsuite: updated with the following expected failures.
+	schema validation errors: 6,17.
+	little endian issue: 19.
+	* testsuite/hmapTest.at: added reader test on #18.
+
+
+2011-01-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (VS_mapping_info_t): added a is_old_attr flag.
+	* xml_hmap.c (write_old_vgroup_attr):
+	added for VSofclass test.
+	* h4_sds.c (read_fill_value): freed "fill_value" memory.
+	* h4_vdata.c (VSmapping): added condition for checking is_old_attr.
+	* h4_vdata.c (VSfree_mapping_info): fixed the memory leak.
+	* testsuite/hmapTest.at: updated cases that are affected by stdout
+	redirection.
+	* run.sh: changed "make clean" to "make distclean".
+	* xml_sds.c (write_array_chunks_byte_stream):
+	freed memory allocated by read_chunk() but commented out due to
+	double-free error on other files.
+
+2011-01-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.h (write_SDattrs):
+	renamed to write_array_attrs() for consistency.
+	* xml_sds.c (write_dimension_attrs):
+	corrected the 1st argument for SDgetoldattdatainfo().
+	* xml_sds.c (write_SDattrs):
+	renamed to write_array_attrs() for consistency.
+	* xml_sds.c (get_adjusted_attr_datainfo):
+	added for 1B21.071022.56609.9.HDF file.
+
+2011-01-20  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.h:
+	defined did2sid and did2sid_list structure.
+	added free/get/set_did2sid_list() function headers.
+	* hmap.c (main): added free_dn2id_list().
+	* xml_sds.c (free_did2sid_list): added.
+	* xml_sds.c (get_did2sid_list): added.
+	* xml_sds.c (set_did2sid_list): added.
+	* xml_vdata.c (write_column_attr): freed memory.
+	* xml_vdata.c (write_verify_table_values_row): freed databuf memory.
+	* xml_vdata.c (write_VSattrs): freed attr_nt_desc memory.
+
+2011-01-19  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (read_fill_value):
+	added routine for reading the default value directly.
+	* xml_sds.c (write_dimension_attrs):
+	added routine for handling old attributes.
+
+2011-01-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_array_data):
+	handled new SDgetdatainfo() that returns 0 for empty SDS.
+
+2011-01-14  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_SDattrs): tested SDgetoldattdatainfo().
+
+2011-01-13  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: added write_array_attrs_an and write_array_attrs_an_1.
+	* xml.h (XML_FOOT):added \n at the end.
+	* h4.c (readBytes): is added.
+	* hmap.c (main): moved </h4:File> tag before the ddChecker output.
+	* hmap.c (main): added fopen for ddChecker.
+	* xml_sds.c (write_map_sds): added write_array_attrs_an().
+	* xml_sds.c (write_dimension_attrs): freed memory for attr_nt_desc.
+
+2011-01-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h (depth_first): an_id argument is added.
+	* xml_sds.h (write_map_sds): an_id argument is added.
+	* xml_vg.h (write_vgroup_noroot): an_id argument is added.
+	* hmap.c (main): an_id argument is added.
+	* xml_an.c (write_array_attrs_an): is added.
+	* xml_hmap.c (depth_first): an_id argument is added.
+	* xml_sds.c (write_map_sds): an_id argument is added.
+	* xml_sds.c (write_map_lone_sds): an_id argument is added.
+	* xml_vg.c (write_vgroup_noroot): an_id argument is added.
+
+2011-01-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_SDattrs): added DIMNOVG checking routine.
+	* xml_sds.c (write_dimension_attrs): added DIMNOVG checking routine.
+	* xml_sds.c: replaced sd_id to sdsid to improve readability.
+
+2011-01-03  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (help): added the gzip compression explanation.
+	* xml_hmap.c (depth_first): added cycle detection error message.
+
+2010-12-30  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_vdata.c (write_verify_table_values): removed indentation
+	for "row(s)" for verification.
+
+2010-12-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_dimension):
+	increased indentation for verification values.
+
+2010-12-15  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.c: updated comments.
+
+2010-12-14  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c: added fts.h and libgen.h. fixed write_gzip().
+
+2010-12-13  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c: added put_header().
+
+2010-12-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.h: added zlib.h.
+	* hmap.c: added write_gzip().
+
+2010-11-23  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_dimension_data):
+	removed extra space at the byteStream.
+	* xml_sds.c (write_array_chunks_byte_stream):
+	removed extra space at the byteStream inside byteStreamSets.
+
+2010-11-19  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.c (check_nt_unexpected): updated to the latest ddChecker.
+	* xml_hmap.c (write_byte_streams):
+	added an additional loop for byteStreamSet.
+	* xml_sds.c (write_mattrs):
+	add an additional byteStreamSet.
+	* xml_sds.c (write_array_byte_stream):
+	removed byteStreamSet generation.
+
+2010-11-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h:
+	added read_fill_value().
+	moved swap_2bytes() up.
+	* xml.h: added TAG_FVALUE tag.
+	* h4_sds.c: added read_fill_value().
+	* hmap.c (main): removed "//" comment for Mac porting.
+	* xml_hmap.c (get_escape_xml): removed "//" comment for Mac porting.
+	* xml_sds.c (write_SDattrs): set the fillvalue.
+	* xml_sds.c (write_array_chunks_byte_stream):
+	added TAG_FVALUE.
+
+2010-11-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main): added -c, the ddChecker option.
+	* hmap.1 : updated to include -c option.
+
+2010-11-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (mattr): added start member.
+	* h4.c (has_mattr):
+	added string length check.
+	added start index check.
+	* xml_sds.c (write_array_chunks_byte_stream):
+	added offset/length NULL pointer check after read_chunk().
+	* xml_vdata.c (write_map_vdata): freed memory after "done:" label.
+
+2010-11-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.c (check_tag_expected): added.
+	* hmap.1: added -e option and limitations.
+	* hmap.c: added -e option for putting file attributes at the end.
+	* testsuite: added nbit testings #55 and #145.
+
+2010-11-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: added XML_INSTRUCTION.
+	* hmap.c: made mt option visible.
+
+2010-11-08  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main): moved file attrs to the end.
+	* xml_sds.c (write_map_lone_sds):
+	fixed memory initialization bug in amd64 compiler.
+	fixed the number of arguments for fprintf().
+
+2010-11-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_verify_array_values):
+	added fakeDim checking for random values.
+
+2010-11-03  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* CMakeLists.txt: added INSTALL_TARGET.
+	* warn.h: separated from h4.h to remove warnings.
+	* hmap.1: corrected typo in -tm option.
+
+2010-11-01  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_verify_array_values): added error condition check.
+
+2010-10-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: added rpm generation.
+	* hmap.spec: added for RPM generation.
+	* xml_hmap.c (write_missing_objects): added.
+
+2010-10-28  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main):
+	added obj_missed.
+	added read_all_refs().
+
+2010-10-26  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h:
+	cleaned it up.
+	added function header to clear warnings.
+	* h4.c:
+	cleaned it up.
+	* hmap.c:
+	add new line for Unable to open message.
+
+2010-10-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_map_lone_sds):
+	reset the map_info inside the loop. Otherwise, compression information
+	will be carried over from the previous map_info.
+
+
+2010-10-20  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_map_sds):
+	handled return code from write_array_data().
+	* xml_sds.c (write_array_chunks): added return code.
+	* xml_sds.c (write_array_chunks_byte_stream):
+	added chunk location in  error message.
+
+2010-10-19  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_array_chunks_byte_stream):
+	saved map_info->id.
+	added BSTREAM element.
+	added tag closing option for write_chunk_position_in_array() call.
+	* xml_sds.c (write_chunk_position_in_array):
+
+
+2010-10-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_dimension_attrs):added new SDgetattdatainfo().
+	* xml_sds.c (write_file_attrs):	added new SDgetattdatainfo().
+	* xml_sds.c (write_SDattrs): added new SDgetattdatainfo().
+
+2010-10-14  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: sorted functions by alphabetical order.
+	* h4_sds.c (SDmapping): removed compression information reading part.
+	* xml_hmap.c (write_byte_streams): is added.
+	used write_byte_stream().
+	* xml_ris.c: sorted functions by alphabetical order.
+	* xml_sds.c (write_array_byte_stream): used write_byte_streams().
+	* xml_sds.c (write_array_byte_stream_xml):
+	renamed to write_byte_stream and moved to xml_hmap.c.
+	* xml_sds.c: sorted functions by alphabetical order.
+	* xml_vdata.c (write_map_vdata):
+	merged consecutive blocks.
+
+2010-10-13  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (SD_mapping_info_t): id member is added.
+	* h4_sds.c (read_chunk): is added.
+	* h4_sds.c (read_compression): is added.
+	* xml_sds.c (write_array_data): mapping is delayed for chunking.
+	* xml_sds.c (write_verify_array_values): suppressed fakeDim name.
+
+2010-10-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4_sds.c (SDmapping): added NULL argument to SDgetdatainfo().
+	* xml_sds.c (write_verify_array_values):
+	added routine for skipping corner cases if they are already checked
+	during random points generation.
+	fixed diagonal point generation problem.
+	replaced seed to sds_id.
+	* xml_sds.c (write_array_attribute):
+	replaced indent+1 to indent.
+
+
+2010-10-08  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.h:
+	added unistd.h for amd64 porting.
+	added ctype.h for sparc porting.
+	* h4.h
+	* xml.h
+	* xml_sds.h
+	* xml_vg.h
+	removed HDFLIBAPI for functions defined in hmap C files.
+	* hmap.c removed __progname, err.h for Solaris portability.
+	* xml_sds.c (write_array_byte_stream_xml): added.
+
+
+2010-10-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c: removed metadata related calls.
+	* xml_sds.h: removed metadata related structures.
+	* xml_sds.c: removed metadata related function calls.
+	* xml_sds.c (write_array_byte_stream):
+	added merging offsets and lengths if they are back to back.
+
+2010-10-06  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: man page is added.
+	* hmap.1: added
+	* xml_sds.c (write_array_byte_stream): added offset=N/A nBytes=0.
+	* testsuite
+	added 3B42.100331.21.6A.HDF.
+	added 3B43.070901.6A.HDF.
+
+2010-10-05  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h: mattr structure is defined.
+	* xml_sds.h:
+	updated documentation.
+	removed write_dimension_scale_data().
+
+	* h4.c (set_mattr): added.
+	* h4.c (free_mattr_list): added.
+	* hmap.c (main):
+	added META_ONLY macro.
+	added write_mattrs() and free_mattr_list().
+	* xml_sds.c:
+	replaced stderr to flog.
+	added META_ONLY for merging and trimming metadata only.
+
+2010-10-04  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (is_metadata):
+	dropped variable name checking,
+	copied to is_string(), and added to h4.c.
+	* h4.c: created.
+	* h4.c (is_string): added.
+
+2010-10-01  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c: added option for trimming and merging.
+	* xml_sds.c (get_trimmed_xml): added trimming option.
+	* xml_sds.c (write_file_attrs): added merging option.
+	* testsuite/hmapTest.at:
+	added -t options on test 4, 10, and 15.
+	added -m options on test 4, 5, 9, 10, 14, 15, 16, 18.
+	added 2A12.
+	added macro AT_HMAP_TEST.
+	added 2A25_CSI.990804.9692.KORA.6.HDF.
+	added 1B21_CSI.990906.10217.KORA.6.HDF
+
+2010-09-30  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h:
+	removed TAG_BLK and TAG_DBLK.
+	removed trim().
+	* h4_sds.c (SDmapping): replaced 511 to COMP_INFO -1.
+	* xml_hmap.c (trim): removed.
+	* xml_sds.c (write_array_byte_stream): made TAG_BSTMSET active if
+	compression is used.
+	* xml_vdata.c (write_verify_table_values_field):
+	replaced garbage character with space character.
+	* testsuite: updated to pass most examples.
+
+2010-09-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h (SD_mapping_info_t):
+	removed isUnlimited member.
+	removed isLinkedBlocks member.
+	* h4_sds.c (SDfree_mapping_info): removed the code of freeing origin.
+	* xml.h:
+	updated documentation.
+	removed 64-bit datatype definition.
+	* xml_ris.c (write_map_ris): removed origin.
+	* xml_ris.c (write_ris_byte_stream):
+	added and replaced TAG_BLK and TAG_DBLK.
+	* xml_sds.c: updated documentation.
+	* xml_sds.c (write_array_byte_stream): added TAG_BSTMSET element.
+	* xml_sds.c (write_array_chunks_byte_stream):
+	added TAG_BSTMSET element.
+
+2010-09-28  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: updated documentation.
+	* xml_hmap.c (write_map_datatype): removed.
+	corrected formatting for uint32/uint16/uint32
+	* xml_ris.c (write_map_ris):
+	replaced write_map_datatype to write_map_datum.
+	* xml_vdata.c (write_VSattrs):
+	removed unused variable - ret_values.
+	* xml_vdata.c (write_verify_table_values_row):
+	replaced FULL_INTERLACE with map_info->	vs->interlace.
+
+
+2010-09-27  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c: added Hgetntinfo().
+
+2010-09-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h: updated documentation.
+	* xml.h: removed NPOINT_PER_LINE.
+	* h4_vdata.c: updated documentation.
+	* xml_an.c: updated documentation.
+	* xml_hmap.c: updated documentation.
+	* xml_hmap.c (write_attr_value):
+	removed indentation with NPOINT_PER_LINE.
+	* xml_sds.c: updated documentation.
+	* xml_vg.c: updated documentation.
+
+2010-09-23  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h:
+	documented all structures.
+	sorted structures in alphabetical order.
+	* h4_sds.c (SDmapping):
+	added quote for nbit compression attribute values.
+	corrected adaptiveHuffman_skipsize to adaptiveHuffman_Skipsize.
+	* hmapTest.at: added xmllint test with Draft12 schema.
+	* xml_ris.c (write_map_ris):
+	changed objName to name and used map_info->name.
+	* xml_sds.c (write_file_attrs): fixed the memory leak.
+	changed objName to name and used map_info->name.
+	* xml_vg.c (write_vgorup_noroot): fixed the memory leak.
+
+2010-09-22  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4_ris.c (RISget_refs): uses GRfileinfo() instead of Hfind().
+
+2010-09-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_an.c (write_group_attrs_an): is added.
+	* xml_an.c (write_file_attrs_AN): is renamed to write_file_attrs_an.
+	* h4_ris.c: updated comments
+
+
+2010-09-20  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main):
+	remembers top level vgroup refid.
+	add write_group().
+	group name and class name are XML-escaped.
+	* xml_hmap.c (depth_first): group name and class name are XML-escaped.
+	* xml_vg.c (write_group): is added.
+	* xml_vg.c (write_vgroup_noroot): added depth_first call.
+
+2010-09-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c (write_VGattrs):
+	is moved to xml_vg.c and renamed to write_vgroup_attrs().
+	* xml_vg.c: is added.
+
+
+2010-09-16  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_file_attrs): added origin in merged attribute.
+
+2010-09-15  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_hmap.c: added start_elm_c() and end_elm_c().
+
+2010-09-13  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h: added VSisinternal().
+	* xml_hmap.c (write_attr_value): replaced trim().
+
+2010-09-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_an.c (get_string_xml): moved to xml_hmap.c.
+	* xml_ris.c (write_map_ris): added file attribute handling.
+
+
+2010-09-08  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4_sds.c (SDmapping):
+	replaced sprintf with snprintf().
+	added SZIP/NBIT compression type.
+	* h4_vdata.c (VSmapping): replaced is_internal() with VSisinternal().
+	* hmap.c (main): replaced is_internal() with Visinternal().
+	* xml_an.c (get_string_xml): removed unused variable found.
+	* xml_hmap.c (is_internal): is removed.
+	* xml_sds.c (write_array_byte_stream): removed extra space.
+
+
+2010-09-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: added files for tar ball distribution.
+	* xml_vdata.c (write_verify_table_values_field): added ' ' delimiter in
+	character values.
+
+
+2010-09-03  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_vdata.c: added field attribute handling.
+	* xml_hmap.c: corrected trim() function's behavior.
+	* xml_sds.c (write_metadata):
+	fixed a bug for cutting .0 in the originalAttribute.
+
+2010-09-02  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_an.c: added ANgetdatainfo().
+
+
+2010-08-31  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c: merged all other metadatas.
+
+2010-08-30  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c:
+	merged core metadata.
+	sorted functions.
+	* xml_an.c (write_file_attrs_AN):
+	added buf[ann_length] = '\0' to remove garbage characters.
+	* xml_hmap.c (write_attr_value):
+	added src[n] = '\0' to remove garbage characters.
+
+
+2010-08-27  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_vdata.c:
+	added storageOrder attribute.
+	* xml_sds.c:
+	replaced the fixed 10 to MAX_RAND_SAMPLES(=5).
+	added corner points.
+
+2010-08-26  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_vdata.c:
+	added verification values.
+
+
+2010-08-25  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.h: added #include "hdatainfo.h" to accommodate new APIs.
+	* hmap.c (main): added class attribute in Vgroup.
+	* xml.h: changed offset/length types to int32 in write_attr_data().
+	* xml_hmap.c (write_attr_value):
+	changed types of offset/length arguments.
+	* xml_hmap.c (write_VGattrs):
+	added offset/length using Vgetattdatainfo().
+	* xml_sds.c (write_array_attribute):
+	added offset/length arguments.
+	* xml_vdata.c (write_VSattrs):
+	added offset/length using VSgetattdatainfo().
+
+
+2010-08-24  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.h: added is_diff().
+	* xml_sds.c:
+	added is_diff().
+	added allocatedDimensionSizes.
+	added verification values for Dimension.
+	fixed a bug in checking visited indexes.
+
+2010-08-23  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_verify_array_values):
+	added random number generation.
+	* xml_sds.h: added MAX_RAND_TRY for maximum random number generation.
+
+2010-08-20  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4_sds.c (SDmapping): added compression info.
+	* xml_sds.c (write_array_data): added compression info.
+	* xml_sds.c (write_array_chunks): removed compression info.
+	* xml_sds.c (write_dimension):
+	added SDcheckempty().
+        added get_escape_xml().
+	* xml_sds.c (write_dimension):
+	added get_escape_xml().
+	* xml_sds.c (write_map_dimension_no_data):
+	fixed bug in id generation.
+	added get_escape_xml().
+
+2010-08-19  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h:
+	moved function declarations implemented in xml_sds.c to xml_sds.h.
+	* xml_sds.h: renamed structures.
+	* xml_sds.c:
+	renamed functions.
+	fixed chunkDimensionSizes.
+	fixed chunkPositionArray.
+
+2010-08-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h4.h: removed SDgetdatainfo_count().
+	* h4_sds.c (SDmapping):
+	removed SDgetdatainfo_count().
+	called SVN5439 APIs.
+	* h4_vdata.c (VSmapping): called SVN5439 APIs.
+
+2010-08-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main):
+	added free_ds_list().
+	added write_map_dimensions().
+	* xml_an.c (write_file_attrs_AN):
+	added return statement at the end.
+	fixed a bug in the for (i=0; i < n_file_label; i++) loop.
+	* xml_sds.c (write_map_lone_sds): changed indentation from 2 to 1.
+	* xml_sds.c (write_dimension_ref):
+	added reference generation for dimension with no data.
+	added set_dn_list() and free_dn_list().
+
+
+2010-08-16  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.h: added ds_list and dn_list structure.
+	* xml_sds.c (write_dimension): added datum info.
+	* xml_sds.c (write_dimension_ref):
+	skip generating tag if no scale data is involved.
+	* xml_sds.c (write_dimension_no_data):
+	skip generating tag if dimension has fakeDim name and no attributes.
+	* xml_hmap.c (write_attr_data): added N/A.
+	* testsuite: moved big files to /mnt/scr1/hmap.
+
+2010-08-13  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: added GroupAttribute tag.
+	* xml_an.c (write_file_attrs_AN):
+	added label and desc content retrieval.
+	* xml_hmap.c: updated documentation.
+	* xml_hmap.c (isInternal): renamed to is_internal.
+	* xml_hmap.c (write_VGattrs): corrected tag and content generation.
+	* xml_ris.c (write_file_attrs_GR): added function header only.
+	* xml_vdata.c (write_VSattrs): corrected the content generation.
+
+2010-08-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* COPYING: copied from HDF4 distribution.
+	* Makefile.am: added xml_an.c
+	* h4_sds.c: updated comments. cut unused functions.
+	* hmap.c (main):
+      	changed indentation.
+	added ANstart/end interface.
+	* xml_an.c: added for file annotation.
+	* xml_hmap.c (write_attr_value):
+	* xml_ris.c: updated comments.
+	* xml_sds.c (ID_FA): redefined as a global variable in hmap.c.
+	* xml_vdata.c (write_map_lone_vdata): corrected indentation.
+        added 'break' at the end of the case DFNT_INT16.
+	* testsuite: added PO.DAAC raster image file and big(633M) CERES file.
+
+2010-08-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main): changed ID= to id= for vgroup.
+	* xml_sds.c: removed all compiler warnings.
+	* xml_sds.h: added to keep track of reference ids.
+	* xml_vdata.c: removed all compiler warnings.
+
+2010-08-09  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c: renamed functions.
+
+2010-08-06  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+
+	* xml_hmap.c (write_array_value): removed the space before the end tag.
+	* xml.h: added tags for dimension scale.
+	* xml_sds.c (write_dimension, write_map_sds): added dimension tag.
+
+2010-08-05  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_sds.c (write_array_data):
+ 	added rank argument to generate the fastestVaryingDimensionIndex value.
+
+
+2010-08-04  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml_vdata.c (write_map_vdata):
+	added class attribute for Table element.
+	* xml_vdata.c (write_VSattrs):
+	added class attribute for Table element.
+	* xml_hmap.c (depth_first): added class attribute for Group element.
+
+2010-08-03  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* all: updated to be in sync with Draft schema 11.
+	* testsuite: added data/ directory for real HDF4 files testing.
+
+2010-05-20  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* testsuite: added schema/ and xml/ directory for xmllint testing.
+
+2010-04-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* hmap.c (main): added command line parsing with getopt().
+
+2010-04-22  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* xml.h: is split and added from hmap.h.
+	* h4.h: is split and added from hmap.h
+
+2010-04-15  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* configure.ac: is added.
+	* Makefile.am: is added.
+
+2009-03-15  Binh-Minh Ribler <bmribler@hdfgroup.org>
+
+	* hmap.c (main):
+	fixed several bugs.
+	moved the argc check code in front of  other command line check
+   	since hmap gives Segmentation fault when it's run with no argument.
+	printed informative message, "file is not found" since nothing
+	happened when file name is invalid.
+	improved CHECK_ERROR and added it to many API calls.
+	added _HDF_DIMENSION, _HDF_UDIMENSION, DIM_VALS, DIM_VALS01 to
+	INTERNAL_HDF_CLASSES in function isInternal, also noted both vgroup
+	and vdata, not just sometime vgroup, sometime vdata.
+	fixed type of several parameters passing to H functions to remove
+	compilation warnings "differ in signedness."
+	added ref_count_free(&ris_visited) to prevent memory leak.
+	changed free, malloc, str... functions to HDfree, HDmalloc, HDstr...
+	added #include "mfhdf.h" to avoid duplication.
+

@@ -1,0 +1,67 @@
+TEST DMR SPLICE
+
+--------BEGIN H4MAP data----------
+h4map info:
+<?xml version="1.0" encoding="UTF-8"?>
+<h4:HDF4map  version="1.0.1" xsi:schemaLocation="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1/HDF4map.xsd" xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<h4:Array name="SDS_DFNT_INT32" path="/" nDimensions="1" id="ID_A1">
+    <h4:dataDimensionSizes>5</h4:dataDimensionSizes>
+    <h4:datum dataType="int32" byteOrder="bigEndian"/>
+    <h4:arrayData fastestVaryingDimensionIndex="0">
+        <h4:byteStream offset="2502" nBytes="20"/>
+    </h4:arrayData>
+    <!-- value(s) for verification
+        SDS_DFNT_INT32[0]=0
+        SDS_DFNT_INT32[4]=-2147483648
+        SDS_DFNT_INT32[3]=2147483647
+        SDS_DFNT_INT32[2]=-1
+        SDS_DFNT_INT32[1]=1
+    -->
+</h4:Array>
+<h4:Array name="SDS_DFNT_UINT32" path="/" nDimensions="1" id="ID_A2">
+    <h4:dataDimensionSizes>3</h4:dataDimensionSizes>
+    <h4:datum dataType="uint32" byteOrder="bigEndian"/>
+    <h4:arrayData fastestVaryingDimensionIndex="0">
+        <h4:byteStream offset="2522" nBytes="12"/>
+    </h4:arrayData>
+    <!-- value(s) for verification
+        SDS_DFNT_UINT32[0]=0
+        SDS_DFNT_UINT32[2]=4294967295
+        SDS_DFNT_UINT32[1]=1
+    -->
+</h4:Array>
+--------END H4MAP data----------
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="testsds1.hdf">
+    <Int32 name="SDS_DFNT_INT32">
+        <Dim name="/fakeDim0"/>
+        <Dim size="5"/>
+        <dmrpp:chunks compressionType="shuffle deflate fletcher32" fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="2502" nBytes="20" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+        <Attribute name="dim_0" type="Container">
+            <Attribute name="SDS_DFNT_INT32" type="uint32">
+                <Value>0</Value>
+                <Value>2147483648</Value>
+                <Value>2147483647</Value>
+                <Value>1</Value>
+                <Value>1</Value>
+            </Attribute>
+        </Attribute>
+    </Int32>
+    <UInt32 name="SDS_DFNT_UINT32">
+        <Dim name="/fakeDim1"/>
+        <Dim size="5"/>
+        <dmrpp:chunks compressionType="shuffle deflate fletcher32" fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="2522" nBytes="12" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+        <Attribute name="dim_0" type="Container">
+            <Attribute name="SDS_DFNT_UINT32" type="uint32">
+                <Value>0</Value>
+                <Value>4294967295</Value>
+                <Value>1</Value>
+            </Attribute>
+        </Attribute>
+    </UInt32>
