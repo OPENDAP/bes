@@ -21,7 +21,7 @@ SUBDIRS += debug_functions
 endif
 
 if BUILD_HDF4
-SUBDIRS += hdf4_handler builddmrpp_h4_module
+SUBDIRS += hdf4_handler
 endif
 
 if BUILD_HDF5

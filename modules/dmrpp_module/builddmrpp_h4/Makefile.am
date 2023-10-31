@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
-M_NAME=builddmrpp_h4_module
+M_NAME=builddmrpp_h4
 M_VER=0.1.0
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) -I$(top_srcdir)/http
