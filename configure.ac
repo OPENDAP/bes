@@ -1140,6 +1140,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/tests_build_dmrpp/atlocal
     modules/dmrpp_module/data/Makefile
     modules/dmrpp_module/writer/Makefile
+    modules/dmrpp_module/builddmrpp_h4/Makefile
 
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
@@ -1198,8 +1199,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/hdf4_handler/hdfclass/Makefile
     modules/hdf4_handler/bes-testsuite/Makefile
     modules/hdf4_handler/bes-testsuite/atlocal
-
-    modules/builddmrpp_h4_module/Makefile
 
     modules/hdf5_handler/Makefile
     modules/hdf5_handler/bes-testsuite/Makefile
