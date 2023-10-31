@@ -48,12 +48,13 @@
 
 using namespace libdap;
 
+namespace dap_utils {
+
 constexpr auto BES_KEYS_MAX_RESPONSE_SIZE_KEY = "BES.MaxResponseSize.bytes";
 constexpr auto BES_KEYS_MAX_VAR_SIZE_KEY = "BES.MaxVariableSize.bytes";
 constexpr auto BES_CONTEXT_MAX_RESPONSE_SIZE_KEY = "max_response_size";
 constexpr auto BES_CONTEXT_MAX_VAR_SIZE_KEY = "max_variable_size";
 
-namespace dap_utils {
 
 // We want MODULE and MODULE_VERBOSE to be in the namespace in order to isolate them from potential overlap between
 // different bes/modules
@@ -364,7 +365,9 @@ uint64_t compute_response_size_and_inv_big_vars(
             " " << child_grp->FQN() << " (No child selected.)" << endl);
         }
     }
-    BESDEBUG(MODULE_VERBOSE, prolog << "END " << grp->type_name() << " " << grp->FQN() << endl);
+    BESDEBUG(MODULE_VERBOSE, prolog << "END " << grp->type_name() << " " << grp->FQN() << " ("
+                                       "response_size: " << response_size << ", "<<
+                                       "too_big_vars: " << too_big.size() << ")" << endl);
     return response_size;
 }
 
@@ -398,44 +401,60 @@ uint64_t compute_response_size_and_inv_big_vars(
  */
 void get_max_sizes_bytes(uint64_t &max_var_size_bytes, uint64_t &max_response_size_bytes){
     // The BES configuration is help in TheBESKeys, so we read from there.
-    uint64_t config_resp_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY, 0);
-    uint64_t context_resp_size=0;
-    bool found = false;
-    context_resp_size = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_RESPONSE_SIZE_KEY, found);
+    uint64_t config_max_resp_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY, 0);
+    BESDEBUG(MODULE, prolog << "config_max_resp_size: " << config_max_resp_size << "\n");
+
+    uint64_t cmd_context_max_resp_size;
+    bool found;
+    cmd_context_max_resp_size = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_RESPONSE_SIZE_KEY, found);
     if (found) {
-        if(config_resp_size == context_resp_size){
+        BESDEBUG(MODULE, prolog << "cmd_context_max_resp_size: " << cmd_context_max_resp_size << "\n");
+        if(config_max_resp_size == cmd_context_max_resp_size){
             // If they're the same then use one.
-            max_response_size_bytes = config_resp_size;
+            max_response_size_bytes = config_max_resp_size;
         }
-        else if( context_resp_size < config_resp_size || config_resp_size == 0 ){
+        else if( cmd_context_max_resp_size < config_max_resp_size || config_max_resp_size == 0 ){
             // If the context value is effectively less than the config value, use the context value.
-            max_response_size_bytes = context_resp_size;
+            max_response_size_bytes = cmd_context_max_resp_size;
         }
         else {
             // Otherwise use the config value.
-            max_response_size_bytes = config_resp_size;
+            max_response_size_bytes = config_max_resp_size;
         }
     }
+    else {
+        max_response_size_bytes = config_max_resp_size;
+        BESDEBUG(MODULE, prolog << "Did not locate BESContext key: " << BES_CONTEXT_MAX_RESPONSE_SIZE_KEY << " SKIPPING." << "\n");
+    }
+    BESDEBUG(MODULE, prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
 
     // The BES configuration is help in TheBESKeys, so we read from there.
-    uint64_t config_var_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_VAR_SIZE_KEY, 0);
-    uint64_t context_var_size=0;
+    uint64_t config_max_var_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_VAR_SIZE_KEY, 0);
+    BESDEBUG(MODULE, prolog << "config_max_var_size: " << config_max_var_size << "\n");
+
+    uint64_t cmd_context_max_var_size=0;
     found = false;
-    context_var_size = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_VAR_SIZE_KEY, found);
+    cmd_context_max_var_size = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_VAR_SIZE_KEY, found);
     if (found) {
-        if(config_var_size == context_var_size){
+        BESDEBUG(MODULE, prolog << "cmd_context_max_var_size: " << cmd_context_max_var_size << "\n");
+        if(config_max_var_size == cmd_context_max_var_size){
             // If they're the same then use one.
-            max_var_size_bytes = config_var_size;
+            max_var_size_bytes = config_max_var_size;
         }
-        else if( context_var_size < config_var_size || config_var_size == 0 ){
+        else if( cmd_context_max_var_size < config_max_var_size || config_max_var_size == 0 ){
             // If the context value is effectively less than the config value, use the context value.
-            max_var_size_bytes = context_var_size;
+            max_var_size_bytes = cmd_context_max_var_size;
         }
         else {
             // Otherwise use the config value.
-            max_var_size_bytes = config_var_size;
+            max_var_size_bytes = config_max_var_size;
         }
     }
+    else {
+        max_var_size_bytes = config_max_var_size;
+        BESDEBUG(MODULE, prolog << "Did not locate BESContext key: " << BES_CONTEXT_MAX_VAR_SIZE_KEY << " SKIPPING." << "\n");
+    }
+    BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
 
 }
 
@@ -470,8 +489,12 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
     std::vector< pair<std::string,int64_t> > too_big_vars;
 
     get_max_sizes_bytes(max_var_size_bytes, max_response_size_bytes);
+    BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
+    BESDEBUG(MODULE, prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
 
     auto response_size_bytes = compute_response_size_and_inv_big_vars(dmr, max_var_size_bytes, too_big_vars);
+    BESDEBUG(MODULE, prolog << "response_size_bytes: " << response_size_bytes << "\n");
+    BESDEBUG(MODULE, prolog << "too_big_vars: " << too_big_vars.size() << "\n");
 
     // Is the whole thing too big? If so flag and make message.
     bool response_too_big = max_response_size_bytes>0 && response_size_bytes > max_response_size_bytes;
@@ -484,14 +507,14 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
     if(!too_big_vars.empty()){
         if(response_too_big){
             msg << "In addition to the overall response being to large for the service to produce,\n";
-            msg << "the request references the following variables ";
+            msg << "the request references the following variable(s) ";
         }
         else {
             msg << too_big_opener(max_response_size_bytes, max_var_size_bytes);
-            msg << "The following is a list of variables, identified in the request,\n";
+            msg << "The following is a list of variable(s), identified in the request,\n";
         }
         msg << "that are individually Too Large for the service to process.\n";
-        msg << "\nOversized Variables: \n";
+        msg << "\nOversized Variable(s): \n";
         for(const auto& var_entry:too_big_vars){
             msg << "    " << var_entry.first << " (" << var_entry.second << " bytes)\n";
         }
@@ -508,7 +531,7 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
         msg << "You can find detailed information about DAP4 variable sub-setting here:\n";
         msg << "https://github.com/OPENDAP/dap4-specification/blob/main/";
         msg << "01_data-model-and-serialized-rep.md#8-constraints\n";
-        BESDEBUG(MODULE,msg.str() + "\n");
+        BESDEBUG(MODULE,prolog + msg.str() + "\n");
         throw BESSyntaxUserError(msg.str(), file, line);
     }
 }
