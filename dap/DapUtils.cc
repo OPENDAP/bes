@@ -281,6 +281,9 @@ std::string get_dap_decl(libdap::BaseType *var) {
     return ss.str();
 }
 
+uint64_t crsaibv_process_ctor(const libdap::Constructor *ctor,
+                               const uint64_t &max_var_size,
+                               std::vector< pair<std::string,int64_t> > &too_big );
 
 /**
  * @brief Determines the number of bytes that var will contribute to the response and adds var to the inventory of too_big variables.
@@ -304,16 +307,9 @@ uint64_t crsaibv_process_variable(
 
     if(var->send_p()) {
         if (var->is_constructor_type()) {
-            auto some_constrctr = dynamic_cast<libdap::Constructor *>(var);
-            if (some_constrctr) {
-                for (auto dap_var: some_constrctr->variables()) {
-                    response_size += crsaibv_process_variable(dap_var, max_var_size, too_big);
-                }
-            } else {
-                BESDEBUG(MODULE,
-                         prolog << "ERROR Failed to cast BaseType pointer var to Constructor type." << endl);
-            }
-        } else {
+            response_size += crsaibv_process_ctor(dynamic_cast<libdap::Constructor *>(var), max_var_size, too_big);
+        }
+        else {
             // width_ll() returns the number of bytes needed to hold the data
             uint64_t vsize = var->width_ll(true);
             response_size += vsize;
@@ -331,6 +327,22 @@ uint64_t crsaibv_process_variable(
     return response_size;
 }
 
+uint64_t crsaibv_process_ctor(const libdap::Constructor *ctor,
+                               const uint64_t &max_var_size,
+                               std::vector< pair<std::string,int64_t> > &too_big ){
+    uint64_t response_size = 0;
+    if (ctor) {
+        for (auto dap_var: ctor->variables()) {
+            response_size += crsaibv_process_variable(dap_var, max_var_size, too_big);
+        }
+    }
+    else {
+        BESDEBUG(MODULE,
+                 prolog << "ERROR Received a null pointer to Constructor. " <<
+                 "It is likely that a dynamic_cast failed.." << endl);
+    }
+    return response_size;
+}
 
 
 /**
@@ -343,14 +355,14 @@ uint64_t crsaibv_process_variable(
  * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
 uint64_t compute_response_size_and_inv_big_vars(
-        libdap::D4Group *grp,
+        const libdap::D4Group *grp,
         const uint64_t &max_var_size,
         std::vector< pair<std::string,int64_t> > &too_big)
 {
     BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << grp->type_name() << " " << grp->FQN() << endl);
 
     uint64_t response_size = 0;
-    // Process Child Variables.
+    // Process child variables.
     for(auto dap_var:grp->variables()){
         response_size += crsaibv_process_variable(dap_var, max_var_size, too_big);
     }
@@ -458,10 +470,15 @@ void get_max_sizes_bytes(uint64_t &max_var_size_bytes, uint64_t &max_response_si
 
 }
 
-std::string too_big_opener(uint64_t max_response_size_bytes, uint64_t max_var_size_bytes){
+/**
+ * Creates the beginning of the error message
+ * @param max_response_size_bytes
+ * @param max_var_size_bytes
+ * @return The error message prolog.
+ */
+std::string too_big_error_prolog(uint64_t max_response_size_bytes, uint64_t max_var_size_bytes){
     stringstream msg;
     msg << "\nYou asked for too much! \n";
-
     msg << "    Maximum allowed response size: ";
     if(max_response_size_bytes == 0){
         msg << "unlimited\n";
@@ -469,7 +486,6 @@ std::string too_big_opener(uint64_t max_response_size_bytes, uint64_t max_var_si
     else {
         msg << max_response_size_bytes << " bytes.\n";
     }
-
     msg << "    Maximum allowed variable size: ";
     if(max_var_size_bytes == 0){
         msg << "unlimited\n";
@@ -477,11 +493,16 @@ std::string too_big_opener(uint64_t max_response_size_bytes, uint64_t max_var_si
     else {
         msg << max_var_size_bytes << " bytes.\n";
     }
-
     return msg.str();
 }
 
 
+/**
+ *
+ * @param dmr
+ * @param file
+ * @param line
+ */
 void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int line){
     stringstream msg;
     uint64_t max_var_size_bytes=0;
@@ -499,7 +520,7 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
     // Is the whole thing too big? If so flag and make message.
     bool response_too_big = max_response_size_bytes>0 && response_size_bytes > max_response_size_bytes;
     if(response_too_big){
-        msg << too_big_opener(max_response_size_bytes, max_var_size_bytes);
+        msg << too_big_error_prolog(max_response_size_bytes, max_var_size_bytes);
         msg << "The submitted DAP4 request will generate a " << response_size_bytes;
         msg <<  " byte response, which is too large.\n";
     }
@@ -510,7 +531,7 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
             msg << "the request references the following variable(s) ";
         }
         else {
-            msg << too_big_opener(max_response_size_bytes, max_var_size_bytes);
+            msg << too_big_error_prolog(max_response_size_bytes, max_var_size_bytes);
             msg << "The following is a list of variable(s), identified in the request,\n";
         }
         msg << "that are individually Too Large for the service to process.\n";

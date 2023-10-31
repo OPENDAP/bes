@@ -52,7 +52,7 @@ void throw_if_dap4_response_too_big(libdap::DMR &dmr, const std::string &file, u
 
 
 uint64_t compute_response_size_and_inv_big_vars(const libdap::Constructor *ctr, const uint64_t &max_var_size, std::vector< pair<std::string,int64_t> > &too_big);
-uint64_t compute_response_size_and_inv_big_vars( libdap::D4Group *grp, const uint64_t &max_var_size, std::vector< pair<std::string,int64_t> > &too_big);
+uint64_t compute_response_size_and_inv_big_vars(const libdap::D4Group *grp, const uint64_t &max_var_size, std::vector< pair<std::string,int64_t> > &too_big);
 uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t &max_var_size, std::vector< pair<std::string,int64_t> > &too_big);
 
 void throw_if_too_big(libdap::DMR &dmr, const std::string &file, unsigned int line);
