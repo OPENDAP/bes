@@ -155,6 +155,8 @@ public:
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
         auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
         d_test_dmr->root()->set_send_p(true);
 
         // Setting these in TheBESKeys is like setting it in the bes configuration files.
@@ -202,6 +204,8 @@ public:
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
         auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
         d_test_dmr->root()->set_send_p(true);
 
         // Setting these in TheBESKeys is like setting it in the bes configuration files.
@@ -232,6 +236,8 @@ public:
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
         auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
         d_test_dmr->root()->set_send_p(true);
 
         // Setting these in TheBESKeys is like setting it in the bes configuration files.
@@ -256,6 +262,8 @@ public:
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
         auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
         d_test_dmr->root()->set_send_p(true);
 
         // Setting these in TheBESKeys is like setting it in the bes configuration files.
@@ -281,6 +289,8 @@ public:
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
         auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
         d_test_dmr->root()->set_send_p(true);
 
         // Setting these in TheBESKeys is like setting it in the bes configuration files.
@@ -305,6 +315,8 @@ public:
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
         auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
         d_test_dmr->root()->set_send_p(true);
 
         // Setting these in TheBESKeys is like setting it in the bes configuration files.
@@ -323,30 +335,22 @@ public:
     }
 
 
-
-
-
-
-
     void var_too_big_test() {
 
         D4BaseTypeFactory d_d4f;
-        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
-
         D4ParserSax2 dp;
+        string file_name = "input-files/test_01.dmr";
+        auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
+        d_test_dmr->root()->set_send_p(true);
+
         stringstream msg;
         uint64_t response_size = 0;
         uint64_t expected_response_size = 1016;
-
-        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/test_01.dmr");
-        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
-
-        fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr.get());
-        d_test_dmr->root()->set_send_p(true);
-
         uint64_t max_size = 200;
         std::vector< pair<std::string,int64_t> > too_big;
+
         response_size =  dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
@@ -370,19 +374,16 @@ public:
     void dmrpp_var_too_big_test() {
 
         D4BaseTypeFactory d_d4f;
-        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
-
         D4ParserSax2 dp;
+        string file_name = "input-files/tempo_l2.nc.dmrpp";
+        auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
+        d_test_dmr->root()->set_send_p(true);
+
         stringstream msg;
         uint64_t response_size = 0;
         uint64_t expected_response_size = 180356500;
-
-        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
-        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
-
-        fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr.get());
-        d_test_dmr->root()->set_send_p(true);
 
         uint64_t max_size = 1000000;
         std::vector< pair<std::string,int64_t> > too_big;
@@ -410,24 +411,20 @@ public:
     void dmrpp_constrained_var_too_big_test() {
 
         D4BaseTypeFactory d_d4f;
-        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
-
         D4ParserSax2 dp;
+        string file_name = "input-files/tempo_l2.nc.dmrpp";
+        auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR
+        D4ConstraintEvaluator d4ce(d_test_dmr.get());
+        d4ce.parse("/support_data/gas_profile;/support_data/scattering_weights");
+
         stringstream msg;
         uint64_t response_size = 0;
         uint64_t expected_response_size = 140378112;
-
-        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
-        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
-
-        fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr.get());
-        D4ConstraintEvaluator d4ce(d_test_dmr.get());
-
         uint64_t max_size = 1000000;
         std::vector< pair<std::string,int64_t> > too_big;
 
-        d4ce.parse("/support_data/gas_profile;/support_data/scattering_weights");
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
@@ -456,24 +453,19 @@ public:
     void dmrpp_constrained_var_ok_test() {
 
         D4BaseTypeFactory d_d4f;
-        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
-
         D4ParserSax2 dp;
+        string file_name = "input-files/tempo_l2.nc.dmrpp";
+        auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR
+        D4ConstraintEvaluator d4ce(d_test_dmr.get());
+        d4ce.parse("/support_data/gas_profile[1][][];/support_data/scattering_weights[3][][]");
+
         stringstream msg;
         uint64_t response_size = 0;
         uint64_t expected_response_size = 1179648;
-
-        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
-        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
-
-        fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr.get());
-        D4ConstraintEvaluator d4ce(d_test_dmr.get());
-
         uint64_t max_size = 1000000;
         std::vector< pair<std::string,int64_t> > too_big;
-
-        d4ce.parse("/support_data/gas_profile[1][][];/support_data/scattering_weights[3][][]");
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
@@ -498,26 +490,20 @@ public:
     }
 
     void dmrpp_root_group_var_too_big_test() {
-
         D4BaseTypeFactory d_d4f;
-        auto d_test_dmr = std::unique_ptr<DMR>(new DMR(&d_d4f));
-
         D4ParserSax2 dp;
+        string file_name = "input-files/tempo_l2.nc.dmrpp";
+        auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR
+        D4ConstraintEvaluator d4ce(d_test_dmr.get());
+        d4ce.parse("/xtrack;/mirror_step");
+
         stringstream msg;
         uint64_t response_size = 0;
         uint64_t expected_response_size = 8668;
-
-        string file_name=BESUtil::pathConcat(TEST_SRC_DIR,"input-files/tempo_l2.nc.dmrpp");
-        DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
-
-        fstream in(file_name.c_str(), ios::in|ios::binary);
-        dp.intern(in, d_test_dmr.get());
-        D4ConstraintEvaluator d4ce(d_test_dmr.get());
-
         uint64_t max_size = 8000;
         std::vector< pair<std::string,int64_t> > too_big;
-
-        d4ce.parse("/xtrack;/mirror_step");
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
@@ -587,16 +573,13 @@ public:
 
     }
 
-
-
-
 /* TESTS END */
 /*##################################################################################################*/
 
     CPPUNIT_TEST_SUITE(DapUtilsTest);
-        CPPUNIT_TEST(config_vs_cmd_test_1);
-        CPPUNIT_TEST(config_vs_cmd_test_2);
-        CPPUNIT_TEST(var_too_big_test);
+    CPPUNIT_TEST(config_vs_cmd_test_1);
+    CPPUNIT_TEST(config_vs_cmd_test_2);
+    CPPUNIT_TEST(var_too_big_test);
     CPPUNIT_TEST(throw_if_too_big_test_rv);
     CPPUNIT_TEST(throw_if_too_big_test_Rv);
     CPPUNIT_TEST(throw_if_too_big_test_rV);
