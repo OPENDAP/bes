@@ -27,6 +27,7 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <cmath>
 
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
@@ -54,7 +55,6 @@ constexpr auto BES_KEYS_MAX_RESPONSE_SIZE_KEY = "BES.MaxResponseSize.bytes";
 constexpr auto BES_KEYS_MAX_VAR_SIZE_KEY = "BES.MaxVariableSize.bytes";
 constexpr auto BES_CONTEXT_MAX_RESPONSE_SIZE_KEY = "max_response_size";
 constexpr auto BES_CONTEXT_MAX_VAR_SIZE_KEY = "max_variable_size";
-
 
 // We want MODULE and MODULE_VERBOSE to be in the namespace in order to isolate them from potential overlap between
 // different bes/modules
@@ -159,6 +159,7 @@ void throw_for_dap4_typed_attrs(DAS *das, const std::string &file, unsigned int 
     }
 }
 
+#if 0
 /**
  * @brief convenience function for the response limit test.
  * The DDS stores the response size limit in Bytes even though the context
@@ -176,6 +177,7 @@ void throw_if_dap2_response_too_big(DDS *dds, const std::string &file, unsigned 
         throw BESSyntaxUserError(msg.str(),file, line);
     }
 }
+#endif
 
 /**
  * @brief - determines the number of requested elements for the D4Dimension d4dim.
@@ -390,6 +392,19 @@ uint64_t compute_response_size_and_inv_big_vars(
     return compute_response_size_and_inv_big_vars(dmr.root(), max_var_size,too_big);
 }
 
+uint64_t compute_response_size_and_inv_big_vars(
+        libdap::DDS &dds,
+        const uint64_t &max_var_size,
+        std::vector< pair<std::string,int64_t> > &too_big)
+{
+    uint64_t response_size = 0;
+    // Process child variables.
+    for(auto dap_var:dds.variables()){
+        response_size += crsaibv_process_variable(dap_var, max_var_size, too_big);
+    }
+    return response_size;
+}
+
 
 
 /**
@@ -399,7 +414,8 @@ uint64_t compute_response_size_and_inv_big_vars(
  * @param max_var_size The maximum allowable size, in bytes, for a constrained variable.
  * @param max_response_size The maximum allowable total response size, in bytes.
  */
-void get_max_sizes_bytes(uint64_t &max_var_size_bytes, uint64_t &max_response_size_bytes){
+void get_max_sizes_bytes(uint64_t &max_response_size_bytes, uint64_t &max_var_size_bytes,  bool is_dap2)
+{
     // The BES configuration is help in TheBESKeys, so we read from there.
     uint64_t config_max_resp_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY, 0);
     BESDEBUG(MODULE, prolog << "config_max_resp_size: " << config_max_resp_size << "\n");
@@ -454,8 +470,16 @@ void get_max_sizes_bytes(uint64_t &max_var_size_bytes, uint64_t &max_response_si
         max_var_size_bytes = config_max_var_size;
         BESDEBUG(MODULE, prolog << "Did not locate BESContext key: " << BES_CONTEXT_MAX_VAR_SIZE_KEY << " SKIPPING." << "\n");
     }
-    BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
 
+    if(is_dap2){
+        uint64_t TWO_GB = 2147483648;
+        uint64_t FOUR_GB = 4294967296;
+        if(max_var_size_bytes == 0 || max_var_size_bytes > TWO_GB){
+            BESDEBUG(MODULE, prolog << "Adjusting max_var_size_bytes to DAP2 limits.\n");
+            max_var_size_bytes = TWO_GB;
+        }
+    }
+    BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
 }
 
 /**
@@ -464,7 +488,7 @@ void get_max_sizes_bytes(uint64_t &max_var_size_bytes, uint64_t &max_response_si
  * @param max_var_size_bytes
  * @return The error message prolog.
  */
-std::string too_big_error_prolog(uint64_t max_response_size_bytes, uint64_t max_var_size_bytes){
+std::string too_big_error_prolog(const uint64_t max_response_size_bytes, const uint64_t max_var_size_bytes){
     stringstream msg;
     msg << "\nYou asked for too much! \n";
     msg << "    Maximum allowed response size: ";
@@ -484,44 +508,41 @@ std::string too_big_error_prolog(uint64_t max_response_size_bytes, uint64_t max_
     return msg.str();
 }
 
+bool its_too_big(
+        stringstream &msg,
+        const uint64_t max_response_size_bytes,
+        const uint64_t response_size_bytes,
+        const uint64_t max_var_size_bytes,
+        const std::vector< pair<std::string,int64_t> > &too_big_vars,
+        bool is_dap2=false
+        ){
 
-/**
- *
- * @param dmr
- * @param file
- * @param line
- */
-void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int line){
-    stringstream msg;
-    uint64_t max_var_size_bytes=0;
-    uint64_t max_response_size_bytes=0;
-    std::vector< pair<std::string,int64_t> > too_big_vars;
-
-    get_max_sizes_bytes(max_var_size_bytes, max_response_size_bytes);
-    BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
     BESDEBUG(MODULE, prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
-
-    auto response_size_bytes = compute_response_size_and_inv_big_vars(dmr, max_var_size_bytes, too_big_vars);
+    BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
     BESDEBUG(MODULE, prolog << "response_size_bytes: " << response_size_bytes << "\n");
-    BESDEBUG(MODULE, prolog << "too_big_vars: " << too_big_vars.size() << "\n");
+    BESDEBUG(MODULE, prolog << "too_big_vars.size(): " << too_big_vars.size() << "\n");
 
-    // Is the whole thing too big? If so flag and make message.
-    bool response_too_big = max_response_size_bytes>0 && response_size_bytes > max_response_size_bytes;
+    // Is the whole thing too big? If so flag and start message.
+    bool response_too_big = (max_response_size_bytes > 0) && (response_size_bytes > max_response_size_bytes);
     if(response_too_big){
         msg << too_big_error_prolog(max_response_size_bytes, max_var_size_bytes);
-        msg << "The submitted DAP4 request will generate a " << response_size_bytes;
+        msg << "The submitted DAP" << (is_dap2?"2":"4") << " request will generate a " << response_size_bytes;
         msg <<  " byte response, which is too large.\n";
     }
 
+    // Was one or more of the constrained variables too big?
     if(!too_big_vars.empty()){
         if(response_too_big){
+            // Is the whole thing too big? Continue message.
             msg << "In addition to the overall response being to large for the service to produce,\n";
             msg << "the request references the following variable(s) ";
         }
         else {
+            // Start message
             msg << too_big_error_prolog(max_response_size_bytes, max_var_size_bytes);
             msg << "The following is a list of variable(s), identified in the request,\n";
         }
+        // Add oversoze variable info.
         msg << "that are individually Too Large for the service to process.\n";
         msg << "\nOversized Variable(s): \n";
         for(const auto& var_entry:too_big_vars){
@@ -532,16 +553,90 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
     }
 
     if(response_too_big) {
+        //  Finish message
         msg << "You can resolve these issues by requesting less.\n";
         msg << " - Consider asking for fewer variables (do you need them all?)\n";
         msg << " - If individual variables are too large you can also subset\n";
         msg << "   them using an index based array subset expression \n";
         msg << "   to request a smaller area or to decimate the variable.\n";
-        msg << "You can find detailed information about DAP4 variable sub-setting here:\n";
-        msg << "https://github.com/OPENDAP/dap4-specification/blob/main/";
-        msg << "01_data-model-and-serialized-rep.md#8-constraints\n";
-        BESDEBUG(MODULE,prolog + msg.str() + "\n");
-        throw BESSyntaxUserError(msg.str(), file, line);
+        if(is_dap2){
+            msg << "You can find detailed information about DAP2 variable sub-setting\n";
+            msg << "expressions in section 4.4 of the DAP2 User Guide located here:\n";
+            msg << "http://www.opendap.org/documentation/UserGuideComprehensive.pdf\n";
+        }
+        else {
+            // It's a DAP4 thing...
+            msg << "You can find detailed information about DAP4 variable sub-setting here:\n";
+            msg << "https://github.com/OPENDAP/dap4-specification/blob/main/";
+            msg << "01_data-model-and-serialized-rep.md#8-constraints\n";
+        }
+        return true;
+    }
+    return false;
+}
+
+/**
+ *
+ * @param dmr
+ * @param file
+ * @param line
+ */
+void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int line){
+    uint64_t max_var_size_bytes=0;
+    uint64_t max_response_size_bytes=0;
+    std::vector< pair<std::string,int64_t> > too_big_vars;
+
+    get_max_sizes_bytes(max_response_size_bytes, max_var_size_bytes);
+    BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
+    BESDEBUG(MODULE, prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
+
+    auto response_size_bytes = compute_response_size_and_inv_big_vars(dmr, max_var_size_bytes, too_big_vars);
+    BESDEBUG(MODULE, prolog << "response_size_bytes: " << response_size_bytes << "\n");
+    BESDEBUG(MODULE, prolog << "too_big_vars: " << too_big_vars.size() << "\n");
+
+    stringstream too_big_message;
+    if(its_too_big(
+            too_big_message,
+            max_response_size_bytes,
+            response_size_bytes,
+            max_var_size_bytes,
+            too_big_vars)) {
+        BESDEBUG(MODULE, prolog << "It's TOO BIG:\n" << too_big_message.str() << "\n");
+        throw BESSyntaxUserError(too_big_message.str(), file, line);
+    }
+}
+
+
+/**
+*
+* @param dds
+* @param file
+* @param line
+*/
+void throw_if_too_big(libdap::DDS &dds, const std::string &file, const unsigned int line)
+{
+    uint64_t max_var_size_bytes=0;
+    uint64_t max_response_size_bytes=0;
+    std::vector< pair<std::string,int64_t> > too_big_vars;
+
+    get_max_sizes_bytes(max_response_size_bytes, max_var_size_bytes, true);
+    BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
+    BESDEBUG(MODULE, prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
+
+    auto response_size_bytes = compute_response_size_and_inv_big_vars(dds, max_var_size_bytes, too_big_vars);
+    BESDEBUG(MODULE, prolog << "response_size_bytes: " << response_size_bytes << "\n");
+    BESDEBUG(MODULE, prolog << "too_big_vars: " << too_big_vars.size() << "\n");
+
+    stringstream too_big_message;
+    if(its_too_big(
+            too_big_message,
+            max_response_size_bytes,
+            response_size_bytes,
+            max_var_size_bytes,
+            too_big_vars,
+            true)) {
+        BESDEBUG(MODULE, prolog << "It's TOO BIG:\n" << too_big_message.str() << "\n");
+        throw BESSyntaxUserError(too_big_message.str(), file, line);
     }
 }
 
