@@ -5,12 +5,10 @@
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
-  <bes:setContext name="max_variable_size">10240</bes:setContext>
+  <bes:setContext name="max_variable_size">1024</bes:setContext>
   <bes:setContainer name="c">/data/coads.dods</bes:setContainer>
   <bes:define name="d" space="default">
-    <bes:container name="c">
-      <bes:dap4constraint>SST</bes:dap4constraint>
-    </bes:container>
+    <bes:container name="c" />
   </bes:define>
   <bes:get type="dap" definition="d"/>
 </bes:request>

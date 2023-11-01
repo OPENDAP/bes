@@ -69,6 +69,7 @@ public:
     virtual void unset_context(const std::string &name);
     virtual std::string get_context(const std::string &name, bool &found);
     virtual int get_context_int(const std::string &name, bool &found);
+    virtual uint64_t get_context_uint64(const std::string &name, bool &found);
 
     virtual void list_context(BESInfo &info);
 
