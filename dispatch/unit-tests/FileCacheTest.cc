@@ -521,8 +521,6 @@ public:
     {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
-        FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
         struct stat sb{0};
         if (stat(source_file.c_str(), &sb) != 0)
@@ -532,6 +530,9 @@ public:
         if (fork() == 0) {
             // child process
             // sleep here to give the parent a head start, not much use.
+            FileCache fc;
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+
             bool status = fc.put("key1", source_file);
             DBG(cerr << prolog << "child process put() status: " << status << '\n');
             exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
@@ -539,6 +540,9 @@ public:
         else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
+            FileCache fc;
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
             FileCache::Item item;
             bool status = fc.get("key1", item);
@@ -639,13 +643,12 @@ public:
 
             FileCache::Item item1;
             bool status1 = fc.get("key1", item1);
-            DBG(cerr << prolog << "child process put() key1 status: " << status1 << '\n');
-            if (!status1)
-                exit(EXIT_FAILURE);
+            DBG(cerr << prolog << "child process get() key1 status: " << status1 << '\n');
+
 
             FileCache::Item item2;
             bool status2 = fc.get("key2", item2);
-            DBG(cerr << prolog << "child process put() key2 status: " << status1 << '\n');
+            DBG(cerr << prolog << "child process get() key2 status: " << status2 << '\n');
             if (!status2)
                 exit(EXIT_FAILURE);
 
@@ -692,7 +695,77 @@ public:
         }
     }
 
-    CPPUNIT_TEST_SUITE(FileCacheTest);
+    void test_put_get_del_in_two_processes_two_cache_instances() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        if (fork() == 0) {
+            // child process
+            FileCache fc;
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+
+            CPPUNIT_ASSERT_MESSAGE("put() key1 should return true", fc.put("key1", source_file));
+            CPPUNIT_ASSERT_MESSAGE("put() key2 should return true", fc.put("key2", source_file));
+
+            FileCache::Item item1;
+            bool status1 = fc.get("key1", item1);
+            DBG(cerr << prolog << "child process get() key1 status: " << status1 << '\n');
+
+
+            FileCache::Item item2;
+            bool status2 = fc.get("key2", item2);
+            DBG(cerr << prolog << "child process get() key2 status: " << status2 << '\n');
+            if (!status2)
+                exit(EXIT_FAILURE);
+
+            DBG(cerr << prolog << "child process has shared locks on both key1 and key2\n");
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            DBG(cerr << prolog << "child process exit\n");
+            exit(EXIT_SUCCESS);   // exit with 0 if status is true, 1 if false (it's a process)
+        }
+        else {
+            // parent process - generally faster. I used std::this_thread::sleep_for() but this is
+            // not multi-threaded code. It's just a way to sleep for a short time.
+            FileCache fc;
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            DBG(cerr << prolog << "Before del() key1\n");
+            bool del_status = fc.del("key1");
+            DBG(cerr << prolog << "After del() key1, status is: " << del_status << '\n');
+
+            // del(key1) might work, but it might fail, depending on the timing of the parent and
+            // child processes.
+
+            int child_status;
+            wait(&child_status);
+            DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');
+            // exit status for a process: 0 is true, 1 is false
+
+            // Because we use blocking locks for access to the cache, if the get and put functions are
+            // both called at the same time by two processes, the put() always works if the file does
+            // not already exist (because the get always fails if it is run first).
+            CPPUNIT_ASSERT_MESSAGE("Child process (which ran put()) should exit with success.",
+                                   WEXITSTATUS(child_status) == 0);
+            bool status;
+            FileCache::Item item1;
+            if (del_status) {
+                status = fc.get("key1", item1);
+                CPPUNIT_ASSERT_MESSAGE("get() should return false since key1 has been deleted", !status);
+            }
+            else {
+                status = fc.get("key1", item1);
+                CPPUNIT_ASSERT_MESSAGE("get() should return true since key1 was not deleted", status);
+            }
+
+            FileCache::Item item2;
+            status = fc.get("key2", item2);
+            CPPUNIT_ASSERT_MESSAGE("get() should return true since key2 has _not_ been deleted", status);
+        }
+    }
+
+CPPUNIT_TEST_SUITE(FileCacheTest);
 
     CPPUNIT_TEST(test_unintialized_cache);
     CPPUNIT_TEST(test_intialized_cache);
@@ -716,6 +789,7 @@ public:
 
     CPPUNIT_TEST(test_put_get_del);
     CPPUNIT_TEST(test_put_get_del_in_two_processes);
+    CPPUNIT_TEST(test_put_get_del_in_two_processes_two_cache_instances);
 
     CPPUNIT_TEST_SUITE_END();
 };

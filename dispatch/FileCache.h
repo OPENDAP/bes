@@ -30,6 +30,8 @@
 
 #include <vector>
 #include <algorithm>
+#include <mutex>
+
 #include <cstring>
 
 #include <unistd.h>
@@ -106,6 +108,8 @@ class FileCache {
     class CacheLock {
     private:
         int d_fd = -1;
+        static std::mutex cache_lock_mtx;
+
     public:
         CacheLock() = default;
         CacheLock(const CacheLock &) = default;
@@ -121,6 +125,7 @@ class FileCache {
                 ERROR_LOG("Call to CacheLock::lock_the_cache with uninitialized lock object\n");
                 return false;
             }
+            const std::lock_guard<std::mutex> lock(cache_lock_mtx);
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
                     ERROR_LOG(msg << get_lock_type_string(lock_type) << get_errno() << '\n');
@@ -194,6 +199,9 @@ public:
     class Item {
         int d_fd = -1;
 
+        // This is static because two threads might want each want to lock the same file. jhrg 11/01/23
+        static std::mutex item_mtx; // Overkill to make a static mutex? jhrg 11/01/23
+
     public:
         Item() = default;
         Item(const Item &) = default;
@@ -218,6 +226,7 @@ public:
                 ERROR_LOG("Call to Item::lock_the_item() with uninitialized item file descriptor.\n");
                 return false;
             }
+            const std::lock_guard<std::mutex> lock(item_mtx);
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
                     ERROR_LOG("Could not get " << get_lock_type_string(lock_type) << " lock: " << get_errno() << '\n');
@@ -405,5 +414,8 @@ public:
         }
     }
 };
+
+std::mutex FileCache::Item::item_mtx;
+std::mutex FileCache::CacheLock::cache_lock_mtx;
 
 #endif // FileCache_h_
