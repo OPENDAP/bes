@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-9-36][bes_client:/-0]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDAP>
+        <BESError>
+            <Type>3</Type>
+            <Message>
+You asked for too much! 
+    Maximum allowed response size: 10240 bytes.
+    Maximum allowed variable size: 1024 bytes.
+The submitted DAP4 request will generate a 3112656 byte response, which is too large.
+In addition to the overall response being to large for the service to produce,
+the request references the following variable(s) that are individually Too Large for the service to process.
+
+Oversized Variable(s): 
+    Float64 /COADSX[180] (1440 bytes)
+    Float32 /SST[12][90][180] (777600 bytes)
+    Float32 /AIRT[12][90][180] (777600 bytes)
+    Float32 /UWND[12][90][180] (777600 bytes)
+    Float32 /VWND[12][90][180] (777600 bytes)
+
+You can resolve these issues by requesting less.
+ - Consider asking for fewer variables (do you need them all?)
+ - If individual variables are too large you can also subset
+   them using an index based array subset expression 
+   to request a smaller area or to decimate the variable.
+You can find detailed information about DAP4 variable sub-setting here:
+https://github.com/OPENDAP/dap4-specification/blob/main/01_data-model-and-serialized-rep.md#8-constraints
+</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                removed file
+                removed line
+            </Location>
+        </BESError>
+    </getDAP>
+</response>
