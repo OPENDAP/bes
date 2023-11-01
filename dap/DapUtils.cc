@@ -177,21 +177,6 @@ void throw_if_dap2_response_too_big(DDS *dds, const std::string &file, unsigned 
     }
 }
 
-#if 0
-void throw_if_dap4_response_too_big(DMR &dmr, const std::string &file, unsigned int line)
-{
-    if (dmr.too_big()) {
-        stringstream msg;
-        msg << "The submitted DAP4 request will generate a " << dmr.request_size_kb(true);
-        msg <<  " kilobyte response, which is too large. ";
-        msg << "The maximum response size for this server is limited to " << dmr.response_limit_kb();
-        msg << " kilobytes.";
-        throw BESSyntaxUserError(msg.str(), file, line);
-    }
-}
-#endif
-
-
 /**
  * @brief - determines the number of requested elements for the D4Dimension d4dim.
  * This assumes that integer division truncates the fractiona part of the result.
