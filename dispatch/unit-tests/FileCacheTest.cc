@@ -607,6 +607,8 @@ public:
         CPPUNIT_ASSERT_MESSAGE("get() should return true", status);
         CPPUNIT_ASSERT_MESSAGE("Item::get_fd() should not return -1", item2.get_fd() != -1);
 
+        auto size_with_both_files = fc.get_cache_info_size();
+
         // Both the files held by item1 and item2 have shared locks in place, so del()
         // will block when it tries to get an exclusive lock. Close the FDs to release
         // the locks. jhrg 11/1/23
@@ -621,6 +623,10 @@ public:
 
         status = fc.get("key2", item2);
         CPPUNIT_ASSERT_MESSAGE("get() should return true since key2 has _not_ been deleted", status);
+
+        auto size_with_one_file = fc.get_cache_info_size();
+        // key1 and key2 cache the same contents
+        CPPUNIT_ASSERT_MESSAGE("Size in cache_info should be smaller by half", size_with_both_files == 2 * size_with_one_file);
     }
 
     // Test del() on a file when it might be locked by get(). This code uses timing to

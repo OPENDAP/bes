@@ -108,19 +108,19 @@ class FileCache {
     class CacheLock {
     private:
         int d_fd = -1;
-        static std::mutex cache_lock_mtx;
+        std::mutex cache_lock_mtx;
 
     public:
         CacheLock() = default;
-        CacheLock(const CacheLock &) = default;
+        CacheLock(const CacheLock &) = delete;
         explicit CacheLock(int fd) : d_fd(fd) {}
-        CacheLock &operator=(const CacheLock &) = default;
+        CacheLock &operator=(const CacheLock &) = delete;
         ~CacheLock() {
             if (flock(d_fd, LOCK_UN) < 0)
                 ERROR_LOG("Could not unlock the FileCache.\n");
         }
 
-        bool lock_the_cache(int lock_type, const std::string &msg = "") const {
+        bool lock_the_cache(int lock_type, const std::string &msg = "") {
             if (d_fd < 0) {
                 ERROR_LOG("Call to CacheLock::lock_the_cache with uninitialized lock object\n");
                 return false;
@@ -141,6 +141,8 @@ class FileCache {
     void purge();
 #endif
 
+    // These private methods assume they are called on a locked instance of the cache.
+
     bool invariant() const {
         if (d_cache_info_fd < 0)
             return false;
@@ -158,6 +160,8 @@ class FileCache {
     // Open the cache info file and write a zero to it.
     // Assign the file descriptor to d_cache_info_fd.
     // d_cache_dir must be set.
+    // FIXME if the CACHE_INFO_FILE_NAME already exists, that's OK. Fix this and
+    //  revisit if the mutexes should be static. jhrg 11/01/23
     bool open_cache_info() {
         if (d_cache_dir.empty())
             return false;
@@ -200,13 +204,13 @@ public:
         int d_fd = -1;
 
         // This is static because two threads might want each want to lock the same file. jhrg 11/01/23
-        static std::mutex item_mtx; // Overkill to make a static mutex? jhrg 11/01/23
+        std::mutex item_mtx; // Overkill to make a static mutex? jhrg 11/01/23
 
     public:
         Item() = default;
-        Item(const Item &) = default;
+        Item(const Item &) = delete;
         explicit Item(int fd) : d_fd(fd) { }
-        Item &operator=(const Item &) = default;
+        Item &operator=(const Item &) = delete;
         virtual ~Item() {
             if (d_fd != -1) {
                 close(d_fd);    // Also releases any locks
@@ -221,7 +225,7 @@ public:
             d_fd = fd;
         }
 
-        bool lock_the_item(int lock_type, const std::string &msg = "") const {
+        bool lock_the_item(int lock_type, const std::string &msg = "") {
             if (d_fd < 0) {
                 ERROR_LOG("Call to Item::lock_the_item() with uninitialized item file descriptor.\n");
                 return false;
@@ -274,7 +278,7 @@ public:
         return true;
     }
 
-    // Add a Value to the Cache, locks the cache while adding
+    // Add a copy of the file to the Cache, locks the cache while adding
     bool put(const std::string &key, const std::string &file_name) {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
@@ -319,7 +323,8 @@ public:
         }
 
         // NB: The cache_info file ws locked on entry to this method.
-        update_cache_info_size(get_cache_info_size() + get_file_size(fd));
+        if (!update_cache_info_size(get_cache_info_size() + get_file_size(fd)))
+            return false;
 
         // The fd_wrapper instances will take care of closing (and thus unlocking) the files.
         return true;
@@ -366,10 +371,15 @@ public:
         if (!item.lock_the_item(LOCK_EX, "locking the cache item in del() for: " + key))
             return false;
 
+        auto file_size = get_file_size(fd);
+
         if (remove(key_file_name.c_str()) != 0) {
             ERROR_LOG("Error removing " << key << " from cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
             return false;
         }
+
+        if (!update_cache_info_size(get_cache_info_size() - file_size))
+            return false;
 
         return true;
     }
@@ -415,7 +425,7 @@ public:
     }
 };
 
-std::mutex FileCache::Item::item_mtx;
-std::mutex FileCache::CacheLock::cache_lock_mtx;
+// std::mutex FileCache::Item::item_mtx;
+//std::mutex FileCache::CacheLock::cache_lock_mtx;
 
 #endif // FileCache_h_
