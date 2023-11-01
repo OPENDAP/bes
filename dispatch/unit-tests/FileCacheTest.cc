@@ -528,7 +528,7 @@ public:
             CPPUNIT_FAIL("stat() failed on test data file");
         size_t source_file_size = sb.st_size;
 
-            if (fork() == 0) {
+        if (fork() == 0) {
             // child process
             // sleep here to give the parent a head start, not much use.
             bool status = fc.put("key1", source_file);
@@ -582,6 +582,114 @@ public:
                                sha256(source_file) == sha256(BESUtil::pathConcat(cache_dir, "key1")));
     }
 
+    void test_put_get_del() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        CPPUNIT_ASSERT_MESSAGE("put() should return true", fc.put("key1", source_file));
+        CPPUNIT_ASSERT_MESSAGE("put() should return true", fc.put("key2", source_file));
+
+        FileCache::Item item1;
+        bool status = fc.get("key1", item1);
+        CPPUNIT_ASSERT_MESSAGE("get() should return true", status);
+        CPPUNIT_ASSERT_MESSAGE("Item::get_fd() should not return -1", item1.get_fd() != -1);
+
+        FileCache::Item item2;
+        status = fc.get("key2", item2);
+        CPPUNIT_ASSERT_MESSAGE("get() should return true", status);
+        CPPUNIT_ASSERT_MESSAGE("Item::get_fd() should not return -1", item2.get_fd() != -1);
+
+        // Both the files held by item1 and item2 have shared locks in place, so del()
+        // will block when it tries to get an exclusive lock. Close the FDs to release
+        // the locks. jhrg 11/1/23
+        close(item1.get_fd());
+        close(item2.get_fd());
+
+        status = fc.del("key1");
+        CPPUNIT_ASSERT_MESSAGE("del() should return true", status);
+
+        status = fc.get("key1", item1);
+        CPPUNIT_ASSERT_MESSAGE("get() should return false since key1 has been deleted", !status);
+
+        status = fc.get("key2", item2);
+        CPPUNIT_ASSERT_MESSAGE("get() should return true since key2 has _not_ been deleted", status);
+    }
+
+    // Test del() on a file when it might be locked by get(). This code uses timing to
+    // test a common hard case to debug, but the code does not _depend_ on the timing to
+    // work - the test should pass no matter how the parent and child run, but in the
+    // common case, del(key1) is called before the shared lock made by the call to get(key1)
+    // is released. In that case, del(key1) should block until the lock on key1 is released
+    // (which happens when the child process exits). jhrg 11/01/23
+    void test_put_get_del_in_two_processes() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        if (fork() == 0) {
+            // child process
+            CPPUNIT_ASSERT_MESSAGE("put() key1 should return true", fc.put("key1", source_file));
+            CPPUNIT_ASSERT_MESSAGE("put() key2 should return true", fc.put("key2", source_file));
+
+            FileCache::Item item1;
+            bool status1 = fc.get("key1", item1);
+            DBG(cerr << prolog << "child process put() key1 status: " << status1 << '\n');
+            if (!status1)
+                exit(EXIT_FAILURE);
+
+            FileCache::Item item2;
+            bool status2 = fc.get("key2", item2);
+            DBG(cerr << prolog << "child process put() key2 status: " << status1 << '\n');
+            if (!status2)
+                exit(EXIT_FAILURE);
+
+            DBG(cerr << prolog << "child process has shared locks on both key1 and key2\n");
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            DBG(cerr << prolog << "child process exit\n");
+            exit(EXIT_SUCCESS);   // exit with 0 if status is true, 1 if false (it's a process)
+        }
+        else {
+            // parent process - generally faster. I used std::this_thread::sleep_for() but this is
+            // not multi-threaded code. It's just a way to sleep for a short time.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            DBG(cerr << prolog << "Before del() key1\n");
+            bool del_status = fc.del("key1");
+            DBG(cerr << prolog << "After del() key1, status is: " << del_status << '\n');
+
+            // del(key1) might work, but it might fail, depending on the timing of the parent and
+            // child processes.
+
+            int child_status;
+            wait(&child_status);
+            DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');
+            // exit status for a process: 0 is true, 1 is false
+
+            // Because we use blocking locks for access to the cache, if the get and put functions are
+            // both called at the same time by two processes, the put() always works if the file does
+            // not already exist (because the get always fails if it is run first).
+            CPPUNIT_ASSERT_MESSAGE("Child process (which ran put()) should exit with success.",
+                                   WEXITSTATUS(child_status) == 0);
+            bool status;
+            FileCache::Item item1;
+            if (del_status) {
+                 status = fc.get("key1", item1);
+                CPPUNIT_ASSERT_MESSAGE("get() should return false since key1 has been deleted", !status);
+            }
+            else {
+                status = fc.get("key1", item1);
+                CPPUNIT_ASSERT_MESSAGE("get() should return true since key1 was not deleted", status);
+            }
+
+            FileCache::Item item2;
+            status = fc.get("key2", item2);
+            CPPUNIT_ASSERT_MESSAGE("get() should return true since key2 has _not_ been deleted", status);
+        }
+    }
 
     CPPUNIT_TEST_SUITE(FileCacheTest);
 
@@ -604,6 +712,9 @@ public:
     CPPUNIT_TEST(test_get_a_file);
     CPPUNIT_TEST(test_get_a_file_two_processes);
     CPPUNIT_TEST(test_get_and_put_duplicate_key_two_processes);
+
+    CPPUNIT_TEST(test_put_get_del);
+    CPPUNIT_TEST(test_put_get_del_in_two_processes);
 
     CPPUNIT_TEST_SUITE_END();
 };

@@ -338,10 +338,31 @@ public:
         return true;
     }
 
-#if 0
     // Remove a Value from the Cache
-    void del(const std::string &key);
-#endif
+    bool del(const std::string &key) {
+        // Lock the cache. Ensure the cache is unlocked no matter how we exit
+        CacheLock lock(d_cache_info_fd);
+        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in del()."))
+            return false;
+
+        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
+        int fd = open(key_file_name.c_str(), O_WRONLY, 0666);
+        if (fd < 0) {
+            ERROR_LOG("Error opening the cache item in del() for: " << key << " " << get_errno() << '\n');
+            return false;
+        }
+
+        Item item(fd);
+        if (!item.lock_the_item(LOCK_EX, "locking the cache item in del() for: " + key))
+            return false;
+
+        if (remove(key_file_name.c_str()) != 0) {
+            ERROR_LOG("Error removing " << key << " from cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * @brief Remove all files from the cache. Zero the cache info file.
@@ -349,6 +370,11 @@ public:
      * in the cache could not be removed, true otherwise.
      */
     bool clear() {
+        // Lock the cache. Ensure the cache is unlocked no matter how we exit
+        CacheLock lock(d_cache_info_fd);
+        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in clear()."))
+            return false;
+
         // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
         DIR *dir = nullptr;
         struct dirent *ent = nullptr;
