@@ -39,18 +39,17 @@
 #include <BESError.h>
 #include <BESInternalFatalError.h>
 
-#if 0
 
-#include "build_dmrpp_util.h"
 
-#endif
+#include "build_dmrpp_util_h4.h"
+
 
 using namespace std;
 using namespace libdap;
-#if 0
+
 using namespace dmrpp;
-using namespace build_dmrpp_util;
-#endif
+using namespace build_dmrpp_util_h4;
+
 
 #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
 
@@ -146,7 +145,7 @@ int main(int argc, char *argv[]) {
         }
 
         // Build the dmr++ from an existing DMR file.
-#if 0
+
         build_dmrpp_from_dmr_file(
                 dmrpp_href_value,
                 dmr_filename,
@@ -154,7 +153,7 @@ int main(int argc, char *argv[]) {
                 add_production_metadata,
                 bes_conf_file_used_to_create_dmr,
                 argc,  argv);
-#endif
+
     }
     catch (const BESError &e) {
         cerr << "BESError: " << e.get_message() << endl;

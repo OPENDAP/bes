@@ -86,7 +86,7 @@ using namespace std;
 using namespace libdap;
 using namespace dmrpp;
 
-namespace build_dmrpp_util {
+namespace build_dmrpp_util_h4 {
 
 bool verbose = false;   // Optionally set by build_dmrpp's main().
 
@@ -1463,13 +1463,13 @@ void inject_version_and_configuration(DMRpp *dmrpp)
  * @param granule_url The value to use for the XML attribute dap4:Dataset/@dmrpp:href This may be a template string,
  * or it may be the actual URL location of the source granule file.
  * @param dmr_filename The name of the file from which to read the DMR.
- * @param h5_file_fqn The granule filename.
+ * @param h4_file_fqn The granule filename.
  * @param add_production_metadata If true the production metadata (software version, configuration, and invocation) will
  * be added to the DMR++.
  * @param argc The number of arguments supplied to build_dmrpp
  * @param argv The arguments for build_dmrpp.
  */
-void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h5_file_fqn,
+void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h4_file_fqn,
         bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, int argc, char *argv[])
 {
     // Get dmr:
@@ -1482,7 +1482,7 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     parser.intern(in, &dmrpp, false);
 
 #if 0
-    add_chunk_information(h5_file_fqn, &dmrpp);
+    add_chunk_information(h4_file_fqn, &dmrpp);
 
     if (add_production_metadata) {
         inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
