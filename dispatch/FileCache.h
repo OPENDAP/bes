@@ -30,6 +30,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <cstring>
 
 #include <unistd.h>
 #include <dirent.h>
@@ -300,7 +301,7 @@ public:
         Item fdl2(fd2);     // The 'source' file is not locked; the Item ensures it is closed.
 
         std::vector<char> buf(std::min(MEGABYTE, get_file_size(fd2)));
-        size_t n;
+        ssize_t n;
         while ((n = read(fd2, buf.data(), buf.size())) > 0) {
             if (write(fd, buf.data(), n) != n) {
                 ERROR_LOG("Error writing to destination file: " << key << " " << get_errno() << '\n');

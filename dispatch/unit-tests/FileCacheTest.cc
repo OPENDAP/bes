@@ -28,6 +28,7 @@
 
 #include <thread>
 #include <future>
+#include <iomanip>
 #include <chrono>
 
 #include <algorithm>
@@ -56,19 +57,19 @@ string sha256(const string &filename)
     if (!file)
         CPPUNIT_FAIL("Tried to open a file to compute the SHA256 hash of its contents");
 
-    unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256_CTX sha256;
     SHA256_Init(&sha256);
 
-    file.seekg (0, file.end);
-    int length = file.tellg();
-    file.seekg (0, file.beg);
+    file.seekg (0, fstream::end);
+    streamoff length = file.tellg();
+    file.seekg (0, fstream::beg);
 
-    char *buffer = new char[length];
-    file.read (buffer, length);
+    vector<char> buffer(length);
+    file.read(buffer.data(), length);
 
-    SHA256_Update(&sha256, buffer, length);
-    SHA256_Final(hash, &sha256);
+    SHA256_Update(&sha256, buffer.data(), length);
+    vector<unsigned char> hash(SHA256_DIGEST_LENGTH);
+    SHA256_Final(hash.data(), &sha256);
 
     stringstream ss;
     for(int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
