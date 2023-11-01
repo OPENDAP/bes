@@ -355,10 +355,20 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
 
         case H5T_STRING: {
             if (H5Tis_variable_str(h5_type_id)) {
-                 string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_STRING as a fillValue "
-                                     "type. This is not yet supported by the dmr++ creation machinery. "
-                                     "The variable/dataset type screening code should intercepted this prior.");
-                 throw UnsupportedTypeException(msg);
+
+                // Reading the value like this doesn't work for squat.
+                string fv_str(value.begin(),value.end());
+                // Now fv_str is garbage,.
+
+                stringstream msg(prolog);
+                msg << "UnsupportedTypeException: Your data granule contains a variable length H5T_STRING ";
+                msg << "as a fillValue type. This is not yet supported by the dmr++ creation machinery. ";
+                msg << "The variable/dataset type screening code should have intercepted this prior. ";
+                msg  <<  "fillValue(" + to_string(fv_str.length()) +" chars): 0x";
+                for(auto c : fv_str){
+                    msg << std::hex << +c ;
+                }
+                throw UnsupportedTypeException(msg.str());
             }
             else {
                 string str_fv(value.begin(),value.end());
@@ -608,7 +618,7 @@ string byte_order_str(hid_t dataset){
  * @param btp The dap BaseType variable which is to hold the information gleand from the hdf5 dataset.
  */
 void process_contiguous_layout_dariable(hid_t dataset, BaseType *btp){
-    VERBOSE(cerr << prolog << "Storage:   contiguous" << endl);
+    VERBOSE(cerr << prolog << "  Storage: contiguous" << endl);
 
     haddr_t cont_addr = H5Dget_offset(dataset);
     hsize_t cont_size = H5Dget_storage_size(dataset);
@@ -1036,14 +1046,7 @@ string get_type_decl(BaseType *btp){
     return type_decl.str();
 }
 
-/**
- * @brief Examines the hdf5 dataset, dataset_id, and returns true if the dataset is encoded as an unsupported type.
- * @param dataset_id The dataset to examine
- * @param btp The associated libdap::BaseType variable for this hdf5 dataset.
- * @param msg If an unsupported type is encountered a message about it will be returned in the msg return value
- * parameter.
- * @return True if the type of dataset_id is unsupported, false otherwise.
- */
+
 bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     VERBOSE(cerr << prolog << "BEGIN " << get_type_decl(btp) << endl);
 
@@ -1051,14 +1054,19 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     hid_t h5_type_id = H5Dget_type(dataset_id);
     H5T_class_t class_type = H5Tget_class(h5_type_id);
 
+    bool isArray = btp->type() == dods_array_c;
+
     switch (class_type) {
         case H5T_STRING: {
-            if (H5Tis_variable_str(h5_type_id)) {
+            if (H5Tis_variable_str(h5_type_id) && isArray) {
                 stringstream msgs;
                 msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
                 msgs << get_type_decl(btp) << " ";
-                msgs << "which the underlying HDF5/NetCDF-4 file has stored as an array of ";
-                msgs << "variable length strings (AVLS). This data architecture is not currently supported by ";
+                msgs << "which the underlying HDF5/NetCDF-4 file has stored as a";
+                msgs << (isArray?"n array of ":" ");
+                msgs << "variable length string";
+                msgs << (isArray?"s (AVLS). ":". ");
+                msgs << "This data architecture is not currently supported by ";
                 msgs << "the dmr++ creation machinery. One solution available to you is to rewrite the granule ";
                 msgs << "so that these arrays are represented as arrays of fixed length strings (AFLS). While ";
                 msgs << "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so ";
@@ -1082,8 +1090,149 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
         default:
             break;
     }
+    VERBOSE(cerr << prolog << "END  is_unsupported: " << (is_unsupported?"true":"false") << endl);
     return is_unsupported;
 }
+
+/**
+ * @brief Identifies, reads, and then stores a vlss in a DAP dmr++ variable using the compact representation
+ *
+ * @param dataset The HDF5 dataset id.
+ * @param btp The BaseType pointer to the sister DAP class
+ * @return Returns true if the variable was processed, false otherwise.
+ */
+bool process_variable_length_string_scalar(const hid_t dataset, BaseType *btp){
+
+    // btp->type() == dods_str_c means a scalar string, if it was an
+    // array of strings then btp->type() == dods_array_c would be true
+    if(btp->type() == dods_str_c) {
+        auto h5_type_id = H5Dget_type(dataset);
+        if(H5Tis_variable_str(h5_type_id) > 0) {
+            vector<string> finstrval;   // passed by reference to read_vlen_string
+            finstrval.emplace_back(""); // initialize array for it's trip to Cville
+
+            // Read the scalar string.
+            read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+            string vlstr = finstrval[0];
+            VERBOSE(cerr << prolog << " read_vlen_string(): " << vlstr << endl);
+
+            // Convert variable to a compact representation
+            // so that its value can be stored in the dmr++
+            auto dc = toDC(btp);
+            dc->set_compact(true);
+
+            // And then set the value.
+            auto str = dynamic_cast<libdap::Str *>(btp);
+            str->set_value(vlstr);
+            str->set_read_p(true);
+
+            return true;
+        }
+    }
+    return false;
+}
+
+/**e
+ * @brief This helper function for get_chunks_for_all_variables() opens the HDF5 dataset and returns the dataset_id
+ * @param file The HDF5 file to examine
+ * @param btp The associated DAP variable
+ * @param nc4_non_coord_candidate
+ * @return The open dataset_id
+ */
+hid_t get_h5_dataset_id(hid_t file, BaseType *btp, const unordered_set<string> &nc4_non_coord_candidate) {
+    D4Attributes *d4_attrs = btp->attributes();
+    if (!d4_attrs)
+        throw BESInternalError("Expected to find an attribute table for " + btp->name() + " but did not.",
+                               __FILE__, __LINE__);
+
+    // Look for the full name path for this variable
+    // If one was not given via an attribute, use BaseType::FQN() which
+    // relies on the variable's position in the DAP dataset hierarchy.
+    const D4Attribute *attr = d4_attrs->get("fullnamepath");
+        // I believe the logic is more clear in this way:
+        // If fullnamepath exists and the H5Dopen2 fails to open, it should throw an error.
+        // If fullnamepath doesn't exist, we should ignore the error as the reason described below:
+        // (However, we should suppress the HDF5 dataset open error message.)  KY 2019-12-02
+        // It's not an error if a DAP variable in a DMR from the hdf5 handler
+        // doesn't exist in the file _if_ there's no 'fullnamepath' because
+        // that variable was synthesized (likely for CF compliance)
+    hid_t dataset = -1;
+    if (attr) {
+        string FQN;
+        if (attr->num_values() == 1)
+            FQN = attr->value(0);
+        else
+            FQN = btp->FQN();
+
+        VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
+        dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
+        if (dataset < 0) {
+            throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+        }
+    }
+    else {
+        // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
+        // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
+        //
+        // A comment from an older version of the code:
+        // It's not an error if a DAP variable in a DMR from the hdf5 handler
+        // doesn't exist in the file _if_ there's no 'fullnamepath' because
+        // that variable was synthesized (likely for CF compliance)
+        H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
+        string FQN = btp->FQN();
+        if (nc4_non_coord_candidate.find(btp->name()) != nc4_non_coord_candidate.end()) {
+            string real_name_candidate = "_nc4_non_coord_" + btp->name();
+            size_t fqn_last_fslash_pos = btp->FQN().find_last_of('/');
+            string real_path_candidate = btp->FQN().substr(0, fqn_last_fslash_pos + 1) + real_name_candidate;
+            dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
+        }
+
+        VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
+        if (dataset < 0) {
+            dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
+            if (dataset < 0) {
+                VERBOSE(cerr << prolog << "WARNING: HDF5 dataset '" << FQN << "' cannot be opened." << endl);
+// throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+            }
+        }
+    }
+    return dataset;
+}
+
+/**
+ * netCDF-4 variable can share the same name as a pure dimension name.
+ * When this case happens, the netCDF-4 will add "_nc4_non_coord_" to the variable name to
+ * distinguish the variable name from the correponding dimension name when storing in the HDF5.
+ * To emulate netCDF-4 model, the HDF5 handler will remove the "_nc4_non_coord_" from the variable in dmr.
+ * When obtaining this variable's information, we need to use the real HDF5 variable name.
+ * KY 2022-09-11
+ * When the above case occurs, a dimension name of this group must share with a variable name.
+ * So we will find these variables and put them into an unodered set.
+ *
+ * @param group
+ * @param nc4_non_coord_candidate
+ */
+void mk_nc4_non_coord_candidates(D4Group *group, unordered_set<string> &nc4_non_coord_candidate){
+
+    // First obtain  dimension names.
+    unordered_set<string> dimname_list;
+    D4Dimensions *grp_dims = group->dims();
+
+    if (grp_dims) {
+        for (auto di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di)
+            dimname_list.insert((*di)->name());
+    }
+
+    if (!dimname_list.empty()) {
+        // Then find the nc4_non_coord candidate variables,
+        for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+            if (dimname_list.find((*btp)->name())!=dimname_list.end())
+                nc4_non_coord_candidate.insert((*btp)->name());
+        }
+    }
+
+}
+
 
 /**
  * @brief Iterate over all the variables in a DMR and get their chunk info
@@ -1094,135 +1243,56 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
  */
 void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
-    // netCDF-4 variable can share the same name as a pure dimension name. 
-    // When this case happens, the netCDF-4 will add "_nc4_non_coord_" to the variable name to
-    // distinguish the variable name from the correponding dimension name when storing in the HDF5. 
-    // To emulate netCDF-4 model, the HDF5 handler will remove the "_nc4_non_coord_" from the variable in dmr.
-    // When obtaining this variable's information, we need to use the real HDF5 variable name.
-    // KY 2022-09-11
-    // When the above case occurs, a dimension name of this group must share with a variable name.
-    // So we will find these variables and put them into an unodered set. 
-
     unordered_set<string> nc4_non_coord_candidate;
-
-    // First obtain  dimension names.
-    unordered_set<string> dimname_list;
-    D4Dimensions *grp_dims = group->dims();
-    
-    if (grp_dims) {
-        for (auto di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di)
-            dimname_list.insert((*di)->name());
-    }
-
-    if (!dimname_list.empty()) {
-        // Then find the nc4_non_coord candidate variables,
-        for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
-            if (dimname_list.find((*btp)->name())!=dimname_list.end())   
-                nc4_non_coord_candidate.insert((*btp)->name());
-        }
-    }
-
+    mk_nc4_non_coord_candidates(group,nc4_non_coord_candidate);
 
     // variables in the group
 
     for(auto btp : group->variables()) {
         VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
+        VERBOSE(cerr << prolog);
+        VERBOSE(btp->print_decl(cerr,"",false,false,false) );
+        VERBOSE(cerr << endl);
 
-        // if this variable has a 'fullnamepath' attribute, use that and not the
-        // FQN value.
-        D4Attributes *d4_attrs = btp->attributes();
-        if (!d4_attrs)
-            throw BESInternalError("Expected to find an attribute table for " + btp->name() + " but did not.",
-                                   __FILE__, __LINE__);
+        auto dataset  = get_h5_dataset_id(file, btp, nc4_non_coord_candidate);
+        if(dataset > 0) {
+            // If we have a valid dataset then we have a variable with data. I think.
+            // If it's not valid we skip it, I think because the associated BaseType,
+            // btp, may be a semantic object, like a dimension,  with no data
+            // associated with it.
+            try {
+                string msg;
+                if (is_unsupported_type(dataset, btp, msg)) {
+                    throw UnsupportedTypeException(msg);
+                }
 
-        // Look for the full name path for this variable
-        // If one was not given via an attribute, use BaseType::FQN() which
-        // relies on the variable's position in the DAP dataset hierarchy.
-        const D4Attribute *attr = d4_attrs->get("fullnamepath");
-        // I believe the logic is more clear in this way:
-        // If fullnamepath exists and the H5Dopen2 fails to open, it should throw an error.
-        // If fullnamepath doesn't exist, we should ignore the error as the reason described below:
-        // (However, we should suppress the HDF5 dataset open error message.)  KY 2019-12-02
-        // It's not an error if a DAP variable in a DMR from the hdf5 handler
-        // doesn't exist in the file _if_ there's no 'fullnamepath' because
-        // that variable was synthesized (likely for CF compliance)
-        hid_t dataset = -1;
-        if (attr) {
-            string FQN;
-            if (attr->num_values() == 1)
-                FQN = attr->value(0);
-            else
-                FQN = btp->FQN();
+                if (!process_variable_length_string_scalar(dataset, btp)) {
 
-            VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
-            dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
-            if (dataset < 0) {
-                throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+                    VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
+                    get_variable_chunk_info(dataset, btp);
+
+                    VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
+                    add_string_array_info(dataset, btp);
+                }
+                H5Dclose(dataset);
+            }
+            catch (...) {
+                H5Dclose(dataset);
+                throw;
             }
         }
         else {
-            // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
-            // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
-            //
-            // A comment from an older version of the code:
-            // It's not an error if a DAP variable in a DMR from the hdf5 handler
-            // doesn't exist in the file _if_ there's no 'fullnamepath' because
-            // that variable was synthesized (likely for CF compliance)
-            H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
-            string FQN = btp->FQN();
-            if (nc4_non_coord_candidate.find(btp->name()) != nc4_non_coord_candidate.end()) {
-                string real_name_candidate = "_nc4_non_coord_" + btp->name();
-                size_t fqn_last_fslash_pos = btp->FQN().find_last_of("/");
-                string real_path_candidate = btp->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
-                dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
-            }
-            
-            VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
-            if (dataset < 0)  {
-                dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
-                if (dataset < 0) {
-                   VERBOSE(cerr << prolog << "WARNING: HDF5 dataset '" << FQN << "' cannot be opened." << endl);
-                    // throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
-                    continue;
-                }
-            }
-        }
-
-        try {
-            string msg;
-            if(is_unsupported_type(dataset, btp, msg)){
-                // @TODO What should really happen in this case?
-                //   - Throw an exception?
-                //   - Elide the variable from the dmr++?
-                //   - Demote dataset/var to Attribute?
-                //   - Mark the variable as "unsupported" so that it's metadata are transmitted but
-                //     it's data cannot be read.
-                throw UnsupportedTypeException(msg);
-            }
-
-            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
-            get_variable_chunk_info(dataset, btp);
-
-            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
-            add_string_array_info(dataset, btp);
-            H5Dclose(dataset);
-        }
-        catch (UnsupportedTypeException &uste){
-            // TODO - If we are going to elide a variable because it is an unsupported type, I think
-            //  that this would be the place to do it.
-            cerr << prolog << "Caught UnsupportedTypeException for variable " << btp->FQN() << " message: " << uste.what() << endl;
-            throw;
-        }
-        catch (...) {
-            H5Dclose(dataset);
-            throw;
+            VERBOSE(cerr << prolog << "Unable to open " << btp->FQN()
+            << " with the hdf5 api. Skipping chunk production. "
+            << "Everything will be ok." << endl);
         }
     }
 
     // all groups in the group
-    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
-        get_chunks_for_all_variables(file, *g);
+    for(auto g:group->groups()) {
+        get_chunks_for_all_variables(file, g);
     }
+
 }
 
 /**
