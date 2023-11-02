@@ -79,7 +79,7 @@ string sha256(const string &filename)
 }
 
 class FileCacheTest : public CppUnit::TestFixture {
-    std::string cache_dir = string(TEST_BUILD_DIR) + "/test_cache";
+    std::string cache_dir = string(TEST_BUILD_DIR) + "/fc";
 
 public:
 
@@ -97,7 +97,7 @@ public:
         // Create the cache directory
         if (mkdir(cache_dir.c_str(), 0755) != 0) {
             if (errno != EEXIST) {
-                DBG(cerr << prolog << "Failed to create cache directory: " << cache_dir << '\n');
+                DBG2(cerr << prolog << "Failed to create cache directory: " << cache_dir << '\n');
                 CPPUNIT_FAIL("Failed to create cache directory in setUp()");
             }
         }
@@ -115,7 +115,7 @@ public:
                 if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
                     continue;
                 string cache_file = BESUtil::pathConcat(cache_dir, ent->d_name);
-                DBG(cerr << prolog << "Removing cache file: " << cache_file << '\n');
+                DBG2(cerr << prolog << "Removing cache file: " << cache_file << '\n');
                 if (remove(cache_file.c_str()) != 0) {
                     CPPUNIT_FAIL(string("Error removing ") + ent->d_name + " from cache directory (" + cache_dir + ")");
                 }
@@ -140,13 +140,34 @@ public:
     void test_intialized_cache()
     {
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize("/tmp/", 100, 20));
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be true - cache initialized", fc.invariant());
         CPPUNIT_ASSERT_MESSAGE("d_cache_info_fd should not be -1 - cache initialized", fc.d_cache_info_fd != -1);
         CPPUNIT_ASSERT_MESSAGE("d_purge_size should be 20 - cache initialized", fc.d_purge_size == 20);
         CPPUNIT_ASSERT_MESSAGE("d_max_cache_size_in_bytes should be 100 - cache initialized",
                                fc.d_max_cache_size_in_bytes == 100);
-        CPPUNIT_ASSERT_MESSAGE("d_cache_dir should be \"/tmp/\" - cache initialized", fc.d_cache_dir == "/tmp/");
+        CPPUNIT_ASSERT_MESSAGE("d_cache_dir should be \"/tmp/\" - cache initialized", fc.d_cache_dir == cache_dir);
+    }
+
+    void test_two_intialized_caches_same_directory()
+    {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be true - cache initialized", fc.invariant());
+        CPPUNIT_ASSERT_MESSAGE("d_cache_info_fd should not be -1 - cache initialized", fc.d_cache_info_fd != -1);
+        CPPUNIT_ASSERT_MESSAGE("d_purge_size should be 20 - cache initialized", fc.d_purge_size == 20);
+        CPPUNIT_ASSERT_MESSAGE("d_max_cache_size_in_bytes should be 100 - cache initialized",
+                               fc.d_max_cache_size_in_bytes == 100);
+        CPPUNIT_ASSERT_MESSAGE("d_cache_dir should be \"/tmp/\" - cache initialized", fc.d_cache_dir == cache_dir);
+
+        FileCache fc2;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100, 20));
+        CPPUNIT_ASSERT_MESSAGE("Cache invariant should be true - cache initialized", fc2.invariant());
+        CPPUNIT_ASSERT_MESSAGE("d_cache_info_fd should not be -1 - cache initialized", fc2.d_cache_info_fd != -1);
+        CPPUNIT_ASSERT_MESSAGE("d_purge_size should be 20 - cache initialized", fc2.d_purge_size == 20);
+        CPPUNIT_ASSERT_MESSAGE("d_max_cache_size_in_bytes should be 100 - cache initialized",
+                               fc2.d_max_cache_size_in_bytes == 100);
+        CPPUNIT_ASSERT_MESSAGE("d_cache_dir should be \"/tmp/\" - cache initialized", fc2.d_cache_dir == cache_dir);
     }
 
     // test the private open_cache_into() method
@@ -517,6 +538,75 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Item::get_fd() should not return -1", item.get_fd() != -1);
     }
 
+    void test_get_duplicate_key_three_threads()
+    {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        CPPUNIT_ASSERT_MESSAGE("Cache put(key1) should work", fc.put("key1", source_file));
+
+        auto f1 = async(launch::async,
+                        [source_file, &fc](const string &key) -> bool {
+                            FileCache::Item item;
+                            bool status = fc.get(key, item);
+                            return status;
+                        },
+                        "key1");
+        auto f2 = async(launch::async,
+                        [source_file, &fc](const string &key) -> bool {
+                            FileCache::Item item;
+                            bool status = fc.get(key, item);
+                            return status;
+                        },
+                        "key1");
+        auto f3 = async(launch::async,
+                        [source_file, &fc](const string &key) -> bool {
+                            FileCache::Item item;
+                            bool status = fc.get(key, item);
+                            return status;
+                        },
+                        "key1");
+
+        DBG(cerr << "Start querying\n" );
+
+        bool f1_status = f1.get();
+        bool f2_status = f2.get();
+        bool f3_status = f3.get();
+        DBG(cerr << "f1_status: " << f1_status << '\n');
+        DBG(cerr << "f2_status: " << f2_status << '\n');
+        DBG(cerr << "f3_status: " << f3_status << '\n');
+
+        CPPUNIT_ASSERT_MESSAGE("All three statuses should be true", f1_status && f2_status && f2_status);
+    }
+
+    // This tests the cases where the file is open/locked for 'get()' and when it has been closed
+    // (i.e., unlocked).
+    void test_get_key_in_thread_then_del()
+    {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        CPPUNIT_ASSERT_MESSAGE("Cache put(key1) should work", fc.put("key1", source_file));
+
+        FileCache::Item item;
+
+        auto f1 = async(launch::async,
+                        [source_file, &fc, &item]() {
+                            bool status = fc.get("key1", item);
+                            return status;
+                        });
+
+        bool status = f1.get();
+        CPPUNIT_ASSERT_MESSAGE("Cache get(key1, item) should work", status);
+        CPPUNIT_ASSERT_MESSAGE("Cache del(key1) should not work here", !fc.del("key1"));
+
+        close(item.get_fd());
+
+        CPPUNIT_ASSERT_MESSAGE("Cache del(key1) should work here", fc.del("key1"));
+    }
+
     void test_get_and_put_duplicate_key_two_processes()
     {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
@@ -775,6 +865,7 @@ CPPUNIT_TEST_SUITE(FileCacheTest);
 
     CPPUNIT_TEST(test_unintialized_cache);
     CPPUNIT_TEST(test_intialized_cache);
+    CPPUNIT_TEST(test_two_intialized_caches_same_directory);
 
     CPPUNIT_TEST(test_open_cache_info);
     CPPUNIT_TEST(test_open_cache_info_cache_dir_not_set);
@@ -786,11 +877,13 @@ CPPUNIT_TEST_SUITE(FileCacheTest);
     CPPUNIT_TEST(test_put_duplicate_key);
     CPPUNIT_TEST(test_put_duplicate_key_two_processes);
     CPPUNIT_TEST(test_put_duplicate_key_three_threads);
+    CPPUNIT_TEST(test_get_key_in_thread_then_del);
     CPPUNIT_TEST(test_put_duplicate_key_two_processes_three_threads_each);
 
     CPPUNIT_TEST(test_get_a_file_not_cached);
     CPPUNIT_TEST(test_get_a_file);
     CPPUNIT_TEST(test_get_a_file_two_processes);
+    CPPUNIT_TEST(test_get_duplicate_key_three_threads);
     CPPUNIT_TEST(test_get_and_put_duplicate_key_two_processes);
 
     CPPUNIT_TEST(test_put_get_del);

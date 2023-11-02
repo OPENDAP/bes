@@ -160,16 +160,17 @@ class FileCache {
     // Open the cache info file and write a zero to it.
     // Assign the file descriptor to d_cache_info_fd.
     // d_cache_dir must be set.
-    // FIXME if the CACHE_INFO_FILE_NAME already exists, that's OK. Fix this and
-    //  revisit if the mutexes should be static. jhrg 11/01/23
     bool open_cache_info() {
         if (d_cache_dir.empty())
             return false;
-        if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT, 0666)) < 0)
+        if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT | O_EXCL, 0666)) >= 0) {
+            unsigned long long size = 0;
+            if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
+                return false;
+        }
+        else if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR, 0666)) < 0) {
             return false;
-        unsigned long long size = 0;
-        if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
-            return false;
+        }
         return true;
     }
 
@@ -353,8 +354,9 @@ public:
         return true;
     }
 
-    // Remove a Value from the Cache
-    bool del(const std::string &key) {
+    // Remove a file from the Cache. By default, try to lock the item exclusively,
+    // using a non-blocking lock. If that fails, retry and maybe use a blocking lock.
+    bool del(const std::string &key, int lock_type = LOCK_EX | LOCK_NB) {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
         if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in del()."))
@@ -368,7 +370,7 @@ public:
         }
 
         Item item(fd);
-        if (!item.lock_the_item(LOCK_EX, "locking the cache item in del() for: " + key))
+        if (!item.lock_the_item(lock_type, "locking the cache item in del() for: " + key))
             return false;
 
         auto file_size = get_file_size(fd);
@@ -424,8 +426,5 @@ public:
         }
     }
 };
-
-// std::mutex FileCache::Item::item_mtx;
-//std::mutex FileCache::CacheLock::cache_lock_mtx;
 
 #endif // FileCache_h_
