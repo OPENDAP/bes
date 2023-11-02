@@ -112,7 +112,7 @@ void log_response_and_memory_size(const std::string &caller_id, /*const*/ DMR &d
  * @param file The file of the calling method (outside of this evaluation activity)
  * @param line The line in file from which this call tree originated.
  */
-std::string mk_model_incompatibility_message(const std::vector<std::string> &inventory,const std::string &file, unsigned int line){
+std::string mk_model_incompatibility_message(const std::vector<std::string> &inventory){
     stringstream msg;
     msg << endl;
     msg << "ERROR: Your have asked this service to utilize the DAP2 data model\n";
@@ -155,7 +155,7 @@ void throw_for_dap4_typed_vars_or_attrs(DDS *dds, const std::string &file, unsig
 {
     vector<string> inventory;
     if(dds->is_dap4_projected(inventory)){
-        string msg = mk_model_incompatibility_message(inventory,file,line);
+        string msg = mk_model_incompatibility_message(inventory);
         throw BESSyntaxUserError(msg, file, line);
     }
 }
@@ -170,7 +170,7 @@ void throw_for_dap4_typed_attrs(DAS *das, const std::string &file, unsigned int 
 {
     vector<string> inventory;
     if(das->get_top_level_attributes()->has_dap4_types("/",inventory)){
-        string msg = mk_model_incompatibility_message(inventory,file,line);
+        string msg = mk_model_incompatibility_message(inventory);
         throw BESSyntaxUserError(msg, file, line);
     }
 }
@@ -409,7 +409,7 @@ uint64_t compute_response_size_and_inv_big_vars(
  * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
 uint64_t compute_response_size_and_inv_big_vars(
-        libdap::DDS &dds,
+        const libdap::DDS &dds,
         const uint64_t &max_var_size,
         std::vector<std::string> &too_big)
 {
@@ -469,24 +469,21 @@ void get_max_sizes_bytes(uint64_t &max_response_size_bytes, uint64_t &max_var_si
     uint64_t cmd_context_max_var_size=0;
     found = false;
     cmd_context_max_var_size = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_VAR_SIZE_KEY, found);
-    if (found) {
-        BESDEBUG(MODULE, prolog << "cmd_context_max_var_size: " << cmd_context_max_var_size << "\n");
-        if(config_max_var_size == cmd_context_max_var_size){
-            // If they're the same then use one.
-            max_var_size_bytes = config_max_var_size;
-        }
-        else if( cmd_context_max_var_size < config_max_var_size || config_max_var_size == 0 ){
-            // If the context value is effectively less than the config value, use the context value.
-            max_var_size_bytes = cmd_context_max_var_size;
-        }
-        else {
-            // Otherwise use the config value.
-            max_var_size_bytes = config_max_var_size;
-        }
-    }
-    else {
+    if (!found) {
         max_var_size_bytes = config_max_var_size;
         BESDEBUG(MODULE, prolog << "Did not locate BESContext key: " << BES_CONTEXT_MAX_VAR_SIZE_KEY << " SKIPPING." << "\n");
+    }
+    else if(config_max_var_size == cmd_context_max_var_size){
+        // If they're the same then use one.
+        max_var_size_bytes = config_max_var_size;
+    }
+    else if( cmd_context_max_var_size < config_max_var_size || config_max_var_size == 0 ){
+        // If the context value is effectively less than the config value, use the context value.
+        max_var_size_bytes = cmd_context_max_var_size;
+    }
+    else {
+        // Otherwise use the config value.
+        max_var_size_bytes = config_max_var_size;
     }
 
     // Enforce DAP2 limits?
