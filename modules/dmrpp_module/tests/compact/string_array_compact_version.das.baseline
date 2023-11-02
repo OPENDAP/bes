@@ -21,7 +21,9 @@ You may resolve these issues by asking the service to use
 the DAP4 data model instead of the DAP2 model.
 
  - NetCDF If you wish to receive your response encoded as a
-   netcdf file please note that netcdf-3 has similar representational   constraints as DAP2, while netcdf-4 does not. In order to request   a DAP4 model nectdf-4 response, change your request URL from 
+   netcdf file please note that netcdf-3 has similar representational
+   constraints as DAP2, while netcdf-4 does not. In order to request
+   a DAP4 model nectdf-4 response, change your request URL from 
    dataset_url.nc to dataset_url.dap.nc4
 
  - DAP Clients If you are using a specific DAP client like pyDAP or
