@@ -151,7 +151,7 @@ class FileCache {
         struct item_info {
             std::string d_name;
             off_t d_size;
-            item_info(const char *name, off_t size) :d_name(name), d_size(size) {}
+            item_info(const std::string &name, off_t size) :d_name(name), d_size(size) {}
         };
 
         // sorted by access time, with the oldest time first
@@ -169,12 +169,13 @@ class FileCache {
                     continue;
                 // for each file, record its name, size and access time
                 struct stat sb{0};
-                if (stat(ent->d_name, &sb) < 0) {
-                    ERROR_LOG("Error purging the cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
+                std::string path_name = BESUtil::pathConcat(d_cache_dir, ent->d_name);
+                if (stat(path_name.c_str(), &sb) < 0) {
+                    ERROR_LOG("Error purging the cache directory (" << ent->d_name << ") - " << get_errno() << '\n');
                     return false;
                 }
 
-                items.insert(std::pair<unsigned long, item_info>(sb.st_atimespec.tv_sec, item_info(ent->d_name, sb.st_size)));
+                items.insert(std::pair<unsigned long, item_info>(sb.st_atimespec.tv_sec, item_info(path_name, sb.st_size)));
             }
             closedir (dir);
 
