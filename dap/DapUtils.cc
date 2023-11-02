@@ -129,8 +129,8 @@ std::string mk_model_incompatibility_message(const std::vector<std::string> &inv
     msg <<  "the DAP4 data model instead of the DAP2 model.\n";
     msg << "\n";
     msg << " - NetCDF If you wish to receive your response encoded as a\n";
-    msg << "   netcdf file please note that netcdf-3 has similar representational";
-    msg << "   constraints as DAP2, while netcdf-4 does not. In order to request";
+    msg << "   netcdf file please note that netcdf-3 has similar representational\n";
+    msg << "   constraints as DAP2, while netcdf-4 does not. In order to request\n";
     msg << "   a DAP4 model nectdf-4 response, change your request URL from \n";
     msg << "   dataset_url.nc to dataset_url.dap.nc4\n";
     msg << "\n";
