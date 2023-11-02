@@ -487,12 +487,9 @@ void get_max_sizes_bytes(uint64_t &max_response_size_bytes, uint64_t &max_var_si
     }
 
     // Enforce DAP2 limits?
-    if(is_dap2){
-        // Make sure the variable size is capped at 2GB
-        if(max_var_size_bytes == 0 || max_var_size_bytes > twoGB){
-            BESDEBUG(MODULE, prolog << "Adjusting max_var_size_bytes to DAP2 limits.\n");
-            max_var_size_bytes = twoGB;
-        }
+    if ( is_dap2 && (max_var_size_bytes == 0 || max_var_size_bytes > twoGB) ){
+        max_var_size_bytes = twoGB;
+        BESDEBUG(MODULE, prolog << "Adjusted max_var_size_bytes to DAP2 limit.\n");
     }
     BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
 }
@@ -648,7 +645,7 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
  * @param file The file of the calling code.
  * @param line The line in the calling code.
 */
-void throw_if_too_big(libdap::DDS &dds, const std::string &file, const unsigned int line)
+void throw_if_too_big(const libdap::DDS &dds, const std::string &file, const unsigned int line)
 {
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;

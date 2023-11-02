@@ -54,6 +54,6 @@ uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t
 void get_max_sizes_bytes(uint64_t &max_response_size_bytes, uint64_t &max_var_size_bytes,  bool is_dap2=false);
 
 void throw_if_too_big(libdap::DMR &dmr, const std::string &file, unsigned int line);
-void throw_if_too_big(libdap::DDS &dds, const std::string &file, unsigned int line);
+void throw_if_too_big(const libdap::DDS &dds, const std::string &file, unsigned int line);
 }
 #endif //BES_DAPUTILS_H
