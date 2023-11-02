@@ -557,24 +557,29 @@ bool its_too_big(
     bool response_too_big = (max_response_size_bytes > 0) && (response_size_bytes > max_response_size_bytes);
     if(response_too_big){
         msg << too_big_error_prolog(max_response_size_bytes, max_var_size_bytes);
-        msg << "The submitted DAP" << (is_dap2?"2":"4") << " request will generate a " << response_size_bytes;
-        msg <<  " byte response, which is too large.\n";
+        msg << "The submitted DAP" << (is_dap2?"2":"4") << " request will generate a ";
+        msg << response_size_bytes << " byte\n";
+        msg << "response, which is larger than the maximum allowed response size.\n";
     }
 
     // Was one or more of the constrained variables too big?
     if(!too_big_vars.empty()){
         if(response_too_big){
             // Is the whole thing too big? Continue message.
-            msg << "In addition to the overall response being to large for the service to produce,\n";
-            msg << "the request references the following variable(s) ";
+//          msg <<"- Consider asking for fewer variables (do you need them all?)"
+            msg << "\nIn addition to the overall response being too large for the\n";
+            msg << "service to produce, the request references the following\n";
+            msg << "variable(s) ";
         }
         else {
             // Start message
             msg << too_big_error_prolog(max_response_size_bytes, max_var_size_bytes);
-            msg << "The following is a list of variable(s), identified in the request,\n";
+            msg << "The following is a list of variable(s), identified\n";
+            msg << "in the request, ";
         }
         // Add oversoze variable info.
-        msg << "that are individually Too Large for the service to process.\n";
+        msg << "that are each too large for the service\n";
+        msg << "to process.\n";
         msg << "\nOversized Variable(s): \n";
         for(const auto& var_entry:too_big_vars){
             msg << "    " << var_entry << "\n";
