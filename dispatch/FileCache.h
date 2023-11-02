@@ -47,10 +47,7 @@ static inline std::string get_errno() {
     return s_err ? s_err : "unknown error";
 }
 
-// Name of the file that tracks the size of the cache
-constexpr auto const CACHE_INFO_FILE_NAME = "cache_info";
-
-constexpr const unsigned long long MEGABYTE = 1048576;
+const unsigned long long MEGABYTE = 1048576;
 
 /**
  * @brief Implementation of a caching mechanism for compressed data.
@@ -70,18 +67,22 @@ constexpr const unsigned long long MEGABYTE = 1048576;
  * looks to see if a file is already in the cache, the entire cache is locked.
  * If the file is present, a shared read lock is obtained and the cache is unlocked.
  *
- * Methods: create_and_lock() and get_read_lock() open and lock files; the former
- * creates the file and locks it exclusively iff it does not exist, while the
- * latter obtains a shared lock iff the file already exists. The unlock()
- * methods unlock a file. The lock_cache_info() and unlock_cache_info() are
- * used to control access to the whole cache - with the open + lock and
- * close + unlock operations are performed atomically. Other methods that operate
- * on the cache info file must only be called when the lock has been obtained.
+ * This is the Nth rewrite of the original BES 'uncompress cache' and it now
+ * supplies a much simpler interface: initialize(), put(), get(), and del().
+ * The constructor for FileCache no longer initializes the cache, use the named
+ * method for that. The put(key, source file) method locks the cache and copies
+ * the contents of 'source file' into a new file that is named 'key.' The
+ * get(key, item) method opens the file named 'key' and returns an instance of
+ * FileCache::Item that holds the locked (shared, using flock(2)) file. Use
+ * close(item.get_fd()) to release the lock and close the file. The del(key)
+ * method deletes the file if it can get an exclusive lock on the file. The
+ * del() method is the only method that uses a non-blocking lock on a file.
+ * If can be forced to use a blocking lock using an optional second argument.
  *
  * @note The locking mechanism uses Unix flock(2) and so is _per file_.
  * Using flock(2) instead of fcntl(2) means that the locking is thread-safe. On
  * older linux kernels (< 2.6.12) flock(2) does not work with NFSv4. Based on
- * stackoverflow[0, it should work with an AWS EFS volume and newer NFS implementations.
+ * stackoverflow[0], it should work with an AWS EFS volume and newer NFS implementations.
  * (YMMV).
  *
  * [0]: stackoverflow.com/questions/53177938/is-it-safe-to-use-flock-on-aws-efs-to-emulate-a-critical-section
@@ -99,6 +100,8 @@ class FileCache {
 
     // Name of the file that tracks the size of the cache
     int d_cache_info_fd = -1;
+
+    const std::string CACHE_INFO_FILE_NAME = "cache_info";
 
     static std::string get_lock_type_string(int lock_type) {
         return (lock_type == LOCK_EX) ? "Exclusive": "Shared";

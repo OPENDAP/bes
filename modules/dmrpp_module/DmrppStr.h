@@ -39,29 +39,28 @@ namespace dmrpp {
 class DmrppStr: public libdap::Str, public DmrppCommon {
 
 public:
-    DmrppStr(const std::string &n) : libdap::Str(n), DmrppCommon() { }
+    explicit DmrppStr(const std::string &n) : libdap::Str(n), DmrppCommon() { }
     DmrppStr(const std::string &n, const std::string &d) : libdap::Str(n, d), DmrppCommon() { }
     DmrppStr(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Str(n), DmrppCommon(dmz) { }
     DmrppStr(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Str(n, d), DmrppCommon(dmz) { }
     DmrppStr(const DmrppStr &) = default;
 
-    virtual ~DmrppStr() = default;
+    ~DmrppStr() override = default;
 
     DmrppStr &operator=(const DmrppStr &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppStr(*this);
     }
 
     bool read() override;
     void set_send_p(bool state) override;
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
-    {
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override {
         DmrppCommon::print_dmrpp(writer, constrained);
     }
 
-    virtual void dump(ostream & strm) const;
+    void dump(ostream & strm) const override;
 };
 
 } // namespace dmrpp
