@@ -398,12 +398,12 @@ public:
             return false;
 
         // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
-        DIR *dir = nullptr;
-        struct dirent *ent = nullptr;
+        DIR *dir;
+        struct dirent *ent;
         if ((dir = opendir (d_cache_dir.c_str())) != nullptr) {
             /* print all the files and directories within directory */
             while ((ent = readdir (dir)) != nullptr) {
-                // Skip the . and .. files and the cache info file
+                // Skip the '.' and '..' files and the cache info file
                 if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0
                     || strcmp(ent->d_name, CACHE_INFO_FILE_NAME) == 0)
                     continue;
