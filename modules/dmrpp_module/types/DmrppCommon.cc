@@ -27,6 +27,7 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
+#include <memory>
 #include <cstdlib>
 #include <cstring>
 
@@ -38,7 +39,6 @@
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>
 
-
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
@@ -49,7 +49,13 @@
 #include "BESUtil.h"
 #include "BESInternalError.h"
 
+// TODO is this OK to remove now - has enough time gone by? jhrg 8/31/23
+//  Why? Because there is only this use of the RequestHandler class.
+#define EMULATE_ORIGINAL_FILTER_ORDER_BEHAVIOR 1
+#if EMULATE_ORIGINAL_FILTER_ORDER_BEHAVIOR
 #include "DmrppRequestHandler.h"
+#endif
+
 #include "DmrppCommon.h"
 #include "Chunk.h"
 #include "byteswap_compat.h"
@@ -103,6 +109,7 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
 
 /// @brief Set the value of the filters property
 void DmrppCommon::set_filter(const string &value) {
+#if EMULATE_ORIGINAL_FILTER_ORDER_BEHAVIOR
     if (DmrppRequestHandler::d_emulate_original_filter_order_behavior) {
         d_filters = "";
         if (value.find("shuffle") != string::npos)
@@ -117,6 +124,9 @@ void DmrppCommon::set_filter(const string &value) {
     else {
         d_filters = value;
     }
+#else
+    d_filters = value;
+#endif
 }
 
 /**

@@ -22,55 +22,46 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-//#include "config.h"
+#include "config.h"
 
 #include <string>
 
-//#include <libdap/D4Enum.h>
-//#include <libdap/D4EnumDefs.h>
-#include <libdap/D4Attributes.h>
-#include <libdap/D4Maps.h>
-#include <libdap/D4Group.h>
-#include <libdap/XMLWriter.h>
-
 #include <BESError.h>
-//#include <BESDebug.h>
+#include <BESDebug.h>
 
-#include "DmrppD4Group.h"
+#include "DmrppD4Sequence.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppD4Group &
-DmrppD4Group::operator=(const DmrppD4Group &rhs)
+DmrppD4Sequence &
+DmrppD4Sequence::operator=(const DmrppD4Sequence &rhs)
 {
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<D4Group &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    D4Sequence::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
-void
-DmrppD4Group::set_send_p(bool state)
+bool
+DmrppD4Sequence::read()
 {
-    if (state && !get_attributes_loaded())
-        load_attributes(this);
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
-    D4Group::set_send_p(state);
+    throw BESError("Unsupported type libdap::D4Sequence (dmrpp::DmrppSequence)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
 }
 
-void DmrppD4Group::dump(ostream & strm) const
+void DmrppD4Sequence::dump(ostream & strm) const
 {
-    strm << BESIndent::LMarg << "DmrppD4Group::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "DmrppD4Sequence::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    D4Group::dump(strm);
+    D4Sequence::dump(strm);
     strm << BESIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
     BESIndent::UnIndent();
 }

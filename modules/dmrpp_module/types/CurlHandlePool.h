@@ -45,7 +45,6 @@ class Chunk;
  * for serial data access or parallel (round robin) data transfers.
  */
 class dmrpp_easy_handle {
-    bool d_in_use = false;      ///< Is this easy_handle in use?
     std::shared_ptr<http::url> d_url;  ///< The libcurl handle reads from this URL.
     Chunk *d_chunk = nullptr;     ///< This easy_handle reads the data for \arg chunk.
     char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
@@ -57,6 +56,8 @@ class dmrpp_easy_handle {
 
 public:
     dmrpp_easy_handle();
+    dmrpp_easy_handle(const dmrpp_easy_handle &) = delete;
+    dmrpp_easy_handle &operator=(const dmrpp_easy_handle &) = delete;
 
     ~dmrpp_easy_handle();
 

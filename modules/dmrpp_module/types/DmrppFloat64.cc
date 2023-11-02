@@ -29,43 +29,62 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "DmrppD4Sequence.h"
+#include "DmrppFloat64.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppD4Sequence &
-DmrppD4Sequence::operator=(const DmrppD4Sequence &rhs)
+DmrppFloat64 &
+DmrppFloat64::operator=(const DmrppFloat64 &rhs)
 {
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<D4Sequence &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Float64::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppD4Sequence::read()
+DmrppFloat64::read()
 {
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+	BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
-    throw BESError("Unsupported type libdap::D4Sequence (dmrpp::DmrppSequence)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
+    if (read_p())
+        return true;
+
+    set_value(*reinterpret_cast<dods_float64*>(read_atomic(name())));
+
+    set_read_p(true);
+
+    return true;
 }
 
-void DmrppD4Sequence::dump(ostream & strm) const
+void
+DmrppFloat64::set_send_p(bool state)
 {
-    strm << BESIndent::LMarg << "DmrppD4Sequence::dump - (" << (void *) this << ")" << endl;
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Float64::set_send_p(state);
+}
+
+void DmrppFloat64::dump(ostream & strm) const
+{
+    strm << BESIndent::LMarg << "DmrppFloat64::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    D4Sequence::dump(strm);
-    strm << BESIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
+    Float64::dump(strm);
+    strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }
 
 } // namespace dmrpp
+
+

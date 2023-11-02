@@ -30,31 +30,27 @@
 #include <BESDebug.h>
 
 #include "byteswap_compat.h"
-#include "DmrppUInt32.h"
+#include "DmrppInt64.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppUInt32 &
-DmrppUInt32::operator=(const DmrppUInt32 &rhs)
-{
+DmrppInt64 &
+DmrppInt64::operator=(const DmrppInt64 &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<UInt32 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Int64::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppUInt32::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+DmrppInt64::read() {
+    BESDEBUG("dmrpp", "Entering " << __PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -62,10 +58,10 @@ DmrppUInt32::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_uint32*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_int64 *>(read_atomic(name())));
 
-    if ( this->twiddle_bytes() ) {
-        d_buf = bswap_32(d_buf);
+    if (this->twiddle_bytes()) {
+        d_buf = bswap_64(d_buf);
     }
     set_read_p(true);
 
@@ -74,20 +70,18 @@ DmrppUInt32::read()
 }
 
 void
-DmrppUInt32::set_send_p(bool state)
-{
+DmrppInt64::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    UInt32::set_send_p(state);
+    Int64::set_send_p(state);
 }
 
-void DmrppUInt32::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "DmrppUInt32::dump - (" << (void *) this << ")" << endl;
+void DmrppInt64::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "DmrppInt64::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    UInt32::dump(strm);
+    Int64::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }

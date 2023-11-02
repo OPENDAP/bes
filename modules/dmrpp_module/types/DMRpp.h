@@ -45,15 +45,15 @@ class DMRpp : public libdap::DMR {
 private:
     std::string d_href;
     std::string d_version;
-    bool d_print_chunks{};
+    bool d_print_chunks = false;
 
 public:
-    DMRpp() : DMR() { }
-    DMRpp(const DMRpp &dmrpp) : DMR(dmrpp) { }
+    DMRpp() = default;
+    DMRpp(const DMRpp &dmrpp) = default;
+    explicit DMRpp(DmrppTypeFactory *factory, const std::string &name = "");
+    DMRpp &operator=(const DMRpp &) = default;
 
-    DMRpp(DmrppTypeFactory *factory, const std::string &name = "");
-
-    virtual ~DMRpp() { }
+    virtual ~DMRpp() = default;
 
     virtual std::string get_href() const { return d_href; }
     virtual void set_href(const std::string &h) { d_href = h; }

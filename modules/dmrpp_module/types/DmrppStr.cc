@@ -26,64 +26,78 @@
 
 #include <string>
 
-#include <BESError.h>
-#include <BESDebug.h>
+#include "BESError.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
 
-#include "DmrppUrl.h"
+#include "Chunk.h"
+#include "DmrppStr.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppUrl &
-DmrppUrl::operator=(const DmrppUrl &rhs)
-{
+DmrppStr &
+DmrppStr::operator=(const DmrppStr &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<Url &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Str::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppUrl::read()
-{
+DmrppStr::read() {
     if (!get_chunks_loaded())
         load_chunks(this);
 
     if (read_p())
         return true;
 
-    string value = read_atomic(name());
+    // The following replaces a call to DmrppCommon::read_atomic() because the
+    // string code requires special processing of the data array and requires information
+    // about the chunk size to produce correct answers.
 
+    if (get_chunks_size() != 1)
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
+
+    auto chunk = get_immutable_chunks()[0];
+    chunk->read_chunk();
+    auto chunk_size = chunk->get_size();
+    char *data = chunk->get_rbuf();
+
+    // It is possible that the string data is not null terminated and/or
+    // Does not span the full width of the chunk.
+    // This should correct those issues.
+    unsigned long long str_len = 0;
+    bool done = false;
+    while (!done) {
+        done = (data[str_len] == 0) || (str_len >= chunk_size);
+        if (!done) str_len++;
+    }
+    string value(data, str_len);
     set_value(value);   // sets read_p too
-
     return true;
 }
 
 void
-DmrppUrl::set_send_p(bool state)
-{
+DmrppStr::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    Url::set_send_p(state);
+    Str::set_send_p(state);
 }
 
-void DmrppUrl::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;
+void DmrppStr::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "DmrppStr::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    Url::dump(strm);
+    Str::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }
 
 } // namespace dmrpp
-

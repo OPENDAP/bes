@@ -75,19 +75,13 @@ using namespace libdap;
 // jhrg 11/2/21
 #define TREAT_NAMESPACES_AS_LITERALS 1
 
-// THe code can either search for a DAP variable's information in the XML, or it can
+// The code can either search for a DAP variable's information in the XML, or it can
 // record that during the parse process. Set this when/if the code does the latter.
 // Using this simplifies the lazy-load process, particularly for the DAP2 DDS and
 // data responses (which have not yet been coded completely). jhrg 11/17/21
 #define USE_CACHED_XML_NODE 1
 
-#define SUPPORT_FILL_VALUE_CHUNKS 1
-
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
-
-
-
-
 
 namespace dmrpp {
 

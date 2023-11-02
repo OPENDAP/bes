@@ -4,13 +4,14 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
-    -I$(top_srcdir)/http -I$(top_srcdir)/modules/ngap_module -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
+    -I$(top_srcdir)/http -I$(top_srcdir)/modules/dmrpp_module/types -I$(top_srcdir)/modules/ngap_module \
+    -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
-OPENSSL_LIBS=-lcrypto
-OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+OPENSSL_LIBS = -lcrypto
+OPENSSL_INC = -I/usr/local/opt/openssl/include
+OPENSSL_LDFLAGS = -L/usr/local/opt/openssl/lib
 
 AM_CPPFLAGS += $(OPENSSL_INC)
 
@@ -30,33 +31,18 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 AM_LDFLAGS = 
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = writer . unit-tests tests data tests_build_dmrpp
+SUBDIRS = types writer . unit-tests tests data tests_build_dmrpp
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
 
-BES_SRCS = DMRpp.cc DmrppCommon.cc Chunk.cc CurlHandlePool.cc DmrppByte.cc DmrppArray.cc \
-DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc DmrppInt64.cc \
-DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
-DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
-DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppMetadataStore.cc \
-SuperChunk.cc DMZ.cc
-
-BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h DmrppByte.h \
-DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
-DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
-DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
-DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
-DmrppMetadataStore.h DmrppNames.h byteswap_compat.h  \
-SuperChunk.h Base64.h DMZ.h  DmrppChunkOdometer.h UnsupportedTypeException.h
-
-DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
-
-libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) $(DMRPP_MODULE)
+libdmrpp_module_la_SOURCES = $(DMRPP_MODULE)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module
-libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-    $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types \
-    -Lwriter -ldmrpp_writer
+libdmrpp_module_la_LIBADD = types/libdmrpp_types.la writer/libdmrpp_writer.la \
+    $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+    $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
+
+DMRPP_MODULE = DmrppModule.cc DmrppModule.h DmrppRequestHandler.cc DmrppRequestHandler.h
 
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 
@@ -69,14 +55,11 @@ h5common.h: Makefile
 	cp $(top_srcdir)/modules/hdf5_handler/h5common.h ./h5common.h
 
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
-build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
-    build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
-build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
-build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
+build_dmrpp_SOURCES = DmrppRequestHandler.cc DmrppRequestHandler.h build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
+build_dmrpp_LDFLAGS = types/libdmrpp_types.la $(top_builddir)/dap/.libs/libdap_module.a
+build_dmrpp_LDADD = types/libdmrpp_types.la $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
     $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
     $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
-
-# jhrg 6/2/23 $(BES_EXTRA_LIBS)
 
 # check_dmrpp config
 check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)

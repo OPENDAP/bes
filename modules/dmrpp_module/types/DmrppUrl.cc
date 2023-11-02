@@ -24,69 +24,58 @@
 
 #include "config.h"
 
-#include <string>
-
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "DmrppFloat64.h"
+#include "DmrppUrl.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppFloat64 &
-DmrppFloat64::operator=(const DmrppFloat64 &rhs)
-{
+DmrppUrl &
+DmrppUrl::operator=(const DmrppUrl &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<Float64 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    Url::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppFloat64::read()
-{
-	BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
-
+DmrppUrl::read() {
     if (!get_chunks_loaded())
         load_chunks(this);
 
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_float64*>(read_atomic(name())));
+    string value = read_atomic(name());
 
-    set_read_p(true);
+    set_value(value);   // sets read_p too
 
     return true;
 }
 
 void
-DmrppFloat64::set_send_p(bool state)
-{
+DmrppUrl::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    Float64::set_send_p(state);
+    Url::set_send_p(state);
 }
 
-void DmrppFloat64::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "DmrppFloat64::dump - (" << (void *) this << ")" << endl;
+void DmrppUrl::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    Float64::dump(strm);
+    Url::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }
 
 } // namespace dmrpp
-
 

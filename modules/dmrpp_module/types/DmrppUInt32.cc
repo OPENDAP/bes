@@ -30,31 +30,27 @@
 #include <BESDebug.h>
 
 #include "byteswap_compat.h"
-#include "DmrppInt16.h"
+#include "DmrppUInt32.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppInt16 &
-DmrppInt16::operator=(const DmrppInt16 &rhs)
-{
+DmrppUInt32 &
+DmrppUInt32::operator=(const DmrppUInt32 &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<Int16 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    UInt32::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppInt16::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+DmrppUInt32::read() {
+    BESDEBUG("dmrpp", "Entering " << __PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -62,32 +58,30 @@ DmrppInt16::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_int16*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_uint32 *>(read_atomic(name())));
 
-    if ( this->twiddle_bytes() ) {
-        d_buf = bswap_16(d_buf);
+    if (this->twiddle_bytes()) {
+        d_buf = bswap_32(d_buf);
     }
-
     set_read_p(true);
 
     return true;
+
 }
 
 void
-DmrppInt16::set_send_p(bool state)
-{
+DmrppUInt32::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    Int16::set_send_p(state);
+    UInt32::set_send_p(state);
 }
 
-void DmrppInt16::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "DmrppInt16::dump - (" << (void *) this << ")" << endl;
+void DmrppUInt32::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "DmrppUInt32::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    Int16::dump(strm);
+    UInt32::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }

@@ -22,75 +22,53 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include "config.h"
+//#include "config.h"
 
 #include <string>
 
-#include <BESError.h>
-#include <BESDebug.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Group.h>
+#include <libdap/XMLWriter.h>
 
-#include "byteswap_compat.h"
-#include "DmrppInt64.h"
+#include <BESError.h>
+
+#include "DmrppD4Group.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppInt64 &
-DmrppInt64::operator=(const DmrppInt64 &rhs)
+DmrppD4Group &
+DmrppD4Group::operator=(const DmrppD4Group &rhs)
 {
     if (this == &rhs)
     return *this;
 
-    dynamic_cast<Int64 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    D4Group::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
-bool
-DmrppInt64::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
-
-    if (!get_chunks_loaded())
-        load_chunks(this);
-
-    if (read_p())
-        return true;
-
-    set_value(*reinterpret_cast<dods_int64*>(read_atomic(name())));
-
-    if ( this->twiddle_bytes() ) {
-        d_buf = bswap_64(d_buf);
-    }
-    set_read_p(true);
-
-    return true;
-
-}
-
 void
-DmrppInt64::set_send_p(bool state)
+DmrppD4Group::set_send_p(bool state)
 {
-    if (!get_attributes_loaded())
+    if (state && !get_attributes_loaded())
         load_attributes(this);
 
-    Int64::set_send_p(state);
+    D4Group::set_send_p(state);
 }
 
-void DmrppInt64::dump(ostream & strm) const
+void DmrppD4Group::dump(ostream & strm) const
 {
-    strm << BESIndent::LMarg << "DmrppInt64::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "DmrppD4Group::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     DmrppCommon::dump(strm);
-    Int64::dump(strm);
-    strm << BESIndent::LMarg << "value:    " << d_buf << endl;
+    D4Group::dump(strm);
+    strm << BESIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
     BESIndent::UnIndent();
 }
 
 } // namespace dmrpp
-

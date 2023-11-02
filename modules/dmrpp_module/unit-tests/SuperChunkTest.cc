@@ -39,9 +39,10 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
+#include "CurlHandlePool.h"
+#include "DmrppRequestHandler.h"
 #include "DmrppArray.h"
 #include "DmrppByte.h"
-#include "DmrppRequestHandler.h"
 #include "Chunk.h"
 #include "SuperChunk.h"
 
@@ -64,18 +65,12 @@ private:
 
 public:
     // Called once before everything gets tested
-    SuperChunkTest()
-    {
-    }
-
+    SuperChunkTest() = default;
     // Called at the end of the test
-    ~SuperChunkTest()
-    {
-    }
+    ~SuperChunkTest() override = default;
 
     // Called before each test
-    void setUp()
-    {
+    void setUp() override {
         DBG(cerr << endl);
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
@@ -89,14 +84,6 @@ public:
         unsigned long long int max_threads = 8;
         dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
         dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
-
-        // This call instantiates the curlHandlePool. jhrg 5/24/22
-        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
-    }
-
-    // Called after each test
-    void tearDown()
-    {
     }
 
     void sc_one_chunk_test() {
@@ -295,10 +282,6 @@ public:
                     }
                     letter_index++;
                 }
-
-                //char target_a[] = "a";
-                //char target_test[] = "test";
-
             }
 
         }
@@ -322,8 +305,10 @@ public:
 
     CPPUNIT_TEST_SUITE( SuperChunkTest );
 
+#if 1
         CPPUNIT_TEST(sc_one_chunk_test);
         CPPUNIT_TEST(sc_chunks_test_01);
+#endif
         CPPUNIT_TEST(sc_chunks_test_02);
 
     CPPUNIT_TEST_SUITE_END();

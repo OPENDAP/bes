@@ -30,31 +30,27 @@
 #include <BESDebug.h>
 
 #include "byteswap_compat.h"
-#include "DmrppUInt16.h"
+#include "DmrppUInt64.h"
 
 using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
 
-DmrppUInt16 &
-DmrppUInt16::operator=(const DmrppUInt16 &rhs)
-{
+DmrppUInt64 &
+DmrppUInt64::operator=(const DmrppUInt64 &rhs) {
     if (this == &rhs)
-    return *this;
+        return *this;
 
-    dynamic_cast<UInt16 &>(*this) = rhs; // run Constructor=
-
-    dynamic_cast<DmrppCommon &>(*this) = rhs;
-    //DmrppCommon::m_duplicate_common(rhs);
+    UInt64::operator=(rhs);
+    DmrppCommon::operator=(rhs);
 
     return *this;
 }
 
 bool
-DmrppUInt16::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+DmrppUInt64::read() {
+    BESDEBUG("dmrpp", "Entering " << __PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -62,10 +58,10 @@ DmrppUInt16::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_uint16*>(read_atomic(name())));
+    set_value(*reinterpret_cast<dods_uint64 *>(read_atomic(name())));
 
-    if ( this->twiddle_bytes() ) {
-        d_buf = bswap_16(d_buf);
+    if (this->twiddle_bytes()) {
+        d_buf = bswap_64(d_buf);
     }
     set_read_p(true);
 
@@ -74,24 +70,20 @@ DmrppUInt16::read()
 }
 
 void
-DmrppUInt16::set_send_p(bool state)
-{
+DmrppUInt64::set_send_p(bool state) {
     if (!get_attributes_loaded())
         load_attributes(this);
 
-    UInt16::set_send_p(state);
+    UInt64::set_send_p(state);
 }
 
-void DmrppUInt16::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "DmrppUInt16::dump - (" << (void *) this << ")" << endl;
+void DmrppUInt64::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "DmrppUInt64::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-
     DmrppCommon::dump(strm);
-    UInt16::dump(strm);
+    UInt64::dump(strm);
     strm << BESIndent::LMarg << "value:    " << d_buf << endl;
     BESIndent::UnIndent();
 }
 
 } // namespace dmrpp
-

@@ -4,7 +4,15 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
     -I$(top_srcdir)/modules -I$(top_srcdir)/rapidjson -I$(top_srcdir)/modules/fileout_netcdf $(DAP_CFLAGS)
+
 LIBADD =  $(NC_LDFLAGS) $(NC_LIBS)  $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(DAP_SERVER_LIBS)
+
+# TODO set these with configure. jhrg 11/26/19
+OPENSSL_LIBS=-lcrypto
+OPENSSL_INC=-I/usr/local/opt/openssl/include
+OPENSSL_LD=-L/usr/local/opt/openssl/lib
+
+LIBADD += $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
 
@@ -31,7 +39,7 @@ check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-# Adding the tmp dir here causes make to put it in the buld dir
+# Adding the tmp dir here causes make to put it in the build dir
 noinst_DATA = tmp
 
 BUILT_SOURCES = test_config.h
