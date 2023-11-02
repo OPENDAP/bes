@@ -159,25 +159,6 @@ void throw_for_dap4_typed_attrs(DAS *das, const std::string &file, unsigned int 
     }
 }
 
-#if 0
-/**
- * @brief convenience function for the response limit test.
- * The DDS stores the response size limit in Bytes even though the context
- * param uses KB. The DMR uses KB throughout.
- * @param dds
- */
-void throw_if_dap2_response_too_big(DDS *dds, const std::string &file, unsigned int line)
-{
-    if (dds->too_big()) {
-        stringstream msg;
-        msg << "The submitted DAP2 request will generate a " << dds->get_request_size_kb(true);
-        msg <<  " kilobyte response, which is too large. ";
-        msg << "The maximum response size for this server is limited to " << dds->get_response_limit_kb();
-        msg << " kilobytes.";
-        throw BESSyntaxUserError(msg.str(),file, line);
-    }
-}
-#endif
 
 /**
  * @brief - determines the number of requested elements for the D4Dimension d4dim.
