@@ -421,7 +421,7 @@ void process_chunks_unconstrained_concurrent(
     }
 }
 
-//KENT: TODO - change for direct chunk IO.
+//Direct IO routine for processing chunks when the variable is not constrained. 
 void process_chunks_unconstrained_concurrent_dio(
         const string &super_chunk_id,
         queue<shared_ptr<Chunk>> &chunks,
@@ -449,6 +449,8 @@ void process_chunks_unconstrained_concurrent_dio(
 
                     auto args = unique_ptr<one_chunk_unconstrained_args>(
                             new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape) );
+
+                    // Call direct IO routine
                     thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args));
 
                     if (thread_started) {
@@ -685,18 +687,17 @@ void SuperChunk::retrieve_data() {
         chunk->set_bytes_read(chunk->get_size());
     }
 }
-//KENT: Need to change for direct chunk IO.
+// Direct chunk IO routine for retrieve_data, it clones from retrieve_data(). To ensure
+// the regular operations. Still use a separate method.
 void SuperChunk::retrieve_data_dio() {
+
+    // Leave this comment copied from retrieve_data_dio().
     // TODO I think this code should set d_is_read. It sets it for the Chunk, which may be redundant). jhrg 5/9/22
     if (d_is_read) {
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
     }
 
-    // TODO Move this into read_aggregate_bytes(), move map_chunks_to_buffer()
-    //  after read_aggregate_bytes() and modify map_chunks_to_buffer() to set
-    //  the chunk size and read state so the last for loop can be removed.
-    //  jhrg 5/6/22
     if (!d_read_buffer) {
         // Allocate memory for SuperChunk receive buffer.
         // release memory in destructor.
@@ -834,12 +835,11 @@ void SuperChunk::dump(ostream & strm) const {
     strm << to_string(false) ;
 }
 
-// KENT: need to handle for direct chunk IO.
+// direct chunk method to read unconstrained variables.
 void SuperChunk::read_unconstrained_dio() {
 
+    //Retrieve data for the direct IO case.
     retrieve_data_dio();
-    //process_child_chunks_unconstrained();
-
 
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = d_parent_array->get_shape(true);
@@ -851,7 +851,7 @@ void SuperChunk::read_unconstrained_dio() {
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
 #endif
-        for(auto &chunk :get_chunks()){
+        for(const auto &chunk :get_chunks()){
             process_one_chunk_unconstrained_dio(chunk, chunk_shape, d_parent_array, array_shape);
         }
     }
@@ -863,7 +863,7 @@ void SuperChunk::read_unconstrained_dio() {
         sw.start(timer_name.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for (auto &chunk:get_chunks())
+        for (const auto &chunk:get_chunks())
             chunks_to_process.push(chunk);
 
         process_chunks_unconstrained_concurrent_dio(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);

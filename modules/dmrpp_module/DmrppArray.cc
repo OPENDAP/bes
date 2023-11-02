@@ -415,6 +415,8 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
     }
 }
 
+// Clone of read_super_chunks_unconstrained_concurrent for direct IO. 
+// Doing this to ensure direct IO won't affect the regular operations.
 void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>> &super_chunks, DmrppArray *array)
 {
     BESStopWatch sw;
@@ -446,6 +448,8 @@ void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>
                     BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
 
                     auto args = unique_ptr<one_super_chunk_args>(new one_super_chunk_args(super_chunk, array));
+
+                    // direct IO calling
                     thread_started = start_super_chunk_unconstrained_transfer_thread_dio(futures, std::move(args));
 
                     if (thread_started) {
@@ -982,7 +986,7 @@ void DmrppArray::read_one_chunk_dio() {
     // For this version, we just read the whole chunk all at once.
     the_one_chunk->read_chunk_dio();
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
-    char *source_buffer = the_one_chunk->get_rbuf();
+    const char *source_buffer = the_one_chunk->get_rbuf();
     char *target_buffer = get_buf();
     memcpy(target_buffer, source_buffer , the_one_chunk->get_size());
 
@@ -1051,14 +1055,17 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
     }
 }
 
-
+// The direct IO routine to insert the unconstrained chunks.
 void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
 
-    char *source_buffer = chunk->get_rbuf();
+    const char *source_buffer = chunk->get_rbuf();
     char *target_buffer = get_buf();
+
+    // copy the chunk buffer to the variable buffer at the right location.
     memcpy(target_buffer + chunk->get_direct_io_offset(), source_buffer,chunk->get_size());
  
 }
+
 /**
  * @brief Read data for an unconstrained chunked array
  *
@@ -1134,7 +1141,7 @@ void DmrppArray::read_chunks_unconstrained()
     set_read_p(true);
 }
 
-//KENT: handle direct chunk IO, mostly copy from the general IO handling routines.
+//The direct chunk IO routine of read chunks., mostly copy from the general IO handling routines.
 void DmrppArray::read_chunks_dio_unconstrained()
 {
 
@@ -1167,11 +1174,8 @@ void DmrppArray::read_chunks_dio_unconstrained()
         }
     }
 
-    // KENT: Change to the total storage buffer size to just the compressed buffer size. 
+    //Change to the total storage buffer size to just the compressed buffer size. 
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
-    //d_buf.resize(get_var_chunks_storage_size());
-    //reserve_value_capacity_ll(get_size());
-
 
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
@@ -1190,7 +1194,8 @@ void DmrppArray::read_chunks_dio_unconstrained()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
-            //super_chunk->read_unconstrained();
+
+            // Call direct IO routine 
             super_chunk->read_unconstrained_dio();
         }
     }
@@ -1201,6 +1206,7 @@ void DmrppArray::read_chunks_dio_unconstrained()
         BESStopWatch sw(dmrpp_3);
         sw.start(timer_name.str());
 #endif
+        // Call direct IO routine for parallel transfers
         read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
     }
     set_read_p(true);
@@ -1981,22 +1987,30 @@ bool DmrppArray::read()
     // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
     // Direct io offset is only necessary when the direct IO operation is possible.
     if (this->use_direct_io_opt()) { 
+
         this->set_dio_flag();
         auto chunks = this->get_chunks();
+
+        // Need to provide the offset of a chunk in the final data buffer.
         for (unsigned int i = 0; i<chunks.size();i++) {
             if (i > 0) 
                chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
             BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
         }
+
+        // Fill in the chunk information so that the fileout netcdf can retrieve.
         Array::var_storage_info dmrpp_vs_info;
         dmrpp_vs_info.filter = this->get_filters();
     
+        // Provide the deflate compression levels.
         for (const auto &def_lev:this->get_deflate_levels())
             dmrpp_vs_info.deflate_levels.push_back(def_lev);
         
+        // Chunk dimension sizes.
         for (const auto &chunk_dim:this->get_chunk_dimension_sizes())
             dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
         
+        // Provide chunk offset/length etc. 
         auto im_chunks = this->get_immutable_chunks();
         for (const auto &chunk:im_chunks) {
             Array::var_chunk_info_t vci_t;
@@ -2578,12 +2592,14 @@ bool DmrppArray::use_direct_io_opt() {
     }
 
     bool is_data_all_fvalues = false;
-    // This is the final check for a rare case: the variable data just contains the filled values.
+    // This is the check for a rare case: the variable data just contains the filled values.
     // If this var's storage size is 0. Then it should be filled with the filled values.
     if (has_deflate_filter && this->get_uses_fill_value() && this->get_var_chunks_storage_size() == 0) 
             is_data_all_fvalues = true;
 
     bool has_dio_filters = false;
+
+    // If the deflate level is not provided, we cannot do the direct IO.
     if (has_deflate_filter && !is_data_all_fvalues) {
         if (this->get_deflate_levels().empty() == false)
             has_dio_filters = true; 
@@ -2593,6 +2609,7 @@ bool DmrppArray::use_direct_io_opt() {
     // If this is the case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
     // TODO later, if the dimension is unlimited, this restriction can be lifted. Current dmrpp doesn't store the
     // unlimited dimension information.
+
     if (has_dio_filters) {
 
         vector <unsigned long long>chunk_dim_sizes = this->get_chunk_dimension_sizes();

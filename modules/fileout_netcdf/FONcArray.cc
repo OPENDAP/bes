@@ -358,9 +358,9 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         }
     }
 
-#if 0
-for( const auto &chunk_size:d_chunksizes) 
-    BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
+#ifndef NDEBUG
+    for( const auto &chunk_size:d_chunksizes) 
+        BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
 #endif
 
     // if this array is a string array, then add the length dimension
@@ -377,13 +377,12 @@ for( const auto &chunk_size:d_chunksizes)
         // string data long before we actually write it out. Kind of a drag,
         // but not the end of the world. jhrg 5/18/21
 
-        // Kent: Here we still need to call the intern_data(), otherwise, some tests get failed.
-//#if 0
+        // For NC_CHAR, the module needs to call the intern_data().  
+        // This routine is called in the convert(). So it should not called in define().
         if (d_is_dap4)
             d_a->intern_data();
         else
             d_a->intern_data(*get_eval(), *get_dds());
-//#endif
 
         // get the data from the dap array
         int array_length = d_a->length();
@@ -598,87 +597,89 @@ void FONcArray::define(int ncid) {
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
-// Add direct IO check
-
-    if (d_array_type !=NC_CHAR) {
-    if (d_is_dap4)
-        d_a->intern_data();
-    else    
-        d_a->intern_data(*get_eval(), *get_dds());
-    }
-
-    bool d_io_flag = d_a->get_dio_flag();
-    BESDEBUG("fonc", "d_io_flag: "<<d_io_flag<<endl);
-    
-    if (d_io_flag) {
-        Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
-        BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
-        for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
-            BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
-
-        for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
-            BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
-
-        for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
-            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
-            
-            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
-            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
-                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
+        // Check if the direct IO flag is set. Note intern_data() is called in define().
+        if (d_array_type != NC_CHAR) {
+            if (d_is_dap4)
+                d_a->intern_data();
+            else    
+                d_a->intern_data(*get_eval(), *get_dds());
         }
- 
-    }
 
-    // KENT: Debugging only
-    // KENT: Need to get the indentations corrected.
-    //d_io_flag = false;
+        bool d_io_flag = d_a->get_dio_flag();
+
+#ifndef NBEBUG
+        BESDEBUG("fonc", "d_io_flag: "<<d_io_flag<<endl);
+        
+        if (d_io_flag) {
+
+            Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+            BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
+            for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
+                BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
+    
+            for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
+                BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
+    
+            for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
+                BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
+                BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
+                BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
+                
+                BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
+                for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
+                    BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
+            }
+        }
 
         BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << d_ncVersion << endl);
+
+#endif
+
         if (isNetCDF4()) {
             BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
 
-          if (d_io_flag) {
-                // Kent: Use the direct chunk IO settings.
+            if (d_io_flag) {
+                // Use the direct chunk IO settings.
                 define_dio_filters(ncid, d_varid);     
-          }
-          else {
-            if (FONcRequestHandler::chunk_size == 0)
-                // I have no idea if chunksizes is needed in this case.
-                stax = nc_def_var_chunking(ncid, d_varid, NC_CONTIGUOUS, d_chunksizes.data());
-            else
-                stax = nc_def_var_chunking(ncid, d_varid, NC_CHUNKED, d_chunksizes.data());
-
-            if (stax != NC_NOERR) {
-                string err = "fileout.netcdf - Failed to define chunking for variable " + d_varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }
-
-            // TODO Make this more adaptable to the Array's data type. Find out when it's
-            //  best to use shuffle, et c. jhrg 7/22/18
-            if (FONcRequestHandler::use_compression) {
-
-                int shuffle = 0;
-                // For integer, if the type size is >= 2, turn on the shuffle key always.
-                // For other types, turn off the shuffle key by default.
-                if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
-                    NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
-                    FONcRequestHandler::use_shuffle)                
-                    shuffle = 1;
-                
-                int deflate = 1;
-                int deflate_level = 4;
-                stax = nc_def_var_deflate(ncid, d_varid, shuffle, deflate, deflate_level);
-
+            else {
+                if (FONcRequestHandler::chunk_size == 0)
+                    // I have no idea if chunksizes is needed in this case.
+                    stax = nc_def_var_chunking(ncid, d_varid, NC_CONTIGUOUS, d_chunksizes.data());
+                else
+                    stax = nc_def_var_chunking(ncid, d_varid, NC_CHUNKED, d_chunksizes.data());
+    
                 if (stax != NC_NOERR) {
-                    string err = (string) "fileout.netcdf - Failed to define compression (deflate) level for variable "
-                                 + d_varname;
+                    string err = "fileout.netcdf - Failed to define chunking for variable " + d_varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+    
+                // TODO Make this more adaptable to the Array's data type. Find out when it's
+                //  best to use shuffle, et c. jhrg 7/22/18
+                // The following code provides a way how to use shuffle. KY 11/2/23
+                if (FONcRequestHandler::use_compression) {
+    
+                    int shuffle = 0;
+                    // For integer, if the type size is >= 2, turn on the shuffle key always.
+                    // For other types, turn off the shuffle key by default.
+                    if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
+                        NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
+                        FONcRequestHandler::use_shuffle)                
+                        shuffle = 1;
+                    
+                    int deflate = 1;
+                    int deflate_level = 4;
+                    stax = nc_def_var_deflate(ncid, d_varid, shuffle, deflate, deflate_level);
+    
+                    if (stax != NC_NOERR) {
+                        string err = (string) "fileout.netcdf - Failed to define compression (deflate) level for variable "
+                                     + d_varname;
+                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                    }
                 }
             }
         }
-      }
 
         // Largely revised the fillvalue check code and add the check for the DAP4 case. KY 2021-05-10
         if (d_is_dap4) {
@@ -714,7 +715,7 @@ void FONcArray::define(int ncid) {
  */
 void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 
-// KENT: to support direct IO, intern_data() is moved to the define mode.
+// To support direct IO, intern_data() is moved to the define mode, Comment out for the time being.
 #if 0
     if (d_is_dap4)
         d_a->intern_data();
@@ -722,37 +723,11 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
         d_a->intern_data(*get_eval(), *get_dds());
 #endif
 
-    // TODO: the ifndef NDEBUG #endif should be removed when direct IO is supported.
+    // Check if we can use direct IO.
     bool d_io_flag = d_a->get_dio_flag();
 
-#ifndef NDEBUG
-    BESDEBUG("fonc", "d_io_flag: "<<d_io_flag<<endl);
-    
     if (d_io_flag) {
-        Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
-        for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
-            BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
-
-        for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
-            BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
-
-        for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
-            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
-            
-            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
-            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
-                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
-        }
- 
-    }
-#endif
- 
-    
-    // KENT: debugging only
-    //d_io_flag = false;
-    if (d_io_flag) {
+        // direct IO operation.
         write_direct_io_data(ncid,d_varid);
         return;
     }
@@ -911,6 +886,8 @@ void FONcArray::write_for_nc3_types(int ncid) {
             // detects the original variable was of type Byte and typecasts
             // each data value to a short.
             if (element_type == dods_byte_c || element_type == dods_uint8_c) {
+               // The data is retrieved in the define mode. So no need to do it here.
+               // Comment out for the time being.
 #if 0
                 if (d_is_dap4)
                     d_a->intern_data();
@@ -962,6 +939,9 @@ void FONcArray::write_for_nc3_types(int ncid) {
             }
 
             if (element_type == dods_uint16_c) {
+
+               // The data is retrieved in the define mode. So no need to do it here.
+               // Comment out for the time being.
 #if 0
                 if (d_is_dap4)
                     d_a->intern_data();
@@ -1164,6 +1144,7 @@ void FONcArray::write_for_nc4_types(int ncid) {
     }
 }
 
+// Method to define filters of direct IO.
 void FONcArray::define_dio_filters(int ncid, int d_varid) {
 
     Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
@@ -1178,6 +1159,7 @@ void FONcArray::define_dio_filters(int ncid, int d_varid) {
     bool has_2deflates = false;
     bool has_1deflate = false;
 
+    // Filter orders matter.
     obtain_dio_filters_order(filters_string, has_fletcher_first, has_fletcher_last, has_shuffle, has_2deflates, has_1deflate);
 
     int stax = 0;
@@ -1187,28 +1169,13 @@ void FONcArray::define_dio_filters(int ncid, int d_varid) {
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
 
+    // Allocate filters for the direct IO.
     allocate_dio_nc4_def_filters(ncid, d_varid, has_fletcher_first, has_fletcher_last, has_shuffle, has_2deflates, has_1deflate, dmrpp_vs_info.deflate_levels);
 
 
-        for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
-            BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
-
-        for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
-            BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
-
-        for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
-            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
-            
-            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
-            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
-                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
-        }
-
 }
 
-
+// Method that obtains the filter orders for the direct IO case.
 void FONcArray::obtain_dio_filters_order(const string & filters, bool &has_fle_first, bool &has_fle_last, bool &has_shuffle, bool &has_2defs, bool &has_1def) {
 
     vector<string> filter_array = BESUtil::split(filters, ' ' );
@@ -1236,7 +1203,7 @@ void FONcArray::obtain_dio_filters_order(const string & filters, bool &has_fle_f
 
 }
 
-
+// Method that allocate netCDF-4 filters for the direct IO case.
 void FONcArray::allocate_dio_nc4_def_filters(int ncid, int d_varid, bool has_fle_first, bool has_fle_last, bool has_shuffle, 
                                          bool has_2defs, bool has_1def, const vector<unsigned int>& def_levs) {
 
@@ -1300,38 +1267,29 @@ void FONcArray::allocate_dio_nc4_def_filters(int ncid, int d_varid, bool has_fle
 
 }
 
+// Write data for the direct IO case.
 void FONcArray::write_direct_io_data(int ncid, int d_varid) {
 
     char dummy_buffer[1];
+
+    // The following call doesn't write any data but set up the necessary operations for sending data directly.
     int stax = nc_put_var(ncid, d_varid, dummy_buffer);
     if (stax != NC_NOERR) {
         string err = "fileout.netcdf - the direct IO version of nc_put_var error for variable " + d_varname;
         FONcUtils::handle_error(stax , err, __FILE__, __LINE__);
     }
 
-
     Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
 
     for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
 
-            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
-            
-            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
-            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
-                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
-
         Array::var_chunk_info_t vci = dmrpp_vs_info.var_chunk_info[i];
 
-        // KENT: may use the vector to replace new later. 
+        // May use the vector to replace new[] later. 
         char *chunk_buf = new char[vci.chunk_buffer_size];
-            BESDEBUG("fonc", "before memory copy" <<endl);
         memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);
-            BESDEBUG("fonc", "after memcpy: "<<endl);
 
         stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(vci.chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);
-            BESDEBUG("fonc", "after nc4_write_chunk: "<<endl);
         if (stax != NC_NOERR) {
             string err = "fileout.netcdf - nc4_write_chunk error for variable " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
