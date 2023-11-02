@@ -179,7 +179,7 @@ public:
         fc.d_cache_dir = cache_dir;
         CPPUNIT_ASSERT_MESSAGE("The cache file should be opened", fc.open_cache_info());
 
-        string cache_info_filename = BESUtil::pathConcat(cache_dir, CACHE_INFO_FILE_NAME);
+        string cache_info_filename = BESUtil::pathConcat(cache_dir, fc.CACHE_INFO_FILE_NAME);
         DBG(cerr << prolog << "cache_info_filename: " << cache_info_filename << '\n');
         CPPUNIT_ASSERT_MESSAGE("The cache file should exist", access(cache_info_filename.c_str(), F_OK) == 0);
 
@@ -467,6 +467,78 @@ public:
             bool xor_parent_child_status = (xor_status && WEXITSTATUS(child_status) != 0) || (!xor_status && WEXITSTATUS(child_status) == 0);
             CPPUNIT_ASSERT_MESSAGE("one status should be true and one false", xor_parent_child_status);
         }
+    }
+
+    void test_put_fd_version_single_file()
+    {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        struct stat sb{0};  // used later...
+        if (stat(source_file.c_str(), &sb) != 0)
+            CPPUNIT_FAIL("stat() failed on cached file");
+
+        {
+            FileCache::PutItem item(fc);
+
+            bool status = fc.put("key1", item);
+            CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
+
+            // cached file is really there
+            string raw_cached_file_path = cache_dir + "/key1";
+            CPPUNIT_ASSERT_MESSAGE("Should see cached file", access(raw_cached_file_path.c_str(), F_OK) == 0);
+
+            // Write stuff to the open, locked 'item.'
+            int fd2;
+            if ((fd2 = open(source_file.c_str(), O_RDONLY)) < 0) {
+                CPPUNIT_FAIL("Failed to open the source data");
+            }
+
+            std::vector<char> buf(std::min(MEGABYTE, FileCache::get_file_size(fd2)));
+            ssize_t n;
+            while ((n = read(fd2, buf.data(), buf.size())) > 0) {
+                if (write(item.get_fd(), buf.data(), n) != n) {
+                    CPPUNIT_FAIL("Failed to write the source data");
+                }
+            }
+
+            // Now check the size of the cached file - same as the source file?
+            struct stat rcfp_b{0};
+            if (stat(raw_cached_file_path.c_str(), &rcfp_b) != 0)
+                CPPUNIT_FAIL("stat() failed on cached file");
+            CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file", sb.st_size == rcfp_b.st_size);
+
+            CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
+                                   sha256(source_file) == sha256(raw_cached_file_path));
+
+            // Before the PutItem goes out of scope, get(key1) should fail because the
+            // item has an exclusive lock; del() should fail, too.
+            FileCache::Item get_item;
+            CPPUNIT_ASSERT_MESSAGE("get() should fail since the file is still locked", !fc.get("key1", get_item));
+            CPPUNIT_ASSERT_MESSAGE("del() should fail since the file is still locked", !fc.del("key1"));
+
+            // The PutItem goes out of scope and the descriptor should unlock and the
+            // cache_info should be updated.
+        }
+
+        // Was cache_info_size updated correctly?
+        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file",
+                               fc.get_cache_info_size() == sb.st_size);
+
+        {
+            FileCache::Item get_item;   // get_item unlocks the file on exit from the block
+            CPPUNIT_ASSERT_MESSAGE("get() should work now since the file is not locked", fc.get("key1", get_item));
+            CPPUNIT_ASSERT_MESSAGE("del() should not work since the file is locked, now by get()", !fc.del("key1"));
+        }
+
+        CPPUNIT_ASSERT_MESSAGE("del() should work since the file is not locked", fc.del("key1"));
+
+        // Was cache_info_size updated correctly?
+        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file",
+                               fc.get_cache_info_size() == 0);
     }
 
     void test_get_a_file_not_cached() {
@@ -861,6 +933,22 @@ public:
         }
     }
 
+    void test_purge_1() {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        for (int i = 0; i < 10; ++i) {
+            ostringstream oss;
+            oss << "key" << i;
+            CPPUNIT_ASSERT_MESSAGE("Cache put(keyn) should work", fc.put(oss.str(), source_file));
+            oss.clear();
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+
+        fc.purge();
+    }
+
 CPPUNIT_TEST_SUITE(FileCacheTest);
 
     CPPUNIT_TEST(test_unintialized_cache);
@@ -880,6 +968,8 @@ CPPUNIT_TEST_SUITE(FileCacheTest);
     CPPUNIT_TEST(test_get_key_in_thread_then_del);
     CPPUNIT_TEST(test_put_duplicate_key_two_processes_three_threads_each);
 
+    CPPUNIT_TEST(test_put_fd_version_single_file);
+
     CPPUNIT_TEST(test_get_a_file_not_cached);
     CPPUNIT_TEST(test_get_a_file);
     CPPUNIT_TEST(test_get_a_file_two_processes);
@@ -889,6 +979,8 @@ CPPUNIT_TEST_SUITE(FileCacheTest);
     CPPUNIT_TEST(test_put_get_del);
     CPPUNIT_TEST(test_put_get_del_in_two_processes);
     CPPUNIT_TEST(test_put_get_del_in_two_processes_two_cache_instances);
+
+    CPPUNIT_TEST(test_purge_1);
 
     CPPUNIT_TEST_SUITE_END();
 };
