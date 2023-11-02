@@ -7,9 +7,13 @@
 You asked for too much! 
     Maximum allowed response size: 10240 bytes.
     Maximum allowed variable size: 1024 bytes.
-The submitted DAP4 request will generate a 3112656 byte response, which is too large.
-In addition to the overall response being to large for the service to produce,
-the request references the following variable(s) that are individually Too Large for the service to process.
+The submitted DAP4 request will generate a 3112656 byte
+response, which is larger than the maximum allowed response size.
+
+In addition to the overall response being too large for the
+service to produce, the request references the following
+variable(s) that are each too large for the service
+to process.
 
 Oversized Variable(s): 
     Float64 /COADSX[180] (1440 bytes)
