@@ -592,7 +592,7 @@ bool its_too_big(
         if(is_dap2){
             msg << "You can find detailed information about DAP2 variable sub-setting\n";
             msg << "expressions in section 4.4 of the DAP2 User Guide located here:\n";
-            msg << "http://www.opendap.org/documentation/UserGuideComprehensive.pdf\n";
+            msg << "https://www.opendap.org/documentation/UserGuideComprehensive.pdf\n";
         }
         else {
             // It's a DAP4 thing...
