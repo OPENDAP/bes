@@ -408,7 +408,7 @@ public:
             while ((ent = readdir (dir)) != nullptr) {
                 // Skip the '.' and '..' files and the cache info file
                 if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0
-                    || strcmp(ent->d_name, CACHE_INFO_FILE_NAME) == 0)
+                    || strcmp(ent->d_name, CACHE_INFO_FILE_NAME.c_str()) == 0)
                     continue;
                 if (remove(BESUtil::pathConcat(d_cache_dir, ent->d_name).c_str()) != 0) {
                     ERROR_LOG("Error removing " << ent->d_name << " from cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
