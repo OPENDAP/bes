@@ -271,7 +271,7 @@ std::string get_dap_decl(libdap::BaseType *var) {
  * Forward declaration
  */
 uint64_t crsaibv_process_ctor(const libdap::Constructor *ctor,
-                               const uint64_t &max_var_size,
+                               const uint64_t max_var_size,
                               std::vector<std::string> &too_big );
 
 /**
@@ -286,7 +286,7 @@ uint64_t crsaibv_process_ctor(const libdap::Constructor *ctor,
  */
 uint64_t crsaibv_process_variable(
         BaseType *var,
-        const uint64_t &max_var_size,
+        const uint64_t max_var_size,
         std::vector<std::string> &too_big
 ){
 
@@ -325,7 +325,7 @@ uint64_t crsaibv_process_variable(
  * @param too_big An unordered_map fo variable descriptions and their constrained sizes.
  */
  uint64_t crsaibv_process_ctor(const libdap::Constructor *ctor,
-                               const uint64_t &max_var_size,
+                               const uint64_t max_var_size,
                                std::vector<std::string> &too_big
     ){
     uint64_t response_size = 0;
@@ -354,7 +354,7 @@ uint64_t crsaibv_process_variable(
  */
 uint64_t compute_response_size_and_inv_big_vars(
         const libdap::D4Group *grp,
-        const uint64_t &max_var_size,
+        const uint64_t max_var_size,
         std::vector<std::string> &too_big)
 {
     BESDEBUG(MODULE_VERBOSE, prolog << "BEGIN " << grp->type_name() << " " << grp->FQN() << endl);
@@ -394,7 +394,7 @@ uint64_t compute_response_size_and_inv_big_vars(
  */
 uint64_t compute_response_size_and_inv_big_vars(
         libdap::DMR &dmr,
-        const uint64_t &max_var_size,
+        const uint64_t max_var_size,
         std::vector<std::string> &too_big)
 {
     return compute_response_size_and_inv_big_vars(dmr.root(), max_var_size,too_big);
@@ -412,7 +412,7 @@ uint64_t compute_response_size_and_inv_big_vars(
  */
 uint64_t compute_response_size_and_inv_big_vars(
         const libdap::DDS &dds,
-        const uint64_t &max_var_size,
+        const uint64_t max_var_size,
         std::vector<std::string> &too_big)
 {
     uint64_t response_size = 0;

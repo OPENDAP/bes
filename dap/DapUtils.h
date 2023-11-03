@@ -47,9 +47,9 @@ void log_response_and_memory_size(const std::string &caller_id, /*const*/ libdap
 void throw_for_dap4_typed_attrs(libdap::DAS *das, const std::string &file, unsigned int line);
 void throw_for_dap4_typed_vars_or_attrs(libdap::DDS *dds, const std::string &file, unsigned int line);
 
-uint64_t compute_response_size_and_inv_big_vars(const libdap::Constructor *ctr, const uint64_t &max_var_size, std::vector<std::string> &too_big);
-uint64_t compute_response_size_and_inv_big_vars(const libdap::D4Group *grp, const uint64_t &max_var_size, std::vector<std::string> &too_big);
-uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, const uint64_t &max_var_size, std::vector<std::string> &too_big);
+uint64_t compute_response_size_and_inv_big_vars(const libdap::Constructor *ctr, uint64_t max_var_size, std::vector<std::string> &too_big);
+uint64_t compute_response_size_and_inv_big_vars(const libdap::D4Group *grp, uint64_t max_var_size, std::vector<std::string> &too_big);
+uint64_t compute_response_size_and_inv_big_vars(libdap::DMR &dmr, uint64_t max_var_size, std::vector<std::string> &too_big);
 
 void get_max_sizes_bytes(uint64_t &max_response_size_bytes, uint64_t &max_var_size_bytes,  bool is_dap2=false);
 
