@@ -1311,7 +1311,9 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
     stringstream msg;
     msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
     BESDEBUG(MODULE, msg.str());
+#ifndef NDEBUG
     INFO_LOG(msg.str());
+#endif
 
     vector<char> rbuffer(OUTPUT_FILE_BLOCK_SIZE);
 
@@ -1365,13 +1367,17 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
         auto crntpos = o_strm.tellp();
         msg << " current_position: " << crntpos << endl;
         BESDEBUG(MODULE, msg.str());
+#ifndef NDEBUG
         INFO_LOG(msg.str());
+#endif
     }
 
     msg.str(prolog);
     msg << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
     BESDEBUG(MODULE,msg.str());
+#ifndef NDEBUG
     INFO_LOG(msg.str());
+#endif
 
     return tcount;
 }
@@ -1493,7 +1499,7 @@ string BESUtil::file_to_string(const string &filename) {
     }
     std::stringstream buffer;
     buffer << t.rdbuf();
-    return {buffer.str()};
+    return buffer.str();
 }
 
 /**

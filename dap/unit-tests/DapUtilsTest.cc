@@ -61,6 +61,8 @@ constexpr auto BES_CONTEXT_MAX_VAR_SIZE_KEY = "max_variable_size";
 class DapUtilsTest : public CppUnit::TestFixture {
 
 public:
+    const uint64_t fourGB = 4294967296;
+    const uint64_t twoGB = 2147483648;
 
     // bool debug=true;
 
@@ -74,6 +76,10 @@ public:
 
     // Called before each test
     void setUp()  {
+        string bes_logfile = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.log");
+        TheBESKeys::TheKeys()->set_key( "BES.LogName",bes_logfile);
+
+
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
 
         TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY,"0");
@@ -89,6 +95,7 @@ public:
             if (debug2) {
                 show_file(bes_conf);
             }
+
 
         }
         if(debug2) {
@@ -226,12 +233,77 @@ public:
         }
     }
 
+    void check_dap4_max_sizes_test()
+    {
+        uint64_t max_response_size_bytes;
+        uint64_t max_var_size_bytes;
+
+        // Setting these in TheBESKeys is like setting it in the bes configuration files.
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY,"200");
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_VAR_SIZE_KEY,"100");
+
+        dap_utils::get_max_sizes_bytes(max_response_size_bytes, max_var_size_bytes, true);
+
+        CPPUNIT_ASSERT(max_response_size_bytes == 200);
+        CPPUNIT_ASSERT(max_var_size_bytes == 100);
+    }
+
+    void check_dap2_max_sizes_test()
+    {
+        uint64_t max_response_size_bytes;
+        uint64_t max_var_size_bytes;
+        bool is_dap2 = false;
+
+        dap_utils::get_max_sizes_bytes(max_response_size_bytes, max_var_size_bytes, true);
+        DBG( cerr << prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
+        DBG( cerr << prolog << "     max_var_size_bytes: " << max_var_size_bytes << "\n");
+
+        CPPUNIT_ASSERT(max_response_size_bytes == fourGB);
+        CPPUNIT_ASSERT(max_var_size_bytes == twoGB);
+
+        // Setting these in TheBESKeys is like setting it in the bes configuration files.
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY, to_string(fourGB));
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_VAR_SIZE_KEY,to_string(fourGB));
+
+        dap_utils::get_max_sizes_bytes(max_response_size_bytes, max_var_size_bytes, true);
+
+        CPPUNIT_ASSERT(max_response_size_bytes == fourGB);
+        CPPUNIT_ASSERT(max_var_size_bytes == twoGB);
+    }
+
+
+
+    void throw_if_dds_response_too_big_test() {
+        D4BaseTypeFactory d_d4f;
+        D4ParserSax2 dp;
+        string file_name = "input-files/test_01.dmr";
+        auto d_test_dmr = mk_dmr_from_file(file_name, dp, &d_d4f);
+
+        // Apply Constraint to the DMR (Mark all)
+        d_test_dmr->root()->set_send_p(true);
+
+        auto test_dds = d_test_dmr->getDDS();
+
+        // Setting these in TheBESKeys is like setting it in the bes configuration files.
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY,"200");
+        TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_VAR_SIZE_KEY,"100");
+
+        try {
+            dap_utils::throw_if_too_big(*test_dds, __FILE__, __LINE__);
+            CPPUNIT_FAIL("ERROR: Failed to throw exception for test dmr '" + file_name + "'");
+        }
+        catch (BESSyntaxUserError &bsue) {
+            DBG(cerr << prolog <<"SUCCESS: Caught BESSyntaxUserError. message: \n" + bsue.get_message() + '\n');
+        }
+
+        delete test_dds;
+    }
 
     /**
      * Response too big
      * Variable(s) too big.
      */
-    void throw_if_too_big_test_RV() {
+    void throw_if_dmr_too_big_test_RV() {
         D4BaseTypeFactory d_d4f;
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
@@ -257,7 +329,7 @@ public:
      * Response size ok
      * Variable(s) too big.
      */
-    void throw_if_too_big_test_rV() {
+    void throw_if_dmr_too_big_test_rV() {
         D4BaseTypeFactory d_d4f;
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
@@ -284,7 +356,7 @@ public:
      * Response too big
      * Variable(s) size(s) ok.
      */
-    void throw_if_too_big_test_Rv() {
+    void throw_if_dmr_too_big_test_Rv() {
         D4BaseTypeFactory d_d4f;
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
@@ -310,7 +382,7 @@ public:
      * Response size ok
      * Variable(s) size(s) ok.
      */
-    void throw_if_too_big_test_rv() {
+    void throw_if_dmr_too_big_test_rv() {
         D4BaseTypeFactory d_d4f;
         D4ParserSax2 dp;
         string file_name = "input-files/test_01.dmr";
@@ -348,10 +420,10 @@ public:
         stringstream msg;
         uint64_t response_size = 0;
         uint64_t expected_response_size = 1016;
-        uint64_t max_size = 200;
-        std::vector< pair<std::string,int64_t> > too_big;
+        uint64_t max_var_size = 200;
+        std::vector<std::string> too_big;
 
-        response_size =  dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
+        response_size =  dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_var_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
         DBG( cerr << msg.str());
 
@@ -359,9 +431,9 @@ public:
         // differ from one system to the next, example OS-X: 24 bytes, centos-8: 32 bytes
 
         if(!too_big.empty()){
-            DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
-            for(auto apair:too_big){
-                DBG(cerr << prolog << "  " << apair.first << " (size: " << apair.second << ")" <<  endl);
+            DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_var_size << " bytes:" << endl);
+            for(auto entry:too_big){
+                DBG(cerr << prolog << "  " << entry <<  endl);
             }
             CPPUNIT_ASSERT( too_big.size() == 2 );
         }
@@ -386,7 +458,7 @@ public:
         uint64_t expected_response_size = 180356500;
 
         uint64_t max_size = 1000000;
-        std::vector< pair<std::string,int64_t> > too_big;
+        std::vector<std::string> too_big;
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
@@ -398,8 +470,8 @@ public:
 
         if(!too_big.empty()){
             DBG(cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
-            for(auto apair:too_big){
-                DBG(cerr << prolog << "  " << apair.first << " (size: " << apair.second << ")" <<  endl);
+            for(auto entry:too_big){
+                DBG(cerr << prolog << "  " << entry <<  endl);
             }
             CPPUNIT_ASSERT(too_big.size() == 10 );
         }
@@ -423,7 +495,7 @@ public:
         uint64_t response_size = 0;
         uint64_t expected_response_size = 140378112;
         uint64_t max_size = 1000000;
-        std::vector< pair<std::string,int64_t> > too_big;
+        std::vector<std::string> too_big;
 
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
@@ -437,8 +509,8 @@ public:
 
         if(!too_big.empty()){
             DBG(cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
-            for(auto apair:too_big){
-                DBG(cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
+            for(auto entry:too_big){
+                DBG(cerr << prolog << "  " << entry <<  endl);
             }
             CPPUNIT_ASSERT( too_big.size() == 2);
         }
@@ -465,7 +537,7 @@ public:
         uint64_t response_size = 0;
         uint64_t expected_response_size = 1179648;
         uint64_t max_size = 1000000;
-        std::vector< pair<std::string,int64_t> > too_big;
+        std::vector<std::string> too_big;
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
@@ -477,8 +549,8 @@ public:
 
         if(!too_big.empty()){
             DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
-            for(auto apair:too_big){
-                DBG( cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
+            for(auto entry:too_big){
+                DBG(cerr << prolog << "  " << entry <<  endl);
             }
             CPPUNIT_FAIL( prolog + "ERROR The applied constraint expression should have reduced the size of the "
                                    "requested variables so that they are no longer too big. That's not ok." );
@@ -503,7 +575,7 @@ public:
         uint64_t response_size = 0;
         uint64_t expected_response_size = 8668;
         uint64_t max_size = 8000;
-        std::vector< pair<std::string,int64_t> > too_big;
+        std::vector<std::string> too_big;
 
         response_size = dap_utils::compute_response_size_and_inv_big_vars( *(d_test_dmr.get()), max_size, too_big);
         msg << prolog << "response_size: " << response_size  << " (expected: " << expected_response_size << ")" << endl;
@@ -515,8 +587,8 @@ public:
 
         if(!too_big.empty()){
             DBG(cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
-            for(auto apair:too_big){
-                DBG(cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
+            for(auto entry:too_big){
+                DBG(cerr << prolog << "  " << entry <<  endl);
             }
             CPPUNIT_ASSERT( too_big.size() == 1);
         }
@@ -546,7 +618,7 @@ public:
         D4ConstraintEvaluator d4ce(d_test_dmr.get());
 
         uint64_t max_size = 8000;
-        std::vector< pair<std::string,int64_t> > too_big;
+        std::vector<std::string> too_big;
 
         d4ce.parse("/xtrack[1:4:2047];/mirror_step");
 
@@ -561,7 +633,9 @@ public:
         if(!too_big.empty()){
             DBG( cerr << prolog << "Found " << too_big.size() <<  " variables larger than " << max_size << " bytes:" << endl);
             for(auto apair:too_big){
-                DBG( cerr << prolog << "  " << apair.first << "(" << apair.second << " bytes)" <<  endl);
+                for(auto entry:too_big){
+                    DBG(cerr << prolog << "  " << entry <<  endl);
+                }
             }
             CPPUNIT_FAIL( prolog + "ERROR The applied constraint expression should have reduced the size of the "
                                    "requested variables so that they are no longer too big. That's not ok." );
@@ -579,11 +653,16 @@ public:
     CPPUNIT_TEST_SUITE(DapUtilsTest);
     CPPUNIT_TEST(config_vs_cmd_test_1);
     CPPUNIT_TEST(config_vs_cmd_test_2);
+
+    CPPUNIT_TEST(check_dap4_max_sizes_test);
+    CPPUNIT_TEST(check_dap2_max_sizes_test);
+    CPPUNIT_TEST(throw_if_dds_response_too_big_test);
+
     CPPUNIT_TEST(var_too_big_test);
-    CPPUNIT_TEST(throw_if_too_big_test_rv);
-    CPPUNIT_TEST(throw_if_too_big_test_Rv);
-    CPPUNIT_TEST(throw_if_too_big_test_rV);
-    CPPUNIT_TEST(throw_if_too_big_test_RV);
+    CPPUNIT_TEST(throw_if_dmr_too_big_test_rv);
+    CPPUNIT_TEST(throw_if_dmr_too_big_test_Rv);
+    CPPUNIT_TEST(throw_if_dmr_too_big_test_rV);
+    CPPUNIT_TEST(throw_if_dmr_too_big_test_RV);
     CPPUNIT_TEST(dmrpp_var_too_big_test);
     CPPUNIT_TEST(dmrpp_constrained_var_too_big_test);
     CPPUNIT_TEST(dmrpp_constrained_var_ok_test);
