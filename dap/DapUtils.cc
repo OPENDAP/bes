@@ -302,7 +302,7 @@ uint64_t crsaibv_process_variable(
             response_size += vsize;
 
             BESDEBUG(MODULE_VERBOSE, prolog << "  " << get_dap_decl(var) << "(" << vsize << " bytes)" << endl);
-            if (max_var_size > 0 && vsize > max_var_size) {
+            if ( (max_var_size > 0) && (vsize > max_var_size) ) {
                 string entry = get_dap_decl(var) + " (" + to_string(vsize) + " bytes)";
                 too_big.emplace_back(entry);
                 BESDEBUG(MODULE,
@@ -613,8 +613,10 @@ bool its_too_big(
  */
 void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int line)
 {
+#ifndef NDEBUG
     BESStopWatch sw;
     sw.start(prolog + "DMR");
+#endif
 
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;
@@ -650,8 +652,11 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
 */
 void throw_if_too_big(const libdap::DDS &dds, const std::string &file, const unsigned int line)
 {
+
+#ifndef NDEBUG
     BESStopWatch sw;
     sw.start(prolog + "DDS");
+#endif
 
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;
