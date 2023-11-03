@@ -108,6 +108,29 @@ class FileCache {
         return (lock_type == LOCK_EX) ? "Exclusive": "Shared";
     }
 
+    bool files_in_cache(std::vector<std::string> &files) {
+        // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
+        DIR *dir;
+        const struct dirent *ent;
+        if ((dir = opendir (d_cache_dir.c_str())) != nullptr) {
+            /* print all the files and directories within directory */
+            while ((ent = readdir (dir)) != nullptr) {
+                // Skip the '.' and '..' files and the cache info file
+                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0
+                    || strcmp(ent->d_name, CACHE_INFO_FILE_NAME.c_str()) == 0)
+                    continue;
+                files.emplace_back(BESUtil::pathConcat(d_cache_dir, ent->d_name));
+            }
+            closedir (dir);
+        }
+        else {
+            ERROR_LOG("Could not open the cache directory (" << d_cache_dir << ").\n");
+            return false;
+        }
+
+        return true;
+    }
+
     /// Manage the Cache-level locking. Each instance has to be initialized with d_cache_info_fd.
     class CacheLock {
     private:
@@ -141,11 +164,10 @@ class FileCache {
         }
     };
 
-#if 1
     bool purge() {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
-        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in clear()."))
+        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in purge()."))
             return false;
 
         struct item_info {
@@ -156,54 +178,53 @@ class FileCache {
 
         // sorted by access time, with the oldest time first
         std::multimap<unsigned long, struct item_info, std::less<>> items;
-        uint64_t total_size = 0;
+        uint64_t total_size = 0;    // for a sanity check. jhrg 11/03/23
 
-        // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
-        DIR *dir;
-        const struct dirent *ent;
-        if ((dir = opendir (d_cache_dir.c_str())) != nullptr) {
-            /* print all the files and directories within directory */
-            while ((ent = readdir(dir)) != nullptr) {
-                // Skip the '.' and '..' files and the cache info file
-                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0
-                    || strcmp(ent->d_name, CACHE_INFO_FILE_NAME.c_str()) == 0)
-                    continue;
-                // for each file, record its name, size and access time
-                struct stat sb{0};
-                std::string path_name = BESUtil::pathConcat(d_cache_dir, ent->d_name);
-                if (stat(path_name.c_str(), &sb) < 0) {
-                    ERROR_LOG("Error purging the cache directory (" << ent->d_name << ") - " << get_errno() << '\n');
-                    return false;
-                }
+        std::vector<std::string> files;
+        if (!files_in_cache(files))
+            return false;
 
-                items.insert(std::pair<unsigned long, item_info>(sb.st_atime, item_info(path_name, sb.st_size)));
-                total_size += sb.st_size;
-            }
-            closedir (dir);
+        for (const auto &file: files) {
+            struct stat sb{0};
 
-            uint64_t ci_size = get_cache_info_size();
-#if 0
-            if (ci_size != total_size) {
-                ERROR_LOG("Error cache_info and the measure size of items differ (" << total_size << ")\n");
-            }
-#endif
-
-            // choose which files to remove
-
-            // update the cache info file
-#if 0
-            if (!update_cache_info_size(0))
+            if (stat(file.c_str(), &sb) < 0) {
+                ERROR_LOG("Error getting info on " << file << " in purge() - " << get_errno() << '\n');
                 return false;
-#endif
+            }
 
-            return true;
+            items.insert(std::pair<unsigned long, item_info>(sb.st_atime, item_info(file, sb.st_size)));
+            total_size += sb.st_size;   // sanity check; remove some day? jhrg 11/03/23
         }
-        else {
-            ERROR_LOG("Error opening the cache directory (" << d_cache_dir << ") for purging - " << get_errno() << '\n');
+
+        uint64_t ci_size = get_cache_info_size();
+        if (ci_size != total_size) {
+            ERROR_LOG("Error cache_info and the measured size of items differ by " << std::to_string(total_size) << " bytes\n");
+        }
+
+        // choose which files to remove - since the 'items' map orders the things by time, use that ordering
+        uint64_t removed_bytes = 0;
+        for (const auto &item: items) {
+            if (removed_bytes > d_purge_size)
+                break;
+            // TODO Get an exclusive (non-blocking) lock on the item, otherwise, skip the remove. jhrg 11/03/23
+            if (remove(item.second.d_name.c_str()) != 0) {
+                ERROR_LOG("Error removing " << item.second.d_name << " from cache directory in purge() - " << get_errno() << '\n');
+                // but keep going; this is a soft error
+            }
+            else {
+                // but only count the bytes if they are actually removed
+                removed_bytes += item.second.d_size;
+            }
+        }
+
+        // update the cache info file
+        if (!update_cache_info_size(ci_size - removed_bytes)) {
+            ERROR_LOG("Error updating the cache_info size in purge() - " << get_errno() << '\n');
             return false;
         }
+
+        return true;
     }
-#endif
 
     // These private methods assume they are called on a locked instance of the cache.
 
@@ -509,33 +530,19 @@ public:
         if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in clear()."))
             return false;
 
-        // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
-        DIR *dir;
-        struct dirent *ent;
-        if ((dir = opendir (d_cache_dir.c_str())) != nullptr) {
-            /* print all the files and directories within directory */
-            while ((ent = readdir (dir)) != nullptr) {
-                // Skip the '.' and '..' files and the cache info file
-                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0
-                    || strcmp(ent->d_name, CACHE_INFO_FILE_NAME.c_str()) == 0)
-                    continue;
-                if (remove(BESUtil::pathConcat(d_cache_dir, ent->d_name).c_str()) != 0) {
-                    ERROR_LOG("Error removing " << ent->d_name << " from cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
-                    return false;
-                }
-            }
-            closedir (dir);
-
-            // Zero the cache info file
-            if (!update_cache_info_size(0))
-                return false;
-
-            return true;
-        }
-        else {
-            ERROR_LOG("Error clearing the cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
+        std::vector<std::string> files;
+        if (!files_in_cache(files)) {
             return false;
         }
+
+        for (const auto &file: files) {
+            if (remove(file.c_str()) != 0) {
+                ERROR_LOG("Error removing " << file << " from cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
+                return false;
+            }
+        }
+
+        return true;
     }
 };
 

@@ -933,9 +933,10 @@ public:
         }
     }
 
-    void test_purge_1() {
+    void test_purge() {
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        // Each copy of source_file is 188,973 bytes; 10 --> 1,889,730
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 2'000'000, 370'000));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
         for (int i = 0; i < 10; ++i) {
@@ -943,13 +944,124 @@ public:
             oss << "key" << i;
             CPPUNIT_ASSERT_MESSAGE("Cache put(keyn) should work", fc.put(oss.str(), source_file));
             oss.clear();
+            // this delay spreads the 10 files out over 5 seconds
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
 
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be 1,889,730 before purge",
+                               fc.get_cache_info_size() == 1'889'730);
+        vector<string> files;
+        fc.files_in_cache(files);
+        DBG(cerr << "files in cache: ");
+        DBG(copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n")));
+
+        CPPUNIT_ASSERT_MESSAGE("Cache should have 10 files before purge", files.size() == 10);
+
+        string key0 = BESUtil::pathConcat(cache_dir, "key0");
+        CPPUNIT_ASSERT_MESSAGE("Cache should have key0 before purge",
+                                std::find(files.begin(), files.end(), key0) != files.end());
+
         fc.purge();
+
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be 1,511,784 after purge (two files removed)",
+                               fc.get_cache_info_size() == 1'511'784);
+
+        files.clear();
+        fc.files_in_cache(files);
+        DBG(cerr << "\nfiles in cache: ");
+        DBG(copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n")));
+
+        CPPUNIT_ASSERT_MESSAGE("Cache should have 8 files after purge", files.size() == 8);
+
+        // because the files are added every 0.5s but the time granularity of the cache is 1s,
+        // and the test removes two files, we can only be sure that key0 will be removed. It will
+        // be the case that key1 xor key2 will be removed, but we can't tell which. Just test
+        // for the removal of key0
+
+        CPPUNIT_ASSERT_MESSAGE("Cache should not have key0 after purge",
+                               std::find(files.begin(), files.end(), key0) == files.end());
     }
 
-CPPUNIT_TEST_SUITE(FileCacheTest);
+    void test_purge_key0_used_most_recently() {
+        FileCache fc;
+        // Each copy of source_file is 188,973 bytes; 10 --> 1,889,730
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 2'000'000, 370'000));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        for (int i = 0; i < 10; ++i) {
+            ostringstream oss;
+            oss << "key" << i;
+            CPPUNIT_ASSERT_MESSAGE("Cache put(keyn) should work", fc.put(oss.str(), source_file));
+            oss.clear();
+            // this delay spreads the 10 files out over 5 seconds
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be 1,889,730 before purge",
+                               fc.get_cache_info_size() == 1'889'730);
+
+        // key0 is now the most recently used item and should not be removed.
+        FileCache::Item item;
+        CPPUNIT_ASSERT_MESSAGE("Should be able to get key0", fc.get("key0", item));
+        close(item.get_fd());
+
+        fc.purge();
+
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be 1,511,784 after purge (two files removed)",
+                               fc.get_cache_info_size() == 1'511'784);
+
+        vector<string> files;
+        fc.files_in_cache(files);
+        DBG(cerr << "files in cache: ");
+        DBG(copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n")));
+
+        CPPUNIT_ASSERT_MESSAGE("Cache should have 8 files after purge", files.size() == 8);
+
+        string key0 = BESUtil::pathConcat(cache_dir, "key0");
+        CPPUNIT_ASSERT_MESSAGE("Cache should still have key0 after purge because we just accessed it.",
+                               std::find(files.begin(), files.end(), key0) != files.end());
+    }
+
+    void test_purge_key0_in_use() {
+        FileCache fc;
+        // Each copy of source_file is 188,973 bytes; 10 --> 1,889,730
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 2'000'000, 370'000));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        for (int i = 0; i < 10; ++i) {
+            ostringstream oss;
+            oss << "key" << i;
+            CPPUNIT_ASSERT_MESSAGE("Cache put(keyn) should work", fc.put(oss.str(), source_file));
+            oss.clear();
+            // this delay spreads the 10 files out over 5 seconds
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be 1,889,730 before purge",
+                               fc.get_cache_info_size() == 1'889'730);
+
+        // key0 is now the most recently used item and should not be removed.
+        FileCache::Item item;
+        CPPUNIT_ASSERT_MESSAGE("Should be able to get key0", fc.get("key0", item));
+
+        fc.purge();
+
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be 1,511,784 after purge (two files removed)",
+                               fc.get_cache_info_size() == 1'511'784);
+
+        vector<string> files;
+        fc.files_in_cache(files);
+        DBG(cerr << "files in cache: ");
+        DBG(copy(files.begin(), files.end(), ostream_iterator<string>(cerr, "\n")));
+
+        CPPUNIT_ASSERT_MESSAGE("Cache should have 8 files after purge", files.size() == 8);
+
+        string key0 = BESUtil::pathConcat(cache_dir, "key0");
+        CPPUNIT_ASSERT_MESSAGE("Cache should still have key0 after purge because it is locked.",
+                               std::find(files.begin(), files.end(), key0) != files.end());
+    }
+
+    CPPUNIT_TEST_SUITE(FileCacheTest);
 
     CPPUNIT_TEST(test_unintialized_cache);
     CPPUNIT_TEST(test_intialized_cache);
@@ -980,7 +1092,13 @@ CPPUNIT_TEST_SUITE(FileCacheTest);
     CPPUNIT_TEST(test_put_get_del_in_two_processes);
     CPPUNIT_TEST(test_put_get_del_in_two_processes_two_cache_instances);
 
-    CPPUNIT_TEST(test_purge_1);
+    CPPUNIT_TEST(test_purge);
+
+    // LRU Behavior not working. The purge() is FIFO.
+    CPPUNIT_TEST_FAIL(test_purge_key0_used_most_recently);
+
+    // purge() must get an exclusive lock on the items before removing them. see del()
+    CPPUNIT_TEST_FAIL(test_purge_key0_in_use);
 
     CPPUNIT_TEST_SUITE_END();
 };
