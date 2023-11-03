@@ -76,6 +76,10 @@ public:
 
     // Called before each test
     void setUp()  {
+        string bes_logfile = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.log");
+        TheBESKeys::TheKeys()->set_key( "BES.LogName",bes_logfile);
+
+
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
 
         TheBESKeys::TheKeys()->set_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY,"0");
@@ -91,6 +95,7 @@ public:
             if (debug2) {
                 show_file(bes_conf);
             }
+
 
         }
         if(debug2) {
@@ -250,8 +255,10 @@ public:
         bool is_dap2 = false;
 
         dap_utils::get_max_sizes_bytes(max_response_size_bytes, max_var_size_bytes, true);
+        DBG( cerr << prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
+        DBG( cerr << prolog << "     max_var_size_bytes: " << max_var_size_bytes << "\n");
 
-        CPPUNIT_ASSERT(max_response_size_bytes == 0);
+        CPPUNIT_ASSERT(max_response_size_bytes == fourGB);
         CPPUNIT_ASSERT(max_var_size_bytes == twoGB);
 
         // Setting these in TheBESKeys is like setting it in the bes configuration files.
