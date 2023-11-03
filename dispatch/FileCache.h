@@ -175,7 +175,7 @@ class FileCache {
                     return false;
                 }
 
-                items.insert(std::pair<unsigned long, item_info>(sb.st_atimespec.tv_sec, item_info(path_name, sb.st_size)));
+                items.insert(std::pair<unsigned long, item_info>(sb.st_atime, item_info(path_name, sb.st_size)));
             }
             closedir (dir);
 
