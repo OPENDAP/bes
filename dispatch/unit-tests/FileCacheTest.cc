@@ -1105,8 +1105,6 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FileCacheTest);
 
-// } // namespace http
-
 int main(int argc, char *argv[])
 {
     return bes_run_tests<FileCacheTest>(argc, argv, "cerr,file-cache") ? 0 : 1;
