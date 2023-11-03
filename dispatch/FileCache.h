@@ -156,6 +156,7 @@ class FileCache {
 
         // sorted by access time, with the oldest time first
         std::multimap<unsigned long, struct item_info, std::less<>> items;
+        uint64_t total_size = 0;
 
         // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
         DIR *dir;
@@ -176,8 +177,16 @@ class FileCache {
                 }
 
                 items.insert(std::pair<unsigned long, item_info>(sb.st_atime, item_info(path_name, sb.st_size)));
+                total_size += sb.st_size;
             }
             closedir (dir);
+
+            uint64_t ci_size = get_cache_info_size();
+#if 0
+            if (ci_size != total_size) {
+                ERROR_LOG("Error cache_info and the measure size of items differ (" << total_size << ")\n");
+            }
+#endif
 
             // choose which files to remove
 
