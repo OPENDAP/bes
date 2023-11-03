@@ -614,7 +614,7 @@ bool its_too_big(
 void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int line)
 {
     BESStopWatch sw;
-    sw.start(prolog+"DMR");
+    sw.start(prolog + "DMR");
 
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;
