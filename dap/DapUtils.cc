@@ -41,6 +41,7 @@
 #include "BESUtil.h"
 #include "BESLog.h"
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 #include "BESSyntaxUserError.h"
 #include "DapUtils.h"
 
@@ -56,6 +57,7 @@ constexpr auto BES_KEYS_MAX_VAR_SIZE_KEY = "BES.MaxVariableSize.bytes";
 constexpr auto BES_CONTEXT_MAX_RESPONSE_SIZE_KEY = "max_response_size";
 constexpr auto BES_CONTEXT_MAX_VAR_SIZE_KEY = "max_variable_size";
 constexpr uint64_t twoGB = 2147483648;
+constexpr uint64_t fourGB = 4294967296;
 
 // We want MODULE and MODULE_VERBOSE to be in the namespace in order to isolate them from potential overlap between
 // different bes/modules
@@ -437,34 +439,33 @@ void get_max_sizes_bytes(uint64_t &max_response_size_bytes, uint64_t &max_var_si
     // The BES configuration is help in TheBESKeys, so we read from there.
     uint64_t config_max_resp_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY, 0);
     BESDEBUG(MODULE, prolog << "config_max_resp_size: " << config_max_resp_size << "\n");
+    max_response_size_bytes = config_max_resp_size; // This is the default state, the command can only make it smaller
 
     uint64_t cmd_context_max_resp_size;
     bool found;
     cmd_context_max_resp_size = BESContextManager::TheManager()->get_context_uint64(BES_CONTEXT_MAX_RESPONSE_SIZE_KEY, found);
-    if (found) {
+    if (!found) {
+        BESDEBUG(MODULE,
+                 prolog << "Did not locate BESContext key: " << BES_CONTEXT_MAX_RESPONSE_SIZE_KEY << " SKIPPING."
+                        << "\n");
+    }
+    else {
         BESDEBUG(MODULE, prolog << "cmd_context_max_resp_size: " << cmd_context_max_resp_size << "\n");
-        if(config_max_resp_size == cmd_context_max_resp_size){
-            // If they're the same then use one.
-            max_response_size_bytes = config_max_resp_size;
-        }
-        else if( cmd_context_max_resp_size < config_max_resp_size || config_max_resp_size == 0 ){
+        // If the cmd_context_max_resp_size==0, then there's nothing to do because
+        // we prioritize the bes configuration. If the config_max_resp_size=0 it's a no-op, and if config_max_resp_size
+        // is some other value then it's not unlimited, and we're not letting the command context make these values
+        // bigger than the one in the BES configuration, only smaller.
+        if(cmd_context_max_resp_size != 0 &&  (cmd_context_max_resp_size < config_max_resp_size || config_max_resp_size == 0) ){
             // If the context value is effectively less than the config value, use the context value.
             max_response_size_bytes = cmd_context_max_resp_size;
         }
-        else {
-            // Otherwise use the config value.
-            max_response_size_bytes = config_max_resp_size;
-        }
-    }
-    else {
-        max_response_size_bytes = config_max_resp_size;
-        BESDEBUG(MODULE, prolog << "Did not locate BESContext key: " << BES_CONTEXT_MAX_RESPONSE_SIZE_KEY << " SKIPPING." << "\n");
     }
     BESDEBUG(MODULE, prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
 
     // The BES configuration is help in TheBESKeys, so we read from there.
     uint64_t config_max_var_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_VAR_SIZE_KEY, 0);
     BESDEBUG(MODULE, prolog << "config_max_var_size: " << config_max_var_size << "\n");
+    max_var_size_bytes = config_max_var_size;
 
     uint64_t cmd_context_max_var_size=0;
     found = false;
@@ -473,23 +474,21 @@ void get_max_sizes_bytes(uint64_t &max_response_size_bytes, uint64_t &max_var_si
         max_var_size_bytes = config_max_var_size;
         BESDEBUG(MODULE, prolog << "Did not locate BESContext key: " << BES_CONTEXT_MAX_VAR_SIZE_KEY << " SKIPPING." << "\n");
     }
-    else if(config_max_var_size == cmd_context_max_var_size){
-        // If they're the same then use one.
-        max_var_size_bytes = config_max_var_size;
-    }
-    else if( cmd_context_max_var_size < config_max_var_size || config_max_var_size == 0 ){
+    else if( (cmd_context_max_var_size != 0) &&  (cmd_context_max_var_size < config_max_var_size || config_max_var_size == 0) ){
         // If the context value is effectively less than the config value, use the context value.
         max_var_size_bytes = cmd_context_max_var_size;
     }
-    else {
-        // Otherwise use the config value.
-        max_var_size_bytes = config_max_var_size;
-    }
 
     // Enforce DAP2 limits?
-    if ( is_dap2 && (max_var_size_bytes == 0 || max_var_size_bytes > twoGB) ){
-        max_var_size_bytes = twoGB;
-        BESDEBUG(MODULE, prolog << "Adjusted max_var_size_bytes to DAP2 limit.\n");
+    if ( is_dap2){
+        if (max_var_size_bytes == 0 || max_var_size_bytes > twoGB) {
+            max_var_size_bytes = twoGB;
+            BESDEBUG(MODULE, prolog << "Adjusted max_var_size_bytes to DAP2 limit.\n");
+        }
+        if (max_response_size_bytes == 0 || max_response_size_bytes > fourGB) {
+            max_response_size_bytes = fourGB;
+            BESDEBUG(MODULE, prolog << "Adjusted max_response_size_bytes to DAP2 limit.\n");
+        }
     }
     BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
 }
@@ -612,7 +611,11 @@ bool its_too_big(
  * @param file The file of the calling code.
  * @param line The line in the calling code.
  */
-void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int line){
+void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int line)
+{
+    BESStopWatch sw;
+    sw.start(prolog+"DMR");
+
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;
     std::vector<std::string> too_big_vars;
@@ -647,6 +650,9 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
 */
 void throw_if_too_big(const libdap::DDS &dds, const std::string &file, const unsigned int line)
 {
+    BESStopWatch sw;
+    sw.start(prolog + "DDS");
+
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;
     std::vector<std::string> too_big_vars;
