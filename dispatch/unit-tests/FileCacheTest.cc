@@ -1022,6 +1022,7 @@ public:
                                std::find(files.begin(), files.end(), key0) != files.end());
     }
 
+    // This tests if a key opened by get() is not removed by purge(). jhrg 11/03/23
     void test_purge_key0_in_use() {
         FileCache fc;
         // Each copy of source_file is 188,973 bytes; 10 --> 1,889,730
@@ -1093,12 +1094,8 @@ public:
     CPPUNIT_TEST(test_put_get_del_in_two_processes_two_cache_instances);
 
     CPPUNIT_TEST(test_purge);
-
-    // LRU Behavior not working. The purge() is FIFO.
-    CPPUNIT_TEST_FAIL(test_purge_key0_used_most_recently);
-
-    // purge() must get an exclusive lock on the items before removing them. see del()
-    CPPUNIT_TEST_FAIL(test_purge_key0_in_use);
+    CPPUNIT_TEST(test_purge_key0_used_most_recently);
+    CPPUNIT_TEST(test_purge_key0_in_use);
 
     CPPUNIT_TEST_SUITE_END();
 };

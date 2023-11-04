@@ -39,9 +39,17 @@
 #include <dirent.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 
 #include "BESUtil.h"
 #include "BESLog.h"
+
+// If this is defined, then the access time of a file is updated when it is
+// closed by the Item dtor. This is a hack to get around the fact that the
+// access time is not always updated by simple read operations.
+// If this is set to zero, the cache may become, in effect, a FIFO and not
+// an LRU cache. jhrg 11/03/23
+#define FORCE_ACCESS_TIME_UPDATE 1
 
 static inline std::string get_errno() {
     const char *s_err = strerror(errno);
@@ -164,12 +172,9 @@ class FileCache {
         }
     };
 
-    bool purge() {
-        // Lock the cache. Ensure the cache is unlocked no matter how we exit
-        CacheLock lock(d_cache_info_fd);
-        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in purge()."))
-            return false;
+    // These private methods assume they are called on a locked instance of the cache.
 
+    bool purge() {
         struct item_info {
             std::string d_name;
             off_t d_size;
@@ -207,6 +212,16 @@ class FileCache {
             if (removed_bytes > d_purge_size)
                 break;
             // TODO Get an exclusive (non-blocking) lock on the item, otherwise, skip the remove. jhrg 11/03/23
+            int fd = open(item.second.d_name.c_str(), O_WRONLY, 0666);
+            if (fd < 0) {
+                ERROR_LOG("Error opening the cache item in purge() for: " << item.second.d_name << " " << get_errno() << '\n');
+                return false;
+            }
+
+            Item lock(fd);  // The Item dtor is called on every loop iteration according to Google. jhrg 11/03/23
+            if (!lock.lock_the_item(LOCK_EX | LOCK_NB, "locking the cache item in purge() for: " + item.second.d_name))
+                continue;
+
             if (remove(item.second.d_name.c_str()) != 0) {
                 ERROR_LOG("Error removing " << item.second.d_name << " from cache directory in purge() - " << get_errno() << '\n');
                 // but keep going; this is a soft error
@@ -225,8 +240,6 @@ class FileCache {
 
         return true;
     }
-
-    // These private methods assume they are called on a locked instance of the cache.
 
     bool invariant() const {
         if (d_cache_info_fd < 0)
@@ -298,7 +311,7 @@ public:
         explicit Item(int fd) : d_fd(fd) { }
         Item &operator=(const Item &) = delete;
         virtual ~Item() {
-             if (d_fd != -1) {
+            if (d_fd != -1) {
                 close(d_fd);    // Also releases any locks
                 d_fd = -1;
             }
@@ -324,6 +337,10 @@ public:
                     ERROR_LOG(msg << ": " << get_errno() << '\n');
                 return false;
             }
+
+#if FORCE_ACCESS_TIME_UPDATE
+            futimes(d_fd, nullptr);
+#endif
 
             return true;
         }
