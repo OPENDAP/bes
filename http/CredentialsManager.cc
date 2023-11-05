@@ -30,6 +30,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 #include <sys/stat.h>
 
 #include "AllowedHosts.h"

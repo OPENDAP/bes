@@ -26,7 +26,7 @@
 #ifndef HYRAX_KVP_UTILS_H
 #define HYRAX_KVP_UTILS_H
 #include <fstream>
-#include <map>
+#include <unordered_map>
 #include <set>
 #include <vector>
 
