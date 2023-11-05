@@ -257,13 +257,8 @@ bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<o
         retval = true;
 
         // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
-        // If you want to debug with BESDEBUG, uncomment out the following #if 0 block.
-#if 0   
-        if(args) {
-            BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                 "' from std::async for " << args->child_chunk->to_string() << endl);
-        }
-#endif
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
     }
     return retval;
 }
@@ -285,13 +280,9 @@ bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_
         retval = true;
        
         // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
-        // If you want to debug with BESDEBUG, uncomment out the following #if 0 block.
-#if 0
-        if (args) {
-            BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                            "' from std::async for " << args->super_chunk->to_string(false) << endl);
-        }
-#endif
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
+ 
     }
     return retval;
 }
@@ -312,13 +303,9 @@ bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &fu
         retval = true;
 
         // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
-        // If you want to debug with BESDEBUG, uncomment out the following #if 0 block.
-#if 0
-        if (args) {
-            BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                            "' from std::async, transfer_thread_counter: " << transfer_thread_counter << endl);
-        }
-#endif
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
+ 
     }
     return retval;
 }
