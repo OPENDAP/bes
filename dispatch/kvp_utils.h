@@ -36,17 +36,17 @@ namespace kvp {
 
 void load_keys(
         std::ifstream *keys_file,
-        std::map<std::string,
+        std::unordered_map<std::string,
         std::vector<std::string> > &keystore);
 
 void load_keys(
         const std::string &keys_file_name,
         std::set<std::string> &loaded_kvp_files,
-        std::map<std::string, std::vector<std::string> > &keystore);
+        std::unordered_map<std::string, std::vector<std::string> > &keystore);
 
 void load_keys(
         const std::string &config_file,
-        std::map <std::string, std::vector<std::string>>  &keystore);
+        std::unordered_map <std::string, std::vector<std::string>>  &keystore);
 
 bool break_pair(const char* b, std::string& key, std::string &value, bool &addto);
 

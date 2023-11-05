@@ -305,7 +305,7 @@ void CredentialsManager::load_credentials() {
 
     BESDEBUG(HTTP_MODULE, prolog << "The config file '" << config_file << "' is secured." << endl);
 
-    map<string, vector<string>> keystore;
+    unordered_map<string, vector<string> > keystore;
 
     kvp::load_keys(config_file, keystore);
     map<string, AccessCredentials *> credential_sets;

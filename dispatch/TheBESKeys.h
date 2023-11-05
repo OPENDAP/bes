@@ -94,12 +94,11 @@ class TheBESKeys: public BESObj {
     friend class http::HttpCacheTest;
 
     std::string d_keys_file_name;
-    /// The keys and values; `keys_kvp` is a map of string keys to a vector of string values.
-    using keys_kvp = typename std::map<std::string, std::vector<std::string>>;
 
     // TODO Refactor this so it's not a pointer. jhrg 2/2/23
     //std::unique_ptr<keys_kvp> d_the_keys{new keys_kvp()};
-    keys_kvp d_the_keys;
+    std::unordered_map< std::string, std::vector<std::string> > d_the_keys;
+
 #if DYNAMIC_CONFIG_ENABLED
     std::unique_ptr<keys_kvp> d_the_original_keys{new keys_kvp()};
 #endif
@@ -152,17 +151,17 @@ public:
 
     void set_keys(const std::string &key, const std::vector<std::string> &values, bool addto);
 
-    void set_keys(const std::string &key, const std::map<std::string, std::string> &values,
+    void set_keys(const std::string &key, const std::unordered_map<std::string, std::string> &values,
                   bool case_insensitive_map_keys, bool addto);
 
     void get_value(const std::string &s, std::string &val, bool &found);
 
     void get_values(const std::string &s, std::vector<std::string> &vals, bool &found);
 
-    void get_values(const std::string &, std::map<std::string, std::string> &map_values,
+    void get_values(const std::string &, std::unordered_map<std::string, std::string> &map_values,
                     const bool &case_insensitive_map_keys, bool &found);
 
-    void get_values(const std::string &, std::map<std::string, std::map<std::string, std::vector<std::string> > > &map,
+    void get_values(const std::string &, std::unordered_map<std::string, std::unordered_map<std::string, std::vector<std::string> > > &map,
                     const bool &case_insensitive_map_keys, bool &found);
 
     bool read_bool_key(const std::string &key, bool default_value) const;
@@ -175,9 +174,10 @@ public:
 
     uint64_t read_uint64_key(const std::string &key, uint64_t default_value) const;
 
+private:
+    typedef std::unordered_map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
 
-    typedef std::map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
-
+public:
     Keys_citer keys_begin() {
         return d_the_keys.begin();
     }
