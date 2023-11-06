@@ -22,7 +22,7 @@ BES.Catalog.default.Exclude=README;
 
 
 BES.ServerAdministrator=email:admin.email.address@your.domain.name
-BES.ServerAdministrator+=organization:Company/Insitution Name
+BES.ServerAdministrator+=organization:Company/Institution Name
 BES.ServerAdministrator+=street:Street Address
 BES.ServerAdministrator+=city:City
 BES.ServerAdministrator+=region:State

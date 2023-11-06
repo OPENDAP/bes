@@ -148,15 +148,15 @@ int main(int argc, char *argv[]) {
 
     }
     catch (const BESError &e) {
-        cerr << "BESError: " << e.get_message() << endl;
+        cerr << "ERROR Caught BESError. message: " << e.get_message() << endl;
         return EXIT_FAILURE;
     }
     catch (const std::exception &e) {
-        cerr << "std::exception: " << e.what() << endl;
+        cerr << "ERROR Caught std::exception. what: " << e.what() << endl;
         return EXIT_FAILURE;
     }
     catch (...) {
-        cerr << "Unknown error." << endl;
+        cerr << "ERROR Caught Unknown Error." << endl;
         return EXIT_FAILURE;
     }
 
