@@ -1176,7 +1176,7 @@ void FONcArray::define_dio_filters(int ncid, int d_varid) {
 }
 
 // Method that obtains the filter orders for the direct IO case.
-void FONcArray::obtain_dio_filters_order(const string & filters, bool &has_fle_first, bool &has_fle_last, bool &has_shuffle, bool &has_2defs, bool &has_1def) {
+void FONcArray::obtain_dio_filters_order(const string & filters, bool &has_fle_first, bool &has_fle_last, bool &has_shuffle, bool &has_2defs, bool &has_1def) const {
 
     vector<string> filter_array = BESUtil::split(filters, ' ' );
 
@@ -1205,7 +1205,7 @@ void FONcArray::obtain_dio_filters_order(const string & filters, bool &has_fle_f
 
 // Method that allocate netCDF-4 filters for the direct IO case.
 void FONcArray::allocate_dio_nc4_def_filters(int ncid, int d_varid, bool has_fle_first, bool has_fle_last, bool has_shuffle, 
-                                         bool has_2defs, bool has_1def, const vector<unsigned int>& def_levs) {
+                                         bool has_2defs, bool has_1def, const vector<unsigned int>& def_levs) const {
 
     int stax = 0;
 
@@ -1281,12 +1281,12 @@ void FONcArray::write_direct_io_data(int ncid, int d_varid) {
 
     Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
 
-    for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
+    for (const auto & var_chunk_info:dmrpp_vs_info.var_chunk_info) {
 
-        Array::var_chunk_info_t vci = dmrpp_vs_info.var_chunk_info[i];
+        Array::var_chunk_info_t vci = var_chunk_info;
 
         // May use the vector to replace new[] later. 
-        char *chunk_buf = new char[vci.chunk_buffer_size];
+        auto chunk_buf = new char[vci.chunk_buffer_size];
         memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);
 
         stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(vci.chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);

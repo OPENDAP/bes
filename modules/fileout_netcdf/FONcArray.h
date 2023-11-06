@@ -111,8 +111,8 @@ private:
     void write_equal_length_string_array(int ncid);
 
     void define_dio_filters(int ncid, int d_varid);
-    void obtain_dio_filters_order(const string&,bool &,bool &, bool &, bool &, bool &);
-    void allocate_dio_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &); 
+    void obtain_dio_filters_order(const string&,bool &,bool &, bool &, bool &, bool &) const;
+    void allocate_dio_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &) const; 
     void write_direct_io_data(int, int);
 
     FONcArray() = default;      // Used in some unit tests
