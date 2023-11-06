@@ -1105,31 +1105,85 @@ bool process_variable_length_string_scalar(const hid_t dataset, BaseType *btp){
 
     // btp->type() == dods_str_c means a scalar string, if it was an
     // array of strings then btp->type() == dods_array_c would be true
-    if(btp->type() == dods_str_c) {
-        auto h5_type_id = H5Dget_type(dataset);
-        if(H5Tis_variable_str(h5_type_id) > 0) {
-            vector<string> finstrval;   // passed by reference to read_vlen_string
-            finstrval.emplace_back(""); // initialize array for it's trip to Cville
-
-            // Read the scalar string.
-            read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-            string vlstr = finstrval[0];
-            VERBOSE(cerr << prolog << " read_vlen_string(): " << vlstr << endl);
-
-            // Convert variable to a compact representation
-            // so that its value can be stored in the dmr++
-            auto dc = toDC(btp);
-            dc->set_compact(true);
-
-            // And then set the value.
-            auto str = dynamic_cast<libdap::Str *>(btp);
-            str->set_value(vlstr);
-            str->set_read_p(true);
-
-            return true;
-        }
+    if(btp->type() != dods_str_c) {
+        return false;
     }
-    return false;
+
+    auto h5_type_id = H5Dget_type(dataset);
+    if(H5Tis_variable_str(h5_type_id) <= 0) {
+        return false; // Not a variable length string, so, again, not our problem.
+    }
+
+    vector<string> vls_values;   // passed by reference to read_vlen_string
+    vls_values.emplace_back(""); // initialize array for it's trip to Cville
+
+    // Read the scalar string.
+    read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, vls_values);
+    string vlss = vls_values[0];
+    VERBOSE(cerr << prolog << " read_vlen_string(): " << vlss << endl);
+
+    // Convert variable to a compact representation
+    // so that its value can be stored in the dmr++
+    auto dc = toDC(btp);
+    dc->set_compact(true);
+
+    // And then set the value.
+    auto str = dynamic_cast<libdap::Str *>(btp);
+    str->set_value(vlss);
+    str->set_read_p(true);
+
+    return true;
+
+
+}
+
+/**
+ * @brief Identifies, reads, and then stores a vlss in a DAP dmr++ variable using the compact representation
+ *
+ * @param dataset The HDF5 dataset id.
+ * @param btp The BaseType pointer to the sister DAP class
+ * @return Returns true if the variable was processed, false otherwise.
+ */
+bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
+
+    if(btp->type() != dods_array_c) {
+        return false; // Not an array, not our problem...
+    }
+    auto dap_array = dynamic_cast<DmrppArray *>(btp);
+    if(!dap_array){
+        throw BESInternalError("Malformed DAP object " + btp->FQN() +
+        " Identifies as dods_array_c but cast to DmrppArray fails!", __FILE__, __LINE__);
+    }
+
+    if(dap_array->prototype()->type() != dods_str_c){
+        return false; // Not a string, not our problem...
+    }
+
+    auto h5_type_id = H5Dget_type(dataset);
+    if(H5Tis_variable_str(h5_type_id) <= 0) {
+        return false;  // Not a variable length string, so, again, not our problem.
+    }
+
+    uint64_t num_elements = dap_array->get_size(false);\
+    vector<string> vls_values;   // passed by reference to read_vlen_string
+    vls_values.emplace_back(""); // initialize array for it's trip to Cville
+
+    // Read the scalar string.
+    read_vlen_string(dataset, num_elements, nullptr, nullptr, nullptr, vls_values);
+
+    // Convert variable to a compact representation
+    // so that its value can be stored in the dmr++
+    dap_array->set_compact(true);
+
+    for(const auto &sval: vls_values) {
+        VERBOSE(cerr << prolog << " sval(): " << sval << "\n");
+    }
+
+    // And then set the value.
+    dap_array->set_value(vls_values,vls_values.size());
+    dap_array->set_read_p(true);
+
+    return true;
 }
 
 /**e
@@ -1266,7 +1320,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                     throw UnsupportedTypeException(msg);
                 }
 
-                if (!process_variable_length_string_scalar(dataset, btp)) {
+                if (!process_variable_length_string_scalar(dataset, btp) && !process_variable_length_string_array(dataset,btp)) {
 
                     VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
                     get_variable_chunk_info(dataset, btp);
