@@ -541,7 +541,8 @@ string TheBESKeys::dump() const
  *
  * This returns the BES keys state as a string. The content is formatted for inclusion in a bes.conf
  * file.  The keys sorted alphabetically by the std::map default rule for std:string.
- * Why? The order is not important for key ingest later, but for comparing two different configurations.
+ * Why? The order is not important for key ingest later, but sorting them allows for simple
+ * comparisons of the configuration state in TheBESKeys. This is particularly important  for provenance.
  * Since TheBESKeys uses an unordered_map internally (for performance reasons) we need to sort the keys
  * in this method before we assemble the string.
  *
@@ -549,8 +550,7 @@ string TheBESKeys::dump() const
  */
 string TheBESKeys::get_as_config() const
 {
-    //  We copy the keys into a std::map because they need to be sorted.
-    // Why
+    // We copy the keys into a std::map because they need to be sorted.
     map<string, vector<string>, less<string> > sorted_keys;
     for(const auto &key_entry: d_the_keys){
         sorted_keys.insert( pair<string, vector<string> >(key_entry.first,( vector<string>(key_entry.second) )));
