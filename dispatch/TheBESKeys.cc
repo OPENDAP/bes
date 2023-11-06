@@ -39,6 +39,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <sstream>
 #include <memory>
 
@@ -177,8 +178,7 @@ void TheBESKeys::reload_keys()
  */
 void TheBESKeys::set_key(const string &key, const string &val, bool addto)
 {
-    map<string, vector<string> >::iterator i;
-    i = d_the_keys.find(key);
+    auto i = d_the_keys.find(key);
     if (i == d_the_keys.end()) {
         vector<string> vals;
         d_the_keys[key] = vals;
@@ -208,8 +208,7 @@ void TheBESKeys::set_key(const string &key, const string &val, bool addto)
  */
 void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool addto)
 {
-    map<string, vector<string> >::iterator i;
-    i = d_the_keys.find(key);
+    auto i = d_the_keys.find(key);
     if (i == d_the_keys.end()) {
         vector<string> vals;
         d_the_keys[key] = vals;
@@ -242,12 +241,11 @@ void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool 
  */
 void TheBESKeys::set_keys(
         const string &key,
-        const map<string, string> &values,
+        const unordered_map<string, string> &values,
         const bool case_insensitive_map_keys,
         bool addto)
 {
-    map<string, vector<string> >::iterator i;
-    i = d_the_keys.find(key);
+    auto i = d_the_keys.find(key);
     if (i == d_the_keys.end()) {
         vector<string> vals;
         d_the_keys[key] = vals;
@@ -256,9 +254,8 @@ void TheBESKeys::set_keys(
         d_the_keys[key].clear();
     }
 
-    map<string, string>::const_iterator mit;
-    for(mit = values.begin(); mit!=values.end(); mit++){
-        string map_key = mit->first;
+    for(auto &p : values){
+        string map_key = p.first;
         if(map_key.empty() ){
             BESDEBUG(MODULE, prolog << "The map_key is empty. SKIPPING." << endl);
         }
@@ -266,9 +263,10 @@ void TheBESKeys::set_keys(
             if(case_insensitive_map_keys){
                 map_key = BESUtil::lowercase(map_key);
             }
-            string map_record=map_key+":"+mit->second;
+            string map_record=map_key+":"+p.second;
             d_the_keys[key].push_back(map_record);
         }
+
     }
 }
 
@@ -536,15 +534,34 @@ string TheBESKeys::dump() const
     return ss.str();
 }
 
+
+
+/**
+ * @brief @return The BES configuration keys, sorted by the std::map default rule for std:string, formatted for ingest by the BES.
+ *
+ * This returns the BES keys state as a string. The content is formatted for inclusion in a bes.conf
+ * file.  The keys sorted alphabetically by the std::map default rule for std:string.
+ * Why? The order is not important for key ingest later, but sorting them allows for simple
+ * comparisons of the configuration state in TheBESKeys. This is particularly important  for provenance.
+ * Since TheBESKeys uses an unordered_map internally (for performance reasons) we need to sort the keys
+ * in this method before we assemble the string.
+ *
+ * @return The BES keys, sorted by the std::map default rule for std:string.
+ */
 string TheBESKeys::get_as_config() const
 {
+    // We copy the keys into a std::map because they need to be sorted.
+    map<string, vector<std::string>, std::less<> > sorted_keys;
+    for(const auto &key_entry: d_the_keys){
+        sorted_keys.insert( pair<string, vector<string> >(key_entry.first,( vector<string>(key_entry.second) )));
+    }
     stringstream ss;
     ss << endl;
     ss << "# TheBESKeys::get_as_config()" << endl;
-    if (!d_the_keys.empty()) {
-        for (const auto &kvp: d_the_keys) {
-            string name = kvp.first;
-            vector<string> values = kvp.second;
+    if (!sorted_keys.empty()) {
+        for (const auto &key_entry : sorted_keys) {
+            string name = key_entry.first;
+            vector<string> values = key_entry.second;
             bool first = true;
             for(const string &value: values){
                 ss << name << (first?"=":"+=") << value << endl;
@@ -555,6 +572,7 @@ string TheBESKeys::get_as_config() const
     else {
         ss << "# TheBESKeys are empty()" << endl;
     }
+
     return ss.str();
 }
 
@@ -582,7 +600,7 @@ bool parse_map_record(const string &map_record, const bool &case_insensitive_map
  */
 void TheBESKeys::get_values(
         const std::string &key,
-        std::map<std::string,std::string> &map_values,
+        std::unordered_map<std::string,std::string> &map_values,
         const bool &case_insensitive_map_keys,
         bool &found) {
 
@@ -604,8 +622,7 @@ void TheBESKeys::get_values(
         }
     }
 #if 0
-    vector<string>::iterator it;
-    for(it=values.begin();  it!=values.end(); it++){
+    for(auto it=values.begin();  it!=values.end(); it++){
         string map_key;
         string map_value;
         if (parse_map_record(*it,case_insensitive_map_keys,map_key,map_value)) {
@@ -628,7 +645,7 @@ void TheBESKeys::get_values(
  */
 void TheBESKeys::get_values(
         const std::string &key,
-        std::map< std::string, std::map<std::string,std::vector<std::string> > > &primary_map,
+        std::unordered_map< std::string, std::unordered_map<std::string,std::vector<std::string> > > &primary_map,
         const bool &case_insensitive_map_keys,
         bool &found){
 
@@ -661,11 +678,12 @@ void TheBESKeys::get_values(
                 }
                 else {
                     // How to make a map<string,vector<string>> and poke in to the primary_map??
-                    map<string, vector<string>> secondary_map_entry;
-                    vector<string> secondary_map_entry_values;
+                    unordered_map< string, vector<string> > secondary_map_entry;
+                    vector< string > secondary_map_entry_values;
                     secondary_map_entry_values.push_back(secondary_value);
-                    secondary_map_entry.insert(pair<string, vector<string> >(secondary_key, secondary_map_entry_values));
-                    primary_map.insert(pair<string, map<string, vector<string> > >(primary_map_key, secondary_map_entry));
+                    secondary_map_entry.insert(pair< string, vector<string> >(secondary_key, secondary_map_entry_values));
+                    primary_map.insert(pair<string, unordered_map<string, vector<string> > >(primary_map_key, secondary_map_entry));
+
                 }
             }
             else {
@@ -715,14 +733,12 @@ void TheBESKeys::load_dynamic_config(const string &name)
 
     string best_matching_config_name;
     long longest_match=0;
-    map<string, map<string, vector<string>>>::iterator best_matching_config=dynamic_confg.end();
+    auto best_matching_config = dynamic_confg.end();
 
-    map<string, map<string, vector<string>>>::iterator dcit;
-    for(dcit = dynamic_confg.begin(); dcit != dynamic_confg.end(); dcit++){
+    for(auto dcit = dynamic_confg.begin(); dcit != dynamic_confg.end(); dcit++){
         BESDEBUG(MODULE, prolog << "Processing " << DYNAMIC_CONFIG_KEY << "["<<dcit->first<< "]" << endl);
 
-        map<string, vector<string>>::iterator rit;
-        rit = dcit->second.find(DC_REGEX_KEY);
+        auto rit = dcit->second.find(DC_REGEX_KEY);
         if(rit==dcit->second.end()){
             BESDEBUG(MODULE, prolog << "Could not find a " << DC_REGEX_KEY << " (regular expression) for the "
             << DYNAMIC_CONFIG_KEY << " named: " << dcit->first << " SKIPPING!" << endl);
@@ -730,8 +746,7 @@ void TheBESKeys::load_dynamic_config(const string &name)
         else {
             BESDEBUG(MODULE, prolog << "Found " << DC_REGEX_KEY << " vector for "
             << DYNAMIC_CONFIG_KEY << "["<< dcit->first << "]" << endl);
-            vector<string>::iterator vit;
-            for(vit = rit->second.begin(); vit != rit->second.end(); vit ++){ // For all the regex expressions
+            for(auto vit = rit->second.begin(); vit != rit->second.end(); vit ++){ // For all the regex expressions
                 BESDEBUG(MODULE, prolog << "Processing " << DC_REGEX_KEY << " value '" << *vit << "'" << endl);
                 BESRegex regex((*vit).c_str()); // make BESRegex
                 long match_length = regex.match(name.c_str(),name.size(),0); // Eval match
@@ -742,8 +757,7 @@ void TheBESKeys::load_dynamic_config(const string &name)
                     BESDEBUG(MODULE, prolog << "match_length of " << match_length
                     << " is larger than the current longest_match of "<< longest_match << endl);
 
-                    map<string, vector<string>>::iterator cit;
-                    cit = dcit->second.find(DC_CONFIG_KEY);
+                    auto cit = dcit->second.find(DC_CONFIG_KEY);
                     if(cit==dcit->second.end() || cit->second.empty()){ // does it have a config?
                         BESDEBUG(MODULE, prolog << "There were no " << DC_CONFIG_KEY
                         << " (configuration) values for the " << DYNAMIC_CONFIG_KEY << " named: "
@@ -776,10 +790,8 @@ void TheBESKeys::load_dynamic_config(const string &name)
     }
 
     // Now load the specific keys from the dynamic config;
-    map<string, vector<string>>::iterator cit;
-    cit = best_matching_config->second.find(DC_CONFIG_KEY);
-    vector<string>::iterator vit;
-    for(vit=cit->second.begin(); vit != cit->second.end(); vit++){
+    auto cit = best_matching_config->second.find(DC_CONFIG_KEY);
+    for(auto vit=cit->second.begin(); vit != cit->second.end(); vit++){
         // Each value of this vector should be a regular BESKeys kvp. i.e. "BES.LogName=./opendap.log"
         // Which we just feed into the keys, since we just backed them up...
         BESDEBUG(MODULE, prolog << "Adding dynamic configuration BES Key: " << *vit << endl);

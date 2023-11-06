@@ -29,7 +29,7 @@
 
 #include <list>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 #define SERVER_ADMINISTRATOR_KEY "BES.ServerAdministrator"
 
@@ -40,7 +40,7 @@ namespace bes {
  */
 class ServerAdministrator {
 private:
-    std::map<std::string,std::string> d_admin_info;
+    std::unordered_map<std::string,std::string> d_admin_info;
     std::string d_organization;
     std::string d_street;
     std::string d_city;
