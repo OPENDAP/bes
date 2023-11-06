@@ -551,7 +551,7 @@ string TheBESKeys::dump() const
 string TheBESKeys::get_as_config() const
 {
     // We copy the keys into a std::map because they need to be sorted.
-    map<string, vector<string>, less<string> > sorted_keys;
+    map<string, vector<std::string>, std::less<> > sorted_keys;
     for(const auto &key_entry: d_the_keys){
         sorted_keys.insert( pair<string, vector<string> >(key_entry.first,( vector<string>(key_entry.second) )));
     }
