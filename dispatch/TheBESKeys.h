@@ -174,15 +174,12 @@ public:
 
     uint64_t read_uint64_key(const std::string &key, uint64_t default_value) const;
 
-private:
-    typedef std::unordered_map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
-
 public:
-    Keys_citer keys_begin() {
+    std::unordered_map<std::string, std::vector<std::string> >::const_iterator keys_begin() {
         return d_the_keys.begin();
     }
 
-    Keys_citer keys_end() {
+    std::unordered_map<std::string, std::vector<std::string> >::const_iterator keys_end() {
         return d_the_keys.end();
     }
 

@@ -254,8 +254,8 @@ void TheBESKeys::set_keys(
         d_the_keys[key].clear();
     }
 
-    for(auto mit = values.begin(); mit!=values.end(); mit++){
-        string map_key = mit->first;
+    for(auto &p : values){
+        string map_key = p.first;
         if(map_key.empty() ){
             BESDEBUG(MODULE, prolog << "The map_key is empty. SKIPPING." << endl);
         }
@@ -263,9 +263,10 @@ void TheBESKeys::set_keys(
             if(case_insensitive_map_keys){
                 map_key = BESUtil::lowercase(map_key);
             }
-            string map_record=map_key+":"+mit->second;
+            string map_record=map_key+":"+p.second;
             d_the_keys[key].push_back(map_record);
         }
+
     }
 }
 
@@ -550,9 +551,8 @@ string TheBESKeys::get_as_config() const
 {
     //  We copy the keys into a std::map because they need to be sorted.
     // Why
-    auto keytr = TheBESKeys::TheKeys()->keys_begin();
     map<string, vector<string> > sorted_keys;
-    for(auto key_entry: d_the_keys){
+    for(const auto &key_entry: d_the_keys){
         sorted_keys.insert( pair<string, vector<string> >(key_entry.first,( vector<string>(key_entry.second) )));
     }
     stringstream ss;
