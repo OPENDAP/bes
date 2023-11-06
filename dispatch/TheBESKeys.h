@@ -174,7 +174,6 @@ public:
 
     uint64_t read_uint64_key(const std::string &key, uint64_t default_value) const;
 
-public:
     std::unordered_map<std::string, std::vector<std::string> >::const_iterator keys_begin() {
         return d_the_keys.begin();
     }

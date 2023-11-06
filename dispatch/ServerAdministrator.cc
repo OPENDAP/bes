@@ -198,7 +198,7 @@ std::string ServerAdministrator::get(const string &key){
 
 std::string ServerAdministrator::xdump() const {
     std::stringstream ss;
-    ss << "<ServerAdministrator ";
+    ss << R"(<ServerAdministrator )";
     ss << "organization=\"" << d_organization << "\" ";
     ss <<       "street=\"" << d_street << "\" ";
     ss <<         "city=\"" << d_city << "\" ";
@@ -217,7 +217,7 @@ std::string ServerAdministrator::jdump(bool compact) const {
     ss  << "{";
     if(!compact)
         ss<< endl << "  ";
-    ss << "\"ServerAdministrator\":";
+    ss << R"("ServerAdministrator":)";
     if(!compact)
         ss << " ";
     ss << "{";
