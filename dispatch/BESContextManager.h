@@ -61,10 +61,7 @@ private:
 public:
     BESContextManager();
     virtual ~BESContextManager();
-
-    //typedef std::map<std::string, std::string>::const_iterator Context_citer;
-    //typedef std::map<std::string, std::string>::iterator Context_iter;
-
+    
     virtual void set_context(const std::string &name, const std::string &value);
     virtual void unset_context(const std::string &name);
     virtual std::string get_context(const std::string &name, bool &found);
