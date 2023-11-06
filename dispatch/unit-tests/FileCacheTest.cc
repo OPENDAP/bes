@@ -936,7 +936,7 @@ public:
     void test_purge() {
         FileCache fc;
         // Each copy of source_file is 188,973 bytes; 10 --> 1,889,730
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 2'000'000, 370'000));
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 1'800'000, 370'000));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
         for (int i = 0; i < 10; ++i) {
@@ -985,7 +985,7 @@ public:
     void test_purge_key0_used_most_recently() {
         FileCache fc;
         // Each copy of source_file is 188,973 bytes; 10 --> 1,889,730
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 2'000'000, 370'000));
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 1'800'000, 370'000));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
         for (int i = 0; i < 10; ++i) {
@@ -1026,7 +1026,7 @@ public:
     void test_purge_key0_in_use() {
         FileCache fc;
         // Each copy of source_file is 188,973 bytes; 10 --> 1,889,730
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 2'000'000, 370'000));
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 1'800'000, 370'000));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
         for (int i = 0; i < 10; ++i) {
@@ -1060,6 +1060,29 @@ public:
         string key0 = BESUtil::pathConcat(cache_dir, "key0");
         CPPUNIT_ASSERT_MESSAGE("Cache should still have key0 after purge because it is locked.",
                                std::find(files.begin(), files.end(), key0) != files.end());
+    }
+
+    // This tests if purge() skips expensive operations when possible
+    void test_purge_efficiency() {
+        FileCache fc;
+        // Each copy of source_file is 188,973 bytes; 10 --> 1,889,730
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 2'000'000, 370'000));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        for (int i = 0; i < 10; ++i) {
+            ostringstream oss;
+            oss << "key" << i;
+            CPPUNIT_ASSERT_MESSAGE("Cache put(keyn) should work", fc.put(oss.str(), source_file));
+            oss.clear();
+        }
+
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be 1,889,730 before purge",
+                               fc.get_cache_info_size() == 1'889'730);
+
+        CPPUNIT_ASSERT_MESSAGE("Cache purge should do nothing, but return true", fc.purge());
+
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be unchanged",
+                               fc.get_cache_info_size() == 1'889'730);
     }
 
     CPPUNIT_TEST_SUITE(FileCacheTest);
@@ -1096,6 +1119,7 @@ public:
     CPPUNIT_TEST(test_purge);
     CPPUNIT_TEST(test_purge_key0_used_most_recently);
     CPPUNIT_TEST(test_purge_key0_in_use);
+    CPPUNIT_TEST(test_purge_efficiency);
 
     CPPUNIT_TEST_SUITE_END();
 };
