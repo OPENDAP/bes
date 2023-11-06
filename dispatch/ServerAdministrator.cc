@@ -199,15 +199,15 @@ std::string ServerAdministrator::get(const string &key){
 std::string ServerAdministrator::xdump() const {
     std::stringstream ss;
     ss << R"(<ServerAdministrator )";
-    ss << "organization=\"" << d_organization << "\" ";
-    ss <<       "street=\"" << d_street << "\" ";
-    ss <<         "city=\"" << d_city << "\" ";
-    ss <<       "region=\"" << d_region << "\" ";
-    ss <<      "country=\"" << d_country << "\" ";
-    ss <<   "postalcode=\"" << d_postal_code << "\" ";
-    ss <<    "telephone=\"" << d_telephone << "\" ";
-    ss <<        "email=\"" << d_email << "\" ";
-    ss <<      "website=\"" << d_website << "\" ";
+    ss << R"(organization=")" << d_organization << R"(" )";
+    ss <<       R"(street=")" << d_street << R"(" )";
+    ss <<         R"(city=")" << d_city << R"(" )";
+    ss <<       R"(region=")" << d_region << R"(" )";
+    ss <<      R"(country=")" << d_country << R"(" )";
+    ss <<   R"(postalcode=")" << d_postal_code << R"(" )";
+    ss <<    R"(telephone=")" << d_telephone << R"(" )";
+    ss <<        R"(email=")" << d_email << R"(" )";
+    ss <<      R"(website=")" << d_website << R"(" )";
     ss << "/>";
     return ss.str();
 }
@@ -225,23 +225,23 @@ std::string ServerAdministrator::jdump(bool compact) const {
     if(!compact) ss << " ";
 
     if(!compact){ ss << endl << "   "; }
-    ss << "\"organization\": \"" << d_organization << "\", ";
+    ss << R"("organization": ")" << d_organization << R"(", )";
     if(!compact){ ss << endl << "   "; }
-    ss <<       "\"street\": \"" << d_street << "\", ";
+    ss <<       R"("street": ")" << d_street << R"(", )";
     if(!compact){ ss << endl << "   "; }
-    ss <<         "\"city\": \"" << d_city << "\", ";
+    ss <<         R"("city": ")" << d_city << R"(", )";
     if(!compact){ ss << endl << "   "; }
-    ss <<       "\"region\": \"" << d_region << "\", ";
+    ss <<       R"("region": ")" << d_region << R"(", )";
     if(!compact){ ss << endl << "   "; }
-    ss <<      "\"country\": \"" << d_country << "\", ";
+    ss <<      R"("country": ")" << d_country << R"(", )";
     if(!compact){ ss << endl << "   "; }
-    ss <<   "\"postalcode\": \"" << d_postal_code << "\", ";
+    ss <<   R"("postalcode": ")" << d_postal_code << R"(", )";
     if(!compact){ ss << endl << "   "; }
-    ss <<    "\"telephone\": \"" << d_telephone << "\", ";
+    ss <<    R"("telephone": ")" << d_telephone << R"(", )";
     if(!compact){ ss << endl << "   "; }
-    ss <<        "\"email\": \"" << d_email << "\", ";
+    ss <<        R"("email": ")" << d_email << R"(", )";
     if(!compact){ ss << endl << "   "; }
-    ss <<      "\"website\": \"" << d_website << "\" ";
+    ss <<      R"("website": ")" << d_website << R"(" )";
     if(!compact){ ss << endl << "   "; }
     ss << "}";
     if(!compact)
