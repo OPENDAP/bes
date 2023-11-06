@@ -112,10 +112,14 @@ m4_define([_AT_BESCMD_ERROR_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -227,6 +231,20 @@ m4_define([REMOVE_DATE_TIME], [dnl
     -e 's@_DATE_TIME_SUB_.[[0-9]]\{3\}@_DATE_TIME_SUB_@g' \
     -e 's@_DATE_TIME_SUB_[[a-zA-Z]]\{1,3\}@removed date-time@g' \
     < $1 > $1.sed
+    mv $1.sed $1
+])
+
+m4_define([REMOVE_ERROR_FILE], [dnl
+    sed -e 's@<File>[[0-9a-zA-Z/._]]*</File>@removed file@g' \
+        -e 's@File:.*@removed file@g' < $1 > $1.sed
+    dnl '
+    mv $1.sed $1
+])
+
+m4_define([REMOVE_ERROR_LINE], [dnl
+    sed -e 's@<Line>[[0-9]]*</Line>@removed line@g' \
+        -e 's@Line:.*@removed line@g' < $1 > $1.sed
+    dnl '
     mv $1.sed $1
 ])
 
