@@ -1165,9 +1165,7 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     if(H5Tis_variable_str(h5_type_id) <= 0) {
         return false;  // Not a variable length string, so, again, not our problem.
     }
-
     VERBOSE(cerr << prolog << "Processing VLSA: " << dap_array->FQN() << "\n");
-
     vector<hsize_t> offset;
     vector<hsize_t> stride;
     vector<hsize_t> count;
@@ -1178,23 +1176,30 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
         VERBOSE(cerr << prolog << "dim" << (ditr->name.empty()?"["+to_string(i)+"]" : " " + ditr->name)<<  " size: " << ditr->size << "\n");
         offset.emplace_back(0);
         stride.emplace_back(1);
+        // @TODO setting count like this:
+        //     count.emplace_back(ditr->size);
+        //   for every dimension causes an exception in h5common.cc:
+        //   ERROR Caught std::exception. what: An internal error was encountered in h5common.cc at line 319:
         count.emplace_back(1);
-        i++;
         value_count *= ditr->size;
+        i++;
     }
 
     uint64_t num_elements = dap_array->get_size(false);\
     VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
 
     vector<string> vls_values;
-    vls_values.reserve(value_count);// passed by reference to read_vlen_string
+    vls_values.reserve(num_elements);// passed by reference to read_vlen_string
     //vls_values.emplace_back(""); // initialize array for it's trip to Cville
 
     vector<string> aValue;
+    aValue.reserve(num_elements);
     aValue.emplace_back("");
-#if 1
+    // @TODO This is really a simple 1D case, and I don't really understand how to
+    //   use read_vlen_string()
     for(i=0; i<value_count; i++) {
         VERBOSE(cerr << prolog << "Processing value: " << i <<  "\n");
+        // @TODO Incrementing offset when the num_elements>1 one seems... odd.
         offset[0] =  i;
         // Read each array value.
         read_vlen_string(dataset, num_elements, offset.data(), stride.data(), count.data(), aValue);
@@ -1202,9 +1207,6 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
         VERBOSE(cerr << prolog << "aValue[" << 0 <<  "]: '" << aValue[0] << "'\n");
         vls_values.emplace_back(aValue[0]);
     }
-#else
-    read_vlen_string(dataset, num_elements, offset, stride, count, aValue);
-#endif
 
 #ifndef NDEBUG
     {
@@ -1222,6 +1224,9 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
 
 
     // And then set the value.
+    // #TODO This is failing because either:
+    //   - The DAP object state is not correctly established prior to making this call
+    //   - There is a bug in the DmrppArray implementation.
     dap_array->set_value(vls_values,vls_values.size());
     dap_array->set_read_p(true);
 
