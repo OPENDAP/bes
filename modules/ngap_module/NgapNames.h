@@ -58,6 +58,10 @@ constexpr static auto const USE_DMRPP_CACHE = "NGAP.UseDMRppCache";
 constexpr static auto const DMRPP_CACHE_THRESHOLD = "NGAP.DMRppCacheSize";
 constexpr static auto const DMRPP_CACHE_SPACE = "NGAP.DMRppCachePurge";
 
+constexpr static auto const DMRPP_FILE_CACHE_THRESHOLD = "NGAP.DMRppFileCacheSize"; // in MB
+constexpr static auto const DMRPP_FILE_CACHE_SPACE = "NGAP.DMRppFileCachePurge";    // in MB
+constexpr static auto const DMRPP_FILE_CACHE_DIR = "NGAP.DMRppFileCacheDir";
+
 // These are used only in NgapApiTest.cc. jhrg 9/28/23
 #define CMR_PROVIDER "provider"
 #define CMR_ENTRY_TITLE "entry_title"

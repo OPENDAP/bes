@@ -210,7 +210,7 @@ string NgapContainer::access() {
 
     string dmrpp_string;
     if (NgapRequestHandler::d_use_dmrpp_cache && NgapRequestHandler::d_new_dmrpp_cache.get(get_real_name(), dmrpp_string)) {
-        // set_container_type() because access() is called from within the framework and the DMR++ handler
+        // set_container_type() because access() is called from both the framework and the DMR++ handler
         BESDEBUG(NGAP_CACHE, prolog << "Cache hit, DMR++: " << get_real_name() << endl);
         set_container_type("dmrpp");
         set_attributes("as-string");
@@ -227,6 +227,18 @@ string NgapContainer::access() {
         besTimer2.start("DMR++ retrieval: " + dmrpp_url_str);
     }
 #endif
+
+    // Before going over the network to get the DMR++, look in the FileCache.
+    // If found, put it in the memory cache and return it as a string.
+    FileCache::Item item;
+    if (NgapRequestHandler::d_dmrpp_file_cache.get(get_real_name(), item)) { // got it
+        
+    }
+
+    // Else, the DMR++ is neither in the memory cache nor the file cache.
+    // Read it from S3, etc., and filter it. Put it in the memory cache.
+    // Use a child thread to copy it into the FileCache.
+    // Return the DMR++ string.
 
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);

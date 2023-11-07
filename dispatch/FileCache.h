@@ -321,7 +321,8 @@ public:
 
     /**
      * @brief Initialize the cache.
-     * @param cache_dir Directory on some filesystem where the cache will be stored.
+     * @param cache_dir Directory on some filesystem where the cache will be stored. This
+     * directory must exist before this call is made.
      * @param size Allow this many bytes in the cache
      * @param target_size When purging, remove items until this many bytes remain.
      * @return False if the cache object could not be initialized, true otherwise.

@@ -35,6 +35,7 @@
 #include <unordered_map>
 
 #include "MemoryCache.h"
+#include "FileCache.h"
 #include "BESRequestHandler.h"
 
 namespace ngap {
@@ -53,10 +54,14 @@ class NgapRequestHandler : public BESRequestHandler {
     static bool d_use_dmrpp_cache;
     static MemoryCache<std::string> d_new_dmrpp_cache;
 
+    static unsigned long long d_dmrpp_file_cache_size;
+    static unsigned long long d_dmrpp_file_cache_purge_size;
+    static std::string d_dmrpp_file_cache_dir;
+
+    static FileCache d_dmrpp_file_cache;
+
     friend class NgapContainer;   // give NgapContainer access to the cache parameters
-
     friend class NgapContainerTest;
-
     friend class NgapRequestHandlerTest;
 
 public:

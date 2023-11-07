@@ -47,7 +47,7 @@ using namespace libdap;
 using namespace ngap;
 
 // CMR caching
-unsigned int NgapRequestHandler::d_cmr_cache_size = 100;
+unsigned int NgapRequestHandler::d_cmr_cache_size = 100;    // Entries, not size in bytes, MB, etc.
 unsigned int NgapRequestHandler::d_cmr_cache_purge = 20;
 
 bool NgapRequestHandler::d_use_cmr_cache = false;
@@ -59,6 +59,12 @@ unsigned int NgapRequestHandler::d_dmrpp_cache_purge = 20;
 
 bool NgapRequestHandler::d_use_dmrpp_cache = false;
 MemoryCache<std::string> NgapRequestHandler::d_new_dmrpp_cache;
+
+unsigned long long NgapRequestHandler::d_dmrpp_file_cache_size = 10'000;    // 10,000 MB ~= 10GB, roughly
+unsigned long long NgapRequestHandler::d_dmrpp_file_cache_purge_size = 2'000;  // 2,000 MB ~= 20MB
+string NgapRequestHandler::d_dmrpp_file_cache_dir = "/tmp";     // Please change this!
+
+FileCache NgapRequestHandler::d_dmrpp_file_cache;
 
 NgapRequestHandler::NgapRequestHandler(const string &name) :
         BESRequestHandler(name)
@@ -88,6 +94,26 @@ NgapRequestHandler::NgapRequestHandler(const string &name) :
                 = TheBESKeys::TheKeys()->read_int_key(DMRPP_CACHE_SPACE, NgapRequestHandler::d_dmrpp_cache_purge);
         if (!d_new_dmrpp_cache.initialize(d_dmrpp_cache_size, d_dmrpp_cache_purge)) {
             ERROR_LOG("NgapRequestHandler::NgapRequestHandler() - failed to initialize DMR++ cache");
+        }
+
+        // Now set up the file cache.
+        NgapRequestHandler::d_dmrpp_file_cache_size
+            = MEGABYTE * TheBESKeys::TheKeys()->read_ulong_key(DMRPP_FILE_CACHE_THRESHOLD,
+                                                               NgapRequestHandler::d_dmrpp_file_cache_size);
+        NgapRequestHandler::d_dmrpp_file_cache_purge_size
+            = MEGABYTE * TheBESKeys::TheKeys()->read_ulong_key(DMRPP_FILE_CACHE_SPACE,
+                                                               NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+        NgapRequestHandler::d_dmrpp_file_cache_dir
+            = TheBESKeys::TheKeys()->read_string_key(DMRPP_FILE_CACHE_DIR,
+                                                     NgapRequestHandler::d_dmrpp_file_cache_dir);
+        if (BESUtil::mkdir_p(NgapRequestHandler::d_dmrpp_file_cache_dir, 0775) != 0) {
+            throw BESInternalError("Temporary file directory '" + NgapRequestHandler::d_dmrpp_file_cache_dir
+                                    + "' error: " + strerror(errno), __FILE__, __LINE__);
+        }
+        if (!NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
+                                                               NgapRequestHandler::d_dmrpp_file_cache_size,
+                                                               NgapRequestHandler::d_dmrpp_file_cache_purge_size)) {
+            ERROR_LOG("NgapRequestHandler::NgapRequestHandler() - failed to initialize DMR++ file cache");
         }
     }
 }
