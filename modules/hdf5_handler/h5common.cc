@@ -259,7 +259,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
         is_scalar = true;
 
 
-    if (false == is_scalar) {
+    if (!is_scalar) {
         if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
                                hoffset, hstep,
                                hcount, nullptr) < 0) {
@@ -283,7 +283,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
 
     if ((dtypeid = H5Dget_type(dsetid)) < 0) {
             
-        if (false == is_scalar) 
+        if (!is_scalar)
             H5Sclose(mspace);
         H5Sclose(dspace);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain the datatype.");
@@ -292,7 +292,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
 
-        if (false == is_scalar) 
+        if (!is_scalar)
             H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Sclose(dspace);
@@ -305,13 +305,23 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
     vector <char> strval;
     strval.resize(nelms*ty_size);
     hid_t read_ret = -1;
-    if (true == is_scalar) 
-        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)strval.data());
+    if (is_scalar)
+        read_ret = H5Dread(dsetid,
+                           memtype,
+                           H5S_ALL,
+                           H5S_ALL,
+                           H5P_DEFAULT,
+                           (void*)strval.data());
     else 
-        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)strval.data());
+        read_ret = H5Dread(dsetid,
+                           memtype,
+                           mspace,
+                           dspace,
+                           H5P_DEFAULT,
+                           (void*)strval.data());
 
     if (read_ret < 0) {
-        if (false == is_scalar)  
+        if (!is_scalar)
             H5Sclose(mspace);
         H5Tclose(memtype);
         H5Tclose(dtypeid);

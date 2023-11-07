@@ -572,7 +572,6 @@ string TheBESKeys::get_as_config() const
     else {
         ss << "# TheBESKeys are empty()" << endl;
     }
-
     return ss.str();
 }
 

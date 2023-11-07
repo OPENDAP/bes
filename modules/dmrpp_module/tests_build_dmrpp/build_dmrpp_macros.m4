@@ -663,7 +663,7 @@ export PATH=${abs_top_builddir}/standalone:$PATH
 gd_verbose=""
 AS_IF([test -z "$at_verbose"], [ gd_verbose="-v -X" ])
 
-TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${gd_verbose} ${input_file}"
+TEST_CMD="${GET_DMRPP} -V -A -b ${BES_DATA_ROOT} ${params} ${gd_verbose} ${input_file}"
 
 # at_verbose=""
 

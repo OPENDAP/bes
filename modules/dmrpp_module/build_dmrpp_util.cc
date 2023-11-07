@@ -1072,7 +1072,7 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
                 msgs << "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so ";
                 msgs << "the storage penalty is minimal.";
                 msg = msgs.str();
-                is_unsupported = true;
+                is_unsupported = false;
             }
             break;
         }
@@ -1114,6 +1114,8 @@ bool process_variable_length_string_scalar(const hid_t dataset, BaseType *btp){
         return false; // Not a variable length string, so, again, not our problem.
     }
 
+    VERBOSE(cerr << prolog << "Processing VLSS: " << btp->FQN() << "\n");
+
     vector<string> vls_values;   // passed by reference to read_vlen_string
     vls_values.emplace_back(""); // initialize array for it's trip to Cville
 
@@ -1138,7 +1140,7 @@ bool process_variable_length_string_scalar(const hid_t dataset, BaseType *btp){
 }
 
 /**
- * @brief Identifies, reads, and then stores a vlss in a DAP dmr++ variable using the compact representation
+ * @brief Identifies, reads, and then stores a VLSS in a DAP dmr++ variable using the compact representation
  *
  * @param dataset The HDF5 dataset id.
  * @param btp The BaseType pointer to the sister DAP class
@@ -1164,20 +1166,60 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
         return false;  // Not a variable length string, so, again, not our problem.
     }
 
-    uint64_t num_elements = dap_array->get_size(false);\
-    vector<string> vls_values;   // passed by reference to read_vlen_string
-    vls_values.emplace_back(""); // initialize array for it's trip to Cville
+    VERBOSE(cerr << prolog << "Processing VLSA: " << dap_array->FQN() << "\n");
 
-    // Read the scalar string.
-    read_vlen_string(dataset, num_elements, nullptr, nullptr, nullptr, vls_values);
+    vector<hsize_t> offset;
+    vector<hsize_t> stride;
+    vector<hsize_t> count;
+
+    uint64_t i = 0;
+    uint64_t value_count=1;
+    for(auto ditr=dap_array->dim_begin(); ditr != dap_array->dim_end(); ditr++){
+        VERBOSE(cerr << prolog << "dim" << (ditr->name.empty()?"["+to_string(i)+"]" : " " + ditr->name)<<  " size: " << ditr->size << "\n");
+        offset.emplace_back(0);
+        stride.emplace_back(1);
+        count.emplace_back(1);
+        i++;
+        value_count *= ditr->size;
+    }
+
+    uint64_t num_elements = dap_array->get_size(false);\
+    VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
+
+    vector<string> vls_values;
+    vls_values.reserve(value_count);// passed by reference to read_vlen_string
+    //vls_values.emplace_back(""); // initialize array for it's trip to Cville
+
+    vector<string> aValue;
+    aValue.emplace_back("");
+#if 1
+    for(i=0; i<value_count; i++) {
+        VERBOSE(cerr << prolog << "Processing value: " << i <<  "\n");
+        offset[0] =  i;
+        // Read each array value.
+        read_vlen_string(dataset, num_elements, offset.data(), stride.data(), count.data(), aValue);
+        VERBOSE(cerr << prolog << "aValue.size(): " << aValue.size()<< "'\n");
+        VERBOSE(cerr << prolog << "aValue[" << 0 <<  "]: '" << aValue[0] << "'\n");
+        vls_values.emplace_back(aValue[0]);
+    }
+#else
+    read_vlen_string(dataset, num_elements, offset, stride, count, aValue);
+#endif
+
+#ifndef NDEBUG
+    {
+        VERBOSE(cerr << prolog << " vls_values.size(): " << vls_values.size() << "\n");
+        uint64_t indx = 0;
+        for (const auto &sval: vls_values) {
+            VERBOSE(cerr << prolog << " vls_values[" << to_string(indx++) << "]: '" << sval << "'\n");
+        }
+    }
+#endif
 
     // Convert variable to a compact representation
     // so that its value can be stored in the dmr++
     dap_array->set_compact(true);
 
-    for(const auto &sval: vls_values) {
-        VERBOSE(cerr << prolog << " sval(): " << sval << "\n");
-    }
 
     // And then set the value.
     dap_array->set_value(vls_values,vls_values.size());
