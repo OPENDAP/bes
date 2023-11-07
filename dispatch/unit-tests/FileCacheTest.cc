@@ -332,16 +332,12 @@ public:
                                sha256(source_file) == sha256(BESUtil::pathConcat(cache_dir, "key1")));
     }
 
-    void test_put_duplicate_key_three_threads()
-    {
-        FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
-        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
-
+    /// Used in three places. jhrg 11/7/23
+    bool multiple_put_operations(FileCache &fc, const string &source_file) const {
         auto f1 = async(launch::async,
                         [source_file, &fc](const string &key) -> bool {
                             // give the other threads a head start
-                            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                            this_thread::sleep_for(chrono::milliseconds(1));
                             bool status = fc.put(key, source_file);
                             return status;
                         },
@@ -359,7 +355,7 @@ public:
                         },
                         "key1");
 
-        DBG(cerr << "Start querying\n" );
+        DBG(cerr << "Start querying\n");
 
         bool f1_status = f1.get();
         bool f2_status = f2.get();
@@ -370,6 +366,17 @@ public:
         bool xor_status = (f1_status && !f2_status && !f3_status) ||
                           (!f1_status && f2_status && !f3_status) ||
                           (!f1_status && !f2_status && f3_status);
+        return xor_status;
+    }
+
+    void test_put_duplicate_key_three_threads()
+    {
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
+
+        bool xor_status = multiple_put_operations(fc, source_file);
+
         CPPUNIT_ASSERT_MESSAGE("Only one status should be true", xor_status);
 
         CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
@@ -387,6 +394,8 @@ public:
         if (fork() == 0) {
             // child process
             // sleep here to give the parent a head start, not much use.
+            bool xor_status = multiple_put_operations(fc, source_file);
+#if 0
             auto f1 = async(launch::async,
                             [source_file, &fc](const string &key) -> bool {
                                 // give the other threads a head start
@@ -419,6 +428,7 @@ public:
             bool xor_status = (f1_status && !f2_status && !f3_status) ||
                               (!f1_status && f2_status && !f3_status) ||
                               (!f1_status && !f2_status && f3_status);
+#endif
 
             DBG(cerr << prolog << "child process put() status: " << xor_status << '\n');
             exit(xor_status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
@@ -427,6 +437,9 @@ public:
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+            bool xor_status = multiple_put_operations(fc, source_file);
+#if 0
             auto f1 = async(launch::async,
                             [source_file, &fc](const string &key) -> bool {
                                 // give the other threads a head start
@@ -459,7 +472,7 @@ public:
             bool xor_status = (f1_status && !f2_status && !f3_status) ||
                               (!f1_status && f2_status && !f3_status) ||
                               (!f1_status && !f2_status && f3_status);
-
+#endif
             int child_status;
             wait(&child_status);
             DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');
