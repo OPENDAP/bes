@@ -31,10 +31,10 @@
 #include <map>
 #include <sstream>
 
-#include <TheBESKeys.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESLog.h>
+#include "TheBESKeys.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESLog.h"
 #include "BESInternalFatalError.h"
 
 #include "ServerAdministrator.h"
@@ -99,40 +99,8 @@ namespace bes {
 ServerAdministrator::ServerAdministrator(){
     bool found = false;
 
+
     TheBESKeys::TheKeys()->get_values(SERVER_ADMINISTRATOR_KEY,d_admin_info, true, found);
-
-#if 0
-    vector<string> admin_keys;
-    TheBESKeys::TheKeys()->get_values(SERVER_ADMINISTRATOR_KEY, admin_keys, found);
-    if(!found){
-        throw BESInternalFatalError(string("The BES configuration must provide server administrator information using the key: '")+SERVER_ADMINISTRATOR_KEY
-            +"'", __FILE__, __LINE__);
-        BESDEBUG(MODULE,__func__ << "() -  ERROR! The BES configuration must provide server administrator information using the key " << SERVER_ADMINISTRATOR_KEY << endl);
-        mk_default();
-        return;
-    }
-
-    vector<string>::iterator it;
-    for(it=admin_keys.begin();  it!=admin_keys.end(); it++){
-        string admin_info_entry = *it;
-        int index = admin_info_entry.find(":");
-        if(index>0){
-            string key = admin_info_entry.substr(0,index);
-            key =  BESUtil::lowercase(key);
-            string value =  admin_info_entry.substr(index+1);
-            BESDEBUG(MODULE, prolog << "key: '" << key << "'  value: " << value << endl);
-            d_admin_info.insert( std::pair<string,string>(key,value));
-        }
-        else {
-            //throw BESInternalFatalError(string("The configuration entry for the ") + SERVER_ADMINISTRATOR_KEY +
-            //    " was incorrectly formatted. entry: "+admin_info_entry, __FILE__,__LINE__);
-            BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " << SERVER_ADMINISTRATOR_KEY << " was incorrectly formatted.  Offending entry: " << admin_info_entry << endl);
-            mk_default();
-            return;
-        }
-    }
-
-#endif
 
 
     bool bad_flag = false;
@@ -217,7 +185,7 @@ ServerAdministrator::ServerAdministrator(){
 
 std::string ServerAdministrator::get(const string &key){
     string lkey = BESUtil::lowercase(key);
-    std::map<std::string,std::string>::const_iterator result = d_admin_info.find(lkey);
+    auto result = d_admin_info.find(lkey);
     if(result == d_admin_info.end()){
         return "";
     }
@@ -230,41 +198,51 @@ std::string ServerAdministrator::get(const string &key){
 
 std::string ServerAdministrator::xdump() const {
     std::stringstream ss;
-    std::map<std::string,std::string>::const_iterator it = d_admin_info.begin();
-    ss << "<ServerAdministrator ";
-    for(it=d_admin_info.begin(); it!= d_admin_info.end(); it++){
-        if(it!= d_admin_info.begin())
-            ss << " ";
-        ss << it->first << "=\"" << it->second << "\"";
-    }
+    ss << R"(<ServerAdministrator )";
+    ss << R"(organization=")" << d_organization << R"(" )";
+    ss <<       R"(street=")" << d_street << R"(" )";
+    ss <<         R"(city=")" << d_city << R"(" )";
+    ss <<       R"(region=")" << d_region << R"(" )";
+    ss <<      R"(country=")" << d_country << R"(" )";
+    ss <<   R"(postalcode=")" << d_postal_code << R"(" )";
+    ss <<    R"(telephone=")" << d_telephone << R"(" )";
+    ss <<        R"(email=")" << d_email << R"(" )";
+    ss <<      R"(website=")" << d_website << R"(" )";
     ss << "/>";
     return ss.str();
 }
 
 std::string ServerAdministrator::jdump(bool compact) const {
     std::stringstream ss;
-    std::map<std::string,std::string>::const_iterator it = d_admin_info.begin();
     ss  << "{";
     if(!compact)
         ss<< endl << "  ";
-    ss << "\"ServerAdministrator\":";
+    ss << R"("ServerAdministrator":)";
     if(!compact)
         ss << " ";
     ss << "{";
     if(!compact) ss << " ";
     if(!compact) ss << " ";
-    for(it=d_admin_info.begin(); it!= d_admin_info.end(); it++){
-        if(it!= d_admin_info.begin())
-            ss << ",";
-        if(!compact)
-            ss << endl << "   ";
-        ss << "\"" << it->first << "\"" << ":";
-        if(!compact)
-            ss << " ";
-        ss << "\"" << it->second << "\"";
-    }
-    if(!compact)
-        ss<< endl << "  ";
+
+    if(!compact){ ss << endl << "   "; }
+    ss << R"("organization": ")" << d_organization << R"(", )";
+    if(!compact){ ss << endl << "   "; }
+    ss <<       R"("street": ")" << d_street << R"(", )";
+    if(!compact){ ss << endl << "   "; }
+    ss <<         R"("city": ")" << d_city << R"(", )";
+    if(!compact){ ss << endl << "   "; }
+    ss <<       R"("region": ")" << d_region << R"(", )";
+    if(!compact){ ss << endl << "   "; }
+    ss <<      R"("country": ")" << d_country << R"(", )";
+    if(!compact){ ss << endl << "   "; }
+    ss <<   R"("postalcode": ")" << d_postal_code << R"(", )";
+    if(!compact){ ss << endl << "   "; }
+    ss <<    R"("telephone": ")" << d_telephone << R"(", )";
+    if(!compact){ ss << endl << "   "; }
+    ss <<        R"("email": ")" << d_email << R"(", )";
+    if(!compact){ ss << endl << "   "; }
+    ss <<      R"("website": ")" << d_website << R"(" )";
+    if(!compact){ ss << endl << "   "; }
     ss << "}";
     if(!compact)
         ss << endl;

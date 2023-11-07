@@ -60,7 +60,7 @@ const string catalog_root_dir = BESUtil::assemblePath(TEST_SRC_DIR,"catalog_test
 
 class KeyValuePairTest: public TestFixture {
 private:
-    map<string, vector<string> > keystore;
+    unordered_map<string, vector<string> > keystore;
 
     void show_file(string filename)
     {
@@ -147,7 +147,6 @@ public:
     void get_key_value() {
         if(debug) cout << endl << "******  get_key_value() ******"  << endl;
         load_good_keys("/keys_test.ini");
-        map<string, vector<string>>::iterator it;
         if(debug) cout << "get_key_value() - Keystore has "<< keystore.size() <<  " keys" << endl ;
         string ret = "";
         for (int i = 1; i < 5; i++) {
@@ -157,8 +156,8 @@ public:
             sprintf(val, "val%d", i);
             if(debug) cout << "get_key_value() - Looking for " << key << " with value " << val << endl;
             ret = "";
-            it=keystore.find(key);
-            if(it!=keystore.end()){
+            auto it = keystore.find(key);
+            if ( it != keystore.end() ) {
                 vector<string> &ret_vals = it->second;
                 CPPUNIT_ASSERT(!ret_vals.empty());
                 CPPUNIT_ASSERT(!ret_vals[0].empty());
@@ -174,11 +173,10 @@ public:
     void get_multi_valued_key() {
         if(debug) cout << endl << "******  get_multi_valued_key() ******"  << endl;
         load_good_keys("/keys_test.ini");
-        map<string, vector<string>>::iterator it;
         if(debug) cout << "get_multi_valued_key() - Check for a multi value key" << endl;
 
         string key = "BES.KEY.MULTI";
-        it=keystore.find(key);
+        auto it=keystore.find(key);
         if(it!=keystore.end()){
             vector<string> &ret_vals = it->second;
             if(debug) cout << "get_multi_valued_key() - Found " << ret_vals.size() << " values for key: '" << key << "'" << endl;
@@ -200,12 +198,11 @@ public:
     void get_single_val_from_multi_val_key(){
         if(debug) cout << endl << "******  get_single_val_from_multi_val_key() ******"  << endl;
         load_good_keys("/keys_test.ini");
-        map<string, vector<string>>::iterator it;
         if(debug) cout << "get_single_val_from_multi_val_key() - Get single value from a multi-value key" << endl;
 
         string key = "BES.KEY.MULTI";
-        it=keystore.find(key);
-        if(it!=keystore.end()){
+        auto it = keystore.find(key);
+        if ( it != keystore.end() ) {
             vector<string> &ret_vals = it->second;
             if(debug) cout << "get_multi_valued_key() - Found " << ret_vals.size() << " values for key: '" << key << "'" << endl;
             CPPUNIT_ASSERT(ret_vals.size() == 5);
@@ -222,12 +219,11 @@ public:
     void check_for_missing_key(){
         if(debug) cout << endl << "******  check_for_missing_key() ******"  << endl;
         load_good_keys("/keys_test.ini");
-        map<string, vector<string>>::iterator it;
         if(debug) cout << "check_for_missing_key() - Looking for non existant key" << endl;
 
         string key = "BES.NOTFOUND";
-        it=keystore.find(key);
-        if(it!=keystore.end()){
+        auto it = keystore.find(key);
+        if ( it!=keystore.end() ) {
             CPPUNIT_FAIL(string("check_for_missing_key() - OOPS! Key '")+key+"' was found! ");
         }
         if(debug) cout << "check_for_missing_key() - Alright. Alright. Aright..." << endl;
@@ -237,12 +233,11 @@ public:
     void get_key_with_empty_value (){
         if(debug) cout << endl << "******  get_key_with_empty_value() ******"  << endl;
         load_good_keys("/keys_test.ini");
-        map<string, vector<string>>::iterator it;
         if(debug) cout << "get_key_with_empty_value() - Looking for key with empty value" << endl;
 
         string key = "BES.KEY5";
-        it=keystore.find(key);
-        if(it!=keystore.end()){
+        auto it=keystore.find(key);
+        if ( it != keystore.end() ) {
             CPPUNIT_ASSERT(it->second.empty());
         }
         else {
@@ -254,12 +249,11 @@ public:
     void check_empty_value_from_include (){
         if(debug) cout << endl << "******  get_key_with_empty_value() ******"  << endl;
         load_good_keys("/keys_test.ini");
-        map<string, vector<string>>::iterator it;
         if(debug) cout << "check_empty_value_from_include() - Looking for key with empty value in included file" << endl;
 
         string key = "BES.KEY6";
-        it=keystore.find(key);
-        if(it!=keystore.end()){
+        auto it = keystore.find(key);
+        if ( it != keystore.end() ) {
             CPPUNIT_ASSERT(it->second.empty());
         }
         else {
@@ -272,12 +266,11 @@ public:
     void get_keys_from_regexp_include (){
         if(debug) cout << endl << "******  get_keys_from_regexp_include() ******"  << endl;
         load_good_keys("/keys_test.ini");
-        map<string, vector<string>>::iterator it;
         if(debug) cout << "get_keys_from_regexp_include() - Getting keys from reg exp included file" << endl;
 
         string key = "BES.KEY.MI";
-        it=keystore.find(key);
-        if(it!=keystore.end()){
+        auto it = keystore.find(key);
+        if ( it != keystore.end() ) {
             vector<string> values = it->second;
 
             CPPUNIT_ASSERT(values.size() == 3);
@@ -297,7 +290,6 @@ public:
     void get_those_keys (){
         if(debug) cout << endl << "******  get_those_keys() ******"  << endl;
         load_good_keys("/keys_test.ini");
-        map<string, vector<string>>::iterator it;
         if(debug) cout << "get_those_keys() - Looking many single valued keys" << endl;
 
         for (int i = 1; i < 7; i++) {
@@ -315,8 +307,8 @@ public:
                 val = ss.str();
             }
             if(debug) cout << "get_those_keys() - Looking for " << key << " with value " << val << endl;
-            it=keystore.find(key);
-            if(it!=keystore.end()){
+            auto it = keystore.find(key);
+            if ( it != keystore.end() ) {
                 vector<string> values = it->second;
                 if(val.size()==0){
                     CPPUNIT_ASSERT(values.size() == 0);

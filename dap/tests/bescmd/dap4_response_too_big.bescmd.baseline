@@ -7,7 +7,8 @@
 You asked for too much! 
     Maximum allowed response size: 10240 bytes.
     Maximum allowed variable size: unlimited
-The submitted DAP4 request will generate a 3112656 byte response, which is too large.
+The submitted DAP4 request will generate a 3112656 byte
+response, which is larger than the maximum allowed response size.
 You can resolve these issues by requesting less.
  - Consider asking for fewer variables (do you need them all?)
  - If individual variables are too large you can also subset

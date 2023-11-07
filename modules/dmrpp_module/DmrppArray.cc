@@ -270,8 +270,10 @@ bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<o
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_child_chunk_thread_new, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                 "' from std::async for " << args->child_chunk->to_string() << endl);
+
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
     }
     return retval;
 }
@@ -291,8 +293,11 @@ bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_super_chunk_transfer_thread, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                            "' from std::async for " << args->super_chunk->to_string(false) << endl);
+       
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
+ 
     }
     return retval;
 }
@@ -311,8 +316,11 @@ bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &fu
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                            "' from std::async, transfer_thread_counter: " << transfer_thread_counter << endl);
+
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
+ 
     }
     return retval;
 }

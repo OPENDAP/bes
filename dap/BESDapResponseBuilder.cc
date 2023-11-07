@@ -958,7 +958,8 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
 
     dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-    dap_utils::throw_if_dap2_response_too_big(dds, __FILE__, __LINE__);
+    dap_utils::throw_if_too_big(*dds, __FILE__, __LINE__);
+
 
     // Iterate through the variables in the DataDDS and read
     // in the data if the variable has its send flag set.
@@ -1034,7 +1035,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        dap_utils::throw_if_dap2_response_too_big(*dds, __FILE__, __LINE__);
+        dap_utils::throw_if_too_big(**dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1056,7 +1057,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
         dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
-        dap_utils::throw_if_dap2_response_too_big(*dds, __FILE__, __LINE__);
+        dap_utils::throw_if_too_big(**dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1154,7 +1155,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        dap_utils::throw_if_dap2_response_too_big(*dds, __FILE__, __LINE__);
+        dap_utils::throw_if_too_big(**dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1176,7 +1177,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
         dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
-        dap_utils::throw_if_dap2_response_too_big(*dds, __FILE__, __LINE__);
+        dap_utils::throw_if_too_big(**dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
