@@ -1177,12 +1177,16 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
         offset.emplace_back(0);
         stride.emplace_back(1);
         // @TODO setting count like this:
-        //     count.emplace_back(ditr->size);
+         count.emplace_back(ditr->size);
         //   for every dimension causes an exception in h5common.cc:
         //   ERROR Caught std::exception. what: An internal error was encountered in h5common.cc at line 319:
-        count.emplace_back(1);
+        //count.emplace_back(1);
         value_count *= ditr->size;
         i++;
+    }
+    auto ndims = dap_array->dimensions(false);
+    for(unsigned int i = 0; i< ndims ; i++){
+
     }
 
     uint64_t num_elements = dap_array->get_size(false);\
@@ -1200,7 +1204,7 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     for(i=0; i<value_count; i++) {
         VERBOSE(cerr << prolog << "Processing value: " << i <<  "\n");
         // @TODO Incrementing offset when the num_elements>1 one seems... odd.
-        offset[0] =  i;
+        // offset[0] =  i;
         // Read each array value.
         read_vlen_string(dataset, num_elements, offset.data(), stride.data(), count.data(), aValue);
         VERBOSE(cerr << prolog << "aValue.size(): " << aValue.size()<< "'\n");
