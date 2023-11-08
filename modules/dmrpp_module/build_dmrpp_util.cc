@@ -818,7 +818,6 @@ void process_compact_flsa(hid_t dataset, BaseType *btp){
 
     auto memRequired = btp->length_ll() * fls_length;
 
-
     auto array = toDA(btp);
     auto &string_buf = array->compact_str_buffer();
     string_buf.resize(memRequired);
@@ -1151,7 +1150,7 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     if(btp->type() != dods_array_c) {
         return false; // Not an array, not our problem...
     }
-    auto dap_array = dynamic_cast<DmrppArray *>(btp);
+    auto dap_array = toDA(btp);
     if(!dap_array){
         throw BESInternalError("Malformed DAP object " + btp->FQN() +
         " Identifies as dods_array_c but cast to DmrppArray fails!", __FILE__, __LINE__);
@@ -1165,7 +1164,10 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     if(H5Tis_variable_str(h5_type_id) <= 0) {
         return false;  // Not a variable length string, so, again, not our problem.
     }
+
+    dap_array->set_is_vlsa(true);
     VERBOSE(cerr << prolog << "Processing VLSA: " << dap_array->FQN() << "\n");
+
     vector<hsize_t> offset;
     vector<hsize_t> stride;
     vector<hsize_t> count;
@@ -1177,16 +1179,12 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
         offset.emplace_back(0);
         stride.emplace_back(1);
         // @TODO setting count like this:
-         count.emplace_back(ditr->size);
+        // count.emplace_back(ditr->size);
         //   for every dimension causes an exception in h5common.cc:
         //   ERROR Caught std::exception. what: An internal error was encountered in h5common.cc at line 319:
-        //count.emplace_back(1);
+        count.emplace_back(1);
         value_count *= ditr->size;
         i++;
-    }
-    auto ndims = dap_array->dimensions(false);
-    for(unsigned int i = 0; i< ndims ; i++){
-
     }
 
     uint64_t num_elements = dap_array->get_size(false);\
@@ -1196,6 +1194,7 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     vls_values.reserve(num_elements);// passed by reference to read_vlen_string
     //vls_values.emplace_back(""); // initialize array for it's trip to Cville
 
+    uint64_t memRequired = 0;
     vector<string> aValue;
     aValue.reserve(num_elements);
     aValue.emplace_back("");
@@ -1203,13 +1202,15 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     //   use read_vlen_string()
     for(i=0; i<value_count; i++) {
         VERBOSE(cerr << prolog << "Processing value: " << i <<  "\n");
-        // @TODO Incrementing offset when the num_elements>1 one seems... odd.
-        // offset[0] =  i;
+        // @TODO Incrementing offset when the num_elements>1 one seems odd. But so far it's the only way
+        //   I have found to get all the values.
+        offset[0] =  i;
         // Read each array value.
         read_vlen_string(dataset, num_elements, offset.data(), stride.data(), count.data(), aValue);
         VERBOSE(cerr << prolog << "aValue.size(): " << aValue.size()<< "'\n");
         VERBOSE(cerr << prolog << "aValue[" << 0 <<  "]: '" << aValue[0] << "'\n");
         vls_values.emplace_back(aValue[0]);
+        memRequired += aValue[0].size();
     }
 
 #ifndef NDEBUG
@@ -1222,17 +1223,31 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     }
 #endif
 
+#if 0
     // Convert variable to a compact representation
     // so that its value can be stored in the dmr++
     dap_array->set_compact(true);
 
-
     // And then set the value.
-    // #TODO This is failing because either:
-    //   - The DAP object state is not correctly established prior to making this call
-    //   - There is a bug in the DmrppArray implementation.
-    dap_array->set_value(vls_values,vls_values.size());
+    dap_array->set_value(vls_values,(int) vls_values.size());
     dap_array->set_read_p(true);
+#else
+
+    /**/
+    // This is the scalar solution, for reference.
+    // We need to decide on a representation for arrays of compact strings.
+    //
+    auto &string_buf = dap_array->compact_str_buffer();
+
+    string_buf.resize(memRequired);
+    get_data(dataset, reinterpret_cast<void *>(string_buf.data()));
+    dap_array->set_read_p(true);
+    /**/
+#endif
+
+
+
+
 
     return true;
 }
@@ -1660,6 +1675,9 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     }
 
     XMLWriter writer;
+    // #TODO This is failing because either:
+    //   - The DAP object state is not correctly established prior to making this call
+    //   - There is a bug in the DmrppArray implementation.
     dmrpp.print_dmrpp(writer, dmrpp_href_value);
     cout << writer.get_doc();
 

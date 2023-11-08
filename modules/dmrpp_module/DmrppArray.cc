@@ -2252,6 +2252,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
             case dods_str_c:
             case dods_url_c:
             {
+
                 uint8_t *values = nullptr;
                 try {
                     auto size = buf2val(reinterpret_cast<void **>(&values));
