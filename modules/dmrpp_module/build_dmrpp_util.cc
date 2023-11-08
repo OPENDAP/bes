@@ -1160,24 +1160,34 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
         return false; // Not a string, not our problem...
     }
 
-    auto h5_type_id = H5Dget_type(dataset);
+    hid_t h5_type_id = H5Dget_type(dataset);
     if(H5Tis_variable_str(h5_type_id) <= 0) {
         return false;  // Not a variable length string, so, again, not our problem.
     }
+    VERBOSE(cerr << prolog << "h5_type_id: " << h5_type_id << "\n");
 
     dap_array->set_is_vlsa(true);
     VERBOSE(cerr << prolog << "Processing VLSA: " << dap_array->FQN() << "\n");
 
-    vector<hsize_t> offset;
-    vector<hsize_t> stride;
-    vector<hsize_t> count;
+    auto dspace = H5Dget_space(dataset);
 
+    int ndims = H5Sget_simple_extent_ndims(dspace);
+    VERBOSE(cerr << prolog << "ndims: " << ndims << "\n");
+
+    vector<hsize_t>count;
+    count.reserve(ndims);
+    H5Sget_simple_extent_dims(dspace, count.data(), nullptr);
+
+    vector<hsize_t> offset;
+    offset.reserve(ndims);
+    for(int i=0; i<ndims; i++)
+        offset.emplace_back(0);
+#if 0
     uint64_t i = 0;
     uint64_t value_count=1;
     for(auto ditr=dap_array->dim_begin(); ditr != dap_array->dim_end(); ditr++){
         VERBOSE(cerr << prolog << "dim" << (ditr->name.empty()?"["+to_string(i)+"]" : " " + ditr->name)<<  " size: " << ditr->size << "\n");
         offset.emplace_back(0);
-        stride.emplace_back(1);
         // @TODO setting count like this:
         // count.emplace_back(ditr->size);
         //   for every dimension causes an exception in h5common.cc:
@@ -1186,32 +1196,21 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
         value_count *= ditr->size;
         i++;
     }
+#endif
 
     uint64_t num_elements = dap_array->get_size(false);\
     VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
 
     vector<string> vls_values;
     vls_values.reserve(num_elements);// passed by reference to read_vlen_string
-    //vls_values.emplace_back(""); // initialize array for it's trip to Cville
+    // vls_values.emplace_back(""); // initialize array for it's trip to Cville
 
-    uint64_t memRequired = 0;
-    vector<string> aValue;
-    aValue.reserve(num_elements);
-    aValue.emplace_back("");
-    // @TODO This is really a simple 1D case, and I don't really understand how to
-    //   use read_vlen_string()
-    for(i=0; i<value_count; i++) {
-        VERBOSE(cerr << prolog << "Processing value: " << i <<  "\n");
-        // @TODO Incrementing offset when the num_elements>1 one seems odd. But so far it's the only way
-        //   I have found to get all the values.
-        offset[0] =  i;
-        // Read each array value.
-        read_vlen_string(dataset, num_elements, offset.data(), stride.data(), count.data(), aValue);
-        VERBOSE(cerr << prolog << "aValue.size(): " << aValue.size()<< "'\n");
-        VERBOSE(cerr << prolog << "aValue[" << 0 <<  "]: '" << aValue[0] << "'\n");
-        vls_values.emplace_back(aValue[0]);
-        memRequired += aValue[0].size();
-    }
+    read_vlen_string(dataset,
+                     num_elements,
+                     offset.data(),
+                     nullptr,
+                     count.data(),
+                     vls_values);
 
 #ifndef NDEBUG
     {
@@ -1239,7 +1238,9 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     //
     auto &string_buf = dap_array->compact_str_buffer();
 
-    string_buf.resize(memRequired);
+    //uint64_t memRequired = 0;
+
+    //string_buf.resize(memRequired);
     get_data(dataset, reinterpret_cast<void *>(string_buf.data()));
     dap_array->set_read_p(true);
     /**/
