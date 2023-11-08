@@ -1188,33 +1188,19 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     }
     VERBOSE(cerr << prolog << msg.str() << "\n");
 
-
     vector<hsize_t> offset;
     offset.reserve(ndims);
     for(int i=0; i<ndims; i++)
         offset.emplace_back(0);
-#if 0
-    uint64_t i = 0;
-    uint64_t value_count=1;
-    for(auto ditr=dap_array->dim_begin(); ditr != dap_array->dim_end(); ditr++){
-        VERBOSE(cerr << prolog << "dim" << (ditr->name.empty()?"["+to_string(i)+"]" : " " + ditr->name)<<  " size: " << ditr->size << "\n");
-        offset.emplace_back(0);
-        // @TODO setting count like this:
-        // count.emplace_back(ditr->size);
-        //   for every dimension causes an exception in h5common.cc:
-        //   ERROR Caught std::exception. what: An internal error was encountered in h5common.cc at line 319:
-        count.emplace_back(1);
-        value_count *= ditr->size;
-        i++;
-    }
-#endif
 
     uint64_t num_elements = dap_array->get_size(false);\
     VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
 
     vector<string> vls_values;
-    vls_values.reserve(num_elements);// passed by reference to read_vlen_string
-    // vls_values.emplace_back(""); // initialize array for it's trip to Cville
+    //vls_values.reserve(num_elements);// passed by reference to read_vlen_string
+    //for(uint64_t i=0; i< num_elements; i++)
+    //    vls_values.emplace_back(""); // initialize array for it's trip to Cville
+    vls_values.resize(num_elements);
 
     read_vlen_string(dataset,
                      num_elements,
@@ -1233,33 +1219,8 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     }
 #endif
 
-#if 0
-    // Convert variable to a compact representation
-    // so that its value can be stored in the dmr++
-    dap_array->set_compact(true);
-
-    // And then set the value.
     dap_array->set_value(vls_values,(int) vls_values.size());
     dap_array->set_read_p(true);
-#else
-
-    /**/
-    // This is the scalar solution, for reference.
-    // We need to decide on a representation for arrays of compact strings.
-    //
-    auto &string_buf = dap_array->compact_str_buffer();
-
-    //uint64_t memRequired = 0;
-
-    //string_buf.resize(memRequired);
-    get_data(dataset, reinterpret_cast<void *>(string_buf.data()));
-    dap_array->set_read_p(true);
-    /**/
-#endif
-
-
-
-
 
     return true;
 }
