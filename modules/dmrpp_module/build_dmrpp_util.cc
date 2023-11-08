@@ -1176,7 +1176,18 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
 
     vector<hsize_t>count;
     count.reserve(ndims);
-    H5Sget_simple_extent_dims(dspace, count.data(), nullptr);
+    if(H5Sget_simple_extent_dims(dspace, count.data(), nullptr) < 0){
+        throw BESInternalError("Failed to get hdf5 count for variable: " + btp->FQN(), __FILE__, __LINE__);
+    }
+
+    stringstream msg;
+    msg << "count[]: ";
+    for(int i=0; i<ndims; i++) {
+        if(i) msg << ",";
+        msg << count[i];
+    }
+    VERBOSE(cerr << prolog << msg.str() << "\n");
+
 
     vector<hsize_t> offset;
     offset.reserve(ndims);
