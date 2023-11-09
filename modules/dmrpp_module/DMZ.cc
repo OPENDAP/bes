@@ -85,7 +85,7 @@ using namespace libdap;
 
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
 
-
+constexpr auto LF = "\n";
 
 
 
@@ -681,20 +681,24 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
             process_map(dmr, group, array, child);
         }
         else if (is_eq(child.name(), DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT)) {
-            BESDEBUG(MODULE,"Variable has been marked as a " << DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT << endl);
+            BESDEBUG(PARSER, prolog << "Variable has been marked with a " << DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT << endl);
             // <dmrpp:FixedLengthStringArray string_length="8" pad="null"/>
             array->set_is_flsa(true);
             for (xml_attribute attr = child.first_attribute(); attr; attr = attr.next_attribute()) {
                 if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_LENGTH_ATTR)) {
                     auto length = array->set_fixed_string_length(attr.value());
-                    BESDEBUG(MODULE,"Fixed length string array string length: " << length << endl);
+                    BESDEBUG(PARSER, prolog << "Fixed length string array string length: " << length << endl);
                 }
                 else if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_PAD_ATTR)) {
                     string_pad_type pad = array->set_fixed_length_string_pad_type(attr.value());
-                    BESDEBUG(MODULE,"Fixed length string array padding scheme: " << pad << " (" <<
+                    BESDEBUG(PARSER, prolog << "Fixed length string array padding scheme: " << pad << " (" <<
                         array->get_fixed_length_string_pad_str() << ")" << endl);
                 }
             }
+        }
+        else if(is_eq(child.name(), DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT)){
+            BESDEBUG(PARSER, prolog << "Variable has been marked with a " << DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT << endl);
+            array->set_is_vlsa(true);
         }
     }
 
@@ -1204,6 +1208,119 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
     }
 }
 
+
+/**
+ * @brief Read a string array from the child "v" elements (v as in value) of vlsa_element
+ * @param array The DAP array that is being processed.
+ * @param vlsa_element The dmr++ array's child vlsa element in the XML document
+ * @param entries The values read from the XML document.
+ */
+void vlsa_element_values_worker(DmrppArray *array, const pugi::xml_node &vlsa_element, vector<string> &entries){
+    auto value_name = "v";
+    // Chunks for this node will be held in the var_node siblings.
+    for (auto v = vlsa_element.child(value_name); v; v = v.next_sibling()) {
+        if (is_eq(v.name(), value_name)) {
+            BESDEBUG(PARSER, prolog << "entry: "  << v.child_value() << LF);
+            entries.emplace_back(v.child_value());
+        }
+    }
+}
+
+/**
+ * @brief Read a string array from values of the vlsa_element.
+ * Each value is base64 encoded, every value ends with a ';' character.
+ * @param array The DAP array that is being processed.
+ * @param vlsa_element The dmr++ array's child vlsa element in the XML document
+ * @param entries The values read from the XML document.
+ */
+void vlsa_base64_values_worker(DmrppArray *array, const pugi::xml_node &vlsa_element, vector<string>&entries){
+
+    // dc(btp)->set_vlsa(true);
+
+    const char *data = vlsa_element.child_value();
+    if (!data) {
+        stringstream msg;
+        msg << prolog << "The " << DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT <<
+               " is missing data values.";
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+    string data_str(data);
+    BESDEBUG(PARSER, prolog << "\nvlsa_element.child_value(): " << data_str << "\n\n");
+
+    char sep = ';';
+    string entry;
+    entries.clear();
+    for(auto c : data_str){
+        // Every entry must end in 'sep',
+        // even if there's only a single entry.
+        if(c==sep){
+            BESDEBUG(PARSER, prolog << "        entry: '"  << entry << "'" << LF);
+            string decoded_entry;
+            if(entry.empty()){
+                decoded_entry = "";
+            }
+            else {
+                std::vector<u_int8_t> decoded_chars = base64::Base64::decode(entry);
+                decoded_entry = string((char *) decoded_chars.data());
+            }
+            BESDEBUG(PARSER, prolog << "decoded_entry: '" << decoded_entry << "'" <<  LF);
+            entries.emplace_back(decoded_entry);
+            entry="";
+        }
+        else {
+            entry += c;
+        }
+    }
+    // QC - Check that the number of things in the value match the array.
+    BESDEBUG(PARSER, prolog << "    entries.size(): "  << entries.size() << LF);
+    BESDEBUG(PARSER, prolog << "array->length_ll(): "  << array->length_ll() << LF);
+    if(entries.size() != array->length_ll()){
+        stringstream msg;
+        msg << prolog << "The " << DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT << " contained " << entries.size() ;
+        msg << " child 'v' elements. This does not match the size of enclosing DAP variable " + array->FQN();
+        msg << "(" << array->length_ll() << " elements) ";
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+
+}
+
+
+
+void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element)
+{
+    //---------------------------------------------------------------------------
+    // Input Sanitization
+    // We do the QC here and not in all the functions called, like endlessly...
+    //
+    if (btp->type() != dods_array_c) {
+        throw BESInternalError(prolog + "Received an unexpected "+ btp->type_name() +
+        " Expected an instance of DmrppArray!", __FILE__, __LINE__);
+    }
+    auto *array = dynamic_cast<DmrppArray *>(btp);
+    if (!array) {
+        throw BESInternalError("Internal state error. "
+        "Object claims to be array but is not.", __FILE__, __LINE__);
+    }
+
+    vector<string>entries;
+    auto v_element = vlsa_element.child("v");
+    if(v_element != nullptr){
+        vlsa_element_values_worker(array, vlsa_element, entries);
+    }
+    else {
+        vlsa_base64_values_worker(array, vlsa_element, entries);
+    }
+
+    array->set_is_vlsa(true);
+    array->set_value(entries, (int) entries.size());
+    array->set_read_p(true);
+}
+
+
+
+
+
+
 /**
  * @brief Parse a chunk node
  * There are several different forms a chunk node can take and this handles
@@ -1476,6 +1593,7 @@ void DMZ::load_chunks(BaseType *btp)
     int chunks_found = 0;
     int chunk_found = 0;
     int compact_found = 0;
+    int vlsa_found = 0;
 
     // Chunked data
     if (process_chunks(btp, var_node)) {
@@ -1592,9 +1710,15 @@ void DMZ::load_chunks(BaseType *btp)
         process_compact(btp, compact);
     }
 
+    auto vlsa_element = var_node.child(DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT);
+    if (vlsa_element) {
+        vlsa_found = 1;
+        process_vlsa(btp, vlsa_element);
+    }
+
     // Here we (optionally) check that exactly one of the three types of node was found
     if (DmrppRequestHandler::d_require_chunks) {
-        int elements_found = chunks_found + chunk_found + compact_found;
+        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found;
         if (elements_found != 1) {
             ostringstream oss;
             oss << "Expected chunk, chunks or compact information in the DMR++ data. Found " << elements_found

@@ -486,17 +486,6 @@ string_pad_type get_pad_type(const hid_t dataset) {
 }
 
 
-/**
- * @brief @TODO THIS IS A DUMMY FUNCTION AND NOT AN ACTUAL IMPLEMENTATION
- * @param dataset
- * @param da
- */
-static void add_vlen_str_array_info(hid_t dataset, DmrppArray *da){
-    string ons_str="0:26,26:35,35:873,873:5000";
-    da->set_ons_string(ons_str);
-    da->set_is_vlsa(true);
-}
-
 
 /**
  * Adds the fixed length string array information to the array variable array_var. If the array_var is not an
@@ -575,7 +564,7 @@ static void add_string_array_info(const hid_t dataset, BaseType *btp){
 
     if (H5Tis_variable_str(h5_dataset_type) > 0) {
         VERBOSE( cerr << prolog << "Found variable length string array: " << dap_array->name() << endl);
-        add_vlen_str_array_info( dataset, dap_array);
+        dap_array->set_is_vlsa(true);
     }
     else {
         VERBOSE( cerr << prolog << "Found fixed length string array: " << dap_array->name() << endl);

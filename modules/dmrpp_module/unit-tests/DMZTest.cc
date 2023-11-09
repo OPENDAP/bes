@@ -48,6 +48,7 @@
 #include "DMZ.h"
 #include "Chunk.h"
 #include "DmrppCommon.h"
+#include "DmrppArray.h"
 #include "DmrppTypeFactory.h"
 
 #define PUGIXML_HEADER_ONLY
@@ -62,6 +63,7 @@ using namespace libdap;
 using namespace bes;
 
 #define prolog std::string("DMZTest::").append(__func__).append("() - ")
+constexpr auto bes_debug_args="cerr,dmrpp:dmz";
 
 namespace dmrpp {
 
@@ -76,6 +78,8 @@ private:
     const string coads_climatology_dmrpp = string(TEST_SRC_DIR).append("/input-files/coads_climatology.dmrpp");
     const string test_array_6_1_dmrpp = string(TEST_SRC_DIR).append("/input-files/test_array_6.1.xml");
     const string test_simple_6_dmrpp = string(TEST_SRC_DIR).append("/input-files/test_simple_6.xml");
+    const string vlsa_element_values_dmrpp = string(TEST_SRC_DIR).append("/input-files/vlsa_element_values.dmrpp");
+    const string vlsa_base64_values_dmrpp = string(TEST_SRC_DIR).append("/input-files/vlsa_base64_values.dmrpp");
 
 public:
     // Called once before everything gets tested
@@ -87,6 +91,7 @@ public:
     // Called before each test
     void setUp() override
     {
+        DBG( cerr << "\n" );
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
     }
 
@@ -1017,7 +1022,108 @@ public:
         }
     }
 
-    CPPUNIT_TEST_SUITE( DMZTest );
+    void test_vlsa_element_values() {
+        try {
+            DBG( cerr << prolog << "Using input: " << vlsa_element_values_dmrpp << "\n");
+
+            d_dmz.reset(new DMZ(vlsa_element_values_dmrpp));
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << prolog << "Using DMR document: \n" << xml.get_doc() << endl);
+
+            auto vars = dmr.root()->variables();
+            CPPUNIT_ASSERT( vars.size() == 1 );
+
+            auto btp = vars[0];
+
+            CPPUNIT_ASSERT(btp->type() == dods_array_c);
+
+            auto vlsa = dynamic_cast<DmrppArray *>(btp);
+            DBG(cerr << prolog << "vlsa->is_vlsa(): " <<(vlsa->is_vlsa()?"true":"false") << endl);
+            CPPUNIT_ASSERT_MESSAGE("vlsa->is_vlsa() is not marked as VLSA", vlsa->is_vlsa());
+
+            DBG(cerr << prolog << "vlsa->read_p(): " <<(vlsa->read_p()?"true":"false") << endl);
+            d_dmz->load_chunks(vlsa);
+            DBG(cerr << prolog << "vlsa->read_p(): " <<(vlsa->read_p()?"true":"false") << endl);
+            CPPUNIT_ASSERT_MESSAGE("vlsa->read_p() is false. Should be true.", vlsa->read_p());
+
+            auto baselines = { "Parting", "is su", "swe", ""};
+
+            auto baseline = baselines.begin();
+            vector<string> values;
+            vlsa->value(values);
+            uint64_t idx=0;
+            for(auto value:values){
+                DBG( cerr << prolog << "    value[" << idx << "]: '" << value << "'\n");
+                DBG( cerr << prolog << "baselines[" << idx << "]: '" << *baseline << "'\n");
+                CPPUNIT_ASSERT_MESSAGE("Value does not match baseline!", value == *baseline);
+                baseline++;
+                idx++;
+            }
+
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+    }
+
+    void test_vlsa_base64_values() {
+        try {
+            DBG( cerr << prolog << "Using input: " << vlsa_base64_values_dmrpp << "\n");
+
+            d_dmz.reset(new DMZ(vlsa_base64_values_dmrpp));
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << prolog << "Using DMR document: \n" << xml.get_doc() << endl);
+
+            auto vars = dmr.root()->variables();
+            CPPUNIT_ASSERT( vars.size() == 1 );
+
+            auto btp = vars[0];
+
+            CPPUNIT_ASSERT(btp->type() == dods_array_c);
+
+            auto vlsa = dynamic_cast<DmrppArray *>(btp);
+            DBG(cerr << prolog << "vlsa->is_vlsa(): " <<(vlsa->is_vlsa()?"true":"false") << endl);
+            CPPUNIT_ASSERT_MESSAGE("vlsa->is_vlsa() is not marked as VLSA", vlsa->is_vlsa());
+
+            DBG(cerr << prolog << "vlsa->read_p(): " <<(vlsa->read_p()?"true":"false") << endl);
+            d_dmz->load_chunks(vlsa);
+            DBG(cerr << prolog << "vlsa->read_p(): " <<(vlsa->read_p()?"true":"false") << endl);
+            CPPUNIT_ASSERT_MESSAGE("vlsa->read_p() is false. Should be true.", vlsa->read_p());
+
+            auto baselines = { "Parting", "is su", "swe", ""};
+
+            auto baseline = baselines.begin();
+            vector<string> values;
+            vlsa->value(values);
+            uint64_t idx=0;
+            for(auto value:values){
+                DBG( cerr << prolog << "    value[" << idx << "]: '" << value << "'\n");
+                DBG( cerr << prolog << "baselines[" << idx << "]: '" << *baseline << "'\n");
+                CPPUNIT_ASSERT_MESSAGE("Value does not match baseline!", value == *baseline);
+                baseline++;
+                idx++;
+            }
+
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+    }
+
+CPPUNIT_TEST_SUITE( DMZTest );
+
+    CPPUNIT_TEST(test_vlsa_element_values);
+    CPPUNIT_TEST(test_vlsa_base64_values);
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
     CPPUNIT_TEST(test_DMZ_ctor_2);
@@ -1084,5 +1190,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DMZTest);
 
 int main(int argc, char*argv[])
 {
-    return bes_run_tests<dmrpp::DMZTest>(argc, argv, "cerr,dmz") ? 0 : 1;
+
+    return bes_run_tests<dmrpp::DMZTest>(argc, argv, bes_debug_args) ? 0 : 1;
 }

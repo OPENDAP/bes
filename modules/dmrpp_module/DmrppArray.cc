@@ -2253,6 +2253,7 @@ void vlsa_xml_terse(XMLWriter &xml, DmrppArray &a) {
         if (values.size() > 1) {
             vlsa_payload += sep;
         }
+        BESDEBUG(MODULE, prolog << "vlsa_payload: " << vlsa_payload << "\n");
     }
     string element_name("dmrpp:vlsa");
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0){
@@ -2389,7 +2390,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
 
             // Write the dmr++ for Variable Length String Array
             vlsa_xml_element(xml, *this);
-            
+
             // Do it again (duplicate data), but in a more compact manner.
             vlsa_xml_terse(xml, *this);
         }
