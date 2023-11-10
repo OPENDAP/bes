@@ -70,13 +70,10 @@ using namespace std;
 
 namespace dmrpp {
 
-
 // Transfer Thread Pool state variables.
 std::mutex transfer_thread_pool_mtx;     // mutex for critical section
 //atomic_ullong transfer_thread_counter(0);
 atomic_uint transfer_thread_counter(0);
-
-
 
 /**
  * @brief Uses future::wait_for() to scan the futures for a ready future, returning true when once get() has been called.
@@ -162,13 +159,16 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
 
 static void one_child_chunk_thread_new_sanity_check(const one_child_chunk_args_new *args) {
     if (!args->the_one_chunk->get_rbuf()) {
-        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - the_one_chunk->get_rbuf() is NULL!", __FILE__, __LINE__);
+        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - the_one_chunk->get_rbuf() is NULL!",
+                               __FILE__, __LINE__);
     }
     if (!args->child_chunk->get_rbuf()) {
-        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - child_chunk->get_rbuf() is NULL!", __FILE__, __LINE__);
+        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - child_chunk->get_rbuf() is NULL!",
+                               __FILE__, __LINE__);
     }
     if (args->child_chunk->get_bytes_read() != args->child_chunk->get_size()) {
-        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - child_chunk->get_bytes_read() != child_chunk->get_size()!", __FILE__, __LINE__);
+        throw BESInternalError("one_child_chunk_thread_new_sanity_check() - child_chunk->get_bytes_read() != child_chunk->get_size()!",
+                               __FILE__, __LINE__);
     }
 }
 
@@ -1737,7 +1737,17 @@ bool DmrppArray::read_string_array() {
     }
 
     if (is_flsa()) {
-        read_contiguous_string_array();
+        if (get_chunks_size() == 1) {
+            read_contiguous_string_array();
+        }
+        else {  // Handle the more complex case where the data is chunked.
+            if (!is_projected()) {
+                // FIXME read_chunks_unconstrained();
+            }
+            else {
+                // FIXME read_chunks();
+            }
+        }
     }
     else {
         throw BESInternalFatalError(prolog + "For String arrays, only fixed-length arrays are supported at this time.",
@@ -1806,7 +1816,6 @@ void DmrppArray::read_contiguous_string_array()
 
     set_read_p(true);
 }
-
 
 #if 0
 try {
@@ -2071,14 +2080,12 @@ unsigned long long DmrppArray::set_fixed_string_length(const string &length_str)
     try {
         d_fixed_str_length = stoull(length_str);
     }
-    catch(std::invalid_argument e){
-        stringstream err_msg;
-        err_msg << "The value of the length string could not be parsed. Message: " << e.what();
-        throw BESInternalError(err_msg.str(),__FILE__,__LINE__);
+    catch(const std::invalid_argument &e){
+        throw BESInternalError(string("The value of the length string could not be parsed. Message: ") + e.what(),
+                               __FILE__,__LINE__);
     }
     return d_fixed_str_length;
 }
-
 
 std::string pad_to_str(string_pad_type pad)
 {
@@ -2124,20 +2131,17 @@ string_pad_type str_to_pad_type(const string &pad_str){
         pad_type = not_set;
     }
     else {
-        stringstream err_msg;
-        err_msg << "The value of the pad string was not recognized. pad_str: " << pad_str;
-        throw BESInternalError(err_msg.str(),__FILE__,__LINE__);
+        throw BESInternalError(string("The value of the pad string was not recognized. pad_str: ") + pad_str,
+                               __FILE__,__LINE__);
     }
     return pad_type;
 }
-
 
 string_pad_type DmrppArray::set_fixed_length_string_pad_type(const string &pad_str)
 {
     d_fixed_length_string_pad_type = str_to_pad_type(pad_str);
     return d_fixed_length_string_pad_type;
 }
-
 
 ons::ons(const std::string &ons_pair_str) {
     const string colon(":");
@@ -2149,7 +2153,6 @@ ons::ons(const std::string &ons_pair_str) {
     string size_str = ons_pair_str.substr(colon_pos + 1);
     size = stoull(size_str);
 }
-
 
 void DmrppArray::set_ons_string(const std::string &ons_str)
 {
@@ -2168,7 +2171,6 @@ void DmrppArray::set_ons_string(const vector<ons> &ons_pairs)
     }
     d_vlen_ons_str = ons_ss.str();
 }
-
 
 /**
  * Ingests the (possibly long) ons (offset and size) string that itemizes every offset
@@ -2193,7 +2195,6 @@ void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
     //   and make sure the "tail" is handled correctly.
     cout << d_vlen_ons_str.substr(last) << endl;
 }
-
 
 /**
  * @brief Shadow libdap::Array::print_dap4() - optionally prints DMR++ chunk information
@@ -2376,7 +2377,6 @@ void DmrppArray::dump(ostream &strm) const
     strm << BESIndent::LMarg << "value: " << "----" << /*d_buf <<*/endl;
     BESIndent::UnIndent();
 }
-
 
 unsigned int DmrppArray::buf2val(void **val){
 
