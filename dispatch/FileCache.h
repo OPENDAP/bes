@@ -73,12 +73,18 @@ const unsigned long long MEGABYTE = 1048576;
  * can be added and the cache can be purged, without disrupting the existing
  * read operations.
  *
- * How it works. When a file is added to the cache, the cache is locked - no
+ * How it works: Before a file is added to the cache, the cache is locked - no
  * other processes can add, read or remove files. Once a file has been added,
- * the cache size is examined and, if needed, the cache is purged so that its
- * size is 80% of the maximum size. Then the cache is unlocked. When a process
- * looks to see if a file is already in the cache, the entire cache is locked.
+ * the cache size is updated cache is unlocked. Unlike other caches, this
+ * implementation does not automatically purge entries when the size becomes too
+ * large. It is up to the client code to call the purge() method when the
+ * size is at the maximum size.
+ *
+ * When a process looks to see if a file is already in the cache, the entire cache is locked.
  * If the file is present, a shared read lock is obtained and the cache is unlocked.
+ *
+ * For the put(), get(), and del() methods, the client code must manage the mapping
+ * between the things in the cache and the keys.
  *
  * This is the Nth rewrite of the original BES 'uncompress cache' and it now
  * supplies a much simpler interface: initialize(), put(), get(), and del().
