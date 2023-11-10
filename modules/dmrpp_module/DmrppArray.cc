@@ -602,7 +602,8 @@ unsigned long long DmrppArray::get_size(bool constrained)
  */
 vector<unsigned long long> DmrppArray::get_shape(bool constrained)
 {
-    auto dim = dim_begin(), edim = dim_end();
+    auto dim = dim_begin();
+    auto edim = dim_end();
     vector<unsigned long long> shape;
 
     // For a 3d array, this method took 14ms without reserve(), 5ms with
@@ -733,7 +734,6 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
  */
 void DmrppArray::read_contiguous()
 {
-
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
@@ -753,7 +753,6 @@ void DmrppArray::read_contiguous()
     if (!DmrppRequestHandler::d_use_transfer_threads || the_one_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
         // Read the the_one_chunk as is. This is the non-parallel I/O case
         the_one_chunk->read_chunk();
-
     }
     else {
         // Allocate memory for the 'the_one_chunk' so the transfer threads can transfer data
@@ -788,17 +787,21 @@ void DmrppArray::read_contiguous()
         for (unsigned int i = 0; i < num_chunks - 1; i++) {
             if (chunk_url == nullptr) {
                 BESDEBUG(dmrpp_3, "chunk_url is null, this may be a variable that covers the fill values." <<endl);
-                chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_byteorder,the_one_chunk->get_fill_value(),the_one_chunk->get_fill_value_type(), chunk_size, chunk_offset)));
+                chunks_to_read.push(std::make_shared<Chunk>(chunk_byteorder, the_one_chunk->get_fill_value(),
+                                                            the_one_chunk->get_fill_value_type(), chunk_size,
+                                                            chunk_offset));
             }
             else
-                chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
+                chunks_to_read.push(std::make_shared<Chunk>(chunk_url, chunk_byteorder, chunk_size, chunk_offset));
             chunk_offset += chunk_size;
         }
         // Make the remainder Chunk, see above for details.
         if (chunk_url != nullptr) 
-            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, chunk_offset)));
+            chunks_to_read.push(std::make_shared<Chunk>(chunk_url, chunk_byteorder, chunk_size + chunk_remainder,
+                                                        chunk_offset));
         else 
-            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_byteorder,the_one_chunk->get_fill_value(),the_one_chunk->get_fill_value_type(), chunk_size, chunk_offset)));
+            chunks_to_read.push(std::make_shared<Chunk>(chunk_byteorder, the_one_chunk->get_fill_value(),
+                                                        the_one_chunk->get_fill_value_type(), chunk_size, chunk_offset));
 
         // We maintain a list  of futures to track our parallel activities.
         list<future<bool>> futures;
@@ -820,7 +823,7 @@ void DmrppArray::read_contiguous()
                         auto current_chunk = chunks_to_read.front();
                         BESDEBUG(dmrpp_3, prolog << "Starting thread for " << current_chunk->to_string() << endl);
 
-                        auto args = unique_ptr<one_child_chunk_args_new>(new one_child_chunk_args_new(current_chunk, the_one_chunk));
+                        auto args = std::make_unique<one_child_chunk_args_new>(current_chunk, the_one_chunk);
 
                         thread_started = start_one_child_chunk_thread(futures, std::move(args));
 
@@ -1318,7 +1321,6 @@ void DmrppArray::read_chunks()
     set_read_p(true);
 }
 
-
 #ifdef USE_READ_SERIAL
 /**
  * Insert data from \arg chunk into the array given the current constraint
@@ -1506,39 +1508,35 @@ void DmrppArray::read_contiguous_string()
     set_read_p(true);
 }
 
-string DmrppArray::ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type)
+string
+ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, string_pad_type pad_type)
 {
     string value;
     unsigned long long str_len = 0;
     switch(pad_type){
         case null_pad:
-        case null_term:
-        {
+        case null_term: {
             while(buf[str_len]!=0 && str_len < fixed_str_len){
                 str_len++;
             }
             BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
-            value = string(buf,str_len);
-            break;
+            return  string(buf,str_len);
         }
-        case space_pad:
-        {
+
+        case space_pad: {
             str_len = fixed_str_len;
             while( (buf[str_len-1]==' ' || buf[str_len-1]==0) && str_len>0){
                 str_len--;
             }
             BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
-            value = string(buf,str_len);
-            break;
+            return string(buf,str_len);
         }
-        case not_set:
+
         default:
             // Do nothing.
             BESDEBUG(MODULE, prolog << "pad_type: NOT_SET" << endl);
-            break;
+            return "";
     }
-    BESDEBUG(MODULE, prolog << "value: '" << value << "'" << endl);
-    return value;
 }
 
 string dims_to_string(const vector<unsigned long long> dims){
@@ -1549,6 +1547,7 @@ string dims_to_string(const vector<unsigned long long> dims){
     return ss.str();
 }
 
+/// Used for debugging only. jhrg 11/07/23
 std::string array_to_str(DmrppArray a, const string &banner)  {
     stringstream msg;
     msg << endl << "#  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -" << endl;
@@ -1596,17 +1595,8 @@ std::string show_string_buff(char *buff, unsigned long long num_bytes, unsigned 
     return ss.str();
 }
 
-/**
- * Takes the passed array and construsts a DmrppArray of bytes
- * the should be able to read all of the data for the array into the
- * memory biffer correctly. This kind of "recast" is of little use
- * for nominal atomic types, but is very useful for things like
- * arrays of fixed length strings.
- * @param array
- * @return A DmrppArray of Byte that can be used to read the data
- * represented by the passed array.
- */
-DmrppArray *get_as_byte_array(DmrppArray &array){
+#if 0
+DmrppArray *get_as_byte_array(DmrppArray &array) {
 
     Type var_type;
     var_type = array.prototype()->type();
@@ -1705,30 +1695,27 @@ DmrppArray *get_as_byte_array(DmrppArray &array){
     return byte_array_proxy;
 
 }
+#endif
 
+#if 0
 /**
  * Reads the string data for the fixed length string array flsa from the
  * data buffer of the data array into which it was read.
  * @param flsa
  * @param data
  */
-void ingest_flsa_data(DmrppArray &flsa, DmrppArray &data)
+void ingest_flsa_data(DmrppArray &flsa, Chunk &the_one_chunk)
 {
     if (flsa.is_flsa()) {
-        BESDEBUG(MODULE, prolog << "Ingesting Fixed Length String Array Data." << endl);
-        auto fstr_len = flsa.get_fixed_string_length();
-        BESDEBUG(MODULE, prolog << "flsa.get_fixed_string_length(): " << fstr_len << endl);
-
-        auto pad_type = flsa.get_fixed_length_string_pad();
-        BESDEBUG(MODULE, prolog << "flsa.get_fixed_length_string_pad_str(): " << flsa.get_fixed_length_string_pad_str() << endl);
-
-        auto buff = data.get_buf();
-        BESDEBUG(MODULE, prolog << "data.get_buf(): " << (void *) buff << endl);
-        if(buff == nullptr){
+        // auto buff = data.get_buf();
+        auto buff = the_one_chunk.get_rbuf();
+        if (buff == nullptr) {
             throw BESInternalError("Failed to acquire byte buffer from which to read string array data.",__FILE__,__LINE__);
         }
-        unsigned long long num_bytes = data.length();
-        BESDEBUG(MODULE, prolog << "Buffer contains: " << show_string_buff(buff, num_bytes, fstr_len) << endl);
+        unsigned long long num_bytes = the_one_chunk.get_size();
+
+        auto fstr_len = flsa.get_fixed_string_length();
+        auto pad_type = flsa.get_fixed_length_string_pad();
 
         auto begin = buff;
         char *end = buff + num_bytes;
@@ -1739,25 +1726,141 @@ void ingest_flsa_data(DmrppArray &flsa, DmrppArray &data)
             begin += fstr_len;
         }
     }
+}
+#endif
 
+bool DmrppArray::read_string_array() {
+
+    Type var_type = this->var()->type();
+    if (!(var_type == dods_str_c || var_type == dods_url_c)) {
+        throw BESInternalFatalError(prolog + " Called with non-string array.", __FILE__, __LINE__);
+    }
+
+    if (is_flsa()) {
+        read_contiguous_string_array();
+    }
+    else {
+        throw BESInternalFatalError(prolog + "For String arrays, only fixed-length arrays are supported at this time.",
+                                    __FILE__, __LINE__);
+    }
+
+    return true;
 }
 
-/**
- * Prototype variable length string array solution
- * @param vlsa
- * @param data
- */
-void ingest_vlsa_data(DmrppArray &vlsa, DmrppArray &data){
-    auto buff = data.get_buf();
-    vector<ons> ons_vec;
-    vlsa.get_ons_objs(ons_vec);
-    for(ons ons_obj:ons_vec){
-        auto begin = buff +  ons_obj.offset;
-        string value(begin,ons_obj.size);
-        vlsa.get_str().push_back(value);
+void DmrppArray::read_contiguous_string_array()
+{
+    BESStopWatch sw;
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
+
+    // Get the single chunk that makes up this CONTIGUOUS variable.
+    if (get_chunks_size() != 1)
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
+
+    // This is the original chunk for this 'contiguous' variable.
+    auto the_one_chunk = get_immutable_chunks()[0];
+
+    unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
+    unsigned long long the_one_chunk_size = the_one_chunk->get_size();
+
+    // While arrays of int, etc., may be broken up and read in parallel, we will not do that
+    // optimization for string arrays (it is a debatable optimization). jhrg 11/09/23
+    the_one_chunk->read_chunk();
+
+    // Now that the_one_chunk has been read, we do what is necessary...
+    if (!is_filters_empty() && !get_one_chunk_fill_value()) {
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+    }
+
+    // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
+    if (!is_projected()) {  // if there is no projection constraint
+        // iterate over the elements in the array to receive the strings and add the values
+        vector<unsigned long long> array_shape = get_shape(false);
+
+        if (the_one_chunk->get_rbuf() == nullptr) {
+            throw BESInternalError("Failed to read string array data.",__FILE__,__LINE__);
+        }
+        unsigned long long num_bytes = the_one_chunk->get_size();
+
+        auto fstr_len = get_fixed_string_length();
+        auto pad_type = get_fixed_length_string_pad();
+
+        auto begin = the_one_chunk->get_rbuf();
+        const auto end = the_one_chunk->get_rbuf() + num_bytes;
+        while (begin < end) {
+            get_str().emplace_back(ingest_fixed_length_string(begin, fstr_len, pad_type));
+            begin += fstr_len;
+        }
+    }
+    else {                  // apply the constraint
+        vector<unsigned long long> array_shape = get_shape(false);
+
+#if 0
+        // Reserve space in this array for the constrained size of the data request
+        reserve_value_capacity_ll(get_size(true));
+        unsigned long target_index = 0;
+        vector<unsigned long long> subset;
+
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+#endif
+    }
+
+    set_read_p(true);
+}
+
+
+#if 0
+try {
+        BESDEBUG(MODULE, prolog << array_to_str(*array_to_read, "Reading Data From DmrppArray") << endl);
+        // Single chunk and 'contiguous' are the same for this code.
+        if (array_to_read->get_chunks_size() == 1) {
+            BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
+            array_to_read->read_contiguous();    // Throws on various errors
+        }
+        else {  // Handle the more complex case where the data is chunked.
+            if (!array_to_read->is_projected()) {
+                BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
+                array_to_read->read_chunks_unconstrained();
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+                array_to_read->read_chunks();
+            }
+        }
+
+        if ((var_type == dods_str_c || var_type == dods_url_c)) {
+            BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);
+            if(array_to_read == this){
+                // TODO I think this case should be handled above see 'TODO Check...' jhrg 11/07/23
+                throw BESInternalFatalError(prolog + "Server encountered internal state conflict. "
+                                                     "Expected byte transport array. Exiting.",
+                                            __FILE__, __LINE__);
+            }
+
+            if (is_flsa()) {
+                // TODO Could this be source of the leak in https://bugs.earthdata.nasa.gov/browse/HYRAX-1225:
+                //  WIP jhrg 11/07/23
+                ingest_flsa_data(*this, *array_to_read);
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "Processing Variable Length String Array data. SKIPPING..." << endl);
+                throw BESInternalError("Arrays of variable length strings are not yet supported.",__FILE__,__LINE__);
+            }
+        }
+        if(array_to_read && array_to_read != this) {
+            delete array_to_read;
+            array_to_read = nullptr;
+        }
+
+    }
+    catch(...){
+        if(array_to_read && array_to_read != this) {
+            delete array_to_read;
+            array_to_read = nullptr;
+        }
+        throw;
     }
 }
-
+#endif
 
 /**
  * @brief Read data for the array
@@ -1773,7 +1876,6 @@ void ingest_vlsa_data(DmrppArray &vlsa, DmrppArray &data){
 
 bool DmrppArray::read()
 {
-    Type var_type = this->var()->type();
     // If the chunks are not loaded, load them now. NB: load_chunks()
     // reads data for HDF5 COMPACT storage, so read_p() will be true
     // (but it does not read any other data). Thus, call load_chunks()
@@ -1787,7 +1889,7 @@ bool DmrppArray::read()
     // does not explicitly appear in this method as it is handled by the parser.
     if (read_p()) return true;
 
-    // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
+    // Add direct_io offset for each chunk. This will be used to retrieve individual buffer at fileout netCDF.
     // Direct io offset is only necessary when the direct IO operation is possible.
     if (this->use_direct_io_opt()) { 
         this->set_dio_flag();
@@ -1820,74 +1922,32 @@ bool DmrppArray::read()
         this->set_var_storage_info(dmrpp_vs_info);
     }
     
+    BESDEBUG(MODULE, prolog << array_to_str(*this, "Reading Data From DmrppArray") << endl);
 
-    DmrppArray *array_to_read = this;
+    Type var_type = this->var()->type();
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
-        if (is_flsa()) {
-            // For fixed length string we use a proxy array of Byte to retrieve the data.
-            array_to_read = get_as_byte_array(*this);
-        }
+        return read_string_array();
     }
-    try {
-        if(BESDebug::IsSet(MODULE)) {
-            string msg = array_to_str(*array_to_read, "Reading Data From DmrppArray");
-            BESDEBUG(MODULE, prolog << msg << endl);
-        }
-        // Single chunk and 'contiguous' are the same for this code.
-        if (array_to_read->get_chunks_size() == 1) {
-            BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
-            array_to_read->read_contiguous();    // Throws on various errors
-        }
-        else {  // Handle the more complex case where the data is chunked.
-            if (!array_to_read->is_projected()) {
-                BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
-                array_to_read->read_chunks_unconstrained();
-            }
-            else {
-                BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
-                array_to_read->read_chunks();
-            }
-        }
 
-        if ((var_type == dods_str_c || var_type == dods_url_c)) {
-            BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);
-            if(array_to_read == this){
-                throw BESInternalFatalError(prolog + "Server encountered internal state conflict. "
-                                                     "Expected byte transport array. Exiting.",
-                                            __FILE__, __LINE__);
-            }
-
-            if (is_flsa()) {
-                ingest_flsa_data(*this, *array_to_read);
-            }
-            else {
-                BESDEBUG(MODULE, prolog << "Processing Variable Length String Array data. SKIPPING..." << endl);
-#if 0 // @TODO Turn this on...
-                ingest_vlsa_data(*this, *array_to_read);
-#else
-                throw BESInternalError("Arrays of variable length strings are not yet supported.",__FILE__,__LINE__);
-#endif
-            }
-        }
-        if(array_to_read && array_to_read != this) {
-            delete array_to_read;
-            array_to_read = nullptr;
-        }
-
+    // Single chunk and 'contiguous' are the same for this code.
+    if (get_chunks_size() == 1) {
+        BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
+        read_contiguous();    // Throws on various errors
     }
-    catch(...){
-        if(array_to_read && array_to_read != this) {
-            delete array_to_read;
-            array_to_read = nullptr;
+    else {  // Handle the more complex case where the data is chunked.
+        if (!is_projected()) {
+            BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
+            read_chunks_unconstrained();
         }
-        throw;
+        else {
+            BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+            read_chunks();
+        }
     }
 
     if (this->twiddle_bytes()) {
-
         int64_t num = this->length_ll();
-
-        switch (var_type) {
+        switch (this->var()->type()) {
             case dods_int16_c:
             case dods_uint16_c: {
                 auto *local = reinterpret_cast<dods_uint16*>(this->get_buf());
@@ -1899,7 +1959,7 @@ bool DmrppArray::read()
             }
             case dods_int32_c:
             case dods_uint32_c: {
-                auto *local = reinterpret_cast<dods_uint32*>(this->get_buf());;
+                auto *local = reinterpret_cast<dods_uint32*>(this->get_buf());
                 while (num--) {
                     *local = bswap_32(*local);
                     local++;
@@ -1908,14 +1968,15 @@ bool DmrppArray::read()
             }
             case dods_int64_c:
             case dods_uint64_c: {
-                auto *local = reinterpret_cast<dods_uint64*>(this->get_buf());;
+                auto *local = reinterpret_cast<dods_uint64*>(this->get_buf());
                 while (num--) {
                     *local = bswap_64(*local);
                     local++;
                 }
                 break;
             }
-            default: break; // Do nothing for all other types.
+            default:
+                break; // Do nothing for all other types.
         }
     }
 
