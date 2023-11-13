@@ -225,6 +225,10 @@ public:
             DBG(cerr << "\n");
         }
     }
+
+    /**
+     * 
+     */
     void test_compress_base64_02(){
         unsigned long source_size;
         uint64_t start = 1;
