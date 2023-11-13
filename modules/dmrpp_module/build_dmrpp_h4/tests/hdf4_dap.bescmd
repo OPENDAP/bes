@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
     <setContext name="dap_format">dap2</setContext>
-    <setContainer name="data" space="catalog">/builddmrpp_h4/tests/h4mapper_testsds_splice.dmrpp</setContainer>
+    <setContainer name="data" space="catalog">/build_dmrpp_h4/tests/h4mapper_testsds_splice.dmrpp</setContainer>
     <define name="d">
 	<container name="data" />
     </define>
-    <get type="dmr" definition="d" />
+    <get type="dap" definition="d" />
 </request>

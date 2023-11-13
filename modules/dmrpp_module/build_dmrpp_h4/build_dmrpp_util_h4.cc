@@ -36,9 +36,12 @@
 #include <H5Zpublic.h>  // Constants for compression filters
 #include <H5Spublic.h>
 #include <H5Tpublic.h>
-
-#include "h5common.h"   // This is in the hdf5 handler
 #endif
+#include "h5common.h"   // This is in the hdf5 handler
+
+#include "h4config.h"
+#include "hdf.h"  // HDF4 header file
+#include "mfhdf.h"  // Include the HDF4 header file
 
 #include <libdap/Str.h>
 #include <libdap/util.h>
@@ -1227,29 +1230,197 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         get_chunks_for_all_variables(file, *g);
     }
 }
+#endif
+
+/**
+ * @brief Iterate over all the variables in a DMR and get their chunk info
+ *
+ * @param file The open HDF5 file; passed through to get_variable_chunk_info
+ * @param group Read variables from this DAP4 Group. Call with the root Group
+ * to process all the variables in the DMR
+ */
+void get_chunks_for_all_variables(int file, D4Group *group) {
+
+    // netCDF-4 variable can share the same name as a pure dimension name.
+    // When this case happens, the netCDF-4 will add "_nc4_non_coord_" to the variable name to
+    // distinguish the variable name from the correponding dimension name when storing in the HDF5.
+    // To emulate netCDF-4 model, the HDF5 handler will remove the "_nc4_non_coord_" from the variable in dmr.
+    // When obtaining this variable's information, we need to use the real HDF5 variable name.
+    // KY 2022-09-11
+    // When the above case occurs, a dimension name of this group must share with a variable name.
+    // So we will find these variables and put them into an unodered set.
+
+    unordered_set<string> nc4_non_coord_candidate;
+
+    // First obtain  dimension names.
+    unordered_set<string> dimname_list;
+    D4Dimensions *grp_dims = group->dims();
+
+    if (grp_dims) {
+        for (auto di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di)
+            dimname_list.insert((*di)->name());
+    }
+
+    if (!dimname_list.empty()) {
+        // Then find the nc4_non_coord candidate variables,
+        for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+            if (dimname_list.find((*btp)->name())!=dimname_list.end())
+                nc4_non_coord_candidate.insert((*btp)->name());
+        }
+    }
+
+
+    // variables in the group
+
+    for(auto btp : group->variables()) {
+        VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
+
+        // if this variable has a 'fullnamepath' attribute, use that and not the
+        // FQN value.
+        D4Attributes *d4_attrs = btp->attributes();
+        if (!d4_attrs)
+            throw BESInternalError("Expected to find an attribute table for " + btp->name() + " but did not.",
+                                   __FILE__, __LINE__);
+
+        // Look for the full name path for this variable
+        // If one was not given via an attribute, use BaseType::FQN() which
+        // relies on the variable's position in the DAP dataset hierarchy.
+        const D4Attribute *attr = d4_attrs->get("fullnamepath");
+        // I believe the logic is more clear in this way:
+        // If fullnamepath exists and the H5Dopen2 fails to open, it should throw an error.
+        // If fullnamepath doesn't exist, we should ignore the error as the reason described below:
+        // (However, we should suppress the HDF5 dataset open error message.)  KY 2019-12-02
+        // It's not an error if a DAP variable in a DMR from the hdf5 handler
+        // doesn't exist in the file _if_ there's no 'fullnamepath' because
+        // that variable was synthesized (likely for CF compliance)
+        int dataset = -1;
+
+        string FQN;
+        FQN = btp->FQN();
+        FQN = FQN.substr(1); //Take off the leading "/"
+
+        const char* sdsName = FQN.c_str(); // Use the correct name
+        int sdsIndex = SDnametoindex(file, sdsName);
+        cerr << "fqn: " << FQN << endl;
+        cerr << "sdsIndex: " << sdsIndex << endl;
+
+        if (attr) {
+
+            if (attr->num_values() == 1)
+                FQN = attr->value(0);
+            else
+                FQN = btp->FQN();
+
+            VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
+            dataset = SDselect(file, sdsIndex);
+            cerr << "bt variable name: " << FQN << endl;
+            if (dataset < 0) {
+                throw BESInternalError("HDF4 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+            }
+        }
+        else {
+            // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
+            // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
+            //
+            // A comment from an older version of the code:
+            // It's not an error if a DAP variable in a DMR from the hdf5 handler
+            // doesn't exist in the file _if_ there's no 'fullnamepath' because
+            // that variable was synthesized (likely for CF compliance)
+            HEprint(stderr, 0);
+            string FQN = btp->FQN();
+            if (nc4_non_coord_candidate.find(btp->name()) != nc4_non_coord_candidate.end()) {
+                string real_name_candidate = "_nc4_non_coord_" + btp->name();
+                size_t fqn_last_fslash_pos = btp->FQN().find_last_of("/");
+                string real_path_candidate = btp->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
+                dataset = SDselect(file, atoi(real_path_candidate.c_str()));
+                if (dataset == FAIL) {
+                    // Handle the case where the index is not valid or doesn't correspond to an SDS.
+                    printf("The provided index does not correspond to a valid SDS.\n");
+                } else {
+                    // The index corresponds to a valid SDS, and sds_id contains the SDS identifier.
+                    printf("SDS with index %d was successfully selected.\n", index);
+                    // You can further work with the selected SDS using sds_id.
+                }
+            }
+
+            VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
+            if (dataset < 0)  {
+                dataset = SDselect(file, 0);
+                if (dataset != FAIL) {
+                    cerr << "dataset success : " << dataset << endl << endl;
+                } else {
+                    fprintf(stderr, "Error selecting the dataset.\n");
+                    HEprint(stderr, 0);
+                }
+
+                if (dataset < 0) {
+                    VERBOSE(cerr << prolog << "WARNING: HDF4 dataset '" << FQN << "' cannot be opened." << endl);
+                    // throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+                    continue;
+                }
+            }
+        }
+#if 0
+        try {
+            string msg;
+            if(is_unsupported_type(dataset, btp, msg)){
+                // @TODO What should really happen in this case?
+                //   - Throw an exception?
+                //   - Elide the variable from the dmr++?
+                //   - Demote dataset/var to Attribute?
+                //   - Mark the variable as "unsupported" so that it's metadata are transmitted but
+                //     it's data cannot be read.
+                throw UnsupportedTypeException(msg);
+            }
+
+            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
+            get_variable_chunk_info(dataset, btp);
+
+            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
+            add_string_array_info(dataset, btp);
+            H5Dclose(dataset);
+        }
+        catch (UnsupportedTypeException &uste){
+            // TODO - If we are going to elide a variable because it is an unsupported type, I think
+            //  that this would be the place to do it.
+            cerr << prolog << "Caught UnsupportedTypeException for variable " << btp->FQN() << " message: " << uste.what() << endl;
+            throw;
+        }
+        catch (...) {
+            H5Dclose(dataset);
+            throw;
+        }
+#endif
+    }
+
+    // all groups in the group
+    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
+        get_chunks_for_all_variables(file, *g);
+    }
+}
 
 /**
  * @brief Add chunk information about to a DMRpp object
- * @param h5_file_name Read information from this file
+ * @param h4_file_name Read information from this file
  * @param dmrpp Dump the chunk information here
  */
-void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
+void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
 {
-    // Open the hdf5 file
-    hid_t file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-    if (file < 0) {
+    // Open the hdf4 file
+    int h4file = SDstart(h4_file_name.c_str(), DFACC_READ);
+    if (h4file < 0) {
         stringstream msg;
-        msg << "Error: HDF5 file '" << h5_file_name << "' cannot be opened." << endl;
+        msg << "Error: HDF4 file '" << h4_file_name << "' cannot be opened." << endl;
         throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
     }
 
     // iterate over all the variables in the DMR
     try {
-        get_chunks_for_all_variables(file, dmrpp->root());
-        H5Fclose(file);
+        get_chunks_for_all_variables(h4file, dmrpp->root());
+        Hclose(h4file);
     }
     catch (...) {
-        H5Fclose(file);
+        Hclose(h4file);
         throw;
     }
 }
@@ -1333,6 +1504,7 @@ void qc_input_file(const string &file_fqn)
 }
 
 
+#if 0
 /**
  * @brief Recreate the command invocation given argv and argc.
  *
@@ -1481,9 +1653,9 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-#if 0
     add_chunk_information(h4_file_fqn, &dmrpp);
 
+#if 0
     if (add_production_metadata) {
         inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
