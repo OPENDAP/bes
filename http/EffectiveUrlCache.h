@@ -78,7 +78,9 @@ public:
     EffectiveUrlCache(const EffectiveUrlCache &src) = delete;
     EffectiveUrlCache &operator=(const EffectiveUrlCache &rhs) = delete;
 
-    ~EffectiveUrlCache() override = default;
+    ~EffectiveUrlCache() override { 
+        d_instance.reset(nullptr);
+    }
 
     std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
 
