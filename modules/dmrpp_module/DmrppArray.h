@@ -103,7 +103,14 @@ private:
                                        const std::vector<unsigned long long> &array_shape, char *data);
 
     void read_contiguous();
+
+    void insert_constrained_contiguous_string(Dim_iter dim_iter, vector<string>::iterator &target_index,
+                                              vector<unsigned long long> &subset_addr,
+                                              const vector<unsigned long long> &array_shape,
+                                              char *src_buf);
+#if 0
     void read_contiguous_string();
+#endif
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned long long> *target_element_address,

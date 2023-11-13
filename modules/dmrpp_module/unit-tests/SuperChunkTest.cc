@@ -120,13 +120,13 @@ public:
             }
 
         }
-        catch( BESError be){
+        catch(const BESError &be){
             stringstream msg;
             msg << prolog << "CAUGHT BESError: " << be.get_verbose_message() << endl;
             cerr << msg.str();
             CPPUNIT_FAIL(msg.str());
         }
-        catch( std::exception se ){
+        catch(const std::exception &se){
             stringstream msg;
             msg << "CAUGHT std::exception: " << se.what() << endl;
             cerr << msg.str();

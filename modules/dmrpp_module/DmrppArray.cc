@@ -437,7 +437,7 @@ void read_super_chunks_concurrent(queue< shared_ptr<SuperChunk> > &super_chunks,
                     auto super_chunk = super_chunks.front();
                     BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
 
-                    auto args = unique_ptr<one_super_chunk_args>(new one_super_chunk_args(super_chunk, array));
+                    auto args = std::make_unique<one_super_chunk_args>(super_chunk, array);
                     thread_started = start_super_chunk_transfer_thread(futures, std::move(args));
 
                     if (thread_started) {
@@ -497,7 +497,8 @@ get_index(const vector<unsigned long long> &address_in_target, const vector<unsi
     }
 
     auto shape_index = target_shape.rbegin();
-    auto index = address_in_target.rbegin(), index_end = address_in_target.rend();
+    auto index = address_in_target.rbegin();
+    auto index_end = address_in_target.rend();
 
     unsigned long long multiplier_var = *shape_index++;
     unsigned long long offset = *index++;
@@ -532,11 +533,12 @@ get_index(const vector<unsigned long long> &address_in_target, const vector<unsi
  */
 static unsigned long long multiplier(const vector<unsigned long long> &shape, unsigned int k)
 {
-    if (!(shape.size() > k + 1)) {
+    if (shape.size() <= k + 1) {
         throw BESInternalError("multiplier: !(shape.size() > k + 1)", __FILE__, __LINE__);
     }
 
-    vector<unsigned long long>::const_iterator i = shape.begin(), e = shape.end();
+    auto i = shape.begin();
+    const auto e = shape.end();
     advance(i, k + 1);
     unsigned long long multiplier = *i++;
     while (i != e) {
@@ -571,7 +573,7 @@ DmrppArray::operator=(const DmrppArray &rhs)
  */
 bool DmrppArray::is_projected()
 {
-    for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p)
+    for (auto p = dim_begin(), e = dim_end(); p != e; ++p)
         if (dimension_size_ll(p, true) != dimension_size_ll(p, false)) return true;
 
     return false;
@@ -587,7 +589,7 @@ unsigned long long DmrppArray::get_size(bool constrained)
 {
     // number of array elements in the constrained array
     unsigned long long asize = 1;
-    for (Dim_iter dim = dim_begin(), end = dim_end(); dim != end; dim++) {
+    for (auto dim = dim_begin(), end = dim_end(); dim != end; dim++) {
         auto dim_size =  dimension_size_ll(dim, constrained);
         asize *= dim_size;
     }
@@ -1475,6 +1477,7 @@ DmrppArray::set_send_p(bool state)
     Array::set_send_p(state);
 }
 
+#if 0
 /**
  * @brief Process String Array so long as it has only one element
  *
@@ -1507,7 +1510,15 @@ void DmrppArray::read_contiguous_string()
 
     set_read_p(true);
 }
+#endif
 
+/**
+ * @brief Read a fixed-length string from a block of memory and pad it as necessary
+ * @param buf Start of the string data
+ * @param fixed_str_len Length of the string
+ * @param pad_type pad type from the pad_type enum
+ * @return The C++ string object. If the pad_type is not valid, return an empty string.
+ */
 string
 ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, string_pad_type pad_type)
 {
@@ -1520,7 +1531,7 @@ ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, st
                 str_len++;
             }
             BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
-            return  string(buf,str_len);
+            return  {buf,str_len};
         }
 
         case space_pad: {
@@ -1529,7 +1540,7 @@ ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, st
                 str_len--;
             }
             BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
-            return string(buf,str_len);
+            return {buf,str_len};
         }
 
         default:
@@ -1539,12 +1550,16 @@ ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, st
     }
 }
 
-string dims_to_string(const vector<unsigned long long> dims){
-    stringstream ss;
+/// Used only in array_to_str() below, for debugging jhrg 11/12/23
+string dims_to_string(const vector<unsigned long long> &dims){
+    //stringstream ss;
+    string s;
     for(auto dim: dims){
-        ss << "[" << dim << "]";
+        //ss << "[" << dim << "]";
+        s += '[' + to_string(dim) + ']';
     }
-    return ss.str();
+    //return ss.str();
+    return s;
 }
 
 /// Used for debugging only. jhrg 11/07/23
@@ -1769,9 +1784,6 @@ void DmrppArray::read_contiguous_string_array()
     // This is the original chunk for this 'contiguous' variable.
     auto the_one_chunk = get_immutable_chunks()[0];
 
-    unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
-    unsigned long long the_one_chunk_size = the_one_chunk->get_size();
-
     // While arrays of int, etc., may be broken up and read in parallel, we will not do that
     // optimization for string arrays (it is a debatable optimization). jhrg 11/09/23
     the_one_chunk->read_chunk();
@@ -1796,6 +1808,7 @@ void DmrppArray::read_contiguous_string_array()
 
         auto begin = the_one_chunk->get_rbuf();
         const auto end = the_one_chunk->get_rbuf() + num_bytes;
+        get_str().reserve(get_size(false));
         while (begin < end) {
             get_str().emplace_back(ingest_fixed_length_string(begin, fstr_len, pad_type));
             begin += fstr_len;
@@ -1803,8 +1816,15 @@ void DmrppArray::read_contiguous_string_array()
     }
     else {                  // apply the constraint
         vector<unsigned long long> array_shape = get_shape(false);
+        vector<unsigned long long> subset;
+        get_str().reserve(get_size(true));
+        auto target_index = get_str().begin();
+        insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, the_one_chunk->get_rbuf());
 
 #if 0
+        unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
+        unsigned long long the_one_chunk_size = the_one_chunk->get_size();
+
         // Reserve space in this array for the constrained size of the data request
         reserve_value_capacity_ll(get_size(true));
         unsigned long target_index = 0;
@@ -1815,6 +1835,97 @@ void DmrppArray::read_contiguous_string_array()
     }
 
     set_read_p(true);
+}
+
+/**
+ * @brief Insert string data into a variable. A helper method.
+ *
+ * This recursive private method collects values from the rbuf and copies
+ * them into buf. It supports stop, stride, and start and while correct is not
+ * efficient.
+ *
+ * This method is used only for contiguous string data. It is called only by itself
+ * and read_contiguous_string_array().
+ *
+ * @param dim_iter Process offsets for this dimension.
+ * @param target_index The index where the next data element will be written.
+ * @param subset_addr The index in the source array where the next data element will be read.
+ * @param array_shape The shape of the array
+ * @param src_buf The buffer containing the data to be copied.
+ */
+void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
+                                                      vector<string>::iterator &target_index,
+                                                      vector<unsigned long long> &subset_addr,
+                                                      const vector<unsigned long long> &array_shape,
+                                                      char /*Chunk*/*src_buf)
+{
+    auto chars_per_string = get_fixed_string_length();
+    auto pad_type = get_fixed_length_string_pad();
+
+    uint64_t start = this->dimension_start_ll(dim_iter, true);
+    uint64_t stop = this->dimension_stop_ll(dim_iter, true);
+    uint64_t stride = this->dimension_stride_ll(dim_iter, true);
+
+    dim_iter++;
+
+    // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
+    // See the else clause for the general case.
+    if (dim_iter == dim_end() && stride == 1) {
+        // For the start and stop indexes of the subset, get the matching indexes in the whole array.
+        subset_addr.push_back(start);
+        unsigned long long start_index = get_index(subset_addr, array_shape);
+        subset_addr.pop_back();
+
+        subset_addr.push_back(stop);
+        unsigned long long stop_index = get_index(subset_addr, array_shape);
+        subset_addr.pop_back();
+
+        // Copy block of strings from start_index to stop_index
+        for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
+            uint64_t source_char = source_index * chars_per_string;
+            // Copy a single string.
+            get_str().emplace(target_index++, ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
+#if 0
+            for (unsigned long i = 0; i < chars_per_string; i++) {
+                dest_buf[target_byte++] = src_buf[source_byte++];
+            }
+            target_index++;
+#endif
+
+        }
+
+    }
+    else {
+        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+
+            // Is it the last dimension?
+            if (dim_iter != dim_end()) {
+                // Nope! Then we recurse to the last dimension to read stuff
+                subset_addr.push_back(myDimIndex);
+                insert_constrained_contiguous_string(dim_iter, target_index, subset_addr, array_shape, src_buf);
+                subset_addr.pop_back();
+            }
+            else {
+                // We are at the last (innermost) dimension, so it's time to copy values.
+                subset_addr.push_back(myDimIndex);
+                auto sourceIndex = get_index(subset_addr, array_shape);
+                subset_addr.pop_back();
+
+                // Copy a single value.
+                uint64_t source_char = sourceIndex * chars_per_string;
+
+                get_str().emplace(target_index++, ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
+#if 0
+                for (unsigned int i = 0; i < chars_per_string; i++) {
+#if 0
+                    dest_buf[target_byte++] = src_buf[source_byte++];
+#endif
+                }
+                (*target_index)++;
+#endif
+            }
+        }
+    }
 }
 
 #if 0
