@@ -1788,6 +1788,10 @@ void DmrppArray::read_contiguous_string_array()
     // optimization for string arrays (it is a debatable optimization). jhrg 11/09/23
     the_one_chunk->read_chunk();
 
+    if (the_one_chunk->get_rbuf() == nullptr) {
+        throw BESInternalError("Failed to read string array data.",__FILE__,__LINE__);
+    }
+
     // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty() && !get_one_chunk_fill_value()) {
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
@@ -1798,40 +1802,27 @@ void DmrppArray::read_contiguous_string_array()
         // iterate over the elements in the array to receive the strings and add the values
         vector<unsigned long long> array_shape = get_shape(false);
 
-        if (the_one_chunk->get_rbuf() == nullptr) {
-            throw BESInternalError("Failed to read string array data.",__FILE__,__LINE__);
-        }
-        unsigned long long num_bytes = the_one_chunk->get_size();
-
         auto fstr_len = get_fixed_string_length();
         auto pad_type = get_fixed_length_string_pad();
 
-        auto begin = the_one_chunk->get_rbuf();
-        const auto end = the_one_chunk->get_rbuf() + num_bytes;
         get_str().reserve(get_size(false));
-        while (begin < end) {
-            get_str().emplace_back(ingest_fixed_length_string(begin, fstr_len, pad_type));
-            begin += fstr_len;
+
+        auto buffer = the_one_chunk->get_rbuf();
+        const auto buffer_end = the_one_chunk->get_rbuf() + the_one_chunk->get_size();
+
+        while (buffer < buffer_end) {
+            get_str().emplace_back(ingest_fixed_length_string(buffer, fstr_len, pad_type));
+            buffer += fstr_len;
         }
     }
     else {                  // apply the constraint
         vector<unsigned long long> array_shape = get_shape(false);
         vector<unsigned long long> subset;
+
         get_str().reserve(get_size(true));
+
         auto target_index = get_str().begin();
         insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, the_one_chunk->get_rbuf());
-
-#if 0
-        unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
-        unsigned long long the_one_chunk_size = the_one_chunk->get_size();
-
-        // Reserve space in this array for the constrained size of the data request
-        reserve_value_capacity_ll(get_size(true));
-        unsigned long target_index = 0;
-        vector<unsigned long long> subset;
-
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
-#endif
     }
 
     set_read_p(true);
@@ -1885,29 +1876,21 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
             uint64_t source_char = source_index * chars_per_string;
             // Copy a single string.
             get_str().emplace(target_index++, ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
-#if 0
-            for (unsigned long i = 0; i < chars_per_string; i++) {
-                dest_buf[target_byte++] = src_buf[source_byte++];
-            }
-            target_index++;
-#endif
-
         }
-
     }
     else {
-        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+        for (uint64_t dim_index = start; dim_index <= stop; dim_index += stride) {
 
             // Is it the last dimension?
             if (dim_iter != dim_end()) {
                 // Nope! Then we recurse to the last dimension to read stuff
-                subset_addr.push_back(myDimIndex);
+                subset_addr.push_back(dim_index);
                 insert_constrained_contiguous_string(dim_iter, target_index, subset_addr, array_shape, src_buf);
                 subset_addr.pop_back();
             }
             else {
                 // We are at the last (innermost) dimension, so it's time to copy values.
-                subset_addr.push_back(myDimIndex);
+                subset_addr.push_back(dim_index);
                 auto sourceIndex = get_index(subset_addr, array_shape);
                 subset_addr.pop_back();
 
@@ -1915,14 +1898,6 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
                 uint64_t source_char = sourceIndex * chars_per_string;
 
                 get_str().emplace(target_index++, ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
-#if 0
-                for (unsigned int i = 0; i < chars_per_string; i++) {
-#if 0
-                    dest_buf[target_byte++] = src_buf[source_byte++];
-#endif
-                }
-                (*target_index)++;
-#endif
             }
         }
     }
