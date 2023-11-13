@@ -694,8 +694,8 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
                 }
             }
         }
-        else if(is_eq(child.name(), DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT)){
-            BESDEBUG(PARSER, prolog << "Variable has been marked with a " << DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT << endl);
+        else if(is_eq(child.name(), DMRPP_VLSA_ELEMENT)){
+            BESDEBUG(PARSER, prolog << "Variable has been marked with a " << DMRPP_VLSA_ELEMENT << endl);
             array->set_is_vlsa(true);
         }
     }
@@ -1230,7 +1230,7 @@ void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element
     }
 
     vector<string>entries;
-    vlsa::read_vlsa_values(vlsa_element, entries);
+    vlsa::read(vlsa_element, entries);
 
     array->set_is_vlsa(true);
     array->set_value(entries, (int) entries.size());
@@ -1631,7 +1631,7 @@ void DMZ::load_chunks(BaseType *btp)
         process_compact(btp, compact);
     }
 
-    auto vlsa_element = var_node.child(DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT);
+    auto vlsa_element = var_node.child(DMRPP_VLSA_ELEMENT);
     if (vlsa_element) {
         vlsa_found = 1;
         process_vlsa(btp, vlsa_element);

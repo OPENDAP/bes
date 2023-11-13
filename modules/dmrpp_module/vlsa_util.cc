@@ -37,6 +37,7 @@
 
 #include "vlsa_util.h"
 #include "DmrppArray.h"
+#include "DmrppNames.h"
 #include "Base64.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
@@ -53,51 +54,44 @@ using namespace std;
 
 namespace vlsa {
 
-string vlsa_element_name = "dmrpp:vlsa";
-string vlsa_value_element_name = "v";
-string vlsa_value_size_attr_name = "s";
-
+string vlsa_element_name(DMRPP_VLSA_ELEMENT);
+string vlsa_value_element_name(DMRPP_VLSA_VALUE_ELEMENT);
+string vlsa_value_size_attr_name(DMRPP_VLSA_VALUE_SIZE_ATTR);
 
 /**
- * #define Z_OK            0
- * #define Z_STREAM_END    1
- * #define Z_NEED_DICT     2
- * #define Z_ERRNO        (-1)
- * #define Z_STREAM_ERROR (-2)
- * #define Z_DATA_ERROR   (-3)
- * #define Z_MEM_ERROR    (-4)
- * #define Z_BUF_ERROR    (-5)
- * #define Z_VERSION_ERROR (-6)
+ * @brief Maps zlib return code to a string value;
+ * @param retval The zlib return value;
+ * @return A string representation of the return code's meaning.
  */
 string zlib_msg(int retval)
 {
     string msg;
     switch (retval) {
-        case 0:
+        case Z_OK:
             msg = "Z_OK";
             break;
-        case 1:
+        case Z_STREAM_END:
             msg = "Z_STREAM_END";
             break;
-        case 2:
+        case Z_NEED_DICT:
             msg = "Z_NEED_DICT";
             break;
-        case -1:
+        case Z_ERRNO:
             msg = "Z_ERRNO";
             break;
-        case -2:
+        case Z_STREAM_ERROR:
             msg = "Z_STREAM_ERROR";
             break;
-        case -3:
+        case Z_DATA_ERROR:
             msg = "Z_DATA_ERROR";
             break;
-        case -4:
+        case Z_MEM_ERROR:
             msg = "Z_MEM_ERROR";
             break;
-        case -5:
+        case Z_BUF_ERROR:
             msg = "Z_BUF_ERROR";
             break;
-        case -6:
+        case Z_VERSION_ERROR:
             msg = "Z_VERSION_ERROR";
             break;
         default:
@@ -110,10 +104,13 @@ string zlib_msg(int retval)
 constexpr unsigned int W = 10;
 constexpr unsigned int R = 8;
 
-/**
+/** _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._
+ * @brief Attempts to compress the source_string bytes and then base64 encode the compressed bytes.
+ * The compress function has some minimum size requirement of about 100 bytes, but the size of the
+ * compressed bytes isn't reliably smaller then the source_string until about 300 bytes.
  *
- * @param source_string
- * @return
+ * @param source_string The string to encode.
+ * @return The source string compressed and then base64 encoded.
  */
 std::string encode(const std::string &source_string) {
     BESDEBUG(VLSA, prolog << "BEGIN\n");
@@ -137,22 +134,17 @@ std::string encode(const std::string &source_string) {
     }
 #endif
     vector<Bytef> compressed_src;
-    if(source_size<110){
-        compressed_src.resize(110);
-    }
-    else {
-        compressed_src.resize(source_size);
-    }
+    compressed_src.resize(source_size);
     unsigned long compressed_src_size = source_size;
 
     int retval = compress(compressed_src.data(), &compressed_src_size, src.data(), source_size);
     BESDEBUG(VLSA, prolog << "        compress() retval: " << setw(W) << retval
                           << " (" << zlib_msg(retval) << ")\n");
-    // CPPUNIT_ASSERT(retval == 0);
+
     if (retval != 0) {
         stringstream msg;
         msg << "Failed to compress source string. \n";
-        msg << "   compress() retval: " << retval << "(" << zlib_msg(retval) << ")\n";
+        msg << "   compress() retval: " << retval << " (" << zlib_msg(retval) << ")\n";
         msg << "         source_size: " << source_size << "\n";
         msg << " compressed_src_size: " << compressed_src_size << "\n";
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -193,9 +185,6 @@ string decode(const string &encoded, uint64_t expected_size) {
     vector<Bytef> result_bytes;
     uLongf result_size = expected_size;
 
-    //if(expected_size < decoded.size()){
-    //    result_size = decoded.size();
-    //}
     BESDEBUG(VLSA, prolog << "               result_size: " << setw(W) << result_size << "\n");
 
     result_bytes.resize(result_size);
@@ -230,60 +219,81 @@ string decode(const string &encoded, uint64_t expected_size) {
 
 
 
-void write_value_dmrpp_xml(libdap::XMLWriter &xml, const std::string &value)
+void write_value(libdap::XMLWriter &xml, const std::string &value)
 {
-    bool mk_compressed = value.size() > VALUE_COMPRESSION_THRESHOLD;
 
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) vlsa_value_element_name.c_str()) < 0) {
-        throw BESInternalError( prolog +"Could not begin '" + vlsa_value_element_name + "' element.", __FILE__, __LINE__);
+        stringstream msg;
+        msg <<  prolog << "Could not begin '" + vlsa_value_element_name + "' element.";
+        throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
 
-    if(mk_compressed) {
+    if(value.size() > VALUE_COMPRESSION_THRESHOLD) {
 
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) vlsa_value_size_attr_name.c_str(),
-                                        (const xmlChar *) to_string(value.size()).c_str()) < 0)
-            throw BESInternalError( prolog + "Could not write 's' (size) attribute.", __FILE__, __LINE__);
-
+                                        (const xmlChar *) to_string(value.size()).c_str()) < 0) {
+            stringstream msg;
+            msg << prolog << "Could not write '" << vlsa_value_size_attr_name << "' (size) attribute.";
+            throw BESInternalError( msg.str(), __FILE__, __LINE__);
+        }
         string encoded = encode(value);
 
         if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) encoded.c_str()) < 0) {
-            throw BESInternalError( prolog + "Could not write text into element", __FILE__, __LINE__);
+            stringstream msg;
+            msg << prolog <<  "Could not write text into element '" << vlsa_value_element_name << "'";
+            throw BESInternalError( msg.str(), __FILE__, __LINE__);
         }
     }
     else {
         if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) value.c_str()) < 0) {
-            throw BESInternalError( prolog + "Could not write text into element", __FILE__, __LINE__);
+            stringstream msg;
+            msg << prolog <<  "Could not write text into element '"<< vlsa_value_element_name << "'";
+            throw BESInternalError( msg.str(), __FILE__, __LINE__);
         }
     }
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0) {
-        throw BESInternalError( prolog + "Could not end '" + vlsa_value_element_name + "' element", __FILE__, __LINE__);
+        stringstream msg;
+        msg << prolog << "Could not end '" + vlsa_value_element_name + "' element";
+        throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
 
 
 }
 
-void write_dmrpp_xml_element(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
+void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
 {
     auto values = a.get_str();
 
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) vlsa_element_name.c_str()) < 0) {
-        throw BESInternalError("Could not write " + vlsa_element_name + " element", __FILE__, __LINE__);
+        stringstream msg;
+        msg << prolog << "Could not write " << vlsa_element_name << " element";
+        throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
 
-    for(const auto &value: values) {
-        write_value_dmrpp_xml(xml,value);
+    for(const auto &value : values) {
+        write_value(xml,value);
     }
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0) {
-        throw BESInternalError("Could not end " + vlsa_element_name + " element", __FILE__, __LINE__);
+        stringstream msg;
+        msg << prolog << "Could not end " << vlsa_element_name << " element";
+        throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
 }
 
-
-void read_vlsa_value(const pugi::xml_node &v, std::string &value)
+/**
+ * @brief Reads the vale of a vlsa value 'v', element.
+ * TODO Is there an advanage to passing the ref or would returning the string value be equivalent?
+ * @param v The element to evaluate
+ * @param value The (decoded) string value of v
+ */
+void read_value(const pugi::xml_node &v, std::string &value)
 {
-    if (v.name() == vlsa_value_element_name) {
+    if (v.name() == vlsa_value_element_name ) {
+        // We check for the presence of the size attribut, vlsa_value_size_attr_name
+        // If present it means the content was compressed and the base64 encoded
+        // and we have to decode it.
         pugi::xml_attribute esize = v.attribute(vlsa_value_size_attr_name.c_str());
         if (esize) {
             uint64_t value_size = stoull(esize.value());
@@ -294,12 +304,14 @@ void read_vlsa_value(const pugi::xml_node &v, std::string &value)
         BESDEBUG(VLSA, prolog << "value: '" << value << "'");
     }
 }
-void read_vlsa_values(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries)
+void read(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries)
 {
+    if (vlsa_element.name() != vlsa_element_name ) { return; }
+
     // Chunks for this node will be held in the var_node siblings.
     for (auto v = vlsa_element.child(vlsa_value_element_name.c_str()); v; v = v.next_sibling()) {
         string value;
-        read_vlsa_value(v, value);
+        read_value(v, value);
         entries.emplace_back(value);
     }
 }

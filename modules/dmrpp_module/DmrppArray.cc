@@ -2316,7 +2316,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
         }
         else if (is_vlsa() && DmrppCommon::d_print_chunks) {
             // Write the dmr++ for Variable Length String Array
-            vlsa::write_dmrpp_xml_element(xml, *this);
+            vlsa::write(xml, *this);
         }
     }
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)

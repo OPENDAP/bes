@@ -32,9 +32,9 @@ namespace vlsa {
 std::string zlib_msg(int retval);
 std::string encode(const std::string &source_string);
 std::string decode(const std::string &encoded, uint64_t expected_size);
-void write_value_dmrpp_xml(libdap::XMLWriter &xml, const std::string &value);
-void write_dmrpp_xml_element(libdap::XMLWriter &xml, dmrpp::DmrppArray &a);
-void read_vlsa_value(const pugi::xml_node &v, std::string &value);
-void read_vlsa_values(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries);
+void write_value(libdap::XMLWriter &xml, const std::string &value);
+void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a);
+void read_value(const pugi::xml_node &v, std::string &value);
+void read(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries);
 }
 #endif //BES_VLSA_UTIL_H

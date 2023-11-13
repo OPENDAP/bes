@@ -60,7 +60,9 @@
 #define DMRPP_FIXED_LENGTH_STRING_LENGTH_ATTR "string_length"
 #define DMRPP_FIXED_LENGTH_STRING_PAD_ATTR "pad"
 
-#define DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT "dmrpp:vlsa"
+#define DMRPP_VLSA_ELEMENT "dmrpp:vlsa"
+#define DMRPP_VLSA_VALUE_ELEMENT "v"
+#define DMRPP_VLSA_VALUE_SIZE_ATTR "s"
 
 
 #endif // E_DmrppNames_H
