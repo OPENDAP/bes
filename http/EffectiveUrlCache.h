@@ -52,7 +52,9 @@ class url;
  */
 class EffectiveUrlCache : public BESObj {
 private:
+#if 0
     static std::unique_ptr<EffectiveUrlCache> d_instance;
+#endif
 
     std::mutex d_cache_lock_mutex;
 
@@ -72,7 +74,10 @@ private:
     friend class EffectiveUrlCacheTest;
 
 public:
-    static EffectiveUrlCache *TheCache();
+    static EffectiveUrlCache *TheCache() {
+        static EffectiveUrlCache d_instance;
+        return &d_instance;
+    }
 
     EffectiveUrlCache() = default;
     EffectiveUrlCache(const EffectiveUrlCache &src) = delete;
