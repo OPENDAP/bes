@@ -71,7 +71,8 @@ EffectiveUrlCache::TheCache()
     if (d_instance == nullptr) {
         static std::once_flag d_euc_init_once;
         std::call_once(d_euc_init_once, []() {
-            d_instance.reset(new EffectiveUrlCache()); // Create new instance, assign to unique_ptr.
+            d_instance = std::make_unique<EffectiveUrlCache>(); // Create new instance, assign to unique_ptr.
+            // d_instance.reset(new EffectiveUrlCache()); // Create new instance, assign to unique_ptr.
         });
     }
 
