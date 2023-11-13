@@ -1861,34 +1861,27 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
 
     // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
     // See the else clause for the general case.
-    if (dim_iter == dim_end() && stride == 1) {
-        // For the start and stop indexes of the subset, get the matching indexes in the whole array.
-        subset_addr.push_back(start);
-        unsigned long long start_index = get_index(subset_addr, array_shape);
-        subset_addr.pop_back();
+    if (dim_iter == dim_end()) {
+        if (stride == 1) {
+            // For the start and stop indexes of the subset, get the matching indexes in the whole array.
+            subset_addr.push_back(start);
+            unsigned long long start_index = get_index(subset_addr, array_shape);
+            subset_addr.pop_back();
 
-        subset_addr.push_back(stop);
-        unsigned long long stop_index = get_index(subset_addr, array_shape);
-        subset_addr.pop_back();
+            subset_addr.push_back(stop);
+            unsigned long long stop_index = get_index(subset_addr, array_shape);
+            subset_addr.pop_back();
 
-        // Copy block of strings from start_index to stop_index
-        for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
-            uint64_t source_char = source_index * chars_per_string;
-            // Copy a single string.
-            get_str().emplace(target_index++, ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
-        }
-    }
-    else {
-        for (uint64_t dim_index = start; dim_index <= stop; dim_index += stride) {
-
-            // Is it the last dimension?
-            if (dim_iter != dim_end()) {
-                // Nope! Then we recurse to the last dimension to read stuff
-                subset_addr.push_back(dim_index);
-                insert_constrained_contiguous_string(dim_iter, target_index, subset_addr, array_shape, src_buf);
-                subset_addr.pop_back();
+            // Copy block of strings from start_index to stop_index
+            for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
+                uint64_t source_char = source_index * chars_per_string;
+                // Copy a single string.
+                get_str().emplace(target_index++,
+                                  ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
             }
-            else {
+        }
+        else {
+            for (uint64_t dim_index = start; dim_index <= stop; dim_index += stride) {
                 // We are at the last (innermost) dimension, so it's time to copy values.
                 subset_addr.push_back(dim_index);
                 auto sourceIndex = get_index(subset_addr, array_shape);
@@ -1897,8 +1890,17 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
                 // Copy a single value.
                 uint64_t source_char = sourceIndex * chars_per_string;
 
-                get_str().emplace(target_index++, ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
+                get_str().emplace(target_index++,
+                                  ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
             }
+        }
+    }
+    else {
+        for (uint64_t dim_index = start; dim_index <= stop; dim_index += stride) {
+            // Nope! Then we recurse to the last dimension to read stuff
+            subset_addr.push_back(dim_index);
+            insert_constrained_contiguous_string(dim_iter, target_index, subset_addr, array_shape, src_buf);
+            subset_addr.pop_back();
         }
     }
 }
