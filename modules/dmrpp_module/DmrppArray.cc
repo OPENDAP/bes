@@ -58,6 +58,7 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
 #include "Base64.h"
+#include "vlsa_util.h"
 
 // Used with BESDEBUG
 #define dmrpp_3 "dmrpp:3"
@@ -1750,22 +1751,6 @@ void ingest_flsa_data(DmrppArray &flsa, DmrppArray &data)
 
 }
 
-/**
- * Prototype variable length string array solution
- * @param vlsa
- * @param data
- */
-void ingest_vlsa_data(DmrppArray &vlsa, DmrppArray &data){
-    auto buff = data.get_buf();
-    vector<ons> ons_vec;
-    vlsa.get_ons_objs(ons_vec);
-    for(ons ons_obj:ons_vec){
-        auto begin = buff +  ons_obj.offset;
-        string value(begin,ons_obj.size);
-        vlsa.get_str().push_back(value);
-    }
-}
-
 
 /**
  * @brief Read data for the array
@@ -2234,70 +2219,13 @@ void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
             throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
     }
 }
-/**
- * @brief Write a Variable Length String Array into the dmr++ document as a single element with base64 encoded values seperated by sep.
- * @param xml
- * @param a
- */
-void vlsa_xml_terse(XMLWriter &xml, DmrppArray &a) {
-    char sep = ';';
 
-    string vlsa_payload;
-    auto values = a.get_str();
-    uint64_t idx = 0;
-    for (const auto &value: values) {
-        BESDEBUG(MODULE, prolog << "vlsa[" << idx++ << "]: " << value << "\n");
-        std::vector<uint8_t> bytes(value.begin(), value.end());
-        bytes.reserve(value.size());
-        vlsa_payload += base64::Base64::encode(bytes.data(), bytes.size());
-        if (values.size() > 1) {
-            vlsa_payload += sep;
-        }
-        BESDEBUG(MODULE, prolog << "vlsa_payload: " << vlsa_payload << "\n");
-    }
-    string element_name("dmrpp:vlsa");
-    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0){
-        throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
-    }
-    if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) vlsa_payload.c_str()) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Could not write text into element");
-    }
-    if (xmlTextWriterEndElement(xml.get_writer()) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Could not end " + a.type_name() + " element");
-    }
-
-}
 
 /**
  * @bried Write a Variable Length String Array into the dmr++ document as an XML element with values.
  * @param xml
  * @param a
  */
-void vlsa_xml_element(XMLWriter &xml, DmrppArray &a) {
-    auto values = a.get_str();
-
-    string element_name("dmrpp:vlsa");
-    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
-    }
-
-    element_name = "v";
-    for(const auto &value: values) {
-        if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
-        }
-        if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) value.c_str()) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Could not write text into element");
-        }
-        if (xmlTextWriterEndElement(xml.get_writer()) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Could not end " + a.type_name() + " element");
-        }
-    }
-
-    if (xmlTextWriterEndElement(xml.get_writer()) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Could not end " + a.type_name() + " element");
-    }
-}
 
 
 /**
@@ -2387,12 +2315,8 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
             flsa_xml_element(xml, *this);
         }
         else if (is_vlsa() && DmrppCommon::d_print_chunks) {
-
             // Write the dmr++ for Variable Length String Array
-            vlsa_xml_element(xml, *this);
-
-            // Do it again (duplicate data), but in a more compact manner.
-            vlsa_xml_terse(xml, *this);
+            vlsa::write_dmrpp_xml_element(xml, *this);
         }
     }
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)

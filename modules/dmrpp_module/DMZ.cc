@@ -63,6 +63,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESLog.h"
+#include "vlsa_util.h"
 
 using namespace pugi;
 using namespace std;
@@ -84,9 +85,6 @@ using namespace libdap;
 #define SUPPORT_FILL_VALUE_CHUNKS 1
 
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
-
-constexpr auto LF = "\n";
-
 
 
 namespace dmrpp {
@@ -1209,82 +1207,6 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 }
 
 
-/**
- * @brief Read a string array from the child "v" elements (v as in value) of vlsa_element
- * @param array The DAP array that is being processed.
- * @param vlsa_element The dmr++ array's child vlsa element in the XML document
- * @param entries The values read from the XML document.
- */
-void vlsa_element_values_worker(DmrppArray *array, const pugi::xml_node &vlsa_element, vector<string> &entries){
-    auto value_name = "v";
-    // Chunks for this node will be held in the var_node siblings.
-    for (auto v = vlsa_element.child(value_name); v; v = v.next_sibling()) {
-        if (is_eq(v.name(), value_name)) {
-            BESDEBUG(PARSER, prolog << "entry: "  << v.child_value() << LF);
-            entries.emplace_back(v.child_value());
-        }
-    }
-}
-
-/**
- * @brief Read a string array from values of the vlsa_element.
- * Each value is base64 encoded, every value ends with a ';' character.
- * @param array The DAP array that is being processed.
- * @param vlsa_element The dmr++ array's child vlsa element in the XML document
- * @param entries The values read from the XML document.
- */
-void vlsa_base64_values_worker(DmrppArray *array, const pugi::xml_node &vlsa_element, vector<string>&entries){
-
-    // dc(btp)->set_vlsa(true);
-
-    const char *data = vlsa_element.child_value();
-    if (!data) {
-        stringstream msg;
-        msg << prolog << "The " << DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT <<
-               " is missing data values.";
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
-    string data_str(data);
-    BESDEBUG(PARSER, prolog << "\nvlsa_element.child_value(): " << data_str << "\n\n");
-
-    char sep = ';';
-    string entry;
-    entries.clear();
-    for(auto c : data_str){
-        // Every entry must end in 'sep',
-        // even if there's only a single entry.
-        if(c==sep){
-            BESDEBUG(PARSER, prolog << "        entry: '"  << entry << "'" << LF);
-            string decoded_entry;
-            if(entry.empty()){
-                decoded_entry = "";
-            }
-            else {
-                std::vector<u_int8_t> decoded_chars = base64::Base64::decode(entry);
-                decoded_entry = string((char *) decoded_chars.data());
-            }
-            BESDEBUG(PARSER, prolog << "decoded_entry: '" << decoded_entry << "'" <<  LF);
-            entries.emplace_back(decoded_entry);
-            entry="";
-        }
-        else {
-            entry += c;
-        }
-    }
-    // QC - Check that the number of things in the value match the array.
-    BESDEBUG(PARSER, prolog << "    entries.size(): "  << entries.size() << LF);
-    BESDEBUG(PARSER, prolog << "array->length_ll(): "  << array->length_ll() << LF);
-    if(entries.size() != array->length_ll()){
-        stringstream msg;
-        msg << prolog << "The " << DMRPP_VARIABLE_LENGTH_STRING_ARRAY_ELEMENT << " contained " << entries.size() ;
-        msg << " child 'v' elements. This does not match the size of enclosing DAP variable " + array->FQN();
-        msg << "(" << array->length_ll() << " elements) ";
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
-
-}
-
-
 
 void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element)
 {
@@ -1301,15 +1223,14 @@ void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element
         throw BESInternalError("Internal state error. "
         "Object claims to be array but is not.", __FILE__, __LINE__);
     }
+    if(array->var()->type() != dods_str_c && array->var()->type() != dods_url_c){
+        throw BESInternalError(prolog + "Internal state error. "
+                               "Expected array of dods_str_c, got " +
+                                       array->var()->type_name(), __FILE__, __LINE__);
+    }
 
     vector<string>entries;
-    auto v_element = vlsa_element.child("v");
-    if(v_element != nullptr){
-        vlsa_element_values_worker(array, vlsa_element, entries);
-    }
-    else {
-        vlsa_base64_values_worker(array, vlsa_element, entries);
-    }
+    vlsa::read_vlsa_values(vlsa_element, entries);
 
     array->set_is_vlsa(true);
     array->set_value(entries, (int) entries.size());

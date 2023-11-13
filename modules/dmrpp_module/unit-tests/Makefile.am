@@ -80,7 +80,7 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 if CPPUNIT
 
 UNIT_TESTS = DmrppArrayTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest CurlHandlePoolTest \
-DMZTest build_dmrpp_util_test DmrppChunkOdometerTest
+DMZTest build_dmrpp_util_test DmrppChunkOdometerTest vlsa_util_test
 
 else
 
@@ -130,3 +130,8 @@ DmrppChunkOdometerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 build_dmrpp_util_test_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc ../build_dmrpp_util.cc ../h5common.cc
 build_dmrpp_util_test_LDADD = $(H5_LDFLAGS) $(H5_LIBS) ../.libs/libdmrpp_module.a $(LIBADD)
+
+vlsa_util_test_SOURCES = vlsa_util_test.cc ../vlsa_util.cc
+vlsa_util_test_LDADD   = $(LIBADD)
+
+

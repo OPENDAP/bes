@@ -31,6 +31,8 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "zlib.h"
+
 #include <libdap/debug.h>
 #include <libdap/DMR.h>
 #include <libdap/D4Group.h>
@@ -50,6 +52,8 @@
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
 #include "DmrppTypeFactory.h"
+#include "Base64.h"
+#include "vlsa_util.h"
 
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
@@ -68,6 +72,7 @@ constexpr auto bes_debug_args="cerr,dmrpp:dmz";
 namespace dmrpp {
 
 class DMZTest: public CppUnit::TestFixture {
+
 private:
     unique_ptr<DMZ> d_dmz {nullptr};
 
@@ -80,6 +85,15 @@ private:
     const string test_simple_6_dmrpp = string(TEST_SRC_DIR).append("/input-files/test_simple_6.xml");
     const string vlsa_element_values_dmrpp = string(TEST_SRC_DIR).append("/input-files/vlsa_element_values.dmrpp");
     const string vlsa_base64_values_dmrpp = string(TEST_SRC_DIR).append("/input-files/vlsa_base64_values.dmrpp");
+
+    const string omps = string(TEST_SRC_DIR).append("/input-files/OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5.dmrpp");
+    const string s5pnrtil = string(TEST_SRC_DIR).append("/input-files/S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5.dmrpp");
+    const string scalar_contiguous  = string(TEST_SRC_DIR).append("/input-files/Scalar_contiguous_vlstr.h5.dmrpp");
+    const string acos_l2 = string(TEST_SRC_DIR).append("/input-files/acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5.dmrpp");
+    const string test_compress_doc_01 = string(TEST_SRC_DIR).append("/input-files/test_compress_doc.xml");
+
+    bool d_show_doc = false;
+    string hr="# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --";
 
 public:
     // Called once before everything gets tested
@@ -1119,10 +1133,226 @@ public:
             handle_fatal_exceptions();
         }
     }
+#if 0
 
+    void test_compress_1char(){
+        uint8_t dest[2048];
+        unsigned long dlen;
+        const uint8_t *src = (uint8_t *) R"(\)";
+        unsigned long slen=1;
+
+        auto retval = compress(dest,&dlen,src,slen);
+        DBG( cerr << prolog << "retval: " << retval << "\n" );
+        CPPUNIT_ASSERT( !retval );
+
+        DBG( cerr << prolog << "dlen: " << dlen << "\n" );
+
+        if(debug) {
+            cerr << prolog << "dest: \n";
+            for (uint64_t i = 0; i < dlen; i++) {
+                cerr << setw(2) << setfill('0') << hex  << (int) dest[i] << " ";
+            }
+            cerr << "\n";
+        }
+    }
+    /**
+     * #define Z_OK            0
+     * #define Z_STREAM_END    1
+     * #define Z_NEED_DICT     2
+     * #define Z_ERRNO        (-1)
+     * #define Z_STREAM_ERROR (-2)
+     * #define Z_DATA_ERROR   (-3)
+     * #define Z_MEM_ERROR    (-4)
+     * #define Z_BUF_ERROR    (-5)
+     * #define Z_VERSION_ERROR (-6)
+     */
+    string zlib_msg(int retval){
+        string msg;
+        switch(retval){
+            case 0:
+                msg = "Z_OK";
+                break;
+            case 1:
+                msg = "Z_STREAM_END";
+                break;
+            case 2:
+                msg = "Z_NEED_DICT";
+                break;
+            case -1:
+                msg = "Z_ERRNO";
+                break;
+            case -2:
+                msg = "Z_STREAM_ERROR";
+                break;
+            case -3:
+                msg = "Z_DATA_ERROR";
+                break;
+            case -4:
+                msg = "Z_MEM_ERROR";
+                break;
+            case -5:
+                msg = "Z_BUF_ERROR";
+                break;
+            case -6:
+                msg = "Z_VERSION_ERROR";
+                break;
+            default:
+                msg = "UNKNOWN ZLIB RETURN CODE";
+                break;
+        }
+        return msg;
+    }
+
+
+
+    /**
+     *
+     * @param source_string
+     * @return
+     */
+    string vlsa_value_encode(const string &source_string){
+        DBG( cerr << prolog << "BEGIN\n" );
+        const unsigned int w=10;
+        const unsigned int r=8;
+        string encoded;
+        auto source_size = source_string.size();
+        // Copy the stuff into a vector...
+        vector<Bytef> src(source_string.begin(), source_string.end());
+        DBG( cerr << prolog << "Source doc is " << src.size() << " bytes. (source_size: " << source_size << ")\n" );
+
+        if(d_show_doc){
+            cerr << prolog << "Source document copied to vector<Bytef>: \n";
+            for (uint64_t i = 0; i < source_size; i++) {
+                cerr << (char) src[i];
+            }
+            cerr << "\n";
+        }
+
+        vector<Bytef> compressed_src;
+        compressed_src.resize(source_size);
+        unsigned long compressed_src_size = source_size;
+
+        int retval = compress(compressed_src.data(), &compressed_src_size, src.data(), source_size);
+        DBG(cerr << prolog << "         compress() retval: " << setw(w) << retval
+                 << " (" << zlib_msg(retval) << ")\n");
+        // CPPUNIT_ASSERT(retval == 0);
+        if(retval != 0) {
+            DBG(cout << source_size << ", " << 0 << ", " << 0 << "\n");
+            return "";
+        }
+
+        double c_ratio = ((double) source_size) / ((double) compressed_src_size);
+
+        // CSV DATA ON STDOUT
+        DBG(cout << source_size << ", " << compressed_src_size << ", " << c_ratio << "\n");
+
+        DBG(cerr << prolog << "                source len: " << setw(w) << source_size << "\n");
+        DBG(cerr << prolog << "  compressed source binary: " << setw(w) << compressed_src_size <<
+                 " src:csb=" << setw(r) << c_ratio << "\n");
+
+        string base64_compressed_payload;
+        base64_compressed_payload = base64::Base64::encode(compressed_src.data(), compressed_src_size);
+        double base64_compressed_ratio = ((double) source_size) / ((double) base64_compressed_payload.size());
+        DBG(cerr << prolog << " base64_encoded_compressed: " << setw(w) << base64_compressed_payload.size() <<
+                 " src:b64=" << setw(r) << base64_compressed_ratio << "\n");
+        if (d_show_doc) {
+            cerr << base64_compressed_payload << "\n";
+        }
+        DBG( cerr << prolog << "END\n" );
+        return base64_compressed_payload;
+    }
+
+    /**
+     *
+     * @param encoded
+     * @param expected_size
+     * @return
+     */
+    string vlsa_value_decode(const string &encoded, uint64_t expected_size){
+        DBG( cerr << prolog << "BEGIN\n" );
+        string decoded_string;
+        const unsigned int w=10;
+        const unsigned int r=8;
+        auto encoded_size = encoded.size();
+
+        DBG(cerr << prolog << "            encoded.size(): " << setw(w) << encoded.size() << "\n");
+
+        std::vector <u_int8_t> decoded = base64::Base64::decode(encoded);
+        DBG(cerr << prolog << "            decoded.size(): " << setw(w) << decoded.size() << "\n");
+
+        vector<Bytef> result_bytes;
+        result_bytes.resize(expected_size);
+        uLongf result_size = expected_size;
+
+        int retval = uncompress( result_bytes.data(), &result_size, decoded.data(), decoded.size());
+        DBG(cerr << prolog << "       uncompress() retval: " << setw(w) << retval
+                 << " (" << zlib_msg(retval) << ")\n");
+
+        DBG(cerr << prolog << "  uncompress() result_size: " << setw(w) << result_size << "\n");
+        DBG(cerr << prolog << "             expected_size: " << setw(w) << expected_size << "\n");
+        // CPPUNIT_ASSERT_MESSAGE("Uncompressed result was a different size than expected.", result_size == expected_size);
+
+        if(retval != 0){
+            return "";
+        }
+
+        std::string result_string(result_bytes.begin(),result_bytes.end());
+        DBG(cerr << prolog << "      result_string.size(): " << setw(w) << result_string.size() << "\n");
+        // CPPUNIT_ASSERT(result_string.size() == expected_size);
+
+        if (d_show_doc) {
+            cerr << prolog << "RESULT DOC: \n";
+            cerr << result_string << "\n";
+        }
+        DBG( cerr << prolog << "END\n" );
+
+        return result_string;
+    }
+#endif
+
+    void test_compress_base64(){
+        unsigned long source_size;
+        unsigned int delta = 1;
+        uint64_t start = 1;
+        uint64_t stop = 5000;
+
+        DBG(cerr << hr << "\n");
+
+        DBG(cerr << prolog << "Testing " << test_compress_doc_01 << "\n");
+
+        string source_string = BESUtil::file_to_string(test_compress_doc_01);
+        source_size = source_string.size();
+        DBG(cerr << prolog << "source_string.size() " << source_size << "\n");
+
+        for(uint64_t sample_size = start;  sample_size <= stop  && sample_size <= source_size ; sample_size += delta){
+            DBG(cerr << hr << "\n");
+            DBG(cerr << prolog << "sample_size: " << sample_size << "\n");
+
+            auto sample_string = source_string.substr(0,sample_size);
+            DBG(cerr << prolog << "sample_string.size() " << sample_string.size() << "\n");
+            DBG(cerr << prolog << "sample_string: \n" << sample_string << "\n");
+
+            try {
+                auto encoded = vlsa::encode(sample_string);
+                DBG(cerr << prolog << "encoded: \n" << encoded << "\n");
+
+                // <v s="####">encoded_content</v>
+
+                auto decoded = vlsa::decode(encoded, sample_size);
+                DBG(cerr << prolog << "decoded: \n" << decoded << "\n");
+            }
+            catch(BESInternalError bie){
+                DBG( cerr << "Caught BESInternalError message: " << bie.get_verbose_message() << endl);
+            }
+            //CPPUNIT_ASSERT( decoded == sample_string);
+            DBG(cerr << "\n");
+        }
+    }
 CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_vlsa_element_values);
+    // CPPUNIT_TEST(test_compress_1char);
+    // CPPUNIT_TEST(test_compress_base64);
     CPPUNIT_TEST(test_vlsa_base64_values);
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
