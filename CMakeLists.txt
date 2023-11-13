@@ -673,7 +673,7 @@ add_executable(
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
     modules/dmrpp_module/unit-tests/test_config.h
 	modules/dmrpp_module/build_dmrpp.cc
-        modules/dmrpp_module/build_dmrpp_util_h4.cc
+		modules/dmrpp_module/build_dmrpp_util.cc
 	modules/dmrpp_module/build_dmrpp_util.h
     modules/dmrpp_module/Chunk.cc
     modules/dmrpp_module/Chunk.h
