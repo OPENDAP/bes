@@ -52,10 +52,6 @@ class url;
  */
 class EffectiveUrlCache : public BESObj {
 private:
-#if 0
-    static std::unique_ptr<EffectiveUrlCache> d_instance;
-#endif
-
     std::mutex d_cache_lock_mutex;
 
     std::map<std::string, std::shared_ptr<http::EffectiveUrl>> d_effective_urls;
@@ -74,6 +70,16 @@ private:
     friend class EffectiveUrlCacheTest;
 
 public:
+    /** @brief Get the singleton EffectiveUrlCache instance.
+     *
+     * This static method returns the instance of this singleton class.
+     * The implementation will only build one instance of EffectiveUrlCache and
+     * thereafter simple return that pointer.
+     *
+     * @note This method is thread safe, and is known as Meyer's Singleton.
+     *
+     * @return A pointer to the EffectiveUrlCache singleton
+     */
     static EffectiveUrlCache *TheCache() {
         static EffectiveUrlCache d_instance;
         return &d_instance;

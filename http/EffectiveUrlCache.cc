@@ -55,40 +55,6 @@ using namespace std;
 
 namespace http {
 
-#if 0
-std::unique_ptr<EffectiveUrlCache> EffectiveUrlCache::d_instance = nullptr;
-#endif
-
-/** @brief Get the singleton EffectiveUrlCache instance.
- *
- * This static method returns the instance of this singleton class.
- * The implementation will only build one instance of EffectiveUrlCache and
- * thereafter simple return that pointer.
- *
- * @return A pointer to the EffectiveUrlCache singleton
- */
-#if 0
-
-EffectiveUrlCache *
-EffectiveUrlCache::TheCache()
-{
-    static EffectiveUrlCache d_instance;
-    return &d_instance;
-#if 0
-    if (d_instance == nullptr) {
-        static std::once_flag d_euc_init_once;
-        std::call_once(d_euc_init_once, []() {
-            d_instance = std::make_unique<EffectiveUrlCache>(); // Create new instance, assign to unique_ptr.
-            // d_instance.reset(new EffectiveUrlCache()); // Create new instance, assign to unique_ptr.
-        });
-    }
-
-    return d_instance.get();
-#endif
-}
-
-#endif
-
 /**
  * @brief Get the cached effective URL.
  * @param url_key Key to a cached effective URL.
