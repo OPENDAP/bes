@@ -172,7 +172,7 @@ public:
             deflate_levels.push_back(def_level);
     }
     void set_processing_fv_chunks() { processing_fv_chunks = true;}
-    bool get_processing_fv_chunks() { return processing_fv_chunks; }
+    bool get_processing_fv_chunks() const { return processing_fv_chunks; }
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();
