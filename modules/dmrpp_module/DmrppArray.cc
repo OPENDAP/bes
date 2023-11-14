@@ -2618,7 +2618,7 @@ bool DmrppArray::use_direct_io_opt() {
     // TODO later, if the dimension is unlimited, this restriction can be lifted. Current dmrpp doesn't store the
     // unlimited dimension information.
 
-    if (has_dio_filters) {
+    if (has_dio_filters && this->get_processing_fv_chunks() == false) {
 
         vector <unsigned long long>chunk_dim_sizes = this->get_chunk_dimension_sizes();
         vector <unsigned long long>dim_sizes;

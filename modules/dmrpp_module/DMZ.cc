@@ -1503,6 +1503,7 @@ void DMZ::load_chunks(BaseType *btp)
                 // While later in process_chunks(), we will check if fillValue is defined and adjust the value.
                 if (num_logical_chunks == 1) 
                     dc(btp)->set_one_chunk_fill_value(true);
+                dc(btp)->set_processing_fv_chunks();
 
                 
             }
