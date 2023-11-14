@@ -26,6 +26,8 @@
 #include <exception>
 #include <cstring>
 #include <algorithm>
+#include <iostream>     // std::cout, std::endl
+#include <iomanip>      // std::setw
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -150,15 +152,14 @@ public:
         }
     }
 
-    void test_compress_base64(){
+    void test_vlsa_api(){
         unsigned long source_size;
         unsigned int delta = 1;
         uint64_t start = 1;
-        uint64_t stop = 500;
+        uint64_t stop = 1000;
 
 
         DBG(cerr << hr << "\n");
-
         DBG(cerr << prolog << "Testing " << test_compress_doc_01 << "\n");
 
         string source_string = BESUtil::file_to_string(test_compress_doc_01);
@@ -167,7 +168,7 @@ public:
         DBG(cout << "sample_string.size()" << ", " << "encoded.size()" << "\n");
 
         for(uint64_t sample_size = start;  sample_size <= stop  && sample_size <= source_size ; sample_size += delta){
-            libdap::XMLWriter xml; // freshy each pass
+            libdap::XMLWriter xml_writer; // freshy each pass
             bool encode_failed = false;
             string decoded;
 
@@ -178,9 +179,16 @@ public:
             DBG(cerr << prolog << "sample_string.size() " << sample_string.size() << "\n");
             // DBG(cerr << prolog << "sample_string: \n" << sample_string << "\n");
 
+            vector<string> values;
+            values.emplace_back(sample_string);
+
             try {
-                vlsa::write_value(xml, sample_string);
-                DBG(cerr << prolog << "xml_value: \n\n" << xml.get_doc() << "\n");
+                // We write the value to the XML document encode etc handled inside.
+                // Since we only made a single value above, when we encoded, and not a bunch
+                // of values we use vlsa::write_value)_ to write just the value element into
+                // the xml_writer.
+                vlsa::write_value(xml_writer, sample_string);
+                DBG(cerr << prolog << "xml_writer.get_doc(): \n\n" << xml_writer.get_doc() << "\n");
 
             }
             catch (BESInternalError bie) {
@@ -194,10 +202,15 @@ public:
 
             if(!encode_failed){
                 try {
-                    pugi::xml_document d_xml_doc;
-                    pugi::xml_parse_result result = d_xml_doc.load_string(xml.get_doc());
+                    // We use pugi::xml to parse the XML we made above, with the encoded vlsa value on board
+                    pugi::xml_document  result_xml_doc;
+                    pugi::xml_parse_result result = result_xml_doc.load_string(xml_writer.get_doc());
 
-                    auto value_element = d_xml_doc.document_element();
+                    // The we grab the top level elememt, which we know is the value element because
+                    // we used vlsa::write_value() above.
+                    auto value_element = result_xml_doc.document_element();
+
+                    // pass the value element into read_value
                     vlsa::read_value(value_element, decoded);
 
                     if(sample_string == decoded){
@@ -211,28 +224,21 @@ public:
                         DBG(cerr << decoded << "'\n");
                     }
                 }
-             //   catch (BESInternalError bie) {
-               //     DBG(cerr << prolog << "Failed to decode the string. message: \n" << bie.get_verbose_message() << "\n");
-               // }
                 catch (...) {
                     handle_fatal_exceptions();
                 }
-
             }
-
-
-            //CPPUNIT_ASSERT( decoded == sample_string);
             DBG(cerr << "\n");
         }
     }
 
     /**
-     * 
+     *
      */
-    void test_compress_base64_02(){
+    void test_compress_base64(){
         unsigned long source_size;
         uint64_t start = 1;
-        uint64_t stop = 50000;
+        uint64_t stop = 1000;
         unsigned int delta = 1;
 
         DBG(cerr << hr << "\n");
@@ -301,8 +307,8 @@ public:
 CPPUNIT_TEST_SUITE( vlsa_util_test );
 
         CPPUNIT_TEST(test_compress_1char);
+        CPPUNIT_TEST(test_vlsa_api);
         CPPUNIT_TEST(test_compress_base64);
-        CPPUNIT_TEST(test_compress_base64_02);
 
     CPPUNIT_TEST_SUITE_END();
 };

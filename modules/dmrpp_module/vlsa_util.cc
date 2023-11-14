@@ -28,6 +28,8 @@
 #include <string>
 #include <sstream>
 #include <zlib.h>
+#include <iostream>     // std::cout, std::endl
+#include <iomanip>      // std::setw
 
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
@@ -48,7 +50,7 @@
 #define VLSA "vlsa"
 #define VLSA_VERBOSE "vlsa:verbose"
 #define VLSA_VERBOSE "vlsa:verbose"
-#define VALUE_COMPRESSION_THRESHOLD 300
+#define VLSA_VALUE_COMPRESSION_THRESHOLD 300
 
 using namespace std;
 
@@ -228,7 +230,7 @@ void write_value(libdap::XMLWriter &xml, const std::string &value)
         throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
 
-    if(value.size() > VALUE_COMPRESSION_THRESHOLD) {
+    if(value.size() > VLSA_VALUE_COMPRESSION_THRESHOLD) {
 
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) vlsa_value_size_attr_name.c_str(),
                                         (const xmlChar *) to_string(value.size()).c_str()) < 0) {
