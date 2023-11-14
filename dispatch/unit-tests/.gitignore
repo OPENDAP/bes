@@ -11,3 +11,5 @@ uncompressT
 /ServerAdministratorTest
 /kvp_utils_test
 /RequestTimerTest
+/FileCacheTest
+/BESFileLockingCacheTest
