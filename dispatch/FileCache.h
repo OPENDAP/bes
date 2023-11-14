@@ -63,10 +63,11 @@ static inline std::string get_errno() {
 const unsigned long long MEGABYTE = 1048576;
 
 /**
- * @brief Implementation of a caching mechanism for compressed data.
+ * @brief Implementation of a caching mechanism for files.
  *
  * This cache uses simple advisory locking found on most modern unix file systems.
  * It was originally designed to hold the decompressed versions of compressed files.
+ *
  * Compressed files are uncompressed and stored in a cache where they can be
  * used over and over until removed from the cache. Several processes can
  * share the cache with each reading from files. At the same time, new files
@@ -80,14 +81,15 @@ const unsigned long long MEGABYTE = 1048576;
  * large. It is up to the client code to call the purge() method when the
  * size is at the maximum size.
  *
- * When a process looks to see if a file is already in the cache, the entire cache is locked.
- * If the file is present, a shared read lock is obtained and the cache is unlocked.
+ * When a process tries to get a file is already in the cache, the entire cache is
+ * locked. If the file is present, a shared read lock on the cached file is
+ * obtained and the cache is unlocked.
  *
  * For the put(), get(), and del() methods, the client code must manage the mapping
  * between the things in the cache and the keys.
  *
  * This is the Nth rewrite of the original BES 'uncompress cache' and it now
- * supplies a much simpler interface: initialize(), put(), get(), and del().
+ * supplies a much simpler interface: initialize(), put(), get(), del(), and purge().
  * The constructor for FileCache no longer initializes the cache, use the named
  * method for that. The put(key, source file) method locks the cache and copies
  * the contents of 'source file' into a new file that is named 'key.' The
@@ -97,6 +99,10 @@ const unsigned long long MEGABYTE = 1048576;
  * method deletes the file if it can get an exclusive lock on the file. The
  * del() method is the only method that uses a non-blocking lock on a file.
  * If can be forced to use a blocking lock using an optional second argument.
+ * There is a second put(key, PutItem) method that returns a PutItem instance
+ * that holds an open, locked, file descriptor. The PutItem dtor updates the
+ * cache_info file. This method exists to allow the caller to write directly
+ * to the file and then close the file descriptor to release the lock.
  *
  * @note The locking mechanism uses Unix flock(2) and so is _per file_.
  * Using flock(2) instead of fcntl(2) means that the locking is thread-safe. On
@@ -247,7 +253,7 @@ class FileCache {
     friend class FileCacheTest;
 
 public:
-    /// Mange the state of an open file descriptor for a cached item.
+    /// Manage the state of an open file descriptor for a cached item.
     class Item {
         int d_fd = -1;
 
