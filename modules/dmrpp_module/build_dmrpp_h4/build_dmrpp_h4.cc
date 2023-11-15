@@ -23,7 +23,6 @@
 
 #include "config.h"
 
-
 #include <iostream>
 #include <sstream>
 #include <iterator>
@@ -39,10 +38,7 @@
 #include <BESError.h>
 #include <BESInternalFatalError.h>
 
-
-
 #include "build_dmrpp_util_h4.h"
-
 
 using namespace std;
 using namespace libdap;
@@ -93,9 +89,7 @@ int main(int argc, char *argv[]) {
                 return 0;
 
             case 'v':
-#if 0
-                build_dmrpp_util::verbose = true; // verbose hdf5 errors
-#endif
+                build_dmrpp_util_h4::verbose = true; // verbose hdf5 errors
                 break;
 
             case 'd':

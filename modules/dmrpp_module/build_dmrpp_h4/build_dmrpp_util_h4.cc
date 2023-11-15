@@ -77,7 +77,7 @@ namespace build_dmrpp_util_h4 {
 bool verbose = false;   // Optionally set by build_dmrpp's main().
 
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
-#define prolog std::string("# build_dmrpp::").append(__func__).append("() - ")
+#define prolog std::string("build_dmrpp_h4::").append(__func__).append("() - ")
 
 #define INVOCATION_CONTEXT "invocation"
 
@@ -1393,7 +1393,7 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
             VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
             VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
 
-            dc->add_chunk("LE", map_info.offsets[i], map_info.lengths[i], position_in_array);
+            dc->add_chunk("LE", map_info.lengths[i], map_info.offsets[i], position_in_array);
         }
 #if 0
         if (fullnamepath_attr) {
@@ -1442,8 +1442,6 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
         throw;
     }
 }
-
-
 
 /**
  * @brief Performs a quality control check on the user supplied data file.
