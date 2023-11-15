@@ -12,4 +12,4 @@ uncompressT
 /kvp_utils_test
 /RequestTimerTest
 /BESFileLockingCacheTest
-
+/FileCacheTest
