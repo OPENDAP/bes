@@ -102,12 +102,17 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
     // If using the cache, look there. Note that the UID is part of the key to the cached data.
     string url_key = d_ngap_path + ':' + uid;
     string real_name;
-    if (NgapRequestHandler::d_use_cmr_cache && NgapRequestHandler::d_new_cmr_cache.get(url_key, real_name)) {
-        set_real_name(real_name);
-        set_relative_name(real_name);
-        BESDEBUG(NGAP_CACHE, prolog << "Cache hit, translated URL: " << get_real_name() << endl);
-        BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
-        return;
+    if (NgapRequestHandler::d_use_cmr_cache) {
+        if (NgapRequestHandler::d_cmr_mem_cache.get(url_key, real_name)) {
+            set_real_name(real_name);
+            set_relative_name(real_name);
+            BESDEBUG(NGAP_CACHE, prolog << "CMR Cache hit, translated URL: " << get_real_name() << endl);
+            BESDEBUG(MODULE, prolog << "END (obj_addr: " << (void *) this << ")" << endl);
+            return;
+        }
+        else {
+            BESDEBUG(NGAP_CACHE, prolog << "CMR Cache miss, URL: " << get_real_name() << endl);
+        }
     }
 
     real_name = NgapApi::convert_ngap_resty_path_to_data_access_url(get_real_name());
@@ -119,8 +124,8 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
 
     // If using the CMR cache, cache the response.
     if (NgapRequestHandler::d_use_cmr_cache) {
-        NgapRequestHandler::d_new_cmr_cache.put(url_key, real_name);
-        BESDEBUG(NGAP_CACHE, prolog << "Cache miss, cached translated URL: " << get_real_name() << endl);
+        NgapRequestHandler::d_cmr_mem_cache.put(url_key, real_name);
+        BESDEBUG(NGAP_CACHE, prolog << "CMR Cache, cached translated URL: " << get_real_name() << endl);
     }
 
     BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
@@ -174,6 +179,15 @@ NgapContainer::get_content_filters(map<string, string, std::less<>> &content_fil
     return false;
 }
 
+static bool file_to_string(int fd, string &content) {
+    vector<char> buffer(4096);
+    ssize_t bytes_read;
+    while ((bytes_read = read(fd, buffer.data(), buffer.size())) > 0) {
+        content.append(buffer.data(), bytes_read);
+    }
+    return bytes_read == 0;
+}
+
 /**
  * @brief Should the server inject the data URL into DMR++ documents?
  *
@@ -209,36 +223,55 @@ string NgapContainer::access() {
 #endif
 
     string dmrpp_string;
-    if (NgapRequestHandler::d_use_dmrpp_cache && NgapRequestHandler::d_new_dmrpp_cache.get(get_real_name(), dmrpp_string)) {
-        // set_container_type() because access() is called from both the framework and the DMR++ handler
-        BESDEBUG(NGAP_CACHE, prolog << "Cache hit, DMR++: " << get_real_name() << endl);
-        set_container_type("dmrpp");
-        set_attributes("as-string");
-        return dmrpp_string;
+    if (NgapRequestHandler::d_use_dmrpp_cache) {
+        if (NgapRequestHandler::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
+            // set_container_type() because access() is called from both the framework and the DMR++ handler
+            BESDEBUG(NGAP_CACHE, prolog << "Memory Cache hit, DMR++: " << get_real_name() << endl);
+            set_container_type("dmrpp");
+            set_attributes("as-string");
+            return dmrpp_string;
+        }
+        else {
+            BESDEBUG(NGAP_CACHE, prolog << "Memory Cache miss, DMR++: " << get_real_name() << endl);
+        }
     }
 
-    // It's not in the cache, so get the DMR++ as a string.
-    string dmrpp_url_str = get_real_name() + ".dmrpp";
+    // Before going over the network to get the DMR++, look in the FileCache.
+    // If found, put it in the memory cache and return it as a string.
+    if (NgapRequestHandler::d_use_dmrpp_cache) {
+        FileCache::Item item;
+        if (NgapRequestHandler::d_dmrpp_file_cache.get(get_real_name(), item)) { // got it
+            // read data from the file into the string.
+            BESDEBUG(NGAP_CACHE, prolog << "File Cache hit, Memory Cache miss, DMR++: " << get_real_name() << endl);
+            if (file_to_string(item.get_fd(), dmrpp_string)) {
+                // put it in the memory cache
+                NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
+                set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
+                set_container_type("dmrpp");
+                return dmrpp_string;
+            }
+            else {
+                ERROR_LOG("NgapContainer::access() - failed to read DMR++ from file cache");
+            }
+        }
+        else {
+            BESDEBUG(NGAP_CACHE, prolog << "File Cache miss, DMR++: " << get_real_name() << endl);
+        }
+    }   // end of FileCache::Item scope
 
-    // Get the DMR++ as a string. jhrg 10/19/23
+    // Else, the DMR++ is neither in the memory cache nor the file cache.
+    // Read it from S3, etc., and filter it. Put it in the memory cache.
+    // Use a child thread to copy it into the FileCache.
+    // Return the DMR++ string.
+
+    string dmrpp_url_str = get_real_name() + ".dmrpp";  // The URL of the DMR++ file
+
 #ifndef NDEBUG
     BESStopWatch besTimer2;
     if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
         besTimer2.start("DMR++ retrieval: " + dmrpp_url_str);
     }
 #endif
-
-    // Before going over the network to get the DMR++, look in the FileCache.
-    // If found, put it in the memory cache and return it as a string.
-    FileCache::Item item;
-    if (NgapRequestHandler::d_dmrpp_file_cache.get(get_real_name(), item)) { // got it
-        
-    }
-
-    // Else, the DMR++ is neither in the memory cache nor the file cache.
-    // Read it from S3, etc., and filter it. Put it in the memory cache.
-    // Use a child thread to copy it into the FileCache.
-    // Return the DMR++ string.
 
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);
@@ -251,8 +284,20 @@ string NgapContainer::access() {
     }
 
     if (NgapRequestHandler::d_use_dmrpp_cache) {
-        NgapRequestHandler::d_new_dmrpp_cache.put(get_real_name(), dmrpp_string);
-        BESDEBUG(NGAP_CACHE, prolog << "Cache miss, cached DMR++: " << get_real_name() << endl);
+        NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
+        BESDEBUG(NGAP_CACHE, prolog << "Memory Cache, cached DMR++: " << get_real_name() << endl);
+
+        FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
+        if (NgapRequestHandler::d_dmrpp_file_cache.put(get_real_name(), item)) {
+            // TODO do this in a child thread someday. jhrg 11/14/23
+            if (write(item.get_fd(), dmrpp_string.data(), dmrpp_string.size()) != dmrpp_string.size()) {
+                ERROR_LOG("NgapContainer::access() - failed to write DMR++ to file cache");
+            }
+            BESDEBUG(NGAP_CACHE, prolog << "File Cache, cached DMR++: " << get_real_name() << endl);
+        }
+        else {
+            ERROR_LOG("NgapContainer::access() - failed to put DMR++ in file cache");
+        }
     }
 
     set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23

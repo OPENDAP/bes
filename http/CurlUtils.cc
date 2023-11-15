@@ -1167,7 +1167,7 @@ static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * @return The HTTP result code
  */
 void http_get(const string &target_url, vector<char> &buf) {
-
+    // TODO Improve this; rewrite to take and/or return a string. jhrg 11/14/23
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;

@@ -187,7 +187,7 @@ public:
 
         const string expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
         string cache_value;
-        bool found = NgapRequestHandler::d_new_cmr_cache.get(resty_path + ":" + uid_value, cache_value);
+        bool found = NgapRequestHandler::d_cmr_mem_cache.get(resty_path + ":" + uid_value, cache_value);
 
         CPPUNIT_ASSERT_MESSAGE("Expected URL from CMR not cached", found);
         CPPUNIT_ASSERT_MESSAGE("Expected URL from CMR not cached", cache_value == expected);
@@ -217,7 +217,7 @@ public:
 
         const string expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
         string cache_value;
-        bool found = NgapRequestHandler::d_new_cmr_cache.get(resty_path + ":" + uid_value, cache_value);
+        bool found = NgapRequestHandler::d_cmr_mem_cache.get(resty_path + ":" + uid_value, cache_value);
 
         CPPUNIT_ASSERT_MESSAGE("Expected URL from CMR not cached", found);
         CPPUNIT_ASSERT_MESSAGE("Expected URL from CMR not cached", cache_value == expected);
@@ -236,6 +236,12 @@ public:
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
         NgapRequestHandler::d_use_cmr_cache = true;
         NgapRequestHandler::d_use_dmrpp_cache = true;
+        NgapRequestHandler::d_dmrpp_file_cache_dir = "/tmp"; // any dir that exists will do
+        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache.initialize( NgapRequestHandler::d_dmrpp_file_cache_dir,
+                                                           NgapRequestHandler::d_dmrpp_file_cache_size,
+                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
 
         const string uid_value = "bugsbunny";
         BESContextManager::TheManager()->set_context("uid", uid_value);

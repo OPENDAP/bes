@@ -46,13 +46,13 @@ class NgapRequestHandler : public BESRequestHandler {
     static unsigned int d_cmr_cache_purge;      // remove this many during purge
 
     static bool d_use_cmr_cache;
-    static MemoryCache<std::string> d_new_cmr_cache;
+    static MemoryCache<std::string> d_cmr_mem_cache;
 
-    static unsigned int d_dmrpp_cache_size;  // max number of entries
-    static unsigned int d_dmrpp_cache_purge;      // remove this many during purge
+    static unsigned int d_dmrpp_mem_cache_size;  // max number of entries
+    static unsigned int d_dmrpp_mem_cache_purge;      // remove this many during purge
 
     static bool d_use_dmrpp_cache;
-    static MemoryCache<std::string> d_new_dmrpp_cache;
+    static MemoryCache<std::string> d_dmrpp_mem_cache;
 
     static unsigned long long d_dmrpp_file_cache_size;
     static unsigned long long d_dmrpp_file_cache_purge_size;
