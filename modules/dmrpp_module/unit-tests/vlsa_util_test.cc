@@ -157,7 +157,7 @@ public:
         unsigned int delta = 1;
         uint64_t start = 1;
         uint64_t stop = 1000;
-
+        uint64_t value_reps = 1;
 
         DBG(cerr << hr << "\n");
         DBG(cerr << prolog << "Testing " << test_compress_doc_01 << "\n");
@@ -185,9 +185,9 @@ public:
             try {
                 // We write the value to the XML document encode etc handled inside.
                 // Since we only made a single value above, when we encoded, and not a bunch
-                // of values we use vlsa::write_value)_ to write just the value element into
+                // of values we use vlsa::write_value() to write just the value element into
                 // the xml_writer.
-                vlsa::write_value(xml_writer, sample_string);
+                vlsa::write_value(xml_writer, sample_string, value_reps);
                 DBG(cerr << prolog << "xml_writer.get_doc(): \n\n" << xml_writer.get_doc() << "\n");
 
             }
@@ -205,13 +205,15 @@ public:
                     // We use pugi::xml to parse the XML we made above, with the encoded vlsa value on board
                     pugi::xml_document  result_xml_doc;
                     pugi::xml_parse_result result = result_xml_doc.load_string(xml_writer.get_doc());
+                    DBG(cerr << prolog << "xml_parse_result.description(): " << result.description() << "\n");
+                    CPPUNIT_ASSERT(result);
 
-                    // The we grab the top level elememt, which we know is the value element because
-                    // we used vlsa::write_value() above.
+                    // We grab the top level element, which we know is the "value" element because
+                    // we used vlsa::write_value() to create it above.
                     auto value_element = result_xml_doc.document_element();
 
                     // pass the value element into read_value
-                    vlsa::read_value(value_element, decoded);
+                    decoded = vlsa::read_value(value_element);
 
                     if(sample_string == decoded){
                         DBG(cerr << prolog << "SUCCESS.\n");

@@ -220,14 +220,32 @@ string decode(const string &encoded, uint64_t expected_size) {
 }
 
 
-
-void write_value(libdap::XMLWriter &xml, const std::string &value)
+/**
+ * @brief Writes a dmrpp::vlsa  'v' element (value) with the passed value as the value.
+ * If dup_count is greater than one the value element is annotated with a 'c' (count) attribute
+ * whose value is dup_count.
+ * If the sample string is longer than the VLSA_VALUE_COMPRESSION_THRESHOLD then:
+ *  - An 's' attribute (size) with the value of sample_string.size() will be added to the value element
+ *  - The sample_string is compressed andthe result base64 encoded and that will be the value elements text content.
+ * @param xml The xmldoc to modify
+ * @param value The string value to add to the vlsa
+ * @param dup_count The number of consecutive duplicates for this value in the source data.
+ */
+void write_value(libdap::XMLWriter &xml, const std::string &value, uint64_t dup_count)
 {
 
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) vlsa_value_element_name.c_str()) < 0) {
         stringstream msg;
         msg <<  prolog << "Could not begin '" + vlsa_value_element_name + "' element.";
         throw BESInternalError( msg.str(), __FILE__, __LINE__);
+    }
+    if (dup_count > 1) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "c",
+                                        (const xmlChar *) to_string(dup_count).c_str()) < 0) {
+            stringstream msg;
+            msg << prolog << "Could not write '" << "c" << "' (size) attribute.";
+            throw BESInternalError( msg.str(), __FILE__, __LINE__);
+        }
     }
 
     if(value.size() > VLSA_VALUE_COMPRESSION_THRESHOLD) {
@@ -273,9 +291,24 @@ void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
         throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
 
+    string last_value;
+    bool not_first = false;
+    uint64_t dup_count  = 1;
     for(const auto &value : values) {
-        write_value(xml,value);
+        if(not_first && value == last_value) {
+            dup_count++;
+        }
+        else {
+            cerr << "value: '" << value << "' dup_count: " << dup_count << endl;
+            vlsa::write_value(xml, value, dup_count);
+            dup_count = 1;
+        }
+        last_value = value;
+        not_first = true;
     }
+    cerr << "last_value: '" << last_value << "' dup_count: " << dup_count << endl;
+    write_value(xml,last_value, dup_count);
+
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0) {
         stringstream msg;
@@ -290,8 +323,9 @@ void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
  * @param v The element to evaluate
  * @param value The (decoded) string value of v
  */
-void read_value(const pugi::xml_node &v, std::string &value)
+std::string read_value(const pugi::xml_node &v)
 {
+    string value;
     if (v.name() == vlsa_value_element_name ) {
         // We check for the presence of the size attribut, vlsa_value_size_attr_name
         // If present it means the content was compressed and the base64 encoded
@@ -300,11 +334,13 @@ void read_value(const pugi::xml_node &v, std::string &value)
         if (esize) {
             uint64_t value_size = stoull(esize.value());
             value = decode(v.child_value(), value_size);
+
         } else {
             value = v.child_value();
         }
         BESDEBUG(VLSA, prolog << "value: '" << value << "'");
     }
+    return value;
 }
 void read(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries)
 {
@@ -312,9 +348,15 @@ void read(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries)
 
     // Chunks for this node will be held in the var_node siblings.
     for (auto v = vlsa_element.child(vlsa_value_element_name.c_str()); v; v = v.next_sibling()) {
-        string value;
-        read_value(v, value);
-        entries.emplace_back(value);
+        uint64_t count = 1;
+        pugi::xml_attribute c_attr = v.attribute("c");
+        if(c_attr){
+            count = stoull(c_attr.value());
+        }
+        string value = read_value(v);
+        for(uint64_t i=0; i<count ;i++){
+            entries.emplace_back(value);
+        }
     }
 }
 

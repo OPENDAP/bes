@@ -29,12 +29,15 @@
 #include "DmrppArray.h"
 
 namespace vlsa {
+
 std::string zlib_msg(int retval);
 std::string encode(const std::string &source_string);
 std::string decode(const std::string &encoded, uint64_t expected_size);
-void write_value(libdap::XMLWriter &xml, const std::string &value);
+
+void write_value(libdap::XMLWriter &xml, std::string &value, uint64_t dup_count);
 void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a);
-void read_value(const pugi::xml_node &v, std::string &value);
+
+string read_value(const pugi::xml_node &v);
 void read(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries);
 }
 #endif //BES_VLSA_UTIL_H

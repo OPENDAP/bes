@@ -132,6 +132,6 @@ build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc ../build_dmrpp_util.cc 
 build_dmrpp_util_test_LDADD = $(H5_LDFLAGS) $(H5_LIBS) ../.libs/libdmrpp_module.a $(LIBADD)
 
 vlsa_util_test_SOURCES = vlsa_util_test.cc ../vlsa_util.cc
-vlsa_util_test_LDADD   = $(LIBADD)
+vlsa_util_test_LDADD   = ../.libs/libdmrpp_module.a $(LIBADD)
 
 
