@@ -29,16 +29,6 @@
 #include <iterator>
 #include <unordered_set>
 
-#if 0
-#include <H5Ppublic.h>
-#include <H5Dpublic.h>
-#include <H5Epublic.h>
-#include <H5Zpublic.h>  // Constants for compression filters
-#include <H5Spublic.h>
-#include <H5Tpublic.h>
-#endif
-#include "h5common.h"   // This is in the hdf5 handler
-
 #include "h4config.h"
 #include "hdf.h"  // HDF4 header file
 #include "mfhdf.h"  // Include the HDF4 header file
@@ -52,7 +42,6 @@
 #include <BESInternalFatalError.h>
 
 #include <TheBESKeys.h>
-#include <BESContextManager.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
@@ -60,32 +49,9 @@
 #include "DmrppArray.h"
 #include "D4ParserSax2.h"
 
-#include "UnsupportedTypeException.h"
-
-#if 0
-#define H5S_MAX_RANK    32
-#define H5O_LAYOUT_NDIMS    (H5S_MAX_RANK+1)
-
-/*
- * "Generic" chunk record.  Each chunk is keyed by the minimum logical
- * N-dimensional coordinates and the datatype size of the chunk.
- * The fastest-varying dimension is assumed to reference individual bytes of
- * the array, so a 100-element 1-D array of 4-byte integers would really be a
- * 2-D array with the slow varying dimension of size 100 and the fast varying
- * dimension of size 4 (the storage dimensionality has very little to do with
- * the real dimensionality).
- *
- * The chunk's file address, filter mask and size on disk are not key values.
- */
-typedef struct H5D_chunk_rec_t {
-    hsize_t scaled[H5O_LAYOUT_NDIMS];    /* Logical offset to start */
-    uint32_t nbytes;                      /* Size of stored data */
-    uint32_t filter_mask;                 /* Excluded filters */
-    haddr_t chunk_addr;                  /* Address of chunk in file */
-} H5D_chunk_rec_t;
-#endif
-
 #define COMP_INFO 512 /*!< Max buffer size for compression information.  */
+
+#define FAIL_ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; exit(1); } while(false)
 
 /*
  * Hold mapping information for SDS objects.
@@ -1249,6 +1215,79 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 }
 #endif
 
+int SDfree_mapping_info(SD_mapping_info_t  *map_info)
+{
+    intn  ret_value = SUCCEED;
+
+    /* nothing to free */
+    if (map_info == NULL)
+        return SUCCEED;
+
+    map_info->nblocks = 0;
+
+    if (map_info->offsets != NULL) {
+        HDfree(map_info->offsets);
+        map_info->offsets = NULL;
+    }
+
+    if (map_info->lengths) {
+        HDfree(map_info->lengths);
+        map_info->lengths = NULL;
+    }
+
+    return ret_value;
+}
+
+/**
+ * @brief Read chunk information from a HDF4 dataset
+ * @param sdsid
+ * @param map_info
+ * @param origin The parameter origin must be NULL when the data is not stored in chunking layout.
+ * When the data is chunked, SDgetdatainfo can be called on a single chunk and origin is used to
+ * specify the coordinates of the chunk.
+ * @return
+ */
+int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
+{
+
+    intn  info_count = 0;
+    intn  ret_value = SUCCEED;
+
+    /* Free any info before resetting. */
+    SDfree_mapping_info(map_info);
+    /* Reset map_info. */
+    /* HDmemset(map_info, 0, sizeof(SD_mapping_info_t)); */
+
+    /* Save SDS id since HDmemset reset it. map_info->id will be reused. */
+    /* map_info->id = sdsid; */
+
+    info_count = SDgetdatainfo(sdsid, origin, 0, 0, NULL, NULL);
+
+    if (info_count == FAIL){
+        //fprintf(flog, "SDgetedatainfo() failed in read_chunk().\n");
+        return FAIL;
+    }
+
+    if (info_count > 0) {
+        map_info->nblocks = (int32) info_count;
+        map_info->offsets = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
+        if (map_info->offsets == NULL) {
+            cerr << "HDmalloc() failed: Out of Memory";
+        }
+        map_info->lengths = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
+        if (map_info->lengths == NULL) {
+            cerr << "HDmalloc() failed: Out of Memory";
+        }
+
+        ret_value = SDgetdatainfo(sdsid, origin, 0, info_count, map_info->offsets, map_info->lengths);
+        return ret_value;
+    }
+
+    return ret_value;
+
+} /* read_chunk */
+
+
 /**
  * @brief Iterate over all the variables in a DMR and get their chunk info
  *
@@ -1263,6 +1302,8 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
     for(auto btp : group->variables()) {
         VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
 
+#if 0
+        // TODO Check with Kent if this is still needed.
         // if this variable has a 'fullnamepath' attribute, use that and not the
         // FQN value.
         D4Attributes *d4_attrs = btp->attributes();
@@ -1277,26 +1318,97 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
         // TODO Find out if HDF4 has a similar issue to HDF5 where the variable FQN is
         //  encoded as an attribute t=in the DMR.
         const D4Attribute *fullnamepath_attr = d4_attrs->get("fullnamepath");
+#endif
 
         string FQN = btp->FQN();
 
         const char* sdsName = FQN.substr(1).c_str(); //Take off the leading "/", get as const char *
-        int sdsIndex = SDnametoindex(file, sdsName);
+        int sds_index = SDnametoindex(file, sdsName);
+        int sdsid = SDselect(file, sds_index);
         VERBOSE(cerr << "fqn: " << FQN << endl);
-        VERBOSE(cerr << "sdsIndex: " << sdsIndex << endl);
+        VERBOSE(cerr << "sdsid: " << sdsid << endl);
 
+        SD_mapping_info_t map_info;
+        map_info.nblocks = 0;
+        map_info.offsets = NULL;
+        map_info.lengths = NULL;
+
+        // In h4mapwriter xml_sds.c, see write_map_sds(...) for more info about HDF4's SD API.
+
+        /* Save the SDS id. */
+        map_info.id = sdsid;
+
+        /* Check if SDS has no data. */
+        int status = SDcheckempty(sdsid, &(map_info.is_empty));
+        if (status == FAIL) {
+            FAIL_ERROR("SDcheckempty() failed.");
+        }
+
+        char obj_name[H4_MAX_NC_NAME]; /* name of the object */
+        int32 rank = -1;                 /* number of dimensions */
+        int32 dimsizes[H4_MAX_VAR_DIMS]; /* dimension sizes */
+        int32 data_type = -1;            /* data type */
+        int32 num_attrs = -1;            /* number of global attributes */
+
+        status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
+        if (status == FAIL) {
+            FAIL_ERROR("SDgetinfo() failed.");
+        }
+
+        /* Save the data type. */
+        map_info.data_type = data_type;
+
+        HDF_CHUNK_DEF cdef;
+        int32 chunk_flag = -1;        /* chunking flag */
+
+        status = SDgetchunkinfo(sdsid, &cdef, &chunk_flag);
+        if (status == FAIL) {
+            FAIL_ERROR("SDgetchunkinfo() failed.");
+        }
+
+        int *origin = NULL;
+        if (chunk_flag != HDF_NONE) {
+               /* Chunking. */
+                origin = (int *)HDmalloc(sizeof(int)*rank);
+                if (origin == NULL) {
+                    FAIL_ERROR("HDmalloc() failed: Out of Memory");
+                }
+                memset(origin, 0, sizeof(int)*rank);
+        }
+
+        auto info_count = read_chunk(sdsid, &map_info, origin);
+        if (info_count == FAIL) {
+            cerr << "SDgetedatainfo() failed in read_chunk().\n";
+            return;
+        }
+
+        auto dc = dynamic_cast<DmrppCommon*>(btp);
+        if (!dc) {
+            throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.",
+                                   __FILE__, __LINE__);
+        }
+
+        vector<unsigned long long> position_in_array(rank, 0);
+        for (int i = 0; i < map_info.nblocks; i++) {
+            VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
+            VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
+
+            dc->add_chunk("LE", map_info.offsets[i], map_info.lengths[i], position_in_array);
+        }
+#if 0
         if (fullnamepath_attr) {
             if (fullnamepath_attr->num_values() == 1)
                 FQN = fullnamepath_attr->value(0);
 
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
 
-            int dataset = SDselect(file, sdsIndex);
+            int dataset = SDselect(file, sdsid);
             cerr << "bt variable name: " << FQN << endl;
             if (dataset < 0) {
                 throw BESInternalError("HDF4 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
             }
         }
+#endif
     }
 
     // all groups in the group
@@ -1331,68 +1443,6 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
     }
 }
 
-int SDfree_mapping_info(SD_mapping_info_t  *map_info)
-{
-    intn  ret_value = SUCCEED;
-
-    /* nothing to free */
-    if (map_info == NULL)
-        return SUCCEED;
-
-    map_info->nblocks = 0;
-
-    if (map_info->offsets != NULL) {
-        HDfree(map_info->offsets);
-        map_info->offsets = NULL;
-    }
-
-    if (map_info->lengths) {
-        HDfree(map_info->lengths);
-        map_info->lengths = NULL;
-    }
-
-    return ret_value;
-}
-
-int read_chunk(int sdsid, SD_mapping_info_t *map_info, int* index)
-{
-
-    intn  info_count = 0;
-    intn  ret_value = SUCCEED;
-
-    /* Free any info before resetting. */
-    SDfree_mapping_info(map_info);
-    /* Reset map_info. */
-    /* HDmemset(map_info, 0, sizeof(SD_mapping_info_t)); */
-
-    /* Save SDS id since HDmemset reset it. map_info->id will be reused. */
-    /* map_info->id = sdsid; */
-
-    info_count = SDgetdatainfo(sdsid, index, 0, 0, NULL, NULL);
-
-    if (info_count == FAIL){
-        //fprintf(flog, "SDgetedatainfo() failed in read_chunk().\n");
-        return FAIL;
-    }
-
-    if (info_count > 0) {
-        map_info->nblocks = (int32) info_count;
-        map_info->offsets = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
-        if (map_info->offsets == NULL) {
-            cerr << "HDmalloc() failed: Out of Memory";
-        }
-        map_info->lengths = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
-        if (map_info->lengths == NULL) {
-            cerr << "HDmalloc() failed: Out of Memory";
-        }
-
-        ret_value = SDgetdatainfo(sdsid, index, 0, info_count, map_info->offsets, map_info->lengths);
-        return ret_value;
-    }
-
-    return ret_value;
-
-} /* read_chunk */
 
 
 /**
