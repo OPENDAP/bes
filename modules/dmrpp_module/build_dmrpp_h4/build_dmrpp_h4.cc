@@ -154,6 +154,9 @@ int main(int argc, char *argv[]) {
                 bes_conf_file_used_to_create_dmr,
                 argc,  argv);
 
+        string command = "./h4mapwriter/h4mapwriter " + h4_file_name;
+        system(command.c_str());
+
     }
     catch (const BESError &e) {
         cerr << "BESError: " << e.get_message() << endl;

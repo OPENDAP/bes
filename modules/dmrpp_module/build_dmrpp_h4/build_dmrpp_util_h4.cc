@@ -1335,10 +1335,10 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
                 dataset = SDselect(file, atoi(real_path_candidate.c_str()));
                 if (dataset == FAIL) {
                     // Handle the case where the index is not valid or doesn't correspond to an SDS.
-                    printf("The provided index does not correspond to a valid SDS.\n");
+                    cerr << ("The provided index does not correspond to a valid SDS.\n") << endl;
                 } else {
                     // The index corresponds to a valid SDS, and sds_id contains the SDS identifier.
-                    printf("SDS with index %d was successfully selected.\n", index);
+                    cerr << ("SDS with index %d was successfully selected.\n", index) << endl;
                     // You can further work with the selected SDS using sds_id.
                 }
             }
@@ -1349,7 +1349,7 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
                 if (dataset != FAIL) {
                     cerr << "dataset success : " << dataset << endl << endl;
                 } else {
-                    fprintf(stderr, "Error selecting the dataset.\n");
+                    cerr << (stderr, "Error selecting the dataset.\n") << endl;
                     HEprint(stderr, 0);
                 }
 
@@ -1424,6 +1424,51 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
         throw;
     }
 }
+
+intn
+read_chunk(int sdsid, SD_mapping_info_t *map_info, int* index)
+{
+
+    intn  info_count = 0;
+    intn  ret_value = SUCCEED;
+
+    /* Free any info before resetting. */
+    SDfree_mapping_info(map_info);
+    /* Reset map_info. */
+    /* HDmemset(map_info, 0, sizeof(SD_mapping_info_t)); */
+
+    /* Save SDS id since HDmemset reset it. map_info->id will be resued. */
+    /* map_info->id = sdsid; */
+
+    info_count = SDgetdatainfo(sdsid, index, 0, 0, NULL, NULL);
+
+    if (info_count == FAIL){
+        //fprintf(flog, "SDgetedatainfo() failed in read_chunk().\n");
+        return FAIL;
+    }
+
+    if (info_count > 0) {
+        map_info->nblocks = (int32) info_count;
+        map_info->offsets = (int32 *)
+                HDmalloc(sizeof(int32)*map_info->nblocks);
+        if(map_info->offsets == NULL){
+            cerr << ("HDmalloc() failed: Out of Memory");
+        }
+        map_info->lengths = (int32 *)
+                HDmalloc(sizeof(int32)*map_info->nblocks);
+        if(map_info->lengths == NULL){
+            cerr << ("HDmalloc() failed: Out of Memory");
+        }
+
+        ret_value = SDgetdatainfo(sdsid, index, 0, info_count,
+                                  map_info->offsets, map_info->lengths);
+        return ret_value;
+
+    }
+
+    return ret_value;
+
+} /* read_chunk */
 
 
 /**
