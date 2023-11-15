@@ -85,6 +85,23 @@ typedef struct H5D_chunk_rec_t {
 } H5D_chunk_rec_t;
 #endif
 
+#define COMP_INFO 512 /*!< Max buffer size for compression information.  */
+
+/*
+ * Hold mapping information for SDS objects.
+ */
+typedef struct {
+    char comp_info[COMP_INFO];  /*!< compression information */
+    int32 nblocks;              /*!< number of data blocks in dataset */
+    int32 *offsets;             /*!< offsets of data blocks */
+    int32 *lengths;             /*!< lengths (in bytes) of data blocks */
+    int32 id;                   /*!< SDS id  */
+    int32 data_type;            /*!< data type */
+    intn is_empty;              /*!< flag for checking empty  */
+    VOIDP fill_value;           /*!< fill value  */
+
+} SD_mapping_info_t;
+
 using namespace std;
 using namespace libdap;
 using namespace dmrpp;
@@ -1235,7 +1252,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 /**
  * @brief Iterate over all the variables in a DMR and get their chunk info
  *
- * @param file The open HDF5 file; passed through to get_variable_chunk_info
+ * @param file The open HDF4 file; passed through to get_variable_chunk_info
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
@@ -1314,8 +1331,30 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
     }
 }
 
-intn
-read_chunk(int sdsid, SD_mapping_info_t *map_info, int* index)
+int SDfree_mapping_info(SD_mapping_info_t  *map_info)
+{
+    intn  ret_value = SUCCEED;
+
+    /* nothing to free */
+    if (map_info == NULL)
+        return SUCCEED;
+
+    map_info->nblocks = 0;
+
+    if (map_info->offsets != NULL) {
+        HDfree(map_info->offsets);
+        map_info->offsets = NULL;
+    }
+
+    if (map_info->lengths) {
+        HDfree(map_info->lengths);
+        map_info->lengths = NULL;
+    }
+
+    return ret_value;
+}
+
+int read_chunk(int sdsid, SD_mapping_info_t *map_info, int* index)
 {
 
     intn  info_count = 0;
