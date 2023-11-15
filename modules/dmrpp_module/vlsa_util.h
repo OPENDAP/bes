@@ -34,7 +34,7 @@ std::string zlib_msg(int retval);
 std::string encode(const std::string &source_string);
 std::string decode(const std::string &encoded, uint64_t expected_size);
 
-void write_value(libdap::XMLWriter &xml, std::string &value, uint64_t dup_count);
+void write_value(libdap::XMLWriter &xml, const std::string &value, uint64_t dup_count);
 void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a);
 
 string read_value(const pugi::xml_node &v);
