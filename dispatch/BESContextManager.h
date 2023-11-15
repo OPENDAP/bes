@@ -33,7 +33,7 @@
 #ifndef I_BESContextManager_h
 #define I_BESContextManager_h 1
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <mutex>
 
@@ -56,19 +56,17 @@ private:
     static void initialize_instance();
     static void delete_instance();
 
-    std::map<std::string, std::string> _context_list;
+    std::unordered_map<std::string, std::string> _context_list;
 
 public:
     BESContextManager();
     virtual ~BESContextManager();
-
-    typedef std::map<std::string, std::string>::const_iterator Context_citer;
-    typedef std::map<std::string, std::string>::iterator Context_iter;
-
+    
     virtual void set_context(const std::string &name, const std::string &value);
     virtual void unset_context(const std::string &name);
     virtual std::string get_context(const std::string &name, bool &found);
     virtual int get_context_int(const std::string &name, bool &found);
+    virtual uint64_t get_context_uint64(const std::string &name, bool &found);
 
     virtual void list_context(BESInfo &info);
 

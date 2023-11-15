@@ -96,8 +96,7 @@ string BESContextManager::get_context(const string &name, bool &found)
 #if 1
     string ret = "";
     found = false;
-    BESContextManager::Context_iter i;
-    i = _context_list.find(name);
+    auto i = _context_list.find(name);
     if (i != _context_list.end()) {
         ret = (*i).second;
         found = true;
@@ -142,6 +141,28 @@ int BESContextManager::get_context_int(const string &name, bool &found)
     return val;
 }
 
+uint64_t BESContextManager::get_context_uint64(const string &name, bool &found)
+{
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
+    string value = BESContextManager::TheManager()->get_context(name, found);
+
+    if (!found || value.empty()) return 0;
+
+    char *endptr;
+    errno = 0;
+    uint64_t val = strtoull(value.c_str(), &endptr, /*int base*/10);
+    if (val == 0 && errno > 0) {
+        throw BESInternalError(string("Error reading an integer value for the context '") + name + "': " + strerror(errno),
+                               __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE, prolog << "name=\"" << name << "\", found=\"" << found << "\" value: \"" << val << "\"" << endl);
+    return val;
+}
+
+
+
+
 /** @brief Adds all context and their values to the given informational
  * object
  */
@@ -152,8 +173,8 @@ void BESContextManager::list_context(BESInfo &info)
     string name;
     string value;
     std::map<string, string> props;
-    BESContextManager::Context_citer i = _context_list.begin();
-    BESContextManager::Context_citer e = _context_list.end();
+    auto i = _context_list.begin();
+    auto e = _context_list.end();
     for (; i != e; i++) {
         props.clear();
         name = (*i).first;
@@ -179,8 +200,8 @@ void BESContextManager::dump(ostream &strm) const
     if (_context_list.size()) {
         strm << BESIndent::LMarg << "current context:" << endl;
         BESIndent::Indent();
-        BESContextManager::Context_citer i = _context_list.begin();
-        BESContextManager::Context_citer ie = _context_list.end();
+        auto i = _context_list.begin();
+        auto ie = _context_list.end();
         for (; i != ie; i++) {
             strm << BESIndent::LMarg << (*i).first << ": " << (*i).second << endl;
         }
