@@ -1241,35 +1241,6 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
  */
 void get_chunks_for_all_variables(int file, D4Group *group) {
 
-    // netCDF-4 variable can share the same name as a pure dimension name.
-    // When this case happens, the netCDF-4 will add "_nc4_non_coord_" to the variable name to
-    // distinguish the variable name from the correponding dimension name when storing in the HDF5.
-    // To emulate netCDF-4 model, the HDF5 handler will remove the "_nc4_non_coord_" from the variable in dmr.
-    // When obtaining this variable's information, we need to use the real HDF5 variable name.
-    // KY 2022-09-11
-    // When the above case occurs, a dimension name of this group must share with a variable name.
-    // So we will find these variables and put them into an unodered set.
-
-    unordered_set<string> nc4_non_coord_candidate;
-
-    // First obtain  dimension names.
-    unordered_set<string> dimname_list;
-    D4Dimensions *grp_dims = group->dims();
-
-    if (grp_dims) {
-        for (auto di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di)
-            dimname_list.insert((*di)->name());
-    }
-
-    if (!dimname_list.empty()) {
-        // Then find the nc4_non_coord candidate variables,
-        for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
-            if (dimname_list.find((*btp)->name())!=dimname_list.end())
-                nc4_non_coord_candidate.insert((*btp)->name());
-        }
-    }
-
-
     // variables in the group
 
     for(auto btp : group->variables()) {
@@ -1285,112 +1256,30 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
         // Look for the full name path for this variable
         // If one was not given via an attribute, use BaseType::FQN() which
         // relies on the variable's position in the DAP dataset hierarchy.
-        const D4Attribute *attr = d4_attrs->get("fullnamepath");
-        // I believe the logic is more clear in this way:
-        // If fullnamepath exists and the H5Dopen2 fails to open, it should throw an error.
-        // If fullnamepath doesn't exist, we should ignore the error as the reason described below:
-        // (However, we should suppress the HDF5 dataset open error message.)  KY 2019-12-02
-        // It's not an error if a DAP variable in a DMR from the hdf5 handler
-        // doesn't exist in the file _if_ there's no 'fullnamepath' because
-        // that variable was synthesized (likely for CF compliance)
-        int dataset = -1;
+        //
+        // TODO Find out if HDF4 has a similar issue to HDF5 where the variable FQN is
+        //  encoded as an attribute t=in the DMR.
+        const D4Attribute *fullnamepath_attr = d4_attrs->get("fullnamepath");
 
-        string FQN;
-        FQN = btp->FQN();
-        FQN = FQN.substr(1); //Take off the leading "/"
+        string FQN = btp->FQN();
 
-        const char* sdsName = FQN.c_str(); // Use the correct name
+        const char* sdsName = FQN.substr(1).c_str(); //Take off the leading "/", get as const char *
         int sdsIndex = SDnametoindex(file, sdsName);
-        cerr << "fqn: " << FQN << endl;
-        cerr << "sdsIndex: " << sdsIndex << endl;
+        VERBOSE(cerr << "fqn: " << FQN << endl);
+        VERBOSE(cerr << "sdsIndex: " << sdsIndex << endl);
 
-        if (attr) {
-
-            if (attr->num_values() == 1)
-                FQN = attr->value(0);
-            else
-                FQN = btp->FQN();
+        if (fullnamepath_attr) {
+            if (fullnamepath_attr->num_values() == 1)
+                FQN = fullnamepath_attr->value(0);
 
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
-            dataset = SDselect(file, sdsIndex);
+
+            int dataset = SDselect(file, sdsIndex);
             cerr << "bt variable name: " << FQN << endl;
             if (dataset < 0) {
                 throw BESInternalError("HDF4 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
             }
         }
-        else {
-            // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
-            // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
-            //
-            // A comment from an older version of the code:
-            // It's not an error if a DAP variable in a DMR from the hdf5 handler
-            // doesn't exist in the file _if_ there's no 'fullnamepath' because
-            // that variable was synthesized (likely for CF compliance)
-            HEprint(stderr, 0);
-            string FQN = btp->FQN();
-            if (nc4_non_coord_candidate.find(btp->name()) != nc4_non_coord_candidate.end()) {
-                string real_name_candidate = "_nc4_non_coord_" + btp->name();
-                size_t fqn_last_fslash_pos = btp->FQN().find_last_of("/");
-                string real_path_candidate = btp->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
-                dataset = SDselect(file, atoi(real_path_candidate.c_str()));
-                if (dataset == FAIL) {
-                    // Handle the case where the index is not valid or doesn't correspond to an SDS.
-                    cerr << ("The provided index does not correspond to a valid SDS.\n") << endl;
-                } else {
-                    // The index corresponds to a valid SDS, and sds_id contains the SDS identifier.
-                    cerr << ("SDS with index %d was successfully selected.\n", index) << endl;
-                    // You can further work with the selected SDS using sds_id.
-                }
-            }
-
-            VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
-            if (dataset < 0)  {
-                dataset = SDselect(file, 0);
-                if (dataset != FAIL) {
-                    cerr << "dataset success : " << dataset << endl << endl;
-                } else {
-                    cerr << (stderr, "Error selecting the dataset.\n") << endl;
-                    HEprint(stderr, 0);
-                }
-
-                if (dataset < 0) {
-                    VERBOSE(cerr << prolog << "WARNING: HDF4 dataset '" << FQN << "' cannot be opened." << endl);
-                    // throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
-                    continue;
-                }
-            }
-        }
-#if 0
-        try {
-            string msg;
-            if(is_unsupported_type(dataset, btp, msg)){
-                // @TODO What should really happen in this case?
-                //   - Throw an exception?
-                //   - Elide the variable from the dmr++?
-                //   - Demote dataset/var to Attribute?
-                //   - Mark the variable as "unsupported" so that it's metadata are transmitted but
-                //     it's data cannot be read.
-                throw UnsupportedTypeException(msg);
-            }
-
-            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
-            get_variable_chunk_info(dataset, btp);
-
-            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
-            add_string_array_info(dataset, btp);
-            H5Dclose(dataset);
-        }
-        catch (UnsupportedTypeException &uste){
-            // TODO - If we are going to elide a variable because it is an unsupported type, I think
-            //  that this would be the place to do it.
-            cerr << prolog << "Caught UnsupportedTypeException for variable " << btp->FQN() << " message: " << uste.what() << endl;
-            throw;
-        }
-        catch (...) {
-            H5Dclose(dataset);
-            throw;
-        }
-#endif
     }
 
     // all groups in the group
@@ -1437,7 +1326,7 @@ read_chunk(int sdsid, SD_mapping_info_t *map_info, int* index)
     /* Reset map_info. */
     /* HDmemset(map_info, 0, sizeof(SD_mapping_info_t)); */
 
-    /* Save SDS id since HDmemset reset it. map_info->id will be resued. */
+    /* Save SDS id since HDmemset reset it. map_info->id will be reused. */
     /* map_info->id = sdsid; */
 
     info_count = SDgetdatainfo(sdsid, index, 0, 0, NULL, NULL);
@@ -1449,21 +1338,17 @@ read_chunk(int sdsid, SD_mapping_info_t *map_info, int* index)
 
     if (info_count > 0) {
         map_info->nblocks = (int32) info_count;
-        map_info->offsets = (int32 *)
-                HDmalloc(sizeof(int32)*map_info->nblocks);
-        if(map_info->offsets == NULL){
-            cerr << ("HDmalloc() failed: Out of Memory");
+        map_info->offsets = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
+        if (map_info->offsets == NULL) {
+            cerr << "HDmalloc() failed: Out of Memory";
         }
-        map_info->lengths = (int32 *)
-                HDmalloc(sizeof(int32)*map_info->nblocks);
-        if(map_info->lengths == NULL){
-            cerr << ("HDmalloc() failed: Out of Memory");
+        map_info->lengths = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
+        if (map_info->lengths == NULL) {
+            cerr << "HDmalloc() failed: Out of Memory";
         }
 
-        ret_value = SDgetdatainfo(sdsid, index, 0, info_count,
-                                  map_info->offsets, map_info->lengths);
+        ret_value = SDgetdatainfo(sdsid, index, 0, info_count, map_info->offsets, map_info->lengths);
         return ret_value;
-
     }
 
     return ret_value;
