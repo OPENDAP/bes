@@ -328,7 +328,7 @@ public:
     }
 
     // Test the http_get() function that extends as needed a vector<char>
-    void http_get_test_2() {
+    void http_get_test_vector_char() {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf;
         curl::http_get(url, buf);
@@ -342,10 +342,25 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288);
     }
 
+    // Test the http_get() function that extends as needed a C++ std::string
+    void http_get_test_string() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        string str;
+        curl::http_get(url, str);
+
+        DBG(cerr << "str.data() = " << string(str.data()) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(str.data()).find("<Proxy *>") == 0);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
+                               string(str.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
+                               string::npos);
+        DBG(cerr << "str.size() = " << str.size() << endl);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288);
+    }
+
     // Test the http_get() function that extends as needed a vector<char>.
     // This what happens if the vector already holds data - it should be
     // retained.
-    void http_get_test_3() {
+    void http_get_test_vector_char_appended() {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf;
         const string twimc = "To whom it may concern:";
@@ -363,6 +378,25 @@ public:
         DBG(cerr << "twimc.size() = " << twimc.size() << endl);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288 + twimc.size());
+    }
+    void http_get_test_string_appended() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> str;
+        const string twimc = "To whom it may concern:";
+        str.resize(twimc.size());
+        memcpy(str.data(), twimc.c_str(), twimc.size());
+        curl::http_get(url, str);
+
+        DBG(cerr << "str.data() = " << string(str.data()) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>",
+                               string(str.data()).find("<Proxy *>") == twimc.size());
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
+                               string(str.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
+                               string::npos);
+
+        DBG(cerr << "twimc.size() = " << twimc.size() << endl);
+        DBG(cerr << "str.size() = " << str.size() << endl);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288 + twimc.size());
     }
 
     // This test is to an S3 bucket and must be signed. Use the ENV_CRED
@@ -456,8 +490,10 @@ public:
     CPPUNIT_TEST(sign_s3_url_test_2);
     CPPUNIT_TEST(sign_s3_url_test_3);
 
-    CPPUNIT_TEST(http_get_test_2);
-    CPPUNIT_TEST(http_get_test_3);
+    CPPUNIT_TEST(http_get_test_vector_char);
+    CPPUNIT_TEST(http_get_test_string);
+    CPPUNIT_TEST(http_get_test_vector_char_appended);
+    CPPUNIT_TEST(http_get_test_string_appended);
 
     CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
     CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);

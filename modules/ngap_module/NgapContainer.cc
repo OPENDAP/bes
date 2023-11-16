@@ -83,11 +83,6 @@ NgapContainer::ptr_duplicate() {
  */
 void NgapContainer::set_real_name_using_cmr_or_cache()
 {
-    BESDEBUG(MODULE, prolog << "BEGIN (obj_addr: "<< (void *) this << ")" << endl);
-    BESDEBUG(MODULE, prolog << "sym_name: "<< get_symbolic_name() << endl);
-    BESDEBUG(MODULE, prolog << "real_name: "<< get_real_name() << endl);
-    BESDEBUG(MODULE, prolog << "type: "<< get_container_type() << endl);
-
 #ifndef NDEBUG
     BESStopWatch besTimer;
     if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
@@ -127,8 +122,6 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
         NgapRequestHandler::d_cmr_mem_cache.put(url_key, real_name);
         BESDEBUG(NGAP_CACHE, prolog << "CMR Cache, cached translated URL: " << get_real_name() << endl);
     }
-
-    BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
 }
 
 /**
@@ -200,7 +193,11 @@ bool NgapContainer::inject_data_url() {
     return result;
 }
 
-void NgapContainer::get_dmrpp_from_cache_or_remote_source() {
+/**
+ * @brief Get the DMR++ from a remote source or a cache
+ * @param dmrpp_string Value-result parameter that will contain the DMR++ as a string
+ */
+void NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) const {
 #ifndef NDEBUG
     BESStopWatch besTimer;
     if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
@@ -208,14 +205,15 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source() {
     }
 #endif
 
-    string dmrpp_string;
     if (NgapRequestHandler::d_use_dmrpp_cache) {
         if (NgapRequestHandler::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
             // set_container_type() because access() is called from both the framework and the DMR++ handler
             BESDEBUG(NGAP_CACHE, prolog << "Memory Cache hit, DMR++: " << get_real_name() << endl);
+#if 0
             set_container_type("dmrpp");
             set_attributes("as-string");
-            return dmrpp_string;
+#endif
+            return;
         }
         else {
             BESDEBUG(NGAP_CACHE, prolog << "Memory Cache miss, DMR++: " << get_real_name() << endl);
@@ -232,9 +230,11 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source() {
             if (file_to_string(item.get_fd(), dmrpp_string)) {
                 // put it in the memory cache
                 NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
+#if 0
                 set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
                 set_container_type("dmrpp");
-                return dmrpp_string;
+#endif
+                return;
             }
             else {
                 ERROR_LOG("NgapContainer::access() - failed to read DMR++ from file cache");
@@ -259,6 +259,7 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source() {
     }
 #endif
 
+    // TODO Use the new curl::http_get(dmrpp_url_str, string) method. jhrg 11/16/23)
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);
     copy(buffer.begin(), buffer.end(), back_inserter(dmrpp_string));
@@ -285,7 +286,6 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source() {
             ERROR_LOG("NgapContainer::access() - failed to put DMR++ in file cache");
         }
     }
-
 }
 
 /**
@@ -299,10 +299,19 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source() {
  * @throws BESError if there is a problem making the remote request
  */
 string NgapContainer::access() {
-    BESDEBUG(MODULE, prolog << "BEGIN  (obj_addr: "<< (void *) this << ")" << endl);
-
     set_real_name_using_cmr_or_cache();
 
+    string dmrpp_string;
+    get_dmrpp_from_cache_or_remote_source(dmrpp_string);
+
+    set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
+    // Originally, this was either hard-coded (as it is now) or was set using the 'extension'
+    // on the URL. But it's always a DMR++. jhrg 11/16/23
+    set_container_type("dmrpp");
+    return dmrpp_string;
+}
+
+#if 0
 #ifndef NDEBUG
     BESStopWatch besTimer;
     if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
@@ -399,6 +408,7 @@ string NgapContainer::access() {
 
     return dmrpp_string;    // this should return the dmr++ file name from the NgapCache
 }
+#endif
 
 /** @brief dumps information about this object
  *

@@ -1153,6 +1153,15 @@ static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *d
     return nbytes;
 }
 
+static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
+    auto str = reinterpret_cast<string *>(data);
+    size_t nbytes = size * nmemb;
+    size_t current_size = str->size();
+    str->resize(current_size + nbytes);
+    memcpy((void *)(str->data() + current_size), buffer, nbytes);
+    return nbytes;
+}
+
 /**
  * Dereference the target URL and put the response in response_buf
  *
@@ -1189,6 +1198,54 @@ void http_get(const string &target_url, vector<char> &buf) {
 
         // Pass all data to the 'write_data' function --------------------------------------------------------------
         res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, vector_write_data);
+        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
+
+        // Pass this to write_data as the fourth argument ----------------------------------------------------------
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&buf));
+        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer.data(), __FILE__, __LINE__);
+
+        unset_error_buffer(ceh);
+
+        super_easy_perform(ceh);
+
+        if (request_headers)
+            curl_slist_free_all(request_headers);
+
+        curl_easy_cleanup(ceh);
+
+        buf.push_back('\0');    // add a trailing null byte
+    }
+    catch (...) {
+        if (request_headers)
+            curl_slist_free_all(request_headers);
+        if (ceh)
+            curl_easy_cleanup(ceh);
+        throw;
+    }
+}
+
+void http_get(const string &target_url, string &buf) {
+    vector<char> error_buffer(CURL_ERROR_SIZE);
+    CURL *ceh = nullptr;     ///< The libcurl handle object.
+    CURLcode res;
+
+    curl_slist *request_headers = nullptr;
+    // Add the authorization headers
+    request_headers = add_edl_auth_headers(request_headers);
+
+    shared_ptr<http::url> url(new http::url(target_url));
+    request_headers = sign_url_for_s3_if_possible(url, request_headers);
+
+    try {
+        ceh = curl::init(target_url, request_headers, nullptr);
+        if (!ceh)
+            throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
+
+        // Error Buffer (for use during this setup) ----------------------------------------------------------------
+        set_error_buffer(ceh, error_buffer.data());
+
+        // Pass all data to the 'write_data' function --------------------------------------------------------------
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, string_write_data);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
 
         // Pass this to write_data as the fourth argument ----------------------------------------------------------
