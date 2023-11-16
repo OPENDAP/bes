@@ -228,7 +228,7 @@ string decode(const string &encoded, uint64_t expected_size) {
  * @param value The string value to add to the vlsa
  * @param dup_count The number of consecutive duplicates for this value in the source data.
  */
-void write_value(libdap::XMLWriter &xml, const std::string &value, uint64_t dup_count)
+void write_value(const libdap::XMLWriter &xml, const std::string &value, uint64_t dup_count)
 {
 
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) DMRPP_VLSA_VALUE_ELEMENT) < 0) {
@@ -278,7 +278,7 @@ void write_value(libdap::XMLWriter &xml, const std::string &value, uint64_t dup_
 
 }
 
-void write(libdap::XMLWriter &xml, const vector<string> &values)
+void write(const libdap::XMLWriter &xml, const vector<string> &values)
 {
 
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *)DMRPP_VLSA_ELEMENT) < 0) {
