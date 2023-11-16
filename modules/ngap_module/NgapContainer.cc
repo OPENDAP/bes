@@ -223,7 +223,7 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
     // If found, put it in the memory cache and return it as a string.
     if (NgapRequestHandler::d_use_dmrpp_cache) {
         FileCache::Item item;
-        if (NgapRequestHandler::d_dmrpp_file_cache.get(get_real_name(), item)) { // got it
+        if (NgapRequestHandler::d_dmrpp_file_cache.get(FileCache::hash_key(get_real_name()), item)) { // got it
             // read data from the file into the string.
             BESDEBUG(NGAP_CACHE, prolog << "File Cache hit, Memory Cache miss, DMR++: " << get_real_name() << endl);
             if (file_to_string(item.get_fd(), dmrpp_string)) {
@@ -267,12 +267,14 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
         filter_response(content_filters, dmrpp_string);
     }
 
+    // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
+    // The memory cache is for use by this process, the file cache for other processes/VMs
     if (NgapRequestHandler::d_use_dmrpp_cache) {
         NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
         BESDEBUG(NGAP_CACHE, prolog << "Memory Cache, cached DMR++: " << get_real_name() << endl);
 
         FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
-        if (NgapRequestHandler::d_dmrpp_file_cache.put(get_real_name(), item)) {
+        if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
             // TODO do this in a child thread someday. jhrg 11/14/23
             if (write(item.get_fd(), dmrpp_string.data(), dmrpp_string.size()) != dmrpp_string.size()) {
                 ERROR_LOG("NgapContainer::access() - failed to write DMR++ to file cache");
