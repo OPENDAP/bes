@@ -1393,7 +1393,7 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
             VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
             VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
 
-            dc->add_chunk("LE", map_info.lengths[i], map_info.offsets[i], position_in_array);
+            dc->add_chunk("BE", map_info.lengths[i], map_info.offsets[i], position_in_array);
         }
 #if 0
         if (fullnamepath_attr) {
