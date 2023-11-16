@@ -196,7 +196,7 @@ string decode(const string &encoded, uint64_t expected_size) {
         msg << "                 retval: " << retval << " (" << zlib_msg(retval) << ")\n";
         msg << "            result_size: " << result_size << "\n";
         msg << "          expected_size: " << expected_size << "\n";
-        msg << "    result_bytes.size(): " << expected_size << "\n";
+        msg << "    result_bytes.size(): " << result_bytes.size() << "\n";
 
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }

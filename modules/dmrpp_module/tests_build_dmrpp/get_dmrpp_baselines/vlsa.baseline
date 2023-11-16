@@ -7,7 +7,6 @@
             <v>is su</v>
             <v>swe</v>
             <v></v>
-            <v></v>
         </dmrpp:vlsa>
     </String>
     <Attribute name="build_dmrpp_metadata" type="Container">

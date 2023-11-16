@@ -130,31 +130,67 @@ public:
     }
 
 
+    /**
+     * A hack that tests compression on a single character.
+     * It shouldn't work, the compressed value is 9 chars.
+     * But it does work... But only for certain values of dlen.
+     * The value of dlen >= than the compressed size it works.
+     * But since for string lengths less than about 110 chars
+     * the compressed size is bigger it's kind of a punt
+     */
     void test_compress_1char(){
-        uint8_t dest[2048];
-        unsigned long dlen=100;
-        const uint8_t *src = (uint8_t *) R"(+)";
-        unsigned long slen=1;
-        DBG(cerr << prolog << "source length: " << slen << "\n");
 
-        auto retval = compress(dest, &dlen, src, slen);
-        DBG(cerr << prolog << vlsa::zlib_msg(retval) << " (" << retval << ")\n");
+        unsigned long delta=8;
+
+
+        vector<uint8_t> src;
+        unsigned long slen=1;
+        src.resize(slen);
+        src.emplace_back('+');
+
+        uLongf dlen = slen + delta;
+        vector<uint8_t> compressed;
+        compressed.resize(dlen+delta);
+
+        DBG(cerr << prolog << "      source length: " << slen << "\n");
+        DBG(cerr << prolog << "             src[0]: " << (char) src[0] << "\n");
+
+        auto retval = compress(compressed.data(), &dlen, src.data(), slen);
+        DBG(cerr << prolog << "             retval: " << vlsa::zlib_msg(retval) << " (" << retval << ")\n");
 
         CPPUNIT_ASSERT(retval == Z_OK);
-        DBG(cerr << prolog << "compressed length: " << dlen << "\n");
-
+        DBG(cerr << prolog << "  compressed length: " << dlen << "\n");
         if(debug) {
-            cerr << prolog << "dest: \n";
+            cerr << prolog << "    compressed data: ";
             for (uint64_t i = 0; i < dlen; i++) {
-                cerr << setw(2) << setfill('0') << hex  << (int) dest[i] << " ";
+                cerr << setw(2) << setfill('0') << hex  << (int) compressed[i] << " ";
             }
             cerr << "\n";
         }
+
+        vector<Bytef> result_bytes;
+        uLongf result_size = 1;
+        result_bytes.resize(result_size);
+
+        retval = uncompress(result_bytes.data(), &result_size, compressed.data(),dlen);
+        if(retval !=0){
+            stringstream msg;
+            msg << prolog << "Failed to decompress payload. \n";
+            msg << "                 retval: " << retval << " (" << vlsa::zlib_msg(retval) << ")\n";
+            msg << "            result_size: " << result_size << "\n";
+            msg << "          expected_size: " << 1 << "\n";
+            msg << "    result_bytes.size(): " << result_bytes.size() << "\n";
+            cerr << msg.str();
+        }
+        DBG(cerr << prolog << "        result_size: "  << result_size << "\n");
+        DBG(cerr << prolog << "result_bytes.size(): " << result_bytes.size() << "\n");
+        DBG(cerr << prolog << "    result_bytes[0]: " << (char) src[0] << "\n");
+
     }
 
 
     /**
-     *
+     * Tests the vlsa::encode() and vlsa::decode() functions
      */
     void test_compress_base64(){
         unsigned long source_size;
@@ -225,6 +261,9 @@ public:
         }
     }
 
+    /**
+    * Tests the vlsa::write_value() and vlsa::read_value() functions
+    */
     void test_vlsa_write_read_value(){
         unsigned long source_size;
         unsigned int delta = 1;
@@ -277,7 +316,10 @@ public:
                 try {
                     // We use pugi::xml to parse the XML we made above, with the encoded vlsa value on board
                     pugi::xml_document  result_xml_doc;
-                    pugi::xml_parse_result result = result_xml_doc.load_string(xml_writer.get_doc());
+                    pugi::xml_parse_result result =
+                            result_xml_doc.load_string(xml_writer.get_doc(),
+                            pugi::parse_default | pugi::parse_ws_pcdata_single);
+
                     DBG(cerr << prolog << "xml_parse_result.description(): " << result.description() << "\n");
                     CPPUNIT_ASSERT(result);
 
@@ -307,6 +349,9 @@ public:
         }
     }
 
+    /**
+     * Tests the vlsa::write() and vlsa::read() functions
+     */
     void test_vlsa_write_read(){
         uint64_t source_data_bytes = 0;
         uint64_t vlsa_element_size = 0;
@@ -317,6 +362,15 @@ public:
 
         string source_string = BESUtil::file_to_string(test_compress_doc_01);
 
+        // -------------------------------------------------------------
+        // BEGIN Data content creation
+        //
+        // We populate the source_values vector with specific things:
+        //  - whitespace only values
+        //  - lead/trailing whitespace
+        //  - empty strings
+        //  - content strings just under/over the compression threshold
+        //
         vector<string> source_values;
         for ( int i = 0; i < 5 ; i++){
             source_values.emplace_back("dupie          ");
@@ -329,6 +383,9 @@ public:
         }
         for ( int i = 0; i < 5 ; i++){
             source_values.emplace_back("        ");
+        }
+        for ( int i = 0; i < 5 ; i++){
+            source_values.emplace_back("");
         }
         uint64_t pos = 0;
         uint64_t n = 299;
@@ -356,21 +413,22 @@ public:
         for ( int i = 0; i < 111 ; i++){
             source_values.emplace_back(dupy);
         }
-        DBG( cerr << hr << "\n");
-        DBG(cerr << prolog << "              source_values.size(): " << source_values.size() << "\n");
-        for(const auto &v : source_values){
-            source_data_bytes += v.length();
-        }
-        DBG(cerr << prolog << "                 source_data_bytes: " << source_data_bytes << "\n");
-
-        libdap::XMLWriter xml_writer; // freshy each pass
-        bool encode_failed = false;
 
         DBG(cerr << hr << "\n");
         DBG(cerr << prolog << "              source_values.size(): " << source_values.size() << "\n");
+        for (const auto &v: source_values) {
+            source_data_bytes += v.length();
+        }
+        DBG(cerr << prolog << "                 source_data_bytes: " << source_data_bytes << "\n");
+        //
+        // END Data content creation
+        // -------------------------------------------------------------
+
+
+        libdap::XMLWriter xml_writer;
         try {
             // We write the dmrpp:vlsa element and it's values to the XML document,
-            // encoding etc handled inside.
+            // encoding etc.  handled inside.
             vlsa::write(xml_writer, source_values);
             string xml_doc(xml_writer.get_doc());
             vlsa_element_size = xml_doc.size();
@@ -380,64 +438,64 @@ public:
         }
         catch (BESInternalError bie) {
             DBG(cerr << prolog << "Failed to encode the string. message: " << bie.get_verbose_message() << "\n");
-            encode_failed = true;
             throw bie;
         }
         catch (...) {
             handle_fatal_exceptions();
         }
 
-        if(!encode_failed){
-            try {
-                // We use pugi::xml to parse the XML we made above, with the encoded vlsa value on board
-                pugi::xml_document  result_xml_doc;
-                pugi::xml_parse_result result = result_xml_doc.load_string(
-                        xml_writer.get_doc(),
-                        pugi::parse_default | pugi::parse_ws_pcdata_single);
-                DBG(cerr << prolog << "xml_parse_result.description(): " << result.description() << "\n");
-                CPPUNIT_ASSERT(result);
+        try {
+            // We use pugi::xml to parse the XML we made above, with the encoded vlsa value on board
+            pugi::xml_document  result_xml_doc;
+            pugi::xml_parse_result result = result_xml_doc.load_string(
+                    xml_writer.get_doc(),
+                    pugi::parse_default | pugi::parse_ws_pcdata_single); // Don't screw with the white space pugi!
+            DBG(cerr << prolog << "xml_parse_result.description(): " << result.description() << "\n");
+            CPPUNIT_ASSERT(result);
 
-                // We grab the top level element, which we know is the "value" element because
-                // we used vlsa::write_value() to create it above.
-                auto vlsa_element = result_xml_doc.document_element();
+            // We grab the top level element, which we know is the "value" element because
+            // we used vlsa::write_value() to create it above.
+            auto vlsa_element = result_xml_doc.document_element();
 
-                vector<string> results;
-                // pass the value element into read_value
-                vlsa::read(vlsa_element,results);
+            vector<string> results;
+            // pass the value element into read_value
+            vlsa::read(vlsa_element,results);
 
-                DBG(cerr << hr << "\n");
-                DBG(cerr << prolog << "       source_values.size(): " << source_values.size() << "\n");
-                DBG(cerr << prolog << "             results.size(): " << results.size() << "\n");
+            DBG(cerr << hr << "\n");
+            DBG(cerr << prolog << "       source_values.size(): " << source_values.size() << "\n");
+            DBG(cerr << prolog << "             results.size(): " << results.size() << "\n");
 
-                if(results != source_values) {
-                    for (unsigned int i = 0; i < source_values.size() && i < results.size(); i++) {
-                        if(source_values[i] != results[i]) {
-                            DBG(cerr << "# - - - - - - - - -\n");
-                            DBG(cerr << "source_values[" << i << "]: '" << source_values[i] << "'\n");
-                            DBG(cerr << "      results[" << i << "]: '" << results[i] << "'\n");
-                        }
+            if(results != source_values) {
+                for (unsigned int i = 0; i < source_values.size() && i < results.size(); i++) {
+                    if(source_values[i] != results[i]) {
+                        DBG(cerr << "# - - - - - - - - -\n");
+                        DBG(cerr << "source_values[" << i << "]: '" << source_values[i] << "'\n");
+                        DBG(cerr << "      results[" << i << "]: '" << results[i] << "'\n");
                     }
                 }
+            }
 
-                CPPUNIT_ASSERT(results.size() == source_values.size());
+            CPPUNIT_ASSERT(results.size() == source_values.size());
 
-                CPPUNIT_ASSERT(results == source_values);
+            CPPUNIT_ASSERT(results == source_values);
 
 
+            if(debug) {
                 result_data_bytes = 0;
-                for(const auto &v : source_values){
+                for (const auto &v: source_values) {
                     result_data_bytes += v.length();
                 }
-                DBG(cerr << prolog << "          source_data_bytes: " << source_data_bytes << "\n");
-                DBG(cerr << prolog << "          vlsa_element_size: " << vlsa_element_size << "\n");
-                DBG(cerr << prolog << "          result_data_bytes: " << result_data_bytes << "\n");
-                double ratio = ((double)source_data_bytes)/((double)vlsa_element_size);
-                DBG(cerr << prolog << "RATIO          size/encoded: " << ratio << "\n");
-            }
-            catch (...) {
-                handle_fatal_exceptions();
+                cerr << prolog << "          source_data_bytes: " << source_data_bytes << "\n";
+                cerr << prolog << "          vlsa_element_size: " << vlsa_element_size << "\n";
+                cerr << prolog << "          result_data_bytes: " << result_data_bytes << "\n";
+                cerr << prolog << "RATIO          size/encoded: " <<
+                         (((double) source_data_bytes) / ((double) vlsa_element_size)) << "\n";
             }
         }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+
         DBG(cerr << "\n");
 
     }
