@@ -27,6 +27,8 @@ FONc.Tempdir = /tmp/hyrax_fonc
 FONc.Reference = http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcdf
 
 # The default values for these keys
+# When the direct IO feature is used with the dmrpp module, the chunk and compression parameters 
+# will be passed from the original HDF5 files.
 FONc.UseCompression = true
 FONc.ChunkSize = 4096
 FONc.ClassicModel = false
