@@ -152,7 +152,80 @@ public:
         }
     }
 
-    void test_vlsa_api(){
+
+    /**
+     *
+     */
+    void test_compress_base64(){
+        unsigned long source_size;
+        uint64_t start = 1;
+        uint64_t stop = 1000;
+        unsigned int delta = 1;
+
+        DBG(cerr << hr << "\n");
+
+        DBG(cerr << prolog << "Testing " << test_compress_doc_01 << "\n");
+
+        string source_string = BESUtil::file_to_string(test_compress_doc_01);
+        source_size = source_string.size();
+        DBG(cerr << prolog << "source_string.size() " << dec << source_size << "\n");
+        DBG(cout << "sample_string.size()" << ", " << "encoded.size()" << "\n");
+
+        for(uint64_t sample_size = start;  sample_size <= stop  && sample_size <= source_size ; sample_size += delta){
+            libdap::XMLWriter xml; // freshy each pass
+            bool encode_failed = false;
+            string encoded;
+            string decoded;
+
+            DBG(cerr << hr << "\n");
+
+            auto sample_string = source_string.substr(0,sample_size);
+            DBG(cerr << prolog << "sample_string.size() " << sample_string.size() << "\n");
+            try {
+                encoded = vlsa::encode(sample_string);
+                //DBG(cerr << prolog << "encoded: '" << encoded << "'\n");
+            }
+            catch (BESInternalError bie) {
+                DBG(cerr << prolog << "Failed to encode the string. message: " << bie.get_verbose_message() << "\n");
+                encode_failed = true;
+            }
+            catch (...) {
+                handle_fatal_exceptions();
+            }
+
+            if(!encode_failed){
+                try {
+                    decoded = vlsa::decode(encoded, sample_string.size());
+                    //DBG(cerr << prolog << "decoded: '" << decoded << "'\n");
+
+                    if(sample_string == decoded){
+                        DBG(cerr << prolog << "SUCCESS.\n");
+                        DBG( cout << sample_string.size() << ", " << encoded.size() << "\n" );
+                    }
+                    else {
+                        DBG(cerr << prolog << "TRANSFORMATION FAILED.\n");
+                        DBG(cerr << prolog << "baseline: '");
+                        DBG(cerr << sample_string << "'\n");
+                        DBG(cerr << prolog << " decoded: '");
+                        DBG(cerr << decoded << "'\n");
+                    }
+                }
+                    //   catch (BESInternalError bie) {
+                    //     DBG(cerr << prolog << "Failed to decode the string. message: \n" << bie.get_verbose_message() << "\n");
+                    // }
+                catch (...) {
+                    handle_fatal_exceptions();
+                }
+
+            }
+
+
+            //CPPUNIT_ASSERT( decoded == sample_string);
+            DBG(cerr << "\n");
+        }
+    }
+
+    void test_vlsa_write_read_value(){
         unsigned long source_size;
         unsigned int delta = 1;
         uint64_t start = 1;
@@ -234,82 +307,147 @@ public:
         }
     }
 
-    /**
-     *
-     */
-    void test_compress_base64(){
-        unsigned long source_size;
-        uint64_t start = 1;
-        uint64_t stop = 1000;
-        unsigned int delta = 1;
+    void test_vlsa_write_read(){
+        uint64_t source_data_bytes = 0;
+        uint64_t vlsa_element_size = 0;
+        uint64_t result_data_bytes = 0;
 
         DBG(cerr << hr << "\n");
-
         DBG(cerr << prolog << "Testing " << test_compress_doc_01 << "\n");
 
         string source_string = BESUtil::file_to_string(test_compress_doc_01);
-        source_size = source_string.size();
-        DBG(cerr << prolog << "source_string.size() " << dec << source_size << "\n");
-        DBG(cout << "sample_string.size()" << ", " << "encoded.size()" << "\n");
 
-        for(uint64_t sample_size = start;  sample_size <= stop  && sample_size <= source_size ; sample_size += delta){
-            libdap::XMLWriter xml; // freshy each pass
-            bool encode_failed = false;
-            string encoded;
-            string decoded;
+        vector<string> source_values;
+        for ( int i = 0; i < 5 ; i++){
+            source_values.emplace_back("dupie          ");
+        }
+        for ( int i = 0; i < 5 ; i++){
+            source_values.emplace_back("        dupie          ");
+        }
+        for ( int i = 0; i < 5 ; i++){
+            source_values.emplace_back("        dupie");
+        }
+        for ( int i = 0; i < 5 ; i++){
+            source_values.emplace_back("        ");
+        }
+        uint64_t pos = 0;
+        uint64_t n = 299;
+        source_values.emplace_back(source_string.substr(pos,n));
 
-            DBG(cerr << hr << "\n");
+        pos += n;
+        n = 333;
+        string encoded_dups = source_string.substr(pos,n);
+        source_values.emplace_back(encoded_dups);
+        source_values.emplace_back(encoded_dups);
+        source_values.emplace_back(encoded_dups);
 
-            auto sample_string = source_string.substr(0,sample_size);
-            DBG(cerr << prolog << "sample_string.size() " << sample_string.size() << "\n");
+        pos += n;
+        n=3597;
+        source_values.emplace_back(source_string.substr(pos,n));
+        pos += n;
+        n=167;
+        source_values.emplace_back(source_string.substr(pos,n));
+        for ( int i = 0; i < 4 ; i++){
+            source_values.emplace_back("dupie dupie doo two");
+        }
+        pos += n;
+        n=2;
+        string dupy = source_string.substr(pos,n);
+        for ( int i = 0; i < 111 ; i++){
+            source_values.emplace_back(dupy);
+        }
+        DBG( cerr << hr << "\n");
+        DBG(cerr << prolog << "              source_values.size(): " << source_values.size() << "\n");
+        for(const auto &v : source_values){
+            source_data_bytes += v.length();
+        }
+        DBG(cerr << prolog << "                 source_data_bytes: " << source_data_bytes << "\n");
+
+        libdap::XMLWriter xml_writer; // freshy each pass
+        bool encode_failed = false;
+
+        DBG(cerr << hr << "\n");
+        DBG(cerr << prolog << "              source_values.size(): " << source_values.size() << "\n");
+        try {
+            // We write the dmrpp:vlsa element and it's values to the XML document,
+            // encoding etc handled inside.
+            vlsa::write(xml_writer, source_values);
+            string xml_doc(xml_writer.get_doc());
+            vlsa_element_size = xml_doc.size();
+            DBG(cerr << prolog << "          xml_writer.get_doc(): \n\n" << xml_doc << "\n");
+            DBG(cerr << prolog << "                  XML doc size: " << vlsa_element_size << "\n");
+
+        }
+        catch (BESInternalError bie) {
+            DBG(cerr << prolog << "Failed to encode the string. message: " << bie.get_verbose_message() << "\n");
+            encode_failed = true;
+            throw bie;
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+
+        if(!encode_failed){
             try {
-                encoded = vlsa::encode(sample_string);
-                //DBG(cerr << prolog << "encoded: '" << encoded << "'\n");
-            }
-            catch (BESInternalError bie) {
-                DBG(cerr << prolog << "Failed to encode the string. message: " << bie.get_verbose_message() << "\n");
-                encode_failed = true;
+                // We use pugi::xml to parse the XML we made above, with the encoded vlsa value on board
+                pugi::xml_document  result_xml_doc;
+                pugi::xml_parse_result result = result_xml_doc.load_string(
+                        xml_writer.get_doc(),
+                        pugi::parse_default | pugi::parse_ws_pcdata_single);
+                DBG(cerr << prolog << "xml_parse_result.description(): " << result.description() << "\n");
+                CPPUNIT_ASSERT(result);
+
+                // We grab the top level element, which we know is the "value" element because
+                // we used vlsa::write_value() to create it above.
+                auto vlsa_element = result_xml_doc.document_element();
+
+                vector<string> results;
+                // pass the value element into read_value
+                vlsa::read(vlsa_element,results);
+
+                DBG(cerr << hr << "\n");
+                DBG(cerr << prolog << "       source_values.size(): " << source_values.size() << "\n");
+                DBG(cerr << prolog << "             results.size(): " << results.size() << "\n");
+
+                if(results != source_values) {
+                    for (unsigned int i = 0; i < source_values.size() && i < results.size(); i++) {
+                        if(source_values[i] != results[i]) {
+                            DBG(cerr << "# - - - - - - - - -\n");
+                            DBG(cerr << "source_values[" << i << "]: '" << source_values[i] << "'\n");
+                            DBG(cerr << "      results[" << i << "]: '" << results[i] << "'\n");
+                        }
+                    }
+                }
+
+                CPPUNIT_ASSERT(results.size() == source_values.size());
+
+                CPPUNIT_ASSERT(results == source_values);
+
+
+                result_data_bytes = 0;
+                for(const auto &v : source_values){
+                    result_data_bytes += v.length();
+                }
+                DBG(cerr << prolog << "          source_data_bytes: " << source_data_bytes << "\n");
+                DBG(cerr << prolog << "          vlsa_element_size: " << vlsa_element_size << "\n");
+                DBG(cerr << prolog << "          result_data_bytes: " << result_data_bytes << "\n");
+                double ratio = ((double)source_data_bytes)/((double)vlsa_element_size);
+                DBG(cerr << prolog << "RATIO          size/encoded: " << ratio << "\n");
             }
             catch (...) {
                 handle_fatal_exceptions();
             }
-
-            if(!encode_failed){
-                try {
-                    decoded = vlsa::decode(encoded, sample_string.size());
-                    //DBG(cerr << prolog << "decoded: '" << decoded << "'\n");
-
-                    if(sample_string == decoded){
-                        DBG(cerr << prolog << "SUCCESS.\n");
-                        DBG( cout << sample_string.size() << ", " << encoded.size() << "\n" );
-                    }
-                    else {
-                        DBG(cerr << prolog << "TRANSFORMATION FAILED.\n");
-                        DBG(cerr << prolog << "baseline: '");
-                        DBG(cerr << sample_string << "'\n");
-                        DBG(cerr << prolog << " decoded: '");
-                        DBG(cerr << decoded << "'\n");
-                    }
-                }
-                    //   catch (BESInternalError bie) {
-                    //     DBG(cerr << prolog << "Failed to decode the string. message: \n" << bie.get_verbose_message() << "\n");
-                    // }
-                catch (...) {
-                    handle_fatal_exceptions();
-                }
-
-            }
-
-
-            //CPPUNIT_ASSERT( decoded == sample_string);
-            DBG(cerr << "\n");
         }
+        DBG(cerr << "\n");
+
     }
+
 
 CPPUNIT_TEST_SUITE( vlsa_util_test );
 
         CPPUNIT_TEST(test_compress_1char);
-        CPPUNIT_TEST(test_vlsa_api);
+        CPPUNIT_TEST(test_vlsa_write_read_value);
+        CPPUNIT_TEST(test_vlsa_write_read);
         CPPUNIT_TEST(test_compress_base64);
 
     CPPUNIT_TEST_SUITE_END();

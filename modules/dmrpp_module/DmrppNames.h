@@ -63,6 +63,7 @@
 #define DMRPP_VLSA_ELEMENT "dmrpp:vlsa"
 #define DMRPP_VLSA_VALUE_ELEMENT "v"
 #define DMRPP_VLSA_VALUE_SIZE_ATTR "s"
+#define DMRPP_VLSA_VALUE_COUNT_ATTR "c"
 
 
 #endif // E_DmrppNames_H

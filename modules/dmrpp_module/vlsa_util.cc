@@ -56,9 +56,6 @@ using namespace std;
 
 namespace vlsa {
 
-string vlsa_element_name(DMRPP_VLSA_ELEMENT);
-string vlsa_value_element_name(DMRPP_VLSA_VALUE_ELEMENT);
-string vlsa_value_size_attr_name(DMRPP_VLSA_VALUE_SIZE_ATTR);
 
 /**
  * @brief Maps zlib return code to a string value;
@@ -234,13 +231,13 @@ string decode(const string &encoded, uint64_t expected_size) {
 void write_value(libdap::XMLWriter &xml, const std::string &value, uint64_t dup_count)
 {
 
-    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) vlsa_value_element_name.c_str()) < 0) {
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) DMRPP_VLSA_VALUE_ELEMENT) < 0) {
         stringstream msg;
-        msg <<  prolog << "Could not begin '" + vlsa_value_element_name + "' element.";
+        msg <<  prolog << "Could not begin '" << DMRPP_VLSA_VALUE_ELEMENT << "' element.";
         throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
     if (dup_count > 1) {
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "c",
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) DMRPP_VLSA_VALUE_COUNT_ATTR,
                                         (const xmlChar *) to_string(dup_count).c_str()) < 0) {
             stringstream msg;
             msg << prolog << "Could not write '" << "c" << "' (size) attribute.";
@@ -250,44 +247,43 @@ void write_value(libdap::XMLWriter &xml, const std::string &value, uint64_t dup_
 
     if(value.size() > VLSA_VALUE_COMPRESSION_THRESHOLD) {
 
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) vlsa_value_size_attr_name.c_str(),
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) DMRPP_VLSA_VALUE_SIZE_ATTR,
                                         (const xmlChar *) to_string(value.size()).c_str()) < 0) {
             stringstream msg;
-            msg << prolog << "Could not write '" << vlsa_value_size_attr_name << "' (size) attribute.";
+            msg << prolog << "Could not write '" << DMRPP_VLSA_VALUE_SIZE_ATTR << "' (size) attribute.";
             throw BESInternalError( msg.str(), __FILE__, __LINE__);
         }
         string encoded = encode(value);
 
         if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) encoded.c_str()) < 0) {
             stringstream msg;
-            msg << prolog <<  "Could not write text into element '" << vlsa_value_element_name << "'";
+            msg << prolog <<  "Could not write text into element '" << DMRPP_VLSA_VALUE_ELEMENT << "'";
             throw BESInternalError( msg.str(), __FILE__, __LINE__);
         }
     }
     else {
         if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) value.c_str()) < 0) {
             stringstream msg;
-            msg << prolog <<  "Could not write text into element '"<< vlsa_value_element_name << "'";
+            msg << prolog <<  "Could not write text into element '"<< DMRPP_VLSA_VALUE_ELEMENT << "'";
             throw BESInternalError( msg.str(), __FILE__, __LINE__);
         }
     }
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0) {
         stringstream msg;
-        msg << prolog << "Could not end '" + vlsa_value_element_name + "' element";
+        msg << prolog << "Could not end '" << DMRPP_VLSA_VALUE_ELEMENT << "' element";
         throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
 
 
 }
 
-void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
+void write(libdap::XMLWriter &xml, const vector<string> &values)
 {
-    auto values = a.get_str();
 
-    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) vlsa_element_name.c_str()) < 0) {
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *)DMRPP_VLSA_ELEMENT) < 0) {
         stringstream msg;
-        msg << prolog << "Could not write " << vlsa_element_name << " element";
+        msg << prolog << "Could not write " << DMRPP_VLSA_VALUE_ELEMENT << " element";
         throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
 
@@ -295,26 +291,37 @@ void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
     bool not_first = false;
     uint64_t dup_count  = 1;
     for(const auto &value : values) {
-        if(not_first && value == last_value) {
-            dup_count++;
-        }
-        else {
-            cerr << "value: '" << value << "' dup_count: " << dup_count << endl;
-            vlsa::write_value(xml, value, dup_count);
-            dup_count = 1;
+        if(not_first) {
+            if(value == last_value) {
+                dup_count++;
+            }
+            else {
+                BESDEBUG(VLSA, prolog << "value: '" << value << "' dup_count: " << dup_count << endl);
+                vlsa::write_value(xml, last_value, dup_count);
+                dup_count = 1;
+            }
         }
         last_value = value;
         not_first = true;
     }
-    cerr << "last_value: '" << last_value << "' dup_count: " << dup_count << endl;
+    BESDEBUG(VLSA, prolog <<  "last_value: '" << last_value << "' dup_count: " << dup_count << endl);
     write_value(xml,last_value, dup_count);
 
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0) {
         stringstream msg;
-        msg << prolog << "Could not end " << vlsa_element_name << " element";
+        msg << prolog << "Could not end " << DMRPP_VLSA_VALUE_ELEMENT << " element";
         throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
+
+}
+
+
+
+void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
+{
+    write(xml, a.get_str());
+
 }
 
 /**
@@ -325,35 +332,40 @@ void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
  */
 std::string read_value(const pugi::xml_node &v)
 {
+    static string vlsa_value_element_name(DMRPP_VLSA_VALUE_ELEMENT);
+
     string value;
     if (v.name() == vlsa_value_element_name ) {
         // We check for the presence of the size attribut, vlsa_value_size_attr_name
         // If present it means the content was compressed and the base64 encoded
         // and we have to decode it.
-        pugi::xml_attribute esize = v.attribute(vlsa_value_size_attr_name.c_str());
-        if (esize) {
-            uint64_t value_size = stoull(esize.value());
+        auto size_attr = v.attribute(DMRPP_VLSA_VALUE_SIZE_ATTR);
+        if (size_attr) {
+            uint64_t value_size = stoull(size_attr.value());
             value = decode(v.child_value(), value_size);
-
         } else {
             value = v.child_value();
         }
-        BESDEBUG(VLSA, prolog << "value: '" << value << "'");
     }
     return value;
 }
+
 void read(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries)
 {
+    static string vlsa_element_name(DMRPP_VLSA_ELEMENT);
+
     if (vlsa_element.name() != vlsa_element_name ) { return; }
 
     // Chunks for this node will be held in the var_node siblings.
-    for (auto v = vlsa_element.child(vlsa_value_element_name.c_str()); v; v = v.next_sibling()) {
+    for (auto v = vlsa_element.child(DMRPP_VLSA_VALUE_ELEMENT); v; v = v.next_sibling()) {
+        string value = read_value(v);
+
         uint64_t count = 1;
-        pugi::xml_attribute c_attr = v.attribute("c");
+        pugi::xml_attribute c_attr = v.attribute(DMRPP_VLSA_VALUE_COUNT_ATTR);
         if(c_attr){
             count = stoull(c_attr.value());
         }
-        string value = read_value(v);
+        BESDEBUG(VLSA, prolog << "value: '" << value << "' count: " << count << "\n");
         for(uint64_t i=0; i<count ;i++){
             entries.emplace_back(value);
         }
