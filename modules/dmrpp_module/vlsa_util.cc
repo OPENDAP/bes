@@ -47,15 +47,14 @@
 
 
 #define prolog std::string("vlsa_util::").append(__func__).append("() - ")
-#define VLSA "vlsa"
-#define VLSA_VERBOSE "vlsa:verbose"
-#define VLSA_VERBOSE "vlsa:verbose"
-#define VLSA_VALUE_COMPRESSION_THRESHOLD 300
 
 using namespace std;
 
 namespace vlsa {
 
+const auto VLSA = "vlsa";
+const auto VLSA_VERBOSE = "vlsa:verbose";
+const auto VLSA_VALUE_COMPRESSION_THRESHOLD = 300;
 
 /**
  * @brief Maps zlib return code to a string value;
@@ -134,7 +133,7 @@ std::string encode(const std::string &source_string) {
 #endif
     vector<Bytef> compressed_src;
     compressed_src.resize(source_size);
-    unsigned long compressed_src_size = source_size;
+    auto compressed_src_size = source_size;
 
     int retval = compress(compressed_src.data(), &compressed_src_size, src.data(), source_size);
     BESDEBUG(VLSA, prolog << "        compress() retval: " << setw(W) << retval

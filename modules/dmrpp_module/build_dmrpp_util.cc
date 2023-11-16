@@ -1186,9 +1186,6 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
 
     vector<string> vls_values;
-    //vls_values.reserve(num_elements);// passed by reference to read_vlen_string
-    //for(uint64_t i=0; i< num_elements; i++)
-    //    vls_values.emplace_back(""); // initialize array for it's trip to Cville
     vls_values.resize(num_elements);
 
     read_vlen_string(dataset,
@@ -1199,12 +1196,10 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
                      vls_values);
 
 #ifndef NDEBUG
-    {
-        VERBOSE(cerr << prolog << " vls_values.size(): " << vls_values.size() << "\n");
-        uint64_t indx = 0;
-        for (const auto &sval: vls_values) {
-            VERBOSE(cerr << prolog << " vls_values[" << to_string(indx++) << "]: '" << sval << "'\n");
-        }
+    VERBOSE(cerr << prolog << " vls_values.size(): " << vls_values.size() << "\n");
+    uint64_t indx = 0;
+    for (const auto &sval: vls_values) {
+        VERBOSE(cerr << prolog << " vls_values[" << to_string(indx++) << "]: '" << sval << "'\n");
     }
 #endif
 
@@ -1637,9 +1632,6 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     }
 
     XMLWriter writer;
-    // #TODO This is failing because either:
-    //   - The DAP object state is not correctly established prior to making this call
-    //   - There is a bug in the DmrppArray implementation.
     dmrpp.print_dmrpp(writer, dmrpp_href_value);
     cout << writer.get_doc();
 
