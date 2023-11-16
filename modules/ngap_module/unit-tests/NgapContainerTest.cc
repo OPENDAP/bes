@@ -256,12 +256,7 @@ public:
     }
 
     void test_get_dmrpp_from_cache_or_remote_source() {
-        const string provider_name = "GHRC_DAAC";
-        const string collection_concept_id ="C1996541017-GHRC_DAAC";
-        const string granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
-
-        const string resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
-
+        const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
         TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
@@ -275,16 +270,14 @@ public:
                                                           NgapRequestHandler::d_dmrpp_file_cache_size,
                                                           NgapRequestHandler::d_dmrpp_file_cache_purge_size);
 
-        const string uid_value = "bugsbunny";
-        BESContextManager::TheManager()->set_context("uid", uid_value);
-        const string token_value = "Bearer XYZ";
-        BESContextManager::TheManager()->set_context("edl_auth_token", token_value);
-
         NgapContainer container;
-        container.set_ngap_path(resty_path);
-        container.set_real_name(resty_path);
-        string file_name;
-        CPPUNIT_ASSERT_THROW_MESSAGE("Expected NGAP to balk, requiring auth", file_name = container.access(), BESError);
+        container.set_real_name(real_path);
+        string dmrpp_string;
+        CPPUNIT_ASSERT_MESSAGE("Getting the DMRPP should work",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The file name should be set", !dmrpp_string.empty());
+        CPPUNIT_ASSERT_MESSAGE("The file name should be the cache file name",
+                               dmrpp_string.find("<dmrpp:chunkDimensionSizes>50 50</dmrpp:chunkDimensionSizes>") != string::npos);
     }
 
 
@@ -302,6 +295,7 @@ CPPUNIT_TEST_SUITE( NgapContainerTest );
     CPPUNIT_TEST(test_set_real_name_using_cmr_or_cache_using_cache_default_ctor);
 
     CPPUNIT_TEST(test_access);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source);
 
     CPPUNIT_TEST_SUITE_END();
 };

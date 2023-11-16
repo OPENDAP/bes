@@ -196,8 +196,11 @@ bool NgapContainer::inject_data_url() {
 /**
  * @brief Get the DMR++ from a remote source or a cache
  * @param dmrpp_string Value-result parameter that will contain the DMR++ as a string
+ * @return True if the DMR++ was found and no caching issues were encountered, false if there
+ * was a failure of the caching system. Error messages are logged if there is a caching issue.
+ * @exception BESError if there is a problem making the remote request if one is needed.
  */
-void NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) const {
+bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) const {
 #ifndef NDEBUG
     BESStopWatch besTimer;
     if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
@@ -209,11 +212,7 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
         if (NgapRequestHandler::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
             // set_container_type() because access() is called from both the framework and the DMR++ handler
             BESDEBUG(NGAP_CACHE, prolog << "Memory Cache hit, DMR++: " << get_real_name() << endl);
-#if 0
-            set_container_type("dmrpp");
-            set_attributes("as-string");
-#endif
-            return;
+            return true;
         }
         else {
             BESDEBUG(NGAP_CACHE, prolog << "Memory Cache miss, DMR++: " << get_real_name() << endl);
@@ -230,14 +229,11 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
             if (file_to_string(item.get_fd(), dmrpp_string)) {
                 // put it in the memory cache
                 NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
-#if 0
-                set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
-                set_container_type("dmrpp");
-#endif
-                return;
+                return true;
             }
             else {
                 ERROR_LOG("NgapContainer::access() - failed to read DMR++ from file cache");
+                return false;
             }
         }
         else {
@@ -260,6 +256,7 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
 #endif
 
     // TODO Use the new curl::http_get(dmrpp_url_str, string) method. jhrg 11/16/23)
+    // This code throws an exception if there is a problem. jhrg 11/16/23
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);
     copy(buffer.begin(), buffer.end(), back_inserter(dmrpp_string));
@@ -279,13 +276,17 @@ void NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
             // TODO do this in a child thread someday. jhrg 11/14/23
             if (write(item.get_fd(), dmrpp_string.data(), dmrpp_string.size()) != dmrpp_string.size()) {
                 ERROR_LOG("NgapContainer::access() - failed to write DMR++ to file cache");
+                return false;
             }
             BESDEBUG(NGAP_CACHE, prolog << "File Cache, cached DMR++: " << get_real_name() << endl);
         }
         else {
             ERROR_LOG("NgapContainer::access() - failed to put DMR++ in file cache");
+            return false;
         }
     }
+
+    return true;
 }
 
 /**

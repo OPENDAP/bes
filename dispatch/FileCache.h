@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <map>
 #include <mutex>
+#include <sstream>
 
 #include <cstring>
 
@@ -40,6 +41,8 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+
+#include <openssl/sha.h>
 
 #include "BESUtil.h"
 #include "BESLog.h"
@@ -253,6 +256,25 @@ class FileCache {
     friend class FileCacheTest;
 
 public:
+    /**
+     * @brief Return a SHA256 hash of the given key.
+     * @param key The key to has
+     * @param log_it If true, write an info message to the bes log so it's easier to track the
+     * key --> hash mapping. False by default.
+     * @return The SHA256 hash of the key.
+     */
+    static std::string hash_key(const std::string &key, bool log_it = false) {
+        unsigned char md[SHA256_DIGEST_LENGTH];
+        SHA256(reinterpret_cast<const unsigned char *>(key.c_str()), key.size(), md);
+        std::stringstream hex_stream;
+        for (auto b: md) {
+            hex_stream << std::hex << std::setw(2) << std::setfill('0') << (int)b;
+        }
+        if (log_it)
+            INFO_LOG("FileCache::hash_key: " << key << " -> " << hex_stream.str() << '\n');
+        return {hex_stream.str()};
+    }
+
     /// Manage the state of an open file descriptor for a cached item.
     class Item {
         int d_fd = -1;
@@ -479,12 +501,16 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd = open(key_file_name.c_str(), O_RDONLY, 0666);
         if (fd < 0) {
-            ERROR("Error opening the cache item in get for: " << key << " " << get_errno() << '\n');
-            return false;
+            if (errno == ENOENT)
+                return false;
+            else {
+                ERROR("Error opening the cache item in get for: " << key << " " << get_errno() << '\n');
+                return false;
+            }
         }
 
         item.set_fd(fd);
-        if (!item.lock_the_item(lock_type, "locking the cache item in get() for: " + key))
+        if (!item.lock_the_item(lock_type, "Error locking the item in get() for: " + key))
             return false;
 
         // Here's where we should update the info about the item in the cache_info file

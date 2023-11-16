@@ -95,11 +95,9 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
         TheBESKeys::TheKeys()->set_key("BES.LogVerbose", "yes");
         // Create the cache directory
-        if (mkdir(cache_dir.c_str(), 0755) != 0) {
-            if (errno != EEXIST) {
-                DBG2(cerr << prolog << "Failed to create cache directory: " << cache_dir << '\n');
-                CPPUNIT_FAIL("Failed to create cache directory in setUp()");
-            }
+        if (mkdir(cache_dir.c_str(), 0755) != 0 && errno != EEXIST) {
+            DBG2(cerr << prolog << "Failed to create cache directory: " << cache_dir << '\n');
+            CPPUNIT_FAIL("Failed to create cache directory in setUp()");
         }
     }
 
@@ -107,7 +105,7 @@ public:
     {
         // Remove the cache directory
         DIR *dir = nullptr;
-        struct dirent *ent{0};
+        struct dirent *ent{nullptr};
         if ((dir = opendir(cache_dir.c_str())) != nullptr) {
             /* print all the files and directories within directory */
             while ((ent = readdir(dir)) != nullptr) {
@@ -128,6 +126,35 @@ public:
         else {
             CPPUNIT_FAIL("Failed to open cache directory in tearDown()");
         }
+    }
+
+    void test_hash_key() {
+        const string str = "hello";
+        const string hash_value = "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824";
+
+        truncate("./bes.log", 0);
+        const string returned_value = FileCache::hash_key(str);
+        DBG(cerr << prolog << "hash of " << str << " is " << returned_value << '\n');
+        DBG(cerr << prolog << str << " should be " << hash_value << '\n');
+        CPPUNIT_ASSERT_MESSAGE("Hash of " + str + " should be " + hash_value, returned_value == hash_value);
+        // the hash value should not be logged
+        int fd = open("./bes.log", O_RDONLY);
+        CPPUNIT_ASSERT_MESSAGE("Info should not be logged", FileCache::get_file_size(fd) == 0);
+        close(fd);
+    }
+
+    void test_hash_key_with_info_log() {
+        const string str = "hello";
+        const string hash_value = "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824";
+
+        truncate("./bes.log", 0);
+        const string returned_value = FileCache::hash_key(str, true);
+        DBG(cerr << prolog << "hash of " << str << " is " << returned_value << '\n');
+        DBG(cerr << prolog << str << " should be " << hash_value << '\n');
+        CPPUNIT_ASSERT_MESSAGE("Hash of " + str + " should be " + hash_value, returned_value == hash_value);
+        int fd = open("./bes.log", O_RDONLY);
+        CPPUNIT_ASSERT_MESSAGE("Info should be logged", FileCache::get_file_size(fd) > 0);
+        close(fd);
     }
 
     // a cache that has not been initialized should fail the invariant test
@@ -1099,6 +1126,9 @@ public:
     }
 
     CPPUNIT_TEST_SUITE(FileCacheTest);
+
+    CPPUNIT_TEST(test_hash_key);
+    CPPUNIT_TEST(test_hash_key_with_info_log);
 
     CPPUNIT_TEST(test_unintialized_cache);
     CPPUNIT_TEST(test_intialized_cache);
