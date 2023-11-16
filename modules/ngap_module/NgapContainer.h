@@ -70,6 +70,7 @@ class NgapContainer: public BESContainer {
     std::string d_ngap_path;    // The (in)famous restified path
 
     void set_real_name_using_cmr_or_cache();
+    void get_dmrpp_from_cache_or_remote_source();
 
     bool get_content_filters(std::map<std::string, std::string, std::less<>> &content_filters) const;
     void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content) const;
