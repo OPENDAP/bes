@@ -1163,20 +1163,15 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
 }
 
 /**
- * Dereference the target URL and put the response in response_buf
- *
- * @note The vector<char> should be empty when this is first called.
- *
- * @note Used only in http_get_as_json() in this module. jhrg 4/28/23
+ * Dereference the target URL and put the response in buf
  *
  * @param target_url The URL to dereference.
  * @param buf The vector<char> into which to put the response. New data will be
  * appended to this vector<char>. In most cases this should be zero-length vector,
  * but setting its capacity() to the suspected size may improve performance.
- * @return The HTTP result code
+ * @exception Throws when libcurl encounters a problem.
  */
 void http_get(const string &target_url, vector<char> &buf) {
-    // TODO Improve this; rewrite to take and/or return a string. jhrg 11/14/23
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
@@ -1185,7 +1180,7 @@ void http_get(const string &target_url, vector<char> &buf) {
     // Add the authorization headers
     request_headers = add_edl_auth_headers(request_headers);
 
-    shared_ptr<http::url> url(new http::url(target_url));
+    auto url = std::make_shared<http::url>(target_url);
     request_headers = sign_url_for_s3_if_possible(url, request_headers);
 
     try {
@@ -1224,6 +1219,20 @@ void http_get(const string &target_url, vector<char> &buf) {
     }
 }
 
+/**
+ * Dereference the target URL and put the response in buf.
+ *
+ * @note The intent here is to read data and store it directly into the string.
+ * @see http_get(const string &target_url, vector<char> &buf) for a version that
+ * uses a vector<char> to store the data. This version has not been tested to
+ * show that the new data will be appended if the string is not empty. The vector<char>
+ * version of http_get() will append data to the buf parameter.
+ *
+ * @param target_url The URL to dereference.
+ * @param buf The string into which to put the response. New data will be
+ * appended to this string. In most cases this should be an empty string.
+ * @exception Throws when libcurl encounters a problem.
+ */
 void http_get(const string &target_url, string &buf) {
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
@@ -1233,7 +1242,7 @@ void http_get(const string &target_url, string &buf) {
     // Add the authorization headers
     request_headers = add_edl_auth_headers(request_headers);
 
-    shared_ptr<http::url> url(new http::url(target_url));
+    auto url = std::make_shared<http::url>(target_url);
     request_headers = sign_url_for_s3_if_possible(url, request_headers);
 
     try {
