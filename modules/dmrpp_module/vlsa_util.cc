@@ -116,26 +116,14 @@ std::string encode(const std::string &source_string) {
     string encoded;
     auto source_size = source_string.size();
     // Copy the stuff into a vector...
-    vector<Bytef> src(source_string.begin(), source_string.end());
     BESDEBUG(VLSA, prolog << "     source_string.size(): " << source_string.size() << " bytes. \n");
-    BESDEBUG(VLSA, prolog << " vector<Bytef> src.size(): " << src.size() << " bytes.\n");
+    BESDEBUG(VLSA_VERBOSE, "source_string: " << source_string << "\n");
 
-#ifndef NDEBUG
-    if (BESDebug::IsSet(VLSA_VERBOSE)) {
-        stringstream dbg_msg;
-        dbg_msg << prolog << "Source document copied to vector<Bytef>: \n";
-        for (uint64_t i = 0; i < source_size; i++) {
-            dbg_msg << (char) src[i];
-        }
-        dbg_msg << "\n";
-        BESDEBUG(VLSA_VERBOSE, dbg_msg.str());
-    }
-#endif
     vector<Bytef> compressed_src;
     compressed_src.resize(source_size);
     auto compressed_src_size = source_size;
 
-    int retval = compress(compressed_src.data(), &compressed_src_size, src.data(), source_size);
+    int retval = compress(compressed_src.data(), &compressed_src_size, (Bytef *)source_string.data(), source_size);
     BESDEBUG(VLSA, prolog << "        compress() retval: " << setw(W) << retval
                           << " (" << zlib_msg(retval) << ")\n");
 
@@ -148,21 +136,12 @@ std::string encode(const std::string &source_string) {
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
-    double c_ratio = ((double) source_size) / ((double) compressed_src_size);
-
     BESDEBUG(VLSA, prolog << "                source len: " << setw(W) << source_size << "\n");
     BESDEBUG(VLSA, prolog << "  compressed source binary: " << setw(W) << compressed_src_size <<
-                          " src:csb=" << setw(R) << c_ratio << "\n");
+                          " src:csb=" << setw(R) << ((double) source_size) / ((double) compressed_src_size) << "\n");
 
-    string base64_compressed_payload;
-    base64_compressed_payload = base64::Base64::encode(compressed_src.data(), compressed_src_size);
-    double base64_compressed_ratio = ((double) source_size) / ((double) base64_compressed_payload.size());
-    BESDEBUG(VLSA, prolog << " base64_encoded_compressed: " << setw(W) << base64_compressed_payload.size() <<
-                          " src:b64=" << setw(R) << base64_compressed_ratio << "\n");
-
-    BESDEBUG(VLSA_VERBOSE, prolog << "base64_compressed_payload:\n" << base64_compressed_payload << "\n");
     BESDEBUG(VLSA, prolog << "END\n");
-    return base64_compressed_payload;
+    return { base64::Base64::encode(compressed_src.data(), compressed_src_size) };
 }
 
 /** _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._
@@ -202,17 +181,13 @@ string decode(const string &encoded, uint64_t expected_size) {
     BESDEBUG(VLSA, prolog << "  uncompress() result_size: " << setw(W) << result_size << "\n");
     BESDEBUG(VLSA, prolog << "             expected_size: " << setw(W) << expected_size << "\n");
 
-    std::string result_string(result_bytes.begin(), result_bytes.end());
-    BESDEBUG(VLSA, prolog << "      result_string.size(): " << setw(W) << result_string.size() << "\n");
-    if(result_string.size() != expected_size){
+    if(result_bytes.size() != expected_size){
         stringstream msg;
-        msg << prolog << "Result size " << result_string.size() << " does not match expected size " << expected_size;
+        msg << prolog << "Result size " << result_bytes.size() << " does not match expected size " << expected_size;
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
-
-    BESDEBUG(VLSA_VERBOSE, prolog << "RESULT DOC: \n" << result_string << "\n");
     BESDEBUG(VLSA, prolog << "END\n");
-    return result_string;
+    return { string(result_bytes.begin(), result_bytes.end() ) };
 }
 
 
