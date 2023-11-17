@@ -32,13 +32,13 @@ SRC = build_dmrpp_h4.cc build_dmrpp_util_h4.cc ../Chunk.cc ../DMRpp.cc ../DMZ.cc
    ../DmrppD4Enum.cc ../DmrppD4Group.cc ../DmrppD4Opaque.cc ../DmrppD4Sequence.cc ../DmrppFloat32.cc ../DmrppFloat64.cc \
    ../DmrppInt16.cc ../DmrppInt32.cc ../DmrppInt64.cc ../DmrppInt8.cc ../DmrppStr.cc ../DmrppStructure.cc \
    ../DmrppTypeFactory.cc ../DmrppUInt16.cc ../DmrppUInt32.cc ../DmrppUInt64.cc ../DmrppUrl.cc ../SuperChunk.cc \
-   ../DmrppRequestHandler.cc ../CurlHandlePool.cc
+   ../DmrppRequestHandler.cc ../CurlHandlePool.cc ../vlsa_util.cc
 
 HDR = build_dmrpp_util_h4.h ../Chunk.h ../DMRpp.h ../DMZ.h ../DmrppArray.h ../DmrppByte.h ../DmrppCommon.h \
     ../DmrppD4Enum.h ../DmrppD4Group.h ../DmrppD4Opaque.h ../DmrppD4Sequence.h ../DmrppFloat32.h ../DmrppFloat64.h \
     ../DmrppInt16.h ../DmrppInt32.h ../DmrppInt64.h ../DmrppInt8.h ../DmrppStr.h ../DmrppStructure.h \
     ../DmrppTypeFactory.h ../DmrppUInt16.h ../DmrppUInt32.h ../DmrppUInt64.h ../DmrppUrl.h ../SuperChunk.h \
-    ../DmrppRequestHandler.h ../CurlHandlePool.h
+    ../DmrppRequestHandler.h ../CurlHandlePool.h ../vlsa_util.h
 
 build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
 
