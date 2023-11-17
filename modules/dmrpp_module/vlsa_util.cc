@@ -114,16 +114,16 @@ std::string encode(const std::string &source_string) {
     BESDEBUG(VLSA, prolog << "BEGIN\n");
 
     string encoded;
-    auto source_size = source_string.size();
     // Copy the stuff into a vector...
     BESDEBUG(VLSA, prolog << "     source_string.size(): " << source_string.size() << " bytes. \n");
     BESDEBUG(VLSA_VERBOSE, "source_string: " << source_string << "\n");
 
+    uLong  ssize  = source_string.size();
+    uLongf csize  = source_string.size();
     vector<Bytef> compressed_src;
-    compressed_src.resize(source_size);
-    auto compressed_src_size = source_size;
+    compressed_src.resize(source_string.size());
 
-    int retval = compress(compressed_src.data(), &compressed_src_size, (Bytef *)source_string.data(), source_size);
+    int retval = compress((Bytef *) compressed_src.data(), &csize, (Bytef *)source_string.data(), ssize);
     BESDEBUG(VLSA, prolog << "        compress() retval: " << setw(W) << retval
                           << " (" << zlib_msg(retval) << ")\n");
 
@@ -131,17 +131,17 @@ std::string encode(const std::string &source_string) {
         stringstream msg;
         msg << "Failed to compress source string. \n";
         msg << "   compress() retval: " << retval << " (" << zlib_msg(retval) << ")\n";
-        msg << "         source_size: " << source_size << "\n";
-        msg << " compressed_src_size: " << compressed_src_size << "\n";
+        msg << "               ssize: " << ssize << "\n";
+        msg << "               csize: " << csize << "\n";
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(VLSA, prolog << "                source len: " << setw(W) << source_size << "\n");
-    BESDEBUG(VLSA, prolog << "  compressed source binary: " << setw(W) << compressed_src_size <<
-                          " src:csb=" << setw(R) << ((double) source_size) / ((double) compressed_src_size) << "\n");
+    BESDEBUG(VLSA, prolog << "                source len: " << setw(W) << source_string.size() << "\n");
+    BESDEBUG(VLSA, prolog << "  compressed source binary: " << setw(W) << compressed_src.size() <<
+                          " src:csb=" << setw(R) << ((double) source_string.size()) / ((double) compressed_src.size()) << "\n");
 
     BESDEBUG(VLSA, prolog << "END\n");
-    return { base64::Base64::encode(compressed_src.data(), compressed_src_size) };
+    return { base64::Base64::encode(compressed_src.data(), csize) };
 }
 
 /** _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._
@@ -300,7 +300,6 @@ void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
 
 /**
  * @brief Reads the vale of a vlsa value 'v', element.
- * TODO Is there an advanage to passing the ref or would returning the string value be equivalent?
  * @param v The element to evaluate
  * @param value The (decoded) string value of v
  */
