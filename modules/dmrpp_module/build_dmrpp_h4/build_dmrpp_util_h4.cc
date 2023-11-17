@@ -1367,13 +1367,28 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
         }
 
         int *origin = NULL;
-        if (chunk_flag != HDF_NONE) {
-               /* Chunking. */
+        switch (chunk_flag) {
+            case HDF_NONE:
+                /* No chunking. */
+                break;
+            case HDF_CHUNK:
+                /* Chunking. */
                 origin = (int *)HDmalloc(sizeof(int)*rank);
                 if (origin == NULL) {
                     FAIL_ERROR("HDmalloc() failed: Out of Memory");
                 }
                 memset(origin, 0, sizeof(int)*rank);
+                break;
+            case HDF_COMP:
+                /* Compression. */
+                FAIL_ERROR("Compression chunking not supported.");
+                break;
+            case HDF_NBIT:
+                /* NBIT compression. */
+                FAIL_ERROR("NBit Compression chunking not supported.");
+                break;
+            default:
+                FAIL_ERROR("Unknown chunking flag.");
         }
 
         auto info_count = read_chunk(sdsid, &map_info, origin);
