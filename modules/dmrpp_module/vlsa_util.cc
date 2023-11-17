@@ -123,7 +123,7 @@ std::string encode(const std::string &source_string) {
     vector<Bytef> compressed_src;
     compressed_src.resize(source_string.size());
 
-    int retval = compress((Bytef *) compressed_src.data(), &csize, (Bytef *)source_string.data(), ssize);
+    int retval = compress(compressed_src.data(), &csize, (Bytef *)source_string.data(), ssize);
     BESDEBUG(VLSA, prolog << "        compress() retval: " << setw(W) << retval
                           << " (" << zlib_msg(retval) << ")\n");
 
