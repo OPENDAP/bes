@@ -356,23 +356,32 @@ public:
     /**
      * @brief Initialize the cache.
      * @param cache_dir Directory on some filesystem where the cache will be stored. This
-     * directory must exist before this call is made.
+     * directory is made if it does not exist.
      * @param size Allow this many bytes in the cache
      * @param target_size When purging, remove items until this many bytes remain.
      * @return False if the cache object could not be initialized, true otherwise.
      */
     virtual bool initialize(const std::string &cache_dir, long long size, long long purge_size) {
-        if (size < 0 || purge_size < 0)
+        if (size < 0 || purge_size < 0) {
+            ERROR_LOG("FileCache::initialize() - size and purge_size must be >= 0\n");
             return false;
+        }
 
         struct stat sb;
-        if (stat(cache_dir.c_str(), &sb) != 0)
-            return false;
+        if (stat(cache_dir.c_str(), &sb) != 0) {
+            BESUtil::mkdir_p(cache_dir, 0775);
+            if (stat(cache_dir.c_str(), &sb) != 0) {
+                ERROR_LOG("FileCache::initialize() - could not stat the cache directory: " << cache_dir << '\n');
+                return false;
+            }
+        }
 
         d_cache_dir = cache_dir;
 
-        if (!open_cache_info())
+        if (!open_cache_info()) {
+            ERROR_LOG("FileCache::initialize() - could not open the cache info file: " << cache_dir << '\n');
             return false;
+        }
 
         d_max_cache_size_in_bytes = (unsigned long long)size;
         d_purge_size = (unsigned long long)purge_size;
