@@ -243,11 +243,6 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
 
     // Else, the DMR++ is neither in the memory cache nor the file cache.
     // Read it from S3, etc., and filter it. Put it in the memory cache.
-    // Use a child thread to copy it into the FileCache.
-    // Return the DMR++ string.
-
-    string dmrpp_url_str = get_real_name() + ".dmrpp";  // The URL of the DMR++ file
-
 #ifndef NDEBUG
     BESStopWatch besTimer2;
     if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
@@ -257,6 +252,7 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
 
     // TODO Use the new curl::http_get(dmrpp_url_str, string) method. jhrg 11/16/23)
     // This code throws an exception if there is a problem. jhrg 11/16/23
+    string dmrpp_url_str = get_real_name() + ".dmrpp";  // The URL of the DMR++ file
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);
     copy(buffer.begin(), buffer.end(), back_inserter(dmrpp_string));
@@ -360,12 +356,7 @@ string NgapContainer::access() {
     }   // end of FileCache::Item scope
 
     // Else, the DMR++ is neither in the memory cache nor the file cache.
-    // Read it from S3, etc., and filter it. Put it in the memory cache.
-    // Use a child thread to copy it into the FileCache.
-    // Return the DMR++ string.
-
-    string dmrpp_url_str = get_real_name() + ".dmrpp";  // The URL of the DMR++ file
-
+    // Read it from S3, etc., and filter it. Put it in the memory cache(s).
 #ifndef NDEBUG
     BESStopWatch besTimer2;
     if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
@@ -373,6 +364,7 @@ string NgapContainer::access() {
     }
 #endif
 
+    string dmrpp_url_str = get_real_name() + ".dmrpp";  // The URL of the DMR++ file
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);
     copy(buffer.begin(), buffer.end(), back_inserter(dmrpp_string));

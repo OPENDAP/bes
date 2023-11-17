@@ -25,8 +25,6 @@
 
 #include <memory>
 
-#include <libdap/util.h>
-
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
@@ -261,7 +259,6 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
-        NgapRequestHandler::d_use_cmr_cache = true;
         NgapRequestHandler::d_use_dmrpp_cache = true;
         NgapRequestHandler::d_dmrpp_file_cache_dir = "/tmp"; // any dir that exists will do
         NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
@@ -280,6 +277,68 @@ public:
                                dmrpp_string.find("<dmrpp:chunkDimensionSizes>50 50</dmrpp:chunkDimensionSizes>") != string::npos);
     }
 
+    void test_get_dmrpp_from_cache_or_remote_source_twice() {
+        const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
+        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
+        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        NgapRequestHandler::d_use_dmrpp_cache = true;
+        NgapRequestHandler::d_dmrpp_file_cache_dir = "/tmp"; // any dir that exists will do
+        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
+                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
+                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+
+        NgapContainer container;
+        container.set_real_name(real_path);
+        string dmrpp_string;
+        CPPUNIT_ASSERT_MESSAGE("Getting the DMRPP should work",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The file name should be set", !dmrpp_string.empty());
+        CPPUNIT_ASSERT_MESSAGE("The file name should be the cache file name",
+                               dmrpp_string.find("<dmrpp:chunkDimensionSizes>50 50</dmrpp:chunkDimensionSizes>") != string::npos);
+
+        CPPUNIT_ASSERT_MESSAGE("Getting the DMRPP should work",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The file name should be set", !dmrpp_string.empty());
+        CPPUNIT_ASSERT_MESSAGE("The file name should be the cache file name",
+                               dmrpp_string.find("<dmrpp:chunkDimensionSizes>50 50</dmrpp:chunkDimensionSizes>") != string::npos);
+    }
+
+    void test_get_dmrpp_from_cache_or_remote_source_two_containers() {
+        const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
+        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
+        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        NgapRequestHandler::d_use_dmrpp_cache = true;
+        NgapRequestHandler::d_dmrpp_file_cache_dir = "/tmp"; // any dir that exists will do
+        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
+                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
+                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+
+        NgapContainer container;
+        container.set_real_name(real_path);
+        string dmrpp_string;
+        CPPUNIT_ASSERT_MESSAGE("Getting the DMRPP should work",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The file name should be set", !dmrpp_string.empty());
+        CPPUNIT_ASSERT_MESSAGE("The file name should be the cache file name",
+                               dmrpp_string.find("<dmrpp:chunkDimensionSizes>50 50</dmrpp:chunkDimensionSizes>") != string::npos);
+
+        NgapContainer container2;
+        container2.set_real_name(real_path);
+        string dmrpp_string2;
+        CPPUNIT_ASSERT_MESSAGE("Getting the DMRPP should work",
+                               container2.get_dmrpp_from_cache_or_remote_source(dmrpp_string2));
+        CPPUNIT_ASSERT_MESSAGE("The file name should be set", !dmrpp_string2.empty());
+        CPPUNIT_ASSERT_MESSAGE("The file name should be the cache file name",
+                               dmrpp_string2.find("<dmrpp:chunkDimensionSizes>50 50</dmrpp:chunkDimensionSizes>") != string::npos);
+    }
 
 CPPUNIT_TEST_SUITE( NgapContainerTest );
 
@@ -296,6 +355,8 @@ CPPUNIT_TEST_SUITE( NgapContainerTest );
 
     CPPUNIT_TEST(test_access);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_twice);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_two_containers);
 
     CPPUNIT_TEST_SUITE_END();
 };
