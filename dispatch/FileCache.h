@@ -32,6 +32,8 @@
 #include <algorithm>
 #include <map>
 #include <mutex>
+#include <sstream>
+#include <iomanip>
 
 #include <cstring>
 
@@ -40,6 +42,8 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+
+#include <openssl/sha.h>
 
 #include "BESUtil.h"
 #include "BESLog.h"
@@ -253,6 +257,25 @@ class FileCache {
     friend class FileCacheTest;
 
 public:
+    /**
+     * @brief Return a SHA256 hash of the given key.
+     * @param key The key to has
+     * @param log_it If true, write an info message to the bes log so it's easier to track the
+     * key --> hash mapping. False by default.
+     * @return The SHA256 hash of the key.
+     */
+    static std::string hash_key(const std::string &key, bool log_it = false) {
+        unsigned char md[SHA256_DIGEST_LENGTH];
+        SHA256(reinterpret_cast<const unsigned char *>(key.c_str()), key.size(), md);
+        std::stringstream hex_stream;
+        for (auto b: md) {
+            hex_stream << std::hex << std::setw(2) << std::setfill('0') << (int)b;
+        }
+        if (log_it)
+            INFO_LOG("FileCache::hash_key: " << key << " -> " << hex_stream.str() << '\n');
+        return {hex_stream.str()};
+    }
+
     /// Manage the state of an open file descriptor for a cached item.
     class Item {
         int d_fd = -1;
@@ -333,23 +356,33 @@ public:
 
     /**
      * @brief Initialize the cache.
-     * @param cache_dir Directory on some filesystem where the cache will be stored.
+     * @param cache_dir Directory on some filesystem where the cache will be stored. This
+     * directory is made if it does not exist.
      * @param size Allow this many bytes in the cache
      * @param target_size When purging, remove items until this many bytes remain.
      * @return False if the cache object could not be initialized, true otherwise.
      */
     virtual bool initialize(const std::string &cache_dir, long long size, long long purge_size) {
-        if (size < 0 || purge_size < 0)
+        if (size < 0 || purge_size < 0) {
+            ERROR_LOG("FileCache::initialize() - size and purge_size must be >= 0\n");
             return false;
+        }
 
         struct stat sb;
-        if (stat(cache_dir.c_str(), &sb) != 0)
-            return false;
+        if (stat(cache_dir.c_str(), &sb) != 0) {
+            BESUtil::mkdir_p(cache_dir, 0775);
+            if (stat(cache_dir.c_str(), &sb) != 0) {
+                ERROR_LOG("FileCache::initialize() - could not stat the cache directory: " << cache_dir << '\n');
+                return false;
+            }
+        }
 
         d_cache_dir = cache_dir;
 
-        if (!open_cache_info())
+        if (!open_cache_info()) {
+            ERROR_LOG("FileCache::initialize() - could not open the cache info file: " << cache_dir << '\n');
             return false;
+        }
 
         d_max_cache_size_in_bytes = (unsigned long long)size;
         d_purge_size = (unsigned long long)purge_size;
@@ -400,8 +433,8 @@ public:
 
         Item fdl2(fd2);     // The 'source' file is not locked; the Item ensures it is closed.
 
-        // TODO Here we might use st_blocks and st_blksize if that will speed up the transfer.
-        //  This is likely to matter only for large files (where large means...?). jhrg 11/02/23
+        // Here we might use st_blocks and st_blksize if that will speed up the transfer.
+        // This is likely to matter only for large files (where large means...?). jhrg 11/02/23
         std::vector<char> buf(std::min(MEGABYTE, get_file_size(fd2)));
         ssize_t n;
         while ((n = read(fd2, buf.data(), buf.size())) > 0) {
@@ -478,12 +511,16 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd = open(key_file_name.c_str(), O_RDONLY, 0666);
         if (fd < 0) {
-            ERROR("Error opening the cache item in get for: " << key << " " << get_errno() << '\n');
-            return false;
+            if (errno == ENOENT)
+                return false;
+            else {
+                ERROR("Error opening the cache item in get for: " << key << " " << get_errno() << '\n');
+                return false;
+            }
         }
 
         item.set_fd(fd);
-        if (!item.lock_the_item(lock_type, "locking the cache item in get() for: " + key))
+        if (!item.lock_the_item(lock_type, "Error locking the item in get() for: " + key))
             return false;
 
         // Here's where we should update the info about the item in the cache_info file
@@ -621,8 +658,8 @@ public:
                 ERROR("Error opening the cache item in purge() for: " << item.second.d_name << " " << get_errno() << '\n');
                 return false;
             }
-            Item lock(fd);  // The Item dtor is called on every loop iteration according to Google. jhrg 11/03/23
-            if (!lock.lock_the_item(LOCK_EX | LOCK_NB, "locking the cache item in purge() for: " + item.second.d_name))
+            Item item_lock(fd);  // The Item dtor is called on every loop iteration according to Google. jhrg 11/03/23
+            if (!item_lock.lock_the_item(LOCK_EX | LOCK_NB, "locking the cache item in purge() for: " + item.second.d_name))
                 continue;
 
             if (remove(item.second.d_name.c_str()) != 0) {
