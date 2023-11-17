@@ -33,6 +33,7 @@
 #include <map>
 #include <mutex>
 #include <sstream>
+#include <iomanip>
 
 #include <cstring>
 
@@ -432,8 +433,8 @@ public:
 
         Item fdl2(fd2);     // The 'source' file is not locked; the Item ensures it is closed.
 
-        // TODO Here we might use st_blocks and st_blksize if that will speed up the transfer.
-        //  This is likely to matter only for large files (where large means...?). jhrg 11/02/23
+        // Here we might use st_blocks and st_blksize if that will speed up the transfer.
+        // This is likely to matter only for large files (where large means...?). jhrg 11/02/23
         std::vector<char> buf(std::min(MEGABYTE, get_file_size(fd2)));
         ssize_t n;
         while ((n = read(fd2, buf.data(), buf.size())) > 0) {
@@ -657,8 +658,8 @@ public:
                 ERROR("Error opening the cache item in purge() for: " << item.second.d_name << " " << get_errno() << '\n');
                 return false;
             }
-            Item lock(fd);  // The Item dtor is called on every loop iteration according to Google. jhrg 11/03/23
-            if (!lock.lock_the_item(LOCK_EX | LOCK_NB, "locking the cache item in purge() for: " + item.second.d_name))
+            Item item_lock(fd);  // The Item dtor is called on every loop iteration according to Google. jhrg 11/03/23
+            if (!item_lock.lock_the_item(LOCK_EX | LOCK_NB, "locking the cache item in purge() for: " + item.second.d_name))
                 continue;
 
             if (remove(item.second.d_name.c_str()) != 0) {

@@ -53,7 +53,25 @@ public:
     NgapContainerTest(const NgapContainerTest &src) = delete;
     const NgapContainerTest &operator=(const NgapContainerTest & rhs) = delete;
 
-    // setUp; Called before each test; not used.
+    void set_bes_keys() const {
+        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
+        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+    }
+
+    void configure_ngap_handler() const {
+        NgapRequestHandler::d_use_dmrpp_cache = true;
+        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
+        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
+                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
+                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+    }
+
+    // Delete the cache dir before each test; really only needed for the
+    // tests toward the end of the suite that test the FileCache.
     void setUp() override {
         struct stat sb;
         if (stat(d_cache_dir.c_str(), &sb) == 0) {
@@ -164,10 +182,8 @@ public:
 
         const string resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
 
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        set_bes_keys();
+
         NgapRequestHandler::d_use_cmr_cache = true;
 
         NgapContainer container;
@@ -185,10 +201,8 @@ public:
 
         const string resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
 
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        set_bes_keys();
+
         NgapRequestHandler::d_use_cmr_cache = true;
 
         const string uid_value = "bugsbunny";
@@ -213,10 +227,8 @@ public:
 
         const string resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
 
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        set_bes_keys();
+
         NgapRequestHandler::d_use_cmr_cache = true;
 
         const string uid_value = "bugsbunny";
@@ -243,18 +255,11 @@ public:
 
         const string resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
 
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        set_bes_keys();
+
         NgapRequestHandler::d_use_cmr_cache = true;
-        NgapRequestHandler::d_use_dmrpp_cache = true;
-        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
-        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+
+        configure_ngap_handler();
 
         const string uid_value = "bugsbunny";
         BESContextManager::TheManager()->set_context("uid", uid_value);
@@ -270,17 +275,10 @@ public:
 
     void test_get_dmrpp_from_cache_or_remote_source() {
         const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
-        NgapRequestHandler::d_use_dmrpp_cache = true;
-        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
-        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+
+        set_bes_keys();
+
+        configure_ngap_handler();
 
         NgapContainer container;
         container.set_real_name(real_path);
@@ -294,17 +292,10 @@ public:
 
     void test_get_dmrpp_from_cache_or_remote_source_twice() {
         const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
-        NgapRequestHandler::d_use_dmrpp_cache = true;
-        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
-        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+
+        set_bes_keys();
+
+        configure_ngap_handler();
 
         NgapContainer container;
         container.set_real_name(real_path);
@@ -324,17 +315,10 @@ public:
 
     void test_get_dmrpp_from_cache_or_remote_source_two_containers() {
         const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
-        NgapRequestHandler::d_use_dmrpp_cache = true;
-        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
-        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+
+        set_bes_keys();
+
+        configure_ngap_handler();
 
         NgapContainer container;
         container.set_real_name(real_path);
@@ -357,17 +341,10 @@ public:
 
     void test_get_dmrpp_from_cache_or_remote_source_clean_mem_cache() {
         const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
-        NgapRequestHandler::d_use_dmrpp_cache = true;
-        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
-        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+
+        set_bes_keys();
+
+        configure_ngap_handler();
 
         NgapContainer container;
         container.set_real_name(real_path);
@@ -395,17 +372,9 @@ public:
     // find it in the mem cache
     void test_get_dmrpp_from_cache_or_remote_source_clean_mem_cache_2() {
         const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
-        NgapRequestHandler::d_use_dmrpp_cache = true;
-        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
-        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+
+        set_bes_keys();
+
 
         NgapContainer container;
         container.set_real_name(real_path);
@@ -439,10 +408,9 @@ public:
 
     void test_get_dmrpp_from_cache_or_remote_source_twice_no_cache() {
         const string real_path = "http://test.opendap.org/opendap/data/dmrpp/a2_local_twoD.h5";
-        TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+
+        set_bes_keys();
+
         NgapRequestHandler::d_use_dmrpp_cache = false;
 
         NgapContainer container;
