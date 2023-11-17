@@ -1388,12 +1388,27 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
                                    __FILE__, __LINE__);
         }
 
+        string endian_name;
+        hdf_ntinfo_t info;          /* defined in hdf.h near line 142. */
+        int result = Hgetntinfo(data_type, &info);
+        if (result == FAIL) {
+            FAIL_ERROR("Hgetntinfo() failed.");
+        }
+        else{
+            if (strncmp(info.byte_order, "bigEndian", 9) == 0)
+                endian_name = "BE";
+            else if (strncmp(info.byte_order, "littleEndian", 12) == 0)
+                endian_name = "LE";
+            else
+                endian_name = "UNKNOWN";
+        }
+
         vector<unsigned long long> position_in_array(rank, 0);
         for (int i = 0; i < map_info.nblocks; i++) {
             VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
             VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
 
-            dc->add_chunk("BE", map_info.lengths[i], map_info.offsets[i], position_in_array);
+            dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], position_in_array);
         }
 #if 0
         if (fullnamepath_attr) {
