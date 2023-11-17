@@ -241,6 +241,8 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
         }
     }   // end of FileCache::Item scope
 
+    string dmrpp_url_str = get_real_name() + ".dmrpp";  // The URL of the DMR++ file
+    
     // Else, the DMR++ is neither in the memory cache nor the file cache.
     // Read it from S3, etc., and filter it. Put it in the memory cache.
 #ifndef NDEBUG
@@ -252,11 +254,14 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
 
     // TODO Use the new curl::http_get(dmrpp_url_str, string) method. jhrg 11/16/23)
     // This code throws an exception if there is a problem. jhrg 11/16/23
-    string dmrpp_url_str = get_real_name() + ".dmrpp";  // The URL of the DMR++ file
+
+    curl::http_get(dmrpp_url_str, dmrpp_string);
+#if 0
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);
     copy(buffer.begin(), buffer.end(), back_inserter(dmrpp_string));
     buffer.clear(); // keep the original for as little time as possible.
+#endif
 
     map<string,string, std::less<>> content_filters;
     if (get_content_filters(content_filters)) {
