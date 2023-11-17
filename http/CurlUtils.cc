@@ -998,13 +998,13 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 effective_url = filter_aws_url(get_effective_url(c_handle, target_url));
             }
             catch ( BESInternalError &bie){
-                effective_url = "Unable_Determine_CURLINFO_EFFECTIVE_URL";
+                effective_url = "Unable_To_Determine_CURLINFO_EFFECTIVE_URL: " + bie.get_message();
             }
             if (attempts == retry_limit) {
                 stringstream msg;
                 msg << prolog << "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL ";
                 msg << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
-                msg << "CURLINFO_EFFECTIVE_URL: " << effective_url;
+                msg << "CURLINFO_EFFECTIVE_URL: " << effective_url << " ";
                 msg << "Returned HTTP_STATUS: " << http_code;
                 ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -1153,21 +1153,25 @@ static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *d
     return nbytes;
 }
 
+static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
+    auto str = reinterpret_cast<string *>(data);
+    size_t nbytes = size * nmemb;
+    size_t current_size = str->size();
+    str->resize(current_size + nbytes);
+    memcpy((void *)(str->data() + current_size), buffer, nbytes);
+    return nbytes;
+}
+
 /**
- * Dereference the target URL and put the response in response_buf
- *
- * @note The vector<char> should be empty when this is first called.
- *
- * @note Used only in http_get_as_json() in this module. jhrg 4/28/23
+ * Dereference the target URL and put the response in buf
  *
  * @param target_url The URL to dereference.
  * @param buf The vector<char> into which to put the response. New data will be
  * appended to this vector<char>. In most cases this should be zero-length vector,
  * but setting its capacity() to the suspected size may improve performance.
- * @return The HTTP result code
+ * @exception Throws when libcurl encounters a problem.
  */
 void http_get(const string &target_url, vector<char> &buf) {
-
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
@@ -1176,7 +1180,7 @@ void http_get(const string &target_url, vector<char> &buf) {
     // Add the authorization headers
     request_headers = add_edl_auth_headers(request_headers);
 
-    shared_ptr<http::url> url(new http::url(target_url));
+    auto url = std::make_shared<http::url>(target_url);
     request_headers = sign_url_for_s3_if_possible(url, request_headers);
 
     try {
@@ -1189,6 +1193,68 @@ void http_get(const string &target_url, vector<char> &buf) {
 
         // Pass all data to the 'write_data' function --------------------------------------------------------------
         res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, vector_write_data);
+        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
+
+        // Pass this to write_data as the fourth argument ----------------------------------------------------------
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&buf));
+        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer.data(), __FILE__, __LINE__);
+
+        unset_error_buffer(ceh);
+
+        super_easy_perform(ceh);
+
+        if (request_headers)
+            curl_slist_free_all(request_headers);
+
+        curl_easy_cleanup(ceh);
+
+        buf.push_back('\0');    // add a trailing null byte
+    }
+    catch (...) {
+        if (request_headers)
+            curl_slist_free_all(request_headers);
+        if (ceh)
+            curl_easy_cleanup(ceh);
+        throw;
+    }
+}
+
+/**
+ * Dereference the target URL and put the response in buf.
+ *
+ * @note The intent here is to read data and store it directly into the string.
+ * @see http_get(const string &target_url, vector<char> &buf) for a version that
+ * uses a vector<char> to store the data. This version has not been tested to
+ * show that the new data will be appended if the string is not empty. The vector<char>
+ * version of http_get() will append data to the buf parameter.
+ *
+ * @param target_url The URL to dereference.
+ * @param buf The string into which to put the response. New data will be
+ * appended to this string. In most cases this should be an empty string.
+ * @exception Throws when libcurl encounters a problem.
+ */
+void http_get(const string &target_url, string &buf) {
+    vector<char> error_buffer(CURL_ERROR_SIZE);
+    CURL *ceh = nullptr;     ///< The libcurl handle object.
+    CURLcode res;
+
+    curl_slist *request_headers = nullptr;
+    // Add the authorization headers
+    request_headers = add_edl_auth_headers(request_headers);
+
+    auto url = std::make_shared<http::url>(target_url);
+    request_headers = sign_url_for_s3_if_possible(url, request_headers);
+
+    try {
+        ceh = curl::init(target_url, request_headers, nullptr);
+        if (!ceh)
+            throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
+
+        // Error Buffer (for use during this setup) ----------------------------------------------------------------
+        set_error_buffer(ceh, error_buffer.data());
+
+        // Pass all data to the 'write_data' function --------------------------------------------------------------
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, string_write_data);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
 
         // Pass this to write_data as the fourth argument ----------------------------------------------------------

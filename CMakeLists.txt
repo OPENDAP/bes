@@ -275,7 +275,8 @@ add_executable(
     dispatch/PicoSHA2/test/test.cpp
     dispatch/PicoSHA2/picosha2.h
     dispatch/tests/FileLockingCacheTest.cc
-    dispatch/tests/test_config.h
+	dispatch/unit-tests/FileCacheTest.cc
+    dispatch/unit-tests/test_config.h
     dispatch/unit-tests/agglistT.cc
     dispatch/unit-tests/BESCatalogListTest.cc
     dispatch/unit-tests/cacheT.cc
@@ -382,6 +383,7 @@ add_executable(
     dispatch/BESFileContainerStorage.h
     dispatch/BESFileLockingCache.cc
     dispatch/BESFileLockingCache.h
+	dispatch/FileCache.h
     dispatch/BESForbiddenError.h
     dispatch/BESFSDir.cc
     dispatch/BESFSDir.h

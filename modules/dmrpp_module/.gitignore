@@ -23,3 +23,10 @@
 
 /tests_build_dmrpp/testsuite_dmrpp_tests
 /tests_build_dmrpp/test_bes.conf
+
+/writer/h5common.cc
+/writer/h5common.h
+/h5common.cc
+/h5common.h
+
+/tests/timing_log*

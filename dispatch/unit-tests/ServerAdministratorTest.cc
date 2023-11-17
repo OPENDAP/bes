@@ -64,6 +64,7 @@ public:
     // Called before each test
     void setUp()
     {
+        if(debug) cerr << endl;
 
         if(debug) cerr << prolog << "BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
@@ -94,11 +95,11 @@ public:
 
     void xml_dmup_test()
     {
-        if(debug) cerr << endl;
         try {
             ServerAdministrator admin;
             string xml_result = admin.xdump();
-            string xml_baseline = "<ServerAdministrator city=\"City\" country=\"USA\" email=\"admin.email.address@your.domain.name\" organization=\"Company/Insitution Name\" postalcode=\"12345\" region=\"State\" street=\"Street Address\" telephone=\"+1.800.555.1212\" website=\"http://www.your.domain.name\"/>";
+            string xml_baseline = "<ServerAdministrator organization=\"Company/Institution Name\" street=\"Street Address\" city=\"City\" region=\"State\" country=\"USA\" postalcode=\"12345\" telephone=\"+1.800.555.1212\" email=\"admin.email.address@your.domain.name\" website=\"http://www.your.domain.name\" />";
+
             if(debug){
                 cerr << "xml_baseline: " << xml_baseline << endl;
                 cerr << "  xml_result: " << xml_result << endl;
@@ -113,11 +114,11 @@ public:
 
     void json_dmup_test()
     {
-        if(debug) cerr << endl;
+
         try {
             ServerAdministrator admin;
             string json_result = admin.jdump();
-            string json_baseline = "{\"ServerAdministrator\":{\"city\":\"City\",\"country\":\"USA\",\"email\":\"admin.email.address@your.domain.name\",\"organization\":\"Company/Insitution Name\",\"postalcode\":\"12345\",\"region\":\"State\",\"street\":\"Street Address\",\"telephone\":\"+1.800.555.1212\",\"website\":\"http://www.your.domain.name\"}}";
+            string json_baseline = "{\"ServerAdministrator\":{\"organization\": \"Company/Institution Name\", \"street\": \"Street Address\", \"city\": \"City\", \"region\": \"State\", \"country\": \"USA\", \"postalcode\": \"12345\", \"telephone\": \"+1.800.555.1212\", \"email\": \"admin.email.address@your.domain.name\", \"website\": \"http://www.your.domain.name\" }}";
             if(debug){
                 cerr << "json_baseline: " << json_baseline << endl;
                 cerr << "  json_result: " << json_result << endl;
@@ -132,7 +133,7 @@ public:
 
     void get_test()
     {
-        if(debug) cerr << endl;
+
         try {
             ServerAdministrator admin;
             string baseline, result;

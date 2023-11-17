@@ -4,10 +4,10 @@
         <BESError>
             <Type>3</Type>
             <Message>
-ERROR: Unable to convert a DAP4 DMR for this dataset to a DAP2 DDS object. 
-This dataset contains variables and/or attributes whose data types are not compatible 
-with the DAP2 data model.
-
+ERROR: Your have asked this service to utilize the DAP2 data model
+to process your request. Unfortunately the requested dataset contains
+data types that cannot be represented in DAP2.
+ 
 There are 4 incompatible variables and/or attributes referenced 
 in your request.
 Incompatible variables: 
@@ -16,6 +16,23 @@ Incompatible variables:
     Int8 tep_valid_spot@flag_values
     Int8 tep_valid_spot@valid_max
     Int8 tep_valid_spot@valid_min
+
+You may resolve these issues by asking the service to use
+the DAP4 data model instead of the DAP2 model.
+
+ - NetCDF If you wish to receive your response encoded as a
+   netcdf file please note that netcdf-3 has similar representational
+   constraints as DAP2, while netcdf-4 does not. In order to request
+   a DAP4 model nectdf-4 response, change your request URL from 
+   dataset_url.nc to dataset_url.dap.nc4
+
+ - DAP Clients If you are using a specific DAP client like pyDAP or
+   Panoply you may be able to signal the tool to use DAP4 by changing
+   the protocol of the dataset_url from https:// to dap4:// 
+
+ - If you are using the service's Data Request Form for your dataset
+   you can find the DAP4 version by changing form_url.html to form_url.dmr.html
+
 </Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>

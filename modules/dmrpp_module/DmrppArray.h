@@ -84,6 +84,7 @@ private:
 
     std::string d_vlen_ons_str;
     bool is_variable_length_string_array = false;
+    bool is_fixed_length_string_array = false;
 
     // In the dmr++ XML:
     //     <dmrpp:fStringArray string_length="##" pad="null_pad | null_term | space_pad" />
@@ -182,13 +183,13 @@ public:
      * @param state
      */
     void set_is_flsa(bool state){
-        is_variable_length_string_array=!state;
+        is_fixed_length_string_array = state;
     };
+    bool is_flsa() const{ return is_fixed_length_string_array; }
 
     void set_is_vlsa(bool state){
-        is_variable_length_string_array=state;
+        is_variable_length_string_array = state;
     };
-    bool is_flsa() const{ return !is_variable_length_string_array; }
     bool is_vlsa() const{ return is_variable_length_string_array; }
 
     void set_fixed_string_length(const unsigned long long length){ d_fixed_str_length = length; }

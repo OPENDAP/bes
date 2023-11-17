@@ -31,7 +31,10 @@ NGAP.inject_data_urls = true
 NGAP.UseCMRCache = true
 NGAP.UseDMRppCache = true
 
-NGAP.CMRCacheSize = 100
-NGAP.CMRCachePurge = 20
-NGAP.DMRppCacheSize = 100
-NGAP.DMRppCachePurge = 20
+NGAP.CMRCacheSize.Items = 100
+NGAP.CMRCachePurge.Items = 20
+NGAP.DMRppCacheSize.Items = 100
+NGAP.DMRppCachePurge.Items = 20
+NGAP.DMRppFileCacheSize.MB = 10000
+NGAP.DMRppFileCachePurge.MB = 2000
+NGAP.DMRppFileCacheDir = /tmp

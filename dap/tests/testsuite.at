@@ -21,3 +21,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/dap4_ce_function-01.bescmd, xfail)
 AT_BESCMD_RESPONSE_TEST([bescmd/fnoc.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([bescmd/fnoc.ddx.bescmd])
 AT_BESCMD_RESPONSE_TEST([bescmd/fnoc.dmr.bescmd])
+
+AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/dap4_response_too_big.bescmd])
+AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/dap4_variable_too_big.bescmd])
+AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/dap4_var_and_response_too_big.bescmd])

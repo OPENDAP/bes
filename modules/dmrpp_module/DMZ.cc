@@ -63,6 +63,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESLog.h"
+#include "vlsa_util.h"
 
 using namespace pugi;
 using namespace std;
@@ -84,9 +85,6 @@ using namespace libdap;
 #define SUPPORT_FILL_VALUE_CHUNKS 1
 
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
-
-
-
 
 
 namespace dmrpp {
@@ -681,20 +679,24 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
             process_map(dmr, group, array, child);
         }
         else if (is_eq(child.name(), DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT)) {
-            BESDEBUG(MODULE,"Variable has been marked as a " << DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT << endl);
+            BESDEBUG(PARSER, prolog << "Variable has been marked with a " << DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT << endl);
             // <dmrpp:FixedLengthStringArray string_length="8" pad="null"/>
             array->set_is_flsa(true);
             for (xml_attribute attr = child.first_attribute(); attr; attr = attr.next_attribute()) {
                 if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_LENGTH_ATTR)) {
                     auto length = array->set_fixed_string_length(attr.value());
-                    BESDEBUG(MODULE,"Fixed length string array string length: " << length << endl);
+                    BESDEBUG(PARSER, prolog << "Fixed length string array string length: " << length << endl);
                 }
                 else if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_PAD_ATTR)) {
                     string_pad_type pad = array->set_fixed_length_string_pad_type(attr.value());
-                    BESDEBUG(MODULE,"Fixed length string array padding scheme: " << pad << " (" <<
+                    BESDEBUG(PARSER, prolog << "Fixed length string array padding scheme: " << pad << " (" <<
                         array->get_fixed_length_string_pad_str() << ")" << endl);
                 }
             }
+        }
+        else if(is_eq(child.name(), DMRPP_VLSA_ELEMENT)){
+            BESDEBUG(PARSER, prolog << "Variable has been marked with a " << DMRPP_VLSA_ELEMENT << endl);
+            array->set_is_vlsa(true);
         }
     }
 
@@ -1204,6 +1206,42 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
     }
 }
 
+
+
+void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element)
+{
+    //---------------------------------------------------------------------------
+    // Input Sanitization
+    // We do the QC here and not in all the functions called, like endlessly...
+    //
+    if (btp->type() != dods_array_c) {
+        throw BESInternalError(prolog + "Received an unexpected "+ btp->type_name() +
+        " Expected an instance of DmrppArray!", __FILE__, __LINE__);
+    }
+    auto *array = dynamic_cast<DmrppArray *>(btp);
+    if (!array) {
+        throw BESInternalError("Internal state error. "
+        "Object claims to be array but is not.", __FILE__, __LINE__);
+    }
+    if(array->var()->type() != dods_str_c && array->var()->type() != dods_url_c){
+        throw BESInternalError(prolog + "Internal state error. "
+                               "Expected array of dods_str_c, got " +
+                                       array->var()->type_name(), __FILE__, __LINE__);
+    }
+
+    vector<string>entries;
+    vlsa::read(vlsa_element, entries);
+
+    array->set_is_vlsa(true);
+    array->set_value(entries, (int) entries.size());
+    array->set_read_p(true);
+}
+
+
+
+
+
+
 /**
  * @brief Parse a chunk node
  * There are several different forms a chunk node can take and this handles
@@ -1476,6 +1514,7 @@ void DMZ::load_chunks(BaseType *btp)
     int chunks_found = 0;
     int chunk_found = 0;
     int compact_found = 0;
+    int vlsa_found = 0;
 
     // Chunked data
     if (process_chunks(btp, var_node)) {
@@ -1592,9 +1631,15 @@ void DMZ::load_chunks(BaseType *btp)
         process_compact(btp, compact);
     }
 
+    auto vlsa_element = var_node.child(DMRPP_VLSA_ELEMENT);
+    if (vlsa_element) {
+        vlsa_found = 1;
+        process_vlsa(btp, vlsa_element);
+    }
+
     // Here we (optionally) check that exactly one of the three types of node was found
     if (DmrppRequestHandler::d_require_chunks) {
-        int elements_found = chunks_found + chunk_found + compact_found;
+        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found;
         if (elements_found != 1) {
             ostringstream oss;
             oss << "Expected chunk, chunks or compact information in the DMR++ data. Found " << elements_found

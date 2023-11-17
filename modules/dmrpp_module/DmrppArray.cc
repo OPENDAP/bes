@@ -58,6 +58,7 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
 #include "Base64.h"
+#include "vlsa_util.h"
 
 // Used with BESDEBUG
 #define dmrpp_3 "dmrpp:3"
@@ -255,8 +256,10 @@ bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<o
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_child_chunk_thread_new, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                 "' from std::async for " << args->child_chunk->to_string() << endl);
+
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
     }
     return retval;
 }
@@ -276,8 +279,11 @@ bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_super_chunk_transfer_thread, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                            "' from std::async for " << args->super_chunk->to_string(false) << endl);
+       
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
+ 
     }
     return retval;
 }
@@ -296,8 +302,11 @@ bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &fu
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                            "' from std::async, transfer_thread_counter: " << transfer_thread_counter << endl);
+
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
+ 
     }
     return retval;
 }
@@ -1742,22 +1751,6 @@ void ingest_flsa_data(DmrppArray &flsa, DmrppArray &data)
 
 }
 
-/**
- * Prototype variable length string array solution
- * @param vlsa
- * @param data
- */
-void ingest_vlsa_data(DmrppArray &vlsa, DmrppArray &data){
-    auto buff = data.get_buf();
-    vector<ons> ons_vec;
-    vlsa.get_ons_objs(ons_vec);
-    for(ons ons_obj:ons_vec){
-        auto begin = buff +  ons_obj.offset;
-        string value(begin,ons_obj.size);
-        vlsa.get_str().push_back(value);
-    }
-}
-
 
 /**
  * @brief Read data for the array
@@ -2133,6 +2126,107 @@ void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
     cout << d_vlen_ons_str.substr(last) << endl;
 }
 
+/**
+ * @brief Write a Fixed Length String Array into the dmr++ document as an XML element with values.
+ * <dmrpp:FixedLengthStringArray string_length="##" pad="null_pad | null_term | space_pad" />
+ * @param xml
+ * @param a
+ */
+void flsa_xml_element(XMLWriter &xml, DmrppArray &a){
+
+    string element_name("dmrpp:FixedLengthStringArray");
+    string str_len_attr_name("string_length");
+    string pad_attr_name("pad");
+
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
+
+    stringstream strlen_str;
+    strlen_str << a.get_fixed_string_length();
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) str_len_attr_name.c_str(),
+                                    (const xmlChar *) strlen_str.str().c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'string_length'");
+
+    if (a.get_fixed_length_string_pad() == not_set) {
+        throw BESInternalError("ERROR: Padding Scheme Has Not Been Set!", __FILE__, __LINE__);
+    }
+    string pad_str = a.pad_type_to_str(a.get_fixed_length_string_pad());
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "pad",
+                                    (const xmlChar *) pad_str.c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'pad'");
+
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not end " + a.type_name() + " element");
+}
+
+
+/**
+ * Write hdf5 compact data types into the dmr++ document.
+ * @param xml
+ * @param a
+ */
+void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
+    switch (a.var()->type()) {
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+
+        case dods_enum_c:
+
+        case dods_float32_c:
+        case dods_float64_c: {
+            uint8_t *values = nullptr;
+            try {
+                auto size = a.buf2val(reinterpret_cast<void **>(&values));
+                string encoded = base64::Base64::encode(values, size);
+                a.print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                delete[] values;
+            }
+            catch (...) {
+                delete[] values;
+                throw;
+            }
+            break;
+        }
+
+        case dods_str_c:
+        case dods_url_c: {
+            auto sb = a.compact_str_buffer();
+            if(!sb.empty()) {
+                uint8_t *values = nullptr;
+                try {
+                    auto size = a.buf2val(reinterpret_cast<void **>(&values));
+                    string encoded = base64::Base64::encode(values, size);
+                    a.print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                    delete[] values;
+                }
+                catch (...) {
+                    delete[] values;
+                    throw;
+                }
+            }
+            break;
+        }
+
+        default:
+            throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
+    }
+}
+
+
+/**
+ * @bried Write a Variable Length String Array into the dmr++ document as an XML element with values.
+ * @param xml
+ * @param a
+ */
+
 
 /**
  * @brief Shadow libdap::Array::print_dap4() - optionally prints DMR++ chunk information
@@ -2157,15 +2251,14 @@ void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
  * @see DmrppCommon::print_dmrpp()
  * @see DMRpp::print_dmrpp()
  */
-void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
-{
+void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
     if (constrained && !send_p()) return;
 
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) var()->type_name().c_str()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
 
     if (!name().empty()) {
-        BESDEBUG(MODULE, prolog << "variable full path: " << FQN() <<endl);
+        BESDEBUG(MODULE, prolog << "variable full path: " << FQN() << endl);
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "name", (const xmlChar *) name().c_str()) <
             0)
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
@@ -2211,95 +2304,19 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     // elements. This is because the size of each string's value is different.
     // Not so for an int32.
     if (DmrppCommon::d_print_chunks && is_compact_layout() && read_p()) {
-        switch (var()->type()) {
-            case dods_byte_c:
-            case dods_char_c:
-            case dods_int8_c:
-            case dods_uint8_c:
-            case dods_int16_c:
-            case dods_uint16_c:
-            case dods_int32_c:
-            case dods_uint32_c:
-            case dods_int64_c:
-            case dods_uint64_c:
-
-            case dods_enum_c:
-
-            case dods_float32_c:
-            case dods_float64_c: {
-                uint8_t *values = nullptr;
-                try {
-                    auto size = buf2val(reinterpret_cast<void **>(&values));
-                    string encoded = base64::Base64::encode(values, size);
-                    print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
-                    delete[] values;
-                }
-                catch (...) {
-                    delete[] values;
-                    throw;
-                }
-                break;
-            }
-
-            case dods_str_c:
-            case dods_url_c:
-            {
-                uint8_t *values = nullptr;
-                try {
-                    auto size = buf2val(reinterpret_cast<void **>(&values));
-                    string encoded = base64::Base64::encode(values, size);
-                    print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
-                    delete[] values;
-                }
-                catch (...) {
-                    delete[] values;
-                    throw;
-                }
-                break;
-            }
-
-            default:
-                throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
-        }
+        compact_data_xml_element(xml, *this);
     }
-    if(var()->type() == dods_str_c){
-        if(is_flsa() && DmrppCommon::d_print_chunks){
-            // <dmrpp:FixedLengthStringArray string_length="##" pad="null_pad | null_term | space_pad" />
 
-            string element_name("dmrpp:FixedLengthStringArray");
-            string str_len_attr_name("string_length");
-            string pad_attr_name("pad");
+    // Is it an array of strings? Those have issues so we treat them special.
+    if (var()->type() == dods_str_c) {
+        if (is_flsa() && DmrppCommon::d_print_chunks) {
 
-            if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
-
-            stringstream strlen_str;
-            strlen_str << d_fixed_str_length;
-            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) str_len_attr_name.c_str(), (const xmlChar *) strlen_str.str().c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'string_length'");
-
-            if(d_fixed_length_string_pad_type == not_set){
-                    throw BESInternalError("ERROR: Padding Scheme Has Not Been Set!",__FILE__,__LINE__);
-            }
-            string pad_str = pad_type_to_str(d_fixed_length_string_pad_type);
-
-            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "pad", (const xmlChar *) pad_str.c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'pad'");
-
-            if (xmlTextWriterEndElement(xml.get_writer()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
+            // Write the dmr++ for Fix Length String Array
+            flsa_xml_element(xml, *this);
         }
-        else if(is_vlsa() && DmrppCommon::d_print_chunks){
-            string element_name("dmrpp:VariableLengthStringArray");
-            if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
-
-            if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) "offset[0]:size[0],...,offset[n]:size[n]") < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write text into element");
-
-            if (xmlTextWriterEndElement(xml.get_writer()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
-
+        else if (is_vlsa() && DmrppCommon::d_print_chunks) {
+            // Write the dmr++ for Variable Length String Array
+            vlsa::write(xml, *this);
         }
     }
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
@@ -2337,17 +2354,13 @@ unsigned int DmrppArray::buf2val(void **val){
         memcpy(*val, str_buf.data(), buf_size);
         return buf_size;
     }
-
     return Vector::buf2val(val);
-
-
 }
 
 // Check if direct chunk IO can be used. 
 bool DmrppArray::use_direct_io_opt() {
 
     bool ret_value = false;
-
     bool is_integer_le_float = false;
 
     if (DmrppRequestHandler::is_netcdf4_enhanced_response && this->is_filters_empty() == false) {

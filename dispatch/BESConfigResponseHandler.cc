@@ -74,8 +74,8 @@ BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
     info->add_tag( "file", TheBESKeys::TheKeys()->keys_file_name() ) ;
 
     map<string,string> props ;
-    TheBESKeys::Keys_citer ki = TheBESKeys::TheKeys()->keys_begin() ;
-    TheBESKeys::Keys_citer ke = TheBESKeys::TheKeys()->keys_end() ;
+    auto ki = TheBESKeys::TheKeys()->keys_begin() ;
+    auto ke = TheBESKeys::TheKeys()->keys_end() ;
     for( ; ki != ke; ki++ )
     {
 	props.clear() ;

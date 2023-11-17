@@ -92,44 +92,15 @@ template<typename M>
 class BESPlugin: public BESObj {
 private:
 	std::string d_filename; // Library filename
-    void *d_lib; // Open library handle
+    void *d_lib = nullptr; // Open library handle
 
-    /** Do not allow empty instances to be created.
-     */
-    BESPlugin();
-#if 0
-    throw (BESInternalError)
-    {
-        throw BESInternalError("Unimplemented method", __FILE__, __LINE__);
-    }
-#endif
-    /** Do not allow clients to use the copy constructor. BESPlugin
-     pointer (since doing so could result in calling dlclose too many
-     times, something that is apt to be bad.
-     */
-    BESPlugin(const BESPlugin &p);
-#if 0
-    throw (BESInternalError)
-    {
-        throw BESInternalError("Unimplemented method.", __FILE__, __LINE__);
-    }
-#endif
-    /** Do not allow clients to use the assignment operator.
-     @see BESPlugin(const BESPlugin &p)
-     */
-    BESPlugin &operator=(const BESPlugin &p);
-#if 0
-    throw (BESInternalError)
-    {
-        throw BESInternalError("Unimplemented method.", __FILE__, __LINE__);
-    }
-#endif
-    void *get_lib() throw (NoSuchLibrary)
-    {
+    /// THis is pretty simple caching scheme. However, do we need this?
+    /// but it probably does not cost that much.
+    void *get_lib() {
         if (!d_lib) {
             d_lib = dlopen(d_filename.c_str(), RTLD_LAZY /*RTLD_NOW*/ | RTLD_GLOBAL);
             BESDEBUG( "bes", "BESPlugin: plug in handler:" << d_filename << ", " << d_lib << std::endl);
-            if (d_lib == NULL) {
+            if (d_lib == nullptr) {
                 throw NoSuchLibrary(std::string(dlerror()), __FILE__, __LINE__);
             }
         }
@@ -138,36 +109,25 @@ private:
     }
 
 public:
-    /** Create a new BESPlugin.
-     @param filename The name of the sharable object library that holds
-     the class' implementation.
-     */
-    BESPlugin(const std::string &filename) :
-            d_filename(filename), d_lib(0)
-    {
-    }
+    BESPlugin() = delete;
+    BESPlugin(const BESPlugin &p) = delete;
 
-    /** The destructor closes the library.
+    /**
+     * Create a new BESPlugin.
+     * @param filename The name of the sharable object library that holds the class' implementation.
      */
-    virtual ~BESPlugin()
-    {
-        BESDEBUG( "bes", "BESPlugin: unplugging handler:" << d_filename << ", " << d_lib << std::endl);
-#ifdef UNPLUG_HANDLERS
-        if (d_lib) {
-            dlclose(d_lib);
-            d_lib = 0; // Added; paranoia. jhrg
-        }
-#endif
-    }
+    explicit BESPlugin(const std::string &filename) : d_filename(filename) { }
 
-    /** Instantiate the object. Using the \b maker function found in the
-     shreable-object library, create a new instance of class \b M where \b
-     M was the template parameter of BESPlugin.
+    ~BESPlugin() override = default;
 
-     @return A pointer to the new instance.
+    BESPlugin &operator=(const BESPlugin &p) = delete;
+
+    /**
+     * Instantiate the object. Using the \b maker function found in the shareable-object library,
+     * create a new instance of class \b M where \b M was the template parameter of BESPlugin.
+     * @return A pointer to the new instance.
      */
-    M* instantiate() throw (NoSuchLibrary, NoSuchObject)
-    {
+    M* instantiate() {
         void *maker = dlsym(get_lib(), "maker");
         if (!maker) {
             throw NoSuchObject(std::string(dlerror()), __FILE__, __LINE__);
@@ -175,16 +135,15 @@ public:
 
         typedef M *(*maker_func_ptr)();
         maker_func_ptr my_maker = *reinterpret_cast<maker_func_ptr*>(&maker);
-        M *my_M = (my_maker)();
+        M *my_M = my_maker();
 
         return my_M;
     }
 
-    virtual void dump(std::ostream &strm) const
-    {
-        strm << "BESPlugin::dump - (" << (void *) this << ")" << std::endl;
+    void dump(std::ostream &strm) const override  {
+        strm << "BESPlugin::dump - (" << std::ios::hex << this << ")" << std::endl;
         strm << "    plugin name: " << d_filename << std::endl;
-        strm << "    library handle: " << (void *) d_lib << std::endl;
+        strm << "    library handle: " << std::ios::hex << d_lib << std::endl;
     }
 };
 

@@ -337,6 +337,10 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cont.h5.dmrpp.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cstr.h5.dmrpp.dap])
 
 #############################################################################
+# Arrays of Variable Length String tests
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_vl_string_1d.h5.dmrpp])
+
+#############################################################################
 # Multi input tests. These test caching. The DAP4 tests fail because caching
 # for the DMR was moved to the NGAP module (at least for now). When DMR object
 # copying is fixed, these DMR and DAP tests should work again. jhrg 9/27/23

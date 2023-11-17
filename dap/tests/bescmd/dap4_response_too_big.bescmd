@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[thread:http-nio-8080-exec-9-36][bes_client:/-0]">
+  <bes:setContext name="bes_timeout">3000</bes:setContext>
+  <bes:setContext name="xdap_accept">2.0</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">10240</bes:setContext>
+  <bes:setContext name="max_variable_size">0</bes:setContext>
+  <bes:setContainer name="c">/data/coads.dods</bes:setContainer>
+  <bes:define name="d" space="default">
+    <bes:container name="c" />
+  </bes:define>
+  <bes:get type="dap" definition="d"/>
+</bes:request>
