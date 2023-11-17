@@ -70,9 +70,9 @@ public:
                                                           NgapRequestHandler::d_dmrpp_file_cache_purge_size);
     }
 
-    // Delete the cache dir before each test; really only needed for the
+    // Delete the cache dir after each test; really only needed for the
     // tests toward the end of the suite that test the FileCache.
-    void setUp() override {
+    void tearDown() override {
         struct stat sb;
         if (stat(d_cache_dir.c_str(), &sb) == 0) {
             if (S_ISDIR(sb.st_mode)) {
@@ -85,9 +85,7 @@ public:
             }
         }
     }
-
-    // tearDown; Called after each test; not used.
-
+    
     void test_inject_data_url_default() {
         NgapContainer container;
         CPPUNIT_ASSERT_MESSAGE("The default value should be false", !container.inject_data_url());
