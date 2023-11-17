@@ -60,10 +60,10 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache to not be used by default", !NgapRequestHandler::d_use_cmr_cache);
         CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache to not be used by default", !NgapRequestHandler::d_use_dmrpp_cache);
 
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 100", NgapRequestHandler::d_cmr_cache_size == 100);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 100", NgapRequestHandler::d_dmrpp_mem_cache_size == 100);
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache space to be 20", NgapRequestHandler::d_cmr_cache_purge == 20);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache space to be 20", NgapRequestHandler::d_dmrpp_mem_cache_purge == 20);
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 100", NgapRequestHandler::d_cmr_cache_size_items == 100);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 100", NgapRequestHandler::d_dmrpp_mem_cache_size_items == 100);
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache space to be 20", NgapRequestHandler::d_cmr_cache_purge_items == 20);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache space to be 20", NgapRequestHandler::d_dmrpp_mem_cache_purge_items == 20);
     }
 
     void test_cmr_cache_disabled() {
@@ -76,10 +76,10 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache to be false", !NgapRequestHandler::d_use_cmr_cache);
         CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache to be used by default", NgapRequestHandler::d_use_dmrpp_cache);
 
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 100", NgapRequestHandler::d_cmr_cache_size == 100);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 100", NgapRequestHandler::d_dmrpp_mem_cache_size == 100);
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache space to be 20", NgapRequestHandler::d_cmr_cache_purge == 20);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache space to be 20", NgapRequestHandler::d_dmrpp_mem_cache_purge == 20);
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 100", NgapRequestHandler::d_cmr_cache_size_items == 100);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 100", NgapRequestHandler::d_dmrpp_mem_cache_size_items == 100);
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache space to be 20", NgapRequestHandler::d_cmr_cache_purge_items == 20);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache space to be 20", NgapRequestHandler::d_dmrpp_mem_cache_purge_items == 20);
     }
 
     void test_dmrpp_cache_disabled() {
@@ -92,20 +92,20 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache to be false", !NgapRequestHandler::d_use_dmrpp_cache);
 
         // These will still have the default values
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 100", NgapRequestHandler::d_cmr_cache_size == 100);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 100", NgapRequestHandler::d_dmrpp_mem_cache_size == 100);
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache space to be 20", NgapRequestHandler::d_cmr_cache_purge == 20);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache space to be 20", NgapRequestHandler::d_dmrpp_mem_cache_purge == 20);
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 100", NgapRequestHandler::d_cmr_cache_size_items == 100);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 100", NgapRequestHandler::d_dmrpp_mem_cache_size_items == 100);
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache space to be 20", NgapRequestHandler::d_cmr_cache_purge_items == 20);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache space to be 20", NgapRequestHandler::d_dmrpp_mem_cache_purge_items == 20);
     }
 
     void test_custom_cache_params() {
         TheBESKeys::TheKeys()->reload_keys(BESUtil::assemblePath(TEST_BUILD_DIR, "bes.cache.conf"));
 
-        TheBESKeys::TheKeys()->set_key("NGAP.CMRCacheSize", "17");
-        TheBESKeys::TheKeys()->set_key("NGAP.CMRCachePurge", "7");
+        TheBESKeys::TheKeys()->set_key("NGAP.CMRCacheSize.Items", "17");
+        TheBESKeys::TheKeys()->set_key("NGAP.CMRCachePurge.Items", "7");
 
-        TheBESKeys::TheKeys()->set_key("NGAP.DMRppCacheSize", "17");
-        TheBESKeys::TheKeys()->set_key("NGAP.DMRppCachePurge", "7");
+        TheBESKeys::TheKeys()->set_key("NGAP.DMRppCacheSize.Items", "17");
+        TheBESKeys::TheKeys()->set_key("NGAP.DMRppCachePurge.Items", "7");
 
         d_rh = make_unique<NgapRequestHandler>("test_no_dmrpp_cache");
 
@@ -113,10 +113,10 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache to be used by default", NgapRequestHandler::d_use_dmrpp_cache);
 
         // These will still have the default values
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 100", NgapRequestHandler::d_cmr_cache_size == 17);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 100", NgapRequestHandler::d_dmrpp_mem_cache_size == 17);
-        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache space to be 20", NgapRequestHandler::d_cmr_cache_purge == 7);
-        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache space to be 20", NgapRequestHandler::d_dmrpp_mem_cache_purge == 7);
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache threshold to be 17", NgapRequestHandler::d_cmr_cache_size_items == 17);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache threshold to be 17", NgapRequestHandler::d_dmrpp_mem_cache_size_items == 17);
+        CPPUNIT_ASSERT_MESSAGE("Expected the CMR cache space to be 7", NgapRequestHandler::d_cmr_cache_purge_items == 7);
+        CPPUNIT_ASSERT_MESSAGE("Expected the DMR++ cache space to be 7", NgapRequestHandler::d_dmrpp_mem_cache_purge_items == 7);
     }
 
     CPPUNIT_TEST_SUITE( NgapRequestHandlerTest );

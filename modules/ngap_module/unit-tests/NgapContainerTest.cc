@@ -63,11 +63,11 @@ public:
     void configure_ngap_handler() const {
         NgapRequestHandler::d_use_dmrpp_cache = true;
         NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
-        NgapRequestHandler::d_dmrpp_file_cache_size = 100 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache_purge_size = 20 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache_size_mb = 100 * MEGABYTE; // MB
+        NgapRequestHandler::d_dmrpp_file_cache_purge_size_mb = 20 * MEGABYTE; // MB
         NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_size,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size);
+                                                          NgapRequestHandler::d_dmrpp_file_cache_size_mb,
+                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size_mb);
     }
 
     // Delete the cache dir after each test; really only needed for the
@@ -85,7 +85,7 @@ public:
             }
         }
     }
-    
+
     void test_inject_data_url_default() {
         NgapContainer container;
         CPPUNIT_ASSERT_MESSAGE("The default value should be false", !container.inject_data_url());
