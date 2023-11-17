@@ -140,9 +140,8 @@ std::string encode(const std::string &source_string) {
     BESDEBUG(VLSA, prolog << "  compressed source binary: " << setw(W) << compressed_src.size() <<
                           " src:csb=" << setw(R) << ((double) source_string.size()) / ((double) compressed_src.size()) << "\n");
 
-    int bsize = csize;
     BESDEBUG(VLSA, prolog << "END\n");
-    return { base64::Base64::encode(compressed_src.data(), bsize) };
+    return { base64::Base64::encode(compressed_src.data(), (int)csize) };
 }
 
 /** _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._ _._
