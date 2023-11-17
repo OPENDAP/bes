@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="t_vl_string_1d.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.20.13">
+    <String name="VLSArrayElements">
+        <Dim size="4"/>
+        <dmrpp:vlsa>
+            <v>Parting</v>
+            <v>is su</v>
+            <v>swe</v>
+            <v></v>
+        </dmrpp:vlsa>
+    </String>
+</Dataset>
+

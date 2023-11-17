@@ -486,17 +486,6 @@ string_pad_type get_pad_type(const hid_t dataset) {
 }
 
 
-/**
- * @brief @TODO THIS IS A DUMMY FUNCTION AND NOT AN ACTUAL IMPLEMENTATION
- * @param dataset
- * @param da
- */
-static void add_vlen_str_array_info(hid_t dataset, DmrppArray *da){
-    string ons_str="0:26,26:35,35:873,873:5000";
-    da->set_ons_string(ons_str);
-    da->set_is_vlsa(true);
-}
-
 
 /**
  * Adds the fixed length string array information to the array variable array_var. If the array_var is not an
@@ -575,7 +564,7 @@ static void add_string_array_info(const hid_t dataset, BaseType *btp){
 
     if (H5Tis_variable_str(h5_dataset_type) > 0) {
         VERBOSE( cerr << prolog << "Found variable length string array: " << dap_array->name() << endl);
-        add_vlen_str_array_info( dataset, dap_array);
+        dap_array->set_is_vlsa(true);
     }
     else {
         VERBOSE( cerr << prolog << "Found fixed length string array: " << dap_array->name() << endl);
@@ -817,7 +806,6 @@ void process_compact_flsa(hid_t dataset, BaseType *btp){
     VERBOSE( cerr << prolog << "fls_length:  " << fls_length << endl);
 
     auto memRequired = btp->length_ll() * fls_length;
-
 
     auto array = toDA(btp);
     auto &string_buf = array->compact_str_buffer();
@@ -1072,7 +1060,7 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
                 msgs << "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so ";
                 msgs << "the storage penalty is minimal.";
                 msg = msgs.str();
-                is_unsupported = true;
+                is_unsupported = false;
             }
             break;
         }
@@ -1105,31 +1093,120 @@ bool process_variable_length_string_scalar(const hid_t dataset, BaseType *btp){
 
     // btp->type() == dods_str_c means a scalar string, if it was an
     // array of strings then btp->type() == dods_array_c would be true
-    if(btp->type() == dods_str_c) {
-        auto h5_type_id = H5Dget_type(dataset);
-        if(H5Tis_variable_str(h5_type_id) > 0) {
-            vector<string> finstrval;   // passed by reference to read_vlen_string
-            finstrval.emplace_back(""); // initialize array for it's trip to Cville
-
-            // Read the scalar string.
-            read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-            string vlstr = finstrval[0];
-            VERBOSE(cerr << prolog << " read_vlen_string(): " << vlstr << endl);
-
-            // Convert variable to a compact representation
-            // so that its value can be stored in the dmr++
-            auto dc = toDC(btp);
-            dc->set_compact(true);
-
-            // And then set the value.
-            auto str = dynamic_cast<libdap::Str *>(btp);
-            str->set_value(vlstr);
-            str->set_read_p(true);
-
-            return true;
-        }
+    if(btp->type() != dods_str_c) {
+        return false;
     }
-    return false;
+
+    auto h5_type_id = H5Dget_type(dataset);
+    if(H5Tis_variable_str(h5_type_id) <= 0) {
+        return false; // Not a variable length string, so, again, not our problem.
+    }
+
+    VERBOSE(cerr << prolog << "Processing VLSS: " << btp->FQN() << "\n");
+
+    vector<string> vls_values;   // passed by reference to read_vlen_string
+    vls_values.emplace_back(""); // initialize array for it's trip to Cville
+
+    // Read the scalar string.
+    read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, vls_values);
+    string vlss = vls_values[0];
+    VERBOSE(cerr << prolog << " read_vlen_string(): " << vlss << endl);
+
+    // Convert variable to a compact representation
+    // so that its value can be stored in the dmr++
+    auto dc = toDC(btp);
+    dc->set_compact(true);
+
+    // And then set the value.
+    auto str = dynamic_cast<libdap::Str *>(btp);
+    str->set_value(vlss);
+    str->set_read_p(true);
+
+    return true;
+
+
+}
+
+/**
+ * @brief Identifies, reads, and then stores a VLSS in a DAP dmr++ variable using the compact representation
+ *
+ * @param dataset The HDF5 dataset id.
+ * @param btp The BaseType pointer to the sister DAP class
+ * @return Returns true if the variable was processed, false otherwise.
+ */
+bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
+
+    if(btp->type() != dods_array_c) {
+        return false; // Not an array, not our problem...
+    }
+    auto dap_array = toDA(btp);
+    if(!dap_array){
+        throw BESInternalError("Malformed DAP object " + btp->FQN() +
+        " Identifies as dods_array_c but cast to DmrppArray fails!", __FILE__, __LINE__);
+    }
+
+    if(dap_array->prototype()->type() != dods_str_c){
+        return false; // Not a string, not our problem...
+    }
+
+    hid_t h5_type_id = H5Dget_type(dataset);
+    if(H5Tis_variable_str(h5_type_id) <= 0) {
+        return false;  // Not a variable length string, so, again, not our problem.
+    }
+    VERBOSE(cerr << prolog << "h5_type_id: " << h5_type_id << "\n");
+
+    dap_array->set_is_vlsa(true);
+    VERBOSE(cerr << prolog << "Processing VLSA: " << dap_array->FQN() << "\n");
+
+    auto dspace = H5Dget_space(dataset);
+
+    int ndims = H5Sget_simple_extent_ndims(dspace);
+    VERBOSE(cerr << prolog << "ndims: " << ndims << "\n");
+
+    vector<hsize_t>count;
+    count.reserve(ndims);
+    if(H5Sget_simple_extent_dims(dspace, count.data(), nullptr) < 0){
+        throw BESInternalError("Failed to get hdf5 count for variable: " + btp->FQN(), __FILE__, __LINE__);
+    }
+
+    stringstream msg;
+    msg << "count[]: ";
+    for(int i=0; i<ndims; i++) {
+        if(i) msg << ",";
+        msg << count[i];
+    }
+    VERBOSE(cerr << prolog << msg.str() << "\n");
+
+    vector<hsize_t> offset;
+    offset.reserve(ndims);
+    for(int i=0; i<ndims; i++)
+        offset.emplace_back(0);
+
+    uint64_t num_elements = dap_array->get_size(false);\
+    VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
+
+    vector<string> vls_values;
+    vls_values.resize(num_elements);
+
+    read_vlen_string(dataset,
+                     num_elements,
+                     offset.data(),
+                     nullptr,
+                     count.data(),
+                     vls_values);
+
+#ifndef NDEBUG
+    VERBOSE(cerr << prolog << " vls_values.size(): " << vls_values.size() << "\n");
+    uint64_t indx = 0;
+    for (const auto &sval: vls_values) {
+        VERBOSE(cerr << prolog << " vls_values[" << to_string(indx++) << "]: '" << sval << "'\n");
+    }
+#endif
+
+    dap_array->set_value(vls_values,(int) vls_values.size());
+    dap_array->set_read_p(true);
+
+    return true;
 }
 
 /**e
@@ -1266,7 +1343,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                     throw UnsupportedTypeException(msg);
                 }
 
-                if (!process_variable_length_string_scalar(dataset, btp)) {
+                if (!process_variable_length_string_scalar(dataset, btp) && !process_variable_length_string_array(dataset,btp)) {
 
                     VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
                     get_variable_chunk_info(dataset, btp);
