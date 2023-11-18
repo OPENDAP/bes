@@ -1915,6 +1915,7 @@ bool DmrppArray::read()
     return true;
 }
 
+#if 0
 /**
  * Classes used with the STL for_each() algorithm; stolen from libdap::Array.
  */
@@ -1996,6 +1997,7 @@ public:
     }
 };
 ///@}
+#endif
 
 
 unsigned long long DmrppArray::set_fixed_string_length(const string &length_str)
@@ -2278,16 +2280,57 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
 
     if (prototype()->is_constructor_type()) {
         Constructor &c = static_cast<Constructor &>(*prototype());
+#if 0
         for_each(c.var_begin(), c.var_end(), PrintD4ConstructorVarXMLWriter(xml, constrained));
+#endif
+        for_each(c.var_begin(), c.var_end(), [&xml, constrained](BaseType *btp){ btp->print_dap4(xml, constrained); });
         // bind2nd(mem_fun_ref(&BaseType::print_dap4), xml));
     }
 
     // Drop the local_constraint which is per-array and use a per-dimension on instead
+#if 0
     for_each(dim_begin(), dim_end(), PrintD4ArrayDimXMLWriter(xml, constrained));
+#endif
+    for_each(dim_begin(), dim_end(),
+             [&xml, constrained](Array::dimension &d) {
+                 // This duplicates code in D4Dimensions (where D4Dimension::print_dap4() is defined
+                 // because of the need to print the constrained size of a dimension). I think that
+                 // the constraint information has to be kept here and not in the dimension (since they
+                 // are shared dims). Could hack print_dap4() to take the constrained size, however.
+                 if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) "Dim") < 0)
+                     throw InternalErr(__FILE__, __LINE__, "Could not write Dim element");
+
+                 string name = (d.dim) ? d.dim->fully_qualified_name() : d.name;
+                 // If there is a name, there must be a Dimension (named dimension) in scope
+                 // so write its name but not its size.
+                 if (!constrained && !name.empty()) {
+                     if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "name",
+                                                     (const xmlChar *) name.c_str()) < 0)
+                         throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+                 }
+                 else if (d.use_sdim_for_slice) {
+                     if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "name",
+                                                     (const xmlChar *) name.c_str()) < 0)
+                         throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+                 }
+                 else {
+                     ostringstream size;
+                     size << (constrained ? d.c_size : d.size);
+                     if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "size",
+                                                     (const xmlChar *) size.str().c_str()) < 0)
+                         throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+                 }
+
+                 if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+                     throw InternalErr(__FILE__, __LINE__, "Could not end Dim element");
+             });
 
     attributes()->print_dap4(xml);
 
+#if 0
     for_each(maps()->map_begin(), maps()->map_end(), PrintD4MapXMLWriter(xml));
+#endif
+    for_each(maps()->map_begin(), maps()->map_end(), [&xml](D4Map *m){ m->print_dap4(xml); });
 
     // Only print the chunks' info if there. This is the code added to libdap::Array::print_dap4().
     // jhrg 5/10/18
