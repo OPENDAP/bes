@@ -280,6 +280,7 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
                 return false;
             }
             BESDEBUG(NGAP_CACHE, prolog << "File Cache, cached DMR++: " << get_real_name() << endl);
+            // TODO call purge() here every so often. jhrg 11/18/23
         }
         else {
             ERROR_LOG("NgapContainer::access() - failed to put DMR++ in file cache");
