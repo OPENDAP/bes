@@ -1491,11 +1491,11 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
 void qc_input_file(const string &file_fqn)
 {
     //Use an ifstream file to run a check on the provided file's signature
-    // to see if it is an HDF5 file. - kln 5/18/23
+    // to see if it is an HDF4 file. - kln 5/18/23
 
     if (file_fqn.empty()) {
         stringstream msg;
-        msg << "HDF5 input file name must be provided (-f <input>) and be a fully qualified path name." << endl;
+        msg << "HDF4 input file name must be provided (-f <input>) and be a fully qualified path name." << endl;
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
 
@@ -1514,18 +1514,17 @@ void qc_input_file(const string &file_fqn)
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
 
-    //HDF5 and NetCDF3 signatures:
-    const char hdf5Signature[] = {'\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n'};
-    const char netcdf3Signature[] = {'C', 'D', 'F'};
+    //HDF4 signature:
+    const char hdf4Signature[] = {'H', 'D', 'F', '\r', '\n', '\x1A', '\n'};
 
     //Read the first 8 bytes (file signature) from the file
     string signature;
     signature.resize(8);
     file.read(&signature[0], signature.size());
 
-    //First check if file is NOT an HDF5 file, then, if it is not, check if it is netcdf3
-    bool isHDF5 = memcmp(&signature[0], hdf5Signature, sizeof(hdf5Signature)) == 0;
-    if (!isHDF5) {
+    //First check if file is NOT an HDF4 file, then, if it is not, check if it is netcdf3
+    bool isHDF4 = memcmp(&signature[0], hdf4Signature, sizeof(hdf4Signature)) == 0;
+    if (!isHDF4) {
         //Reset the file stream to read from the beginning
         file.clear();
         file.seekg(0);
@@ -1533,20 +1532,12 @@ void qc_input_file(const string &file_fqn)
         char newSignature[3];
         file.read(&signature[0], signature.size());
 
-        bool isNetCDF3 = memcmp(newSignature, netcdf3Signature, sizeof(netcdf3Signature)) == 0;
-        if (isNetCDF3) {
-            stringstream msg;
-            msg << "The file submitted, " << file_fqn << ", ";
-            msg << "is a NetCDF-3 classic file and is not compatible with dmr++ production at this time." << endl;
-            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
-        }
-        else {
-            stringstream msg;
-            msg << "The provided file: " << file_fqn << " - ";
-            msg << "is neither an HDF5 or a NetCDF-4 file, currently only HDF5 and NetCDF-4 files ";
-            msg << "are supported for dmr++ production" << endl;
-            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
-        }
+    } else {
+        stringstream msg;
+        msg << "The provided file: " << file_fqn << " - ";
+        msg << "is neither an HDF4 or a NetCDF-4 file, currently only HDF4 and NetCDF-4 files ";
+        msg << "are supported for dmr++ production" << endl;
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
 }
 
