@@ -49,6 +49,8 @@
 #include "NgapNames.h"
 
 #define prolog std::string("NgapContainer::").append(__func__).append("() - ")
+// CACHE_LOG is defined separately from INFO_LOG so we can turn it off easily. jhrg 11/19/23
+#define CACHE_LOG(x) MR_LOG("info", x)
 
 using namespace std;
 using namespace bes;
@@ -211,11 +213,11 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
     if (NgapRequestHandler::d_use_dmrpp_cache) {
         if (NgapRequestHandler::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
             // set_container_type() because access() is called from both the framework and the DMR++ handler
-            BESDEBUG(NGAP_CACHE, prolog << "Memory Cache hit, DMR++: " << get_real_name() << endl);
+            CACHE_LOG(prolog + "Memory Cache hit, DMR++: " + get_real_name());
             return true;
         }
         else {
-            BESDEBUG(NGAP_CACHE, prolog << "Memory Cache miss, DMR++: " << get_real_name() << endl);
+            CACHE_LOG(prolog + "Memory Cache miss, DMR++: " + get_real_name());
         }
     }
 
@@ -225,10 +227,11 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
         FileCache::Item item;
         if (NgapRequestHandler::d_dmrpp_file_cache.get(FileCache::hash_key(get_real_name()), item)) { // got it
             // read data from the file into the string.
-            BESDEBUG(NGAP_CACHE, prolog << "File Cache hit, Memory Cache miss, DMR++: " << get_real_name() << endl);
+            CACHE_LOG(prolog + "File Cache hit, DMR++: " + get_real_name());
             if (file_to_string(item.get_fd(), dmrpp_string)) {
                 // put it in the memory cache
                 NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
+                CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name());
                 return true;
             }
             else {
@@ -237,7 +240,7 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
             }
         }
         else {
-            BESDEBUG(NGAP_CACHE, prolog << "File Cache miss, DMR++: " << get_real_name() << endl);
+            CACHE_LOG(prolog +  "File Cache miss, DMR++: " + get_real_name());
         }
     }   // end of FileCache::Item scope
 
@@ -270,21 +273,24 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
     // The memory cache is for use by this process, the file cache for other processes/VMs
     if (NgapRequestHandler::d_use_dmrpp_cache) {
         NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
-        BESDEBUG(NGAP_CACHE, prolog << "Memory Cache, cached DMR++: " << get_real_name() << endl);
+        CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name());
 
         FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
         if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
-            // TODO do this in a child thread someday. jhrg 11/14/23
+            // Do this in a child thread someday. jhrg 11/14/23
             if (write(item.get_fd(), dmrpp_string.data(), dmrpp_string.size()) != dmrpp_string.size()) {
                 ERROR_LOG("NgapContainer::access() - failed to write DMR++ to file cache");
                 return false;
             }
-            BESDEBUG(NGAP_CACHE, prolog << "File Cache, cached DMR++: " << get_real_name() << endl);
-            // TODO call purge() here every so often. jhrg 11/18/23
+            CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name());
         }
         else {
             ERROR_LOG("NgapContainer::access() - failed to put DMR++ in file cache");
             return false;
+        }
+
+        if (!NgapRequestHandler::d_dmrpp_file_cache.purge()) {
+            ERROR_LOG("NgapContainer::access() - call to FileCache::purge() failed");
         }
     }
 
