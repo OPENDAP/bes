@@ -19,6 +19,10 @@ NGAP.UseDMRppCache = true
 
 NGAP.UseCMRCache = true
 
-# Same defaults and meaning as for the CMR cache
+# Same defaults and meaning as for the DMRppCache cache
 # NGAP.CMRCacheSize = 100
 # NGAP.CMRCachePurge = 20
+
+NGAP.DMRppFileCacheDir = /tmp/hyrax_ngap_cache
+NGAP.DMRppFileCacheSize.MB = 10000
+NGAP.DMRppFileCachePurge.MB = 2000
