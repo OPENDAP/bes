@@ -598,7 +598,7 @@ public:
      * @brief Purge the lest recently used items from the cache.
      * The purge() method for FileCache is public. It is the user's job to call purge.
      * The idea behind this is that user code can decide if purge needs to be called
-     * on every put, every Nth put or not at all. Note that purge() does nothing more
+     * on every put, every Nth put or not at all. Note that purge() (often) does nothing more
      * than compare the size recorded in the cache_info file (updated on every put())
      * with the configured max cache size.
      * @return True if the purge operation encountered no errors, false if failures
