@@ -105,10 +105,6 @@ public:
     MemoryCache() = default;    // this makes testing easier
     MemoryCache(const MemoryCache *src) = delete;
 
-#if 0
-    MemoryCache(unsigned int t, unsigned int s): d_max_items(t), d_purge_items(s) {}
-#endif
-
     virtual ~MemoryCache() = default;
     MemoryCache &operator=(const MemoryCache *src) = delete;
 

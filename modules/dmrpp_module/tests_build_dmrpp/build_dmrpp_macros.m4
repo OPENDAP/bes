@@ -230,9 +230,9 @@ DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
-test_name="$1"
-input_file="$2"
-baseline="${BASELINES_DIR}/$3"
+test_name=$1
+input_file=$2
+baseline=${BASELINES_DIR}/$3
 params="$4"
 output_file="$5"
 AT_XFAIL_IF([test z$6 = zxfail]) # This is always run FIRST
@@ -268,40 +268,43 @@ TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${gd_verbose} ${input_fi
 
 AS_IF([test -z "$at_verbose"], [
     echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
-    echo "#   abs_top_srcdir: ${abs_top_srcdir}"
-    echo "#       abs_srcdir: ${abs_srcdir}"
-    echo "#       top_srcdir: ${top_srcdir}"
-    echo "#         builddir: ${builddir}"
-    echo "#     abs_builddir: ${abs_builddir}"
-    echo "#     top_builddir: ${top_builddir}"
-    echo "# top_build_prefix: ${top_build_prefix}"
-    echo "# abs_top_builddir: ${abs_top_builddir}"
-    echo "#        GET_DMRPP: ${GET_DMRPP}"
-    echo "#    BES_DATA_ROOT: ${BES_DATA_ROOT}"
-    echo "#         DATA_DIR: ${DATA_DIR}"
-    echo "#    BASELINES_DIR: ${BASELINES_DIR}"
+    echo "#   abs_top_srcdir: '${abs_top_srcdir}'"
+    echo "#       abs_srcdir: '${abs_srcdir}'"
+    echo "#       top_srcdir: '${top_srcdir}'"
+    echo "#         builddir: '${builddir}'"
+    echo "#     abs_builddir: '${abs_builddir}'"
+    echo "#     top_builddir: '${top_builddir}'"
+    echo "# top_build_prefix: '${top_build_prefix}'"
+    echo "# abs_top_builddir: '${abs_top_builddir}'"
+    echo "#        GET_DMRPP: '${GET_DMRPP}'"
+    echo "#    BES_DATA_ROOT: '${BES_DATA_ROOT}'"
+    echo "#         DATA_DIR: '${DATA_DIR}'"
+    echo "#    BASELINES_DIR: '${BASELINES_DIR}'"
     echo "#"
     echo "# AT_GET_DMRPP_3_20() arguments: "
-    echo "#           arg #1: "$1
-    echo "#           arg #2: "$2
-    echo "#           arg #3: "$3
-    echo "#           arg #4: "$4
-    echo "#           arg #5: "$5
-    echo "#           arg #6: "$6
-    echo "#       test_name: ${test_name}"
-    echo "#       input_file: ${input_file}"
-    echo "#         baseline: ${baseline}"
-    echo "#      xfail_param: ${xfail_param}"
-    echo "#           params: ${params}"
-    echo "#      output_file: ${output_file}"
-    echo "#       gd_verbose: ${gd_verbose}"
-    echo "#         TEST_CMD: ${TEST_CMD}"
+    echo "#           arg #1: '${1}'"
+    echo "#           arg #2: '${2}'"
+    echo "#           arg #3: '${3}'"
+    echo "#           arg #4: '${4}'"
+    echo "#           arg #5: '${5}'"
+    echo "#           arg #6: '${6}'"
+    echo "#        test_name: '${test_name}'"
+    echo "#       input_file: '${input_file}'"
+    echo "#         baseline: '${baseline}'"
+    echo "#      xfail_param: '${xfail_param}'"
+    echo "#           params: '${params}'"
+    echo "#      output_file: '${output_file}'"
+    echo "#       gd_verbose: '${gd_verbose}'"
+    echo "#         TEST_CMD: '${TEST_CMD}'"
 ])
 
 AS_IF([test -n "$baselines" -a x$baselines = xyes],
 [
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
     AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines - output_file: ${output_file}"])
+
     NORMALIZE_EXEC_NAME([${output_file}])
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
@@ -663,7 +666,7 @@ export PATH=${abs_top_builddir}/standalone:$PATH
 gd_verbose=""
 AS_IF([test -z "$at_verbose"], [ gd_verbose="-v -X" ])
 
-TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${gd_verbose} ${input_file}"
+TEST_CMD="${GET_DMRPP} -V -A -b ${BES_DATA_ROOT} ${params} ${gd_verbose} ${input_file}"
 
 # at_verbose=""
 
@@ -688,7 +691,7 @@ AS_IF([test -z "$at_verbose"], [
     echo "#           arg #4: "$4
     echo "#           arg #5: "$5
     echo "#           arg #6: "$6
-    echo "#       test_name: ${test_name}"
+    echo "#        test_name: ${test_name}"
     echo "#       input_file: ${input_file}"
     echo "#         baseline: ${baseline}"
     echo "#      xfail_param: ${xfail_param}"
