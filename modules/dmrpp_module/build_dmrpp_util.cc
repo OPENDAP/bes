@@ -384,8 +384,8 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             throw UnsupportedTypeException(msg);
         }
         case H5T_COMPOUND: {
-            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as fillValue type. "
-                       "This is not yet supported by the dmr++ creation machinery. ");
+            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as user-defined fillValue type. "
+                   "This is not yet supported by the dmr++ creation machinery. ");
             string str_fv(value.begin(),value.end());
             throw UnsupportedTypeException(msg);
         }
@@ -396,7 +396,33 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
         }
     }
 }
+string
+get_compound_fv_as_string(hid_t h5_plist_id, vector<char> &value)
+{
+    H5D_fill_value_t fill_value_status;
+    if (H5Pfill_value_defined(h5_plist_id, &fill_value_status)<0) { 
+        H5Pclose(h5_plist_id);
+        throw BESInternalError("H5Pfill_value_defined failed.", __FILE__, __LINE__);
+    }
 
+    string ret_str;
+    string H5_Default_fvalue = "0";
+    if (fill_value_status == H5D_FILL_VALUE_DEFAULT)
+        ret_str = H5_Default_fvalue;
+    else if (fill_value_status == H5D_FILL_VALUE_USER_DEFINED) {
+        H5Pclose(h5_plist_id);
+        string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as user-defined fillValue type. "
+               "This is not yet supported by the dmr++ creation machinery. ");
+        string str_fv(value.begin(),value.end());
+        throw UnsupportedTypeException(msg);
+    }
+    else if (fill_value_status == H5D_FILL_VALUE_UNDEFINED) {
+        H5Pclose(h5_plist_id);
+        throw BESInternalError("The fill value is undefined, the dmrpp module cannot handle this case now.", __FILE__, __LINE__);
+    }
+
+    return ret_str;
+}
 /**
  * @brief Get the value of the File Value as a string
  * @param dataset_id
@@ -421,8 +447,16 @@ string get_hdf5_fill_value_str(hid_t dataset_id)
         if (H5Pget_fill_value(plist_id, dtype_id, value.data()) < 0)
             throw BESInternalError("Unable to access HDF5 Fill Value.", __FILE__, __LINE__);
 
+        string fvalue_str;
+        // The fill value of the compound datatype needs to be handled separately.
+        if (H5Tget_class(dtype_id) == H5T_COMPOUND) 
+            fvalue_str = get_compound_fv_as_string(plist_id,value);
+        else 
+            fvalue_str =  get_value_as_string(dtype_id, value);
+
         H5Pclose(plist_id);
-        return get_value_as_string(dtype_id, value);
+
+        return fvalue_str;
     }
     catch (...) {
         H5Pclose(plist_id);
