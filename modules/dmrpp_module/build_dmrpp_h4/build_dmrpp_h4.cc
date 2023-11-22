@@ -127,10 +127,8 @@ int main(int argc, char *argv[]) {
 
     try {
 
-#if 0
-        // Check to see if the file is hdf5 compliant
-        qc_input_file(h5_file_name);
-#endif
+        // Check to see if the file is hdf4 compliant
+        qc_input_file(h4_file_name);
 
         if (dmr_filename.empty()){
             stringstream msg;

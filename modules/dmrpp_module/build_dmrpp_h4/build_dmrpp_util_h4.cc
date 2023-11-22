@@ -1525,18 +1525,18 @@ void qc_input_file(const string &file_fqn)
     //First check if file is NOT an HDF4 file, then, if it is not, check if it is netcdf3
     bool isHDF4 = memcmp(&signature[0], hdf4Signature, sizeof(hdf4Signature)) == 0;
     if (!isHDF4) {
+        cerr << "not hdf4" << endl;
         //Reset the file stream to read from the beginning
         file.clear();
         file.seekg(0);
 
         char newSignature[3];
         file.read(&signature[0], signature.size());
-
     } else {
+        cerr << "confirmed hdf4" << endl;
         stringstream msg;
         msg << "The provided file: " << file_fqn << " - ";
-        msg << "is neither an HDF4 or a NetCDF-4 file, currently only HDF4 and NetCDF-4 files ";
-        msg << "are supported for dmr++ production" << endl;
+        msg << "is not an HDF4 file" << endl;
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
 }
