@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="data" space="catalog">/build_dmrpp_h4/tests/MOD13Q1.A2023241.h08v05.061.2023258002222.hdf</setContainer>
+    <define name="d">
+	<container name="data" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>
