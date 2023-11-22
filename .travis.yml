@@ -124,6 +124,8 @@ stages:
   - name: build-and-package
   - name: scan
     if:  branch = master
+  - name: update-change-log
+    if:  branch = master
   - name: hyrax-olfs-trigger
     if: type != pull_request OR branch =~ ^(.*-test-deploy)$
     # A way to skip a stage. jhrg 1/26/23
@@ -159,10 +161,10 @@ jobs:
             --volume $TRAVIS_BUILD_DIR:/root/travis
             --env OS=centos-stream8
             --env DIST=el8
-            --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-            --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-            --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-            --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+            --env LIBDAP_RPM_VERSION
+            --env BES_BUILD_NUMBER
+            --env AWS_ACCESS_KEY_ID
+            --env AWS_SECRET_ACCESS_KEY
             opendap/centos-stream8_hyrax_builder:1.1 /root/travis/travis/build-rpm.sh
 
     - stage: build-and-package
@@ -228,6 +230,15 @@ jobs:
         - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
+
+    - stage: update-change-log
+      name: "Update BES ChangeLog"
+      script:
+        - export STAGE=update-change-log
+        - echo $STAGE
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+        - ./travis/update-change-log.sh
 
     - stage: hyrax-olfs-trigger
       name: "Hyrax OLFS Trigger"
