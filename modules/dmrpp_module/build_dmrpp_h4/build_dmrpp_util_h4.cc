@@ -1515,25 +1515,12 @@ void qc_input_file(const string &file_fqn)
     }
 
     //HDF4 signature:
-    const char hdf4Signature[] = {'H', 'D', 'F', '\r', '\n', '\x1A', '\n'};
+    int file_id = Hopen(file_fqn.c_str(), DFACC_READ, 0);
+    int status = Hishdf(file_fqn.c_str());
+    Hclose(file_id);
 
-    //Read the first 8 bytes (file signature) from the file
-    string signature;
-    signature.resize(8);
-    file.read(&signature[0], signature.size());
-
-    //First check if file is NOT an HDF4 file, then, if it is not, check if it is netcdf3
-    bool isHDF4 = memcmp(&signature[0], hdf4Signature, sizeof(hdf4Signature)) == 0;
-    if (!isHDF4) {
-        cerr << "not hdf4" << endl;
-        //Reset the file stream to read from the beginning
-        file.clear();
-        file.seekg(0);
-
-        char newSignature[3];
-        file.read(&signature[0], signature.size());
-    } else {
-        cerr << "confirmed hdf4" << endl;
+    //Check if file is NOT an HDF4 file
+    if (status != 1) {
         stringstream msg;
         msg << "The provided file: " << file_fqn << " - ";
         msg << "is not an HDF4 file" << endl;
