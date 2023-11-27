@@ -1249,7 +1249,6 @@ int SDfree_mapping_info(SD_mapping_info_t  *map_info)
  */
 int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
 {
-
     intn  info_count = 0;
     intn  ret_value = SUCCEED;
 
@@ -1300,147 +1299,124 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
     // variables in the group
 
     for(auto btp : group->variables()) {
-        VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
+        // if this is not a group, it is a variable
+        if (btp->type() != dods_group_c) {
+            // Special handling for a Structure variable
 
-#if 0
-        // TODO Check with Kent if this is still needed.
-        // if this variable has a 'fullnamepath' attribute, use that and not the
-        // FQN value.
-        D4Attributes *d4_attrs = btp->attributes();
-        if (!d4_attrs)
-            throw BESInternalError("Expected to find an attribute table for " + btp->name() + " but did not.",
-                                   __FILE__, __LINE__);
+            VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
+            string FQN = btp->FQN();
 
-        // Look for the full name path for this variable
-        // If one was not given via an attribute, use BaseType::FQN() which
-        // relies on the variable's position in the DAP dataset hierarchy.
-        //
-        // TODO Find out if HDF4 has a similar issue to HDF5 where the variable FQN is
-        //  encoded as an attribute t=in the DMR.
-        const D4Attribute *fullnamepath_attr = d4_attrs->get("fullnamepath");
-#endif
+            const char *sdsName = FQN.substr(1).c_str(); //Take off the leading "/", get as const char *
+            int sds_index = SDnametoindex(file, sdsName);
+            int sdsid = SDselect(file, sds_index);
+            VERBOSE(cerr << "fqn: " << FQN << endl);
+            VERBOSE(cerr << "sdsid: " << sdsid << endl);
 
-        string FQN = btp->FQN();
+            SD_mapping_info_t map_info;
+            map_info.nblocks = 0;
+            map_info.offsets = NULL;
+            map_info.lengths = NULL;
 
-        const char* sdsName = FQN.substr(1).c_str(); //Take off the leading "/", get as const char *
-        int sds_index = SDnametoindex(file, sdsName);
-        int sdsid = SDselect(file, sds_index);
-        VERBOSE(cerr << "fqn: " << FQN << endl);
-        VERBOSE(cerr << "sdsid: " << sdsid << endl);
+            // In h4mapwriter xml_sds.c, see write_map_sds(...) for more info about HDF4's SD API.
 
-        SD_mapping_info_t map_info;
-        map_info.nblocks = 0;
-        map_info.offsets = NULL;
-        map_info.lengths = NULL;
+            /* Save the SDS id. */
+            map_info.id = sdsid;
 
-        // In h4mapwriter xml_sds.c, see write_map_sds(...) for more info about HDF4's SD API.
+            /* Check if SDS has no data. */
+            int status = SDcheckempty(sdsid, &(map_info.is_empty));
+            if (status == FAIL) {
+                FAIL_ERROR("SDcheckempty() failed.");
+            }
 
-        /* Save the SDS id. */
-        map_info.id = sdsid;
+            char obj_name[H4_MAX_NC_NAME]; /* name of the object */
+            int32 rank = -1;                 /* number of dimensions */
+            int32 dimsizes[H4_MAX_VAR_DIMS]; /* dimension sizes */
+            int32 data_type = -1;            /* data type */
+            int32 num_attrs = -1;            /* number of global attributes */
 
-        /* Check if SDS has no data. */
-        int status = SDcheckempty(sdsid, &(map_info.is_empty));
-        if (status == FAIL) {
-            FAIL_ERROR("SDcheckempty() failed.");
-        }
+            status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
+            if (status == FAIL) {
+                FAIL_ERROR("SDgetinfo() failed.");
+            }
 
-        char obj_name[H4_MAX_NC_NAME]; /* name of the object */
-        int32 rank = -1;                 /* number of dimensions */
-        int32 dimsizes[H4_MAX_VAR_DIMS]; /* dimension sizes */
-        int32 data_type = -1;            /* data type */
-        int32 num_attrs = -1;            /* number of global attributes */
+            /* Save the data type. */
+            map_info.data_type = data_type;
 
-        status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
-        if (status == FAIL) {
-            FAIL_ERROR("SDgetinfo() failed.");
-        }
+            HDF_CHUNK_DEF cdef;
+            int32 chunk_flag = -1;        /* chunking flag */
 
-        /* Save the data type. */
-        map_info.data_type = data_type;
+            status = SDgetchunkinfo(sdsid, &cdef, &chunk_flag);
+            if (status == FAIL) {
+                FAIL_ERROR("SDgetchunkinfo() failed.");
+            }
 
-        HDF_CHUNK_DEF cdef;
-        int32 chunk_flag = -1;        /* chunking flag */
+            int *origin = NULL;
+            switch (chunk_flag) {
+                case HDF_NONE:
+                    /* No chunking. */
+                    break;
+                case HDF_CHUNK:
+                    /* Chunking. */
+                    origin = (int *) HDmalloc(sizeof(int) * rank);
+                    if (origin == NULL) {
+                        FAIL_ERROR("HDmalloc() failed: Out of Memory");
+                    }
+                    memset(origin, 0, sizeof(int) * rank);
+                    break;
+                case HDF_COMP:
+                    /* Compression. */
+                    FAIL_ERROR("Compression chunking not supported.");
+                    break;
+                case HDF_NBIT:
+                    /* NBIT compression. */
+                    FAIL_ERROR("NBit Compression chunking not supported.");
+                    break;
+                default:
+                    FAIL_ERROR("Unknown chunking flag.");
+            }
 
-        status = SDgetchunkinfo(sdsid, &cdef, &chunk_flag);
-        if (status == FAIL) {
-            FAIL_ERROR("SDgetchunkinfo() failed.");
-        }
+            auto info_count = read_chunk(sdsid, &map_info, origin);
+            if (info_count == FAIL) {
+                cerr << "SDgetedatainfo() failed in read_chunk().\n";
+                return;
+            }
 
-        int *origin = NULL;
-        switch (chunk_flag) {
-            case HDF_NONE:
-                /* No chunking. */
-                break;
-            case HDF_CHUNK:
-                /* Chunking. */
-                origin = (int *)HDmalloc(sizeof(int)*rank);
-                if (origin == NULL) {
-                    FAIL_ERROR("HDmalloc() failed: Out of Memory");
-                }
-                memset(origin, 0, sizeof(int)*rank);
-                break;
-            case HDF_COMP:
-                /* Compression. */
-                FAIL_ERROR("Compression chunking not supported.");
-                break;
-            case HDF_NBIT:
-                /* NBIT compression. */
-                FAIL_ERROR("NBit Compression chunking not supported.");
-                break;
-            default:
-                FAIL_ERROR("Unknown chunking flag.");
-        }
+            auto dc = dynamic_cast<DmrppCommon *>(btp);
+            if (!dc) {
+                throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.",
+                                       __FILE__, __LINE__);
+            }
 
-        auto info_count = read_chunk(sdsid, &map_info, origin);
-        if (info_count == FAIL) {
-            cerr << "SDgetedatainfo() failed in read_chunk().\n";
-            return;
-        }
+            string endian_name;
+            hdf_ntinfo_t info;          /* defined in hdf.h near line 142. */
+            int result = Hgetntinfo(data_type, &info);
+            if (result == FAIL) {
+                FAIL_ERROR("Hgetntinfo() failed.");
+            }
+            else {
+                if (strncmp(info.byte_order, "bigEndian", 9) == 0)
+                    endian_name = "BE";
+                else if (strncmp(info.byte_order, "littleEndian", 12) == 0)
+                    endian_name = "LE";
+                else
+                    endian_name = "UNKNOWN";
+            }
 
-        auto dc = dynamic_cast<DmrppCommon*>(btp);
-        if (!dc) {
-            throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.",
-                                   __FILE__, __LINE__);
-        }
+            vector<unsigned long long> position_in_array(rank, 0);
+            for (int i = 0; i < map_info.nblocks; i++) {
+                VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
+                VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
 
-        string endian_name;
-        hdf_ntinfo_t info;          /* defined in hdf.h near line 142. */
-        int result = Hgetntinfo(data_type, &info);
-        if (result == FAIL) {
-            FAIL_ERROR("Hgetntinfo() failed.");
-        }
-        else{
-            if (strncmp(info.byte_order, "bigEndian", 9) == 0)
-                endian_name = "BE";
-            else if (strncmp(info.byte_order, "littleEndian", 12) == 0)
-                endian_name = "LE";
-            else
-                endian_name = "UNKNOWN";
-        }
-
-        vector<unsigned long long> position_in_array(rank, 0);
-        for (int i = 0; i < map_info.nblocks; i++) {
-            VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
-            VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
-
-            dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], position_in_array);
-        }
-#if 0
-        if (fullnamepath_attr) {
-            if (fullnamepath_attr->num_values() == 1)
-                FQN = fullnamepath_attr->value(0);
-
-            VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
-
-            int dataset = SDselect(file, sdsid);
-            cerr << "bt variable name: " << FQN << endl;
-            if (dataset < 0) {
-                throw BESInternalError("HDF4 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+                dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], position_in_array);
             }
         }
-#endif
+        else {
+            auto g = dynamic_cast<D4Group*>(btp);
+            if (!g)
+                throw BESInternalError("Expected "  + btp->name() + " to be a D4Group but it is not.", __FILE__, __LINE__);
+            get_chunks_for_all_variables(file, g);
+        }
     }
-
     // all groups in the group
     for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
         get_chunks_for_all_variables(file, *g);
