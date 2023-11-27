@@ -1233,7 +1233,8 @@ void http_get(const string &target_url, vector<char> &buf) {
  * appended to this string. In most cases this should be an empty string.
  * @exception Throws when libcurl encounters a problem.
  */
-void http_get(const string &target_url, string &buf) {
+void http_get(const string &target_url, string &buf)
+{
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;

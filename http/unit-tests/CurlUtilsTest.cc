@@ -348,9 +348,7 @@ public:
     void http_get_test_string() {
         const string url = "http://test.opendap.org/opendap.conf";
         string str;
-        vector<char> buff;
-        curl::http_get(url, buff);
-        str.copy(buff.data(),buff.size());
+        curl::http_get(url, str);
 
         DBG(cerr << "str.data() = " << string(str.data()) << endl);
         CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(str.data()).find("<Proxy *>") == 0);

@@ -51,6 +51,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, i
                                  std::vector<std::string> *http_response_headers);
 
 void http_get(const std::string &target_url, std::vector<char> &buf);
+void http_get(const std::string &target_url, std::string &buf);
 
 void super_easy_perform(CURL *ceh);
 ///@}
