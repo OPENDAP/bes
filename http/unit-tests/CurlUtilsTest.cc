@@ -26,10 +26,12 @@
 #include <memory>
 #include <cstring>
 #include <iostream>
+#include <string.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
+#include "BESStopWatch.h"
 #include "BESCatalogList.h"
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
@@ -46,7 +48,7 @@
 
 using namespace std;
 
-#define prolog std::string("CurlUtilsTest::").append(__func__).append("() - ")
+#define prolog std::string("# CurlUtilsTest::").append(__func__).append("() - ")
 
 namespace http {
 
@@ -63,14 +65,14 @@ public:
 
     // Called before each test
     void setUp() override {
-        if (debug) cerr << endl;
-        if (debug) cerr << "setUp() - BEGIN" << endl;
+        DBG( cerr << endl);
+        DBG( cerr << "setUp() - BEGIN" << endl);
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
-        if (debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
-        if (debug2) show_file(bes_conf);
+        DBG( cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
+        DBG2( show_file(bes_conf));
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (debug) cerr << "setUp() - END" << endl;
+        DBG( cerr << "setUp() - END" << endl);
     }
 
     // Called after each test
@@ -346,7 +348,9 @@ public:
     void http_get_test_string() {
         const string url = "http://test.opendap.org/opendap.conf";
         string str;
-        curl::http_get(url, str);
+        vector<char> buff;
+        curl::http_get(url, buff);
+        str.copy(buff.data(),buff.size());
 
         DBG(cerr << "str.data() = " << string(str.data()) << endl);
         CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(str.data()).find("<Proxy *>") == 0);
@@ -473,10 +477,126 @@ public:
         }
     }
 
+    // Tests expected redirect location.
+    void get_redirect_url_00() {
+
+        string source_url_str("http://test.opendap.org/opendap");
+        string baseline_str("http://test.opendap.org/opendap/"); // note trailing slash
+
+        DBG( cerr << prolog << "  source_url_str: " << source_url_str << "\n");
+
+        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+
+        string redirect_url_str;
+        redirect_url_str = curl::get_redirect_url(source_url);
+
+        DBG( cerr << prolog << "    baseline_str: " << baseline_str << "\n");
+        DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+        CPPUNIT_ASSERT( !redirect_url_str.empty() );
+        CPPUNIT_ASSERT( redirect_url_str == baseline_str );
+
+    }
+
+    // Tests no redirect location.
+    void get_redirect_url_01() {
+
+        string source_url_str("http://test.opendap.org/opendap/");
+
+        DBG( cerr << prolog << "  source_url_str: " << source_url_str << "\n");
+
+        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+
+        string redirect_url_str;
+        redirect_url_str = curl::get_redirect_url(source_url);
+
+        DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+        CPPUNIT_ASSERT( redirect_url_str.empty() );
+
+    }
+
+    // Tests TEA, no auth
+    void get_redirect_url_02() {
+
+        string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
+                              "/Daymet_Daily_V4R1/data/daymet_v4_daily_hi_prcp_2022.nc");
+
+        DBG( cerr << prolog << "  source_url_str: " << source_url_str << "\n");
+
+        string baseline("https://urs.earthdata.nasa.gov/oauth/authorize");
+        DBG( cerr << prolog << "        baseline: " << baseline << "\n");
+
+        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+
+        string redirect_url_str;
+        redirect_url_str = curl::get_redirect_url(source_url);
+
+        DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+
+        CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
+
+
+        //CPPUNIT_ASSERT( redirect_url_str.empty() );
+
+    }
+
+    // Tests TEA, bad auth
+    void get_redirect_url_03() {
+
+        string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
+                              "/Daymet_Daily_V4R1/data/daymet_v4_daily_hi_prcp_2022.nc");
+        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+
+        DBG( cerr << prolog << "      source_url: " << source_url->str() << "\n");
+
+        string baseline("https://d3o6w55j8uz1ro.cloudfront.net");
+        DBG( cerr << prolog << "        baseline: " << baseline << "\n");
+
+        auto edl_user = getenv("edl_user");
+        auto edl_token_type = getenv("edl_token_type");
+        auto edl_token = getenv("edl_token");
+        if(edl_user && edl_token_type && edl_token){
+            string auth_token(edl_token_type);
+            auth_token.append(" ").append(edl_token);
+            string tokens[] = {edl_user,
+                               auth_token,
+                               edl_token};
+            BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
+            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+
+            string redirect_url_str;
+
+            {
+                BESStopWatch sw;
+                sw.start(prolog);
+                redirect_url_str = curl::get_redirect_url(source_url);
+            }
+            DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+
+            CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
+
+        }
+        else {
+            DBG( cerr << prolog << "Incomplete EDL authentication credentials. Status:\n" <<
+                        "        edl_user: " << (edl_user?edl_user:"<missing>") << "\n" <<
+                        "  edl_token_type: " << (edl_token_type?edl_token_type:"<missing>") << "\n" <<
+                        "       edl_token: " << (edl_token?edl_token:"<missing>") << "\n"
+                                   );
+        }
+
+    }
+
 /* TESTS END */
 /*##################################################################################################*/
 
     CPPUNIT_TEST_SUITE(CurlUtilsTest);
+
+
+        CPPUNIT_TEST(get_redirect_url_00);
+        CPPUNIT_TEST(get_redirect_url_01);
+        CPPUNIT_TEST(get_redirect_url_02);
+        CPPUNIT_TEST(get_redirect_url_03);
+
 
     CPPUNIT_TEST(is_retryable_test);
     CPPUNIT_TEST(retrieve_effective_url_test);
@@ -509,5 +629,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CurlUtilsTest);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl") ? 0 : 1;
+    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "cerr,bes,http,curl,timing") ? 0 : 1;
 }
