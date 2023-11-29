@@ -134,6 +134,10 @@ public:
 
     virtual void build_thin_dmr(libdap::DMR *dmr);
 
+    virtual void set_up_all_direct_io_flags_phase_1(libdap::DMR *dmr);
+    virtual bool set_up_direct_io_flag_phase_1(libdap::D4Group *group);
+    virtual bool set_up_direct_io_flag_phase_1(libdap::BaseType *btp);
+
     virtual void load_attributes(libdap::BaseType *btp);
     virtual void load_attributes(libdap::Constructor *constructor);
     virtual void load_attributes(libdap::D4Group *group);

@@ -748,6 +748,13 @@ void FONcTransform::transform_dap4() {
     besDRB.set_async_accepted(d_dhi->data[ASYNC]);
     besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
 
+    // Will check if direct_io_flag is set for any Array variables. Note: This is for temporary memory usage optimization.
+    // Once we can support the define() with or without dio for individual array, this function is not necessary. KY 11/29/23
+    if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model) {
+        // STOP: add a method to check if the dio flag is true for any Array variable, if yes, set the global_dio_flag to true. 
+
+    }
+
     // Convert the DMR into an internal format to keep track of
     // variables, arrays, shared dimensions, grids, common maps,
     // embedded structures. It only grabs the variables that are to be

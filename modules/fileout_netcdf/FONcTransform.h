@@ -70,7 +70,10 @@ private:
     std::set<std::string> _included_grp_names;
     std::map<std::string,int64_t> GFQN_dimname_to_dimsize;
     std::map<std::string,int64_t> VFQN_dimname_to_dimsize;
-    
+  
+    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
+    //       This flag is not necessary and should be removed. KY 11/29/23
+    bool global_dio_flag = false; 
 
 public:
 	/**
@@ -91,6 +94,12 @@ public:
 	virtual void transform_dap4();
 
 	virtual void dump(ostream &strm) const;
+
+        // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
+        //       This flag is not necessary and should be removed. KY 11/29/23
+        bool get_gdio_flag() const {return global_dio_flag; }
+        void set_gdio_flag() { global_dio_flag = true; }
+
 
 private:
     virtual void transform_dap4_no_group();

@@ -596,7 +596,16 @@ void FONcArray::define(int ncid) {
             string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
+#ifndef NBEBUG
+        bool d_io_flag_phase_1 = d_a->get_dio_flag();
+        
+        if (d_io_flag_phase_1) {
+            BESDEBUG("fonc","variable name is "<<d_varname << endl);
+            BESDEBUG("fonc","direct io flag is true before calling the intern_data()"<<endl);
+        }
+#endif
 
+ 
         // Check if the direct IO flag is set. Note intern_data() is called in define().
         if (d_array_type != NC_CHAR) {
             if (d_is_dap4)
