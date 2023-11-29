@@ -40,6 +40,7 @@
 #include "CurlUtils.h"
 #include "CredentialsManager.h"
 #include "BESForbiddenError.h"
+#include "EffectiveUrlCache.h"
 
 #include "test_config.h"
 
@@ -486,8 +487,9 @@ public:
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
         string redirect_url_str;
-        redirect_url_str = curl::get_redirect_url(source_url);
+        auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
 
+        DBG( cerr << prolog << "     http_status: " << http_status << "\n");
         DBG( cerr << prolog << "    baseline_str: " << baseline_str << "\n");
         DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
         CPPUNIT_ASSERT( !redirect_url_str.empty() );
@@ -505,8 +507,9 @@ public:
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
         string redirect_url_str;
-        redirect_url_str = curl::get_redirect_url(source_url);
+        auto http_status = curl::get_redirect_url(source_url,redirect_url_str);
 
+        DBG( cerr << prolog << "     http_status: " << http_status << "\n");
         DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
         CPPUNIT_ASSERT( redirect_url_str.empty() );
 
@@ -526,10 +529,12 @@ public:
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
         string redirect_url_str;
-        redirect_url_str = curl::get_redirect_url(source_url);
+        auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
 
+        DBG( cerr << prolog << "     http_status: " << http_status << "\n");
         DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
 
+        // does the redirect_url_str start with the baseline??
         CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
 
 
@@ -537,7 +542,7 @@ public:
 
     }
 
-    // Tests TEA, bad auth
+    // Tests TEA, good auth
     void get_redirect_url_03() {
 
         string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
@@ -564,24 +569,142 @@ public:
 
             string redirect_url_str;
 
-            {
-                BESStopWatch sw;
-                sw.start(prolog);
-                redirect_url_str = curl::get_redirect_url(source_url);
-            }
+            auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
+            DBG( cerr << prolog << "     http_status: " << http_status << "\n");
             DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
 
+            // does the redirect_url_str start with the baseline??
             CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
 
         }
         else {
             DBG( cerr << prolog << "Incomplete EDL authentication credentials. Status:\n" <<
-                        "        edl_user: " << (edl_user?edl_user:"<missing>") << "\n" <<
-                        "  edl_token_type: " << (edl_token_type?edl_token_type:"<missing>") << "\n" <<
-                        "       edl_token: " << (edl_token?edl_token:"<missing>") << "\n"
-                                   );
+                      "        edl_user: " << (edl_user?edl_user:"<missing>") << "\n" <<
+                      "  edl_token_type: " << (edl_token_type?edl_token_type:"<missing>") << "\n" <<
+                      "       edl_token: " << (edl_token?edl_token:"<missing>") << "\n"
+            );
         }
 
+    }
+    // Tests TEA, bad auth
+    void get_redirect_url_04() {
+
+        string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
+                              "/Daymet_Daily_V4R1/data/daymet_v4_daily_hi_prcp_2022.nc");
+        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+
+        DBG( cerr << prolog << "      source_url: " << source_url->str() << "\n");
+
+        string baseline("https://d3o6w55j8uz1ro.cloudfront.net");
+        DBG( cerr << prolog << "        baseline: " << baseline << "\n");
+
+        auto edl_user = "hard-times-charlie";
+        auto edl_token_type = "Bearer";
+        auto edl_token = "this-is-so-not-a-edl-valid-token";
+        if(edl_user && edl_token_type && edl_token){
+            string auth_token(edl_token_type);
+            auth_token.append(" ").append(edl_token);
+            string tokens[] = {edl_user,
+                               auth_token,
+                               edl_token};
+            BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
+            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+
+            string redirect_url_str;
+
+            { // These {}s scope the timer so that it's destructor is call in a timely manner.
+                BESStopWatch sw;
+                sw.start(prolog);
+                auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
+                DBG(cerr << prolog << "      http_status: " << http_status << "\n");
+            }
+            DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+
+            // does the redirect_url_str start with the baseline??
+            CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
+
+        }
+        else {
+            DBG( cerr << prolog << "Incomplete EDL authentication credentials. Status:\n" <<
+                      "        edl_user: " << (edl_user?edl_user:"<missing>") << "\n" <<
+                      "  edl_token_type: " << (edl_token_type?edl_token_type:"<missing>") << "\n" <<
+                      "       edl_token: " << (edl_token?edl_token:"<missing>") << "\n"
+            );
+        }
+
+    }
+
+    void time_redirect_url_and_effective_url() {
+
+        DBG( cout << endl);
+
+        string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
+                              "/Daymet_Daily_V4R1/data/daymet_v4_daily_hi_prcp_2022.nc");
+        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+
+        DBG( cerr << prolog << "      source_url: " << source_url->str() << "\n");
+
+        string baseline("https://d3o6w55j8uz1ro.cloudfront.net");
+        DBG( cerr << prolog << "        baseline: " << baseline << "\n");
+
+        auto edl_user = getenv("edl_user");
+        auto edl_token_type = getenv("edl_token_type");
+        auto edl_token = getenv("edl_token");
+        if(edl_user && edl_token_type && edl_token){
+            string auth_token(edl_token_type);
+            auth_token.append(" ").append(edl_token);
+            string tokens[] = {edl_user,
+                               auth_token,
+                               edl_token};
+            BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
+            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+            BESDebug::SetUp("cerr,moogoo");
+            // The results...
+            string redirect_url_str;
+            shared_ptr<EffectiveUrl> effective_url;
+
+            // @TODO The first request always takes and oddly long time, we should profile this to see why.
+            {
+                // We warm up the test by making a first request - this always takes much longer than any
+                // subsequent request. Like 3,303,337 us for first and vs 641,921 us for second.
+                BESStopWatch sw;
+                sw.start("WARMUP - CurlUtilsTest calling curl::retrieve_effective_url()");
+                effective_url = curl::retrieve_effective_url(source_url);
+                DBG(cerr << prolog << "   effective_url: " << effective_url->str() << "\n");
+                // does the effective_url start with the baseline??
+                CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
+            }
+
+            unsigned int reps = 1000;
+            for (int i=0; i<reps ;i++)
+            {
+                {
+                    BESStopWatch sw;
+                    sw.start("CurlUtilsTest calling curl::retrieve_effective_url() - " + to_string(i));
+                    effective_url = curl::retrieve_effective_url(source_url);
+                    DBG(cerr << prolog << "   effective_url: " << effective_url->str() << "\n");
+                    // does the effective_url start with the baseline??
+                    CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
+                }
+                {
+                    BESStopWatch sw;
+                    sw.start("CurlUtilsTest calling curl::get_redirect_url() - " + to_string(i));
+                    auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
+                    DBG(cerr << prolog << "     http_status: " << http_status << "\n");
+                    DBG(cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+                    // does the redirect_url_str start with the baseline??
+                    CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
+                }
+            }
+        }
+        else {
+            DBG( cerr << prolog << "Incomplete EDL authentication credentials.\n");
+            DBG( cerr << prolog << "        edl_user: " << (edl_user?edl_user:"<missing>") << "\n");
+            DBG( cerr << prolog << "  edl_token_type: " << (edl_token_type?edl_token_type:"<missing>") << "\n");
+            DBG( cerr << prolog << "       edl_token: " << (edl_token?edl_token:"<missing>") << "\n");
+        }
     }
 
 /* TESTS END */
@@ -594,6 +717,8 @@ public:
         CPPUNIT_TEST(get_redirect_url_01);
         CPPUNIT_TEST(get_redirect_url_02);
         CPPUNIT_TEST(get_redirect_url_03);
+        CPPUNIT_TEST(get_redirect_url_04);
+        CPPUNIT_TEST(time_redirect_url_and_effective_url);
 
 
     CPPUNIT_TEST(is_retryable_test);
@@ -627,5 +752,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CurlUtilsTest);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "cerr,bes,http,curl,timing") ? 0 : 1;
+    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "cerr,bes,http,curl,curl:timing") ? 0 : 1;
 }
