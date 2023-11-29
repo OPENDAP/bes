@@ -1687,15 +1687,13 @@ void write_response_details(const unsigned int http_status,
 unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std::string &redirect_url)
 {
     vector<char> error_buffer(CURL_ERROR_SIZE);
-    CURL *ceh = nullptr;
     curl_slist *req_headers = nullptr;
     vector <string> response_headers;
-    string response_body;
     unsigned int max_retries = 3;
-    
-
     unsigned int http_status=0;
-    redirect_url = "";
+    string response_body;
+    redirect_url = ""; // clean it, just in case.
+
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1713,11 +1711,12 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
 
     req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
 
+    CURL *ceh = nullptr;
     try {
-        unsigned int  attempts = 1;
+        unsigned int  attempts = 0;
         bool success = false;
         while( !success &&  max_retries > attempts++) {
-            BESDEBUG(MODULE, prolog << "attempts: " << attempts << "\n");
+            BESDEBUG(MODULE, prolog << "This is attempt #" << attempts << " for " << origin_url->str() << "\n");
 
             // OK! Make the cURL handle
             ceh = init_no_follow_redirects_handle(origin_url->str(),req_headers, response_headers, response_body);
@@ -1766,7 +1765,8 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
                         if(host.find("urs.earthdata.nasa.gov") != string::npos){
                             if(attempts >= max_retries) {
                                 stringstream msg;
-                                msg << prolog << "ERROR - I tried " << attempts << " times and yet it appears that the ";
+                                msg << prolog << "ERROR - I tried " << attempts;
+                                msg << " times and yet it appears that the ";
                                 msg << "provided access credentials are either missing or invalid/expired. \n";
                                 write_response_details(http_status, response_headers, response_body, msg);
                                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -1781,7 +1781,8 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
                         if(attempts >= max_retries) {
                             // Everything else is bad. What Do? Retry until?
                             stringstream msg;
-                            msg << prolog << "ERROR -  I tried " << attempts << " times to access " << origin_url->str() << "\n";
+                            msg << prolog << "ERROR -  I tried " << attempts;
+                            msg << " times to access " << origin_url->str() << "\n";
                             write_response_details(http_status, response_headers, response_body, msg);
                             throw BESInternalError(msg.str(), __FILE__, __LINE__);
                         }
