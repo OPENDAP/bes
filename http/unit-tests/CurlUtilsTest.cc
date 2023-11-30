@@ -675,7 +675,10 @@ public:
             BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
             BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
             BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
-            BESDebug::SetUp("cerr,moogoo");
+
+            // What matters here is that we assign cerr to the BESDebug output stream
+            DBG( BESDebug::SetUp("cerr,DUMMY_KEY") );
+
             // The results...
             string redirect_url_str;
             shared_ptr<EffectiveUrl> effective_url;
@@ -704,7 +707,6 @@ public:
                     CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
                 }
                 {
-
                     BESStopWatch sw;
                     DBG( sw.start("CurlUtilsTest calling curl::get_redirect_url() - " + to_string(i)) );
                     auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
@@ -729,12 +731,12 @@ public:
     CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
 
-        CPPUNIT_TEST(get_redirect_url_00);
-        CPPUNIT_TEST(get_redirect_url_01);
-        CPPUNIT_TEST(get_redirect_url_02);
-        CPPUNIT_TEST(get_redirect_url_03);
-        CPPUNIT_TEST(get_redirect_url_04);
-        CPPUNIT_TEST(time_redirect_url_and_effective_url);
+    CPPUNIT_TEST(get_redirect_url_00);
+    CPPUNIT_TEST(get_redirect_url_01);
+    CPPUNIT_TEST(get_redirect_url_02);
+    CPPUNIT_TEST(get_redirect_url_03);
+    CPPUNIT_TEST(get_redirect_url_04);
+    CPPUNIT_TEST(time_redirect_url_and_effective_url);
 
 
     CPPUNIT_TEST(is_retryable_test);
