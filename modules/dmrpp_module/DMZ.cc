@@ -799,7 +799,10 @@ void DMZ::set_up_all_direct_io_flags_phase_1(DMR *dmr) {
         throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
     }
 
-    set_up_direct_io_flag_phase_1(dmr->root());
+    bool dio_flag_value = set_up_direct_io_flag_phase_1(dmr->root());
+    
+    dmr->set_global_dio_flag(dio_flag_value);
+    
 }
 
 bool DMZ::set_up_direct_io_flag_phase_1(D4Group *group) {

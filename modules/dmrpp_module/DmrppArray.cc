@@ -1978,9 +1978,9 @@ bool DmrppArray::read()
     if (read_p()) return true;
 
     // Here we need to reset the dio_flag to false for the time being before calling the method use_direct_io_opt()
-    // since the dio_flag may be set to true for reducing the memory usage with a temporary solution. TODO: To change this 
-    // in the future. KY 2023-11-29
-    // STOPPP HERE !!!
+    // since the dio_flag may be set to true for reducing the memory usage with a temporary solution. 
+    // TODO: we need to reset the direct io flag to false and change back in the future. KY 2023-11-29
+    this->set_dio_flag(false);
 
     // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
     // Direct io offset is only necessary when the direct IO operation is possible.

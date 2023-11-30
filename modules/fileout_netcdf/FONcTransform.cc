@@ -751,7 +751,11 @@ void FONcTransform::transform_dap4() {
     // Will check if direct_io_flag is set for any Array variables. Note: This is for temporary memory usage optimization.
     // Once we can support the define() with or without dio for individual array, this function is not necessary. KY 11/29/23
     if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model) {
-        // STOP: add a method to check if the dio flag is true for any Array variable, if yes, set the global_dio_flag to true. 
+        global_dio_flag = _dmr->get_global_dio_flag();
+        if(global_dio_flag)  
+            BESDEBUG(MODULE, prolog << "global_dio_flag is true" << endl);
+        else 
+            BESDEBUG(MODULE, prolog << "global_dio_flag is false" << endl);
 
     }
 
