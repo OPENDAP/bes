@@ -615,8 +615,9 @@ void FONcArray::define(int ncid) {
 #endif
 
  
-        // Check if the direct IO flag is set. Note intern_data() is called in define().
-        if (d_array_type != NC_CHAR) {
+        // Check if the direct IO flag is really set. Note intern_data() is called in define() if fdio_flag is true.
+        // TODO: the following should be NOT necessary with further optimization of the memory usage in the future. KY 2023-11-30
+        if (d_array_type != NC_CHAR && fdio_flag == true) {
             if (d_is_dap4)
                 d_a->intern_data();
             else    
@@ -733,13 +734,13 @@ void FONcArray::define(int ncid) {
  */
 void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 
-// To support direct IO, intern_data() is moved to the define mode, Comment out for the time being.
-#if 0
+  // Note: when fdio_flag is not true, the intern_data needs to be called here. 
+  if (fdio_flag == false) {
     if (d_is_dap4)
         d_a->intern_data();
     else
         d_a->intern_data(*get_eval(), *get_dds());
-#endif
+  }
 
     // Check if we can use direct IO.
     bool d_io_flag = d_a->get_dio_flag();
@@ -906,12 +907,12 @@ void FONcArray::write_for_nc3_types(int ncid) {
             if (element_type == dods_byte_c || element_type == dods_uint8_c) {
                // The data is retrieved in the define mode. So no need to do it here.
                // Comment out for the time being.
-#if 0
+//#if 0
                 if (d_is_dap4)
                     d_a->intern_data();
                 else
                     d_a->intern_data(*get_eval(), *get_dds());
-#endif
+//#endif
 
                 // There's no practical way to get rid of the value copy, be here we
                 // read directly from libdap::Array object's memory.
@@ -960,12 +961,12 @@ void FONcArray::write_for_nc3_types(int ncid) {
 
                // The data is retrieved in the define mode. So no need to do it here.
                // Comment out for the time being.
-#if 0
+//#if 0
                 if (d_is_dap4)
                     d_a->intern_data();
                 else
                     d_a->intern_data(*get_eval(), *get_dds());
-#endif
+//#endif
 
                 vector<int> data(d_nelements);
                 for (size_t d_i = 0; d_i < d_nelements; d_i++)
