@@ -85,6 +85,10 @@ public:
         BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
         BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
         BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
+
+        auto cookie_file = curl::get_cookie_filename();
+        std::remove(cookie_file.c_str());
+
     }
 
 /*##################################################################################################*/
@@ -503,15 +507,19 @@ public:
         string source_url_str("http://test.opendap.org/opendap/");
 
         DBG( cerr << prolog << "  source_url_str: " << source_url_str << "\n");
-
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
         string redirect_url_str;
-        auto http_status = curl::get_redirect_url(source_url,redirect_url_str);
-
-        DBG( cerr << prolog << "     http_status: " << http_status << "\n");
-        DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
-        CPPUNIT_ASSERT( redirect_url_str.empty() );
+        try {
+            auto http_status = curl::get_redirect_url(source_url,redirect_url_str);
+            DBG( cerr << prolog << "     http_status: " << http_status << "\n");
+            DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+            CPPUNIT_FAIL("A BESInternalError should have been thrown.");
+        }
+        catch(BESInternalError bie){
+            DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
+            DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
+        }
 
     }
 
@@ -529,10 +537,16 @@ public:
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
         string redirect_url_str;
-        auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
-
-        DBG( cerr << prolog << "     http_status: " << http_status << "\n");
-        DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+        try {
+            auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
+            DBG( cerr << prolog << "     http_status: " << http_status << "\n");
+            DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+            CPPUNIT_FAIL("A BESInternalError should have been thrown.");
+        }
+        catch(BESInternalError bie){
+            DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
+            DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
+        }
 
         // does the redirect_url_str start with the baseline??
         CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
@@ -613,16 +627,17 @@ public:
 
             string redirect_url_str;
 
-            { // These {}s scope the timer so that it's destructor is call in a timely manner.
+            try {
                 BESStopWatch sw;
                 sw.start(prolog);
                 auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
-                DBG(cerr << prolog << "      http_status: " << http_status << "\n");
+                CPPUNIT_FAIL("The call to curl::get_redirect_url() should have thrown a "
+                             "BESInternalError! http_status: " + to_string(http_status));
             }
-            DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
-
-            // does the redirect_url_str start with the baseline??
-            CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
+            catch(BESInternalError bie){
+                DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
+                DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
+            }
 
         }
         else {
@@ -670,27 +685,28 @@ public:
                 // We warm up the test by making a first request - this always takes much longer than any
                 // subsequent request. Like 3,303,337 us for first and vs 641,921 us for second.
                 BESStopWatch sw;
-                sw.start("WARMUP - CurlUtilsTest calling curl::retrieve_effective_url()");
+                DBG( sw.start("WARMUP - CurlUtilsTest calling curl::retrieve_effective_url()") );
                 effective_url = curl::retrieve_effective_url(source_url);
                 DBG(cerr << prolog << "   effective_url: " << effective_url->str() << "\n");
                 // does the effective_url start with the baseline??
                 CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
             }
 
-            unsigned int reps = 1000;
+            unsigned int reps = 10;
             for (int i=0; i<reps ;i++)
             {
                 {
                     BESStopWatch sw;
-                    sw.start("CurlUtilsTest calling curl::retrieve_effective_url() - " + to_string(i));
+                    DBG( sw.start("CurlUtilsTest calling curl::retrieve_effective_url() - " + to_string(i)) );
                     effective_url = curl::retrieve_effective_url(source_url);
                     DBG(cerr << prolog << "   effective_url: " << effective_url->str() << "\n");
                     // does the effective_url start with the baseline??
                     CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
                 }
                 {
+
                     BESStopWatch sw;
-                    sw.start("CurlUtilsTest calling curl::get_redirect_url() - " + to_string(i));
+                    DBG( sw.start("CurlUtilsTest calling curl::get_redirect_url() - " + to_string(i)) );
                     auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
                     DBG(cerr << prolog << "     http_status: " << http_status << "\n");
                     DBG(cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");

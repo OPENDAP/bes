@@ -1686,14 +1686,6 @@ void write_response_details(const unsigned int http_status,
  */
 unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std::string &redirect_url)
 {
-    vector<char> error_buffer(CURL_ERROR_SIZE);
-    curl_slist *req_headers = nullptr;
-    vector <string> response_headers;
-    unsigned int max_retries = 3;
-    unsigned int http_status=0;
-    string response_body;
-    redirect_url = ""; // clean it, just in case.
-
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1705,35 +1697,52 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-
-    // Add the EDL authorization headers if the Information is in the BES Context Manager
-    req_headers = add_edl_auth_headers(req_headers);
-
-    req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
-
     CURL *ceh = nullptr;
-    try {
-        unsigned int  attempts = 0;
-        bool success = false;
-        while( !success &&  max_retries > attempts++) {
-            BESDEBUG(MODULE, prolog << "This is attempt #" << attempts << " for " << origin_url->str() << "\n");
+    bool success = false;
+    unsigned int max_retries = 3;
+    unsigned int http_status = 0;
+    unsigned int attempt = 0;
+
+    while (!success && max_retries >= attempt) {
+        attempt++;
+        BESDEBUG(MODULE, prolog << "This is attempt #" << attempt << " for " << origin_url->str() << "\n");
+
+        vector<char> error_buffer(CURL_ERROR_SIZE);
+        curl_slist *req_headers = nullptr;
+        vector<string> response_headers;
+        string response_body;
+        redirect_url = ""; // clean it, just in case.
+        CURLcode curl_code = CURLE_OK;
+
+        // Add the EDL authorization headers if the Information is in the BES Context Manager
+        req_headers = add_edl_auth_headers(req_headers);
+        req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
+
+        try {
 
             // OK! Make the cURL handle
-            ceh = init_no_follow_redirects_handle(origin_url->str(),req_headers, response_headers, response_body);
+            ceh = init_no_follow_redirects_handle(
+                    origin_url->str(),
+                    req_headers,
+                    response_headers,
+                    response_body);
 
-            CURLcode curl_code = CURLE_OK;
             {
 #ifndef NDEBUG
                 BESStopWatch sw;
-                if( BESDebug::IsSet(CURL_TIMING) ) {
+                if (BESDebug::IsSet(CURL_TIMING)) {
                     sw.start(prolog + "Retrieved redirect url for target_url: " + origin_url->str());
                 }
 #endif
                 curl_code = curl_easy_perform(ceh);
             }
-            success = eval_curl_easy_perform_code(origin_url->str(), curl_code, error_buffer.data(), attempts);
-            if (success) {
+            success = eval_curl_easy_perform_code(
+                    origin_url->str(),
+                    curl_code,
+                    error_buffer.data(),
+                    attempt);
 
+            if (success) {
                 http_status = get_http_status(ceh);
                 BESDEBUG(MODULE, prolog << "http_status: " << http_status << "\n");
                 char *url = nullptr;
@@ -1743,16 +1752,7 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
                 }
                 BESDEBUG(MODULE, prolog << "redirect_url: " << redirect_url << "\n");
 
-                switch(http_status) {
-#if 0
-                    case 200: // OK
-                    case 204: // No Content
-                    case 206: // Partial Content
-                    {
-                        // What Do?
-                        break;
-                    }
-#endif
+                switch (http_status) {
                     case 301: // Moved Permanently
                     case 302: // Found (fka Move Temporarily)
                     case 303: // See Other
@@ -1760,28 +1760,26 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
                     case 308: // Permanent Redirect
                     {
                         // Check for EDL redirect
-                        http::url foo(redirect_url);
-                        auto host = foo.host();
-                        if(host.find("urs.earthdata.nasa.gov") != string::npos){
-                            if(attempts >= max_retries) {
+                        http::url rdu(redirect_url);
+                        if (rdu.host().find("urs.earthdata.nasa.gov") != string::npos) {
+                            success = false; //  EDL is not the redirect we were looking for...
+                            if (attempt >= max_retries) {
                                 stringstream msg;
-                                msg << prolog << "ERROR - I tried " << attempts;
+                                msg << prolog << "ERROR - I tried " << attempt;
                                 msg << " times and yet it appears that the ";
                                 msg << "provided access credentials are either missing or invalid/expired. \n";
                                 write_response_details(http_status, response_headers, response_body, msg);
                                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
                             }
-                            success = false;
                         }
                         break;
                     }
 
-                    default:
-                    {
-                        if(attempts >= max_retries) {
+                    default: {
+                        if (attempt >= max_retries) {
                             // Everything else is bad. What Do? Retry until?
                             stringstream msg;
-                            msg << prolog << "ERROR -  I tried " << attempts;
+                            msg << prolog << "ERROR -  I tried " << attempt;
                             msg << " times to access " << origin_url->str() << "\n";
                             write_response_details(http_status, response_headers, response_body, msg);
                             throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -1792,23 +1790,30 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
                 }
 
             }
-
             // Free the header list
-            if (req_headers)
+            if (req_headers) {
                 curl_slist_free_all(req_headers);
-            if (ceh)
+            }
+            // clean up cURL handle
+            if (ceh) {
                 curl_easy_cleanup(ceh);
-        }
-        BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << "\n");
-    }
-    catch (...) {
-        if (req_headers)
-            curl_slist_free_all(req_headers);
-        if (ceh)
-            curl_easy_cleanup(ceh);
-        throw;
-    }
+                BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << "\n");
+            }
 
+        }
+        catch (...) {
+            // Free the header list
+            if (req_headers) {
+                curl_slist_free_all(req_headers);
+            }
+            // clean up cURL handle
+            if (ceh) {
+                curl_easy_cleanup(ceh);
+                BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << "\n");
+            }
+            throw;
+        }
+    }
     BESDEBUG(MODULE, prolog << "END redirect_url: " << redirect_url << "\n");
 
     return http_status;
