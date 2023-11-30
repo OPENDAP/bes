@@ -1676,6 +1676,56 @@ void write_response_details(const unsigned int http_status,
     msg << response_body << "\n";
 }
 
+bool process_get_redirect_http_status(const unsigned int http_status,
+                                      const vector<string> &response_headers,
+                                      const string &response_body,
+                                      const string &redirect_url,
+                                      const string &origin_url,
+                                      const unsigned int attempt,
+                                      const unsigned int max_retries){
+    bool success = false;
+    switch (http_status) {
+        case 301: // Moved Permanently
+        case 302: // Found (fka Move Temporarily)
+        case 303: // See Other
+        case 307: // Temporary Redirect
+        case 308: // Permanent Redirect
+        {
+            // Check for EDL redirect
+            http::url rdu(redirect_url);
+            if (rdu.host().find("urs.earthdata.nasa.gov") != string::npos) {
+                if (attempt >= max_retries) {
+                    stringstream msg;
+                    msg << prolog << "ERROR - I tried " << attempt << " times and it appears that the ";
+                    msg << "provided access credentials are either missing or invalid/expired. \n";
+                    write_response_details(http_status, response_headers, response_body, msg);
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+                //  EDL is not the redirect we were looking for...
+                success =  false;
+            }
+            else {
+                success  = true;
+            }
+            break;
+        }
+
+        default: {
+            if (attempt >= max_retries) {
+                // Everything else is bad.
+                stringstream msg;
+                msg << prolog << "ERROR -  I tried " << attempt;
+                msg << " times to access " << origin_url << "\n";
+                write_response_details(http_status, response_headers, response_body, msg);
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+            success = false;
+            break;
+        }
+    }
+
+}
+
 
 /**
  *
@@ -1727,15 +1777,17 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
                     response_headers,
                     response_body);
 
-            {
 #ifndef NDEBUG
+            {
                 BESStopWatch sw;
                 if (BESDebug::IsSet(CURL_TIMING)) {
                     sw.start(prolog + "Retrieved redirect url for target_url: " + origin_url->str());
                 }
 #endif
                 curl_code = curl_easy_perform(ceh);
+#ifndef NDEBUG
             }
+#endif
             success = eval_curl_easy_perform_code(
                     origin_url->str(),
                     curl_code,
@@ -1751,45 +1803,25 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
                     redirect_url = url;
                 }
                 BESDEBUG(MODULE, prolog << "redirect_url: " << redirect_url << "\n");
-
-                switch (http_status) {
-                    case 301: // Moved Permanently
-                    case 302: // Found (fka Move Temporarily)
-                    case 303: // See Other
-                    case 307: // Temporary Redirect
-                    case 308: // Permanent Redirect
-                    {
-                        // Check for EDL redirect
-                        http::url rdu(redirect_url);
-                        if (rdu.host().find("urs.earthdata.nasa.gov") != string::npos) {
-                            success = false; //  EDL is not the redirect we were looking for...
-                            if (attempt >= max_retries) {
-                                stringstream msg;
-                                msg << prolog << "ERROR - I tried " << attempt;
-                                msg << " times and yet it appears that the ";
-                                msg << "provided access credentials are either missing or invalid/expired. \n";
-                                write_response_details(http_status, response_headers, response_body, msg);
-                                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                            }
-                        }
-                        break;
-                    }
-
-                    default: {
-                        if (attempt >= max_retries) {
-                            // Everything else is bad. What Do? Retry until?
-                            stringstream msg;
-                            msg << prolog << "ERROR -  I tried " << attempt;
-                            msg << " times to access " << origin_url->str() << "\n";
-                            write_response_details(http_status, response_headers, response_body, msg);
-                            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                        }
-                        success = false;
-                        break;
-                    }
-                }
-
+                success =  process_get_redirect_http_status( http_status,
+                                                      response_headers,
+                                                      response_body,
+                                                      redirect_url,
+                                                      origin_url->str(),
+                                                      attempt,
+                                                      max_retries);
             }
+            else if (attempt >= max_retries) {
+                // Everything else is bad.
+                stringstream msg;
+                msg << prolog << "ERROR -  I tried " << attempt;
+                msg << " times to access " << origin_url->str() << "\n";
+                msg << "This failure appears to be a problem with cURL.\n";
+                msg << "The cURL message associated with the most recent failure is:\n";
+                msg << error_message(curl_code, error_buffer.data()) << "\n";
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+
             // Free the header list
             if (req_headers) {
                 curl_slist_free_all(req_headers);

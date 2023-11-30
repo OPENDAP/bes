@@ -85,6 +85,10 @@ public:
         BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
         BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
 
+        // We have to remove the cookie file between test invocations.
+        // Not doing so can cause the previous test's login success
+        // to propagate to the next test. Which is a problem when testing
+        // behaviors related to authentication success/failure.
         auto cookie_file = curl::get_cookie_filename();
         ifstream f(cookie_file.c_str());
         if(f.good()) {
