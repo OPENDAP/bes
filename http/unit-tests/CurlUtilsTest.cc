@@ -65,6 +65,7 @@ public:
 
     // Called before each test
     void setUp() override {
+        debug=true;
         DBG( cerr << endl);
         DBG( cerr << "setUp() - BEGIN" << endl);
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");

@@ -1812,7 +1812,7 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
                                                       max_retries);
             }
             else if (attempt >= max_retries) {
-                // Everything else is bad.
+                // Everything is bad now.
                 stringstream msg;
                 msg << prolog << "ERROR -  I tried " << attempt;
                 msg << " times to access " << origin_url->str() << "\n";
