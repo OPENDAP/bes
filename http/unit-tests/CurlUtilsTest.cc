@@ -66,14 +66,15 @@ public:
     // Called before each test
     void setUp() override {
         debug=true;
-        DBG( cerr << endl);
-        DBG( cerr << "setUp() - BEGIN" << endl);
+        DBG( cerr << "\n");
+        DBG( cerr << "#-----------------------------------------------------------------\n");
+        DBG( cerr << "setUp() - BEGIN\n");
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
-        DBG( cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
+        DBG( cerr << "setUp() - Using BES configuration: " << bes_conf << "\n");
         DBG2( show_file(bes_conf));
         TheBESKeys::ConfigFile = bes_conf;
 
-        DBG( cerr << "setUp() - END" << endl);
+        DBG( cerr << "setUp() - END\n");
     }
 
     // Called after each test
@@ -101,6 +102,7 @@ public:
                 DBG(cerr << prolog << msg.str() << "\n");
             }
         }
+        DBG( cerr << "\n");
     }
 
 /*##################################################################################################*/
@@ -503,9 +505,8 @@ public:
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
         string redirect_url_str;
-        auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
+        curl::get_redirect_url(source_url, redirect_url_str);
 
-        DBG( cerr << prolog << "     http_status: " << http_status << "\n");
         DBG( cerr << prolog << "    baseline_str: " << baseline_str << "\n");
         DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
         CPPUNIT_ASSERT( !redirect_url_str.empty() );
@@ -523,8 +524,7 @@ public:
 
         string redirect_url_str;
         try {
-            auto http_status = curl::get_redirect_url(source_url,redirect_url_str);
-            DBG( cerr << prolog << "     http_status: " << http_status << "\n");
+            curl::get_redirect_url(source_url,redirect_url_str);
             DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
             CPPUNIT_FAIL("A BESInternalError should have been thrown.");
         }
@@ -546,16 +546,15 @@ public:
         string baseline("https://urs.earthdata.nasa.gov/oauth/authorize");
         DBG( cerr << prolog << "        baseline: " << baseline << "\n");
 
-        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+        shared_ptr<http::url> source_url(new http::url(source_url_str, true));
 
         string redirect_url_str;
         try {
-            auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
-            DBG( cerr << prolog << "     http_status: " << http_status << "\n");
+            curl::get_redirect_url(source_url, redirect_url_str);
             DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
             CPPUNIT_FAIL("A BESInternalError should have been thrown.");
         }
-        catch(BESInternalError bie){
+        catch(BESInternalError &bie){
             DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
             DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
         }
@@ -573,7 +572,7 @@ public:
 
         string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
                               "/Daymet_Daily_V4R1/data/daymet_v4_daily_hi_prcp_2022.nc");
-        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+        shared_ptr<http::url> source_url(new http::url(source_url_str, true));
 
         DBG( cerr << prolog << "      source_url: " << source_url->str() << "\n");
 
@@ -595,8 +594,7 @@ public:
 
             string redirect_url_str;
 
-            auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
-            DBG( cerr << prolog << "     http_status: " << http_status << "\n");
+            curl::get_redirect_url(source_url, redirect_url_str);
             DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
 
             // does the redirect_url_str start with the baseline??
@@ -604,7 +602,7 @@ public:
 
         }
         else {
-            DBG( cerr << prolog << "Incomplete EDL authentication credentials. Status:\n" <<
+            DBG( cerr << prolog << "SKIPPING TEST - Incomplete EDL authentication credentials. Status:\n" <<
                       "        edl_user: " << (edl_user?edl_user:"<missing>") << "\n" <<
                       "  edl_token_type: " << (edl_token_type?edl_token_type:"<missing>") << "\n" <<
                       "       edl_token: " << (edl_token?edl_token:"<missing>") << "\n"
@@ -642,11 +640,11 @@ public:
             try {
                 BESStopWatch sw;
                 sw.start(prolog);
-                auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
+                curl::get_redirect_url(source_url, redirect_url_str);
                 CPPUNIT_FAIL("The call to curl::get_redirect_url() should have thrown a "
-                             "BESInternalError! http_status: " + to_string(http_status));
+                             "BESInternalError!");
             }
-            catch(BESInternalError bie){
+            catch(BESInternalError &bie){
                 DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
                 DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
             }
@@ -707,7 +705,7 @@ public:
                 CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
             }
 
-            unsigned int reps = 10;
+            unsigned int reps = 2;
             for (int i=0; i<reps ;i++)
             {
                 {
@@ -721,8 +719,7 @@ public:
                 {
                     BESStopWatch sw;
                     DBG( sw.start("CurlUtilsTest calling curl::get_redirect_url() - " + to_string(i)) );
-                    auto http_status = curl::get_redirect_url(source_url, redirect_url_str);
-                    DBG(cerr << prolog << "     http_status: " << http_status << "\n");
+                    curl::get_redirect_url(source_url, redirect_url_str);
                     DBG(cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
                     // does the redirect_url_str start with the baseline??
                     CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);

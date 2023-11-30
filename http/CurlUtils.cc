@@ -1653,6 +1653,12 @@ static CURL *init_no_follow_redirects_handle(const string &target_url, struct cu
     return ceh;
 }
 
+/**
+ *
+ *
+ * @param ceh
+ * @return
+ */
 unsigned int get_http_status(CURL *ceh){
     unsigned int http_code = 0;
     CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
@@ -1663,6 +1669,13 @@ unsigned int get_http_status(CURL *ceh){
     return http_code;
 }
 
+/**
+ *
+ * @param http_status
+ * @param response_headers
+ * @param response_body
+ * @param msg
+ */
 void write_response_details(const unsigned int http_status,
                           const vector<string> &response_headers,
                           const string &response_body,
@@ -1676,6 +1689,17 @@ void write_response_details(const unsigned int http_status,
     msg << response_body << "\n";
 }
 
+/**
+ *
+ * @param http_status
+ * @param response_headers
+ * @param response_body
+ * @param redirect_url
+ * @param origin_url
+ * @param attempt
+ * @param max_retries
+ * @return
+ */
 bool process_get_redirect_http_status(const unsigned int http_status,
                                       const vector<string> &response_headers,
                                       const string &response_body,
@@ -1723,7 +1747,7 @@ bool process_get_redirect_http_status(const unsigned int http_status,
             break;
         }
     }
-
+    return success;
 }
 
 
@@ -1734,7 +1758,7 @@ bool process_get_redirect_http_status(const unsigned int http_status,
  * @param redirect_url Returned value parameter for the redirect url.
  * @return
  */
-unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std::string &redirect_url)
+void get_redirect_url( const std::shared_ptr<http::url> &origin_url, std::string &redirect_url)
 {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -1847,8 +1871,6 @@ unsigned int get_redirect_url( const std::shared_ptr<http::url> &origin_url, std
         }
     }
     BESDEBUG(MODULE, prolog << "END redirect_url: " << redirect_url << "\n");
-
-    return http_status;
 }
 
 
