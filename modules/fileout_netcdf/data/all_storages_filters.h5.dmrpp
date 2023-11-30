@@ -16,7 +16,7 @@
     <Int32 name="one_chunk_filters">
         <Dim size="6"/>
         <Dim size="4"/>
-        <dmrpp:chunks compressionType="fletcher32 shuffle deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
+        <dmrpp:chunks compressionType="fletcher32 shuffle deflate" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>6 4</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4016" nBytes="34" chunkPositionInArray="[0,0]"/>
         </dmrpp:chunks>
@@ -32,7 +32,7 @@
     <Int32 name="two_chunks_filters">
         <Dim size="6"/>
         <Dim size="4"/>
-        <dmrpp:chunks compressionType="fletcher32 shuffle deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
+        <dmrpp:chunks compressionType="fletcher32 shuffle deflate" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>3 4</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4050" nBytes="26" chunkPositionInArray="[0,0]"/>
             <dmrpp:chunk offset="4076" nBytes="26" chunkPositionInArray="[3,0]"/>

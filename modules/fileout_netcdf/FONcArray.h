@@ -100,10 +100,12 @@ private:
     // if DAP4 dim. is defined
     bool d4_def_dim = false;
 
+#if 0
     // direct io flag, used in the define mode,the default is false. It should be set to true when direct io is supported.
     // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
     //       This flag is not necessary and should be removed. KY 11/29/23
-    bool direct_io_flag = false;
+    bool farray_dio_flag = false;
+#endif
 
 
     FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
@@ -158,10 +160,12 @@ public:
     virtual libdap::AttrType getAttrType(nc_type nct) override;
 #endif
 
+#if 0
     // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
     //       The following methods are  not necessary and should be removed. KY 11/29/23
-    bool get_dio_flag() const {return direct_io_flag; }
-    void set_dio_flag() { direct_io_flag = true; }
+    bool get_dio_flag() const {return farray_dio_flag; }
+    void set_dio_flag(bool dio_flag_value = true) { farray_dio_flag = dio_flag_value; }
+#endif
 
     static std::vector<FONcDim *> Dimensions;
 };

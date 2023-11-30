@@ -597,6 +597,15 @@ void FONcArray::define(int ncid) {
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 #ifndef NBEBUG
+
+        if (fdio_flag) {
+            BESDEBUG("fonc","variable name is "<<d_varname << endl);
+            BESDEBUG("fonc","FONC direct io flag is true before calling the intern_data()"<<endl);
+        }
+        else {
+            BESDEBUG("fonc","variable name is "<<d_varname << endl);
+            BESDEBUG("fonc","FONC direct io flag is false before calling the intern_data()"<<endl);
+        }
         bool d_io_flag_phase_1 = d_a->get_dio_flag();
         
         if (d_io_flag_phase_1) {

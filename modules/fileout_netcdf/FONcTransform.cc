@@ -929,6 +929,7 @@ void FONcTransform::transform_dap4_no_group() {
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
+            fb->set_fdio_flag(global_dio_flag);
             _fonc_vars.push_back(fb);
 
             vector <string> embed;
