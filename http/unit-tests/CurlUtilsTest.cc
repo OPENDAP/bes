@@ -40,7 +40,6 @@
 #include "CurlUtils.h"
 #include "CredentialsManager.h"
 #include "BESForbiddenError.h"
-#include "EffectiveUrlCache.h"
 
 #include "test_config.h"
 
@@ -87,8 +86,16 @@ public:
         BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
 
         auto cookie_file = curl::get_cookie_filename();
-        std::remove(cookie_file.c_str());
-
+        ifstream f(cookie_file.c_str());
+        if(f.good()) {
+            int retval = std::remove(cookie_file.c_str());
+            if (retval != 0 && debug) {
+                stringstream msg;
+                msg << "Failed to delete cookie file: '" << cookie_file << "' ";
+                msg << "Message: " << strerror(errno);
+                DBG(cerr << prolog << msg.str() << "\n");
+            }
+        }
     }
 
 /*##################################################################################################*/
