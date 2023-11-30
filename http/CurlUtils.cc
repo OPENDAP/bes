@@ -1721,7 +1721,7 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                 if (attempt >= max_retries) {
                     stringstream msg;
                     msg << prolog << "ERROR - I tried " << attempt << " times and it appears that the ";
-                    msg << "provided access credentials are either missing or invalid/expired. \n";
+                    msg << "provided access credentials are either missing, invalid, or expired.\n";
                     write_response_details(http_status, response_headers, response_body, msg);
                     throw BESInternalError(msg.str(), __FILE__, __LINE__);
                 }
@@ -1752,13 +1752,15 @@ bool process_get_redirect_http_status(const unsigned int http_status,
 
 
 /**
- *
+ * @brief Gets the redirect url returned by the origin_url
+ * The assumption is that the origin_url will always return a redirect, thus
+ * an http status of 2xx, 4xx, or 5xx is considered an error.
  *
  * @param origin_url The origin url for the request
  * @param redirect_url Returned value parameter for the redirect url.
  * @return
  */
-void get_redirect_url( const std::shared_ptr<http::url> &origin_url, std::string &redirect_url)
+std::string  get_redirect_url( const std::shared_ptr<http::url> &origin_url)
 {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -1771,6 +1773,7 @@ void get_redirect_url( const std::shared_ptr<http::url> &origin_url, std::string
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
+    string redirect_url;
     CURL *ceh = nullptr;
     bool success = false;
     unsigned int max_retries = 3;
@@ -1871,6 +1874,7 @@ void get_redirect_url( const std::shared_ptr<http::url> &origin_url, std::string
         }
     }
     BESDEBUG(MODULE, prolog << "END redirect_url: " << redirect_url << "\n");
+    return redirect_url;
 }
 
 

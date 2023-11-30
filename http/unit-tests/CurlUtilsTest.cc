@@ -494,8 +494,10 @@ public:
         }
     }
 
-    // Tests expected redirect location.
-    void get_redirect_url_00() {
+    /**
+     * Tests an expected redirect location
+     */
+    void get_redirect_url_test_expected_redirect() {
 
         string source_url_str("http://test.opendap.org/opendap");
         string baseline_str("http://test.opendap.org/opendap/"); // note trailing slash
@@ -505,7 +507,7 @@ public:
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
         string redirect_url_str;
-        curl::get_redirect_url(source_url, redirect_url_str);
+        redirect_url_str = curl::get_redirect_url(source_url);
 
         DBG( cerr << prolog << "    baseline_str: " << baseline_str << "\n");
         DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
@@ -514,29 +516,33 @@ public:
 
     }
 
-    // Tests no redirect location.
-    void get_redirect_url_01() {
+    /**
+     * Tests a no redirect location
+     */
+    void get_redirect_url_test_no_redirect() {
 
         string source_url_str("http://test.opendap.org/opendap/");
 
         DBG( cerr << prolog << "  source_url_str: " << source_url_str << "\n");
-        shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
+        shared_ptr<http::url> source_url(new http::url(source_url_str, true));
 
         string redirect_url_str;
         try {
-            curl::get_redirect_url(source_url,redirect_url_str);
+            redirect_url_str = curl::get_redirect_url(source_url);
             DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
             CPPUNIT_FAIL("A BESInternalError should have been thrown.");
         }
-        catch(BESInternalError bie){
+        catch(BESInternalError &bie){
             DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
             DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
         }
 
     }
 
-    // Tests TEA, no auth
-    void get_redirect_url_02() {
+    /**
+     *  Tests TEA redirect, no auth credentials
+     */
+    void get_redirect_url_test_tea_no_creds() {
 
         string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
                               "/Daymet_Daily_V4R1/data/daymet_v4_daily_hi_prcp_2022.nc");
@@ -550,7 +556,7 @@ public:
 
         string redirect_url_str;
         try {
-            curl::get_redirect_url(source_url, redirect_url_str);
+            redirect_url_str = curl::get_redirect_url(source_url);
             DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
             CPPUNIT_FAIL("A BESInternalError should have been thrown.");
         }
@@ -559,16 +565,12 @@ public:
             DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
         }
 
-        // does the redirect_url_str start with the baseline??
-        CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
-
-
-        //CPPUNIT_ASSERT( redirect_url_str.empty() );
-
     }
 
-    // Tests TEA, good auth
-    void get_redirect_url_03() {
+    /**
+     * Tests TEA, with good auth credentials
+     */
+    void get_redirect_url_test_tea_good_auth() {
 
         string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
                               "/Daymet_Daily_V4R1/data/daymet_v4_daily_hi_prcp_2022.nc");
@@ -594,7 +596,7 @@ public:
 
             string redirect_url_str;
 
-            curl::get_redirect_url(source_url, redirect_url_str);
+            redirect_url_str = curl::get_redirect_url(source_url);
             DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
 
             // does the redirect_url_str start with the baseline??
@@ -610,8 +612,10 @@ public:
         }
 
     }
-    // Tests TEA, bad auth
-    void get_redirect_url_04() {
+    /**
+     * Tests TEA, with BAD auth credentials
+     */
+    void get_redirect_url_test_tea_bad_auth() {
 
         string source_url_str("https://data.ornldaac.earthdata.nasa.gov/protected/daymet"
                               "/Daymet_Daily_V4R1/data/daymet_v4_daily_hi_prcp_2022.nc");
@@ -640,7 +644,7 @@ public:
             try {
                 BESStopWatch sw;
                 sw.start(prolog);
-                curl::get_redirect_url(source_url, redirect_url_str);
+                redirect_url_str = curl::get_redirect_url(source_url);
                 CPPUNIT_FAIL("The call to curl::get_redirect_url() should have thrown a "
                              "BESInternalError!");
             }
@@ -660,6 +664,10 @@ public:
 
     }
 
+    /**
+     * Runs a timing comparison test on the new get_redirect_url(), which does not follow redirects,
+     * and the old get_effective_utl(), which does follow redirects.
+     */
     void time_redirect_url_and_effective_url() {
 
         DBG( cout << endl);
@@ -693,7 +701,7 @@ public:
             string redirect_url_str;
             shared_ptr<EffectiveUrl> effective_url;
 
-            // @TODO The first request always takes and oddly long time, we should profile this to see why.
+            // @TODO The first request always takes an oddly long time, we should profile this to see why.
             {
                 // We warm up the test by making a first request - this always takes much longer than any
                 // subsequent request. Like 3,303,337 us for first and vs 641,921 us for second.
@@ -719,7 +727,7 @@ public:
                 {
                     BESStopWatch sw;
                     DBG( sw.start("CurlUtilsTest calling curl::get_redirect_url() - " + to_string(i)) );
-                    curl::get_redirect_url(source_url, redirect_url_str);
+                    redirect_url_str = curl::get_redirect_url(source_url);
                     DBG(cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
                     // does the redirect_url_str start with the baseline??
                     CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
@@ -740,11 +748,11 @@ public:
     CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
 
-    CPPUNIT_TEST(get_redirect_url_00);
-    CPPUNIT_TEST(get_redirect_url_01);
-    CPPUNIT_TEST(get_redirect_url_02);
-    CPPUNIT_TEST(get_redirect_url_03);
-    CPPUNIT_TEST(get_redirect_url_04);
+    CPPUNIT_TEST(get_redirect_url_test_expected_redirect);
+    CPPUNIT_TEST(get_redirect_url_test_no_redirect);
+    CPPUNIT_TEST(get_redirect_url_test_tea_no_creds);
+    CPPUNIT_TEST(get_redirect_url_test_tea_good_auth);
+    CPPUNIT_TEST(get_redirect_url_test_tea_bad_auth);
     CPPUNIT_TEST(time_redirect_url_and_effective_url);
 
 
