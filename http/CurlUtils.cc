@@ -1675,31 +1675,34 @@ void write_response_details(const unsigned int http_status,
                           const vector<string> &response_headers,
                           const string &response_body,
                           stringstream &msg){
+    msg << "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
+    msg << "HTTP Response Details\n";
     msg << "The remote service returned an HTTP status of: " << http_status << "\n";
-    msg << "Response Headers:\n";
+    msg << "Response Headers -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
     for (const auto &hdr: response_headers) {
         msg << "  "<<  hdr << "\n";
     }
-    msg << "Response Body:\n";
+    msg << "# BEGIN Response Body -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
     msg << response_body << "\n";
+    msg << "# END Response Body   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
 }
 
 /**
- *
- * @param http_status
- * @param response_headers
- * @param response_body
- * @param redirect_url
- * @param origin_url
- * @param attempt
- * @param max_retries
+ * #brief Error handling for the gru_mk_attempt()
+ * @param http_status The http status of the response
+ * @param response_headers <--
+ * @param response_body <--
+ * @param redirect_url_str The redirect url string, might be empty if there was a non 3xx response.
+ * @param origin_url_str The origin url
+ * @param attempt The attempt number of the current attempt
+ * @param max_attempts The maximum number af attempts allowed
  * @return
  */
 bool process_get_redirect_http_status(const unsigned int http_status,
                                       const vector<string> &response_headers,
                                       const string &response_body,
-                                      const string &redirect_url,
-                                      const string &origin_url,
+                                      const string &redirect_url_str,
+                                      const string &origin_url_str,
                                       const unsigned int attempt,
                                       const unsigned int max_attempts){
     bool success = false;
@@ -1711,12 +1714,12 @@ bool process_get_redirect_http_status(const unsigned int http_status,
         case 308: // Permanent Redirect
         {
             // Check for EDL redirect
-            http::url rdu(redirect_url);
+            http::url rdu(redirect_url_str);
             if (rdu.host().find("urs.earthdata.nasa.gov") != string::npos) {
                 if (attempt >= max_attempts) {
                     stringstream msg;
                     msg << prolog << "ERROR - I tried " << attempt << " times to access the url:\n";
-                    msg << "    " << origin_url << "\n" ;
+                    msg << "    " << origin_url_str << "\n" ;
                     msg << "It seems that the provided access credentials are either missing, invalid, or expired.\n";
                     msg << "Here are the details from the most recent attempt:\n\n";
                     write_response_details(http_status, response_headers, response_body, msg);
@@ -1736,7 +1739,7 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                 // Everything else is bad.
                 stringstream msg;
                 msg << prolog << "ERROR -  I tried " << attempt << " times to access:\n";
-                msg << "    " << origin_url << "\n";
+                msg << "    " << origin_url_str << "\n";
                 msg << "I was expecting to receive an HTTP redirect code and location header in the response. \n";
                 msg << "Unfortunately this did not happen.\n";
                 msg << "Here are the details of the most recent transaction:\n\n";
@@ -1896,10 +1899,13 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http
     while (!success && retry_limit > attempt++) {
         success = gru_mk_attempt(origin_url,attempt, retry_limit, redirect_url);
     }
-    if(attempt >= retry_limit){
+    // This is a failsafe test - the gru_mk_attempt)_ should detect the errors and throw an exception
+    // if the attempt count exceeds the retry_limit, but if for some reason there's flaw in that
+    // logic I add this check as well... ndp-12/01/23
+    if(attempt > retry_limit){
         stringstream msg;
-        msg << prolog << "ERROR: I tried " << attempt << " times to determine the redirect URL for the origin_url:'";
-        msg << origin_url->str() << "'\n";
+        msg << prolog << "ERROR: I tried " << attempt << " times to determine the redirect URL for the origin_url:\n";
+        msg << "    " << origin_url->str() << "\n";
         msg << "Oddly, I was unable to detect an error, but nonetheless I have made the maximum ";
         msg << "number of attempts and I must now give up...\n";
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
