@@ -515,11 +515,12 @@ public:
     }
 
     /**
-     * Tests a no redirect location
+     * Tests a no redirect location, i.e. one that returns an HTTP status 200 (OK)
+     * and a response body of some sort.
      */
-    void get_redirect_url_test_no_redirect() {
+    void get_redirect_url_unexpected_ok() {
 
-        string source_url_str("http://test.opendap.org/opendap/");
+        string source_url_str("http://test.opendap.org/opendap/hyrax/version");
 
         DBG( cerr << prolog << "  source_url_str: " << source_url_str << "\n");
         shared_ptr<http::url> source_url(new http::url(source_url_str, true));
@@ -531,7 +532,7 @@ public:
         }
         catch(BESInternalError &bie){
             DBG(cerr << prolog << "curl::get_redirect_url() was NOT redirected. This is an expected error.\n");
-            DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
+            DBG(cerr << prolog << "Caught expected BESInternalError. \nError Message:\n\n" << bie.get_verbose_message() << "\n");
         }
 
     }
@@ -558,7 +559,7 @@ public:
         }
         catch(BESInternalError &bie){
             DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint. This is an expected error.\n");
-            DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
+            DBG(cerr << prolog << "Caught expected BESInternalError.\nError Message:\n\n" << bie.get_verbose_message() << "\n");
         }
 
     }
@@ -741,7 +742,7 @@ public:
 
 
     CPPUNIT_TEST(get_redirect_url_test_expected_redirect);
-    CPPUNIT_TEST(get_redirect_url_test_no_redirect);
+    CPPUNIT_TEST(get_redirect_url_unexpected_ok);
     CPPUNIT_TEST(get_redirect_url_test_tea_no_creds);
     CPPUNIT_TEST(get_redirect_url_test_tea_good_auth);
     CPPUNIT_TEST(get_redirect_url_test_tea_bad_auth);
