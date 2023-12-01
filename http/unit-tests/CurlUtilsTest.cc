@@ -182,7 +182,7 @@ public:
         try {
             if (debug) cerr << prolog << "   target_url: " << target_url->str() << endl;
 
-            auto effective_url = curl::retrieve_effective_url(target_url);
+            auto effective_url = curl::get_redirect_url(target_url);
 
             if (debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
             if (debug) cerr << prolog << " expected_url: " << expected_url << endl;
@@ -196,7 +196,7 @@ public:
             CPPUNIT_ASSERT(effective_url->is_trusted() == target_url->is_trusted());
 
 
-            effective_url = curl::retrieve_effective_url(trusted_target_url);
+            effective_url = curl::get_redirect_url(trusted_target_url);
 
             if (debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
             if (debug) cerr << prolog << " expected_url: " << expected_url << endl;
@@ -700,7 +700,7 @@ public:
                 // subsequent request. Like 3,303,337 us for first and vs 641,921 us for second.
                 BESStopWatch sw;
                 DBG( sw.start("WARMUP - CurlUtilsTest calling curl::retrieve_effective_url()") );
-                effective_url = curl::retrieve_effective_url(source_url);
+                effective_url = curl::get_redirect_url(source_url);
                 DBG(cerr << prolog << "   effective_url: " << effective_url->str() << "\n");
                 // does the effective_url start with the baseline??
                 CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
@@ -712,7 +712,7 @@ public:
                 {
                     BESStopWatch sw;
                     DBG( sw.start("CurlUtilsTest calling curl::retrieve_effective_url() - " + to_string(i)) );
-                    effective_url = curl::retrieve_effective_url(source_url);
+                    effective_url = curl::get_redirect_url(source_url);
                     DBG(cerr << prolog << "   effective_url: " << effective_url->str() << "\n");
                     // does the effective_url start with the baseline??
                     CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);

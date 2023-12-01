@@ -1523,6 +1523,7 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
     return req_headers;
 }
 
+#if 0
 /**
  * @brief Performs a small (4 byte) range get on the target URL. If successful the value of the returned EffectiveUrl
  * will be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string and the
@@ -1597,24 +1598,21 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
         throw;
     }
 }
-
+#endif
 
 /**
- * @brief Returns an cURL easy handle for tracing redirects.
+ * @brief Returns an cURL easy handle for recovering the location
+ * from a redirects response
  *
- * The returned cURL easy handle is configured to make a 4 byte
- * range get from the url. When theis cURL handle is "exercised"
- * at the end the cURL handles CURLINFO_EFFECTIVE_URL value will
- * be the place from which the 4 bytes were retrieved, the
- * terminus if the redirect sequence.
- *
- * @note This is used ony by retrieve_effective_url(). jhrg 3/7/23
+ * The returned cURL easy handle will write the response to a string
+ * and it will NOT follow redirects.
  *
  * @param target_url The URL to target
  * @param req_headers A curl_slist containing any necessary request headers
  * to be transmitted with the HTTP request.
  * @param resp_hdrs A vector into which any response headers associated
  * the servers response will be placed.
+ * @param response_body The returned response body.
  * @return A cURL easy handle configured as described above,
  */
 static CURL *init_no_follow_redirects_handle(const string &target_url, const struct curl_slist *req_headers,
@@ -1896,13 +1894,14 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http
     unsigned int attempt = 0;
     bool success = false;
 
-    while (!success && retry_limit > attempt++) {
+    while ( !success && ( attempt < retry_limit ) ) {
         success = gru_mk_attempt(origin_url,attempt, retry_limit, redirect_url);
+        attempt++;
     }
     // This is a failsafe test - the gru_mk_attempt)_ should detect the errors and throw an exception
     // if the attempt count exceeds the retry_limit, but if for some reason there's flaw in that
     // logic I add this check as well... ndp-12/01/23
-    if(attempt > retry_limit){
+    if(attempt >= retry_limit){
         stringstream msg;
         msg << prolog << "ERROR: I tried " << attempt << " times to determine the redirect URL for the origin_url:\n";
         msg << "    " << origin_url->str() << "\n";
