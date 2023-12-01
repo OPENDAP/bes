@@ -914,6 +914,7 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url, long 
     if (requested_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
         return true;
 
+#ifndef NDEBUG
     if (BESISDEBUG(MODULE)) {   // BESISDEBUG is a macro that expands to false when NDEBUG is defined. jhrg 4/19/23
         long redirects;
         curl_easy_getinfo(ceh, CURLINFO_REDIRECT_COUNT, &redirects);
@@ -924,6 +925,7 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url, long 
         if (redirect_url)
             BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
     }
+#endif
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
     switch (http_code) {
@@ -1539,13 +1541,6 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
-#if 0
-    BESStopWatch moo;
-    if( BESDebug::IsSet(CURL_TIMING) ) {
-        moo.start(prolog + "Retrieved effective url for starting_point_url: " + starting_point_url->str());
-    }
-#endif
-
     // Add the authorization headers
     request_headers = add_edl_auth_headers(request_headers);
 
@@ -1622,7 +1617,7 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
  * the servers response will be placed.
  * @return A cURL easy handle configured as described above,
  */
-static CURL *init_no_follow_redirects_handle(const string &target_url, struct curl_slist *req_headers,
+static CURL *init_no_follow_redirects_handle(const string &target_url, const struct curl_slist *req_headers,
                                                  vector <string> &resp_hdrs, string &response_body) {
     vector<char> error_buffer(CURL_ERROR_SIZE);
     error_buffer[0] = '\0'; // null terminate empty string
@@ -1758,9 +1753,9 @@ bool process_get_redirect_http_status(const unsigned int http_status,
  *
  * @param origin_url The origin url for the request
  * @param redirect_url Returned value parameter for the redirect url.
- * @return
+ * @return The redirect URL string.
  */
-std::string  get_redirect_url( const std::shared_ptr<http::url> &origin_url)
+std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http::url> &origin_url)
 {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -1773,12 +1768,14 @@ std::string  get_redirect_url( const std::shared_ptr<http::url> &origin_url)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    string redirect_url;
+    string redirect_url_str;
     CURL *ceh = nullptr;
     bool success = false;
     unsigned int max_retries = 3;
     unsigned int http_status = 0;
     unsigned int attempt = 0;
+    std::shared_ptr<http::EffectiveUrl> redirect_url;
+
 
     while (!success && max_retries >= attempt) {
         attempt++;
@@ -1788,7 +1785,7 @@ std::string  get_redirect_url( const std::shared_ptr<http::url> &origin_url)
         curl_slist *req_headers = nullptr;
         vector<string> response_headers;
         string response_body;
-        redirect_url = ""; // clean it, just in case.
+        redirect_url_str = ""; // clean it, just in case.
         CURLcode curl_code = CURLE_OK;
 
         // Add the EDL authorization headers if the Information is in the BES Context Manager
@@ -1827,16 +1824,21 @@ std::string  get_redirect_url( const std::shared_ptr<http::url> &origin_url)
                 char *url = nullptr;
                 curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &url);
                 if (url) {
-                    redirect_url = url;
+                    redirect_url_str = url;
                 }
-                BESDEBUG(MODULE, prolog << "redirect_url: " << redirect_url << "\n");
-                success =  process_get_redirect_http_status( http_status,
+                BESDEBUG(MODULE, prolog << "redirect_url_str: " << redirect_url_str << "\n");
+                success = process_get_redirect_http_status( http_status,
                                                       response_headers,
                                                       response_body,
-                                                      redirect_url,
+                                                            redirect_url_str,
                                                       origin_url->str(),
                                                       attempt,
                                                       max_retries);
+                if(success){
+                    redirect_url = make_shared<http::EffectiveUrl>(redirect_url_str,
+                                                           response_headers,
+                                                           origin_url->is_trusted());
+                }
             }
             else if (attempt >= max_retries) {
                 // Everything is bad now.
@@ -1873,9 +1875,11 @@ std::string  get_redirect_url( const std::shared_ptr<http::url> &origin_url)
             throw;
         }
     }
-    BESDEBUG(MODULE, prolog << "END redirect_url: " << redirect_url << "\n");
+
+    BESDEBUG(MODULE, prolog << "END redirect_url: " << redirect_url->str() << "\n");
     return redirect_url;
 }
+
 
 
 } /* namespace curl */

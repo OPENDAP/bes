@@ -150,7 +150,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
             if (BESDebug::IsSet(MODULE_TIMER) || BESDebug::IsSet(TIMING_LOG_KEY))
                 sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url->str());
 #endif
-            effective_url = curl::retrieve_effective_url(source_url);
+            effective_url = curl::get_redirect_url(source_url);
         }
         BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << " ("
                                 << (source_url->is_trusted() ? "" : "NOT ") << "trusted)" << endl);

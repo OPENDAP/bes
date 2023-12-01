@@ -65,7 +65,6 @@ public:
 
     // Called before each test
     void setUp() override {
-        debug=true;
         DBG( cerr << "\n");
         DBG( cerr << "#-----------------------------------------------------------------\n");
         DBG( cerr << "setUp() - BEGIN\n");
@@ -506,13 +505,12 @@ public:
 
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
-        string redirect_url_str;
-        redirect_url_str = curl::get_redirect_url(source_url);
+        auto redirect_url = curl::get_redirect_url(source_url);
 
         DBG( cerr << prolog << "    baseline_str: " << baseline_str << "\n");
-        DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
-        CPPUNIT_ASSERT( !redirect_url_str.empty() );
-        CPPUNIT_ASSERT( redirect_url_str == baseline_str );
+        DBG( cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
+        CPPUNIT_ASSERT( !redirect_url->str().empty() );
+        CPPUNIT_ASSERT( redirect_url->str() == baseline_str );
 
     }
 
@@ -526,14 +524,13 @@ public:
         DBG( cerr << prolog << "  source_url_str: " << source_url_str << "\n");
         shared_ptr<http::url> source_url(new http::url(source_url_str, true));
 
-        string redirect_url_str;
         try {
-            redirect_url_str = curl::get_redirect_url(source_url);
-            DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+            auto redirect_url = curl::get_redirect_url(source_url);
+            DBG( cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
             CPPUNIT_FAIL("A BESInternalError should have been thrown.");
         }
         catch(BESInternalError &bie){
-            DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
+            DBG(cerr << prolog << "curl::get_redirect_url() was NOT redirected. This is an expected error.\n");
             DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
         }
 
@@ -554,14 +551,13 @@ public:
 
         shared_ptr<http::url> source_url(new http::url(source_url_str, true));
 
-        string redirect_url_str;
         try {
-            redirect_url_str = curl::get_redirect_url(source_url);
-            DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+            auto redirect_url = curl::get_redirect_url(source_url);
+            DBG( cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
             CPPUNIT_FAIL("A BESInternalError should have been thrown.");
         }
         catch(BESInternalError &bie){
-            DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
+            DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint. This is an expected error.\n");
             DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
         }
 
@@ -594,13 +590,11 @@ public:
             BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
             BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
 
-            string redirect_url_str;
-
-            redirect_url_str = curl::get_redirect_url(source_url);
-            DBG( cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+            auto redirect_url = curl::get_redirect_url(source_url);
+            DBG( cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
 
             // does the redirect_url_str start with the baseline??
-            CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
+            CPPUNIT_ASSERT(redirect_url->str().rfind(baseline, 0) == 0);
 
         }
         else {
@@ -639,12 +633,10 @@ public:
             BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
             BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
 
-            string redirect_url_str;
-
             try {
                 BESStopWatch sw;
                 sw.start(prolog);
-                redirect_url_str = curl::get_redirect_url(source_url);
+                auto redirect_url = curl::get_redirect_url(source_url);
                 CPPUNIT_FAIL("The call to curl::get_redirect_url() should have thrown a "
                              "BESInternalError!");
             }
@@ -698,7 +690,7 @@ public:
             DBG( BESDebug::SetUp("cerr,DUMMY_KEY") );
 
             // The results...
-            string redirect_url_str;
+            shared_ptr<EffectiveUrl> redirect_url;
             shared_ptr<EffectiveUrl> effective_url;
 
             // @TODO The first request always takes an oddly long time, we should profile this to see why.
@@ -727,10 +719,10 @@ public:
                 {
                     BESStopWatch sw;
                     DBG( sw.start("CurlUtilsTest calling curl::get_redirect_url() - " + to_string(i)) );
-                    redirect_url_str = curl::get_redirect_url(source_url);
-                    DBG(cerr << prolog << "redirect_url_str: " << redirect_url_str << "\n");
+                    redirect_url = curl::get_redirect_url(source_url);
+                    DBG(cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
                     // does the redirect_url_str start with the baseline??
-                    CPPUNIT_ASSERT(redirect_url_str.rfind(baseline, 0) == 0);
+                    CPPUNIT_ASSERT(redirect_url->str().rfind(baseline, 0) == 0);
                 }
             }
         }
