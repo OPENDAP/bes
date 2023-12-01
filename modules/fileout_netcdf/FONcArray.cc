@@ -905,14 +905,13 @@ void FONcArray::write_for_nc3_types(int ncid) {
             // detects the original variable was of type Byte and typecasts
             // each data value to a short.
             if (element_type == dods_byte_c || element_type == dods_uint8_c) {
-               // The data is retrieved in the define mode. So no need to do it here.
-               // Comment out for the time being.
-//#if 0
+                // The data is retrieved in the define mode. So no need to do it here.
+                // Comment out for the time being.
+                // Uncomment to reduce the memory print. the meory is not allocated in the define mode.
                 if (d_is_dap4)
                     d_a->intern_data();
                 else
                     d_a->intern_data(*get_eval(), *get_dds());
-//#endif
 
                 // There's no practical way to get rid of the value copy, be here we
                 // read directly from libdap::Array object's memory.
@@ -959,14 +958,13 @@ void FONcArray::write_for_nc3_types(int ncid) {
 
             if (element_type == dods_uint16_c) {
 
-               // The data is retrieved in the define mode. So no need to do it here.
-               // Comment out for the time being.
-//#if 0
+                // The data is retrieved in the define mode. So no need to do it here.
+                // Comment out for the time being.
+                // Uncomment to reduce the memory print. the meory is not allocated in the define mode.
                 if (d_is_dap4)
                     d_a->intern_data();
                 else
                     d_a->intern_data(*get_eval(), *get_dds());
-//#endif
 
                 vector<int> data(d_nelements);
                 for (size_t d_i = 0; d_i < d_nelements; d_i++)
