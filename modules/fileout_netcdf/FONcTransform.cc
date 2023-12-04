@@ -1146,6 +1146,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
             FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
+            fb->set_fdio_flag(global_dio_flag);
 
             fonc_vars_in_grp.push_back(fb);
 
