@@ -793,6 +793,75 @@ void DMZ::build_thin_dmr(DMR *dmr)
     }
 }
 
+void DMZ::set_up_all_direct_io_flags_phase_1(DMR *dmr) {
+
+    if (d_xml_doc == nullptr){
+        throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
+    }
+
+    bool dio_flag_value = set_up_direct_io_flag_phase_1(dmr->root());
+    
+    dmr->set_global_dio_flag(dio_flag_value);
+    
+}
+
+bool DMZ::set_up_direct_io_flag_phase_1(D4Group *group) {
+
+    bool ret_value = false;
+    for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
+        // Even though is_constructor_type() returns true for instances of D4Group,
+        // Groups are kept under a separate container from variables because they
+        // have a different function than the Structure and Sequence types (Groups
+        // never hold data).
+        BESDEBUG("dmrpp","Inside set_up_direct_io_flag: var name is "<<(*i)->name()<<endl);
+        if ((*i)->type() == dods_array_c) {
+            if (true == set_up_direct_io_flag_phase_1(*i)) {
+                ret_value = true;
+                break;
+            }
+        }
+    }
+    
+
+    if (ret_value == false) {
+        for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi) {
+            if (true == set_up_direct_io_flag_phase_1(*gi)) {
+                ret_value = true;  
+                break;
+            }
+        }
+    }
+    return ret_value;
+    
+}
+
+bool DMZ::set_up_direct_io_flag_phase_1(BaseType *btp) {
+
+     // goto the DOM tree node for this variable
+    xml_node var_node = get_variable_xml_node(btp);
+    if (var_node == nullptr)
+        throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
+
+    auto chunks = var_node.child("dmrpp:chunks");
+    if(!chunks)
+        return false;
+
+    bool ret_value = false;
+    for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute())  {
+        if (is_eq(attr.name(), "deflateLevel")) {
+            auto d_a = dynamic_cast<DmrppArray *>(btp);
+            d_a->set_dio_flag();
+            BESDEBUG("dmrpp ","dmrpp dio is true for variable name is "<<btp->name() << endl);
+            ret_value = true;
+            break;
+        }
+    }
+    return ret_value;
+}
+
+
+
+
 /**
  * Check to see if the current tag is either an \c Attribute or an \c Alias
  * start tag. This method is a glorified macro...
@@ -1542,6 +1611,7 @@ void DMZ::load_chunks(BaseType *btp)
                 // While later in process_chunks(), we will check if fillValue is defined and adjust the value.
                 if (num_logical_chunks == 1) 
                     dc(btp)->set_one_chunk_fill_value(true);
+                dc(btp)->set_processing_fv_chunks();
 
                 
             }

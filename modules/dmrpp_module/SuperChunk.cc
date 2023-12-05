@@ -132,6 +132,21 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
 
+void process_one_chunk_unconstrained_dio(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
+                                     DmrppArray *array, const vector<unsigned long long> &array_shape)
+{
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
+
+    chunk->read_chunk();
+
+    if(array){
+        array->insert_chunk_unconstrained_dio(chunk);
+    }
+
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
+}
+
+
 
 /**
  * @brief A single argument wrapper for process_one_chunk() for use with std::async().
@@ -171,6 +186,19 @@ bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_a
     return true;
 }
 
+bool one_chunk_unconstrained_compute_thread_dio(unique_ptr<one_chunk_unconstrained_args> args)
+{
+#if DMRPP_ENABLE_THREAD_TIMERS
+    stringstream timer_tag;
+    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
+          " parent_tid: 0x" << std::hex << args->parent_thread_id << " parent_sc: " << args->parent_super_chunk_id ;
+    BESStopWatch sw(COMPUTE_THREADS);
+    sw.start(timer_tag.str());
+#endif
+
+    process_one_chunk_unconstrained_dio(args->chunk, args->chunk_shape, args->array, args->array_shape);
+    return true;
+}
 /**
  * @brief Asynchronously starts the one_chunk_compute_thread using std::async() and places the returned std::future in the queue futures.
  *
@@ -217,6 +245,20 @@ bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futur
     }
     return retval;
 }
+
+bool start_one_chunk_unconstrained_compute_thread_dio(list<std::future<bool>> &futures, unique_ptr<one_chunk_unconstrained_args> args) {
+    bool retval = false;
+    std::unique_lock<std::mutex> lck (chunk_processing_thread_pool_mtx);
+    if (chunk_processing_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
+        futures.push_back(std::async(std::launch::async, one_chunk_unconstrained_compute_thread_dio, std::move(args)));
+        chunk_processing_thread_counter++;
+        retval = true;
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Got std::future '" << futures.size() <<
+                                            "' from std::async, chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
+    }
+    return retval;
+}
+
 
 /**
  * @brief Uses std::async and std::future to concurrently retrieve/inflate/shuffle/insert/etc the Chunks in the queue "chunks".
@@ -378,6 +420,68 @@ void process_chunks_unconstrained_concurrent(
         throw;
     }
 }
+
+//Direct IO routine for processing chunks when the variable is not constrained. 
+void process_chunks_unconstrained_concurrent_dio(
+        const string &super_chunk_id,
+        queue<shared_ptr<Chunk>> &chunks,
+        const vector<unsigned long long> &chunk_shape,
+        DmrppArray *array,
+        const vector<unsigned long long> &array_shape){
+
+    // We maintain a list  of futures to track our parallel activities.
+    list<future<bool>> futures;
+    try {
+        bool done = false;
+        while (!done) {
+
+            if(!futures.empty())
+                get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+
+            if (!chunks.empty()){
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
+                bool thread_started = true;
+                while(thread_started && !chunks.empty()) {
+                    auto chunk = chunks.front();
+
+                    auto args = unique_ptr<one_chunk_unconstrained_args>(
+                            new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape) );
+
+                    // Call direct IO routine
+                    thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args));
+
+                    if (thread_started) {
+                        chunks.pop();
+                    } else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                            " chunk_processing_thread_counter: " << chunk_processing_thread_counter <<
+                                                            " futures.size(): " << futures.size() << endl);
+                    }
+                }
+            }
+            else {
+                // No more Chunks and no futures means we're done here.
+                if(futures.empty())
+                    done = true;
+            }
+        }
+    }
+    catch (...) {
+        // Complete all the futures, otherwise we'll have threads out there using up resources
+        while(!futures.empty()){
+            if(futures.back().valid())
+                futures.back().get();
+            futures.pop_back();
+        }
+        // re-throw the exception
+        throw;
+    }
+}
+
 
 //#####################################################################################################################
 //#####################################################################################################################
@@ -583,6 +687,46 @@ void SuperChunk::retrieve_data() {
         chunk->set_bytes_read(chunk->get_size());
     }
 }
+// Direct chunk IO routine for retrieve_data, it clones from retrieve_data(). To ensure
+// the regular operations. Still use a separate method.
+void SuperChunk::retrieve_data_dio() {
+
+    // Leave this comment copied from retrieve_data_dio().
+    // TODO I think this code should set d_is_read. It sets it for the Chunk, which may be redundant). jhrg 5/9/22
+    if (d_is_read) {
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
+        return;
+    }
+
+    if (!d_read_buffer) {
+        // Allocate memory for SuperChunk receive buffer.
+        // release memory in destructor.
+        d_read_buffer = new char[d_size];
+    }
+
+    // Massage the chunks so that their read/receive/intern data buffer
+    // points to the correct section of the d_read_buffer memory.
+    // "Slice it up!"
+    map_chunks_to_buffer();
+
+    // Read the bytes from the target URL. (pthreads, maybe depends on size...)
+    // Use one (or possibly more) thread(s) depending on d_size
+    // and utilize our friend cURL to stuff the bytes into d_read_buffer
+    //
+    // TODO Replace or improve this way of handling fill value chunks. jhrg 5/7/22
+    read_aggregate_bytes();
+
+    // TODO Check if Chunk::read() sets these. jhrg 5/9/22
+    // Set each Chunk's read state to true.
+    // Set each chunks byte count to the expected
+    // size for the chunk - because upstream events
+    // have assured this to be true.
+    for(const auto& chunk : d_chunks){
+        chunk->set_is_read(true);
+        chunk->set_bytes_read(chunk->get_size());
+    }
+}
+
 
 /**
  * @brief Reads the SuperChunk, inflates/de-shuffles the subordinate chunks as required and copies the values into array
@@ -689,6 +833,43 @@ string SuperChunk::to_string(bool verbose=false) const {
  */
 void SuperChunk::dump(ostream & strm) const {
     strm << to_string(false) ;
+}
+
+// direct chunk method to read unconstrained variables.
+void SuperChunk::read_unconstrained_dio() {
+
+    //Retrieve data for the direct IO case.
+    retrieve_data_dio();
+
+    // The size in element of each of the array's dimensions
+    const vector<unsigned long long> array_shape = d_parent_array->get_shape(true);
+    // The size, in elements, of each of the chunk's dimensions
+    const vector<unsigned long long> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
+
+    if(!DmrppRequestHandler::d_use_compute_threads){
+#if DMRPP_ENABLE_THREAD_TIMERS
+        BESStopWatch sw(SUPER_CHUNK_MODULE);
+        sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
+#endif
+        for(const auto &chunk :get_chunks()){
+            process_one_chunk_unconstrained_dio(chunk, chunk_shape, d_parent_array, array_shape);
+        }
+    }
+    else {
+#if DMRPP_ENABLE_THREAD_TIMERS
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent Chunk Processing. sc_id: " << d_id;
+        BESStopWatch sw(SUPER_CHUNK_MODULE);
+        sw.start(timer_name.str());
+#endif
+        queue<shared_ptr<Chunk>> chunks_to_process;
+        for (const auto &chunk:get_chunks())
+            chunks_to_process.push(chunk);
+
+        process_chunks_unconstrained_concurrent_dio(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
+    }
+
+
 }
 
 } // namespace dmrpp

@@ -16,7 +16,7 @@
     <Int32 name="one_chunk_filters">
         <Dim size="6"/>
         <Dim size="4"/>
-        <dmrpp:chunks compressionType="fletcher32 shuffle deflate" fillValue="0" byteOrder="LE">
+        <dmrpp:chunks compressionType="fletcher32 shuffle deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>6 4</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4016" nBytes="34" chunkPositionInArray="[0,0]"/>
         </dmrpp:chunks>
@@ -32,7 +32,7 @@
     <Int32 name="two_chunks_filters">
         <Dim size="6"/>
         <Dim size="4"/>
-        <dmrpp:chunks compressionType="fletcher32 shuffle deflate" fillValue="0" byteOrder="LE">
+        <dmrpp:chunks compressionType="fletcher32 shuffle deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>3 4</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4050" nBytes="26" chunkPositionInArray="[0,0]"/>
             <dmrpp:chunk offset="4076" nBytes="26" chunkPositionInArray="[3,0]"/>
@@ -70,12 +70,12 @@ BES.LogName=./bes.log
 BES.UncompressCache.dir=/tmp/hyrax_ux
 BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
-BES.module.cmd=/Users/myang6/work/opendap/hyrax-1159/bes/xmlcommand/.libs/libdap_xml_module.so
-BES.module.dap=/Users/myang6/work/opendap/hyrax-1159/bes/dap/.libs/libdap_module.so
-BES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1159/bes/modules/dmrpp_module/.libs/libdmrpp_module.so
-BES.module.fonc=/Users/myang6/work/opendap/hyrax-1159/bes/modules/fileout_netcdf/.libs/libfonc_module.so
-BES.module.h5=/Users/myang6/work/opendap/hyrax-1159/bes/modules/hdf5_handler/.libs/libhdf5_module.so
-BES.module.nc=/Users/myang6/work/opendap/hyrax-1159/bes/modules/netcdf_handler/.libs/libnc_module.so
+BES.module.cmd=/Users/myang6/work/opendap/hyrax-1219/bes/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dap=/Users/myang6/work/opendap/hyrax-1219/bes/dap/.libs/libdap_module.so
+BES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1219/bes/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.fonc=/Users/myang6/work/opendap/hyrax-1219/bes/modules/fileout_netcdf/.libs/libfonc_module.so
+BES.module.h5=/Users/myang6/work/opendap/hyrax-1219/bes/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.nc=/Users/myang6/work/opendap/hyrax-1219/bes/modules/netcdf_handler/.libs/libnc_module.so
 BES.modules=dap,cmd,h5,dmrpp,nc,fonc
 FONc.ClassicModel=false
 FONc.NoGlobalAttrs=true
@@ -84,7 +84,7 @@ H5.EnableCheckNameClashing=true
 </Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.s9bZp9Sm -f ./all_storages_filters.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.TgErlMcP -u data/all_storages_filters.h5 -M</Value>
+            <Value>build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.bnbKcNds -f ./all_storages_filters.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.VAXDa1wc -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
         </Attribute>
     </Attribute>
 </Dataset>

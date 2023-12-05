@@ -1,0 +1,43 @@
+netcdf test {
+dimensions:
+	dim1 = 6 ;
+	dim2 = 4 ;
+	dim3 = 6 ;
+	dim4 = 4 ;
+	dim5 = 2 ;
+	dim6 = 3 ;
+variables:
+	int contiguous(dim1, dim2) ;
+	int one_chunk_filters(dim3, dim4) ;
+	int two_chunks_filters(dim5, dim6) ;
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.configuration = "\n# TheBESKeys::get_as_config()\nAllowedHosts=^https?:\\/\\/\nBES.Catalog.catalog.FollowSymLinks=Yes\nBES.Catalog.catalog.RootDirectory=.\nBES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\nBES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\nBES.Data.RootDirectory=/dev/null\nBES.LogName=./bes.log\nBES.UncompressCache.dir=/tmp/hyrax_ux\nBES.UncompressCache.prefix=ux_\nBES.UncompressCache.size=500\nBES.module.cmd=/Users/myang6/work/opendap/hyrax-1219/bes/xmlcommand/.libs/libdap_xml_module.so\nBES.module.dap=/Users/myang6/work/opendap/hyrax-1219/bes/dap/.libs/libdap_module.so\nBES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1219/bes/modules/dmrpp_module/.libs/libdmrpp_module.so\nBES.module.fonc=/Users/myang6/work/opendap/hyrax-1219/bes/modules/fileout_netcdf/.libs/libfonc_module.so\nBES.module.h5=/Users/myang6/work/opendap/hyrax-1219/bes/modules/hdf5_handler/.libs/libhdf5_module.so\nBES.module.nc=/Users/myang6/work/opendap/hyrax-1219/bes/modules/netcdf_handler/.libs/libnc_module.so\nBES.modules=dap,cmd,h5,dmrpp,nc,fonc\nFONc.ClassicModel=false\nFONc.NoGlobalAttrs=true\nH5.EnableCF=false\nH5.EnableCheckNameClashing=true\n" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.bnbKcNds -f ./all_storages_filters.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.VAXDa1wc -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex all_storages_filters.h5.deflev.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"all_storages_filters.h5.deflev.dmrpp\"}]}]" ;
+data:
+
+ contiguous =
+  0, 1, 2, 3,
+  1, 2, 3, 4,
+  2, 3, 4, 5,
+  3, 4, 5, 6,
+  4, 5, 6, 7,
+  5, 6, 7, 8 ;
+
+ one_chunk_filters =
+  0, 1, 2, 3,
+  1, 2, 3, 4,
+  2, 3, 4, 5,
+  3, 4, 5, 6,
+  4, 5, 6, 7,
+  5, 6, 7, 8 ;
+
+ two_chunks_filters =
+  0, 1, 2,
+  2, 3, 4 ;
+}

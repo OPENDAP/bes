@@ -1,0 +1,66 @@
+netcdf test {
+dimensions:
+	y = 8075 ;
+	x = 7814 ;
+	time = 365 ;
+	nv = 2 ;
+variables:
+	float y(y) ;
+		y:units = "m" ;
+		y:long_name = "y coordinate of projection" ;
+		y:standard_name = "projection_y_coordinate" ;
+	float lon(y, x) ;
+		lon:units = "degrees_east" ;
+		lon:long_name = "longitude coordinate" ;
+		lon:standard_name = "longitude" ;
+	float lat(y, x) ;
+		lat:units = "degrees_north" ;
+		lat:long_name = "latitude coordinate" ;
+		lat:standard_name = "latitude" ;
+	float time(time) ;
+		time:standard_name = "time" ;
+		time:calendar = "standard" ;
+		time:units = "days since removed date-time" ;
+		time:bounds = "time_bnds" ;
+		time:long_name = "24-hour day based on local time" ;
+	float x(x) ;
+		x:units = "m" ;
+		x:long_name = "x coordinate of projection" ;
+		x:standard_name = "projection_x_coordinate" ;
+	short lambert_conformal_conic ;
+		lambert_conformal_conic:grid_mapping_name = "lambert_conformal_conic" ;
+		lambert_conformal_conic:longitude_of_central_meridian = -100. ;
+		lambert_conformal_conic:latitude_of_projection_origin = 42.5 ;
+		lambert_conformal_conic:false_easting = 0. ;
+		lambert_conformal_conic:false_northing = 0. ;
+		lambert_conformal_conic:standard_parallel = 25., 60. ;
+		lambert_conformal_conic:semi_major_axis = 6378137. ;
+		lambert_conformal_conic:inverse_flattening = 298.257223563 ;
+	float prcp(time, y, x) ;
+		prcp:_FillValue = -9999.f ;
+		prcp:long_name = "daily total precipitation" ;
+		prcp:units = "mm/day" ;
+		prcp:missing_value = -9999.f ;
+		prcp:coordinates = "lat lon" ;
+		prcp:grid_mapping = "lambert_conformal_conic" ;
+		prcp:cell_methods = "area: mean time: sum" ;
+	float time_bnds(time, nv) ;
+	short yearday(time) ;
+		yearday:long_name = "day of year (DOY) starting with day 1 on Januaray 1st" ;
+
+// global attributes:
+		:start_year = 2010s ;
+		:source = "Daymet Software Version 4.0" ;
+		:Version_software = "Daymet Software Version 4.0" ;
+		:Version_data = "Daymet Data Version 4.0" ;
+		:Conventions = "CF-1.6" ;
+		:citation = "Please see http://daymet.ornl.gov/ for current Daymet data citation information" ;
+		:references = "Please see http://daymet.ornl.gov/ for current information on Daymet references" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.configuration = "\n# TheBESKeys::get_as_config()\nAllowedHosts=^https?:\\/\\/\nBES.Catalog.catalog.FollowSymLinks=Yes\nBES.Catalog.catalog.RootDirectory=.\nBES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\nBES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\nBES.Data.RootDirectory=/dev/null\nBES.LogName=./bes.log\nBES.UncompressCache.dir=/tmp/hyrax_ux\nBES.UncompressCache.prefix=ux_\nBES.UncompressCache.size=500\nBES.module.cmd=/Users/myang6/work/opendap/hyrax-1219/bes/xmlcommand/.libs/libdap_xml_module.so\nBES.module.dap=/Users/myang6/work/opendap/hyrax-1219/bes/dap/.libs/libdap_module.so\nBES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1219/bes/modules/dmrpp_module/.libs/libdmrpp_module.so\nBES.module.fonc=/Users/myang6/work/opendap/hyrax-1219/bes/modules/fileout_netcdf/.libs/libfonc_module.so\nBES.module.h5=/Users/myang6/work/opendap/hyrax-1219/bes/modules/hdf5_handler/.libs/libhdf5_module.so\nBES.module.nc=/Users/myang6/work/opendap/hyrax-1219/bes/modules/netcdf_handler/.libs/libnc_module.so\nBES.modules=dap,cmd,h5,dmrpp,nc,fonc\nFONc.ClassicModel=false\nFONc.NoGlobalAttrs=true\nH5.EnableCF=false\nH5.EnableCheckNameClashing=true\n" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.lDBx2wNC -f ./daymet_v4_daily_na_prcp_2010.nc.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.yJ4425FU -u data/daymet_v4_daily_na_prcp_2010.nc.h5 -M" ;
+		:history = "removed date-timex daymet_v4_daily_na_prcp_2010.nc.h5_dio.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"daymet_v4_daily_na_prcp_2010.nc.h5_dio.dmrpp\"}]}]" ;
+}

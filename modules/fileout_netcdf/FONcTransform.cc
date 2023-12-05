@@ -748,6 +748,17 @@ void FONcTransform::transform_dap4() {
     besDRB.set_async_accepted(d_dhi->data[ASYNC]);
     besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
 
+    // Will check if direct_io_flag is set for any Array variables. Note: This is for temporary memory usage optimization.
+    // Once we can support the define() with or without dio for individual array, this function is not necessary. KY 11/29/23
+    if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model) {
+        global_dio_flag = _dmr->get_global_dio_flag();
+        if(global_dio_flag)  
+            BESDEBUG(MODULE, prolog << "global_dio_flag is true" << endl);
+        else 
+            BESDEBUG(MODULE, prolog << "global_dio_flag is false" << endl);
+
+    }
+
     // Convert the DMR into an internal format to keep track of
     // variables, arrays, shared dimensions, grids, common maps,
     // embedded structures. It only grabs the variables that are to be
@@ -918,6 +929,7 @@ void FONcTransform::transform_dap4_no_group() {
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
+            fb->set_fdio_flag(global_dio_flag);
             _fonc_vars.push_back(fb);
 
             vector <string> embed;
@@ -1134,6 +1146,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
             FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
+            fb->set_fdio_flag(global_dio_flag);
 
             fonc_vars_in_grp.push_back(fb);
 
