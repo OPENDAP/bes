@@ -58,7 +58,7 @@
 /*
  * Hold mapping information for SDS objects.
  */
-typedef struct {
+using SD_mapping_info_t = struct {
     char comp_info[COMP_INFO];  /*!< compression information */
     int32 nblocks;              /*!< number of data blocks in dataset */
     int32 *offsets;             /*!< offsets of data blocks */
@@ -67,8 +67,7 @@ typedef struct {
     int32 data_type;            /*!< data type */
     intn is_empty;              /*!< flag for checking empty  */
     VOIDP fill_value;           /*!< fill value  */
-
-} SD_mapping_info_t;
+};
 
 using namespace std;
 using namespace libdap;
@@ -81,30 +80,230 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
 #define prolog std::string("build_dmrpp_h4::").append(__func__).append("() - ")
 
-#define INVOCATION_CONTEXT "invocation"
+constexpr auto INVOCATION_CONTEXT = "invocation";
 
 int SDfree_mapping_info(SD_mapping_info_t  *map_info)
 {
     intn  ret_value = SUCCEED;
 
     /* nothing to free */
-    if (map_info == NULL)
+    if (map_info == nullptr)
         return SUCCEED;
 
     map_info->nblocks = 0;
 
-    if (map_info->offsets != NULL) {
+    if (map_info->offsets != nullptr) {
         HDfree(map_info->offsets);
-        map_info->offsets = NULL;
+        map_info->offsets = nullptr;
     }
 
     if (map_info->lengths) {
         HDfree(map_info->lengths);
-        map_info->lengths = NULL;
+        map_info->lengths = nullptr;
     }
 
     return ret_value;
 }
+
+// TODO Modify and reuse this code to get the chunk information for a variable.
+//  Ripped from xml_sds.c in h4mapwriter. jhrg 12/5/23
+
+#if 0
+/*!
+  \fn write_array_chunks(FILE *ofptr, SD_mapping_info_t *map_info, int32 rank,
+  int32* dimsizes, HDF_CHUNK_DEF* cdef, intn indent)
+  \brief Write array data(SDS) chunk information.
+
+  \author Hyo-Kyung (Joe) Lee (hyoklee@hdfgroup.org)
+  \date October 13, 2010
+
+*/
+intn
+write_array_chunks(FILE *ofptr, SD_mapping_info_t *map_info, int32 rank,
+                   int32* dimsizes, HDF_CHUNK_DEF* cdef, intn indent)
+{
+    int k;
+    intn status = FAIL;
+    /* Write <h4:chunks> element. */
+    start_elm_0(ofptr, TAG_CHUNK, indent);
+    /* Write <h4:chunkDimensionSizes> element. */
+    start_elm_0(ofptr, TAG_CSPACE, indent+1);
+
+    for (k=0; k < rank; k++){
+        if(k != rank - 1){
+            fprintf(ofptr, "%d ", (int)cdef->chunk_lengths[k]);
+        }
+        else{
+            fprintf(ofptr, "%d", (int)cdef->chunk_lengths[k]);
+
+        }
+
+    }
+    end_elm_0(ofptr, TAG_CSPACE);
+
+    status = write_array_chunks_byte_stream(ofptr, map_info, rank, dimsizes,
+                                            cdef, indent+1);
+    end_elm(ofptr, TAG_CHUNK, indent);
+    return status;
+}
+
+/*!
+  \fn write_chunk_position_in_array(FILE* ofptr, int rank, int32* lengths,
+      int32* strides, int tag_close)
+  \brief Write chunk position in array.
+
+  \author Hyo-Kyung (Joe) Lee (hyoklee@hdfgroup.org)
+
+  \date October 13, 2010
+ */
+
+void
+write_chunk_position_in_array(FILE* ofptr, int rank, int32* lengths,
+                              int32* strides, int tag_close)
+{
+    int i=0;
+    fprintf(ofptr, "chunkPositionInArray=\"[");
+    for(i = 0; i < (int)rank; i++){
+        int32 index = lengths[i] * strides[i];
+        if(i != rank - 1){
+            fprintf(ofptr, "%ld,", (long) index);
+        }
+        else{
+            fprintf(ofptr, "%ld", (long) index);
+        }
+    }
+    if(tag_close)
+        fprintf(ofptr, "]\"/>");
+    else
+        fprintf(ofptr, "]\">");
+
+}
+
+
+/*!
+
+  \fn write_array_chunks_byte_stream(FILE *ofptr, SD_mapping_info_t *map_info,
+                               int32 rank, int32* dimsizes,
+                               HDF_CHUNK_DEF* cdef,intn indent)
+
+  \brief Write chunked array data(SDS) byte stream information.
+
+  It writes chunk array information.
+
+  \return FAIL
+  \return SUCCEED
+*/
+intn
+write_array_chunks_byte_stream(FILE *ofptr, SD_mapping_info_t *map_info,
+                               int32 rank, int32* dimsizes,
+                               HDF_CHUNK_DEF* cdef,intn indent)
+{
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    int chunk_size = 1;
+
+
+    int32* strides = NULL;
+    int* steps = NULL;
+
+    strides = (int32 *) HDmalloc((int)rank * sizeof(int32));
+    if(strides == NULL){
+        FAIL_ERROR("HDmalloc() failed: Out of Memory");
+    }
+
+    steps = (int *) HDmalloc((int)rank * sizeof(int));
+    if(steps == NULL){
+        FAIL_ERROR("HDmalloc() failed: Out of Memory");
+    }
+
+    /* Initialize steps. */
+    for(i = 0; i < (int)rank; i++){
+        steps[i] = (int)(dimsizes[i] / cdef->chunk_lengths[i]);
+        chunk_size = chunk_size * steps[i];
+        strides[i] = 0;
+    }
+
+
+    for (j=0; j < chunk_size; j++) {
+
+        int scale = 1;
+
+        if(read_chunk(map_info->id, map_info, strides) == FAIL){
+            fprintf(flog, "read_chunk() failed at chunk - ");
+            for(i = 0; i < (int)rank; i++){
+                fprintf(flog, " %ld", (long) strides[i]);
+            }
+            fprintf(flog, "\n");
+            HDfree(strides);
+            HDfree(steps);
+            return FAIL;
+        }
+
+        if(map_info->nblocks > 1){ /* Add h4:byteStreamSet element. */
+            start_elm(ofptr, TAG_BSTMSET, indent);
+
+            write_chunk_position_in_array(ofptr, (int)rank,
+                                          cdef->chunk_lengths,
+                                          strides,
+                                          0);  /* Do not close the tag. */
+            for (k=0; k < map_info->nblocks; k++) {
+                start_elm(ofptr, TAG_BSTREAM, indent+1);
+                if (uuid == 1) {
+                    write_uuid(ofptr, (int)map_info->offsets[k],
+                               (int)map_info->lengths[k]);
+                }
+                fprintf(ofptr, "offset=\"%d\" nBytes=\"%d\"/>",
+                        (int)map_info->offsets[k], (int)map_info->lengths[k]);
+            }
+            end_elm(ofptr, TAG_BSTMSET, indent);
+        }
+        else{
+            if(map_info->nblocks == 1) { /* There's only one block stream. */
+                start_elm(ofptr, TAG_BSTREAM, indent);
+                if (uuid == 1) {
+                    write_uuid(ofptr, (int)map_info->offsets[k],
+                               (int)map_info->lengths[k]);
+                }
+
+                fprintf(ofptr, "offset=\"%d\" nBytes=\"%d\" ",
+                        (int)map_info->offsets[0], (int)map_info->lengths[0]);
+                write_chunk_position_in_array(ofptr, (int)rank,
+                                              cdef->chunk_lengths,
+                                              strides,
+                                              1); /* Close the tag. */
+            }
+            else {
+                /* 0 means all fill values in the chunk.
+                   See MISR_ELIPSOID case. */
+                /* Thus, we'll skip generating offset / length. */
+                start_elm(ofptr, TAG_FVALUE, indent);
+                fprintf(ofptr, "value=\"");
+                write_attr_value(ofptr, map_info->data_type, 1,
+                                 map_info->fill_value, 0);
+                fprintf(ofptr, "\" ");
+                write_chunk_position_in_array(ofptr, (int)rank,
+                                              cdef->chunk_lengths,
+                                              strides,
+                                              1); /* Close the tag. */
+            }
+        }
+
+        /* Increase strides for each dimension. */
+        /* The fastest varying dimension is rank-1. */
+        for(i = rank-1; i >= 0 ; i--){
+            if((j+1) % scale == 0){
+                strides[i] = ++strides[i] % steps[i];
+            }
+            scale = scale * steps[i];
+        }
+    }
+
+    HDfree(strides);
+    HDfree(steps);
+    return SUCCEED;
+}
+#endif
 
 /**
  * @brief Read chunk information from a HDF4 dataset
@@ -205,11 +404,10 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
 
     int *origin = nullptr;
     switch (chunk_flag) {
-        case HDF_NONE:
-            /* No chunking. */
+        case HDF_NONE: /* No chunking. */
             break;
-        case HDF_CHUNK:
-            /* Chunking. */
+        case HDF_CHUNK: /* Chunking. */
+        case HDF_COMP: /* Compression. */
             if (rank <= 0) {
                 ERROR("Invalid rank.");
                 return false;
@@ -220,8 +418,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             }
             memset(origin, 0, sizeof(int) * rank);
             break;
-        case HDF_COMP:
-            /* Compression. */
+#if 0
             if (rank <= 0) {
                 ERROR("Invalid rank.");
                 return false;
@@ -231,6 +428,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
                 FAIL_ERROR("HDmalloc() failed: Out of Memory");
             }
             memset(origin, 0, sizeof(int) * rank);
+#endif
             break;
         case HDF_NBIT:
             /* NBIT compression. */
@@ -241,15 +439,16 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             return false;
     }
 
+    // TODO Use the information in cdef (the HDF_CHUNK_DEF) to get the chunk information.
+    //  The HDF_CHUNK_DEF.chunk_length information is used for the HDF_CHUNK case above,
+    //  The ...comp information is used for the HDF_COMP case above.
+    //  Use the dimsizes[] along with the chunk_length or comp.chunk_length to compute the
+    //  number of chunks.
+    //  For the HDF_COMP case, the cdef.comp holds the info about the compression algorithm.
+    //  For the time being, we only need to handle deflate. jhrg 12/5/23
     auto info_count = read_chunk(sdsid, &map_info, origin);
     if (info_count == FAIL) {
         FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
-    }
-
-    auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc) {
-        throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.",
-                               __FILE__, __LINE__);
     }
 
     string endian_name;
@@ -266,6 +465,12 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
         else
             endian_name = "UNKNOWN";
     }
+
+    auto dc = dynamic_cast<DmrppCommon *>(btp);
+    if (!dc)
+        throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.", __FILE__, __LINE__);
+
+    // TODO Add chunkDimensionSizes and compression information here. jhrg 12/5/23
 
     vector<unsigned long long> position_in_array(rank, 0);
     for (int i = 0; i < map_info.nblocks; i++) {
