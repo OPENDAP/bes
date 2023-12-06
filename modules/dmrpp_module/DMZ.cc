@@ -793,7 +793,7 @@ void DMZ::build_thin_dmr(DMR *dmr)
     }
 }
 
-void DMZ::set_up_all_direct_io_flags_phase_1(DMR *dmr) {
+bool DMZ::set_up_all_direct_io_flags_phase_1(DMR *dmr) {
 
     if (d_xml_doc == nullptr){
         throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
@@ -802,6 +802,7 @@ void DMZ::set_up_all_direct_io_flags_phase_1(DMR *dmr) {
     bool dio_flag_value = set_up_direct_io_flag_phase_1(dmr->root());
     
     dmr->set_global_dio_flag(dio_flag_value);
+    return dio_flag_value;
     
 }
 
@@ -809,10 +810,6 @@ bool DMZ::set_up_direct_io_flag_phase_1(D4Group *group) {
 
     bool ret_value = false;
     for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
-        // Even though is_constructor_type() returns true for instances of D4Group,
-        // Groups are kept under a separate container from variables because they
-        // have a different function than the Structure and Sequence types (Groups
-        // never hold data).
         BESDEBUG("dmrpp","Inside set_up_direct_io_flag: var name is "<<(*i)->name()<<endl);
         if ((*i)->type() == dods_array_c) {
             if (true == set_up_direct_io_flag_phase_1(*i)) {
@@ -822,7 +819,6 @@ bool DMZ::set_up_direct_io_flag_phase_1(D4Group *group) {
         }
     }
     
-
     if (ret_value == false) {
         for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi) {
             if (true == set_up_direct_io_flag_phase_1(*gi)) {
@@ -859,6 +855,97 @@ bool DMZ::set_up_direct_io_flag_phase_1(BaseType *btp) {
     return ret_value;
 }
 
+void DMZ::set_up_all_direct_io_flags_phase_2(DMR *dmr) {
+
+    if (d_xml_doc == nullptr){
+        throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
+    }
+
+    bool dio_flag_value = set_up_direct_io_flag_phase_2(dmr->root());
+    
+}
+
+void DMZ::set_up_direct_io_flag_phase_2(D4Group *group) {
+
+    bool ret_value = false;
+    for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
+        BESDEBUG("dmrpp","Inside set_up_direct_io_flag_phase_2: var name is "<<(*i)->name()<<endl);
+        if ((*i)->type() == dods_array_c) 
+            set_up_direct_io_flag_phase_2(*i)); 
+    }
+
+    for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi) 
+        set_up_direct_io_flag_phase_2(*gi)); 
+    
+}
+
+void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
+
+    bool is_integer_float = false;
+    Array *t_a = nullptr;
+    
+    Type t = btp->type();
+    if (t == dods_array_c) {
+        t_a=dynamic_cast<Array *>(btp);
+        if (libdap::is_simple_type(t_a->var()->type())
+            is_integer_float = true;
+    }
+    
+    // If the var is not an integer or float array, don't support the direct IO.
+    if (is_integer_float == false)
+        return;
+
+    
+    // goto the DOM tree node for this variable
+    xml_node var_node = get_variable_xml_node(btp);
+    if (var_node == nullptr)
+        throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
+
+    auto chunks = var_node.child("dmrpp:chunks");
+
+    // No chunks,no need to check the rest. 
+    if(!chunks)
+        return;
+
+    
+    bool has_deflate_filter  = false;
+    string filter;
+    vector<unsigned int>deflate_levels;
+    bool use_fvalue = true;
+
+    bool is_le = false;
+
+    for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute())  {
+        if (!has_deflate_filter && is_eq(attr.name(), "compressionType")) {
+            BESDEBUG("dmrpp ","dmrpp dio has compressionType, the var name is  "<<btp->name() << endl);
+            filter = attr.value();
+            if (filter.find("deflate") == string::npos) 
+                break;
+            else 
+                has_deflate_filter = true;
+        }
+        else if (has_deflate_filter && deflate_levels.empty()) {
+            
+            if (is_eq(attr.name(), "deflateLevel")) {
+
+                string def_lev_str = attr.value();
+
+                // decompose the string.
+                vector<string> def_lev_str_vec = BESUtil::split(def_lev_str, ' ' );
+                for (const auto &def_lev:def_lev_str_vec)
+                    deflate_levels.push_back(stoul(def_lev));
+            }
+                
+        }
+        else if (has_deflate_filter && !use_fvalue && is_eq(attr.name(), "fillValue"))
+             use_fvalue = true;
+        else if (is_eq(attr.name(),"byteOrder")) {
+            if (attr.value()=="LE")
+                is_le = true;
+        }
+    }
+    // Stop, need to check if the datatype is integer.
+}
 
 
 
