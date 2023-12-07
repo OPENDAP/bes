@@ -310,7 +310,7 @@ write_array_chunks_byte_stream(FILE *ofptr, SD_mapping_info_t *map_info,
  * @param sdsid
  * @param map_info
  * @param origin The parameter origin must be NULL when the data is not stored in chunking layout.
- * When the data is chunked, SDgetdatainfo can be called on a single chunk and origin is used to
+ * When the data are chunked, SDgetdatainfo can be called on a single chunk and origin is used to
  * specify the coordinates of the chunk.
  * @return
  */
@@ -329,19 +329,18 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
 
     info_count = SDgetdatainfo(sdsid, origin, 0, 0, nullptr, nullptr);
     if (info_count == FAIL) {
-        //fprintf(flog, "SDgetedatainfo() failed in read_chunk().\n");
-        return FAIL;
+        FAIL_ERROR("SDgetedatainfo() failed in read_chunk().\n");
     }
 
     if (info_count > 0) {
         map_info->nblocks = (int32) info_count;
         map_info->offsets = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
         if (map_info->offsets == nullptr) {
-            cerr << "HDmalloc() failed: Out of Memory";
+            FAIL_ERROR("HDmalloc() failed: Out of Memory");
         }
         map_info->lengths = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
         if (map_info->lengths == nullptr) {
-            cerr << "HDmalloc() failed: Out of Memory";
+            FAIL_ERROR("HDmalloc() failed: Out of Memory");
         }
 
         ret_value = SDgetdatainfo(sdsid, origin, 0, info_count, map_info->offsets, map_info->lengths);
@@ -364,6 +363,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
     VERBOSE(cerr << "DMR FQN: " << btp->FQN() << endl);
     VERBOSE(cerr << "sdsid: " << sdsid << endl);
 
+#if 0
     SD_mapping_info_t map_info;
     map_info.nblocks = 0;
     map_info.offsets = nullptr;
@@ -379,6 +379,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
     if (status == FAIL) {
         FAIL_ERROR("SDcheckempty() failed.");
     }
+#endif
 
     char obj_name[H4_MAX_NC_NAME]; /* name of the object */
     int32 rank = -1;                 /* number of dimensions */
@@ -386,13 +387,15 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
     int32 data_type = -1;            /* data type */
     int32 num_attrs = -1;            /* number of global attributes */
 
-    status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
+    int status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
     if (status == FAIL) {
         FAIL_ERROR("SDgetinfo() failed.");
     }
 
+#if 0
     /* Save the data type. */
     map_info.data_type = data_type;
+#endif
 
     HDF_CHUNK_DEF cdef;
     int32 chunk_flag = -1;        /* chunking flag */
@@ -439,6 +442,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             return false;
     }
 
+#if 0
     // TODO Use the information in cdef (the HDF_CHUNK_DEF) to get the chunk information.
     //  The HDF_CHUNK_DEF.chunk_length information is used for the HDF_CHUNK case above,
     //  The ...comp information is used for the HDF_COMP case above.
@@ -450,6 +454,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
     if (info_count == FAIL) {
         FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
     }
+#endif
 
     string endian_name;
     hdf_ntinfo_t info;          /* defined in hdf.h near line 142. */
@@ -466,19 +471,106 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             endian_name = "UNKNOWN";
     }
 
+    // Check if SDS has no data. But, what should we do??? jhrg 12/7/23
+    int is_empty = 0;
+    status = SDcheckempty(sdsid, &is_empty);
+    if (status == FAIL) {
+        FAIL_ERROR("SDcheckempty() failed.");
+    }
+
+    if (is_empty) {
+        // FIXME Maybe this is the case where the variable is just fill values? jhrg 12/7/23
+        VERBOSE(cerr << "SDS is empty." << endl);
+        return false;
+    }
+
     auto dc = dynamic_cast<DmrppCommon *>(btp);
     if (!dc)
         throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.", __FILE__, __LINE__);
 
-    // TODO Add chunkDimensionSizes and compression information here. jhrg 12/5/23
+    if (chunk_flag == HDF_CHUNK || chunk_flag == HDF_COMP) {
+        vector<unsigned long long> chunk_dimension_sizes(rank, 0);
+        for (int i = 0; i < rank; i++) {
+            if (chunk_flag == HDF_CHUNK)
+                chunk_dimension_sizes[i] = cdef.chunk_lengths[i];
+            else // chunk_flag is HDF_COMP
+                chunk_dimension_sizes[i] = cdef.comp.chunk_lengths[i];
+        }
+        dc->set_chunk_dimension_sizes(chunk_dimension_sizes);
+
+        int number_of_chunks = 1;
+        for (int i = 0; i < rank; i++) {
+            number_of_chunks = number_of_chunks * (dimsizes[i] / chunk_dimension_sizes[i]);
+        }
+
+        SD_mapping_info_t map_info;
+        map_info.is_empty = 0;
+        map_info.nblocks = 0;
+        map_info.offsets = nullptr;
+        map_info.lengths = nullptr;
+        map_info.data_type = data_type;
+
+        vector<unsigned long long> position_in_array(rank, 0);
+        for (int k = 0; k < number_of_chunks; ++k) {
+            // TODO Use the information in cdef (the HDF_CHUNK_DEF) to get the chunk information.
+            //  The HDF_CHUNK_DEF.chunk_length information is used for the HDF_CHUNK case above,
+            //  The ...comp information is used for the HDF_COMP case above.
+            //  Use the dimsizes[] along with the chunk_length or comp.chunk_length to compute the
+            //  number of chunks.
+            //  For the HDF_COMP case, the cdef.comp holds the info about the compression algorithm.
+            //  For the time being, we only need to handle deflate. jhrg 12/5/23
+            auto info_count = read_chunk(sdsid, &map_info, origin);
+            if (info_count == FAIL) {
+                FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
+            }
+
+            for (int i = 0; i < map_info.nblocks; i++) {
+                VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
+                VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
+
+                dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], position_in_array);
+            }
+        }
+    }
+
+    if (chunk_flag == HDF_COMP) {
+     // add info about compression. jhrg 12/7/23
+    }
+
+#if 0
+    // How many chunks are there?
+    // Compute the number of chunks from the dimsizes and the chunk_dimension_sizes.
+    // This might be the 'strides' or it might be the 'steps' array in the code above.
 
     vector<unsigned long long> position_in_array(rank, 0);
+
+    SD_mapping_info_t map_info;
+    map_info.is_empty = 0;
+    map_info.nblocks = 0;
+    map_info.offsets = nullptr;
+    map_info.lengths = nullptr;
+    map_info.data_type = data_type;
+
+
+    // TODO Use the information in cdef (the HDF_CHUNK_DEF) to get the chunk information.
+    //  The HDF_CHUNK_DEF.chunk_length information is used for the HDF_CHUNK case above,
+    //  The ...comp information is used for the HDF_COMP case above.
+    //  Use the dimsizes[] along with the chunk_length or comp.chunk_length to compute the
+    //  number of chunks.
+    //  For the HDF_COMP case, the cdef.comp holds the info about the compression algorithm.
+    //  For the time being, we only need to handle deflate. jhrg 12/5/23
+    auto info_count = read_chunk(sdsid, &map_info, origin);
+    if (info_count == FAIL) {
+        FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
+    }
+
     for (int i = 0; i < map_info.nblocks; i++) {
         VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
         VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
 
         dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], position_in_array);
     }
+#endif
 
     return true;
 }
