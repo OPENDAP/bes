@@ -156,28 +156,29 @@ write_array_chunks(FILE *ofptr, SD_mapping_info_t *map_info, int32 rank,
 
   \date October 13, 2010
  */
+#endif
 
-void
+vector<unsigned long long>
 write_chunk_position_in_array(FILE* ofptr, int rank, int32* lengths,
                               int32* strides, int tag_close)
 {
+    vector<unsigned long long> chunk_pos;
+
     int i=0;
     fprintf(ofptr, "chunkPositionInArray=\"[");
     for(i = 0; i < (int)rank; i++){
         int32 index = lengths[i] * strides[i];
-        if(i != rank - 1){
-            fprintf(ofptr, "%ld,", (long) index);
-        }
-        else{
-            fprintf(ofptr, "%ld", (long) index);
-        }
+        chunk_pos.push_back(index);
     }
     if(tag_close)
         fprintf(ofptr, "]\"/>");
     else
         fprintf(ofptr, "]\">");
 
+    return chunk_pos;
 }
+
+#if 0
 
 
 /*!
@@ -579,7 +580,7 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
 void qc_input_file(const string &file_fqn)
 {
     //Use an ifstream file to run a check on the provided file's signature
-    // to see if it is an HDF4 file. - kln 5/18/23
+    // to see if it is an HDF4 file. - kln 11/20/23
 
     if (file_fqn.empty()) {
         stringstream msg;
