@@ -1018,6 +1018,8 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
            
     // Now we should provide the variable info for the define mode inside the fileout netCDF module. 
     // The chunk offset/length etc. information will be provided after load_chunk() is called in the read().
+
+    BESDEBUG(PARSER, prolog << "Can do direct IO: the variable name is: " <<btp->name() << endl);
     
 }
 
