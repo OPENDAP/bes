@@ -910,7 +910,6 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     bool has_deflate_filter  = false;
     string filter;
     vector<unsigned int>deflate_levels;
-    //bool use_fvalue = true;
 
     bool is_le = false;
 
@@ -1020,6 +1019,24 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     // The chunk offset/length etc. information will be provided after load_chunk() is called in the read().
 
     BESDEBUG(PARSER, prolog << "Can do direct IO: the variable name is: " <<btp->name() << endl);
+
+    // Adding the dio information in the variable level. This information is needed for the define mode in the fileout netcdf module.
+    // Fill in the chunk information so that the fileout netcdf can retrieve.
+    Array::var_storage_info dmrpp_vs_info;
+
+    // Add the filter info.
+    dmrpp_vs_info.filter = filter;
+
+    // Provide the deflate compression levels.
+    for (const auto &def_lev:deflate_levels)
+        dmrpp_vs_info.deflate_levels.push_back(def_lev);
+    
+    // Provide the chunk dimension sizes.
+    for (const auto &chunk_dim:chunk_dim_sizes)
+        dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
+
+    t_a->set_var_storage_info(dmrpp_vs_info);
+    t_a->set_dio_flag();
     
 }
 

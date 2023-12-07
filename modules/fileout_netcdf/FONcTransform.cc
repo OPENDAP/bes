@@ -752,8 +752,9 @@ void FONcTransform::transform_dap4() {
     // Once we can support the define() with or without dio for individual array, this function is not necessary. KY 11/29/23
     if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model) {
         global_dio_flag = _dmr->get_global_dio_flag();
-        if(global_dio_flag)  
+        if(global_dio_flag) {  
             BESDEBUG(MODULE, prolog << "global_dio_flag is true" << endl);
+        }
         else 
             BESDEBUG(MODULE, prolog << "global_dio_flag is false" << endl);
 
@@ -921,6 +922,7 @@ void FONcTransform::transform_dap4_no_group() {
     Constructor::Vars_iter vi = root_grp->var_begin();
     Constructor::Vars_iter ve = root_grp->var_end();
 
+    if (global_dio_flag == false) {
     for (; vi != ve; vi++) {
         if ((*vi)->send_p()) {
             BaseType *v = *vi;
@@ -929,12 +931,38 @@ void FONcTransform::transform_dap4_no_group() {
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
-            fb->set_fdio_flag(global_dio_flag);
+            
             _fonc_vars.push_back(fb);
 
             vector <string> embed;
             fb->convert(embed, true, false);
         }
+    }
+    }
+    else {
+    for (; vi != ve; vi++) {
+        if ((*vi)->send_p()) {
+            BaseType *v = *vi;
+
+            BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
+
+            if (v->type() == dods_array_c) {
+                Array *t_a = dynamic_cast<Array *>(v);
+                if (t_a->get_dio_flag()) 
+                    set_constraint_var_dio_flag(t_a);
+
+            }
+            // This is a factory class call, and 'fg' is specialized for 'v'
+            FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
+
+            
+            _fonc_vars.push_back(fb);
+
+            vector <string> embed;
+            fb->convert(embed, true, false);
+        }
+    }
+
     }
 
 #if !NDEBUG
@@ -1137,6 +1165,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
     vector < FONcBaseType * > fonc_vars_in_grp;
 
+    if (global_dio_flag == false) {
     for (; vi != ve; vi++) {
         if ((*vi)->send_p()) {
             BaseType *v = *vi;
@@ -1146,7 +1175,6 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
             FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
-            fb->set_fdio_flag(global_dio_flag);
 
             fonc_vars_in_grp.push_back(fb);
 
@@ -1156,6 +1184,37 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             vector <string> embed;
             fb->convert(embed, true, true);
         }
+    }
+    }
+    else {
+    for (; vi != ve; vi++) {
+        if ((*vi)->send_p()) {
+            BaseType *v = *vi;
+
+            BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
+
+            if (v->type() == dods_array_c) {
+                Array *t_a = dynamic_cast<Array *>(v);
+                if (t_a->get_dio_flag()) 
+                    set_constraint_var_dio_flag(t_a);
+
+            }
+
+            // This is a factory class call, and 'fg' is specialized for 'v'
+            //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
+            FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
+
+            fonc_vars_in_grp.push_back(fb);
+
+            // This is needed to avoid the memory leak.
+            _total_fonc_vars_in_grp.push_back(fb);
+
+            vector <string> embed;
+            fb->convert(embed, true, true);
+        }
+    }
+
+
     }
 
 #if !NDEBUG
@@ -1390,6 +1449,27 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
     }
 
 }
+void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) {
+
+
+        // The last check to see if the direct io can be done is to check if
+        // this array is subset. If yes, we cannot use direct IO.
+
+            bool partial_subset_array = false;
+            Array::Dim_iter di = t_a->dim_begin();
+            Array::Dim_iter de = t_a->dim_end();
+
+            for (; di != de; di++) {
+                if (t_a->dimension_size_ll(di,true) != t_a->dimension_size_ll(di, false)) {
+                    partial_subset_array = true;
+                    break;
+                }
+            }
+            if (partial_subset_array)
+                t_a->set_dio_flag(false);
+
+}
+
 
 void FONcTransform::set_constraint_var_dio_flag(libdap::BaseType* bt) {
 
