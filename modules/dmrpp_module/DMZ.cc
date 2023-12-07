@@ -861,21 +861,20 @@ void DMZ::set_up_all_direct_io_flags_phase_2(DMR *dmr) {
         throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
     }
 
-    bool dio_flag_value = set_up_direct_io_flag_phase_2(dmr->root());
+    set_up_direct_io_flag_phase_2(dmr->root());
     
 }
 
 void DMZ::set_up_direct_io_flag_phase_2(D4Group *group) {
 
-    bool ret_value = false;
     for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
         BESDEBUG("dmrpp","Inside set_up_direct_io_flag_phase_2: var name is "<<(*i)->name()<<endl);
         if ((*i)->type() == dods_array_c) 
-            set_up_direct_io_flag_phase_2(*i)); 
+            set_up_direct_io_flag_phase_2((*i)); 
     }
 
     for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi) 
-        set_up_direct_io_flag_phase_2(*gi)); 
+        set_up_direct_io_flag_phase_2((*gi)); 
     
 }
 
@@ -887,7 +886,7 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     Type t = btp->type();
     if (t == dods_array_c) {
         t_a=dynamic_cast<Array *>(btp);
-        if (libdap::is_simple_type(t_a->var()->type())
+        if (libdap::is_simple_type(t_a->var()->type()))
             is_integer_float = true;
     }
     
@@ -911,7 +910,7 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     bool has_deflate_filter  = false;
     string filter;
     vector<unsigned int>deflate_levels;
-    bool use_fvalue = true;
+    //bool use_fvalue = true;
 
     bool is_le = false;
 
@@ -937,14 +936,89 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
             }
                 
         }
+#if 0
         else if (has_deflate_filter && !use_fvalue && is_eq(attr.name(), "fillValue"))
              use_fvalue = true;
+#endif
         else if (is_eq(attr.name(),"byteOrder")) {
-            if (attr.value()=="LE")
+            string endian_str = attr.value();
+            if (endian_str=="LE")
                 is_le = true;
         }
     }
-    // Stop, need to check if the datatype is integer.
+
+    // If no deflate filter is used or the deflate_levels is not defined, cannot do the direct IO. return.
+    if (!has_deflate_filter || (deflate_levels.empty()))
+        return;
+
+    // If the datatype is integer and this is not little-endian, cannot do the direct IO. return.
+    if (!is_le && is_integer_type(t_a->var()->type()))
+        return;
+
+    // Now we need to read the first child of dmrpp:chunks to obtain the chunk sizes.
+    vector<unsigned long long>chunk_dim_sizes;
+    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child; child = child.next_sibling()) {
+        if (is_eq(child.name(), "dmrpp:chunkDimensionSizes")) {
+            string chunk_sizes_str = child.child_value();
+            vector<string> chunk_sizes_str_vec = BESUtil::split(chunk_sizes_str, ' ' );
+            for (const auto &chunk_size:chunk_sizes_str_vec)
+                chunk_dim_sizes.push_back(stoull(chunk_size));
+            break;
+        }
+    }
+
+    // Since the deflate filter is always associated with the chunk storage, 
+    // the chunkDimensionSizes should always exist for the direct IO case. If not, return.
+    if (chunk_dim_sizes.empty())
+        return;
+
+    // Now we need to count the number of children with the name <dmrpp:chunk> inside the <dmrpp:chunks>.
+    size_t num_chunks_children = 0;
+    for (auto child = chunks.first_child(); child; child = child.next_sibling()) 
+        num_chunks_children++;
+
+    // If the only child is dmrpp::chunkDimensionSizes, no chunk is found. This is not direct IO case.
+    if (num_chunks_children == 1) 
+        return;
+
+    // Now we need to check the special case if the chunk size is greater than the dimension size for any dimension.
+    // If this is the case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
+    // TODO later, if the dimension is unlimited, this restriction can be lifted. Current dmrpp doesn't store the
+    // unlimited dimension information.
+    vector <unsigned long long>dim_sizes;
+    Array::Dim_iter p = t_a->dim_begin();
+    while (p != t_a->dim_end()) {
+        dim_sizes.push_back((unsigned long long)(t_a->dimension_size_ll(p)));
+        p++;
+    }
+
+    bool chunk_less_dim = true;
+    if (chunk_dim_sizes.size() == dim_sizes.size()) {
+        for (unsigned int i = 0; i<dim_sizes.size(); i++) {
+            if (chunk_dim_sizes[i] > dim_sizes[i]) {
+                 chunk_less_dim = false;
+                 break;
+            }
+        }
+    }
+    else
+        chunk_less_dim = false;
+
+    if (!chunk_less_dim)
+        return;
+
+    // Another special case is that some chunks are only filled with the fvalues. This case cannot be handled by direct IO.
+    // First calculate the number of logical chunks.
+    // Also up to this step, the size of chunk_dim_sizes must be the same as the size of dim_sizes. No need to double check.
+    size_t num_logical_chunks = 1;
+    for (unsigned int i = 0; i<dim_sizes.size(); i++) 
+            num_logical_chunks *=(size_t)ceil((float)dim_sizes[i] / (float)chunk_dim_sizes[i]);
+    if (num_logical_chunks != (num_chunks_children-1))
+        return;
+           
+    // Now we should provide the variable info for the define mode inside the fileout netCDF module. 
+    // The chunk offset/length etc. information will be provided after load_chunk() is called in the read().
+    
 }
 
 

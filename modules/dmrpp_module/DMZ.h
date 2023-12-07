@@ -139,8 +139,8 @@ public:
     virtual bool set_up_direct_io_flag_phase_1(libdap::BaseType *btp);
 
     virtual void set_up_all_direct_io_flags_phase_2(libdap::DMR *dmr);
-    virtual bool set_up_direct_io_flag_phase_2(libdap::D4Group *group);
-    virtual bool set_up_direct_io_flag_phase_2(libdap::BaseType *btp);
+    virtual void set_up_direct_io_flag_phase_2(libdap::D4Group *group);
+    virtual void set_up_direct_io_flag_phase_2(libdap::BaseType *btp);
 
 
     virtual void load_attributes(libdap::BaseType *btp);
