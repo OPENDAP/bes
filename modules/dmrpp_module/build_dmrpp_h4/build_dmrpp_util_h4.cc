@@ -162,12 +162,11 @@ write_array_chunks(FILE *ofptr, SD_mapping_info_t *map_info, int32 rank,
 #endif
 
 vector<int>
-write_chunk_position_in_array(int rank, int32* lengths, int32* strides)
+write_chunk_position_in_array(int rank, int* lengths, int* strides)
 {
     vector<int> chunk_pos;
 
-    int i=0;
-    for(i = 0; i < (int)rank; i++){
+    for(int i = 0; i < rank; i++){
         int index = lengths[i] * strides[i];
         chunk_pos.push_back(index);
     }
