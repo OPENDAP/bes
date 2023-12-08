@@ -159,8 +159,7 @@ write_array_chunks(FILE *ofptr, SD_mapping_info_t *map_info, int32 rank,
 #endif
 
 vector<int>
-write_chunk_position_in_array(int rank, int32* lengths,
-                              int32* strides, int tag_close)
+write_chunk_position_in_array(int rank, int32* lengths, int32* strides)
 {
     vector<int> chunk_pos;
 
@@ -174,8 +173,6 @@ write_chunk_position_in_array(int rank, int32* lengths,
 }
 
 #if 0
-
-
 /*!
 
   \fn write_array_chunks_byte_stream(FILE *ofptr, SD_mapping_info_t *map_info,
