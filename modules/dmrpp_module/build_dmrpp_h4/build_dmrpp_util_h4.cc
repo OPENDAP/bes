@@ -80,7 +80,10 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
 #define prolog std::string("build_dmrpp_h4::").append(__func__).append("() - ")
 
+#if 0
+// will be used later maybe? jhrg 12/7/23
 constexpr auto INVOCATION_CONTEXT = "invocation";
+#endif
 
 int SDfree_mapping_info(SD_mapping_info_t  *map_info)
 {
@@ -401,6 +404,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
     int *origin = nullptr;
     switch (chunk_flag) {
         case HDF_NONE: /* No chunking. */
+            VERBOSE(cerr << "No chunking.\n");
             break;
         case HDF_CHUNK: /* Chunking. */
         case HDF_COMP: /* Compression. */
@@ -413,6 +417,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
                 FAIL_ERROR("HDmalloc() failed: Out of Memory");
             }
             memset(origin, 0, sizeof(int) * rank);
+            VERBOSE(cerr << "HDF_CHUNK or HDF_COMP.\n");
             break;
 #if 0
             if (rank <= 0) {
@@ -496,6 +501,12 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             number_of_chunks = number_of_chunks * (dimsizes[i] / chunk_dimension_sizes[i]);
         }
 
+        VERBOSE(cerr << "number_of_chunks: " << number_of_chunks << endl);\
+        VERBOSE(cerr << "rank: " << rank << endl);
+        VERBOSE(cerr << "chunk dimension sizes: ");
+        VERBOSE(copy(chunk_dimension_sizes.begin(), chunk_dimension_sizes.end(),
+                     ostream_iterator<int32>(cerr, " ")));
+
         SD_mapping_info_t map_info;
         map_info.is_empty = 0;
         map_info.nblocks = 0;
@@ -524,6 +535,31 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
                 dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], position_in_array);
             }
         }
+    }
+    else if (chunk_flag == HDF_NONE) {
+        SD_mapping_info_t map_info;
+        map_info.is_empty = 0;
+        map_info.nblocks = 0;
+        map_info.offsets = nullptr;
+        map_info.lengths = nullptr;
+        map_info.data_type = data_type;
+
+        auto info_count = read_chunk(sdsid, &map_info, origin);
+        if (info_count == FAIL) {
+            FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
+        }
+
+        vector<unsigned long long> position_in_array(rank, 0);
+        for (int i = 0; i < map_info.nblocks; i++) {
+            VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
+            VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
+
+            dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], position_in_array);
+        }
+    }
+    else {
+        // TODO Handle the other cases. jhrg 12/7/23
+        FAIL_ERROR("Unknown chunk_flag.");
     }
 
     if (chunk_flag == HDF_COMP) {

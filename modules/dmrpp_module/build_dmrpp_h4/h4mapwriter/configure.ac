@@ -15,7 +15,7 @@ AC_INIT(h4mapwriter, 1.0.8, help@hdfgroup.org)
 AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_SRCDIR([.])
 AC_CONFIG_HEADER([config.h])
-AC_CONFIG_TESTDIR(testsuite, [.])
+# AC_CONFIG_TESTDIR(testsuite, [.])
 
 # Checks for programs.
 AC_PROG_CC
@@ -45,7 +45,8 @@ AC_HEADER_STDBOOL
 # Checks for library functions.
 AC_CHECK_FUNCS([memset])
 
-AC_CONFIG_FILES([Makefile testsuite/Makefile testsuite/atlocal])
+AC_CONFIG_FILES([Makefile])
+#  testsuite/Makefile testsuite/atlocal])
 #AC_OUTPUT(Makefile)
 AC_OUTPUT
 

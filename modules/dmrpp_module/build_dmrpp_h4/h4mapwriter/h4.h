@@ -46,6 +46,9 @@
 
  */
 
+// Added jhrg 12/6/23
+#define uint unsigned int
+
 #define COMP_INFO 512 /*!< Max buffer size for compression information.  */
 #define N_PAL_VALUES      768   /*!< Number of Palette values. */
 
