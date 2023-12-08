@@ -845,8 +845,8 @@ bool DMZ::set_up_direct_io_flag_phase_1(BaseType *btp) {
     bool ret_value = false;
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute())  {
         if (is_eq(attr.name(), "deflateLevel")) {
-            auto d_a = dynamic_cast<DmrppArray *>(btp);
-            d_a->set_dio_flag();
+            //auto d_a = dynamic_cast<DmrppArray *>(btp);
+            //d_a->set_dio_flag();
             BESDEBUG("dmrpp ","dmrpp dio is true for variable name is "<<btp->name() << endl);
             ret_value = true;
             break;
@@ -886,7 +886,8 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     Type t = btp->type();
     if (t == dods_array_c) {
         t_a=dynamic_cast<Array *>(btp);
-        if (libdap::is_simple_type(t_a->var()->type()))
+        Type t_var = t_a->var()->type();
+        if (libdap::is_simple_type(t_var) && t_var != dods_str_c && t_var != dods_url_c && t_var!= dods_enum_c && t_var!=dods_opaque_c)
             is_integer_float = true;
     }
     

@@ -606,15 +606,29 @@ void FONcArray::define(int ncid) {
             BESDEBUG("fonc","variable name is "<<d_varname << endl);
             BESDEBUG("fonc","FONC direct io flag is false before calling the intern_data()"<<endl);
         }
-        bool d_io_flag_phase_1 = d_a->get_dio_flag();
         
-        if (d_io_flag_phase_1) {
+        bool d_io_flag_phase_2 = d_a->get_dio_flag();
+        if (d_io_flag_phase_2) {
             BESDEBUG("fonc","variable name is "<<d_varname << endl);
             BESDEBUG("fonc","direct io flag is true before calling the intern_data()"<<endl);
+            Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+            BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
+            for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
+                BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
+    
+            for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
+                BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
+    
+            BESDEBUG("fonc","End of checking the chunk info. for the define mode.  "<<d_varname << endl);
+
         }
+
+        
 #endif
 
  
+#if 0
         // Check if the direct IO flag is really set. Note intern_data() is called in define() if fdio_flag is true.
         // TODO: the following should be NOT necessary with further optimization of the memory usage in the future. KY 2023-11-30
         if (d_array_type != NC_CHAR && fdio_flag == true) {
@@ -623,11 +637,12 @@ void FONcArray::define(int ncid) {
             else    
                 d_a->intern_data(*get_eval(), *get_dds());
         }
+#endif
 
         bool d_io_flag = d_a->get_dio_flag();
 
 #ifndef NBEBUG
-        BESDEBUG("fonc", "d_io_flag: "<<d_io_flag<<endl);
+        BESDEBUG("fonc", "d_io_flag after intern_data(): "<<d_io_flag<<endl);
         
         if (d_io_flag) {
 
@@ -735,12 +750,10 @@ void FONcArray::define(int ncid) {
 void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 
   // Note: when fdio_flag is not true, the intern_data needs to be called here. 
-  if (fdio_flag == false) {
     if (d_is_dap4)
         d_a->intern_data();
     else
         d_a->intern_data(*get_eval(), *get_dds());
-  }
 
     // Check if we can use direct IO.
     bool d_io_flag = d_a->get_dio_flag();
