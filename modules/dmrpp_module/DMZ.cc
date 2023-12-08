@@ -991,7 +991,11 @@ DMZ::load_attributes(BaseType *btp)
             auto *c = dynamic_cast<Constructor*>(btp);
             if (c) {
                 for (auto i = c->var_begin(), e = c->var_end(); i != e; i++) {
+#if 0
+                    // jhrg 12/8/23
                     dc(btp->var())->set_attributes_loaded(true);
+#endif
+                    dc(*i)->set_attributes_loaded(true);
                 }
                 break;
             }

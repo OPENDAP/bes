@@ -14,14 +14,18 @@
 ##   Note: renamed hmap to h4mapwriter.
 ##
 ##  This file is part of h4mapwriter tool.
+
 AUTOMAKE_OPTIONS = foreign check-news
 AM_CC = h4cc
+
 # Remove -Wall flag for Solaris cc compiler.
 AM_CFLAGS =  -Wall
 AM_LDFLAGS = -L/opt/homebrew/Cellar/openssl@3/3.1.0/lib -lssl -lcrypto \
 -L/Users/jimg/src/opendap/hyrax_git/build/deps/lib -ldf -lmfhdf
+
 # get rid of -luuid for OSX
 # -luuid
+
 bin_PROGRAMS = h4mapwriter
 GRAM_SRC = odl.tab.c odl.tab.h lex.odl.c
 YACC = bison
@@ -31,15 +35,16 @@ h4mapwriter_SOURCES = $(GRAM_SRC) \
                xml_hmap.c \
                xml_sds.c xml_vdata.c xml_ris.c xml_an.c xml_vg.c xml_pal.c \
                h4.c h4_ris.c h4_sds.c  h4_vdata.c h4_pal.c \
-               h4.h hmap.h  xml.h xml_sds.h xml_vg.h 
+               h4.h hmap.h  xml.h xml_sds.h xml_vg.h
+
 SUBDIRS = . 
 # testsuite
 DIST_SUBDIRS = . 
 # testsuite
+
 man_MANS = h4mapwriter.1
 dist_man_MANS = h4mapwriter.1
 EXTRA_DIST = h4mapwriter.spec odl.y odl.lex
-
 
 # Build linux RPMs
 srpm: dist
@@ -47,7 +52,6 @@ srpm: dist
 
 rpm: dist
 	rpmbuild -tb --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
-
 
 ###########################################################################
 # Build the ODL parser
