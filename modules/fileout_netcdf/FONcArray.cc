@@ -639,6 +639,7 @@ void FONcArray::define(int ncid) {
         }
 #endif
 
+        // Obtain the direct IO flag
         bool d_io_flag = d_a->get_dio_flag();
 
 #ifndef NBEBUG

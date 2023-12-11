@@ -845,9 +845,6 @@ bool DMZ::set_up_direct_io_flag_phase_1(BaseType *btp) {
     bool ret_value = false;
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute())  {
         if (is_eq(attr.name(), "deflateLevel")) {
-            //auto d_a = dynamic_cast<DmrppArray *>(btp);
-            //d_a->set_dio_flag();
-            BESDEBUG("dmrpp ","dmrpp dio is true for variable name is "<<btp->name() << endl);
             ret_value = true;
             break;
         }
@@ -868,7 +865,6 @@ void DMZ::set_up_all_direct_io_flags_phase_2(DMR *dmr) {
 void DMZ::set_up_direct_io_flag_phase_2(D4Group *group) {
 
     for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
-        BESDEBUG("dmrpp","Inside set_up_direct_io_flag_phase_2: var name is "<<(*i)->name()<<endl);
         if ((*i)->type() == dods_array_c) 
             set_up_direct_io_flag_phase_2((*i)); 
     }
@@ -916,7 +912,6 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
 
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute())  {
         if (!has_deflate_filter && is_eq(attr.name(), "compressionType")) {
-            BESDEBUG("dmrpp ","dmrpp dio has compressionType, the var name is  "<<btp->name() << endl);
             filter = attr.value();
             if (filter.find("deflate") == string::npos) 
                 break;
@@ -936,10 +931,6 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
             }
                 
         }
-#if 0
-        else if (has_deflate_filter && !use_fvalue && is_eq(attr.name(), "fillValue"))
-             use_fvalue = true;
-#endif
         else if (is_eq(attr.name(),"byteOrder")) {
             string endian_str = attr.value();
             if (endian_str=="LE")
