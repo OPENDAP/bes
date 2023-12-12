@@ -762,6 +762,8 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
     if (d_io_flag) {
         // direct IO operation.
         write_direct_io_data(ncid,d_varid);
+
+        d_a->clear_local_data();
         return;
     }
 
