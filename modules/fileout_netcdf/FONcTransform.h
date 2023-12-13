@@ -123,6 +123,9 @@ private:
             const string &ce);
     void set_max_size_and_encoding(unsigned long long &max_request_size_kb, string &return_encoding);
 
+    void set_constraint_var_dio_flag(libdap::BaseType*) const;
+    void set_constraint_var_dio_flag(libdap::Array*) const;
+
 };
 
 #endif // FONcTransfrom_h_

@@ -1977,6 +1977,7 @@ bool DmrppArray::read()
     // does not explicitly appear in this method as it is handled by the parser.
     if (read_p()) return true;
 
+#if 0
     // Here we need to reset the dio_flag to false for the time being before calling the method use_direct_io_opt()
     // since the dio_flag may be set to true for reducing the memory usage with a temporary solution. 
     // TODO: we need to reset the direct io flag to false and change back in the future. KY 2023-11-29
@@ -2021,6 +2022,37 @@ bool DmrppArray::read()
             dmrpp_vs_info.var_chunk_info.push_back(vci_t);
         }
         this->set_var_storage_info(dmrpp_vs_info);
+    }
+#endif
+
+    if (this->get_dio_flag()) {
+
+        Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
+
+        auto chunks = this->get_chunks();
+
+        // Need to provide the offset of a chunk in the final data buffer.
+        for (unsigned int i = 0; i<chunks.size();i++) {
+            if (i > 0) 
+               chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
+            BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
+        }
+
+        // Fill in the chunk information so that the fileout netcdf can retrieve.
+        // Provide chunk offset/length etc. 
+        auto im_chunks = this->get_immutable_chunks();
+        for (const auto &chunk:im_chunks) {
+            Array::var_chunk_info_t vci_t;
+            vci_t.filter_mask = chunk->get_filter_mask();
+            vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
+            vci_t.chunk_buffer_size = chunk->get_size();
+    
+            for (const auto &chunk_coord:chunk->get_position_in_array())
+                vci_t.chunk_coords.push_back(chunk_coord);           
+            dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+        }
+        this->set_var_storage_info(dmrpp_vs_info);
+
     }
     
 
