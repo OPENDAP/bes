@@ -101,6 +101,7 @@ private:
                                        const std::vector<unsigned long long> &array_shape, char *data);
 
     void read_contiguous();
+    void read_one_chunk_dio();
     void read_contiguous_string();
 
 #ifdef USE_READ_SERIAL
@@ -115,6 +116,12 @@ private:
     process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
             DmrppArray *array, const vector<unsigned long long> &array_shape);
 
+    // Change this for direct chunk IO.
+    friend void
+    process_one_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
+            DmrppArray *array, const vector<unsigned long long> &array_shape);
+
+
     // Called from read_chunks()
     friend void
     process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
@@ -126,8 +133,11 @@ private:
                                     unsigned long long chunk_offset, const std::vector<unsigned long long> &chunk_shape,
                                     const std::vector<unsigned long long> &chunk_origin);
 
+    virtual void insert_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk);
+   
     void read_chunks();
     void read_chunks_unconstrained();
+    void read_chunks_dio_unconstrained();
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 

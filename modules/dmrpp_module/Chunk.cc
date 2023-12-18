@@ -995,6 +995,50 @@ void Chunk::read_chunk() {
     d_is_read = true;
 }
 
+// direct IO method that reads chunks.
+void Chunk::read_chunk_dio() {
+
+    // Read chunk for dio - use read_chunk() as a reference.
+    if (d_is_read)
+        return;
+
+    // By default, d_read_buffer_is_mine is true. But if this is part of a SuperChunk
+    // then the SuperChunk will have allocated memory and d_read_buffer_is_mine is false.
+    if (d_read_buffer_is_mine)
+        set_rbuf_to_size();
+
+    dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+    if (!handle)
+        throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
+
+    try {
+        handle->read_data();  // retries until success when appropriate, else throws
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+    }
+    catch (...) {
+        // TODO See https://bugs.earthdata.nasa.gov/browse/HYRAX-378
+        //  It may be that this is the code that catches throws from
+        //  chunk_write_data and based on read_data()'s behavior, the
+        //  code should probably stop _all_ transfers, reclaim all
+        //  handles and send a failure message up the call stack.
+        //  jhrg 4/7/21
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        throw;
+    }
+    
+
+    // If the expected byte count was not read, it's an error.
+    if (get_size() != get_bytes_read()) {
+        ostringstream oss;
+        oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    d_is_read = true;
+
+
+}
+
 /**
  *  unsigned long long d_size;
  *  unsigned long long d_offset;

@@ -1,0 +1,20 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 3 ;
+variables:
+	int chunk_normal(dim1, dim2) ;
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.10" ;
+		:build_dmrpp_metadata.invocation = "/Users/myang6/work/opendap/hyrax-771/bes/modules/dmrpp_module/.libs/build_dmrpp -f One_chunk_s_c.h5 -r One_chunk_c_c.dmr -M" ;
+		:history = "removed date-timex One_chunk_s_c_deflevel.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"One_chunk_s_c_deflevel.h5.dmrpp\"}]}]" ;
+data:
+
+ chunk_normal =
+  0, 1, 2,
+  2, 3, 4 ;
+}

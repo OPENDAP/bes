@@ -1,0 +1,89 @@
+netcdf test {
+dimensions:
+	time = 8 ;
+	scan = 4 ;
+	band = 2 ;
+variables:
+	double time(time) ;
+		time:standard_name = "time" ;
+		time:units = "seconds since 2010-1-1 0:0:0" ;
+	float lon(time, scan) ;
+		lon:standard_name = "longitude" ;
+		lon:units = "degrees_east" ;
+	float pre_wrong(time) ;
+	float lat(time, scan) ;
+		lat:standard_name = "latitude" ;
+		lat:units = "degrees_north" ;
+	float swath_data(time, scan, band) ;
+	float pre(time) ;
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.configuration = "\n# TheBESKeys::get_as_config()\nAllowedHosts=^https?:\\/\\/\nBES.Catalog.catalog.FollowSymLinks=Yes\nBES.Catalog.catalog.RootDirectory=.\nBES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\nBES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\nBES.Data.RootDirectory=/dev/null\nBES.LogName=./bes.log\nBES.UncompressCache.dir=/tmp/hyrax_ux\nBES.UncompressCache.prefix=ux_\nBES.UncompressCache.size=500\nBES.module.cmd=/Users/myang6/work/opendap/hyrax-1249/bes/xmlcommand/.libs/libdap_xml_module.so\nBES.module.dap=/Users/myang6/work/opendap/hyrax-1249/bes/dap/.libs/libdap_module.so\nBES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1249/bes/modules/dmrpp_module/.libs/libdmrpp_module.so\nBES.module.fonc=/Users/myang6/work/opendap/hyrax-1249/bes/modules/fileout_netcdf/.libs/libfonc_module.so\nBES.module.h5=/Users/myang6/work/opendap/hyrax-1249/bes/modules/hdf5_handler/.libs/libhdf5_module.so\nBES.module.nc=/Users/myang6/work/opendap/hyrax-1249/bes/modules/netcdf_handler/.libs/libnc_module.so\nBES.modules=dap,cmd,h5,dmrpp,nc,fonc\nFONc.ClassicModel=false\nFONc.NoGlobalAttrs=true\nH5.EnableCF=false\nH5.EnableCheckNameClashing=true\n" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.RzN2CFcN -f ./swath_wrong_dim_rp.nc -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.atPzg8fi -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex swath_wrong_dim_rp.nc.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"swath_wrong_dim_rp.nc.dmrpp\"}]}]" ;
+data:
+
+ time = 0, 1, 2, 3, 4, 5, 6, 7 ;
+
+ lon =
+  60, 60.96774, 61.93548, 62.90322,
+  63.87097, 64.83871, 65.80645, 66.77419,
+  67.74194, 68.70968, 69.67742, 70.64516,
+  71.6129, 72.58064, 73.54839, 74.51613,
+  75.48387, 76.45161, 77.41936, 78.3871,
+  79.35484, 80.32258, 81.29032, 82.25806,
+  83.22581, 84.19355, 85.16129, 86.12904,
+  87.09677, 88.06451, 89.03226, 90 ;
+
+ pre_wrong = 0, 500, 1000, 1500, 0, 0, 0, 0 ;
+
+ lat =
+  45, 45.48387, 45.96774, 46.45161,
+  46.93548, 47.41935, 47.90322, 48.3871,
+  48.87097, 49.35484, 49.83871, 50.32258,
+  50.80645, 51.29032, 51.77419, 52.25806,
+  52.74194, 53.22581, 53.70968, 54.19355,
+  54.67742, 55.16129, 55.64516, 56.12903,
+  56.6129, 57.09678, 57.58065, 58.06452,
+  58.54839, 59.03226, 59.51613, 60 ;
+
+ swath_data =
+  193.2532, 196.897,
+  193.4952, 200.436,
+  199.3542, 204.9752,
+  193.8211, 216.1632,
+  205.7508, 205.9369,
+  219.1356, 176.5154,
+  207.4124, 200.5186,
+  192.223, 204.9959,
+  186.6447, 184.3237,
+  204.5124, 206.7339,
+  198.6257, 188.7375,
+  200.9266, 184.9525,
+  200.4348, 193.6536,
+  204.7461, 179.261,
+  188.4976, 208.4392,
+  197.2867, 215.6311,
+  195.4016, 190.1508,
+  207.9334, 200.2,
+  202.4017, 206.1566,
+  195.8187, 204.9275,
+  184.8008, 197.1141,
+  202.951, 201.5332,
+  209.405, 202.9583,
+  205.6945, 192.6557,
+  185.4385, 203.3041,
+  198.3598, 183.8042,
+  190.5135, 192.3925,
+  211.647, 196.9166,
+  197.249, 203.4984,
+  218.4413, 194.0372,
+  203.5601, 212.1762,
+  221.4939, 194.2911 ;
+
+ pre = 0, 500, 1000, 1500, 2000, 2500, 3000, 3500 ;
+}
