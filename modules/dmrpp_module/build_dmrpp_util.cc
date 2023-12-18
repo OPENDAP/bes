@@ -653,6 +653,7 @@ void process_contiguous_layout_dariable(hid_t dataset, BaseType *btp){
 
     if (cont_size > 0) {
         auto dc = toDC(btp);
+        VERBOSE(cerr << prolog << "     Before add_chunk: " <<btp->name() << endl);
         dc->add_chunk(byte_order, cont_size, cont_addr, "");
     }
 
@@ -1068,7 +1069,66 @@ string get_type_decl(BaseType *btp){
     return type_decl.str();
 }
 
+bool is_supported_compound_type(hid_t h5_type) {
 
+    bool ret_value = true;
+    hid_t memtype = -1;
+    if ((memtype = H5Tget_native_type(h5_type, H5T_DIR_ASCEND)) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
+    }
+    
+    hid_t  memb_id = -1;
+    H5T_class_t memb_cls = H5T_NO_CLASS;
+    int nmembs = 0;
+    size_t memb_offset = 0;
+    char *memb_name = nullptr;
+
+    if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+    }
+
+    for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
+
+        if ((memb_id = H5Tget_member_type(memtype, u)) < 0)
+            throw InternalErr(__FILE__, __LINE__,
+                              "Fail to obtain the datatype of an HDF5 compound datatype member.");
+
+        // Get member type class
+        memb_cls = H5Tget_member_class(memtype, u);
+
+        // Get member offset
+        memb_offset = H5Tget_member_offset(memtype, u);
+
+        // Get member name
+        memb_name = H5Tget_member_name(memtype, u);
+        if (memb_name == nullptr)
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
+
+        if (memb_cls == H5T_COMPOUND) 
+            ret_value = false;
+        else if (memb_cls == H5T_ARRAY) {
+
+            hid_t at_base_type = H5Tget_super(memb_id);
+            H5T_class_t array_cls = H5Tget_class(at_base_type);
+            if (array_cls != H5T_INTEGER && array_cls != H5T_FLOAT)
+                ret_value = false;
+            H5Tclose(at_base_type);
+
+
+        } else if (memb_cls != H5T_INTEGER && memb_cls != H5T_FLOAT) {
+            ret_value = false;
+        } 
+
+        // Close member type ID
+        H5Tclose(memb_id);
+        free(memb_name);
+        if (ret_value == false) 
+            break;
+    } // end for
+
+
+
+}
 bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     VERBOSE(cerr << prolog << "BEGIN " << get_type_decl(btp) << endl);
 
@@ -1108,6 +1168,21 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
             is_unsupported = true;
             break;
         }
+        case H5T_COMPOUND: {
+            bool supported_compound_type = is_supported_compound_type(h5_type_id);
+            if (supported_compound_type == false) {
+                stringstream msgs;
+                msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
+                msgs << get_type_decl(btp) << " ";
+                msgs << "which the underlying HDF5/NetCDF-4 file has stored as an HDF5 compound datatype and ";
+                msgs << "the basetype of the compound datatype is not integer or float. ";
+                msgs << "This is not yet supported by the dmr++ creation machinery.";
+                msg = msgs.str();
+                is_unsupported = true;
+            }
+
+            break;
+        }
 
         default:
             break;
@@ -1115,6 +1190,7 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     VERBOSE(cerr << prolog << "END  is_unsupported: " << (is_unsupported?"true":"false") << endl);
     return is_unsupported;
 }
+
 
 /**
  * @brief Identifies, reads, and then stores a vlss in a DAP dmr++ variable using the compact representation
