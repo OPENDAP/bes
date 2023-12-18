@@ -54,7 +54,7 @@ namespace vlsa {
 
 const auto VLSA = "vlsa";
 const auto VLSA_VERBOSE = "vlsa:verbose";
-const auto VLSA_VALUE_COMPRESSION_THRESHOLD = 300;
+const auto VLSA_VALUE_COMPRESSION_THRESHOLD = 512;
 
 /**
  * @brief Maps zlib return code to a string value;
