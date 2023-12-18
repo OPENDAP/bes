@@ -1,0 +1,1874 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MOD13Q1.A2023241.h08v05.061.2023258002222.hdf">
+    <Dimension name="YDim:MODIS_Grid_16DAY_250m_500m_VI" size="4800"/>
+    <Dimension name="XDim:MODIS_Grid_16DAY_250m_500m_VI" size="4800"/>
+    <Structure name="MODIS_Grid_16DAY_250m_500m_VI">
+        <Structure name="Data Fields">
+            <Int16 name="250m 16 days NDVI">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days NDVI</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>NDVI</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-2000</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-3000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int16 name="250m 16 days EVI">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days EVI</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>EVI</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-2000</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-3000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <UInt16 name="250m 16 days VI Quality">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days VI Quality</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bit field</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>65534</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>65535</Value>
+                </Attribute>
+                <Attribute name="Legend" type="String">
+                    <Value>
+	 Bit Fields Description (Right to Left): 
+	[0-1] : MODLAND_QA [2 bit range] 
+		 00: VI produced, good quality 
+		 01: VI produced, but check other QA 
+		 10: Pixel produced, but most probably cloudy 
+		 11: Pixel not produced due to other reasons than clouds 
+	[2-5] : VI usefulness [4 bit range] 
+		 0000: Highest quality 
+		 0001: Lower quality  
+		 0010..1010: Decreasing quality 
+		 1100: Lowest quality 
+		 1101: Quality so low that it is not useful 
+		 1110: L1B data faulty 
+		 1111: Not useful for any other reason/not processed 
+	[6-7] : Aerosol quantity [2 bit range] 
+		 00: Climatology 
+		 01: Low 
+		 10: Average 
+		 11: High (11) 
+	[8] : Adjacent cloud detected; [1 bit range] 
+		 1: Yes 
+		 0: No 
+	[9] : Atmosphere BRDF correction performed [1 bit range] 
+		 1: Yes 
+		 0: No 
+	[10] : Mixed clouds  [1 bit range] 
+		 1: Yes 
+		 0: No 
+	[11-13] : Land/Water Flag [3 bit range] 
+		 000: Shallow ocean 
+		 001: Land (Nothing else but land) 
+		 010: Ocean coastlines and lake shorelines 
+		 011: Shallow inland water 
+		 100: Ephemeral water 
+		 101: Deep inland water 
+		 110: Moderate or continental ocean 
+		 111: Deep ocean 
+	[14] : Possible snow/ice [1 bit range] 
+		 1: Yes 
+		 0: No 
+	[15] : Possible shadow [1 bit range] 
+		 1: Yes 
+		 0: No 
+</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </UInt16>
+            <Int16 name="250m 16 days red reflectance">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days red reflectance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int16 name="250m 16 days NIR reflectance">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days NIR reflectance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int16 name="250m 16 days blue reflectance">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days blue reflectance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int16 name="250m 16 days MIR reflectance">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days MIR reflectance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1000</Value>
+                </Attribute>
+                <Attribute name="Legend" type="String">
+                    <Value>
+	 The MIR band saved in the VI product is MODIS band 7 
+		 Bandwidth : 2105-2155 nm 
+		 Band center: 2130 nm 
+</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int16 name="250m 16 days view zenith angle">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days view zenith angle</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>18000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int16 name="250m 16 days sun zenith angle">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days sun zenith angle</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>18000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int16 name="250m 16 days relative azimuth angle">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days relative azimuth angle</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-18000</Value>
+                    <Value>18000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-4000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int16 name="250m 16 days composite day of the year">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days composite day of the year</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>Julian day of the year </Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>1</Value>
+                    <Value>366</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int16>
+            <Int32 name="250m 16 days pixel reliability">
+                <Dim name="/YDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim:MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days pixel reliability</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>rank</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int32">
+                    <Value>0</Value>
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int32">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="Legend" type="String">
+                    <Value>
+	 Rank Keys: 
+		[-1]:  Fill/No Data-Not Processed. 
+		 [0]:  Good data      - Use with confidence 
+		 [1]:  Marginal data  - Useful, but look at other QA information 
+		 [2]:  Snow/Ice       - Target covered with snow/ice 
+		 [3]:  Cloudy         - Target not visible, covered with cloud 
+</Value>
+                </Attribute>
+                <Attribute name="dim_0" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>YDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="dim_1" type="Container">
+                    <Attribute name="name" type="String">
+                        <Value>XDim:MODIS_Grid_16DAY_250m_500m_VI</Value>
+                    </Attribute>
+                </Attribute>
+            </Int32>
+        </Structure>
+    </Structure>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_V2.19</Value>
+        </Attribute>
+        <Attribute name="identifier_product_doi" type="String">
+            <Value>10.5067/MODIS/MOD13Q1.061</Value>
+        </Attribute>
+        <Attribute name="identifier_product_doi_authority" type="String">
+            <Value>http://dx.doi.org</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="StructMetadata" type="Container">
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container">
+            <Attribute name="GRID_1" type="Container">
+                <Attribute name="GridName" type="String">
+                    <Value>&quot;MODIS_Grid_16DAY_250m_500m_VI&quot;</Value>
+                </Attribute>
+                <Attribute name="XDim" type="Int32">
+                    <Value>4800</Value>
+                </Attribute>
+                <Attribute name="YDim" type="Int32">
+                    <Value>4800</Value>
+                </Attribute>
+                <Attribute name="UpperLeftPointMtrs" type="Float64">
+                    <Value>-11119505.196667</Value>
+                    <Value>4447802.078667</Value>
+                </Attribute>
+                <Attribute name="LowerRightMtrs" type="Float64">
+                    <Value>-10007554.677000</Value>
+                    <Value>3335851.559000</Value>
+                </Attribute>
+                <Attribute name="Projection" type="String">
+                    <Value>GCTP_SNSOID</Value>
+                </Attribute>
+                <Attribute name="ProjParams" type="Float64">
+                    <Value>6371007.181000</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="SphereCode" type="Int32">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="Dimension" type="Container"/>
+                <Attribute name="DataField" type="Container">
+                    <Attribute name="DataField_1" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days NDVI&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_2" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days EVI&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_3" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days VI Quality&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_UINT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_4" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days red reflectance&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_5" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days NIR reflectance&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_6" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days blue reflectance&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_7" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days MIR reflectance&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_8" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days view zenith angle&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_9" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days sun zenith angle&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_10" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days relative azimuth angle&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_11" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days composite day of the year&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT16</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="DataField_12" type="Container">
+                        <Attribute name="DataFieldName" type="String">
+                            <Value>&quot;250m 16 days pixel reliability&quot;</Value>
+                        </Attribute>
+                        <Attribute name="DataType" type="String">
+                            <Value>DFNT_INT8</Value>
+                        </Attribute>
+                        <Attribute name="DimList" type="String">
+                            <Value>&quot;YDim&quot;</Value>
+                            <Value>&quot;XDim&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+    </Attribute>
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <Value>MASTERGROUP</Value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="REPROCESSINGPLANNED" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;further update is anticipated&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="REPROCESSINGACTUAL" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;reprocessed&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;MOD13Q1.A2023241.h08v05.061.2023258002222.hdf&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;Day&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;2023-09-15T04:22:22.000Z&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;6.0.33&quot;</Value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <Value>&quot;1&quot;</Value>
+                        <Value>&quot;2&quot;</Value>
+                        <Value>&quot;3&quot;</Value>
+                        <Value>&quot;4&quot;</Value>
+                        <Value>&quot;5&quot;</Value>
+                        <Value>&quot;6&quot;</Value>
+                        <Value>&quot;7&quot;</Value>
+                        <Value>&quot;8&quot;</Value>
+                        <Value>&quot;9&quot;</Value>
+                        <Value>&quot;10&quot;</Value>
+                        <Value>&quot;11&quot;</Value>
+                        <Value>&quot;12&quot;</Value>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <Value>&quot;1&quot;</Value>
+                            <Value>&quot;2&quot;</Value>
+                            <Value>&quot;3&quot;</Value>
+                            <Value>&quot;4&quot;</Value>
+                            <Value>&quot;5&quot;</Value>
+                            <Value>&quot;6&quot;</Value>
+                            <Value>&quot;7&quot;</Value>
+                            <Value>&quot;8&quot;</Value>
+                            <Value>&quot;9&quot;</Value>
+                            <Value>&quot;10&quot;</Value>
+                            <Value>&quot;11&quot;</Value>
+                            <Value>&quot;12&quot;</Value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <Value>&quot;250m 16 days NDVI&quot;</Value>
+                            <Value>&quot;250m 16 days EVI&quot;</Value>
+                            <Value>&quot;250m 16 days VI Quality&quot;</Value>
+                            <Value>&quot;250m 16 days red reflectance&quot;</Value>
+                            <Value>&quot;250m 16 days NIR reflectance&quot;</Value>
+                            <Value>&quot;250m 16 days blue reflectance&quot;</Value>
+                            <Value>&quot;250m 16 days MIR reflectance&quot;</Value>
+                            <Value>&quot;250m 16 days view zenith angle&quot;</Value>
+                            <Value>&quot;250m 16 days sun zenith angle&quot;</Value>
+                            <Value>&quot;250m 16 days relative azimuth angle&quot;</Value>
+                            <Value>&quot;250m 16 days composite day of the year&quot;</Value>
+                            <Value>&quot;250m 16 days pixel reliability&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <Value>&quot;1&quot;</Value>
+                            <Value>&quot;2&quot;</Value>
+                            <Value>&quot;3&quot;</Value>
+                            <Value>&quot;4&quot;</Value>
+                            <Value>&quot;5&quot;</Value>
+                            <Value>&quot;6&quot;</Value>
+                            <Value>&quot;7&quot;</Value>
+                            <Value>&quot;8&quot;</Value>
+                            <Value>&quot;9&quot;</Value>
+                            <Value>&quot;10&quot;</Value>
+                            <Value>&quot;11&quot;</Value>
+                            <Value>&quot;12&quot;</Value>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                                <Value>&quot;Passed&quot;</Value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                                <Value>&quot;No automatic quality assessment is performed in the PGE&quot;</Value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                                <Value>&quot;Not Investigated&quot;</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SCIENCEQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                                <Value>&quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;</Value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <Value>&quot;1&quot;</Value>
+                            <Value>&quot;2&quot;</Value>
+                            <Value>&quot;3&quot;</Value>
+                            <Value>&quot;4&quot;</Value>
+                            <Value>&quot;5&quot;</Value>
+                            <Value>&quot;6&quot;</Value>
+                            <Value>&quot;7&quot;</Value>
+                            <Value>&quot;8&quot;</Value>
+                            <Value>&quot;9&quot;</Value>
+                            <Value>&quot;10&quot;</Value>
+                            <Value>&quot;11&quot;</Value>
+                            <Value>&quot;12&quot;</Value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTINTERPOLATEDDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                                <Value>100</Value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTOUTOFBOUNDSDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                                <Value>0</Value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTCLOUDCOVER" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;MOD13Q1&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <Value>61</Value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>160</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;MOD09Q1.A2023241.h08v05.061.2023251222026.hdf&quot;</Value>
+                        <Value>&quot;MOD09Q1.A2023249.h08v05.061.2023258041359.hdf&quot;</Value>
+                        <Value>&quot;MOD09A1.A2023241.h08v05.061.2023251222026.hdf&quot;</Value>
+                        <Value>&quot;MOD09A1.A2023249.h08v05.061.2023258041359.hdf&quot;</Value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="GPOLYGON" type="Container">
+                        <Attribute name="GPOLYGONCONTAINER" type="Container">
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                            </Attribute>
+                            <Attribute name="GRING" type="Container">
+                                <Attribute name="CLASS" type="String">
+                                    <Value>&quot;1&quot;</Value>
+                                </Attribute>
+                                <Attribute name="EXCLUSIONGRINGFLAG" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <Value>1</Value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <Value>&quot;1&quot;</Value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="String">
+                                        <Value>&quot;N&quot;</Value>
+                                    </Attribute>
+                                </Attribute>
+                            </Attribute>
+                            <Attribute name="GRINGPOINT" type="Container">
+                                <Attribute name="CLASS" type="String">
+                                    <Value>&quot;1&quot;</Value>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTLATITUDE" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <Value>4</Value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <Value>&quot;1&quot;</Value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <Value>29.8308028608368</Value>
+                                        <Value>39.9999999964079</Value>
+                                        <Value>40.0852255853565</Value>
+                                        <Value>29.9062514942912</Value>
+                                    </Attribute>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTLONGITUDE" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <Value>4</Value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <Value>&quot;1&quot;</Value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <Value>-115.369550008828</Value>
+                                        <Value>-130.540728914638</Value>
+                                        <Value>-117.360631853124</Value>
+                                        <Value>-103.699828723654</Value>
+                                    </Attribute>
+                                </Attribute>
+                                <Attribute name="GRINGPOINTSEQUENCENO" type="Container">
+                                    <Attribute name="NUM_VAL" type="Int32">
+                                        <Value>4</Value>
+                                    </Attribute>
+                                    <Attribute name="CLASS" type="String">
+                                        <Value>&quot;1&quot;</Value>
+                                    </Attribute>
+                                    <Attribute name="VALUE" type="Float64">
+                                        <Value>1</Value>
+                                        <Value>2</Value>
+                                        <Value>3</Value>
+                                        <Value>4</Value>
+                                    </Attribute>
+                                </Attribute>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;00:00:00&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;23:59:59&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;2023-08-29&quot;</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;2023-09-13&quot;</Value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <Value>&quot;6.1.0&quot;</Value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <Value>&quot;1&quot;</Value>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <Value>&quot;1&quot;</Value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <Value>1</Value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <Value>&quot;MODIS&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <Value>&quot;1&quot;</Value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <Value>1</Value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <Value>&quot;Terra&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <Value>&quot;1&quot;</Value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <Value>1</Value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <Value>&quot;MODIS&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <Value>&quot;1&quot;</Value>
+                        <Value>&quot;2&quot;</Value>
+                        <Value>&quot;3&quot;</Value>
+                        <Value>&quot;4&quot;</Value>
+                        <Value>&quot;5&quot;</Value>
+                        <Value>&quot;6&quot;</Value>
+                        <Value>&quot;7&quot;</Value>
+                        <Value>&quot;8&quot;</Value>
+                        <Value>&quot;9&quot;</Value>
+                        <Value>&quot;10&quot;</Value>
+                        <Value>&quot;11&quot;</Value>
+                        <Value>&quot;12&quot;</Value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <Value>&quot;1&quot;</Value>
+                            <Value>&quot;2&quot;</Value>
+                            <Value>&quot;3&quot;</Value>
+                            <Value>&quot;4&quot;</Value>
+                            <Value>&quot;5&quot;</Value>
+                            <Value>&quot;6&quot;</Value>
+                            <Value>&quot;7&quot;</Value>
+                            <Value>&quot;8&quot;</Value>
+                            <Value>&quot;9&quot;</Value>
+                            <Value>&quot;10&quot;</Value>
+                            <Value>&quot;11&quot;</Value>
+                            <Value>&quot;12&quot;</Value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                            <Value>1</Value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <Value>&quot;QAPERCENTGOODQUALITY&quot;</Value>
+                            <Value>&quot;QAPERCENTOTHERQUALITY&quot;</Value>
+                            <Value>&quot;QAPERCENTNOTPRODUCEDCLOUD&quot;</Value>
+                            <Value>&quot;QAPERCENTNOTPRODUCEDOTHER&quot;</Value>
+                            <Value>&quot;NDVI250M16DAYQCLASSPERCENTAGE&quot;</Value>
+                            <Value>&quot;EVI250M16DAYQCLASSPERCENTAGE&quot;</Value>
+                            <Value>&quot;HORIZONTALTILENUMBER&quot;</Value>
+                            <Value>&quot;VERTICALTILENUMBER&quot;</Value>
+                            <Value>&quot;TileID&quot;</Value>
+                            <Value>&quot;INPUTPRODUCTRESOLUTION&quot;</Value>
+                            <Value>&quot;identifier_product_doi&quot;</Value>
+                            <Value>&quot;identifier_product_doi_authority&quot;</Value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <Value>&quot;1&quot;</Value>
+                            <Value>&quot;2&quot;</Value>
+                            <Value>&quot;3&quot;</Value>
+                            <Value>&quot;4&quot;</Value>
+                            <Value>&quot;5&quot;</Value>
+                            <Value>&quot;6&quot;</Value>
+                            <Value>&quot;7&quot;</Value>
+                            <Value>&quot;8&quot;</Value>
+                            <Value>&quot;9&quot;</Value>
+                            <Value>&quot;10&quot;</Value>
+                            <Value>&quot;11&quot;</Value>
+                            <Value>&quot;12&quot;</Value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                                <Value>1</Value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <Value>&quot;1&quot;</Value>
+                                <Value>&quot;2&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;4&quot;</Value>
+                                <Value>&quot;5&quot;</Value>
+                                <Value>&quot;6&quot;</Value>
+                                <Value>&quot;7&quot;</Value>
+                                <Value>&quot;8&quot;</Value>
+                                <Value>&quot;9&quot;</Value>
+                                <Value>&quot;10&quot;</Value>
+                                <Value>&quot;11&quot;</Value>
+                                <Value>&quot;12&quot;</Value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <Value>&quot;97&quot;</Value>
+                                <Value>&quot;3&quot;</Value>
+                                <Value>&quot;0&quot;</Value>
+                                <Value>&quot;0&quot;</Value>
+                                <Value>&quot;0&quot;</Value>
+                                <Value>&quot;0&quot;</Value>
+                                <Value>&quot;08&quot;</Value>
+                                <Value>&quot;05&quot;</Value>
+                                <Value>&quot;51008005&quot;</Value>
+                                <Value>&quot;Product input resolution 250m&quot;</Value>
+                                <Value>&quot;10.5067/MODIS/MOD13Q1.061&quot;</Value>
+                                <Value>&quot;http://dx.doi.org&quot;</Value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="ArchiveMetadata" type="Container">
+        <Attribute name="ARCHIVEDMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <Value>MASTERGROUP</Value>
+            </Attribute>
+            <Attribute name="SPSOPARAMETERS" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>4</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;2749&quot;</Value>
+                    <Value>&quot;4334&quot;</Value>
+                    <Value>&quot;2749a&quot;</Value>
+                    <Value>&quot;4334a&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ALGORITHMPACKAGEACCEPTANCEDATE" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;102004&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ALGORITHMPACKAGEMATURITYCODE" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;Normal&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ALGORITHMPACKAGENAME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;MOD_PR13A1&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ALGORITHMPACKAGEVERSION" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;6&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INSTRUMENTNAME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;Moderate-Resolution Imaging SpectroRadiometer&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="LONGNAME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PROCESSINGCENTER" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;MODAPS&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTFILENAME" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>160</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;MOD09Q1.A2023241.h08v05.061.2023251222026.hdf&quot;</Value>
+                    <Value>&quot;MOD09Q1.A2023249.h08v05.061.2023258041359.hdf&quot;</Value>
+                    <Value>&quot;MOD09A1.A2023241.h08v05.061.2023251222026.hdf&quot;</Value>
+                    <Value>&quot;MOD09A1.A2023249.h08v05.061.2023258041359.hdf&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <Value>39.9999999964079</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <Value>29.9999999973059</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <Value>-103.913425937493</Value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <Value>1</Value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Float64">
+                        <Value>-130.540728914638</Value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PROCESSINGENVIRONMENT" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;Linux minion20226 5.4.0-1081-fips #90-Ubuntu SMP Tue Jul 11 10:13:07 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="DESCRREVISION" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;6.1&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="CHARACTERISTICBINANGULARSIZE" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Float64">
+                    <Value>7.5</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="CHARACTERISTICBINSIZE" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Float64">
+                    <Value>231.656358263889</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="DATACOLUMNS" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <Value>4800</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="DATAROWS" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <Value>4800</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="GLOBALGRIDCOLUMNS" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <Value>172800</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="GLOBALGRIDROWS" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <Value>86400</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="NUMBEROFDAYS" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <Value>16</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="DAYSOFYEAR" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>16</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Float64">
+                    <Value>241</Value>
+                    <Value>242</Value>
+                    <Value>243</Value>
+                    <Value>244</Value>
+                    <Value>245</Value>
+                    <Value>246</Value>
+                    <Value>247</Value>
+                    <Value>248</Value>
+                    <Value>249</Value>
+                    <Value>250</Value>
+                    <Value>251</Value>
+                    <Value>252</Value>
+                    <Value>253</Value>
+                    <Value>254</Value>
+                    <Value>255</Value>
+                    <Value>256</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="GEOANYABNORMAL" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;False&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="GEOESTMAXRMSERROR" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Float64">
+                    <Value>50.0</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="QAPERCENTPOORQ250MOR500M16DAYNDVI" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>16</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Float64">
+                    <Value>0</Value>
+                    <Value>94</Value>
+                    <Value>3</Value>
+                    <Value>2</Value>
+                    <Value>1</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="QAPERCENTPOORQ250MOR500M16DAYEVI" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>16</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Float64">
+                    <Value>0</Value>
+                    <Value>94</Value>
+                    <Value>3</Value>
+                    <Value>2</Value>
+                    <Value>1</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                    <Value>0</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PERCENTLAND" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="Int32">
+                    <Value>100</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="DAYSPROCESSED" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>16</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;2023241&quot;</Value>
+                    <Value>&quot;2023242&quot;</Value>
+                    <Value>&quot;2023243&quot;</Value>
+                    <Value>&quot;2023244&quot;</Value>
+                    <Value>&quot;2023245&quot;</Value>
+                    <Value>&quot;2023246&quot;</Value>
+                    <Value>&quot;2023247&quot;</Value>
+                    <Value>&quot;2023248&quot;</Value>
+                    <Value>&quot;2023249&quot;</Value>
+                    <Value>&quot;2023250&quot;</Value>
+                    <Value>&quot;2023251&quot;</Value>
+                    <Value>&quot;2023252&quot;</Value>
+                    <Value>&quot;2023253&quot;</Value>
+                    <Value>&quot;2023254&quot;</Value>
+                    <Value>&quot;2023255&quot;</Value>
+                    <Value>&quot;2023256&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PRODUCTIONTYPE" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;Regular Production [1-16,17-32,33-48,...353-2/3]&quot;</Value>
+                </Attribute>
+            </Attribute>
+            <Attribute name="QA_STRUCTURE_STYLE" type="Container">
+                <Attribute name="NUM_VAL" type="Int32">
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="VALUE" type="String">
+                    <Value>&quot;C5 or later&quot;</Value>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+</Dataset>
