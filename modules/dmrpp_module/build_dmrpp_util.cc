@@ -1080,7 +1080,6 @@ bool is_supported_compound_type(hid_t h5_type) {
     hid_t  memb_id = -1;
     H5T_class_t memb_cls = H5T_NO_CLASS;
     int nmembs = 0;
-    size_t memb_offset = 0;
     char *memb_name = nullptr;
 
     if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
@@ -1095,9 +1094,6 @@ bool is_supported_compound_type(hid_t h5_type) {
 
         // Get member type class
         memb_cls = H5Tget_member_class(memtype, u);
-
-        // Get member offset
-        memb_offset = H5Tget_member_offset(memtype, u);
 
         // Get member name
         memb_name = H5Tget_member_name(memtype, u);
