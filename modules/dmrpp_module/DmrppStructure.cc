@@ -51,6 +51,24 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
     return *this;
 }
 
+bool
+DmrppStructure::read()
+{
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+    throw InternalErr (__FILE__, __LINE__, "The read function of DmrppStructure is not implemented yet.");
+
+}
+
+void
+DmrppStructure::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Structure::set_send_p(state);
+}
+
+
 void DmrppStructure::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppStructure::dump - (" << (void *) this << ")" << endl;

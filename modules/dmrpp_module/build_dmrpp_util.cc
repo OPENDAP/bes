@@ -1126,7 +1126,7 @@ bool is_supported_compound_type(hid_t h5_type) {
             break;
     } // end for
 
-
+    return ret_value;
 
 }
 bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){

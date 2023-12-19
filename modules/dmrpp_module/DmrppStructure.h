@@ -53,6 +53,15 @@ public:
         return new DmrppStructure(*this);
     }
 
+    bool read() override;
+    void set_send_p(bool state) override;
+
+    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false) 
+    {
+        DmrppCommon::print_dmrpp(writer, constrained);
+    }
+
+
     virtual void dump(ostream & strm) const;
 };
 
