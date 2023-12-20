@@ -56,10 +56,7 @@ public:
     bool read() override;
     void set_send_p(bool state) override;
 
-    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override
-    {
-        DmrppCommon::print_dmrpp(writer, constrained);
-    }
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override;
 
 
     virtual void dump(ostream & strm) const;
