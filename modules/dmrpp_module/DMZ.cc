@@ -593,6 +593,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
 
     btp->set_is_dap4(true);
 
+    // I cannot find a test on the code on enum. Is this part of code really tested? KY 2023-12-21
     if (t == dods_enum_c) {
         if (enum_value.empty())
             throw BESInternalError("The variable ' " + name_value + "' lacks an 'enum' attribute.", __FILE__, __LINE__);
@@ -1206,10 +1207,13 @@ DMZ::load_attributes(BaseType *btp)
     if (dc(btp)->get_attributes_loaded())
         return;
 
+     BESDEBUG("dmrpp", "In load_attributes: btp name is " << btp->name() <<endl);
     load_attributes(btp, get_variable_xml_node(btp));
+     BESDEBUG("dmrpp", "In load_attributes: after load_attributes  " <<endl);
 
     // TODO Remove redundant
     dc(btp)->set_attributes_loaded(true);
+     BESDEBUG("dmrpp", "In load_attributes: after set_attributes_loaded  " <<endl);
 
     switch (btp->type()) {
         // When we load attributes for an Array, the set_send_p() method
@@ -1229,10 +1233,16 @@ DMZ::load_attributes(BaseType *btp)
         case dods_structure_c:
         case dods_sequence_c:
         case dods_grid_c: {
+            BESDEBUG("dmrpp", "In load_attributes:  dods_structure  " <<endl);
             auto *c = dynamic_cast<Constructor*>(btp);
             if (c) {
                 for (auto i = c->var_begin(), e = c->var_end(); i != e; i++) {
+                    BESDEBUG("dmrpp", "i name  " <<(*i)->name()<< endl);
+#if 0
+                    // jhrg 12/8/23
                     dc(btp->var())->set_attributes_loaded(true);
+#endif
+                    dc(*i)->set_attributes_loaded(true);
                 }
                 break;
             }
@@ -1241,6 +1251,7 @@ DMZ::load_attributes(BaseType *btp)
         default:
             break;
     }
+     BESDEBUG("dmrpp", "In load_attributes:  end_attributes_loaded  " <<endl);
 }
 
 /**
@@ -1606,9 +1617,15 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
             has_fill_value = true;
 
             // Fill values are only supported for Arrays and scalar numeric datatypes (7/12/22)
-            if (btp->type()==dods_url_c || btp->type()== dods_structure_c
+            if (btp->type()==dods_url_c 
                 || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
-                throw BESInternalError("Fill Value chunks are only supported for Arrays and numeric datatypes.", __FILE__, __LINE__);
+                throw BESInternalError("Fill Value chunks are unsupported for URL, sequence and grid types.", __FILE__, __LINE__);
+
+            if (btp->type() == dods_structure_c) {
+                string fvalue_str = attr.value();
+                if (fvalue_str !="0")
+                    throw BESInternalError("Fill Value chunks for structure are only supported when the fill value is 0 .", __FILE__, __LINE__);
+            }
 
             if (btp->type() == dods_array_c) {
                 auto array = dynamic_cast<libdap::Array*>(btp);

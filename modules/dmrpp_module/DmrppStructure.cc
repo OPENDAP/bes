@@ -27,6 +27,8 @@
 #include <string>
 
 #include <libdap/XMLWriter.h>
+#include <libdap/util.h>   
+#include <libdap/Array.h>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -55,10 +57,63 @@ bool
 DmrppStructure::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
-    throw InternalErr (__FILE__, __LINE__, "The read function of DmrppStructure is not implemented yet.");
+    //throw InternalErr (__FILE__, __LINE__, "The read function of DmrppStructure is not implemented yet.");
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
+    if (read_p())
+        return true;
+
+    char *buf_value = read_atomic(name());   
+    size_t value_size = strlen(buf_value);
+    vector<char> values(buf_value,buf_value+value_size);
+
+    //set_value(*reinterpret_cast<dods_float32*>(read_atomic(name())));
+ 
+    structure_read(values);
+    set_read_p(true);
+
+    return true;
+
 
 }
 
+void DmrppStructure::structure_read(vector<char> &values) {
+
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+    Constructor::Vars_iter vi = this->var_begin();
+    Constructor::Vars_iter ve = this->var_end();
+
+    size_t values_offset = 0;
+
+    for (; vi != ve; vi++) {
+        BaseType *bt = *vi;
+        Type t_bt = bt->type();
+        if (libdap::is_simple_type(t_bt) && t_bt != dods_str_c && t_bt != dods_url_c && t_bt!= dods_enum_c && t_bt!=dods_opaque_c) {
+
+            BESDEBUG("dmrpp", "var name is: " << bt->name() << "'" << endl);
+
+            bt->val2buf(values.data() + values_offset);
+            values_offset += bt->width_ll();
+        }
+        else if (t_bt == dods_array_c) {
+
+            Array *t_a = dynamic_cast<Array *>(bt);
+            Type t_array_var = t_a->var()->type();
+            if (libdap::is_simple_type(t_array_var) && t_array_var != dods_str_c && t_array_var != dods_url_c && t_array_var!= dods_enum_c && t_array_var!=dods_opaque_c) {
+
+                t_a->val2buf(values.data()+values_offset);
+                // update values_offset.
+                values_offset +=t_a->width_ll();
+            }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+        } 
+        else 
+            throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+    }
+
+}
 void
 DmrppStructure::set_send_p(bool state)
 {

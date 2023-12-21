@@ -63,6 +63,9 @@ public:
 
 
     virtual void dump(ostream & strm) const;
+
+private:
+    void structure_read(vector<char> &values);
 };
 
 } // namespace dmrpp
