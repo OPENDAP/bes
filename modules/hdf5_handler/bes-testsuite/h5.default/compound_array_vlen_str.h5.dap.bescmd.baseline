@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_array_vlen_str.h5">
+    <Structure name="DSC_array">
+        <Int32 name="Orbit"/>
+        <Float32 name="Temperature">
+            <Dim size="2"/>
+        </Float32>
+        <String name="year"/>
+        <Dim size="2"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>8ecbccf2</Value>
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Int32 Orbit;
+    Float32 Temperature[2];
+    String year;
+} DSC_array[2] = {{ 1153, {53.23, 54.11}, "2023" }, { 1184, {55.12, 56.07}, "2024" }};
+
