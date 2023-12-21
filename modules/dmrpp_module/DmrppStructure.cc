@@ -123,6 +123,45 @@ DmrppStructure::set_send_p(bool state)
     Structure::set_send_p(state);
 }
 
+void 
+DmrppStructure::print_dap4(libdap::XMLWriter &writer, bool constrained) {
+
+    if (constrained && !this->send_p()) 
+        return; 
+ 
+    if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*)this->type_name().c_str()) < 0) 
+        throw InternalErr(__FILE__, __LINE__, "Could not write " + this->type_name() + " element"); 
+ 
+    if (!this->name().empty()) { 
+        if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "name", (const xmlChar*)this->name().c_str()) < 0) 
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name"); 
+    } 
+
+ 
+    if (this->is_dap4()) 
+        this->attributes()->print_dap4(writer); 
+    
+    if (!this->is_dap4() && this->get_attr_table().get_size() > 0) 
+        this->get_attr_table().print_xml_writer(writer); 
+
+    Constructor::Vars_iter vi = this->var_begin(); 
+    Constructor::Vars_iter ve = this->var_end();
+
+    for (; vi != ve; vi++) {
+        BaseType *bt = *vi;
+        bt->print_dap4(writer);
+    }
+
+    if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
+        print_chunks_element(writer, DmrppCommon::d_ns_prefix);
+
+       // print scalar value for compact storage.
+       // TODO: add this later.
+    if (xmlTextWriterEndElement(writer.get_writer()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not end " + this->type_name() + " element");
+
+}
+  
 
 void DmrppStructure::dump(ostream & strm) const
 {
