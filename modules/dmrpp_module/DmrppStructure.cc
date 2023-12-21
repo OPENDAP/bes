@@ -77,10 +77,11 @@ DmrppStructure::print_dap4(libdap::XMLWriter &writer, bool constrained) {
     if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*)this->type_name().c_str()) < 0) 
         throw InternalErr(__FILE__, __LINE__, "Could not write " + this->type_name() + " element"); 
  
-    if (this->name().empty()) { 
+    if (!this->name().empty()) { 
         if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "name", (const xmlChar*)this->name().c_str()) < 0) 
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name"); 
     } 
+
  
     if (this->is_dap4()) 
         this->attributes()->print_dap4(writer); 
