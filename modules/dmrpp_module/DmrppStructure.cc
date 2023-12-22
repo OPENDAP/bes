@@ -66,8 +66,9 @@ DmrppStructure::read()
     if (read_p())
         return true;
 
-    char *buf_value = read_atomic(name());   
-    size_t value_size = strlen(buf_value);
+    size_t value_size = 0;
+    char *buf_value = read_atomic(name(),value_size);
+    // value_size = strlen(buf_value);
     vector<char> values(buf_value,buf_value+value_size);
 
     //set_value(*reinterpret_cast<dods_float32*>(read_atomic(name())));
@@ -95,7 +96,7 @@ void DmrppStructure::structure_read(vector<char> &values) {
 
             BESDEBUG("dmrpp", "var name is: " << bt->name() << "'" << endl);
             BESDEBUG("dmrpp", "var values_offset is: " << values_offset << "'" << endl);
-#if 1
+#if 0
             if(t_bt == dods_int32_c) {
                 Int32 *val_int = static_cast<Int32 *>(bt);
                 val_int->set_value(*((dods_int32*)(values.data()+values_offset)));
@@ -109,7 +110,7 @@ void DmrppStructure::structure_read(vector<char> &values) {
             else 
                 bt->val2buf(values.data() + values_offset);
 #endif
-            //bt->val2buf(values.data() + values_offset);
+            bt->val2buf(values.data() + values_offset);
             values_offset += bt->width_ll();
         }
         else if (t_bt == dods_array_c) {

@@ -1242,7 +1242,11 @@ DMZ::load_attributes(BaseType *btp)
                     // jhrg 12/8/23
                     dc(btp->var())->set_attributes_loaded(true);
 #endif
-                    dc(*i)->set_attributes_loaded(true);
+                    //dc(*i)->set_attributes_loaded(true);
+                    if ((*i)->type() == dods_array_c)
+                        dc((*i)->var())->set_attributes_loaded(true);
+                    else
+                        dc(*i)->set_attributes_loaded(true);
                 }
                 break;
             }

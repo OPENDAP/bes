@@ -377,6 +377,17 @@ DmrppCommon::read_atomic(const string &name)
     return chunk->get_rbuf();
 }
 
+char * DmrppCommon::read_atomic(const string &name, size_t & buf_size)
+{
+    if (get_chunks_size() != 1)
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
+
+    auto chunk = get_immutable_chunks()[0];
+
+    chunk->read_chunk();
+    buf_size = chunk->get_rbuf_size();
+    return chunk->get_rbuf();
+}
 /**
  * @brief Print the Chunk information.
  *
