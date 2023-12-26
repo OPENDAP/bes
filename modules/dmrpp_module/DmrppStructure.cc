@@ -68,10 +68,7 @@ DmrppStructure::read()
 
     size_t value_size = 0;
     char *buf_value = read_atomic(name(),value_size);
-    // value_size = strlen(buf_value);
     vector<char> values(buf_value,buf_value+value_size);
-
-    //set_value(*reinterpret_cast<dods_float32*>(read_atomic(name())));
  
     structure_read(values);
     set_read_p(true);
@@ -115,7 +112,7 @@ void DmrppStructure::structure_read(vector<char> &values) {
         }
         else if (t_bt == dods_array_c) {
 
-            Array *t_a = dynamic_cast<Array *>(bt);
+            auto t_a = dynamic_cast<Array *>(bt);
             Type t_array_var = t_a->var()->type();
             if (libdap::is_simple_type(t_array_var) && t_array_var != dods_str_c && t_array_var != dods_url_c && t_array_var!= dods_enum_c && t_array_var!=dods_opaque_c) {
 
