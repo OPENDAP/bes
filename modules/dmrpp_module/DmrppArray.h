@@ -149,6 +149,8 @@ private:
             std::vector<unsigned long long> *chunk_element_address,
             std::shared_ptr<Chunk> chunk,
             const vector<unsigned long long> &constrained_array_shape);
+    void read_array_of_structure(vector<char> &values);
+    bool check_struct_handling();
 
     bool use_direct_io_opt();
 

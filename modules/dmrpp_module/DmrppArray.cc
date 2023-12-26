@@ -55,6 +55,7 @@
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "DmrppArray.h"
+#include "DmrppStructure.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
 #include "Base64.h"
@@ -967,7 +968,21 @@ void DmrppArray::read_contiguous()
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         reserve_value_capacity_ll(get_size(false));
-        val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
+        // We need to handle the structure data differently.
+        if (this->var()->type() != dods_structure_c)
+           val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
+        else { // Structure 
+            // Check if we can handle this case. 
+            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+            bool can_handle_struct = check_struct_handling();
+            if (can_handle_struct) {
+                char *buf_value = the_one_chunk->get_rbuf();
+                unsigned long long value_size = the_one_chunk->get_size();
+                vector<char> values(buf_value,buf_value+value_size);
+                read_array_of_structure(values);
+            //throw InternalErr(__FILE__, __LINE__, "Cannot handle the array of structure yet."); 
+            }
+        }
     }
     else {                  // apply the constraint
         vector<unsigned long long> array_shape = get_shape(false);
@@ -978,6 +993,7 @@ void DmrppArray::read_contiguous()
         vector<unsigned long long> subset;
 
         insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+        // TODO: handle the array of strcucture 
     }
 
     set_read_p(true);
@@ -2688,6 +2704,86 @@ bool DmrppArray::use_direct_io_opt() {
     return ret_value;
 
 } 
+
+void DmrppArray::read_array_of_structure(vector<char> &values) {
+
+    size_t values_offset = 0;
+    int64_t nelms = this->length_ll();
+    for (int64_t element = 0; element < nelms; ++element) {
+
+        auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
+        try {
+            dmrpp_s->structure_read(values,values_offset);
+        }
+        catch(...) {
+            delete dmrpp_s;
+            string err_msg = "Cannot read the data of a dmrpp structure variable " + var()->name();
+            throw InternalErr(__FILE__, __LINE__, err_msg); 
+        }
+        dmrpp_s->set_read_p(true);
+        set_vec_ll((uint64_t)element,dmrpp_s);
+        delete dmrpp_s;
+    }
+
+    set_read_p(true);
+
+#if 0
+        Constructor::Vars_iter vi = dmrpp_s->var_begin();
+        Constructor::Vars_iter ve = dmrpp_s->var_end();
+
+        for (; vi != ve; vi++) { 
+
+            BaseType *bt = *vi;
+            Type t_bt = bt->type();
+            if (libdap::is_simple_type(t_bt) == true && t_bt != dods_str_c && t_bt != dods_url_c && t_bt != dods_enum_c && t_bt!=dods_opaque_c)) {
+                bt->val2buf(values.data() + values_offset);
+            }
+            else 
+
+
+    }
+#endif
+    throw InternalErr(__FILE__, __LINE__, "Cannot handle the array of structure yet."); 
+}
+
+bool DmrppArray::check_struct_handling() {
+
+    bool ret_value = true;
+    if (this->get_filters().empty()) {
+
+        if (this->var()->type() == dods_structure_c) {
+
+            auto array_base = dynamic_cast<DmrppStructure*>(this->var());
+            Constructor::Vars_iter vi = array_base->var_begin();
+            Constructor::Vars_iter ve = array_base->var_end();
+            for (; vi != ve; vi++) { 
+
+                BaseType *bt = *vi;
+                Type t_bt = bt->type();
+                if (libdap::is_simple_type(t_bt) == false) {
+
+                    if (t_bt == dods_array_c) {
+
+                        auto t_a = dynamic_cast<Array *>(bt);
+                        Type t_array_var = t_a->var()->type();
+                        if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_str_c || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
+                            ret_value = false;
+                            break;
+                        }
+                    }
+                }
+                else if (t_bt == dods_str_c || t_bt == dods_url_c || t_bt == dods_enum_c || t_bt == dods_opaque_c) {
+                    ret_value = false;
+                    break;
+                }
+            }
+        }
+    }
+    else
+        ret_value = false;
+
+    return ret_value;
+}
 
 
 } // namespace dmrpp

@@ -70,7 +70,8 @@ DmrppStructure::read()
     char *buf_value = read_atomic(name(),value_size);
     vector<char> values(buf_value,buf_value+value_size);
  
-    structure_read(values);
+    size_t values_offset = 0;
+    structure_read(values, values_offset);
     set_read_p(true);
 
     return true;
@@ -78,13 +79,13 @@ DmrppStructure::read()
 
 }
 
-void DmrppStructure::structure_read(vector<char> &values) {
+void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset) {
 
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
     Constructor::Vars_iter vi = this->var_begin();
     Constructor::Vars_iter ve = this->var_end();
 
-    size_t values_offset = 0;
+    //size_t values_offset = 0;
 
     for (; vi != ve; vi++) {
         BaseType *bt = *vi;
