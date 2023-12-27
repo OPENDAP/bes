@@ -85,8 +85,6 @@ void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset)
     Constructor::Vars_iter vi = this->var_begin();
     Constructor::Vars_iter ve = this->var_end();
 
-    //size_t values_offset = 0;
-
     for (; vi != ve; vi++) {
         BaseType *bt = *vi;
         Type t_bt = bt->type();

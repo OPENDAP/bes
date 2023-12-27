@@ -820,6 +820,85 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 }
 
 /**
+ * @brief Insert data into a variable. A helper method.
+ *
+ * This recursive private method collects values from the rbuf and copies
+ * them into buf. It supports stop, stride, and start and while correct is not
+ * efficient.
+ *
+ * This method is used only for contiguous data. It is called only by itself
+ * and read_contiguous().
+ */
+void DmrppArray::insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
+                                               vector<unsigned long long> &subset_addr,
+                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf, vector<char> &dest_buf)
+{
+    BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
+
+    unsigned int bytes_per_elem = prototype()->width();
+
+    uint64_t start = this->dimension_start_ll(dim_iter, true);
+    uint64_t stop = this->dimension_stop_ll(dim_iter, true);
+    uint64_t stride = this->dimension_stride_ll(dim_iter, true);
+
+    dim_iter++;
+
+    // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
+    // See the else clause for the general case.
+    if (dim_iter == dim_end() && stride == 1) {
+        // For the start and stop indexes of the subset, get the matching indexes in the whole array.
+        subset_addr.push_back(start);
+        unsigned long long start_index = get_index(subset_addr, array_shape);
+        subset_addr.pop_back();
+
+        subset_addr.push_back(stop);
+        unsigned long long stop_index = get_index(subset_addr, array_shape);
+        subset_addr.pop_back();
+
+        // Copy data block from start_index to stop_index
+        // TODO Replace this loop with a call to std::memcpy()
+        for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
+            uint64_t target_byte = *target_index * bytes_per_elem;
+            uint64_t source_byte = source_index * bytes_per_elem;
+            // Copy a single value.
+            for (unsigned long i = 0; i < bytes_per_elem; i++) {
+                dest_buf[target_byte++] = src_buf[source_byte++];
+            }
+            (*target_index)++;
+        }
+
+    }
+    else {
+        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+
+            // Is it the last dimension?
+            if (dim_iter != dim_end()) {
+                // Nope! Then we recurse to the last dimension to read stuff
+                subset_addr.push_back(myDimIndex);
+                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf);
+                subset_addr.pop_back();
+            }
+            else {
+                // We are at the last (innermost) dimension, so it's time to copy values.
+                subset_addr.push_back(myDimIndex);
+                unsigned int sourceIndex = get_index(subset_addr, array_shape);
+                subset_addr.pop_back();
+
+                // Copy a single value.
+                uint64_t target_byte = *target_index * bytes_per_elem;
+                uint64_t source_byte = sourceIndex * bytes_per_elem;
+
+                for (unsigned int i = 0; i < bytes_per_elem; i++) {
+                    dest_buf[target_byte++] = src_buf[source_byte++];
+                }
+                (*target_index)++;
+            }
+        }
+    }
+}
+
+
+/**
  * @brief Read an array that is stored using one 'chunk.'
  *
  * If parallel transfers are enabled in the BES configuration files, this
@@ -985,15 +1064,36 @@ void DmrppArray::read_contiguous()
         }
     }
     else {                  // apply the constraint
-        vector<unsigned long long> array_shape = get_shape(false);
 
-        // Reserve space in this array for the constrained size of the data request
-        reserve_value_capacity_ll(get_size(true));
-        unsigned long target_index = 0;
-        vector<unsigned long long> subset;
+        if (this->var()->type() != dods_structure_c) { 
 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+            vector<unsigned long long> array_shape = get_shape(false);
+            unsigned long target_index = 0;
+            vector<unsigned long long> subset;
+
+           // Reserve space in this array for the constrained size of the data request
+           reserve_value_capacity_ll(get_size(true));
+            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+        }
+        else {
         // TODO: handle the array of strcucture 
+            // Check if we can handle this case. 
+            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+
+
+            bool can_handle_struct = check_struct_handling();
+            if (can_handle_struct) {
+                unsigned long long value_size = get_size(true)*width_ll();
+                vector<char> values;
+                values.resize(value_size);
+                vector<unsigned long long> array_shape = get_shape(false);
+                unsigned long target_index = 0;
+                vector<unsigned long long> subset;
+                insert_constrained_contiguous_structure(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values);
+                read_array_of_structure(values);
+            //throw InternalErr(__FILE__, __LINE__, "Cannot handle the array of structure yet."); 
+            }
+        }
     }
 
     set_read_p(true);
@@ -2743,7 +2843,7 @@ void DmrppArray::read_array_of_structure(vector<char> &values) {
 
     }
 #endif
-    throw InternalErr(__FILE__, __LINE__, "Cannot handle the array of structure yet."); 
+    //throw InternalErr(__FILE__, __LINE__, "Cannot handle the array of structure yet."); 
 }
 
 bool DmrppArray::check_struct_handling() {

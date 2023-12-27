@@ -100,6 +100,9 @@ private:
                                        std::vector<unsigned long long> &subset_addr,
                                        const std::vector<unsigned long long> &array_shape, char *data);
 
+    void insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
+                                       std::vector<unsigned long long> &subset_addr,
+                                       const std::vector<unsigned long long> &array_shape, char *data, std::vector<char> &values);
     void read_contiguous();
     void read_one_chunk_dio();
     void read_contiguous_string();
