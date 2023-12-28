@@ -175,7 +175,7 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
 void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
-
+    uint64_t bytes_sent = 0;
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
 
         auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
@@ -215,7 +215,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
 
         // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
-        BESUtil::file_to_stream(temp_file_name,strm);
+        bytes_sent = BESUtil::file_to_stream(temp_file_name,strm);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -230,7 +230,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf" << endl);
+    BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf. bytes_sent: " << bytes_sent << endl);
 }
 
 
