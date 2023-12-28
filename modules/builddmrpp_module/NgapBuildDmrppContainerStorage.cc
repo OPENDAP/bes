@@ -29,6 +29,7 @@
 
 #include <string>
 
+#include "RemoteResource.h"
 #include "NgapBuildDmrppContainerStorage.h"
 #include "NgapBuildDmrppContainer.h"
 
