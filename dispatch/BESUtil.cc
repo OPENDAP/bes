@@ -1128,8 +1128,9 @@ void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
  * Thanks to O'Reilly: https://www.oreilly.com/library/view/c-cookbook/0596007612/ch10s08.html
  * @param file_name
  * @param o_strm
+ * @return The number of bytes read/written
  */
-uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
+uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm, uint64_t read_start_position)
 {
     stringstream msg;
     msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
@@ -1159,6 +1160,8 @@ uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_s
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
+    // this is where we advance to the last byte that was read
+    i_stream.seekg(read_start_position);
 
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // This is where the file is copied.
@@ -1213,7 +1216,8 @@ uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_s
     return tcount;
 }
 
-uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount){
+#if 0
+uint64_t OLDfile_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount){
 
     stringstream msg;
     msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
@@ -1296,7 +1300,7 @@ uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostre
 
     return byteCount;
 }
-
+#endif
 
 #if 0
 // I added this because maybe using the low-level file calls was important. I'm not

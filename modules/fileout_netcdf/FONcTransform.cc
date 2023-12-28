@@ -556,7 +556,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
                                     __LINE__);
         }
         // write file data
-        uint64_t byteCount = 0;
+        uint64_t bytes_written = 0;
 
         if (is_streamable()) {
             // Verify the request hasn't exceeded bes_timeout.
@@ -566,8 +566,8 @@ void FONcTransform::transform_dap2(ostream &strm) {
             // cancel any pending timeout alarm according to the configuration.
             BESUtil::conditional_timeout_cancel();
 
-            byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
-            BESDEBUG(MODULE,  prolog << "First write data to stream, count:  " << byteCount << endl);
+            bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
+            BESDEBUG(MODULE,  prolog << "First write data to stream, bytes_written:  " << bytes_written << endl);
         }
 
         for (FONcBaseType *fbt: _fonc_vars) {
@@ -583,8 +583,8 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
             if (is_streamable()) {
                 // write the what's been written
-                byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
-                BESDEBUG(MODULE,  prolog << "Writing data to stream, count:  " << byteCount << endl);
+                bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
+                BESDEBUG(MODULE,  prolog << "Writing data to stream, bytes_written:  " << bytes_written << endl);
             }
         }
 
@@ -594,8 +594,8 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
         RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting data." , __FILE__, __LINE__);
 
-        byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
-        BESDEBUG(MODULE,  prolog << "After nc_close() count:  " << byteCount << endl);
+        bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
+        BESDEBUG(MODULE,  prolog << "After nc_close() bytes_written:  " << bytes_written << endl);
     }
     catch (BESError &e) {
         (void) nc_close(_ncid); // ignore the error at this point
