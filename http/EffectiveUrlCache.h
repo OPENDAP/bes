@@ -76,7 +76,9 @@ public:
      *
      * This static method returns the instance of this singleton class.
      * The implementation will only build one instance of EffectiveUrlCache and
-     * thereafter simple return that pointer.
+     * thereafter return a pointer to that instance.
+     *
+     * Thread safe with C++-11 and greater.
      *
      * @return A pointer to the EffectiveUrlCache singleton
      */
