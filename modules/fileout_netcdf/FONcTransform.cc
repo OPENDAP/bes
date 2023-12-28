@@ -507,7 +507,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
     }
 
     if (stax != NC_NOERR) {
-        FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
+        FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
     }
 
     int current_fill_prop_vaule;
@@ -776,7 +776,7 @@ void FONcTransform::transform_dap4() {
         BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
         stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4, &_ncid);
         if (stax != NC_NOERR)
-            FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
+            FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
 
         D4Group *root_grp = _dmr->root();
 
@@ -1002,7 +1002,7 @@ void FONcTransform::transform_dap4_no_group() {
     }
 
     if (stax != NC_NOERR) {
-        FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
+        FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
     }
 
     try {
