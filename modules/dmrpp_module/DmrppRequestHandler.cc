@@ -361,9 +361,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
                 }
             }
  
-            BESDEBUG("dmrpp","Before calling load_all_attributes"<<endl);
             dmz->load_all_attributes(dmr);
-            BESDEBUG("dmrpp","after calling load_all_attributes"<<endl);
         }
     }
     catch (...) {

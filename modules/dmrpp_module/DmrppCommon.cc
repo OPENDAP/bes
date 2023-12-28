@@ -377,6 +377,7 @@ DmrppCommon::read_atomic(const string &name)
     return chunk->get_rbuf();
 }
 
+// Need to obtain the buffer size for scalar structure.
 char * DmrppCommon::read_atomic(const string &name, size_t & buf_size)
 {
     if (get_chunks_size() != 1)

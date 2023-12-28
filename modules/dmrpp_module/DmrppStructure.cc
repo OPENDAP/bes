@@ -29,8 +29,6 @@
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>   
 #include <libdap/Array.h>
-#include <libdap/Int32.h>
-#include <libdap/Float32.h>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -59,7 +57,6 @@ bool
 DmrppStructure::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
-    //throw InternalErr (__FILE__, __LINE__, "The read function of DmrppStructure is not implemented yet.");
     if (!get_chunks_loaded())
         load_chunks(this);
 

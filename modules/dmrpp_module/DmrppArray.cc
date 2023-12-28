@@ -820,11 +820,9 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 }
 
 /**
- * @brief Insert data into a variable. A helper method.
+ * @brief Insert data into a variable for structure.  
  *
- * This recursive private method collects values from the rbuf and copies
- * them into buf. It supports stop, stride, and start and while correct is not
- * efficient.
+ * This method is a clone of the method insert_constrained_contiguous with the minimal addition to handle the structure.
  *
  * This method is used only for contiguous data. It is called only by itself
  * and read_contiguous().
@@ -1047,6 +1045,7 @@ void DmrppArray::read_contiguous()
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         reserve_value_capacity_ll(get_size(false));
+
         // We need to handle the structure data differently.
         if (this->var()->type() != dods_structure_c)
            val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
@@ -1059,8 +1058,9 @@ void DmrppArray::read_contiguous()
                 unsigned long long value_size = the_one_chunk->get_size();
                 vector<char> values(buf_value,buf_value+value_size);
                 read_array_of_structure(values);
-            //throw InternalErr(__FILE__, __LINE__, "Cannot handle the array of structure yet."); 
             }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
         }
     }
     else {                  // apply the constraint
@@ -1071,16 +1071,12 @@ void DmrppArray::read_contiguous()
             unsigned long target_index = 0;
             vector<unsigned long long> subset;
 
-           // Reserve space in this array for the constrained size of the data request
-           reserve_value_capacity_ll(get_size(true));
+            // Reserve space in this array for the constrained size of the data request
+            reserve_value_capacity_ll(get_size(true));
             insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
         }
         else {
-        // TODO: handle the array of strcucture 
-            // Check if we can handle this case. 
             // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
-
-
             bool can_handle_struct = check_struct_handling();
             if (can_handle_struct) {
                 unsigned long long value_size = get_size(true)*width_ll();
@@ -1091,8 +1087,9 @@ void DmrppArray::read_contiguous()
                 vector<unsigned long long> subset;
                 insert_constrained_contiguous_structure(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values);
                 read_array_of_structure(values);
-            //throw InternalErr(__FILE__, __LINE__, "Cannot handle the array of structure yet."); 
             }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
         }
     }
 
@@ -2805,10 +2802,12 @@ bool DmrppArray::use_direct_io_opt() {
 
 } 
 
+// Read the data from the supported array of structure
 void DmrppArray::read_array_of_structure(vector<char> &values) {
 
     size_t values_offset = 0;
     int64_t nelms = this->length_ll();
+
     for (int64_t element = 0; element < nelms; ++element) {
 
         auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
@@ -2827,28 +2826,13 @@ void DmrppArray::read_array_of_structure(vector<char> &values) {
 
     set_read_p(true);
 
-#if 0
-        Constructor::Vars_iter vi = dmrpp_s->var_begin();
-        Constructor::Vars_iter ve = dmrpp_s->var_end();
-
-        for (; vi != ve; vi++) { 
-
-            BaseType *bt = *vi;
-            Type t_bt = bt->type();
-            if (libdap::is_simple_type(t_bt) == true && t_bt != dods_str_c && t_bt != dods_url_c && t_bt != dods_enum_c && t_bt!=dods_opaque_c)) {
-                bt->val2buf(values.data() + values_offset);
-            }
-            else 
-
-
-    }
-#endif
-    //throw InternalErr(__FILE__, __LINE__, "Cannot handle the array of structure yet."); 
 }
 
+// Check if this DAP4 structure is what we can support.
 bool DmrppArray::check_struct_handling() {
 
     bool ret_value = true;
+    // Currently doesn't support compressed array of structure.
     if (this->get_filters().empty()) {
 
         if (this->var()->type() == dods_structure_c) {
@@ -2860,6 +2844,8 @@ bool DmrppArray::check_struct_handling() {
 
                 BaseType *bt = *vi;
                 Type t_bt = bt->type();
+
+                // Only support array or scalar of float/int.
                 if (libdap::is_simple_type(t_bt) == false) {
 
                     if (t_bt == dods_array_c) {

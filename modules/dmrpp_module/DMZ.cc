@@ -1207,13 +1207,10 @@ DMZ::load_attributes(BaseType *btp)
     if (dc(btp)->get_attributes_loaded())
         return;
 
-     BESDEBUG("dmrpp", "In load_attributes: btp name is " << btp->name() <<endl);
     load_attributes(btp, get_variable_xml_node(btp));
-     BESDEBUG("dmrpp", "In load_attributes: after load_attributes  " <<endl);
 
     // TODO Remove redundant
     dc(btp)->set_attributes_loaded(true);
-     BESDEBUG("dmrpp", "In load_attributes: after set_attributes_loaded  " <<endl);
 
     switch (btp->type()) {
         // When we load attributes for an Array, the set_send_p() method
@@ -1233,16 +1230,9 @@ DMZ::load_attributes(BaseType *btp)
         case dods_structure_c:
         case dods_sequence_c:
         case dods_grid_c: {
-            BESDEBUG("dmrpp", "In load_attributes:  dods_structure  " <<endl);
             auto *c = dynamic_cast<Constructor*>(btp);
             if (c) {
                 for (auto i = c->var_begin(), e = c->var_end(); i != e; i++) {
-                    BESDEBUG("dmrpp", "i name  " <<(*i)->name()<< endl);
-#if 0
-                    // jhrg 12/8/23
-                    dc(btp->var())->set_attributes_loaded(true);
-#endif
-                    //dc(*i)->set_attributes_loaded(true);
                     if ((*i)->type() == dods_array_c)
                         dc((*i)->var())->set_attributes_loaded(true);
                     else
@@ -1255,7 +1245,6 @@ DMZ::load_attributes(BaseType *btp)
         default:
             break;
     }
-     BESDEBUG("dmrpp", "In load_attributes:  end_attributes_loaded  " <<endl);
 }
 
 /**
