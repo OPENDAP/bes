@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_simple_scalar_memb_array.h5">
+    <Structure name="DSC_scalar_base_array">
+        <Int32 name="Orbit"/>
+        <Float32 name="Temperature">
+            <Dim size="2"/>
+        </Float32>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Int32 Orbit;
+    Float32 Temperature[2];
+} DSC_scalar_base_array = { 1153, {53.23, 55.12} };
+

@@ -42,9 +42,9 @@
 
 #include "BESObj.h"
 
-#define DYNAMIC_CONFIG_KEY "DynamicConfig"
-#define DC_REGEX_KEY "regex"
-#define DC_CONFIG_KEY "config"
+constexpr auto DYNAMIC_CONFIG_KEY = "DynamicConfig";
+constexpr auto DC_REGEX_KEY = "regex";
+constexpr auto DC_CONFIG_KEY = "config";
 
 #define DYNAMIC_CONFIG_ENABLED 0
 
@@ -95,8 +95,6 @@ class TheBESKeys: public BESObj {
 
     std::string d_keys_file_name;
 
-    // TODO Refactor this so it's not a pointer. jhrg 2/2/23
-    //std::unique_ptr<keys_kvp> d_the_keys{new keys_kvp()};
     std::unordered_map< std::string, std::vector<std::string> > d_the_keys;
 
 #if DYNAMIC_CONFIG_ENABLED
@@ -110,10 +108,9 @@ class TheBESKeys: public BESObj {
 
     bool is_loaded_key_file(const std::string &key_file);
 
-    TheBESKeys() = default;
-
     static std::unique_ptr<TheBESKeys> d_instance;
 
+    // Only called by the static TheBESKeys::TheKeys() method.
     explicit TheBESKeys(std::string keys_file_name);
 
 public:
@@ -123,10 +120,15 @@ public:
      */
     static std::string ConfigFile;
 
+    TheBESKeys() = delete;
+    TheBESKeys(const TheBESKeys &) = delete;
+    TheBESKeys(TheBESKeys &&) = delete;
+    TheBESKeys &operator=(const TheBESKeys &) = delete;
+    TheBESKeys &operator=(TheBESKeys &&) = delete;
+    ~TheBESKeys() override = default;
+
     /// Access to the singleton.
     static TheBESKeys *TheKeys();
-
-    ~TheBESKeys() override = default;
 
     std::string keys_file_name() const {
         return d_keys_file_name;
@@ -156,23 +158,26 @@ public:
 
     void get_value(const std::string &s, std::string &val, bool &found);
 
+    // get values for a vector-valued key
     void get_values(const std::string &s, std::vector<std::string> &vals, bool &found);
 
+    // get value for a map-valued key
     void get_values(const std::string &, std::unordered_map<std::string, std::string> &map_values,
-                    const bool &case_insensitive_map_keys, bool &found);
+                    bool case_insensitive_map_keys, bool &found);
 
-    void get_values(const std::string &, std::unordered_map<std::string, std::unordered_map<std::string, std::vector<std::string> > > &map,
-                    const bool &case_insensitive_map_keys, bool &found);
+    void get_values(const std::string &, std::unordered_map<std::string,
+                    std::unordered_map<std::string, std::vector<std::string> > > &map,
+                    bool case_insensitive_map_keys, bool &found);
 
-    bool read_bool_key(const std::string &key, bool default_value) const;
+    static bool read_bool_key(const std::string &key, bool default_value);
 
-    std::string read_string_key(const std::string &key, const std::string &default_value) const;
+    static std::string read_string_key(const std::string &key, const std::string &default_value);
 
-    int read_int_key(const std::string &key, int default_value) const;
+    static int read_int_key(const std::string &key, int default_value);
 
-    unsigned long read_ulong_key(const std::string &key, unsigned long default_value) const;
+    static unsigned long read_ulong_key(const std::string &key, unsigned long default_value);
 
-    uint64_t read_uint64_key(const std::string &key, uint64_t default_value) const;
+    static uint64_t read_uint64_key(const std::string &key, uint64_t default_value);
 
     std::unordered_map<std::string, std::vector<std::string> >::const_iterator keys_begin() {
         return d_the_keys.begin();
