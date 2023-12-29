@@ -79,8 +79,10 @@ static string get_the_config_filename() {
     return config_file;
 }
 
-TheBESKeys *TheBESKeys::TheKeys()
-{
+TheBESKeys *TheBESKeys::TheKeys() {
+    static TheBESKeys instance(get_the_config_filename());
+    return &instance;
+#if 0
     if (d_instance == nullptr) {
         static std::once_flag d_euc_init_once;
         std::call_once(d_euc_init_once, []() {
@@ -89,16 +91,17 @@ TheBESKeys *TheBESKeys::TheKeys()
     }
 
     return d_instance.get();
+#endif
 }
 
-/** @brief default constructor that reads loads key/value pairs from the
+/** @brief constructor that reads loads key/value pairs from the
  * specified file.
  *
  * This constructor uses the specified file to load key/value pairs.
  * This file holds different key/value pairs for the application, one
  * key/value pair per line separated by an equal (=) sign.
  *
- * key=value
+ * key = value
  *
  * Comments are allowed in the file and must begin with a pound (#) sign at
  * the beginning of the line. No comments are allowed at the end of lines.
@@ -358,7 +361,7 @@ void TheBESKeys::get_values(const string& key, vector<string> &vals, bool &found
  * key is set to "true", "yes", or "on", otherwise the key value is
  * interpreted as false. If \arg key is not set, return \arg default_value.
  */
-bool TheBESKeys::read_bool_key(const string &key, bool default_value) const
+bool TheBESKeys::read_bool_key(const string &key, bool default_value)
 {
     bool found = false;
     string value;
@@ -383,7 +386,7 @@ bool TheBESKeys::read_bool_key(const string &key, bool default_value) const
  * @param default_value Return this value if \arg key is not found.
  * @return The string value of \arg key.
  */
-string TheBESKeys::read_string_key(const string &key, const string &default_value) const
+string TheBESKeys::read_string_key(const string &key, const string &default_value)
 {
     bool found = false;
     string value;
@@ -410,7 +413,7 @@ string TheBESKeys::read_string_key(const string &key, const string &default_valu
  * @param default_value Return this value if \arg key is not found.
  * @return The integer value of \arg key.
  */
-int TheBESKeys::read_int_key(const string &key, int default_value) const
+int TheBESKeys::read_int_key(const string &key, int default_value)
 {
     bool found = false;
     string value;
@@ -440,7 +443,7 @@ int TheBESKeys::read_int_key(const string &key, int default_value) const
  * @param default_value Return this value if \arg key is not found.
  * @return The integer value of \arg key.
  */
-unsigned long TheBESKeys::read_ulong_key(const string &key, unsigned long default_value) const
+unsigned long TheBESKeys::read_ulong_key(const string &key, unsigned long default_value)
 {
     bool found = false;
     string value;
@@ -472,7 +475,7 @@ unsigned long TheBESKeys::read_ulong_key(const string &key, unsigned long defaul
  */
 
 
-uint64_t TheBESKeys::read_uint64_key(const string &key, uint64_t default_value) const
+uint64_t TheBESKeys::read_uint64_key(const string &key, uint64_t default_value)
 {
     bool found = false;
     string value;
@@ -491,50 +494,6 @@ uint64_t TheBESKeys::read_uint64_key(const string &key, uint64_t default_value) 
         return default_value;
     }
 }
-
-/** @brief dumps information about this object
- *
- * Displays the pointer value of this instance along with all of the keys.
- *
- * @param strm C++ i/o stream to dump the information to
- */
-void TheBESKeys::dump(ostream &strm) const
-{
-    strm << dump();
-}
-
-/** @brief dumps information about this object
- *
- * @return A string containing the dump from this instance of TheBESKeys object.
- *
- */
-string TheBESKeys::dump() const
-{
-    stringstream ss;
-    ss << BESIndent::LMarg << "BESKeys::dump - (" << (void *) this << ")" << endl;
-    BESIndent::Indent();
-    ss << BESIndent::LMarg << "key file:" << d_keys_file_name << endl;
-
-    if (!d_the_keys.empty()) {
-        ss << BESIndent::LMarg << "  keys:" << endl;
-        BESIndent::Indent();
-        for (auto &p: d_the_keys) { // p is the key value pair
-            ss << BESIndent::LMarg << p.first << ": ";
-            for (auto &value: p.second) {
-                ss << value << " ";
-            }
-            ss << endl;
-        }
-        BESIndent::UnIndent();
-    }
-    else {
-        ss << BESIndent::LMarg << "keys: none" << endl;
-    }
-    BESIndent::UnIndent();
-    return ss.str();
-}
-
-
 
 /**
  * @brief @return The BES configuration keys, sorted by the std::map default rule for std:string, formatted for ingest by the BES.
@@ -575,7 +534,7 @@ string TheBESKeys::get_as_config() const
     return ss.str();
 }
 
-#define MAP_SEPARATOR ':'
+constexpr auto MAP_SEPARATOR = ':';
 
 bool parse_map_record(const string &map_record, const bool &case_insensitive_map_keys, string &key, string &value) {
     size_t primary_index = map_record.find(MAP_SEPARATOR);
@@ -620,19 +579,6 @@ void TheBESKeys::get_values(
                 "formatted as a map record. The offending entry: " << value << " HAS BEEN SKIPPED." << endl);
         }
     }
-#if 0
-    for(auto it=values.begin();  it!=values.end(); it++){
-        string map_key;
-        string map_value;
-        if (parse_map_record(*it,case_insensitive_map_keys,map_key,map_value)) {
-            map_values.insert( std::pair<string,string>(map_key,map_value));
-        }
-        else {
-            BESDEBUG(MODULE, prolog << string("The configuration entry for the ") << key << " was not " <<
-                "formatted as a map record. The offending entry: " << *it << " HAS BEEN SKIPPED." << endl);
-        }
-    }
-#endif
 }
 
 /**
@@ -804,3 +750,44 @@ void TheBESKeys::load_dynamic_config(const string &name)
     BESDEBUG("bes:keys",dump());
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with all of the keys.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void TheBESKeys::dump(ostream &strm) const
+{
+    strm << dump();
+}
+
+/** @brief dumps information about this object
+ *
+ * @return A string containing the dump from this instance of TheBESKeys object.
+ *
+ */
+string TheBESKeys::dump() const
+{
+    stringstream ss;
+    ss << BESIndent::LMarg << "BESKeys::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    ss << BESIndent::LMarg << "key file:" << d_keys_file_name << endl;
+
+    if (!d_the_keys.empty()) {
+        ss << BESIndent::LMarg << "  keys:" << endl;
+        BESIndent::Indent();
+        for (auto &p: d_the_keys) { // p is the key value pair
+            ss << BESIndent::LMarg << p.first << ": ";
+            for (auto &value: p.second) {
+                ss << value << " ";
+            }
+            ss << endl;
+        }
+        BESIndent::UnIndent();
+    }
+    else {
+        ss << BESIndent::LMarg << "keys: none" << endl;
+    }
+    BESIndent::UnIndent();
+    return ss.str();
+}
