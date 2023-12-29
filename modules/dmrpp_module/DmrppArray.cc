@@ -55,6 +55,7 @@
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "DmrppArray.h"
+#include "DmrppStructure.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
 #include "Base64.h"
@@ -819,6 +820,83 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 }
 
 /**
+ * @brief Insert data into a variable for structure.  
+ *
+ * This method is a clone of the method insert_constrained_contiguous with the minimal addition to handle the structure.
+ *
+ * This method is used only for contiguous data. It is called only by itself
+ * and read_contiguous().
+ */
+void DmrppArray::insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
+                                               vector<unsigned long long> &subset_addr,
+                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf, vector<char> &dest_buf)
+{
+    BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
+
+    unsigned int bytes_per_elem = prototype()->width();
+
+    uint64_t start = this->dimension_start_ll(dim_iter, true);
+    uint64_t stop = this->dimension_stop_ll(dim_iter, true);
+    uint64_t stride = this->dimension_stride_ll(dim_iter, true);
+
+    dim_iter++;
+
+    // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
+    // See the else clause for the general case.
+    if (dim_iter == dim_end() && stride == 1) {
+        // For the start and stop indexes of the subset, get the matching indexes in the whole array.
+        subset_addr.push_back(start);
+        unsigned long long start_index = get_index(subset_addr, array_shape);
+        subset_addr.pop_back();
+
+        subset_addr.push_back(stop);
+        unsigned long long stop_index = get_index(subset_addr, array_shape);
+        subset_addr.pop_back();
+
+        // Copy data block from start_index to stop_index
+        // TODO Replace this loop with a call to std::memcpy()
+        for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
+            uint64_t target_byte = *target_index * bytes_per_elem;
+            uint64_t source_byte = source_index * bytes_per_elem;
+            // Copy a single value.
+            for (unsigned long i = 0; i < bytes_per_elem; i++) {
+                dest_buf[target_byte++] = src_buf[source_byte++];
+            }
+            (*target_index)++;
+        }
+
+    }
+    else {
+        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+
+            // Is it the last dimension?
+            if (dim_iter != dim_end()) {
+                // Nope! Then we recurse to the last dimension to read stuff
+                subset_addr.push_back(myDimIndex);
+                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf);
+                subset_addr.pop_back();
+            }
+            else {
+                // We are at the last (innermost) dimension, so it's time to copy values.
+                subset_addr.push_back(myDimIndex);
+                unsigned int sourceIndex = get_index(subset_addr, array_shape);
+                subset_addr.pop_back();
+
+                // Copy a single value.
+                uint64_t target_byte = *target_index * bytes_per_elem;
+                uint64_t source_byte = sourceIndex * bytes_per_elem;
+
+                for (unsigned int i = 0; i < bytes_per_elem; i++) {
+                    dest_buf[target_byte++] = src_buf[source_byte++];
+                }
+                (*target_index)++;
+            }
+        }
+    }
+}
+
+
+/**
  * @brief Read an array that is stored using one 'chunk.'
  *
  * If parallel transfers are enabled in the BES configuration files, this
@@ -967,17 +1045,52 @@ void DmrppArray::read_contiguous()
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         reserve_value_capacity_ll(get_size(false));
-        val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
+
+        // We need to handle the structure data differently.
+        if (this->var()->type() != dods_structure_c)
+           val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
+        else { // Structure 
+            // Check if we can handle this case. 
+            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+            bool can_handle_struct = check_struct_handling();
+            if (can_handle_struct) {
+                char *buf_value = the_one_chunk->get_rbuf();
+                unsigned long long value_size = the_one_chunk->get_size();
+                vector<char> values(buf_value,buf_value+value_size);
+                read_array_of_structure(values);
+            }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+        }
     }
     else {                  // apply the constraint
-        vector<unsigned long long> array_shape = get_shape(false);
 
-        // Reserve space in this array for the constrained size of the data request
-        reserve_value_capacity_ll(get_size(true));
-        unsigned long target_index = 0;
-        vector<unsigned long long> subset;
+        if (this->var()->type() != dods_structure_c) { 
 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+            vector<unsigned long long> array_shape = get_shape(false);
+            unsigned long target_index = 0;
+            vector<unsigned long long> subset;
+
+            // Reserve space in this array for the constrained size of the data request
+            reserve_value_capacity_ll(get_size(true));
+            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+        }
+        else {
+            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+            bool can_handle_struct = check_struct_handling();
+            if (can_handle_struct) {
+                unsigned long long value_size = get_size(true)*width_ll();
+                vector<char> values;
+                values.resize(value_size);
+                vector<unsigned long long> array_shape = get_shape(false);
+                unsigned long target_index = 0;
+                vector<unsigned long long> subset;
+                insert_constrained_contiguous_structure(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values);
+                read_array_of_structure(values);
+            }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+        }
     }
 
     set_read_p(true);
@@ -2688,6 +2801,75 @@ bool DmrppArray::use_direct_io_opt() {
     return ret_value;
 
 } 
+
+// Read the data from the supported array of structure
+void DmrppArray::read_array_of_structure(vector<char> &values) {
+
+    size_t values_offset = 0;
+    int64_t nelms = this->length_ll();
+
+    for (int64_t element = 0; element < nelms; ++element) {
+
+        auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
+        try {
+            dmrpp_s->structure_read(values,values_offset);
+        }
+        catch(...) {
+            delete dmrpp_s;
+            string err_msg = "Cannot read the data of a dmrpp structure variable " + var()->name();
+            throw InternalErr(__FILE__, __LINE__, err_msg); 
+        }
+        dmrpp_s->set_read_p(true);
+        set_vec_ll((uint64_t)element,dmrpp_s);
+        delete dmrpp_s;
+    }
+
+    set_read_p(true);
+
+}
+
+// Check if this DAP4 structure is what we can support.
+bool DmrppArray::check_struct_handling() {
+
+    bool ret_value = true;
+    // Currently doesn't support compressed array of structure.
+    if (this->get_filters().empty()) {
+
+        if (this->var()->type() == dods_structure_c) {
+
+            auto array_base = dynamic_cast<DmrppStructure*>(this->var());
+            Constructor::Vars_iter vi = array_base->var_begin();
+            Constructor::Vars_iter ve = array_base->var_end();
+            for (; vi != ve; vi++) { 
+
+                BaseType *bt = *vi;
+                Type t_bt = bt->type();
+
+                // Only support array or scalar of float/int.
+                if (libdap::is_simple_type(t_bt) == false) {
+
+                    if (t_bt == dods_array_c) {
+
+                        auto t_a = dynamic_cast<Array *>(bt);
+                        Type t_array_var = t_a->var()->type();
+                        if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_str_c || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
+                            ret_value = false;
+                            break;
+                        }
+                    }
+                }
+                else if (t_bt == dods_str_c || t_bt == dods_url_c || t_bt == dods_enum_c || t_bt == dods_opaque_c) {
+                    ret_value = false;
+                    break;
+                }
+            }
+        }
+    }
+    else
+        ret_value = false;
+
+    return ret_value;
+}
 
 
 } // namespace dmrpp

@@ -60,6 +60,10 @@ public:
 
 
     virtual void dump(ostream & strm) const;
+
+private:
+    void structure_read(vector<char> &values, size_t &values_offset);
+    friend class DmrppArray;
 };
 
 } // namespace dmrpp

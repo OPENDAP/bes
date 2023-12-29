@@ -141,7 +141,7 @@ class DmrppCommon {
 
 protected:
     virtual char *read_atomic(const std::string &name);
-
+      virtual char *read_atomic(const std::string &name, size_t & buf_size);
     // This declaration allows code in the SuperChunky program to use the protected method.
     // jhrg 10/25/21
     friend void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, std::vector<dmrpp::SuperChunk *> &super_chunks);
