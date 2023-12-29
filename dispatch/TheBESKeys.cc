@@ -554,7 +554,7 @@ bool parse_map_record(const string &map_record, const bool &case_insensitive_map
 void TheBESKeys::get_values(
         const std::string &key,
         std::unordered_map<std::string,std::string> &map_values,
-        const bool &case_insensitive_map_keys,
+        bool case_insensitive_map_keys,
         bool &found) {
 
     vector<string> values;
@@ -586,7 +586,7 @@ void TheBESKeys::get_values(
 void TheBESKeys::get_values(
         const std::string &key,
         std::unordered_map< std::string, std::unordered_map<std::string,std::vector<std::string> > > &primary_map,
-        const bool &case_insensitive_map_keys,
+        bool case_insensitive_map_keys,
         bool &found){
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);

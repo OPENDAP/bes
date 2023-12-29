@@ -158,14 +158,16 @@ public:
 
     void get_value(const std::string &s, std::string &val, bool &found);
 
+    // get values for a vector-valued key
     void get_values(const std::string &s, std::vector<std::string> &vals, bool &found);
 
+    // get value for a map-valued key
     void get_values(const std::string &, std::unordered_map<std::string, std::string> &map_values,
-                    const bool &case_insensitive_map_keys, bool &found);
+                    bool case_insensitive_map_keys, bool &found);
 
     void get_values(const std::string &, std::unordered_map<std::string,
                     std::unordered_map<std::string, std::vector<std::string> > > &map,
-                    const bool &case_insensitive_map_keys, bool &found);
+                    bool case_insensitive_map_keys, bool &found);
 
     static bool read_bool_key(const std::string &key, bool default_value);
 
