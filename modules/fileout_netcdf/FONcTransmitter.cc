@@ -140,16 +140,16 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
         ft.transform_dap2(strm);
     }
     catch (Error &e) {
-        throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (BESError &e) {
         throw;
     }
     catch (std::exception &e) {
-        throw BESInternalError("Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
     }
     catch (...) {
-        throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
     BESDEBUG(MODULE,  prolog << "END Transmitted as netcdf" << endl);
@@ -218,16 +218,16 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         bytes_sent = BESUtil::file_to_stream(temp_file_name,strm);
     }
     catch (Error &e) {
-        throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (BESError &e) {
         throw;
     }
     catch (std::exception &e) {
-        throw BESInternalError("Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
     }
     catch (...) {
-        throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
     BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf. bytes_sent: " << bytes_sent << endl);
