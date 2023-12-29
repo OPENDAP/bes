@@ -58,6 +58,11 @@ using namespace std;
 
 std::unique_ptr<TheBESKeys> TheBESKeys::d_instance = nullptr;
 
+/// This is the name of the file that holds the key/value pairs.
+/// However, it will only be used once, when the singleton is created.
+/// To load different sets of keys (e.g., during testing), use the
+/// reload_keys(string) method which clears the current data and loads
+/// the name key file.
 string TheBESKeys::ConfigFile;
 
 static string get_the_config_filename() {
@@ -82,16 +87,6 @@ static string get_the_config_filename() {
 TheBESKeys *TheBESKeys::TheKeys() {
     static TheBESKeys instance(get_the_config_filename());
     return &instance;
-#if 0
-    if (d_instance == nullptr) {
-        static std::once_flag d_euc_init_once;
-        std::call_once(d_euc_init_once, []() {
-            d_instance.reset(new TheBESKeys(get_the_config_filename()));
-        });
-    }
-
-    return d_instance.get();
-#endif
 }
 
 /** @brief constructor that reads loads key/value pairs from the
