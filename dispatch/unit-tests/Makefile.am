@@ -30,7 +30,7 @@ BUILT_SOURCES = test_config.h bes.conf
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT pfileT plistT pvolT replistT		\
+TESTS = keysT constraintT defT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
@@ -118,6 +118,8 @@ clean-local:
 	rm -rf testdir
 
 ############################################################################
+
+keysT_SOURCES = keysT.cc
 
 kvp_utils_test_SOURCES = kvp_utils_test.cc
 

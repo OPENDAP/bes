@@ -101,8 +101,7 @@ namespace kvp {
                     }
                 }
                 if (!done) {
-                    string s = string("BES: Invalid entry ") + b + " in configuration file " //+ d_keys_file_name + ": "
-                               + " '=' character not found.\n";
+                    string s = string("BES: Invalid entry ") + b + " in configuration file, '=' character not found.\n";
                     throw BESInternalFatalError(s, __FILE__, __LINE__);
                 }
 
