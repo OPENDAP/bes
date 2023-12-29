@@ -117,9 +117,9 @@ void log_response_and_memory_size(const std::string &caller_id, /*const*/ DMR &d
  *
  * @param dds Use this DDS to get the size of the request.
  */
-void log_response_and_memory_size(const std::string &caller_id, libdap::XMLWriter *const *dmrpp_writer)
+void log_response_and_memory_size(const std::string &caller_id, /*const*/ libdap::XMLWriter &dmrpp_writer)
 {
-    auto response_size = (long) (*dmrpp_writer)->get_doc_size();
+    auto response_size = (long)dmrpp_writer.get_doc_size();
     log_response_and_memory_size_helper(caller_id, response_size);
 }
 
