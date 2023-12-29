@@ -116,6 +116,7 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                     try {
                         bool success = (*futr).get();
                         future_finished = true;
+                        thread_counter--; // decrement the thread counter because the thread has completed its mission
                         BESDEBUG(dmrpp_3, debug_prefix << prolog << "Called future::get() on a ready future."
                             << " success: " << (success?"true":"false") << endl);
                         if(!success){
