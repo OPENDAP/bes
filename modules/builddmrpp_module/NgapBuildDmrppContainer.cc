@@ -94,11 +94,11 @@ void NgapBuildDmrppContainer::initialize()
 }
 
 NgapBuildDmrppContainer::NgapBuildDmrppContainer(const NgapBuildDmrppContainer &copy_from) :
-        BESContainer(copy_from), d_data_rresource(copy_from.d_data_rresource), d_real_name(copy_from.d_real_name) {
+        BESContainer(copy_from), d_real_name(copy_from.d_real_name) {
 
     BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying from: " << (void *) &copy_from << endl);
     // We can not make a copy of this container once the request has been made.
-    if (d_data_rresource) {
+    if (copy_from.d_data_rresource) {
         throw BESInternalError("The Container has already been accessed, cannot create a copy of this container.",
                                __FILE__, __LINE__);
     }
@@ -113,14 +113,15 @@ void NgapBuildDmrppContainer::_duplicate(NgapBuildDmrppContainer &copy_to) {
     BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying to: " << (void *) &copy_to << endl);
 
     if (copy_to.d_data_rresource) {
-        throw BESInternalError("The Container has already been accessed, cannot duplicate this resource.",
+        throw BESInternalError("The target Container has already been accessed, "
+                               "cannot duplicate this resource into it.",
                                __FILE__, __LINE__);
     }
 
     BESContainer::_duplicate(copy_to);
 
     copy_to.d_real_name = d_real_name;
-    copy_to.d_data_rresource = d_data_rresource;
+    copy_to.d_data_rresource = std::move(d_data_rresource); //  = d_data_rresource;
 }
 
 BESContainer *
@@ -159,7 +160,7 @@ string NgapBuildDmrppContainer::access() {
 
         auto data_url(std::make_shared<http::url>(data_access_url_str, true));
         {
-            d_data_rresource = std::make_shared<http::RemoteResource>(data_url);
+            d_data_rresource = std::make_unique<http::RemoteResource>(data_url);
 #ifndef NDEBUG
             BESStopWatch besTimer;
             if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
