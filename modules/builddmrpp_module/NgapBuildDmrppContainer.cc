@@ -121,7 +121,7 @@ void NgapBuildDmrppContainer::_duplicate(NgapBuildDmrppContainer &copy_to) {
     BESContainer::_duplicate(copy_to);
 
     copy_to.d_real_name = d_real_name;
-    copy_to.d_data_rresource = std::move(d_data_rresource); //  = d_data_rresource;
+    copy_to.d_data_rresource = std::move(d_data_rresource);
 }
 
 BESContainer *
