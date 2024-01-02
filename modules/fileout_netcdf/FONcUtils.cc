@@ -33,7 +33,6 @@
 #include "config.h"
 
 #include <cassert>
-#include <sstream>
 
 #include "FONcUtils.h"
 #include "FONcDim.h"
@@ -57,8 +56,6 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <libdap/D4Dimensions.h>
-
-#define prolog std::string("FONcUtils::").append(__func__).append("() - ")
 
 /** @brief If a variable name, dimension name, or attribute name begins
  * with a character that is not supported by netcdf, then use this
@@ -424,18 +421,10 @@ FONcUtils::convert(BaseType *v,
  *
  * @throws BESError if the return value represents a netcdf error
  */
-void FONcUtils::handle_error(int ncerr, const string &err, const string &file, int line)
+void FONcUtils::handle_error(int stax, const string &err, const string &file, int line)
 {
-    stringstream err_msg;
+    assert(stax != NC_NOERR);   // This should not be called for NOERR
 
-    if(ncerr == NC_NOERR) {   // This should not be called for NOERR
-        err_msg << prolog << "Ouch! the value of the error, " << ncerr << " equals NC_NOERR!";
-        err_msg << "How did we get here?";
-        throw BESInternalError(err_msg.str(), file, line);
-    }
-
-    err_msg << err;
-    err_msg << "(ncerr: " << ncerr << "): " << nc_strerror(ncerr);
-    throw BESInternalError(err_msg.str(), file, line);
+    throw BESInternalError(err + string(": ") + nc_strerror(stax), file, line);
 }
 
