@@ -52,7 +52,6 @@ namespace builddmrpp {
 class NgapBuildDmrppContainer : public BESContainer {
 
 private:
-    // TODO Remove std::shared_ptr<http::RemoteResource> d_data_rresource = nullptr;
     std::unique_ptr<http::RemoteResource> d_data_rresource = nullptr;
     std::string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
 

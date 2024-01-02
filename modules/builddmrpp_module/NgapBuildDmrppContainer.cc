@@ -113,7 +113,8 @@ void NgapBuildDmrppContainer::_duplicate(NgapBuildDmrppContainer &copy_to) {
     BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying to: " << (void *) &copy_to << endl);
 
     if (copy_to.d_data_rresource) {
-        throw BESInternalError("The Container has already been accessed, cannot duplicate this resource.",
+        throw BESInternalError("The target Container has already been accessed, "
+                               "cannot duplicate this resource into it.",
                                __FILE__, __LINE__);
     }
 

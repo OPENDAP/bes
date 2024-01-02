@@ -26,11 +26,18 @@
 
 #include "config.h"
 
+#ifdef HAVE_STDLIB_H
+#include <cstdlib>
+#endif
+
 #include <mutex>
 
 #include <sstream>
 #include <string>
 
+#include "EffectiveUrlCache.h"
+
+#include "BESRegex.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -38,17 +45,38 @@
 #include "CurlUtils.h"
 #include "HttpNames.h"
 #include "EffectiveUrl.h"
-#include "EffectiveUrlCache.h"
 
 using namespace std;
 
-constexpr auto MODULE = "euc";
-constexpr auto  MODULE_TIMER = "euc:timer";
-constexpr auto  MODULE_DUMPER = "euc:dump";
-
+#define MODULE "euc"
+#define MODULE_TIMER "euc:timer"
+#define MODULE_DUMPER "euc:dump"
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
 namespace http {
+
+std::unique_ptr<EffectiveUrlCache> EffectiveUrlCache::d_instance = nullptr;
+
+/** @brief Get the singleton EffectiveUrlCache instance.
+ *
+ * This static method returns the instance of this singleton class.
+ * The implementation will only build one instance of EffectiveUrlCache and
+ * thereafter simple return that pointer.
+ *
+ * @return A pointer to the EffectiveUrlCache singleton
+ */
+EffectiveUrlCache *
+EffectiveUrlCache::TheCache()
+{
+    if (d_instance == nullptr) {
+        static std::once_flag d_euc_init_once;
+        std::call_once(d_euc_init_once, []() {
+            d_instance.reset(new EffectiveUrlCache()); // Create new instance, assign to unique_ptr.
+        });
+    }
+
+    return d_instance.get();
+}
 
 /**
  * @brief Get the cached effective URL.
@@ -140,12 +168,12 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
         // the instance we placed in the cache - it can be modified and the one in the cache
         // is unchanged. Trusted state was established from source_url when effective_url was
         // created in curl::retrieve_effective_url()
-        effective_url = make_shared<EffectiveUrl>(effective_url); // shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url));
+        effective_url = shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url));
     }
     else {
         // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
         // Now we need to make a copy to return, inheriting trust from the requesting URL.
-        effective_url =  make_shared<EffectiveUrl>(effective_url, source_url->is_trusted()); // shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url, source_url->is_trusted()));
+        effective_url = shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url, source_url->is_trusted()));
     }
 
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
@@ -201,6 +229,17 @@ void EffectiveUrlCache::dump(ostream &strm) const
         strm << BESIndent::LMarg << "effective url list: EMPTY" << endl;
     }
     BESIndent::UnIndent();
+}
+
+/**
+ * @brief dumps information about this object
+ * @param strm C++ i/o stream to dump the information to
+ */
+string EffectiveUrlCache::dump() const
+{
+    stringstream sstrm;
+    dump(sstrm);
+    return sstrm.str();
 }
 
 } // namespace http

@@ -52,7 +52,7 @@ class url;
  */
 class EffectiveUrlCache : public BESObj {
 private:
-    EffectiveUrlCache() = default;
+    static std::unique_ptr<EffectiveUrlCache> d_instance;
 
     std::mutex d_cache_lock_mutex;
 
@@ -72,22 +72,9 @@ private:
     friend class EffectiveUrlCacheTest;
 
 public:
-    /** @brief Get the singleton EffectiveUrlCache instance.
-     *
-     * This static method returns the instance of this singleton class.
-     * The implementation will only build one instance of EffectiveUrlCache and
-     * thereafter return a pointer to that instance.
-     *
-     * Thread safe with C++-11 and greater.
-     *
-     * @return A pointer to the EffectiveUrlCache singleton
-     */
-    static EffectiveUrlCache *TheCache() {
-        // Create a local static object the first time the function is called
-        static EffectiveUrlCache instance;
-        return &instance;
-    }
+    static EffectiveUrlCache *TheCache();
 
+    EffectiveUrlCache() = default;
     EffectiveUrlCache(const EffectiveUrlCache &src) = delete;
     EffectiveUrlCache &operator=(const EffectiveUrlCache &rhs) = delete;
 
@@ -96,13 +83,7 @@ public:
     std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
 
     void dump(std::ostream &strm) const override;
-
-private:
-    std::string dump() const {
-        std::stringstream sstrm;
-        dump(sstrm);
-        return sstrm.str();
-    }
+    virtual std::string dump() const;
 };
 
 } // namespace http

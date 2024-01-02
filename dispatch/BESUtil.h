@@ -127,8 +127,6 @@ public:
     static BESCatalog *separateCatalogFromPath(std::string &path);
 
     static uint64_t file_to_stream(const std::string &file_name, std::ostream &o_strm, uint64_t read_start_position=0);
-   // static uint64_t file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount);
-    // static uint64_t file_to_stream_task(const std::string &file_name, std::atomic<bool> &file_write_done, std::ostream &o_strm);
 
     static std::string get_dir_name(const std::string &p);
     static bool is_directory(const std::string &p);
