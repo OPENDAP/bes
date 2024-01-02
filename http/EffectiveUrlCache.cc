@@ -145,7 +145,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
     else {
         // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
         // Now we need to make a copy to return, inheriting trust from the requesting URL.
-        effective_url =  make_shared<EffectiveUrl>(effective_url, source_url->is_trusted()); // shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url, source_url->is_trusted()));
+        effective_url =  make_shared<EffectiveUrl>(effective_url, source_url->is_trusted());
     }
 
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
