@@ -116,10 +116,6 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                     try {
                         bool success = (*futr).get();
                         future_finished = true;
-
-                        // We know there's a problem with the thread_counter management but this didn't seem to fix it...
-                        // thread_counter--; // decrement the thread counter because the thread has completed its mission
-
                         BESDEBUG(dmrpp_3, debug_prefix << prolog << "Called future::get() on a ready future."
                             << " success: " << (success?"true":"false") << endl);
                         if(!success){
@@ -403,11 +399,9 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
                         BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted. "
-                                                            << super_chunks.size() << " SuperChunk(s) remain in queue. "
-                                                            <<  "transfer_thread_counter: " << transfer_thread_counter
-                                                            << " futures.size(): " << futures.size() << endl);
-
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                            " transfer_thread_counter: " << transfer_thread_counter <<
+                                                            " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -473,10 +467,9 @@ void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>
                         BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted. "
-                                                 << super_chunks.size() << " SuperChunk(s) remain in queue. "
-                                                 <<  "transfer_thread_counter: " << transfer_thread_counter
-                                                 << " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                            " transfer_thread_counter: " << transfer_thread_counter <<
+                                                            " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -559,10 +552,9 @@ void read_super_chunks_concurrent(queue< shared_ptr<SuperChunk> > &super_chunks,
                         BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted. "
-                                                 << super_chunks.size() << " SuperChunk(s) remain in queue. "
-                                                 <<  "transfer_thread_counter: " << transfer_thread_counter
-                                                 << " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                            " transfer_thread_counter: " << transfer_thread_counter <<
+                                                            " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -1021,10 +1013,9 @@ void DmrppArray::read_contiguous()
                             BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << current_chunk->to_string() << endl);
                         } else {
                             // Thread did not start, ownership of the arguments was not passed to the thread.
-                            BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted. "
-                                                     << chunks_to_read.size() << " Chunk(s) remain in queue. "
-                                                     <<  "transfer_thread_counter: " << transfer_thread_counter
-                                                     << " futures.size(): " << futures.size() << endl);
+                            BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                     " transfer_thread_counter: " << transfer_thread_counter <<
+                                                     " futures.size(): " << futures.size() << endl);
                         }
                     }
                 } else {
