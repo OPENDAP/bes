@@ -110,8 +110,6 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
     auto dmr = bdmr->get_dmr();
 
-    dap_utils::log_response_and_memory_size(prolog, *dmr);
-
     try {
         dmrpp::DMRpp dmrpp;
         dmrpp::DmrppTypeFactory dtf;
