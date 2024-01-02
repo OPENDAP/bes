@@ -119,7 +119,7 @@ void log_response_and_memory_size(const std::string &caller_id, /*const*/ DMR &d
  */
 void log_response_and_memory_size(const std::string &caller_id, /*const*/ libdap::XMLWriter &dmrpp_writer)
 {
-    auto response_size = (long)dmrpp_writer.get_doc_size();
+    auto response_size = (long)dmrpp_writer.get_doc_size() / 1000;
     log_response_and_memory_size_helper(caller_id, response_size);
 }
 
