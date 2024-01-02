@@ -1210,7 +1210,7 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
 #ifndef NDEBUG
     INFO_LOG(msg.str());
 #endif
-
+    
 }
 
 uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount){
