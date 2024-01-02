@@ -316,8 +316,10 @@ void process_chunks_concurrent(
                         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
-                                                            "chunk_processing_thread_counter: " << chunk_processing_thread_counter << " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted. "
+                            << chunks.size() << " Chunk(s) remain in queue. "
+                            <<  "chunk_processing_thread_counter: " << chunk_processing_thread_counter
+                            << " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -396,9 +398,10 @@ void process_chunks_unconstrained_concurrent(
                         chunks.pop();
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
-                                                            " chunk_processing_thread_counter: " << chunk_processing_thread_counter <<
-                                                            " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted. "
+                                            << chunks.size() << " Chunk(s) remain in queue. "
+                                            <<  "chunk_processing_thread_counter: " << chunk_processing_thread_counter
+                                            << " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -457,9 +460,11 @@ void process_chunks_unconstrained_concurrent_dio(
                         chunks.pop();
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
-                                                            " chunk_processing_thread_counter: " << chunk_processing_thread_counter <<
-                                                            " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted. "
+                                                << chunks.size() << " Chunk(s) remain in queue. "
+                                                <<  "chunk_processing_thread_counter: " << chunk_processing_thread_counter
+                                                << " futures.size(): " << futures.size() << endl);
+
                     }
                 }
             }
