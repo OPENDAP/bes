@@ -9,3 +9,4 @@ mds_inventory
 /mds_ledger.txt
 /pathinfo_files/
 /ShowPathInfoTest
+/DapUtilsTest

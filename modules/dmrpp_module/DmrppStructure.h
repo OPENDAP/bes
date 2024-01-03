@@ -53,7 +53,17 @@ public:
         return new DmrppStructure(*this);
     }
 
+    bool read() override;
+    void set_send_p(bool state) override;
+
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override;
+
+
     virtual void dump(ostream & strm) const;
+
+private:
+    void structure_read(vector<char> &values, size_t &values_offset);
+    friend class DmrppArray;
 };
 
 } // namespace dmrpp

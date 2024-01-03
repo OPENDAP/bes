@@ -606,6 +606,16 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_scalar.h5.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([comp_scalar.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_scalar.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([comp_scalar.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_simple_scalar.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_simple_scalar.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_simple_scalar_fix_str.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_simple_scalar_fix_str.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_simple_scalar_vlen_str.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_simple_scalar_vlen_str.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_simple_scalar_memb_array.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_simple_scalar_memb_array.h5.dap.bescmd])
+
+
 
 # Compound Array (both dap2 and dap4)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_more_types.h5.dds.bescmd])
@@ -613,6 +623,21 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([compound_more_types.h5.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([compound_more_types.h5.data.subset.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_more_types.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_more_types.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_more_types.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_simple_array_fix_str.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_simple_array_fix_str.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_array_fix_str.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_array_fix_str.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_array_vlen_str.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_array_vlen_str.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_simple.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_simple.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([compound_simple_array.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([compound_simple_array.h5.dap.bescmd])
+
+
+
+
 
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_group.h5.das.bescmd])

@@ -52,6 +52,8 @@ class url;
  */
 class EffectiveUrlCache : public BESObj {
 private:
+    EffectiveUrlCache() = default;
+
     std::mutex d_cache_lock_mutex;
 
     std::map<std::string, std::shared_ptr<http::EffectiveUrl>> d_effective_urls;
@@ -74,18 +76,20 @@ public:
      *
      * This static method returns the instance of this singleton class.
      * The implementation will only build one instance of EffectiveUrlCache and
-     * thereafter simple return that pointer.
+     * thereafter return a pointer to that instance.
      *
-     * @note This method is thread safe, and is known as Meyer's Singleton.
+     * Thread safe with C++-11 and greater.
+     *
+     * This uses the pattern known as Meyer's Singleton.
      *
      * @return A pointer to the EffectiveUrlCache singleton
      */
     static EffectiveUrlCache *TheCache() {
-        static EffectiveUrlCache d_instance;
-        return &d_instance;
+        // Create a local static object the first time the function is called
+        static EffectiveUrlCache instance;
+        return &instance;
     }
 
-    EffectiveUrlCache() = default;
     EffectiveUrlCache(const EffectiveUrlCache &src) = delete;
     EffectiveUrlCache &operator=(const EffectiveUrlCache &rhs) = delete;
 
@@ -94,7 +98,13 @@ public:
     std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
 
     void dump(std::ostream &strm) const override;
-    virtual std::string dump() const;
+
+private:
+    std::string dump() const {
+        std::stringstream sstrm;
+        dump(sstrm);
+        return sstrm.str();
+    }
 };
 
 } // namespace http

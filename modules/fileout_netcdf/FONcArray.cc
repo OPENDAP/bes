@@ -32,6 +32,7 @@
 
 #include <sstream>
 #include <algorithm>
+#include <cstring>
 
 #include <netcdf.h>
 
@@ -41,6 +42,7 @@
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
+#include <BESUtil.h>
 
 #include "FONcRequestHandler.h" // For access to the handler's keys
 #include "FONcArray.h"
@@ -356,9 +358,9 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         }
     }
 
-#if 0
-for( const auto &chunk_size:d_chunksizes) 
-    BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
+#ifndef NDEBUG
+    for( const auto &chunk_size:d_chunksizes) 
+        BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
 #endif
 
     // if this array is a string array, then add the length dimension
@@ -374,6 +376,9 @@ for( const auto &chunk_size:d_chunksizes)
         // order to define the variable for the netCDF file, we need to read
         // string data long before we actually write it out. Kind of a drag,
         // but not the end of the world. jhrg 5/18/21
+
+        // For NC_CHAR, the module needs to call the intern_data().  
+        // This routine is called in the convert(). So it should not called in define().
         if (d_is_dap4)
             d_a->intern_data();
         else
@@ -591,41 +596,122 @@ void FONcArray::define(int ncid) {
             string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
+#ifndef NBEBUG
+
+        if (fdio_flag) {
+            BESDEBUG("fonc","variable name is "<<d_varname << endl);
+            BESDEBUG("fonc","FONC direct io flag is true before calling the intern_data()"<<endl);
+        }
+        else {
+            BESDEBUG("fonc","variable name is "<<d_varname << endl);
+            BESDEBUG("fonc","FONC direct io flag is false before calling the intern_data()"<<endl);
+        }
+        
+        bool d_io_flag_phase_2 = d_a->get_dio_flag();
+        if (d_io_flag_phase_2) {
+            BESDEBUG("fonc","variable name is "<<d_varname << endl);
+            BESDEBUG("fonc","direct io flag is true before calling the intern_data()"<<endl);
+            Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+            BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
+            for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
+                BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
+    
+            for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
+                BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
+    
+            BESDEBUG("fonc","End of checking the chunk info. for the define mode.  "<<d_varname << endl);
+
+        }
+
+        
+#endif
+
+ 
+#if 0
+        // Check if the direct IO flag is really set. Note intern_data() is called in define() if fdio_flag is true.
+        // TODO: the following should be NOT necessary with further optimization of the memory usage in the future. KY 2023-11-30
+        if (d_array_type != NC_CHAR && fdio_flag == true) {
+            if (d_is_dap4)
+                d_a->intern_data();
+            else    
+                d_a->intern_data(*get_eval(), *get_dds());
+        }
+#endif
+
+        // Obtain the direct IO flag
+        bool d_io_flag = d_a->get_dio_flag();
+
+#ifndef NBEBUG
+        BESDEBUG("fonc", "d_io_flag after intern_data(): "<<d_io_flag<<endl);
+        
+        if (d_io_flag) {
+
+            Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+            BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
+            for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
+                BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
+    
+            for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
+                BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
+    
+            for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
+                BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
+                BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
+                BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
+                
+                BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
+                for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
+                    BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
+            }
+        }
 
         BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << d_ncVersion << endl);
+
+#endif
+
         if (isNetCDF4()) {
             BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
-            if (FONcRequestHandler::chunk_size == 0)
-                // I have no idea if chunksizes is needed in this case.
-                stax = nc_def_var_chunking(ncid, d_varid, NC_CONTIGUOUS, d_chunksizes.data());
-            else
-                stax = nc_def_var_chunking(ncid, d_varid, NC_CHUNKED, d_chunksizes.data());
 
-            if (stax != NC_NOERR) {
-                string err = "fileout.netcdf - Failed to define chunking for variable " + d_varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            if (d_io_flag) {
+                // Use the direct chunk IO settings.
+                define_dio_filters(ncid, d_varid);     
             }
-
-            // TODO Make this more adaptable to the Array's data type. Find out when it's
-            //  best to use shuffle, et c. jhrg 7/22/18
-            if (FONcRequestHandler::use_compression) {
-
-                int shuffle = 0;
-                // For integer, if the type size is >= 2, turn on the shuffle key always.
-                // For other types, turn off the shuffle key by default.
-                if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
-                    NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
-                    FONcRequestHandler::use_shuffle)                
-                    shuffle = 1;
-                
-                int deflate = 1;
-                int deflate_level = 4;
-                stax = nc_def_var_deflate(ncid, d_varid, shuffle, deflate, deflate_level);
-
+            else {
+                if (FONcRequestHandler::chunk_size == 0)
+                    // I have no idea if chunksizes is needed in this case.
+                    stax = nc_def_var_chunking(ncid, d_varid, NC_CONTIGUOUS, d_chunksizes.data());
+                else
+                    stax = nc_def_var_chunking(ncid, d_varid, NC_CHUNKED, d_chunksizes.data());
+    
                 if (stax != NC_NOERR) {
-                    string err = (string) "fileout.netcdf - Failed to define compression (deflate) level for variable "
-                                 + d_varname;
+                    string err = "fileout.netcdf - Failed to define chunking for variable " + d_varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+    
+                // TODO Make this more adaptable to the Array's data type. Find out when it's
+                //  best to use shuffle, et c. jhrg 7/22/18
+                // The following code provides a way how to use shuffle. KY 11/2/23
+                if (FONcRequestHandler::use_compression) {
+    
+                    int shuffle = 0;
+                    // For integer, if the type size is >= 2, turn on the shuffle key always.
+                    // For other types, turn off the shuffle key by default.
+                    if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
+                        NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
+                        FONcRequestHandler::use_shuffle)                
+                        shuffle = 1;
+                    
+                    int deflate = 1;
+                    int deflate_level = 4;
+                    stax = nc_def_var_deflate(ncid, d_varid, shuffle, deflate, deflate_level);
+    
+                    if (stax != NC_NOERR) {
+                        string err = (string) "fileout.netcdf - Failed to define compression (deflate) level for variable "
+                                     + d_varname;
+                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                    }
                 }
             }
         }
@@ -663,37 +749,24 @@ void FONcArray::define(int ncid) {
  * @param ncid The ID of the open netCDF file.
  */
 void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
+
+  // Note: when fdio_flag is not true, the intern_data needs to be called here. 
     if (d_is_dap4)
         d_a->intern_data();
     else
         d_a->intern_data(*get_eval(), *get_dds());
 
-    // TODO: the ifndef NDEBUG #endif should be removed when direct IO is supported.
-#ifndef NDEBUG
+    // Check if we can use direct IO.
     bool d_io_flag = d_a->get_dio_flag();
-    BESDEBUG("fonc", "d_io_flag: "<<d_io_flag<<endl);
-    
+
     if (d_io_flag) {
-        Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
-        for (const auto& def_lev:dmrpp_vs_info.deflate_levels) 
-            BESDEBUG("fonc", "deflate level: "<<def_lev<<endl);
+        // direct IO operation.
+        write_direct_io_data(ncid,d_varid);
 
-        for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
-            BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
-
-        for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
-            BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
-            BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
-            
-            BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
-            for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
-                BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
-        }
- 
+        d_a->clear_local_data();
+        return;
     }
-#endif
-    
+
     int stax;
 
     switch (var_type) {
@@ -848,6 +921,9 @@ void FONcArray::write_for_nc3_types(int ncid) {
             // detects the original variable was of type Byte and typecasts
             // each data value to a short.
             if (element_type == dods_byte_c || element_type == dods_uint8_c) {
+                // The data is retrieved in the define mode. So no need to do it here.
+                // Comment out for the time being.
+                // Uncomment to reduce the memory print. the meory is not allocated in the define mode.
                 if (d_is_dap4)
                     d_a->intern_data();
                 else
@@ -897,6 +973,10 @@ void FONcArray::write_for_nc3_types(int ncid) {
             }
 
             if (element_type == dods_uint16_c) {
+
+                // The data is retrieved in the define mode. So no need to do it here.
+                // Comment out for the time being.
+                // Uncomment to reduce the memory print. the meory is not allocated in the define mode.
                 if (d_is_dap4)
                     d_a->intern_data();
                 else
@@ -1096,4 +1176,162 @@ void FONcArray::write_for_nc4_types(int ncid) {
             throw BESInternalError(err, __FILE__, __LINE__);
     }
 }
+
+// Method to define filters of direct IO.
+void FONcArray::define_dio_filters(int ncid, int d_varid) {
+
+    Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+    BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
+
+    string filters_string = dmrpp_vs_info.filter;
+    
+    bool has_fletcher_first = false;
+    bool has_fletcher_last = false;
+    bool has_shuffle = false;
+    bool has_2deflates = false;
+    bool has_1deflate = false;
+
+    // Filter orders matter.
+    obtain_dio_filters_order(filters_string, has_fletcher_first, has_fletcher_last, has_shuffle, has_2deflates, has_1deflate);
+
+    int stax = 0;
+    stax = nc_def_var_chunking_direct_write(ncid, d_varid, NC_CHUNKED, dmrpp_vs_info.chunk_dims.data());
+    if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define direct_io chunking for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+    }
+
+    // Allocate filters for the direct IO.
+    allocate_dio_nc4_def_filters(ncid, d_varid, has_fletcher_first, has_fletcher_last, has_shuffle, has_2deflates, has_1deflate, dmrpp_vs_info.deflate_levels);
+
+
+}
+
+// Method that obtains the filter orders for the direct IO case.
+void FONcArray::obtain_dio_filters_order(const string & filters, bool &has_fle_first, bool &has_fle_last, bool &has_shuffle, bool &has_2defs, bool &has_1def) const {
+
+    vector<string> filter_array = BESUtil::split(filters, ' ' );
+
+    short num_defs = 0;
+    for (unsigned int i = 0; i <filter_array.size(); i++) {
+        if (filter_array[i] == "shuffle") 
+            has_shuffle = true;
+        else if (filter_array[i] == "deflate") 
+            num_defs++;
+        else if (filter_array[i] == "fletcher32") {
+            if (i ==0)
+                has_fle_first = true;
+            else 
+                has_fle_last = true;
+        }
+    }
+
+    if (num_defs == 1)
+        has_1def = true;
+    else if (num_defs == 2)
+        has_2defs = true;
+    else if (num_defs >2)
+        throw BESInternalError("Currently we don't support more than 2 deflate filters.", __FILE__, __LINE__);
+
+}
+
+// Method that allocate netCDF-4 filters for the direct IO case.
+void FONcArray::allocate_dio_nc4_def_filters(int ncid, int d_varid, bool has_fle_first, bool has_fle_last, bool has_shuffle, 
+                                         bool has_2defs, bool has_1def, const vector<unsigned int>& def_levs) const {
+
+    int stax = 0;
+
+    if (has_1def && def_levs.size() !=1)
+        throw BESInternalError("The size of def_levs should be 1 for one deflate filter", __FILE__, __LINE__);
+
+    if (has_2defs && def_levs.size() !=2)
+        throw BESInternalError("The size of def_levs should be 2 for two deflate filters", __FILE__, __LINE__);
+
+    if (has_fle_first) {
+
+        stax = nc_def_var_fletcher32(ncid, d_varid, 1);
+        if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the fletcher32 filter for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+    }
+
+    if (has_shuffle) {
+        if (has_1def) {
+            stax = nc_def_var_deflate(ncid, d_varid, 1, 1, def_levs[0]);
+            if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the deflate and the shuffle filters for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+        else if (has_2defs) {
+            stax = nc_def_var_two_deflates(ncid, d_varid, 1, 1, def_levs[0], def_levs[1]);
+            if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the two deflate filters and the shuffle filter for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+    }
+    else {
+        if (has_1def) {
+            stax = nc_def_var_deflate(ncid, d_varid, 0, 1, def_levs[0]);
+            if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the deflate filter for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+        else if (has_2defs) {
+            stax = nc_def_var_two_deflates(ncid, d_varid, 0, 1, def_levs[0], def_levs[1]);
+            if (stax != NC_NOERR) {
+                string err = "fileout.netcdf - Failed to define the two deflate filters for variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+    }
+
+    if (has_fle_last) {
+        stax = nc_def_var_fletcher32(ncid, d_varid,1);   
+        if (stax != NC_NOERR) {
+            string err = "fileout.netcdf - Failed to define the filter fletcher32 for variable " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+    }
+
+}
+
+// Write data for the direct IO case.
+void FONcArray::write_direct_io_data(int ncid, int d_varid) {
+
+    char dummy_buffer[1];
+
+    // The following call doesn't write any data but set up the necessary operations for sending data directly.
+    int stax = nc_put_var(ncid, d_varid, dummy_buffer);
+    if (stax != NC_NOERR) {
+        string err = "fileout.netcdf - the direct IO version of nc_put_var error for variable " + d_varname;
+        FONcUtils::handle_error(stax , err, __FILE__, __LINE__);
+    }
+
+    Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+    for (const auto & var_chunk_info:dmrpp_vs_info.var_chunk_info) {
+
+        Array::var_chunk_info_t vci = var_chunk_info;
+
+        // May use the vector to replace new[] later. 
+        auto chunk_buf = new char[vci.chunk_buffer_size];
+        memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);
+
+        stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(vci.chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);
+        if (stax != NC_NOERR) {
+            string err = "fileout.netcdf - nc4_write_chunk error for variable " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+
+        }
+
+        delete[] chunk_buf;
+    }
+ 
+}
+
 

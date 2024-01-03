@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="c" space="catalog">/data/all_storages_filters.h5.deflev.dmrpp</setContainer>
+    <define name="d">
+	   <container name="c" >
+                <dap4constraint>
+                    two_chunks_filters[0:2:3][0:1:2];one_chunk_filters[0:1:5][0:1:3];contiguous
+                </dap4constraint>
+           </container>
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>

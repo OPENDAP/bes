@@ -137,10 +137,11 @@ class DmrppCommon {
     // For compact and contiguous storages, this variable is always 0 since there are no chunks.
     unsigned long long var_chunks_storage_size = 0;
     std::vector<unsigned int> deflate_levels;
+    bool processing_fv_chunks = false;
 
 protected:
     virtual char *read_atomic(const std::string &name);
-
+      virtual char *read_atomic(const std::string &name, size_t & buf_size);
     // This declaration allows code in the SuperChunky program to use the protected method.
     // jhrg 10/25/21
     friend void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, std::vector<dmrpp::SuperChunk *> &super_chunks);
@@ -170,6 +171,8 @@ public:
          for(const auto &def_level:def_levels)
             deflate_levels.push_back(def_level);
     }
+    void set_processing_fv_chunks() { processing_fv_chunks = true;}
+    bool get_processing_fv_chunks() const { return processing_fv_chunks; }
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();

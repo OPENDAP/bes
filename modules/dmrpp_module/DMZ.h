@@ -97,6 +97,7 @@ private:
     static std::set< std::vector<unsigned long long> > get_chunk_map(const std::vector<std::shared_ptr<Chunk>> &chunks);
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
+    static void process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element);
 
     static pugi::xml_node get_variable_xml_node_helper(const pugi::xml_node &var_node, std::stack<libdap::BaseType*> &bt);
     static void build_basetype_chain(libdap::BaseType *btp, std::stack<libdap::BaseType*> &bt);
@@ -132,6 +133,15 @@ public:
     void parse_xml_string(const std::string &contents);
 
     virtual void build_thin_dmr(libdap::DMR *dmr);
+
+    virtual bool set_up_all_direct_io_flags_phase_1(libdap::DMR *dmr);
+    virtual bool set_up_direct_io_flag_phase_1(libdap::D4Group *group);
+    virtual bool set_up_direct_io_flag_phase_1(libdap::BaseType *btp);
+
+    virtual void set_up_all_direct_io_flags_phase_2(libdap::DMR *dmr);
+    virtual void set_up_direct_io_flag_phase_2(libdap::D4Group *group);
+    virtual void set_up_direct_io_flag_phase_2(libdap::BaseType *btp);
+
 
     virtual void load_attributes(libdap::BaseType *btp);
     virtual void load_attributes(libdap::Constructor *constructor);

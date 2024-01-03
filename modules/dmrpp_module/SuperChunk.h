@@ -86,7 +86,12 @@ public:
         process_child_chunks_unconstrained();
     }
 
+    virtual void read_unconstrained_dio(); 
+
+
     virtual void retrieve_data();
+    virtual void retrieve_data_dio();
+
     virtual void process_child_chunks();
     virtual void process_child_chunks_unconstrained();
 
@@ -144,6 +149,15 @@ void process_chunks_unconstrained_concurrent(
         const std::vector<unsigned long long> &chunk_shape,
         DmrppArray *array,
         const std::vector<unsigned long long> &array_shape);
+
+void process_chunks_unconstrained_concurrent_dio(
+        const string &super_chunk_id,
+        std::queue<std::shared_ptr<Chunk>> &chunks,
+        const std::vector<unsigned long long> &chunk_shape,
+        DmrppArray *array,
+        const std::vector<unsigned long long> &array_shape);
+
+
 
 } // namespace dmrpp
 

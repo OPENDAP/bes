@@ -30,12 +30,12 @@ BUILT_SOURCES = test_config.h bes.conf
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT pfileT plistT pvolT replistT		\
+TESTS = keysT constraintT defT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test \
-RequestTimerTest BESFileLockingCacheTest
+RequestTimerTest BESFileLockingCacheTest FileCacheTest
 
 # removed cacheT jhrg 1/11/23
 # FIXME keysT removed to see if it's the only blocker. jhrg 2/2/23
@@ -119,6 +119,8 @@ clean-local:
 
 ############################################################################
 
+keysT_SOURCES = keysT.cc
+
 kvp_utils_test_SOURCES = kvp_utils_test.cc
 
 constraintT_SOURCES = constraintT.cc
@@ -176,7 +178,7 @@ BESCatalogListTest_SOURCES  = BESCatalogListTest.cc
 
 # complete_catalog_lister_SOURCES = complete_catalog_lister.cc
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
-# complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
+# complete_catalog_lister_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
 
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
@@ -184,3 +186,7 @@ ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
 RequestTimerTest_SOURCES = RequestTimerTest.cc
 
 BESFileLockingCacheTest_SOURCES = BESFileLockingCacheTest.cc
+
+FileCacheTest_SOURCES = FileCacheTest.cc
+FileCacheTest_CPPFLAGS = $(AM_CPPFLAGS) $(OPENSSL_INC)
+FileCacheTest_LDADD = $(LDADD) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)

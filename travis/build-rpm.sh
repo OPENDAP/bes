@@ -16,6 +16,8 @@
 # u: treat unset env vars in substitutions as an error
 set -eux
 
+yum update -y
+
 # This script will start with /root as the CWD since that's how the
 # centos6/7 hyrax build containers are configured. The PATH will be 
 # set to include $prefix/bin and $prefix/deps/bin; $prefix will be

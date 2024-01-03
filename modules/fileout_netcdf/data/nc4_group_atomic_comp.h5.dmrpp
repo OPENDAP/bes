@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_group_atomic_comp.h5" dmrpp:href="data/nc4_group_atomic_comp.h5" dmrpp:version="3.20.13">
+    <Dimension name="dim1" size="2"/>
+    <Int32 name="dim1">
+        <Dim name="/dim1"/>
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunk offset="2087" nBytes="8"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Float32 name="d1">
+        <Dim name="/dim1"/>
+        <Map name="/dim1"/>
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunk offset="2095" nBytes="8"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.11</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.module.cmd=/Users/myang6/work/opendap/hyrax-1249/bes/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dap=/Users/myang6/work/opendap/hyrax-1249/bes/dap/.libs/libdap_module.so
+BES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1249/bes/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.fonc=/Users/myang6/work/opendap/hyrax-1249/bes/modules/fileout_netcdf/.libs/libfonc_module.so
+BES.module.h5=/Users/myang6/work/opendap/hyrax-1249/bes/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.nc=/Users/myang6/work/opendap/hyrax-1249/bes/modules/netcdf_handler/.libs/libnc_module.so
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.tQNiE2gB -f ./nc4_group_atomic_comp.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.pn4K9m5Z -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="g1">
+        <Dimension name="dim2" size="3"/>
+        <Int32 name="dim2">
+            <Dim name="/g1/dim2"/>
+            <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
+                <dmrpp:chunk offset="2048" nBytes="12"/>
+            </dmrpp:chunks>
+        </Int32>
+        <Float32 name="d2">
+            <Dim name="/dim1"/>
+            <Dim name="/g1/dim2"/>
+            <Map name="/dim1"/>
+            <Map name="/g1/dim2"/>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="9.96921e+36" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>2 3</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="2060" nBytes="27" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+    </Group>
+</Dataset>

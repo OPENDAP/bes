@@ -323,6 +323,16 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
 
             dmz->build_thin_dmr(dmr);
 
+            BESDEBUG("dmrpp","Before calling set_up_all_direct_io_flags"<<endl);
+            if (DmrppRequestHandler::is_netcdf4_enhanced_response == true) { 
+                BESDEBUG("dmrpp","calling set_up_all_direct_io_flags"<<endl);
+                bool global_dio_flag = dmz->set_up_all_direct_io_flags_phase_1(dmr);
+                if (global_dio_flag) {
+                    BESDEBUG("dmrpp","global_dio_flags is true."<<endl);
+                    dmz->set_up_all_direct_io_flags_phase_2(dmr);
+                }
+            }
+
             dmz->load_all_attributes(dmr);
         }
         else {
@@ -341,7 +351,16 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             dmz->parse_xml_doc(data_pathname);
 
             dmz->build_thin_dmr(dmr);
-
+            BESDEBUG("dmrpp","Before calling set_up_all_direct_io_flags"<<endl);
+            if (DmrppRequestHandler::is_netcdf4_enhanced_response == true) { 
+                BESDEBUG("dmrpp","calling set_up_all_direct_io_flags"<<endl);
+                bool global_dio_flag = dmz->set_up_all_direct_io_flags_phase_1(dmr);
+                if (global_dio_flag) {
+                    BESDEBUG("dmrpp","global_dio_flags is true."<<endl);
+                    dmz->set_up_all_direct_io_flags_phase_2(dmr);
+                }
+            }
+ 
             dmz->load_all_attributes(dmr);
         }
     }

@@ -840,6 +840,7 @@ unsigned long int CmrApi::get_opendap_collections_count(const string &provider_i
 }
 
 
+
 void CmrApi::get_collections_worker( const std::string &provider_id,
                                     std::map<std::string, std::unique_ptr<cmr::Collection>> &collections,
                                     unsigned int page_size,

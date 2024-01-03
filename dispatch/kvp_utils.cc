@@ -54,7 +54,7 @@ namespace kvp {
     void load_keys(
             const std::string &keys_file_name,
             set<string> &loaded_kvp_files,
-            std::map<std::string, std::vector<std::string> > &keystore);
+            std::unordered_map<std::string, std::vector<std::string> > &keystore);
 
     bool only_blanks(const char *line) {
         string my_line = line;
@@ -101,8 +101,7 @@ namespace kvp {
                     }
                 }
                 if (!done) {
-                    string s = string("BES: Invalid entry ") + b + " in configuration file " //+ d_keys_file_name + ": "
-                               + " '=' character not found.\n";
+                    string s = string("BES: Invalid entry ") + b + " in configuration file, '=' character not found.\n";
                     throw BESInternalFatalError(s, __FILE__, __LINE__);
                 }
 
@@ -131,12 +130,12 @@ namespace kvp {
     void load_include_file(
             const string &file,
             set<string> &loaded_kvp_files,
-            std::map<std::string, std::vector<std::string> > &keystore
+            std::unordered_map<std::string, std::vector<std::string> > &keystore
     ) {
         // make sure the file exists and is readable
         // throws exception if unable to read
         // not loaded if has already be started to be loaded
-        set<string>::iterator it = loaded_kvp_files.find(file);
+        auto it = loaded_kvp_files.find(file);
 
         if (it == loaded_kvp_files.end()) {
             // Didn't find it, better load it...
@@ -161,7 +160,7 @@ namespace kvp {
             const string &current_keys_file_name,
             const string &file_expr,
             set<string> &loaded_kvp_files,
-            std::map<std::string, std::vector<std::string> > &keystore
+            std::unordered_map<std::string, std::vector<std::string> > &keystore
     ) {
         string newdir = "";
         BESFSFile allfiles(file_expr);
@@ -204,9 +203,9 @@ namespace kvp {
             const string &key,
             const string &val,
             bool addto,
-            std::map<std::string, std::vector<std::string> > &keystore) {
-        map<string, vector<string> >::iterator i;
-        i = keystore.find(key);
+            std::unordered_map<std::string, std::vector<std::string> > &keystore) {
+
+        auto i = keystore.find(key);
         if (i == keystore.end()) {
             vector<string> vals;
             keystore[key] = vals;
@@ -221,7 +220,7 @@ namespace kvp {
             const string &current_keys_file_name,
             std::ifstream &keys_file,
             set<string> &loaded_kvp_files,
-            std::map<std::string, std::vector<std::string> > &keystore ) {
+            std::unordered_map<std::string, std::vector<std::string> > &keystore ) {
 
         string key, value, line;
         while (!keys_file.eof()) {
@@ -245,7 +244,7 @@ namespace kvp {
     void load_keys(
             const std::string &keys_file_name,
             set<string> &loaded_kvp_files,
-            std::map<std::string, std::vector<std::string> > &keystore
+            std::unordered_map<std::string, std::vector<std::string> > &keystore
     ) {
         std::ifstream keys_file(keys_file_name.c_str());
 
@@ -279,7 +278,7 @@ namespace kvp {
 
     void load_keys(
             const std::string &keys_file_name,
-            std::map<std::string, std::vector<std::string> > &keystore
+            std::unordered_map<std::string, std::vector<std::string> > &keystore
     ) {
         set<string> loaded_kvp_files;
         // FIXME: Don't make this just to throw it away. jhrg 2/2/23

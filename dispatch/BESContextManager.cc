@@ -96,8 +96,7 @@ string BESContextManager::get_context(const string &name, bool &found)
 #if 1
     string ret = "";
     found = false;
-    BESContextManager::Context_iter i;
-    i = _context_list.find(name);
+    auto i = _context_list.find(name);
     if (i != _context_list.end()) {
         ret = (*i).second;
         found = true;
@@ -174,8 +173,8 @@ void BESContextManager::list_context(BESInfo &info)
     string name;
     string value;
     std::map<string, string> props;
-    BESContextManager::Context_citer i = _context_list.begin();
-    BESContextManager::Context_citer e = _context_list.end();
+    auto i = _context_list.begin();
+    auto e = _context_list.end();
     for (; i != e; i++) {
         props.clear();
         name = (*i).first;
@@ -201,8 +200,8 @@ void BESContextManager::dump(ostream &strm) const
     if (_context_list.size()) {
         strm << BESIndent::LMarg << "current context:" << endl;
         BESIndent::Indent();
-        BESContextManager::Context_citer i = _context_list.begin();
-        BESContextManager::Context_citer ie = _context_list.end();
+        auto i = _context_list.begin();
+        auto ie = _context_list.end();
         for (; i != ie; i++) {
             strm << BESIndent::LMarg << (*i).first << ": " << (*i).second << endl;
         }

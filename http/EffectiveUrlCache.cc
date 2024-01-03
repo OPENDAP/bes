@@ -26,18 +26,11 @@
 
 #include "config.h"
 
-#ifdef HAVE_STDLIB_H
-#include <cstdlib>
-#endif
-
 #include <mutex>
 
 #include <sstream>
 #include <string>
 
-#include "EffectiveUrlCache.h"
-
-#include "BESRegex.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -45,12 +38,14 @@
 #include "CurlUtils.h"
 #include "HttpNames.h"
 #include "EffectiveUrl.h"
+#include "EffectiveUrlCache.h"
 
 using namespace std;
 
-#define MODULE "euc"
-#define MODULE_TIMER "euc:timer"
-#define MODULE_DUMPER "euc:dump"
+constexpr auto MODULE = "euc";
+constexpr auto  MODULE_TIMER = "euc:timer";
+constexpr auto  MODULE_DUMPER = "euc:dump";
+
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
 namespace http {
@@ -127,7 +122,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
             if (BESDebug::IsSet(MODULE_TIMER) || BESDebug::IsSet(TIMING_LOG_KEY))
                 sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url->str());
 #endif
-            effective_url = curl::retrieve_effective_url(source_url);
+            effective_url = curl::get_redirect_url(source_url);
         }
         BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << " ("
                                 << (source_url->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
@@ -145,12 +140,12 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
         // the instance we placed in the cache - it can be modified and the one in the cache
         // is unchanged. Trusted state was established from source_url when effective_url was
         // created in curl::retrieve_effective_url()
-        effective_url = shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url));
+        effective_url = make_shared<EffectiveUrl>(effective_url);
     }
     else {
         // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
         // Now we need to make a copy to return, inheriting trust from the requesting URL.
-        effective_url = shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url, source_url->is_trusted()));
+        effective_url =  make_shared<EffectiveUrl>(effective_url, source_url->is_trusted());
     }
 
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
@@ -206,17 +201,6 @@ void EffectiveUrlCache::dump(ostream &strm) const
         strm << BESIndent::LMarg << "effective url list: EMPTY" << endl;
     }
     BESIndent::UnIndent();
-}
-
-/**
- * @brief dumps information about this object
- * @param strm C++ i/o stream to dump the information to
- */
-string EffectiveUrlCache::dump() const
-{
-    stringstream sstrm;
-    dump(sstrm);
-    return sstrm.str();
 }
 
 } // namespace http

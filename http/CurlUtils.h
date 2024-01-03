@@ -51,11 +51,13 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, i
                                  std::vector<std::string> *http_response_headers);
 
 void http_get(const std::string &target_url, std::vector<char> &buf);
+void http_get(const std::string &target_url, std::string &buf);
 
 void super_easy_perform(CURL *ceh);
 ///@}
 
-std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr<http::url> &starting_point_url);
+std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http::url> &url);
+
 std::string filter_aws_url(const std::string &eff_url);
 
 CURL *init(const std::string &target_url, const struct curl_slist *http_request_headers,

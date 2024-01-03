@@ -55,9 +55,11 @@
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "DmrppArray.h"
+#include "DmrppStructure.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
 #include "Base64.h"
+#include "vlsa_util.h"
 
 // Used with BESDEBUG
 #define dmrpp_3 "dmrpp:3"
@@ -247,6 +249,21 @@ bool one_super_chunk_unconstrained_transfer_thread(const unique_ptr<one_super_ch
     return true;
 }
 
+bool one_super_chunk_unconstrained_transfer_thread_dio(const unique_ptr<one_super_chunk_args> &args)
+{
+
+#if DMRPP_ENABLE_THREAD_TIMERS
+    stringstream timer_tag;
+    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
+    " parent_tid: 0x" << std::hex << args->parent_thread_id  << " sc_id: " << args->super_chunk->id();
+    BESStopWatch sw(TRANSFER_THREADS);
+    sw.start(timer_tag.str());
+#endif
+
+    args->super_chunk->read_unconstrained_dio();
+    return true;
+}
+
 
 bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<one_child_chunk_args_new> args) {
     bool retval = false;
@@ -255,8 +272,10 @@ bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<o
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_child_chunk_thread_new, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                 "' from std::async for " << args->child_chunk->to_string() << endl);
+
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
     }
     return retval;
 }
@@ -276,8 +295,11 @@ bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_super_chunk_transfer_thread, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                            "' from std::async for " << args->super_chunk->to_string(false) << endl);
+       
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
+ 
     }
     return retval;
 }
@@ -295,6 +317,22 @@ bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &fu
     if(transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
         transfer_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread, std::move(args)));
+        retval = true;
+
+        // The args may be null after move(args) is called and causes the segmentation fault in the following BESDEBUG.
+        // So remove that part but leave the futures.size() for bookkeeping.
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<endl);
+ 
+    }
+    return retval;
+}
+
+bool start_super_chunk_unconstrained_transfer_thread_dio(list<std::future<bool>> &futures, unique_ptr<one_super_chunk_args> args) {
+    bool retval = false;
+    std::unique_lock<std::mutex> lck (transfer_thread_pool_mtx);
+    if(transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
+        transfer_thread_counter++;
+        futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread_dio, std::move(args)));
         retval = true;
         BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
                                             "' from std::async, transfer_thread_counter: " << transfer_thread_counter << endl);
@@ -386,6 +424,75 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
         throw;
     }
 }
+
+// Clone of read_super_chunks_unconstrained_concurrent for direct IO. 
+// Doing this to ensure direct IO won't affect the regular operations.
+void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>> &super_chunks, DmrppArray *array)
+{
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
+
+    // Parallel version based on read_chunks_unconstrained(). There is
+    // substantial duplication of the code in read_chunks_unconstrained(), but
+    // wait to remove that when we move to C++11 which has threads integrated.
+
+    // We maintain a list  of futures to track our parallel activities.
+    list<future<bool>> futures;
+    try {
+        bool done = false;
+        bool future_finished = true;
+        while (!done) {
+
+            if(!futures.empty())
+                future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+            BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
+
+            if (!super_chunks.empty()){
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
+                bool thread_started = true;
+                while(thread_started && !super_chunks.empty()) {
+                    auto super_chunk = super_chunks.front();
+                    BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
+
+                    auto args = unique_ptr<one_super_chunk_args>(new one_super_chunk_args(super_chunk, array));
+
+                    // direct IO calling
+                    thread_started = start_super_chunk_unconstrained_transfer_thread_dio(futures, std::move(args));
+
+                    if (thread_started) {
+                        super_chunks.pop();
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
+                    } else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                            " transfer_thread_counter: " << transfer_thread_counter <<
+                                                            " futures.size(): " << futures.size() << endl);
+                    }
+                }
+            }
+            else {
+                // No more Chunks and no futures means we're done here.
+                if(futures.empty())
+                    done = true;
+            }
+            future_finished = false;
+        }
+    }
+    catch (...) {
+        // Complete all the futures, otherwise we'll have threads out there using up resources
+        while(!futures.empty()){
+            if(futures.back().valid())
+                futures.back().get();
+            futures.pop_back();
+        }
+        // re-throw the exception
+        throw;
+    }
+}
+
 
 /**
  * @brief Uses std::async and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
@@ -716,6 +823,83 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 }
 
 /**
+ * @brief Insert data into a variable for structure.  
+ *
+ * This method is a clone of the method insert_constrained_contiguous with the minimal addition to handle the structure.
+ *
+ * This method is used only for contiguous data. It is called only by itself
+ * and read_contiguous().
+ */
+void DmrppArray::insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
+                                               vector<unsigned long long> &subset_addr,
+                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf, vector<char> &dest_buf)
+{
+    BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
+
+    unsigned int bytes_per_elem = prototype()->width();
+
+    uint64_t start = this->dimension_start_ll(dim_iter, true);
+    uint64_t stop = this->dimension_stop_ll(dim_iter, true);
+    uint64_t stride = this->dimension_stride_ll(dim_iter, true);
+
+    dim_iter++;
+
+    // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
+    // See the else clause for the general case.
+    if (dim_iter == dim_end() && stride == 1) {
+        // For the start and stop indexes of the subset, get the matching indexes in the whole array.
+        subset_addr.push_back(start);
+        unsigned long long start_index = get_index(subset_addr, array_shape);
+        subset_addr.pop_back();
+
+        subset_addr.push_back(stop);
+        unsigned long long stop_index = get_index(subset_addr, array_shape);
+        subset_addr.pop_back();
+
+        // Copy data block from start_index to stop_index
+        // TODO Replace this loop with a call to std::memcpy()
+        for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
+            uint64_t target_byte = *target_index * bytes_per_elem;
+            uint64_t source_byte = source_index * bytes_per_elem;
+            // Copy a single value.
+            for (unsigned long i = 0; i < bytes_per_elem; i++) {
+                dest_buf[target_byte++] = src_buf[source_byte++];
+            }
+            (*target_index)++;
+        }
+
+    }
+    else {
+        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+
+            // Is it the last dimension?
+            if (dim_iter != dim_end()) {
+                // Nope! Then we recurse to the last dimension to read stuff
+                subset_addr.push_back(myDimIndex);
+                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf);
+                subset_addr.pop_back();
+            }
+            else {
+                // We are at the last (innermost) dimension, so it's time to copy values.
+                subset_addr.push_back(myDimIndex);
+                unsigned int sourceIndex = get_index(subset_addr, array_shape);
+                subset_addr.pop_back();
+
+                // Copy a single value.
+                uint64_t target_byte = *target_index * bytes_per_elem;
+                uint64_t source_byte = sourceIndex * bytes_per_elem;
+
+                for (unsigned int i = 0; i < bytes_per_elem; i++) {
+                    dest_buf[target_byte++] = src_buf[source_byte++];
+                }
+                (*target_index)++;
+            }
+        }
+    }
+}
+
+
+/**
  * @brief Read an array that is stored using one 'chunk.'
  *
  * If parallel transfers are enabled in the BES configuration files, this
@@ -866,20 +1050,73 @@ void DmrppArray::read_contiguous()
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         reserve_value_capacity_ll(get_size(false));
-        val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
+
+        // We need to handle the structure data differently.
+        if (this->var()->type() != dods_structure_c)
+           val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
+        else { // Structure 
+            // Check if we can handle this case. 
+            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+            bool can_handle_struct = check_struct_handling();
+            if (can_handle_struct) {
+                char *buf_value = the_one_chunk->get_rbuf();
+                unsigned long long value_size = the_one_chunk->get_size();
+                vector<char> values(buf_value,buf_value+value_size);
+                read_array_of_structure(values);
+            }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+        }
     }
     else {                  // apply the constraint
-        vector<unsigned long long> array_shape = get_shape(false);
 
-        // Reserve space in this array for the constrained size of the data request
-        reserve_value_capacity_ll(get_size(true));
-        unsigned long target_index = 0;
-        vector<unsigned long long> subset;
+        if (this->var()->type() != dods_structure_c) { 
 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+            vector<unsigned long long> array_shape = get_shape(false);
+            unsigned long target_index = 0;
+            vector<unsigned long long> subset;
+
+            // Reserve space in this array for the constrained size of the data request
+            reserve_value_capacity_ll(get_size(true));
+            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+        }
+        else {
+            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+            bool can_handle_struct = check_struct_handling();
+            if (can_handle_struct) {
+                unsigned long long value_size = get_size(true)*width_ll();
+                vector<char> values;
+                values.resize(value_size);
+                vector<unsigned long long> array_shape = get_shape(false);
+                unsigned long target_index = 0;
+                vector<unsigned long long> subset;
+                insert_constrained_contiguous_structure(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values);
+                read_array_of_structure(values);
+            }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+        }
     }
 
     set_read_p(true);
+}
+
+void DmrppArray::read_one_chunk_dio() {
+
+    // Get the single chunk that makes up this one-chunk compressed variable.
+    if (get_chunks_size() != 1)
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
+
+    // This is the chunk for this variable.
+    auto the_one_chunk = get_immutable_chunks()[0];
+
+    // For this version, we just read the whole chunk all at once.
+    the_one_chunk->read_chunk_dio();
+    reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
+    const char *source_buffer = the_one_chunk->get_rbuf();
+    char *target_buffer = get_buf();
+    memcpy(target_buffer, source_buffer , the_one_chunk->get_size());
+
 }
 
 /**
@@ -943,6 +1180,17 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
                                        chunk_origin);
         }
     }
+}
+
+// The direct IO routine to insert the unconstrained chunks.
+void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
+
+    const char *source_buffer = chunk->get_rbuf();
+    char *target_buffer = get_buf();
+
+    // copy the chunk buffer to the variable buffer at the right location.
+    memcpy(target_buffer + chunk->get_direct_io_offset(), source_buffer,chunk->get_size());
+ 
 }
 
 /**
@@ -1016,6 +1264,77 @@ void DmrppArray::read_chunks_unconstrained()
         sw.start(timer_name.str());
 #endif
         read_super_chunks_unconstrained_concurrent(super_chunks, this);
+    }
+    set_read_p(true);
+}
+
+//The direct chunk IO routine of read chunks., mostly copy from the general IO handling routines.
+void DmrppArray::read_chunks_dio_unconstrained()
+{
+
+    if (get_chunks_size() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
+    // made using a debugger easier. However, order does not matter, AFAIK.
+
+    unsigned long long sc_count=0;
+    stringstream sc_id;
+    sc_id << name() << "-" << sc_count++;
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this)) ;
+    super_chunks.push(current_super_chunk);
+
+    // Make the SuperChunks using all the chunks.
+    for(const auto& chunk: get_immutable_chunks()) {
+        bool added = current_super_chunk->add_chunk(chunk);
+        if (!added) {
+            sc_id.str(std::string());
+            sc_id << name() << "-" << sc_count++;
+            current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this));
+            super_chunks.push(current_super_chunk);
+            if (!current_super_chunk->add_chunk(chunk)) {
+                stringstream msg ;
+                msg << prolog << "Failed to add Chunk to new SuperChunk. chunk: " << chunk->to_string();
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        }
+    }
+
+    //Change to the total storage buffer size to just the compressed buffer size. 
+    reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
+
+    // The size in element of each of the array's dimensions
+    const vector<unsigned long long> array_shape = get_shape(true);
+    // The size, in elements, of each of the chunk's dimensions
+    const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+
+    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
+
+    if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
+#if DMRPP_ENABLE_THREAD_TIMERS
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog + "Serial SuperChunk Processing.");
+#endif
+        while(!super_chunks.empty()) {
+            auto super_chunk = super_chunks.front();
+            super_chunks.pop();
+            BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
+
+            // Call direct IO routine 
+            super_chunk->read_unconstrained_dio();
+        }
+    }
+    else {      // Parallel transfers
+#if DMRPP_ENABLE_THREAD_TIMERS
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
+#endif
+        // Call direct IO routine for parallel transfers
+        read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
     }
     set_read_p(true);
 }
@@ -1848,7 +2167,7 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
                                                       vector<string>::iterator &target_index,
                                                       vector<unsigned long long> &subset_addr,
                                                       const vector<unsigned long long> &array_shape,
-                                                      char /*Chunk*/*src_buf)
+                                                      char *src_buf)
 {
     auto chars_per_string = get_fixed_string_length();
     auto pad_type = get_fixed_length_string_pad();
@@ -1905,60 +2224,6 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
     }
 }
 
-#if 0
-try {
-        BESDEBUG(MODULE, prolog << array_to_str(*array_to_read, "Reading Data From DmrppArray") << endl);
-        // Single chunk and 'contiguous' are the same for this code.
-        if (array_to_read->get_chunks_size() == 1) {
-            BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
-            array_to_read->read_contiguous();    // Throws on various errors
-        }
-        else {  // Handle the more complex case where the data is chunked.
-            if (!array_to_read->is_projected()) {
-                BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
-                array_to_read->read_chunks_unconstrained();
-            }
-            else {
-                BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
-                array_to_read->read_chunks();
-            }
-        }
-
-        if ((var_type == dods_str_c || var_type == dods_url_c)) {
-            BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);
-            if(array_to_read == this){
-                // TODO I think this case should be handled above see 'TODO Check...' jhrg 11/07/23
-                throw BESInternalFatalError(prolog + "Server encountered internal state conflict. "
-                                                     "Expected byte transport array. Exiting.",
-                                            __FILE__, __LINE__);
-            }
-
-            if (is_flsa()) {
-                // TODO Could this be source of the leak in https://bugs.earthdata.nasa.gov/browse/HYRAX-1225:
-                //  WIP jhrg 11/07/23
-                ingest_flsa_data(*this, *array_to_read);
-            }
-            else {
-                BESDEBUG(MODULE, prolog << "Processing Variable Length String Array data. SKIPPING..." << endl);
-                throw BESInternalError("Arrays of variable length strings are not yet supported.",__FILE__,__LINE__);
-            }
-        }
-        if(array_to_read && array_to_read != this) {
-            delete array_to_read;
-            array_to_read = nullptr;
-        }
-
-    }
-    catch(...){
-        if(array_to_read && array_to_read != this) {
-            delete array_to_read;
-            array_to_read = nullptr;
-        }
-        throw;
-    }
-}
-#endif
-
 /**
  * @brief Read data for the array
  *
@@ -1986,25 +2251,43 @@ bool DmrppArray::read()
     // does not explicitly appear in this method as it is handled by the parser.
     if (read_p()) return true;
 
+<<<<<<< HEAD
     // Add direct_io offset for each chunk. This will be used to retrieve individual buffer at fileout netCDF.
+=======
+#if 0
+    // Here we need to reset the dio_flag to false for the time being before calling the method use_direct_io_opt()
+    // since the dio_flag may be set to true for reducing the memory usage with a temporary solution. 
+    // TODO: we need to reset the direct io flag to false and change back in the future. KY 2023-11-29
+    this->set_dio_flag(false);
+
+    // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
+>>>>>>> master
     // Direct io offset is only necessary when the direct IO operation is possible.
     if (this->use_direct_io_opt()) { 
+
         this->set_dio_flag();
         auto chunks = this->get_chunks();
+
+        // Need to provide the offset of a chunk in the final data buffer.
         for (unsigned int i = 0; i<chunks.size();i++) {
             if (i > 0) 
                chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
             BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
         }
+
+        // Fill in the chunk information so that the fileout netcdf can retrieve.
         Array::var_storage_info dmrpp_vs_info;
         dmrpp_vs_info.filter = this->get_filters();
     
+        // Provide the deflate compression levels.
         for (const auto &def_lev:this->get_deflate_levels())
             dmrpp_vs_info.deflate_levels.push_back(def_lev);
         
+        // Chunk dimension sizes.
         for (const auto &chunk_dim:this->get_chunk_dimension_sizes())
             dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
         
+        // Provide chunk offset/length etc. 
         auto im_chunks = this->get_immutable_chunks();
         for (const auto &chunk:im_chunks) {
             Array::var_chunk_info_t vci_t;
@@ -2018,6 +2301,37 @@ bool DmrppArray::read()
         }
         this->set_var_storage_info(dmrpp_vs_info);
     }
+#endif
+
+    if (this->get_dio_flag()) {
+
+        Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
+
+        auto chunks = this->get_chunks();
+
+        // Need to provide the offset of a chunk in the final data buffer.
+        for (unsigned int i = 0; i<chunks.size();i++) {
+            if (i > 0) 
+               chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
+            BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
+        }
+
+        // Fill in the chunk information so that the fileout netcdf can retrieve.
+        // Provide chunk offset/length etc. 
+        auto im_chunks = this->get_immutable_chunks();
+        for (const auto &chunk:im_chunks) {
+            Array::var_chunk_info_t vci_t;
+            vci_t.filter_mask = chunk->get_filter_mask();
+            vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
+            vci_t.chunk_buffer_size = chunk->get_size();
+    
+            for (const auto &chunk_coord:chunk->get_position_in_array())
+                vci_t.chunk_coords.push_back(chunk_coord);           
+            dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+        }
+        this->set_var_storage_info(dmrpp_vs_info);
+
+    }
     
     BESDEBUG(MODULE, prolog << array_to_str(*this, "Reading Data From DmrppArray") << endl);
 
@@ -2025,6 +2339,63 @@ bool DmrppArray::read()
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         return read_string_array();
     }
+<<<<<<< HEAD
+=======
+    try {
+        if(BESDebug::IsSet(MODULE)) {
+            string msg = array_to_str(*array_to_read, "Reading Data From DmrppArray");
+            BESDEBUG(MODULE, prolog << msg << endl);
+        }
+        // Single chunk and 'contiguous' are the same for this code.
+        if (array_to_read->get_chunks_size() == 1) {
+            BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
+            // KENT: here we need to add the handling of direct chunk IO for one chunk. 
+            if (this->get_dio_flag())
+                array_to_read->read_one_chunk_dio();
+            else 
+                array_to_read->read_contiguous();    // Throws on various errors
+        }
+        else {  // Handle the more complex case where the data is chunked.
+            if (!array_to_read->is_projected()) {
+                BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
+                 // KENT: Only here we need to consider the direct buffer IO.
+                // The best way is to hold another function but with direct buffer
+                if (this->get_dio_flag())
+                    array_to_read->read_chunks_dio_unconstrained();
+                else 
+                    array_to_read->read_chunks_unconstrained();
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+                array_to_read->read_chunks();
+            }
+        }
+
+        if ((var_type == dods_str_c || var_type == dods_url_c)) {
+            BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);
+            if(array_to_read == this){
+                throw BESInternalFatalError(prolog + "Server encountered internal state conflict. "
+                                                     "Expected byte transport array. Exiting.",
+                                            __FILE__, __LINE__);
+            }
+
+            if (is_flsa()) {
+                ingest_flsa_data(*this, *array_to_read);
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "Processing Variable Length String Array data. SKIPPING..." << endl);
+#if 0 // @TODO Turn this on...
+                ingest_vlsa_data(*this, *array_to_read);
+#else
+                throw BESInternalError("Arrays of variable length strings are not yet supported.",__FILE__,__LINE__);
+#endif
+            }
+        }
+        if(array_to_read && array_to_read != this) {
+            delete array_to_read;
+            array_to_read = nullptr;
+        }
+>>>>>>> master
 
     // Single chunk and 'contiguous' are the same for this code.
     if (get_chunks_size() == 1) {
@@ -2284,6 +2655,111 @@ void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
     cout << d_vlen_ons_str.substr(last) << endl;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * @brief Write a Fixed Length String Array into the dmr++ document as an XML element with values.
+ * <dmrpp:FixedLengthStringArray string_length="##" pad="null_pad | null_term | space_pad" />
+ * @param xml
+ * @param a
+ */
+void flsa_xml_element(XMLWriter &xml, DmrppArray &a){
+
+    string element_name("dmrpp:FixedLengthStringArray");
+    string str_len_attr_name("string_length");
+    string pad_attr_name("pad");
+
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
+
+    stringstream strlen_str;
+    strlen_str << a.get_fixed_string_length();
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) str_len_attr_name.c_str(),
+                                    (const xmlChar *) strlen_str.str().c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'string_length'");
+
+    if (a.get_fixed_length_string_pad() == not_set) {
+        throw BESInternalError("ERROR: Padding Scheme Has Not Been Set!", __FILE__, __LINE__);
+    }
+    string pad_str = a.pad_type_to_str(a.get_fixed_length_string_pad());
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "pad",
+                                    (const xmlChar *) pad_str.c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'pad'");
+
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not end " + a.type_name() + " element");
+}
+
+
+/**
+ * Write hdf5 compact data types into the dmr++ document.
+ * @param xml
+ * @param a
+ */
+void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
+    switch (a.var()->type()) {
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+
+        case dods_enum_c:
+
+        case dods_float32_c:
+        case dods_float64_c: {
+            uint8_t *values = nullptr;
+            try {
+                auto size = a.buf2val(reinterpret_cast<void **>(&values));
+                string encoded = base64::Base64::encode(values, size);
+                a.print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                delete[] values;
+            }
+            catch (...) {
+                delete[] values;
+                throw;
+            }
+            break;
+        }
+
+        case dods_str_c:
+        case dods_url_c: {
+            auto sb = a.compact_str_buffer();
+            if(!sb.empty()) {
+                uint8_t *values = nullptr;
+                try {
+                    auto size = a.buf2val(reinterpret_cast<void **>(&values));
+                    string encoded = base64::Base64::encode(values, size);
+                    a.print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                    delete[] values;
+                }
+                catch (...) {
+                    delete[] values;
+                    throw;
+                }
+            }
+            break;
+        }
+
+        default:
+            throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
+    }
+}
+
+
+/**
+ * @bried Write a Variable Length String Array into the dmr++ document as an XML element with values.
+ * @param xml
+ * @param a
+ */
+
+
+>>>>>>> master
 /**
  * @brief Shadow libdap::Array::print_dap4() - optionally prints DMR++ chunk information
  *
@@ -2307,15 +2783,14 @@ void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
  * @see DmrppCommon::print_dmrpp()
  * @see DMRpp::print_dmrpp()
  */
-void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
-{
+void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
     if (constrained && !send_p()) return;
 
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) var()->type_name().c_str()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
 
     if (!name().empty()) {
-        BESDEBUG(MODULE, prolog << "variable full path: " << FQN() <<endl);
+        BESDEBUG(MODULE, prolog << "variable full path: " << FQN() << endl);
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "name", (const xmlChar *) name().c_str()) <
             0)
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
@@ -2361,95 +2836,19 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     // elements. This is because the size of each string's value is different.
     // Not so for an int32.
     if (DmrppCommon::d_print_chunks && is_compact_layout() && read_p()) {
-        switch (var()->type()) {
-            case dods_byte_c:
-            case dods_char_c:
-            case dods_int8_c:
-            case dods_uint8_c:
-            case dods_int16_c:
-            case dods_uint16_c:
-            case dods_int32_c:
-            case dods_uint32_c:
-            case dods_int64_c:
-            case dods_uint64_c:
-
-            case dods_enum_c:
-
-            case dods_float32_c:
-            case dods_float64_c: {
-                uint8_t *values = nullptr;
-                try {
-                    auto size = buf2val(reinterpret_cast<void **>(&values));
-                    string encoded = base64::Base64::encode(values, size);
-                    print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
-                    delete[] values;
-                }
-                catch (...) {
-                    delete[] values;
-                    throw;
-                }
-                break;
-            }
-
-            case dods_str_c:
-            case dods_url_c:
-            {
-                uint8_t *values = nullptr;
-                try {
-                    auto size = buf2val(reinterpret_cast<void **>(&values));
-                    string encoded = base64::Base64::encode(values, size);
-                    print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
-                    delete[] values;
-                }
-                catch (...) {
-                    delete[] values;
-                    throw;
-                }
-                break;
-            }
-
-            default:
-                throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
-        }
+        compact_data_xml_element(xml, *this);
     }
-    if(var()->type() == dods_str_c){
-        if(is_flsa() && DmrppCommon::d_print_chunks){
-            // <dmrpp:FixedLengthStringArray string_length="##" pad="null_pad | null_term | space_pad" />
 
-            string element_name("dmrpp:FixedLengthStringArray");
-            string str_len_attr_name("string_length");
-            string pad_attr_name("pad");
+    // Is it an array of strings? Those have issues so we treat them special.
+    if (var()->type() == dods_str_c) {
+        if (is_flsa() && DmrppCommon::d_print_chunks) {
 
-            if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
-
-            stringstream strlen_str;
-            strlen_str << d_fixed_str_length;
-            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) str_len_attr_name.c_str(), (const xmlChar *) strlen_str.str().c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'string_length'");
-
-            if(d_fixed_length_string_pad_type == not_set){
-                    throw BESInternalError("ERROR: Padding Scheme Has Not Been Set!",__FILE__,__LINE__);
-            }
-            string pad_str = pad_type_to_str(d_fixed_length_string_pad_type);
-
-            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "pad", (const xmlChar *) pad_str.c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'pad'");
-
-            if (xmlTextWriterEndElement(xml.get_writer()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
+            // Write the dmr++ for Fix Length String Array
+            flsa_xml_element(xml, *this);
         }
-        else if(is_vlsa() && DmrppCommon::d_print_chunks){
-            string element_name("dmrpp:VariableLengthStringArray");
-            if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
-
-            if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) "offset[0]:size[0],...,offset[n]:size[n]") < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write text into element");
-
-            if (xmlTextWriterEndElement(xml.get_writer()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
-
+        else if (is_vlsa() && DmrppCommon::d_print_chunks) {
+            // Write the dmr++ for Variable Length String Array
+            vlsa::write(xml, *this);
         }
     }
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
@@ -2486,17 +2885,13 @@ unsigned int DmrppArray::buf2val(void **val){
         memcpy(*val, str_buf.data(), buf_size);
         return buf_size;
     }
-
     return Vector::buf2val(val);
-
-
 }
 
 // Check if direct chunk IO can be used. 
 bool DmrppArray::use_direct_io_opt() {
 
     bool ret_value = false;
-
     bool is_integer_le_float = false;
 
     if (DmrppRequestHandler::is_netcdf4_enhanced_response && this->is_filters_empty() == false) {
@@ -2527,16 +2922,121 @@ bool DmrppArray::use_direct_io_opt() {
     }
 
     bool is_data_all_fvalues = false;
-    // This is the final check for a rare case: the variable data just contains the filled values.
+    // This is the check for a rare case: the variable data just contains the filled values.
     // If this var's storage size is 0. Then it should be filled with the filled values.
     if (has_deflate_filter && this->get_uses_fill_value() && this->get_var_chunks_storage_size() == 0) 
             is_data_all_fvalues = true;
 
-    if (has_deflate_filter && !is_data_all_fvalues)
-        ret_value = true;
-    
+    bool has_dio_filters = false;
+
+    // If the deflate level is not provided, we cannot do the direct IO.
+    if (has_deflate_filter && !is_data_all_fvalues) {
+        if (this->get_deflate_levels().empty() == false)
+            has_dio_filters = true; 
+    }
+
+    // Check if the chunk size is greater than the dimension size for any dimension.
+    // If this is the case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
+    // TODO later, if the dimension is unlimited, this restriction can be lifted. Current dmrpp doesn't store the
+    // unlimited dimension information.
+
+    if (has_dio_filters && this->get_processing_fv_chunks() == false) {
+
+        vector <unsigned long long>chunk_dim_sizes = this->get_chunk_dimension_sizes();
+        vector <unsigned long long>dim_sizes;
+        Dim_iter p = dim_begin();
+        while (p != dim_end()) {
+            dim_sizes.push_back((unsigned long long)dimension_size_ll(p));
+            p++;
+        }
+
+        bool chunk_less_dim = true;
+        if (chunk_dim_sizes.size() == dim_sizes.size()) {
+            for (unsigned int i = 0; i<dim_sizes.size(); i++) {
+                if (chunk_dim_sizes[i] > dim_sizes[i]) {
+                     chunk_less_dim = false;
+                     break;
+                }
+            }
+        }
+        else
+            chunk_less_dim = false;
+
+        ret_value = chunk_less_dim;
+    }
+         
     return ret_value;
+
 } 
+
+// Read the data from the supported array of structure
+void DmrppArray::read_array_of_structure(vector<char> &values) {
+
+    size_t values_offset = 0;
+    int64_t nelms = this->length_ll();
+
+    for (int64_t element = 0; element < nelms; ++element) {
+
+        auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
+        try {
+            dmrpp_s->structure_read(values,values_offset);
+        }
+        catch(...) {
+            delete dmrpp_s;
+            string err_msg = "Cannot read the data of a dmrpp structure variable " + var()->name();
+            throw InternalErr(__FILE__, __LINE__, err_msg); 
+        }
+        dmrpp_s->set_read_p(true);
+        set_vec_ll((uint64_t)element,dmrpp_s);
+        delete dmrpp_s;
+    }
+
+    set_read_p(true);
+
+}
+
+// Check if this DAP4 structure is what we can support.
+bool DmrppArray::check_struct_handling() {
+
+    bool ret_value = true;
+    // Currently doesn't support compressed array of structure.
+    if (this->get_filters().empty()) {
+
+        if (this->var()->type() == dods_structure_c) {
+
+            auto array_base = dynamic_cast<DmrppStructure*>(this->var());
+            Constructor::Vars_iter vi = array_base->var_begin();
+            Constructor::Vars_iter ve = array_base->var_end();
+            for (; vi != ve; vi++) { 
+
+                BaseType *bt = *vi;
+                Type t_bt = bt->type();
+
+                // Only support array or scalar of float/int.
+                if (libdap::is_simple_type(t_bt) == false) {
+
+                    if (t_bt == dods_array_c) {
+
+                        auto t_a = dynamic_cast<Array *>(bt);
+                        Type t_array_var = t_a->var()->type();
+                        if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_str_c || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
+                            ret_value = false;
+                            break;
+                        }
+                    }
+                }
+                else if (t_bt == dods_str_c || t_bt == dods_url_c || t_bt == dods_enum_c || t_bt == dods_opaque_c) {
+                    ret_value = false;
+                    break;
+                }
+            }
+        }
+    }
+    else
+        ret_value = false;
+
+    return ret_value;
+}
 
 
 } // namespace dmrpp

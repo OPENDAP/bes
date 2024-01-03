@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="swath_wrong_dim_rp.nc" dmrpp:href="data/swath_wrong_dim_rp.nc" dmrpp:version="3.20.13">
+    <Dimension name="time" size="8"/>
+    <Dimension name="scan" size="4"/>
+    <Dimension name="band" size="2"/>
+    <Float64 name="time">
+        <Dim name="/time"/>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2010-1-1 0:0:0</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunk offset="2304" nBytes="64"/>
+        </dmrpp:chunks>
+    </Float64>
+    <Float32 name="lon">
+        <Dim name="/time"/>
+        <Dim name="/scan"/>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunk offset="2176" nBytes="128"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="pre_wrong">
+        <Dim name="/time"/>
+        <Map name="/time"/>
+        <dmrpp:chunks compressionType="shuffle deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="2686" nBytes="14" chunkPositionInArray="[0]"/>
+            <dmrpp:chunk offset="2700" nBytes="16" chunkPositionInArray="[2]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/time"/>
+        <Dim name="/scan"/>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunk offset="2048" nBytes="128"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="swath_data">
+        <Dim name="/time"/>
+        <Dim name="/scan"/>
+        <Dim name="/band"/>
+        <Map name="/time"/>
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunk offset="2368" nBytes="256"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="pre">
+        <Dim name="/time"/>
+        <Map name="/time"/>
+        <dmrpp:chunks compressionType="shuffle deflate" deflateLevel="4" fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="2624" nBytes="14" chunkPositionInArray="[0]"/>
+            <dmrpp:chunk offset="2638" nBytes="16" chunkPositionInArray="[2]"/>
+            <dmrpp:chunk offset="2654" nBytes="16" chunkPositionInArray="[4]"/>
+            <dmrpp:chunk offset="2670" nBytes="16" chunkPositionInArray="[6]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.11</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.module.cmd=/Users/myang6/work/opendap/hyrax-1249/bes/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dap=/Users/myang6/work/opendap/hyrax-1249/bes/dap/.libs/libdap_module.so
+BES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1249/bes/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.fonc=/Users/myang6/work/opendap/hyrax-1249/bes/modules/fileout_netcdf/.libs/libfonc_module.so
+BES.module.h5=/Users/myang6/work/opendap/hyrax-1249/bes/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.nc=/Users/myang6/work/opendap/hyrax-1249/bes/modules/netcdf_handler/.libs/libnc_module.so
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.RzN2CFcN -f ./swath_wrong_dim_rp.nc -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.atPzg8fi -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

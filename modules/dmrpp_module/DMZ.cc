@@ -63,6 +63,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESLog.h"
+#include "vlsa_util.h"
 
 using namespace pugi;
 using namespace std;
@@ -84,9 +85,6 @@ using namespace libdap;
 #define SUPPORT_FILL_VALUE_CHUNKS 1
 
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
-
-
-
 
 
 namespace dmrpp {
@@ -595,6 +593,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
 
     btp->set_is_dap4(true);
 
+    // I cannot find a test on the code on enum. Is this part of code really tested? KY 2023-12-21
     if (t == dods_enum_c) {
         if (enum_value.empty())
             throw BESInternalError("The variable ' " + name_value + "' lacks an 'enum' attribute.", __FILE__, __LINE__);
@@ -681,20 +680,24 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
             process_map(dmr, group, array, child);
         }
         else if (is_eq(child.name(), DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT)) {
-            BESDEBUG(MODULE,"Variable has been marked as a " << DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT << endl);
+            BESDEBUG(PARSER, prolog << "Variable has been marked with a " << DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT << endl);
             // <dmrpp:FixedLengthStringArray string_length="8" pad="null"/>
             array->set_is_flsa(true);
             for (xml_attribute attr = child.first_attribute(); attr; attr = attr.next_attribute()) {
                 if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_LENGTH_ATTR)) {
                     auto length = array->set_fixed_string_length(attr.value());
-                    BESDEBUG(MODULE,"Fixed length string array string length: " << length << endl);
+                    BESDEBUG(PARSER, prolog << "Fixed length string array string length: " << length << endl);
                 }
                 else if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_PAD_ATTR)) {
                     string_pad_type pad = array->set_fixed_length_string_pad_type(attr.value());
-                    BESDEBUG(MODULE,"Fixed length string array padding scheme: " << pad << " (" <<
+                    BESDEBUG(PARSER, prolog << "Fixed length string array padding scheme: " << pad << " (" <<
                         array->get_fixed_length_string_pad_str() << ")" << endl);
                 }
             }
+        }
+        else if(is_eq(child.name(), DMRPP_VLSA_ELEMENT)){
+            BESDEBUG(PARSER, prolog << "Variable has been marked with a " << DMRPP_VLSA_ELEMENT << endl);
+            array->set_is_vlsa(true);
         }
     }
 
@@ -790,6 +793,247 @@ void DMZ::build_thin_dmr(DMR *dmr)
         }
     }
 }
+
+bool DMZ::set_up_all_direct_io_flags_phase_1(DMR *dmr) {
+
+    if (d_xml_doc == nullptr){
+        throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
+    }
+
+    bool dio_flag_value = set_up_direct_io_flag_phase_1(dmr->root());
+    
+    dmr->set_global_dio_flag(dio_flag_value);
+    return dio_flag_value;
+    
+}
+
+bool DMZ::set_up_direct_io_flag_phase_1(D4Group *group) {
+
+    bool ret_value = false;
+    for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
+        BESDEBUG("dmrpp","Inside set_up_direct_io_flag: var name is "<<(*i)->name()<<endl);
+        if ((*i)->type() == dods_array_c) {
+            if (true == set_up_direct_io_flag_phase_1(*i)) {
+                ret_value = true;
+                break;
+            }
+        }
+    }
+    
+    if (ret_value == false) {
+        for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi) {
+            if (true == set_up_direct_io_flag_phase_1(*gi)) {
+                ret_value = true;  
+                break;
+            }
+        }
+    }
+    return ret_value;
+    
+}
+
+bool DMZ::set_up_direct_io_flag_phase_1(BaseType *btp) {
+
+     // goto the DOM tree node for this variable
+    xml_node var_node = get_variable_xml_node(btp);
+    if (var_node == nullptr)
+        throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
+
+    auto chunks = var_node.child("dmrpp:chunks");
+    if(!chunks)
+        return false;
+
+    bool ret_value = false;
+    for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute())  {
+        if (is_eq(attr.name(), "deflateLevel")) {
+            ret_value = true;
+            break;
+        }
+    }
+    return ret_value;
+}
+
+void DMZ::set_up_all_direct_io_flags_phase_2(DMR *dmr) {
+
+    if (d_xml_doc == nullptr){
+        throw BESInternalError(prolog + "Received a null DMR pointer.", __FILE__, __LINE__);
+    }
+
+    set_up_direct_io_flag_phase_2(dmr->root());
+    
+}
+
+void DMZ::set_up_direct_io_flag_phase_2(D4Group *group) {
+
+    for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
+        if ((*i)->type() == dods_array_c) 
+            set_up_direct_io_flag_phase_2((*i)); 
+    }
+
+    for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi) 
+        set_up_direct_io_flag_phase_2((*gi)); 
+    
+}
+
+void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
+
+    bool is_integer_float = false;
+    Array *t_a = nullptr;
+    
+    Type t = btp->type();
+    if (t == dods_array_c) {
+        t_a=dynamic_cast<Array *>(btp);
+        Type t_var = t_a->var()->type();
+        if (libdap::is_simple_type(t_var) && t_var != dods_str_c && t_var != dods_url_c && t_var!= dods_enum_c && t_var!=dods_opaque_c)
+            is_integer_float = true;
+    }
+    
+    // If the var is not an integer or float array, don't support the direct IO.
+    if (is_integer_float == false)
+        return;
+
+    
+    // goto the DOM tree node for this variable
+    xml_node var_node = get_variable_xml_node(btp);
+    if (var_node == nullptr)
+        throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
+
+    auto chunks = var_node.child("dmrpp:chunks");
+
+    // No chunks,no need to check the rest. 
+    if(!chunks)
+        return;
+
+    
+    bool has_deflate_filter  = false;
+    string filter;
+    vector<unsigned int>deflate_levels;
+
+    bool is_le = false;
+
+    for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute())  {
+        if (!has_deflate_filter && is_eq(attr.name(), "compressionType")) {
+            filter = attr.value();
+            if (filter.find("deflate") == string::npos) 
+                break;
+            else 
+                has_deflate_filter = true;
+        }
+        else if (has_deflate_filter && deflate_levels.empty()) {
+            
+            if (is_eq(attr.name(), "deflateLevel")) {
+
+                string def_lev_str = attr.value();
+
+                // decompose the string.
+                vector<string> def_lev_str_vec = BESUtil::split(def_lev_str, ' ' );
+                for (const auto &def_lev:def_lev_str_vec)
+                    deflate_levels.push_back(stoul(def_lev));
+            }
+                
+        }
+        else if (is_eq(attr.name(),"byteOrder")) {
+            string endian_str = attr.value();
+            if (endian_str=="LE")
+                is_le = true;
+        }
+    }
+
+    // If no deflate filter is used or the deflate_levels is not defined, cannot do the direct IO. return.
+    if (!has_deflate_filter || (deflate_levels.empty()))
+        return;
+
+    // If the datatype is integer and this is not little-endian, cannot do the direct IO. return.
+    if (!is_le && is_integer_type(t_a->var()->type()))
+        return;
+
+    // Now we need to read the first child of dmrpp:chunks to obtain the chunk sizes.
+    vector<unsigned long long>chunk_dim_sizes;
+    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child; child = child.next_sibling()) {
+        if (is_eq(child.name(), "dmrpp:chunkDimensionSizes")) {
+            string chunk_sizes_str = child.child_value();
+            vector<string> chunk_sizes_str_vec = BESUtil::split(chunk_sizes_str, ' ' );
+            for (const auto &chunk_size:chunk_sizes_str_vec)
+                chunk_dim_sizes.push_back(stoull(chunk_size));
+            break;
+        }
+    }
+
+    // Since the deflate filter is always associated with the chunk storage, 
+    // the chunkDimensionSizes should always exist for the direct IO case. If not, return.
+    if (chunk_dim_sizes.empty())
+        return;
+
+    // Now we need to count the number of children with the name <dmrpp:chunk> inside the <dmrpp:chunks>.
+    size_t num_chunks_children = 0;
+    for (auto child = chunks.first_child(); child; child = child.next_sibling()) 
+        num_chunks_children++;
+
+    // If the only child is dmrpp::chunkDimensionSizes, no chunk is found. This is not direct IO case.
+    if (num_chunks_children == 1) 
+        return;
+
+    // Now we need to check the special case if the chunk size is greater than the dimension size for any dimension.
+    // If this is the case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
+    // TODO later, if the dimension is unlimited, this restriction can be lifted. Current dmrpp doesn't store the
+    // unlimited dimension information.
+    vector <unsigned long long>dim_sizes;
+    Array::Dim_iter p = t_a->dim_begin();
+    while (p != t_a->dim_end()) {
+        dim_sizes.push_back((unsigned long long)(t_a->dimension_size_ll(p)));
+        p++;
+    }
+
+    bool chunk_less_dim = true;
+    if (chunk_dim_sizes.size() == dim_sizes.size()) {
+        for (unsigned int i = 0; i<dim_sizes.size(); i++) {
+            if (chunk_dim_sizes[i] > dim_sizes[i]) {
+                 chunk_less_dim = false;
+                 break;
+            }
+        }
+    }
+    else
+        chunk_less_dim = false;
+
+    if (!chunk_less_dim)
+        return;
+
+    // Another special case is that some chunks are only filled with the fvalues. This case cannot be handled by direct IO.
+    // First calculate the number of logical chunks.
+    // Also up to this step, the size of chunk_dim_sizes must be the same as the size of dim_sizes. No need to double check.
+    size_t num_logical_chunks = 1;
+    for (unsigned int i = 0; i<dim_sizes.size(); i++) 
+            num_logical_chunks *=(size_t)ceil((float)dim_sizes[i] / (float)chunk_dim_sizes[i]);
+    if (num_logical_chunks != (num_chunks_children-1))
+        return;
+           
+    // Now we should provide the variable info for the define mode inside the fileout netCDF module. 
+    // The chunk offset/length etc. information will be provided after load_chunk() is called in the read().
+
+    BESDEBUG(PARSER, prolog << "Can do direct IO: the variable name is: " <<btp->name() << endl);
+
+    // Adding the dio information in the variable level. This information is needed for the define mode in the fileout netcdf module.
+    // Fill in the chunk information so that the fileout netcdf can retrieve.
+    Array::var_storage_info dmrpp_vs_info;
+
+    // Add the filter info.
+    dmrpp_vs_info.filter = filter;
+
+    // Provide the deflate compression levels.
+    for (const auto &def_lev:deflate_levels)
+        dmrpp_vs_info.deflate_levels.push_back(def_lev);
+    
+    // Provide the chunk dimension sizes.
+    for (const auto &chunk_dim:chunk_dim_sizes)
+        dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
+
+    t_a->set_var_storage_info(dmrpp_vs_info);
+    t_a->set_dio_flag();
+    
+}
+
+
 
 /**
  * Check to see if the current tag is either an \c Attribute or an \c Alias
@@ -989,7 +1233,10 @@ DMZ::load_attributes(BaseType *btp)
             auto *c = dynamic_cast<Constructor*>(btp);
             if (c) {
                 for (auto i = c->var_begin(), e = c->var_end(); i != e; i++) {
-                    dc(btp->var())->set_attributes_loaded(true);
+                    if ((*i)->type() == dods_array_c)
+                        dc((*i)->var())->set_attributes_loaded(true);
+                    else
+                        dc(*i)->set_attributes_loaded(true);
                 }
                 break;
             }
@@ -1204,6 +1451,42 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
     }
 }
 
+
+
+void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element)
+{
+    //---------------------------------------------------------------------------
+    // Input Sanitization
+    // We do the QC here and not in all the functions called, like endlessly...
+    //
+    if (btp->type() != dods_array_c) {
+        throw BESInternalError(prolog + "Received an unexpected "+ btp->type_name() +
+        " Expected an instance of DmrppArray!", __FILE__, __LINE__);
+    }
+    auto *array = dynamic_cast<DmrppArray *>(btp);
+    if (!array) {
+        throw BESInternalError("Internal state error. "
+        "Object claims to be array but is not.", __FILE__, __LINE__);
+    }
+    if(array->var()->type() != dods_str_c && array->var()->type() != dods_url_c){
+        throw BESInternalError(prolog + "Internal state error. "
+                               "Expected array of dods_str_c, got " +
+                                       array->var()->type_name(), __FILE__, __LINE__);
+    }
+
+    vector<string>entries;
+    vlsa::read(vlsa_element, entries);
+
+    array->set_is_vlsa(true);
+    array->set_value(entries, (int) entries.size());
+    array->set_read_p(true);
+}
+
+
+
+
+
+
 /**
  * @brief Parse a chunk node
  * There are several different forms a chunk node can take and this handles
@@ -1327,9 +1610,15 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
             has_fill_value = true;
 
             // Fill values are only supported for Arrays and scalar numeric datatypes (7/12/22)
-            if (btp->type()==dods_url_c || btp->type()== dods_structure_c
+            if (btp->type()==dods_url_c 
                 || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
-                throw BESInternalError("Fill Value chunks are only supported for Arrays and numeric datatypes.", __FILE__, __LINE__);
+                throw BESInternalError("Fill Value chunks are unsupported for URL, sequence and grid types.", __FILE__, __LINE__);
+
+            if (btp->type() == dods_structure_c) {
+                string fvalue_str = attr.value();
+                if (fvalue_str !="0")
+                    throw BESInternalError("Fill Value chunks for structure are only supported when the fill value is 0 .", __FILE__, __LINE__);
+            }
 
             if (btp->type() == dods_array_c) {
                 auto array = dynamic_cast<libdap::Array*>(btp);
@@ -1476,6 +1765,7 @@ void DMZ::load_chunks(BaseType *btp)
     int chunks_found = 0;
     int chunk_found = 0;
     int compact_found = 0;
+    int vlsa_found = 0;
 
     // Chunked data
     if (process_chunks(btp, var_node)) {
@@ -1503,6 +1793,7 @@ void DMZ::load_chunks(BaseType *btp)
                 // While later in process_chunks(), we will check if fillValue is defined and adjust the value.
                 if (num_logical_chunks == 1) 
                     dc(btp)->set_one_chunk_fill_value(true);
+                dc(btp)->set_processing_fv_chunks();
 
                 
             }
@@ -1592,9 +1883,15 @@ void DMZ::load_chunks(BaseType *btp)
         process_compact(btp, compact);
     }
 
+    auto vlsa_element = var_node.child(DMRPP_VLSA_ELEMENT);
+    if (vlsa_element) {
+        vlsa_found = 1;
+        process_vlsa(btp, vlsa_element);
+    }
+
     // Here we (optionally) check that exactly one of the three types of node was found
     if (DmrppRequestHandler::d_require_chunks) {
-        int elements_found = chunks_found + chunk_found + compact_found;
+        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found;
         if (elements_found != 1) {
             ostringstream oss;
             oss << "Expected chunk, chunks or compact information in the DMR++ data. Found " << elements_found

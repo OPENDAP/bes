@@ -83,6 +83,12 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/ntypes.h5], xfail)
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_float.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_int_scalar.h5])
 
+# Test data files with simple compound datatypes that have default filled values. 
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple_scalar.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple_scalar_memb_array.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple_array.h5])
+
 # Test data files with various fill value schemes. These won't work until
 # more work is done on fill value support. jhrg 4/22/22
 # Works now. jhrg 5/25/22
@@ -91,6 +97,8 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_chunk.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_c_b.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/deflate_twice/cmprss_big_1.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/deflate_twice/cmprss_big_2.h5])
+
+
 
 # Test build_dmrpp with the -M option
 # AT_BUILD_DMRPP_M([modules/dmrpp_module/data/dmrpp/chunked_compound.h5])
@@ -112,4 +120,5 @@ AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_compact.h5])
 # Test variable length string scalar (vlss)
 #
 AT_GET_DMRPP_3_20([VariableLengthStringScalar - VLSS], [Scalar_contiguous_vlstr.h5],[vlss.baseline] )
+AT_GET_DMRPP_3_20([VariableLengthStringArray - VLSA], [t_vl_string_1d.h5],[vlsa.baseline] )
 

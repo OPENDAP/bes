@@ -87,6 +87,7 @@ private:
 
     std::string d_vlen_ons_str;
     bool is_variable_length_string_array = false;
+    bool is_fixed_length_string_array = false;
 
     // In the dmr++ XML:
     //     <dmrpp:fStringArray string_length="##" pad="null_pad | null_term | space_pad" />
@@ -102,15 +103,15 @@ private:
                                        std::vector<unsigned long long> &subset_addr,
                                        const std::vector<unsigned long long> &array_shape, char *data);
 
+    void insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
+                                       std::vector<unsigned long long> &subset_addr,
+                                       const std::vector<unsigned long long> &array_shape, char *data, std::vector<char> &values);
     void read_contiguous();
 
     void insert_constrained_contiguous_string(Dim_iter dim_iter, vector<string>::iterator &target_index,
                                               vector<unsigned long long> &subset_addr,
                                               const vector<unsigned long long> &array_shape,
                                               char *src_buf);
-#if 0
-    void read_contiguous_string();
-#endif
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned long long> *target_element_address,
@@ -124,6 +125,12 @@ private:
     process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
             DmrppArray *array, const vector<unsigned long long> &array_shape);
 
+    // Change this for direct chunk IO.
+    friend void
+    process_one_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
+            DmrppArray *array, const vector<unsigned long long> &array_shape);
+
+
     // Called from read_chunks()
     friend void
     process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
@@ -135,8 +142,11 @@ private:
                                     unsigned long long chunk_offset, const std::vector<unsigned long long> &chunk_shape,
                                     const std::vector<unsigned long long> &chunk_origin);
 
+    virtual void insert_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk);
+   
     void read_chunks();
     void read_chunks_unconstrained();
+    void read_chunks_dio_unconstrained();
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
@@ -148,6 +158,8 @@ private:
             std::vector<unsigned long long> *chunk_element_address,
             std::shared_ptr<Chunk> chunk,
             const vector<unsigned long long> &constrained_array_shape);
+    void read_array_of_structure(vector<char> &values);
+    bool check_struct_handling();
 
     bool use_direct_io_opt();
 
@@ -195,13 +207,13 @@ public:
      * @param state
      */
     void set_is_flsa(bool state){
-        is_variable_length_string_array=!state;
+        is_fixed_length_string_array = state;
     };
+    bool is_flsa() const{ return is_fixed_length_string_array; }
 
     void set_is_vlsa(bool state){
-        is_variable_length_string_array=state;
+        is_variable_length_string_array = state;
     };
-    bool is_flsa() const{ return !is_variable_length_string_array; }
     bool is_vlsa() const{ return is_variable_length_string_array; }
 
     void set_fixed_string_length(const unsigned long long length){ d_fixed_str_length = length; }
