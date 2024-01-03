@@ -62,6 +62,8 @@
 #include "build_dmrpp_util.h"
 #include "FODmrppTransmitter.h"
 
+#include "DapUtils.h"
+
 using namespace libdap;
 using namespace std;
 
@@ -141,6 +143,8 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
 
         XMLWriter dmrpp_writer;
         dmrpp.print_dmrpp(dmrpp_writer, href_url);
+
+        dap_utils::log_response_and_memory_size(prolog, dmrpp_writer);
 
         auto &strm = dhi.get_output_stream();
         strm << dmrpp_writer.get_doc() << flush;

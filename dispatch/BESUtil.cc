@@ -1128,14 +1128,14 @@ void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
  * Thanks to O'Reilly: https://www.oreilly.com/library/view/c-cookbook/0596007612/ch10s08.html
  * @param file_name
  * @param o_strm
+ * @return The number of bytes read/written
  */
-void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
+uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm, uint64_t read_start_position)
 {
+#ifndef NDEBUG
     stringstream msg;
     msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
     BESDEBUG(MODULE,  msg.str());
-
-#ifndef NDEBUG
     INFO_LOG( msg.str());
 #endif
 
@@ -1159,6 +1159,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
+    // this is where we advance to the last byte that was read
+    i_stream.seekg(read_start_position);
 
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // This is where the file is copied.
@@ -1203,235 +1205,15 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         ERROR_LOG(msg.str());
     }
 
+#ifndef NDEBUG
     msg.str("");
     msg << prolog << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
     BESDEBUG(MODULE,msg.str());
-
-#ifndef NDEBUG
-    INFO_LOG(msg.str());
-#endif
-    
-}
-
-uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount){
-
-    stringstream msg;
-    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
-    BESDEBUG(MODULE,  msg.str());
-    INFO_LOG( msg.str());
-
-    vector<char> rbuffer(OUTPUT_FILE_BLOCK_SIZE);
-    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
-
-    // good() returns true if !(eofbit || badbit || failbit)
-    if(!i_stream.good()){
-        stringstream msg;
-        msg << prolog << "Failed to open file " << file_name;
-        ios_state_msg(i_stream, msg);
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
-    }
-
-    // good() returns true if !(eofbit || badbit || failbit)
-    if(!o_strm.good()){
-        stringstream msg;
-        msg << prolog << "Problem with ostream. " << file_name;
-        ios_state_msg(i_stream, msg);
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
-    }
-
-    // this is where we advance to the last byte that was read
-    i_stream.seekg(byteCount);
-
-    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // This is where the file is copied.
-    while (i_stream.good() && o_strm.good()){
-        i_stream.read(rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
-        o_strm.write(rbuffer.data(), i_stream.gcount()); // buf, then write the buf to
-        BESDEBUG(MODULE, "i_stream: " << i_stream.gcount() << endl);
-        byteCount += i_stream.gcount();
-    }
-    o_strm.flush();
-
-    // fail() is true if failbit || badbit got set, but does not consider eofbit
-    if(i_stream.fail() && !i_stream.eof()){
-        stringstream msg;
-        msg << prolog << "There was an ifstream error when reading from: " << file_name;
-        ios_state_msg(i_stream, msg);
-        msg << " last_lap: " << i_stream.gcount() << " bytes";
-        msg << " total_read: " << byteCount << " bytes";
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
-    }
-
-    // If we're not at the eof of the input stream then we have failed.
-    if (!i_stream.eof()){
-        stringstream msg;
-        msg << prolog << "Failed to reach EOF on source file: " << file_name;
-        ios_state_msg(i_stream, msg);
-        msg << " last_lap: " << i_stream.gcount() << " bytes";
-        msg << " total_read: " << byteCount << " bytes";
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
-    }
-
-    // And if something went wrong on the output stream we have failed.
-    if(!o_strm.good()){
-        stringstream msg;
-        msg << prolog << "There was an ostream error during transmit. Transmitted " << byteCount  << " bytes.";
-        ios_state_msg(o_strm, msg);
-        auto crntpos = o_strm.tellp();
-        msg << " current_position: " << crntpos << endl;
-        BESDEBUG(MODULE, msg.str());
-        ERROR_LOG(msg.str());
-    }
-
-    msg.str(prolog);
-    msg << "Sent "<< byteCount << " bytes from file '" << file_name<< "'. " << endl;
-    BESDEBUG(MODULE,msg.str());
-    INFO_LOG(msg.str());
-
-    i_stream.close();
-
-    return byteCount;
-}
-
-
-// I added this because maybe using the low-level file calls was important. I'm not
-// sure and the iostreams in C++ are safer. jhrg 6/4/21
-#define FILE_CALLS 0
-
-/**
- * *brief child thread/task to stream a netCDF file as it is built
- * @param file_name
- * @param o_strm
- */
-uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<bool> &file_write_done, std::ostream &o_strm) {
-    stringstream msg;
-    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
-    BESDEBUG(MODULE, msg.str());
-#ifndef NDEBUG
-    INFO_LOG(msg.str());
-#endif
-
-    vector<char> rbuffer(OUTPUT_FILE_BLOCK_SIZE);
-
-    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);
-#if FILE_CALLS
-    int fd = open(file_name.c_str(), O_RDONLY | O_NONBLOCK);
-    int eof = false;
-#endif
-
-    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // This is where the file is copied.
-    BESDEBUG(MODULE, "Starting transfer" << endl);
-    uint64_t tcount = 0;
-    while (!i_stream.bad() && !i_stream.fail() && o_strm.good()) {
-        if (file_write_done && i_stream.eof()) {
-            BESDEBUG(MODULE, "breaking out of loop" << endl);
-            break;
-        }
-        else {
-            i_stream.read(rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
-
-#if FILE_CALLS
-            int status = read(fd, rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE);
-            if (status == 0) {
-                eof = true;
-            }
-            else if (status == -1) {
-                BESDEBUG(MODULE, "read() call error: " << errno << endl);
-            }
-
-            o_strm.write(rbuffer.data(), status); // buf, then write the buf to
-            tcount += status;
-#endif
-
-            o_strm.write(rbuffer.data(), i_stream.gcount()); // buf, then write the buf to
-            tcount += i_stream.gcount();
-            BESDEBUG(MODULE, "transfer bytes " << tcount << endl);
-        }
-    }
-
-#if FILE_CALLS
-    close(fd);
-#endif
-    o_strm.flush();
-
-    // And if something went wrong on the output stream we have failed.
-    if(!o_strm.good()){
-        stringstream msg;
-        msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
-        ios_state_msg(o_strm, msg);
-        auto crntpos = o_strm.tellp();
-        msg << " current_position: " << crntpos << endl;
-        BESDEBUG(MODULE, msg.str());
-#ifndef NDEBUG
-        INFO_LOG(msg.str());
-#endif
-    }
-
-    msg.str(prolog);
-    msg << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
-    BESDEBUG(MODULE,msg.str());
-#ifndef NDEBUG
     INFO_LOG(msg.str());
 #endif
 
     return tcount;
 }
-
-#if 0
-/// Stolen from our friends at Stack Overflow and modified for our use.
-/// This is far faster than the istringstream code it replaces (for one
-/// test, run time for parse_chunk_position_in_array_string() dropped from
-/// 20ms to ~3ms). It also fixes a test we could never get to pass.
-/// jhrg 11/5/21
-
-/**
- * @brief Split a string using delimiter. Store values as unsigned long longs
- * @param s The string to split
- * @param delimiter The delimiter
- * @param res Return the result in this vector
- */
-void BESUtil::split(const string &s, const string &delimiter, vector<uint64_t> &res)
-{
-    const size_t delim_len = delimiter.size();
-
-    size_t pos_start = 0, pos_end;
-
-    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
-        res.push_back (stoull(s.substr(pos_start, pos_end - pos_start)));
-        pos_start = pos_end + delim_len;
-    }
-
-    res.push_back (stoull(s.substr (pos_start)));
-}
-
-/**
- * @brief Split a string using delimiter. Store values as strings
- * @param s The string to split
- * @param delimiter The delimiter
- * @param res Return the result in this vector
- *
- * @note Maybe we could combine this and the previous function using a lambda
- * to wrap stoull()? jhrg 11/9/21
- */
-void BESUtil::split(const string &s, const string &delimiter, vector<string> &res)
-{
-    const size_t delim_len = delimiter.size();
-
-    size_t pos_start = 0, pos_end;
-
-    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
-        res.push_back(s.substr(pos_start, pos_end - pos_start));
-        pos_start = pos_end + delim_len;
-    }
-
-    res.push_back(s.substr (pos_start));
-}
-#endif
 
 /// Is the given path a directory?
 bool BESUtil::is_directory(const string &p) {
