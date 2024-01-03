@@ -140,7 +140,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
         // the instance we placed in the cache - it can be modified and the one in the cache
         // is unchanged. Trusted state was established from source_url when effective_url was
         // created in curl::retrieve_effective_url()
-        effective_url = make_shared<EffectiveUrl>(effective_url); // shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url));
+        effective_url = make_shared<EffectiveUrl>(effective_url);
     }
     else {
         // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
