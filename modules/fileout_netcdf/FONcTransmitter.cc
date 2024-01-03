@@ -145,7 +145,7 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
         throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (const std::exception &e) {
-        throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to read data! Caught std::exception. Message; " + string(e.what()), __FILE__, __LINE__);
     }
     catch (...) {
         throw BESInternalError(prolog + "Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
@@ -221,7 +221,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (const std::exception &e) {
-        throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to read data! Caught std::exception. Message: " + string(e.what()), __FILE__, __LINE__);
     }
     catch (...) {
         throw BESInternalError(prolog + "Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
