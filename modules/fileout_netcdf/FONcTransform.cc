@@ -597,7 +597,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
         bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
         BESDEBUG(MODULE,  prolog << "After nc_close() bytes_written:  " << bytes_written << endl);
     }
-    catch (BESError &e) {
+    catch (const BESError &e) {
         (void) nc_close(_ncid); // ignore the error at this point
         throw;
     }

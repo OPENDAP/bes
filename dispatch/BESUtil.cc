@@ -1132,11 +1132,10 @@ void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
  */
 uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm, uint64_t read_start_position)
 {
+#ifndef NDEBUG
     stringstream msg;
     msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
     BESDEBUG(MODULE,  msg.str());
-
-#ifndef NDEBUG
     INFO_LOG( msg.str());
 #endif
 
@@ -1206,13 +1205,13 @@ uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_s
         ERROR_LOG(msg.str());
     }
 
+#ifndef NDEBUG
     msg.str("");
     msg << prolog << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
     BESDEBUG(MODULE,msg.str());
-
-#ifndef NDEBUG
     INFO_LOG(msg.str());
 #endif
+
     return tcount;
 }
 

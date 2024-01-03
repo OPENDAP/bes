@@ -139,13 +139,13 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
 
         ft.transform_dap2(strm);
     }
-    catch (Error &e) {
+    catch (const Error &e) {
         throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
-    catch (BESError &e) {
+    catch (const BESError &e) {
         throw;
     }
-    catch (std::exception &e) {
+    catch (const std::exception &e) {
         throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
     }
     catch (...) {
@@ -217,13 +217,13 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
         bytes_sent = BESUtil::file_to_stream(temp_file_name,strm);
     }
-    catch (Error &e) {
+    catch (const Error &e) {
         throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
-    catch (BESError &e) {
+    catch (const BESError &e) {
         throw;
     }
-    catch (std::exception &e) {
+    catch (const std::exception &e) {
         throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
     }
     catch (...) {

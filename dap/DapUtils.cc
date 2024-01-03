@@ -102,7 +102,7 @@ void log_response_and_memory_size(const std::string &caller_id, DDS *const *dds)
  *
  * @param dmr Use this DMR to get the size of the request.
  */
-void log_response_and_memory_size(const std::string &caller_id, /*const*/ DMR &dmr)
+void log_response_and_memory_size(const std::string &caller_id, DMR &dmr)
 {
     // The request_size_kb() method is not marked const. Fix. jhrg 4/6/22
     auto response_size = (long)dmr.request_size_kb(true);
@@ -117,7 +117,7 @@ void log_response_and_memory_size(const std::string &caller_id, /*const*/ DMR &d
  *
  * @param dds Use this DDS to get the size of the request.
  */
-void log_response_and_memory_size(const std::string &caller_id, /*const*/ libdap::XMLWriter &dmrpp_writer)
+void log_response_and_memory_size(const std::string &caller_id, libdap::XMLWriter &dmrpp_writer)
 {
     auto response_size = (long)dmrpp_writer.get_doc_size() / 1000;
     log_response_and_memory_size_helper(caller_id, response_size);
