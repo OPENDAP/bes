@@ -76,12 +76,6 @@ using namespace rapidjson;
 #define prolog string("FONcTransmitter::").append(__func__).append("() - ")
 
 
-#if 0 // Moved to BESUtil.cc
-// size of the buffer used to read from the temporary file built on disk and
-// send data to the client over the network connection (socket/stream)
-// #define OUTPUT_FILE_BLOCK_SIZE 4096
-#endif
-
 /** @brief Construct the FONcTransmitter, adding it with name netcdf to be
  * able to transmit a data response
  *
@@ -143,69 +137,19 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(obj, &dhi, temp_file_name, dhi.data[RETURN_CMD]);
 
-#if 0
-        // This is used to signal the BESUtil::file_to_stream_task() this code is done
-        // writing to the file. WIP jhrg 6/4/21
-        atomic<bool> file_write_done(false);
-
-        // Calling the 'packaged_task' here blocks, but we could have run the task in a thread.
-        // See: https://stackoverflow.com/questions/18143661/what-is-the-difference-between-packaged-task-and-async
-        // jhrg 6/4/21
-
-        std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
-        std::future<uint64_t> result = task.get_future();
-        task(temp_file.get_name(), file_write_done, strm);
-#endif
-
-#define TOGGLE_TASK 0
-        // TOGGLE_TASK 1 besstandalone -c bes.nc4.conf -i mem-pressure-tests/bescmd.xml > tmp2.nc4
-        //      151.13s user 8.75s system 98% cpu 2:41.69 total
-        // TOGGLE_TASK 0 besstandalone -c bes.nc4.conf -i mem-pressure-tests/bescmd.xml > tmp2.nc4
-        //      154.71s user 8.99s system 99% cpu 2:45.27 total
-        // TOGGLE_TASK 0 as above, but using BESUtil::file_to_stream(temp_file.get_name(), strm);
-        // and not ESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
-        // 148.61s user 7.54s system 99% cpu 2:36.35 total
-#if TOGGLE_TASK
-        // This code works without the sleep(1) hack in BESUtil::file_to_stream_task().
-        // Because it is marked as deferred, the task does not start until the future's
-        // get() method is run, after transform() has written all the data. jhrg 6/4/21
-        future<uint64_t> result = async(launch::deferred, &BESUtil::file_to_stream_task, temp_file.get_name(),
-                                        std::ref(file_write_done), std::ref(strm));
-#endif
         ft.transform_dap2(strm);
-
-#if 0
-        file_write_done = true;
-        uint64_t tcount = result.get();
-#endif
-
-         //original call before the 'task' hack was added:
-         //BESUtil::file_to_stream(temp_file.get_name(),strm);
-         //jhrg 6/4/21
-
-#if 0
-        // The task can be called like this right here
-        uint64_t tcount = BESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
-
-        // Or it can be run like this...
-        std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
-        std::future<uint64_t> result = task.get_future();
-        task(temp_file.get_name(), file_write_done, strm);
-        uint64_t tcount = result.get();
-#endif
-        //BESDEBUG(MODULE,  prolog << "NetCDF file bytes written " << tcount << endl);
     }
     catch (Error &e) {
-        throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (BESError &e) {
         throw;
     }
     catch (std::exception &e) {
-        throw BESInternalError("Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
     }
     catch (...) {
-        throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
     BESDEBUG(MODULE,  prolog << "END Transmitted as netcdf" << endl);
@@ -231,7 +175,7 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
 void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
-
+    uint64_t bytes_sent = 0;
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
 
         auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
@@ -271,22 +215,22 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
 
         // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
-        BESUtil::file_to_stream(temp_file_name,strm);
+        bytes_sent = BESUtil::file_to_stream(temp_file_name,strm);
     }
     catch (Error &e) {
-        throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (BESError &e) {
         throw;
     }
     catch (std::exception &e) {
-        throw BESInternalError("Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
     }
     catch (...) {
-        throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf" << endl);
+    BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf. bytes_sent: " << bytes_sent << endl);
 }
 
 
