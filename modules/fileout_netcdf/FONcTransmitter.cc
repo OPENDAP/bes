@@ -139,11 +139,10 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
 
         ft.transform_dap2(strm);
     }
+    // This series of catch blocks is used to convert other errors into BESErrors.
+    // Thus, we do not need to catch BESError here because it's already what we want.
     catch (const Error &e) {
         throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
-    }
-    catch (const BESError &e) {
-        throw;
     }
     catch (const std::exception &e) {
         throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
@@ -151,7 +150,6 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
     catch (...) {
         throw BESInternalError(prolog + "Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
-
     BESDEBUG(MODULE,  prolog << "END Transmitted as netcdf" << endl);
 }
 
@@ -217,11 +215,10 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
         bytes_sent = BESUtil::file_to_stream(temp_file_name,strm);
     }
+    // This series of catch blocks is used to convert other errors into BESErrors.
+    // Thus, we do not need to catch BESError here because it's already what we want.
     catch (const Error &e) {
         throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
-    }
-    catch (const BESError &e) {
-        throw;
     }
     catch (const std::exception &e) {
         throw BESInternalError(prolog + "Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
