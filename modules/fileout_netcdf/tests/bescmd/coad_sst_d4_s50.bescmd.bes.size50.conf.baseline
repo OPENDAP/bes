@@ -2,8 +2,8 @@
 <response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <getDAP>
         <BESError>
-            <Type>1</Type>
-            <Message>FONcTransmitter::send_dap4_data() - Failed to read data! Caught std::exception. Message: Your request was for a (DAP4 data model response) to be encoded as netcdf-4. The response to your specific request will produce a 1520 kilobyte response. On this server the response size for your request is limited to 50 kilobytes. The server is configured to allow responses as large as: 50 kilobytes. I've noticed that no constraint expression accompanied your request. You may also reduce the size of the request by choosing just the variable(s) you need and/or by using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.</Message>
+            <Type>3</Type>
+            <Message>Your request was for a (DAP4 data model response) to be encoded as netcdf-4. The response to your specific request will produce a 1520 kilobyte response. On this server the response size for your request is limited to 50 kilobytes. The server is configured to allow responses as large as: 50 kilobytes. I've noticed that no constraint expression accompanied your request. You may also reduce the size of the request by choosing just the variable(s) you need and/or by using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
                 removed file

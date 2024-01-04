@@ -3,7 +3,7 @@
     <getDODS>
         <BESError>
             <Type>1</Type>
-            <Message>FONcTransmitter::send_dap2_data() - Failed to read data! Caught std::exception. Message; file out netcdf, classic model-doesn't support unsigned int. Please use netCDF-4 enhanced model instead.</Message>
+            <Message>file out netcdf, classic model-doesn't support unsigned int. Please use netCDF-4 enhanced model instead.</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
                 removed file

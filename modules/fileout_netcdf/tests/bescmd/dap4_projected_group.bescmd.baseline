@@ -2,8 +2,8 @@
 <response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <getDAP>
         <BESError>
-            <Type>1</Type>
-            <Message>FONcTransmitter::send_dap4_data() - Failed to read data! Caught std::exception. Message: This dataset contains variables and/or attributes whose data types are not compatible with the 
+            <Type>3</Type>
+            <Message>This dataset contains variables and/or attributes whose data types are not compatible with the 
 NetCDF-3 data model. If your request includes any of variables represented by one of these 
 incompatible variables and/or attributes and you choose the &#8220;NetCDF-3&#8221; download encoding, 
 your request will FAIL. 
