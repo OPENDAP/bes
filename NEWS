@@ -1,5 +1,64 @@
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## News for 3.21.0
+
+Reworked the way we implement the BES's singletons (or more of them at least)
+so that they use the Meyers Singleton pattern. This includes the EffectiveUrlCache
+and TheBESKeys classes.
+
+We have made significant advances to supporting HDF5 files in the DMR++ builder
+and interpreter. Our support is close to complete with only a very few features
+not supported. This support now includes HDF5's Varying-length string arrays. The
+software now also supports scalar strings in all their forms. Note that we also
+added support for fixed length string arrays in the DMR++ builder and interpreter.
+
+This version of the BES includes a new feature, dependent on the newest version
+of libdap, that reduces the time needed to build NetCDF4 responses by a factor
+of 10 or more when the variables in the response are not spatially subset (that
+is, when all variables in the response are returned in their entirety). It is still
+possible to subset at the variable level and get this performance boost. This is
+the 'Direct I/O' feature added ti libdap. NOTE: To use this feature, you must
+rebuild DMR++ files using the version of the DMR++ builder associated with this
+version of the BES (or get_dmrpp tool from the hyrax-1.16.8-356 build).
+
+We improved the performance of finding the effective URL for a data item when it
+is accessed via a series of redirect operations, the last of which is a signed
+AWS URL. This is a common case for data stored in S3.
+
+We have added generic Memory and File caching, tailored specifically toward the
+cases that arise when serving data from S3 using the DMR++ system.
+
+The BES now has much better support for response size and time limits. Users are
+warned about responses that are too large _before_ they are built and the BES
+now exits gracefully when a response takes too long to build. The limits are
+configurable.
+
+We replaced a home-grown HTTP connection pool with a scheme provided by libcurl.
+The two have equivalent performance, but the libcurl version is much easier to
+maintain and might offer room for improvement in the future.
+
+C99 compatibility improvements for the GCTP code in/used-by the HDF5 handler.
+Thanks ti Florian Weimer  <fweimer at redhat.com> for those fixes.
+
+We have added a BES module that can work with S3 using the DMR++ system. This
+provides a data flow that is similar to the one we provide for Hyrax in the Cloud
+as developer for NASA, but this new module does not make use of the NASA/ESDIS
+CMR system to resolve 'NASA Granules' to URLs. This will enable other groups to
+use the DMR++ system to serve data from S3.
+
+We have adopted C++-14 as aggressively as we can, resulting in fewer lines of code,
+better memory management and more efficient code.
+
+We have moved more of the handlers to build/use DAP4 as the default response format
+and build DAP2 responses from those. This reduces the amount of code we have to
+maintain.
+
+The BES can sign S3 URLs using the AWS V4 signing scheme. This uses the Credentials
+Manager system.
+
+The bundled grid() and geogrid() server side functions now support DAP4.
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## News for 3.20.13
 
 * Triggered a build to test new dependencies (hdf-4 and netcdf-4 updates).

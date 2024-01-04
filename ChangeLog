@@ -1,3 +1,3310 @@
+
+2024-01-03  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version
+	Matrix: libdap4-3.21.0-1024 2024-01-04T00:32:00+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version
+	Matrix: libdap4-3.21.0-218 2024-01-03T23:42:02+0000
+
+2024-01-03  Nathan Potter  <ndp@opendap.org>
+
+	build_dmrpp resource utilization logging plus a simplified
+	BESUtil::file_to_stream() api (#866) 
+
+	* Brought in resource concumption logging and unified
+	file_to_stream() api fro lcfo-2023 branch 
+
+2024-01-02  Nathan Potter  <ndp@opendap.org>
+	    James Gallagher  <jgallagher@opendap.org>
+
+	EffectiveUrlCache singleton pattern update (#864)
+	More branch cleanup for EffectiveUrlCache
+
+2024-01-02  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #860 from OPENDAP/hyrax-1241
+	HYRAX-1241, add get_dmrpp tests for HDF5 compound datatypes.
+
+2023-12-29  James Gallagher  <jgallagher@opendap.org>
+
+	Keys singleton fix (#861)
+	A proposed fix for the TheBESKeys singleton. With unit testing.
+
+2023-12-29  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1241, add get_dmrpp tests for HDF5 compound datatypes.
+	The default fill value is included. 
+
+2023-12-29  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #859 from OPENDAP/hyrax-1243
+	Hyrax 1243
+
+2023-12-28  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1243, clean up code for the final review
+
+	 delete an unused file that is added accidently
+
+2023-12-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1243, clean up the sample testing script of the hdf5 handler
+
+2023-12-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1243, forgot adding the data file for two tests.
+
+	HYRAX-1243, add the array of structure support for reading
+	subset and the whole data. 
+
+2023-12-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1243, add code for simple array of structure reading.
+
+	HYRAX-1243, reduce code smells
+
+	HYRAX-1243, add structure simple scalar tests.
+
+2023-12-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1243, make the scalar compound datatype read() function.
+ 	Still need to clean up code and test more. 
+
+	HYRAX-1243, add debugging code
+
+2023-12-21  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1243
+
+	HYRAX-1243, add code to support the reading of structure. Need more debugging
+
+2023-12-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #858 from OPENDAP/hyrax-1257
+	HYRAX-1257, miss a crucial character and the scalar structure name is…
+
+2023-12-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1257, miss a crucial character and the scalar structure name is missing. fixed it.
+
+2023-12-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #857 from OPENDAP/hyrax-1257
+	Hyrax 1257
+
+2023-12-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1257, add basetype info for the generation of dmrpp file for the scalar compound datatype.
+
+2023-12-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1243, adding a compound datatype simple scalar test that includes an array as a member of the compound datatype.
+
+2023-12-19  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1257, reduce code smells.
+
+2023-12-19  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-1243' into hyrax-1257
+
+	HYRAX-1257, generate dmrpp info for scalar structure
+
+	HYRAX-1243, add a compound simple HDF5 test.
+
+2023-12-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1257, add the check of compound datatype.
+
+2023-12-18  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Reet VLSA value comprssion threshhold to 512 bytes.
+
+2023-12-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1243, add more tests.
+
+2023-12-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1243, add a few simple compound datatype tests.
+
+	HYRAX-1243, adding a python script to generate an HDF5 compound datatype scalar dataset.
+
+2023-12-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1243, preparing the testing file.
+
+2023-12-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #855 from OPENDAP/hyrax-1254
+	Hyrax 1254
+
+2023-12-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1254, reformat a function.
+
+2023-12-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1254, clear the memory after the data is written for the direct IO case
+
+2023-12-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	 HYRAX-1250, clean up code smells and others a bit
+
+2023-12-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1250, add a filled-chunk case.
+
+	HYRAX-1250, forgot a dmrpp file.
+
+	HYRAX-1250, remove intern_data in the define mode and also make sure the direct IO only holds integer and float data.
+
+2023-12-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1250, re-arrange how to generate the dio information. Still need to add code to handle the dio in the define mode without calling read().
+
+	HYRAX-1250, add a test for a subset variable that has deflate levels inside the dmrpp.
+
+	HYRAX-1250, adding the direct IO check before the read() in DmrppRequestHandler.cc.
+
+	Merge branch 'master' into hyrax-1250
+
+	 HYRAX-1250, add a debugging line.
+
+	HYRAX-1250, add more checks for the direct IO case in the dmrpp module. The code can be compiled. More information needs to be added
+
+2023-12-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1250, adding code to check the status of the direct IO flag before the define mode in the fileout netcdf module. Added the check of expression constraint before the define mode in the fileout netCDF. Also start adding code after building_thin_dmr to check if the direct IO flag can be set.
+
+2023-12-05  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #852 from OPENDAP/hyrax-1249
+	HYRAX-1249 add one test that includes a compressed variable inside an…
+
+2023-12-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1249 add one test that includes a compressed variable inside an HDF5 group.
+
+2023-12-05  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #851 from OPENDAP/hyrax-1247
+	Hyrax 1247
+
+2023-12-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1249, forgot setting the global dio flag for the group case
+
+2023-12-03  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1247
+
+	Merge branch 'master' into hyrax-1247
+
+2023-12-01  Nathan Potter  <ndp@opendap.org>
+
+	Implmenting a probe to get just the redirect url (#850)
+	* Implemented curl::get_redirect_url() which queries an origin URL and returns an (expected) redirect URL without following the redirect.
+	* Replaced curl::retrieve_effective_url() with curl::get_redirect_url() in EgffectoveUrlCache
+	* Removed curl:: retrieve_effective_url() and transfered its invocations to get_redirect_url()
+
+2023-12-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1247, update some comments to trigger the travis tests
+
+2023-11-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1247, adding the check on how to use the intern_data
+
+	HYRAX-1247, pass the global direct IO flag to FONcArray code.
+
+2023-11-30  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-217 2023-11-30T16:30:08+0000
+
+2023-11-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1247, need to reset the dio flag before checking it again in the data reading phase. Also use global flag in the Fileout netCDF.
+
+2023-11-29  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1247, obtain the global direct IO flag in the dmrpp module. However, need to update libdap4 to handle a special case.
+
+2023-11-27  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1219
+
+2023-11-21  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	added yum update to rpm build
+
+2023-11-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1219
+
+2023-11-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #849 from OPENDAP/hyrax-1241
+	HYRAX-1241, handle the fill value of the compound datatype. Handle th…
+
+2023-11-21  ndp-opendap  <ndp@opendap.org>
+
+	Trigger cicd
+
+2023-11-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1241, add a simple compound datatype test.
+
+	HYRAX-1241, handle the fill value of the compound datatype. Handle the case when the fill value is the default fillvalue defined by the HDF5 library.
+
+2023-11-20  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Updated ngap.conf.in file
+
+2023-11-20  James Gallagher  <jgallagher@opendap.org>
+
+	Ngap cache purge (#848)
+	Added call to purge and moved cache hit/miss/put info from debug to the info log
+
+2023-11-18  James Gallagher  <jgallagher@opendap.org>
+
+	Added note about missing purge() call.
+	[skip ci]
+
+2023-11-17  Nathan Potter  <ndp@opendap.org>
+
+	vlsa! now with run length encoding! (#846)
+	Added vlsa implementation
+	* Added vlsa value compression for values longer than 300 chars
+	* Adding a run length encoding implmentation for dupicate vlsa values
+
+2023-11-17  James Gallagher  <jgallagher@opendap.org>
+
+	Comments and use of std::make_shared<http::url>().
+
+	Ngap file cache (#847)
+	This is the culmination of the work on DMR++ caching.
+
+	A memory cache is used by each process to hold DMR++ documents for
+	fast reuse.  Timing data shows the memory cache returns hits in
+	~100uS. This is backed up by a file cache that can be accessed across
+	all the processes on a given host (and across hosts if the file system
+	supports NFS - which AWS's EFS does). Timing data shows cache hits for
+	the file cache return items in ~1mS. Network access has been
+	refactored so that the DMR++ is read from the wire directly into a C++
+	string object and this takes about 500mS without the overhead of
+	authentication (i.e., in tests where we use OPeNDAP's S3 bucket and do
+	not rely on a web service for credentials or 'URL signing').
+
+2023-11-14  James Gallagher  <jgallagher@opendap.org>
+
+	File cache (#837)
+
+	This is a simple cache for files. Its API is limited to get(key,
+	&item), put(key, filename), del(key), clear(), purge(), and
+	initialize(...). For all of these operations, the cache is locked.
+	The get() operation returns _item_ with a valid open file descriptor
+	to the file that is locked using a shared lock. When item is
+	destroyed, the lock is cleared. There is a second version of put()
+	that takes/returns a &PutItem that holds an open file descriptor that
+	other code can write to. When the PutItem instance is destroyed, the
+	fd is closed and the exclusive lock on the file is released. The cache
+	is process- and thread-safe.
+	
+2023-11-14  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1219, reduce a code smell detected by sonar cloud
+
+	HYRAX-1219, turn off the direct IO when the filled chunks are present.
+
+2023-11-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-215 2023-11-07T17:45:31+0000
+
+2023-11-07  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1219
+
+2023-11-06  Nathan Potter  <ndp@opendap.org>
+
+	Migrates TheBESKeys to an std::unordered_map (#842)
+	* Migrates TheBESKeys from an internal std::map to an internal std::unordered_map
+
+	Switched BESContextManager to unordered_map (#843)
+	* Switched BESContextManager to unordered_map
+
+2023-11-06  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #841 from OPENDAP/hyrax-1111
+	HYRAX-1111, the args after calling move(args) in start_super_chunk_tr…
+
+2023-11-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, reduce more sonar cloud code smells
+
+2023-11-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1111, still leave the BESDEUG with just printing the future size. This will help debugging with the previous operation is successfully executed or not.
+
+2023-11-03  Nathan Potter  <ndp@opendap.org>
+
+	First pass at controlling max variable size and max response size for DAP2 requests (#840)
+	* Implemented max_var_size and max_response size management for DAP2
+
+2023-11-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1111, the args after calling move(args) in start_super_chunk_transfer_thread() may become null and it will cause segmentation fault in the BESDEBUG that calls args->super_chunk. So comment out the BESDEBUG statements.
+
+2023-11-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, clean up the code and add comments.
+
+2023-11-01  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1219
+
+2023-11-01  Nathan Potter  <ndp@opendap.org>
+
+	Response limits (#838)
+	* Wired in new dap4 size limits.
+	* Revised messages for too_big()function. Added regression tests for too big
+	* Switch from unordered_map to vector
+	* Added REMOVE_LINE and REMOVE_FILE filters to m4 macros
+	* Efficiency mods and a change on the processing of the max size configuration
+	* Fixed key name
+	* Fixed bug in max size determination
+	* New tests, new entries in dap.conf.in, etc
+	* Reducing duplicate code in DapUtilsTest
+
+2023-10-31  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1219
+
+2023-10-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, add NASA direct chunk IO tests to the testsuite.
+
+2023-10-31  James Gallagher  <jgallagher@opendap.org>
+
+	Plugin factory refactor (#836)
+	Update Plugin Factory and remove the deprecated unary_function<> use.
+	C++11 conformance
+
+2023-10-31  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-214 2023-10-31T12:57:16+0000
+
+2023-10-29  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, for array of NC_CHAR, make sure only one intern_data() is called.
+
+	HYRAX-1219, add a test to check the full and partial constraints.
+
+2023-10-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, add a test for an unlimited dimension variable that has chunk sizes that are bigger than the dimension sizes.
+
+2023-10-26  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-1219' of https://github.com/opendap/bes into hyrax-1219
+
+	HYRAX-1219, add a testing HDF5 file that has chunk sizes bigger than dimension sizes.
+
+2023-10-26  Muqun Yang  <myang6@hdfgroup.org>
+
+	Adding the check if the chunk size is greater than the dimension size
+
+2023-10-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1219, add the cstring header to make Linux compile
+
+2023-10-24  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1219
+
+	HYRAX-1219, update valgrind tests in the fileout netcdf for the direct IO case.
+
+2023-10-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, make sure the nasa testing files can be accessed.
+
+	HYRAX-1219, add two direct IO tests to the NASA testsuite.
+
+2023-10-23  Nathan Potter  <ndp@opendap.org>
+
+	Vls scalar (#833)
+	* Added a solution for the Variable Length String
+	Scalar case. This solution reads the string
+	during dmr++ creation, converts the DAP variable
+	to a compact representation, and then stores the
+	value in the compact variable so that the runtime
+	code need not read it from the remote data object.
+	* Comments and a new test for VLSS
+	* Fixing get_drmpp inventory test. Probably needs a review
+
+2023-10-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, add a test that includes different storages for the direct IO test.
+
+2023-10-20  James Gallagher  <jgallagher@opendap.org>
+
+	Now the DMR++ is only in a string and not stored in a temp file. (#835)
+	Now the DMR++ is only in a string and not stored in a temp file.
+
+	Removed unused ctor from MemoryCache<V> (#834)
+
+2023-10-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, fix one chunk IO. Need more debugging.
+
+	 HYRAX-1219, turn on the direct_io code before the big debugging
+
+	HYRAX-1219, clean up code before the final debugging
+
+2023-10-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1219, adding the code for direct chunk IO
+
+2023-10-18  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the bug where a token is leaked when a Chunk gets an error from S3. (#832)
+	Also found and noted that the http::url::is_expired() code is
+	duplicated by the unused method:
+	NgapApi::signed_url_is_expired(const http::url &signed_url).
+
+	Memory cache class (#831)
+	MemoryCache<V> is now a header-only implementation.
+	MemoryCache works for string values
+	Changed the name of the NGAP Cache (CMR and DMR++) keys
+	Now uses NGAP.CMRCacheSize, NGAP.CMRCachePurge, NGAP.DMRppCacheSize,
+	and NGAP.DMRppCachePurge. The 'Use' keys' names are unchanged.
+	Minor fixes - marked destructor as virtual, corrected return type for size().
+
+2023-10-16  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1219
+
+2023-10-16  Nathan Potter  <ndp@opendap.org>
+
+	Log silencing (#830)
+	* Fixing response size semantics
+	* made info log statement a compile in for devs
+
+2023-10-16  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1162
+
+2023-10-16  James Gallagher  <jgallagher@opendap.org>
+
+	NGAP module code refactor (#829)
+	Refactoring edits - comments, formatting and some work on C++-11 conformance
+
+2023-10-16  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1162, check in the code to handle the data transfer of the direct IO. An 'if (0)' will be  switched to direct IO when we handle the direct IO case on the fileout netcdf side.
+
+2023-10-16  James Gallagher  <jgallagher@opendap.org>
+
+	Added \n to two messages in the CM code. (#804)
+	Also fixed spaces in two SuperChunk functions.
+
+2023-10-16  Nathan Potter  <ndp@opendap.org>
+
+	Reducing log noice (#826)
+
+2023-10-13  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'ngap-cache'
+
+	Removed #if 0 and removed two enums from the curl share loc code.
+	The extra enums were confusing and should be handled by the default
+	case.
+
+2023-10-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for Linux; removed symbols for the enum that are not on that platform
+	Also, moved the CurlHandlePool instance to a unique_ptr<>.
+
+2023-10-12  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #828 from OPENDAP/cleanup_hdf_handlers
+	Clean up HDF4 handler code: remove extra spaces, update comments, rem…
+
+2023-10-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	Update NASA file download scripts.
+
+2023-10-12  Kyang2014  <myang6@hdfgroup.org>
+
+	Remove more #if 0 #endif blocks.
+
+	Continue cleaning up debugging #if 0 #endif etc.
+
+2023-10-11  James Gallagher  <jgallagher@opendap.org>
+
+	Better thread safety for the libcurl share object.
+	No performance testing, but the unit and regressoion tests work.
+
+2023-10-06  Kyang2014  <myang6@hdfgroup.org>
+
+	Clean up HDF4 handler code: remove extra spaces, update comments,
+	remove most old debugging info with #if 0 #endif blocks.
+
+2023-10-06  James Gallagher  <jgallagher@opendap.org>
+
+	This code has the home grown CurlHandlePool removed and the libcurl
+	'share' used in its place 
+
+	For this modification, the code that managed the curl handle pool (the
+	original code) processed data from 20 requests for 2 variables with
+	contiguous storage in 222ms. Removing the 'handle reuse' of the pool
+	saw that time change to 351ms.  Using the sharing feature of curl (and
+	the blunt force trauma lock functions) and that time becomes 227ms. So
+	our self-managed and the libcurl scheme are effectively equal, with
+	the latter having some room for better performance if the lock
+	functions are improved. jhrg 10/6/23
+
+	Remove use of the curl handle pool.
+
+2023-10-03  James Gallagher  <jgallagher@opendap.org>
+
+	Changed the defaults for the NGAP module DMR++ cache to false.
+	The ngap.conf file explicitly sets the caches to 'true'. Also,
+	modified the comments in the DMR++ module to indicate that the
+	module uses local caches for the DDS and DAS (DAP2 metadata) but
+	that the DMR++ caching in currently done in the NGAP module.
+
+2023-10-02  James Gallagher  <jgallagher@opendap.org>
+
+	Now our interfce to curl will retry every request up to the retry limit.
+
+2023-10-01  James Gallagher  <jgallagher@opendap.org>
+
+	Removed -shared-libsan from the besstandalong LDFLAGS - that was an
+	experiment...
+
+	minor edits
+
+	Added a test for NgapContainer::access() but I'm not sure how to get around the NGAP auth
+	I tried using a token - just as an experiment since we cannot check
+	that into GitHub, etc., but it didn't work.I should have been able to
+	get a bearer token set using a context to work.
+
+	Added tests for set_real_name_using_cmr_or_cache().
+
+2023-10-01  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Structure dap4 (#825)
+	Add skeleton for direct IO data handling
+	HYRAX-1162, add skeleton for direct chunk IO data transfer
+	Make sure 8-bit integer maps to DAP4 8-bit integer for the HDF5 compound datatype.
+	Add compound datatype tests to valgrind tests
+	Use the original dmrpp module files.
+	Use the latest master's direct IO code
+
+2023-09-29  James Gallagher  <jgallagher@opendap.org>
+
+	Test files added
+
+	Spelling
+
+2023-09-28  James Gallagher  <jgallagher@opendap.org>
+
+	Minor fixes
+
+	Added some tests for NgapContainer. Not complete...
+
+	Forgot to add bes.cache.conf.in and NgapRequestHandler.cc to git
+
+	Added tests for NgapRequestHandler - test cache config params
+
+	Code cleanup.
+
+2023-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into ngap-cache
+
+	Fix for broken distcheck
+
+	Merge branch 'master' into ngap-cache
+
+2023-09-27  Nathan Potter  <ndp@opendap.org>
+
+	Removed assert() calls from DMZ (#824)
+	* Removed assert() calls from DMZ, replaced with test and throw
+
+2023-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Adding unit tests to the NGAP Module. WIP.
+
+	Added another test for xml string parsing via the DMZ class
+
+	Added tests for modifications to caching in the DMR++ handler and DMZ parser.
+
+2023-09-26  Nathan Potter  <ndp@opendap.org>
+
+	Added message about unsupported types to the info log. (#823)
+	* Added message about unsupported types to the info log.
+
+2023-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	WIP
+
+2023-09-26  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-211 2023-09-26T19:32:56+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-209 2023-09-26T18:13:58+0000
+
+2023-09-26  Nathan Potter  <ndp@opendap.org>
+
+	Elide unsupported (#822)
+	* Implemented eliding the variables marked as
+	unsupported.
+	* Refined eliding code so that scalar strings and
+	FixedLengthStringArrays are handled special.
+	* Configuration control added.
+
+2023-09-25  James Gallagher  <jgallagher@opendap.org>
+
+	Cache purging seems to work.
+
+	Added purge to the CMR cache in the NgapContainer class
+
+2023-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Added caching debug output
+
+	Added DMR++ 'content' caching to the NgapContainer
+	I used the existing BESContainer attributes to signal that access()
+	was going to return the cached content (the whole XML doc as a string)
+	and not a file name. I extended teh DMZ parser so that it can parse
+	strings. I added some timing to the new code along with 'hit' or 'miss'
+	text for the 'cache' BESDebug key. It's pretty rough still.
+
+2023-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	More hacckery - NgapContainer::access() factored into several functions
+
+	Setting the stage for DMR++ caching
+
+	Added (untested) cmr result caching
+
+2023-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	WIP
+
+2023-09-20  ndp-opendap  <ndp@opendap.org>
+
+	Silencing BESStopWatch::start() in BESDEBUG
+
+2023-09-20  Nathan Potter  <ndp@opendap.org>
+
+	Improved handling/rejection of granules containing unsupported data types. (#805)
+	Refactoring unsupported type handling in the build_dmrpp app
+
+2023-09-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1162, add skeleton for direct chunk IO data transfer
+
+2023-09-19  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #819 from OPENDAP/hyrax-1161
+	Hyrax 1161 - draft
+
+2023-09-19  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-1161' into hyrax-1162
+
+	Add skeleton for direct IO data handling
+
+	HYRAX-1161, change debugging output according to Jame's suggestions.
+
+	Merge branch 'hyrax-1161' into hyrax-1162
+
+	Clean up code a little bit
+
+	Merge branch 'master' into hyrax-1161
+
+	Merge branch 'master' into hyrax-1162
+
+	HYRAX-1161, fix the check of netcdf-4 enhanced response, also update stare tests since by default fileout netcdf will issue the enhanced netcdf-4 output.
+
+2023-09-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1161, resume the .m4 and Makefile.am under dmrpp/tests.
+
+	HYRAX-1155, back-up code that checks the direct chunk IO flags. Will create a new branch based on this one.
+
+2023-09-18  Nathan Potter  <ndp@opendap.org>
+
+	Adding the http_status to the error messages associated with retrying requests. (#818)
+
+2023-09-15  Nathan Potter  <ndp@opendap.org>
+
+	First passes adding effective URL to retries logging (#817)
+	* Adding effective URL to retries logging
+
+2023-09-14  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-208 2023-09-14T16:36:37+0000
+
+2023-09-12  James Gallagher  <jgallagher@opendap.org>
+
+	Changed DMR++ object memory cache so it is off by default
+	The cache seems to have an error in the D4Maps code. Also fixed an
+	error in the test code that mistakenly used a baseline file as if it
+	was the file to test. And added missing code to read the value of the
+	keys used to configure the cache - so two errors in the code were
+	fixed in addition to changing the default behavior.
+
+2023-09-12  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1155
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	HYRAX-1155, add a netcdf_3 test.
+
+	HYRAX-1161, make sure the all filled value case is turned off
+
+2023-09-11  myang6  <myang6@hdfgroup.org>
+
+	Adding the direct IO flag check info.
+
+2023-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	Dmrpp obj cache (#810)
+	Added use of the object memory cache to the DMR++ handler
+	Removed some duplication in the new object caching
+	DDS and DAS now cached in object caches. Added control keys.
+	When besstandalone is run multiple times, either using -r or several
+	instances of -i, each output is separated by (at the start of a new line)
+	'Next-Response:' on its own line. This will enable testing the responses
+	once they have been separated.
+
+2023-09-11  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1155
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2023-09-11  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #815 from OPENDAP/hyrax-1159
+	HYRAX-1159, add dap4 constraint tests.
+
+2023-09-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1159, add dap4 constraint tests.
+
+	Merge branch 'master' into hyrax-1155
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2023-09-11  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #814 from OPENDAP/hyrax-1159
+	Hyrax 1159 - new tests in the fileout netcdf
+
+2023-09-11  myang6  <myang6@hdfgroup.org>
+
+	HYTAX-1159, add a new test. It was missing from the previous check-in.
+
+2023-09-10  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1159
+
+	HYRAX-1159, add new hdf5 and dmrpp files for direct chunk IO. Also update testsuite.at.
+
+	HYRAX-1159, add another test for direct chunk IO.
+
+	HYRAX-1159, add the bescmd files in the testsuite for direct chunk IO.
+
+	HYRAX-1159, add the .baseline.ver and .baseline.header files in the testsuite for direct chunk IO.
+
+	HYRAX-1159, add the .baseline.data files in the testsuite for direct chunk IO.
+
+2023-09-08  myang6  <myang6@hdfgroup.org>
+
+	reduce two code smells detected by sonar cloud
+
+2023-09-08  Nathan Potter  <ndp@opendap.org>
+
+	Added new lines to log messages from BESUtil (#813)
+
+2023-09-08  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-203 2023-09-08T15:58:02+0000
+
+2023-09-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1155, add the information needed by direct io to the dmrpp module and the fileout netCDF module. Also update the dmrpp module unit-test. More work needs to be done.
+
+2023-09-06  myang6  <myang6@hdfgroup.org>
+
+	Writing var chunk info to Array
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	HYRAX-1155, add the direct chunk IO flag check in the fileout netcdf and dmrpp modules.
+
+2023-09-05  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #809 from OPENDAP/local_total_storage_size
+	Enhance dmrpp file to support direct chunk IO
+
+2023-09-05  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'local_total_storage_size' of https://github.com/opendap/bes into local_total_storage_size
+
+	HFVHANDLER-1145, update the baseline files of the get_dmrpp test.
+
+2023-09-01  myang6  <myang6@hdfgroup.org>
+
+	Make DMZ parse the filter mask and deflate levels
+
+2023-08-31  myang6  <myang6@hdfgroup.org>
+
+	Remove a sonar cloud smell.
+
+	Temporarily turn off the generation of deflate level and filter mask to ensure the existing get_dmrpp tests get passed
+
+2023-08-30  myang6  <myang6@hdfgroup.org>
+
+	Retrieve deflate levels and filter masks. Write them to dmrpp files. Tested.
+
+2023-08-29  myang6  <myang6@hdfgroup.org>
+
+	Add the code to check the storage size. Verify that it works.
+
+2023-08-22  James Gallagher  <jgallagher@opendap.org>
+
+	Removed assert() calls from DMR++ module's Chunk.cc file. (#803)
+	Removed assert() calls from DMR++ module's Chunk.cc file.
+	More asserts removed from DmrppArray.cc
+
+2023-08-22  Nathan Potter  <ndp@opendap.org>
+
+	Reject avls granules 2 (#802)
+	* Adding build_dmrpp rejection of arrays of variable length strings.
+	* Added UnsupportedTypeException
+
+2023-08-21  Nathan Potter  <ndp@opendap.org>
+
+	Reject avls granules 2 (#801)
+	* Adding build_dmrpp rejection of arrays of variable length strings.
+	* Improved messages
+	* Marked failing tests (unsupported avls granule) as expected fail
+	* Added  UnsupportedTypeException
+
+	Adding build_dmrpp rejection of arrays of variable length strings. (#800)
+	* Adding build_dmrpp rejection of arrays of variable length strings.
+	* MArked failing tests (unsupported avls granule) as expected fail
+
+	Max Variable Size Checking (#799)
+	* First implementation and unit-tests for a too_big() implementation
+	* Added response_size computation
+
+2023-08-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #795 from OPENDAP/hyrax-1083
+	HYRAX-1083 second round
+
+2023-08-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, re-arrange some code to follow JG's suggestions.
+
+2023-08-16  Nathan Potter  <ndp@opendap.org>
+
+	Add try block for cURL handle release in CurlHandlePool (#797)
+	* Trying to catch exceptions in get_easy_handle()
+	* Dropped unused KEEP_ALIVE macro.
+
+2023-08-07  Nathan Potter  <ndp@opendap.org>
+
+	Removed exceptions thrown in CredentialsManager::load_credemtials(). (#796)
+	* Removed exceptions thrown in CredentialsManager::load_credemtials().
+	Because load_credentials() is call from inside a std::call_once() this was making many
+	bad things happen. In particular, the no more curl handles business.
+
+2023-07-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, use unique_ptr to replace new.
+
+	HYRAX-1083, add the header for the unique_ptr.
+
+	HYRAX-1083, use unique_ptr to replace new.
+
+2023-07-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, add the header for the unique_ptr
+
+	HYRAX-1083, use unique_ptr to replace new
+
+	HYRAX-1083 add the header that uses unique_ptr
+
+	HYRAX-1083, use unique_ptr to replace new
+
+2023-07-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1083, add headers for unique_ptr for more files.
+
+2023-07-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, add the header for unique ptr. Detected by linux.
+
+	HYRAX-1083, Mainly tackle HDF5CF.cc and HDF5GMCF.cc - use unique_ptr. Also carry out some easy change from new to unique_ptr.
+
+	HYRAX-1083, use unique_ptr to replace new
+
+2023-07-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, reduce a few code smells
+
+	HYRAX-1083, revert the change.  The tets get passed at Mac but not on Linux
+
+	HYRAX-1083, correct a few code smells detected by sonar cloud.
+
+2023-07-19  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #791 from OPENDAP/hyrax-1083
+	Hyrax 1083 -first round
+
+2023-07-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, correct typos and make code a litte cleaner in heos5cdap.cc
+
+2023-07-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for the failure of the CredentialsManager to load credentials. (#794)
+	* Fix for the failure of the CredentialsManager to load credentials.
+	* Tests for CredentialsManager fixed
+	* Remove the lock from load_credentials() since it is called only via call_once()
+	* Temporarily removed CredentialsManagerTest.
+	See what shakes loose...
+	* Possible fix for CurlUtilTest
+	* Temporarily removed 4 tests in CredentialsManagerTest.
+	See what shakes loose...
+	* Temporarily removed 2 tests in CredentialsManagerTest.
+	See what shakes loose...
+	* Temporarily removed 1 test in CredentialsManagerTest.
+	See what shakes loose...
+	* Run all tests in CredentialsManagerTest.
+	See what shakes loose...
+	* Cleanup
+
+2023-07-16  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, correct comments and add several error handling checks
+
+	HYRAX-1083, remove unused code and fine tune the use of unique_ptr for attrTable
+
+2023-07-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, use unique_ptr in the CF option handling
+
+	HYRAX-1083, try to use unique ptr to replace new and delete
+
+	Adding the header for make_unique
+
+	HYRAX-1083, reduce more code smells from the latest sonar cloud analysis. Also use unqiue ptr to replace new and delete
+
+	HYRAX-1083, use unique_ptr to replace new and delete.
+
+2023-07-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, reduce code complexity by dividing big size functions to smaller size functions. `
+
+	HYRAX-1083, correct a memory leak caused by using unique_ptr
+
+	HYRAX-1083, reduce code complexity and use unique_ptr
+
+2023-07-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, reduce code complexity for the function that generates DMR when CF option is on.
+
+	HYRAX-1083, minor corrections to make datatypes match
+
+	HYRAX-1083, divide the function that generates dds into a few smaller functions. Also use the unique pointer to replace the new/delete.
+
+2023-07-11  myang6  <myang6@hdfgroup.org>
+
+	 HYRAX-1083, remove more code smells detected by sonar cloud. mostly commented code
+
+	 HYRAX-1083, remove unused code, update comments etc.
+
+2023-07-11  ndp-opendap  <ndp@opendap.org>
+
+	More phaffing with build process
+
+	Adding build_dmrpp build recod to bes-snapshot file
+
+	Removed duplicate tag
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Adding build_dmrpp version to version pipeline.
+
+2023-07-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, mostly use dynamic_cast to replace static_cast for classes with inheritance..
+
+	HYRAX-1083, reduce another code complexity; update c functions with new c++ functions; use const functions etc.
+
+	HYRAX-1083, reduce code complexity as well as removing unused headers
+
+2023-07-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, remove small code smells.
+
+	HYRAX-1083, reduce code complexity for functions in the handler service routine
+
+2023-07-10  James Gallagher  <jgallagher@opendap.org>
+
+	Flc thread test (#792)
+	Removed the lock_cache_write/read() and replaced it with a RAII class
+	I removed the exceptions that were thrown as messages. Now error
+	messages are logged.Dropped the fancy error message in the new
+	AdvisoryLockGuard class' constructor and destructor since there are
+	OSX -vs- Linux issues with getting a file name from a descriptor.
+
+2023-07-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, reduce code complexity for functions in handling lat/lon values and the request functions in the handler.
+
+	HYRAX-1083, use unique_ptr to replace new for datatype mapping class of the default option.
+
+2023-07-07  myang6  <myang6@hdfgroup.org>
+
+	reduce code complexity in the HDF5 compound data type reading function
+
+	reduce more code complexity due to new sonar cloud analysis
+
+	HYRAX-1083, dimension handling: reduce code complexity, use unique_ptr.
+
+2023-07-06  Nathan Potter  <ndp@opendap.org>
+
+	Cmr providers patch (#793)
+	* Potential implmentation of noew CMR providers metadata API
+	* New providers interface is working, but a bulk request mode is needed for performance
+	* Dropped the use of the new (pedantic) providers api for the bulk get version. Much code retiring
+
+2023-07-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, reduce array_in_compound_array code compplexity
+
+	HYRAX-1083, updating object/region reference functions
+
+2023-07-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, reducing code complexity for the data reading for the default option. Also use unique_ptr
+
+	HYRAX-1083, reduce two more reasonable code smells.
+
+	HYRAX-1083, reduce code smells by sonar cloud, using const etc.
+
+	HYRAX-1083, correct a warning for mismatch datatype
+
+	HYRAX-1083, add another function to handle eos5 grid in order to reduce the code complexity.
+
+	HYRAX-1083, use unique_ptr and reduce code complexity for EOS5 grid handling functions
+
+2023-07-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, change another new to unique_ptr
+
+	 HYRAX-1083, check the usage of the unique pointer.
+
+	 add an internal function to reduce code complexity
+
+	HYRAX-1083, use unique ptr and create another function to reduce code complexity.
+
+	HYRAX-1083, add more functions to reduce the code complexity.
+
+	HYRAX-1083, reduce ECS metadata handling code complexity
+
+2023-07-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, use unique pointer, also add new functions to reduce the code complexity
+
+	 write a separate write_dap4_attr function to reduce code complexity.
+
+	HYRAX-1083, use common utf8 string check routine
+
+2023-06-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, divide the basetype and structure reading functions to several smaller functions. use make_unique if possible.
+
+2023-06-29  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, continue reducing the code complexity. Also use unique_ptr to reduce new/delete
+
+	HYRAX-1083, mostly clean up the #if 0 #endif block
+
+	HYRAX-1083, simplify the handling of scalar datatype.
+
+	HYRAX-1083, use make_unique to replace new
+
+	HYRAX-1083, divide the breadth_first function into several small functions
+
+2023-06-28  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-1083' of https://github.com/opendap/bes into hyrax-1083
+
+	HYRAX-1083, reduce code complexity and update minor comments.
+
+2023-06-28  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1083, update contact info etc.
+
+2023-06-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, reduce several new code smells
+
+	 HYRAX-1083, reduce the code complexity: divide large-size functions into small functions.
+
+	 HYRAX-1083, check the usage of unique pointer
+
+	HYRAX-1083, also resume a compound data test
+
+	HYRAX-1083, make the array datatype handling a separate function for the compound datatype mapping. Resume a compound datatype test.
+
+2023-06-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, divide large-size function into several small-size functions and use unique pointer to replace new
+
+2023-06-23  James Gallagher  <jgallagher@opendap.org>
+
+	Segfault fix (#789)
+	backed the unique_ptr singleton out, returned to the CredentialsManager version of 5/18/23
+	This fixes the odd segfault on exit we see in the S3_reader module.
+	This may also indicate there are issues with using unique pointers
+	to implement singletons. More investigation is needed.
+	Fixed memory leak in s3 module load/unload
+	Changed the default optimization with --enable-developer to -Og
+
+2023-06-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, use range-for-loop
+
+	HYRAX-1083, reduce code complexity for another function
+
+	HYRAX-1083, reduce the code complexity of the dmr handling function.
+
+2023-06-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1083, update comments for h5get.cc
+
+	HYRAX-1083, reduce unused line
+
+	HYRAX-1083, split get_dap_type() to reduce code complexity
+
+	 HYRAX-1083, split get_attr_info to reduce code complexity
+
+2023-06-22  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #790 from OPENDAP/hyrax-1082
+	Draft: HYRAX-1082, suport NULL space variables. If this variable is dimensio…
+
+2023-06-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1082, forgot checking in the testing bescmd file
+
+2023-06-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1082, suport NULL space variables. If this variable is dimension scale, it will map to a DAP4 dimension. Add tests for both hdf5 handler and fileout netcdf..
+
+2023-06-20  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #784 from OPENDAP/dap4_dmr
+	Re-added the d4 tests
+
+2023-06-13  James Gallagher  <jgallagher@opendap.org>
+
+	Changes - fixed leak (unverified as of now) (#788)
+	Fixed a leak in the build DMR++ module unload
+	Also refactored to adopt C++14 features.
+	Added a test for the DMR++ builder that will work in more places.
+	It still requires access to ESDIS CMR and a granule name that exists
+	in CMR, but it is not local to one machine. The test is not run by
+	default, but is included and can be run by hand if CMR access is available.
+
+2023-06-12  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #787 from OPENDAP/hyrax-1076
+	HYRAX-1076,HTYRAX-1061, add the check for the cases to generate DMRs …
+
+2023-06-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1061, remove an unused #if 0 block and also the lines used by the code inside the block
+
+2023-06-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1076,HTYRAX-1061, add the check for the cases to generate DMRs when the coordinates attribute doesn't conform to the CF. Tests are added.
+
+2023-06-09  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #786 from OPENDAP/hyrax-1072
+	Hyrax 1072
+
+2023-06-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1072, add tests to access the PO DAAC's dmrpp and the HDF5 file with the fileout netcdf module.
+
+2023-06-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1072, add fletcher32+deflate+shuffle combination tests to the hdf5 handler and fileout netcdf.
+
+2023-06-08  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #785 from OPENDAP/hyrax-1069
+	Hyrax 1069
+
+2023-06-08  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1069 correct the file path in a testing dmrpp file
+
+	Merge branch 'master' into hyrax-1069
+
+2023-06-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1069, ensure the correct buffer and buffer size to pass to the fletcher32 filter. Add 6 tests to ensure the combination of fletcher32, shuffle and deflate works.
+
+2023-06-07  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Moved files, modified makefile
+
+2023-06-06  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Removed the d4_tools source file from the Makefile
+
+	Merge branch 'master' into dap4_dmr
+
+	Removed old files
+
+2023-06-05  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Imported the d4tools and d4ToolsTest back into fileout_netcdf. Tests currently pass.
+
+2023-06-05  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for Python on rocky8 and start of fix for openssl (#783)
+	Fix for Python on rocky8 and Fix for OPENSSL
+	CmrApiTest fixes including Provider test patch
+
+2023-06-05  James Gallagher  <jgallagher@opendap.org>
+	    Florian Weimer  <fweimer@redhat.com>
+
+	modules/hdf5_handler/gctp: C99 compatibility improvements (#775)
+	* modules/hdf5_handler/gctp: C99 compatibility improvements
+	This change adds additional prototypes to avoid implicit
+	function declarations, which will not be supported by future
+	compilers by default, resulting in build failures.  Also add a
+	missing int type, which future compilers will require, too.
+	The additional prototypes revealed that the wrapper function gctp_
+	has the wrong signature, which is also fixed in this commit.
+	Update gctp_prototypes.h
+	Update br_gctp.c
+	Update gctp.c
+	---------
+
+2023-06-04  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #782 from OPENDAP/hyrax-1063
+	Hyrax 1063
+
+2023-06-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1063, improve the code a bit according to James' suggestions.
+
+2023-06-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1063, remove another code smell
+
+	HYRAX-1063, reduce code smells and add two tests for a NASA PO DAAC file.
+
+2023-06-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1063, add the simple grid support for DAP4 response. A test is added.
+
+2023-05-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1063, add code that handles the DAP4 request.
+
+	Merge branch 'master' into hyrax-1063
+
+2023-05-31  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #781 from OPENDAP/hyrax-1018
+	HYRAX-1018, add the support of DAP2 grid to coverage json: this check…
+
+2023-05-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1063, add dap4 methods at the transmitter code. Also add the dmr processing code at BESDapResponseBuilder.cc.
+
+	 Make the three CMR provider tests as exception again
+
+	HYRAX-1018, improve the code a bit based on the code review
+
+2023-05-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1018, forgot checking in the header file
+
+	HYRAX-1018, reduce another code smell
+
+	HYRAX-1018, clean up code smell
+
+	HYRAX-1018, add the support of DAP2 grid to coverage json: this check-in addresses the PODAAC's reported issue in this ticket. More enhancement needs to be done later.
+
+2023-05-26  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	HDF5 file check
+	Added a function to check if the file passed in is hdf5 or netcdf3. Also some refactoring was done to better organize existing files and function calls.
+
+	Trigger Travis build
+
+	Use string instead of char[]
+
+2023-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Changed sonarscane properties files based on feedback for SS (#774)
+
+	Update the BESStatus command (#780)
+
+2023-05-26  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Small fixes
+
+2023-05-26  Nathan Potter  <ndp@opendap.org>
+
+	Cleaning up BESXMLInterface::execute_data_request_plan() and adding a call to RequestTimer::throw_if_expired ()
+
+2023-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Remove pthread (#778)
+	Remove use/include of pthread
+	There are some source files in old or unused directories
+	that still have the include, and there one place in BESInterface
+	where it's part of a large comment. But pthreads are out AFAIK.
+
+2023-05-26  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Adjusted test to use 'TEST_DATA_ROOT_DIR'
+
+2023-05-25  Nathan Potter  <ndp@opendap.org>
+
+	Small changes associated with timeout processing (#777)
+	* Small changes associated with timeout processing
+
+2023-05-25  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #776 from OPENDAP/hyrax-1032
+	Hyrax 1032
+
+2023-05-25  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added hdf5 test, fixed other tests to match other cppunit test format
+
+	Fixed the qc_input_file() tests
+
+2023-05-25  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1050, add a sinusodial projection dmrpp missing data test.
+
+	HYRAX-1038, HYRAX-1042, reduce the code smell
+
+2023-05-24  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Tests added. Exceptions are being caught, but it is causing the tests to fail, must FIX
+
+2023-05-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1050, modify get_dmrpp so that it can handle the missing data inside a dmrpp file that has groups. Also add a test that handles missing data inside a dmrpp file that has groups.
+
+2023-05-24  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-198 2023-05-24T13:12:26+0000
+
+2023-05-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1032, fixing the bug that mismatches the datatypes.
+
+	Merge branch 'master' into hyrax-1032
+
+2023-05-22  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into file_check
+
+2023-05-19  ndp-opendap  <ndp@opendap.org>
+
+	Var name changes etc
+
+	Documentation [skip-ci]
+
+	Documentation [skip-ci]
+
+	Small chnge
+
+	Documentation [skip-ci]
+
+	Documentation [skip-ci]
+
+	Documentation
+
+	Put the bes configurstion back into the possible  input parameters for build_dmrpp. It is need to  build the correct production metedata, it is not  "used" other than as a string of record.
+
+	Added override tags as needed
+
+	Reorder buid_dmrpp tests
+
+2023-05-18  James Gallagher  <jgallagher@opendap.org>
+	    Samuel Lloyd  <slloyd@opendap.org>
+
+	S3 module (#773)
+	An 's3 reader' module for the BES. To be used for testing...
+	This could also be the basis for a module that provides access to data
+	held in S3 in a way that is more general than the current module that relies
+	on CMR for the locations of the data files.
+	This branch also contains fixes for issues in the 'http' convenience library:
+	 * Refactor of CredentialsManager so that load_credentials() is always called
+	 * Pass the vector<char> buffer in to the caller so that memory does not go
+	out of scope once the function returns. I suspect that rapid_json (and similar
+	libraries) depend on the document memory.
+	 * We remove the include of rapid json in CurlUtils.h The CurlUtils.h header
+	is installed but the rapidjson headers are not. Remove the http_get_as_json()
+	function and use the simple http_get() and have the client build JSON however
+	they want/can.
+	* Removed NgapCredentials since it's not used.
+	---------
+
+2023-05-18  ndp-opendap  <ndp@opendap.org>
+
+	Stop using build_dmrpp -c option
+
+	Merge branch 'master' into file_check
+
+	Dropping unused define
+
+	Dropping MDS support from build_dmrpp
+
+	Messaging
+
+	spelchk
+
+	Moved functions from build_dmrpp to build_dmrpp_utils for tests
+
+	Adding errno and strerror to info output
+
+	Restructed build_dmrpp, wrapped file qc, mds acticity, and build form dmr as functions
+
+2023-05-18  James Gallagher  <jgallagher@opendap.org>
+
+	Reinstated the tests with baselines that will need updating for GDAL 3.6++
+	We decided to hold off on the GDAL update.
+
+2023-05-18  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Error checking uses perror and badbit checking to return more detailed error status
+
+2023-05-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1032, add the group support for check_dmrpp and merge_dmrpp. Also clean up a little bit of reduce_mdf.cc
+
+2023-05-17  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added error check and reason for error if ifstream fails to open
+
+2023-05-16  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Took out unnecessary comments
+
+	Updated wording for error. Added NetCDF3 check.
+
+	Took out 'std::'
+
+	Merge branch 'master' into file_check
+
+	Compare provided file with HDF5 signature
+
+2023-05-15  Nathan Potter  <ndp@opendap.org>
+
+	Fixing get_dmrpp baselines - chunk offset changes (#769)
+
+2023-05-11  James Gallagher  <jgallagher@opendap.org>
+
+	RemoteResource retry fix (#771)
+	* Fixed the RemoteResources retry code
+	The problem was that ftruncate was used to remove an error
+	message from the file used to hold the response as it was
+	read from the network. However, the file descriptor was not
+	rewound to the start of the file, so the valid response data
+	was written starting past the initial position. A reader would see the
+	initial part of the temporary file as filled with nulls. This
+	error was introduced with RR was rewritten.
+	Also refactored the CmrApiTest.cc code since this work overlapped
+	the CMR legacy API and I was working on those tests.
+	Added tests for the RR retry fix
+
+2023-05-11  Nathan Potter  <ndp@opendap.org>
+
+	Fixing production rules so that netcdf is linked with libxml2 (#770)
+	* Fixing production rules so that netcdf is linked with libxml2
+	* Adding libxml2 to dispatch/unit-tests build
+	* Using XML2_LIBS variable
+
+2023-05-08  James Gallagher  <jgallagher@opendap.org>
+
+	Cutil refactor 04.26.23 (#766)
+
+	Undo the CMR API test patch
+	The legacy API stopped working for a while, returning 404, now
+	it works again.
+
+2023-05-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-195 2023-05-07T23:10:58+0000
+
+2023-05-04  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-194 2023-05-04T21:00:36+0000
+
+2023-05-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1032, adding an example of DAP4 constraint of an HDF-EOS5 grid file.
+
+2023-05-03  James Gallagher  <jgallagher@opendap.org>
+
+	Hackery so that we can build against the new hyrax-deps code (#768)
+	Once the hyrax dependencies are pushed through the CI/CD system and
+	everyone has them on their development machines, back these changes
+	out of the code and update the baselines based on the output of the
+	new libraries. Look for tests (testuite.at) that include the comment
+	GDAL3-6 jhrg 4/19/23. Remove those comments and rebuild the baselines.
+
+2023-05-02  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #764 from OPENDAP/hyrax-781
+	Hyrax 781
+
+2023-05-02  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-781
+
+2023-05-02  James Gallagher  <jgallagher@opendap.org>
+
+	Patch for three failing tests in the CMR API code. (#767)
+	We will need to address the underlying issue, but this gets the master
+	branch building again, albeit with a broken CMR module
+
+2023-05-02  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-781' of https://github.com/opendap/bes into hyrax-781
+
+2023-05-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, forgot adding one NASA bescmd and baseline files.
+
+2023-05-02  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-781
+
+2023-05-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, update fileout netcdf module's NASA testsuite to support the HDF-EOS5 grid for the default option.
+
+	HYRAX-781, update HDF5 handler's NASA tests due to the enhancement of making HDF-EOS5 Geo Grid attributes CF compliant
+
+2023-05-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, for the geographic projection of HDF-EOS5 grids, make attribute names like ScaleOffset to CF name for the visualization tool like panoly to pick up
+
+2023-04-30  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-781' of https://github.com/opendap/bes into hyrax-781
+
+	HYRAX-781, add the NASA tests for the HDF-EOS5 grid support.
+
+2023-04-28  ndp-opendap  <ndp@opendap.org>
+
+	Trigger build on master
+
+2023-04-28  Nathan Potter  <ndp@opendap.org>
+	    dh-opendap  <dholloway@opendap.org>
+
+	Rrtimeout (#765)
+	* Check RequestServiceTimer in CurlUtils
+	* Modified TimeOut error message
+	---------
+
+2023-04-28  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-781
+
+2023-04-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, 1) remove reasonable some code smells detected by sonar cloud, 2) clean up code/comments 3) use HDF5 UTF8 enum rather than number.
+
+2023-04-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, add new valgrind tests related to the HDF-EOS5 Grid support.
+
+	 HYRAX-781, remove some code smells
+
+	HYRAX-781, add HDF5 handler tests for the HDF-EOS5 grid support in the default option.
+
+	HYRAX-781, add new fileout netCDF tests.
+
+	HYRAX-781, add the CF coordinates attributes for physical variables.
+
+2023-04-26  James Gallagher  <jgallagher@opendap.org>
+
+	More curl util refactor (#761)
+	Added tests for filter_effective_url and refactoring in http/CurlUtils.cc
+
+2023-04-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, add cv info for the data variables
+
+2023-04-25  James Gallagher  <jgallagher@opendap.org>
+
+	Found more places where AWS tokens were leaked - fixed (#762)
+	Also removed code coverage altogether. Will look into other,
+	faster, ways to compute code coverage.
+
+2023-04-25  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, make sure the geographic projection handled correctly. CF attributes are not added
+
+2023-04-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, add the support HDFEOS5 geographic projection, also add the corresponding fileout netCDF testing files.
+
+2023-04-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-781, correct memory leaking issues
+
+2023-04-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, make the CF variables for the HDF-EOS5 grid in the handler. Debugging info is inside the code. The attributes are not added.
+
+2023-04-21  James Gallagher  <jgallagher@opendap.org>
+
+	Fix a syntax error in the sonar scan properties files that broke covergage data
+	Still, I have turned off coverage data collection for the modules
+	except the HDF modules.
+
+	Remove coverage computation from travis to save time. (#760)
+	Remove coverage computation from travis to save time.
+	If we decide that the coverage for the non-hdf modules is needed,
+	then let's make a new set of 'check targets' in the bes/modules
+	Makefile.am so that 'make check' can be more targeted and lets
+	also make a fourth scan process to even out the load.
+
+2023-04-20  James Gallagher  <jgallagher@opendap.org>
+
+	Changes that filter the effective URL to remove credentials (#758)
+	In some cases, security tokens (which in NGAP can last for months)
+	were leaked to log files and error messages. This branch filters
+	the URLs that contain those credentials, leaving most of the URL
+	but removing the 'security parts.'
+	Bonus: The RemoteResource HTTP fetch is now timed.
+
+2023-04-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, add files to generate latitude/longitude and CF grid mapping information.
+
+2023-04-19  Dan Holloway  <d.holloway@opendap.org>
+
+	Merge pull request #756 from OPENDAP/mkdmrpp
+	Mkdmrpp
+
+2023-04-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-781, add more coding to handle the HDF-EOS5 grid
+
+	HYRAX-781, check in some testing files and the intermediate experimental code(hopefully will be used in the final version)
+
+2023-04-18  Dan Holloway  <d.holloway@opendap.org>
+
+	Merge branch 'master' into mkdmrpp
+
+2023-04-18  dh-opendap  <dholloway@opendap.org>
+
+	Updated to resolve PR comments
+
+2023-04-17  James Gallagher  <jgallagher@opendap.org>
+
+	Debug log refactor (#757)
+	Some refactoring of the BES Debug, Log and Stopwatch code.
+	No behavior changes
+	Added <iomanip> to BESDebug.cc for std::put_time()
+	Drop the unordered map - our existing use leads to div by zero in three tests
+
+2023-04-17  dh-opendap  <dholloway@opendap.org>
+
+	Removed dmrpp-enabler tests
+
+	Removed dmrpp_builder tests
+
+2023-04-13  James Gallagher  <jgallagher@opendap.org>
+
+	Add TESTSUITE_DMRPP_BUILDER to check-local
+
+2023-04-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #755 from OPENDAP/hyrax-974
+	Hyrax 974
+
+2023-04-13  dh-opendap  <dholloway@opendap.org>
+
+	Updated dmrpp_module tests
+
+2023-04-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-973, reduce code smells according to sonar cloud
+
+2023-04-13  dh-opendap  <dholloway@opendap.org>
+
+	Updated dmrpp_module tests
+
+2023-04-13  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-193 2023-04-13T15:55:44+0000
+
+2023-04-13  dh-opendap  <dholloway@opendap.org>
+
+	Updated dmrpp_module tests
+
+2023-04-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-974, ensure the map variables are in the front of all the other variables that use this map
+
+2023-04-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-974, update the SMAP headers and remove compiling warnings.
+
+2023-04-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-974, update fileout netCDF NASA testsuite to reflect the change that moves the map variables to the front for the default option.
+
+2023-04-12  dh-opendap  <dholloway@opendap.org>
+
+	Updated tests for make check to complete
+
+2023-04-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-973, update the baseline because the map variables are moved front
+
+	Merge branch 'master' into hyrax-974
+
+2023-04-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-973, add more tests to valgrind and fileout netcdf.
+
+2023-04-12  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #754 from OPENDAP/hyrax-1004
+	HYRAX-1004, fix the map deletion bug for a map variable. The previous…
+
+2023-04-12  dh-opendap  <dholloway@opendap.org>
+
+	Update tests
+
+	Add builddmrpp to testsuite
+
+2023-04-12  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1004, fix the map deletion bug for a map variable. The previous implementation either leave one map or cause segmentation fault under some cases.
+
+2023-04-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-974, move cv in front of all the other variables. update the general and NASA testsuites.
+
+	HYRAX-974, update the at file.
+
+2023-04-10  dh-opendap  <dholloway@opendap.org>
+
+	Add setContext invocation to bescmd
+
+2023-04-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-973, move the map variables to the front
+
+	Merge branch 'master' into hyrax-974
+
+	HYRAX-974, add code to move the map variables to the the front of other variables.
+
+2023-04-10  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #753 from OPENDAP/hyrax-974-1
+	 HYRAX-974-1, the map variables can contain >1 dimension scales. So r…
+
+2023-04-10  myang6  <myang6@hdfgroup.org>
+
+	 HYRAX-974-1, the map variables can contain >1 dimension scales. So remove the wrong sanity check.
+
+2023-04-10  dh-opendap  <dholloway@opendap.org>
+
+	Add version and configuration metadata to DMRPP
+
+2023-04-07  ndp-opendap  <ndp@opendap.org>
+
+	Updating comments
+
+2023-04-06  dh-opendap  <dholloway@opendap.org>
+
+	Syncing with Master
+
+2023-04-05  James Gallagher  <jgallagher@opendap.org>
+
+	Frankenbranch (#752)
+	The Build DMR++ module and the RemoteResource changes.
+	This merge includes the additions for the Build DMR++ module of the BES
+	and the changes to the bes/http convenience library that removes caching
+	from the RemoteResource class. Other changes include the way RR is used
+	in various modules in the BES, including the NGAP, Gateway, and HTTP
+	catalog modules.
+
+2023-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Add two blank lines to README.md to trigger a master build and the Docker container push
+
+2023-03-29  ndp-opendap  <ndp@opendap.org>
+
+	Triggering non-test build/deploy
+
+	Removing the value clearing assignment of the default catalog TypeMatch expression by dap.conf. This should also allow the serv to utilize CSV data as input.
+
+2023-03-23  ndp-opendap  <ndp@opendap.org>
+
+	Trigger build
+
+2023-03-23  dh-opendap  <dholloway@opendap.org>
+
+	Removed prior NGAP dependencies in Makefile required by dmrpp-enabler container build
+
+	Renamed builddmrpp_module
+
+	Updated builddmrpp_module
+
+2023-03-22  dh-opendap  <dholloway@opendap.org>
+
+	Updated for new BuildDmrpp Module
+
+	New module build_dmrpp
+
+	Added new module build_dmrpp
+
+	Added new module build_dmrpp
+
+2023-03-15  dh-opendap  <dholloway@opendap.org>
+
+	Updated DMRPP-Enabler
+
+2023-03-14  dh-opendap  <dholloway@opendap.org>
+
+	Updated for working DMRPP-Enabler
+
+2023-03-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #751 from OPENDAP/hyrax-968
+	Hyrax 968
+
+2023-03-13  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-183 2023-03-13T17:21:20+0000
+
+2023-03-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #750 from OPENDAP/hyrax-960
+	HYRAX-960, need to update version number of HDF5 to support HDF5 1.14
+
+2023-03-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-960, need to update version number of HDF5 to support HDF5 1.14
+
+2023-03-10  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-968, remove a redundant test.
+
+2023-03-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-968, add new tests to check if additional DAP4 maps can be successfully removed when local constraints apply. Also update the nasa valgrind testsuite.
+
+2023-03-09  dh-opendap  <dholloway@opendap.org>
+
+	Updated Container class and usage
+
+2023-03-09  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #749 from OPENDAP/hyrax-601
+	HYRAX-601, The default option adds DAP4 maps correctly. However, the …
+
+2023-03-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-601, The default option adds DAP4 maps correctly. However, the CF option doesn't include time because the coordinates attribute doesn't include time. However, the time is a dimension scale and should be included as the map. Revise the CF option code and make sure these kind of dimensions are handled properly. Update the testsuite etc.
+
+2023-03-09  dh-opendap  <dholloway@opendap.org>
+
+	New containers
+
+	Updated for DmrppNgapContainer testing
+
+	Updated for new  DmrppNgapContainer class
+
+2023-03-08  dh-opendap  <dholloway@opendap.org>
+
+	Adding DmrppNgapContainer
+
+	Updated dmrpp_module/write FOTransmitter
+
+2023-03-08  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #747 from OPENDAP/hyrax-956
+	Hyrax 956
+
+2023-03-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-956, clean up code more and add a few DAP4 expression constraint tests; also update the valgrind test .at file.
+
+2023-03-07  dh-opendap  <dholloway@opendap.org>
+
+	Updated DMRPP_Module
+
+	DMRPP Enabler additions
+
+2023-03-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-956, improve the way to handle the relative path of the coordinate variables from the sonar cloud analysis. Also remove some code smells detected by the sonar cloud
+
+2023-03-07  dh-opendap  <dholloway@opendap.org>
+
+	Added dmrpp_module/writer
+
+	Added dmrpp_module/writer
+
+	Added writer subdir to dmrpp_module
+
+2023-03-07  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-956, update a baseline file because the DAP4 coverage support is added.
+
+2023-03-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-956, update the sample script a little bit.
+
+	Merge branch 'hyrax-956' of https://github.com/opendap/bes into hyrax-956
+
+	Merge branch 'master' into hyrax-956
+
+	HYRAX-956, clean up code a little bit
+
+2023-03-06  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-956, update a link.
+
+2023-03-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-956, update NASA testsuite with the coverage support of the default option. Add a new test.
+
+	HYRAX-956, add more tests to the testsuite for the coverage support of the default option.
+
+	HYRAX-956, update the testsuite baseline files to reflect the support of DAP4 coverage for the netCDF/CF HDF5 files.
+
+2023-03-05  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-956' of https://github.com/opendap/bes into hyrax-956
+
+	HYRAX-956, comment out debugging info.
+
+2023-03-05  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-956, need to delete the removed map explicitly. Libdap4 doesn't do that. Without doing this, the memory leaks occur.
+
+2023-03-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-956, remove the maps of dimension scales and coordiate variables. They should not have maps.
+
+	HYRAX-956, make the coordinates pass the tests.
+
+2023-03-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-956, more code to handle coordinates and build the maps, not compiled yet.
+
+2023-03-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-956, generate full path for coordinate variables. and also start generating the global dimension scale maps.
+
+2023-02-28  dh-opendap  <dholloway@opendap.org>
+
+	Updated BuildDmrpp service elements
+
+2023-02-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-956, add tests and some codes. Still in the debugging mode
+
+2023-02-28  dh-opendap  <dholloway@opendap.org>
+
+	Added BuildDmrpp service elements
+
+	Added BuildDmrpp service elements
+
+2023-02-28  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #746 from OPENDAP/hyrax-883
+	HYRAX-883, adding NASA tests of dmrpp and fileout netCDF for special …
+
+2023-02-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-883, adding NASA tests of dmrpp and fileout netCDF for special string fill values.
+
+2023-02-24  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #745 from OPENDAP/hyrax-955
+	Hyrax 955
+
+2023-02-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-955, turn off the long time large array tests.
+
+2023-02-23  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-955
+
+2023-02-23  dh-opendap  <dholloway@opendap.org>
+
+	Build_Dmrpp Additions
+
+2023-02-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-955, add more expression constraint tests for large array size. Mainly dimension expression constraints.
+
+2023-02-22  Nathan Potter  <ndp@opendap.org>
+
+	Req timer debuggin (#743)
+	* Added DAP4 Type checking to transform_dap2()
+	* Reformatting error timeout error message and adding a error_lof message for the timeout
+
+2023-02-22  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-955, add big array dmrpp files in the script.
+
+2023-02-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-955, add simple expression constraints of big array tests for dmrpp.
+
+2023-02-22  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-955, update the big array size dmrpp test for the contiguous storge. Need to use 5G for start and stride.
+
+	HYRAX-955, add a large array big-endian dmrpp test to the fileout netcdf module.
+
+	Merge branch 'master' into hyrax-955
+
+2023-02-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-955, add a big endian test. Also update the code to make the endianess byte-swap code handle large array size.
+
+2023-02-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-955, add a big-endian testing HDF5 file and a python script that generates the file.
+
+2023-02-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #741 from OPENDAP/hyrax-947
+	Hyrax 947
+
+2023-02-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-955, add two HDF5 big-endian datatype tests.
+
+2023-02-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-955, add a big array shuffle+deflate test.
+
+2023-02-21  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-947
+
+2023-02-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-955
+
+2023-02-21  James Gallagher  <jgallagher@opendap.org>
+
+	Baseline update for the CMR show_years test
+
+2023-02-20  myang6  <myang6@hdfgroup.org>
+
+	Updating a little bit of CF NASA dmrpp test.
+
+	Need to update big array file tests. Merge branch 'hyrax-955' of https://github.com/opendap/bes into hyrax-955
+
+	HYRAX-955, add big array tests to the fileout netcdf for both cf/default dmrpp tests.
+
+2023-02-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-955, add a python script that creates a shuffle+gzip big variable.
+
+2023-02-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-947, find more places that need to use 64-bit int instead of int
+
+2023-02-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-947, clean up debugging info and reduce code smells detected by sonar cloud.
+
+2023-02-17  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-947, forget adding the baseline file.
+
+	HYRAX-947, fix a bug that causes segmentation fault when a contiguous storage variable that has fill values and the size is >2MB. A test has been added to the fileout netCDF module
+
+2023-02-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-947, need to use stoull instead of stoi for 64-bit integer support. Also update a few other routines. Still seg. fault for a debugging contiguous case.
+
+2023-02-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-947, add the python script and the files to download.
+
+	HYRAX-947, need to use reserve_value_capacity_ll instead of reserve_value_capacity.
+
+2023-02-09  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-947, fix another bug but still seg. fault
+
+2023-02-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-923, first round of fixing issues for the dmrpp to handle large array size. Still segmentation fault when using fileout netCDF to fetch a >4GB array.
+
+2023-02-07  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #732 from OPENDAP/hyrax-935
+	Hyrax 935 -handle large array for the HDF5 handler CF option
+
+2023-02-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-953, forget adding another test for fileout netcdf
+
+	Merge branch 'hyrax-935' of https://github.com/opendap/bes into hyrax-935
+
+	HYRAX-935, forgot adding two big array size tests.
+
+2023-02-07  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-935, adding the daymet test.
+
+2023-02-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-935, reduce sonar cloud smells and add big array tests for the CF option of the HDF5 handler and fileout entCDF module.
+
+2023-02-06  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-935
+
+	HYRAX-935, use append_dim_ll for the coordinate variables and other special variables for the CF option.
+
+2023-02-03  James Gallagher  <jgallagher@opendap.org>
+
+	Bes keys fix (#733)
+	TheBESKeys --> unique_ptr pattern
+	* TheBESKeys now uses a unique_ptr and passes tests.
+	Some other code had to be changed because the singleton
+	was 'messed with' by some of the BES framework destructors
+	and some of the unit-tests. I added a reload_keys() method
+	to enable unit-tests to switch key files and/or reload the
+	original key file, effectively resetting changes they might
+	have made during the tests.
+
+2023-02-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-935, used explicit cast for 64-bit integer to supress compiling failure by travis
+
+	HYRAX-935, remove several sonar cloud smells and add tests for the large array size support.
+
+2023-02-02  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-935
+
+2023-02-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-935, first round of check-in that handles the large array support. The big expression constraints and a simple big file tests get passed.
+
+2023-02-01  James Gallagher  <jgallagher@opendap.org>
+
+	Use C++14 for the builds by default (#731)
+	Use C++14 for the builds by default
+	* Also removed the OSX_Resources stuff.
+	* Various fixes to configure and friends to minimize autoreconf errors.
+	* Drop the autoconf version to 2.69 from 2.71.
+	* The h5common.cc/h files in modules/dmrpp_handler are now 'built sources.'
+	This preserves the SSOT for these files as the modules/hdf5_handler
+	directory. The files are 'built' by copying them into the modules/
+	dmrpp_module so they can be used by the build_dmrpp code.
+	Made a new 'common' library for testing code; migrated as much as possible
+
+2023-01-31  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #729 from OPENDAP/hyrax-934
+	Hyrax 934
+
+2023-01-31  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-934' into hyrax-935
+
+	HYRAX-934, add test header files.
+
+	HYRAX-934, reduce compiling warnings, add 4 big array tests etc.
+
+2023-01-31  ndp-opendap  <ndp@opendap.org>
+
+	Adding autotest excludes to all sonar scans
+
+	Excluding data and test directories (fifo, ouch) from hdf* sonar scan
+
+	Tryto drop testsuite dirs
+
+2023-01-30  Nathan Potter  <ndp@opendap.org>
+
+	Trying two line exclision def (#730)
+
+2023-01-30  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-116 2023-01-30T21:13:44+0000
+
+2023-01-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-934, remove sonar cloud smells.
+
+2023-01-30  ndp-opendap  <ndp@opendap.org>
+
+	excluding testsuite.dir from sonarscan
+
+2023-01-30  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-934
+
+	HYRAX-934, optimize the chunk sizes. The code is not cleaned up but have some useful comments on the thoughts to choose the correct chunk sizes.
+
+2023-01-30  ndp-opendap  <ndp@opendap.org>
+
+	Decreasing log noise
+
+2023-01-27  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-109 2023-01-28T00:48:54+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-107 2023-01-28T00:13:52+0000
+
+2023-01-27  James Gallagher  <jgallagher@opendap.org>
+
+	No c7 (#728)
+	Remove CentOS 7 from the BES build.
+
+2023-01-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-934, modify the chunk size calcuation algorithm to avoid too big chunk sizes.
+
+2023-01-26  Nathan Potter  <ndp@opendap.org>
+
+	Updating error messages. (#725)
+
+2023-01-25  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #726 from OPENDAP/hyrax-859
+	Hyrax 859
+
+2023-01-25  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-859' into hyrax-934
+
+	HYRAX-859, use const as suggested by sonar cloud.
+
+	HYRAX-859, use the new large array size handling APIs in several other places based on sonar cloud's analysis.
+
+2023-01-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-859' of https://github.com/opendap/bes into hyrax-859
+
+	HYRAX-859, add fileout netCDF test output files and update the .at file.
+
+2023-01-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-859, add the python script to create a big array HDF5 file
+
+	HYRAX-859, add large array size for the fileout netCDF.
+
+	HYRAX-859, add new testing bescmd files for the large-array size support for the HDF5 handler.
+
+	HYRAX-859, add the large array support for the default option.
+
+2023-01-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #724 from OPENDAP/hyrax-913
+	Hyrax 913
+
+2023-01-23  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-105 2023-01-23T19:01:25+0000
+
+2023-01-23  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-913
+
+2023-01-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #723 from OPENDAP/hyrax-927
+	HYRAX-927, fix the issue that causes the wrong attribute values in 1A…
+
+2023-01-22  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-913' into hyrax-859
+
+2023-01-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-913, add the big array support in the file netCDF. The whole big array support test is inside the NASA tests.
+
+	Merge branch 'hyrax-927' into hyrax-913
+
+2023-01-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-927, fix the issue that causes the wrong attribute values in 1A and 2A GPM files
+
+2023-01-19  Nathan Potter  <ndp@opendap.org>
+
+	Dap2 from dap4 qc (#722)
+	* Typos and error message formatting.
+	* Updated test baselines
+	* Almost sorted with tests
+	* Updating baselines
+	* Text edits and code tidying
+	* Worked c++11 compliance in dap/BESDapResponseBuilder.h and dap/BESDapResponseBuilder.cc
+	* Updated dmrpp regression tests for new dap4 in dap2 object behavior
+	* Added memory include to DapUtils.h
+	* C++11 updates.
+	* Updated baselines for fileout_netcdf
+	* Added file and line to the DapUtils throw_for... functions
+	* Fixed incorrect DAS operation
+
+2023-01-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-913, update the big array by using dimension_size_ll() instead of dimension_size().
+
+2023-01-18  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-103 2023-01-19T03:53:34+0000
+
+2023-01-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-913, add a test that has a DAP4 dimension name.
+
+2023-01-17  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #721 from OPENDAP/hyrax-868
+	Hyrax 868/898
+
+2023-01-17  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-913, add large start/stride/stop values in expression constraint tests.
+
+2023-01-17  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-99 2023-01-17T18:57:16+0000
+
+2023-01-17  myang6  <myang6@hdfgroup.org>
+
+	hyrax-868, add tests for large start/stride/stop in the expression constraints in the asciival module.
+
+	HYRAX-898, add dapreader tests.
+
+2023-01-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-868, clean up code
+
+2023-01-13  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-868' of https://github.com/opendap/bes into hyrax-868
+
+	Merge branch 'master' into hyrax-868
+
+2023-01-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-868, update ASCIIVAL module to test the big array handling.
+
+2023-01-12  James Gallagher  <jgallagher@opendap.org>
+
+	RemoteResources refactor (#720)
+	Refactor various classes: RemoteResources, Httpcache, TheBESKeys, BESFileLockingCache and added tests.
+	Added: HttpCacheTest, RemoteReseourceTests, BESFileLockingCacheTest
+
+2023-01-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Reformat HttpCache
+	[skip-ci]
+
+2023-01-09  ndp-opendap  <ndp@opendap.org>
+
+	Dropped useless copy
+
+2023-01-09  Nathan Potter  <ndp@opendap.org>
+
+	Migrates the is_dap4_projected() method from BES to libdap4 (#719)
+	* Switching to the lbdap4::BaseType::is_dap4_projectd() ecosystem
+	* Mothballing d4tools now that the functionality is enshrined in libdap::BaseType
+	* Updated baseline for test change
+
+2023-01-09  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-868
+
+2023-01-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-93 2023-01-07T10:29:30+0000
+
+2023-01-03  James Gallagher  <jgallagher@opendap.org>
+
+	Refactor the regex code (#717)
+	Refactor the regex code
+
+	Refactor e url (#714)
+	Refactor of EffectiveUrl, EffectiveUrlCache and url in bes/http
+
+2022-12-30  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-868
+
+	HYRAX-868, change ncml min() to a simple implemantion due to the compilation error with the large array support.
+
+2022-12-29  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #715 from OPENDAP/hyrax-888
+	Hyrax 888,Hyrax 882, Hyrax 891
+
+2022-12-28  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-868
+
+2022-12-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-888, reduce one code smell
+
+	HYRAX-891,HYRAX-888, correct an error handling of DMZ. When href string is null, an error should be thrown immediately. Also add tests to dmrpp and fileout netcdf. Python scripts to create HDF5 testing files are also added.
+
+2022-12-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-891, add throw in DmrppArray read() so that the correct error message is shown when an error inside the read() occurs
+
+2022-12-23  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-888, update baseline files based on the support of HDF5 fixed-size string fillvalues.
+
+2022-12-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-888, make fixed-size string scalar and array correctly handle the case when the data contains only fillvalues.
+
+2022-12-19  myang6  <myang6@hdfgroup.org>
+
+	 Make the parameter consistent for the declaration and definition of the invalid_type_error_msg()
+
+2022-12-18  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #712 from OPENDAP/hyrax-667
+	Hyrax 667
+
+2022-12-18  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-667
+
+2022-12-16  ndp-opendap  <ndp@opendap.org>
+
+	Removed facets from test paths and baselines
+
+	Dropped the facets path element because there is only the temporal facet
+
+	Moved show_collections_node test to the SCIOPS provider  - off of GES_DISC
+
+2022-12-16  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-667
+
+2022-12-16  ndp-opendap  <ndp@opendap.org>
+
+	Fixing baseline file for show_collections_node test
+
+2022-12-16  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-667
+
+2022-12-16  Nathan Potter  <ndp@opendap.org>
+
+	Switched the Providers and Collections containers to std::map for sor… (#713)
+	* Swtiched the Providers and Collections containers to std::map for sorting
+	* Fixed API fail and updated baseline for sorted output
+
+2022-12-16  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-667
+
+	HYRAX-667, add a few more const to functions and their parameters
+
+	Just make travis re-run to avoid the fake NcML failures
+
+	HYRAX-667, clean code smells detected by sonar cloud. Mostly add const to the function and its parameters.
+
+2022-12-15  Nathan Potter  <ndp@opendap.org>
+
+	Cmr catalog update (#711)
+	* Added Provider and Collection classes
+	* Refactored CMR search URL construction to support provider and collection search
+	* Sync
+	* Adding new json library, implmentation of Provider
+	* Added Collection and Provider class to cmr_module
+	* Dropped unsed code from CmrCatalog class
+	* Implmented to_string() methods for Provider and Collection classes
+	* A fragile  CMR catalog that detects providers and collections
+	* Comment update
+	* Unit tests are passing with the code based on the nlohmann/json library
+	* Dropping rapidjson from cmr_module
+	* updated regression tests baselines
+	* Better errors, temporal works
+	* Working on dap access links
+	* Creating umm based GranuleUMM object for better link processing.
+	* More refinemnts on CmrApi and it'ss clients.
+	* More refinemnts on CmrApi and it'ss clients.
+	* Silent failure data granule url acquisition
+	* Fixed bad include in CmrAPi, simplifyed GranuleUMM::getCatalogItem()
+	* Added optional description element to CatalogItem
+	* Hooked up granule size in GranuleUMM
+	* Bigger integers in expression for terrabytes
+	* Moving changes from master into this branch
+	* Updating RemoteResource form master
+	* Updated baselines for node/item tests
+	* Fixed link dependencis in cmr_module_unit-tests
+	* dropping unsed file and modify production rules etc
+	* Working through build issues on travis.
+	* Working through build issues on travis.
+	* Working through build issues on travis.
+	* Adding new json lib, nlohmann, to EXTRA-DIST
+	* Added REMOVE_VERSIONS to AT_BESCMD_BINARY_DAP4_RESPONSE_TEST
+	* Updated dmrpp_module/tests baselines to erflect new remove version activities
+	* Updated cmr_module/tests baselines to reflect new remove version activities
+	* Updated fileout_netcdf/tests baselines to reflect new remove version activities
+	* Trying to sort our auto test macros
+	* Finally sorted out regex for version matching. Baselines adjusted...
+	* More baselines (s3 stuff)
+	* Added debugging and comments to GranuleUMM.cc
+	* More comments
+	* More comments etc
+	* Loopy code smells...
+	* Oh the const functions are go
+	* Mode smells
+	* Refactored the json utilities.
+	* Fixed get get/setSize implmentations.
+	* Renamed rjson_utils class and files to JsonUtils
+	* Trying uniq_ptr for memeory anagement
+	* Switched GranuleUmm to uniqe_ptr
+	* Fixing unit-tests/Makefile.am to include JsonUtils
+	* Protected inspections of json objects, add unique_ptr to all of the _products_ produced by CmrAPi
+	* More with the unique_ptrs
+	* Simplified setDapAccessURL
+	* Code Smells
+
+2022-12-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-882, adding the OMG file to the testsuite that checks the NASA files.
+
+	HYRAX-882, add the 0 size unlimited pure netcdf-4 dimension case to the testsuite.
+
+	HYRAX-882, add a test file to check if the hdf5 handler can handle the netCDF4 unlimited dimension when the size is 0.
+
+2022-12-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-882, add a netcdf testing file and the corresponding bescmd.
+
+2022-12-12  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-667
+
+2022-12-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, upgrade the code with  const, range auto and default according to sonar cloud.
+
+2022-12-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use const, auto and reduce some comments according to sonar cloud suggestions.
+
+2022-12-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto range-for loops,const etc. Many changes in HDF5GMCF.cc.
+
+2022-12-07  Nathan Potter  <ndp@opendap.org>
+
+	Httpd catalog update (#710)
+	* Add protections for empty string inputs
+	* Added more debugging output to tests.
+	* Updated remove version macro to handle ##.##.##-### formated versions
+	* Updated baselines to reflect the new and somewghat promiscuous replace version string macro
+	* Code correction
+
+2022-12-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-74 2022-12-07T18:36:14+0000
+
+2022-12-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto const and range-for-loop.
+
+2022-12-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, remove throw exception in the function declaration
+
+	hyrax-868, change the code to use the 64-bit integer stride/stop/start.
+
+2022-12-02  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #709 from OPENDAP/hyrax-880
+	Hyrax 880
+
+2022-12-02  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-67 2022-12-02T19:55:01+0000
+
+2022-12-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-880, add const to the catch exception parameter.
+
+2022-12-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-880, a little improvement for VESSyntaxUserError exception catch
+
+	HYRAX-880, move the catch of specific exception before the catch of general exceptions.
+
+2022-12-01  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #707 from OPENDAP/h4-clean-csmell
+	H4 clean csmell
+
+2022-12-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, correct a few minor code smells based on the latest sonar cloud analysis.
+
+2022-11-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, continue reducing code smells for the old HDF4 handler code. Mainly on const, constructor, auto, range-for loop  etc.
+
+2022-11-30  Dan Holloway  <d.holloway@opendap.org>
+
+	Merge pull request #708 from OPENDAP/dap2-bad-request-error
+	Dap2 bad request error
+
+2022-11-29  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, reduce many code smells especially the old code that doesn't use the HDF-EOS2 library.
+
+2022-11-29  dh-opendap  <dholloway@opendap.org>
+
+	Removed use of CE suggestion from DAP2 bad response error
+
+2022-11-28  dh-opendap  <dholloway@opendap.org>
+
+	Ready for PR
+
+	Merge branch 'master' into dap2-bad-request-error
+
+2022-11-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use range-for-loop, in-class initialization and const
+
+2022-11-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, in-class initializer and const
+
+2022-11-23  Sam Lloyd  <slloyd@opendap.org>
+	    Sam Lloyd  <slloyd@rocky8.Home>
+	    James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 730 (#705)
+	* added d4_tools.cc and *.h
+	* laptop change over push
+	* added more unit-tests
+	* d4tools unit-tests
+	* changes
+	* fileout_netcdf tests
+	* master merge changes
+	* Removed generated file from git.
+	* bugs and code smell fixes
+
+2022-11-23  myang6  <myang6@hdfgroup.org>
+
+	HRRAX-667, remove more code smell from old code.
+
+2022-11-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, remove code smells with const, auto, nullptr, default, override etc. features.
+
+2022-11-21  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into h4-clean-csmell
+
+	HYRAX-667, use nullptr, auto ,const etc. to reduce sonar cloud smells.
+
+2022-11-21  Dan Holloway  <d.holloway@opendap.org>
+	    dh-opendap  <dholloway@opendap.org>
+
+	Dap2 bad request error (#704)
+	Use BESSyntaxUserError to report variables that are incompatible with DAP2
+	Catch BESSyntaxUserError thrown from h5get
+	Updated BESSyntaxUserError message as per suggested in PR review
+
+2022-11-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #706 from OPENDAP/hyrax-869
+	Hyrax 869
+
+2022-11-21  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into h4-clean-csmell
+
+2022-11-20  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-869, add -lm to the configure.ac.
+
+2022-11-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-869, add a check to see if the HDF-EOS2 library exists.
+
+2022-11-17  dh-opendap  <dholloway@opendap.org>
+
+	Updated BESSyntaxUserError message as per suggested in PR review
+
+2022-11-17  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #703 from OPENDAP/hyrax-806
+	Hyrax 806
+
+2022-11-17  dh-opendap  <dholloway@opendap.org>
+
+	Mergeg branch 'master' into dap2-bad-request-error
+
+2022-11-17  James Gallagher  <jgallagher@opendap.org>
+
+	Remote Resources bug 2 (#701)
+	Fixes for a concurrency issue reported by NSIDC.
+	Removed the header caching and cached item expiration features from the
+	RemoteResource class. The headers were not being used, however, we will
+	need to address this issue in the future. The Expiration Issue needs to be addressed
+	before this code can go in production. We can test this patch in UAT to see
+	if the problem reported by NSIDC has been addressed.
+
+2022-11-17  dh-opendap  <dholloway@opendap.org>
+
+	Catch BESSyntaxUserError thrown from h5get
+
+	Use BESSyntaxUserError to report variables that are incompatible with DAP2
+
+2022-11-17  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-806, update NcML and fileout netCDF tests due to the use of libdap4's new escaping special character attribute routines in the HDF4 handler when the HDF-EOS2 library is not present
+
+2022-11-16  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-806, not escape the special characters for the attribute when the HDF4 handler is not configured with the HDF-EOS2.
+
+2022-11-16  dh-opendap  <dholloway@opendap.org>
+
+	all changes
+
+2022-11-16  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #700 from OPENDAP/hyrax-732
+	HYRAX-732, add two tests that handle special characters inside the at…
+
+2022-11-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-732, add two tests that handle special characters inside the attribute.
+
+2022-11-14  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-64 2022-11-14T22:55:41+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-61 2022-11-14T18:45:23+0000
+
+2022-11-08  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-59 2022-11-08T22:02:17+0000
+
+2022-11-07  James Gallagher  <jgallagher@opendap.org>
+
+	Reformatting only (#698)
+
+	Typo in configure.ac
+	[skip ci]
+
+	S3 signing (#695)
+	Added S3 URL signing when there are credentials
+	If the BES is configured with credentials for a given
+	URL (via conf file or env vars), they will be used to
+	sign a URL that matches those credentials.
+	Also added credentials.conf to gitignore
+	Added a test for S3 URL signing - works
+
+2022-11-04  James Gallagher  <jgallagher@opendap.org>
+
+	configure now fails if libdap is not found (#696)
+
+2022-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Rm gen file (#694)
+	Remove generated file bes_ngap_s3_creds.conf
+
+2022-11-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-859, adding two big data tests.
+
+	Merge branch 'master' into hyrax-859
+
+2022-10-31  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #693 from OPENDAP/hyrax-858
+	Hyrax 858
+
+2022-10-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-858, improve the check of floating point terminator according to Jame's suggestions.
+
+	Merge branch 'hyrax-858' into hyrax-859
+
+2022-10-31  James Gallagher  <jgallagher@opendap.org>
+
+	Initial commit of this branch - moved credential mgmt to bes/http (#692)
+	Moved credential mgmt to the http library
+	gmtime() --> gmtime_r()
+	Changes based on sonar scan suggestions
+
+2022-10-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-858, remove a code smell suggested by sonar cloud.
+
+	HYRAX-858, fix a bug in function equal_length(). It doesn't consider the case when vector of string size is 0
+
+	cannot use isnan() to check the NaN because of conflicting headers at CentOS 7
+
+	HYRAX-858, handle the mapping of nan to DAP attributes properly.
+
+2022-10-25  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-858, update NASA testsuites of fileout netCDF and HDF5 handler due to the recent enhancement of HDF-EOS5 support.
+
+	HYRAX-858, check in an HDF-EOS5 special character DMRPP test in the fileout netCDF module. Update the README etc.
+
+2022-10-25  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #691 from OPENDAP/hyrax-857
+	HYRAX-857, ensure the HDF-EOS5 variable and dimension names follow th…
+
+2022-10-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-857, forgot checking in the HDF5 testing files.
+
+	HYRAX-857, ensure the HDF-EOS5 variable and dimension names follow the CF conventions for the default option.
+
+2022-10-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #690 from OPENDAP/hyrax-779
+	Hyrax 779
+
+2022-10-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-779, remove an unused test in the valgrind testsuite and remove an unused paramemeter in a function.
+
+	HYRAX-779, remove a couple of code smells detected by sonar cloud. Also add news to the valgrind testsuite.
+
+2022-10-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-779, remove an unused baseline file.
+
+	HYRAX-779, remove comments, add tests to HDF5 handler and fileout netCDF.
+
+2022-10-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-779, map HDF-EOS5 dimensions to both DAP4 group and vars. A simple test works. Need more code clean-up and testings.
+
+2022-10-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-779, in the process of adding dimension name information to DAP4
+
+2022-10-17  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-779
+
+2022-10-17  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #689 from OPENDAP/hyrax-846
+	HYRAX-846, fix the attribute _fillvalue datatype mismatch issue for t…
+
+2022-10-17  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-779
+
+	HYRAX-779, add the code to read the structmetadata.
+
+2022-10-14  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-55 2022-10-14T22:59:59+0000
+
+2022-10-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-846, fix the attribute _fillvalue datatype mismatch issue for the netCDF classic model. signed 8-bit integer is supported, so it should not be changed.
+
+2022-10-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #688 from OPENDAP/hyrax-842
+	HYRAX-842, adding code and tests to change the special characters of …
+
+2022-10-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-842, remove one code smell detected by sonar cloud
+
+	HYRAX-842, forget adding two bescmd files.
+
+	HYRAX-842, adding code and tests to change the special characters of HDF-EOS5 object names.
+
+2022-10-12  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #687 from OPENDAP/hyrax-750
+	HYRAX-750, 1) add point, point series and single profile support 2) a…
+
+2022-10-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-750, remove a few code smells detected by sonar cloud.
+
+2022-10-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-750, Clean up code smell.
+
+2022-10-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-750, 1) add point, point series and single profile support 2) add scalar variable support 3) add vertical coordinate support 4) add tests
+
+2022-10-05  James Gallagher  <jgallagher@opendap.org>
+
+	Fonc string arrays (#686)
+	Optimize how fileout_netcdf handles string arrays
+	Added a switch to turn on/off the optimization.
+
+2022-10-05  Dan Holloway  <d.holloway@opendap.org>
+
+	Merge pull request #678 from OPENDAP/dap4-grid-functions
+	Dap4 grid functions
+
+2022-10-05  James Gallagher  <jgallagher@opendap.org>
+
+	Added another bescmd to the dmrpp_string_tests dir
+	[skip ci]
+
+2022-10-03  James Gallagher  <jgallagher@opendap.org>
+
+	Dmrpp string tests (#685)
+	Added DMR++ string test code for profiling and Refactor. I'm stopping here.
+
+2022-10-03  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-52 2022-10-03T19:33:55+0000
+
+2022-10-03  Orion Poplawski  <orion@nwra.com>
+
+	Use int32 type for temp_num_dim_attrs (#684)
+
+2022-09-28  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #683 from OPENDAP/hyrax-784
+	Hyrax 784
+
+2022-09-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-784, add CF DMR support for the feature to flatten the bounds CF attribute. Also updated the NASA baseline files for both HDF5 and fileout netCDF. The README of the handler is updated to reflect the update from 1.16.6 to the future 1.16.9.
+
+2022-09-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-784, 1) Make the CF bounds attribute value consistent with the changed variable names. 2) Add the tests for this change. 3) Update NASA tests.The OMI-Aura_L2-OMIAuraAER and S5PNRT das baseline files are updated.
+
+2022-09-25  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-804, add python code and the testing file for the CF bounds attribute handling.
+
+2022-09-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #682 from OPENDAP/hyrax_804
+	Hyrax 804
+
+2022-09-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-804, fix the distclean issue.
+
+2022-09-22  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-51 2022-09-22T21:52:48+0000
+
+2022-09-22  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax_804
+
+	HYRAX-804, add more tests for utf8 escaping tests. It tests das,ddx,dmr for both default and cf options. It also tests the dmr from dds and das for the cf option.
+
+2022-09-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #681 from OPENDAP/hyrax-816
+	Hyrax 816
+
+2022-09-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-804, add code for utf8 string handling, need to work more on DAP2 and tests.
+
+2022-09-20  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-816, make sure to fix the code in the right place
+
+2022-09-20  myang6  <myang6@hdfgroup.org>
+
+	 HYRAX-816, fix the netCDF handler memory leak
+
+2022-09-20  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #680 from OPENDAP/hfvhandler-377
+	Hfvhandler 377
+
+2022-09-20  myang6  <myang6@hdfgroup.org>
+
+	Check in the right .at file.
+
+	 temporarily turn off the utf_8 tests. This is the preparation for another ticket.
+
+	Merge branch 'master' into hfvhandler-377
+
+2022-09-19  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-48 2022-09-19T15:44:19+0000
+
+2022-09-18  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANLER-377, add the platform-dependent test.
+
+2022-09-16  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-377, add object memory cache tests for the HDF5 handler. Currently only testing DDS/DAS/DMR/DDX.
+
+2022-09-13  dh-opendap  <dholloway@opendap.org>
+
+	Set test to dap4 geogrid()
+
+2022-09-13  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-44 2022-09-13T17:12:59+0000
+
+2022-09-13  dh-opendap  <dholloway@opendap.org>
+
+	Reset dap4 grid() test to coads_climatology.nc
+
+2022-09-13  Nathan Potter  <ndp@opendap.org>
+
+	Fixed Length String Arrays with Compact Storage. Solution. (#679)
+	* Fixed Length String Arrays with Compact Storage. Solution.
+	* Updated string def in compact layout test data
+	* Cleaning up disabled code blocks.
+	* Adding test files
+	* Adding tests files
+	* Comments in testsuite.at
+	* Cleanup up a potential memory leak, comments
+
+2022-09-12  dh-opendap  <dholloway@opendap.org>
+
+	Set to test geogrid function
+
+	Updated to use new set_lat/lon_size methods
+
+	Resolving GridGeoConstraint.cc
+	Merge branch 'dap4-grid-functions' of https://github.com/opendap/bes into dap4-grid-functions
+
+	Resolving conflicts with master
+
+2022-09-12  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #677 from OPENDAP/hyrax-810
+	HYRAX-810, make build_dmrpp correct generate chunk info for the case …
+
+2022-09-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-810, address Jame's suggestions on the review and add a test for this change.
+
+2022-09-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-810, make build_dmrpp correct generate chunk info for the case when anetCDF-4 variable shares its name with a dimension.
+
+2022-09-11  Nathan Potter  <ndp@opendap.org>
+
+	More refactoring, no work on compact yet (#676)
+	* More refactoring, no work on compact yet
+	* Small code updates before merge
+
+2022-09-09  ndp-opendap  <ndp@opendap.org>
+
+	Fiddle some memory management calls in build_dmrpp
+
+	Minor updates to build_dmrpp refactor
+
+2022-09-09  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #674 from OPENDAP/hyrax-811
+	Hyrax 811
+
+2022-09-09  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-811
+
+	HYRAX-811, remove a comment line to make sonar cloud reduce one code smell. Also add tests for fileout netCDF to reflect the feature addressed by this ticket.
+
+2022-09-09  Nathan Potter  <ndp@opendap.org>
+
+	Build dmrpp refactor (#675)
+	* Starting refactor
+	* Refactor build_dmrpp_utl.cc, smaller code blocks
+	* Refactor build_dmrpp_utl.cc, smaller code blocks
+
+2022-09-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-811, for the CF option, handle the case when a non-coordinate variable name shares the same name as a dimension name. Testsuite is updated.
+
+	Merge branch 'hyrax-803' into hyrax-811
+
+2022-09-07  ndp-opendap  <ndp@opendap.org>
+
+	Added explanatory comments and dropped production of unused variable [skip ci]
+
+	Adding lidap4 numbers to olfs commit tag
+
+	more trigger an tag tweaking
+
+	More travis fiddle for tagging
+
+2022-09-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-42 2022-09-07T21:22:30+0000
+
+2022-09-07  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+2022-09-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-41 2022-09-07T21:03:35+0000
+
+2022-09-07  ndp-opendap  <ndp@opendap.org>
+
+	Adding version tag to travis builds.
+
+2022-09-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-40 2022-09-07T20:27:48+0000
+
+2022-09-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-803, add NASA tests for fileout netcdf.
+
+	HYRAX-803, update fileout netCDF testsuite to reflect the handling of the same var/dim name case.
+
+	HYRAX-803, update the testsuite etc for NASA files.
+
+	HYRAX-803, add code and tests to change the var name to netcdf-4 var name when the var name is the same as the dimension name.
+
+2022-09-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-803, add more testing files to the testsuite.
+
+2022-09-06  ndp-opendap  <ndp@opendap.org>
+
+	Triggering TravisCI
+
+2022-09-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-803, add the CDL file.
+
+2022-09-06  Nathan Potter  <ndp@opendap.org>
+	    myang6  <myang6@hdfgroup.org>
+
+	Dmrpp string arrays (#668)
+	This commit includes the code in support of HYRAX-653 and includes:
+	Code to detect fixed length string arrays and add the relevant information to the dmr++ by adding the element:
+	<dmrpp:FixedLengthStringArray string_length="###" pad="null | space"/>
+	Support for arrays of fixed length strings stored with either the Contiguous or Chunked layouts.
+	Support for arrays of fixed length strings stored in the Compact layout is not yet supported. (But will be soon)
+	Arrays of variable ;length strings are not yet supported.
+	* Add string handling code/files.
+	* Added simple Makefile for hdf5 dev code
+	* Reviewed PODAACs array of string issues and made a notes.md file.
+	* Add introduction to notes.md
+	* CMakeLists, structured output from h5_obj_addr_info, retired redundant code
+	* Added pad removal function
+	* Simplifying loops ala c++11
+	* resurrected read_str_vars.cc as read_str_vars_orig.cc from Kent's initial check-in
+	* Fixed broken String reads
+	* Comments
+	* Trying to set up fixed length string state in build_dmrpp.cc
+	* Identifying fixed length string arrays and apply appropriate state to DmrppArray and then using that state to produce a dmr++ file that contains said state.
+	* misc cleanup
+	* Updated baselines for FixLengthStringArray datasets
+	* Dropping exception for unknown state.
+	* Updating offset and size (ons) code
+	* Simplified constructor defs
+	* Syncing... DmrppMetadataTest still broken. Retired DmrppParserSax2
+	* Cleaning up MDA mess
+	* Fixed broken tests
+	* Added read code for fixed length string arrays
+	* Added first string array test (broken) and tests data files
+	* Working for 1D arrays of fixed length strings
+	* Add full dap test for arrays of fixed length strings
+	* Added tests for contiguous array of fixed length strings
+	* Added tests for contiguous, chunked, and ctsr style hdf5 strings
+	* Fixing macro def for HEX
+	* Removed unnecessary local variable
+	* Fiddle dmrpp paths
+	* Updating string array baselines
+	* tests work except the chunked scalar variable is reporting too many chars
+	* Fixed distcheck issue, still failing for scalar strings
+	* I think I fixed a bug in DmrppStr in which the data were not being QC'd
+	* Packed up thg dev code.
+	* Update .gitignore [skip ci]
+
+2022-09-06  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #672 from OPENDAP/hyrax-695
+	Hyrax 695
+
+2022-09-02  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-37 2022-09-02T17:55:23+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-35 2022-09-02T15:44:51+0000
+
+2022-09-01  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-34 2022-09-01T22:21:28+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.20.11-33 2022-09-01T21:56:44+0000
+
+2022-09-01  ndp-opendap  <ndp@opendap.org>
+
+	Updating ChangeLog for bes-3.20.13-52 (hyrax-1.16.8-25) [skip ce]
 	
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ##  bes-3.20.13-52
