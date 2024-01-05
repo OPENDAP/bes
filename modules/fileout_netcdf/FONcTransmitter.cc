@@ -144,6 +144,10 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
     catch (const Error &e) {
         throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
+    catch (const BESError &e) {
+        BESDEBUG(MODULE,  prolog << "Caught BESError. Message " << e.get_verbose_message() << endl);
+        throw;
+    }
     catch (const std::exception &e) {
         throw BESInternalError(prolog + "Failed to read data! Caught std::exception. Message; " + string(e.what()), __FILE__, __LINE__);
     }
@@ -219,6 +223,10 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     // Thus, we do not need to catch BESError here because it's already what we want.
     catch (const Error &e) {
         throw BESDapError(prolog + "Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+    }
+    catch (const BESError &e) {
+        BESDEBUG(MODULE,  prolog << "Caught BESError. Message " << e.get_verbose_message() << endl);
+        throw;
     }
     catch (const std::exception &e) {
         throw BESInternalError(prolog + "Failed to read data! Caught std::exception. Message: " + string(e.what()), __FILE__, __LINE__);
