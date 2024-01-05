@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=builddmrpp_module
-M_VER=1.0.0
+M_VER=1.0.1
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
 -I$(top_srcdir)/http -I$(top_srcdir)/modules/ngap_module $(DAP_CFLAGS)

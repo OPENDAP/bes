@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=hdf5_handler
-M_VER=1.16.7
+M_VER=1.16.8
 
 GCTP_LIBS=gctp/src/libGctp.a
 GCTP_CPPFLAGS=-I gctp/include

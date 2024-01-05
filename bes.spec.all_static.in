@@ -17,8 +17,6 @@
 Name:           bes
 Version:        @PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@.@PACKAGE_PATCH_VERSION@
 Release:        @PACKAGE_BUILD_NUMBER@.static%{?dist}
-# Version:        3.20.8
-# Release:        1.static%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
@@ -28,10 +26,11 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.20.11
+Requires:       libdap >= 3.21.0
 Requires:       readline bzip2 zlib
 Requires:	    libicu >= 3.6 
-Requires:       libxml2 >= 2.7.0
+Requires:       libxml2 >= 2.9.0
+Requires:       libcurl >= 7.61.0
 Requires:       openssl
 
 # Requires:	netcdf >= 4.1 
@@ -45,10 +44,11 @@ Requires:       openssl
 
 Requires(pre):  shadow-utils
 
-BuildRequires:  libdap-devel >= 3.20.10
+BuildRequires:  libdap-devel >= 3.21.0
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
-BuildRequires:  libxml2-devel >= 2.7.0
+BuildRequires:  libxml2-devel >= 2.9.0
+BuildRequires:  libcurl-devel >= 7.61.0
 BuildRequires:	libicu-devel >= 3.6
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
@@ -76,7 +76,7 @@ in the standard + EPEL repos.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.20.7
+Requires:       libdap-devel >= 3.21.0
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
