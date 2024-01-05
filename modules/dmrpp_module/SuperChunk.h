@@ -97,7 +97,8 @@ public:
 
     virtual bool empty(){ return d_chunks.empty(); }
 
-    std::vector<std::shared_ptr<Chunk>> get_chunks() { return d_chunks; }
+    // @deprecated
+    // std::vector<std::shared_ptr<Chunk>> get_chunks() { return d_chunks; }
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;
