@@ -42,6 +42,8 @@ class DmrppArray;
  *
  */
 class SuperChunk {
+    friend class SuperChunkTest;
+
 private:
     std::string d_id;
     DmrppArray *d_parent_array;
@@ -96,9 +98,6 @@ public:
     virtual void process_child_chunks_unconstrained();
 
     virtual bool empty(){ return d_chunks.empty(); }
-
-    // @deprecated
-    // std::vector<std::shared_ptr<Chunk>> get_chunks() { return d_chunks; }
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;
