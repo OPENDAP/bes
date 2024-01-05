@@ -295,3 +295,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/d_size8_large_chunk.h5.dm
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic_comp_no_dio.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/swath_wrong_dim_rp.nc.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd)
+
+#Structure support
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/ref_tst_compounds.nc.dap2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar.h5.dmrpp.bescmd)
