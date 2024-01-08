@@ -3,7 +3,7 @@
     <getDODS>
         <BESError>
             <Type>1</Type>
-            <Message>FONcTransmitter::send_dap2_data() - Failed to read data! Caught std::exception. Message; fileout_netcdf: The datatype of this variable 's1.s2.ui32a' is not supported. It is very possible that you try to obtain a netCDF file that follows the netCDF classic model. The unsigned 32-bit integer and signed/unsigned 64-bit integer are not supported by the netCDF classic model. Downloading this file as the netCDF-4 file that follows the netCDF enhanced model should solve the problem.</Message>
+            <Message>fileout_netcdf: The datatype of this variable 's1.s2.ui32a' is not supported. It is very possible that you try to obtain a netCDF file that follows the netCDF classic model. The unsigned 32-bit integer and signed/unsigned 64-bit integer are not supported by the netCDF classic model. Downloading this file as the netCDF-4 file that follows the netCDF enhanced model should solve the problem.</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
                 removed file
