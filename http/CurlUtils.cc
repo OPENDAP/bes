@@ -1819,8 +1819,8 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http
     bool success = false;
 
     while ( !success && ( attempt < retry_limit ) ) {
-        success = gru_mk_attempt(origin_url,attempt, retry_limit, redirect_url);
         attempt++;
+        success = gru_mk_attempt(origin_url,attempt, retry_limit, redirect_url);
     }
     // This is a failsafe test - the gru_mk_attempt)_ should detect the errors and throw an exception
     // if the attempt count exceeds the retry_limit, but if for some reason there's flaw in that
