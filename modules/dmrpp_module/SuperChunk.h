@@ -42,9 +42,9 @@ class DmrppArray;
  *
  */
 class SuperChunk {
+// private
     friend class SuperChunkTest;
 
-private:
     std::string d_id;
     DmrppArray *d_parent_array;
     std::shared_ptr<http::url> d_data_url;
@@ -79,12 +79,10 @@ public:
     virtual unsigned long long get_offset() const { return d_offset; }
 
     virtual void read() {
-        // retrieve_data(); // TODO process_child_chunks() also calls retrieve_data(). jhrg 5/9/22
         process_child_chunks();
     }
 
     virtual void read_unconstrained() {
-        // retrieve_data();    // TODO process_child_chunks_unconstrained() also calls retrieve_data(). jhrg 5/9/22
         process_child_chunks_unconstrained();
     }
 
