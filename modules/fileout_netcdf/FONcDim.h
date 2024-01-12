@@ -49,13 +49,17 @@ private:
     int				_dimid ;
     bool			_defined ;
     int				_ref ;
+    int             _struct_ref;
 public:
     				FONcDim( const std::string &name, int64_t size ) ;
     virtual			~FONcDim() {}
     virtual void		incref() { _ref++ ; }
     virtual void		decref() ;
+    virtual void		struct_incref() { _struct_ref++ ; }
+    virtual void		struct_decref() ;
 
     virtual void		define( int ncid ) ;
+    virtual void		define_struct( int ncid ) ;
 
     virtual std::string	name() { return _name ; }
     virtual int64_t		size() { return _size ; }
@@ -66,6 +70,7 @@ public:
     virtual void		dump( std::ostream &strm ) const ;
 
     static int			DimNameNum ;
+    static int          StructDimNameNum;
 } ;
 
 #endif // FONcDim_h_

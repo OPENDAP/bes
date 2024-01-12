@@ -32,6 +32,7 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <libdap/Array.h>
+#include <libdap/util.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
 
@@ -40,6 +41,7 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
+vector<FONcDim *> FONcArrayStructureField::SDimensions;
 /** @brief Constructor for FOncInt that takes a DAP Int32 or UInt32
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
@@ -48,13 +50,59 @@
  * @param b A DAP BaseType that should be an int32 or uint32
  * @throws BESInternalError if the BaseType is not an Int32 or UInt32
  */
-FONcArrayStructureField::FONcArrayStructureField( BaseType *b )
+FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
     : FONcBaseType()
 {
-    d_a = dynamic_cast<Array *>(b);
-    if (!d_a) {
-        string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
+    // We only support one-layer of simple int/float array or scalar fields inside an array of structure now.
+    Type b_data_type = b->type();
+    Type supported_atomic_data_type = b_data_type;
+    if(b_data_type == libdap::dods_array_c)
+        supported_atomic_data_type = b->var()->type();
+    if (!is_simple_type(supported_atomic_data_type) || supported_atomic_data_type == dods_str_c
+        || supported_atomic_data_type == dods_url_c
+        || supported_atomic_data_type == dods_enum_c || supported_atomic_data_type ==dods_opaque_c) {
+        string s = "File out netcdf, only support one-layer of simple int/float fields inside an array of structure.";
         throw BESInternalError(s, __FILE__, __LINE__);
+    }
+
+    d_a = dynamic_cast<Array *>(a);
+    if (!d_a) {
+        string s = "File out netcdf, FONcArrayStructField was passed a variable that is not a DAP Array";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+    d_varname = b->name();
+    if (b_data_type == libdap::dods_array_c)
+        d_array_type = FONcUtils::get_nc_type(b->var(), isNetCDF4_ENHANCED());
+    else
+        d_array_type = FONcUtils::get_nc_type(b, isNetCDF4_ENHANCED());
+
+    // Need to retrieve dimension information here.
+    // In this version, we only try to get the dimension size right.
+    Array::Dim_iter di = d_a->dim_begin();
+    Array::Dim_iter de = d_a->dim_end();
+    for (; di != de; di++) {
+        int64_t size = d_a->dimension_size_ll(di, true);
+        struct_dim_sizes.push_back(size);
+        total_nelements *= size;
+        FONcDim *use_dim = find_sdim(d_a->dimension_name(di), size);
+        struct_dims.push_back(use_dim);
+    }
+    if (b_data_type == libdap::dods_array_c) {
+        auto db_a = dynamic_cast<Array *>(b);
+        if (!db_a){
+            string s = "File out netcdf, FONcArrayStructField was passed a variable that is not a DAP Array";
+            throw BESInternalError(s, __FILE__, __LINE__);
+        }
+        Array::Dim_iter b_di = db_a->dim_begin();
+        Array::Dim_iter b_de = db_a->dim_end();
+        for (; b_di != b_de; b_di++) {
+            int64_t size = d_a->dimension_size_ll(b_di, true);
+            struct_dim_sizes.push_back(size);
+            total_nelements *= size;
+            field_nelements *= size;
+            FONcDim *use_dim = find_sdim(db_a->dimension_name(b_di), size);
+            struct_dims.push_back(use_dim);
+        }
     }
 
 }
@@ -68,6 +116,10 @@ FONcArrayStructureField::~FONcArrayStructureField()
 {
 }
 
+void FONcArrayStructureField::convert(vector<string> embed, bool _dap4, bool is_dap4_group){
+    var_name = FONcUtils::gen_name(embed,d_varname, d_orig_varname);
+
+}
 void
 FONcArrayStructureField::convert_asf( std::vector<std::string> embed) {
 
@@ -87,6 +139,32 @@ FONcArrayStructureField::convert_asf( std::vector<std::string> embed) {
 void
 FONcArrayStructureField::define( int ncid )
 {
+    BESDEBUG("fonc", "FONcArray::define() - defining array '" << d_varname << "'" << endl);
+
+    if (!d_defined) {
+
+        BESDEBUG("fonc", "FONcArray::define() - defining array of structure field: " << d_varname << "'" << endl);
+        vector<FONcDim *>::iterator i = struct_dims.begin();
+        vector<FONcDim *>::iterator e = struct_dims.end();
+        for (; i != e; i++) {
+            FONcDim *fd = *i;
+            fd->define_struct(ncid);
+            d_dim_ids.push_back(fd->dimid());
+            BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
+        }
+
+        int stax = nc_def_var(ncid, var_name.c_str(), d_array_type, (int)(struct_dims.size()), d_dim_ids.data(), &d_varid);
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+
+        stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, NULL );
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+    }
 }
 
 /** @brief Write the int out to the netcdf file
@@ -120,6 +198,35 @@ nc_type
 FONcArrayStructureField::type()
 {
     return d_array_type;
+}
+
+FONcDim *
+FONcArrayStructureField::find_sdim(const string &name, int64_t size) {
+
+    FONcDim *ret_dim = nullptr;
+    vector<FONcDim *>::iterator i = FONcArrayStructureField::SDimensions.begin();
+    vector<FONcDim *>::iterator e = FONcArrayStructureField::SDimensions.end();
+    for (; i != e && !ret_dim; i++) {
+        if (!((*i)->name().empty()) && ((*i)->name() == name)) {
+            if ((*i)->size() == size) {
+                ret_dim = (*i);
+            }
+            else {
+                string err = "fileout_netcdf: dimension found with the same name, but different size";
+                throw BESInternalError(err, __FILE__, __LINE__);
+            }
+        }
+    }
+
+    if (!ret_dim) {
+        ret_dim = new FONcDim(name, size);
+        FONcArrayStructureField::SDimensions.push_back(ret_dim);
+    }
+    else {
+        ret_dim->struct_incref();
+    }
+
+    return ret_dim;
 }
 
 /** @brief dumps information about this object for debugging purposes

@@ -62,22 +62,22 @@ FONcArrayStructure::FONcArrayStructure(BaseType *b) :
 FONcArrayStructure::~FONcArrayStructure()
 {
 
-#if 0
+//#if 0
     bool done = false;
     while (!done) {
-        vector<FONcBaseType *>::iterator i = _vars.begin();
-        vector<FONcBaseType *>::iterator e = _vars.end();
+        vector<FONcArrayStructureField *>::iterator i = _vars.begin();
+        vector<FONcArrayStructureField *>::iterator e = _vars.end();
         if (i == e) {
             done = true;
         }
         else {
             // These are the FONc types, not the actual ones
-            FONcBaseType *b = (*i);
+            FONcArrayStructureField *b = (*i);
             delete b;
             _vars.erase(i);
         }
     }
-#endif
+//#endif
 
 }
 
@@ -99,29 +99,43 @@ FONcArrayStructure::~FONcArrayStructure()
  * @throws BESInternalError if there is a problem converting this
  * structure
  */
-void FONcArrayStructure::convert_as(vector<string> embed)
-{
-#if 0
+void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_group){
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
     embed.push_back(name());
-    Constructor::Vars_iter vi = _s->var_begin();
-    Constructor::Vars_iter ve = _s->var_end();
+
+    Structure* as_v = dynamic_cast<Structure *>(_as->var());
+    if (!as_v) {
+        string s = (string) "File out netcdf, write an array of structure was passed a " + "variable that is not a structure";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+
+    if (false == isNetCDF4_ENHANCED()) {
+        throw BESInternalError("Fileout netcdf: We don't support array of structure for the classical model now. ",
+                               __FILE__, __LINE__);
+    }
+
+    Constructor::Vars_iter vi = as_v->var_begin();
+    Constructor::Vars_iter ve = as_v->var_end();
     for (; vi != ve; vi++) {
         BaseType *bt = *vi;
         if (bt->send_p()) {
             BESDEBUG("fonc", "FONcArrayStructure::convert - converting " << bt->name() << endl);
-            bool is_classic_model = true;
-            if(true == isNetCDF4_ENHANCED())
-                is_classic_model = false;
-            FONcBaseType *fbt = FONcUtils::convert(bt, this->d_ncVersion, is_classic_model);
+
+            FONcArrayStructureField *fsf = new FONcArrayStructureField(bt, _as);
+            //FONcBaseType *fbt = FONcUtils::convert(bt, this->d_ncVersion, is_classic_model);
             //fbt->setVersion(this->_ncVersion);
             //if(true == isNetCDF4())
             //    fbt->setNC4DataModel(this->_nc4_datamodel);
-            _vars.push_back(fbt);
-            fbt->convert(embed,_dap4,is_dap4_group);
+            _vars.push_back(fsf);
+            fsf->convert(embed,_dap4,is_dap4_group);
         }
     }
-#endif
+
+}
+void FONcArrayStructure::convert_as(vector<string> embed)
+{
+
+
 }
 
 /** @brief Define the members of the structure in the netcdf file
@@ -142,13 +156,13 @@ void FONcArrayStructure::convert_as(vector<string> embed)
 void FONcArrayStructure::define(int ncid)
 {
 
-#if 0
+//#if 0
     if (!d_defined) {
         BESDEBUG("fonc", "FONcArrayStructure::define - defining " << d_varname << endl);
-        vector<FONcBaseType *>::const_iterator i = _vars.begin();
-        vector<FONcBaseType *>::const_iterator e = _vars.end();
+        vector<FONcArrayStructureField *>::const_iterator i = _vars.begin();
+        vector<FONcArrayStructureField *>::const_iterator e = _vars.end();
         for (; i != e; i++) {
-            FONcBaseType *fbt = (*i);
+            FONcArrayStructureField *fbt = (*i);
             BESDEBUG("fonc", "defining " << fbt->name() << endl);
             fbt->define(ncid);
         }
@@ -157,7 +171,7 @@ void FONcArrayStructure::define(int ncid)
 
         BESDEBUG("fonc", "FONcArrayStructure::define - done defining " << d_varname << endl);
     }
-#endif
+//#endif
 
 }
 

@@ -60,7 +60,14 @@ private:
     // The type of data stored in the array
     nc_type d_array_type = NC_NAT;
     string var_name;
+    int d_ndims = 0;
+    std::vector<FONcDim *> struct_dims;
+    vector<size_t> struct_dim_sizes;
+    size_t total_nelements = 1;
+    size_t field_nelements = 1;
 
+    // The netcdf dimension ids for this array
+    std::vector<int> d_dim_ids{};
 #if 0
     // The number of dimensions to be stored in netcdf (if string, 2)
     int d_ndims = 0;
@@ -133,11 +140,13 @@ private:
     friend class FONcArrayStructureFieldTest;
 #endif
 
+    FONcDim * find_sdim(const std::string &name, int64_t size);
 public:
 
-    explicit FONcArrayStructureField(libdap::BaseType *b);
+    explicit FONcArrayStructureField(libdap::BaseType *b, libdap::Array* a);
     ~FONcArrayStructureField() override;
 
+    virtual void convert(vector<string> embed, bool _dap4=true, bool is_dap4_group=false);
     void convert_asf(std::vector<std::string> embed);
     virtual void define(int ncid) override;
     virtual void write(int ncid) override;
@@ -149,7 +158,7 @@ public:
 
     virtual void dump(std::ostream &strm) const override;
 
-    static std::vector<FONcDim *> Dimensions;
+    static std::vector<FONcDim *> SDimensions;
 
 #if 0
 
