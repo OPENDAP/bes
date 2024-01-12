@@ -100,6 +100,7 @@ FONcArrayStructure::~FONcArrayStructure()
  * structure
  */
 void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_group){
+    set_is_dap4(_dap4);
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
     embed.push_back(name());
 
@@ -185,6 +186,22 @@ void FONcArrayStructure::define(int ncid)
 void FONcArrayStructure::write(int ncid)
 {
 
+#if 0
+    if (d_is_dap4)
+        _s->intern_data();
+    else
+        _s->intern_data(*get_eval(),*get_dds());
+#endif
+
+    if (d_is_dap4)
+        _as->intern_data();
+    BESDEBUG("fonc", "FONcArrayStructure::write - writing " << d_varname << endl);
+
+    for (const auto &var:_vars) {
+
+        var->write(ncid);
+        //nc_sync(ncid);
+    }
 #if 0
     if (d_is_dap4) 
         _s->intern_data();

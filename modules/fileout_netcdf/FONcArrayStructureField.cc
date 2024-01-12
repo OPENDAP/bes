@@ -32,6 +32,7 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <libdap/Array.h>
+#include <libdap/Structure.h>
 #include <libdap/util.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
@@ -71,11 +72,14 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
         throw BESInternalError(s, __FILE__, __LINE__);
     }
     d_varname = b->name();
-    if (b_data_type == libdap::dods_array_c)
+    if (b_data_type == libdap::dods_array_c) {
         d_array_type = FONcUtils::get_nc_type(b->var(), isNetCDF4_ENHANCED());
-    else
+        d_array_type_size = b->var()->width_ll();
+    }
+    else {
         d_array_type = FONcUtils::get_nc_type(b, isNetCDF4_ENHANCED());
-
+        d_array_type_size = b->width_ll();
+    }
     // Need to retrieve dimension information here.
     // In this version, we only try to get the dimension size right.
     Array::Dim_iter di = d_a->dim_begin();
@@ -178,6 +182,39 @@ void
 FONcArrayStructureField::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcArrayStructureField::write for var " << d_varname << endl ) ;
+
+    vector<char> data_buf;
+    data_buf.resize(total_nelements*d_array_type_size);
+    vector<BaseType*> compound_buf = d_a->get_compound_buf();
+    for (unsigned i= 0; i<d_a->length_ll();i++) {
+        BaseType *cb = compound_buf[i];
+        if (cb->type()!=libdap::dods_structure_c){
+            throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
+        }
+        Structure* structure_elem = dynamic_cast<Structure *>(cb);
+        if (!structure_elem)
+            throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
+        //loop through the structure
+
+        Constructor::Vars_iter vi = structure_elem->var_begin();
+        Constructor::Vars_iter ve = structure_elem->var_end();
+        for (; vi != ve; vi++) {
+            BaseType *bt = *vi;
+            if (bt->send_p()) {
+
+                if (bt->name() == d_varname) {
+                    if (bt->type() == libdap::dods_array_c) {
+                        Array *memb_array = dynamic_cast<Array *>(cb);
+                        char *buf = memb_array->get_buf();
+
+                    } else {// Need to switch to different data types
+
+                    }
+                }
+            }
+        }
+
+    }
 }
 
 /** @brief returns the name of the DAP Int32 or UInt32
