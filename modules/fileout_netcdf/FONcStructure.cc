@@ -160,6 +160,12 @@ void FONcStructure::define(int ncid)
  */
 void FONcStructure::write(int ncid)
 {
+
+    if (d_is_dap4) 
+        _s->intern_data();
+    else 
+        _s->intern_data(*get_eval(),*get_dds());
+
     BESDEBUG("fonc", "FONcStructure::write - writing " << d_varname << endl);
     vector<FONcBaseType *>::const_iterator i = _vars.begin();
     vector<FONcBaseType *>::const_iterator e = _vars.end();
