@@ -74,11 +74,11 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
     d_varname = b->name();
     if (b_data_type == libdap::dods_array_c) {
         d_array_type = FONcUtils::get_nc_type(b->var(), isNetCDF4_ENHANCED());
-        d_array_type_size = b->var()->width_ll();
+        d_array_type_size = (b->var()->width_ll())/(b->var()->length_ll());
     }
     else {
         d_array_type = FONcUtils::get_nc_type(b, isNetCDF4_ENHANCED());
-        d_array_type_size = b->width_ll();
+        d_array_type_size = (b->width_ll())/(b->length_ll());
     }
     // Need to retrieve dimension information here.
     // In this version, we only try to get the dimension size right.
@@ -185,6 +185,7 @@ FONcArrayStructureField::write( int ncid )
 
     vector<char> data_buf;
     data_buf.resize(total_nelements*d_array_type_size);
+    char* data_buf_ptr = data_buf.data();
     vector<BaseType*> compound_buf = d_a->get_compound_buf();
     for (unsigned i= 0; i<d_a->length_ll();i++) {
         BaseType *cb = compound_buf[i];
@@ -204,8 +205,17 @@ FONcArrayStructureField::write( int ncid )
 
                 if (bt->name() == d_varname) {
                     if (bt->type() == libdap::dods_array_c) {
-                        Array *memb_array = dynamic_cast<Array *>(cb);
+                        Array *memb_array = dynamic_cast<Array *>(bt);
+                        if (!memb_array)
+                            throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
                         char *buf = memb_array->get_buf();
+                        size_t memb_array_size = memb_array->width_ll();
+                        // fill in the data_buf.
+                        memcpy(data_buf_ptr, buf, memb_array_size);
+                        BESDEBUG("fonc","memb_array_length is "<<memb_array->length_ll()<<endl);
+                        BESDEBUG("fonc","memb_array_type is "<<memb_array->width_ll()<<endl);
+                        BESDEBUG("fonc","memb_array_size is "<<memb_array_size<<endl);
+                        data_buf_ptr +=memb_array_size;
 
                     } else {// Need to switch to different data types
 

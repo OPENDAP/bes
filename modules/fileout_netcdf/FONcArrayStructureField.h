@@ -66,7 +66,6 @@ private:
     size_t total_nelements = 1;
     size_t field_nelements = 1;
     size_t d_array_type_size;
-
     // The netcdf dimension ids for this array
     std::vector<int> d_dim_ids{};
 #if 0
