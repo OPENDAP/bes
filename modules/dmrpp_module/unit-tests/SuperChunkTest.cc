@@ -252,7 +252,7 @@ public:
                 word_this.retrieve_data();
                 char target_this[] = "This";
                 size_t letter_index=0;
-                for(const auto& chunk: word_this.get_chunks()) {
+                for(const auto& chunk: word_this.d_chunks) {
                     DBG(cerr << prolog << "Checking chunk for target char '"<< target_this[letter_index] << "'" << endl);
                     DBG(cerr << prolog << "chunk->get_is_read(): "<< (chunk->get_is_read()?"true":"false") << endl);
                     CPPUNIT_ASSERT(chunk->get_is_read());
@@ -282,7 +282,7 @@ public:
                 word_is.retrieve_data();
                 char target_is[] = "is";
                 letter_index=0;
-                for(const auto& chunk: word_is.get_chunks()) {
+                for(const auto& chunk: word_is.d_chunks) {
                     DBG(cerr << prolog << "Checking chunk for target char '"<< target_is[letter_index] << "'" << endl);
                     DBG(cerr << prolog << "chunk->get_is_read(): "<< (chunk->get_is_read()?"true":"false") << endl);
                     CPPUNIT_ASSERT(chunk->get_is_read());
