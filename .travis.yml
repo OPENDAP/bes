@@ -183,6 +183,7 @@ jobs:
 
     - stage: scan
       name: "scan bes"
+      jdk: openjdk17
       script:
       - export BES_BUILD=sonar-bes-framework
       - autoreconf --force --install --verbose
@@ -200,6 +201,7 @@ jobs:
 
     - stage: scan
       name: "scan bes-modules-1"
+      jdk: openjdk17
       script:
         - export BES_BUILD=sonar-bes-modules
         - autoreconf --force --install --verbose
@@ -216,6 +218,7 @@ jobs:
 
     - stage: scan
       name: "scan bes-hdf-handlers"
+      jdk: openjdk17
       script:
         - export BES_BUILD=sonar-bes-hdf-handlers
         - autoreconf --force --install --verbose
