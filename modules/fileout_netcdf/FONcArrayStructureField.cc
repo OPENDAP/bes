@@ -33,6 +33,16 @@
 #include <BESDebug.h>
 #include <libdap/Array.h>
 #include <libdap/Structure.h>
+#include <libdap/Byte.h>
+#include <libdap/Int8.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
+#include <libdap/Int64.h>
+#include <libdap/UInt16.h>
+#include <libdap/UInt32.h>
+#include <libdap/UInt64.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
 #include <libdap/util.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
@@ -218,15 +228,92 @@ FONcArrayStructureField::write( int ncid )
                         data_buf_ptr +=memb_array_size;
 
                     } else {// Need to switch to different data types
-
+                        obtain_scalar_data(data_buf_ptr,bt);
+                        data_buf_ptr += d_array_type_size;
                     }
                 }
             }
         }
-
+    }
+    int stax = nc_put_var(ncid, d_varid, (void*)data_buf.data());
+    if (stax != NC_NOERR) {
+        string err = "fileout.netcdf - cannot write the array of structure members " + d_varname;
+        FONcUtils::handle_error(stax , err, __FILE__, __LINE__);
     }
 }
 
+void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b) {
+
+    switch (b->type()) {
+
+        case dods_uint8_c:
+        case dods_byte_c: {
+            auto byte_var = dynamic_cast<Byte *>(b);
+            uint8_t byte_value = byte_var->value();
+            memcpy(data_buf_ptr,(void*)&byte_value,d_array_type_size);
+            break;
+        }
+        case dods_int8_c: {
+            auto int8_var = dynamic_cast<Int8 *>(b);
+            int8_t int8_value = int8_var->value();
+            memcpy(data_buf_ptr,(void*)&int8_value,d_array_type_size);
+            break;
+        }
+
+        case dods_uint16_c: {
+            auto uint16_var = dynamic_cast<UInt16 *>(b);
+            uint16_t uint16_value = uint16_var->value();
+            memcpy(data_buf_ptr,(void*)&uint16_value,d_array_type_size);
+            break;
+        }
+        case dods_int16_c: {
+            auto int16_var = dynamic_cast<Int16 *>(b);
+            int16_t int16_value = int16_var->value();
+            memcpy(data_buf_ptr, (void *) &int16_value, d_array_type_size);
+            break;
+        }
+        case dods_uint32_c: {
+            auto uint32_var = dynamic_cast<UInt32 *>(b);
+            uint32_t uint32_value = uint32_var->value();
+            memcpy(data_buf_ptr,(void*)&uint32_value,d_array_type_size);
+            break;
+        }
+        case dods_int32_c: {
+            auto int32_var = dynamic_cast<Int32 *>(b);
+            int32_t int32_value = int32_var->value();
+            memcpy(data_buf_ptr, (void *) &int32_value, d_array_type_size);
+            break;
+        }
+        case dods_uint64_c: {
+            auto uint64_var = dynamic_cast<UInt64 *>(b);
+            uint64_t uint64_value = uint64_var->value();
+            memcpy(data_buf_ptr,(void*)&uint64_value,d_array_type_size);
+            break;
+        }
+        case dods_int64_c: {
+            auto int64_var = dynamic_cast<Int64 *>(b);
+            int64_t int64_value = int64_var->value();
+            memcpy(data_buf_ptr,(void*)&int64_value,d_array_type_size);
+            break;
+        }
+        case dods_float32_c: {
+            auto float32_var = dynamic_cast<Float32 *>(b);
+            float float32_value = float32_var->value();
+            memcpy(data_buf_ptr,(void*)&float32_value,d_array_type_size);
+            break;
+        }
+        case dods_float64_c: {
+            auto float64_var = dynamic_cast<Float64 *>(b);
+            double float64_value = float64_var->value();
+            memcpy(data_buf_ptr,(void*)&float64_value,d_array_type_size);
+            break;
+        }
+        default:
+            string err = (string) "file out netcdf structure array: Only support int/float types";
+            throw BESInternalError(err, __FILE__, __LINE__);
+    }
+
+}
 /** @brief returns the name of the DAP Int32 or UInt32
  *
  * @returns The name of the DAP Int32 or UInt32

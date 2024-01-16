@@ -68,6 +68,7 @@ private:
     size_t d_array_type_size;
     // The netcdf dimension ids for this array
     std::vector<int> d_dim_ids{};
+
 #if 0
     // The number of dimensions to be stored in netcdf (if string, 2)
     int d_ndims = 0;
@@ -141,6 +142,7 @@ private:
 #endif
 
     FONcDim * find_sdim(const std::string &name, int64_t size);
+    void obtain_scalar_data(char *data_buf_ptr, libdap::BaseType* b);
 public:
 
     explicit FONcArrayStructureField(libdap::BaseType *b, libdap::Array* a);
