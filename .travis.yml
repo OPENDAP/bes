@@ -21,6 +21,7 @@ vm:
 
 language: cpp
 compiler: gcc
+jdk: openjdk17
 
 branches:
   only:
@@ -33,6 +34,7 @@ branches:
 cache:
   directories:
     - ./.cache/sonar/
+    -
 
 addons:
   sonarcloud: true
