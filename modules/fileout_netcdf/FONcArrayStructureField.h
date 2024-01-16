@@ -60,7 +60,9 @@ private:
     // The type of data stored in the array
     nc_type d_array_type = NC_NAT;
     string var_name;
+#if 0
     int d_ndims = 0;
+#endif
     std::vector<FONcDim *> struct_dims;
     vector<size_t> struct_dim_sizes;
     size_t total_nelements = 1;

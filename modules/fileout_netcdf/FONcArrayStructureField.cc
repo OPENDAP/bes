@@ -29,6 +29,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cstring>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <libdap/Array.h>
