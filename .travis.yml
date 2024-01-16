@@ -34,7 +34,6 @@ branches:
 cache:
   directories:
     - ./.cache/sonar/
-    -
 
 addons:
   sonarcloud: true
