@@ -2,32 +2,26 @@
 
 // This file is part of BES Netcdf File Out Module
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// // Copyright (c) The HDF Group, Inc. and OPeNDAP, Inc.
 //
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
 //
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820
 
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cstring>
 #include <BESInternalError.h>
@@ -54,13 +48,15 @@
 #include "FONcAttributes.h"
 
 vector<FONcDim *> FONcArrayStructureField::SDimensions;
-/** @brief Constructor for FOncInt that takes a DAP Int32 or UInt32
+
+/** @brief Constructor for FONcArrayStructureField
  *
- * This constructor takes a DAP BaseType and makes sure that it is a DAP
- * Int32 or UInt32 instance. If not, it throws an exception
- *
- * @param b A DAP BaseType that should be an int32 or uint32
- * @throws BESInternalError if the BaseType is not an Int32 or UInt32
+ * This constructor takes a DAP BaseType and a DAP Array. 
+ * It makes sure the BaseType is only int/float array or scalar. If not, it throws an exception
+ * It will further retrieve the dimension and type information of the base member and the array.
+ * @param b A DAP BaseType that should be an int/float array or scalar.
+ * @param a A DAP Array of structure. It is necessary to retrieve the data and dimension information.
+ * @throws BESInternalError if the BaseType is not an int/float array and the Array is not a DAP array.
  */
 FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
     : FONcBaseType()
@@ -77,11 +73,7 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
         throw BESInternalError(s, __FILE__, __LINE__);
     }
 
-    d_a = dynamic_cast<Array *>(a);
-    if (!d_a) {
-        string s = "File out netcdf, FONcArrayStructField was passed a variable that is not a DAP Array";
-        throw BESInternalError(s, __FILE__, __LINE__);
-    }
+    d_a = a;
     d_varname = b->name();
     if (b_data_type == libdap::dods_array_c) {
         d_array_type = FONcUtils::get_nc_type(b->var(), isNetCDF4_ENHANCED());
@@ -124,8 +116,6 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
 
 /** @brief Destructor that cleans up the instance
  *
- * The DAP Int32 or UInt32 instance does not belong to the FONcByte
- * instance, so it is not deleted.
  */
 FONcArrayStructureField::~FONcArrayStructureField()
 {
@@ -135,21 +125,11 @@ void FONcArrayStructureField::convert(vector<string> embed, bool _dap4, bool is_
     var_name = FONcUtils::gen_name(embed,d_varname, d_orig_varname);
 
 }
-void
-FONcArrayStructureField::convert_asf( std::vector<std::string> embed) {
 
-
-}
-
-/** @brief define the DAP Int32 or UInt32 in the netcdf file
- *
- * The definition actually takes place in FONcBaseType. This function
- * adds the attributes for the instance as well as an attribute if
- * the name of the variable had to be modified.
+/** @brief define the DAP array of structure field  in the netcdf file
  *
  * @param ncid The id of the NetCDF file
- * @throws BESInternalError if there is a problem defining the
- * Int32 or UInt32
+ * @throws BESInternalError if there is a problem. 
  */
 void
 FONcArrayStructureField::define( int ncid )
@@ -159,8 +139,8 @@ FONcArrayStructureField::define( int ncid )
     if (!d_defined) {
 
         BESDEBUG("fonc", "FONcArray::define() - defining array of structure field: " << d_varname << "'" << endl);
-        vector<FONcDim *>::iterator i = struct_dims.begin();
-        vector<FONcDim *>::iterator e = struct_dims.end();
+        auto i = struct_dims.begin();
+        auto e = struct_dims.end();
         for (; i != e; i++) {
             FONcDim *fd = *i;
             fd->define_struct(ncid);
@@ -174,7 +154,7 @@ FONcArrayStructureField::define( int ncid )
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
-        stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, NULL );
+        stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
         if (stax != NC_NOERR) {
             string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -373,6 +353,7 @@ FONcArrayStructureField::find_sdim(const string &name, int64_t size) {
 void
 FONcArrayStructureField::dump( ostream &strm ) const
 {
+    BESInternalError("FONcArrayStructureField::dump is not supported yet.", __FILE__, __LINE__);
 #if 0
     strm << BESIndent::LMarg << "FONcArrayStructureField::dump - ("
 			     << (void *)this << ")" << endl ;

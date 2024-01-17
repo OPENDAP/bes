@@ -53,21 +53,19 @@ namespace libdap {
 class FONcArrayStructure : public FONcBaseType
 {
 private:
-    //libdap::Structure *			_s ;
-    libdap::Array *			_as;
+    libdap::Array *			_as = nullptr;
     vector<FONcArrayStructureField *>	_vars ;
 public:
     				FONcArrayStructure( libdap::BaseType *b ) ;
     virtual			~FONcArrayStructure() ;
 
-    void		convert_as( vector<string> embed) ;
-    virtual void convert(vector<string> embed, bool _dap4=true, bool is_dap4_group=false);
-    virtual void		define( int ncid ) ;
-    virtual void		write( int ncid ) ;
+    void convert(vector<string> embed, bool _dap4=true, bool is_dap4_group=false) override;
+    void		define( int ncid ) override;
+    void		write( int ncid ) override;
 
-    virtual string 		name() ;
+    string 		name() override;
 
-    virtual void		dump( ostream &strm ) const ;
+    void		dump( ostream &strm ) const override;
 } ;
 
 #endif // FONcArrayStructure_h_

@@ -48,7 +48,7 @@ int FONcDim::StructDimNameNum = 0;
  * @param size The size of the dimension
  */
 FONcDim::FONcDim(const string &name, int64_t size) :
-    _name(name), _size(size), _dimid(0), _defined(false), _ref(1),_struct_ref(1)
+    _name(name), _size(size)
 {
 }
 
