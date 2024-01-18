@@ -81,7 +81,7 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
     chunk->read_chunk();
 
     if(array) {
-        // If this chunk used/uses hdf5 fill values, do not attempt to deflate, et., its
+        // If this chunk used/uses hdf5 fill values, do not attempt to deflate, etc., its
         // values since the fill value code makes the chunks 'fully formed.'' jhrg 5/16/22
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
@@ -145,8 +145,6 @@ void process_one_chunk_unconstrained_dio(shared_ptr<Chunk> chunk, const vector<u
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
-
-
 
 /**
  * @brief A single argument wrapper for process_one_chunk() for use with std::async().
