@@ -89,6 +89,7 @@ before_install:
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
+  - java -version
   - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
   - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
