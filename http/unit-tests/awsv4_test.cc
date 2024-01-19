@@ -182,8 +182,8 @@ public:
 #if 0
         web_request_baseline,
         canonical_request_baseline,
-                string_to_sign_baseline,
-                signed_request_baseline);
+        string_to_sign_baseline,
+        signed_request_baseline);
 #endif
 
         std::string auth_header =
