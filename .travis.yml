@@ -13,7 +13,7 @@
 # virt: lxd             # use an lxd container
 # arch: amd64           # optional, this is default, routes to a full VM
 # os: linux             # optional, this is default
-dist: xenial            # or bionic | xenial | trusty | precise with xenial as default
+dist: focal             # or bionic | xenial | trusty | precise | focal with xenial as default
 
 # Added vm size upgrade. This costs extra $s
 vm:
@@ -25,6 +25,7 @@ compiler: gcc
 branches:
   only:
   - master
+  - main
   - /^(.*-test-deploy)$/
 
 # This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
@@ -45,6 +46,7 @@ addons:
     - libicu-dev
     - gcovr
     - grep
+    - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
 
 git:
   depth: false
