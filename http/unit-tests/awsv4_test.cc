@@ -40,7 +40,7 @@ using namespace std;
 static bool debug = false;
 static bool bes_debug = false;
 
-#undef DBG
+//#undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
 namespace http {
@@ -79,15 +79,13 @@ private:
 
 public:
     // Called once before everything gets tested
-    awsv4_test() {
-    }
+    awsv4_test() = default;
 
     // Called at the end of the test
-    ~awsv4_test() {
-    }
+    ~awsv4_test() override = default;
 
     // Called before each test
-    void setUp() {
+    void setUp() override {
         if (debug) cerr << endl;
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:creds");
 
@@ -114,31 +112,30 @@ public:
 
         region = "us-east-1";
         serviceName = "service";
-
     }
 
-    // Called after each test
-    void tearDown() {
-    }
-
-
-    void show_baseline(string name, string value) {
+    void show_baseline(const string &name, const string &value) {
         cerr << "# BEGIN " << name << " -------------------------------------------------" << endl;
         cerr << value << endl;
         cerr << "# END " << name << " -------------------------------------------------" << endl << endl;
     }
 
     void load_test_baselines(const string &test_name,
+#if 0
                              string &web_request_baseline,
                              string &canonical_request_baseline,
                              string &string_to_sign_baseline,
                              string &signed_request_baseline,
+#endif
                              string &auth_header_baseline
     ) {
         string test_file_base = string(TEST_SRC_DIR).append("/awsv4/")
                 .append(test_name).append("/")
                 .append(test_name);
 
+#if 0
+        // TODO Change this to a DBG2() macro. None of these are actaully used. jhrg 1/19/24
+        //  They clutter the output and make it hard to see the actual test results.
         //file-name.req—the web request to be signed.
         web_request_baseline = fileToString(test_file_base + ".req");
         if (debug) show_baseline("web_request_baseline", web_request_baseline);
@@ -154,6 +151,7 @@ public:
         //file-name.sreq— the signed request.
         signed_request_baseline = fileToString(test_file_base + ".sreq");
         if (debug) show_baseline("signed_request_baseline", signed_request_baseline);
+#endif
 
         //file-name.authz—the Authorization header.
         auth_header_baseline = fileToString(test_file_base + ".authz");
@@ -170,13 +168,13 @@ public:
 
         shared_ptr<http::url> request_uri(new http::url(request_uri_str));
 
-        load_test_baselines(
-                test_name,
-                web_request_baseline,
+        load_test_baselines(test_name, web_request_baseline);
+#if 0
                 canonical_request_baseline,
                 string_to_sign_baseline,
                 signed_request_baseline,
                 auth_header_baseline);
+#endif
 
         std::string auth_header =
                 AWSV4::compute_awsv4_signature(
@@ -277,19 +275,23 @@ public:
 
     CPPUNIT_TEST(get_unreserved);
 
-    // CPPUNIT_TEST(get_utf8); // UTF characters are not correctly escaped in canonical request
+#if 0
+    CPPUNIT_TEST(get_utf8); // UTF characters are not correctly escaped in canonical request
+#endif
 
     CPPUNIT_TEST(get_vanilla);
     CPPUNIT_TEST(get_vanilla_empty_query_key);
     CPPUNIT_TEST(get_vanilla_query);
 
-    // CPPUNIT_TEST(get_vanilla_query_order_key); // Order of our parameters is not modifed based on key string
-    // CPPUNIT_TEST(get_vanilla_query_order_key_case); // Order of our parameters is not modifed based on key case
-    // CPPUNIT_TEST(get_vanilla_query_order_value); // Order of our parameters is not modifed based on key value
+#if 0
+    CPPUNIT_TEST(get_vanilla_query_order_key); // Order of our parameters is not modifed based on key string
+    CPPUNIT_TEST(get_vanilla_query_order_key_case); // Order of our parameters is not modifed based on key case
+    CPPUNIT_TEST(get_vanilla_query_order_value); // Order of our parameters is not modifed based on key value
+    CPPUNIT_TEST(get_vanilla_utf8_query); // UTF characters are not correctly escaped in canonical request
+#endif
 
     CPPUNIT_TEST(get_vanilla_query_unreserved);
 
-    // CPPUNIT_TEST(get_vanilla_utf8_query); // UTF characters are not correctly escaped in canonical request
 
     CPPUNIT_TEST_SUITE_END();
 
