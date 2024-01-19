@@ -24,6 +24,8 @@
 
 #include "config.h"
 
+#if 0
+
 #include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
@@ -32,16 +34,22 @@
 
 #include "BESDebug.h"
 
+#endif
+
+#include "modules/common/run_tests_cppunit.h"
+
 #include "awsv4.h"
 #include "test_config.h"
 
 using namespace std;
 
+#if 0
 static bool debug = false;
 static bool bes_debug = false;
 
 //#undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+#endif
 
 namespace http {
 
@@ -87,7 +95,9 @@ public:
     // Called before each test
     void setUp() override {
         if (debug) cerr << endl;
+#if 0
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:creds");
+#endif
 
         // AWSv4 examples are based on a request dat/time of:
         // define REQUEST_DATE "2015 08 30 T 12 36 00Z"
@@ -302,6 +312,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(awsv4_test);
 } // namespace http
 
 int main(int argc, char *argv[]) {
+    return bes_run_tests<http::awsv4_test>(argc, argv, "dmrpp,dmrpp:creds") ? 0 : 1;
+}
+
+#if 0
+
+int main(int argc, char *argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
@@ -344,3 +360,5 @@ int main(int argc, char *argv[]) {
 
     return wasSuccessful ? 0 : 1;
 }
+
+#endif
