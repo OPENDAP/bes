@@ -4,6 +4,7 @@ see the INSTALL. For comprehensive information about the HDF5 handler, check
 https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
 and https://hdfeos.org/software/hdf5_handler.php
 
+
 What's new for Hyrax 1.16.9
 1. CF option
    Flattened the variable paths stored in the CF "bounds" attribute of the coordinate variables. 
