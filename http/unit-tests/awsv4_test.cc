@@ -312,6 +312,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(awsv4_test);
 } // namespace http
 
 int main(int argc, char *argv[]) {
+    debug = true;
     return bes_run_tests<http::awsv4_test>(argc, argv, "dmrpp,dmrpp:creds") ? 0 : 1;
 }
 
