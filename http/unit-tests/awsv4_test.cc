@@ -178,12 +178,12 @@ public:
 
         shared_ptr<http::url> request_uri(new http::url(request_uri_str));
 
-        load_test_baselines(test_name, web_request_baseline);
+        load_test_baselines(test_name, auth_header_baseline);
 #if 0
-                canonical_request_baseline,
+        web_request_baseline,
+        canonical_request_baseline,
                 string_to_sign_baseline,
-                signed_request_baseline,
-                auth_header_baseline);
+                signed_request_baseline);
 #endif
 
         std::string auth_header =
