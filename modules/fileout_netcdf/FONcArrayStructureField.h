@@ -50,7 +50,7 @@ class BaseType;
 class FONcArrayStructureField: public FONcBaseType {
 private:
 
-    // The array being converted
+    // The structure array being converted, not the structure array field
     libdap::Array *d_a = nullptr;
     // The type of data stored in the array
     nc_type d_array_type = NC_NAT;
