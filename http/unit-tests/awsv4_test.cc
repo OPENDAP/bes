@@ -318,6 +318,10 @@ int main(int argc, char *argv[]) {
                 break;
         }
 
+    // TODO Removed once not needed. jhrg 1/19/24
+    debug = true;  // debug is a static global
+    bes_debug = true;  // debug is a static global
+
     argc -= optind;
     argv += optind;
 
