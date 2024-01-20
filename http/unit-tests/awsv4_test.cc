@@ -31,6 +31,8 @@
 #include "awsv4.h"
 #include "test_config.h"
 
+#define USE_MKTIME 0
+
 using namespace std;
 
 namespace http {
@@ -78,14 +80,16 @@ public:
     void setUp() override {
         if (debug) cerr << endl;
 
+        // Get the time value
         // AWSv4 examples are based on a request dat/time of:
         // define REQUEST_DATE "2015 08 30 T 12 36 00Z"
-        //
+#if USE_MKTIME
         // Set timezone to GMT0
         setenv("TZ", "GMT0", true);
 
         // Populate time struct
-        struct tm t_info = {}; // Failure to initialize this struct _may_ cause mktime(3) to on linux. jhrg 1/19/24
+        // Failure to initialize this struct _may_ cause mktime(3) to fail on linux. jhrg 1/19/24
+        struct tm t_info = {};
         t_info.tm_year = 115;  // Years since 1900
         t_info.tm_mon = 7;    // August
         t_info.tm_mday = 30;
@@ -93,8 +97,6 @@ public:
         t_info.tm_min = 36;
         t_info.tm_sec = 0;
 
-        // Get the time value
-#if USE_MKTIME
         request_time = mktime(&t_info);
         if (request_time < 0) cerr << "mktime(3) Error: " << strerror(errno) << endl;
 #else
@@ -124,28 +126,12 @@ public:
     }
 
     void run_test(const string &test_name, const string &request_uri_str) {
-
-        string web_request_baseline;
-        string canonical_request_baseline;
-        string string_to_sign_baseline;
-        string signed_request_baseline;
         string auth_header_baseline;
-
-#if 0
-        shared_ptr<http::url> request_uri(new http::url(request_uri_str));
-#endif
-        auto request_uri = make_shared<http::url>(request_uri_str);
-
         load_test_baselines(test_name, auth_header_baseline);
 
-        std::string auth_header =
-                AWSV4::compute_awsv4_signature(
-                        request_uri,
-                        request_time,
-                        aws_key_id,
-                        aws_secret_key,
-                        region,
-                        serviceName);
+        auto request_uri = make_shared<http::url>(request_uri_str);
+        string auth_header = AWSV4::compute_awsv4_signature(request_uri, request_time, aws_key_id,
+                                                            aws_secret_key, region, serviceName);
 
         if (debug) show_baseline("auth_header", auth_header);
 
