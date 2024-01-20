@@ -24,6 +24,8 @@
 
 #include "config.h"
 
+#include <cstring>
+
 #if 0
 
 #include <unistd.h>
@@ -116,6 +118,8 @@ public:
 
         // Get the time value
         request_time = mktime(&t_info);
+        if (debug && request_time < 0) cerr << "mktime(3) Error: " << strerror(errno) << endl;
+        request_time = 1440938160;
         if (debug) cerr << "request_time: " << request_time << endl;
         aws_key_id = "AKIDEXAMPLE";
         aws_secret_key = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY";
