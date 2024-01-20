@@ -26,32 +26,12 @@
 
 #include <cstring>
 
-#if 0
-
-#include <unistd.h>
-
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-#include "BESDebug.h"
-
-#endif
-
 #include "modules/common/run_tests_cppunit.h"
 
 #include "awsv4.h"
 #include "test_config.h"
 
 using namespace std;
-
-#if 0
-static bool debug = false;
-static bool bes_debug = false;
-
-//#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
-#endif
 
 namespace http {
 
@@ -97,9 +77,6 @@ public:
     // Called before each test
     void setUp() override {
         if (debug) cerr << endl;
-#if 0
-        if (bes_debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:creds");
-#endif
 
         // AWSv4 examples are based on a request dat/time of:
         // define REQUEST_DATE "2015 08 30 T 12 36 00Z"
@@ -108,7 +85,7 @@ public:
         setenv("TZ", "GMT0", true);
 
         // Populate time struct
-        struct tm t_info;
+        struct tm t_info = {}; // Failure to initialize this struct _may_ cause mktime(3) to on linux. jhrg 1/19/24
         t_info.tm_year = 115;  // Years since 1900
         t_info.tm_mon = 7;    // August
         t_info.tm_mday = 30;
@@ -117,9 +94,12 @@ public:
         t_info.tm_sec = 0;
 
         // Get the time value
+#if USE_MKTIME
         request_time = mktime(&t_info);
-        if (debug && request_time < 0) cerr << "mktime(3) Error: " << strerror(errno) << endl;
-        request_time = 1440938160;
+        if (request_time < 0) cerr << "mktime(3) Error: " << strerror(errno) << endl;
+#else
+        request_time = 1440938160;   // This is "2015 08 30 T 12 36 00Z". jhrg 1/19/24
+#endif
         if (debug) cerr << "request_time: " << request_time << endl;
         aws_key_id = "AKIDEXAMPLE";
         aws_secret_key = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY";
@@ -134,40 +114,11 @@ public:
         cerr << "# END " << name << " -------------------------------------------------" << endl << endl;
     }
 
-    void load_test_baselines(const string &test_name,
-#if 0
-                             string &web_request_baseline,
-                             string &canonical_request_baseline,
-                             string &string_to_sign_baseline,
-                             string &signed_request_baseline,
-#endif
-                             string &auth_header_baseline
-    ) {
+    void load_test_baselines(const string &test_name, string &auth_header_baseline) {
         string test_file_base = string(TEST_SRC_DIR).append("/awsv4/")
                 .append(test_name).append("/")
                 .append(test_name);
 
-#if 0
-        // TODO Change this to a DBG2() macro. None of these are actaully used. jhrg 1/19/24
-        //  They clutter the output and make it hard to see the actual test results.
-        //file-name.req—the web request to be signed.
-        web_request_baseline = fileToString(test_file_base + ".req");
-        if (debug) show_baseline("web_request_baseline", web_request_baseline);
-
-        //file-name.creq—the resulting canonical request.
-        canonical_request_baseline = fileToString(test_file_base + ".creq");
-        if (debug) show_baseline("canonical_request_baseline", canonical_request_baseline);
-
-        //file-name.sts—the resulting string to sign.
-        string_to_sign_baseline = fileToString(test_file_base + ".sts");
-        if (debug) show_baseline("string_to_sign_baseline", string_to_sign_baseline);
-
-        //file-name.sreq— the signed request.
-        signed_request_baseline = fileToString(test_file_base + ".sreq");
-        if (debug) show_baseline("signed_request_baseline", signed_request_baseline);
-#endif
-
-        //file-name.authz—the Authorization header.
         auth_header_baseline = fileToString(test_file_base + ".authz");
         if (debug) show_baseline("auth_header_baseline", auth_header_baseline);
     }
@@ -180,15 +131,12 @@ public:
         string signed_request_baseline;
         string auth_header_baseline;
 
+#if 0
         shared_ptr<http::url> request_uri(new http::url(request_uri_str));
+#endif
+        auto request_uri = make_shared<http::url>(request_uri_str);
 
         load_test_baselines(test_name, auth_header_baseline);
-#if 0
-        web_request_baseline,
-        canonical_request_baseline,
-        string_to_sign_baseline,
-        signed_request_baseline);
-#endif
 
         std::string auth_header =
                 AWSV4::compute_awsv4_signature(
@@ -202,7 +150,6 @@ public:
         if (debug) show_baseline("auth_header", auth_header);
 
         CPPUNIT_ASSERT(auth_header == auth_header_baseline);
-
     }
 
     void get_unreserved() {
@@ -306,7 +253,6 @@ public:
 
     CPPUNIT_TEST(get_vanilla_query_unreserved);
 
-
     CPPUNIT_TEST_SUITE_END();
 
 };
@@ -316,54 +262,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(awsv4_test);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    debug = true;
     return bes_run_tests<http::awsv4_test>(argc, argv, "dmrpp,dmrpp:creds") ? 0 : 1;
 }
-
-#if 0
-
-int main(int argc, char *argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "db")) != -1)
-        switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                break;
-            case 'b':
-                debug = true;  // debug is a static global
-                bes_debug = true;  // debug is a static global
-                break;
-            default:
-                break;
-        }
-
-    // TODO Removed once not needed. jhrg 1/19/24
-    debug = true;  // debug is a static global
-    bes_debug = true;  // debug is a static global
-
-    argc -= optind;
-    argv += optind;
-
-    bool wasSuccessful = true;
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            string test = http::awsv4_test::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
-}
-
-#endif
