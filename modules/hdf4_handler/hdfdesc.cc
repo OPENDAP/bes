@@ -195,12 +195,14 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 
 void read_dmr(DMR *dmr, const string &filename);
 void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string &filename);
-BaseType * gen_dap_var(int32 h4_type, const string & h4_str);
-void vgroup_convert_sds_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,filename);
-void vgroup_convert_vdata_objects(vgroup_id,tem_d4_cgroup,filename);
-void vgroup_convert_vgroup_attrs(vgroup_id,tem_d4_cgroup);
-void vgroup_convert_vgroup_objects(vgroup_id,tem_d4_cgroup);
-void convert_sds(sdfd,obj_ref,d4g,const string &filename);
+BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string & filename);
+void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* tem_d4_cgroup,const string& filename);
+void vgroup_convert_vdata_objects(int32 vgroup_id,D4Group* tem_d4_cgroup,const string& filename);
+void convert_vgroup_attrs(int32 vgroup_id,D4Group* tem_d4_cgroup);
+void vgroup_convert_vgroup_objects(int32 vgroup_id,D4Group* tem_d4_cgroup);
+void convert_sds(int32 sdfd,int32 obj_ref,D4Group* d4g,const string &filename);
+void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id);
+bool reserved_vgroups(const vector<char> &vclass_name);
 
 
 void read_das(DAS & das, const string & filename);
@@ -4232,29 +4234,29 @@ void read_dmr(DMR *dmr, const string &filename) {
     //       It is possible that there are SDS and Vdata objects that don't belong to any vgroups.
     //       This is not the case for the sample HDF-EOS2 files.So we will handle them later. KY 2024-01-18
 
-    try {
+    //try {
         read_dmr_vlone_groups(dmr, fileid, sdfd, filename);
-    }
+    //}
+#if 0
     catch(...) {
         Hclose(fileid);
         SDend(sdfd);
         throw InternalErr(__FILE__,__LINE__,"read_dmr error");
     }   
+#endif
 
     Hclose(fileid);
     SDend(sdfd);
 
 }
 
-void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string & filename) {
+void read_dmr_vlone_groups(DMR *dmr, int32 file_id, int32 sdfd, const string & filename) {
 
     D4Group* root_grp = dmr->root();
 
-    int32  vgroup_id;
-    int      num_lonevg; /* number of lone vgroup.*/
+    int      num_lonevg; 
     vector<int> ref_array;
     int32  istat;
-    int      lone_vg_number;
 
     istat = Vstart(file_id);
     if (istat == FAIL) { 
@@ -4264,6 +4266,7 @@ void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string & fi
 
     num_lonevg = Vlone(file_id,NULL,0);
 
+cerr<<"num_lonevg is "<<num_lonevg<<endl;
     if (num_lonevg == FAIL) {
         Vend(file_id);
         throw InternalErr(__FILE__, __LINE__, "error in obtaining lone vgroup number.");
@@ -4285,15 +4288,17 @@ void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string & fi
     for(lone_vg_number = 0; lone_vg_number < num_lonevg;
             lone_vg_number++) {
 #endif
-    for(const auto &ref_array_member:ref_array) {
+    for(auto &ref_array_member:ref_array) {
 
+cerr<<"ref_array_member is "<<ref_array_member <<endl;
         int32 vgroup_id = Vattach(file_id,ref_array_member,"r");
         if (vgroup_id ==FAIL) {
             Vend(file_id);
             throw InternalErr(__FILE__, __LINE__, "error in attaching lone vgroup.");
         }
 
-        if (Vgetnamelen(vgroup_cid,&vgroupnamelen) == FAIL) {
+        uint16 vgroupnamelen = 0;
+        if (Vgetnamelen(vgroup_id,&vgroupnamelen) == FAIL) {
             Vdetach(vgroup_id);
             Vend(file_id);
             throw InternalErr(__FILE__, __LINE__, "cannot obtain vgroup name length.");
@@ -4316,26 +4321,32 @@ void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string & fi
             Vend(file_id);
             throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
         }
-        vclass_name.resize(vclassnamelen);
-        if (Vgetclass(vgroup_id,vclass_name.data()) == FAIL) {
-            Vdetach(vgroup_id);
-            Vend(file_id);
-            throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+ 
+        if (vclassnamelen!=0) {
+            vclass_name.resize(vclassnamelen);
+            if (Vgetclass(vgroup_id,vclass_name.data()) == FAIL) {
+                Vdetach(vgroup_id);
+                Vend(file_id);
+                throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+            }
+            if (reserved_vgroups(vclass_name)) {
+                Vdetach(vgroup_id);
+                continue;
+            }
         }
-        if (reserved_vgroups(vclass_name))
-            return;
 
         // TODO: ensure the CF-style vgroup name.
-        auto tem_d4_cgroup_ptr = make_unique<D4Group>(vgroup_name);
+        string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
+cerr<<"vgroup_name is "<< vgroup_name_str <<endl;
+        auto tem_d4_cgroup_ptr = make_unique<D4Group>(vgroup_name_str);
         auto tem_d4_cgroup = tem_d4_cgroup_ptr.release();
         root_grp->add_group_nocopy(tem_d4_cgroup);
         vgroup_convert_sds_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,filename);
         vgroup_convert_vdata_objects(vgroup_id,tem_d4_cgroup,filename);
-        vgroup_convert_vgroup_attrs(vgroup_id,tem_d4_cgroup);
+        convert_vgroup_attrs(vgroup_id,tem_d4_cgroup);
         vgroup_convert_vgroup_objects(vgroup_id,tem_d4_cgroup);
 
         Vdetach(vgroup_id);
-        Vdetach(file_id);
         
     }
 
@@ -4343,7 +4354,28 @@ void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string & fi
 
 }
 
-void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Group *d4g) {
+bool reserved_vgroups(const vector<char>& vgroup_class) {
+
+  if(strcmp(vgroup_class.data(),_HDF_ATTRIBUTE)==0) 
+      return SUCCEED;
+  else if(strcmp(vgroup_class.data(),_HDF_VARIABLE) ==0) 
+      return SUCCEED;
+  else if(strcmp(vgroup_class.data(),_HDF_DIMENSION)==0) 
+      return SUCCEED;
+  else if(strcmp(vgroup_class.data(),_HDF_UDIMENSION)==0) 
+      return SUCCEED;
+  else if(strcmp(vgroup_class.data(),_HDF_CDF)==0) 
+      return SUCCEED;
+  else if(strcmp(vgroup_class.data(),GR_NAME)==0) 
+      return SUCCEED;
+  else if(strcmp(vgroup_class.data(),RI_NAME)==0) 
+      return SUCCEED;
+
+  return FAIL;
+
+}
+
+void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Group *d4g, const string &filename) {
 
     int num_gobjects; /* number of global objects */
     int32 obj_tag; /* object tag */
@@ -4381,7 +4413,7 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
 
 }
 
-void vgroup_convert_vdata_objects(int32 vgroup_id,D4Group *d4g) {
+void vgroup_convert_vdata_objects(int32 vgroup_id,D4Group *d4g, const string &filename) {
 
 
 
@@ -4451,10 +4483,14 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
 
 }
 
+void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id) {
+
+
+}
 
 BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filename) {
 
-    BaseType * ret_bt = nullptddr;
+    BaseType * ret_bt = nullptr;
     switch (h4_type) {
 
     case DFNT_INT16:
@@ -4496,5 +4532,6 @@ BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filen
     default:
         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
+    }
     return ret_bt;
 }
