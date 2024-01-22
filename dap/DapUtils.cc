@@ -241,14 +241,18 @@ std::string get_dap_array_dims_str(libdap::Array &a){
     while(dim_itr != end_dim){
         auto dim = *dim_itr;
         auto d4dim = dim.dim;
-        uint64_t elements = 0;
+        // uint64_t elements = 0;
+        stringstream ce;
         if(d4dim){
-            elements = count_requested_elements(d4dim);
+            // elements = count_requested_elements(d4dim);
+            ce << d4dim->c_start() << ":" << d4dim->c_stride() << ":" << d4dim->c_stop();
         }
         else {
-            elements  = count_requested_elements(dim);
+            // elements  = count_requested_elements(dim);
+            ce << dim.start << ":" << dim.stride << ":" << dim.stop;
         }
-        my_dims << "[" << elements << "]";
+        // my_dims << "[" << elements << "]";
+        my_dims << "[" << ce.str() << "]";
         dim_itr++;
     }
     return my_dims.str();
