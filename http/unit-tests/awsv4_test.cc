@@ -24,24 +24,16 @@
 
 #include "config.h"
 
-#include <unistd.h>
+#include <cstring>
 
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-#include "BESDebug.h"
+#include "modules/common/run_tests_cppunit.h"
 
 #include "awsv4.h"
 #include "test_config.h"
 
+#define USE_MKTIME 0
+
 using namespace std;
-
-static bool debug = false;
-static bool bes_debug = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 
 namespace http {
 
@@ -79,26 +71,25 @@ private:
 
 public:
     // Called once before everything gets tested
-    awsv4_test() {
-    }
+    awsv4_test() = default;
 
     // Called at the end of the test
-    ~awsv4_test() {
-    }
+    ~awsv4_test() override = default;
 
     // Called before each test
-    void setUp() {
+    void setUp() override {
         if (debug) cerr << endl;
-        if (bes_debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:creds");
 
+        // Get the time value
         // AWSv4 examples are based on a request dat/time of:
         // define REQUEST_DATE "2015 08 30 T 12 36 00Z"
-        //
+#if USE_MKTIME
         // Set timezone to GMT0
         setenv("TZ", "GMT0", true);
 
         // Populate time struct
-        struct tm t_info;
+        // Failure to initialize this struct _may_ cause mktime(3) to fail on linux. jhrg 1/19/24
+        struct tm t_info = {};
         t_info.tm_year = 115;  // Years since 1900
         t_info.tm_mon = 7;    // August
         t_info.tm_mday = 30;
@@ -106,91 +97,45 @@ public:
         t_info.tm_min = 36;
         t_info.tm_sec = 0;
 
-        // Get the time value
         request_time = mktime(&t_info);
+        if (request_time < 0) cerr << "mktime(3) Error: " << strerror(errno) << endl;
+#else
+        request_time = 1440938160;   // This is "2015 08 30 T 12 36 00Z". jhrg 1/19/24
+#endif
         if (debug) cerr << "request_time: " << request_time << endl;
         aws_key_id = "AKIDEXAMPLE";
         aws_secret_key = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY";
 
         region = "us-east-1";
         serviceName = "service";
-
     }
 
-    // Called after each test
-    void tearDown() {
-    }
-
-
-    void show_baseline(string name, string value) {
+    void show_baseline(const string &name, const string &value) {
         cerr << "# BEGIN " << name << " -------------------------------------------------" << endl;
         cerr << value << endl;
         cerr << "# END " << name << " -------------------------------------------------" << endl << endl;
     }
 
-    void load_test_baselines(const string &test_name,
-                             string &web_request_baseline,
-                             string &canonical_request_baseline,
-                             string &string_to_sign_baseline,
-                             string &signed_request_baseline,
-                             string &auth_header_baseline
-    ) {
+    void load_test_baselines(const string &test_name, string &auth_header_baseline) {
         string test_file_base = string(TEST_SRC_DIR).append("/awsv4/")
                 .append(test_name).append("/")
                 .append(test_name);
 
-        //file-name.req—the web request to be signed.
-        web_request_baseline = fileToString(test_file_base + ".req");
-        if (debug) show_baseline("web_request_baseline", web_request_baseline);
-
-        //file-name.creq—the resulting canonical request.
-        canonical_request_baseline = fileToString(test_file_base + ".creq");
-        if (debug) show_baseline("canonical_request_baseline", canonical_request_baseline);
-
-        //file-name.sts—the resulting string to sign.
-        string_to_sign_baseline = fileToString(test_file_base + ".sts");
-        if (debug) show_baseline("string_to_sign_baseline", string_to_sign_baseline);
-
-        //file-name.sreq— the signed request.
-        signed_request_baseline = fileToString(test_file_base + ".sreq");
-        if (debug) show_baseline("signed_request_baseline", signed_request_baseline);
-
-        //file-name.authz—the Authorization header.
         auth_header_baseline = fileToString(test_file_base + ".authz");
         if (debug) show_baseline("auth_header_baseline", auth_header_baseline);
     }
 
     void run_test(const string &test_name, const string &request_uri_str) {
-
-        string web_request_baseline;
-        string canonical_request_baseline;
-        string string_to_sign_baseline;
-        string signed_request_baseline;
         string auth_header_baseline;
+        load_test_baselines(test_name, auth_header_baseline);
 
-        shared_ptr<http::url> request_uri(new http::url(request_uri_str));
-
-        load_test_baselines(
-                test_name,
-                web_request_baseline,
-                canonical_request_baseline,
-                string_to_sign_baseline,
-                signed_request_baseline,
-                auth_header_baseline);
-
-        std::string auth_header =
-                AWSV4::compute_awsv4_signature(
-                        request_uri,
-                        request_time,
-                        aws_key_id,
-                        aws_secret_key,
-                        region,
-                        serviceName);
+        auto request_uri = make_shared<http::url>(request_uri_str);
+        string auth_header = AWSV4::compute_awsv4_signature(request_uri, request_time, aws_key_id,
+                                                            aws_secret_key, region, serviceName);
 
         if (debug) show_baseline("auth_header", auth_header);
 
         CPPUNIT_ASSERT(auth_header == auth_header_baseline);
-
     }
 
     void get_unreserved() {
@@ -277,19 +222,22 @@ public:
 
     CPPUNIT_TEST(get_unreserved);
 
-    // CPPUNIT_TEST(get_utf8); // UTF characters are not correctly escaped in canonical request
+#if 0
+    CPPUNIT_TEST(get_utf8); // UTF characters are not correctly escaped in canonical request
+#endif
 
     CPPUNIT_TEST(get_vanilla);
     CPPUNIT_TEST(get_vanilla_empty_query_key);
     CPPUNIT_TEST(get_vanilla_query);
 
-    // CPPUNIT_TEST(get_vanilla_query_order_key); // Order of our parameters is not modifed based on key string
-    // CPPUNIT_TEST(get_vanilla_query_order_key_case); // Order of our parameters is not modifed based on key case
-    // CPPUNIT_TEST(get_vanilla_query_order_value); // Order of our parameters is not modifed based on key value
+#if 0
+    CPPUNIT_TEST(get_vanilla_query_order_key); // Order of our parameters is not modifed based on key string
+    CPPUNIT_TEST(get_vanilla_query_order_key_case); // Order of our parameters is not modifed based on key case
+    CPPUNIT_TEST(get_vanilla_query_order_value); // Order of our parameters is not modifed based on key value
+    CPPUNIT_TEST(get_vanilla_utf8_query); // UTF characters are not correctly escaped in canonical request
+#endif
 
     CPPUNIT_TEST(get_vanilla_query_unreserved);
-
-    // CPPUNIT_TEST(get_vanilla_utf8_query); // UTF characters are not correctly escaped in canonical request
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -300,41 +248,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(awsv4_test);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "db")) != -1)
-        switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                break;
-            case 'b':
-                debug = true;  // debug is a static global
-                bes_debug = true;  // debug is a static global
-                break;
-            default:
-                break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    bool wasSuccessful = true;
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            string test = http::awsv4_test::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+    return bes_run_tests<http::awsv4_test>(argc, argv, "dmrpp,dmrpp:creds") ? 0 : 1;
 }

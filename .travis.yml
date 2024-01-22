@@ -13,7 +13,7 @@
 # virt: lxd             # use an lxd container
 # arch: amd64           # optional, this is default, routes to a full VM
 # os: linux             # optional, this is default
-dist: xenial            # or bionic | xenial | trusty | precise with xenial as default
+dist: focal             # or bionic | xenial | trusty | precise | focal with xenial as default
 
 # Added vm size upgrade. This costs extra $s
 vm:
@@ -25,6 +25,7 @@ compiler: gcc
 branches:
   only:
   - master
+  - main
   - /^(.*-test-deploy)$/
 
 # This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
@@ -45,6 +46,7 @@ addons:
     - libicu-dev
     - gcovr
     - grep
+    - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
 
 git:
   depth: false
@@ -74,9 +76,9 @@ env:
     # GIT_PSWD for travis-ci-opendap
     - secure: "dlULHE4qbXKEgqJZ0hiL7PcUqEcFaHzHE5GQbZ1v6wCyFujEvq34ayChOHuxZvrfNo64lCKjpHYs1Znq0m69dpkdSP3m0fv2rgLaqqTxD+ewgsYzmlKRA8jWuDx0WvV5IltS9KNdBj2Aj6wSsw5cqPkuRbYQlQCYj7GdqhAPlP8="
     # DOCKER_HUB_UID for travis
-    - secure: "b0/W8+DA35StZB5BKRDn0yLxGE6n/Hc4vXRUBX2bylsSyw1IVplrl4PgKbafE0CT5PfFssOUH1cMlYcSOXgV3EWOeNWquIhwq1cASUJClTf55Y4kr1XPr6bNtdbPJ7UAKw1EG2TyZx0vy7A6TrKwgb9Al24ABm0ev4aFWUk+Sks="
+    # - secure: "b0/W8+DA35StZB5BKRDn0yLxGE6n/Hc4vXRUBX2bylsSyw1IVplrl4PgKbafE0CT5PfFssOUH1cMlYcSOXgV3EWOeNWquIhwq1cASUJClTf55Y4kr1XPr6bNtdbPJ7UAKw1EG2TyZx0vy7A6TrKwgb9Al24ABm0ev4aFWUk+Sks="
     # DOCKER_HUB_PSWD for travis
-    - secure: "Z+M0JHT3szHclksjh8ettN9OoDjX0+lgOaORnSH8H/xvaQp1YCYzmEajnknGGCop6arM+PaiArZEZl7e8X1kBqReitSISLCwbS6XU/juRi1OBqfkk1YzSOgU03jLXe3MG2CmfQRLdExjdHCsphHEXthU2Z0tY++Tq31IfFPy1JQ="
+    # - secure: "Z+M0JHT3szHclksjh8ettN9OoDjX0+lgOaORnSH8H/xvaQp1YCYzmEajnknGGCop6arM+PaiArZEZl7e8X1kBqReitSISLCwbS6XU/juRi1OBqfkk1YzSOgU03jLXe3MG2CmfQRLdExjdHCsphHEXthU2Z0tY++Tq31IfFPy1JQ="
     - CMAC_ID="${AWS_ACCESS_KEY_ID}"
     - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
     - CMAC_URL="https://s3.amazonaws.com/cloudydap/"
@@ -92,7 +94,7 @@ install:
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
   - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
-  - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_UID --password-stdin
+  # - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_UID --password-stdin
 
 before_script:
   - source travis/travis_bes_build_offset.sh
