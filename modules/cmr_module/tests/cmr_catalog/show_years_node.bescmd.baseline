@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showNode>
+        <node count="45" lastModified="removed date-time" name="/CMR/GES_DISC/C1276812863-GES_DISC">
+            <item lastModified="removed date-time" name="1980" type="node"/>
+            <item lastModified="removed date-time" name="1981" type="node"/>
+            <item lastModified="removed date-time" name="1982" type="node"/>
+            <item lastModified="removed date-time" name="1983" type="node"/>
+            <item lastModified="removed date-time" name="1984" type="node"/>
+            <item lastModified="removed date-time" name="1985" type="node"/>
+            <item lastModified="removed date-time" name="1986" type="node"/>
+            <item lastModified="removed date-time" name="1987" type="node"/>
+            <item lastModified="removed date-time" name="1988" type="node"/>
+            <item lastModified="removed date-time" name="1989" type="node"/>
+            <item lastModified="removed date-time" name="1990" type="node"/>
+            <item lastModified="removed date-time" name="1991" type="node"/>
+            <item lastModified="removed date-time" name="1992" type="node"/>
+            <item lastModified="removed date-time" name="1993" type="node"/>
+            <item lastModified="removed date-time" name="1994" type="node"/>
+            <item lastModified="removed date-time" name="1995" type="node"/>
+            <item lastModified="removed date-time" name="1996" type="node"/>
+            <item lastModified="removed date-time" name="1997" type="node"/>
+            <item lastModified="removed date-time" name="1998" type="node"/>
+            <item lastModified="removed date-time" name="1999" type="node"/>
+            <item lastModified="removed date-time" name="2000" type="node"/>
+            <item lastModified="removed date-time" name="2001" type="node"/>
+            <item lastModified="removed date-time" name="2002" type="node"/>
+            <item lastModified="removed date-time" name="2003" type="node"/>
+            <item lastModified="removed date-time" name="2004" type="node"/>
+            <item lastModified="removed date-time" name="2005" type="node"/>
+            <item lastModified="removed date-time" name="2006" type="node"/>
+            <item lastModified="removed date-time" name="2007" type="node"/>
+            <item lastModified="removed date-time" name="2008" type="node"/>
+            <item lastModified="removed date-time" name="2009" type="node"/>
+            <item lastModified="removed date-time" name="2010" type="node"/>
+            <item lastModified="removed date-time" name="2011" type="node"/>
+            <item lastModified="removed date-time" name="2012" type="node"/>
+            <item lastModified="removed date-time" name="2013" type="node"/>
+            <item lastModified="removed date-time" name="2014" type="node"/>
+            <item lastModified="removed date-time" name="2015" type="node"/>
+            <item lastModified="removed date-time" name="2016" type="node"/>
+            <item lastModified="removed date-time" name="2017" type="node"/>
+            <item lastModified="removed date-time" name="2018" type="node"/>
+            <item lastModified="removed date-time" name="2019" type="node"/>
+            <item lastModified="removed date-time" name="2020" type="node"/>
+            <item lastModified="removed date-time" name="2021" type="node"/>
+            <item lastModified="removed date-time" name="2022" type="node"/>
+            <item lastModified="removed date-time" name="2023" type="node"/>
+            <item lastModified="removed date-time" name="2024" type="node"/>
+        </node>
+    </showNode>
+</response>
