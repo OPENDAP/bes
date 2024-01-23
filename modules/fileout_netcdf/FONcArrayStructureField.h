@@ -65,11 +65,11 @@ private:
     std::vector<int> d_dim_ids{};
 
     FONcDim * find_sdim(const std::string &name, int64_t size);
-    void obtain_scalar_data(char *data_buf_ptr, libdap::BaseType* b);
+    void obtain_scalar_data(char *data_buf_ptr, libdap::BaseType* b) const;
 public:
 
     explicit FONcArrayStructureField(libdap::BaseType *b, libdap::Array* a);
-    ~FONcArrayStructureField() override;
+    ~FONcArrayStructureField() = default;
 
     void convert(vector<string> embed, bool _dap4=true, bool is_dap4_group=false) override;
     void define(int ncid) override;

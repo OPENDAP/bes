@@ -114,13 +114,6 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
 
 }
 
-/** @brief Destructor that cleans up the instance
- *
- */
-FONcArrayStructureField::~FONcArrayStructureField()
-{
-}
-
 void FONcArrayStructureField::convert(vector<string> embed, bool _dap4, bool is_dap4_group){
     var_name = FONcUtils::gen_name(embed,d_varname, d_orig_varname);
 
@@ -183,7 +176,7 @@ FONcArrayStructureField::write( int ncid )
         if (cb->type()!=libdap::dods_structure_c){
             throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
         }
-        Structure* structure_elem = dynamic_cast<Structure *>(cb);
+        auto structure_elem = dynamic_cast<Structure *>(cb);
         if (!structure_elem)
             throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
         //loop through the structure
@@ -196,10 +189,10 @@ FONcArrayStructureField::write( int ncid )
 
                 if (bt->name() == d_varname) {
                     if (bt->type() == libdap::dods_array_c) {
-                        Array *memb_array = dynamic_cast<Array *>(bt);
+                        auto memb_array = dynamic_cast<Array *>(bt);
                         if (!memb_array)
                             throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
-                        char *buf = memb_array->get_buf();
+                        const char *buf = memb_array->get_buf();
                         size_t memb_array_size = memb_array->width_ll();
                         // fill in the data_buf.
                         memcpy(data_buf_ptr, buf, memb_array_size);
@@ -223,7 +216,7 @@ FONcArrayStructureField::write( int ncid )
     }
 }
 
-void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b) {
+void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b) const{
 
     switch (b->type()) {
 

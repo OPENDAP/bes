@@ -50,8 +50,8 @@ private:
     libdap::Array *			_as = nullptr;
     vector<FONcArrayStructureField *>	_vars ;
 public:
-    				FONcArrayStructure( libdap::BaseType *b ) ;
-    virtual			~FONcArrayStructure() ;
+    explicit FONcArrayStructure( libdap::BaseType *b ) ;
+    ~FONcArrayStructure() override;
 
     void convert(vector<string> embed, bool _dap4=true, bool is_dap4_group=false) override;
     void		define( int ncid ) override;
