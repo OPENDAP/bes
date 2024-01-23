@@ -37,12 +37,12 @@ namespace libdap {
 }
 
 
-/** @brief A DAP Structure with file out netcdf information included
+/** @brief A array of DAP Structure with file out netcdf information included
  *
- * This class represents a DAP Structure with additional information
- * needed to write it out to a netcdf file. Includes a reference to the
- * actual DAP Structure being converted. Keeps the list of converted
- * BaseTypes as FONcBaseType instances.
+ * This class represents an array of DAP Structure with additional information
+ * needed to write it out to a netcdf file. 
+ * Keeps the list of the structure members as a vector of FONcArrayStructureField 
+ * instances.
  */
 class FONcArrayStructure : public FONcBaseType
 {

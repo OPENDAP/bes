@@ -49,7 +49,7 @@ private:
     int				_dimid = 0;
     bool			_defined = false;
     int				_ref = 1;
-    int             _struct_ref =1;
+    int                         _struct_ref =1;
 public:
     				FONcDim( const std::string &name, int64_t size ) ;
     virtual			~FONcDim() {}

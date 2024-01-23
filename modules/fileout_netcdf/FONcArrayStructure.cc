@@ -42,7 +42,7 @@ FONcArrayStructure::FONcArrayStructure(BaseType *b) :
 {
     _as = dynamic_cast<Array *>(b);
     if (!_as) {
-        string s = (string) "File out netcdf, array of structure was passed a " + "variable that is not an array ";
+        auto s = (string) "File out netcdf, array of structure was passed a " + "variable that is not an array ";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
     if (_as->var()->type() != dods_structure_c) {
@@ -59,6 +59,7 @@ FONcArrayStructure::FONcArrayStructure(BaseType *b) :
 FONcArrayStructure::~FONcArrayStructure()
 {
 
+    // Adapt the code from FONcStructure.cc
     bool done = false;
     while (!done) {
         // _vars are vector<FONcArrayStructureField *>
@@ -68,7 +69,6 @@ FONcArrayStructure::~FONcArrayStructure()
             done = true;
         }
         else {
-            // These are the FONc types, not the actual ones
             FONcArrayStructureField *b = (*i);
             delete b;
             _vars.erase(i);
@@ -87,7 +87,7 @@ FONcArrayStructure::~FONcArrayStructure()
  * called i1, then two variables are created in the netcdf file called
  * s1.a1 and s1.i1.
  *
- * @note This method only converts the variables that are to be sent. Thsi keeps
+ * @note This method only converts the variables that are to be sent. This keeps
  * the convert() and write() methods below from operating on DAP variables
  * that should not be sent.
  *
@@ -128,7 +128,7 @@ void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_
 
 /** @brief Define the members of the array of structure in the netcdf file
  *
- * Since netcdf does not support structures, we define the members of
+ * We still follow the current structure implementation to define the members of
  * the structure to include the name of the structure in their name.
  *
  * @note This will call the FONcArrayStructureField's define() method for individual member.

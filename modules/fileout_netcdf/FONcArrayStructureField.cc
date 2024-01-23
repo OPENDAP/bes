@@ -155,9 +155,9 @@ FONcArrayStructureField::define( int ncid )
     }
 }
 
-/** @brief Write the int out to the netcdf file
+/** @brief Write the netcdf variable data out to the netcdf file
  *
- * Once the int is defined, the value of the int can be written out
+ * Once the variable is defined, the value of the variable can be written out
  *
  * @param ncid The id of the netcdf file
  * @throws BESInternalError if there is a problem writing the value
@@ -168,8 +168,12 @@ FONcArrayStructureField::write( int ncid )
     BESDEBUG( "fonc", "FONcArrayStructureField::write for var " << d_varname << endl ) ;
 
     vector<char> data_buf;
+
+    // Obtain the total data buffer.
     data_buf.resize(total_nelements*d_array_type_size);
     char* data_buf_ptr = data_buf.data();
+
+    // Obtain the compound_buf, this is from gathering the data for individual fields.
     vector<BaseType*> compound_buf = d_a->get_compound_buf();
     for (unsigned i= 0; i<d_a->length_ll();i++) {
         BaseType *cb = compound_buf[i];
@@ -179,11 +183,13 @@ FONcArrayStructureField::write( int ncid )
         auto structure_elem = dynamic_cast<Structure *>(cb);
         if (!structure_elem)
             throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
-        //loop through the structure
 
+        //loop through the structure
         Constructor::Vars_iter vi = structure_elem->var_begin();
         Constructor::Vars_iter ve = structure_elem->var_end();
+
         for (; vi != ve; vi++) {
+
             BaseType *bt = *vi;
             if (bt->send_p()) {
 
@@ -194,6 +200,7 @@ FONcArrayStructureField::write( int ncid )
                             throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
                         const char *buf = memb_array->get_buf();
                         size_t memb_array_size = memb_array->width_ll();
+
                         // fill in the data_buf.
                         memcpy(data_buf_ptr, buf, memb_array_size);
                         BESDEBUG("fonc","memb_array_length is "<<memb_array->length_ll()<<endl);
@@ -283,14 +290,14 @@ void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b
             break;
         }
         default:
-            string err = (string) "file out netcdf structure array: Only support int/float types";
+            auto err = (string) "file out netcdf structure array: Only support int/float types";
             throw BESInternalError(err, __FILE__, __LINE__);
     }
-
 }
-/** @brief returns the name of the DAP Int32 or UInt32
+
+/** @brief returns the name of the array structure field
  *
- * @returns The name of the DAP Int32 or UInt32
+ * @returns The name of the array structure field
  */
 string
 FONcArrayStructureField::name()
@@ -300,7 +307,7 @@ FONcArrayStructureField::name()
 
 /** @brief returns the netcdf type of the DAP object
  *
- * @returns The nc_type of NC_INT
+ * @returns The nc_type of this field.
  */
 nc_type
 FONcArrayStructureField::type()
@@ -308,6 +315,7 @@ FONcArrayStructureField::type()
     return d_array_type;
 }
 
+// The following method is adapted from FONcArray.cc.
 FONcDim *
 FONcArrayStructureField::find_sdim(const string &name, int64_t size) {
 
