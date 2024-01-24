@@ -4,7 +4,7 @@
 
 README for the OPeNDAP BES 
 ==========================
-# Version 3.21.0
+# Version 3.21.0-46
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10564745.svg)](https://doi.org/10.5281/zenodo.10564745)
 
 This version of the BES is part of Hyrax 1.17.0, a data server that supports the
