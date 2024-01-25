@@ -4573,6 +4573,7 @@ cerr<<"num_gobjects: "<<num_gobjects <<endl;
 
             try {
                 string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
+cerr<<"vgroup_name inside vgroup: "<<vgroup_name_str<<endl;
                 auto d4c_g_ptr = make_unique<D4Group>(vgroup_name_str);
                 auto d4c_g  = d4c_g_ptr.release();
                 d4g->add_group_nocopy(d4c_g);
@@ -4592,6 +4593,7 @@ cerr<<"num_gobjects: "<<num_gobjects <<endl;
 
 void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g) {
 
+cerr<<"coming to convert_vgroup_attrs "<<endl;
     char attr_name[H4_MAX_NC_NAME];
 
     intn n_attrs = Vnattrs(vgroup_id);
@@ -4599,6 +4601,7 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g) {
         Vdetach(vgroup_id);
         throw InternalErr(__FILE__,__LINE__,"Vnattrs failed");
     }
+cerr<<"n_attrs is "<<n_attrs <<endl;
 
     for(int attr_index = 0; attr_index <n_attrs; attr_index++) {
     
@@ -4623,6 +4626,7 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g) {
         // Create the DAP4 attribute 
         string tempname (attr_name);
         string dap4_attrname = HDFCFUtil::get_CF_string(tempname);
+cerr<<"dap4_attrname is "<<dap4_attrname <<endl;
         map_vgroup_attr(d4g,dap4_attrname,attr_type,attr_count,attr_value);
 
 #if 0
@@ -4672,6 +4676,7 @@ void convert_sds_attrs(int32 sds_id,D4Group *d4g) {
 }
 
 void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* tem_d4_cgroup,const string& filename) {
+cerr<<"coming to convert_vdata"<<endl;
 
 
 }
@@ -4711,12 +4716,47 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
     }                        
 
+    
     string sds_name_str(sds_name.begin(),sds_name.end());
     // Handle special characters in the sds_name.
     sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
     BaseType *bt = gen_dap_var(sds_type,sds_name_str, filename);
     auto ar_unique = make_unique<HDFArray>(sds_name_str,filename,bt);
     auto ar = ar_unique.release();    
+
+    // Obtain dimension info. 
+
+    // Handle dimensions with original dimension names
+    for (int dimindex = 0; dimindex < sds_rank; dimindex++) {
+
+        int dimid = SDgetdimid (sds_id, dimindex);
+        if (dimid == FAIL) {
+            delete ar;
+            SDendaccess (sds_id);
+            throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
+        }
+        char dim_name[H4_MAX_NC_NAME];
+        int32 dim_size = 0;
+        int32 dim_type = 0;
+
+        // Number of dimension attributes(This is almost never used)
+        int32  num_dim_attrs = 0;
+
+        intn status = SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
+                            &num_dim_attrs);
+
+        if (status == FAIL) {
+            delete ar;
+            SDendaccess (sds_id);
+            throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
+        }
+
+        string dim_name_str (dim_name);
+        dim_name_str = HDFCFUtil::get_CF_string(dim_name_str);
+        ar->append_dim_ll(dim_sizes[dimindex], dim_name_str);
+        //ar->append_dim_ll(dim_sizes[dimindex]);
+
+    }
 
     // map sds var attributes to dap4
     map_sds_var_dap4_attrs(ar,sds_id,obj_ref,n_sds_attrs);
