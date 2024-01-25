@@ -243,6 +243,13 @@ std::string get_dap_array_dims_str(libdap::Array &a){
         auto d4dim = dim.dim;
         // uint64_t elements = 0;
         stringstream ce;
+#if 0
+        // This should work, but does noit because even tho the submitted CE
+        // was a dap4 expre4ssion, i.e. dap4.ce=ce_stuff the d4dim objects
+        // unintialized and so that
+        // d4dim->c_start() == d4dim->c_stride() == d4dim->c_stop() == 0
+        // WTF? WHY?
+        //
         if(d4dim){
             // elements = count_requested_elements(d4dim);
             ce << d4dim->c_start() << ":";
@@ -259,6 +266,14 @@ std::string get_dap_array_dims_str(libdap::Array &a){
             }
             ce  << dim.stop;
         }
+#else
+        // elements  = count_requested_elements(dim);
+        ce << dim.start << ":";
+        if(dim.stride != 1){
+            ce << dim.stride << ":";
+        }
+        ce  << dim.stop;
+#endif
         // my_dims << "[" << elements << "]";
         my_dims << "[" << ce.str() << "]";
         dim_itr++;
