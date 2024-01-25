@@ -110,10 +110,7 @@ void FONcDim::define_struct(int ncid)
 {
     if (!_defined) {
         if (_name.empty()) {
-            ostringstream dimname_strm;
-            dimname_strm << "sdim" << FONcDim::StructDimNameNum + 1;
-            FONcDim::StructDimNameNum++;
-            _name = dimname_strm.str();
+            _name ="sdim" + to_string(++FONcDim::StructDimNameNum);
         }
         else {
             _name = FONcUtils::id2netcdf(_name);

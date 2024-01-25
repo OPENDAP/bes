@@ -184,13 +184,8 @@ FONcArrayStructureField::write( int ncid )
         if (!structure_elem)
             throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
 
-        //loop through the structure
-        Constructor::Vars_iter vi = structure_elem->var_begin();
-        Constructor::Vars_iter ve = structure_elem->var_end();
+        for (auto &bt:structure_elem->variables()) {
 
-        for (; vi != ve; vi++) {
-
-            BaseType *bt = *vi;
             if (bt->send_p()) {
 
                 if (bt->name() == d_varname) {
@@ -354,13 +349,12 @@ FONcArrayStructureField::find_sdim(const string &name, int64_t size) {
 void
 FONcArrayStructureField::dump( ostream &strm ) const
 {
-    BESInternalError("FONcArrayStructureField::dump is not supported yet.", __FILE__, __LINE__);
-#if 0
     strm << BESIndent::LMarg << "FONcArrayStructureField::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name = " << _bt->name()  << endl ;
+    strm << BESIndent::LMarg << "memb name = " << var_name  << endl ;
+    for (const auto& sdim:struct_dims)
+        sdim->dump(strm);
     BESIndent::UnIndent() ;
-#endif
 }
 

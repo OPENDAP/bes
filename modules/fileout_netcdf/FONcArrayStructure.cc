@@ -38,15 +38,15 @@
  * @throws BESInternalError if the BaseType is not a an array
  */
 FONcArrayStructure::FONcArrayStructure(BaseType *b) :
-    FONcBaseType()
+    FONcBaseType(),_as(dynamic_cast<Array*>(b))
 {
-    _as = dynamic_cast<Array *>(b);
+    //_as = dynamic_cast<Array *>(b);
     if (!_as) {
-        auto s = (string) "File out netcdf, array of structure was passed a " + "variable that is not an array ";
+        auto s = (string) "File out netcdf, array of structure was passed a variable that is not an array ";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
     if (_as->var()->type() != dods_structure_c) {
-        string s = (string) "File out netcdf, array of structure was passed a " + "variable that is not a structure ";
+        string s = (string) "File out netcdf, array of structure was passed a variable that is not a structure ";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
 }
@@ -58,21 +58,8 @@ FONcArrayStructure::FONcArrayStructure(BaseType *b) :
  */
 FONcArrayStructure::~FONcArrayStructure()
 {
-
-    // Adapt the code from FONcStructure.cc
-    bool done = false;
-    while (!done) {
-        // _vars are vector<FONcArrayStructureField *>
-        auto i = _vars.begin();
-        auto e = _vars.end();
-        if (i == e) {
-            done = true;
-        }
-        else {
-            FONcArrayStructureField *b = (*i);
-            delete b;
-            _vars.erase(i);
-        }
+    for (auto &var: _vars) {
+        delete var;
     }
 
 }
@@ -111,13 +98,9 @@ void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_
                                __FILE__, __LINE__);
     }
 
-    Constructor::Vars_iter vi = as_v->var_begin();
-    Constructor::Vars_iter ve = as_v->var_end();
-    for (; vi != ve; vi++) {
-        BaseType *bt = *vi;
+    for (auto &bt: as_v->variables()) {
         if (bt->send_p()) {
             BESDEBUG("fonc", "FONcArrayStructure::convert - converting " << bt->name() << endl);
-
             auto fsf = new FONcArrayStructureField(bt, _as);
             _vars.push_back(fsf);
             fsf->convert(embed,_dap4,is_dap4_group);
@@ -146,10 +129,8 @@ void FONcArrayStructure::define(int ncid)
 
     if (!d_defined) {
         BESDEBUG("fonc", "FONcArrayStructure::define - defining " << d_varname << endl);
-        vector<FONcArrayStructureField *>::const_iterator i = _vars.begin();
-        vector<FONcArrayStructureField *>::const_iterator e = _vars.end();
-        for (; i != e; i++) {
-            FONcArrayStructureField *fbt = (*i);
+
+        for (auto &fbt:_vars) {
             BESDEBUG("fonc", "defining " << fbt->name() << endl);
             fbt->define(ncid);
         }
@@ -200,21 +181,14 @@ string FONcArrayStructure::name()
  */
 void FONcArrayStructure::dump(ostream &strm) const
 {
-    BESInternalError("FONcArrayStructure::dump is not supported yet.", __FILE__, __LINE__);
-#if 0
     strm << BESIndent::LMarg << "FONcArrayStructure::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "name = " << _s->name() << " {" << endl;
+    strm << BESIndent::LMarg << "name = " << _as->name() << " {" << endl;
     BESIndent::Indent();
-    vector<FONcBaseType *>::const_iterator i = _vars.begin();
-    vector<FONcBaseType *>::const_iterator e = _vars.end();
-    for (; i != e; i++) {
-        FONcBaseType *fbt = *i;
-        fbt->dump(strm);
-    }
+    for (const auto & _var:_vars)
+        _var->dump(strm);
     BESIndent::UnIndent();
     strm << BESIndent::LMarg << "}" << endl;
     BESIndent::UnIndent();
-#endif
 }
 
