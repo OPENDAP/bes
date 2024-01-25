@@ -245,11 +245,19 @@ std::string get_dap_array_dims_str(libdap::Array &a){
         stringstream ce;
         if(d4dim){
             // elements = count_requested_elements(d4dim);
-            ce << d4dim->c_start() << ":" << d4dim->c_stride() << ":" << d4dim->c_stop();
+            ce << d4dim->c_start() << ":";
+            if(d4dim->c_stride() != 1) {
+                ce << d4dim->c_stride() << ":";
+            }
+            ce << d4dim->c_stop();
         }
         else {
             // elements  = count_requested_elements(dim);
-            ce << dim.start << ":" << dim.stride << ":" << dim.stop;
+            ce << dim.start << ":";
+            if(dim.stride != 1){
+                ce << dim.stride << ":";
+            }
+            ce  << dim.stop;
         }
         // my_dims << "[" << elements << "]";
         my_dims << "[" << ce.str() << "]";
