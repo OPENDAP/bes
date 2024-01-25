@@ -110,7 +110,8 @@ void FONcDim::define_struct(int ncid)
 {
     if (!_defined) {
         if (_name.empty()) {
-            _name ="sdim" + to_string(++FONcDim::StructDimNameNum);
+            FONcDim::StructDimNameNum++;
+            _name ="sdim" + to_string(FONcDim::StructDimNameNum);
         }
         else {
             _name = FONcUtils::id2netcdf(_name);

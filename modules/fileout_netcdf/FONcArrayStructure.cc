@@ -40,13 +40,12 @@
 FONcArrayStructure::FONcArrayStructure(BaseType *b) :
     FONcBaseType(),_as(dynamic_cast<Array*>(b))
 {
-    //_as = dynamic_cast<Array *>(b);
     if (!_as) {
-        auto s = (string) "File out netcdf, array of structure was passed a variable that is not an array ";
+        string s = "File out netcdf, array of structure was passed a variable that is not an array ";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
     if (_as->var()->type() != dods_structure_c) {
-        string s = (string) "File out netcdf, array of structure was passed a variable that is not a structure ";
+        string s =  "File out netcdf, array of structure was passed a variable that is not a structure ";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
 }
@@ -89,7 +88,7 @@ void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_
 
     auto as_v = dynamic_cast<Structure *>(_as->var());
     if (!as_v) {
-        string s = (string) "File out netcdf, write an array of structure was passed a " + "variable that is not a structure";
+        string s = "File out netcdf, write an array of structure was passed a variable that is not a structure";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
 

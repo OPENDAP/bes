@@ -114,6 +114,14 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
 
 }
 
+FONcArrayStructureField::~FONcArrayStructureField() {
+
+    for (auto &dim: struct_dims) {
+        dim->struct_decref();
+    }   
+
+}
+
 void FONcArrayStructureField::convert(vector<string> embed, bool _dap4, bool is_dap4_group){
     var_name = FONcUtils::gen_name(embed,d_varname, d_orig_varname);
 
@@ -285,7 +293,7 @@ void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b
             break;
         }
         default:
-            auto err = (string) "file out netcdf structure array: Only support int/float types";
+            string err = "file out netcdf structure array: Only support int/float types";
             throw BESInternalError(err, __FILE__, __LINE__);
     }
 }

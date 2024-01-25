@@ -69,7 +69,7 @@ private:
 public:
 
     explicit FONcArrayStructureField(libdap::BaseType *b, libdap::Array* a);
-    ~FONcArrayStructureField() = default;
+    ~FONcArrayStructureField();
 
     void convert(vector<string> embed, bool _dap4=true, bool is_dap4_group=false) override;
     void define(int ncid) override;
