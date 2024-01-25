@@ -11,7 +11,7 @@ SUBDIRS = reader writer . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gdal_module
-M_VER=1.0.1
+M_VER=1.0.2
 
 AM_CPPFLAGS = $(GDAL_CFLAGS) $(DAP_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS =

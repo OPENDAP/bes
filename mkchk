@@ -1,1 +1,28 @@
+#!/bin/bash
+
+if test -z "$prefix" 
+then
+    echo "The environment variable \"prefix\" has not been set to a usable value!" >&2
+    echo "Tests will not be run." >&2
+    exit 2
+fi
+
+which getdap
+if test $? -ne 0
+then
+    echo "Unable to locate the getdap application." >&2
+    echo "Tests will not be run." >&2
+    exit 2
+fi
+
+which getdap4
+if test $? -ne 0
+then
+    echo "Unable to locate the getdap4 application." >&2
+    echo "Tests will not be run." >&2
+    exit 2
+
+fi
+
+    
 make -k -j20 check 2>&1 | tee mk.log | grep -e "Making check in" -e "FAILED"

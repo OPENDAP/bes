@@ -81,7 +81,7 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
     chunk->read_chunk();
 
     if(array) {
-        // If this chunk used/uses hdf5 fill values, do not attempt to deflate, et., its
+        // If this chunk used/uses hdf5 fill values, do not attempt to deflate, etc., its
         // values since the fill value code makes the chunks 'fully formed.'' jhrg 5/16/22
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
@@ -145,8 +145,6 @@ void process_one_chunk_unconstrained_dio(shared_ptr<Chunk> chunk, const vector<u
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
-
-
 
 /**
  * @brief A single argument wrapper for process_one_chunk() for use with std::async().
@@ -640,6 +638,8 @@ void SuperChunk::read_fill_value_chunk()
         throw BESInternalError("Found a SuperChunk with uses_fill_value true but more than one child chunk.", __FILE__, __LINE__);
 
     d_chunks.front()->read_chunk();
+
+    d_is_read=true;
 }
 
 /**
@@ -745,7 +745,7 @@ void SuperChunk::process_child_chunks() {
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog+"Serial Chunk Processing. id: " + d_id);
 #endif
-        for(const auto &chunk: get_chunks()){
+        for(const auto &chunk: d_chunks){
             process_one_chunk(chunk,d_parent_array,constrained_array_shape);
         }
     }
@@ -756,8 +756,8 @@ void SuperChunk::process_child_chunks() {
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(timer_name.str());
 #endif
-        queue<shared_ptr<Chunk>> chunks_to_process;
-        for(const auto &chunk: get_chunks())
+        queue< shared_ptr<Chunk> > chunks_to_process;
+        for(const auto &chunk: d_chunks)
             chunks_to_process.push(chunk);
 
         process_chunks_concurrent(d_id, chunks_to_process, d_parent_array, constrained_array_shape);
@@ -785,7 +785,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
 #endif
-        for(auto &chunk: get_chunks()){
+        for(const auto &chunk: d_chunks){
             process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape);
         }
     }
@@ -797,9 +797,9 @@ void SuperChunk::process_child_chunks_unconstrained() {
         sw.start(timer_name.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for (auto &chunk: get_chunks())
+        for (const auto &chunk: d_chunks) {
             chunks_to_process.push(chunk);
-
+        }
         process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
     }
 }
@@ -851,7 +851,7 @@ void SuperChunk::read_unconstrained_dio() {
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
 #endif
-        for(const auto &chunk :get_chunks()){
+        for(const auto &chunk : d_chunks){
             process_one_chunk_unconstrained_dio(chunk, chunk_shape, d_parent_array, array_shape);
         }
     }
@@ -863,7 +863,7 @@ void SuperChunk::read_unconstrained_dio() {
         sw.start(timer_name.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for (const auto &chunk:get_chunks())
+        for (const auto &chunk : d_chunks)
             chunks_to_process.push(chunk);
 
         process_chunks_unconstrained_concurrent_dio(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);

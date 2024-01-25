@@ -43,6 +43,7 @@ namespace dap_utils {
 void log_response_and_memory_size(const std::string &caller_id, libdap::DDS *const *dds);
 
 void log_response_and_memory_size(const std::string &caller_id, /*const*/ libdap::DMR &dmr);
+void log_response_and_memory_size(const std::string &caller_id, /*const*/ libdap::XMLWriter &dmrpp_writer);
 
 void throw_for_dap4_typed_attrs(libdap::DAS *das, const std::string &file, unsigned int line);
 void throw_for_dap4_typed_vars_or_attrs(libdap::DDS *dds, const std::string &file, unsigned int line);
