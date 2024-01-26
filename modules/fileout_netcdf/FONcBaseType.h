@@ -115,7 +115,7 @@ public:
     virtual void setVersion(const std::string &version);
     virtual void setNC4DataModel(const string &nc4_datamodel);
     virtual bool isNetCDF4();
-    virtual bool isNetCDF4_ENHANCED();
+    bool isNetCDF4_ENHANCED();
     virtual void set_is_dap4(bool set_dap4) { d_is_dap4 = set_dap4;}
     virtual libdap::AttrType getAttrType(nc_type t);
     virtual D4AttributeType getD4AttrType(nc_type t);

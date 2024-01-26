@@ -1,0 +1,25 @@
+netcdf test {
+dimensions:
+	sdim1 = 2 ;
+	sdim2 = 2 ;
+	sdim3 = 2 ;
+variables:
+	int DSC_memb_array.Orbit(sdim1) ;
+	float DSC_memb_array.Temperature(sdim2, sdim3) ;
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.configuration = "\n# TheBESKeys::get_as_config()\nAllowedHosts=^https?:\\/\\/\nBES.Catalog.catalog.FollowSymLinks=Yes\nBES.Catalog.catalog.RootDirectory=.\nBES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\nBES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\nBES.Data.RootDirectory=/dev/null\nBES.LogName=./bes.log\nBES.UncompressCache.dir=/tmp/hyrax_ux\nBES.UncompressCache.prefix=ux_\nBES.UncompressCache.size=500\nBES.module.cmd=/Users/myang6/work/opendap/bes-hyrax-1243-clion/xmlcommand/.libs/libdap_xml_module.so\nBES.module.dap=/Users/myang6/work/opendap/bes-hyrax-1243-clion/dap/.libs/libdap_module.so\nBES.module.dmrpp=/Users/myang6/work/opendap/bes-hyrax-1243-clion/modules/dmrpp_module/.libs/libdmrpp_module.so\nBES.module.fonc=/Users/myang6/work/opendap/bes-hyrax-1243-clion/modules/fileout_netcdf/.libs/libfonc_module.so\nBES.module.h5=/Users/myang6/work/opendap/bes-hyrax-1243-clion/modules/hdf5_handler/.libs/libhdf5_module.so\nBES.module.nc=/Users/myang6/work/opendap/bes-hyrax-1243-clion/modules/netcdf_handler/.libs/libnc_module.so\nBES.modules=dap,cmd,h5,dmrpp,nc,fonc\nFONc.ClassicModel=false\nFONc.NoGlobalAttrs=true\nH5.EnableCF=false\nH5.EnableCheckNameClashing=true\n" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.pHiPYUF7 -f ./compound_simple_array.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.QcuHNl35 -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex compound_simple_array.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"compound_simple_array.h5.dmrpp\"}]}]" ;
+data:
+
+ DSC_memb_array.Orbit = 1153, 1184 ;
+
+ DSC_memb_array.Temperature =
+  53.23, 53.87,
+  55.12, 55.95 ;
+}
