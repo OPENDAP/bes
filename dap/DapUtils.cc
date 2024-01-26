@@ -239,7 +239,7 @@ std::string get_dap_array_dims_str(libdap::Array &a){
     auto end_dim = a.dim_end();
     while(dim_itr != end_dim){
         stringstream ce;
-        auto &dim = *dim_itr;
+        const auto &dim = *dim_itr;
         ce << dim.start << ":";
         if(dim.stride != 1){
             ce << dim.stride << ":";
