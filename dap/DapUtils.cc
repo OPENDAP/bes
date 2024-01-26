@@ -235,18 +235,14 @@ uint64_t count_requested_elements(const Array::dimension &dim){
  */
 std::string get_dap_array_dims_str(libdap::Array &a){
     stringstream my_dims;
-    auto dim_itr = a.dim_begin();
-    auto end_dim = a.dim_end();
-    while(dim_itr != end_dim){
-        stringstream ce;
-        const auto &dim = *dim_itr;
+    for (auto dim_iter = a.dim_begin(), end_iter = a.dim_end(); dim_iter != end_iter; ++dim_iter) {        stringstream ce;
+        const auto &dim = *dim_iter;
         ce << dim.start << ":";
         if(dim.stride != 1){
             ce << dim.stride << ":";
         }
         ce  << dim.stop;
         my_dims << "[" << ce.str() << "]";
-        dim_itr++;
     }
     return my_dims.str();
 }
