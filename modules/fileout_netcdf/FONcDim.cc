@@ -40,7 +40,7 @@ using std::ostringstream;
 #include "FONcUtils.h"
 
 int FONcDim::DimNameNum = 0;
-
+int FONcDim::StructDimNameNum = 0;
 /** @brief Constructor for FOncDim that defines the dimension of an
  * array
  *
@@ -48,7 +48,7 @@ int FONcDim::DimNameNum = 0;
  * @param size The size of the dimension
  */
 FONcDim::FONcDim(const string &name, int64_t size) :
-    _name(name), _size(size), _dimid(0), _defined(false), _ref(1)
+    _name(name), _size(size)
 {
 }
 
@@ -65,6 +65,11 @@ void FONcDim::decref()
     if (!_ref) delete this;
 }
 
+void FONcDim::struct_decref()
+{
+    _struct_ref--;
+    if (!_struct_ref) delete this;
+}
 /** @brief define the DAP dimension in the netcdf file
  *
  * If the dimension has not already been created by an array that shares
@@ -85,6 +90,28 @@ void FONcDim::define(int ncid)
             dimname_strm << "dim" << FONcDim::DimNameNum + 1;
             FONcDim::DimNameNum++;
             _name = dimname_strm.str();
+        }
+        else {
+            _name = FONcUtils::id2netcdf(_name);
+        }
+
+        BESDEBUG("fonc",  "FONcDim:: dimension size is "<<_size <<endl);
+        BESDEBUG("fonc",  "FONcDim:: dimension name is "<<_name <<endl);
+        int stax = nc_def_dim(ncid, _name.c_str(), _size, &_dimid);
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - " + "Failed to add dimension " + _name;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        _defined = true;
+    }
+}
+
+void FONcDim::define_struct(int ncid)
+{
+    if (!_defined) {
+        if (_name.empty()) {
+            FONcDim::StructDimNameNum++;
+            _name ="sdim" + to_string(FONcDim::StructDimNameNum);
         }
         else {
             _name = FONcUtils::id2netcdf(_name);

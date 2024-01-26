@@ -46,16 +46,20 @@ class FONcDim : public BESObj
 private:
     std::string			_name ;
     int64_t			_size ;
-    int				_dimid ;
-    bool			_defined ;
-    int				_ref ;
+    int				_dimid = 0;
+    bool			_defined = false;
+    int				_ref = 1;
+    int                         _struct_ref =1;
 public:
     				FONcDim( const std::string &name, int64_t size ) ;
     virtual			~FONcDim() {}
     virtual void		incref() { _ref++ ; }
     virtual void		decref() ;
+    virtual void		struct_incref() { _struct_ref++ ; }
+    virtual void		struct_decref() ;
 
     virtual void		define( int ncid ) ;
+    virtual void		define_struct( int ncid ) ;
 
     virtual std::string	name() { return _name ; }
     virtual int64_t		size() { return _size ; }
@@ -66,6 +70,7 @@ public:
     virtual void		dump( std::ostream &strm ) const ;
 
     static int			DimNameNum ;
+    static int          StructDimNameNum;
 } ;
 
 #endif // FONcDim_h_

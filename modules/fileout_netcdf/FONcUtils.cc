@@ -49,6 +49,8 @@
 #include "FONcFloat.h"
 #include "FONcDouble.h"
 #include "FONcStructure.h"
+#include "FONcArrayStructure.h"
+#include "FONcArrayStructureField.h"
 #include "FONcGrid.h"
 #include "FONcArray.h"
 #include "FONcSequence.h"
@@ -70,6 +72,7 @@ void FONcUtils::reset()
     FONcArray::Dimensions.clear();
     FONcGrid::Maps.clear();
     FONcDim::DimNameNum = 0;
+    FONcDim::StructDimNameNum = 0;
 }
 
 /** @brief convert the provided string to a netcdf allowed
@@ -266,131 +269,133 @@ FONcUtils::convert(BaseType *v,
     
     bool unsigned_promote = true;
 
-    switch (v->type()) {
-    case dods_str_c:
-    case dods_url_c:
-        b = new FONcStr(v);
-        break;
-    case dods_uint8_c:
-    case dods_byte_c: {
-        if(true == is_netcdf4_enhanced)
-            b = new FONcUByte(v);
-        else 
-            b = new FONcShort(v,unsigned_promote);
-        break;
-    }
-    case dods_int8_c: {
-        b = new FONcInt8(v);
-        break;
-    }
-
-    case dods_uint16_c: {
-        if(true == is_netcdf4_enhanced)
-            b = new FONcUShort(v); 
-        else 
-            b = new FONcInt(v,unsigned_promote);
-        break;
-    }
-    case dods_int16_c:
-        b = new FONcShort(v);
-        break;
-    case dods_uint32_c: {
-        if(true == is_netcdf4_enhanced)
-            b = new FONcUInt(v); 
-        else { 
-            string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned int.";
-            err += " Please use netCDF-4 enhanced model instead.";
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-        break;
-    }
-    case dods_int32_c:
-        b = new FONcInt(v);
-        break;
-    case dods_uint64_c: {
-        if(true == is_netcdf4_enhanced)
-            b = new FONcUInt64(v); 
-        else { 
-            string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned 64-bit int.";
-            err += " Please use netCDF-4 enhanced model instead.";
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-        break;
-    }
-    case dods_int64_c: {
-        if(true == is_netcdf4_enhanced)
-            b = new FONcInt64(v); 
-        else {
-            string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned 64-bit int.";
-            err += " Please use netCDF-4 enhanced model instead.";
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-        break;
-    }
-    case dods_float32_c:
-        b = new FONcFloat(v);
-        break;
-    case dods_float64_c:
-        b = new FONcDouble(v);
-        break;
-    case dods_grid_c:
-        b = new FONcGrid(v);
-        break;
-    case dods_array_c:
-
-        // This "if block" is only true for the netCDF-4 enhanced/DAP4 case.
-        // fdimname_to_id is obtained in FONcTransform:transform_dap4_group_internal().
-        if(fdimname_to_id.size()>0) {
-            vector<int> dim_ids;
-            vector<bool> use_d4_dim_ids;
-            Array *t_a = dynamic_cast<Array *>(v);
-            Array::Dim_iter di = t_a->dim_begin();
-            Array::Dim_iter de = t_a->dim_end();
-            // Here we want to check if this array has DAP4 dimension.  
-            // If yes, we want to check if this DAP4 dimension is defined in the DAP4 group.
-            // A DAP4 dimension fully_qualified name is used as a key.
-            // Note: we also need to use a flag to mark if this dimension 
-            // is defined by groups this var belongs to.
-            // DAP4 doesn't require a variable's dimension to have a dimension name. 
-            // When dim_id is 0, a dimension name will be created for this dimension.
-            for (; di != de; di++) {
-
-                D4Dimension * d4_dim = t_a->dimension_D4dim(di);
-                if(d4_dim) {
-                    BESDEBUG("fonc", "FONcArray() - constructor is dap4: dimension name is "<< d4_dim->name() <<endl);
-                    if(fdimname_to_id.find(d4_dim->fully_qualified_name())!= fdimname_to_id.end()) {
-                        int dim_id = fdimname_to_id[d4_dim->fully_qualified_name()];
-                        dim_ids.push_back(dim_id);
-                        use_d4_dim_ids.push_back(true);
-                    }
-                    else {
-                        dim_ids.push_back(0);
-                        use_d4_dim_ids.push_back(false);
-                    }
-                }
-                else {
-                    dim_ids.push_back(0);
-                    use_d4_dim_ids.push_back(false);
-                }
-
+    if (v->type()==dods_array_c && v->var()->type()==dods_structure_c)
+        b = new FONcArrayStructure(v);
+    else {
+        switch (v->type()) {
+            case dods_str_c:
+            case dods_url_c:
+                b = new FONcStr(v);
+                break;
+            case dods_uint8_c:
+            case dods_byte_c: {
+                if (true == is_netcdf4_enhanced)
+                    b = new FONcUByte(v);
+                else
+                    b = new FONcShort(v, unsigned_promote);
+                break;
             }
-            b = new FONcArray(v,dim_ids,use_d4_dim_ids,rds_nums);
+            case dods_int8_c: {
+                b = new FONcInt8(v);
+                break;
+            }
+
+            case dods_uint16_c: {
+                if (true == is_netcdf4_enhanced)
+                    b = new FONcUShort(v);
+                else
+                    b = new FONcInt(v, unsigned_promote);
+                break;
+            }
+            case dods_int16_c:
+                b = new FONcShort(v);
+                break;
+            case dods_uint32_c: {
+                if (true == is_netcdf4_enhanced)
+                    b = new FONcUInt(v);
+                else {
+                    string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned int.";
+                    err += " Please use netCDF-4 enhanced model instead.";
+                    throw BESInternalError(err, __FILE__, __LINE__);
+                }
+                break;
+            }
+            case dods_int32_c:
+                b = new FONcInt(v);
+                break;
+            case dods_uint64_c: {
+                if (true == is_netcdf4_enhanced)
+                    b = new FONcUInt64(v);
+                else {
+                    string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned 64-bit int.";
+                    err += " Please use netCDF-4 enhanced model instead.";
+                    throw BESInternalError(err, __FILE__, __LINE__);
+                }
+                break;
+            }
+            case dods_int64_c: {
+                if (true == is_netcdf4_enhanced)
+                    b = new FONcInt64(v);
+                else {
+                    string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned 64-bit int.";
+                    err += " Please use netCDF-4 enhanced model instead.";
+                    throw BESInternalError(err, __FILE__, __LINE__);
+                }
+                break;
+            }
+            case dods_float32_c:
+                b = new FONcFloat(v);
+                break;
+            case dods_float64_c:
+                b = new FONcDouble(v);
+                break;
+            case dods_grid_c:
+                b = new FONcGrid(v);
+                break;
+            case dods_array_c:
+
+                // This "if block" is only true for the netCDF-4 enhanced/DAP4 case.
+                // fdimname_to_id is obtained in FONcTransform:transform_dap4_group_internal().
+                if (fdimname_to_id.size() > 0) {
+                    vector<int> dim_ids;
+                    vector<bool> use_d4_dim_ids;
+                    Array *t_a = dynamic_cast<Array *>(v);
+                    Array::Dim_iter di = t_a->dim_begin();
+                    Array::Dim_iter de = t_a->dim_end();
+                    // Here we want to check if this array has DAP4 dimension.
+                    // If yes, we want to check if this DAP4 dimension is defined in the DAP4 group.
+                    // A DAP4 dimension fully_qualified name is used as a key.
+                    // Note: we also need to use a flag to mark if this dimension
+                    // is defined by groups this var belongs to.
+                    // DAP4 doesn't require a variable's dimension to have a dimension name.
+                    // When dim_id is 0, a dimension name will be created for this dimension.
+                    for (; di != de; di++) {
+
+                        D4Dimension *d4_dim = t_a->dimension_D4dim(di);
+                        if (d4_dim) {
+                            BESDEBUG("fonc",
+                                     "FONcArray() - constructor is dap4: dimension name is " << d4_dim->name() << endl);
+                            if (fdimname_to_id.find(d4_dim->fully_qualified_name()) != fdimname_to_id.end()) {
+                                int dim_id = fdimname_to_id[d4_dim->fully_qualified_name()];
+                                dim_ids.push_back(dim_id);
+                                use_d4_dim_ids.push_back(true);
+                            } else {
+                                dim_ids.push_back(0);
+                                use_d4_dim_ids.push_back(false);
+                            }
+                        } else {
+                            dim_ids.push_back(0);
+                            use_d4_dim_ids.push_back(false);
+                        }
+
+                    }
+                    b = new FONcArray(v, dim_ids, use_d4_dim_ids, rds_nums);
+
+                } else {
+                    b = new FONcArray(v);
+                }
+                break;
+            case dods_structure_c:
+                b = new FONcStructure(v);
+                break;
+            case dods_sequence_c:
+                b = new FONcSequence(v);
+                break;
+            default:
+                string err = (string) "file out netcdf, unable to " + "write unknown variable type";
+                throw BESInternalError(err, __FILE__, __LINE__);
 
         }
-        else {
-            b = new FONcArray(v);
-        }
-        break;
-    case dods_structure_c:
-        b = new FONcStructure(v);
-        break;
-    case dods_sequence_c:
-        b = new FONcSequence(v);
-        break;
-    default:
-        string err = (string) "file out netcdf, unable to " + "write unknown variable type";
-        throw BESInternalError(err, __FILE__, __LINE__);
-
     }
     // The following code may be combined with other related code. TODO: later.
     b->setVersion(ncdf_version);
