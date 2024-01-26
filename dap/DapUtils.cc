@@ -230,9 +230,8 @@ uint64_t count_requested_elements(const Array::dimension &dim){
 }
 
 /**
- * @brief Returns a string with the square bracket notation for the arrays dimension sizes as constrained.
- * @param a The Array to evaluate.
- * @return A string with the square brackety business.
+ * @brief Returns a string with the square bracket notation for the arrays showing the constraint as start:stride:stop
+ * @return A string with [start:stride:stop] for each dimension.
  */
 std::string get_dap_array_dims_str(libdap::Array &a){
     stringstream my_dims;
@@ -240,8 +239,7 @@ std::string get_dap_array_dims_str(libdap::Array &a){
     auto end_dim = a.dim_end();
     while(dim_itr != end_dim){
         stringstream ce;
-        auto dim = *dim_itr;
-        // elements  = count_requested_elements(dim);
+        auto &dim = *dim_itr;
         ce << dim.start << ":";
         if(dim.stride != 1){
             ce << dim.stride << ":";
