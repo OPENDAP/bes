@@ -61,6 +61,7 @@
 #include <algorithm>
 #include <numeric>
 #include <functional>
+#include <unordered_set>
 
 
 // Include this on linux to suppress an annoying warning about multiple
@@ -195,12 +196,15 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 
 void read_dmr(DMR *dmr, const string &filename);
 void read_sd_attrs(DMR *dmr, int32 sdfd);
+void handle_sds_dims(DMR *dmr, int32 sdfd);
+void obtain_lone_sds(DMR *dmr, int32 sdfd);
+
 void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string &filename);
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* tem_d4_cgroup,const string& filename);
 void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* tem_d4_cgroup,const string& filename);
 void convert_vgroup_attrs(int32 vgroup_id,D4Group* tem_d4_cgroup);
 void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* tem_d4_cgroup, const string & filename);
-void convert_sds(int32 sdfd,int32 obj_ref,D4Group* d4g,const string &filename);
+void convert_sds(int32 sdfd,int32 obj_ref,  D4Group* d4g,const string &filename);
 void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
 void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
 void map_vgroup_attr(D4Group *d4g, const string &dap4_attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
@@ -4243,6 +4247,9 @@ void read_dmr(DMR *dmr, const string &filename) {
     //       We also need to map SD file attributes to DAP4 root group attributes.
 
     //try {
+        handle_sds_dims(dmr,sdfd);
+        obtain_lone_sds(dmr,sdfd);
+        // TODO: very possible we need to handle HDF-EOS2 swath dimensions. It needs special care. 
         read_sd_attrs(dmr,sdfd);
         read_dmr_vlone_groups(dmr, fileid, sdfd, filename);
     //}
@@ -4256,6 +4263,79 @@ void read_dmr(DMR *dmr, const string &filename) {
 
     Hclose(fileid);
     SDend(sdfd);
+
+}
+
+void handle_sds_dims(DMR *dmr, int32 sdfd) {
+
+    int32 n_sds      = 0;       
+    int32 n_sd_attrs = 0;
+
+    // Obtain number of SDS objects and number of SD(file) attributes
+    if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+    }
+
+    D4Group* root_grp = dmr->root();
+    D4Dimensions *dims = root_grp->dims();
+
+    // Create an unordered_set for SDS dimension names.
+    // Unlike SDS, an SDS dimension name is unique.
+    unordered_set<string> sds_dimname_set;
+    for (int i = 0; i <n_sds; i++) {
+
+        int32 sds_id  = SDselect(sdfd,i);
+
+        if (sds_id == FAIL) 
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        // Obtain object name, rank, size, field type and number of SDS attributes
+
+        int32  dim_sizes[H4_MAX_VAR_DIMS];
+        int32  sds_rank = 0;
+        int32  sds_type = 0;
+        int32 n_sds_attrs = 0;
+        if (FAIL == SDgetinfo (sds_id, nullptr, &sds_rank, dim_sizes, &sds_type, &n_sds_attrs)) {
+            SDendaccess(sds_id);
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain SDS info.");
+        }                        
+
+        for (int dimindex = 0; dimindex <sds_rank; dimindex++) {
+
+            int dimid = SDgetdimid (sds_id, dimindex);
+            if (dimid == FAIL) {
+                SDendaccess (sds_id);
+                throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
+            }
+            char dim_name[H4_MAX_NC_NAME];
+            int32 dim_size = 0;
+            int32 dim_type = 0;
+    
+            // Number of dimension attributes(This is almost never used)
+            int32  num_dim_attrs = 0;
+    
+            intn status = SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
+                                &num_dim_attrs);
+    
+            if (status == FAIL) {
+                SDendaccess (sds_id);
+                throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
+            }
+    
+            string dim_name_str (dim_name);
+            dim_name_str = HDFCFUtil::get_CF_string(dim_name_str);
+            
+            auto it_set = sds_dimname_set.insert(dim_name_str);
+            if (it_set.second) {
+                auto d4_dim0_unique = make_unique<D4Dimension>(dim_name_str,dim_sizes[dimindex]);
+                auto d4_dim0 = d4_dim0_unique.release();
+                dims->add_dim_nocopy(d4_dim0);
+            }
+        }
+    }
+}
+
+void obtain_lone_sds(DMR *dmr, int32 sdfd) {
+
 
 }
 
@@ -4443,7 +4523,7 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
             try {
-                convert_sds(sdfd,obj_ref,d4g,filename);
+                convert_sds(sdfd,obj_ref, d4g,filename);
             }  
             catch(...) {
               Vdetach(vgroup_id);
@@ -4753,11 +4833,22 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
 
         string dim_name_str (dim_name);
         dim_name_str = HDFCFUtil::get_CF_string(dim_name_str);
+        // If necessary, we can add a "/" in front of dim_name_str later for the dimension name..
         ar->append_dim_ll(dim_sizes[dimindex], dim_name_str);
+        //dim_name_str_vec.push_back(dim_name_str);
         //ar->append_dim_ll(dim_sizes[dimindex]);
 
     }
+    
+#if 0
+    Array::Dim_iter di = ar->dim_begin();
+    Array::Dim_iter de = ar->dim_end();
+    int dimnum = 0;
+    for (; di != de; di++) {
+        
 
+    }
+#endif
     // map sds var attributes to dap4
     map_sds_var_dap4_attrs(ar,sds_id,obj_ref,n_sds_attrs);
     ar->set_is_dap4(true);
