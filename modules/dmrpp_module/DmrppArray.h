@@ -53,14 +53,14 @@ class XMLWriter;
 
 namespace dmrpp {
 
-    class SuperChunk;
+class SuperChunk;
 
 enum string_pad_type { not_set, null_term, null_pad, space_pad };
 
 struct ons {
     unsigned long long offset;
     unsigned long long size;
-    ons(const std::string &ons_pair_str);
+    explicit ons(const std::string &ons_pair_str);
 };
 
 /**
@@ -105,7 +105,17 @@ private:
                                        const std::vector<unsigned long long> &array_shape, char *data, std::vector<char> &values);
     void read_contiguous();
     void read_one_chunk_dio();
+
+#if 0
+
     void read_contiguous_string();
+
+#endif
+
+    void insert_constrained_contiguous_string(Dim_iter dim_iter, vector<string>::iterator &target_index,
+                                              vector<unsigned long long> &subset_addr,
+                                              const vector<unsigned long long> &array_shape,
+                                              char *src_buf);
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned long long> *target_element_address,
@@ -185,6 +195,9 @@ public:
     bool read() override;
     void set_send_p(bool state) override;
 
+    bool read_string_array(); // not virtual; this class only. jhrg 11/07/23
+    void read_contiguous_string_array(); // not virtual; this class only. jhrg 11/09/23
+
     virtual unsigned long long get_size(bool constrained = false);
 
     virtual std::vector<unsigned long long> get_shape(bool constrained);
@@ -222,12 +235,11 @@ public:
     void get_ons_objs(vector<ons> &ons_list);
 
     static std::string pad_type_to_str(string_pad_type pad_type);
-    static string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
+    // static string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
 
 
     unsigned int buf2val(void **val) override;
     vector<u_int8_t> &compact_str_buffer(){ return d_compact_str_buf; }
-
 };
 
 /**
@@ -274,7 +286,10 @@ struct one_child_chunk_args_new {
 };
 
 
-bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
+bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout,
+                     string debug_prefix);
+
+std::string ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
 
 } // namespace dmrpp
 
