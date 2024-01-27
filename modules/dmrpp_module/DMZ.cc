@@ -1406,7 +1406,8 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
                     auto str_start = reinterpret_cast<char *>(decoded.data());
                     vector<string> fls_values;
                     while(fls_values.size() < btp->length_ll()){
-                        string aValue = DmrppArray::ingest_fixed_length_string(str_start,fls_length, pad_type);
+                        // jhrg 1/26/24 string aValue = DmrppArray::ingest_fixed_length_string(str_start,fls_length, pad_type);
+                        string aValue = ingest_fixed_length_string(str_start,fls_length, pad_type);
                         fls_values.emplace_back(aValue);
                         str_start += fls_length;
                     }
