@@ -1452,8 +1452,6 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
     }
 }
 
-
-
 void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element)
 {
     //---------------------------------------------------------------------------
@@ -1482,11 +1480,6 @@ void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element
     array->set_value(entries, (int) entries.size());
     array->set_read_p(true);
 }
-
-
-
-
-
 
 /**
  * @brief Parse a chunk node
@@ -1647,9 +1640,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
     }
 
     return true;
-
 }
-
 
 /**
  * @brief Get a vector describing the shape and size of an Array
