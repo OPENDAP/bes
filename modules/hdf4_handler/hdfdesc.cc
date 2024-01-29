@@ -197,7 +197,10 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 void read_dmr(DMR *dmr, const string &filename);
 void read_sd_attrs(DMR *dmr, int32 sdfd);
 void handle_sds_dims(DMR *dmr, int32 sdfd);
-void obtain_lone_sds(DMR *dmr, int32 sdfd);
+void read_lone_sds(DMR *dmr, int32 file_id, int32 sdfd, const string &filename);
+void obtain_all_sds_refs(int32 sdfd, unordered_set<int32>& sds_ref);
+void exclude_all_sds_refs_in_vgroups(int32 sdfd,int32 file_id, unordered_set<int32>&sds_ref);
+void exclude_sds_refs_in_vgroup(int32 sdfd,int32 file_id, int32 vgroup_id, unordered_set<int32>&sds_ref);
 
 void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string &filename);
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* tem_d4_cgroup,const string& filename);
@@ -4248,10 +4251,11 @@ void read_dmr(DMR *dmr, const string &filename) {
 
     //try {
         handle_sds_dims(dmr,sdfd);
-        obtain_lone_sds(dmr,sdfd);
+        read_lone_sds(dmr,fileid,sdfd,filename);
         // TODO: very possible we need to handle HDF-EOS2 swath dimensions. It needs special care. 
         read_sd_attrs(dmr,sdfd);
         read_dmr_vlone_groups(dmr, fileid, sdfd, filename);
+cerr<<"Done read_dmr_vlone_groups"<<endl;
     //}
 #if 0
     catch(...) {
@@ -4334,8 +4338,175 @@ void handle_sds_dims(DMR *dmr, int32 sdfd) {
     }
 }
 
-void obtain_lone_sds(DMR *dmr, int32 sdfd) {
+void read_lone_sds(DMR *dmr, int32 file_id,int32 sdfd, const string &filename) {
 
+    unordered_set<int32> lone_sds_refs;
+    obtain_all_sds_refs(sdfd,lone_sds_refs);
+    exclude_all_sds_refs_in_vgroups(sdfd,file_id,lone_sds_refs); 
+
+   //Map SDS to DAP4 root group.
+   for (const auto &sds_ref:lone_sds_refs)
+cerr<<"lone sds_ref is "<<sds_ref<<endl;
+
+}
+
+void obtain_all_sds_refs(int32 sdfd, unordered_set<int32>& sds_ref) {
+
+    int32 n_sds      = 0;       
+    int32 n_sd_attrs = 0;
+
+    // Obtain number of SDS objects and number of SD(file) attributes
+    if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+    }
+
+    for (int i = 0; i <n_sds; i++) {
+
+        int32 sds_id  = SDselect(sdfd,i);
+        int32 obj_ref = SDidtoref(sds_id);
+        if (obj_ref == FAIL) 
+            throw InternalErr (__FILE__,__LINE__,"SDidtoref failed ");
+        sds_ref.insert(obj_ref);
+    }
+
+}
+
+void exclude_all_sds_refs_in_vgroups(int32 sdfd,int32 file_id, unordered_set<int32>& sds_ref) {
+
+    int      num_lonevg; 
+    vector<int> ref_array;
+    int32  istat;
+
+    istat = Vstart(file_id);
+    if (istat == FAIL) { 
+        Vend(file_id);
+        throw InternalErr(__FILE__, __LINE__, "unable to start hdf4 V interface.");
+    }
+
+    num_lonevg = Vlone(file_id,NULL,0);
+
+cerr<<"num_lonevg is "<<num_lonevg<<endl;
+    if (num_lonevg == FAIL) {
+        Vend(file_id);
+        throw InternalErr(__FILE__, __LINE__, "error in obtaining lone vgroup number.");
+    }
+
+    /* obtain object reference array. */
+
+    /* if no lone vgroup, quit from this function. */
+    if (num_lonevg == 0)
+        return;
+
+    ref_array.resize(num_lonevg);
+
+    num_lonevg = Vlone(file_id,ref_array.data(),num_lonevg);
+
+    /* walk through every lone group in the file */
+
+    for(int lone_vg_number = 0; lone_vg_number < num_lonevg;
+            lone_vg_number++) {
+
+        int32 vgroup_id = Vattach(file_id,ref_array[lone_vg_number],"r");
+        if (vgroup_id ==FAIL) {
+            Vend(file_id);
+            throw InternalErr(__FILE__, __LINE__, "error in attaching lone vgroup.");
+        }
+
+        uint16  vclassnamelen; /*Vgroup class name length */
+        vector<char> vclass_name;
+        if (Vgetclassnamelen(vgroup_id,&vclassnamelen) == FAIL) {
+            Vdetach(vgroup_id);
+            Vend(file_id);
+            throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
+        }
+ 
+        if (vclassnamelen!=0) {
+            vclass_name.resize(vclassnamelen+1);
+            if (Vgetclass(vgroup_id,vclass_name.data()) == FAIL) {
+                Vdetach(vgroup_id);
+                Vend(file_id);
+                throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+            }
+            if (reserved_vgroups(vclass_name)) {
+                Vdetach(vgroup_id);
+                continue;
+            }
+        }
+
+        exclude_sds_refs_in_vgroup(sdfd,file_id,vgroup_id,sds_ref);
+    }
+
+}
+
+void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unordered_set<int32> &sds_ref) {
+
+    int num_gobjects; /* number of global objects */
+    int32 obj_tag; /* object tag */
+    int32 obj_ref;/* object reference */
+
+    num_gobjects = Vntagrefs(vgroup_id);
+    if (num_gobjects == FAIL) {
+        Vdetach(vgroup_id);
+        Vend(file_id);
+        throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+    }
+
+    for( int i = 0;i<num_gobjects;i++) { 
+            
+        if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
+
+            Vdetach(vgroup_id);
+            Vend(file_id);
+            throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
+        }
+ 
+        if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
+            if ( 0 == sds_ref.erase(obj_ref)) {
+
+                Vdetach(vgroup_id);
+                Vend(file_id);
+                string err_msg = "Unable to remove the SDS object from the sds reference list for the reference number " + to_string(obj_ref);
+                throw InternalErr(__FILE__, __LINE__, err_msg);
+            }
+
+        }
+        else if (Visvg(vgroup_id, obj_ref)) {
+
+            int32 vgroup_cid = Vattach(file_id,obj_ref,"r");
+            if (vgroup_cid == FAIL) {
+                Vdetach(vgroup_id);
+                Vend(file_id);
+                throw InternalErr(__FILE__, __LINE__, "fail to attach vgroup_cid.");
+            }
+               
+            uint16  vclassnamelen; /*Vgroup class name length */
+            vector<char> vclass_name;
+            if (Vgetclassnamelen(vgroup_cid,&vclassnamelen) == FAIL) {
+                Vdetach(vgroup_cid);
+                Vdetach(vgroup_id);
+                Vend(file_id);
+                throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
+            }
+     
+            if (vclassnamelen!=0) {
+                vclass_name.resize(vclassnamelen);
+                if (Vgetclass(vgroup_cid,vclass_name.data()) == FAIL) {
+                    Vdetach(vgroup_cid);
+                    Vdetach(vgroup_id);
+                    Vend(file_id);
+                    throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+                }
+                if (reserved_vgroups(vclass_name)) {
+                    Vdetach(vgroup_cid);
+                    continue;
+                }
+            }
+
+            exclude_sds_refs_in_vgroup(sdfd,file_id,vgroup_cid,sds_ref);
+
+        }
+
+    }
 
 }
 
@@ -4474,6 +4645,7 @@ cerr<<"vgroup_name is "<< vgroup_name_str <<endl;
     }
 
     Vend(file_id);
+cerr<<"Finish read_dmr_vlone_groups " <<endl;
 
 }
 
