@@ -2395,12 +2395,18 @@ bool DmrppArray::read()
     // Single chunk and 'contiguous' are the same for this code.
     if (get_chunks_size() == 1) {
         BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
-        read_contiguous();    // Throws on various errors
+        if (get_dio_flag())
+            read_one_chunk_dio();
+        else
+            read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
         if (!is_projected()) {
             BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
-            read_chunks_unconstrained();
+            if (get_dio_flag())
+                read_chunks_dio_unconstrained();
+            else
+                read_chunks_unconstrained();
         }
         else {
             BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
@@ -2445,6 +2451,218 @@ bool DmrppArray::read()
 
     return true;
 }
+
+
+#if 0
+
+bool DmrppArray::read()
+{
+    Type var_type = this->var()->type();
+    // If the chunks are not loaded, load them now. NB: load_chunks()
+    // reads data for HDF5 COMPACT storage, so read_p() will be true
+    // (but it does not read any other data). Thus, call load_chunks()
+    // before testing read_p() to cover that case. jhrg 11/15/21
+    // String Arrays that use COMPACT storage appear to work. jhrg 3/3/22
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
+    // It's important to note that w.r.t. the compact data layout the DMZ parser reads the values into the
+    // DmrppArray at the time it is parsed and the read flag is then set. Thus, the compact layout solution
+    // does not explicitly appear in this method as it is handled by the parser.
+    if (read_p()) return true;
+
+#if 0
+    // Here we need to reset the dio_flag to false for the time being before calling the method use_direct_io_opt()
+    // since the dio_flag may be set to true for reducing the memory usage with a temporary solution.
+    // TODO: we need to reset the direct io flag to false and change back in the future. KY 2023-11-29
+    this->set_dio_flag(false);
+
+    // Add direct_io offset for each chunk. This will be used to retrieve individal buffer at fileout netCDF.
+    // Direct io offset is only necessary when the direct IO operation is possible.
+    if (this->use_direct_io_opt()) {
+
+        this->set_dio_flag();
+        auto chunks = this->get_chunks();
+
+        // Need to provide the offset of a chunk in the final data buffer.
+        for (unsigned int i = 0; i<chunks.size();i++) {
+            if (i > 0)
+               chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
+            BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
+        }
+
+        // Fill in the chunk information so that the fileout netcdf can retrieve.
+        Array::var_storage_info dmrpp_vs_info;
+        dmrpp_vs_info.filter = this->get_filters();
+
+        // Provide the deflate compression levels.
+        for (const auto &def_lev:this->get_deflate_levels())
+            dmrpp_vs_info.deflate_levels.push_back(def_lev);
+
+        // Chunk dimension sizes.
+        for (const auto &chunk_dim:this->get_chunk_dimension_sizes())
+            dmrpp_vs_info.chunk_dims.push_back(chunk_dim);
+
+        // Provide chunk offset/length etc.
+        auto im_chunks = this->get_immutable_chunks();
+        for (const auto &chunk:im_chunks) {
+            Array::var_chunk_info_t vci_t;
+            vci_t.filter_mask = chunk->get_filter_mask();
+            vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
+            vci_t.chunk_buffer_size = chunk->get_size();
+
+            for (const auto &chunk_coord:chunk->get_position_in_array())
+                vci_t.chunk_coords.push_back(chunk_coord);
+            dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+        }
+        this->set_var_storage_info(dmrpp_vs_info);
+    }
+#endif
+
+    if (this->get_dio_flag()) {
+
+        Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
+
+        auto chunks = this->get_chunks();
+
+        // Need to provide the offset of a chunk in the final data buffer.
+        for (unsigned int i = 0; i<chunks.size();i++) {
+            if (i > 0)
+                chunks[i]->set_direct_io_offset(chunks[i-1]->get_direct_io_offset()+chunks[i-1]->get_size());
+            BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
+        }
+
+        // Fill in the chunk information so that the fileout netcdf can retrieve.
+        // Provide chunk offset/length etc.
+        auto im_chunks = this->get_immutable_chunks();
+        for (const auto &chunk:im_chunks) {
+            Array::var_chunk_info_t vci_t;
+            vci_t.filter_mask = chunk->get_filter_mask();
+            vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
+            vci_t.chunk_buffer_size = chunk->get_size();
+
+            for (const auto &chunk_coord:chunk->get_position_in_array())
+                vci_t.chunk_coords.push_back(chunk_coord);
+            dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+        }
+        this->set_var_storage_info(dmrpp_vs_info);
+
+    }
+
+
+    DmrppArray *array_to_read = this;
+    if ((var_type == dods_str_c || var_type == dods_url_c)) {
+        if (is_flsa()) {
+            // For fixed length string we use a proxy array of Byte to retrieve the data.
+            array_to_read = get_as_byte_array(*this);
+        }
+    }
+    try {
+        if(BESDebug::IsSet(MODULE)) {
+            string msg = array_to_str(*array_to_read, "Reading Data From DmrppArray");
+            BESDEBUG(MODULE, prolog << msg << endl);
+        }
+        // Single chunk and 'contiguous' are the same for this code.
+        if (array_to_read->get_chunks_size() == 1) {
+            BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
+            // KENT: here we need to add the handling of direct chunk IO for one chunk.
+            if (this->get_dio_flag())
+                array_to_read->read_one_chunk_dio();
+            else
+                array_to_read->read_contiguous();    // Throws on various errors
+        }
+        else {  // Handle the more complex case where the data is chunked.
+            if (!array_to_read->is_projected()) {
+                BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
+                // KENT: Only here we need to consider the direct buffer IO.
+                // The best way is to hold another function but with direct buffer
+                if (this->get_dio_flag())
+                    array_to_read->read_chunks_dio_unconstrained();
+                else
+                    array_to_read->read_chunks_unconstrained();
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+                array_to_read->read_chunks();
+            }
+        }
+
+        if ((var_type == dods_str_c || var_type == dods_url_c)) {
+            BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);
+            if(array_to_read == this){
+                throw BESInternalFatalError(prolog + "Server encountered internal state conflict. "
+                                                     "Expected byte transport array. Exiting.",
+                                            __FILE__, __LINE__);
+            }
+
+            if (is_flsa()) {
+                ingest_flsa_data(*this, *array_to_read);
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "Processing Variable Length String Array data. SKIPPING..." << endl);
+#if 0 // @TODO Turn this on...
+                ingest_vlsa_data(*this, *array_to_read);
+#else
+                throw BESInternalError("Arrays of variable length strings are not yet supported.",__FILE__,__LINE__);
+#endif
+            }
+        }
+        if(array_to_read && array_to_read != this) {
+            delete array_to_read;
+            array_to_read = nullptr;
+        }
+
+    }
+    catch(...){
+        if(array_to_read && array_to_read != this) {
+            delete array_to_read;
+            array_to_read = nullptr;
+        }
+        throw;
+    }
+
+    if (this->twiddle_bytes()) {
+
+        int64_t num = this->length_ll();
+
+        switch (var_type) {
+            case dods_int16_c:
+            case dods_uint16_c: {
+                auto *local = reinterpret_cast<dods_uint16*>(this->get_buf());
+                while (num--) {
+                    *local = bswap_16(*local);
+                    local++;
+                }
+                break;
+            }
+            case dods_int32_c:
+            case dods_uint32_c: {
+                auto *local = reinterpret_cast<dods_uint32*>(this->get_buf());;
+                while (num--) {
+                    *local = bswap_32(*local);
+                    local++;
+                }
+                break;
+            }
+            case dods_int64_c:
+            case dods_uint64_c: {
+                auto *local = reinterpret_cast<dods_uint64*>(this->get_buf());;
+                while (num--) {
+                    *local = bswap_64(*local);
+                    local++;
+                }
+                break;
+            }
+            default: break; // Do nothing for all other types.
+        }
+    }
+
+    return true;
+}
+
+#endif
+
+
 
 /**
  * Classes used with the STL for_each() algorithm; stolen from libdap::Array.
