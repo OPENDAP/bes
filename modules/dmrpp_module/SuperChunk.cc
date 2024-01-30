@@ -646,7 +646,7 @@ void SuperChunk::read_fill_value_chunk()
  * @brief Cause the SuperChunk and all of it's subordinate Chunks to be read.
  */
 void SuperChunk::retrieve_data() {
-    // TODO I think this code should set d_is_read. It sets it for the Chunk, which may be redundant). jhrg 5/9/22
+    // TODO I think this code should set d_is_read. It sets it for the Chunk, (which may be redundant). jhrg 5/9/22
     if (d_is_read) {
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
@@ -687,6 +687,7 @@ void SuperChunk::retrieve_data() {
         chunk->set_bytes_read(chunk->get_size());
     }
 }
+
 // Direct chunk IO routine for retrieve_data, it clones from retrieve_data(). To ensure
 // the regular operations. Still use a separate method.
 void SuperChunk::retrieve_data_dio() {
@@ -734,6 +735,7 @@ void SuperChunk::retrieve_data_dio() {
  */
 void SuperChunk::process_child_chunks() {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
+
     retrieve_data();
 
     vector<unsigned long long> constrained_array_shape = d_parent_array->get_shape(true);

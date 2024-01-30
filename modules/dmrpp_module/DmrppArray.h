@@ -151,6 +151,8 @@ private:
     void read_chunks();
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
+    void build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+    void build_superchunk_queue_constrained(queue<shared_ptr<SuperChunk>> &super_chunks);
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
@@ -197,6 +199,7 @@ public:
 
     bool read_string_array(); // not virtual; this class only. jhrg 11/07/23
     void read_contiguous_string_array(); // not virtual; this class only. jhrg 11/09/23
+    void read_chunked_string_array();   // This class only. jhrg 1/29/24
 
     virtual unsigned long long get_size(bool constrained = false);
 

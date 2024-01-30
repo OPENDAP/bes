@@ -337,6 +337,12 @@ bool start_super_chunk_unconstrained_transfer_thread_dio(list<std::future<bool>>
     return retval;
 }
 
+// TODO (or maybe NOTE) An issue with this function is that it does too much. By
+//  combining the data transfer and the decompression and the insertion, it limits
+//  reuse. We can use this for (arrays of) ints, floats, and the like, but not strings.
+//  If it were broken out into two (or maybe three) parts, particularly to separate
+//  insertion, then the transfer and decompression could be used for string arrays.
+//  jhrg 1/30/24
 
 /**
  * @brief Uses std::async() and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
@@ -1109,11 +1115,11 @@ void DmrppArray::read_one_chunk_dio() {
 
     // For this version, we just read the whole chunk all at once.
     the_one_chunk->read_chunk_dio();
+
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
     const char *source_buffer = the_one_chunk->get_rbuf();
     char *target_buffer = get_buf();
     memcpy(target_buffer, source_buffer , the_one_chunk->get_size());
-
 }
 
 /**
@@ -1191,6 +1197,88 @@ void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
 }
 
 /**
+ * Populate a Queue with SuperChunks that will transfer all of the data for this Array.
+ * @param super_chunks Populate this queue.
+ * @eception BESInternalError If there are fewer than two chunks or a chunk cannot be
+ * added to the queue.
+ */
+void DmrppArray::build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks) {
+    if (get_chunks_size() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
+    // made using a debugger easier. However, order does not matter, AFAIK.
+
+    unsigned long long sc_count = 0;
+    string sc_id = name() + "-";
+
+    // Initialize queue with the first superchunk
+    auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+    super_chunks.push(current_super_chunk);
+
+    // Make the SuperChunks using all the chunks.
+    for (const auto &chunk: get_immutable_chunks()) {
+        bool added = current_super_chunk->add_chunk(chunk);
+        if (!added) {
+            current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+            super_chunks.push(current_super_chunk);
+            if (!current_super_chunk->add_chunk(chunk)) {
+                string msg = prolog + "Failed to add Chunk to new SuperChunk. chunk: " + chunk->to_string();
+                throw BESInternalError(msg, __FILE__, __LINE__);
+            }
+        }
+    }
+}
+
+/**
+ * Populate a Queue with SuperChunks that will transfer all of the constrained for this Array.
+ * @param super_chunks Populate this queue.
+ * @eception BESInternalError If there are fewer than two chunks, a chunk cannot be added to
+ * the queue, or there were no 'needed' chunks.
+ */
+void DmrppArray::build_superchunk_queue_constrained(queue<shared_ptr<SuperChunk>> &super_chunks) {
+    if (get_chunks_size() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
+    // made using a debugger easier. However, order does not matter, AFAIK.
+
+    unsigned long long sc_count = 0;
+    string sc_id = name() + "-";
+    bool found_needed_chunks = false;
+
+    // Initialize queue with the first superchunk
+    auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+    super_chunks.push(current_super_chunk);
+
+    // Make the SuperChunks only the needed chunks.
+    // NB: I tried to merge this into the previous method, but the result was messy and we have
+    // enough complexity in this code.
+    for (const auto &chunk: get_immutable_chunks()) {
+        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
+        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
+        if (needed) {
+            found_needed_chunks = true;
+
+            bool added = current_super_chunk->add_chunk(chunk);
+            if (!added) {
+                current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+                super_chunks.push(current_super_chunk);
+                if (!current_super_chunk->add_chunk(chunk)) {
+                    string msg = prolog + "Failed to add Chunk to new SuperChunk. chunk: " + chunk->to_string();
+                    throw BESInternalError(msg, __FILE__, __LINE__);
+                }
+            }
+        }
+    }
+
+    if (!found_needed_chunks) {  // Ouch! Something went horribly wrong...
+        throw BESInternalError("ERROR - Failed to locate any chunks that correspond to the requested data.", __FILE__,
+                               __LINE__);
+    }
+}
+
+/**
  * @brief Read data for an unconstrained chunked array
  *
  * Read data for an array when those data are split across multiple
@@ -1203,6 +1291,7 @@ void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
  */
 void DmrppArray::read_chunks_unconstrained()
 {
+#if 0
     if (get_chunks_size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
@@ -1231,7 +1320,16 @@ void DmrppArray::read_chunks_unconstrained()
             }
         }
     }
+#endif
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    build_superchunk_queue(super_chunks);
 
+    // TODO I think these three lines don't belong here. The Array/Vector object's
+    //  storage is not used in this method and neither are the array_shape nor
+    //  the chunk_shape. jhrg 1/29/24
+    //  For the case of Fixed length string arrays, the number of elements needs
+    //  to be greater than the value returned by get_size(), but that 'element
+    //  size' is not know here but in the read_chunk_string_array() method.
     reserve_value_capacity_ll(get_size());
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
@@ -1268,7 +1366,7 @@ void DmrppArray::read_chunks_unconstrained()
 //The direct chunk IO routine of read chunks., mostly copy from the general IO handling routines.
 void DmrppArray::read_chunks_dio_unconstrained()
 {
-
+#if 0
     if (get_chunks_size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
@@ -1297,6 +1395,10 @@ void DmrppArray::read_chunks_dio_unconstrained()
             }
         }
     }
+#endif
+
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    build_superchunk_queue(super_chunks);
 
     //Change to the total storage buffer size to just the compressed buffer size. 
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
@@ -1563,6 +1665,7 @@ void DmrppArray::insert_chunk(
  */
 void DmrppArray::read_chunks()
 {
+#if 0
     if (get_chunks_size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
@@ -1604,6 +1707,10 @@ void DmrppArray::read_chunks()
     if(!found_needed_chunks){  // Ouch! Something went horribly wrong...
         throw BESInternalError("ERROR - Failed to locate any chunks that correspond to the requested data.", __FILE__, __LINE__);
     }
+#endif
+
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    build_superchunk_queue_constrained(super_chunks);
 
     reserve_value_capacity_ll(get_size(true));
 
@@ -2061,6 +2168,31 @@ void ingest_flsa_data(DmrppArray &flsa, Chunk &the_one_chunk)
 }
 #endif
 
+#define STUFF 0
+#if STUFF
+// Single chunk and 'contiguous' are the same for this code.
+    if (get_chunks_size() == 1) {
+        BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
+        if (get_dio_flag())
+            read_one_chunk_dio();
+        else
+            read_contiguous();    // Throws on various errors
+    }
+    else {  // Handle the more complex case where the data is chunked.
+        if (!is_projected()) {
+            BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
+            if (get_dio_flag())
+                read_chunks_dio_unconstrained();
+            else
+                read_chunks_unconstrained();
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+            read_chunks();
+        }
+    }
+#endif
+
 bool DmrppArray::read_string_array() {
 
     Type var_type = this->var()->type();
@@ -2074,7 +2206,7 @@ bool DmrppArray::read_string_array() {
         }
         else {  // Handle the more complex case where the data is chunked.
             if (!is_projected()) {
-                // FIXME read_chunks_unconstrained();
+                read_chunked_string_array();
             }
             else {
                 // FIXME read_chunks();
@@ -2089,60 +2221,144 @@ bool DmrppArray::read_string_array() {
     return true;
 }
 
+// Get the single chunk that makes up this CONTIGUOUS variable.
 void DmrppArray::read_contiguous_string_array()
 {
-    BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
-
-    // Get the single chunk that makes up this CONTIGUOUS variable.
     if (get_chunks_size() != 1)
-        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
+        throw BESInternalError(string("Expected only a single chunk for the string array variable ") + name(), __FILE__, __LINE__);
 
-    // This is the original chunk for this 'contiguous' variable.
-    auto the_one_chunk = get_immutable_chunks()[0];
-
-    // While arrays of int, etc., may be broken up and read in parallel, we will not do that
-    // optimization for string arrays (it is a debatable optimization). jhrg 11/09/23
-    the_one_chunk->read_chunk();
-
-    if (the_one_chunk->get_rbuf() == nullptr) {
-        throw BESInternalError("Failed to read string array data.",__FILE__,__LINE__);
+    // Single chunk and 'contiguous' are the same for this code.
+    BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk for a string array." << endl);
+    if (get_dio_flag()) {
+        read_one_chunk_dio();
     }
+    else {
+        // TODO We might be able to use read_contiguous() here if we can trim out some of the
+        //  fat where we break a transfer into parallel requests. Or, maybe we want to use that
+        //  here??? jhrg 1/29/24
 
-    // Now that the_one_chunk has been read, we do what is necessary...
-    if (!is_filters_empty() && !get_one_chunk_fill_value()) {
-        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
-    }
+        // This is the original chunk for this 'contiguous' variable.
+        auto the_one_chunk = get_immutable_chunks()[0];
 
-    // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
-    if (!is_projected()) {  // if there is no projection constraint
-        // iterate over the elements in the array to receive the strings and add the values
-        vector<unsigned long long> array_shape = get_shape(false);
+        // While arrays of int, etc., may be broken up and read in parallel, we will not do that
+        // optimization for string arrays (it is a debatable optimization). jhrg 11/09/23
+        the_one_chunk->read_chunk();
 
-        auto fstr_len = get_fixed_string_length();
-        auto pad_type = get_fixed_length_string_pad();
-
-        get_str().reserve(get_size(false));
-
-        auto buffer = the_one_chunk->get_rbuf();
-        const auto buffer_end = the_one_chunk->get_rbuf() + the_one_chunk->get_size();
-
-        while (buffer < buffer_end) {
-            get_str().emplace_back(ingest_fixed_length_string(buffer, fstr_len, pad_type));
-            buffer += fstr_len;
+        if (the_one_chunk->get_rbuf() == nullptr) {
+            throw BESInternalError("Failed to read string array data.",__FILE__,__LINE__);
         }
+
+        // Now that the_one_chunk has been read, we do what is necessary...
+        if (!is_filters_empty() && !get_one_chunk_fill_value()) {
+            the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+        }
+
+        // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
+        if (!is_projected()) {  // if there is no projection constraint
+            // iterate over the elements in the array to receive the strings and add the values
+            vector<unsigned long long> array_shape = get_shape(false);
+
+            auto fstr_len = get_fixed_string_length();
+            auto pad_type = get_fixed_length_string_pad();
+
+            // NB: libdap::Vector::get_str() returns a reference to a vector<string> used by
+            // the Array to hold this kind of data. jhrg 1/29/24
+            get_str().reserve(get_size(false));
+
+            auto buffer = the_one_chunk->get_rbuf();
+            const auto buffer_end = the_one_chunk->get_rbuf() + the_one_chunk->get_size();
+
+            while (buffer < buffer_end) {
+                get_str().emplace_back(ingest_fixed_length_string(buffer, fstr_len, pad_type));
+                buffer += fstr_len;
+            }
+        }
+        else {                  // apply the constraint
+            vector<unsigned long long> array_shape = get_shape(false);
+            vector<unsigned long long> subset;
+
+            get_str().reserve(get_size(true));
+
+            auto target_index = get_str().begin();
+            insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, the_one_chunk->get_rbuf());
+        }
+
+        set_read_p(true);
     }
-    else {                  // apply the constraint
-        vector<unsigned long long> array_shape = get_shape(false);
-        vector<unsigned long long> subset;
+}
 
-        get_str().reserve(get_size(true));
 
-        auto target_index = get_str().begin();
-        insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, the_one_chunk->get_rbuf());
+// Get the single chunk that makes up this CONTIGUOUS variable.
+void DmrppArray::read_chunked_string_array()
+{
+    if (get_chunks_size() < 2)
+        throw BESInternalError(string("Expected multiple chunks for the string array variable ") + name(), __FILE__, __LINE__);
+
+    // Single chunk and 'contiguous' are the same for this code.
+    BESDEBUG(MODULE, prolog << "Reading data from a chunked string array." << endl);
+    if (get_dio_flag()) {
+        // This call works because the 'dio' methods do not try to unpack the data and
+        // load it into the Array object *as data values*. jhrg 1/30/24
+        read_chunks_dio_unconstrained();
     }
+    else {
+        // This is where we replicate some of the logic of read_chunks_unconstrained()
+        // but instead, bring the data into the fixed length string array that is returned
+        // by Vector::get_str(). That returned object is a vector<string>.
+        //
+        // This call below seems like a good idea, but it calls code that not only reads
+        // the chunks but unpacks them into the Array. It works only for cardinal data
+        // types. For string data is uses the wrong buffer (the one returned by get_buf())
+        // and not the one returned by get_str(). jhrg 1/30/24
+        // read_chunks_unconstrained();
 
-    set_read_p(true);
+        queue<shared_ptr<SuperChunk>> super_chunks;
+        build_superchunk_queue(super_chunks);
+
+        while (!super_chunks.empty()) {
+            auto super_chunk = super_chunks.front();
+            super_chunks.pop();
+
+            super_chunk->retrieve_data();
+        }
+
+        // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
+        if (!is_projected()) {  // if there is no projection constraint
+            // iterate over the elements in the array to receive the strings and add the values
+            vector<unsigned long long> array_shape = get_shape(false);
+
+            auto fstr_len = get_fixed_string_length();
+            auto pad_type = get_fixed_length_string_pad();
+
+            // FIXME Hack jhrg 1/29/24 get_str().reserve(get_size(false));
+            // reserve_value_capacity_ll(get_size(false) * fstr_len);
+            get_str().reserve(get_size(false)* fstr_len);
+
+            for (auto &chunk: get_immutable_chunks()) {
+                auto buffer = chunk->get_rbuf();
+                const auto buffer_end = chunk->get_rbuf() + chunk->get_size();
+
+                while (buffer < buffer_end) {
+                    get_str().emplace_back(ingest_fixed_length_string(buffer, fstr_len, pad_type));
+                    buffer += fstr_len;
+                }
+            }
+        }
+        else {                  // apply the constraint
+            throw BESInternalError("Reading fixed length string arrays that are constrained is not supported yet.", __FILE__, __LINE__);
+#if 0
+            vector<unsigned long long> array_shape = get_shape(false);
+            vector<unsigned long long> subset;
+
+            get_str().reserve(get_size(true));
+
+            auto target_index = get_str().begin();
+            insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, the_one_chunk->get_rbuf());
+#endif
+        }
+
+        set_read_p(true);
+    }
 }
 
 /**
