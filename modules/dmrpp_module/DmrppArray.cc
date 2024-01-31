@@ -2501,14 +2501,13 @@ void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
     }
 }
 
-
 /**
- * @bried Write a Variable Length String Array into the dmr++ document as an XML element with values.
+ * @brief Print information about one dimension of the array.
  * @param xml
- * @param a
+ * @param constrained
+ * @param d
  */
-
-void print_dap4_dimension_helper(XMLWriter &xml, bool constrained, const Array::dimension &d) {
+static void print_dap4_dimension_helper(const XMLWriter &xml, bool constrained, const Array::dimension &d) {
     // This duplicates code in D4Dimensions (where D4Dimension::print_dap4() is defined
     // because of the need to print the constrained size of a dimension). I think that
     // the constraint information has to be kept here and not in the dimension (since they
