@@ -274,7 +274,7 @@ struct one_child_chunk_args_new {
 };
 
 
-bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
+bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout, const string &debug_prefix);
 
 } // namespace dmrpp
 

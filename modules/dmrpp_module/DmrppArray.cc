@@ -72,13 +72,10 @@ using namespace std;
 
 namespace dmrpp {
 
-
 // Transfer Thread Pool state variables.
 std::mutex transfer_thread_pool_mtx;     // mutex for critical section
 //atomic_ullong transfer_thread_counter(0);
 atomic_uint transfer_thread_counter(0);
-
-
 
 /**
  * @brief Uses future::wait_for() to scan the futures for a ready future, returning true when once get() has been called.
@@ -94,52 +91,56 @@ atomic_uint transfer_thread_counter(0);
  * method.
  * @return Returns true if future::get() was called on a ready future, false otherwise.
  */
-bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix) {
+ // TODO I think the name of this function should be wait_for_next_future(). jhrg 1/31/24
+bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout,
+                     const string &debug_prefix) {
     bool future_finished = false;
     bool done = false;
-    std::chrono::milliseconds timeout_ms (timeout);
+    std::chrono::milliseconds timeout_ms(timeout);
 
-    while(!done){
+    while (!done) {
         auto futr = futures.begin();
         auto fend = futures.end();
         bool future_is_valid = true;
-        while(!future_finished && future_is_valid && futr != fend){
+        // TODO This could be a range-based for that uses a break to exit when a complete future is found.
+        while (!future_finished && future_is_valid && futr != fend) {
             future_is_valid = (*futr).valid();
-            if(future_is_valid){
+            if (future_is_valid) {
                 // What happens if wait_for() always returns future_status::timeout for a stuck thread?
                 // If that were to happen, the loop would run forever. However, we assume that these
                 // threads are never 'stuck.' We assume that their computations always complete, either
                 // with success or failure. For the transfer threads, timeouts will stop them if nothing
                 // else does and for the decompression threads, the worst case is a segmentation fault.
                 // jhrg 2/5/21
-                if((*futr).wait_for(timeout_ms) != std::future_status::timeout){
+                if ((*futr).wait_for(timeout_ms) != std::future_status::timeout) {
                     try {
                         bool success = (*futr).get();
                         future_finished = true;
                         BESDEBUG(dmrpp_3, debug_prefix << prolog << "Called future::get() on a ready future."
-                            << " success: " << (success?"true":"false") << endl);
-                        if(!success){
+                                                       << " success: " << (success ? "true" : "false") << endl);
+                        if (!success) {
                             stringstream msg;
                             msg << debug_prefix << prolog << "The std::future has failed!";
                             msg << " thread_counter: " << thread_counter;
                             throw BESInternalError(msg.str(), __FILE__, __LINE__);
                         }
                     }
-                    catch(...){
+                    catch (...) {
                         // TODO I had to add this to make the thread counting work when there's errors
                         //  But I think it's primitive because it trashes everything - there's
                         //  surely a way to handle the situation on a per thread basis and maybe even
                         //  retry?
                         futures.clear();
-                        thread_counter=0;
+                        thread_counter = 0;
                         throw;
                     }
                 }
                 else {
                     futr++;
                     BESDEBUG(dmrpp_3, debug_prefix << prolog << "future::wait_for() timed out. (timeout: " <<
-                        timeout << " ms) There are currently " << futures.size() << " futures in process."
-                        << " thread_counter: " << thread_counter << endl);
+                                                   timeout << " ms) There are currently " << futures.size()
+                                                   << " futures in process."
+                                                   << " thread_counter: " << thread_counter << endl);
                 }
             }
             else {
@@ -148,12 +149,17 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
             }
         }
 
-        if (futr!=fend && future_finished) {
+        // TODO There is no way for futr == fend and futrue_finished == true. Since the function
+        //  only waits for one future, this could be moved up into the above else clause and the
+        //  bool future_finished could be removed. jhrg 1/31/24
+        if (futr != fend && future_finished) {
             futures.erase(futr);
             thread_counter--;
             BESDEBUG(dmrpp_3, debug_prefix << prolog << "Erased future from futures list. (Erased future was "
-                                  << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
-                                  futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
+                                           << (future_is_valid ? "" : "not ") << "valid at start.) There are currently "
+                                           <<
+                                           futures.size() << " futures in process. thread_counter: " << thread_counter
+                                           << endl);
         }
 
         done = future_finished || futures.empty();

@@ -64,7 +64,7 @@ private:
 
 public:
     DmrppArrayTest() = default;
-    ~DmrppArrayTest() = default;
+    ~DmrppArrayTest() override = default;
 
     // Called before each test
     void setUp() override
