@@ -4633,13 +4633,21 @@ cerr<<"num_lonevg is "<<num_lonevg<<endl;
 
         // TODO: ensure the CF-style vgroup name.
         string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
-cerr<<"vgroup_name is "<< vgroup_name_str <<endl;
+//cerr<<"vgroup_name is "<< vgroup_name_str <<endl;
         auto tem_d4_cgroup_ptr = make_unique<D4Group>(vgroup_name_str);
         auto tem_d4_cgroup = tem_d4_cgroup_ptr.release();
+        //auto tem_d4_cgroup = new D4Group(vgroup_name_str);
         root_grp->add_group_nocopy(tem_d4_cgroup);
         
         convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,filename);
 
+//        cerr<<"tem_d4_cgroup number of child groups: "<<tem_d4_cgroup->groups().size() <<endl;
+#if 0
+        for (const auto &tg:tem_d4_cgroup->groups()) {
+            if(tg)
+            cerr << "group name: " << tg->name() << endl;
+        }
+#endif
         Vdetach(vgroup_id);
         
     }
@@ -4720,7 +4728,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
     int num_gobjects; /* number of global objects */
     int32 obj_tag; /* object tag */
     int32 obj_ref;/* object reference */
-
+// cerr<<"D4group name:"<<d4g->name() <<endl;
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
         Vdetach(vgroup_id);
@@ -4825,12 +4833,19 @@ cerr<<"num_gobjects: "<<num_gobjects <<endl;
 
             try {
                 string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
-cerr<<"vgroup_name inside vgroup: "<<vgroup_name_str<<endl;
+//cerr<<"vgroup_name inside vgroup: "<<vgroup_name_str<<endl;
+//#if 0
                 auto d4c_g_ptr = make_unique<D4Group>(vgroup_name_str);
                 auto d4c_g  = d4c_g_ptr.release();
+                //auto d4c_g = d4c_g_ptr.get();
+//#endif
+                //auto d4c_g = new D4Group(vgroup_name_str);
+                //d4g->add_group_nocopy(d4c_g);
                 d4g->add_group_nocopy(d4c_g);
                 convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,filename);
-            }  
+                //delete d4c_g;
+            }
+//#if 0
             catch(...) {
               Vdetach(vgroup_cid);
               Vdetach(vgroup_id);
@@ -4838,9 +4853,19 @@ cerr<<"vgroup_name inside vgroup: "<<vgroup_name_str<<endl;
               throw InternalErr(__FILE__, __LINE__, "error in converting sds.");
  
             }
-            Vdetach(vgroup_cid);
+//#endif
+
+
         }
     }
+//    cerr<<"d4g group name again: "<<d4g->name() <<endl;
+#if 0
+for (const auto &tg:d4g->groups()) {
+            if(tg)
+            cerr << "inside group name: " << tg->name() << endl;
+        }
+#endif
+//        cerr<<"end convert_vgroup_objects"<<endl;
 }
 
 void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g) {
@@ -4878,7 +4903,7 @@ cerr<<"n_attrs is "<<n_attrs <<endl;
         // Create the DAP4 attribute 
         string tempname (attr_name);
         string dap4_attrname = HDFCFUtil::get_CF_string(tempname);
-cerr<<"dap4_attrname is "<<dap4_attrname <<endl;
+//cerr<<"dap4_attrname is "<<dap4_attrname <<endl;
         map_vgroup_attr(d4g,dap4_attrname,attr_type,attr_count,attr_value);
 
 #if 0
