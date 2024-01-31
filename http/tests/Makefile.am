@@ -18,7 +18,8 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf $(srcdir)/package.m4 $(TESTSUITE)
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN) mock-s3
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_S3).at $(TESTSUITE_S3) atlocal.in \
+    $(srcdir)/package.m4 $(BES_CONF_IN) mock-s3
 
 DISTCLEANFILES =  atconfig
 
