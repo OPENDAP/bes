@@ -195,18 +195,18 @@ static vector < hdf_attr > Pals2Attrs(const vector < hdf_palette > palv);
 static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 
 void read_dmr(DMR *dmr, const string &filename);
-void read_sd_attrs(DMR *dmr, int32 sdfd);
-void handle_sds_dims(DMR *dmr, int32 sdfd);
-void read_lone_sds(DMR *dmr, int32 file_id, int32 sdfd, const string &filename);
+void read_sd_attrs(D4Group *root_grp, int32 sdfd);
+void handle_sds_dims(D4Group *root_grp, int32 sdfd);
+void read_lone_sds(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
 void obtain_all_sds_refs(int32 sdfd, unordered_set<int32>& sds_ref);
 void exclude_all_sds_refs_in_vgroups(int32 sdfd,int32 file_id, unordered_set<int32>&sds_ref);
 void exclude_sds_refs_in_vgroup(int32 sdfd,int32 file_id, int32 vgroup_id, unordered_set<int32>&sds_ref);
 
-void read_dmr_vlone_groups(DMR *dmr, int32 fileid, int32 sdfd, const string &filename);
-void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* tem_d4_cgroup,const string& filename);
-void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* tem_d4_cgroup,const string& filename);
-void convert_vgroup_attrs(int32 vgroup_id,D4Group* tem_d4_cgroup);
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* tem_d4_cgroup, const string & filename);
+void read_dmr_vlone_groups(D4Group *root_grp, int32 fileid, int32 sdfd, const string &filename);
+void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* par_group,const string& filename);
+void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* par_group,const string& filename);
+void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4_group);
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4_group, const string & filename);
 void convert_sds(int32 sdfd,int32 obj_ref,  D4Group* d4g,const string &filename);
 void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
 void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
@@ -4244,18 +4244,19 @@ void read_dmr(DMR *dmr, const string &filename) {
         throw InternalErr(__FILE__,__LINE__,invalid_file_msg);
     }
 
+    D4Group* root_grp = dmr->root();
     // TODO:  Add lone SDS and vdata objects later. We must handle lone SDS first due to the possible dimension info.
     //       It is possible that there are SDS and Vdata objects that don't belong to any vgroups.
     //       This is not the case for the sample HDF-EOS2 files.So we will handle them later. KY 2024-01-18
     //       We also need to map SD file attributes to DAP4 root group attributes.
 
     //try {
-        handle_sds_dims(dmr,sdfd);
-        read_lone_sds(dmr,fileid,sdfd,filename);
+        handle_sds_dims(root_grp,sdfd);
+        read_lone_sds(root_grp,fileid,sdfd,filename);
         // TODO: very possible we need to handle HDF-EOS2 swath dimensions. It needs special care. 
 //#if 0
-        read_sd_attrs(dmr,sdfd);
-        read_dmr_vlone_groups(dmr, fileid, sdfd, filename);
+        read_sd_attrs(root_grp,sdfd);
+        read_dmr_vlone_groups(root_grp, fileid, sdfd, filename);
 //#endif
 cerr<<"Done read_dmr_vlone_groups"<<endl;
     //}
@@ -4272,7 +4273,7 @@ cerr<<"Done read_dmr_vlone_groups"<<endl;
 
 }
 
-void handle_sds_dims(DMR *dmr, int32 sdfd) {
+void handle_sds_dims(D4Group *root_grp, int32 sdfd) {
 
     int32 n_sds      = 0;       
     int32 n_sd_attrs = 0;
@@ -4282,7 +4283,6 @@ void handle_sds_dims(DMR *dmr, int32 sdfd) {
         throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
     }
 
-    D4Group* root_grp = dmr->root();
     D4Dimensions *dims = root_grp->dims();
 
     // Create an unordered_set for SDS dimension names.
@@ -4341,7 +4341,7 @@ void handle_sds_dims(DMR *dmr, int32 sdfd) {
     }
 }
 
-void read_lone_sds(DMR *dmr, int32 file_id,int32 sdfd, const string &filename) {
+void read_lone_sds(D4Group *root_grp, int32 file_id,int32 sdfd, const string &filename) {
 
     unordered_set<int32> lone_sds_refs;
     obtain_all_sds_refs(sdfd,lone_sds_refs);
@@ -4516,7 +4516,7 @@ void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unor
 
 }
 
-void read_sd_attrs(DMR *dmr, int32 sdfd) {
+void read_sd_attrs(D4Group *root_grp, int32 sdfd) {
 
     int32 n_sds      = 0;       
     int32 n_sd_attrs = 0;
@@ -4525,8 +4525,6 @@ void read_sd_attrs(DMR *dmr, int32 sdfd) {
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
         throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
     }
-
-    D4Group* root_grp = dmr->root();
 
     for (int attr_index = 0; attr_index < n_sd_attrs;attr_index++) {
 
@@ -4551,9 +4549,7 @@ void read_sd_attrs(DMR *dmr, int32 sdfd) {
 
 }
 
-void read_dmr_vlone_groups(DMR *dmr, int32 file_id, int32 sdfd, const string & filename) {
-
-    D4Group* root_grp = dmr->root();
+void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const string & filename) {
 
     int      num_lonevg; 
     vector<int> ref_array;
@@ -4638,8 +4634,10 @@ cerr<<"num_lonevg is "<<num_lonevg<<endl;
 
 
         // TODO: ensure the CF-style vgroup name.
-        string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
+        string vgroup_name_str(vgroup_name.begin(),vgroup_name.end()-1);
 //cerr<<"vgroup_name is "<< vgroup_name_str <<endl;
+        
+        vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_str);
         auto tem_d4_cgroup_ptr = make_unique<D4Group>(vgroup_name_str);
         auto tem_d4_cgroup = tem_d4_cgroup_ptr.release();
         //auto tem_d4_cgroup = new D4Group(vgroup_name_str);
@@ -4838,9 +4836,11 @@ cerr<<"num_gobjects: "<<num_gobjects <<endl;
             }
 
             try {
-                string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
+                string vgroup_name_str(vgroup_name.begin(),vgroup_name.end()-1);
 //cerr<<"vgroup_name inside vgroup: "<<vgroup_name_str<<endl;
 //#if 0
+
+                vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_str);
                 auto d4c_g_ptr = make_unique<D4Group>(vgroup_name_str);
                 auto d4c_g  = d4c_g_ptr.release();
                 //auto d4c_g = d4c_g_ptr.get();
@@ -5001,7 +5001,7 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
     }                        
 
     
-    string sds_name_str(sds_name.begin(),sds_name.end());
+    string sds_name_str(sds_name.begin(),sds_name.end()-1);
     // Handle special characters in the sds_name.
     sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
     BaseType *bt = gen_dap_var(sds_type,sds_name_str, filename);
