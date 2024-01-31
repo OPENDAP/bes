@@ -4253,8 +4253,10 @@ void read_dmr(DMR *dmr, const string &filename) {
         handle_sds_dims(dmr,sdfd);
         read_lone_sds(dmr,fileid,sdfd,filename);
         // TODO: very possible we need to handle HDF-EOS2 swath dimensions. It needs special care. 
+//#if 0
         read_sd_attrs(dmr,sdfd);
         read_dmr_vlone_groups(dmr, fileid, sdfd, filename);
+//#endif
 cerr<<"Done read_dmr_vlone_groups"<<endl;
     //}
 #if 0
@@ -4335,6 +4337,7 @@ void handle_sds_dims(DMR *dmr, int32 sdfd) {
                 dims->add_dim_nocopy(d4_dim0);
             }
         }
+        SDendaccess(sds_id);
     }
 }
 
@@ -4367,6 +4370,7 @@ void obtain_all_sds_refs(int32 sdfd, unordered_set<int32>& sds_ref) {
         if (obj_ref == FAIL) 
             throw InternalErr (__FILE__,__LINE__,"SDidtoref failed ");
         sds_ref.insert(obj_ref);
+        SDendaccess(sds_id);
     }
 
 }
@@ -4434,6 +4438,7 @@ cerr<<"num_lonevg is "<<num_lonevg<<endl;
         }
 
         exclude_sds_refs_in_vgroup(sdfd,file_id,vgroup_id,sds_ref);
+        Vdetach(vgroup_id);
     }
 
 }
@@ -4489,7 +4494,7 @@ void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unor
             }
      
             if (vclassnamelen!=0) {
-                vclass_name.resize(vclassnamelen);
+                vclass_name.resize(vclassnamelen+1);
                 if (Vgetclass(vgroup_cid,vclass_name.data()) == FAIL) {
                     Vdetach(vgroup_cid);
                     Vdetach(vgroup_id);
@@ -4503,6 +4508,7 @@ void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unor
             }
 
             exclude_sds_refs_in_vgroup(sdfd,file_id,vgroup_cid,sds_ref);
+            Vdetach(vgroup_cid);
 
         }
 
@@ -4622,7 +4628,7 @@ cerr<<"num_lonevg is "<<num_lonevg<<endl;
         }
         vector<char> vgroup_name;
         //vgroup_name.resize(vgroupnamelen+1);
-        vgroup_name.resize(vgroupnamelen);
+        vgroup_name.resize(vgroupnamelen+1);
 
         if (Vgetname(vgroup_id,vgroup_name.data())==FAIL){
             Vdetach(vgroup_id);
@@ -4799,7 +4805,7 @@ cerr<<"num_gobjects: "<<num_gobjects <<endl;
             }
      
             if (vclassnamelen!=0) {
-                vclass_name.resize(vclassnamelen);
+                vclass_name.resize(vclassnamelen+1);
                 if (Vgetclass(vgroup_cid,vclass_name.data()) == FAIL) {
                     Vdetach(vgroup_cid);
                     Vdetach(vgroup_id);
@@ -4822,7 +4828,7 @@ cerr<<"num_gobjects: "<<num_gobjects <<endl;
     
             vector<char> vgroup_name;
             //vgroup_name.resize(vgroupnamelen+1);
-            vgroup_name.resize(vgroupnamelen);
+            vgroup_name.resize(vgroupnamelen+1);
     
             if (Vgetname(vgroup_cid,vgroup_name.data())==FAIL){
                 Vdetach(vgroup_cid);
@@ -4853,6 +4859,7 @@ cerr<<"num_gobjects: "<<num_gobjects <<endl;
               throw InternalErr(__FILE__, __LINE__, "error in converting sds.");
  
             }
+            Vdetach(vgroup_cid);
 //#endif
 
 
@@ -4985,7 +4992,7 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
     }
 
-    sds_name.resize(name_len);
+    sds_name.resize(name_len+1);
 
     // Obtain object name, rank, size, field type and number of SDS attributes
     if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, dim_sizes, &sds_type, &n_sds_attrs)) {
@@ -5051,6 +5058,7 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
     ar->set_is_dap4(true);
     d4g->add_var_nocopy(ar);
 
+     delete bt;
     SDendaccess(sds_id);
 }
 
