@@ -103,7 +103,7 @@ void close_hdf4_fileid(const int sdfd,const int fileid,HDFSP::File*h4file);
 bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool rw_flag);
 bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string & hdf4_filename);
 
-bool HDF4RequestHandler::_direct_dmr               = true;
+bool HDF4RequestHandler::_direct_dmr               = false;
 
 // CF key
 bool HDF4RequestHandler::_usecf                    = false;
@@ -158,6 +158,7 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 	BESRequestHandler::add_method(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
 	BESRequestHandler::add_method(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 
+        _direct_dmr=check_beskeys("H4.EnableDirectDMR");
         _usecf = check_beskeys("H4.EnableCF");
 
         // The following keys are only effective when usecf is true.

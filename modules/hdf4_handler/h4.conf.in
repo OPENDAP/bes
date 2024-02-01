@@ -46,7 +46,7 @@ HDF4.CacheDir=/tmp
 #-----------------------------------------------------------------------#
 # HDF4 handler specific parameters: 
 #-----------------------------------------------------------------------#
-H4.EnableDirectCMR=true
+#H4.EnableDirectDMR=true
 
 # EnableCF: Handle HDF data to follow the CF conventions
 #          (true,yes|false,no, defaults to true)

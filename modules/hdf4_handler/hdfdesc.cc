@@ -4347,9 +4347,12 @@ void read_lone_sds(D4Group *root_grp, int32 file_id,int32 sdfd, const string &fi
     obtain_all_sds_refs(sdfd,lone_sds_refs);
     exclude_all_sds_refs_in_vgroups(sdfd,file_id,lone_sds_refs); 
 
-   //Map SDS to DAP4 root group.
-   for (const auto &sds_ref:lone_sds_refs)
+   // Map SDS to DAP4 root group.
+   for (const auto &sds_ref:lone_sds_refs) {
 cerr<<"lone sds_ref is "<<sds_ref<<endl;
+        convert_sds(sdfd, sds_ref, root_grp, filename);  
+
+   }
 
 }
 
