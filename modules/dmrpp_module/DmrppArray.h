@@ -247,6 +247,7 @@ struct one_super_chunk_args {
  * Chunk data insert args for use with pthreads. Used for reading contiguous data
  * in parallel.
  */
+// TODO Remove since this is not used. jhrg 1/31/24
 struct one_child_chunk_args {
     int *fds;               // pipe back to parent
     unsigned char tid;      // thread id as a byte
@@ -258,7 +259,6 @@ struct one_child_chunk_args {
 
     ~one_child_chunk_args() { }
 };
-
 
 /**
  * Chunk data insert args for use with pthreads. Used for reading contiguous data

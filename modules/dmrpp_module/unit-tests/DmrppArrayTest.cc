@@ -25,104 +25,163 @@
 #include "config.h"
 
 #include <memory>
+#include <future>
+#include <list>
+#include <atomic>
 
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-#include <unistd.h>
 #include <libdap/util.h>
 #include <libdap/debug.h>
 
+#include "modules/common/run_tests_cppunit.h"
+
 #include "BESContextManager.h"
 #include "BESError.h"
-#include "BESDebug.h"
+// #include "BESDebug.h"
 #include "TheBESKeys.h"
 
 #include "DmrppArray.h"
 #include "DmrppByte.h"
 #include "DmrppRequestHandler.h"
-#include "Chunk.h"
-#include "SuperChunk.h"
+// #include "Chunk.h"
+// #include "SuperChunk.h"
 
 #include "test_config.h"
 
 using namespace libdap;
 
-static bool debug = false;
-static bool bes_debug = false;
-static string bes_conf_file = "/bes.conf";
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 #define prolog std::string("DmrppArrayTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
-class DmrppArrayTest: public CppUnit::TestFixture {
-private:
+class DmrppArrayTest : public CppUnit::TestFixture {
+    dmrpp::DmrppRequestHandler *foo = nullptr;
 
 public:
     DmrppArrayTest() = default;
+
     ~DmrppArrayTest() override = default;
 
     // Called before each test
-    void setUp() override
-    {
+    void setUp() override {
         DBG(cerr << endl);
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         DBG(cerr << prolog << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
         string val;
         bool found;
-        TheBESKeys::TheKeys()->get_value("ff",val,found);
+        TheBESKeys::TheKeys()->get_value("ff", val, found);
 
-        if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
-
-        unsigned long long int max_threads = 8;
+        unsigned int max_threads = 8;
         dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
         dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
 
         // Various things will gripe about this not being used... This is how the
         // CurlHandlePool gets instantiated. jhrg 4/22/22
-        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
+        foo = new dmrpp::DmrppRequestHandler("Chaos");
     }
 
-    // Called after each test
-    void tearDown() override
-    {
+    void tearDown() override {
+        delete foo;
+    }
+
+protected:
+    void testEmptyFutures() {
+        std::list<std::future<bool>> futures;
+        std::atomic_uint thread_counter{0};
+        CPPUNIT_ASSERT(!get_next_future(futures, thread_counter, 100, ""));
+    }
+
+    void testFutureReady() {
+        std::list<std::future<bool>> futures;
+        futures.emplace_back(std::async([]() { return true; }));
+        std::atomic_uint thread_counter{1};
+        CPPUNIT_ASSERT(get_next_future(futures, thread_counter, 100, ""));
+        CPPUNIT_ASSERT(futures.empty());
+        CPPUNIT_ASSERT(thread_counter == 0);
+    }
+
+    void testFutureTimeout() {
+        std::list<std::future<bool>> futures;
+        futures.emplace_back(std::async([]() { std::this_thread::sleep_for(std::chrono::milliseconds(200)); return true; }));
+        std::atomic_uint thread_counter{1};
+        CPPUNIT_ASSERT(!get_next_future(futures, thread_counter, 100, ""));
+        CPPUNIT_ASSERT(!futures.empty()); // Future should still be in the list after timeout
+        CPPUNIT_ASSERT(thread_counter == 1);
+    }
+
+    void testFutureInvalid() {
+        std::list<std::future<bool>> futures;
+        futures.emplace_back(std::async([]() { return true; }));
+        if (!futures.front().valid())
+            CPPUNIT_FAIL("The future should be valid here.");
+        if (!futures.front().get())
+            CPPUNIT_FAIL("The future should be return true.");
+        if (futures.front().valid())
+            CPPUNIT_FAIL("The future should be not valid here.");
+        // Now test the way get_next_future() behaves with an invalid future.
+        std::atomic_uint thread_counter{1};
+        CPPUNIT_ASSERT(get_next_future(futures, thread_counter, 100, ""));
+        CPPUNIT_ASSERT(futures.empty());
+        CPPUNIT_ASSERT(thread_counter == 0);
+    }
+
+    void testFutureSuccess() {
+        std::list<std::future<bool>> futures;
+        futures.emplace_back(std::async([]() { return true; }));
+        std::atomic_uint thread_counter{1};
+        CPPUNIT_ASSERT(get_next_future(futures, thread_counter, 100, ""));
+        CPPUNIT_ASSERT(futures.empty());
+        CPPUNIT_ASSERT(thread_counter == 0);
+    }
+
+    void testFutureFailure() {
+        std::list<std::future<bool>> futures;
+        futures.emplace_back(std::async([]() -> bool { throw std::runtime_error("Test failure"); }));
+        std::atomic_uint thread_counter{1};
+        CPPUNIT_ASSERT_THROW(get_next_future(futures, thread_counter, 100, ""), std::runtime_error);
+        CPPUNIT_ASSERT(futures.empty());
+        CPPUNIT_ASSERT(thread_counter == 0);
+    }
+
+    void testThreadCounter() {
+        std::list<std::future<bool>> futures;
+        futures.emplace_back(std::async([]() { return true; }));
+        futures.emplace_back(std::async([]() { return true; }));
+        std::atomic_uint thread_counter{2};
+        CPPUNIT_ASSERT(get_next_future(futures, thread_counter, 100, ""));
+        CPPUNIT_ASSERT(1 == thread_counter);
+        CPPUNIT_ASSERT(get_next_future(futures, thread_counter, 100, ""));
+        CPPUNIT_ASSERT(0 == thread_counter);
     }
 
     void read_contiguous_sc_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
-        shared_ptr<http::url> data_url(new http::url(string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt")));
-        unsigned long long target_file_size = 4194300;
+
+        auto data_url = make_shared<http::url>(
+                string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt"));
+        int target_file_size = 4194300;
 
         DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
-        tiat.append_dim(target_file_size,"test_dim");
+        tiat.append_dim(target_file_size, "test_dim");
         tiat.set_filter("");
 
         vector<unsigned long long> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
         vector<unsigned long long> position_in_array;
         position_in_array.push_back(0);
-        tiat.add_chunk(data_url,"LE",target_file_size,0, position_in_array);
+        tiat.add_chunk(data_url, "LE", target_file_size, 0, position_in_array);
 
         try {
             tiat.read_contiguous();
         }
-        catch(BESError &be){
-            CPPUNIT_FAIL("Caught BESError. Message: " + be.get_verbose_message() );
+        catch (const BESError &be) {
+            CPPUNIT_FAIL("Caught BESError. Message: " + be.get_verbose_message());
         }
-        catch(libdap::Error &lde){
-            CPPUNIT_FAIL("Caught libdap::Error. Message: " + lde.get_error_message() );
+        catch (const libdap::Error &lde) {
+            CPPUNIT_FAIL("Caught libdap::Error. Message: " + lde.get_error_message());
         }
-        catch(std::exception &e){
+        catch (const std::exception &e) {
             CPPUNIT_FAIL(string("Caught libdap::Error. Message: ").append(e.what()));
-        }
-        catch(...){
-            CPPUNIT_FAIL("Caught unknown exception.");
         }
 
         DBG(cerr << prolog << "END" << endl);
@@ -130,40 +189,46 @@ public:
 
     void read_contiguous_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
-        shared_ptr<http::url> data_url( new http::url(string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt")));
-        unsigned long long target_file_size = 4194300;
+
+        auto data_url = std::make_shared<http::url>(
+                string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt"));
+        int target_file_size = 4194300;
 
         DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
-        tiat.append_dim(target_file_size,"test_dim");
+        tiat.append_dim(target_file_size, "test_dim");
         tiat.set_filter("");
 
-        vector<unsigned long long> chunk_dim_sizes {1};
+        vector<unsigned long long> chunk_dim_sizes{1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
-        vector<unsigned long long> pia {0};
-        //pia.push_back(0);
-        tiat.add_chunk(data_url,"LE",target_file_size,0, pia);
+        vector<unsigned long long> pia{0};
+
+        tiat.add_chunk(data_url, "LE", target_file_size, 0, pia);
 
         try {
             tiat.read_contiguous();
         }
-        catch(BESError &be){
-            CPPUNIT_FAIL("Caught BESError. Message: " + be.get_verbose_message() );
+        catch (const BESError &be) {
+            CPPUNIT_FAIL("Caught BESError. Message: " + be.get_verbose_message());
         }
-        catch(libdap::Error &lde){
-            CPPUNIT_FAIL("Caught libdap::Error. Message: " + lde.get_error_message() );
+        catch (const libdap::Error &lde) {
+            CPPUNIT_FAIL("Caught libdap::Error. Message: " + lde.get_error_message());
         }
-        catch(std::exception &e){
+        catch (const std::exception &e) {
             CPPUNIT_FAIL(string("Caught libdap::Error. Message: ").append(e.what()));
-        }
-        catch(...){
-            CPPUNIT_FAIL("Caught unkown exception.");
         }
 
         DBG(cerr << prolog << "END" << endl);
     }
 
     CPPUNIT_TEST_SUITE( DmrppArrayTest );
+
+        CPPUNIT_TEST(testEmptyFutures);
+        CPPUNIT_TEST(testFutureReady);
+        CPPUNIT_TEST(testFutureTimeout);
+        CPPUNIT_TEST(testFutureInvalid);
+        CPPUNIT_TEST(testFutureSuccess);
+        CPPUNIT_TEST(testFutureFailure);
+        CPPUNIT_TEST(testThreadCounter);
 
         CPPUNIT_TEST(read_contiguous_sc_test);
         CPPUNIT_TEST(read_contiguous_test);
@@ -177,6 +242,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DmrppArrayTest);
 
 int main(int argc, char*argv[])
 {
+    bool status = bes_run_tests<dmrpp::DmrppArrayTest>(argc, argv, "cerr,bes,http,curl,dmrpp");
+    return status ? 0: 1;
+
+#if 0
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
@@ -214,4 +283,5 @@ int main(int argc, char*argv[])
     }
 
     return wasSuccessful ? 0 : 1;
+#endif
 }
