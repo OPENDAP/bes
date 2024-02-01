@@ -36,14 +36,11 @@
 
 #include "BESContextManager.h"
 #include "BESError.h"
-// #include "BESDebug.h"
 #include "TheBESKeys.h"
 
 #include "DmrppArray.h"
 #include "DmrppByte.h"
 #include "DmrppRequestHandler.h"
-// #include "Chunk.h"
-// #include "SuperChunk.h"
 
 #include "test_config.h"
 
@@ -85,13 +82,14 @@ public:
     }
 
 protected:
-    void testEmptyFutures() {
+    // ---- These tests were written by AI with some corrections by me (WIP) ----
+    void test_empty_futures() {
         std::list<std::future<bool>> futures;
         std::atomic_uint thread_counter{0};
         CPPUNIT_ASSERT(!get_next_future(futures, thread_counter, 100, ""));
     }
 
-    void testFutureReady() {
+    void test_future_ready() {
         std::list<std::future<bool>> futures;
         futures.emplace_back(std::async([]() { return true; }));
         std::atomic_uint thread_counter{1};
@@ -100,7 +98,7 @@ protected:
         CPPUNIT_ASSERT(thread_counter == 0);
     }
 
-    void testFutureTimeout() {
+    void test_future_timeout() {
         std::list<std::future<bool>> futures;
         futures.emplace_back(std::async([]() { std::this_thread::sleep_for(std::chrono::milliseconds(200)); return true; }));
         std::atomic_uint thread_counter{1};
@@ -109,7 +107,7 @@ protected:
         CPPUNIT_ASSERT(thread_counter == 1);
     }
 
-    void testFutureInvalid() {
+    void test_future_invalid() {
         std::list<std::future<bool>> futures;
         futures.emplace_back(std::async([]() { return true; }));
         if (!futures.front().valid())
@@ -125,7 +123,7 @@ protected:
         CPPUNIT_ASSERT(thread_counter == 0);
     }
 
-    void testFutureSuccess() {
+    void test_future_success() {
         std::list<std::future<bool>> futures;
         futures.emplace_back(std::async([]() { return true; }));
         std::atomic_uint thread_counter{1};
@@ -134,7 +132,7 @@ protected:
         CPPUNIT_ASSERT(thread_counter == 0);
     }
 
-    void testFutureFailure() {
+    void test_future_failure() {
         std::list<std::future<bool>> futures;
         futures.emplace_back(std::async([]() -> bool { throw std::runtime_error("Test failure"); }));
         std::atomic_uint thread_counter{1};
@@ -143,7 +141,7 @@ protected:
         CPPUNIT_ASSERT(thread_counter == 0);
     }
 
-    void testThreadCounter() {
+    void test_thread_counter() {
         std::list<std::future<bool>> futures;
         futures.emplace_back(std::async([]() { return true; }));
         futures.emplace_back(std::async([]() { return true; }));
@@ -153,6 +151,43 @@ protected:
         CPPUNIT_ASSERT(get_next_future(futures, thread_counter, 100, ""));
         CPPUNIT_ASSERT(0 == thread_counter);
     }
+
+    void test_equal_ranks() {
+        std::vector<unsigned long long> address = {1, 2};
+        std::vector<unsigned long long> shape = {3, 4};
+        CPPUNIT_ASSERT_EQUAL(9ULL, get_index(address, shape));
+    }
+
+    void test_unequal_ranks() {
+        std::vector<unsigned long long> address = {1, 2, 3};
+        std::vector<unsigned long long> shape = {3, 4};
+        CPPUNIT_ASSERT_THROW(get_index(address, shape), BESInternalError);
+    }
+
+    void test_index_out_of_bounds() {
+        std::vector<unsigned long long> address = {1, 4};
+        std::vector<unsigned long long> shape = {3, 4};
+        CPPUNIT_ASSERT_THROW(get_index(address, shape), BESInternalError);
+    }
+
+    void test_zero_dimensions() {
+        std::vector<unsigned long long> address, shape;
+        CPPUNIT_ASSERT_EQUAL(0ULL, get_index(address, shape));
+    }
+
+    void test_single_dimension() {
+        std::vector<unsigned long long> address = {3};
+        std::vector<unsigned long long> shape = {5};
+        CPPUNIT_ASSERT_EQUAL(3ULL, get_index(address, shape));
+    }
+
+    void test_multiple_dimensions() {
+        std::vector<unsigned long long> address = {2, 1, 0};
+        std::vector<unsigned long long> shape = {3, 4, 5};
+        CPPUNIT_ASSERT_EQUAL(23ULL, get_index(address, shape));
+    }
+
+    // ---- These tests were written by OPeNDAP ----
 
     void read_contiguous_sc_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
@@ -222,13 +257,20 @@ protected:
 
     CPPUNIT_TEST_SUITE( DmrppArrayTest );
 
-        CPPUNIT_TEST(testEmptyFutures);
-        CPPUNIT_TEST(testFutureReady);
-        CPPUNIT_TEST(testFutureTimeout);
-        CPPUNIT_TEST(testFutureInvalid);
-        CPPUNIT_TEST(testFutureSuccess);
-        CPPUNIT_TEST(testFutureFailure);
-        CPPUNIT_TEST(testThreadCounter);
+        CPPUNIT_TEST(test_empty_futures);
+        CPPUNIT_TEST(test_future_ready);
+        CPPUNIT_TEST(test_future_timeout);
+        CPPUNIT_TEST(test_future_invalid);
+        CPPUNIT_TEST(test_future_success);
+        CPPUNIT_TEST(test_future_failure);
+        CPPUNIT_TEST(test_thread_counter);
+
+        CPPUNIT_TEST(test_equal_ranks);
+        CPPUNIT_TEST(test_unequal_ranks);
+        CPPUNIT_TEST(test_index_out_of_bounds);
+        CPPUNIT_TEST(test_zero_dimensions);
+        CPPUNIT_TEST(test_single_dimension);
+        CPPUNIT_TEST(test_multiple_dimensions);
 
         CPPUNIT_TEST(read_contiguous_sc_test);
         CPPUNIT_TEST(read_contiguous_test);

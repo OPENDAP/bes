@@ -647,11 +647,15 @@ void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>
  * @param target_shape N-tuple of the array's dimension sizes.
  * @return The offset into the vector used to store the values.
  */
-static unsigned long long
+unsigned long long
 get_index(const vector<unsigned long long> &address_in_target, const vector<unsigned long long> &target_shape)
 {
     if (address_in_target.size() != target_shape.size()) {  // ranks must be equal
         throw BESInternalError("get_index: address_in_target != target_shape", __FILE__, __LINE__);
+    }
+
+    if (address_in_target.empty()) {    // both address_in_target and target_shape are empty
+        return 0ULL;
     }
 
     auto shape_index = target_shape.rbegin();
@@ -2332,20 +2336,24 @@ bool DmrppArray::read()
     return true;
 }
 
-unsigned long long DmrppArray::set_fixed_string_length(const string &length_str)
-{
+// TODO Move this into the class. jhrg 2/1/24
+unsigned long long DmrppArray::set_fixed_string_length(const string &length_str) {
     try {
         d_fixed_str_length = stoull(length_str);
     }
-    catch(std::invalid_argument e){
+    // TODO I don't see how this can be thrown - the method will only be used with a std::string.
+    //  jhrg 2/1/24
+    catch (std::invalid_argument e) {
         stringstream err_msg;
         err_msg << "The value of the length string could not be parsed. Message: " << e.what();
-        throw BESInternalError(err_msg.str(),__FILE__,__LINE__);
+        throw BESInternalError(err_msg.str(), __FILE__, __LINE__);
     }
     return d_fixed_str_length;
 }
 
-
+// TODO Move this into the method below since that is the only place it is used. jhrg 2/1/24
+//  The reason I'm suggesting that is having this as both a function and a method implies that
+//  it is used both in code that is part of the object and not.
 std::string pad_to_str(string_pad_type pad)
 {
     string pad_str;
@@ -2369,12 +2377,12 @@ std::string pad_to_str(string_pad_type pad)
     return pad_str;
 }
 
-
 std::string DmrppArray::pad_type_to_str(string_pad_type pad)
 {
     return pad_to_str(pad);
 }
 
+// TODO Same thing here - only used in the following method. jhrg 2/1/24
 string_pad_type str_to_pad_type(const string &pad_str){
     string_pad_type pad_type(not_set);
     if(pad_str=="null_pad"){
@@ -2397,14 +2405,14 @@ string_pad_type str_to_pad_type(const string &pad_str){
     return pad_type;
 }
 
-
 string_pad_type DmrppArray::set_fixed_length_string_pad_type(const string &pad_str)
 {
     d_fixed_length_string_pad_type = str_to_pad_type(pad_str);
     return d_fixed_length_string_pad_type;
 }
 
-
+// TODO Since we have std:string in the header, this method code be moved there and then
+//  ons would be defeined in just one place. jhrg 2/1/24
 ons::ons(const std::string &ons_pair_str) {
     const string colon(":");
     size_t colon_pos = ons_pair_str.find(colon);
@@ -2416,18 +2424,16 @@ ons::ons(const std::string &ons_pair_str) {
     size = stoull(size_str);
 }
 
-
-void DmrppArray::set_ons_string(const std::string &ons_str)
-{
+void DmrppArray::set_ons_string(const std::string &ons_str) {
     d_vlen_ons_str = ons_str;
 }
 
-void DmrppArray::set_ons_string(const vector<ons> &ons_pairs)
-{
+void DmrppArray::set_ons_string(const vector<ons> &ons_pairs) {
+    // TODO Use string. jhrg 2/1/24
     stringstream ons_ss;
     bool first = true;
-    for(auto &ons_pair: ons_pairs){
-        if(!first){
+    for (auto &ons_pair: ons_pairs) {
+        if (!first) {
             ons_ss << ",";
         }
         ons_ss << ons_pair.offset << ":" << ons_pair.size;
@@ -2435,7 +2441,7 @@ void DmrppArray::set_ons_string(const vector<ons> &ons_pairs)
     d_vlen_ons_str = ons_ss.str();
 }
 
-
+// TODO This is never used. jhrg 2/1/24
 /**
  * Ingests the (possibly long) ons (offset and size) string that itemizes every offset
  * and size for the members of variable length string array and creates from the string
@@ -2466,7 +2472,7 @@ void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
  * @param xml
  * @param a
  */
-void flsa_xml_element(XMLWriter &xml, DmrppArray &a){
+void flsa_xml_element(XMLWriter &xml, DmrppArray &a) {
 
     string element_name("dmrpp:FixedLengthStringArray");
     string str_len_attr_name("string_length");
@@ -2475,6 +2481,8 @@ void flsa_xml_element(XMLWriter &xml, DmrppArray &a){
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
 
+    // TODO This use of stringstream can be repplaced with to_string(a.get_fixed_string_length()).c_str()
+    //  stringstream is slow. jhrg 2/1/24
     stringstream strlen_str;
     strlen_str << a.get_fixed_string_length();
     if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) str_len_attr_name.c_str(),
@@ -2518,6 +2526,8 @@ void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
         case dods_float64_c: {
             uint8_t *values = nullptr;
             try {
+                // TODO The code can avoid copying the values by accessing d_buf and pssing that to Base64::encode()
+                //  also means the try-catch and delete[] can be skipped. jhrg 2/1/24
                 auto size = a.buf2val(reinterpret_cast<void **>(&values));
                 string encoded = base64::Base64::encode(values, size);
                 a.print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
@@ -2536,6 +2546,7 @@ void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
             if(!sb.empty()) {
                 uint8_t *values = nullptr;
                 try {
+                    // TODO same as above. jhrg 2/1/24
                     auto size = a.buf2val(reinterpret_cast<void **>(&values));
                     string encoded = base64::Base64::encode(values, size);
                     a.print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
@@ -2582,9 +2593,9 @@ static void print_dap4_dimension_helper(const XMLWriter &xml, bool constrained, 
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
     }
     else {
+        string size = constrained ? to_string(d.c_size) : to_string(d.size);
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "size",
-                                        (const xmlChar *) (constrained ? to_string(d.c_size) : to_string(
-                                                d.size)).c_str()) < 0)
+                                        (const xmlChar *) size.c_str()) < 0)
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
     }
 
@@ -2668,6 +2679,8 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
     // single base64 element, an array of 10 strings will use 10 base64
     // elements. This is because the size of each string's value is different.
     // Not so for an int32.
+    // TODO Is it an error to be here and have both d_print_chunks and is_compact_layout
+    //  true and have read_p false? jhrg 2/1/24
     if (DmrppCommon::d_print_chunks && is_compact_layout() && read_p()) {
         compact_data_xml_element(xml, *this);
     }

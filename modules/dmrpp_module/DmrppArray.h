@@ -57,6 +57,9 @@ namespace dmrpp {
 
 enum string_pad_type { not_set, null_term, null_pad, space_pad };
 
+/**
+ * @brief store the offset and size of a string
+ */
 struct ons {
     unsigned long long offset;
     unsigned long long size;
@@ -207,7 +210,7 @@ public:
     };
     bool is_vlsa() const{ return is_variable_length_string_array; }
 
-    void set_fixed_string_length(const unsigned long long length){ d_fixed_str_length = length; }
+    void set_fixed_string_length(const unsigned long long length) { d_fixed_str_length = length; }
     unsigned long long set_fixed_string_length(const string &length_str);
     unsigned long long get_fixed_string_length() const { return d_fixed_str_length; }
 
@@ -216,9 +219,11 @@ public:
     string_pad_type get_fixed_length_string_pad() const { return d_fixed_length_string_pad_type; }
     std::string get_fixed_length_string_pad_str() const { return pad_type_to_str(d_fixed_length_string_pad_type); }
 
+    // TODO These are not used. jhrg 2/1/24
     void set_ons_string(const std::string &ons_str);
     void set_ons_string(const vector<ons> &ons_pairs);
     std::string get_ons_string(){ return d_vlen_ons_str; };
+    // TODO This is never used. jhrg 2/1/24
     void get_ons_objs(vector<ons> &ons_list);
 
     static std::string pad_type_to_str(string_pad_type pad_type);
@@ -273,8 +278,14 @@ struct one_child_chunk_args_new {
     ~one_child_chunk_args_new() { }
 };
 
+// TODO If these are used only by code that knows about DmrppArray, make these static methods.
+//  That will put them inside the DmrppArray class scope but still make unit tests possible/easy.
+//  jhrg 2/1/24
+bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout,
+                     const string &debug_prefix);
 
-bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout, const string &debug_prefix);
+unsigned long long get_index(const vector<unsigned long long> &address_in_target,
+                             const vector<unsigned long long> &target_shape);
 
 } // namespace dmrpp
 

@@ -287,6 +287,9 @@ is_hdf5_fill_value_defined(hid_t dataset_id)
 
 }
 
+// TODO Fix these warnings.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-align"
 /**
  * @brief Get the HDF5 value as a string
  *
@@ -396,6 +399,8 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
         }
     }
 }
+#pragma GCC diagnostic pop
+
 string
 get_compound_fv_as_string(hid_t h5_plist_id, vector<char> &value)
 {
