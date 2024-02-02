@@ -97,7 +97,7 @@ public:
     string get_amz_date(const time_t &date_time){
         DBG(cerr << prolog << "BEGIN" << endl);
         // string amz_date_format("%Y%m%dT%H%M%SZ"); // 20200808T032623Z
-        struct tm dttm{0};
+        struct tm dttm{};
         gmtime_r(&date_time, &dttm);
 
         vector<char> amz_date(32, 0);

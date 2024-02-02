@@ -40,7 +40,7 @@ int BESStatus::_counter;
 BESStatus::BESStatus() {
     if (_counter++ == 0) {
         const time_t sctime = time(NULL);
-        struct tm sttime;
+        struct tm sttime{};
         localtime_r(&sctime, &sttime);
         char zone_name[10];
         strftime(zone_name, sizeof(zone_name), "%Z", &sttime);

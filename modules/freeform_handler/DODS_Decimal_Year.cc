@@ -284,7 +284,7 @@ DODS_Decimal_Year::julian_day() const
 time_t
 DODS_Decimal_Year::unix_time() const
 {
-    struct tm tm_rec;
+    struct tm tm_rec{};
     tm_rec.tm_mday = _date.day();
     tm_rec.tm_mon = _date.month() - 1; // zero-based
     tm_rec.tm_year = _date.year() - 1900; // years since 1900
