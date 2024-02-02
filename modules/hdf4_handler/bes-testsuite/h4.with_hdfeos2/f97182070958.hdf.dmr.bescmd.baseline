@@ -1,0 +1,782 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="f97182070958.hdf">
+    <Dimension name="lat" size="1024"/>
+    <Dimension name="lon" size="1024"/>
+    <Float64 name="lat">
+        <Dim name="lat"/>
+        <Attribute name="unit" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="lon">
+        <Dim name="lon"/>
+        <Attribute name="unit" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>7</Value>
+        </Attribute>
+    </Float64>
+    <UInt32 name="dsp_band_1">
+        <Dim name="lat"/>
+        <Dim name="lon"/>
+        <Attribute name="dsp_PixelType" type="Byte">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="dsp_PixelSize" type="Byte">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="dsp_Flag" type="UInt16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="dsp_nBits" type="UInt16">
+            <Value>16</Value>
+        </Attribute>
+        <Attribute name="dsp_LineSize" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="dsp_cal_name" type="String">
+            <Value>Temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Temp</Value>
+        </Attribute>
+        <Attribute name="dsp_cal_eqnNumber" type="UInt16">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="dsp_cal_CoeffsLength" type="UInt16">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="dsp_cal_coeffs" type="Float32">
+            <Value>0.1250000000</Value>
+            <Value>-4.000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.1250000000</Value>
+        </Attribute>
+        <Attribute name="add_off" type="Float32">
+            <Value>-4.000000000</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+    </UInt32>
+    <Attribute name="dsp_SubImageId" type="UInt16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_SubImageName" type="String">
+        <Value>N/A</Value>
+    </Attribute>
+    <Attribute name="dsp_ModificationDate" type="Int32">
+        <Value>20040416</Value>
+    </Attribute>
+    <Attribute name="dsp_ModificationTime" type="Int32">
+        <Value>160521</Value>
+    </Attribute>
+    <Attribute name="dsp_SubImageFlag" type="Int32">
+        <Value>64</Value>
+    </Attribute>
+    <Attribute name="dsp_SubImageTitle" type="String">
+        <Value>Ingested by SCRIPP</Value>
+    </Attribute>
+    <Attribute name="dsp_StartDate" type="Int32">
+        <Value>19970701</Value>
+    </Attribute>
+    <Attribute name="dsp_StartTime" type="Float32">
+        <Value>70958.47656</Value>
+    </Attribute>
+    <Attribute name="dsp_SizeX" type="Int32">
+        <Value>1024</Value>
+    </Attribute>
+    <Attribute name="dsp_SizeY" type="Int32">
+        <Value>1024</Value>
+    </Attribute>
+    <Attribute name="dsp_OffsetX" type="Int32">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_RecordLength" type="Int32">
+        <Value>2048</Value>
+    </Attribute>
+    <Attribute name="dsp_DataOrganization" type="Byte">
+        <Value>64</Value>
+    </Attribute>
+    <Attribute name="dsp_NumberOfBands" type="Byte">
+        <Value>1</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_ourid" type="String">
+        <Value>NO14****C\217\345P?\253\205\037</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_numscn" type="UInt16">
+        <Value>44305</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_idsat" type="UInt16">
+        <Value>2560</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_iddata" type="UInt16">
+        <Value>768</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_year" type="UInt16">
+        <Value>24832</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_daysmp" type="UInt16">
+        <Value>46592</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_milsec" type="Int32">
+        <Value>1235716353</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_slope" type="Int32">
+        <Value>1075636998</Value>
+        <Value>551287046</Value>
+        <Value>-426777345</Value>
+        <Value>-1339034123</Value>
+        <Value>5871604</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_intcpt" type="Int32">
+        <Value>514263295</Value>
+        <Value>1892553983</Value>
+        <Value>-371365632</Value>
+        <Value>9497638</Value>
+        <Value>-2140793044</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_tabadr" type="UInt16">
+        <Value>256</Value>
+        <Value>512</Value>
+        <Value>768</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_cnlins" type="UInt16">
+        <Value>256</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_cncols" type="UInt16">
+        <Value>256</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_czncs" type="UInt16">
+        <Value>8</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_line" type="UInt16">
+        <Value>256</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_icol" type="UInt16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_date0" type="String">
+        <Value>23-MAY-10 13:54:29\030</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_time0" type="String">
+        <Value>13:54:29\030</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_label" type="UInt16">
+        <Value>14112</Value>
+        <Value>12576</Value>
+        <Value>14137</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_nxtblk" type="UInt16">
+        <Value>1280</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_datblk" type="UInt16">
+        <Value>1280</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_itape" type="UInt16">
+        <Value>256</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_cbias" type="UInt16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_ccoeff" type="UInt16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_pastim" type="Int32">
+        <Value>1235716353</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_passcn" type="UInt16">
+        <Value>3840</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_lostct" type="UInt16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_lost" type="UInt16">
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_ndrll" type="UInt16">
+        <Value>1280</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_ndrrec" type="UInt16">
+        <Value>3840</Value>
+        <Value>5376</Value>
+        <Value>6912</Value>
+        <Value>8448</Value>
+        <Value>9984</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_ndrlat" type="UInt16">
+        <Value>46110</Value>
+        <Value>44318</Value>
+        <Value>42526</Value>
+        <Value>40478</Value>
+        <Value>38686</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_ndrlon" type="UInt16">
+        <Value>49891</Value>
+        <Value>48611</Value>
+        <Value>47075</Value>
+        <Value>45539</Value>
+        <Value>44259</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_chncnt" type="UInt16">
+        <Value>1280</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_chndsq" type="UInt16">
+        <Value>8</Value>
+        <Value>8</Value>
+        <Value>8</Value>
+        <Value>8</Value>
+        <Value>8</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_czncs2" type="UInt16">
+        <Value>4</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_wrdsiz" type="UInt16">
+        <Value>512</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_nchbas" type="UInt16">
+        <Value>256</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_nchlst" type="UInt16">
+        <Value>1280</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_rpmclc" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_numpix" type="UInt16">
+        <Value>8</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_scnden" type="UInt16">
+        <Value>256</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_eltden" type="UInt16">
+        <Value>256</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_orbtno" type="UInt16">
+        <Value>23858</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_slope2" type="Int32">
+        <Value>1075636998</Value>
+        <Value>551287046</Value>
+        <Value>-426777345</Value>
+        <Value>-1339034123</Value>
+        <Value>5871604</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_intcp2" type="Int32">
+        <Value>514263295</Value>
+        <Value>1892553983</Value>
+        <Value>-371365632</Value>
+        <Value>9497638</Value>
+        <Value>-2140793044</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_prtemp" type="Float32">
+        <Value>3.081097011e+10</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_timerr" type="Float32">
+        <Value>5.661099389e-20</Value>
+    </Attribute>
+    <Attribute name="dsp_ing_tiros_timstn" type="UInt16">
+        <Value>8279</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_xsatid" type="String">
+        <Value>NO14\005\002</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_xsatty" type="Byte">
+        <Value>5</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_xproty" type="Byte">
+        <Value>2</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_xmapsl" type="Byte">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_xtmpch" type="Byte">
+        <Value>4</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_ximgdy" type="Float32">
+        <Value>97182.00000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_ximgtm" type="Float32">
+        <Value>70954.35156</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_xorbit" type="Float32">
+        <Value>12893.00000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_ximgcv" type="Float32">
+        <Value>71.17219543</Value>
+        <Value>0.000000000</Value>
+        <Value>4.881805420</Value>
+        <Value>0.000000000</Value>
+        <Value>-112.1102600</Value>
+        <Value>0.000000000</Value>
+        <Value>-27.95829010</Value>
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_linoff" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_pixoff" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_scnstr" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_scnstp" type="Float32">
+        <Value>1024.000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_pixstr" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_pixstp" type="Float32">
+        <Value>1024.000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_latorg" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_lonorg" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_orgrot" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_lattop" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_latbot" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_latcen" type="Float32">
+        <Value>38.00000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_loncen" type="Float32">
+        <Value>-70.00000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_height" type="Float32">
+        <Value>66.34439087</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_width" type="Float32">
+        <Value>84.22052002</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_level" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_xspace" type="Float32">
+        <Value>5.999023438</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_yspace" type="Float32">
+        <Value>5.999023438</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_rev" type="String">
+        <Value> 0.1</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_dflag" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_toplat" type="Float32">
+        <Value>71.17219543</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_botlat" type="Float32">
+        <Value>4.881805420</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_leflon" type="Float32">
+        <Value>-112.1102600</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_ritlon" type="Float32">
+        <Value>-27.95829010</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_numpix" type="Float32">
+        <Value>1024.000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_numras" type="Float32">
+        <Value>1024.000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_magxx" type="Float32">
+        <Value>6.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_nav_earth_magyy" type="Float32">
+        <Value>6.000000000</Value>
+    </Attribute>
+    <Attribute name="dsp_hgt_llnval" type="Int32">
+        <Value>18</Value>
+    </Attribute>
+    <Attribute name="dsp_hgt_lltime" type="Int32">
+        <Value>25744350</Value>
+    </Attribute>
+    <Attribute name="dsp_hgt_llvect" type="Float32">
+        <Value>869.4276733</Value>
+        <Value>1.147667050</Value>
+        <Value>868.6585693</Value>
+        <Value>1.096347094</Value>
+        <Value>867.8395386</Value>
+        <Value>1.045024872</Value>
+        <Value>866.9785156</Value>
+        <Value>0.9937003851</Value>
+        <Value>866.0841675</Value>
+        <Value>0.9423736930</Value>
+        <Value>865.1652832</Value>
+        <Value>0.8910451531</Value>
+        <Value>864.2312622</Value>
+        <Value>0.8397147655</Value>
+        <Value>863.2915649</Value>
+        <Value>0.7883826494</Value>
+        <Value>862.3558960</Value>
+        <Value>0.7370490432</Value>
+        <Value>861.4340820</Value>
+        <Value>0.6857140064</Value>
+        <Value>860.5357056</Value>
+        <Value>0.6343777776</Value>
+        <Value>859.6703491</Value>
+        <Value>0.5830402374</Value>
+        <Value>858.8472900</Value>
+        <Value>0.5317016244</Value>
+        <Value>858.0754395</Value>
+        <Value>0.4803622365</Value>
+        <Value>857.3631592</Value>
+        <Value>0.4290222526</Value>
+        <Value>856.7184448</Value>
+        <Value>0.3776816428</Value>
+        <Value>856.1484985</Value>
+        <Value>0.3263407052</Value>
+        <Value>855.6597290</Value>
+        <Value>0.2749995887</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>\001PATHNLC May 23 22:40:54 2000 PATHNLC t,3,269.16,0.125,0.,0.01,271.16,308.16,,,,1,,,2,,,3,,,,,,4,,,,,,,2.,,35.,0.1,5,,,,,,,2.,,35.,0.15,55.,80.,0.005,20,,,-2,6.,t,,,,,,,,,,16,,3.5 allb=0 nlsst=1 in=/pathfdr5//97182070958.N14@INGEST@ in1=/pathfdr10/mask/oi.9727.mean out=/pathfdr4/nlc/f97182070958.FMG@0
+\004PATHNLC  NLSST Temp calculation date: April 10, 1996
+\001OISST Jan 12 17:53:43 1998 OISST  /usr3/gacsst/maketc/oi/dinp/oi.comp.bias.1997,/usr3/gacsst/maketc/oi/dout/oi.97,-3.,0.15,oi.dates.97,0
+\004OISST 26 97 06 22 97 06 28  7        472
+\001STATS Jan 12 18:27:34 1998 STATS minpix=1 maxpix=255 in=/usr3/gacsst/maketc/oi/dout//oi.9726 	  audit=t, callim=f, cal=f, cloud=f 	  outm=/usr3/gacsst/etc/oi/oi.9727.mean
+\001OISST Jan 12 17:53:43 1998 OISST  /usr3/gacsst/maketc/oi/dinp/oi.comp.bias.1997,/usr3/gacsst/maketc/oi/dout/oi.97,-3.,0.15,oi.dates.97,0
+\004OISST 27 97 06 29 97 07 05  7        472
+\002STATS /usr3/gacsst/maketc/oi/dout//oi.9727
+\001OISST Jan 12 17:53:43 1998 OISST  /usr3/gacsst/maketc/oi/dinp/oi.comp.bias.1997,/usr3/gacsst/maketc/oi/dout/oi.97,-3.,0.15,oi.dates.97,0
+\004OISST 27 97 06 29 97 07 05  7        472
+\002STATS /usr3/gacsst/maketc/oi/dout//oi.9727
+\001OISST Jan 12 17:53:43 1998 OISST  /usr3/gacsst/maketc/oi/dinp/oi.comp.bias.1997,/usr3/gacsst/maketc/oi/dout/oi.97,-3.,0.15,oi.dates.97,0
+\004OISST 28 97 07 06 97 07 12  7        472
+\002STATS /usr3/gacsst/maketc/oi/dout//oi.9728
+\002PATHNLC /pathfdr10/mask/oi.9727.mean
+\004PATHNLC  45d coeffs used (1) =    0.759   0.947   0.110   1.460   0.000
+\004PATHNLC  45d coeffs used (2) =    1.320   0.952   0.071   0.882   0.000
+\004PATHNLC  45d coeffs used (3) =    0.000   0.000   0.000   0.000   0.000
+\004PATHNLC  GETOZONE I     0.0900    0.0000
+\001REMAP Jun  4 07:59:42 2000 REMAP in=/coral/miami/remaps/sst_8r/file_uZ.FMG out=/coral/miami/remaps/sst_8r/f97182070958.nwa16
+\004REMAP Output image pixel, line size =    6144,    6144
+\004REMAP Grid spacing (X,Y) = (        6.00,        6.00), Projection Code=     1
+\004REMAP center lon,lat,dlon,dlat =       -70.00       38.00        0.01        0.01
+\001merge_sb Apr 16 16:05:09 2004 merge_sb in=(file=/NOPP/carlw/atlantic/remaps/nwa16/f97182070958.nwa16, filecheck=/RAID2/sbaker/atlantic/bslines97/f97182070958.nwa16) val=0 valcheck=0 tag=0 out=(file1=/RAID2/sbaker/nwa1024d/NDC/dsp_data/f97182070958.tmp_m2)
+\001merge_sb Apr 16 16:05:18 2004 merge_sb in=(file=/RAID2/sbaker/nwa1024d/NDC/dsp_data/f97182070958.tmp_m2, filecheck=/RAID/sbaker/DECLOUD/landmask16.img) val=1 valcheck=2 tag=0 out=(file1=/RAID2/sbaker/nwa6144d/NDC/dsp_data/f97182070958.nwa16)
+\001CONVRT Apr 16 16:05:21 2004 CONVRT 1024,1024,0,0,6,6,0,0,f,f,t,16,,SUB,1 in=/RAID2/sbaker/nwa6144d/NDC/dsp_data/f97182070958.nwa16   out=/RAID2/sbaker/nwa1024d/NDC/dsp_data/f97182070958.nwa16
+
+@</Value>
+    </Attribute>
+</Dataset>

@@ -482,3 +482,12 @@ AT_BESCMD_RESPONSE_TEST([tvset.hdf.dds.bescmd])
 ## To obtain the original ddx, go to version 3.11.6 or earlier.
 #
 #AT_BESCMD_RESPONSE_TEST([tvset.hdf.ddx.bescmd])
+
+#Test the direct HDF4 to DMR
+
+AT_BESCMD_RESPONSE_TEST([vgroup_attr.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([vg_hl_test.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([testsds1.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([GridFile.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([h_swath.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([f97182070958.hdf.dmr.bescmd])
