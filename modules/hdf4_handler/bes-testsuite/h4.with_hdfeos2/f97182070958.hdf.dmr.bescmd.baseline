@@ -2,30 +2,6 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="f97182070958.hdf">
     <Dimension name="lat" size="1024"/>
     <Dimension name="lon" size="1024"/>
-    <Float64 name="lat">
-        <Dim name="lat"/>
-        <Attribute name="unit" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>latitude</Value>
-        </Attribute>
-        <Attribute name="dmr_sds_ref" type="Int32">
-            <Value>5</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="lon">
-        <Dim name="lon"/>
-        <Attribute name="unit" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="dmr_sds_ref" type="Int32">
-            <Value>7</Value>
-        </Attribute>
-    </Float64>
     <UInt32 name="dsp_band_1">
         <Dim name="lat"/>
         <Dim name="lon"/>
@@ -70,6 +46,30 @@
             <Value>2</Value>
         </Attribute>
     </UInt32>
+    <Float64 name="lat">
+        <Dim name="lat"/>
+        <Attribute name="unit" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="lon">
+        <Dim name="lon"/>
+        <Attribute name="unit" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>7</Value>
+        </Attribute>
+    </Float64>
     <Attribute name="dsp_SubImageId" type="UInt16">
         <Value>0</Value>
     </Attribute>

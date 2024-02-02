@@ -62,6 +62,7 @@
 #include <numeric>
 #include <functional>
 #include <unordered_set>
+#include <set>
 
 
 // Include this on linux to suppress an annoying warning about multiple
@@ -4258,7 +4259,7 @@ void read_dmr(DMR *dmr, const string &filename) {
         read_sd_attrs(root_grp,sdfd);
         read_dmr_vlone_groups(root_grp, fileid, sdfd, filename);
 //#endif
-cerr<<"Done read_dmr_vlone_groups"<<endl;
+//cerr<<"Done read_dmr_vlone_groups"<<endl;
     //}
 #if 0
     catch(...) {
@@ -4347,9 +4348,11 @@ void read_lone_sds(D4Group *root_grp, int32 file_id,int32 sdfd, const string &fi
     obtain_all_sds_refs(sdfd,lone_sds_refs);
     exclude_all_sds_refs_in_vgroups(sdfd,file_id,lone_sds_refs); 
 
+    set<int32> ordered_lone_sds_refs(lone_sds_refs.begin(),lone_sds_refs.end());
+
    // Map SDS to DAP4 root group.
-   for (const auto &sds_ref:lone_sds_refs) {
-cerr<<"lone sds_ref is "<<sds_ref<<endl;
+   for (const auto &sds_ref:ordered_lone_sds_refs) {
+//cerr<<"lone sds_ref is "<<sds_ref<<endl;
         convert_sds(sdfd, sds_ref, root_grp, filename);  
 
    }
@@ -4392,7 +4395,7 @@ void exclude_all_sds_refs_in_vgroups(int32 sdfd,int32 file_id, unordered_set<int
 
     num_lonevg = Vlone(file_id,NULL,0);
 
-cerr<<"num_lonevg is "<<num_lonevg<<endl;
+//cerr<<"num_lonevg is "<<num_lonevg<<endl;
     if (num_lonevg == FAIL) {
         Vend(file_id);
         throw InternalErr(__FILE__, __LINE__, "error in obtaining lone vgroup number.");
@@ -4566,7 +4569,7 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
 
     num_lonevg = Vlone(file_id,NULL,0);
 
-cerr<<"num_lonevg is "<<num_lonevg<<endl;
+//cerr<<"num_lonevg is "<<num_lonevg<<endl;
     if (num_lonevg == FAIL) {
         Vend(file_id);
         throw InternalErr(__FILE__, __LINE__, "error in obtaining lone vgroup number.");
@@ -4660,7 +4663,7 @@ cerr<<"num_lonevg is "<<num_lonevg<<endl;
     }
 
     Vend(file_id);
-cerr<<"Finish read_dmr_vlone_groups " <<endl;
+//cerr<<"Finish read_dmr_vlone_groups " <<endl;
 
 }
 
@@ -4680,8 +4683,8 @@ bool reserved_vgroups(const vector<char>& vgroup_class) {
       return true;
   else if(strcmp(vgroup_class.data(),RI_NAME)==0) 
       return true;
-string vgroup_class_str(vgroup_class.begin(),vgroup_class.end());
-cerr<<"vgroup_class_str is "<<vgroup_class_str<<endl;
+//string vgroup_class_str(vgroup_class.begin(),vgroup_class.end());
+//cerr<<"vgroup_class_str is "<<vgroup_class_str<<endl;
   return false;
 
 }
@@ -4742,7 +4745,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
         Vend(file_id);
         throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
     }
-cerr<<"num_gobjects: "<<num_gobjects <<endl;
+//cerr<<"num_gobjects: "<<num_gobjects <<endl;
     for( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
@@ -4880,7 +4883,7 @@ for (const auto &tg:d4g->groups()) {
 
 void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g) {
 
-cerr<<"coming to convert_vgroup_attrs "<<endl;
+//cerr<<"coming to convert_vgroup_attrs "<<endl;
     char attr_name[H4_MAX_NC_NAME];
 
     intn n_attrs = Vnattrs(vgroup_id);
@@ -4888,7 +4891,7 @@ cerr<<"coming to convert_vgroup_attrs "<<endl;
         Vdetach(vgroup_id);
         throw InternalErr(__FILE__,__LINE__,"Vnattrs failed");
     }
-cerr<<"n_attrs is "<<n_attrs <<endl;
+//cerr<<"n_attrs is "<<n_attrs <<endl;
 
     for(int attr_index = 0; attr_index <n_attrs; attr_index++) {
     
@@ -4963,7 +4966,7 @@ void convert_sds_attrs(int32 sds_id,D4Group *d4g) {
 }
 
 void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* tem_d4_cgroup,const string& filename) {
-cerr<<"coming to convert_vdata"<<endl;
+//cerr<<"coming to convert_vdata"<<endl;
 
 
 }
