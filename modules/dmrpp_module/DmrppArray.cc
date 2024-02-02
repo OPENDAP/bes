@@ -679,6 +679,9 @@ get_index(const vector<unsigned long long> &address_in_target, const vector<unsi
 /// Read data for a chunked array when the whole array is to be returned.
 /// See below for the most general case - when chunked data are constrained.
 
+// TODO Add en explanation for this code - it is used in insert_chunk_unconstrained()
+//  as an important optimization. If we can apply this to the get_index code (or the code
+//  that calls it) we can reduce runtime of the data insert operations jhrg 2/2/24
 /**
  * For dimension \arg k, compute the multiplier needed for the row-major array
  * offset formula. The formula is:
@@ -1099,6 +1102,9 @@ void DmrppArray::read_contiguous()
     if (!is_filters_empty() && !get_one_chunk_fill_value()) {
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
     }
+
+    // TODO Once the dat from the chunk is transferred into the Array, is the memory for the chunk
+    //  released? jhrg 2/2/24
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         reserve_value_capacity_ll(get_size(false));
@@ -1116,7 +1122,10 @@ void DmrppArray::read_contiguous()
                 vector<char> values(buf_value,buf_value+value_size);
                 read_array_of_structure(values);
             }
-            else 
+            else
+                // TODO Edit the message and use a BESError. Maybe a SyntaxUserError?
+                //  Maybe we need an error for something the BES cannot do yet, but could
+                //  do in the future? jhrg 2/2/24
                 throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
         }
     }
@@ -1145,7 +1154,8 @@ void DmrppArray::read_contiguous()
                 insert_constrained_contiguous_structure(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values);
                 read_array_of_structure(values);
             }
-            else 
+            else
+                // TODO BES Error type. jhrg 2/2/14
                 throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
         }
     }
@@ -1153,6 +1163,7 @@ void DmrppArray::read_contiguous()
     set_read_p(true);
 }
 
+// TODO Comment this. jhrg 2/2/24
 void DmrppArray::read_one_chunk_dio() {
 
     // Get the single chunk that makes up this one-chunk compressed variable.
@@ -1849,6 +1860,8 @@ DmrppArray::set_send_p(bool state)
     Array::set_send_p(state);
 }
 
+// TODO Remove this - it's wrong (it works only for a limited case and we have more
+//  general code here. jhrg 2/2/24
 /**
  * @brief Process String Array so long as it has only one element
  *
@@ -1972,6 +1985,8 @@ std::string show_string_buff(char *buff, unsigned long long num_bytes, unsigned 
     return ss.str();
 }
 
+// TODO This is torturred code. One goal of the code review is to simplify this.
+//  Not sure if that is possble, though. jhrg 2/2/24
 /**
  * Takes the passed array and construsts a DmrppArray of bytes
  * the should be able to read all of the data for the array into the
