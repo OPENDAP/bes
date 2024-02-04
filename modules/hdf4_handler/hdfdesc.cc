@@ -206,8 +206,8 @@ void exclude_sds_refs_in_vgroup(int32 sdfd,int32 file_id, int32 vgroup_id, unord
 void read_dmr_vlone_groups(D4Group *root_grp, int32 fileid, int32 sdfd, const string &filename);
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* par_group,const string& filename);
 void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* par_group,const string& filename);
-void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4_group);
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4_group, const string & filename);
+void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4_group, const string &vgroupname);
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4_group, const string &vgroupname,const string & filename);
 void convert_sds(int32 sdfd,int32 obj_ref,  D4Group* d4g,const string &filename);
 void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
 void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
@@ -4640,16 +4640,16 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
 
 
         // TODO: ensure the CF-style vgroup name.
-        string vgroup_name_str(vgroup_name.begin(),vgroup_name.end()-1);
+        string vgroup_name_orig_str(vgroup_name.begin(),vgroup_name.end()-1);
 //cerr<<"vgroup_name is "<< vgroup_name_str <<endl;
         
-        vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_str);
+        string vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_orig_str);
         auto tem_d4_cgroup_ptr = make_unique<D4Group>(vgroup_name_str);
         auto tem_d4_cgroup = tem_d4_cgroup_ptr.release();
         //auto tem_d4_cgroup = new D4Group(vgroup_name_str);
         root_grp->add_group_nocopy(tem_d4_cgroup);
         
-        convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,filename);
+        convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,vgroup_name_orig_str,filename);
 
 //        cerr<<"tem_d4_cgroup number of child groups: "<<tem_d4_cgroup->groups().size() <<endl;
 #if 0
@@ -4733,7 +4733,7 @@ void vgroup_convert_vdata_objects(int32 vgroup_id,D4Group *d4g, const string &fi
 
 }
 
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,const string& filename) {
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,const string &vgroupname, const string& filename) {
 
     int num_gobjects; /* number of global objects */
     int32 obj_tag; /* object tag */
@@ -4779,7 +4779,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
         }
 
     }
-    convert_vgroup_attrs(vgroup_id,d4g);
+    convert_vgroup_attrs(vgroup_id,d4g, vgroupname);
 
     for( int i = 0;i<num_gobjects;i++) { 
             
@@ -4842,11 +4842,11 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             }
 
             try {
-                string vgroup_name_str(vgroup_name.begin(),vgroup_name.end()-1);
+                string vgroup_name_orig_str(vgroup_name.begin(),vgroup_name.end()-1);
 //cerr<<"vgroup_name inside vgroup: "<<vgroup_name_str<<endl;
 //#if 0
 
-                vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_str);
+                string vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_orig_str);
                 auto d4c_g_ptr = make_unique<D4Group>(vgroup_name_str);
                 auto d4c_g  = d4c_g_ptr.release();
                 //auto d4c_g = d4c_g_ptr.get();
@@ -4854,7 +4854,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
                 //auto d4c_g = new D4Group(vgroup_name_str);
                 //d4g->add_group_nocopy(d4c_g);
                 d4g->add_group_nocopy(d4c_g);
-                convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,filename);
+                convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,vgroup_name_orig_str,filename);
                 //delete d4c_g;
             }
 //#if 0
@@ -4881,12 +4881,12 @@ for (const auto &tg:d4g->groups()) {
 //        cerr<<"end convert_vgroup_objects"<<endl;
 }
 
-void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g) {
+void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname) {
 
 //cerr<<"coming to convert_vgroup_attrs "<<endl;
     char attr_name[H4_MAX_NC_NAME];
 
-    intn n_attrs = Vnattrs(vgroup_id);
+    intn n_attrs = Vnattrs2(vgroup_id);
     if (n_attrs == FAIL) {
         Vdetach(vgroup_id);
         throw InternalErr(__FILE__,__LINE__,"Vnattrs failed");
@@ -4898,23 +4898,34 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g) {
         int attr_value_size = 0;
         int32 attr_type = 0;
         int32 attr_count = 0;
-        intn status_n = Vattrinfo(vgroup_id, attr_index, attr_name, &attr_type,
-                            &attr_count, &attr_value_size);
+        intn status_n = Vattrinfo2(vgroup_id, attr_index, attr_name, &attr_type,
+                            &attr_count, &attr_value_size, NULL, NULL);
         if (status_n == FAIL) {
             Vdetach(vgroup_id);
             throw InternalErr(__FILE__,__LINE__,"Vattrinfo failed");
         }
 
+        // Create the DAP4 attribute 
+        string tempname (attr_name);
+
+        // Here we need to exclude the HDF-EOS2 Grid or Swath specific internal attributes starting from _FV_
+        // These attributes are represented as field attributes already so we don't need to duplicate them.
+        if(vgroupname=="Grid Attributes" || vgroupname=="Swath Attributes") {
+            if(tempname.size()>4) {
+                string tempname_f4chars = tempname.substr(0,4);
+                if (tempname_f4chars=="_FV_")
+                    continue;
+            } 
+        }
+ 
         vector<char> attr_value;
         attr_value.resize(attr_value_size);
-        status_n = Vgetattr(vgroup_id,(intn)attr_index,attr_value.data());
+        status_n = Vgetattr2(vgroup_id,(intn)attr_index,attr_value.data());
         if (status_n == FAIL) {
             Vdetach(vgroup_id);
             throw InternalErr(__FILE__,__LINE__,"Vgetattr failed");
         }
 
-        // Create the DAP4 attribute 
-        string tempname (attr_name);
         string dap4_attrname = HDFCFUtil::get_CF_string(tempname);
 //cerr<<"dap4_attrname is "<<dap4_attrname <<endl;
         map_vgroup_attr(d4g,dap4_attrname,attr_type,attr_count,attr_value);

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="c" space="catalog">/data/AMSR_E_L3_SeaIce25km_V15_20020601.hdf</setContainer>
+    <define name="d">
+	   <container name="c" />
+    </define>
+    <get type="dmr" definition="d"/>
+</request>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3B42.20180802.03.7.HDF">
+    <Dimension name="nlon" size="1440"/>
+    <Dimension name="nlat" size="400"/>
+    <Dimension name="fakeDim2" size="0"/>
+    <Dimension name="fakeDim3" size="0"/>
+    <Dimension name="fakeDim4" size="0"/>
+    <Byte name="InputFileNames">
+        <Dim name="fakeDim2"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>16</Value>
+        </Attribute>
+    </Byte>
+    <Byte name="InputAlgorithmVersions">
+        <Dim name="fakeDim3"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>17</Value>
+        </Attribute>
+    </Byte>
+    <Byte name="InputGenerationDateTimes">
+        <Dim name="fakeDim4"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>18</Value>
+        </Attribute>
+    </Byte>
+    <Attribute name="FileHeader" type="String">
+        <Value>AlgorithmID=3B42;
+AlgorithmVersion=3B42_7.0;
+FileName=3B42.20180802.03.7.HDF;
+GenerationDateTime=2018-10-31T16:07:56.000Z;
+StartGranuleDateTime=2018-08-02T01:30:00.000Z;
+StopGranuleDateTime=2018-08-02T04:29:59.999Z;
+GranuleNumber=;
+NumberOfSwaths=0;
+NumberOfGrids=1;
+GranuleStart=;
+TimeInterval=3_HOUR;
+ProcessingSystem=PPS;
+ProductVersion=7;
+MissingData=;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=m;
+TKCodeBuildVersion=1;
+MetadataVersion=m;
+FormatPackage=HDF Version 4.2 Release 4, January 25, 2009;
+BlueprintFilename=TRMM.V7.3B42.blueprint.xml;
+BlueprintVersion=BV_13;
+TKIOVersion=1.6;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
+    <Attribute name="GridHeader" type="String">
+        <Value>BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.25;
+LongitudeResolution=0.25;
+NorthBoundingCoordinate=50;
+SouthBoundingCoordinate=-50;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+</Value>
+    </Attribute>
+    <Group name="Grid">
+        <Float32 name="precipitation">
+            <Dim name="nlon"/>
+            <Dim name="nlat"/>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>4</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="relativeError">
+            <Dim name="nlon"/>
+            <Dim name="nlat"/>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>6</Value>
+            </Attribute>
+        </Float32>
+        <Int16 name="satPrecipitationSource">
+            <Dim name="nlon"/>
+            <Dim name="nlat"/>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>8</Value>
+            </Attribute>
+        </Int16>
+        <Float32 name="HQprecipitation">
+            <Dim name="nlon"/>
+            <Dim name="nlat"/>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>10</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="IRprecipitation">
+            <Dim name="nlon"/>
+            <Dim name="nlat"/>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>12</Value>
+            </Attribute>
+        </Float32>
+        <Int32 name="satObservationTime">
+            <Dim name="nlon"/>
+            <Dim name="nlat"/>
+            <Attribute name="units" type="String">
+                <Value>minutes</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>14</Value>
+            </Attribute>
+        </Int32>
+        <Attribute name="GridHeader" type="String">
+            <Value>BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.25;
+LongitudeResolution=0.25;
+NorthBoundingCoordinate=50;
+SouthBoundingCoordinate=-50;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+</Value>
+        </Attribute>
+    </Group>
+</Dataset>

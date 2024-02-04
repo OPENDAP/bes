@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="c" space="catalog">/data/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf</setContainer>
+    <define name="d">
+	   <container name="c" />
+    </define>
+    <get type="dmr" definition="d"/>
+</request>

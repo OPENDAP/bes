@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="c" space="catalog">/data/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf</setContainer>
+    <define name="d">
+	   <container name="c" />
+    </define>
+    <get type="dmr" definition="d"/>
+</request>

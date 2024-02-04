@@ -1,0 +1,57 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+
+# ------------------------------
+#
+
+AT_INIT([bes.with_hdfeos2.conf besstandalone getdap])
+# AT_COPYRIGHT([])
+
+AT_TESTED([besstandalone])
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
+
+m4_define([_AT_BESCMD_TEST],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+# Use the following AT_CHECK to generate baseline file.
+# AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 > $2 || true], [], [stdout], [stderr])
+
+# This is the original.
+AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h4.nasa.dmr.valgrind.log], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([_AT_BESCMD_BINARYDATA_TEST],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+# Use the following AT_CHECK to generate baseline file.
+# AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M - > $2 || true], [], [stdout], [stderr])
+
+# This is the original.
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([AT_BESCMD_RESPONSE_TEST],
+[_AT_BESCMD_TEST([$abs_srcdir/h4.nasa.dmr/$1], [$abs_srcdir/h4.nasa.dmr/$1.baseline])
+])
+
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
+[_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/h4.nasa.dmr/$1], [$abs_srcdir/h4.nasa.dmr/$1.baseline])
+])
+
+AT_BESCMD_RESPONSE_TEST([3B42.20180802.03.7.HDF.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([AMSR_E_L2_Land_V09_200206190615_A.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([AMSR_E_L3_SeaIce25km_V15_20020601.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MCD12Q1.A2022001.h10v06.061.2023243073808.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MCD19A1.A2024025.h10v06.061.2024027100206.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MCD43A4.A2012009.h25v05.061.2021202161101.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MOD03.A2000166.0255.061.2017173092154.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MOD10A1F.A2024025.h27v04.061.2024027145105.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MOD11A1.A2024025.h10v06.061.2024028004317.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MOD13Q1.A2023353.h17v06.061.2024005131728.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([MOD29.A2000166.0255.005.2008189120917.hdf.dmr.bescmd])

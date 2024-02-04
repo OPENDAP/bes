@@ -135,7 +135,11 @@ END
                 </Attribute>
             </Float32>
         </Group>
-        <Group name="Grid_Attributes"/>
+        <Group name="Grid_Attributes">
+            <Attribute name="float32" type="Float32">
+                <Value>1.000000000</Value>
+            </Attribute>
+        </Group>
     </Group>
     <Group name="PolarGrid">
         <Group name="Data_Fields">
