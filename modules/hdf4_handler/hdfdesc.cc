@@ -4622,7 +4622,6 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
             continue;
         }
         vector<char> vgroup_name;
-        //vgroup_name.resize(vgroupnamelen+1);
         vgroup_name.resize(vgroupnamelen+1);
 
         if (Vgetname(vgroup_id,vgroup_name.data())==FAIL){
@@ -4672,8 +4671,6 @@ bool reserved_vgroups(const vector<char>& vgroup_class) {
       return true;
   else if(strcmp(vgroup_class.data(),RI_NAME)==0) 
       return true;
-//string vgroup_class_str(vgroup_class.begin(),vgroup_class.end());
-//cerr<<"vgroup_class_str is "<<vgroup_class_str<<endl;
   return false;
 
 }
@@ -4842,7 +4839,6 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
                 d4g->add_group_nocopy(d4c_g);
 
                 convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,vgroup_name_orig_str,filename);
-                //delete d4c_g;
             }
             catch(...) {
               Vdetach(vgroup_cid);
