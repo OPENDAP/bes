@@ -3,8 +3,8 @@
     <Dimension name="lat" size="1024"/>
     <Dimension name="lon" size="1024"/>
     <UInt32 name="dsp_band_1">
-        <Dim name="lat"/>
-        <Dim name="lon"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
         <Attribute name="dsp_PixelType" type="Byte">
             <Value>1</Value>
         </Attribute>
@@ -47,7 +47,7 @@
         </Attribute>
     </UInt32>
     <Float64 name="lat">
-        <Dim name="lat"/>
+        <Dim name="/lat"/>
         <Attribute name="unit" type="String">
             <Value>degrees_north</Value>
         </Attribute>
@@ -59,7 +59,7 @@
         </Attribute>
     </Float64>
     <Float64 name="lon">
-        <Dim name="lon"/>
+        <Dim name="/lon"/>
         <Attribute name="unit" type="String">
             <Value>degrees_east</Value>
         </Attribute>

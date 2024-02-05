@@ -21,7 +21,7 @@
     <Dimension name="detectors_per_500m_band" size="20"/>
     <Dimension name="number_of_1km_reflective_bands" size="15"/>
     <Float32 name="Band_250M">
-        <Dim name="Band_250M"/>
+        <Dim name="/Band_250M"/>
         <Attribute name="long_name" type="String">
             <Value>250M Band Numbers for Subsetting</Value>
         </Attribute>
@@ -30,7 +30,7 @@
         </Attribute>
     </Float32>
     <Float32 name="Band_500M">
-        <Dim name="Band_500M"/>
+        <Dim name="/Band_500M"/>
         <Attribute name="long_name" type="String">
             <Value>500M Band Numbers for Subsetting</Value>
         </Attribute>
@@ -39,7 +39,7 @@
         </Attribute>
     </Float32>
     <Float32 name="Band_1KM_RefSB">
-        <Dim name="Band_1KM_RefSB"/>
+        <Dim name="/Band_1KM_RefSB"/>
         <Attribute name="long_name" type="String">
             <Value>1KM Reflective Solar Band Numbers for Subsetting</Value>
         </Attribute>
@@ -48,7 +48,7 @@
         </Attribute>
     </Float32>
     <Float32 name="Band_1KM_Emissive">
-        <Dim name="Band_1KM_Emissive"/>
+        <Dim name="/Band_1KM_Emissive"/>
         <Attribute name="long_name" type="String">
             <Value>1KM Emissive Band Numbers for Subsetting</Value>
         </Attribute>
@@ -57,47 +57,47 @@
         </Attribute>
     </Float32>
     <Byte name="Noise_in_Thermal_Detectors">
-        <Dim name="number_of_emissive_bands"/>
-        <Dim name="detectors_per_1km_band"/>
+        <Dim name="/number_of_emissive_bands"/>
+        <Dim name="/detectors_per_1km_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15661</Value>
         </Attribute>
     </Byte>
     <Byte name="Change_in_relative_responses_of_thermal_detectors">
-        <Dim name="number_of_emissive_bands"/>
-        <Dim name="detectors_per_1km_band"/>
+        <Dim name="/number_of_emissive_bands"/>
+        <Dim name="/detectors_per_1km_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15663</Value>
         </Attribute>
     </Byte>
     <Int32 name="DC_Restore_Change_for_Thermal_Bands">
-        <Dim name="number_of_scans"/>
-        <Dim name="number_of_emissive_bands"/>
-        <Dim name="detectors_per_1km_band"/>
+        <Dim name="/number_of_scans"/>
+        <Dim name="/number_of_emissive_bands"/>
+        <Dim name="/detectors_per_1km_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15665</Value>
         </Attribute>
     </Int32>
     <Int32 name="DC_Restore_Change_for_Reflective_250m_Bands">
-        <Dim name="number_of_scans"/>
-        <Dim name="number_of_250m_bands"/>
-        <Dim name="detectors_per_250m_band"/>
+        <Dim name="/number_of_scans"/>
+        <Dim name="/number_of_250m_bands"/>
+        <Dim name="/detectors_per_250m_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15667</Value>
         </Attribute>
     </Int32>
     <Int32 name="DC_Restore_Change_for_Reflective_500m_Bands">
-        <Dim name="number_of_scans"/>
-        <Dim name="number_of_500m_bands"/>
-        <Dim name="detectors_per_500m_band"/>
+        <Dim name="/number_of_scans"/>
+        <Dim name="/number_of_500m_bands"/>
+        <Dim name="/detectors_per_500m_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15669</Value>
         </Attribute>
     </Int32>
     <Int32 name="DC_Restore_Change_for_Reflective_1km_Bands">
-        <Dim name="number_of_scans"/>
-        <Dim name="number_of_1km_reflective_bands"/>
-        <Dim name="detectors_per_1km_band"/>
+        <Dim name="/number_of_scans"/>
+        <Dim name="/number_of_1km_reflective_bands"/>
+        <Dim name="/detectors_per_1km_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15671</Value>
         </Attribute>
@@ -9401,8 +9401,8 @@ END
     <Group name="MODIS_SWATH_Type_L1B">
         <Group name="Geolocation_Fields">
             <Float32 name="Latitude">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -9424,8 +9424,8 @@ END
                 </Attribute>
             </Float32>
             <Float32 name="Longitude">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -9449,9 +9449,9 @@ END
         </Group>
         <Group name="Data_Fields">
             <UInt16 name="EV_1KM_RefSB">
-                <Dim name="Band_1KM_RefSB_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_1KM_RefSB_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 1KM Reflective Solar Bands Scaled Integers</Value>
                 </Attribute>
@@ -9584,9 +9584,9 @@ END
                 </Attribute>
             </UInt16>
             <Byte name="EV_1KM_RefSB_Uncert_Indexes">
-                <Dim name="Band_1KM_RefSB_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_1KM_RefSB_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 1KM Reflective Solar Bands Uncertainty Indexes</Value>
                 </Attribute>
@@ -9642,9 +9642,9 @@ END
                 </Attribute>
             </Byte>
             <UInt16 name="EV_1KM_Emissive">
-                <Dim name="Band_1KM_Emissive_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_1KM_Emissive_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 1KM Emissive Bands Scaled Integers</Value>
                 </Attribute>
@@ -9705,9 +9705,9 @@ END
                 </Attribute>
             </UInt16>
             <Byte name="EV_1KM_Emissive_Uncert_Indexes">
-                <Dim name="Band_1KM_Emissive_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_1KM_Emissive_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 1KM Emissive Bands Uncertainty Indexes</Value>
                 </Attribute>
@@ -9765,9 +9765,9 @@ END
                 </Attribute>
             </Byte>
             <UInt16 name="EV_250_Aggr1km_RefSB">
-                <Dim name="Band_250M_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_250M_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 250M Aggregated 1km Reflective Solar Bands Scaled Integers</Value>
                 </Attribute>
@@ -9822,9 +9822,9 @@ END
                 </Attribute>
             </UInt16>
             <Byte name="EV_250_Aggr1km_RefSB_Uncert_Indexes">
-                <Dim name="Band_250M_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_250M_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 250M Aggregated 1km Reflective Solar Bands Uncertainty Indexes</Value>
                 </Attribute>
@@ -9854,9 +9854,9 @@ END
                 </Attribute>
             </Byte>
             <Int32 name="EV_250_Aggr1km_RefSB_Samples_Used">
-                <Dim name="Band_250M_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_250M_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 250M Aggregated 1km Reflective Solar Bands Number of Samples Used in Aggregation</Value>
                 </Attribute>
@@ -9875,9 +9875,9 @@ END
                 </Attribute>
             </Int32>
             <UInt16 name="EV_500_Aggr1km_RefSB">
-                <Dim name="Band_500M_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_500M_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 500M Aggregated 1km Reflective Solar Bands Scaled Integers</Value>
                 </Attribute>
@@ -9950,9 +9950,9 @@ END
                 </Attribute>
             </UInt16>
             <Byte name="EV_500_Aggr1km_RefSB_Uncert_Indexes">
-                <Dim name="Band_500M_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_500M_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 500M Aggregated 1km Reflective Solar Bands Uncertainty Indexes</Value>
                 </Attribute>
@@ -9988,9 +9988,9 @@ END
                 </Attribute>
             </Byte>
             <Int32 name="EV_500_Aggr1km_RefSB_Samples_Used">
-                <Dim name="Band_500M_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Band_500M_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View 500M Aggregated 1km Reflective Solar Bands Number of Samples Used in Aggregation</Value>
                 </Attribute>
@@ -10009,8 +10009,8 @@ END
                 </Attribute>
             </Int32>
             <Int16 name="Height">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="units" type="String">
                     <Value>meters</Value>
                 </Attribute>
@@ -10032,8 +10032,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="SensorZenith">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -10058,8 +10058,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="SensorAzimuth">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -10084,8 +10084,8 @@ END
                 </Attribute>
             </Int16>
             <UInt16 name="Range">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="units" type="String">
                     <Value>meters</Value>
                 </Attribute>
@@ -10110,8 +10110,8 @@ END
                 </Attribute>
             </UInt16>
             <Int16 name="SolarZenith">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -10136,8 +10136,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="SolarAzimuth">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -10162,8 +10162,8 @@ END
                 </Attribute>
             </Int16>
             <Byte name="gflags">
-                <Dim name="_2_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="_FillValue" type="Byte">
                     <Value>255</Value>
                 </Attribute>
@@ -10187,8 +10187,8 @@ END
                 </Attribute>
             </Byte>
             <UInt16 name="EV_Band26">
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View Band 26 Scaled Integers</Value>
                 </Attribute>
@@ -10234,8 +10234,8 @@ END
                 </Attribute>
             </UInt16>
             <Byte name="EV_Band26_Uncert_Indexes">
-                <Dim name="_10_nscans_MODIS_SWATH_Type_L1B"/>
-                <Dim name="Max_EV_frames_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
+                <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
                 <Attribute name="long_name" type="String">
                     <Value>Earth View Band 26 Uncertainty Indexes</Value>
                 </Attribute>

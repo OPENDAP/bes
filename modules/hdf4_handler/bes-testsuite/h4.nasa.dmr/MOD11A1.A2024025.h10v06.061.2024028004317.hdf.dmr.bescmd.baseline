@@ -1119,8 +1119,8 @@ END
     <Group name="MODIS_Grid_Daily_1km_LST">
         <Group name="Data_Fields">
             <UInt16 name="LST_Day_1km">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>Daily daytime 1km grid Land-surface Temperature</Value>
                 </Attribute>
@@ -1157,8 +1157,8 @@ END
                 </Attribute>
             </UInt16>
             <Byte name="QC_Day">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>Quality control for daytime LST and emissivity</Value>
                 </Attribute>
@@ -1177,8 +1177,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Day_view_time">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>Time of daytime Land-surface Temperature observation</Value>
                 </Attribute>
@@ -1215,8 +1215,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Day_view_angl">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>View zenith angle of daytime Land-surface Temperature</Value>
                 </Attribute>
@@ -1256,8 +1256,8 @@ END
                 </Attribute>
             </Byte>
             <UInt16 name="LST_Night_1km">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>Daily nighttime 1km grid Land-surface Temperature</Value>
                 </Attribute>
@@ -1294,8 +1294,8 @@ END
                 </Attribute>
             </UInt16>
             <Byte name="QC_Night">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>Quality control for nighttime LST and emissivity</Value>
                 </Attribute>
@@ -1314,8 +1314,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Night_view_time">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>Time of nighttime Land-surface Temperature observation</Value>
                 </Attribute>
@@ -1352,8 +1352,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Night_view_angl">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>View zenith angle of nighttime Land-surface Temperature</Value>
                 </Attribute>
@@ -1393,8 +1393,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Emis_31">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>Band 31 emissivity</Value>
                 </Attribute>
@@ -1431,8 +1431,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Emis_32">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>Band 32 emissivity</Value>
                 </Attribute>
@@ -1469,8 +1469,8 @@ END
                 </Attribute>
             </Byte>
             <UInt16 name="Clear_day_cov">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>day clear-sky coverage</Value>
                 </Attribute>
@@ -1504,8 +1504,8 @@ END
                 </Attribute>
             </UInt16>
             <UInt16 name="Clear_night_cov">
-                <Dim name="YDim_MODIS_Grid_Daily_1km_LST"/>
-                <Dim name="XDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+                <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
                 <Attribute name="long_name" type="String">
                     <Value>night clear-sky coverage</Value>
                 </Attribute>

@@ -5,8 +5,8 @@
     <Dimension name="fakeDim2" size="4"/>
     <Dimension name="fakeDim3" size="8"/>
     <Float32 name="temperature">
-        <Dim name="fakeDim2"/>
-        <Dim name="fakeDim3"/>
+        <Dim name="/fakeDim2"/>
+        <Dim name="/fakeDim3"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>21</Value>
         </Attribute>
@@ -71,8 +71,8 @@ END
         <Group name="Geolocation_Fields"/>
         <Group name="Data_Fields">
             <Float32 name="temperature">
-                <Dim name="ZDim_Swath"/>
-                <Dim name="NDim_Swath"/>
+                <Dim name="/ZDim_Swath"/>
+                <Dim name="/NDim_Swath"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>9</Value>
                 </Attribute>

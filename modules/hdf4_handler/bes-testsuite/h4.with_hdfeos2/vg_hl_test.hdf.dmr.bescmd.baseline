@@ -8,9 +8,9 @@
     </Group>
     <Group name="groupB">
         <Int32 name="sds">
-            <Dim name="fakeDim0"/>
-            <Dim name="fakeDim1"/>
-            <Dim name="fakeDim2"/>
+            <Dim name="/fakeDim0"/>
+            <Dim name="/fakeDim1"/>
+            <Dim name="/fakeDim2"/>
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>4</Value>
             </Attribute>

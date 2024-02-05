@@ -5001,7 +5001,10 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
 
         string dim_name_str (dim_name);
         dim_name_str = HDFCFUtil::get_CF_string(dim_name_str);
-        // If necessary, we can add a "/" in front of dim_name_str later for the dimension name..
+        // We add a "/" in front of dim_name_str for the dimension name to make it FQN 
+        // since current build_dmrpp requires this.
+        
+        dim_name_str = "/" + dim_name_str;
         ar->append_dim_ll(dim_sizes[dimindex], dim_name_str);
 
     }

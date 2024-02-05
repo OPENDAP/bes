@@ -1547,8 +1547,8 @@ END
     <Group name="MODIS_Grid_16DAY_250m_500m_VI">
         <Group name="Data_Fields">
             <Int16 name="_250m_16_days_NDVI">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days NDVI</Value>
                 </Attribute>
@@ -1582,8 +1582,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_EVI">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days EVI</Value>
                 </Attribute>
@@ -1617,8 +1617,8 @@ END
                 </Attribute>
             </Int16>
             <UInt16 name="_250m_16_days_VI_Quality">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days VI Quality</Value>
                 </Attribute>
@@ -1684,8 +1684,8 @@ END
                 </Attribute>
             </UInt16>
             <Int16 name="_250m_16_days_red_reflectance">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days red reflectance</Value>
                 </Attribute>
@@ -1719,8 +1719,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_NIR_reflectance">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days NIR reflectance</Value>
                 </Attribute>
@@ -1754,8 +1754,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_blue_reflectance">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days blue reflectance</Value>
                 </Attribute>
@@ -1789,8 +1789,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_MIR_reflectance">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days MIR reflectance</Value>
                 </Attribute>
@@ -1831,8 +1831,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_view_zenith_angle">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days view zenith angle</Value>
                 </Attribute>
@@ -1866,8 +1866,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_sun_zenith_angle">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days sun zenith angle</Value>
                 </Attribute>
@@ -1901,8 +1901,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_relative_azimuth_angle">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days relative azimuth angle</Value>
                 </Attribute>
@@ -1936,8 +1936,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_composite_day_of_the_year">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days composite day of the year</Value>
                 </Attribute>
@@ -1956,8 +1956,8 @@ END
                 </Attribute>
             </Int16>
             <Int32 name="_250m_16_days_pixel_reliability">
-                <Dim name="YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
-                <Dim name="XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
                     <Value>250m 16 days pixel reliability</Value>
                 </Attribute>

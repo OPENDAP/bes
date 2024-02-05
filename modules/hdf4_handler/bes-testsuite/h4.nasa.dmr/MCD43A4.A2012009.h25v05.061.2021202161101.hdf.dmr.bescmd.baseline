@@ -910,8 +910,8 @@ END
     <Group name="MOD_Grid_BRDF">
         <Group name="Data_Fields">
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band1">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRDF_Albedo_Band_Mandatory_Quality_Band1</Value>
                 </Attribute>
@@ -936,8 +936,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band2">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRDF_Albedo_Band_Mandatory_Quality_Band2</Value>
                 </Attribute>
@@ -962,8 +962,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band3">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRDF_Albedo_Band_Mandatory_Quality_Band3</Value>
                 </Attribute>
@@ -988,8 +988,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band4">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRDF_Albedo_Band_Mandatory_Quality_Band4</Value>
                 </Attribute>
@@ -1014,8 +1014,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band5">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRDF_Albedo_Band_Mandatory_Quality_Band5</Value>
                 </Attribute>
@@ -1040,8 +1040,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band6">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRDF_Albedo_Band_Mandatory_Quality_Band6</Value>
                 </Attribute>
@@ -1066,8 +1066,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band7">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRDF_Albedo_Band_Mandatory_Quality_Band7</Value>
                 </Attribute>
@@ -1092,8 +1092,8 @@ END
                 </Attribute>
             </Byte>
             <Int16 name="Nadir_Reflectance_Band1">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>Nadir_Reflectance_Band1</Value>
                 </Attribute>
@@ -1127,8 +1127,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band2">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>Nadir_Reflectance_Band2</Value>
                 </Attribute>
@@ -1162,8 +1162,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band3">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>Nadir_Reflectance_Band3</Value>
                 </Attribute>
@@ -1197,8 +1197,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band4">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>Nadir_Reflectance_Band4</Value>
                 </Attribute>
@@ -1232,8 +1232,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band5">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>Nadir_Reflectance_Band5</Value>
                 </Attribute>
@@ -1267,8 +1267,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band6">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>Nadir_Reflectance_Band6</Value>
                 </Attribute>
@@ -1302,8 +1302,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band7">
-                <Dim name="YDim_MOD_Grid_BRDF"/>
-                <Dim name="XDim_MOD_Grid_BRDF"/>
+                <Dim name="/YDim_MOD_Grid_BRDF"/>
+                <Dim name="/XDim_MOD_Grid_BRDF"/>
                 <Attribute name="long_name" type="String">
                     <Value>Nadir_Reflectance_Band7</Value>
                 </Attribute>

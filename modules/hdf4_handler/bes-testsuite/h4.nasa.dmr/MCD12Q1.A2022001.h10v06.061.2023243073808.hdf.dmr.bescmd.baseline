@@ -701,8 +701,8 @@ END
     <Group name="MCD12Q1">
         <Group name="Data_Fields">
             <Byte name="LC_Type1">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Type_1</Value>
                 </Attribute>
@@ -772,8 +772,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Type2">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Type_2</Value>
                 </Attribute>
@@ -834,8 +834,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Type3">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Type_3</Value>
                 </Attribute>
@@ -887,8 +887,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Type4">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Type_4</Value>
                 </Attribute>
@@ -934,8 +934,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Type5">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Type_5</Value>
                 </Attribute>
@@ -990,8 +990,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop1_Assessment">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Property_1_Assessment</Value>
                 </Attribute>
@@ -1007,8 +1007,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop2_Assessment">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Property_2_Assessment</Value>
                 </Attribute>
@@ -1024,8 +1024,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop3_Assessment">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Property_3_Assessment</Value>
                 </Attribute>
@@ -1041,8 +1041,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop1">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Property_1</Value>
                 </Attribute>
@@ -1109,8 +1109,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop2">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Property_2</Value>
                 </Attribute>
@@ -1162,8 +1162,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop3">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Cover_Property_3</Value>
                 </Attribute>
@@ -1212,8 +1212,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="QC">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Quality_Flags</Value>
                 </Attribute>
@@ -1229,8 +1229,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="LW">
-                <Dim name="YDim_MCD12Q1"/>
-                <Dim name="XDim_MCD12Q1"/>
+                <Dim name="/YDim_MCD12Q1"/>
+                <Dim name="/XDim_MCD12Q1"/>
                 <Attribute name="long_name" type="String">
                     <Value>Land_Water_Mask</Value>
                 </Attribute>

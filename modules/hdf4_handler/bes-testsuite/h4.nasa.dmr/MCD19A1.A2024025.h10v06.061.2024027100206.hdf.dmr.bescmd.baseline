@@ -941,9 +941,9 @@ END
     <Group name="grid1km">
         <Group name="Data_Fields">
             <Int16 name="Sur_refl1">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band1</Value>
                 </Attribute>
@@ -968,9 +968,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl2">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band2</Value>
                 </Attribute>
@@ -995,9 +995,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl3">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band3</Value>
                 </Attribute>
@@ -1022,9 +1022,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl4">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band4</Value>
                 </Attribute>
@@ -1049,9 +1049,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl5">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band5</Value>
                 </Attribute>
@@ -1076,9 +1076,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl6">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band6</Value>
                 </Attribute>
@@ -1103,9 +1103,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl7">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band7</Value>
                 </Attribute>
@@ -1130,9 +1130,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl8">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band8</Value>
                 </Attribute>
@@ -1157,9 +1157,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl9">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band9</Value>
                 </Attribute>
@@ -1184,9 +1184,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl10">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band10</Value>
                 </Attribute>
@@ -1211,9 +1211,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl11">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band11</Value>
                 </Attribute>
@@ -1238,9 +1238,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl12">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_1km, Band12</Value>
                 </Attribute>
@@ -1265,9 +1265,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sigma_BRFn1">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRFn uncertainties over time, Band1</Value>
                 </Attribute>
@@ -1292,9 +1292,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sigma_BRFn2">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>BRFn uncertainties over time, Band2</Value>
                 </Attribute>
@@ -1319,9 +1319,9 @@ END
                 </Attribute>
             </Int16>
             <UInt16 name="Status_QA">
-                <Dim name="Orbits_grid1km"/>
-                <Dim name="YDim_grid1km"/>
-                <Dim name="XDim_grid1km"/>
+                <Dim name="/Orbits_grid1km"/>
+                <Dim name="/YDim_grid1km"/>
+                <Dim name="/XDim_grid1km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Status_QA</Value>
                 </Attribute>
@@ -1390,9 +1390,9 @@ END
     <Group name="grid500m">
         <Group name="Data_Fields">
             <Int16 name="Sur_refl_500m1">
-                <Dim name="Orbits_grid500m"/>
-                <Dim name="YDim_grid500m"/>
-                <Dim name="XDim_grid500m"/>
+                <Dim name="/Orbits_grid500m"/>
+                <Dim name="/YDim_grid500m"/>
+                <Dim name="/XDim_grid500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_500m, Band1</Value>
                 </Attribute>
@@ -1417,9 +1417,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m2">
-                <Dim name="Orbits_grid500m"/>
-                <Dim name="YDim_grid500m"/>
-                <Dim name="XDim_grid500m"/>
+                <Dim name="/Orbits_grid500m"/>
+                <Dim name="/YDim_grid500m"/>
+                <Dim name="/XDim_grid500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_500m, Band2</Value>
                 </Attribute>
@@ -1444,9 +1444,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m3">
-                <Dim name="Orbits_grid500m"/>
-                <Dim name="YDim_grid500m"/>
-                <Dim name="XDim_grid500m"/>
+                <Dim name="/Orbits_grid500m"/>
+                <Dim name="/YDim_grid500m"/>
+                <Dim name="/XDim_grid500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_500m, Band3</Value>
                 </Attribute>
@@ -1471,9 +1471,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m4">
-                <Dim name="Orbits_grid500m"/>
-                <Dim name="YDim_grid500m"/>
-                <Dim name="XDim_grid500m"/>
+                <Dim name="/Orbits_grid500m"/>
+                <Dim name="/YDim_grid500m"/>
+                <Dim name="/XDim_grid500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_500m, Band4</Value>
                 </Attribute>
@@ -1498,9 +1498,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m5">
-                <Dim name="Orbits_grid500m"/>
-                <Dim name="YDim_grid500m"/>
-                <Dim name="XDim_grid500m"/>
+                <Dim name="/Orbits_grid500m"/>
+                <Dim name="/YDim_grid500m"/>
+                <Dim name="/XDim_grid500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_500m, Band5</Value>
                 </Attribute>
@@ -1525,9 +1525,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m6">
-                <Dim name="Orbits_grid500m"/>
-                <Dim name="YDim_grid500m"/>
-                <Dim name="XDim_grid500m"/>
+                <Dim name="/Orbits_grid500m"/>
+                <Dim name="/YDim_grid500m"/>
+                <Dim name="/XDim_grid500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_500m, Band6</Value>
                 </Attribute>
@@ -1552,9 +1552,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m7">
-                <Dim name="Orbits_grid500m"/>
-                <Dim name="YDim_grid500m"/>
-                <Dim name="XDim_grid500m"/>
+                <Dim name="/Orbits_grid500m"/>
+                <Dim name="/YDim_grid500m"/>
+                <Dim name="/XDim_grid500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>Surface_bidirectinal_reflectance_factor_500m, Band7</Value>
                 </Attribute>
@@ -1584,9 +1584,9 @@ END
     <Group name="grid5km">
         <Group name="Data_Fields">
             <Int16 name="cosSZA">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>cosine of Solar Zenith Angle</Value>
                 </Attribute>
@@ -1611,9 +1611,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="cosVZA">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>cosine of View Zenith Angle</Value>
                 </Attribute>
@@ -1638,9 +1638,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="RelAZ">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Relative Azimuth Angle</Value>
                 </Attribute>
@@ -1665,9 +1665,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Scattering_Angle">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Scattering Angle</Value>
                 </Attribute>
@@ -1692,9 +1692,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="SAZ">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Solar Azimuth Angle</Value>
                 </Attribute>
@@ -1719,9 +1719,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="VAZ">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>View Azimuth Angle</Value>
                 </Attribute>
@@ -1746,9 +1746,9 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="Glint_Angle">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Glint Angle</Value>
                 </Attribute>
@@ -1773,9 +1773,9 @@ END
                 </Attribute>
             </Int16>
             <Float32 name="Fv">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Volumetric kernel</Value>
                 </Attribute>
@@ -1794,9 +1794,9 @@ END
                 </Attribute>
             </Float32>
             <Float32 name="Fg">
-                <Dim name="Orbits_grid5km"/>
-                <Dim name="YDim_grid5km"/>
-                <Dim name="XDim_grid5km"/>
+                <Dim name="/Orbits_grid5km"/>
+                <Dim name="/YDim_grid5km"/>
+                <Dim name="/XDim_grid5km"/>
                 <Attribute name="long_name" type="String">
                     <Value>Geometric kernel</Value>
                 </Attribute>

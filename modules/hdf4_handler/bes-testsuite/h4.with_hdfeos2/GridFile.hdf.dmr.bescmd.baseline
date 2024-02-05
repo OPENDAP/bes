@@ -117,9 +117,9 @@ END
     <Group name="UTMGrid">
         <Group name="Data_Fields">
             <Float32 name="Pollution">
-                <Dim name="Time_UTMGrid"/>
-                <Dim name="YDim_UTMGrid"/>
-                <Dim name="XDim_UTMGrid"/>
+                <Dim name="/Time_UTMGrid"/>
+                <Dim name="/YDim_UTMGrid"/>
+                <Dim name="/XDim_UTMGrid"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-7.000000000</Value>
                 </Attribute>
@@ -128,8 +128,8 @@ END
                 </Attribute>
             </Float32>
             <Float32 name="Vegetation">
-                <Dim name="YDim_UTMGrid"/>
-                <Dim name="XDim_UTMGrid"/>
+                <Dim name="/YDim_UTMGrid"/>
+                <Dim name="/XDim_UTMGrid"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>15</Value>
                 </Attribute>
@@ -144,16 +144,16 @@ END
     <Group name="PolarGrid">
         <Group name="Data_Fields">
             <Float32 name="Soil_Dryness">
-                <Dim name="YDim_PolarGrid"/>
-                <Dim name="XDim_PolarGrid"/>
+                <Dim name="/YDim_PolarGrid"/>
+                <Dim name="/XDim_PolarGrid"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>17</Value>
                 </Attribute>
             </Float32>
             <Float32 name="MRGFLD_Temperature">
-                <Dim name="MRGDIM_PolarGrid_2"/>
-                <Dim name="YDim_PolarGrid"/>
-                <Dim name="XDim_PolarGrid"/>
+                <Dim name="/MRGDIM_PolarGrid_2"/>
+                <Dim name="/YDim_PolarGrid"/>
+                <Dim name="/XDim_PolarGrid"/>
                 <Attribute name="Field_Dims" type="Int32">
                     <Value>1</Value>
                     <Value>1</Value>
@@ -167,9 +167,9 @@ END
                 </Attribute>
             </Float32>
             <Float64 name="Spectra">
-                <Dim name="Bands_PolarGrid"/>
-                <Dim name="YDim_PolarGrid"/>
-                <Dim name="XDim_PolarGrid"/>
+                <Dim name="/Bands_PolarGrid"/>
+                <Dim name="/YDim_PolarGrid"/>
+                <Dim name="/XDim_PolarGrid"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>21</Value>
                 </Attribute>

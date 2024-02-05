@@ -1476,295 +1476,295 @@ codeListValue=&quot;creation&quot;&gt;creation
     <Group name="NpPolarGrid25km">
         <Group name="Data_Fields">
             <Int16 name="SI_25km_NH_06V_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>5</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06V_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>6</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06V_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>7</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06H_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>8</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06H_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>9</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06H_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>10</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10V_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>11</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10V_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>12</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10V_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>13</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10H_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>14</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10H_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>15</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10H_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>16</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18V_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>17</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18V_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>18</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18V_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>19</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18H_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>20</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18H_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>21</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18H_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>22</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23V_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>23</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23V_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>24</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23V_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>25</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23H_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>26</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23H_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>27</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23H_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>28</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36V_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>29</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36V_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>30</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36V_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>31</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36H_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>32</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36H_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>33</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36H_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>34</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89V_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>35</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89V_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>36</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89V_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>37</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89H_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>38</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89H_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>39</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89H_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>40</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICECON_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>41</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICECON_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>42</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICECON_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>43</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICEDIFF_ASC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>44</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICEDIFF_DSC">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>45</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICEDIFF_DAY">
-                <Dim name="YDim_NpPolarGrid25km"/>
-                <Dim name="XDim_NpPolarGrid25km"/>
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>46</Value>
                 </Attribute>
@@ -1775,295 +1775,295 @@ codeListValue=&quot;creation&quot;&gt;creation
     <Group name="SpPolarGrid25km">
         <Group name="Data_Fields">
             <Int16 name="SI_25km_SH_06V_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>50</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06V_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>51</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06V_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>52</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06H_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>53</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06H_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>54</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06H_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>55</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10V_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>56</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10V_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>57</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10V_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>58</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10H_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>59</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10H_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>60</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10H_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>61</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18V_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>62</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18V_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>63</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18V_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>64</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18H_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>65</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18H_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>66</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18H_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>67</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23V_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>68</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23V_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>69</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23V_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>70</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23H_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>71</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23H_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>72</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23H_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>73</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36V_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>74</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36V_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>75</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36V_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>76</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36H_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>77</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36H_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>78</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36H_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>79</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89V_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>80</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89V_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>81</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89V_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>82</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89H_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>83</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89H_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>84</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89H_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>85</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICECON_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>86</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICECON_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>87</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICECON_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>88</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICEDIFF_ASC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>89</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICEDIFF_DSC">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>90</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICEDIFF_DAY">
-                <Dim name="YDim_SpPolarGrid25km"/>
-                <Dim name="XDim_SpPolarGrid25km"/>
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>91</Value>
                 </Attribute>

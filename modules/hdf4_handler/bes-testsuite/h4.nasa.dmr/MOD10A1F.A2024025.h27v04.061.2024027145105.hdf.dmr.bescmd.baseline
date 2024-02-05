@@ -598,8 +598,8 @@ END
     <Group name="MOD_Grid_Snow_500m">
         <Group name="Data_Fields">
             <Byte name="CGF_NDSI_Snow_Cover">
-                <Dim name="YDim_MOD_Grid_Snow_500m"/>
-                <Dim name="XDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/YDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/XDim_MOD_Grid_Snow_500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>cloud-gap-filled NDSI snow cover</Value>
                 </Attribute>
@@ -618,8 +618,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Cloud_Persistence">
-                <Dim name="YDim_MOD_Grid_Snow_500m"/>
-                <Dim name="XDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/YDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/XDim_MOD_Grid_Snow_500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>cloud persistence for preceding days</Value>
                 </Attribute>
@@ -638,8 +638,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Basic_QA">
-                <Dim name="YDim_MOD_Grid_Snow_500m"/>
-                <Dim name="XDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/YDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/XDim_MOD_Grid_Snow_500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>CGF snow cover general quality value</Value>
                 </Attribute>
@@ -658,8 +658,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Algorithm_Flags_QA">
-                <Dim name="YDim_MOD_Grid_Snow_500m"/>
-                <Dim name="XDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/YDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/XDim_MOD_Grid_Snow_500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>CGF algorithm bit flags</Value>
                 </Attribute>
@@ -687,8 +687,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="MOD10A1_NDSI_Snow_Cover">
-                <Dim name="YDim_MOD_Grid_Snow_500m"/>
-                <Dim name="XDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/YDim_MOD_Grid_Snow_500m"/>
+                <Dim name="/XDim_MOD_Grid_Snow_500m"/>
                 <Attribute name="long_name" type="String">
                     <Value>NDSI snow cover from current day MOD10A1</Value>
                 </Attribute>

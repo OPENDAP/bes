@@ -657,8 +657,8 @@ END
     <Group name="MOD_Swath_Sea_Ice">
         <Group name="Geolocation_Fields">
             <Float32 name="Latitude">
-                <Dim name="Coarse_swath_lines_5km_MOD_Swath_Sea_Ice"/>
-                <Dim name="Coarse_swath_pixels_5km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Coarse_swath_lines_5km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Coarse_swath_pixels_5km_MOD_Swath_Sea_Ice"/>
                 <Attribute name="long_name" type="String">
                     <Value>Coarse 5 km resolution latitude</Value>
                 </Attribute>
@@ -680,8 +680,8 @@ END
                 </Attribute>
             </Float32>
             <Float32 name="Longitude">
-                <Dim name="Coarse_swath_lines_5km_MOD_Swath_Sea_Ice"/>
-                <Dim name="Coarse_swath_pixels_5km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Coarse_swath_lines_5km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Coarse_swath_pixels_5km_MOD_Swath_Sea_Ice"/>
                 <Attribute name="long_name" type="String">
                     <Value>Coarse 5 km resolution longitude</Value>
                 </Attribute>
@@ -705,8 +705,8 @@ END
         </Group>
         <Group name="Data_Fields">
             <Byte name="Sea_Ice_by_Reflectance">
-                <Dim name="Along_swath_lines_1km_MOD_Swath_Sea_Ice"/>
-                <Dim name="Cross_swath_pixels_1km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Along_swath_lines_1km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Cross_swath_pixels_1km_MOD_Swath_Sea_Ice"/>
                 <Attribute name="long_name" type="String">
                     <Value>Sea ice by reflective characteristics</Value>
                 </Attribute>
@@ -755,8 +755,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="Sea_Ice_by_Reflectance_Pixel_QA">
-                <Dim name="Along_swath_lines_1km_MOD_Swath_Sea_Ice"/>
-                <Dim name="Cross_swath_pixels_1km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Along_swath_lines_1km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Cross_swath_pixels_1km_MOD_Swath_Sea_Ice"/>
                 <Attribute name="long_name" type="String">
                     <Value>Sea ice by reflective characteristics spatial QA</Value>
                 </Attribute>
@@ -784,8 +784,8 @@ END
                 </Attribute>
             </Byte>
             <UInt16 name="Ice_Surface_Temperature">
-                <Dim name="Along_swath_lines_1km_MOD_Swath_Sea_Ice"/>
-                <Dim name="Cross_swath_pixels_1km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Along_swath_lines_1km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Cross_swath_pixels_1km_MOD_Swath_Sea_Ice"/>
                 <Attribute name="long_name" type="String">
                     <Value>Ice Surface Temperature by split-window method</Value>
                 </Attribute>
@@ -840,8 +840,8 @@ END
                 </Attribute>
             </UInt16>
             <Byte name="Ice_Surface_Temperature_Pixel_QA">
-                <Dim name="Along_swath_lines_1km_MOD_Swath_Sea_Ice"/>
-                <Dim name="Cross_swath_pixels_1km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Along_swath_lines_1km_MOD_Swath_Sea_Ice"/>
+                <Dim name="/Cross_swath_pixels_1km_MOD_Swath_Sea_Ice"/>
                 <Attribute name="long_name" type="String">
                     <Value>Ice surface temperature pixel QA</Value>
                 </Attribute>

@@ -6,19 +6,19 @@
     <Dimension name="fakeDim3" size="0"/>
     <Dimension name="fakeDim4" size="0"/>
     <Byte name="InputFileNames">
-        <Dim name="fakeDim2"/>
+        <Dim name="/fakeDim2"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>16</Value>
         </Attribute>
     </Byte>
     <Byte name="InputAlgorithmVersions">
-        <Dim name="fakeDim3"/>
+        <Dim name="/fakeDim3"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>17</Value>
         </Attribute>
     </Byte>
     <Byte name="InputGenerationDateTimes">
-        <Dim name="fakeDim4"/>
+        <Dim name="/fakeDim4"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>18</Value>
         </Attribute>
@@ -66,8 +66,8 @@ Origin=SOUTHWEST;
     </Attribute>
     <Group name="Grid">
         <Float32 name="precipitation">
-            <Dim name="nlon"/>
-            <Dim name="nlat"/>
+            <Dim name="/nlon"/>
+            <Dim name="/nlat"/>
             <Attribute name="units" type="String">
                 <Value>mm/hr</Value>
             </Attribute>
@@ -76,8 +76,8 @@ Origin=SOUTHWEST;
             </Attribute>
         </Float32>
         <Float32 name="relativeError">
-            <Dim name="nlon"/>
-            <Dim name="nlat"/>
+            <Dim name="/nlon"/>
+            <Dim name="/nlat"/>
             <Attribute name="units" type="String">
                 <Value>mm/hr</Value>
             </Attribute>
@@ -86,15 +86,15 @@ Origin=SOUTHWEST;
             </Attribute>
         </Float32>
         <Int16 name="satPrecipitationSource">
-            <Dim name="nlon"/>
-            <Dim name="nlat"/>
+            <Dim name="/nlon"/>
+            <Dim name="/nlat"/>
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>8</Value>
             </Attribute>
         </Int16>
         <Float32 name="HQprecipitation">
-            <Dim name="nlon"/>
-            <Dim name="nlat"/>
+            <Dim name="/nlon"/>
+            <Dim name="/nlat"/>
             <Attribute name="units" type="String">
                 <Value>mm/hr</Value>
             </Attribute>
@@ -103,8 +103,8 @@ Origin=SOUTHWEST;
             </Attribute>
         </Float32>
         <Float32 name="IRprecipitation">
-            <Dim name="nlon"/>
-            <Dim name="nlat"/>
+            <Dim name="/nlon"/>
+            <Dim name="/nlat"/>
             <Attribute name="units" type="String">
                 <Value>mm/hr</Value>
             </Attribute>
@@ -113,8 +113,8 @@ Origin=SOUTHWEST;
             </Attribute>
         </Float32>
         <Int32 name="satObservationTime">
-            <Dim name="nlon"/>
-            <Dim name="nlat"/>
+            <Dim name="/nlon"/>
+            <Dim name="/nlat"/>
             <Attribute name="units" type="String">
                 <Value>minutes</Value>
             </Attribute>

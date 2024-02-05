@@ -13,7 +13,7 @@
     <Dimension name="numbands" size="37"/>
     <Dimension name="fakeDim11" size="2"/>
     <Int16 name="Scan_number">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="_FillValue" type="Int16">
             <Value>0</Value>
         </Attribute>
@@ -22,7 +22,7 @@
         </Attribute>
     </Int16>
     <UInt16 name="EV_frames">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="valid_range" type="UInt16">
             <Value>0</Value>
             <Value>1400</Value>
@@ -32,19 +32,19 @@
         </Attribute>
     </UInt16>
     <UInt16 name="SD_frames">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>2040</Value>
         </Attribute>
     </UInt16>
     <UInt16 name="SV_frames">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>2042</Value>
         </Attribute>
     </UInt16>
     <Float64 name="EV_start_time">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="units" type="String">
             <Value>seconds</Value>
         </Attribute>
@@ -56,7 +56,7 @@
         </Attribute>
     </Float64>
     <Float64 name="SD_start_time">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="units" type="String">
             <Value>seconds</Value>
         </Attribute>
@@ -68,7 +68,7 @@
         </Attribute>
     </Float64>
     <Float64 name="SV_start_time">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="units" type="String">
             <Value>seconds</Value>
         </Attribute>
@@ -80,7 +80,7 @@
         </Attribute>
     </Float64>
     <Float64 name="EV_center_time">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="units" type="String">
             <Value>seconds</Value>
         </Attribute>
@@ -92,7 +92,7 @@
         </Attribute>
     </Float64>
     <UInt16 name="Mirror_side">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="valid_range" type="UInt16">
             <Value>0</Value>
             <Value>1</Value>
@@ -105,7 +105,7 @@
         </Attribute>
     </UInt16>
     <Float32 name="SD_Sun_zenith">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="units" type="String">
             <Value>radians</Value>
         </Attribute>
@@ -117,7 +117,7 @@
         </Attribute>
     </Float32>
     <Float32 name="SD_Sun_azimuth">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="units" type="String">
             <Value>radians</Value>
         </Attribute>
@@ -129,8 +129,8 @@
         </Attribute>
     </Float32>
     <Float32 name="Moon_Vector">
-        <Dim name="nscans"/>
-        <Dim name="vecdim"/>
+        <Dim name="/nscans"/>
+        <Dim name="/vecdim"/>
         <Attribute name="_FillValue" type="Float32">
             <Value>9.969209968e+36</Value>
         </Attribute>
@@ -139,8 +139,8 @@
         </Attribute>
     </Float32>
     <Int32 name="L1_scan_quality">
-        <Dim name="nscans"/>
-        <Dim name="numqual"/>
+        <Dim name="/nscans"/>
+        <Dim name="/numqual"/>
         <Attribute name="_FillValue" type="Int32">
             <Value>-1</Value>
         </Attribute>
@@ -149,8 +149,8 @@
         </Attribute>
     </Int32>
     <Int32 name="Geo_scan_quality">
-        <Dim name="nscans"/>
-        <Dim name="numqual"/>
+        <Dim name="/nscans"/>
+        <Dim name="/numqual"/>
         <Attribute name="_FillValue" type="Int8">
             <Value>-127</Value>
         </Attribute>
@@ -159,8 +159,8 @@
         </Attribute>
     </Int32>
     <Float64 name="orb_pos">
-        <Dim name="nscans"/>
-        <Dim name="vecdim"/>
+        <Dim name="/nscans"/>
+        <Dim name="/vecdim"/>
         <Attribute name="units" type="String">
             <Value>meters</Value>
         </Attribute>
@@ -176,8 +176,8 @@
         </Attribute>
     </Float64>
     <Float64 name="orb_vel">
-        <Dim name="nscans"/>
-        <Dim name="vecdim"/>
+        <Dim name="/nscans"/>
+        <Dim name="/vecdim"/>
         <Attribute name="units" type="String">
             <Value>meters per second</Value>
         </Attribute>
@@ -193,9 +193,9 @@
         </Attribute>
     </Float64>
     <Float64 name="T_inst2ECR">
-        <Dim name="nscans"/>
-        <Dim name="vecdim"/>
-        <Dim name="vecdim"/>
+        <Dim name="/nscans"/>
+        <Dim name="/vecdim"/>
+        <Dim name="/vecdim"/>
         <Attribute name="valid_range" type="Float64">
             <Value>-1.0000000000000000</Value>
             <Value>1.0000000000000000</Value>
@@ -208,8 +208,8 @@
         </Attribute>
     </Float64>
     <Float64 name="attitude_angles">
-        <Dim name="nscans"/>
-        <Dim name="vecdim"/>
+        <Dim name="/nscans"/>
+        <Dim name="/vecdim"/>
         <Attribute name="units" type="String">
             <Value>radians</Value>
         </Attribute>
@@ -230,8 +230,8 @@
         </Attribute>
     </Float64>
     <Float32 name="sun_ref">
-        <Dim name="nscans"/>
-        <Dim name="vecdim"/>
+        <Dim name="/nscans"/>
+        <Dim name="/vecdim"/>
         <Attribute name="valid_range" type="Float32">
             <Value>-1.000000000</Value>
             <Value>1.000000000</Value>
@@ -244,7 +244,7 @@
         </Attribute>
     </Float32>
     <Byte name="num_impulse">
-        <Dim name="nscans"/>
+        <Dim name="/nscans"/>
         <Attribute name="valid_range" type="Byte">
             <Value>0</Value>
             <Value>25</Value>
@@ -254,8 +254,8 @@
         </Attribute>
     </Byte>
     <Float64 name="impulse_enc">
-        <Dim name="nscans"/>
-        <Dim name="numenc"/>
+        <Dim name="/nscans"/>
+        <Dim name="/numenc"/>
         <Attribute name="units" type="String">
             <Value>encoder pulses</Value>
         </Attribute>
@@ -271,8 +271,8 @@
         </Attribute>
     </Float64>
     <Float64 name="impulse_time">
-        <Dim name="nscans"/>
-        <Dim name="numenc"/>
+        <Dim name="/nscans"/>
+        <Dim name="/numenc"/>
         <Attribute name="units" type="String">
             <Value>seconds</Value>
         </Attribute>
@@ -288,15 +288,15 @@
         </Attribute>
     </Float64>
     <Byte name="Scan_Type">
-        <Dim name="nscans"/>
-        <Dim name="Scan_Type"/>
+        <Dim name="/nscans"/>
+        <Dim name="/Scan_Type"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>2080</Value>
         </Attribute>
     </Byte>
     <Float32 name="thermal_correction">
-        <Dim name="nscans"/>
-        <Dim name="vecdim"/>
+        <Dim name="/nscans"/>
+        <Dim name="/vecdim"/>
         <Attribute name="units" type="String">
             <Value>degrees</Value>
         </Attribute>
@@ -321,8 +321,8 @@
         </Attribute>
     </Float32>
     <UInt32 name="attitude_quality">
-        <Dim name="nscans"/>
-        <Dim name="mframes"/>
+        <Dim name="/nscans"/>
+        <Dim name="/mframes"/>
         <Attribute name="valid_range" type="UInt32">
             <Value>0</Value>
             <Value>20139</Value>
@@ -374,8 +374,8 @@
         </Attribute>
     </UInt32>
     <UInt32 name="ephemeris_quality">
-        <Dim name="nscans"/>
-        <Dim name="mframes"/>
+        <Dim name="/nscans"/>
+        <Dim name="/mframes"/>
         <Attribute name="valid_range" type="UInt32">
             <Value>0</Value>
             <Value>18091</Value>
@@ -427,7 +427,7 @@
         </Attribute>
     </UInt32>
     <Float64 name="Focal_length">
-        <Dim name="numbands"/>
+        <Dim name="/numbands"/>
         <Attribute name="units" type="String">
             <Value>meters</Value>
         </Attribute>
@@ -436,7 +436,7 @@
         </Attribute>
     </Float64>
     <Float64 name="band_position">
-        <Dim name="numbands"/>
+        <Dim name="/numbands"/>
         <Attribute name="units" type="String">
             <Value>frame sample time</Value>
         </Attribute>
@@ -445,7 +445,7 @@
         </Attribute>
     </Float64>
     <Float64 name="detector_space">
-        <Dim name="numbands"/>
+        <Dim name="/numbands"/>
         <Attribute name="units" type="String">
             <Value>meters</Value>
         </Attribute>
@@ -454,8 +454,8 @@
         </Attribute>
     </Float64>
     <Float64 name="detector_offsets">
-        <Dim name="numbands"/>
-        <Dim name="fakeDim11"/>
+        <Dim name="/numbands"/>
+        <Dim name="/fakeDim11"/>
         <Attribute name="units" type="String">
             <Value>meters</Value>
         </Attribute>
@@ -470,7 +470,7 @@
         </Attribute>
     </Float64>
     <Float64 name="T_offset">
-        <Dim name="numbands"/>
+        <Dim name="/numbands"/>
         <Attribute name="units" type="String">
             <Value>frame sample time</Value>
         </Attribute>
@@ -479,7 +479,7 @@
         </Attribute>
     </Float64>
     <UInt16 name="num_samples">
-        <Dim name="numbands"/>
+        <Dim name="/numbands"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>2098</Value>
         </Attribute>
@@ -1170,8 +1170,8 @@ END
     <Group name="MODIS_Swath_Type_GEO">
         <Group name="Geolocation_Fields">
             <Float32 name="Latitude">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -1187,8 +1187,8 @@ END
                 </Attribute>
             </Float32>
             <Float32 name="Longitude">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -1206,8 +1206,8 @@ END
         </Group>
         <Group name="Data_Fields">
             <Int32 name="Scan_Offset">
-                <Dim name="nscans_20_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_2_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_20_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_2_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>km IFOV</Value>
                 </Attribute>
@@ -1226,8 +1226,8 @@ END
                 </Attribute>
             </Int32>
             <Int32 name="Track_Offset">
-                <Dim name="nscans_20_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_2_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_20_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_2_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>km IFOV</Value>
                 </Attribute>
@@ -1246,8 +1246,8 @@ END
                 </Attribute>
             </Int32>
             <Int32 name="Height_Offset">
-                <Dim name="nscans_20_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_2_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_20_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_2_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>km</Value>
                 </Attribute>
@@ -1266,8 +1266,8 @@ END
                 </Attribute>
             </Int32>
             <Int16 name="Height">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>meters</Value>
                 </Attribute>
@@ -1283,8 +1283,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="SensorZenith">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -1303,8 +1303,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="SensorAzimuth">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -1323,8 +1323,8 @@ END
                 </Attribute>
             </Int16>
             <UInt16 name="Range">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>meters</Value>
                 </Attribute>
@@ -1343,8 +1343,8 @@ END
                 </Attribute>
             </UInt16>
             <Int16 name="SolarZenith">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -1363,8 +1363,8 @@ END
                 </Attribute>
             </Int16>
             <Int16 name="SolarAzimuth">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
                     <Value>degrees</Value>
                 </Attribute>
@@ -1383,8 +1383,8 @@ END
                 </Attribute>
             </Int16>
             <Byte name="Land_SeaMask">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="valid_range" type="Byte">
                     <Value>0</Value>
                     <Value>7</Value>
@@ -1397,8 +1397,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="WaterPresent">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="valid_range" type="Byte">
                     <Value>0</Value>
                     <Value>8</Value>
@@ -1411,8 +1411,8 @@ END
                 </Attribute>
             </Byte>
             <Byte name="gflags">
-                <Dim name="nscans_10_MODIS_Swath_Type_GEO"/>
-                <Dim name="mframes_MODIS_Swath_Type_GEO"/>
+                <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
+                <Dim name="/mframes_MODIS_Swath_Type_GEO"/>
                 <Attribute name="_FillValue" type="Byte">
                     <Value>255</Value>
                 </Attribute>
