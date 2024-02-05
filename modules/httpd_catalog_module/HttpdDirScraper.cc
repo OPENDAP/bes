@@ -192,8 +192,8 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 time_t HttpdDirScraper::parse_time_format_A(const vector<string> tokens) const
 {
     // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
-    struct tm tm;
-    zero_tm_struct(tm);
+    struct tm tm{};
+    // jhrg 2/2/24 zero_tm_struct(tm);
 
     if (tokens.size() > 2) {
         std::istringstream(tokens[0]) >> tm.tm_mday;
@@ -232,9 +232,7 @@ time_t HttpdDirScraper::parse_time_format_A(const vector<string> tokens) const
 time_t HttpdDirScraper::parse_time_format_B(const vector<string> tokens) const
 {
     // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
-    struct tm tm;
-    zero_tm_struct(tm);
-
+    struct tm tm{};
     if (tokens.size() > 2) {
         std::istringstream(tokens[0]) >> tm.tm_year;
         tm.tm_year -= 1900;

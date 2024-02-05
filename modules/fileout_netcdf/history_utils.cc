@@ -91,9 +91,9 @@ namespace fonc_history_util {
 string
 get_time_now() {
     time_t raw_now;
-    struct tm *timeinfo;
+    // jhrg 2/2/24 struct tm *timeinfo;
     time(&raw_now); /* get current time; same as: timer = time(NULL)  */
-    timeinfo = localtime(&raw_now);
+    const struct tm *timeinfo = localtime(&raw_now);
 
     char time_str[128];
     strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", timeinfo);

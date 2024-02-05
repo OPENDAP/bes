@@ -252,7 +252,7 @@ bool url::is_expired()
             std::time_t old_now;
             time(&old_now);  /* get current time; same as: timer = time(NULL)  */
             BESDEBUG(MODULE, prolog << "old_now: " << old_now << endl);
-            struct tm ti{0};
+            struct tm ti{};
             gmtime_r(&old_now, &ti);
             ti.tm_year = stoi(year) - 1900;
             ti.tm_mon = stoi(month) - 1;

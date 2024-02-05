@@ -474,7 +474,7 @@ void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf
     // %T = %H:%M:%S
     // %F = %Y-%m-%d
     time_t mod = buf.st_mtime;
-    struct tm stm;
+    struct tm stm{};
     gmtime_r(&mod, &stm);
     char mdate[64];
     strftime(mdate, 64, "%Y-%m-%d", &stm);
