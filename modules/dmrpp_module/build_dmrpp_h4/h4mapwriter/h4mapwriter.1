@@ -1,0 +1,182 @@
+.TH H4MAPWRITER 1 "Feb 2017" "The HDF Group" "h4mapwriter"
+.SH NAME
+h4mapwriter \- The HDF4 File Content Map Writer for archiving and preserving data
+.SH SYNOPSIS
+.ft B
+h4mapwriter [\-cefmnotuV] [\-i TAG-LIST] [\-s checksum] [\-z[1-9]] [\-l LOGFILE] HDF4FILE [XMLFILE]
+.sp 0
+h4mapwriter [\-h[elp]]
+
+.I Long name options:
+.nf
+.B -c --continue-with-unmapped-objects
+.B -e --put-file-attributes-at-the-end
+.B -f --filename-only
+.B -h --help
+.B -i --ignore-tags
+.B -l --error-log-file
+.B -m --merge-sds-file-attributes
+.B -n --no-checksum
+.B -o --odl-prarser
+.B -s --set-checksum
+.B -t --trim-nulls-from-end
+.B -u --uuid-md5
+.B -V --version
+.B -z --compress-output-file
+.fi
+
+.SH DESCRIPTION
+.B h4mapwriter 
+reads an HDF4 file and writes an XML map file. Since it was designed to serve NASA HDF4/HDF-EOS2 data files, it has many limitations listed below:
+
+.SS "No Support for Little Endian"
+HDF4 files that have little-endian data are not supported.
+
+.SS "Only 8-bit Raster Images (with RLE compression)"
+Only 8-bit raster image with optional RLE compression is supported. Other types of raster images are not supported. 
+
+.SS "Only gzip compression for HDF Scientific Data Sets"
+Only gzip compression is supported for HDF Scientific Data Sets. All other compression types like nbit and szip are not supported.
+
+.SS "Only Vgroup, Palette, and SDS Annotations"
+Only Annotation objects on Vgroup, Palette, and SDS are supported.
+
+.SS "Cycles among Vgroups"
+Vgroups with cycles are not supported.
+
+.SH OPTIONS
+\..PD 0
+.TP
+.B \-c --continue-with-unmapped-objects
+Continue to generate an incomplete map by ignoring\n\tall unmapped objects. By default, h4mapwriter checks for unsupported objects and reports errors when it encounters them.
+
+.TP
+.B \-e  --put-file-attributes-at-the-end
+Put all file attributes at the end of map file. 
+
+.TP
+.B \-f  --filename-only
+Include only the filename, not the complete directory path, in the map.
+
+.TP
+.B \-h  --help
+Print the summary of usage, and exit.
+
+
+.TP
+.B \-i TAG-LIST --ignore-tags=TAG-LIST
+Ignore unmapped objects with tags in TAG-LIST and continue to generate an incomplete map file. The TAG-LIST is a sequence of tag numbers separated by comma. If -c option is specified, this option has no effect since the tag list is used by the data descriptor checker module.
+
+.TP
+.B \-l LOGFILE --error-log-file=LOGFILE
+Redirect all stderr messages to the LOGFILE. If LOGFILE exists, it will append error messages.
+
+.TP
+.B \-m --merge-sds-file-attributes
+Merge all SDS file attributes into a single attribute if they have a similar name and end with different suffixes (e.g., StructMetadata.0, StrcutMetadata.1,..., StructMetadata.n).
+
+.TP
+.B \-n --no-checksum
+Do not compute MD5 checksum and do not put any checksum information.
+
+.TP
+.B \-o --odl-parser
+Parse ODL metadata string and write its contents as Group and Attribute in map.
+
+
+.TP
+.B \-s CHECKSUM --set-checksum=CHECKSUM
+Set the checksum value to be CHECKSUM. The writer will insert the CHECKSUM instead of having the writer compute an MD5 checksum.
+
+
+.TP
+.B \-t --trim-nulls-from-end
+Trim NULL characters from the end of the merged SDS file attributes. For 
+example, a string "END\\0\\0\\0" will be shortened as "END". 
+This option has no effect if -m or --merge-sds-file-attributes option is not 
+used.
+
+.TP
+.B \-u --uuid-md5
+Compute md5 and uuid on each byte stream and add them as attributes. XML validation
+will fail if this option is used because schema doesn't have them.
+
+
+.TP
+.B \-V --version
+Print version information.
+
+.TP
+.B \-z[1-9] --compress-output-file[=1-9]
+Compress the generated map file using gzip using the optional level. This option requires an output file name which will be compressed. Regulate  the speed of compression using the specified digit #, where -z1 indicates the fastest compression method (less compression) and -z9 indicates the slowest compression method (best compression).  The default compression level is 6 (that is, biased towards high compression at expense of speed).
+
+
+.SH "EXAMPLES"
+
+Generate a map file for test.hdf on UNIX stdout.
+
+.na 
+   h4mapwriter test.hdf
+
+Merge and trim SDS file attributes and generate map file called test.xml.
+        
+.na 
+   h4mapwriter -tm test.hdf test.xml
+
+Redirect warning/error message into a test.log file and put file attributes
+at the end of the map file.
+
+.na 
+   h4mapwriter -el test.log test.hdf
+
+
+Ignore TAG number 15 and 107, merge/trim/put the file attributes at the end, and compress the map file with level 9.
+
+.na 
+   h4mapwriter -emt -i15,107 -z9 test.hdf test.xml
+
+.fi
+
+.SH DOCUMENTATION
+
+Additional h4mapwriter documentation is available at
+
+.na
+http://support.hdfgroup.org/projects/h4map/
+
+
+.SH VENDOR
+The HDF Group
+.sp 0
+1800 South Oak Street, Suite 203
+.sp 0
+Champaign, IL 61820
+.sp 0
+USA 
+.sp 0
+www.hdfgroup.org
+
+.SH VERSION
+1.0.8
+.SH LICENSE & SOURCE AVAILABILITY
+Copyright (C) 2010-2017 by The HDF Group.
+
+All rights reserved.
+
+This file is part of HDF.  The full HDF copyright notice, including
+terms governing use, modification, and redistribution, is contained in
+the files COPYING and Copyright.html.  COPYING can be found at the root
+of the source code distribution tree; Copyright.html can be found at
+.sp 0
+http://www.hdfgroup.org/ftp/HDF/HDF_Current/src/unpacked/COPYING. 
+If you do not have access to either file, you may request a copy from 
+.sp 0
+help@hdfgroup.org.
+
+.SH CONTACT & HELP
+The HDF Group
+.sp 0
+Email: help@hdfgroup.org
+
+.PD
+

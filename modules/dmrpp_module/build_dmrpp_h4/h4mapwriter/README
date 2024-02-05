@@ -1,0 +1,62 @@
+Copyright (C) 2010-2014 The HDF Group
+
+  This file contains a few notes about the HDF4 File Content Map Writer
+ (h4mapwriter).
+
+  h4mapwriter is a utility that creates an HDF4 file content map for a given 
+HDF4 file. An HDF4 file content map is an XML document that describes the file
+ structure, file metadata, and offset/length of raw data in an HDF4 file. The 
+map can be used to retrieve data from an HDF4 file without relying on the HDF4 
+library.
+
+
+Header files
+    hmap.h     -- the header file that combines all other header files.
+    h4.h       -- the header file for reading data info.
+    xml.h      -- the header file for writing XML elements. 
+    xml_sds.h  -- the header file for writing XML elements for SDS objects.
+    xml_vg.h   -- the header file for writing XML elements for Vgroup objects.
+
+
+Source files
+    hmap.c       -- the main program for h4mapwriter.
+    h4.c         -- the functions that check unmappable objects.
+    h4_pal.c     -- the functions that read mapping information for Palettes.
+    h4_ris.c     -- the functions that read mapping information for Rasters.
+    h4_sds.c     -- the functions that read mapping information for SDS.
+    h4_vdata.c   -- the functions that read mapping information for Vdata.
+    xml_an.c     -- the functions that write information for Annotation.
+    xml_hmap.c   -- the common utility functions for writing map.
+    xml_pal.c    -- the functions that write information for Palettes.
+    xml_ris.c    -- the functions that write information for Rasters.
+    xml_sds.c    -- the functions that write information for SDS.
+    xml_vdata.c  -- the functions that write information for Vdata.
+    xml_vg.c     -- the functions that write information for Vgroup.
+
+Build Instruction
+  To compile the source codes, you will need to install the HDF4 library.
+  Change CC path in Makefile so that it can point to h4cc (e.g., 
+  CC=/usr/local/hdf4/bin/h4cc).
+
+  See the file INSTALL for full installation instructions.
+
+Usage
+   %h4mapwriter
+   %h4mapwriter -h[elp] for help, OR
+   %h4mapwriter [-cefmntV] [-i TAG-LIST] [-s md5] [-z[1-9]] [-lLOG] HDF4 [XML]]
+
+  For example, run "h4mapwriter test.hdf test.hdf.map.xml"
+  See also man(1) page of h4mapwriter after installation.
+
+Limitations
+    o For compressed SDS datasets, it handles gzip compression only.
+    o It cannot handle Vdata with column storage order.
+    o It cannot handle little-endian data types.
+    o It cannot handle dataset that uses external file.
+    o It cannot handle raster images other than 8-bit with RLE compression.
+    o It cannot handle object annotations other than GR / SDS / Palette 
+      object annotation.
+    o It cannot handle some NASA OCTS Level 3 product that involves palettes.
+
+Bugs
+  Please report bugs at help@hdfgroup.org.
