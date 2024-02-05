@@ -1578,10 +1578,9 @@ bool HDF4RequestHandler::hdf4_build_direct_dmr(BESDataHandlerInterface & dhi) {
     dmr->set_factory(&MyD4TypeFactory);
 
 
-    BESDEBUG("h4", "build_direct_dmr - before root_grp"<< endl);
-    //D4Group* root_grp = dmr->root();
+    BESDEBUG("h4", "build_direct_dmr - begin"<< endl);
     read_dmr(dmr, filename);
-    BESDEBUG("h4", "build_direct_dmr - after root_grp"<< endl);
+    BESDEBUG("h4", "build_direct_dmr - end"<< endl);
 
     bes_dmr_response.set_dap4_constraint(dhi);
     bes_dmr_response.set_dap4_function(dhi);
