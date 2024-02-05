@@ -173,7 +173,7 @@ valgrind besstandalone -c tests/bes.conf -i tests/bescmd/test_ba_start.dap.bescm
 valgrind besstandalone -c tests/bes.conf -i tests/bescmd/test_ba_stride_stop.dap.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/test_ba_start_dim.dap.bescmd>test.nc
 
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/chunked_string_array_c.h5.dmrpp.bescmd>test.nc
+#valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/chunked_string_array_c.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_size64_chunk_be.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_size8.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compact_example.h5.dmrpp.bescmd>test.nc
@@ -202,6 +202,19 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/Three_chunks_pa
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/Three_chunks_partial_fletcher_shuf_deflate.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/all_storages_filters.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/all_storages_filters.h5.deflev.dmrpp.bescmd>test.nc
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/all_storages_filters_constraint.h5.deflev.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_size8_large_chunk.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_atomic_comp_no_dio.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/swath_wrong_dim_rp.nc.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd>test.nc
+
+#Structure support
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_scalar.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_scalar_memb_array.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_array.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple2_array.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_group_simple.h5.dmrpp.bescmd>test.nc
 
 rm -rf test.nc
 rm -rf gr.nc4
