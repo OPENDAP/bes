@@ -163,6 +163,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         // Decode the AWS XML error message. In some cases this will fail because pub keys,
         // which maybe in this error text, may have < or > chars in them. the XML parser
         // will be sad if that happens. jhrg 12/30/19
+        // TODO This try/catch/catch is not needed. BESError now inherits from std::exception
+        //  and turning the execption into a SyntaxUerError is not needed. jhrg 2/5/24
         try {
             process_s3_error_response(data_url, xml_message);   // throws a BESError
         }
@@ -187,6 +189,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     unsigned long long bytes_read = chunk->get_bytes_read();
 
     // If this fails, the code will write beyond the buffer.
+    // TODO This apparently happens - we need to figure out why. jhrg 2/5/24
     if (bytes_read + nbytes > chunk->get_rbuf_size()) {
         stringstream msg;
         msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: "
@@ -413,6 +416,8 @@ void unshuffle(char *dest, const char *src, unsigned long long src_size, unsigne
 /// test, run time for parse_chunk_position_in_array_string() dropped from
 /// 20ms to ~3ms). It also fixes a test we could never get to pass.
 /// jhrg 11/5/21
+// TODO I think this takes a list of things separated by commas and returns
+//  a vector of those things. Update the comment, write tests, etc. jhrg 2/5/24
 static void split_by_comma(const string &s, vector<unsigned long long> &res)
 {
     const string delimiter = ",";
@@ -428,6 +433,7 @@ static void split_by_comma(const string &s, vector<unsigned long long> &res)
     res.push_back (stoull(s.substr (pos_start)));
 }
 
+// TODO Called only once; move into the method below. jhrg 2/5/24
 void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsigned long long> &cpia_vect)
 {
     if (pia.empty()) return;
@@ -495,6 +501,9 @@ string Chunk::get_curl_range_arg_string() {
     return curl::get_range_arg_string(d_offset, d_size);
 }
 
+// TODO This should be re-written so it's less costly or removed.  For example,
+//  make it a compile-time option using ENABLE_TRACKING_QUERY_PARAMETER. See
+//  the use of that #define below. jhrg 2/5/24
 /**
  * @brief Modify this chunk's data URL so that it includes tracking info
  *
@@ -635,6 +644,10 @@ checksum_fletcher32(const void *_data, size_t _len)
     return ((sum2 << 16) | sum1);
 } /* end checksum_fletcher32() */
 
+// TODO This comment was likely written _before_ the code was modified to support
+//  chucks that can be 'inflated' more than once. The comment should be updated. jhrg 2/5/24
+// TODO I think this would be easier to follow if the three filters (deflate, shuffle, and fletcher32)
+//  were handled in separate functions. (NB: 'deflate' is really 'inflate.') jhrg 2/5/24
 /**
  * @brief filter data in the chunk
  *
@@ -650,13 +663,15 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     if (d_is_inflated)
         return;
 
+    // TODO This seems odd - that chunk size here is the number of elements and not the
+    //  number of bytes. jhrg 2/5/24
     chunk_size *= elem_width;
 
     vector<string> filter_array = BESUtil::split(filters, ' ' );
 
     // We need to check if the filters that include the deflate filters are contiguous.
     // That is: the filters must be something like "deflate deflate deflate" instead of "deflate other_filter deflate"
-
+    // TODO This can be it's own function. jhrg 2/5/24
     bool is_1st_deflate = true;
     unsigned cur_deflate_index = 0;
     unsigned num_deflate = 0;
@@ -827,6 +842,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     d_is_inflated = true;
 }
 
+// TODO This should be replaced by code from libdap. jhrg 2/5/24
 static unsigned int get_value_size(libdap::Type type) 
 {
     switch(type) {
@@ -866,6 +882,9 @@ static unsigned int get_value_size(libdap::Type type)
     }
 }
 
+// TODO Add a comment explaining what this does. jhrg 2/5/24
+// TODO I think it converts the string to a value and returns a pointer to that value.
+//  The pointer will be valid as long as the fill_value 'fv' is in scope. jhrg 2/5/24
 const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v)
 {
     switch(type) {
@@ -936,6 +955,9 @@ void Chunk::load_fill_values() {
 
     char *buffer = get_rbuf();
 
+    // TODO This is an inefficient way to fill a buffer with a value.
+    //  memset() will work for signed integers, std::fill is a general solution,\.
+    //  jhrg 2/5/24
     for (unsigned long long  i = 0; i < num_values; ++i, buffer += value_size) {
         memcpy(buffer, value, value_size);
     }
@@ -965,6 +987,10 @@ void Chunk::read_chunk() {
         load_fill_values();
     }
     else {
+        // TODO The code no longer needs to test if the 'pool has been exhausted' since these
+        //  are now just CURL handles from the library. The 'pool' is handled by libcurl and is
+        //  not limited. If some aspect of the handle cannot be initialized, that is detected
+        //  by get_easy_handle() which then throws. jhrg 2/5/24
         dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
         if (!handle)
             throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
@@ -995,7 +1021,8 @@ void Chunk::read_chunk() {
     d_is_read = true;
 }
 
-// direct IO method that reads chunks.
+// TODO This is exactly the same as the preceding method _except_ for the fill value
+//  code. It should be refactored so that the fill value code is in a separate method. jhrg 2/5/24
 void Chunk::read_chunk_dio() {
 
     // Read chunk for dio - use read_chunk() as a reference.
@@ -1070,6 +1097,7 @@ string Chunk::to_string() const {
     return oss.str();
 }
 
+// TODO move this above dump(). jhrg 2/5/24
 std::shared_ptr<http::url> Chunk::get_data_url() const {
 
     // The d_data_url may be nullptr(fillvalue case). 
