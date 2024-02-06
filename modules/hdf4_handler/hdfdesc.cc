@@ -114,6 +114,7 @@
 
 // HDF datatype headers for both the default and the CF options
 #include "HDFByte.h"
+#include "HDFInt8.h"
 #include "HDFInt16.h"
 #include "HDFUInt16.h"
 #include "HDFInt32.h"
@@ -5089,18 +5090,12 @@ BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filen
     BaseType * ret_bt = nullptr;
     switch (h4_type) {
 
-    //case DFNT_UCHAR8:
-    //case DFNT_UCHAR:
 
     case DFNT_INT16:
     case DFNT_NINT16:
         ret_bt = new HDFInt16(h4_str,filename);
         break;
 
-#ifdef SIGNED_BYTE_TO_INT32
-    case DFNT_INT8:
-    case DFNT_NINT8:
-#endif
     case DFNT_NINT32:
     case DFNT_INT32:
         ret_bt = new HDFInt32(h4_str,filename);
@@ -5124,14 +5119,15 @@ BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filen
         ret_bt = new HDFFloat64(h4_str,filename);
         break;
 
-#ifndef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
     case DFNT_NINT8:
-#endif
+    case DFNT_CHAR8:
+        ret_bt = new HDFInt8(h4_str,filename);
+        break;
+
     case DFNT_UINT8:
     case DFNT_NUINT8:
     case DFNT_UCHAR8:
-    case DFNT_CHAR8:
         ret_bt = new HDFByte(h4_str,filename);
         break;
 
@@ -5163,11 +5159,6 @@ D4AttributeType h4type_to_dap4_attrtype(int32 h4_type) {
         dap4_attr_type = attr_int32_c;
         break;
 
-    case DFNT_NINT64:
-    case DFNT_INT64:
-        dap4_attr_type = attr_int64_c;
-        break;
-
     case DFNT_UINT16:
     case DFNT_NUINT16:
         dap4_attr_type = attr_uint16_c;
@@ -5176,11 +5167,6 @@ D4AttributeType h4type_to_dap4_attrtype(int32 h4_type) {
     case DFNT_NUINT32:
     case DFNT_UINT32:
         dap4_attr_type = attr_uint32_c;
-        break;
-
-    case DFNT_NUINT64:
-    case DFNT_UINT64:
-        dap4_attr_type = attr_uint64_c;
         break;
 
     case DFNT_FLOAT32:
@@ -5218,8 +5204,6 @@ print_dap4_attr(int32 type, int loc, void *vals)
         unsigned short *usp;
         int32 /*nclong*/ *lp;
         unsigned int *ui;
-        int64_t *llp;
-        uint64_t * ullp;
         float *fp;
         double *dp;
     } gp;
@@ -5285,22 +5269,6 @@ print_dap4_attr(int32 type, int loc, void *vals)
         {
             gp.ui = (unsigned int *) vals;
             rep << *(gp.ui+loc);
-            return rep.str();
-        }
-
-    case DFNT_UINT64:
-    case DFNT_NUINT64:
-        {
-            gp.ullp = (uint64_t *) vals;
-            rep << *(gp.ullp+loc);
-            return rep.str();
-        }
-
-    case DFNT_INT64:
-    case DFNT_NINT64:
-        {
-            gp.llp = (int64_t *) vals;
-            rep << *(gp.llp+loc);
             return rep.str();
         }
 

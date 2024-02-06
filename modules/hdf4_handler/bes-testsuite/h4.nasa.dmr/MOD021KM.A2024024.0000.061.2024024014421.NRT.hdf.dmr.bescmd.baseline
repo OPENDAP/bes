@@ -70,38 +70,38 @@
             <Value>15663</Value>
         </Attribute>
     </Byte>
-    <Int32 name="DC_Restore_Change_for_Thermal_Bands">
+    <Int8 name="DC_Restore_Change_for_Thermal_Bands">
         <Dim name="/number_of_scans"/>
         <Dim name="/number_of_emissive_bands"/>
         <Dim name="/detectors_per_1km_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15665</Value>
         </Attribute>
-    </Int32>
-    <Int32 name="DC_Restore_Change_for_Reflective_250m_Bands">
+    </Int8>
+    <Int8 name="DC_Restore_Change_for_Reflective_250m_Bands">
         <Dim name="/number_of_scans"/>
         <Dim name="/number_of_250m_bands"/>
         <Dim name="/detectors_per_250m_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15667</Value>
         </Attribute>
-    </Int32>
-    <Int32 name="DC_Restore_Change_for_Reflective_500m_Bands">
+    </Int8>
+    <Int8 name="DC_Restore_Change_for_Reflective_500m_Bands">
         <Dim name="/number_of_scans"/>
         <Dim name="/number_of_500m_bands"/>
         <Dim name="/detectors_per_500m_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15669</Value>
         </Attribute>
-    </Int32>
-    <Int32 name="DC_Restore_Change_for_Reflective_1km_Bands">
+    </Int8>
+    <Int8 name="DC_Restore_Change_for_Reflective_1km_Bands">
         <Dim name="/number_of_scans"/>
         <Dim name="/number_of_1km_reflective_bands"/>
         <Dim name="/detectors_per_1km_band"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>15671</Value>
         </Attribute>
-    </Int32>
+    </Int8>
     <Attribute name="HDFEOSVersion" type="String">
         <Value>HDFEOS_V2.19</Value>
     </Attribute>
@@ -9853,7 +9853,7 @@ END
                     <Value>13109</Value>
                 </Attribute>
             </Byte>
-            <Int32 name="EV_250_Aggr1km_RefSB_Samples_Used">
+            <Int8 name="EV_250_Aggr1km_RefSB_Samples_Used">
                 <Dim name="/Band_250M_MODIS_SWATH_Type_L1B"/>
                 <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
                 <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
@@ -9873,7 +9873,7 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>13517</Value>
                 </Attribute>
-            </Int32>
+            </Int8>
             <UInt16 name="EV_500_Aggr1km_RefSB">
                 <Dim name="/Band_500M_MODIS_SWATH_Type_L1B"/>
                 <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
@@ -9987,7 +9987,7 @@ END
                     <Value>14538</Value>
                 </Attribute>
             </Byte>
-            <Int32 name="EV_500_Aggr1km_RefSB_Samples_Used">
+            <Int8 name="EV_500_Aggr1km_RefSB_Samples_Used">
                 <Dim name="/Band_500M_MODIS_SWATH_Type_L1B"/>
                 <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
                 <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
@@ -10007,7 +10007,7 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>15558</Value>
                 </Attribute>
-            </Int32>
+            </Int8>
             <Int16 name="Height">
                 <Dim name="/_2_nscans_MODIS_SWATH_Type_L1B"/>
                 <Dim name="/_1KM_geo_dim_MODIS_SWATH_Type_L1B"/>

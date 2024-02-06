@@ -34,12 +34,12 @@
             <Value>8</Value>
         </Attribute>
     </UInt16>
-    <Int32 name="SDS_DFNT_INT8">
+    <Int8 name="SDS_DFNT_INT8">
         <Dim name="/fakeDim4"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>10</Value>
         </Attribute>
-    </Int32>
+    </Int8>
     <Byte name="SDS_DFNT_UINT8">
         <Dim name="/fakeDim5"/>
         <Attribute name="dmr_sds_ref" type="Int32">
@@ -58,12 +58,12 @@
             <Value>16</Value>
         </Attribute>
     </Float64>
-    <Byte name="SDS_DFNT_CHAR8">
+    <Int8 name="SDS_DFNT_CHAR8">
         <Dim name="/fakeDim8"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>18</Value>
         </Attribute>
-    </Byte>
+    </Int8>
     <Byte name="SDS_DFNT_UCHAR8">
         <Dim name="/fakeDim9"/>
         <Attribute name="dmr_sds_ref" type="Int32">

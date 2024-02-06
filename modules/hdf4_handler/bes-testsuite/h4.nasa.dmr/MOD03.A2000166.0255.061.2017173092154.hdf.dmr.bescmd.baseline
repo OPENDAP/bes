@@ -148,7 +148,7 @@
             <Value>2060</Value>
         </Attribute>
     </Int32>
-    <Int32 name="Geo_scan_quality">
+    <Int8 name="Geo_scan_quality">
         <Dim name="/nscans"/>
         <Dim name="/numqual"/>
         <Attribute name="_FillValue" type="Int8">
@@ -157,7 +157,7 @@
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>2062</Value>
         </Attribute>
-    </Int32>
+    </Int8>
     <Float64 name="orb_pos">
         <Dim name="/nscans"/>
         <Dim name="/vecdim"/>
@@ -287,13 +287,13 @@
             <Value>2078</Value>
         </Attribute>
     </Float64>
-    <Byte name="Scan_Type">
+    <Int8 name="Scan_Type">
         <Dim name="/nscans"/>
         <Dim name="/Scan_Type"/>
         <Attribute name="dmr_sds_ref" type="Int32">
             <Value>2080</Value>
         </Attribute>
-    </Byte>
+    </Int8>
     <Float32 name="thermal_correction">
         <Dim name="/nscans"/>
         <Dim name="/vecdim"/>
@@ -1205,7 +1205,7 @@ END
             </Float32>
         </Group>
         <Group name="Data_Fields">
-            <Int32 name="Scan_Offset">
+            <Int8 name="Scan_Offset">
                 <Dim name="/nscans_20_MODIS_Swath_Type_GEO"/>
                 <Dim name="/mframes_2_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
@@ -1224,8 +1224,8 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>408</Value>
                 </Attribute>
-            </Int32>
-            <Int32 name="Track_Offset">
+            </Int8>
+            <Int8 name="Track_Offset">
                 <Dim name="/nscans_20_MODIS_Swath_Type_GEO"/>
                 <Dim name="/mframes_2_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
@@ -1244,8 +1244,8 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>410</Value>
                 </Attribute>
-            </Int32>
-            <Int32 name="Height_Offset">
+            </Int8>
+            <Int8 name="Height_Offset">
                 <Dim name="/nscans_20_MODIS_Swath_Type_GEO"/>
                 <Dim name="/mframes_2_MODIS_Swath_Type_GEO"/>
                 <Attribute name="units" type="String">
@@ -1264,7 +1264,7 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>412</Value>
                 </Attribute>
-            </Int32>
+            </Int8>
             <Int16 name="Height">
                 <Dim name="/nscans_10_MODIS_Swath_Type_GEO"/>
                 <Dim name="/mframes_MODIS_Swath_Type_GEO"/>

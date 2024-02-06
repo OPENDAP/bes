@@ -1955,7 +1955,7 @@ END
                     <Value>15</Value>
                 </Attribute>
             </Int16>
-            <Int32 name="_250m_16_days_pixel_reliability">
+            <Int8 name="_250m_16_days_pixel_reliability">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
                 <Attribute name="long_name" type="String">
@@ -1984,7 +1984,7 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>16</Value>
                 </Attribute>
-            </Int32>
+            </Int8>
         </Group>
         <Group name="Grid_Attributes"/>
     </Group>
