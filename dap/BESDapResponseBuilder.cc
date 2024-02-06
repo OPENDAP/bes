@@ -1473,8 +1473,9 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     // chunk. (+2 for the CRLF bytes).
     auto doc_size= xml.get_doc_size() + 2;
     BESDEBUG("first_chunk", prolog << "dmr: " << doc_size << " bytes\n");
-    
-    chunked_ostream cos(out, max((unsigned int) CHUNK_SIZE, doc_size));
+    auto buff_size =  max((unsigned int) CHUNK_SIZE, doc_size);
+    BESDEBUG("first_chunk", prolog << "buff_size: " << buff_size << " bytes\n");
+    chunked_ostream cos(out, buff_size);
 
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
     RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
