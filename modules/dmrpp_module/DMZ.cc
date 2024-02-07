@@ -1348,28 +1348,29 @@ void DMZ::load_all_attributes(libdap::DMR *dmr)
  * @param compact The location in the DMR++ of the Base64 encoded values
  */
 void
-DMZ::process_compact(BaseType *btp, const xml_node &compact)
-{
+DMZ::process_compact(BaseType *btp, const xml_node &compact) {
     dc(btp)->set_compact(true);
 
     auto char_data = compact.child_value();
     if (!char_data)
-        throw BESInternalError("The dmrpp::compact is missing data values.",__FILE__,__LINE__);
+        throw BESInternalError("The dmrpp::compact is missing data values.", __FILE__, __LINE__);
 
-    std::vector <u_int8_t> decoded = base64::Base64::decode(char_data);
+    std::vector<u_int8_t> decoded = base64::Base64::decode(char_data);
 
     // Current not support structure, sequence and grid for compact storage.
-    if (btp->type()== dods_structure_c || btp->type() == dods_sequence_c || btp->type() == dods_grid_c) 
-        throw BESInternalError("The dmrpp::compact element must be the child of an array or a scalar variable", __FILE__, __LINE__);
+    if (btp->type() == dods_structure_c || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
+        throw BESInternalError("The dmrpp::compact element must be the child of an array or a scalar variable",
+                               __FILE__, __LINE__);
 
     // Obtain the datatype for array and scalar.
-    Type dtype =btp->type();
+    Type dtype = btp->type();
     if (dtype == dods_array_c)
         dtype = btp->var()->type();
 
     switch (dtype) {
         case dods_array_c:
-            throw BESInternalError("DMR++ document fail: An Array may not be the template for an Array.", __FILE__, __LINE__);
+            throw BESInternalError("DMR++ document fail: An Array may not be the template for an Array.", __FILE__,
+                                   __LINE__);
 
         case dods_byte_c:
         case dods_char_c:
@@ -1392,21 +1393,20 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
         case dods_str_c:
         case dods_url_c: {
-         
             std::string str(decoded.begin(), decoded.end());
             if (btp->type() == dods_array_c) {
                 auto *array = dynamic_cast<DmrppArray *>(btp);
-                if(!array){
-                    throw BESInternalError("Internal state error. Object claims to be array but is not.",__FILE__,__LINE__);
+                if (!array) {
+                    throw BESInternalError("Object claims to be array but is not.", __FILE__, __LINE__);
                 }
-                if(array->is_flsa()){
+                if (array->is_flsa()) {
                     // It's an array of Fixed Length Strings
                     auto fls_length = array->get_fixed_string_length();
                     auto pad_type = array->get_fixed_length_string_pad();
                     auto str_start = reinterpret_cast<char *>(decoded.data());
                     vector<string> fls_values;
-                    while(fls_values.size() < btp->length_ll()){
-                        string aValue = DmrppArray::ingest_fixed_length_string(str_start,fls_length, pad_type);
+                    while (fls_values.size() < btp->length_ll()) {
+                        string aValue = DmrppArray::ingest_fixed_length_string(str_start, fls_length, pad_type);
                         fls_values.emplace_back(aValue);
                         str_start += fls_length;
                     }
@@ -1415,11 +1415,11 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
                 }
                 else {
                     // It's an array of Variable Length Strings
-                    throw BESInternalError("Variable Length Strings are not yet supported.",__FILE__,__LINE__);
+                    throw BESInternalError("Variable Length Strings are not yet supported.", __FILE__, __LINE__);
                 }
             }
             else {// Scalar
-                if(btp->type() == dods_str_c) {
+                if (btp->type() == dods_str_c) {
                     auto *st = static_cast<DmrppStr *>(btp);
                     st->val2buf(&str);
                     st->set_read_p(true);
@@ -1429,13 +1429,10 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
                     st->val2buf(&str);
                     st->set_read_p(true);
                 }
-                
             }
             break;
         }
 
-        default:
-            throw BESInternalError("Unsupported COMPACT storage variable type in the drmpp handler.", __FILE__, __LINE__);
         case dods_null_c:
             break;
         case dods_structure_c:
@@ -1448,10 +1445,11 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
             break;
         case dods_group_c:
             break;
+
+        default:
+            throw BESInternalError("Unsupported COMPACT storage type in the drmpp handler.", __FILE__, __LINE__);
     }
 }
-
-
 
 void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element)
 {

@@ -56,17 +56,18 @@ class SuperChunk {
 
     bool d_uses_fill_value{false};
 
-    bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk);
+    bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk) const;
     void map_chunks_to_buffer();
     void read_aggregate_bytes();
     void read_fill_value_chunk();
 
 public:
     // TODO Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
-    explicit SuperChunk(const std::string sc_id, DmrppArray *parent=nullptr):
-    d_id(sc_id), d_parent_array(parent), d_data_url(nullptr), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
+    explicit SuperChunk(const std::string sc_id, DmrppArray *parent = nullptr) :
+            d_id(sc_id), d_parent_array(parent), d_data_url(nullptr), d_offset(0), d_size(0), d_is_read(false),
+            d_read_buffer(nullptr) {}
 
-    virtual ~SuperChunk(){
+    virtual ~SuperChunk() {
         delete[] d_read_buffer;
     }
 
@@ -100,6 +101,9 @@ public:
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;
 };
+
+// TODO If we keep parallel transfers, these can still be removed since futures can take
+//  arg lists. jhrg 2/5/24
 
 /**
  * @brief Single argument structure for a thread that will process a single Chunk for a constrained array.

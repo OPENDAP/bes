@@ -83,7 +83,7 @@ dnl it's actually used - not all the source files include config.h. jhrg 1/30/23
 
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
-    [cxx_debug_flags="-g3 -Og -Wall"
+    [cxx_debug_flags="-g3 -O0 -Wall"
       AC_MSG_NOTICE([Developer Mode is enabled.]) ],
     [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
       AC_MSG_NOTICE([Developer Mode is disabled.])])

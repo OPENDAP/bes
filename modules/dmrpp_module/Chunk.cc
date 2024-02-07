@@ -816,7 +816,13 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 throw BESInternalError("fletcher32 filter: buffer size is less than the size of the checksum", __FILE__, __LINE__);
             }
 
+#if 0
+            // This can result in misaligned data. jhrg 2/7/24
             auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
+#endif
+            // Extract the last four bytes to find the checksum for the data.
+            uint32_t f_checksum;
+            memcpy(&f_checksum, get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM, FLETCHER32_CHECKSUM);
 
             // If the code should actually use the checksum (they can be expensive to compute), does it match
             // with once computed on the data actually read? Maybe make this a bes.conf parameter?

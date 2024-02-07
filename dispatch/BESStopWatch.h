@@ -46,6 +46,12 @@
 static const std::string TIMING_LOG_KEY = "timing";
 static const std::string MISSING_LOG_PARAM;
 
+#ifndef NDEBUG
+#define TIMER(log_key, what_is_timed) do {BESStopWatch sw(log_key); sw.start(what_is_timed);} while(0)
+#else
+#define TIMER(log_key, what_is_timed)
+#endif
+
 class BESStopWatch;
 
 namespace bes_timing {

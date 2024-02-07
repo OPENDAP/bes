@@ -53,8 +53,7 @@ DmrppStr::operator=(const DmrppStr &rhs)
 }
 
 bool
-DmrppStr::read()
-{
+DmrppStr::read() {
     if (!get_chunks_loaded())
         load_chunks(this);
 
@@ -70,20 +69,29 @@ DmrppStr::read()
 
     auto chunk = get_immutable_chunks()[0];
     chunk->read_chunk();
-    auto chunk_size= chunk->get_size();
-    char *data = chunk->get_rbuf();
+    auto chunk_size = chunk->get_size();
+    const char *data = chunk->get_rbuf();
 
     // It is possible that the string data is not null terminated and/or
     // Does not span the full width of the chunk.
     // This should correct those issues.
-    unsigned long long str_len=0;
+    unsigned long long str_len = 0;
+    // Find the length of the string. jhrg 2/7/24
+#if 0
     bool done = false;
-    while(!done){
+    while (!done) {
         done = (data[str_len] == 0) || (str_len >= chunk_size);
-        if(!done) str_len++;
+        if (!done) str_len++;
     }
-    string value(data,str_len);
+#endif
+    while (str_len < chunk_size && data[str_len] != 0) {
+        str_len++;
+    }
+#if 0
+    string value(data, str_len);
     set_value(value);   // sets read_p too
+#endif
+    set_value(string{data, str_len});   // sets read_p too
     return true;
 }
 
