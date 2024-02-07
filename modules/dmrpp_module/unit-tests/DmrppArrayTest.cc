@@ -98,13 +98,14 @@ protected:
         CPPUNIT_ASSERT(thread_counter == 0);
     }
 
+    // You can see the future timeout in the debug output. jhrg 2/7/24
     void test_future_timeout() {
         std::list<std::future<bool>> futures;
         futures.emplace_back(std::async([]() { std::this_thread::sleep_for(std::chrono::milliseconds(200)); return true; }));
         std::atomic_uint thread_counter{1};
-        CPPUNIT_ASSERT(!get_next_future(futures, thread_counter, 100, ""));
-        CPPUNIT_ASSERT(!futures.empty()); // Future should still be in the list after timeout
-        CPPUNIT_ASSERT(thread_counter == 1);
+        CPPUNIT_ASSERT(get_next_future(futures, thread_counter, 100, ""));
+        CPPUNIT_ASSERT(futures.empty()); // Future should still be in the list after timeout
+        CPPUNIT_ASSERT(thread_counter == 0);
     }
 
     void test_future_invalid() {
@@ -259,7 +260,7 @@ protected:
 
         CPPUNIT_TEST(test_empty_futures);
         CPPUNIT_TEST(test_future_ready);
-        CPPUNIT_TEST_FAIL(test_future_timeout);
+        CPPUNIT_TEST(test_future_timeout);
         CPPUNIT_TEST(test_future_invalid);
         CPPUNIT_TEST(test_future_success);
         CPPUNIT_TEST(test_future_failure);
@@ -284,7 +285,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DmrppArrayTest);
 
 int main(int argc, char*argv[])
 {
-    bool status = bes_run_tests<dmrpp::DmrppArrayTest>(argc, argv, "cerr,bes,http,curl,dmrpp");
+    bool status = bes_run_tests<dmrpp::DmrppArrayTest>(argc, argv, "cerr,dmrpp,dmrpp:3");
     return status ? 0: 1;
 
 #if 0

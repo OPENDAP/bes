@@ -77,6 +77,11 @@ std::mutex transfer_thread_pool_mtx;     // mutex for critical section
 //atomic_ullong transfer_thread_counter(0);
 atomic_uint transfer_thread_counter(0);
 
+// TODO Fix this comment. It seems like this scans the list of futures for a ready future and
+//  returns true when it find one and if they all time out, it returns false. But that's not what it does.
+//  It scans the list of futures until one is found that is ready and returns true when that is found.
+//  But if one is found that is not valid, it returns false for that.
+//  Simplify this. jhrg 2/7/24
 /**
  * @brief Uses future::wait_for() to scan the futures for a ready future, returning true when once get() has been called.
  *
@@ -664,7 +669,7 @@ get_index(const vector<unsigned long long> &address, const vector<unsigned long 
     if (*index >= *shape_index) {
         throw BESInternalError("get_index: index >= shape_index", __FILE__, __LINE__);
     }
-    
+
     unsigned long long multiplier_var = *shape_index++;
     unsigned long long offset = *index++;
 
