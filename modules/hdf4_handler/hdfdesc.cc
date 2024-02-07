@@ -5058,6 +5058,7 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
             arf->append_dim_ll(vdata_field_order);
             structure_ptr->add_var(arf);
             delete bt; 
+            delete arf;
         }
     }
 
@@ -5070,8 +5071,10 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
         if (nattrs >0)
             map_vdata_to_dap4_attrs(ar,vdata_id,obj_ref,nattrs);
         ar->set_is_dap4(true);
-        d4g->add_var_nocopy(ar);
+        d4g->add_var(ar);
 
+    delete structure_ptr;
+    delete ar;
 }
 
 void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref, int32 nattrs) {
