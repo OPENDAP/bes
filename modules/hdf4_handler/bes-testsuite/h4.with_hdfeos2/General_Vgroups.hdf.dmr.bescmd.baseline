@@ -5,13 +5,22 @@
             <Float32 name="PX"/>
             <Float32 name="PY"/>
             <Dim size="30"/>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>3</Value>
+            </Attribute>
         </Structure>
         <Float32 name="Temperature_TMP">
             <Dim size="30"/>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>4</Value>
+            </Attribute>
         </Float32>
         <Int16 name="Node_List_PLIST">
             <Dim size="30"/>
             <Dim size="3"/>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>5</Value>
+            </Attribute>
         </Int16>
     </Group>
 </Dataset>

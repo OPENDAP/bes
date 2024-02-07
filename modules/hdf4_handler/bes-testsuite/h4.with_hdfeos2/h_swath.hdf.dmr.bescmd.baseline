@@ -71,12 +71,21 @@ END
         <Group name="Geolocation_Fields">
             <Float32 name="pressure">
                 <Dim size="4"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>6</Value>
+                </Attribute>
             </Float32>
             <Float32 name="Latitude">
                 <Dim size="8"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>7</Value>
+                </Attribute>
             </Float32>
             <Float32 name="Longitude">
                 <Dim size="8"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>8</Value>
+                </Attribute>
             </Float32>
         </Group>
         <Group name="Data_Fields">

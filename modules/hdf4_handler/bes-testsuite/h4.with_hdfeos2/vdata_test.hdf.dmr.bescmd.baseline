@@ -12,6 +12,15 @@
                 <Dim size="2"/>
             </Float32>
             <Dim size="10"/>
+            <Attribute name="vdata_attr" type="Int32">
+                <Value>32</Value>
+                <Value>16</Value>
+                <Value>32</Value>
+                <Value>8</Value>
+            </Attribute>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>3</Value>
+            </Attribute>
         </Structure>
     </Group>
 </Dataset>
