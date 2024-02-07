@@ -347,7 +347,28 @@ END
 </Value>
     </Attribute>
     <Group name="AMSR_E_Level_2B_Land_Data">
-        <Group name="Data_Vgroup"/>
+        <Byte name="LevelWritten">
+            <Dim size="8"/>
+        </Byte>
+        <Group name="Data_Vgroup">
+            <Structure name="Land_Parameters">
+                <Float64 name="Time"/>
+                <Float32 name="Latitude"/>
+                <Float32 name="Longitude"/>
+                <Int16 name="Row_Index"/>
+                <Int16 name="Column_Index"/>
+                <Int16 name="TB_QC_Flag"/>
+                <Int16 name="Heterogeneity_Index"/>
+                <Int16 name="Surface_Type"/>
+                <Int16 name="Soil_Moisture"/>
+                <Int16 name="Veg_Water_Content"/>
+                <Int16 name="Land_Surface_Temp"/>
+                <Int16 name="Inversion_QC_Flag_1"/>
+                <Int16 name="Inversion_QC_Flag_2"/>
+                <Int16 name="Inversion_QC_Flag_3"/>
+                <Dim size="25217"/>
+            </Structure>
+        </Group>
         <Group name="Linkage_Vgroup"/>
         <Group name="Point_Attributes"/>
     </Group>

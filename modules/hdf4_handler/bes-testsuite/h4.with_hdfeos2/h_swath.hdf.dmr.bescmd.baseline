@@ -68,7 +68,17 @@ END
 </Value>
     </Attribute>
     <Group name="Swath">
-        <Group name="Geolocation_Fields"/>
+        <Group name="Geolocation_Fields">
+            <Float32 name="pressure">
+                <Dim size="4"/>
+            </Float32>
+            <Float32 name="Latitude">
+                <Dim size="8"/>
+            </Float32>
+            <Float32 name="Longitude">
+                <Dim size="8"/>
+            </Float32>
+        </Group>
         <Group name="Data_Fields">
             <Float32 name="temperature">
                 <Dim name="/ZDim_Swath"/>

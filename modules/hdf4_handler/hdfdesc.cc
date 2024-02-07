@@ -207,6 +207,10 @@ void exclude_sds_refs_in_vgroup(int32 sdfd,int32 file_id, int32 vgroup_id, unord
 void read_dmr_vlone_groups(D4Group *root_grp, int32 fileid, int32 sdfd, const string &filename);
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* par_group,const string& filename);
 void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* par_group,const string& filename);
+void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nflds, int32 obj_ref, D4Group *d4g, const string &filename);
+void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename);
+void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref, int32 n_vdata_attrs);
+
 void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4_group, const string &vgroupname);
 void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4_group, const string &vgroupname,const string & filename);
 void convert_sds(int32 sdfd,int32 obj_ref,  D4Group* d4g,const string &filename);
@@ -4252,18 +4256,20 @@ void read_dmr(DMR *dmr, const string &filename) {
     // We also need to map SD file attributes to DAP4 root group attributes.
     // TODO: add vdata objects mapping later.
 
-    try {
+    //try {
         handle_sds_dims(root_grp,sdfd);
         read_lone_sds(root_grp,fileid,sdfd,filename);
         // TODO: very possible we need to handle HDF-EOS2 swath dimensions. It needs special care. 
         read_sd_attrs(root_grp,sdfd);
         read_dmr_vlone_groups(root_grp, fileid, sdfd, filename);
-    }
+    //}
+#if 0
     catch(...) {
         Hclose(fileid);
         SDend(sdfd);
         throw InternalErr(__FILE__,__LINE__,"read_dmr error");
     }   
+#endif
 
     Hclose(fileid);
     SDend(sdfd);
@@ -4714,14 +4720,6 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
 
 }
 
-#if 0
-void vgroup_convert_vdata_objects(int32 vgroup_id,D4Group *d4g, const string &filename) {
-
-
-
-}
-#endif
-
 void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,const string &vgroupname, const string& filename) {
 
     BESDEBUG("h4"," Start convert_vgroup_objects"<<endl);
@@ -4729,6 +4727,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
     int num_gobjects; /* number of global objects */
     int32 obj_tag; /* object tag */
     int32 obj_ref;/* object reference */
+
 
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
@@ -4758,15 +4757,17 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             }
         }
         else if(Visvs(vgroup_id,obj_ref)) {
-            try {
+            //try {
                 convert_vdata(file_id,obj_ref,d4g,filename);
-            }  
+            //}  
+#if 0
             catch(...) {
               Vdetach(vgroup_id);
               Vend(file_id);
-              throw InternalErr(__FILE__, __LINE__, "error in converting sds.");
+              throw InternalErr(__FILE__, __LINE__, "error in converting vdata.");
  
             }
+#endif
         }
 
     }
@@ -4913,23 +4914,171 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname
 
 }
 
-#if 0
-void convert_sds_attrs(int32 sds_id,D4Group *d4g) {
 
+void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* d4g,const string& filename) {
+
+    // Obtain vdata ID
+    int32 vdata_id = VSattach (fileid, obj_ref, "r");
+    if (vdata_id == FAIL) 
+        throw InternalErr(__FILE__, __LINE__, "Cannot attach vdata.");
+
+    // Vdata class
+    char vdata_class[VSNAMELENMAX];
+
+    if (VSgetclass (vdata_id, vdata_class) == FAIL) {
+        Vdetach (vdata_id);
+        throw InternalErr(__FILE__, __LINE__, "VSgetclass failed.");
+    }
+
+    if (VSisattr(vdata_id) == FALSE && VSisinternal(vdata_class) == FALSE) {
+
+        int32 vs_nflds = VFnfields(vdata_id);
+        if (vs_nflds == FAIL) {
+            VSdetach(vdata_id);
+            throw InternalErr(__FILE__, __LINE__, "Cannot get the number of fields of a vdata.");
+        }
+        
+        int32 num_elms = VSelts(vdata_id);
+        if (num_elms == FAIL) {
+            VSdetach(vdata_id);
+            throw InternalErr(__FILE__, __LINE__, "Cannot get the number of records of a vdata.");
+        }
+
+        if (vs_nflds >1) 
+            map_vdata_to_dap4_structure_array(vdata_id, num_elms, vs_nflds, obj_ref, d4g, filename);
+        else if (vs_nflds == 1)
+            map_vdata_to_dap4_atomic_array(vdata_id, num_elms, obj_ref, d4g, filename);
+
+    }
+    VSdetach(vdata_id);
+
+}
+
+
+void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename) {
+
+    // Now we only handle the vdata when the field order is 1. I haven't seen other cases in NASA files.
+    int32 vdata_field_order = VFfieldorder(vdata_id,0);
+    if (vdata_field_order == FAIL) {
+        VSdetach(vdata_id);
+        throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
+    }
+
+    char vdata_name[VSNAMELENMAX];       
+    if (VSgetname(vdata_id,vdata_name) == FAIL) {
+        VSdetach(vdata_id);
+        throw InternalErr(__FILE__, __LINE__, "Cannot get vdata name.");
+    }       
+ 
+    string vdata_name_str(vdata_name);
+
+    char *fieldname = VFfieldname(vdata_id,0);
+    if (fieldname == nullptr) {
+        VSdetach (vdata_id);
+        throw InternalErr(__FILE__, __LINE__, "Cannot get vdata field name.");
+    }
+
+    string fieldname_str(fieldname);
+    string dap4_vdata_str;
+
+    // For HDF-EOS2, one field vdata and the field share the same name. So we just keep one.
+    if (vdata_name_str == fieldname_str) 
+        dap4_vdata_str = fieldname_str;
+    else
+        dap4_vdata_str = HDFCFUtil::get_CF_string(vdata_name_str) +"_"+ HDFCFUtil::get_CF_string(fieldname_str);
+
+    int32 fieldtype = VFfieldtype(vdata_id,0);
     
+    BaseType *bt = gen_dap_var(fieldtype,dap4_vdata_str,filename);
+    auto ar_unique = make_unique<HDFArray>(dap4_vdata_str,filename,bt);
+    auto ar = ar_unique.release();    
+    ar->append_dim_ll(num_elms);
+    if (vdata_field_order != 1)
+        ar->append_dim_ll(vdata_field_order);
+
+    // map vdata attributes to dap4. We will ignore vdata field attributes. Haven't seen one in NASA files.
+    int32 nattrs = VSfnattrs(vdata_id,_HDF_VDATA);
+    if (nattrs >0)
+        map_vdata_to_dap4_attrs(ar,vdata_id,obj_ref,nattrs);
+    ar->set_is_dap4(true);
+    d4g->add_var_nocopy(ar);
+
+    delete bt;
 
 }
-#endif
 
-void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* tem_d4_cgroup,const string& filename) {
+void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nflds, int32 obj_ref, D4Group *d4g, const string &filename) {
 
+    char vdata_name[VSNAMELENMAX];       
+    if (VSgetname(vdata_id,vdata_name) == FAIL) {
+        VSdetach(vdata_id);
+        throw InternalErr(__FILE__, __LINE__, "Cannot get vdata name.");
+    }       
+    string vdata_name_str(vdata_name);
+    vdata_name_str = HDFCFUtil::get_CF_string(vdata_name_str);
 
-}
+    auto structure_unique_ptr = make_unique<HDFStructure>(vdata_name_str,filename);
+    auto structure_ptr = structure_unique_ptr.release();
+   
+    for (int j = 0; j <nflds; j++) {
+
+        // Now we only handle the vdata when the field order is 1. I haven't seen other cases in NASA files.
+        int32 vdata_field_order = VFfieldorder(vdata_id,j);
+        if (vdata_field_order == FAIL) {
+            VSdetach(vdata_id);
+            throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
+        }
 #if 0
-void convert_vdata_attrs(int32 vdata_id,D4Group *d4g) {
+        else if (vdata_field_order != 1) {
+            VSdetach(vdata_id);
+            throw InternalErr(__FILE__, __LINE__, "We don't handle the case when vdata_field_order is not 1.");
+        }
+#endif
+    
+        char *fieldname = VFfieldname(vdata_id,j);
+        if (fieldname == nullptr) {
+            VSdetach (vdata_id);
+            throw InternalErr(__FILE__, __LINE__, "Cannot get vdata field name.");
+        }
+    
+        string fieldname_str(fieldname);
+        fieldname_str = HDFCFUtil::get_CF_string(fieldname_str);
+    
+        int32 fieldtype = VFfieldtype(vdata_id,j);
+        
+        if (vdata_field_order == 1) {
+            BaseType *bt = gen_dap_var(fieldtype,fieldname_str,filename);
+            structure_ptr->add_var(bt);
+            delete bt; 
+        }
+        else {
+            BaseType *bt = gen_dap_var(fieldtype,fieldname_str,filename);
+            auto arf_unique = make_unique<HDFArray>(fieldname_str,filename,bt);
+            auto arf = arf_unique.release();    
+            arf->append_dim_ll(vdata_field_order);
+            structure_ptr->add_var(arf);
+            delete bt; 
+        }
+    }
+
+    auto ar_unique = make_unique<HDFArray>(vdata_name_str,filename,structure_ptr);
+    auto ar = ar_unique.release();    
+    ar->append_dim_ll(num_elms);
+
+        // map vdata attributes to dap4. We will ignore vdata field attributes. Haven't seen one in NASA files.
+        int32 nattrs = VSfnattrs(vdata_id,_HDF_VDATA);
+        if (nattrs >0)
+            map_vdata_to_dap4_attrs(ar,vdata_id,obj_ref,nattrs);
+        ar->set_is_dap4(true);
+        d4g->add_var_nocopy(ar);
 
 }
-#endif
+
+void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref, int32 nattrs) {
+
+
+}
+
 
 void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename) {
 
@@ -5048,36 +5197,6 @@ void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_s
         dap4_attrname = HDFCFUtil::get_CF_string(dap4_attrname);
 
         map_sds_vdata_attr(ar,dap4_attrname,sds_attr_type,attr_value_count,attr_value);
-#if 0
-        D4AttributeType dap4_attr_type = h4type_to_dap4_attrtype(sds_attr_type);
-
-        // We encounter an unsupported DAP4 attribute type.
-        if (attr_null_c == dap4_attr_type) 
-            throw InternalErr(__FILE__, __LINE__, "unsupported DAP4 attribute type");
-
-        // Create the DAP4 attribute 
-        auto d4_attr_unique = make_unique<D4Attribute>(dap4_attrname, dap4_attr_type);
-        D4Attribute *d4_attr = d4_attr_unique.release();
-
-        // Ignore char to string first.
-        if (sds_attr_type == DFNT_CHAR) {
-            string t_dap4_attr_value(attr_value.begin(),attr_value.end());
-            auto dap4_attr_value = string(t_dap4_attr_value.c_str());
-            d4_attr->add_value(dap4_attr_value);
-        }
-        else {
-            for (int loc=0; loc < attr_value_count ; loc++) {
-                
-                string print_rep = print_dap4_attr(sds_attr_type, loc, (void*) (attr_value.data()));
-                if (print_rep.empty())
-                    throw InternalErr(__FILE__,__LINE__, "Cannot obtain the attribute value for DAP4 ");
-                else 
-                    d4_attr->add_value(print_rep);
-
-            }
-        }
-        ar->attributes()->add_attribute_nocopy(d4_attr);
-#endif
         
     }
 

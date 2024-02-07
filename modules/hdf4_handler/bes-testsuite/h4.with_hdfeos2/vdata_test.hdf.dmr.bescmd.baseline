@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="vdata_test.hdf">
+    <Group name="vgroup">
+        <Structure name="Test_Vset_Name">
+            <Float32 name="Temp"/>
+            <Int16 name="Height"/>
+            <Float32 name="Speed"/>
+            <Int8 name="Ident">
+                <Dim size="3"/>
+            </Int8>
+            <Float32 name="Position">
+                <Dim size="2"/>
+            </Float32>
+            <Dim size="10"/>
+        </Structure>
+    </Group>
+</Dataset>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="General_Vgroups.hdf">
+    <Group name="Vertices">
+        <Structure name="X_Y_Coordinates">
+            <Float32 name="PX"/>
+            <Float32 name="PY"/>
+            <Dim size="30"/>
+        </Structure>
+        <Float32 name="Temperature_TMP">
+            <Dim size="30"/>
+        </Float32>
+        <Int16 name="Node_List_PLIST">
+            <Dim size="30"/>
+            <Dim size="3"/>
+        </Int16>
+    </Group>
+</Dataset>

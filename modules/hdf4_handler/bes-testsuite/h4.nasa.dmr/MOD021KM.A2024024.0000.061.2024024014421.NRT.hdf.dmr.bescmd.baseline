@@ -10186,6 +10186,18 @@ END
                     <Value>15637</Value>
                 </Attribute>
             </Byte>
+            <Float32 name="Band_250M">
+                <Dim size="2"/>
+            </Float32>
+            <Float32 name="Band_500M">
+                <Dim size="5"/>
+            </Float32>
+            <Float32 name="Band_1KM_RefSB">
+                <Dim size="15"/>
+            </Float32>
+            <Float32 name="Band_1KM_Emissive">
+                <Dim size="16"/>
+            </Float32>
             <UInt16 name="EV_Band26">
                 <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>
                 <Dim name="/Max_EV_frames_MODIS_SWATH_Type_L1B"/>
