@@ -102,6 +102,28 @@
             <Value>15671</Value>
         </Attribute>
     </Int8>
+    <Structure name="Level_1B_Swath_Metadata">
+        <Int32 name="Scan_Number"/>
+        <Int32 name="Complete_Scan_Flag"/>
+        <Int8 name="Scan_Type">
+            <Dim size="4"/>
+        </Int8>
+        <Int32 name="Mirror_Side"/>
+        <Float64 name="EV_Sector_Start_Time"/>
+        <Int32 name="EV_Frames"/>
+        <Int32 name="Nadir_Frame_Number"/>
+        <Float32 name="Latitude_of_Nadir_Frame"/>
+        <Float32 name="Longitude_of_Nadir_Frame"/>
+        <Float32 name="Solar_Azimuth_of_Nadir_Frame"/>
+        <Float32 name="Solar_Zenith_of_Nadir_Frame"/>
+        <Int32 name="No__OBC_BB_thermistor_outliers"/>
+        <UInt32 name="Bit_QA_Flags"/>
+        <Float32 name="Sector_Rotation_Angle"/>
+        <Dim size="204"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>15673</Value>
+        </Attribute>
+    </Structure>
     <Attribute name="HDFEOSVersion" type="String">
         <Value>HDFEOS_V2.19</Value>
     </Attribute>
@@ -10188,15 +10210,27 @@ END
             </Byte>
             <Float32 name="Band_250M">
                 <Dim size="2"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>15644</Value>
+                </Attribute>
             </Float32>
             <Float32 name="Band_500M">
                 <Dim size="5"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>15645</Value>
+                </Attribute>
             </Float32>
             <Float32 name="Band_1KM_RefSB">
                 <Dim size="15"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>15646</Value>
+                </Attribute>
             </Float32>
             <Float32 name="Band_1KM_Emissive">
                 <Dim size="16"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>15647</Value>
+                </Attribute>
             </Float32>
             <UInt16 name="EV_Band26">
                 <Dim name="/_10_nscans_MODIS_SWATH_Type_L1B"/>

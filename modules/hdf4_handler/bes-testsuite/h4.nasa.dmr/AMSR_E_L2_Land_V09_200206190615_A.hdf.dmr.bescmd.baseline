@@ -349,6 +349,9 @@ END
     <Group name="AMSR_E_Level_2B_Land_Data">
         <Byte name="LevelWritten">
             <Dim size="8"/>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>3</Value>
+            </Attribute>
         </Byte>
         <Group name="Data_Vgroup">
             <Structure name="Land_Parameters">
@@ -367,6 +370,9 @@ END
                 <Int16 name="Inversion_QC_Flag_2"/>
                 <Int16 name="Inversion_QC_Flag_3"/>
                 <Dim size="25217"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>7</Value>
+                </Attribute>
             </Structure>
         </Group>
         <Group name="Linkage_Vgroup"/>

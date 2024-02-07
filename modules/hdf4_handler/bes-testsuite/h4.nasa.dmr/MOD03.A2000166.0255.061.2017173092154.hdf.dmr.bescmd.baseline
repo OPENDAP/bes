@@ -484,6 +484,21 @@
             <Value>2098</Value>
         </Attribute>
     </UInt16>
+    <Structure name="Average_Temperatures">
+        <Float32 name="TA_RC_SMIR_CFPA"/>
+        <Float32 name="TP_AO_SMIR_OBJ"/>
+        <Float32 name="TP_MF_CALBKHD_SR"/>
+        <Float32 name="TP_MF_Z_BKHD_BB"/>
+        <Float32 name="TP_SA_RCT1_MIR"/>
+        <Float32 name="TP_SR_SNOUT"/>
+        <Dim size="1"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>2100</Value>
+        </Attribute>
+    </Structure>
     <Attribute name="HDFEOSVersion" type="String">
         <Value>HDFEOS_V2.19</Value>
     </Attribute>
