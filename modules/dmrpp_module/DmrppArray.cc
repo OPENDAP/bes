@@ -630,7 +630,7 @@ void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>
 //  cann also be removed (see the comment there) jhrg 1/31/24
 
 /**
- * @brief Compute the index of the address_in_target for an an array of target_shape.
+ * @brief Compute the index of the address for an an array of array_shape.
  *
  * Internally we store N-dimensional arrays using a one dimensional array (i.e., a
  * vector). Compute the offset in that vector that corresponds to a location in
@@ -643,24 +643,28 @@ void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>
  * multiplier(const vector<unsigned int> &shape, unsigned int k) below in
  * read_chunk_unconstrained() and elsewhere in this file.
  *
- * @param address_in_target N-tuple zero-based index of an element in N-space
- * @param target_shape N-tuple of the array's dimension sizes.
+ * @param address N-tuple zero-based index of an element in N-space
+ * @param array_shape N-tuple of the array's dimension sizes.
  * @return The offset into the vector used to store the values.
  */
 unsigned long long
-get_index(const vector<unsigned long long> &address_in_target, const vector<unsigned long long> &target_shape)
+get_index(const vector<unsigned long long> &address, const vector<unsigned long long> &array_shape)
 {
-    if (address_in_target.size() != target_shape.size()) {  // ranks must be equal
-        throw BESInternalError("get_index: address_in_target != target_shape", __FILE__, __LINE__);
+    if (address.size() != array_shape.size()) {  // ranks must be equal
+        throw BESInternalError("get_index: address != array_shape", __FILE__, __LINE__);
     }
 
-    if (address_in_target.empty()) {    // both address_in_target and target_shape are empty
+    if (address.empty()) {    // both address and array_shape are empty
         return 0ULL;
     }
 
-    auto shape_index = target_shape.rbegin();
-    auto index = address_in_target.rbegin(), index_end = address_in_target.rend();
+    auto shape_index = array_shape.rbegin();
+    auto index = address.rbegin(), index_end = address.rend();
 
+    if (*index >= *shape_index) {
+        throw BESInternalError("get_index: index >= shape_index", __FILE__, __LINE__);
+    }
+    
     unsigned long long multiplier_var = *shape_index++;
     unsigned long long offset = *index++;
 
