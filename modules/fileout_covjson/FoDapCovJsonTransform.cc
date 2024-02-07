@@ -3528,9 +3528,9 @@ cerr<<"time_val is "<<time_val <<endl;
 //cerr<<"t_ycf_2 is "<<t_ycf_2 <<endl;
 #endif
 
-  struct tm *t_new_ycf;
-  struct tm temp_new_ycf;
-  // The use of localtime() is to calcuate the time based on the CF time unit.
+  // jhrg 2/2/24 struct tm *t_new_ycf;
+  struct tm temp_new_ycf{};
+  // The use of localtime() is to calculate the time based on the CF time unit.
   // So the value actually represents the GMT time. 
   // Note: we didn't consider the use of local time in the CF. 
   // Our currently supported product uses GMT. Will consider the other cases later.
@@ -3538,7 +3538,7 @@ cerr<<"time_val is "<<time_val <<endl;
   //t_new_ycf = localtime(&t_ycf_2);
   //t_new_ycf = gmtime(&t_ycf_2);
 #endif
-  t_new_ycf = gmtime_r(&t_ycf_2,&temp_new_ycf);
+  auto t_new_ycf = gmtime_r(&t_ycf_2, &temp_new_ycf);
 
 #if 0
 cerr<< "t_new_ycf.tm_year is " <<t_new_ycf->tm_year <<endl;
