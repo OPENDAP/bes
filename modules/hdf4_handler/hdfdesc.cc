@@ -196,34 +196,44 @@ static void FileAnnot_descriptions(DAS & das, const string & filename);
 static vector < hdf_attr > Pals2Attrs(const vector < hdf_palette > palv);
 static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 
+// Start the declaration of HDF4 to DMR direct mapping functions
+// 1. dmr and root level object handlings
 void read_dmr(DMR *dmr, const string &filename);
-void read_sd_attrs(D4Group *root_grp, int32 sdfd);
-void handle_sds_dims(D4Group *root_grp, int32 sdfd);
+void read_sd_attrs(D4Group *root_grp, int32 fileid, int32 sdfd);
+void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd);
 void read_lone_sds(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
-void read_lone_vdata(D4Group *root_grp, int32 file_id, const string &filename);
-void obtain_all_sds_refs(int32 sdfd, unordered_set<int32>& sds_ref);
-void exclude_all_sds_refs_in_vgroups(int32 sdfd,int32 file_id, unordered_set<int32>&sds_ref);
-void exclude_sds_refs_in_vgroup(int32 sdfd,int32 file_id, int32 vgroup_id, unordered_set<int32>&sds_ref);
-
+void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
 void read_dmr_vlone_groups(D4Group *root_grp, int32 fileid, int32 sdfd, const string &filename);
+
+// 2. vgroup handlings
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4_group, const string &vgroupname,const string & filename);
+void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4_group, const string &vgroupname);
+void map_vgroup_attr(D4Group *d4g, const string &dap4_attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
+bool reserved_vgroups(const vector<char> &vclass_name);
+
+// 3. SDS handlings
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* par_group,const string& filename);
-void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* par_group,const string& filename);
+void convert_sds(int32 fileid, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,const string &filename);
+void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref);
+void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>&sds_ref);
+void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unordered_set<int32>&sds_ref);
+void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
+void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
+
+// 4. Vdata handlings
+void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Group* par_group,const string& filename);
 void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nflds, int32 obj_ref, D4Group *d4g, const string &filename);
 void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename);
 void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref);
 
-void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4_group, const string &vgroupname);
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4_group, const string &vgroupname,const string & filename);
-void convert_sds(int32 sdfd,int32 obj_ref,  D4Group* d4g,const string &filename);
-void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
-void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
-void map_vgroup_attr(D4Group *d4g, const string &dap4_attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
+// 5. Helper functions
 void add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref);
-
-bool reserved_vgroups(const vector<char> &vclass_name);
 BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string & filename);
 D4AttributeType h4type_to_dap4_attrtype(int32 sds_type);
 string print_dap4_attr(int32 type, int loc, void *vals);
+void close_vgroup_fileids(int32 fileid, int32 sdfd, int32 vgroup_id);
+
+// End of HDF4 to DMR direct mapping functions.
 
 
 void read_das(DAS & das, const string & filename);
@@ -4231,8 +4241,10 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim)
     return dattrs;
 }
 
+// The following functions handle the direct mapping from HDF4 to DMR.
 void read_dmr(DMR *dmr, const string &filename) {
 
+    BESDEBUG("h4"," Begin read_dmr()"<<endl);
     // H open
     int32 fileid = Hopen(filename.c_str(), DFACC_READ,0);
     if (-1 == fileid) {
@@ -4252,40 +4264,40 @@ void read_dmr(DMR *dmr, const string &filename) {
     }
 
     D4Group* root_grp = dmr->root();
+
     // We must handle lone SDS first due to the possible dimension info.
     // It is possible that there are SDS and Vdata objects that don't belong to any vgroups.
     // We also need to map SD file attributes to DAP4 root group attributes.
-    // TODO: add vdata objects mapping later.
+    // TODO: possible we need to handle HDF-EOS2 swath dimensions. It needs special care. 
 
-    //try {
-        handle_sds_dims(root_grp,sdfd);
-        read_lone_sds(root_grp,fileid,sdfd,filename);
-        // We find one NASA file has lone vdata, so we need to handle this case.
-        read_lone_vdata(root_grp,fileid,filename);
-        // TODO: very possible we need to handle HDF-EOS2 swath dimensions. It needs special care. 
-        read_sd_attrs(root_grp,sdfd);
-        read_dmr_vlone_groups(root_grp, fileid, sdfd, filename);
-    //}
-#if 0
-    catch(...) {
-        Hclose(fileid);
-        SDend(sdfd);
-        throw InternalErr(__FILE__,__LINE__,"read_dmr error");
-    }   
-#endif
+    // SDS dimensions and lone SDS objects 
+    handle_sds_dims(root_grp,fileid, sdfd);
+    read_lone_sds(root_grp,fileid,sdfd,filename);
+
+    // Lone vdata: We find one NASA file has lone vdata, so we need to handle this case.
+    read_lone_vdata(root_grp,fileid,sdfd,filename);
+
+    // SD file attributes under the root group.
+    read_sd_attrs(root_grp,fileid, sdfd);
+
+    // Now go to handle HDF4 vgroups and the objects attached to these vgroups.
+    read_dmr_vlone_groups(root_grp, fileid, sdfd, filename);
 
     Hclose(fileid);
     SDend(sdfd);
 
+    BESDEBUG("h4"," End read_dmr()"<<endl);
 }
 
-void handle_sds_dims(D4Group *root_grp, int32 sdfd) {
+void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd) {
 
+    BESDEBUG("h4"," Begin handle_sds_dims() "<<endl);
     int32 n_sds      = 0;       
     int32 n_sd_attrs = 0;
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        close_vgroup_fileids(fileid,sdfd,-1);
         throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
     }
 
@@ -4298,16 +4310,19 @@ void handle_sds_dims(D4Group *root_grp, int32 sdfd) {
 
         int32 sds_id  = SDselect(sdfd,i);
 
-        if (sds_id == FAIL) 
+        if (sds_id == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
-        // Obtain object name, rank, size, field type and number of SDS attributes
+        }
 
+        // Obtain object name, rank, size, field type and number of SDS attributes
         int32  dim_sizes[H4_MAX_VAR_DIMS];
         int32  sds_rank = 0;
         int32  sds_type = 0;
         int32 n_sds_attrs = 0;
         if (FAIL == SDgetinfo (sds_id, nullptr, &sds_rank, dim_sizes, &sds_type, &n_sds_attrs)) {
             SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain SDS info.");
         }                        
 
@@ -4316,6 +4331,7 @@ void handle_sds_dims(D4Group *root_grp, int32 sdfd) {
             int dimid = SDgetdimid (sds_id, dimindex);
             if (dimid == FAIL) {
                 SDendaccess (sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
                 throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
             }
             char dim_name[H4_MAX_NC_NAME];
@@ -4330,10 +4346,13 @@ void handle_sds_dims(D4Group *root_grp, int32 sdfd) {
     
             if (status == FAIL) {
                 SDendaccess (sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
                 throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
             }
     
             string dim_name_str (dim_name);
+
+            // Make dimension names to follow the CF rule.
             dim_name_str = HDFCFUtil::get_CF_string(dim_name_str);
             
             auto it_set = sds_dimname_set.insert(dim_name_str);
@@ -4345,25 +4364,33 @@ void handle_sds_dims(D4Group *root_grp, int32 sdfd) {
         }
         SDendaccess(sds_id);
     }
+
+    BESDEBUG("h4"," End handle_sds_dims() "<<endl);
 }
 
 void read_lone_sds(D4Group *root_grp, int32 file_id,int32 sdfd, const string &filename) {
 
-    unordered_set<int32> lone_sds_refs;
-    obtain_all_sds_refs(sdfd,lone_sds_refs);
-    exclude_all_sds_refs_in_vgroups(sdfd,file_id,lone_sds_refs); 
+    BESDEBUG("h4"," Begin read_lone_sds() "<<endl);
 
+    unordered_set<int32> lone_sds_refs;
+
+    obtain_all_sds_refs(file_id,sdfd,lone_sds_refs);
+    exclude_all_sds_refs_in_vgroups(file_id,sdfd,lone_sds_refs); 
+
+    // The following line is necessary to ensure the same order of objects on different platforms.
     set<int32> ordered_lone_sds_refs(lone_sds_refs.begin(),lone_sds_refs.end());
 
    // Map SDS to DAP4 root group.
    for (const auto &sds_ref:ordered_lone_sds_refs) {
-        convert_sds(sdfd, sds_ref, root_grp, filename);  
+        convert_sds(file_id, sdfd, -1,sds_ref, root_grp, filename);  
    }
 
+   BESDEBUG("h4"," End read_lone_sds() "<<endl);
 }
 
-void obtain_all_sds_refs(int32 sdfd, unordered_set<int32>& sds_ref) {
+void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref) {
 
+    BESDEBUG("h4"," Begin obtain_all_sds_refs() "<<endl);
     int32 n_sds      = 0;       
     int32 n_sd_attrs = 0;
 
@@ -4382,24 +4409,26 @@ void obtain_all_sds_refs(int32 sdfd, unordered_set<int32>& sds_ref) {
         SDendaccess(sds_id);
     }
 
+    BESDEBUG("h4"," End obtain_all_sds_refs() "<<endl);
 }
 
-void exclude_all_sds_refs_in_vgroups(int32 sdfd,int32 file_id, unordered_set<int32>& sds_ref) {
+void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref) {
 
+    BESDEBUG("h4"," Begin exclude_all_sds_refs_in_vgroups() "<<endl);
     int      num_lonevg; 
     vector<int> ref_array;
     int32  istat;
 
     istat = Vstart(file_id);
     if (istat == FAIL) { 
-        Vend(file_id);
+        close_vgroup_fileids(file_id,sdfd,-1);
         throw InternalErr(__FILE__, __LINE__, "unable to start hdf4 V interface.");
     }
 
     num_lonevg = Vlone(file_id,nullptr,0);
 
     if (num_lonevg == FAIL) {
-        Vend(file_id);
+        close_vgroup_fileids(file_id,sdfd,-1);
         throw InternalErr(__FILE__, __LINE__, "error in obtaining lone vgroup number.");
     }
 
@@ -4420,23 +4449,21 @@ void exclude_all_sds_refs_in_vgroups(int32 sdfd,int32 file_id, unordered_set<int
 
         int32 vgroup_id = Vattach(file_id,ref_array[lone_vg_number],"r");
         if (vgroup_id ==FAIL) {
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,-1);
             throw InternalErr(__FILE__, __LINE__, "error in attaching lone vgroup.");
         }
 
         uint16  vclassnamelen; /*Vgroup class name length */
         vector<char> vclass_name;
         if (Vgetclassnamelen(vgroup_id,&vclassnamelen) == FAIL) {
-            Vdetach(vgroup_id);
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);
             throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
         }
  
         if (vclassnamelen!=0) {
             vclass_name.resize(vclassnamelen+1);
             if (Vgetclass(vgroup_id,vclass_name.data()) == FAIL) {
-                Vdetach(vgroup_id);
-                Vend(file_id);
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
             }
             if (reserved_vgroups(vclass_name)) {
@@ -4445,13 +4472,16 @@ void exclude_all_sds_refs_in_vgroups(int32 sdfd,int32 file_id, unordered_set<int
             }
         }
 
-        exclude_sds_refs_in_vgroup(sdfd,file_id,vgroup_id,sds_ref);
+        exclude_sds_refs_in_vgroup(file_id,sdfd,vgroup_id,sds_ref);
         Vdetach(vgroup_id);
     }
 
+    Vend(file_id);
+
+    BESDEBUG("h4","End exclude_all_sds_refs_in_vgroups() "<<endl);
 }
 
-void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unordered_set<int32> &sds_ref) {
+void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unordered_set<int32> &sds_ref) {
 
     int num_gobjects; /* number of global objects */
     int32 obj_tag; /* object tag */
@@ -4459,25 +4489,21 @@ void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unor
 
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
-        Vdetach(vgroup_id);
-        Vend(file_id);
+        close_vgroup_fileids(file_id,sdfd,vgroup_id);
         throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
     }
 
     for( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
-
-            Vdetach(vgroup_id);
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);
             throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
         }
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
-            if ( 0 == sds_ref.erase(obj_ref)) {
 
-                Vdetach(vgroup_id);
-                Vend(file_id);
+            if (0 == sds_ref.erase(obj_ref)) {
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 string err_msg = "Unable to remove the SDS object from the sds reference list for the reference number " + to_string(obj_ref);
                 throw InternalErr(__FILE__, __LINE__, err_msg);
             }
@@ -4487,8 +4513,7 @@ void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unor
 
             int32 vgroup_cid = Vattach(file_id,obj_ref,"r");
             if (vgroup_cid == FAIL) {
-                Vdetach(vgroup_id);
-                Vend(file_id);
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 throw InternalErr(__FILE__, __LINE__, "fail to attach vgroup_cid.");
             }
                
@@ -4496,8 +4521,7 @@ void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unor
             vector<char> vclass_name;
             if (Vgetclassnamelen(vgroup_cid,&vclassnamelen) == FAIL) {
                 Vdetach(vgroup_cid);
-                Vdetach(vgroup_id);
-                Vend(file_id);
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
             }
      
@@ -4505,8 +4529,7 @@ void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unor
                 vclass_name.resize(vclassnamelen+1);
                 if (Vgetclass(vgroup_cid,vclass_name.data()) == FAIL) {
                     Vdetach(vgroup_cid);
-                    Vdetach(vgroup_id);
-                    Vend(file_id);
+                    close_vgroup_fileids(file_id,sdfd,vgroup_id);
                     throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
                 }
                 if (reserved_vgroups(vclass_name)) {
@@ -4515,22 +4538,22 @@ void exclude_sds_refs_in_vgroup(int32 sdfd, int32 file_id, int32 vgroup_id, unor
                 }
             }
 
-            exclude_sds_refs_in_vgroup(sdfd,file_id,vgroup_cid,sds_ref);
+            exclude_sds_refs_in_vgroup(file_id,sdfd,vgroup_cid,sds_ref);
             Vdetach(vgroup_cid);
 
         }
-
     }
-
 }
 
-void read_sd_attrs(D4Group *root_grp, int32 sdfd) {
+void read_sd_attrs(D4Group *root_grp, int32 fileid, int32 sdfd) {
 
     int32 n_sds      = 0;       
     int32 n_sd_attrs = 0;
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        Hclose(fileid);
+        SDend(sdfd);
         throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
     }
 
@@ -4541,13 +4564,18 @@ void read_sd_attrs(D4Group *root_grp, int32 sdfd) {
         int32 attr_count    = -1;
  
         if (SDattrinfo(sdfd,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
+            Hclose(fileid);
+            SDend(sdfd);
             throw InternalErr (__FILE__,__LINE__,"SDattrinfo failed ");
         }
 
         vector<char> attr_value;
         attr_value.resize(attr_count * DFKNTsize(attr_type));
-        if (SDreadattr (sdfd, attr_index, attr_value.data()) == -1) 
+        if (SDreadattr (sdfd, attr_index, attr_value.data()) == -1)  {
+            Hclose(fileid);
+            SDend(sdfd);
             throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+        }
             
         string dap4_attrname (attr_name);
         dap4_attrname = HDFCFUtil::get_CF_string(dap4_attrname);
@@ -4558,27 +4586,38 @@ void read_sd_attrs(D4Group *root_grp, int32 sdfd) {
 }
 
 
-void read_lone_vdata(D4Group *root_grp, int32 file_id, const string &filename) {
+void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename) {
 
+    BESDEBUG("h4"," Begin read_lone_vdata()"<<endl);
+    if (Vstart(file_id) == FAIL) {
+        Hclose(file_id);
+        SDend(sdfd);
+        throw InternalErr(__FILE__, __LINE__, "Fail to start the V interface.");
+    } 
     // Obtain number of lone vdata.
     int num_lone_vdata = VSlone (file_id, nullptr, 0);
 
-    if (num_lone_vdata == FAIL)
+    if (num_lone_vdata == FAIL) {
+        close_vgroup_fileids(file_id,sdfd,-1);
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain lone vdata number");
+    }
 
     if (num_lone_vdata > 0) {
 
         vector<int32>ref_array;
         ref_array.resize(num_lone_vdata);
 
-        if (VSlone (file_id, ref_array.data(), num_lone_vdata) == FAIL) 
+        if (VSlone (file_id, ref_array.data(), num_lone_vdata) == FAIL) {
+            close_vgroup_fileids(file_id,sdfd,-1);
             throw InternalErr(__FILE__, __LINE__, "Cannot obtain lone vdata reference arrays");
+        }
 
         for (int i = 0; i < num_lone_vdata; i++) 
-            convert_vdata(file_id,ref_array[i],root_grp,filename);
-
+            convert_vdata(file_id,sdfd, -1, ref_array[i],root_grp,filename);
     }
+    Vend(file_id);
 
+    BESDEBUG("h4"," End read_lone_vdata()"<<endl);
 }
 
 void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const string & filename) {
@@ -4591,14 +4630,14 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
 
     istat = Vstart(file_id);
     if (istat == FAIL) { 
-        Vend(file_id);
+        close_vgroup_fileids(file_id,sdfd,-1);
         throw InternalErr(__FILE__, __LINE__, "unable to start hdf4 V interface.");
     }
 
     num_lonevg = Vlone(file_id,nullptr,0);
 
     if (num_lonevg == FAIL) {
-        Vend(file_id);
+        close_vgroup_fileids(file_id,sdfd,-1);
         throw InternalErr(__FILE__, __LINE__, "error in obtaining lone vgroup number.");
     }
 
@@ -4619,23 +4658,21 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
 
         int32 vgroup_id = Vattach(file_id,ref_array[lone_vg_number],"r");
         if (vgroup_id ==FAIL) {
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);
             throw InternalErr(__FILE__, __LINE__, "error in attaching lone vgroup.");
         }
 
         uint16  vclassnamelen; /*Vgroup class name length */
         vector<char> vclass_name;
         if (Vgetclassnamelen(vgroup_id,&vclassnamelen) == FAIL) {
-            Vdetach(vgroup_id);
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);
             throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
         }
  
         if (vclassnamelen!=0) {
             vclass_name.resize(vclassnamelen+1);
             if (Vgetclass(vgroup_id,vclass_name.data()) == FAIL) {
-                Vdetach(vgroup_id);
-                Vend(file_id);
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
             }
             if (reserved_vgroups(vclass_name)) {
@@ -4646,8 +4683,7 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
 
         uint16 vgroupnamelen = 0;
         if (Vgetnamelen(vgroup_id,&vgroupnamelen) == FAIL) {
-            Vdetach(vgroup_id);
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);
             throw InternalErr(__FILE__, __LINE__, "cannot obtain vgroup name length.");
         }
 
@@ -4659,11 +4695,9 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
         vgroup_name.resize(vgroupnamelen+1);
 
         if (Vgetname(vgroup_id,vgroup_name.data())==FAIL){
-            Vdetach(vgroup_id);
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);
             throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup name.");
         }
-
 
         string vgroup_name_orig_str(vgroup_name.begin(),vgroup_name.end()-1);
         
@@ -4674,16 +4708,9 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
         
         convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,vgroup_name_orig_str,filename);
 
-#if 0
-        for (const auto &tg:tem_d4_cgroup->groups()) {
-            if(tg)
-            cerr << "group name: " << tg->name() << endl;
-        }
-#endif
         Vdetach(vgroup_id);
         
     }
-
     Vend(file_id);
     BESDEBUG("h4","Finish read_dmr_vlone_groups "<<endl);
 
@@ -4717,32 +4744,20 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
 
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
-        Vdetach(vgroup_id);
-        Vend(file_id);
+        close_vgroup_fileids(file_id,sdfd,vgroup_id); 
         throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
     }
 
     for( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
-
-            Vdetach(vgroup_id);
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id); 
             throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
         }
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
-            try {
-                convert_sds(sdfd,obj_ref, d4g,filename);
-            }  
-            catch(...) {
-              Vdetach(vgroup_id);
-              Vend(file_id);
-              throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
- 
-            }
+            convert_sds(file_id, sdfd,vgroup_id, obj_ref, d4g,filename);
         }
-
     }
 
 }
@@ -4751,50 +4766,29 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
 
     BESDEBUG("h4"," Start convert_vgroup_objects"<<endl);
 
-    int num_gobjects; /* number of global objects */
-    int32 obj_tag; /* object tag */
-    int32 obj_ref;/* object reference */
-
+    int num_gobjects = 0; /* number of global objects */
+    int32 obj_tag = 0; /* object tag */
+    int32 obj_ref = 0;/* object reference */
 
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
-        Vdetach(vgroup_id);
-        Vend(file_id);
+        close_vgroup_fileids(file_id,sdfd,vgroup_id);
         throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
     }
 
     for( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
-            Vdetach(vgroup_id);
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);
             throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
         }
         
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
-            try {
-                convert_sds(sdfd,obj_ref,d4g,filename);
-            }  
-            catch(...) {
-              Vdetach(vgroup_id);
-              Vend(file_id);
-              throw InternalErr(__FILE__, __LINE__, "error in converting sds.");
- 
-            }
+            convert_sds(file_id,sdfd,vgroup_id,obj_ref,d4g,filename);
         }
         else if(Visvs(vgroup_id,obj_ref)) {
-            //try {
-                convert_vdata(file_id,obj_ref,d4g,filename);
-            //}  
-#if 0
-            catch(...) {
-              Vdetach(vgroup_id);
-              Vend(file_id);
-              throw InternalErr(__FILE__, __LINE__, "error in converting vdata.");
- 
-            }
-#endif
+            convert_vdata(file_id, sdfd, vgroup_id, obj_ref,d4g,filename);
         }
 
     }
@@ -4803,9 +4797,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
     for( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
-
-            Vdetach(vgroup_id);
-            Vend(file_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);
             throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
         }
  
@@ -4813,8 +4805,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
 
             int32 vgroup_cid = Vattach(file_id,obj_ref,"r");
             if (vgroup_cid == FAIL) {
-                Vdetach(vgroup_id);
-                Vend(file_id);
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 throw InternalErr(__FILE__, __LINE__, "fail to attach vgroup_cid.");
             }
                
@@ -4822,8 +4813,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             vector<char> vclass_name;
             if (Vgetclassnamelen(vgroup_cid,&vclassnamelen) == FAIL) {
                 Vdetach(vgroup_cid);
-                Vdetach(vgroup_id);
-                Vend(file_id);
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
             }
      
@@ -4831,8 +4821,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
                 vclass_name.resize(vclassnamelen+1);
                 if (Vgetclass(vgroup_cid,vclass_name.data()) == FAIL) {
                     Vdetach(vgroup_cid);
-                    Vdetach(vgroup_id);
-                    Vend(file_id);
+                    close_vgroup_fileids(file_id,sdfd,vgroup_id);
                     throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
                 }
                 if (reserved_vgroups(vclass_name)) {
@@ -4844,8 +4833,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             uint16 vgroupnamelen = 0;
             if (Vgetnamelen(vgroup_cid,&vgroupnamelen) == FAIL) {
                 Vdetach(vgroup_cid);
-                Vdetach(vgroup_id);
-                Vend(file_id);
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 throw InternalErr(__FILE__, __LINE__, "cannot obtain vgroup name length.");
             }
     
@@ -4854,45 +4842,26 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
     
             if (Vgetname(vgroup_cid,vgroup_name.data())==FAIL){
                 Vdetach(vgroup_cid);
-                Vdetach(vgroup_id);
-                Vend(file_id);
+                close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup name.");
             }
 
-            try {
-                string vgroup_name_orig_str(vgroup_name.begin(),vgroup_name.end()-1);
+            string vgroup_name_orig_str(vgroup_name.begin(),vgroup_name.end()-1);
 
-                string vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_orig_str);
-                auto d4c_g_ptr = make_unique<D4Group>(vgroup_name_str);
-                auto d4c_g  = d4c_g_ptr.release();
-                d4g->add_group_nocopy(d4c_g);
+            string vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_orig_str);
+            auto d4c_g_ptr = make_unique<D4Group>(vgroup_name_str);
+            auto d4c_g  = d4c_g_ptr.release();
+            d4g->add_group_nocopy(d4c_g);
 
-                convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,vgroup_name_orig_str,filename);
-            }
-            catch(...) {
-              Vdetach(vgroup_cid);
-              Vdetach(vgroup_id);
-              Vend(file_id);
-              throw InternalErr(__FILE__, __LINE__, "error in converting sds.");
- 
-            }
+            convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,vgroup_name_orig_str,filename);
+
             Vdetach(vgroup_cid);
-
-
         }
     }
-#if 0
-for (const auto &tg:d4g->groups()) {
-            if(tg)
-            cerr << "inside group name: " << tg->name() << endl;
-}
-#endif
-
     BESDEBUG("h4"," End convert_vgroup_objects"<<endl);
 }
 
 void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname) {
-
 
     intn n_attrs = Vnattrs2(vgroup_id);
     if (n_attrs == FAIL) {
@@ -4942,18 +4911,21 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname
 }
 
 
-void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* d4g,const string& filename) {
+void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Group* d4g,const string& filename) {
 
     // Obtain vdata ID
     int32 vdata_id = VSattach (fileid, obj_ref, "r");
-    if (vdata_id == FAIL) 
+    if (vdata_id == FAIL) {
+        close_vgroup_fileids(fileid,sdfd,vgroup_id);  
         throw InternalErr(__FILE__, __LINE__, "Cannot attach vdata.");
+    }
 
     // Vdata class
     char vdata_class[VSNAMELENMAX];
 
     if (VSgetclass (vdata_id, vdata_class) == FAIL) {
-        Vdetach (vdata_id);
+        VSdetach (vdata_id);
+        close_vgroup_fileids(fileid,sdfd,vgroup_id);  
         throw InternalErr(__FILE__, __LINE__, "VSgetclass failed.");
     }
 
@@ -4962,23 +4934,33 @@ void convert_vdata(int32 fileid, int32 obj_ref ,D4Group* d4g,const string& filen
         int32 vs_nflds = VFnfields(vdata_id);
         if (vs_nflds == FAIL) {
             VSdetach(vdata_id);
+            close_vgroup_fileids(fileid,sdfd,vgroup_id);  
             throw InternalErr(__FILE__, __LINE__, "Cannot get the number of fields of a vdata.");
         }
         
         int32 num_elms = VSelts(vdata_id);
         if (num_elms == FAIL) {
             VSdetach(vdata_id);
+            close_vgroup_fileids(fileid,sdfd,vgroup_id);  
             throw InternalErr(__FILE__, __LINE__, "Cannot get the number of records of a vdata.");
         }
 
-        if (vs_nflds >1) 
-            map_vdata_to_dap4_structure_array(vdata_id, num_elms, vs_nflds, obj_ref, d4g, filename);
-        else if (vs_nflds == 1)
-            map_vdata_to_dap4_atomic_array(vdata_id, num_elms, obj_ref, d4g, filename);
-
+        try {
+            if (vs_nflds >1) 
+                map_vdata_to_dap4_structure_array(vdata_id, num_elms, vs_nflds, obj_ref, d4g, filename);
+            else if (vs_nflds == 1)
+                map_vdata_to_dap4_atomic_array(vdata_id, num_elms, obj_ref, d4g, filename);
+        }
+        catch(...) {
+            VSdetach(vdata_id);
+            close_vgroup_fileids(fileid,sdfd,vgroup_id);  
+            if (vs_nflds >1)
+                throw InternalErr(__FILE__, __LINE__, "Cannot map vdata to a dap structure array.");
+            else 
+                throw InternalErr(__FILE__, __LINE__, "Cannot map vdata to a dap atomic array.");
+        }
     }
     VSdetach(vdata_id);
-
 }
 
 
@@ -4987,21 +4969,18 @@ void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_re
     // Now we only handle the vdata when the field order is 1. I haven't seen other cases in NASA files.
     int32 vdata_field_order = VFfieldorder(vdata_id,0);
     if (vdata_field_order == FAIL) {
-        VSdetach(vdata_id);
         throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
     }
 
     char vdata_name[VSNAMELENMAX];       
     if (VSgetname(vdata_id,vdata_name) == FAIL) {
-        VSdetach(vdata_id);
         throw InternalErr(__FILE__, __LINE__, "Cannot get vdata name.");
     }       
  
     string vdata_name_str(vdata_name);
 
-    char *fieldname = VFfieldname(vdata_id,0);
+    const char *fieldname = VFfieldname(vdata_id,0);
     if (fieldname == nullptr) {
-        VSdetach (vdata_id);
         throw InternalErr(__FILE__, __LINE__, "Cannot get vdata field name.");
     }
 
@@ -5037,7 +5016,6 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
 
     char vdata_name[VSNAMELENMAX];       
     if (VSgetname(vdata_id,vdata_name) == FAIL) {
-        VSdetach(vdata_id);
         throw InternalErr(__FILE__, __LINE__, "Cannot get vdata name.");
     }       
     string vdata_name_str(vdata_name);
@@ -5051,13 +5029,11 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
         // Now we only handle the vdata when the field order is 1. I haven't seen other cases in NASA files.
         int32 vdata_field_order = VFfieldorder(vdata_id,j);
         if (vdata_field_order == FAIL) {
-            VSdetach(vdata_id);
             throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
         }
     
-        char *fieldname = VFfieldname(vdata_id,j);
+        const char *fieldname = VFfieldname(vdata_id,j);
         if (fieldname == nullptr) {
-            VSdetach (vdata_id);
             throw InternalErr(__FILE__, __LINE__, "Cannot get vdata field name.");
         }
     
@@ -5120,7 +5096,6 @@ void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref) {
             status = VSattrinfo (vdata_id, _HDF_VDATA, i, attr_name,
                                  &attr_type, &attr_count, &attrsize);
             if (status == FAIL) {
-                VSdetach(vdata_id);
                 throw InternalErr(__FILE__, __LINE__, "VSattrinfo failed.");
             }   
                 
@@ -5130,7 +5105,6 @@ void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref) {
             attr_value.resize(attrsize);
 
             if (VSgetattr (vdata_id, _HDF_VDATA, i, attr_value.data()) == FAIL) {
-                VSdetach(vdata_id);
                 throw InternalErr(__FILE__, __LINE__, "VSgetattr failed.");
             }
             string dap4_attrname = HDFCFUtil::get_CF_string(tempname);
@@ -5141,11 +5115,10 @@ void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref) {
 
     add_obj_ref_attr(ar,false,obj_ref);
 
-
 }
 
 
-void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename) {
+void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, const string &filename) {
 
     int32 sds_index = 0; 
     int32 sds_id = 0; 
@@ -5157,15 +5130,20 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
     int32 n_sds_attrs = 0;
 
     sds_index = SDreftoindex(sdfd,obj_ref);
-    if (sds_index == FAIL)
+    if (sds_index == FAIL) {
+        close_vgroup_fileids(file_id,sdfd,vgroup_id);  
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS index.");
+    }
 
     sds_id = SDselect(sdfd,sds_index);
-    if (sds_id == FAIL)
+    if (sds_id == FAIL) {
+        close_vgroup_fileids(file_id,sdfd,vgroup_id);  
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+     }
 
     if (SDgetnamelen(sds_id, &name_len) == FAIL) {
         SDendaccess(sds_id);
+        close_vgroup_fileids(file_id,sdfd,vgroup_id);  
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
     }
 
@@ -5174,6 +5152,7 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
     // Obtain object name, rank, size, field type and number of SDS attributes
     if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, dim_sizes, &sds_type, &n_sds_attrs)) {
         SDendaccess(sds_id);
+        close_vgroup_fileids(file_id,sdfd,vgroup_id);  
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
     }                        
 
@@ -5195,6 +5174,7 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
             delete bt;
             delete ar;
             SDendaccess (sds_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);  
             throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
         }
         char dim_name[H4_MAX_NC_NAME];
@@ -5211,6 +5191,7 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
             delete ar;
             delete bt;
             SDendaccess (sds_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);  
             throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
         }
 
@@ -5224,17 +5205,17 @@ void convert_sds(int32 sdfd, int32 obj_ref, D4Group *d4g, const string &filename
 
     }
     
-#if 0
-    Array::Dim_iter di = ar->dim_begin();
-    Array::Dim_iter de = ar->dim_end();
-    int dimnum = 0;
-    for (; di != de; di++) {
-        
-
-    }
-#endif
     // map sds var attributes to dap4
-    map_sds_var_dap4_attrs(ar,sds_id,obj_ref,n_sds_attrs);
+    try {
+        map_sds_var_dap4_attrs(ar,sds_id,obj_ref,n_sds_attrs);
+    }
+    catch(...){
+            delete ar;
+            delete bt;
+            SDendaccess (sds_id);
+            close_vgroup_fileids(file_id,sdfd,vgroup_id);  
+            throw InternalErr(__FILE__, __LINE__, "Map SDS attributes to DAP4  failed.");
+    }
     ar->set_is_dap4(true);
     d4g->add_var_nocopy(ar);
 
@@ -5264,7 +5245,6 @@ void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_s
         map_sds_vdata_attr(ar,dap4_attrname,sds_attr_type,attr_value_count,attr_value);
         
     }
-
     add_obj_ref_attr(ar,true,obj_ref);
 }
 
@@ -5273,7 +5253,6 @@ BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filen
 
     BaseType * ret_bt = nullptr;
     switch (h4_type) {
-
 
     case DFNT_INT16:
     case DFNT_NINT16:
@@ -5401,7 +5380,6 @@ print_dap4_attr(int32 type, int loc, void *vals)
         {
             unsigned char uc;
             gp.ucp = (unsigned char *) vals;
-
             uc = *(gp.ucp+loc);
             rep << (int)uc;
             return rep.str();
@@ -5412,7 +5390,6 @@ print_dap4_attr(int32 type, int loc, void *vals)
         {
             char c;
             gp.cp = (char *) vals;
-
             c = *(gp.cp+loc);
             rep << (int)c;
             return rep.str();
@@ -5510,12 +5487,6 @@ void map_vgroup_attr(D4Group *d4g, const string &dap4_attrname,int32 attr_type, 
         throw InternalErr(__FILE__, __LINE__, "unsupported DAP4 attribute type");
 
     // Create the DAP4 attribute 
-#if 0
-    string tempname (attr_name);
-    string dap4_attrname = HDFCFUtil::get_CF_string(tempname);
-
-    string dap4_attrname (attr_name);
-#endif
     auto d4_attr_unique = make_unique<D4Attribute>(dap4_attrname, dap4_attr_type);
     D4Attribute *d4_attr = d4_attr_unique.release();
 
@@ -5549,10 +5520,6 @@ void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, 
         throw InternalErr(__FILE__, __LINE__, "unsupported DAP4 attribute type");
 
     // Create the DAP4 attribute 
-#if 0
-    string tempname (attr_name);
-    string dap4_attrname = HDFCFUtil::get_CF_string(tempname);
-#endif
 
     string dap4_attrname (attr_name);
     auto d4_attr_unique = make_unique<D4Attribute>(dap4_attrname, dap4_attr_type);
@@ -5576,7 +5543,6 @@ void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, 
     }
     d4b->attributes()->add_attribute_nocopy(d4_attr);
 
-
 }
 
 void  add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref) {
@@ -5595,6 +5561,11 @@ void  add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref) {
   
     d4b->attributes()->add_attribute_nocopy(d4_obj_ref_attr);
 
-
-
+}
+void close_vgroup_fileids(int32 fileid, int32 sdfd, int32 vgroup_id) {
+    if (vgroup_id != FAIL)
+        Vdetach(vgroup_id);
+    Vend(fileid);
+    Hclose(fileid);
+    SDend(sdfd);
 }
