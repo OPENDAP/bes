@@ -51,7 +51,8 @@ namespace dmrpp {
 // ThreadPool state variables.
 std::mutex chunk_processing_thread_pool_mtx;     // mutex for critical section
 atomic_uint chunk_processing_thread_counter(0);
-#define COMPUTE_THREADS "compute_threads"
+
+constexpr auto COMPUTE_THREADS = "compute_threads";
 
 #define DMRPP_ENABLE_THREAD_TIMERS 0
 
@@ -79,15 +80,17 @@ atomic_uint chunk_processing_thread_counter(0);
  * constrained - used to determine where/how to add the chunk's data to the
  * whole array.
  */
-void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape)
-{
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
+void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array,
+                       const vector<unsigned long long> &constrained_array_shape) {
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
 
+#if 0
     // TODO If this is part of a SuperChunk, hasn't the data been read by SuperChunk::Retrieve_data()?
     //  If so, calling read() here is not needed. Same question below. jhg 5/7/22
     chunk->read_chunk();
+#endif
 
-    if(array) {
+    if (array) {
         // If this chunk used/uses hdf5 fill values, do not attempt to deflate, etc., its
         // values since the fill value code makes the chunks 'fully formed.'' jhrg 5/16/22
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
@@ -100,7 +103,213 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
                             chunk, constrained_array_shape);
     }
 
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
+}
+
+/**
+ * @brief A single argument wrapper for process_one_chunk() for use with std::async().
+ * @param args A unique_ptr to an instance of one_chunk_args.
+ * @return True unless an exception is throw in which case neither true or false apply.
+ */
+bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args) {
+#if DMRPP_ENABLE_THREAD_TIMERS
+    stringstream timer_tag;
+    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
+        " parent_tid: 0x" << std::hex << args->parent_thread_id << " parent_sc: " << args->parent_super_chunk_id;
+    BESStopWatch sw(COMPUTE_THREADS);
+    sw.start(timer_tag.str());
+#endif
+
+    process_one_chunk(args->chunk, args->array, args->array_shape);
+    return true;
+}
+
+/**
+ * @brief Asynchronously starts the one_chunk_compute_thread using std::async() and places the returned std::future in the queue futures.
+ *
+ * NOTE: one_chunk_compute_thread is a wrapper() for process_one_chunk()
+ *
+ * @param futures The queue into which to place the future returned by async.
+ * @param args The arguments for the one_chunk_compute_thread function
+ * @return Returns true if the std::async() call was made and a future was returned, false if the
+ * chunk_processing_thread_counter has reached the maximum allowable size.
+ */
+bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, unique_ptr<one_chunk_args> args) {
+    bool retval = false;
+    std::unique_lock<std::mutex> lck(chunk_processing_thread_pool_mtx);
+
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads
+                                        << " chunk_processing_thread_counter: " << chunk_processing_thread_counter
+                                        << endl);
+
+    if (chunk_processing_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
+        chunk_processing_thread_counter++;
+        futures.push_back(std::async(std::launch::async, one_chunk_compute_thread, std::move(args)));
+        retval = true;
+
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Got std::future '" << futures.size() <<
+                                            "' from std::async, chunk_processing_thread_counter: "
+                                            << chunk_processing_thread_counter << endl);
+    }
+    return retval;
+}
+
+// TODO The next function does not start a set of threads. When first called, it will see there are
+//  no futures and start one thread. Then it will wait for that thread to finish and then start the
+//  next thread. This is not what we want. jhrg 2/5/24
+
+void process_chunks_concurrent(
+        const string &super_chunk_id,
+        queue<shared_ptr<Chunk>> &chunks,
+        DmrppArray *array,
+        const vector<unsigned long long> &constrained_array_shape) {
+
+    // We maintain a list  of futures to track our parallel activities.
+    list<future<bool>> futures;
+    try {
+        bool done = false;
+        bool future_finished = true;    // This is never used except for the debug line. jhrg 2/7/24
+        while (!done) {
+
+            if (!futures.empty())
+                future_finished = get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS,
+                                                  prolog);
+
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+            BESDEBUG(SUPER_CHUNK_MODULE, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
+
+            if (!chunks.empty()) {
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
+                bool thread_started = true;
+                while (thread_started && !chunks.empty()) {
+                    auto chunk = chunks.front();
+                    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
+
+                    auto args = unique_ptr<one_chunk_args>(
+                            new one_chunk_args(super_chunk_id, chunk, array, constrained_array_shape));
+                    thread_started = start_one_chunk_compute_thread(futures, std::move(args));
+
+                    if (thread_started) {
+                        chunks.pop();
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
+                    }
+                    else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        BESDEBUG(SUPER_CHUNK_MODULE,
+                                 prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
+                                        "chunk_processing_thread_counter: " << chunk_processing_thread_counter
+                                        << " futures.size(): " << futures.size() << endl);
+                    }
+                }
+            }
+            else {
+                // No more Chunks and no futures means we're done here.
+                if (futures.empty())
+                    done = true;
+            }
+
+            future_finished = false;
+        }
+    }
+    catch (...) {
+        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        while (!futures.empty()) {
+            if (futures.back().valid())
+                futures.back().get();
+            futures.pop_back();
+        }
+        // re-throw the exception
+        throw;
+    }
+}
+
+
+/**
+ * @brief Uses std::async and std::future to concurrently retrieve/inflate/shuffle/insert/etc the Chunks in the queue "chunks".
+ *
+ * For each Chunk in the queue, process the chunked data by using std::async() to generate a std::future which will
+ * perform the data retrieval (if the Chunk has not been read previously) and subsequent computational steps
+ * (inflate/shuffle/etc) and finally insertion into the DmrppArray's internal data buffer.
+ *
+ * NOTE: There are 4 variants of this function:
+ *
+ *  - process_chunks_concurrent()
+ *  - process_chunks_unconstrained_concurrent()
+ *  - read_super_chunks_concurrent()
+ *  - read_super_chunks_unconstrained_concurrent
+ *
+ *  If structural/algorithmic changes need to be made to this function it is almost certain that similar changes will
+ *  be required in the other 3 functions.
+ *
+ * @param chunks The queue of Chunk objects to process.
+ * @param array The DmrppArray into which the chunk data will be placed.
+ * @param array_shape The shape of the DmrppArray (passing is faster than recomputing this value)
+ */
+void process_chunks_concurrent_v2(
+        const string &super_chunk_id,
+        queue<shared_ptr<Chunk>> &chunks,
+        DmrppArray *array,
+        const vector<unsigned long long> &constrained_array_shape) {
+
+    // We maintain a list  of futures to track our parallel activities.
+    list<future<bool>> futures;
+    try {
+        bool done = false;
+        bool future_finished = true;    // This is never used except for the debug line. jhrg 2/7/24
+        while (!done) {
+
+            if (!futures.empty())
+                future_finished = get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS,
+                                                  prolog);
+
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+            BESDEBUG(SUPER_CHUNK_MODULE, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
+
+            if (!chunks.empty()) {
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
+                bool thread_started = true;
+                while (thread_started && !chunks.empty()) {
+                    auto chunk = chunks.front();
+                    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
+
+                    auto args = unique_ptr<one_chunk_args>(
+                            new one_chunk_args(super_chunk_id, chunk, array, constrained_array_shape));
+                    thread_started = start_one_chunk_compute_thread(futures, std::move(args));
+
+                    if (thread_started) {
+                        chunks.pop();
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
+                    }
+                    else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        BESDEBUG(SUPER_CHUNK_MODULE,
+                                 prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
+                                        "chunk_processing_thread_counter: " << chunk_processing_thread_counter
+                                        << " futures.size(): " << futures.size() << endl);
+                    }
+                }
+            }
+            else {
+                // No more Chunks and no futures means we're done here.
+                if (futures.empty())
+                    done = true;
+            }
+
+            future_finished = false;
+        }
+    }
+    catch (...) {
+        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        while (!futures.empty()) {
+            if (futures.back().valid())
+                futures.back().get();
+            futures.pop_back();
+        }
+        // re-throw the exception
+        throw;
+    }
 }
 
 /**
@@ -123,53 +332,36 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
  * whole array.
  */
 void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
-                                     DmrppArray *array, const vector<unsigned long long> &array_shape)
-{
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
+                                     DmrppArray *array, const vector<unsigned long long> &array_shape) {
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
 
+#if 0
     chunk->read_chunk();
+#endif
 
-    if(array){
+    if (array) {
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
 
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
 }
 
 void process_one_chunk_unconstrained_dio(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
-                                     DmrppArray *array, const vector<unsigned long long> &array_shape)
-{
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
+                                         DmrppArray *array, const vector<unsigned long long> &array_shape) {
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
 
+#if 0
     chunk->read_chunk();
+#endif
 
-    if(array){
+    if (array) {
         array->insert_chunk_unconstrained_dio(chunk);
     }
 
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
-}
-
-/**
- * @brief A single argument wrapper for process_one_chunk() for use with std::async().
- * @param args A unique_ptr to an instance of one_chunk_args.
- * @return True unless an exception is throw in which case neither true or false apply.
- */
-bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
-{
-#if DMRPP_ENABLE_THREAD_TIMERS
-    stringstream timer_tag;
-    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
-        " parent_tid: 0x" << std::hex << args->parent_thread_id << " parent_sc: " << args->parent_super_chunk_id;
-    BESStopWatch sw(COMPUTE_THREADS);
-    sw.start(timer_tag.str());
-#endif
-
-    process_one_chunk(args->chunk, args->array, args->array_shape);
-    return true;
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
 }
 
 /**
@@ -203,29 +395,6 @@ bool one_chunk_unconstrained_compute_thread_dio(unique_ptr<one_chunk_unconstrain
 
     process_one_chunk_unconstrained_dio(args->chunk, args->chunk_shape, args->array, args->array_shape);
     return true;
-}
-/**
- * @brief Asynchronously starts the one_chunk_compute_thread using std::async() and places the returned std::future in the queue futures.
- *
- * NOTE: one_chunk_compute_thread is a wrapper() for process_one_chunk()
- *
- * @param futures The queue into which to place the future returned by async.
- * @param args The arguments for the one_chunk_compute_thread function
- * @return Returns true if the std::async() call was made and a future was returned, false if the
- * chunk_processing_thread_counter has reached the maximum allowable size.
- */
-bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, unique_ptr<one_chunk_args> args) {
-    bool retval = false;
-    std::unique_lock<std::mutex> lck (chunk_processing_thread_pool_mtx);
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << " chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
-    if (chunk_processing_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
-        chunk_processing_thread_counter++;
-        futures.push_back(std::async(std::launch::async, one_chunk_compute_thread, std::move(args)));
-        retval = true;
-        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Got std::future '" << futures.size() <<
-                                            "' from std::async, chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
-    }
-    return retval;
 }
 
 /**
@@ -264,89 +433,10 @@ bool start_one_chunk_unconstrained_compute_thread_dio(list<std::future<bool>> &f
     return retval;
 }
 
-// TODO The next three function repeat the same pattern, at least conceptually. If they can be
+// TODO The next three functions repeat the same pattern, at least conceptually. If they can be
 //  combined, lets do that. Also, the function get_next_future() is pretty tortured. jhrg 2/5/24
 
-/**
- * @brief Uses std::async and std::future to concurrently retrieve/inflate/shuffle/insert/etc the Chunks in the queue "chunks".
- *
- * For each Chunk in the queue, process the chunked data by using std::async() to generate a std::future which will
- * perform the data retrieval (if the Chunk has not been read previously) and subsequent computational steps
- * (inflate/shuffle/etc) and finally insertion into the DmrppArray's internal data buffer.
- *
- * NOTE: There are 4 variants of this function:
- *
- *  - process_chunks_concurrent()
- *  - process_chunks_unconstrained_concurrent()
- *  - read_super_chunks_concurrent()
- *  - read_super_chunks_unconstrained_concurrent
- *
- *  If structural/algorithmic changes need to be made to this function it is almost certain that similar changes will
- *  be required in the other 3 functions.
- *
- * @param chunks The queue of Chunk objects to process.
- * @param array The DmrppArray into which the chunk data will be placed.
- * @param array_shape The shape of the DmrppArray (passing is faster than recomputing this value)
- */
-void process_chunks_concurrent(
-        const string &super_chunk_id,
-        queue<shared_ptr<Chunk>> &chunks,
-        DmrppArray *array,
-        const vector<unsigned long long> &constrained_array_shape ){
 
-    // We maintain a list  of futures to track our parallel activities.
-    list<future<bool>> futures;
-    try {
-        bool done = false;
-        bool future_finished = true;
-        while (!done) {
-
-            if(!futures.empty())
-                future_finished = get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
-
-            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
-            // because future::get() was called or a call to future::valid() returned false.
-            BESDEBUG(SUPER_CHUNK_MODULE, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
-
-            if (!chunks.empty()){
-                // Next we try to add a new Chunk compute thread if we can - there might be room.
-                bool thread_started = true;
-                while(thread_started && !chunks.empty()) {
-                    auto chunk = chunks.front();
-                    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
-
-                    auto args = unique_ptr<one_chunk_args>(new one_chunk_args(super_chunk_id, chunk, array, constrained_array_shape));
-                    thread_started = start_one_chunk_compute_thread(futures, std::move(args));
-
-                    if (thread_started) {
-                        chunks.pop();
-                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
-                    } else {
-                        // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
-                                                            "chunk_processing_thread_counter: " << chunk_processing_thread_counter << " futures.size(): " << futures.size() << endl);
-                    }
-                }
-            }
-            else {
-                // No more Chunks and no futures means we're done here.
-                if(futures.empty())
-                    done = true;
-            }
-            future_finished = false;
-        }
-    }
-    catch (...) {
-        // Complete all of the futures, otherwise we'll have threads out there using up resources
-        while(!futures.empty()){
-            if(futures.back().valid())
-                futures.back().get();
-            futures.pop_back();
-        }
-        // re-throw the exception
-        throw;
-    }
-}
 
 /**
  * @brief Uses std::async and std::future to concurrently retrieve/inflate/shuffle/insert/etc the Chunks in the queue "chunks".
@@ -509,6 +599,9 @@ void process_chunks_unconstrained_concurrent_dio(
 // TODO For the next two functions, I think the 'candidate_chunk' param could be a reference.
 //  jhrg 2/5/24
 
+// TODO If the caller of this did not try to add a chunk that used file values, this
+//  function could be simplified. jhrg 2/7/24
+
 /**
  * @brief Attempts to add a new Chunk to this SuperChunk.
  *
@@ -533,12 +626,13 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
         d_chunks.push_back(candidate_chunk);
         d_offset = candidate_chunk->get_offset();
         d_size = candidate_chunk->get_size();
-        // When get_uses_fill_value() is true, returns a shared_ptr<Chunk> initialized to nullptr. jhrg 5/7/22
+
         d_uses_fill_value = candidate_chunk->get_uses_fill_value();
         if (!d_uses_fill_value)
             d_data_url = candidate_chunk->get_data_url();
         else
             d_data_url = nullptr;
+
         chunk_was_added = true;
     }
     // For now, if a chunk uses fill values, it gets its own SuperChunk. jhrg 5/7/22
@@ -772,7 +866,6 @@ void SuperChunk::process_child_chunks_unconstrained() {
     }
 }
 
-// TODO move this up before dump. jhrg 2/5/24
 // direct chunk method to read unconstrained variables.
 void SuperChunk::read_unconstrained_dio() {
 

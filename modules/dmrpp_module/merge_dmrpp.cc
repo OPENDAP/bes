@@ -1369,25 +1369,26 @@ bool obtain_var_path_info(const string &fname, const vector<string> &var_type_li
     vector<string> grp_names;
     vector<unsigned int> grp_lines;
     vector<unsigned int> end_grp_lines;
-    
-    bool has_group = obtain_var_grp_info(fname,var_type_list,grp_names,grp_lines,end_grp_lines,var_type, var_name,var_lines);
-    if (!has_group)  {
-        cout <<" the missing variable info shows this dmrpp has groups, however, no group is found. "<<endl;
+
+    bool has_group = obtain_var_grp_info(fname, var_type_list, grp_names, grp_lines, end_grp_lines, var_type, var_name,
+                                         var_lines);
+    if (!has_group) {
+        cerr << " the missing variable info shows this dmrpp has groups, however, no group is found. " << endl;
         return false;
     }
-    for (unsigned int i =0; i <var_lines.size(); i++) {
-        string var_path = obtain_var_grp_paths(grp_lines,end_grp_lines,grp_names,var_lines[i]);
+    for (unsigned int i = 0; i < var_lines.size(); i++) {
+        string var_path = obtain_var_grp_paths(grp_lines, end_grp_lines, grp_names, var_lines[i]);
         string vfqn = var_path + "/" + var_name[i];
         var_fqn.push_back(vfqn);
     }
 
 // For debugging
 #if 0
-for (unsigned int i = 0; i <var_lines.size(); i++) {
-cerr<<" var fqn: "<<var_fqn[i] <<endl;
-cerr<<" var line: "<<var_lines[i] <<endl;
+    for (unsigned int i = 0; i <var_lines.size(); i++) {
+    cerr<<" var fqn: "<<var_fqn[i] <<endl;
+    cerr<<" var line: "<<var_lines[i] <<endl;
 
-}
+    }
 #endif
 
     return true;
