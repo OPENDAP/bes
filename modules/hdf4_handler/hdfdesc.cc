@@ -4396,15 +4396,23 @@ void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_re
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        close_vgroup_fileids(file_id,sdfd,-1);
         throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
     }
 
     for (int i = 0; i <n_sds; i++) {
 
         int32 sds_id  = SDselect(sdfd,i);
+        if (sds_id == FAIL) {
+            close_vgroup_fileids(file_id,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+        }
         int32 obj_ref = SDidtoref(sds_id);
-        if (obj_ref == FAIL) 
+        if (obj_ref == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(file_id,sdfd,-1);
             throw InternalErr (__FILE__,__LINE__,"SDidtoref failed ");
+        }
         sds_ref.insert(obj_ref);
         SDendaccess(sds_id);
     }
