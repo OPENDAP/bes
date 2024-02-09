@@ -26,8 +26,6 @@
 
 #include <memory>
 
-#include <unistd.h>
-#include <libdap/util.h>
 #include <libdap/debug.h>
 
 #include "BESContextManager.h"
@@ -49,20 +47,139 @@ using namespace libdap;
 
 #define prolog std::string("SuperChunkTest::").append(__func__).append("() - ")
 
+namespace http {
+class mock_url: public url {
+public:
+    mock_url() = default;
+
+    string str() const override { return "http://test.url.tld/file.ext?aws-token=secret_stuff"; }
+    string protocol() const override { return "http"; }
+    string host() const override { return "test.url.tld"; }
+    string path() const override { return "/file.ext"; }
+};
+}
+
 namespace dmrpp {
 
+#define THREAD_SLEEP_TIME 1 // sleep time in seconds
+
+class MockChunk : public Chunk {
+    CurlHandlePool *d_chp;
+    bool d_sim_err; // simulate and err
+
+public:
+    MockChunk(CurlHandlePool *chp, bool sim_err) : Chunk(), d_chp(chp), d_sim_err(sim_err)
+    {}
+
+    void inflate_chunk(bool, bool, unsigned int, unsigned int)
+    {
+        return;
+    }
+
+    virtual shared_ptr<http::url> get_data_url() const override {
+        return make_shared<http::url>("https://httpbin.org/");
+    }
+
+    virtual unsigned long long get_bytes_read() const  override
+    {
+        return 2;
+    }
+
+    virtual unsigned long long get_size() const  override
+    {
+        return 2;
+    }
+
+    std::vector<unsigned long long> mock_pia = {1};
+
+    virtual const std::vector<unsigned long long> &get_position_in_array() const  override
+    {
+        return mock_pia;
+    }
+
+    // This is very close to the real read_chunk with only the call to d_handle->read_data()
+    // replaced by code that throws (or not) depending on the value of 'sim_err' in the
+    // constructor.
+    void read_chunk() override
+    {
+        if (d_is_read) {
+            return;
+        }
+
+        set_rbuf_to_size();
+
+        dmrpp_easy_handle *handle = d_chp->get_easy_handle(this);
+        if (!handle)
+            throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
+
+        try {
+            // Does not call read_data() but simulates a delay.
+            time_t t;
+            srandom(time(&t));
+            sleep(THREAD_SLEEP_TIME);
+
+            if (d_sim_err)
+                throw BESInternalError(prolog + "Simulated error", __FILE__, __LINE__);
+
+            d_chp->release_handle(handle);
+        }
+        catch (...) {
+            d_chp->release_handle(handle);
+            throw;
+        }
+
+        // If the expected byte count was not read, it's an error.
+        if (get_size() != get_bytes_read()) {
+            string msg = prolog + "Wrong number of bytes read for chunk; read: " + std::to_string(get_bytes_read())
+                    + ", expected: " + std::to_string(get_size());
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+
+        d_is_read = true;
+    }
+};
+
+/// This class provides a child of DmrppArray with an inert 'insert_chunk' method. jhrg 2/9/24
+class MockDmrppArray : public DmrppArray {
+public:
+    MockDmrppArray() : DmrppArray("mock_array", new libdap::Byte("mock_array"))
+    {
+        append_dim(10, "mock_dim");
+    }
+
+    bool is_filters_empty() const override
+    { return true; }
+
+    virtual void insert_chunk(unsigned int, vector<unsigned long long> *, vector<unsigned long long> *,
+                              shared_ptr<Chunk>, const vector<unsigned long long> &) override
+    {
+        return;
+    }
+};
+
 class SuperChunkTest : public CppUnit::TestFixture {
+
+    CPPUNIT_TEST_SUITE( SuperChunkTest );
+
+        CPPUNIT_TEST(test_initialize_chunk_processing_futures_empty_queue);
+        CPPUNIT_TEST(test_initialize_chunk_processing_futures_one_chunk);
+        CPPUNIT_TEST(test_initialize_chunk_processing_futures_thread_limit);
+
+        CPPUNIT_TEST(sc_one_chunk_test);
+        CPPUNIT_TEST(sc_chunks_test_01);
+        CPPUNIT_TEST(sc_chunks_test_02);
+
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     SuperChunkTest()
     {
-        //foo = make_unique<DmrppRequestHandler>("Chaos");
         DmrppRequestHandler::curl_handle_pool = make_unique<CurlHandlePool>();
         DmrppRequestHandler::curl_handle_pool->initialize();
     }
 
     // Called at the end of the test
-    ~SuperChunkTest() = default;
+    ~SuperChunkTest() override = default;
 
     // Called before each test
     void setUp() override
@@ -72,18 +189,52 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.LogVerbose", "yes");
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.Default", "default");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.RootDirectory",
-                                       "/Users/jimg/src/opendap/hyrax_git/bes/modules/dmrpp_module");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.RootDirectory", TEST_DMRPP_CATALOG);
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch", "null:*;");
 
-        TheBESKeys::TheKeys()->set_key("AllowedHosts", "^(file|https?):\\/\\/.*$");
+        // Was originally: "^(file|https?):\\/\\/.*$" jhrg 2/9/24
+        TheBESKeys::TheKeys()->set_key("AllowedHosts", "^file.*$");
+
+        DmrppRequestHandler::d_max_compute_threads = 2;
     }
 
-    void test_initialize_chunk_processing_futures() {
-        //initialize_chunk_processing_futures(list <future<bool>> &futures, queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,
-        //                                   const vector<unsigned long long> &constrained_array_shape)
+    void test_initialize_chunk_processing_futures_empty_queue() {
         list <future<bool>> futures;
-        // TODO Write tests. jhrg 2/8/24
+        queue<shared_ptr<Chunk>> chunks;
+        vector<unsigned long long> constrained_array_shape = {100};
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be empty.", chunks.empty());
+        initialize_chunk_processing_futures(futures, chunks, nullptr /*DmrppArray* */, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should be empty given teh chunks queue is empty.", futures.empty());
+    }
+
+    void test_initialize_chunk_processing_futures_one_chunk() {
+        list <future<bool>> futures;
+        queue<shared_ptr<Chunk>> chunks;
+        auto data_url = make_shared<http::mock_url>();
+        std::vector<unsigned long long> chunk_position_in_array = {0};
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, chunk_position_in_array));
+
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should have one entry.", chunks.size() == 1);
+        vector<unsigned long long> constrained_array_shape = {100};
+        initialize_chunk_processing_futures(futures, chunks, nullptr /*DmrppArray* */, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be empty.", chunks.empty());
+    }
+
+    void test_initialize_chunk_processing_futures_thread_limit() {
+        list <future<bool>> futures;
+        queue<shared_ptr<Chunk>> chunks;
+        auto data_url = make_shared<http::mock_url>();
+        std::vector<unsigned long long> chunk_position_in_array = {0};
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, chunk_position_in_array));
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, chunk_position_in_array));
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, chunk_position_in_array));
+
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should have three entries.", chunks.size() == 3);
+        vector<unsigned long long> constrained_array_shape = {100};
+        initialize_chunk_processing_futures(futures, chunks, nullptr /*DmrppArray* */, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 2);
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should have one entry.", chunks.size() == 1);
     }
 
     void sc_one_chunk_test() {
@@ -306,14 +457,6 @@ public:
         }
         DBG( cerr << prolog << "END" << endl);
     }
-
-    CPPUNIT_TEST_SUITE( SuperChunkTest );
-
-        CPPUNIT_TEST(sc_one_chunk_test);
-        CPPUNIT_TEST(sc_chunks_test_01);
-        CPPUNIT_TEST(sc_chunks_test_02);
-
-    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SuperChunkTest);

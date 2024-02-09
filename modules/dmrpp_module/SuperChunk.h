@@ -102,6 +102,10 @@ public:
     virtual void dump(std::ostream & strm) const;
 };
 
+void
+initialize_chunk_processing_futures(list <future<bool>> &futures, queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,
+                                    const vector<unsigned long long> &constrained_array_shape);
+
 // TODO If we keep parallel transfers, these can still be removed since futures can take
 //  arg lists. jhrg 2/5/24
 
