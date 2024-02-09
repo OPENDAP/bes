@@ -4265,8 +4265,9 @@ void read_dmr(DMR *dmr, const string &filename) {
 
     D4Group* root_grp = dmr->root();
 
-    // We must handle lone SDS first due to the possible dimension info.
     // It is possible that there are SDS and Vdata objects that don't belong to any vgroups.
+    // We must handle lone SDS objects first because DAP4 requires a dimension with a name 
+    // to be in the front of a dmr.
     // We also need to map SD file attributes to DAP4 root group attributes.
     // TODO: possible we need to handle HDF-EOS2 swath dimensions. It needs special care. 
 
@@ -4315,7 +4316,7 @@ void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd) {
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
         }
 
-        // Obtain object name, rank, size, field type and number of SDS attributes
+        // Obtain object name, rank, size, field type and number of attributes of an SDS
         int32  dim_sizes[H4_MAX_VAR_DIMS];
         int32  sds_rank = 0;
         int32  sds_type = 0;
@@ -4377,10 +4378,10 @@ void read_lone_sds(D4Group *root_grp, int32 file_id,int32 sdfd, const string &fi
     obtain_all_sds_refs(file_id,sdfd,lone_sds_refs);
     exclude_all_sds_refs_in_vgroups(file_id,sdfd,lone_sds_refs); 
 
-    // The following line is necessary to ensure the same order of objects on different platforms.
+    // Convert  unorder set to set. It is necessary to ensure the same order of objects on different platforms.
     set<int32> ordered_lone_sds_refs(lone_sds_refs.begin(),lone_sds_refs.end());
 
-   // Map SDS to DAP4 root group.
+   // Map lone SDS objects and put them under  DAP4's root group.
    for (const auto &sds_ref:ordered_lone_sds_refs) {
         convert_sds(file_id, sdfd, -1,sds_ref, root_grp, filename);  
    }
@@ -4423,9 +4424,9 @@ void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_re
 void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref) {
 
     BESDEBUG("h4"," Begin exclude_all_sds_refs_in_vgroups() "<<endl);
-    int      num_lonevg; 
+    int      num_lonevg = 0; 
     vector<int> ref_array;
-    int32  istat;
+    int32  istat = 0;
 
     istat = Vstart(file_id);
     if (istat == FAIL) { 
@@ -4443,8 +4444,10 @@ void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<in
     /* obtain object reference array. */
 
     /* if no lone vgroup, quit from this function. */
-    if (num_lonevg == 0)
+    if (num_lonevg == 0) {
+        Vend(file_id);
         return;
+    }
 
     ref_array.resize(num_lonevg);
 
@@ -4607,7 +4610,7 @@ void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string 
 
     if (num_lone_vdata == FAIL) {
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain lone vdata number");
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the number of lone vdatas.");
     }
 
     if (num_lone_vdata > 0) {
@@ -4617,7 +4620,7 @@ void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string 
 
         if (VSlone (file_id, ref_array.data(), num_lone_vdata) == FAIL) {
             close_vgroup_fileids(file_id,sdfd,-1);
-            throw InternalErr(__FILE__, __LINE__, "Cannot obtain lone vdata reference arrays");
+            throw InternalErr(__FILE__, __LINE__, "Cannot obtain lone vdata reference arrays.");
         }
 
         for (int i = 0; i < num_lone_vdata; i++) 
@@ -4632,34 +4635,36 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
 
     BESDEBUG("h4","Start read_dmr_vlone_groups "<<endl);
 
-    int      num_lonevg; 
+    int      num_lonevg = 0; 
     vector<int> ref_array;
-    int32  istat;
+    int32  istat = 0;
 
     istat = Vstart(file_id);
     if (istat == FAIL) { 
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "unable to start hdf4 V interface.");
+        throw InternalErr(__FILE__, __LINE__, "Unable to start hdf4 V interface.");
     }
 
     num_lonevg = Vlone(file_id,nullptr,0);
 
     if (num_lonevg == FAIL) {
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "error in obtaining lone vgroup number.");
+        throw InternalErr(__FILE__, __LINE__, "error in obtaining the total number of lone vgroups.");
     }
 
-    /* obtain object reference array. */
+    // Obtain object reference array. 
 
-    /* if no lone vgroup, quit from this function. */
-    if (num_lonevg == 0)
+    // If no lone vgroups, quit from this function. 
+    if (num_lonevg == 0){
+        Vend(file_id);
         return;
+    }
 
     ref_array.resize(num_lonevg);
 
     num_lonevg = Vlone(file_id,ref_array.data(),num_lonevg);
 
-    /* walk through every lone group in the file */
+    // Walk through every lone group in the file. 
 
     for(int lone_vg_number = 0; lone_vg_number < num_lonevg;
             lone_vg_number++) {
@@ -4670,7 +4675,7 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
             throw InternalErr(__FILE__, __LINE__, "error in attaching lone vgroup.");
         }
 
-        uint16  vclassnamelen; /*Vgroup class name length */
+        uint16  vclassnamelen = 0; /*Vgroup class name length */
         vector<char> vclass_name;
         if (Vgetclassnamelen(vgroup_id,&vclassnamelen) == FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
@@ -4746,9 +4751,9 @@ bool reserved_vgroups(const vector<char>& vgroup_class) {
 
 void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Group *d4g, const string &filename) {
 
-    int num_gobjects; /* number of global objects */
-    int32 obj_tag; /* object tag */
-    int32 obj_ref;/* object reference */
+    int num_gobjects = 0; 
+    int32 obj_tag = 0; 
+    int32 obj_ref = 0;
 
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
@@ -4774,9 +4779,9 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
 
     BESDEBUG("h4"," Start convert_vgroup_objects"<<endl);
 
-    int num_gobjects = 0; /* number of global objects */
-    int32 obj_tag = 0; /* object tag */
-    int32 obj_ref = 0;/* object reference */
+    int num_gobjects = 0; 
+    int32 obj_tag = 0; 
+    int32 obj_ref = 0;
 
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
@@ -4784,7 +4789,8 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
         throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
     }
 
-    for( int i = 0;i<num_gobjects;i++) { 
+    // Need to convert objects first.
+    for ( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
@@ -4798,10 +4804,12 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
         else if(Visvs(vgroup_id,obj_ref)) {
             convert_vdata(file_id, sdfd, vgroup_id, obj_ref,d4g,filename);
         }
-
     }
+
+    // Then attributes.
     convert_vgroup_attrs(vgroup_id,d4g, vgroupname);
 
+    // Then the children groups.
     for( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
@@ -4817,12 +4825,12 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
                 throw InternalErr(__FILE__, __LINE__, "fail to attach vgroup_cid.");
             }
                
-            uint16  vclassnamelen; /*Vgroup class name length */
+            uint16  vclassnamelen = 0; 
             vector<char> vclass_name;
             if (Vgetclassnamelen(vgroup_cid,&vclassnamelen) == FAIL) {
                 Vdetach(vgroup_cid);
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
+                throw InternalErr(__FILE__, __LINE__, "Error in obtaining vgroup class name length.");
             }
      
             if (vclassnamelen!=0) {
@@ -4830,7 +4838,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
                 if (Vgetclass(vgroup_cid,vclass_name.data()) == FAIL) {
                     Vdetach(vgroup_cid);
                     close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                    throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+                    throw InternalErr(__FILE__, __LINE__, "Error in obtaining vgroup class name.");
                 }
                 if (reserved_vgroups(vclass_name)) {
                     Vdetach(vgroup_cid);
@@ -4854,6 +4862,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
                 throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup name.");
             }
 
+            // Need to remove the last '/0'. 
             string vgroup_name_orig_str(vgroup_name.begin(),vgroup_name.end()-1);
 
             string vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_orig_str);
@@ -4870,7 +4879,8 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
 }
 
 void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname) {
-
+ 
+    // Need to use Vnattrs2 instead of Vnattrs to include all attributes. 
     intn n_attrs = Vnattrs2(vgroup_id);
     if (n_attrs == FAIL) {
         Vdetach(vgroup_id);
@@ -4953,6 +4963,7 @@ void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Gr
             throw InternalErr(__FILE__, __LINE__, "Cannot get the number of records of a vdata.");
         }
 
+        // We map one field vdata to an atomic array; multi-field vdata to an array of structure.
         try {
             if (vs_nflds >1) 
                 map_vdata_to_dap4_structure_array(vdata_id, num_elms, vs_nflds, obj_ref, d4g, filename);
@@ -4974,7 +4985,7 @@ void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Gr
 
 void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename) {
 
-    // Now we only handle the vdata when the field order is 1. I haven't seen other cases in NASA files.
+    // Only one field, so the index is 0.
     int32 vdata_field_order = VFfieldorder(vdata_id,0);
     if (vdata_field_order == FAIL) {
         throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
@@ -5034,7 +5045,6 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
    
     for (int j = 0; j <nflds; j++) {
 
-        // Now we only handle the vdata when the field order is 1. I haven't seen other cases in NASA files.
         int32 vdata_field_order = VFfieldorder(vdata_id,j);
         if (vdata_field_order == FAIL) {
             throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
@@ -5121,6 +5131,7 @@ void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref) {
         }       
     }
 
+    // This is for dmrpp. The reference number is used to retrieve the data.
     add_obj_ref_attr(ar,false,obj_ref);
 
 }
@@ -5163,9 +5174,9 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
         close_vgroup_fileids(file_id,sdfd,vgroup_id);  
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
     }                        
-
     
     string sds_name_str(sds_name.begin(),sds_name.end()-1);
+
     // Handle special characters in the sds_name.
     sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
     BaseType *bt = gen_dap_var(sds_type,sds_name_str, filename);
@@ -5205,9 +5216,9 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
 
         string dim_name_str (dim_name);
         dim_name_str = HDFCFUtil::get_CF_string(dim_name_str);
+
         // We add a "/" in front of dim_name_str for the dimension name to make it FQN 
         // since current build_dmrpp requires this.
-        
         dim_name_str = "/" + dim_name_str;
         ar->append_dim_ll(dim_sizes[dimindex], dim_name_str);
 
@@ -5222,7 +5233,7 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
             delete bt;
             SDendaccess (sds_id);
             close_vgroup_fileids(file_id,sdfd,vgroup_id);  
-            throw InternalErr(__FILE__, __LINE__, "Map SDS attributes to DAP4  failed.");
+            throw InternalErr(__FILE__, __LINE__, "Map SDS attributes to DAP4 failed.");
     }
     ar->set_is_dap4(true);
     d4g->add_var_nocopy(ar);
@@ -5253,10 +5264,11 @@ void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_s
         map_sds_vdata_attr(ar,dap4_attrname,sds_attr_type,attr_value_count,attr_value);
         
     }
+    // Save the reference number since it will be used by the dmrpp module.
     add_obj_ref_attr(ar,true,obj_ref);
 }
 
-// TODO: support DAP4 type later(this is still a DAP2 type)
+// Note: HDF4 doesn't support 64-bit integers.
 BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filename) {
 
     BaseType * ret_bt = nullptr;
@@ -5309,6 +5321,8 @@ BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filen
     return ret_bt;
 }
 
+// Note: we map the attributes with DFNT_CHAR(char) to DAP4 string since
+//       this is common way that users apply.
 D4AttributeType h4type_to_dap4_attrtype(int32 h4_type) {
 
     D4AttributeType dap4_attr_type = attr_null_c;
@@ -5498,7 +5512,7 @@ void map_vgroup_attr(D4Group *d4g, const string &dap4_attrname,int32 attr_type, 
     auto d4_attr_unique = make_unique<D4Attribute>(dap4_attrname, dap4_attr_type);
     D4Attribute *d4_attr = d4_attr_unique.release();
 
-    // Ignore char to string first.
+    // Map characters to string first.
     if (attr_type == DFNT_CHAR) {
         string t_dap4_attr_value(attr_value.begin(),attr_value.end());
         auto dap4_attr_value = string(t_dap4_attr_value.c_str());
