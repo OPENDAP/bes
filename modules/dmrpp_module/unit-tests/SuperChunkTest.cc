@@ -38,6 +38,7 @@
 #include "DmrppArray.h"
 #include "DmrppByte.h"
 #include "DmrppRequestHandler.h"
+#include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "SuperChunk.h"
 
@@ -50,12 +51,15 @@ using namespace libdap;
 
 namespace dmrpp {
 
-class SuperChunkTest: public CppUnit::TestFixture {
-private:
+class SuperChunkTest : public CppUnit::TestFixture {
 
 public:
-    // Called once before everything gets tested
-    SuperChunkTest() = default;
+    SuperChunkTest()
+    {
+        //foo = make_unique<DmrppRequestHandler>("Chaos");
+        DmrppRequestHandler::curl_handle_pool = make_unique<CurlHandlePool>();
+        DmrppRequestHandler::curl_handle_pool->initialize();
+    }
 
     // Called at the end of the test
     ~SuperChunkTest() = default;
@@ -64,21 +68,22 @@ public:
     void setUp() override
     {
         DBG(cerr << endl);
-        // Contains BES Log parameters but not cache names
-        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
-        DBG(cerr << prolog << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
-        string val;
-        bool found;
-        TheBESKeys::TheKeys()->get_value("ff",val,found);
+        TheBESKeys::TheKeys()->set_key("BES.LogName", "/bes.log");
+        TheBESKeys::TheKeys()->set_key("BES.LogVerbose", "yes");
 
-#if 0
-        unsigned long long int max_threads = 8;
-        dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
-        dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
-#endif
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.Default", "default");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.RootDirectory",
+                                       "/Users/jimg/src/opendap/hyrax_git/bes/modules/dmrpp_module");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch", "null:*;");
 
-        // This call instantiates the curlHandlePool. jhrg 5/24/22
-        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
+        TheBESKeys::TheKeys()->set_key("AllowedHosts", "^(file|https?):\\/\\/.*$");
+    }
+
+    void test_initialize_chunk_processing_futures() {
+        //initialize_chunk_processing_futures(list <future<bool>> &futures, queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,
+        //                                   const vector<unsigned long long> &constrained_array_shape)
+        list <future<bool>> futures;
+        // TODO Write tests. jhrg 2/8/24
     }
 
     void sc_one_chunk_test() {
@@ -304,11 +309,9 @@ public:
 
     CPPUNIT_TEST_SUITE( SuperChunkTest );
 
-    CPPUNIT_TEST(sc_one_chunk_test);
-#if 0
+        CPPUNIT_TEST(sc_one_chunk_test);
         CPPUNIT_TEST(sc_chunks_test_01);
         CPPUNIT_TEST(sc_chunks_test_02);
-#endif
 
     CPPUNIT_TEST_SUITE_END();
 };

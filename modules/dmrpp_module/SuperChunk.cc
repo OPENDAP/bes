@@ -224,6 +224,73 @@ void process_chunks_concurrent(
     }
 }
 
+// Leaving this as a function that returns bool for compatibility with the oldeer code. jhrg 2/8/24
+bool process_chunk_data(shared_ptr<Chunk> chunk, DmrppArray *array,
+                       const vector<unsigned long long> &constrained_array_shape) {
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
+
+    if (array) {
+        // If this chunk used/uses hdf5 fill values, do not attempt to deflate, etc., its
+        // values since the fill value code makes the chunks 'fully formed.'' jhrg 5/16/22
+        if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
+
+        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
+        vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
+
+        array->insert_chunk(0, &target_element_address, &chunk_source_address,
+                            chunk, constrained_array_shape);
+    }
+
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
+
+    return true;
+}
+
+void
+initialize_chunk_processing_futures(list <future<bool>> &futures, queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,
+                                   const vector<unsigned long long> &constrained_array_shape)
+{
+    while (futures.size() < DmrppRequestHandler::d_max_compute_threads && !chunks.empty()) {
+        auto chunk = chunks.front();
+
+        auto future = std::async(std::launch::async, process_chunk_data, chunk, array, constrained_array_shape);
+        futures.push_back(std::move(future));
+
+        chunks.pop();
+    }
+}
+
+/**
+ *
+ * @param super_chunk_id
+ * @param chunks
+ * @param array
+ * @param constrained_array_shape
+ */
+void process_chunks_concurrent_v2(const string &super_chunk_id, queue <shared_ptr<Chunk>> &chunks, DmrppArray *array,
+                                  const vector<unsigned long long> &constrained_array_shape)
+{
+#if 0
+    if (chunks.empty())
+        return;
+
+    list <future<bool>> futures;
+
+    // Initialize a list of futures with chunks to process
+    initilize_chunk_processing_futures(futures, chunks, array, constrained_array_shape);
+
+    // Wait for a future in the list to finish, check its status and
+    // replace it with a new future.
+    // Do this until there are no more futures in the list
+    do {
+        wait_for_next_future(futures);
+        add_next_chunk_processing_future(futures, chunks, array, constrained_array_shape);
+    } while (!futures.empty());
+#endif
+}
+
+#if 0
 
 /**
  * @brief Uses std::async and std::future to concurrently retrieve/inflate/shuffle/insert/etc the Chunks in the queue "chunks".
@@ -311,6 +378,8 @@ void process_chunks_concurrent_v2(
         throw;
     }
 }
+
+#endif
 
 /**
  * @brief Reads the Chunk (as needed) and performs the inflate/shuffle/etc. processing after which the values are inserted into the array.
