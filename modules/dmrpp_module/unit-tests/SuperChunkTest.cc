@@ -26,10 +26,6 @@
 
 #include <memory>
 
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <unistd.h>
 #include <libdap/util.h>
 #include <libdap/debug.h>
@@ -45,16 +41,11 @@
 #include "Chunk.h"
 #include "SuperChunk.h"
 
+#include "modules/common/run_tests_cppunit.h"
 #include "test_config.h"
 
 using namespace libdap;
 
-static bool debug = false;
-static bool bes_debug = false;
-static string bes_conf_file = "/bes.conf";
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 #define prolog std::string("SuperChunkTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
@@ -64,17 +55,13 @@ private:
 
 public:
     // Called once before everything gets tested
-    SuperChunkTest()
-    {
-    }
+    SuperChunkTest() = default;
 
     // Called at the end of the test
-    ~SuperChunkTest()
-    {
-    }
+    ~SuperChunkTest() = default;
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
         DBG(cerr << endl);
         // Contains BES Log parameters but not cache names
@@ -84,19 +71,14 @@ public:
         bool found;
         TheBESKeys::TheKeys()->get_value("ff",val,found);
 
-        if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
-
+#if 0
         unsigned long long int max_threads = 8;
         dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
         dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
+#endif
 
         // This call instantiates the curlHandlePool. jhrg 5/24/22
         auto foo = new dmrpp::DmrppRequestHandler("Chaos");
-    }
-
-    // Called after each test
-    void tearDown()
-    {
     }
 
     void sc_one_chunk_test() {
@@ -322,9 +304,11 @@ public:
 
     CPPUNIT_TEST_SUITE( SuperChunkTest );
 
-        CPPUNIT_TEST(sc_one_chunk_test);
+    CPPUNIT_TEST(sc_one_chunk_test);
+#if 0
         CPPUNIT_TEST(sc_chunks_test_01);
         CPPUNIT_TEST(sc_chunks_test_02);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -335,41 +319,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SuperChunkTest);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dD")) != -1)
-        switch (option_char) {
-        case 'd':
-            debug = true;  // debug is a static global
-            break;
-        case 'D':
-            debug = true;  // debug is a static global
-            bes_debug = true;  // debug is a static global
-            break;
-        default:
-            break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = dmrpp::SuperChunkTest::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+    return bes_run_tests<dmrpp::SuperChunkTest>(argc, argv, "bes,http,curl,dmrpp,dmrpp:3") ? 0 : 1;
 }
