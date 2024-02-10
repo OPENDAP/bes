@@ -64,11 +64,12 @@ namespace dmrpp {
 #define THREAD_SLEEP_TIME 1 // sleep time in seconds
 
 class MockChunk : public Chunk {
-    CurlHandlePool *d_chp;
-    bool d_sim_err; // simulate and err
+    // CurlHandlePool *d_chp;
+    bool d_sim_err = false; // simulate and err
 
 public:
-    MockChunk(CurlHandlePool *chp, bool sim_err) : Chunk(), d_chp(chp), d_sim_err(sim_err)
+    MockChunk() = default;
+    explicit MockChunk(bool sim_err) : Chunk(), d_sim_err(sim_err)
     {}
 
     void inflate_chunk(bool, bool, unsigned int, unsigned int)
@@ -76,23 +77,28 @@ public:
         return;
     }
 
-    virtual shared_ptr<http::url> get_data_url() const override {
+    shared_ptr<http::url> get_data_url() const override {
         return make_shared<http::url>("https://httpbin.org/");
     }
 
-    virtual unsigned long long get_bytes_read() const  override
+    unsigned long long get_bytes_read() const override
     {
         return 2;
     }
 
-    virtual unsigned long long get_size() const  override
+    unsigned long long get_size() const override
     {
         return 2;
     }
 
     std::vector<unsigned long long> mock_pia = {1};
 
-    virtual const std::vector<unsigned long long> &get_position_in_array() const  override
+    void set_pia(const std::vector<unsigned long long> &pia)
+    {
+        mock_pia = pia;
+    }
+
+    const std::vector<unsigned long long> &get_position_in_array() const  override
     {
         return mock_pia;
     }
@@ -100,44 +106,34 @@ public:
     // This is very close to the real read_chunk with only the call to d_handle->read_data()
     // replaced by code that throws (or not) depending on the value of 'sim_err' in the
     // constructor.
-    void read_chunk() override
-    {
+    void read_chunk() override {
         if (d_is_read) {
             return;
         }
 
-        set_rbuf_to_size();
+        // Does not call read_data() but simulates a delay.
+        sleep(THREAD_SLEEP_TIME);
 
-        dmrpp_easy_handle *handle = d_chp->get_easy_handle(this);
-        if (!handle)
-            throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
-
-        try {
-            // Does not call read_data() but simulates a delay.
-            time_t t;
-            srandom(time(&t));
-            sleep(THREAD_SLEEP_TIME);
-
-            if (d_sim_err)
-                throw BESInternalError(prolog + "Simulated error", __FILE__, __LINE__);
-
-            d_chp->release_handle(handle);
-        }
-        catch (...) {
-            d_chp->release_handle(handle);
-            throw;
-        }
+        if (d_sim_err)
+            throw BESInternalError(prolog + "Simulated error", __FILE__, __LINE__);
 
         // If the expected byte count was not read, it's an error.
         if (get_size() != get_bytes_read()) {
             string msg = prolog + "Wrong number of bytes read for chunk; read: " + std::to_string(get_bytes_read())
-                    + ", expected: " + std::to_string(get_size());
+                         + ", expected: " + std::to_string(get_size());
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
 
         d_is_read = true;
     }
 };
+
+bool mock_process_chunk_data(shared_ptr<Chunk> chunk, bool read) {
+    if (read) {
+        chunk->read_chunk();
+    }
+    return true;
+}
 
 /// This class provides a child of DmrppArray with an inert 'insert_chunk' method. jhrg 2/9/24
 class MockDmrppArray : public DmrppArray {
@@ -164,6 +160,12 @@ class SuperChunkTest : public CppUnit::TestFixture {
         CPPUNIT_TEST(test_initialize_chunk_processing_futures_empty_queue);
         CPPUNIT_TEST(test_initialize_chunk_processing_futures_one_chunk);
         CPPUNIT_TEST(test_initialize_chunk_processing_futures_thread_limit);
+
+        CPPUNIT_TEST(test_next_ready_future_empty_list);
+        CPPUNIT_TEST(test_next_ready_future_one_future);
+        CPPUNIT_TEST(test_next_ready_future_two_futures);
+        CPPUNIT_TEST(test_next_ready_future_throws_on_not_valid);
+        CPPUNIT_TEST(test_next_ready_future_task_error);
 
         CPPUNIT_TEST(sc_one_chunk_test);
         CPPUNIT_TEST(sc_chunks_test_01);
@@ -196,6 +198,74 @@ public:
         TheBESKeys::TheKeys()->set_key("AllowedHosts", "^file.*$");
 
         DmrppRequestHandler::d_max_compute_threads = 2;
+    }
+
+    void test_next_ready_future_empty_list() {
+        list <future<bool>> futures;
+        CPPUNIT_ASSERT_MESSAGE("The futures list should be empty.", futures.empty());
+        CPPUNIT_ASSERT_MESSAGE("The return value should be false.", !next_ready_future(futures));
+    }
+
+    void test_next_ready_future_one_future() {
+        list <future<bool>> futures;
+        auto mock_chunk = make_shared<MockChunk>();
+
+        auto future = std::async(std::launch::async, mock_process_chunk_data, mock_chunk, false);
+        futures.push_back(std::move(future));
+
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("The return value should be true.", next_ready_future(futures));
+        CPPUNIT_ASSERT_MESSAGE("The futures list should be empty.", futures.empty());
+    }
+
+    void test_next_ready_future_two_futures() {
+        list <future<bool>> futures;
+        auto mock_chunk_1 = make_shared<MockChunk>();
+        auto mock_chunk_2 = make_shared<MockChunk>();
+        vector<unsigned long long> array_shape = {100};
+
+        futures.push_back(std::async(std::launch::async, mock_process_chunk_data, mock_chunk_1, false));
+        futures.push_back(std::async(std::launch::async, mock_process_chunk_data, mock_chunk_2, false));
+
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 2);
+        CPPUNIT_ASSERT_MESSAGE("The return value should be true.", next_ready_future(futures));
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 1);
+    }
+
+    void test_next_ready_future_throws_on_not_valid() {
+        list <future<bool>> futures;
+        auto mock_chunk = make_shared<MockChunk>();
+        vector<unsigned long long> array_shape = {100};
+
+        futures.push_back(std::async(std::launch::async, mock_process_chunk_data, mock_chunk, false));
+
+        // invalidate the future by calling get() on it.
+        futures.front().get();
+
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 1);
+        // TODO Should we use a special exception type for invalid futures?
+        CPPUNIT_ASSERT_THROW_MESSAGE("The return value should throw an exception.", next_ready_future(futures), BESInternalError);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should be empty.", futures.empty());
+    }
+
+    // In this test, the first future will throw an exception.
+    void test_next_ready_future_task_error() {
+        list <future<bool>> futures;
+        auto mock_chunk_1 = make_shared<MockChunk>(true);   // simulate an error that causes an exception
+        auto mock_chunk_2 = make_shared<MockChunk>();
+        vector<unsigned long long> array_shape = {100};
+
+        futures.push_back(std::async(std::launch::async, mock_process_chunk_data, mock_chunk_1, true));
+        futures.push_back(std::async(std::launch::async, mock_process_chunk_data, mock_chunk_2, true));
+
+        // to ensure they run to completion, wait for these futures to complete.
+        for (const auto &future: futures) {
+            future.wait();
+        }
+
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 2);
+        CPPUNIT_ASSERT_THROW_MESSAGE("The return value should throw an exception.", next_ready_future(futures), BESInternalError);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 2);
     }
 
     void test_initialize_chunk_processing_futures_empty_queue() {

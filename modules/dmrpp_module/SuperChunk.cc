@@ -262,6 +262,30 @@ initialize_chunk_processing_futures(list <future<bool>> &futures, queue<shared_p
 }
 
 /**
+ * @brief Wait for a future to complete. Removes it from the list of futures.
+ * @param futures
+ * @return True if a future finished, false if no future finished.
+ * @except If a future is not valid, throw a BESInternalError.
+ */
+bool next_ready_future(list<future<bool>> &futures) {
+    for (auto it = futures.begin(), et = futures.end(); it != et; ++it) {
+        if (!it->valid()) {
+            futures.erase(it);
+            throw BESInternalError("one of the tasks that insert data into an Array was not valid.", __FILE__,
+                                   __LINE__);
+        }
+        else {
+            if (it->wait_for(std::chrono::milliseconds(DMRPP_WAIT_FOR_FUTURE_MS)) == std::future_status::ready) {
+                it->get();  // task runs for its side effect, return void.
+                futures.erase(it);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
  *
  * @param super_chunk_id
  * @param chunks
