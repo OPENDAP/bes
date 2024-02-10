@@ -265,7 +265,7 @@ public:
 
         CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 2);
         CPPUNIT_ASSERT_THROW_MESSAGE("The return value should throw an exception.", next_ready_future(futures), BESInternalError);
-        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 2);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 1);
     }
 
     void test_initialize_chunk_processing_futures_empty_queue() {

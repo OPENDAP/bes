@@ -271,14 +271,21 @@ bool next_ready_future(list<future<bool>> &futures) {
     for (auto it = futures.begin(), et = futures.end(); it != et; ++it) {
         if (!it->valid()) {
             futures.erase(it);
+            // TODO Make a new BESError class for this invalid futures? jhrg 2/10/24
             throw BESInternalError("one of the tasks that insert data into an Array was not valid.", __FILE__,
                                    __LINE__);
         }
         else {
             if (it->wait_for(std::chrono::milliseconds(DMRPP_WAIT_FOR_FUTURE_MS)) == std::future_status::ready) {
-                it->get();  // task runs for its side effect, return void.
-                futures.erase(it);
-                return true;
+                try {
+                    it->get();  // task runs for its side effect, return void; throws if exception in task.
+                    futures.erase(it);
+                    return true;
+                }
+                catch (const std::exception &e) {
+                    futures.erase(it);
+                    throw;
+                }
             }
         }
     }
