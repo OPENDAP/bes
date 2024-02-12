@@ -106,6 +106,8 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array,
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
 }
 
+#if 0
+
 /**
  * @brief A single argument wrapper for process_one_chunk() for use with std::async().
  * @param args A unique_ptr to an instance of one_chunk_args.
@@ -224,6 +226,8 @@ void process_chunks_concurrent_orig(
     }
 }
 
+#endif
+
 // Leaving this as a function that returns bool for compatibility with the oldeer code. jhrg 2/8/24
 bool process_chunk_data(shared_ptr <Chunk> chunk, DmrppArray *array,
                         const vector<unsigned long long> &constrained_array_shape)
@@ -321,11 +325,15 @@ bool add_next_chunk_processing_future(list <future<bool>> &futures, queue <share
 }
 
 /**
+ * @brief Process the chunks in the queue using std::async() and std::future.
  *
- * @param super_chunk_id
- * @param chunks
- * @param array
- * @param constrained_array_shape
+ * The chunks, assuming all their data have been read, are processed in parallel.
+ *
+ * @param super_chunk_id unused
+ * @param chunks The queue of chunks to process
+ * @param array The DmrppArray instance that will hold the data in the chunks
+ * @param constrained_array_shape How the DAP Array was constrained - used to
+ * determine where/how to add the chunk's data to the array.
  */
 void process_chunks_concurrent(const string &, queue <shared_ptr<Chunk>> &chunks, DmrppArray *array,
                                   const vector<unsigned long long> &constrained_array_shape)
