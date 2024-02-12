@@ -359,6 +359,8 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The chunks queue should have one entry.", chunks.size() == 1);
     }
 
+    /// Original tests follow. jhrg 2/11/24
+
     void sc_one_chunk_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
 

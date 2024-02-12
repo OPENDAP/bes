@@ -41,6 +41,7 @@
 #include "DmrppArray.h"
 #include "DmrppByte.h"
 #include "DmrppRequestHandler.h"
+#include "CurlHandlePool.h"
 
 #include "test_config.h"
 
@@ -54,27 +55,28 @@ class DmrppArrayTest : public CppUnit::TestFixture {
     dmrpp::DmrppRequestHandler *foo = nullptr;
 
 public:
-    DmrppArrayTest() = default;
+    DmrppArrayTest() {
+        DmrppRequestHandler::curl_handle_pool = make_unique<CurlHandlePool>();
+        DmrppRequestHandler::curl_handle_pool->initialize();
+    }
 
     ~DmrppArrayTest() override = default;
 
     // Called before each test
     void setUp() override {
         DBG(cerr << endl);
-        // Contains BES Log parameters but not cache names
-        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
-        DBG(cerr << prolog << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
-        string val;
-        bool found;
-        TheBESKeys::TheKeys()->get_value("ff", val, found);
+        TheBESKeys::TheKeys()->set_key("BES.LogName", "/bes.log");
+        TheBESKeys::TheKeys()->set_key("BES.LogVerbose", "yes");
 
-        unsigned int max_threads = 8;
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.Default", "default");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.RootDirectory", TEST_DMRPP_CATALOG);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch", "null:*;");
+
+        // Was originally: "^(file|https?):\\/\\/.*$" jhrg 2/9/24
+        TheBESKeys::TheKeys()->set_key("AllowedHosts", "^file.*$");
+
         dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
-        dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
-
-        // Various things will gripe about this not being used... This is how the
-        // CurlHandlePool gets instantiated. jhrg 4/22/22
-        foo = new dmrpp::DmrppRequestHandler("Chaos");
+        dmrpp::DmrppRequestHandler::d_max_transfer_threads = 8;
     }
 
     void tearDown() override {
