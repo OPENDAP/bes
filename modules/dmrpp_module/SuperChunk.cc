@@ -268,7 +268,7 @@ initialize_chunk_processing_futures(list <future<bool>> &futures, queue <shared_
 bool next_ready_future(list <future<bool>> &futures)
 {
     for (auto it = futures.begin(), et = futures.end(); it != et; ++it) {
-        if (!it->valid()) {
+        if (!it->valid()) { // test the future for validity before calling wait_for() or get(). jhrg 2/12/24
             futures.erase(it);
             // TODO Make a new BESError class for this invalid futures? jhrg 2/10/24
             throw BESInternalError("one of the tasks that insert data into an Array was not valid.", __FILE__,
@@ -277,7 +277,7 @@ bool next_ready_future(list <future<bool>> &futures)
         else {
             if (it->wait_for(std::chrono::milliseconds(DMRPP_WAIT_FOR_FUTURE_MS)) == std::future_status::ready) {
                 try {
-                    auto status = it->get();  // task runs for its side effect, return void; throws if exception in task.
+                    auto status = it->get();  // task runs primarily for its side effect; throws if exception in task.
                     futures.erase(it);
                     return status;
                 }
