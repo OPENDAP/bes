@@ -228,12 +228,9 @@ void process_chunks_concurrent_orig(
 
 #endif
 
-// Leaving this as a function that returns bool for compatibility with the oldeer code. jhrg 2/8/24
 bool process_chunk_data(shared_ptr <Chunk> chunk, DmrppArray *array,
                         const vector<unsigned long long> &constrained_array_shape)
 {
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
-
     if (array) {
         // If this chunk used/uses hdf5 fill values, do not attempt to deflate, etc., its
         // values since the fill value code makes the chunks 'fully formed.'' jhrg 5/16/22
@@ -243,13 +240,13 @@ bool process_chunk_data(shared_ptr <Chunk> chunk, DmrppArray *array,
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
 
-        array->insert_chunk(0, &target_element_address, &chunk_source_address,
-                            chunk, constrained_array_shape);
+        array->insert_chunk(0, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
+
+        return true;
     }
-
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
-
-    return true;
+    else {
+        return false;
+    }
 }
 
 void
@@ -280,9 +277,9 @@ bool next_ready_future(list <future<bool>> &futures)
         else {
             if (it->wait_for(std::chrono::milliseconds(DMRPP_WAIT_FOR_FUTURE_MS)) == std::future_status::ready) {
                 try {
-                    it->get();  // task runs for its side effect, return void; throws if exception in task.
+                    auto status = it->get();  // task runs for its side effect, return void; throws if exception in task.
                     futures.erase(it);
-                    return true;
+                    return status;
                 }
                 catch (const std::exception &e) {
                     futures.erase(it);
