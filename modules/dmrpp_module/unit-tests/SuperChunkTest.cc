@@ -167,6 +167,10 @@ class SuperChunkTest : public CppUnit::TestFixture {
         CPPUNIT_TEST(test_next_ready_future_throws_on_not_valid);
         CPPUNIT_TEST(test_next_ready_future_task_error);
 
+        CPPUNIT_TEST(test_add_next_chunk_processing_future_one_chunk);
+        CPPUNIT_TEST(test_add_next_chunk_processing_future_empty_chunks);
+        CPPUNIT_TEST(test_add_next_chunk_processing_future_no_room);
+
         CPPUNIT_TEST(sc_one_chunk_test);
         CPPUNIT_TEST(sc_chunks_test_01);
         CPPUNIT_TEST(sc_chunks_test_02);
@@ -263,9 +267,57 @@ public:
             future.wait();
         }
 
-        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 2);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have two elements.", futures.size() == 2);
         CPPUNIT_ASSERT_THROW_MESSAGE("The return value should throw an exception.", next_ready_future(futures), BESInternalError);
         CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 1);
+    }
+
+    void test_add_next_chunk_processing_future_one_chunk() {
+        list <future<bool>> futures;
+        queue<shared_ptr<Chunk>> chunks;
+
+        chunks.push(make_shared<MockChunk>());
+
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should have one entry.", chunks.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should be empty.", futures.empty());
+
+        vector<unsigned long long> constrained_array_shape = {100};
+        bool state = add_next_chunk_processing_future(futures, chunks, nullptr, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("add_next_chunk_processing_future() return value should be true.", state);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be empty.", chunks.empty() );
+    }
+
+    void test_add_next_chunk_processing_future_empty_chunks()
+    {
+        list <future<bool>> futures;
+        queue <shared_ptr<Chunk>> chunks;
+
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be empty.", chunks.empty());
+        CPPUNIT_ASSERT_MESSAGE("The futures list should be empty.", futures.empty());
+
+        vector<unsigned long long> constrained_array_shape = {100};
+        bool state = add_next_chunk_processing_future(futures, chunks, nullptr, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("add_next_chunk_processing_future() return value should be false.", state == false);
+    }
+    void test_add_next_chunk_processing_future_no_room()
+    {
+        list <future<bool>> futures;
+        queue <shared_ptr<Chunk>> chunks;
+        futures.push_back(std::async(std::launch::async, mock_process_chunk_data, make_shared<MockChunk>(), false));
+        futures.push_back(std::async(std::launch::async, mock_process_chunk_data, make_shared<MockChunk>(), false));
+
+        chunks.push(make_shared<MockChunk>());
+
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be one.", chunks.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should be empty.", futures.size() == 2);
+        CPPUNIT_ASSERT_MESSAGE("max_compute_threads should be two.", DmrppRequestHandler::d_max_compute_threads == 2);;
+
+        vector<unsigned long long> constrained_array_shape = {100};
+        bool state = add_next_chunk_processing_future(futures, chunks, nullptr, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("add_next_chunk_processing_future() return value should be false.", state == false);
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be one.", chunks.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("The futures list should be empty.", futures.size() == 2);
     }
 
     void test_initialize_chunk_processing_futures_empty_queue() {

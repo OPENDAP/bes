@@ -104,9 +104,13 @@ public:
 
 bool process_chunk_data(shared_ptr<Chunk> chunk, DmrppArray *array,
                         const vector<unsigned long long> &constrained_array_shape);
+bool add_next_chunk_processing_future(list <future<bool>> &futures, queue<shared_ptr<Chunk>> &chunks,
+                                      DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
 void initialize_chunk_processing_futures(list <future<bool>> &futures, queue<shared_ptr<Chunk>> &chunks,
                                          DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
 bool next_ready_future(list<future<bool>> &futures);
+void process_chunks_concurrent(const string &, queue <shared_ptr<Chunk>> &chunks, DmrppArray *array,
+                                  const vector<unsigned long long> &constrained_array_shape);
 
 // TODO If we keep parallel transfers, these can still be removed since futures can take
 //  arg lists. jhrg 2/5/24
@@ -145,7 +149,7 @@ struct one_chunk_unconstrained_args {
             array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
 
-void process_chunks_concurrent(
+void process_chunks_concurrent_orig(
         const string &super_chunk_id,
         std::queue<shared_ptr<Chunk>> &chunks,
         DmrppArray *array,
