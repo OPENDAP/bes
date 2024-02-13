@@ -42,7 +42,7 @@
 
 #include <vector>
 
-// Include this on linux to suppres an annoying warning about multiple
+// Include this on linux to suppress an annoying warning about multiple
 // definitions of MIN and MAX.
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>

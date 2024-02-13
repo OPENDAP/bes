@@ -71,6 +71,9 @@ BES.DefaultResponseMethod=POST
 # CacheDir: Cache directory used by the HDF4 data handler.
 # Suggestion: Consider making this '/tmp/bes'; see the comment at
 #-----------------------------------------------------------------------#
+#direc HDF4 to DMR key
+H4.EnableDirectDMR=true
+
 # EnableCF: Handle HDF data to follow the CF conventions
 #          (true,yes|false,no, defaults to true)
 # Since most centers  would like to handle HDF4 data that follows CF now,

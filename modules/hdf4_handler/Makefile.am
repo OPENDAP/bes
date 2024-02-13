@@ -61,7 +61,7 @@ libhdf4_module_la_LIBADD = $(LIBADD)
 
 HDFTYPE_SRC = 	$(GRAM_SRC) \
         HDFArray.cc HDFGrid.cc HDFSequence.cc HDFUInt32.cc \
-	HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
+	HDFInt8.cc HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
 
@@ -77,7 +77,7 @@ HDFCF_SRC = HDFCFUtil.cc BESH4MCache.cc HDFCFStr.cc HDFEOS2.cc HDFEOS2CFStr.cc H
 HDFTYPE_SRC += $(HDFCF_SRC)
 
 HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
-	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
+	HDFByte.h HDFInt8.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h 
 
 
