@@ -85,6 +85,7 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 constexpr auto INVOCATION_CONTEXT = "invocation";
 #endif
 
+// I believe this is copied from H4mapper. Should give credit.
 int SDfree_mapping_info(SD_mapping_info_t  *map_info)
 {
     intn  ret_value = SUCCEED;
@@ -135,6 +136,7 @@ write_chunk_position_in_array(int rank, const unsigned long long *lengths, const
  * @param origin The parameter origin must be NULL when the data is not stored in chunking layout.
  * When the data are chunked, SDgetdatainfo can be called on a single chunk and origin is used to
  * specify the coordinates of the chunk.
+ * Note: The code of this method is largely adapted from the HDF4 mapper software implemented by the HDF group.
  * @return
  */
 int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
@@ -181,35 +183,65 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
  * @return true if the produced output that seems valid, false otherwise.
  */
 bool get_chunks_for_an_array(int file, BaseType *btp) {
-    string name = btp->name();
-    const char *sdsName = name.c_str();
-    // TODO For a more complete version of this, use references and tags, not names.
-    //  Also, the use of FQNs will not, in general, work for HDF4 files, given the
-    //  unusual way that HDF4 files are organized. jhrg 12/5/23
-    int sds_index = SDnametoindex(file, sdsName);
-    int sdsid = SDselect(file, sds_index);
-    VERBOSE(cerr << "Name: " << name << endl);
-    VERBOSE(cerr << "DMR FQN: " << btp->FQN() << endl);
-    VERBOSE(cerr << "sdsid: " << sdsid << endl);
 
-    char obj_name[H4_MAX_NC_NAME]; /* name of the object */
-    int32 rank = -1;                 /* number of dimensions */
-    int32 dimsizes[H4_MAX_VAR_DIMS]; /* dimension sizes */
-    int32 data_type = -1;            /* data type */
-    int32 num_attrs = -1;            /* number of global attributes */
+    // Here we need to retrieve the attribute value dmr_sds_ref of btp.
+    D4Attributes *d4_attrs = btp->attributes();
+    if (!d4_attrs)
+        throw BESInternalError("Expected to find an DAP4 attribute list for " + btp->name() + " but did not.",
+                               __FILE__, __LINE__);
 
-    int status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
-    if (status == FAIL) {
-        FAIL_ERROR("SDgetinfo() failed.");
+    // Look for the full name path for this variable
+    // If one was not given via an attribute, use BaseType::FQN() which
+    // relies on the variable's position in the DAP dataset hierarchy.
+    D4Attribute *attr = d4_attrs->find("dmr_sds_ref");
+    int32 obj_ref = 0;
+    bool is_sds = false;
+    if (attr)
+        is_sds = true;
+    else {
+        attr = d4_attrs->find("dmr_vdata_ref");
+        if (!attr)
+            throw BESInternalError("Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference for " + btp->name() + " but did not.",
+                               __FILE__, __LINE__);
     }
-
-    HDF_CHUNK_DEF cdef;
-    int32 chunk_flag = -1;        /* chunking flag */
-
-    status = SDgetchunkinfo(sdsid, &cdef, &chunk_flag);
-    if (status == FAIL) {
-        FAIL_ERROR("SDgetchunkinfo() failed.");
+    obj_ref = stoi(attr->value(0));
+    int sds_index;
+    if (is_sds) {
+        sds_index = SDreftoindex(file, obj_ref);
     }
+    // TODO: Later we will add the support of retrieving data from vdata. KY 02/13/24
+#if 0
+        string name = btp->name();
+        const char *sdsName = name.c_str();
+        // TODO For a more complete version of this, use references and tags, not names.
+        //  Also, the use of FQNs will not, in general, work for HDF4 files, given the
+        //  unusual way that HDF4 files are organized. jhrg 12/5/23
+        int sds_index = SDnametoindex(file, sdsName);
+#endif
+
+        int sdsid = SDselect(file, sds_index);
+        //VERBOSE(cerr << "Name: " << name << endl);
+        VERBOSE(cerr << "DMR FQN: " << btp->FQN() << endl);
+        VERBOSE(cerr << "sdsid: " << sdsid << endl);
+
+        char obj_name[H4_MAX_NC_NAME]; /* name of the object */
+        int32 rank = -1;                 /* number of dimensions */
+        int32 dimsizes[H4_MAX_VAR_DIMS]; /* dimension sizes */
+        int32 data_type = -1;            /* data type */
+        int32 num_attrs = -1;            /* number of global attributes */
+
+        int status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
+        if (status == FAIL) {
+            FAIL_ERROR("SDgetinfo() failed.");
+        }
+
+        HDF_CHUNK_DEF cdef;
+        int32 chunk_flag = -1;        /* chunking flag */
+
+        status = SDgetchunkinfo(sdsid, &cdef, &chunk_flag);
+        if (status == FAIL) {
+            FAIL_ERROR("SDgetchunkinfo() failed.");
+        }
 
     switch (chunk_flag) {
         case HDF_NONE: /* No chunking. */
@@ -256,6 +288,8 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
 
     if (is_empty) {
         // FIXME Maybe this is the case where the variable is just fill values? jhrg 12/7/23
+        // No, this is mostly an SDS with unlimited dimension and the dimension size is 0.
+        // Now, we can just ignore since it doesn't contain any data. KY 02/12/24
         VERBOSE(cerr << "SDS is empty." << endl);
         return false;
     }
@@ -264,7 +298,17 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
     if (!dc)
         throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.", __FILE__, __LINE__);
 
-    if (chunk_flag == HDF_CHUNK || chunk_flag == HDF_COMP) {
+    // Need to check SDS compression info. Unlike HDF5, HDF4 can be compressed without using chunks.
+    // So we need to cover both cases. KY 02/12/2024
+
+    comp_coder_t        comp_coder_type = COMP_CODE_NONE;
+    comp_info                    c_info;
+
+    if (SDgetcompinfo(sdsid, &comp_coder_type, &c_info) == FAIL) {
+             FAIL_ERROR("SDgetcompinfo() failed.");
+    }
+    // Also need to consider the case when the variable is compressed but not chunked.
+    if (chunk_flag == HDF_CHUNK || chunk_flag == HDF_COMP ) {
         vector<unsigned long long> chunk_dimension_sizes(rank, 0);
         for (int i = 0; i < rank; i++) {
             if (chunk_flag == HDF_CHUNK) {
@@ -272,9 +316,15 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             }
             else {  // chunk_flag is HDF_COMP
                 chunk_dimension_sizes[i] = cdef.comp.chunk_lengths[i];
-                // TODO set/add compression info here. jhrg 12/8/23
-                dc->ingest_compression_type("deflate");
-                // cdef.comp.comp_type, cdef.comp.cinfo[]
+                // Also need to add the deflata levels.
+                if (comp_coder_type == COMP_CODE_DEFLATE) {
+                    dc->ingest_compression_type("deflate");
+                    vector<unsigned int> deflate_levels;
+                    deflate_levels.push_back(c_info.deflate.level);
+                    dc->set_deflate_levels(deflate_levels);
+                }
+                else
+                    FAIL_ERROR("Encounter unsupported compression method. Currently only support deflate compression.");
             }
         }
 
@@ -315,6 +365,10 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
 
             auto pia = write_chunk_position_in_array(rank, chunk_dimension_sizes.data(), strides.data());
 
+            // Critical TODO:
+            // Very possible that the offset and length obtained for a block cannot be decompressed directly
+            // like the HDF5 chunks. Significant work needs to be done in the dmrpp module. New information needs
+            // to be added in the dmrpp file. Pending on the ticket HYRAX-1335. KY 02/13/2024.
             for (int i = 0; i < map_info.nblocks; i++) {
                 VERBOSE(cerr << "offsets[" << k << ", " << i << "]: " << map_info.offsets[i] << endl);
                 VERBOSE(cerr << "lengths[" << k << ", " << i << "]: " << map_info.lengths[i] << endl);
@@ -340,6 +394,18 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
         map_info.lengths = nullptr;
         map_info.data_type = data_type;
 
+         // Also need to consider the case when the variable is compressed but not chunked.
+        if (comp_coder_type != COMP_CODE_NONE) {
+            if (comp_coder_type == COMP_CODE_DEFLATE) {
+                dc->ingest_compression_type("deflate");
+                vector<unsigned int> deflate_levels;
+                deflate_levels.push_back(c_info.deflate.level);
+                dc->set_deflate_levels(deflate_levels);
+            }
+            else
+                FAIL_ERROR("Encounter unsupported compression method. Currently only support deflate compression.");
+        }
+
         vector<int> origin(rank, 0);
         auto info_count = read_chunk(sdsid, &map_info, origin.data());
         if (info_count == FAIL) {
@@ -353,6 +419,11 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
             VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
 
+            // Critical TODO:
+            //  Here is a bug. the position cannot be 0 for the second block if this is treated as a chunk.
+            // Also very possible that the offset and length obtained for a block cannot be decompressed directly
+            // like the HDF5 chunks. Significant work needs to be done in the dmrpp module. New information needs
+            // to be added in the dmrpp file. Pending on the ticket HYRAX-1335. KY 02/13/2024.
             dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], position_in_array);
         }
     }
