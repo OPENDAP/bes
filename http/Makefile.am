@@ -36,6 +36,7 @@ DISTCLEANFILES = http.conf
 # Sources and Headers
 
 SRCS = CurlUtils.cc \
+    HttpError.cc \
     HttpCache.cc \
     RemoteResource.cc \
     HttpUtils.cc \
@@ -49,6 +50,7 @@ SRCS = CurlUtils.cc \
     awsv4.cc
 
 HDRS = CurlUtils.h \
+    HttpError.h \
     HttpCache.h \
     RemoteResource.h \
     HttpUtils.h \

@@ -40,6 +40,7 @@
 #include "BESNotFoundError.h"
 #include "BESTimeoutError.h"
 #include "BESInternalError.h"
+#include "HttpError.h"
 #include "BESDebug.h"
 #include "BESRegex.h"
 #include "TheBESKeys.h"
@@ -1662,11 +1663,13 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                 stringstream msg;
                 msg << prolog << "ERROR -  I tried " << attempt << " times to access:\n";
                 msg << "    " << origin_url_str << "\n";
-                msg << "I was expecting to receive an HTTP redirect code and location header in the response. \n";
+                msg << "I was expecting to receive an HTTP redirect status (3xx) and location header in the response. \n";
                 msg << "Unfortunately this did not happen.\n";
-                msg << "Here are the details of the most recent transaction:\n\n";
-                write_response_details(http_status, response_headers, response_body, msg);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                throw HttpError(msg.str(),
+                                   http_status,
+                                   response_headers,
+                                   response_body,
+                                   __FILE__, __LINE__);
             }
             success = false;
             break;
@@ -1751,7 +1754,7 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
             }
         }
         else if (attempt >= max_attempts) {
-            // Everything is bad now.
+            // Everything is bad now. :(
             stringstream msg;
             msg << prolog << "ERROR -  I tried " << attempt << " times to access:\n";
             msg << "    " << origin_url << "\n";
