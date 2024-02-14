@@ -88,7 +88,7 @@ void FONcStr::define(int ncid)
 
         // FIXME This is a hack to get around the fact that the code moved away from setting the DDS and
         //  the ConstraintEvaluator in the constructor. This is a temporary fix. jhrg 2/14/24
-        if (d_is_dap4|| get_eval() == nullptr || get_dds() == nullptr)
+        if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
             _str->intern_data();
         else
             _str->intern_data(*get_eval(), *get_dds());
