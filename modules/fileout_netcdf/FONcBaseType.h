@@ -66,6 +66,9 @@ protected:
     bool d_defined = false;
     std::string d_ncVersion;
     std::string d_nc4_datamodel;
+    // FIXME Tried setting this true by default; that should have changed some test behavior
+    //  but it didn't. jhrg 2/13/24. Does this mean the value is set somewhere else?
+    //  See HYRAX-1334.
     bool d_is_dap4 = false;
 
     //This is to handle the name clashing of dimension names of string type

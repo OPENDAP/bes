@@ -379,7 +379,8 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
         // For NC_CHAR, the module needs to call the intern_data().  
         // This routine is called in the convert(). So it should not called in define().
-        if (d_is_dap4)
+        // FIXME Patch for HYRAX-1334 jhrg 2/14/24
+        if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
             d_a->intern_data();
         else
             d_a->intern_data(*get_eval(), *get_dds());
@@ -750,8 +751,9 @@ void FONcArray::define(int ncid) {
  */
 void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 
-  // Note: when fdio_flag is not true, the intern_data needs to be called here. 
-    if (d_is_dap4)
+    // Note: when fdio_flag is not true, the intern_data needs to be called here.
+    // FIXME Patch for HYRAX-1334 jhrg 2/14/24
+    if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
         d_a->intern_data();
     else
         d_a->intern_data(*get_eval(), *get_dds());
