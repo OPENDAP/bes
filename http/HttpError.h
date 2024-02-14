@@ -30,19 +30,22 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <sstream>
 
 #include "BESError.h"
 
 namespace http {
 
 class HttpError : public BESError {
-    unsigned int d_http_status;
+    unsigned int d_http_status = 0;
     std::vector<std::string> d_response_headers;
     std::string d_response_body;
 
 public:
+    HttpError() = default;
+
     HttpError(std::string msg, std::string file, unsigned int line) :
-            BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line), d_http_status(0) { }
+            BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) { }
 
     HttpError(std::string msg,
               unsigned int http_status,
@@ -54,6 +57,9 @@ public:
             d_http_status(http_status),
             d_response_headers(std::move(response_headers)),
             d_response_body(std::move(response_body)){ }
+
+
+    HttpError(const HttpError &src)  noexcept = default;
 
     ~HttpError() override = default;
 
@@ -77,6 +83,34 @@ public:
 
     unsigned int get_http_status() const {
         return d_http_status;
+    }
+
+    /** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the exception
+ * message, the file from which the exception was generated, and the line
+ * number in that file.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+    std::string dump( ) const
+    {
+        std::stringstream msg;
+
+        msg << BESIndent::LMarg << "HTTPError::dump - ("
+             << (void *)this << ")\n";
+        BESError::dump(msg);
+        BESIndent::Indent() ;
+        msg << BESIndent::LMarg << "http_status: " << d_http_status << "\n" ;
+        for(const auto &hdr: d_response_headers) {
+            msg << BESIndent::LMarg << "response_header: " << hdr << "\n";
+        }
+        msg << BESIndent::LMarg << "response_body: " << d_response_body << "\n" ;
+        BESIndent::UnIndent() ;
+    }
+
+    void dump(std::ostream &strm){
+        strm << dump();
     }
 
 };

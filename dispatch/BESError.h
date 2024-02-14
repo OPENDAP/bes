@@ -67,9 +67,10 @@ private:
     std::string _file;
     unsigned int _line {0};
 
-    BESError() = default;
 
 public:
+    BESError() = default;
+
     /** @brief constructor that takes message, type of error, source file
      * the error originated and the line number in the source file
      *
