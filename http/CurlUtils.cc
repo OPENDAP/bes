@@ -646,6 +646,7 @@ sign_url_for_s3_if_possible(const shared_ptr <url> &url, curl_slist *request_hea
  * @param ceh The cURL easy handle to query
  * @param requested_url The original URL that was set in the cURL handle prior to a call to curl_easy_perform.
  * @return  The value of CURLINFO_EFFECTIVE_URL from the cURL handle ceh.
+ * @deprecated Use curl::get_redirect_url() instead
  */
 static string get_effective_url(CURL *ceh, const string &requested_url) {
     char *effective_url = nullptr;
@@ -795,9 +796,6 @@ static bool eval_curl_easy_perform_code(
         BESDEBUG(MODULE, prolog << msg.str() << endl);
         ERROR_LOG(msg.str() << endl);
         return false;
-#if 0
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-#endif
     }
 
     return true;
