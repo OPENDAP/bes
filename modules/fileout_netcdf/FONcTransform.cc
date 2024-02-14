@@ -98,6 +98,8 @@ using namespace std;
  * @throws BESInternalError if dds provided is empty or not read, if the
  * file is not specified or failed to create the netcdf file
  */
+#if 0
+
 FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
                              _dds(dds), _localfile(localfile), _returnAs(ncVersion)  {
     if (!_dds) {
@@ -127,6 +129,8 @@ FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const strin
     }
 }
 
+#endif
+
 /** @brief Constructor that creates transformation object from the specified
  * DataDDS object to the specified file
  *
@@ -138,6 +142,8 @@ FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const strin
  * @throws BESInternalError if dds provided is empty or not read, if the
  * file is not specified or failed to create the netcdf file
  */
+#if 0
+
 FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
                              _dmr(dmr), _localfile(localfile), _returnAs(ncVersion) {
     if (!_dmr) {
@@ -166,6 +172,8 @@ FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const strin
         FONcUtils::name_prefix = "nc_";
     }
 }
+
+#endif
 
 /** @brief Constructor that creates transformation object from the specified
  * DataDDS object to the specified file
@@ -683,10 +691,6 @@ void FONcTransform::throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_
         string err_msg = too_big_error_msg(4,return_encoding,req_size_kb, max_response_size_kb, dap4_ce);
         throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
     }
-
-
-
-
 }
 
 /** @brief Transforms each of the variables of the DMR to the NetCDF

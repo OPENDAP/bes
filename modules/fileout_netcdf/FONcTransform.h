@@ -86,8 +86,13 @@ public:
 	 * @param localfile
 	 * @param netcdfVersion
 	 */
-	FONcTransform(libdap::DDS *dds, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
+#if 0
+    // FIXME These are never used - that's OK, but the one remaining constructor does not set _dds or _dmr which is
+    //  the root cause of the bug in https://bugs.earthdata.nasa.gov/browse/HYRAX-1334. At leaset the part where
+    //  _dds is not set. I'm not sure where the CE Evaluator should be set. jhrg 2/13/24
+    FONcTransform(libdap::DDS *dds, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
 	FONcTransform(libdap::DMR *dmr, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
+#endif
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
     virtual ~FONcTransform();
 	virtual void transform_dap2(ostream &strm);
@@ -95,10 +100,10 @@ public:
 
 	virtual void dump(ostream &strm) const;
 
-        // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
-        //       This flag is not necessary and should be removed. KY 11/29/23
-        bool get_gdio_flag() const {return global_dio_flag; }
-        void set_gdio_flag(bool dio_flag_value = true) { global_dio_flag = dio_flag_value; }
+    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
+    //       This flag is not necessary and should be removed. KY 11/29/23
+    bool get_gdio_flag() const {return global_dio_flag; }
+    void set_gdio_flag(bool dio_flag_value = true) { global_dio_flag = dio_flag_value; }
 
 
 private:
