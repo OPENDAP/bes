@@ -283,7 +283,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
     //
     // Apologies for the twisted logic - UTC is the default. Override to
     // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
-    struct tm result;
+    struct tm result{};
     if (!use_local_time) {
         gmtime_r(&the_time, &result);
         status = strftime(buf, sizeof buf, "%FT%T%Z", &result);

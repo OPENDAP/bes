@@ -462,7 +462,7 @@ string DODS_Date::get(date_format format) const
 
 time_t DODS_Date::unix_time() const
 {
-	struct tm tm_rec;
+	struct tm tm_rec{};
 	tm_rec.tm_mday = _day;
 	tm_rec.tm_mon = _month - 1; // zero-based
 	tm_rec.tm_year = _year - 1900; // years since 1900

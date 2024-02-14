@@ -82,6 +82,7 @@ bool get_beskeys(const string &,string &);
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
+extern void read_dmr(DMR * dmr, const string & filename);
 
 extern bool read_dds_hdfsp(DDS & dds, const string & filename,int32 sdfd, int32 fileid,HDFSP::File*h4file);
 
@@ -101,6 +102,8 @@ void close_fileid(const int sdfd, const int fileid,const int gridfd, const int s
 void close_hdf4_fileid(const int sdfd,const int fileid,HDFSP::File*h4file);
 bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool rw_flag);
 bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string & hdf4_filename);
+
+bool HDF4RequestHandler::_direct_dmr               = false;
 
 // CF key
 bool HDF4RequestHandler::_usecf                    = false;
@@ -155,6 +158,7 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 	BESRequestHandler::add_method(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
 	BESRequestHandler::add_method(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 
+        _direct_dmr=check_beskeys("H4.EnableDirectDMR");
         _usecf = check_beskeys("H4.EnableCF");
 
         // The following keys are only effective when usecf is true.
@@ -1356,11 +1360,15 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     if (BESDebug::IsSet(TIMING_LOG_KEY))
         sw.start("HDF4RequestHandler::hdf4_build_dmr", dhi.data[REQUEST_ID]);
 
+    if (true == _direct_dmr) 
+        return hdf4_build_direct_dmr(dhi);
+ 
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).
     // First step, build the 'full DDS'
     string data_path = dhi.container->access();
 
+    
     BaseTypeFactory factory;
     DDS dds(&factory, name_path(data_path), "3.2");
     dds.filename(data_path);
@@ -1551,6 +1559,36 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     dmr->set_factory(nullptr);
 
     return true;
+}
+
+bool HDF4RequestHandler::hdf4_build_direct_dmr(BESDataHandlerInterface & dhi) {
+
+    // Extract the DMR Response object - this holds the DMR used by the
+    // other parts of the framework.
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDMRResponse &bes_dmr_response = dynamic_cast<BESDMRResponse &>(*response);
+
+    string filename = dhi.container->access();
+
+    BESDEBUG("h4", "build_direct_dmr - filename"<< filename <<endl);
+    DMR *dmr = bes_dmr_response.get_dmr();
+    dmr->set_name(name_path(filename));
+    dmr->set_filename(name_path(filename));
+    D4BaseTypeFactory MyD4TypeFactory;
+    dmr->set_factory(&MyD4TypeFactory);
+
+
+    BESDEBUG("h4", "build_direct_dmr - begin"<< endl);
+    read_dmr(dmr, filename);
+    BESDEBUG("h4", "build_direct_dmr - end"<< endl);
+
+    bes_dmr_response.set_dap4_constraint(dhi);
+    bes_dmr_response.set_dap4_function(dhi);
+    dmr->set_factory(nullptr);
+
+    return false;
+    
+
 }
 
 bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) {
