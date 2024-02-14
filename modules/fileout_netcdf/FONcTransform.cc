@@ -87,88 +87,7 @@ using namespace std;
 #define MSG_LABEL_CLASSIC_MODEL " (classic model)"
 #define MSG_LABEL_SIXTYFOUR_BIT_MODEL " (64-bit offset model)"
 
-/** @brief Constructor that creates transformation object from the specified
- * DataDDS object to the specified file
- *
- * @param dds DataDDS object that contains the data structure, attributes
- * and data
- * @param dhi The data interface containing information about the current
- * request
- * @param localfile netcdf to create and write the information to
- * @throws BESInternalError if dds provided is empty or not read, if the
- * file is not specified or failed to create the netcdf file
- */
-FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
-                             _dds(dds), _localfile(localfile), _returnAs(ncVersion)  {
-    if (!_dds) {
-        throw BESInternalError("File out netcdf, null DDS passed to constructor", __FILE__, __LINE__);
-    }
-    if (_localfile.empty()) {
-        throw BESInternalError("File out netcdf, empty local file name passed to constructor", __FILE__, __LINE__);
-    }
-#if 0
-    _localfile = localfile;
-    _dds = dds;
-    _returnAs = ncVersion;
-#endif
-
-    // if there is a variable, attribute, dimension name that is not
-    // compliant with netcdf naming conventions then we will create
-    // a new name. If the new name does not begin with an alpha
-    // character then we will prefix it with name_prefix. We will
-    // get this prefix from the type of data that we are reading in,
-    // such as nc, h4, h5, ff, jg, etc...
-    dhi.first_container();
-    if (dhi.container) {
-        FONcUtils::name_prefix = dhi.container->get_container_type() + "_";
-    }
-    else {
-        FONcUtils::name_prefix = "nc_";
-    }
-}
-
-/** @brief Constructor that creates transformation object from the specified
- * DataDDS object to the specified file
- *
- * @param dmr DMR object that contains the data structure, attributes
- * and data
- * @param dhi The data interface containing information about the current
- * request
- * @param localfile netcdf to create and write the information to
- * @throws BESInternalError if dds provided is empty or not read, if the
- * file is not specified or failed to create the netcdf file
- */
-FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
-                             _dmr(dmr), _localfile(localfile), _returnAs(ncVersion) {
-    if (!_dmr) {
-        throw BESInternalError("File out netcdf, null DMR passed to constructor", __FILE__, __LINE__);
-    }
-    if (_localfile.empty()) {
-        throw BESInternalError("File out netcdf, empty local file name passed to constructor", __FILE__, __LINE__);
-    }
-#if 0
-    _localfile = localfile;
-    _dmr = dmr;
-    _returnAs = ncVersion;
-#endif
-
-    // if there is a variable, attribute, dimension name that is not
-    // compliant with netcdf naming conventions then we will create
-    // a new name. If the new name does not begin with an alpha
-    // character then we will prefix it with name_prefix. We will
-    // get this prefix from the type of data that we are reading in,
-    // such as nc, h4, h5, ff, jg, etc...
-    dhi.first_container();
-    if (dhi.container) {
-        FONcUtils::name_prefix = dhi.container->get_container_type() + "_";
-    }
-    else {
-        FONcUtils::name_prefix = "nc_";
-    }
-}
-
-/** @brief Constructor that creates transformation object from the specified
- * DataDDS object to the specified file
+/** @brief Constructor that creates transformation object from the specified BESResponseObject object to the specified file
  *
  * @param dds DataDDS object that contains the data structure, attributes
  * and data
@@ -218,8 +137,6 @@ FONcTransform::~FONcTransform() {
     // _dds still is. jhrg 8/13/21
     delete _dmr;
 }
-
-
 
 /**
  *
@@ -683,10 +600,6 @@ void FONcTransform::throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_
         string err_msg = too_big_error_msg(4,return_encoding,req_size_kb, max_response_size_kb, dap4_ce);
         throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
     }
-
-
-
-
 }
 
 /** @brief Transforms each of the variables of the DMR to the NetCDF
