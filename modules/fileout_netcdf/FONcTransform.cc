@@ -938,6 +938,7 @@ void FONcTransform::transform_dap4_no_group() {
                 _fonc_vars.push_back(fb);
     
                 vector <string> embed;
+                // This call sets d_is_dap4 to true, and d_is_dap4_group to false. jhrg 2/14/24
                 fb->convert(embed, true, false);
             }
         }
@@ -962,6 +963,7 @@ void FONcTransform::transform_dap4_no_group() {
                 _fonc_vars.push_back(fb);
     
                 vector <string> embed;
+                // This call sets d_is_dap4 to true, and d_is_dap4_group to false. jhrg 2/14/24
                 fb->convert(embed, true, false);
             }
         }
@@ -1186,6 +1188,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
                 _total_fonc_vars_in_grp.push_back(fb);
     
                 vector <string> embed;
+                // This call sets d_is_dap4 to true, and d_is_dap4_group to true. jhrg 2/14/24
                 fb->convert(embed, true, true);
             }
         }
@@ -1214,6 +1217,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
                 _total_fonc_vars_in_grp.push_back(fb);
     
                 vector <string> embed;
+                // This call sets d_is_dap4 to true, and d_is_dap4_group to true. jhrg 2/14/24
                 fb->convert(embed, true, true);
             }
         }
