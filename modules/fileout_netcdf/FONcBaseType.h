@@ -66,12 +66,10 @@ protected:
     bool d_defined = false;
     std::string d_ncVersion;
     std::string d_nc4_datamodel;
-    // FIXME Tried setting this true by default; that should have changed some test behavior (FONcStr.cc test 4 and 5, e.g.)
+    // FIXME Tried setting this true by default; that should have changed some test behavior
     //  but it didn't. jhrg 2/13/24. Does this mean the value is set somewhere else?
-#if 0
+    //  See HYRAX-1334.
     bool d_is_dap4 = false;
-#endif
-    bool d_is_dap4 = true;
 
     //This is to handle the name clashing of dimension names of string type
     bool d_is_dap4_group = false;

@@ -76,23 +76,6 @@ private:
     bool global_dio_flag = false; 
 
 public:
-	/**
-	 * Build a FONcTransform object. By default it builds a netcdf 3 file; pass "netcdf-4"
-	 * to get a netcdf 4 file.
-	 *
-	 * @note added default value to fourth param to preserve the older API. 5/6/13 jhrg
-	 * @param dds
-	 * @param dhi
-	 * @param localfile
-	 * @param netcdfVersion
-	 */
-#if 0
-    // FIXME These are never used - that's OK, but the one remaining constructor does not set _dds or _dmr which is
-    //  the root cause of the bug in https://bugs.earthdata.nasa.gov/browse/HYRAX-1334. At leaset the part where
-    //  _dds is not set. I'm not sure where the CE Evaluator should be set. jhrg 2/13/24
-    FONcTransform(libdap::DDS *dds, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
-	FONcTransform(libdap::DMR *dmr, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
-#endif
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
     virtual ~FONcTransform();
 	virtual void transform_dap2(ostream &strm);

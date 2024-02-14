@@ -84,20 +84,22 @@ void FONcStr::define(int ncid)
         BESDEBUG("fonc", "FONcStr::define - defining " << d_varname << endl);
 
         d_varname = FONcUtils::gen_name(d_embed, d_varname, d_orig_varname);
-        _data = new string;
 
-        // FIXME This is a hack to get around the fact that the code moved away from setting the DDS and
+        // The following code (the call to intern_data() and then buf2val()) moves the string data
+        // from the encapsulated libdap::Str instance to the _data member of this class. Note that
+        // libdap::Str::buf2val() works with a **string and not **void like the numeric types. jhrg 2/14/24
+        // FIXME This (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr) is a hack to get
+        //  around the fact that the code moved away from setting the DDS and
         //  the ConstraintEvaluator in the constructor. This is a temporary fix. jhrg 2/14/24
         if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
             _str->intern_data();
         else
             _str->intern_data(*get_eval(), *get_dds());
 
+        _data = new string;
         _str->buf2val((void**) &_data);
-        auto size = _data->size() + 1;
 
         string dimname;
-
         // For DAP4, we need to ensure the dimension name is unique.
         if(d_is_dap4_group == true) {
             ostringstream dim_suffix_strm;
@@ -107,7 +109,9 @@ void FONcStr::define(int ncid)
         }
         else 
             dimname = d_varname + "_len";
-        int stax = nc_def_dim(ncid, dimname.c_str(), size, &_dimid);
+
+        // FIXME In the following, for the third parameter,  why not: dimname.size() + 1? jhrg 2/14/24
+        int stax = nc_def_dim(ncid, dimname.c_str(), _data->size() + 1, &_dimid);
         if (stax != NC_NOERR) {
             string err = (string) "fileout.netcdf - " + "Failed to define dim " + dimname + " for " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
