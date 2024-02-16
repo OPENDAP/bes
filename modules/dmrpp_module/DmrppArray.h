@@ -118,21 +118,19 @@ private:
 
     friend class DmrppArrayTest;
     // Called from read_chunks_unconstrained() and also using pthreads
-    friend void
-    process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
+    friend void process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
             DmrppArray *array, const vector<unsigned long long> &array_shape);
 
     // Change this for direct chunk IO.
-    friend void
-    process_one_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
-            DmrppArray *array, const vector<unsigned long long> &array_shape);
+    friend void  process_one_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk, DmrppArray *array);
 
 
     // Called from read_chunks()
-    friend void
-    process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
+    friend void process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array,
+                                  const vector<unsigned long long> &constrained_array_shape);
 
-    friend bool process_chunk_data(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
+    friend bool process_chunk_data(shared_ptr<Chunk> chunk, DmrppArray *array,
+                                   const vector<unsigned long long> &constrained_array_shape);
 
     virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned long long> &array_shape,

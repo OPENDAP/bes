@@ -125,6 +125,50 @@ bool process_chunk_data(shared_ptr <Chunk> chunk, DmrppArray *array,
 }
 
 /**
+ * @brief Reads the Chunk (as needed) and performs the inflate/shuffle/etc. processing after which the values are inserted into the array.
+ *
+ * This function may be called by a thread in a multi-threaded access scenario
+ * or by a DmrppArray method in the serial access case. The Chunk::read_chunk()
+ * method may throw an exception. In the multi-threaded case, that exception
+ * will only be part of the thread's execution context, not "main()'s" context.
+ * The code in the thread task one_chuck_thread above will catch that exception
+ * and return an error code using pthread_exit(). That, in turn, will be read
+ * by the main thread and turned into an exception that propagates to the top
+ * of the BES call stack.
+ *
+ * @param chunk The chunk to process
+ * @param chunk_shape The chunk shape
+ * @param array The DmrppArray instance that called this function
+ * @param array_shape How the DAP Array this chunk is part of was
+ * constrained - used to determine where/how to add the chunk's data to the
+ * whole array.
+ */
+void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
+                                     DmrppArray *array, const vector<unsigned long long> &array_shape) {
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
+
+    if (array) {
+        if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
+
+        array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
+    }
+
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
+}
+
+void process_one_chunk_unconstrained_dio(shared_ptr<Chunk> chunk, DmrppArray *array) {
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
+
+    if (array) {
+        array->insert_chunk_unconstrained_dio(chunk);
+    }
+
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
+}
+
+
+/**
  * @brief Initialize a list of futures with chunks to process.
  *
  * @param futures The list of futures to initialize
@@ -196,58 +240,6 @@ void process_chunks_concurrent(const string &, queue <shared_ptr<Chunk>> &chunks
 }
 
 /**
- * @brief Reads the Chunk (as needed) and performs the inflate/shuffle/etc. processing after which the values are inserted into the array.
- *
- * This function may be called by a thread in a multi-threaded access scenario
- * or by a DmrppArray method in the serial access case. The Chunk::read_chunk()
- * method may throw an exception. In the multi-threaded case, that exception
- * will only be part of the thread's execution context, not "main()'s" context.
- * The code in the thread task one_chuck_thread above will catch that exception
- * and return an error code using pthread_exit(). That, in turn, will be read
- * by the main thread and turned into an exception that propagates to the top
- * of the BES call stack.
- *
- * @param chunk The chunk to process
- * @param chunk_shape The chunk shape
- * @param array The DmrppArray instance that called this function
- * @param array_shape How the DAP Array this chunk is part of was
- * constrained - used to determine where/how to add the chunk's data to the
- * whole array.
- */
-void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
-                                     DmrppArray *array, const vector<unsigned long long> &array_shape) {
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
-
-#if 0
-    chunk->read_chunk();
-#endif
-
-    if (array) {
-        if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
-
-        array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
-    }
-
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
-}
-
-void process_one_chunk_unconstrained_dio(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
-                                         DmrppArray *array, const vector<unsigned long long> &array_shape) {
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
-
-#if 0
-    chunk->read_chunk();
-#endif
-
-    if (array) {
-        array->insert_chunk_unconstrained_dio(chunk);
-    }
-
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
-}
-
-/**
  * @brief A single argument wrapper for process_one_chunk_unconstrained() for use with std::async().
  * @param args A unique_ptr to an instance of one_chunk_args.
  * @return True unless an exception is throw in which case neither true or false apply.
@@ -276,7 +268,7 @@ bool one_chunk_unconstrained_compute_thread_dio(unique_ptr<one_chunk_unconstrain
     sw.start(timer_tag.str());
 #endif
 
-    process_one_chunk_unconstrained_dio(args->chunk, args->chunk_shape, args->array, args->array_shape);
+    process_one_chunk_unconstrained_dio(args->chunk, args->array);
     return true;
 }
 
@@ -682,16 +674,19 @@ void SuperChunk::process_child_chunks() {
     retrieve_data();
 
     vector<unsigned long long> constrained_array_shape = d_parent_array->get_shape(true);
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads ? "true" : "false") << endl);
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
+    BESDEBUG(SUPER_CHUNK_MODULE,
+             prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads ? "true" : "false")
+                    << endl);
+    BESDEBUG(SUPER_CHUNK_MODULE,
+             prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
 
     if (!DmrppRequestHandler::d_use_compute_threads) {
 #if DMRPP_ENABLE_THREAD_TIMERS
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog+"Serial Chunk Processing. id: " + d_id);
 #endif
-        for(const auto &chunk: d_chunks){
-            process_chunk_data(chunk,d_parent_array,constrained_array_shape);
+        for (const auto &chunk: d_chunks) {
+            process_chunk_data(chunk, d_parent_array, constrained_array_shape);
         }
     }
     else {
@@ -701,13 +696,13 @@ void SuperChunk::process_child_chunks() {
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(timer_name.str());
 #endif
-        queue< shared_ptr<Chunk> > chunks_to_process;
-        for(const auto &chunk: d_chunks)
+        queue<shared_ptr<Chunk> > chunks_to_process;
+        for (const auto &chunk: d_chunks)
             chunks_to_process.push(chunk);
 
         process_chunks_concurrent(d_id, chunks_to_process, d_parent_array, constrained_array_shape);
     }
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
 }
 
 
@@ -760,13 +755,13 @@ void SuperChunk::read_unconstrained_dio() {
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
 
-    if(!DmrppRequestHandler::d_use_compute_threads){
+    if (!DmrppRequestHandler::d_use_compute_threads) {
 #if DMRPP_ENABLE_THREAD_TIMERS
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
 #endif
-        for(const auto &chunk : d_chunks){
-            process_one_chunk_unconstrained_dio(chunk, chunk_shape, d_parent_array, array_shape);
+        for (const auto &chunk: d_chunks) {
+            process_one_chunk_unconstrained_dio(chunk, d_parent_array);
         }
     }
     else {
@@ -778,10 +773,10 @@ void SuperChunk::read_unconstrained_dio() {
         sw.start(timer_name.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for (const auto &chunk : d_chunks)
+        for (const auto &chunk: d_chunks)
             chunks_to_process.push(chunk);
 
-        process_chunks_unconstrained_concurrent_dio(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
+        process_chunks_unconstrained_concurrent_dio(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
     }
 }
 
