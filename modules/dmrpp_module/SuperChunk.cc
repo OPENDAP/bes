@@ -190,7 +190,7 @@ void process_chunks_concurrent(const string &, queue <shared_ptr<Chunk>> &chunks
     initialize_chunk_processing_futures(futures, chunks, array, constrained_array_shape);
 
     do {
-        next_ready_future(futures) ; // If a future is ready, remove it from the list.
+        next_ready_future(futures); // If a future is ready, remove it from the list.
         add_next_chunk_processing_future(futures, chunks, array, constrained_array_shape);  // add if space available
     } while (!futures.empty() && !chunks.empty());
 }

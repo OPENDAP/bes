@@ -208,7 +208,7 @@ public:
         vector<unsigned long long> array_shape = {1};
 
         try {
-            process_one_chunk(chunk, array, array_shape);
+            process_chunk_data(chunk, array, array_shape);
         }
         catch (BESError &e) {
             DBG(cerr << prolog << "BES Exception: " << e.get_verbose_message() << endl);
