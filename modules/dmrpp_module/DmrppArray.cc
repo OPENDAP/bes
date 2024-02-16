@@ -1261,7 +1261,7 @@ void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
     char *target_buffer = get_buf();
 
     // copy the chunk buffer to the variable buffer at the right location.
-    memcpy(target_buffer + chunk->get_direct_io_offset(), source_buffer,chunk->get_size());
+    memcpy(target_buffer + chunk->get_direct_io_offset(), source_buffer, chunk->get_size());
  
 }
 

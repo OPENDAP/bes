@@ -145,26 +145,18 @@ bool process_chunk_data(shared_ptr <Chunk> chunk, DmrppArray *array,
  */
 void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
                                      DmrppArray *array, const vector<unsigned long long> &array_shape) {
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
-
     if (array) {
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
-
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
 }
 
 void process_one_chunk_unconstrained_dio(shared_ptr<Chunk> chunk, DmrppArray *array) {
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
-
     if (array) {
         array->insert_chunk_unconstrained_dio(chunk);
     }
-
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
 }
 
 
