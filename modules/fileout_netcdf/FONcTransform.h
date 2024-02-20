@@ -76,18 +76,6 @@ private:
     bool global_dio_flag = false; 
 
 public:
-	/**
-	 * Build a FONcTransform object. By default it builds a netcdf 3 file; pass "netcdf-4"
-	 * to get a netcdf 4 file.
-	 *
-	 * @note added default value to fourth param to preserve the older API. 5/6/13 jhrg
-	 * @param dds
-	 * @param dhi
-	 * @param localfile
-	 * @param netcdfVersion
-	 */
-	FONcTransform(libdap::DDS *dds, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
-	FONcTransform(libdap::DMR *dmr, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
     virtual ~FONcTransform();
 	virtual void transform_dap2(ostream &strm);
@@ -95,10 +83,10 @@ public:
 
 	virtual void dump(ostream &strm) const;
 
-        // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
-        //       This flag is not necessary and should be removed. KY 11/29/23
-        bool get_gdio_flag() const {return global_dio_flag; }
-        void set_gdio_flag(bool dio_flag_value = true) { global_dio_flag = dio_flag_value; }
+    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
+    //       This flag is not necessary and should be removed. KY 11/29/23
+    bool get_gdio_flag() const {return global_dio_flag; }
+    void set_gdio_flag(bool dio_flag_value = true) { global_dio_flag = dio_flag_value; }
 
 
 private:
