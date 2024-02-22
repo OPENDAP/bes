@@ -369,3 +369,13 @@ AT_BINARY_DAP2_MULTI_RESPONSE_TEST([chunked/chunked_oneD.h5.dods], xpass)
 
 AT_BINARY_DAP4_ENUMERATED_RESPONSE_TEST([chunked/chunked_oneD.h5.dap], [chunked/chunked_oneD.h5.dap], [chunked/chunked_oneD.h5.dap], xfail)
 AT_BINARY_DAP4_ENUMERATED_RESPONSE_TEST([s3/airs_1_local.dap], [s3/airs_2_local.dap], [s3/airs_3_local.dap], xfail)
+
+##############################################################################
+# HDF4 Simple SDS various storage option tests
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/vg_hl_test.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_comp.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_chunk.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_chunk_comp.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_chunk_extra_area.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_chunk_extra_area_comp.hdf.dap])

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="vg_hl_test.hdf">
+    <Dimension name="fakeDim0" size="4"/>
+    <Dimension name="fakeDim1" size="4"/>
+    <Dimension name="fakeDim2" size="4"/>
+    <Group name="groupA">
+        <Group name="groupC"/>
+    </Group>
+    <Group name="groupB">
+        <Int32 name="sds">
+            <Dim name="/fakeDim0"/>
+            <Dim name="/fakeDim1"/>
+            <Dim name="/fakeDim2"/>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>4</Value>
+            </Attribute>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                removed checksum
+            </Attribute>
+        </Int32>
+    </Group>
+</Dataset>
+
+The data:
+Int32 sds[fakeDim0 = 4][fakeDim1 = 4][fakeDim2 = 4] = {{{0, 0, 0, 0},{1, 1, 1, 1},{2, 2, 2, 2},{3, 3, 3, 3}},{{1, 1, 1, 1},{2, 2, 2, 2},{3, 3, 3, 3},{4, 4, 4, 4}},{{2, 2, 2, 2},{3, 3, 3, 3},{4, 4, 4, 4},{5, 5, 5, 5}},{{3, 3, 3, 3},{4, 4, 4, 4},{5, 5, 5, 5},{6, 6, 6, 6}}};
+
