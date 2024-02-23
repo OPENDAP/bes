@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="data" space="catalog">/data/h4_dmrpp/SDS_chunk_extra_area_comp.hdf.dmrpp</setContainer>
+    <define name="d">
+	<container name="data" />
+    </define>
+    <get type="dap" definition="d" />
+</request>
