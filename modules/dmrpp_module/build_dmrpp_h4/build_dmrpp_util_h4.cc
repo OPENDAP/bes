@@ -466,7 +466,6 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
         if (info_count == FAIL) {
             FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
         }
-cout<<"number of blocks for contiguous storage is: "<<map_info.nblocks <<endl;
         vector<unsigned long long> position_in_array(rank, 0);
         if (map_info.nblocks ==1) {
               dc->add_chunk(endian_name, map_info.lengths[0], map_info.offsets[0], position_in_array);
@@ -480,8 +479,8 @@ cout<<"number of blocks for contiguous storage is: "<<map_info.nblocks <<endl;
             size_t merged_number_blocks = combine_linked_blocks(map_info, merged_lengths, merged_offsets);
             // vector<unsigned long long> position_in_array(rank, 0);
             for (unsigned i = 0; i < merged_number_blocks; i++) {
-                //VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
-                //VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
+                VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
+                VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
 
                 // Critical TODO:
                 //  Here is a bug. the position cannot be 0 for the second block if this is treated as a chunk.
