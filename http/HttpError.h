@@ -32,57 +32,37 @@
 #include <vector>
 #include <sstream>
 
+#include <curl/curl.h>
+
 #include "BESError.h"
+#include "Response.h"
 
 namespace http {
 
 class HttpError : public BESError {
-    unsigned int d_http_status = 0;
-    std::vector<std::string> d_response_headers;
-    std::string d_response_body;
+    Response d_http_response;
 
 public:
     HttpError() = default;
 
-    HttpError(std::string msg, std::string file, unsigned int line) :
-            BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) { }
-
-    HttpError(std::string msg,
-              unsigned int http_status,
-              std::vector<std::string> response_headers,
-              std::string response_body,
-              std::string file,
-              unsigned int line) :
+    HttpError(std::string msg, Response resp, std::string file, unsigned int line):
             BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line),
-            d_http_status(http_status),
-            d_response_headers(std::move(response_headers)),
-            d_response_body(std::move(response_body)){ }
-
+            d_http_response{std::move(resp)} {}
 
     HttpError(const HttpError &src)  noexcept = default;
 
     ~HttpError() override = default;
 
-    void set_response_body(std::string body){
-        d_response_body = std::move(body);
-    }
-    std::string get_response_body() const{
-        return d_response_body;
+    std::string body() {
+        return d_http_response.body();
     }
 
-    void set_response_headers(std::vector<std::string> hdrs){
-        d_response_headers = std::move(hdrs);
-    }
-    std::vector<std::string> get_response_headers() const {
-        return d_response_headers;
+    std::vector<std::string> headers()  {
+        return d_http_response.headers();
     }
 
-    void set_http_status(unsigned int status){
-        d_http_status = status;
-    }
-
-    unsigned int get_http_status() const {
-        return d_http_status;
+    unsigned int http_status() const {
+        return d_http_response.status();
     }
 
     /** @brief dumps information about this object
@@ -101,11 +81,7 @@ public:
              << (void *)this << ")\n";
         BESError::dump(msg);
         BESIndent::Indent() ;
-        msg << BESIndent::LMarg << "http_status: " << d_http_status << "\n" ;
-        for(const auto &hdr: d_response_headers) {
-            msg << BESIndent::LMarg << "response_header: " << hdr << "\n";
-        }
-        msg << BESIndent::LMarg << "response_body: " << d_response_body << "\n" ;
+        msg << d_http_response.dump();
         BESIndent::UnIndent() ;
     }
 

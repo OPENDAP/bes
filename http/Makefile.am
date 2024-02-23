@@ -37,6 +37,7 @@ DISTCLEANFILES = http.conf
 
 SRCS = CurlUtils.cc \
     HttpError.cc \
+    Response.cc \
     HttpCache.cc \
     RemoteResource.cc \
     HttpUtils.cc \
@@ -51,6 +52,7 @@ SRCS = CurlUtils.cc \
 
 HDRS = CurlUtils.h \
     HttpError.h \
+    response.h \
     HttpCache.h \
     RemoteResource.h \
     HttpUtils.h \
