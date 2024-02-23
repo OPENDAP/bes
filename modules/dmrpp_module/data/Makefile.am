@@ -22,7 +22,7 @@ get_dmrpp: get_dmrpp.in $(top_builddir)/config.status Makefile
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.in README README.md dmrpp mds_for_tests s3 s3_data fill_value deflate_twice string_arrays
+EXTRA_DIST = get_dmrpp.in README README.md dmrpp mds_for_tests s3 s3_data fill_value deflate_twice string_arrays h4_dmrpp
 
 CLEANFILES = get_dmrpp mds_for_tests_ledger.txt mds_ledger.txt bes.log *~
 

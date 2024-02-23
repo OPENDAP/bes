@@ -9,7 +9,7 @@ CLEANFILES = bes.conf bes.log bes_serial.conf
 
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
-EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays \
+EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays hdf4\
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3) $(TESTSUITE_S3).at $(TESTSUITE_DMRPP_BUILDER) \
 $(TESTSUITE_DMRPP_BUILDER).at atlocal.in bes.conf.in bes_serial.conf.in $(srcdir)/package.m4 \
 multi_input_tests.m4
