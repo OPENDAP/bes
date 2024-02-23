@@ -45,6 +45,7 @@
 #include <cerrno>
 
 #include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
 
 #include "ServerApp.h"
 #include "ServerExitConditions.h"

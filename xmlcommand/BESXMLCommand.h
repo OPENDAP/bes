@@ -37,6 +37,7 @@
 #include <map>
 
 #include <libxml/encoding.h>
+#include <libxml/tree.h>
 
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
