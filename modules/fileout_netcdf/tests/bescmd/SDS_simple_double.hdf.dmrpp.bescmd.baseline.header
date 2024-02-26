@@ -1,0 +1,12 @@
+netcdf test {
+dimensions:
+	fakeDim0 = 2 ;
+	fakeDim1 = 4 ;
+variables:
+	double SDS_simple_double(fakeDim0, fakeDim1) ;
+		SDS_simple_double:dmr_sds_ref = 2 ;
+
+// global attributes:
+		:history = "removed date-timex SDS_simple_double.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"SDS_simple_double.hdf.dmrpp\"}]}]" ;
+}

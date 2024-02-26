@@ -12,6 +12,7 @@ AT_BESCMD_RESPONSE_TEST([contiguous/t_int_scalar.h5.das])
 AT_BESCMD_RESPONSE_TEST([contiguous/t_int_scalar.h5.dds])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_int_scalar.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/t_int_scalar.h5.dods])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_scalar_dset_float_be.h5.dap])
 
 AT_BESCMD_RESPONSE_TEST([contiguous/d_int.h5.dmr])
 AT_BESCMD_RESPONSE_TEST([contiguous/d_int.h5.das])
@@ -374,6 +375,8 @@ AT_BINARY_DAP4_ENUMERATED_RESPONSE_TEST([s3/airs_1_local.dap], [s3/airs_2_local.
 # HDF4 Simple SDS various storage option tests
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/vg_hl_test.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_float.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_double.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_comp.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_chunk.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_chunk_comp.hdf.dap])
