@@ -2272,6 +2272,24 @@ bool DmrppArray::read()
                 }
                 break;
             }
+            case dods_float32_c: {
+                char *temp_buf = this->get_buf();
+                while (num--) {
+                    for (size_t i = 0; i <sizeof(float)/2;i++) 
+                        std::swap(temp_buf[i],temp_buf[sizeof(float)-i-1]);
+                    temp_buf = temp_buf + sizeof(float);
+                }
+                break;
+            }
+            case dods_float64_c: {
+                char *temp_buf = this->get_buf();
+                while (num--) {
+                    for (size_t i = 0; i <sizeof(double)/2;i++) 
+                        std::swap(temp_buf[i],temp_buf[sizeof(double)-i-1]);
+                    temp_buf = temp_buf + sizeof(double);
+                }
+                break;
+            }
             default: break; // Do nothing for all other types.
         }
     }

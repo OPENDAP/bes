@@ -63,6 +63,13 @@ DmrppFloat64::read()
 
     set_value(*reinterpret_cast<dods_float64*>(read_atomic(name())));
 
+    if ( this->twiddle_bytes() ) {
+       char *const temp_buf = reinterpret_cast<char*>(&d_buf);
+        for (size_t i = 0; i <sizeof(double)/2;i++) 
+            std::swap(temp_buf[i],temp_buf[sizeof(double)-i-1]);
+    }
+
+
     set_read_p(true);
 
     return true;
