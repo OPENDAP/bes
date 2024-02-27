@@ -66,6 +66,8 @@ protected:
     bool d_defined = false;
     std::string d_ncVersion;
     std::string d_nc4_datamodel;
+    // This is set by transform_dap4() in FONCtranform.cc. Look for the call to convert()
+    // and/or the comment lines that mention d_is_dap with the date 2/14/24. jhrg 2/14/24
     bool d_is_dap4 = false;
 
     //This is to handle the name clashing of dimension names of string type

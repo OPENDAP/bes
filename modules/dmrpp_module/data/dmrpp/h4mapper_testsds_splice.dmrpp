@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="testsds1.hdf" dmrpp:href="/data/dmrpp/testsds1.hdf">
+  <Dimension name="fakeDim0" size="5"/>
+  <Dimension name="fakeDim1" size="3"/>
+  <Int32 name="SDS_DFNT_INT32">
+      <Dim name="/fakeDim0"/>
+      <Attribute name="dim_0" type="Container">
+          <Attribute name="name" type="String">
+              <Value>fakeDim0</Value>
+          </Attribute>
+      </Attribute>
+      <dmrpp:chunks byteOrder="BE">
+            <dmrpp:chunkDimensionSizes>5</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="2502" nBytes="20" chunkPositionInArray="[0]" />
+      </dmrpp:chunks>
+  </Int32>
+  <UInt32 name="SDS_DFNT_UINT32">
+      <Dim name="/fakeDim1"/>
+      <Attribute name="dim_0" type="Container">
+          <Attribute name="name" type="String">
+              <Value>fakeDim1</Value>
+          </Attribute>
+      </Attribute>
+      <dmrpp:chunks byteOrder="BE">
+          <dmrpp:chunkDimensionSizes>3</dmrpp:chunkDimensionSizes>
+          <dmrpp:chunk offset="2522" nBytes="12" chunkPositionInArray="[0]" />
+      </dmrpp:chunks>
+  </UInt32>
+</Dataset>

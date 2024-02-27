@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="testvs3.hdf">
+    <Structure name="Vdata">
+        <Int32 name="dINT32"/>
+        <UInt32 name="dUINT32"/>
+        <Int16 name="dINT16"/>
+        <UInt16 name="dUINT16"/>
+        <Int8 name="dINT8"/>
+        <Byte name="dUINT8"/>
+        <Float32 name="dFLOAT32"/>
+        <Float64 name="dFLOAT64"/>
+        <Int8 name="dCHAR8"/>
+        <Byte name="dUCHAR8"/>
+        <Dim size="7"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+    </Structure>
+</Dataset>

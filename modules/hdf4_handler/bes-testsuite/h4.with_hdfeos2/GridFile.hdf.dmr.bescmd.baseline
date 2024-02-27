@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GridFile.hdf">
+    <Dimension name="Time_UTMGrid" size="10"/>
+    <Dimension name="YDim_UTMGrid" size="200"/>
+    <Dimension name="XDim_UTMGrid" size="120"/>
+    <Dimension name="YDim_PolarGrid" size="100"/>
+    <Dimension name="XDim_PolarGrid" size="100"/>
+    <Dimension name="MRGDIM_PolarGrid_2" size="2"/>
+    <Dimension name="Bands_PolarGrid" size="3"/>
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.0</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName=&quot;UTMGrid&quot;
+		XDim=120
+		YDim=200
+		UpperLeftPointMtrs=(210584.500410,3322395.954450)
+		LowerRightMtrs=(813931.109590,2214162.532780)
+		Projection=GCTP_UTM
+		ZoneCode=40
+		SphereCode=0
+		GROUP=Dimension
+			OBJECT=Dimension_1
+				DimensionName=&quot;Time&quot;
+				Size=10
+			END_OBJECT=Dimension_1
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;Pollution&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;Time&quot;,&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+			OBJECT=DataField_2
+				DataFieldName=&quot;Vegetation&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_2
+			OBJECT=DataField_3
+				DataFieldName=&quot;Extern&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_3
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+	GROUP=GRID_2
+		GridName=&quot;PolarGrid&quot;
+		XDim=100
+		YDim=100
+		UpperLeftPointMtrs=DEFAULT
+		LowerRightMtrs=DEFAULT
+		Projection=GCTP_PS
+		ProjParams=(0,0,0,0,0,90000000,0,0,0,0,0,0,0)
+		SphereCode=3
+		GridOrigin=HDFE_GD_LR
+		GROUP=Dimension
+			OBJECT=Dimension_1
+				DimensionName=&quot;Bands&quot;
+				Size=3
+			END_OBJECT=Dimension_1
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;Temperature&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+			OBJECT=DataField_2
+				DataFieldName=&quot;Pressure&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_2
+			OBJECT=DataField_3
+				DataFieldName=&quot;Soil Dryness&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_3
+			OBJECT=DataField_4
+				DataFieldName=&quot;Spectra&quot;
+				DataType=DFNT_FLOAT64
+				DimList=(&quot;Bands&quot;,&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_4
+		END_GROUP=DataField
+		GROUP=MergedFields
+			OBJECT=MergedFields_1
+				MergedFieldName=&quot;MRGFLD_Temperature&quot;
+				FieldList=(&quot;Temperature&quot;,&quot;Pressure&quot;)
+			END_OBJECT=MergedFields_1
+		END_GROUP=MergedFields
+	END_GROUP=GRID_2
+	GROUP=GRID_3
+		GridName=&quot;GEOGrid&quot;
+		XDim=60
+		YDim=40
+		UpperLeftPointMtrs=(0.000000,30000000.000000)
+		LowerRightMtrs=(15000000.000000,20000000.000000)
+		Projection=GCTP_GEO
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_3
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Group name="UTMGrid">
+        <Group name="Data_Fields">
+            <Float32 name="Pollution">
+                <Dim name="/Time_UTMGrid"/>
+                <Dim name="/YDim_UTMGrid"/>
+                <Dim name="/XDim_UTMGrid"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>-7.000000000</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>14</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="Vegetation">
+                <Dim name="/YDim_UTMGrid"/>
+                <Dim name="/XDim_UTMGrid"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>15</Value>
+                </Attribute>
+            </Float32>
+        </Group>
+        <Group name="Grid_Attributes">
+            <Attribute name="float32" type="Float32">
+                <Value>1.000000000</Value>
+            </Attribute>
+        </Group>
+    </Group>
+    <Group name="PolarGrid">
+        <Group name="Data_Fields">
+            <Float32 name="Soil_Dryness">
+                <Dim name="/YDim_PolarGrid"/>
+                <Dim name="/XDim_PolarGrid"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>17</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="MRGFLD_Temperature">
+                <Dim name="/MRGDIM_PolarGrid_2"/>
+                <Dim name="/YDim_PolarGrid"/>
+                <Dim name="/XDim_PolarGrid"/>
+                <Attribute name="Field_Dims" type="Int32">
+                    <Value>1</Value>
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="Field_Offsets" type="Int32">
+                    <Value>0</Value>
+                    <Value>1</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>19</Value>
+                </Attribute>
+            </Float32>
+            <Float64 name="Spectra">
+                <Dim name="/Bands_PolarGrid"/>
+                <Dim name="/YDim_PolarGrid"/>
+                <Dim name="/XDim_PolarGrid"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>21</Value>
+                </Attribute>
+            </Float64>
+        </Group>
+        <Group name="Grid_Attributes"/>
+    </Group>
+    <Group name="GEOGrid">
+        <Group name="Data_Fields"/>
+        <Group name="Grid_Attributes"/>
+    </Group>
+</Dataset>

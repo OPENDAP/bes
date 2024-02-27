@@ -42,6 +42,7 @@ class HDF4RequestHandler:public BESRequestHandler {
     static bool hdf4_build_data_cf_sds(BESDataHandlerInterface & dhi);
     static bool hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface & dhi);
     static bool hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_direct_dmr(BESDataHandlerInterface & dhi);
 
     //BES keys - check the file h4.conf.in for descriptions
     //Key to turn on the CF option
@@ -85,6 +86,8 @@ class HDF4RequestHandler:public BESRequestHandler {
   static bool _cache_metadata_path_exist;
   static std::string _cache_metadata_path;
    
+  static bool _direct_dmr;
+
   public:
     explicit HDF4RequestHandler(const std::string & name);
     ~HDF4RequestHandler(void) override = default;
@@ -95,6 +98,8 @@ class HDF4RequestHandler:public BESRequestHandler {
     static bool hdf4_build_dmr(BESDataHandlerInterface & dhi);
     static bool hdf4_build_help(BESDataHandlerInterface & dhi);
     static bool hdf4_build_version(BESDataHandlerInterface & dhi);
+
+    static bool get_direct_dmr() { return _direct_dmr; }
 
     // CF key
     static bool get_usecf() { return _usecf; }

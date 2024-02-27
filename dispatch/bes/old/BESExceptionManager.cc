@@ -80,7 +80,7 @@ void BESExceptionManager::add_ehm_callback(p_bes_ehm ehm)
 void log_error(BESError &e)
 {
 #if 0
-    struct tm *ptm;
+    struct tm *ptm = nullptr;
     time_t timer = time(NULL);
     ptm = gmtime(&timer);
     string now(asctime(ptm));

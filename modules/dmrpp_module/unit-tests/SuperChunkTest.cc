@@ -171,6 +171,10 @@ class SuperChunkTest : public CppUnit::TestFixture {
         CPPUNIT_TEST(test_add_next_chunk_processing_future_empty_chunks);
         CPPUNIT_TEST(test_add_next_chunk_processing_future_no_room);
 
+        CPPUNIT_TEST(test_process_chunks_concurrent_no_chunks);
+        CPPUNIT_TEST(test_process_chunks_concurrent_one_chunks);
+        CPPUNIT_TEST(test_process_chunks_concurrent_three_chunks);
+
         CPPUNIT_TEST(sc_one_chunk_test);
         CPPUNIT_TEST(sc_chunks_test_01);
         CPPUNIT_TEST(sc_chunks_test_02);
@@ -347,16 +351,53 @@ public:
         list <future<bool>> futures;
         queue<shared_ptr<Chunk>> chunks;
         auto data_url = make_shared<http::mock_url>();
-        std::vector<unsigned long long> chunk_position_in_array = {0};
-        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, chunk_position_in_array));
-        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, chunk_position_in_array));
-        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, chunk_position_in_array));
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, "[0]"));
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 1000, "[1]"));
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 2000, "[2]"));
 
         CPPUNIT_ASSERT_MESSAGE("The chunks queue should have three entries.", chunks.size() == 3);
         vector<unsigned long long> constrained_array_shape = {100};
         initialize_chunk_processing_futures(futures, chunks, nullptr /*DmrppArray* */, constrained_array_shape);
         CPPUNIT_ASSERT_MESSAGE("The futures list should have one element.", futures.size() == 2);
         CPPUNIT_ASSERT_MESSAGE("The chunks queue should have one entry.", chunks.size() == 1);
+    }
+
+    void test_process_chunks_concurrent_no_chunks() {
+        auto data_url = make_shared<http::mock_url>();
+        std::vector<unsigned long long> chunk_position_in_array = {0};
+        queue<shared_ptr<Chunk>> chunks;
+
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should have three entries.", chunks.empty());
+        vector<unsigned long long> constrained_array_shape = {100};
+        process_chunks_concurrent("test_process_chunks_concurrent", chunks, nullptr /*DmrppArray* */, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be empty.", chunks.empty());
+    }
+
+    void test_process_chunks_concurrent_one_chunks() {
+        auto data_url = make_shared<http::mock_url>();
+        std::vector<unsigned long long> chunk_position_in_array = {0};
+        queue<shared_ptr<Chunk>> chunks;
+
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should have three entries.", chunks.empty());
+        vector<unsigned long long> constrained_array_shape = {100};
+        process_chunks_concurrent("test_process_chunks_concurrent", chunks, nullptr /*DmrppArray* */, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be empty.", chunks.empty());
+    }
+
+    void test_process_chunks_concurrent_three_chunks() {
+        auto data_url = make_shared<http::mock_url>();
+        std::vector<unsigned long long> chunk_position_in_array = {0};
+        queue<shared_ptr<Chunk>> chunks;
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 0, chunk_position_in_array));
+        chunk_position_in_array = {1};
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 1000, chunk_position_in_array));
+        chunk_position_in_array = {2};
+        chunks.push(make_shared<Chunk>(data_url, "", 1000, 2000, chunk_position_in_array));
+
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should have three entries.", chunks.size() == 3);
+        vector<unsigned long long> constrained_array_shape = {100};
+        process_chunks_concurrent("test_process_chunks_concurrent", chunks, nullptr /*DmrppArray* */, constrained_array_shape);
+        CPPUNIT_ASSERT_MESSAGE("The chunks queue should be empty.", chunks.empty());
     }
 
     /// Original tests follow. jhrg 2/11/24

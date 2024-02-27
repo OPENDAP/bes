@@ -102,7 +102,7 @@ public:
     virtual void dump(std::ostream & strm) const;
 };
 
-bool process_chunk_data(shared_ptr<Chunk> chunk, DmrppArray *array,
+bool process_chunk_data(shared_ptr <Chunk> chunk, DmrppArray *array,
                         const vector<unsigned long long> &constrained_array_shape);
 bool add_next_chunk_processing_future(list <future<bool>> &futures, queue<shared_ptr<Chunk>> &chunks,
                                       DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
