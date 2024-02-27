@@ -30,6 +30,7 @@
 #include <BESDebug.h>
 
 #include "DmrppFloat32.h"
+#include "float_byteswap.h"
 
 using namespace libdap;
 using namespace std;
@@ -65,9 +66,7 @@ DmrppFloat32::read()
 
     if ( this->twiddle_bytes() ) {
         auto temp_buf = reinterpret_cast<char*>(&d_buf);
-
-        for (size_t i = 0; i <sizeof(float)/2;i++) 
-            std::swap(temp_buf[i],temp_buf[sizeof(float)-i-1]);
+        swap_float32(temp_buf,1);
     }
 
 

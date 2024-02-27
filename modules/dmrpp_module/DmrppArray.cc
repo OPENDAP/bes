@@ -52,6 +52,7 @@
 #include "BESStopWatch.h"
 
 #include "byteswap_compat.h"
+#include "float_byteswap.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "DmrppArray.h"
@@ -2273,21 +2274,11 @@ bool DmrppArray::read()
                 break;
             }
             case dods_float32_c: {
-                char *temp_buf = this->get_buf();
-                while (num--) {
-                    for (size_t i = 0; i <sizeof(float)/2;i++) 
-                        std::swap(temp_buf[i],temp_buf[sizeof(float)-i-1]);
-                    temp_buf = temp_buf + sizeof(float);
-                }
+                swap_float32(this->get_buf(), num);
                 break;
             }
             case dods_float64_c: {
-                char *temp_buf = this->get_buf();
-                while (num--) {
-                    for (size_t i = 0; i <sizeof(double)/2;i++) 
-                        std::swap(temp_buf[i],temp_buf[sizeof(double)-i-1]);
-                    temp_buf = temp_buf + sizeof(double);
-                }
+                swap_float64(this->get_buf(), num);
                 break;
             }
             default: break; // Do nothing for all other types.
