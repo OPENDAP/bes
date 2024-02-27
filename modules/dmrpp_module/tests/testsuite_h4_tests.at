@@ -1,0 +1,9 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/dmrpp_module/tests testsuite_h4])
+
+m4_include([../../common/handler_tests_macros.m4])
+
+dnl - writer - h4 tests ------------------------------------------
+
+AT_BESCMD_RESPONSE_SCRUB_BES_CONF_LINES_TEST([builddmrpp/ghrsst_cmr_dmrpp.dap])
