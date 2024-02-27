@@ -134,13 +134,17 @@ private:
 
     friend bool process_chunk_data(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
 
+    virtual void insert_chunk(unsigned int dim, std::vector<unsigned long long> *target_element_address,
+                              std::vector<unsigned long long> *chunk_element_address, std::shared_ptr <Chunk> chunk,
+                              const vector<unsigned long long> &constrained_array_shape);
+
     virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned long long> &array_shape,
                                     unsigned long long chunk_offset, const std::vector<unsigned long long> &chunk_shape,
                                     const std::vector<unsigned long long> &chunk_origin);
 
     virtual void insert_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk);
-   
+
     void read_chunks();
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
@@ -149,13 +153,7 @@ private:
 
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address, std::shared_ptr<Chunk> chunk);
 
-    virtual void insert_chunk(
-            unsigned int dim,
-            std::vector<unsigned long long> *target_element_address,
-            std::vector<unsigned long long> *chunk_element_address,
-            std::shared_ptr<Chunk> chunk,
-            const vector<unsigned long long> &constrained_array_shape);
-    void read_array_of_structure(vector<char> &values);
+     void read_array_of_structure(vector<char> &values);
     bool check_struct_handling();
 
     bool use_direct_io_opt();
