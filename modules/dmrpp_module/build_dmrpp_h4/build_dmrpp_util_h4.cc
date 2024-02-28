@@ -85,7 +85,8 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 constexpr auto INVOCATION_CONTEXT = "invocation";
 #endif
 
-// I believe this is copied from H4mapper. Should give credit.
+// This function is adapted from H4mapper implemented by the HDF group. 
+// h4mapper can be found from https://docs.hdfgroup.org/archive/support/projects/h4map/h4map_writer.html
 int SDfree_mapping_info(SD_mapping_info_t  *map_info)
 {
     intn  ret_value = SUCCEED;
@@ -281,7 +282,8 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
 
         }
             break;
-
+        default:
+            break;
 
     }
     return ret_value;
@@ -292,8 +294,8 @@ void SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
     if (fill_value.empty()==false) {
          auto dc = dynamic_cast<DmrppCommon *>(btp);
          if (!dc)
-            throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.",
-         __FILE__, __LINE__);
+            throw BESInternalError("Expected to find a DmrppCommon instance but did not.",
+                                    __FILE__, __LINE__);
         dc->set_uses_fill_value(true);
         dc->set_fill_value_string(fill_value);
     }
@@ -379,7 +381,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
     auto dc = dynamic_cast<DmrppCommon *>(btp);
     if (!dc)
-        throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.", __FILE__, __LINE__);
+        throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
 
     // Need to check SDS compression info. Unlike HDF5, HDF4 can be compressed without using chunks.
     // So we need to cover both cases. KY 02/12/2024
@@ -451,7 +453,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             if (info_count == FAIL) {
                 FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
             }
-
+            
             auto pia = write_chunk_position_in_array(rank, chunk_dimension_sizes.data(), strides.data());
 
             // Critical TODO:
@@ -509,11 +511,12 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         if (info_count == FAIL) {
             FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
         }
+        
         vector<unsigned long long> position_in_array(rank, 0);
         if (map_info.nblocks ==1) {
               dc->add_chunk(endian_name, map_info.lengths[0], map_info.offsets[0], position_in_array);
         }
-        else {
+        else if (map_info.nblocks>1) {
             // Here we will see if we can combine the number of contiguous blocks to a bigger one.
             // This is necessary since HDF4 may store small size data in large number of contiguous linked blocks.
             // KY 2024-02-22

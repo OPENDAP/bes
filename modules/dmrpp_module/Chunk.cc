@@ -920,7 +920,7 @@ const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v, bo
         case libdap::dods_float32_c:
         {
             fv.f = stof(v);
-            char *fv_float_p=(char *)&fv.f;
+            auto fv_float_p=(char *)&fv.f;
             if (is_big_endian) 
                 swap_float32(fv_float_p,1);
             return (const char *)fv_float_p;
@@ -929,7 +929,7 @@ const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v, bo
         case libdap::dods_float64_c:
         {
             fv.d = stod(v);
-            char *fv_double_p=(char *)&fv.d;
+            auto fv_double_p=(char *)&fv.d;
             if (is_big_endian)
                 swap_float64 (fv_double_p,1);
             return (const char *)fv_double_p;
