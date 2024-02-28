@@ -1,0 +1,9 @@
+netcdf test {
+variables:
+	float t_float32 ;
+	double t_float64 ;
+
+// global attributes:
+		:history = "removed date-timex t_scalar_dset_float_be.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_scalar_dset_float_be.h5.dmrpp\"}]}]" ;
+}
