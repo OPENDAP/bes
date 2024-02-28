@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="SDS_fillchunk_alltypes.hdf" dmrpp:href="data/h4_dmrpp/SDS_fillchunk_alltypes.hdf">
+    <Dimension name="fakeDim0" size="2"/>
+    <Dimension name="fakeDim1" size="6"/>
+    <Dimension name="fakeDim2" size="2"/>
+    <Dimension name="fakeDim3" size="6"/>
+    <Dimension name="fakeDim4" size="2"/>
+    <Dimension name="fakeDim5" size="6"/>
+    <Dimension name="fakeDim6" size="2"/>
+    <Dimension name="fakeDim7" size="6"/>
+    <Dimension name="fakeDim8" size="2"/>
+    <Dimension name="fakeDim9" size="6"/>
+    <Int8 name="SDS_fc_int8">
+        <Dim name="/fakeDim0"/>
+        <Dim name="/fakeDim1"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-99" byteOrder="BE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="2578" nBytes="4" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="6728" nBytes="4" chunkPositionInArray="[0,2]"/>
+        </dmrpp:chunks>
+    </Int8>
+    <UInt16 name="SDS_fc_uint16">
+        <Dim name="/fakeDim2"/>
+        <Dim name="/fakeDim3"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="65535" byteOrder="BE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="6925" nBytes="8" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="11079" nBytes="8" chunkPositionInArray="[0,2]"/>
+        </dmrpp:chunks>
+    </UInt16>
+    <Int32 name="SDS_fc_int32">
+        <Dim name="/fakeDim4"/>
+        <Dim name="/fakeDim5"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>8</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-999" byteOrder="BE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="11282" nBytes="16" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="15444" nBytes="16" chunkPositionInArray="[0,2]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Float32 name="SDS_fc_float32">
+        <Dim name="/fakeDim6"/>
+        <Dim name="/fakeDim7"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>11</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-9999.000000" byteOrder="BE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="15656" nBytes="16" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="19818" nBytes="16" chunkPositionInArray="[0,2]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float64 name="SDS_fc_float64">
+        <Dim name="/fakeDim8"/>
+        <Dim name="/fakeDim9"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-99999.000000000000</Value>
+        </Attribute>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>14</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-99999.000000" byteOrder="BE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="20035" nBytes="32" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="24213" nBytes="32" chunkPositionInArray="[0,2]"/>
+        </dmrpp:chunks>
+    </Float64>
+</Dataset>

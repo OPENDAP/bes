@@ -46,6 +46,8 @@
 #include "EffectiveUrlCache.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
+#include "byteswap_compat.h"
+#include "float_byteswap.h"
 
 using namespace std;
 using http::EffectiveUrlCache;
@@ -866,7 +868,7 @@ static unsigned int get_value_size(libdap::Type type)
     }
 }
 
-const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v)
+const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v, bool is_big_endian)
 {
     switch(type) {
         case libdap::dods_int8_c:
@@ -875,15 +877,22 @@ const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v)
 
         case libdap::dods_int16_c:
             fv.int16 = (int16_t)stoi(v);
+            if (is_big_endian)
+                fv.int16 = bswap_16(fv.int16);
             return (const char *)&fv.int16;
 
         case libdap::dods_int32_c:
+
             fv.int32 = (int32_t)stoi(v);
+            if (is_big_endian)
+                fv.int32 = bswap_32(fv.int32);
             return (const char *)&fv.int32;
 
         case libdap::dods_int64_c:
             fv.int64 = (int64_t)stoll(v);
-            return (const char *)&fv.int64;
+            if (is_big_endian)
+                fv.int64 = bswap_64(fv.int64);
+           return (const char *)&fv.int64;
 
         case libdap::dods_uint8_c:
         case libdap::dods_byte_c:
@@ -892,23 +901,39 @@ const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v)
 
         case libdap::dods_uint16_c:
             fv.uint16 = (uint16_t)stoi(v);
-            return (const char *)&fv.uint16;
+            if (is_big_endian)
+                fv.uint16 = bswap_16(fv.uint16);
+           return (const char *)&fv.uint16;
 
         case libdap::dods_uint32_c:
             fv.uint32 = (uint32_t)stoul(v);
+            if (is_big_endian)
+                fv.uint32 = bswap_32(fv.uint32);
             return (const char *)&fv.uint32;
 
         case libdap::dods_uint64_c:
             fv.uint64 = (uint64_t)stoull(v);
+            if (is_big_endian)
+                fv.uint64 = bswap_32(fv.uint64);
             return (const char *)&fv.uint64;
 
         case libdap::dods_float32_c:
+        {
             fv.f = stof(v);
-            return (const char *)&fv.f;
+            char *fv_float_p=(char *)&fv.f;
+            if (is_big_endian) 
+                swap_float32(fv_float_p,1);
+            return (const char *)fv_float_p;
+         }
 
         case libdap::dods_float64_c:
+        {
             fv.d = stod(v);
-            return (const char *)&fv.d;
+            char *fv_double_p=(char *)&fv.d;
+            if (is_big_endian)
+                swap_float64 (fv_double_p,1);
+            return (const char *)fv_double_p;
+        }
         case libdap::dods_str_c:
             return v.c_str();
 
@@ -930,7 +955,10 @@ void Chunk::load_fill_values() {
     else 
         value_size = get_value_size(d_fill_value_type);
 
-    const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value);
+    bool is_big_endian = false;
+    if (d_byte_order == "BE")
+        is_big_endian = true;
+    const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value,is_big_endian);
 
     unsigned long long num_values = get_rbuf_size() / value_size;
 

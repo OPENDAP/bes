@@ -218,72 +218,113 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
     return ret_value;
 
 } /* read_chunk */
-/**
- * @note see write_array_chunks_byte_stream() in h4mapwriter for the original version of this code.
- * @param file
- * @param btp
- * @return true if the produced output that seems valid, false otherwise.
- */
-bool get_chunks_for_an_array(int file, BaseType *btp) {
 
-    // Here we need to retrieve the attribute value dmr_sds_ref of btp.
-    D4Attributes *d4_attrs = btp->attributes();
-    if (!d4_attrs)
-        throw BESInternalError("Expected to find an DAP4 attribute list for " + btp->name() + " but did not.",
-                               __FILE__, __LINE__);
+string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
 
-    // Look for the full name path for this variable
-    // If one was not given via an attribute, use BaseType::FQN() which
-    // relies on the variable's position in the DAP dataset hierarchy.
-    D4Attribute *attr = d4_attrs->find("dmr_sds_ref");
-    int32 obj_ref = 0;
-    bool is_sds = false;
-    if (attr)
-        is_sds = true;
-    else {
-        attr = d4_attrs->find("dmr_vdata_ref");
-        if (!attr)
-            throw BESInternalError("Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference for " + btp->name() + " but did not.",
-                               __FILE__, __LINE__);
-    }
-    obj_ref = stoi(attr->value(0));
-    int sds_index = 0;
-    if (is_sds) {
-        sds_index = SDreftoindex(file, obj_ref);
-    }
-    // TODO: Later we will add the support of retrieving data from vdata. KY 02/13/24
-#if 0
-        string name = btp->name();
-        const char *sdsName = name.c_str();
-        // TODO For a more complete version of this, use references and tags, not names.
-        //  Also, the use of FQNs will not, in general, work for HDF4 files, given the
-        //  unusual way that HDF4 files are organized. jhrg 12/5/23
-        int sds_index = SDnametoindex(file, sdsName);
-#endif
+    string ret_value;
+    switch (datatype) {
 
-        int sdsid = SDselect(file, sds_index);
-        //VERBOSE(cerr << "Name: " << name << endl);
-        VERBOSE(cerr << "DMR FQN: " << btp->FQN() << endl);
-        VERBOSE(cerr << "sdsid: " << sdsid << endl);
-
-        char obj_name[H4_MAX_NC_NAME]; /* name of the object */
-        int32 rank = -1;                 /* number of dimensions */
-        int32 dimsizes[H4_MAX_VAR_DIMS]; /* dimension sizes */
-        int32 data_type = -1;            /* data type */
-        int32 num_attrs = -1;            /* number of global attributes */
-
-        int status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
-        if (status == FAIL) {
-            FAIL_ERROR("SDgetinfo() failed.");
+        case DFNT_UINT8:
+        case DFNT_UCHAR: {
+            uint8_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                ret_value = to_string(fvalue);
         }
-
-        HDF_CHUNK_DEF cdef;
-        int32 chunk_flag = -1;        /* chunking flag */
-
-        status = SDgetchunkinfo(sdsid, &cdef, &chunk_flag);
-        if (status == FAIL) {
-            FAIL_ERROR("SDgetchunkinfo() failed.");
+            break;
+        case DFNT_INT8:
+        case DFNT_CHAR: {
+            int8_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                ret_value = to_string(fvalue);
         }
+            break;
+
+        case DFNT_INT16: {
+            int16_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                ret_value = to_string(fvalue);
+        }
+            break;
+
+        case DFNT_UINT16: {
+            uint16_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                ret_value = to_string(fvalue);
+        }
+            break;
+
+        case DFNT_INT32: {
+            int32_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                ret_value = to_string(fvalue);
+        }
+            break;
+
+        case DFNT_UINT32: {
+            uint32_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                ret_value = to_string(fvalue);
+        }
+            break;
+
+        case DFNT_FLOAT: {
+            float fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                ret_value = to_string(fvalue);
+        }
+            break;
+
+        case DFNT_DOUBLE: {
+            double fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                ret_value = to_string(fvalue);
+
+        }
+            break;
+
+
+    }
+    return ret_value;
+}
+void SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
+
+    string fill_value = get_sds_fill_value_str(sdsid,datatype);
+    if (fill_value.empty()==false) {
+         auto dc = dynamic_cast<DmrppCommon *>(btp);
+         if (!dc)
+            throw BESInternalError("Expected to find a DmrppCommon instance for " + btp->name() + " but did not.",
+         __FILE__, __LINE__);
+        dc->set_uses_fill_value(true);
+        dc->set_fill_value_string(fill_value);
+    }
+}
+bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
+
+    int32 sds_index = SDreftoindex(file, obj_ref);
+    int sdsid = SDselect(file, sds_index);
+
+    VERBOSE(cerr << "Name: " << btp->name() << endl);
+    VERBOSE(cerr << "DMR FQN: " << btp->FQN() << endl);
+    VERBOSE(cerr << "sdsid: " << sdsid << endl);
+
+    char obj_name[H4_MAX_NC_NAME]; /* name of the object */
+    int32 rank = -1;                 /* number of dimensions */
+    int32 dimsizes[H4_MAX_VAR_DIMS]; /* dimension sizes */
+    int32 data_type = -1;            /* data type */
+    int32 num_attrs = -1;            /* number of global attributes */
+
+    int status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
+    if (status == FAIL) {
+        FAIL_ERROR("SDgetinfo() failed.");
+    }
+
+    HDF_CHUNK_DEF cdef;
+    int32 chunk_flag = -1;        /* chunking flag */
+
+    status = SDgetchunkinfo(sdsid, &cdef, &chunk_flag);
+    if (status == FAIL) {
+        FAIL_ERROR("SDgetchunkinfo() failed.");
+    }
 
     switch (chunk_flag) {
         case HDF_NONE: /* No chunking. */
@@ -349,6 +390,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
     if (SDgetcompinfo(sdsid, &comp_coder_type, &c_info) == FAIL) {
              FAIL_ERROR("SDgetcompinfo() failed.");
     }
+
     // Also need to consider the case when the variable is compressed but not chunked.
     if (chunk_flag == HDF_CHUNK || chunk_flag == HDF_COMP ) {
         vector<unsigned long long> chunk_dimension_sizes(rank, 0);
@@ -391,7 +433,6 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
 #if 0
             steps[i] = (dimsizes[i] / chunk_dimension_sizes[i]) ;
 #endif
-
             steps[i] =  1 + ((dimsizes[i] - 1) / chunk_dimension_sizes[i]);
             number_of_chunks = number_of_chunks * steps[i];
             strides[i] = 0;
@@ -402,7 +443,7 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
         VERBOSE(cerr << "chunk dimension sizes: ");
         VERBOSE(copy(chunk_dimension_sizes.begin(), chunk_dimension_sizes.end(),
                      ostream_iterator<int32>(cerr, " ")));
-        VERBOSE("\n");
+        VERBOSE(cerr<<endl);
 
 
         for (int k = 0; k < number_of_chunks; ++k) {
@@ -420,14 +461,16 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             // We cannot find a chunked case when the number of blocks is greater than 1. We will issue a failure
             // when we encounter such a case for the time being. KY 02/19/2024.
 
-           if (map_info.nblocks >1) {
+            if (map_info.nblocks >1) {
+#if 0
                cout << "number of blocks in a chunk is: " << map_info.nblocks << endl;
+#endif
                FAIL_ERROR("Number of blocks in this chunk is greater than 1.");
-           }
+            }
+
             for (int i = 0; i < map_info.nblocks; i++) {
                 VERBOSE(cerr << "offsets[" << k << ", " << i << "]: " << map_info.offsets[i] << endl);
                 VERBOSE(cerr << "lengths[" << k << ", " << i << "]: " << map_info.lengths[i] << endl);
-
                 dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], pia);
             }
 
@@ -477,7 +520,6 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
             vector<int> merged_lengths;
             vector<int> merged_offsets;
             size_t merged_number_blocks = combine_linked_blocks(map_info, merged_lengths, merged_offsets);
-            // vector<unsigned long long> position_in_array(rank, 0);
             for (unsigned i = 0; i < merged_number_blocks; i++) {
                 VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
                 VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
@@ -496,8 +538,57 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
         FAIL_ERROR("Unknown chunking type.");
     }
 
+    // Add the fillvalue support
+    SD_set_fill_value(sdsid,data_type, btp);
+
     // Need to close the SDS interface. KY 2024-02-22
     SDendaccess(sdsid);
+    return true;
+}
+/**
+ * @note see write_array_chunks_byte_stream() in h4mapwriter for the original version of this code.
+ * @param file
+ * @param btp
+ * @return true if the produced output that seems valid, false otherwise.
+ */
+bool get_chunks_for_an_array(int file, BaseType *btp) {
+
+    // Here we need to retrieve the attribute value dmr_sds_ref of btp.
+    D4Attributes *d4_attrs = btp->attributes();
+    if (!d4_attrs)
+        throw BESInternalError("Expected to find an DAP4 attribute list for " + btp->name() + " but did not.",
+                               __FILE__, __LINE__);
+
+    // Look for the full name path for this variable
+    // If one was not given via an attribute, use BaseType::FQN() which
+    // relies on the variable's position in the DAP dataset hierarchy.
+    D4Attribute *attr = d4_attrs->find("dmr_sds_ref");
+    int32 obj_ref = 0;
+    bool is_sds = false;
+    if (attr)
+        is_sds = true;
+    else {
+        attr = d4_attrs->find("dmr_vdata_ref");
+        if (!attr)
+            throw BESInternalError("Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference for " + btp->name() + " but did not.",
+                               __FILE__, __LINE__);
+    }
+    obj_ref = stoi(attr->value(0));
+    if (is_sds) {
+        if (false == ingest_sds_info_to_chunk(file, obj_ref,btp))
+            throw BESInternalError("Cannot retrieve SDS information correctly for  " + btp->name() ,
+                               __FILE__, __LINE__);
+    }
+    // TODO: Later we will add the support of retrieving data from vdata. KY 02/13/24
+#if 0
+        string name = btp->name();
+        const char *sdsName = name.c_str();
+        // TODO For a more complete version of this, use references and tags, not names.
+        //  Also, the use of FQNs will not, in general, work for HDF4 files, given the
+        //  unusual way that HDF4 files are organized. jhrg 12/5/23
+        int sds_index = SDnametoindex(file, sdsName);
+#endif
+
     return true;
 }
 
@@ -506,6 +597,7 @@ bool get_chunks_for_a_variable(int file, BaseType *btp) {
     switch (btp->type()) {
         case dods_structure_c: {
             auto sp = dynamic_cast<Structure *>(btp);
+            //TODO: this needs to be re-written since the data of the whole structure is retrieved. KY-2024-02-26
             for_each(sp->var_begin(), sp->var_end(), [file](BaseType *btp) { get_chunks_for_a_variable(file, btp); });
             return true;
         }
