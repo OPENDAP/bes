@@ -6,4 +6,5 @@ m4_include([../../common/handler_tests_macros.m4])
 
 dnl - writer - h4 tests ------------------------------------------
 
-AT_BESCMD_RESPONSE_SCRUB_BES_CONF_LINES_TEST([builddmrpp/ghrsst_cmr_dmrpp.dap])
+# ./../build_dmrpp_h4/build_dmrpp_h4 -f h4/vg_hl_test.hdf -r h4/vg_hl_test.hdf.dmr
+AT_BUILD_DMRPP_H4_TEST([h4/vg_hl_test.hdf])
