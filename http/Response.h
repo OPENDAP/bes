@@ -51,7 +51,7 @@ public:
 
     Response() = default;
     ~Response() = default;
-
+/*
     Response(CURLcode curl_code,
              unsigned int http_status,
              std::string origin_url,
@@ -68,7 +68,7 @@ public:
              d_body(std::move(response_body)),
              d_fd(fd)
              {}
-
+*/
     Response(const Response &r) = default;
     Response(Response &&r) = default;
 
@@ -87,7 +87,7 @@ public:
     void redirect_url(std::string url)  { d_redirect_url = std::move(url); }
     std::string redirect_url() const { return d_redirect_url; }
 
-    void headers(std::vector<std::string> hdrs)  {  d_headers = std::move(hdrs); }
+    // void headers(std::vector<std::string> hdrs)  {  d_headers = std::move(hdrs); }
     std::vector<std::string> &headers() { return d_headers; }
 
     void body(std::string &response_body)  {  d_body = response_body; }
