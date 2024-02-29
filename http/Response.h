@@ -32,6 +32,7 @@
 #define BES_RESPONSE_H
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <curl/curl.h>
@@ -90,7 +91,7 @@ public:
     // void headers(std::vector<std::string> hdrs)  {  d_headers = std::move(hdrs); }
     std::vector<std::string> &headers() { return d_headers; }
 
-    void body(std::string &response_body)  {  d_body = response_body; }
+    // void body(std::string response_body)  {  d_body = std::(response_body); }
     std::string &body() { return d_body; }
 
     void fd(int fd)  {  d_fd = fd; }
