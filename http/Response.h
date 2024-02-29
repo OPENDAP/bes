@@ -51,7 +51,7 @@ public:
 
     Response() = default;
     ~Response() = default;
-/*
+#if 0
     Response(CURLcode curl_code,
              unsigned int http_status,
              std::string origin_url,
@@ -68,7 +68,7 @@ public:
              d_body(std::move(response_body)),
              d_fd(fd)
              {}
-*/
+#endif
     Response(const Response &r) = default;
     Response(Response &&r) = default;
 
