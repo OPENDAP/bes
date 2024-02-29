@@ -73,7 +73,7 @@ public:
  *
  * @param strm C++ i/o stream to dump the information to
  */
-    std::string dump( ) const
+    std::string dump() const
     {
         std::stringstream msg;
 
@@ -83,9 +83,11 @@ public:
         BESIndent::Indent() ;
         msg << d_http_response.dump();
         BESIndent::UnIndent() ;
+        return msg.str();
     }
 
-    void dump(std::ostream &strm){
+    void dump(std::ostream &strm) const override
+    {
         strm << dump();
     }
 

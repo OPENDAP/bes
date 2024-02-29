@@ -411,11 +411,15 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
 
     BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
+#if 0
     vector<char> buffer;
     curl::http_get(cmr_query_url, buffer);
     string cmr_json_string(buffer.begin(), buffer.end());
     buffer.clear(); // keep the original for as little time as possible.
-
+#else
+    string cmr_json_string;
+    curl::http_get(cmr_query_url, cmr_json_string);
+#endif
     rapidjson::Document cmr_response;
     cmr_response.Parse(cmr_json_string.c_str());
     data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);

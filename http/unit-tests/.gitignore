@@ -1,5 +1,6 @@
 /RemoteResourceTest
 /HttpUtilsTest
+/ResponseTest
 /CurlUtilsTest
 /EffectiveUrlCacheTest
 /HttpUrlTest

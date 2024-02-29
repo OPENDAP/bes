@@ -569,6 +569,7 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
     return range.str();
 }
 
+#if 0
 /**
  * @brief Returns an cURL easy handle for tracing redirects.
  *
@@ -613,6 +614,7 @@ static CURL *init_effective_url_retriever_handle(const string &target_url, struc
 
     return ceh;
 }
+#endif
 
 /**
  * @brief Sign the URL if it matches S3 credentials held by the CredentialsManager
@@ -907,17 +909,17 @@ static void process_http_code_helper(http::Response &response) {
  * @return true if at all worked out, false if it didn't and a retry is reasonable.
  * @throws BESInternalError When something really bad happens.
 */
-static bool eval_http_get_response(CURL *ceh, const string &requested_url, long &http_code) {
-    BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
+static bool eval_http_get_response(CURL *ceh, http::Response &http_response) {
+    BESDEBUG(MODULE, prolog << "Requested URL: " << http_response.origin_url() << endl);
 
-    http_code = 0;
+    unsigned int http_code = 0;
     CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
     if (curl_code != CURLE_OK)
         throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
-
     // Special case for file:// URLs. An HTTP Code is zero means success in that case. jhrg 4/20/23
-    if (requested_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
+    if (http_response.origin_url().find(FILE_PROTOCOL) == 0 && http_code == 0)
         return true;
+    http_response.status(http_code);
 
 #ifndef NDEBUG
     if (BESISDEBUG(MODULE)) {   // BESISDEBUG is a macro that expands to false when NDEBUG is defined. jhrg 4/19/23
@@ -942,15 +944,15 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url, long 
             return true;
 
         default:
-            string last_accessed_url = get_effective_url(ceh, requested_url);
+            http_response.redirect_url(get_effective_url(ceh, http_response.origin_url()));
             BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): "
-                                    << filter_aws_url(last_accessed_url) << endl);
+                                    << filter_aws_url(http_response.redirect_url()) << endl);
 
             // process_http_code_helper() _only_ returns if the request can be retried, otherwise
             // it throws an exception. Pass the unfiltered last_accessed_url because the
             // query string params might be needed to determine if the URL should be retried.
             // jhrg 4/20/23
-            process_http_code_helper(http_code, requested_url, last_accessed_url);
+            process_http_code_helper(http_response);
             return false;   // if we get here, retry the request
     }
 }
@@ -974,28 +976,28 @@ static void truncate_file(int fd) {
 }
 
 // Used here only. jhrg 3/8/23
-static void super_easy_perform(CURL *c_handle, int fd) {
+static void super_easy_perform(CURL *c_handle, http::Response &http_response, int fd) {
     string target_url = get_effective_url(c_handle, ""); // This is a trick to get the URL from the cURL handle.
     // We check the value of target_url to see if the URL was correctly set in the cURL handle.
     if (target_url.empty())
-        throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
+        throw BESInternalError(prolog + "The cURL handle does not contain a URL. "
+                                        "The request cannot proceed.", __FILE__, __LINE__);
 
     vector<char> error_buffer(CURL_ERROR_SIZE, 0);
     set_error_buffer(c_handle, error_buffer.data());
     unsigned int attempts = 0;
     useconds_t retry_time = url_retry_time; // 0.25 seconds
     bool success;
-    long http_code;
     do {
         ++attempts;
         BESDEBUG(MODULE,
                  prolog << "Requesting URL: " << filter_aws_url(target_url) << " attempt: " << attempts << endl);
 
-        CURLcode curl_code = curl_easy_perform(c_handle);
-        success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
+        http_response.curl_code(curl_easy_perform(c_handle));
+        success = eval_curl_easy_perform_code(target_url, http_response.curl_code(), error_buffer.data(), attempts);
         if (success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
-            success = eval_http_get_response(c_handle, target_url, http_code);
+            success = eval_http_get_response(c_handle,http_response);
         }
         // If the curl_easy_perform failed, or if the http request failed then
         // we keep trying until we have exceeded the retry_limit.
@@ -1012,7 +1014,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 msg << prolog << "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL ";
                 msg << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
                 msg << "CURLINFO_EFFECTIVE_URL: " << effective_url << " ";
-                msg << "Returned HTTP_STATUS: " << http_code;
+                msg << "Returned HTTP_STATUS: " << http_response.status();
                 ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
@@ -1020,7 +1022,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
                                  << filter_aws_url(target_url) << " attempt: " << attempts << "). "
                                   << "CURLINFO_EFFECTIVE_URL: " << effective_url << " "
-                                  << "Returned HTTP_STATUS: " << http_code << endl);
+                                  << "Returned HTTP_STATUS: " << http_response.status() << endl);
                 usleep(retry_time);
                 retry_time *= 2;
 
@@ -1041,7 +1043,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     unset_error_buffer(c_handle);
 }
 
-#if 0
+#if 1
 /**
  *
  * Use libcurl to dereference a URL. Read the information referenced by
@@ -1066,6 +1068,8 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
     CURLcode res;
     CURL *ceh = nullptr;
     curl_slist *req_headers = nullptr;
+    http::Response http_response;
+    http_response.origin_url(target_url->str());
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1084,7 +1088,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
     try {
         // OK! Make the cURL handle
-        ceh = init(target_url->str(), req_headers, http_response_headers);
+        ceh = init(target_url->str(), req_headers, &http_response.headers());
 
         set_error_buffer(ceh, error_buffer.data());
 
@@ -1097,7 +1101,10 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
         unset_error_buffer(ceh);
 
-        super_easy_perform(ceh, fd);
+        super_easy_perform(ceh, http_response, fd);
+
+        // Copy the response headers into the callers vector
+        *http_response_headers = http_response.headers();
 
         // Free the header list
         if (req_headers)
@@ -1137,6 +1144,8 @@ string error_message(const CURLcode response_code, const char *error_buffer) {
     return oss.str();
 }
 
+
+#if 0
 /**
  * @brief Callback passed to libcurl to handle reading some number of bytes.
  *
@@ -1159,15 +1168,6 @@ static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *d
     size_t current_size = vec->size();
     vec->resize(current_size + nbytes);
     memcpy(vec->data() + current_size, buffer, nbytes);
-    return nbytes;
-}
-
-static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
-    auto str = reinterpret_cast<string *>(data);
-    size_t nbytes = size * nmemb;
-    size_t current_size = str->size();
-    str->resize(current_size + nbytes);
-    memcpy((void *)(str->data() + current_size), buffer, nbytes);
     return nbytes;
 }
 
@@ -1227,6 +1227,17 @@ void http_get(const string &target_url, vector<char> &buf) {
         throw;
     }
 }
+#endif
+
+
+static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
+    auto str = reinterpret_cast<string *>(data);
+    size_t nbytes = size * nmemb;
+    size_t current_size = str->size();
+    str->resize(current_size + nbytes);
+    memcpy((void *)(str->data() + current_size), buffer, nbytes);
+    return nbytes;
+}
 
 /**
  * Dereference the target URL and put the response in buf.
@@ -1247,6 +1258,9 @@ void http_get(const string &target_url, string &buf)
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
+
+    http::Response http_response;
+    http_response.origin_url(target_url);
 
     curl_slist *request_headers = nullptr;
     // Add the authorization headers
@@ -1273,7 +1287,9 @@ void http_get(const string &target_url, string &buf)
 
         unset_error_buffer(ceh);
 
-        super_easy_perform(ceh);
+        super_easy_perform(ceh, http_response);
+
+        buf = http_response.body();
 
         if (request_headers)
             curl_slist_free_all(request_headers);
@@ -1313,9 +1329,9 @@ void http_get(const string &target_url, string &buf)
  *
  * @param c_handle The CURL easy handle on which to operate
  */
-void super_easy_perform(CURL *c_handle) {
+void super_easy_perform(CURL *c_handle, http::Response &http_response) {
     int fd = -1;
-    super_easy_perform(c_handle, fd);
+    super_easy_perform(c_handle, http_response, fd);
 }
 
 // used only in one place here. jhrg 3/8/23
@@ -1781,6 +1797,8 @@ bool gru_mk_attempt(const shared_ptr <url> &origin_url,
         }
         throw;
     }
+    BESDEBUG(MODULE, prolog << "curl_success: " << (curl_success?"true":"false") << "\n" );
+    BESDEBUG(MODULE, prolog << "http_success: " << (http_success?"true":"false") << "\n" );
     BESDEBUG(MODULE, prolog << " END success: " << ((curl_success && http_success) ? "true" : "false") <<
                             " on attempt #" << attempt << " for " << origin_url->str() << "\n");
 

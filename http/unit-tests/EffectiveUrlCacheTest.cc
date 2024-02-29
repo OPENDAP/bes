@@ -100,7 +100,7 @@ public:
         if (Debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http");
+        if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http,curl");
 
         // Clear the cache for the next test.
         EffectiveUrlCache *theCache = EffectiveUrlCache::TheCache();

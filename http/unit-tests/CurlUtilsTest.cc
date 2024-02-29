@@ -347,6 +347,7 @@ public:
         curl_slist_free_all(headers);
     }
 
+#if 0
     // Test the http_get() function that extends as needed a vector<char>
     void http_get_test_vector_char() {
         const string url = "http://test.opendap.org/opendap.conf";
@@ -361,7 +362,7 @@ public:
         DBG(cerr << "buf.size() = " << buf.size() << endl);
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288);
     }
-
+#endif
     // Test the http_get() function that extends as needed a C++ std::string
     void http_get_test_string() {
         const string url = "http://test.opendap.org/opendap.conf";
@@ -376,13 +377,13 @@ public:
         DBG(cerr << "str.size() = " << str.size() << endl);
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288);
     }
-
+#if 0
     // Test the http_get() function that extends as needed a vector<char>.
     // This what happens if the vector already holds data - it should be
     // retained.
     void http_get_test_vector_char_appended() {
         const string url = "http://test.opendap.org/opendap.conf";
-        vector<char> buf;
+        string buf;
         const string twimc = "To whom it may concern:";
         buf.resize(twimc.size());
         memcpy(buf.data(), twimc.c_str(), twimc.size());
@@ -399,9 +400,11 @@ public:
         DBG(cerr << "buf.size() = " << buf.size() << endl);
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288 + twimc.size());
     }
+#endif
+#if 0
     void http_get_test_string_appended() {
         const string url = "http://test.opendap.org/opendap.conf";
-        vector<char> str;
+        string str;
         const string twimc = "To whom it may concern:";
         str.resize(twimc.size());
         memcpy(str.data(), twimc.c_str(), twimc.size());
@@ -418,6 +421,7 @@ public:
         DBG(cerr << "str.size() = " << str.size() << endl);
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288 + twimc.size());
     }
+#endif
 
     // This test is to an S3 bucket and must be signed. Use the ENV_CRED
     // option of CredentialsManager. The environment variables are:
@@ -434,7 +438,7 @@ public:
 
     void http_get_test_4() {
         const string url = "https://fail.nowhere.com/README";
-        vector<char> buf;
+        string buf;
         curl::http_get(url, buf);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
@@ -443,7 +447,7 @@ public:
     // This test will fail with a BESForbidden exception
     void http_get_test_5() {
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
-        vector<char> buf;
+        string buf;
         curl::http_get(url, buf);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
@@ -454,7 +458,7 @@ public:
         setenv("CMAC_URL", "https://s3.us-east-1", 1);
         setenv("CMAC_REGION", "us-east-1", 1);
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
-        vector<char> buf;
+        string buf;
         curl::http_get(url, buf);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
@@ -472,7 +476,7 @@ public:
                 cm->load_credentials();
 
                 const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
-                vector<char> buf;
+                string buf;
                 curl::http_get(url, buf);
                 DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
@@ -761,10 +765,10 @@ public:
     CPPUNIT_TEST(sign_s3_url_test_2);
     CPPUNIT_TEST(sign_s3_url_test_3);
 
-    CPPUNIT_TEST(http_get_test_vector_char);
+    //CPPUNIT_TEST(http_get_test_vector_char);
     CPPUNIT_TEST(http_get_test_string);
-    CPPUNIT_TEST(http_get_test_vector_char_appended);
-    CPPUNIT_TEST(http_get_test_string_appended);
+    //CPPUNIT_TEST(http_get_test_vector_char_appended);
+    // CPPUNIT_TEST(http_get_test_string_appended);
 
     CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
     CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);

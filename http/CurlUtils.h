@@ -36,6 +36,7 @@
 
 #include "BESRegex.h"
 #include "EffectiveUrl.h"
+#include "Response.h"
 
 namespace http {
 class AccessCredentials;
@@ -53,7 +54,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, i
 void http_get(const std::string &target_url, std::vector<char> &buf);
 void http_get(const std::string &target_url, std::string &buf);
 
-void super_easy_perform(CURL *ceh);
+void super_easy_perform(CURL *ceh, http::Response &http_response);
 ///@}
 
 std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http::url> &url);
