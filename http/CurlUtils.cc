@@ -1649,7 +1649,7 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                     msg << "It seems that the provided access credentials are either missing, invalid, or expired.\n";
                     msg << "Here are the details from the most recent attempt:\n\n";
                     write_response_details(http_status, response_headers, response_body, msg);
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                    throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
                 }
                 //  EDL is not the redirect we were looking for...
                 success =  false;
@@ -1670,7 +1670,15 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                 msg << "Unfortunately this did not happen.\n";
                 msg << "Here are the details of the most recent transaction:\n\n";
                 write_response_details(http_status, response_headers, response_body, msg);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                throw HttpError(msg.str(),
+                                origin_url_str,
+                                redirect_url_str,
+                                CURLE_OK,
+                                http_status,
+                                response_headers,
+                                response_body,
+                                __FILE__, __LINE__);
+                // throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             success = false;
             break;

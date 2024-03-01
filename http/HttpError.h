@@ -40,30 +40,65 @@
 namespace http {
 
 class HttpError : public BESError {
-    Response d_http_response;
+    std::string d_origin_url;
+    std::string d_redirect_url;
+    CURLcode d_curl_code = CURLE_OK;
+    unsigned int d_http_status;
+    std::vector<std::string> d_response_headers;
+    std::string d_response_body;
 
 public:
     HttpError() = default;
+    HttpError(const std::string msg,
+              const std::string origin_url,
+              const std::string redirect_url,
+              const CURLcode code,
+              const unsigned int http_status,
+              const std::vector<std::string> response_headers,
+              const std::string response_body,
+              const std::string file,
+              const int line):
+            BESError(msg, BES_HTTP_ERROR, file, line),
+            d_origin_url(origin_url),
+            d_redirect_url(redirect_url),
+            d_curl_code(code),
+            d_http_status(http_status),
+            d_response_headers(response_headers),
+            d_response_body(response_body)
+    {};
 
-    HttpError(std::string msg, Response resp, std::string file, unsigned int line):
-            BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line),
-            d_http_response{std::move(resp)} {}
+    HttpError(const std::string msg,
+              const std::string origin_url,
+              const std::string redirect_url,
+              const CURLcode code,
+              const unsigned int http_status,
+              const std::string file,
+              const int line):
+            BESError(msg, BES_HTTP_ERROR, file, line),
+            d_origin_url(origin_url),
+            d_redirect_url(redirect_url),
+            d_curl_code(code),
+            d_http_status(http_status)
+    {};
+
+
+    HttpError(std::string msg, std::string file, unsigned int line):
+        BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) {}
 
     HttpError(const HttpError &src)  noexcept = default;
 
     ~HttpError() override = default;
 
-    std::string body() {
-        return d_http_response.body();
-    }
+    std::string origin_url() const { return d_origin_url; }
+    std::string redirect_url() const { return d_redirect_url; }
+    CURLcode curl_code() const { return d_curl_code; }
+    unsigned int http_status() const { return d_http_status; }
+    std::vector<std::string> response_headers() const { return d_response_headers; }
+    std::string response_body() const { return d_response_body; }
 
-    std::vector<std::string> headers()  {
-        return d_http_response.headers();
-    }
 
-    unsigned int http_status() const {
-        return d_http_response.status();
-    }
+
+
 
     /** @brief dumps information about this object
  *
@@ -73,18 +108,7 @@ public:
  *
  * @param strm C++ i/o stream to dump the information to
  */
-    std::string dump() const
-    {
-        std::stringstream msg;
-
-        msg << BESIndent::LMarg << "HTTPError::dump - ("
-             << (void *)this << ")\n";
-        BESError::dump(msg);
-        BESIndent::Indent() ;
-        msg << d_http_response.dump();
-        BESIndent::UnIndent() ;
-        return msg.str();
-    }
+    std::string dump() const;
 
     void dump(std::ostream &strm) const override
     {

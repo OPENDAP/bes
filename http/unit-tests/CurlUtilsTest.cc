@@ -37,9 +37,11 @@
 #include "BESContextManager.h"
 #include "url_impl.h"
 #include "AccessCredentials.h"
-#include "CurlUtils.h"
 #include "CredentialsManager.h"
 #include "BESForbiddenError.h"
+#include "BESSyntaxUserError.h"
+#include "CurlUtils.h"
+#include "HttpError.h"
 
 #include "test_config.h"
 
@@ -532,11 +534,11 @@ public:
         try {
             auto redirect_url = curl::get_redirect_url(source_url);
             DBG( cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
-            CPPUNIT_FAIL("A BESInternalError should have been thrown.");
+            CPPUNIT_FAIL("An HttpError should have been thrown.");
         }
-        catch(BESInternalError &bie){
+        catch(HttpError &bie){
             DBG(cerr << prolog << "curl::get_redirect_url() was NOT redirected. This is an expected error.\n");
-            DBG(cerr << prolog << "Caught expected BESInternalError. \nError Message:\n\n" << bie.get_verbose_message() << "\n");
+            DBG(cerr << prolog << "Caught expected HttpError. \nError Message:\n\n" << bie.get_verbose_message() << "\n");
         }
 
     }
@@ -559,11 +561,11 @@ public:
         try {
             auto redirect_url = curl::get_redirect_url(source_url);
             DBG( cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
-            CPPUNIT_FAIL("A BESInternalError should have been thrown.");
+            CPPUNIT_FAIL("A BESSyntaxUserError should have been thrown.");
         }
-        catch(BESInternalError &bie){
+        catch(BESSyntaxUserError &bie){
             DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint. This is an expected error.\n");
-            DBG(cerr << prolog << "Caught expected BESInternalError.\nError Message:\n\n" << bie.get_verbose_message() << "\n");
+            DBG(cerr << prolog << "Caught expected BESSyntaxUserError.\nError Message:\n\n" << bie.get_verbose_message() << "\n");
         }
 
     }
@@ -643,11 +645,11 @@ public:
                 sw.start(prolog);
                 auto redirect_url = curl::get_redirect_url(source_url);
                 CPPUNIT_FAIL("The call to curl::get_redirect_url() should have thrown a "
-                             "BESInternalError!");
+                             "BESSyntaxUserError!");
             }
-            catch(BESInternalError &bie){
+            catch(BESSyntaxUserError &bie){
                 DBG(cerr << prolog << "curl::get_redirect_url() was redirected to the EDL login endpoint.\n");
-                DBG(cerr << prolog << "Caught expected BESInternalError. Message:\n" << bie.get_verbose_message() << "\n");
+                DBG(cerr << prolog << "Caught expected BESSyntaxUserError. Message:\n" << bie.get_verbose_message() << "\n");
             }
 
         }
