@@ -75,6 +75,15 @@ public:
         TheBESKeys::ConfigFile = BES_CONF_FILE;
         DBG(cerr << __func__ << "() - Temp file template is: '" << TEMP_FILE_PREFIX << "'" << endl);
         DBG2(cerr << __func__ << "() - END" << endl);
+
+        if (access(TEMP_DIR.c_str(), F_OK) == -1) {
+            if (errno != ENOENT) {
+                CPPUNIT_FAIL("Failed to make temporary directory for tests: " + TEMP_DIR);
+            }
+            else if (mkdir(TEMP_DIR.c_str(), S_IRWXU | S_IRWXG) != 0) {
+                CPPUNIT_FAIL("Failed to make temporary directory for tests: " + TEMP_DIR);
+            }
+        }
     }
 
     void mk_temp_dir_normal() {
@@ -89,7 +98,7 @@ public:
 
     void mk_temp_dir_exists() {
         TempFile tf;
-        auto tmp_dir = string(TEST_BUILD_DIR) + "/mk_temp_dir_normal";
+
         CPPUNIT_ASSERT_MESSAGE("The directory should exist", access(TEMP_DIR.c_str(), F_OK) == 0);
         CPPUNIT_ASSERT_MESSAGE("The directory should exist and should not be created", !tf.mk_temp_dir(TEMP_DIR));
         CPPUNIT_ASSERT_MESSAGE("The directory should still exist", access(TEMP_DIR.c_str(), F_OK) == 0);

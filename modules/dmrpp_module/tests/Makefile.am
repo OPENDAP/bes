@@ -58,6 +58,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUI
 		true;\
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	$(SHELL) '$(TESTSUITE_H4_DMRPP_BUILDER)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
