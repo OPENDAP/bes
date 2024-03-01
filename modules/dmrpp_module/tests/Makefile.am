@@ -44,7 +44,8 @@ TESTSUITE_H4 = $(srcdir)/testsuite_h4_tests
 check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) $(TESTSUITE_H4) bes.conf bes_serial.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
-	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	$(SHELL) '$(TESTSUITE_H4)' $(TESTSUITEFLAGS)
+	@echo "\n# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
 		&& [ -n "$${CMAC_REGION}" ]  \
@@ -64,6 +65,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUI
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
+	test ! -f '$(TESTSUITE_H4)' || $(SHELL) '$(TESTSUITE_S3)' --clean
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
