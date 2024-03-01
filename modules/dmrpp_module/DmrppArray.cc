@@ -52,6 +52,7 @@
 #include "BESStopWatch.h"
 
 #include "byteswap_compat.h"
+#include "float_byteswap.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "DmrppArray.h"
@@ -2270,6 +2271,14 @@ bool DmrppArray::read()
                     *local = bswap_64(*local);
                     local++;
                 }
+                break;
+            }
+            case dods_float32_c: {
+                swap_float32(this->get_buf(), num);
+                break;
+            }
+            case dods_float64_c: {
+                swap_float64(this->get_buf(), num);
                 break;
             }
             default: break; // Do nothing for all other types.

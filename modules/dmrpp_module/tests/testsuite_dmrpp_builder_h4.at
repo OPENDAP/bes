@@ -1,0 +1,13 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/dmrpp_module/tests testsuite_dmrpp_builder_h4])
+
+m4_include([../../common/handler_tests_macros.m4])
+
+dnl - writer - h4 tests ------------------------------------------
+
+# ./../build_dmrpp_h4/build_dmrpp_h4 -f hdf4_build_dmrpp/vg_hl_test.hdf -r hdf4_build_dmrpp/vg_hl_test.hdf.dmr
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/vg_hl_test.hdf])
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/SDS_chunk_extra_area_comp.hdf])
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/SDS_simple_comp.hdf])
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/SDS_fillchunk_alltypes.hdf])

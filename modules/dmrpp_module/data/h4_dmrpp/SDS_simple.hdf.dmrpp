@@ -1,0 +1,16 @@
+number of blocks for contiguous storage is: 1
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="SDS_simple.hdf" dmrpp:href="data/h4_dmrpp/SDS_simple.hdf">
+    <Dimension name="fakeDim0" size="2"/>
+    <Dimension name="fakeDim1" size="4"/>
+    <Int32 name="SDS_simple">
+        <Dim name="/fakeDim0"/>
+        <Dim name="/fakeDim1"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="BE">
+            <dmrpp:chunk offset="2502" nBytes="32" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Int32>
+</Dataset>

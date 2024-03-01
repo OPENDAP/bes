@@ -178,6 +178,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_size64_chunk_
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_size8.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compact_example.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_int_scalar.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_scalar_dset_float_be.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/FValue_c_b.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/netcdf_3_two_chunks_deflate.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c_full_constraint.dmrpp.bescmd>test.nc
@@ -216,6 +217,13 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple2_array.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_group_simple.h5.dmrpp.bescmd>test.nc
 
+#HDF4 support
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vg_hl_test.hdf.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_float.hdf.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_double.hdf.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_chunk_extra_area_comp.hdf.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_fillchunk_comp.hdf.dmrpp.bescmd>test.nc
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4

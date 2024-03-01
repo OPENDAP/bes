@@ -26,10 +26,6 @@
 #include <memory>
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
-#include <cstdio>
 #include <cstring>
 #include <iostream>
 
@@ -38,18 +34,14 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <unistd.h>
-#include <libdap/util.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
-#include "BESCatalogList.h"
 #include "TheBESKeys.h"
-#include "HttpCache.h"
 #include "HttpUtils.h"
 #include "HttpNames.h"
 #include "url_impl.h"
-#include "RemoteResource.h"
 
 #include "test_config.h"
 

@@ -1,0 +1,18 @@
+netcdf test {
+dimensions:
+	fakeDim0 = 2 ;
+	fakeDim1 = 6 ;
+variables:
+	int SDS_fc_comp(fakeDim0, fakeDim1) ;
+		SDS_fc_comp:_FillValue = -99 ;
+		SDS_fc_comp:dmr_sds_ref = 2 ;
+
+// global attributes:
+		:history = "removed date-timex SDS_fillchunk_comp.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"SDS_fillchunk_comp.hdf.dmrpp\"}]}]" ;
+data:
+
+ SDS_fc_comp =
+  1, 2, 3, 4, _, _,
+  5, 6, 7, 8, _, _ ;
+}

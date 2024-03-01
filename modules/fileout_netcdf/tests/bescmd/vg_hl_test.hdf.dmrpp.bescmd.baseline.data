@@ -1,0 +1,41 @@
+netcdf test {
+dimensions:
+	fakeDim0 = 4 ;
+	fakeDim1 = 4 ;
+	fakeDim2 = 4 ;
+
+// global attributes:
+		:history = "removed date-timex vg_hl_test.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"vg_hl_test.hdf.dmrpp\"}]}]" ;
+
+group: groupA {
+
+  group: groupC {
+    } // group groupC
+  } // group groupA
+
+group: groupB {
+  variables:
+  	int sds(fakeDim0, fakeDim1, fakeDim2) ;
+  		sds:dmr_sds_ref = 4 ;
+  data:
+
+   sds =
+  0, 0, 0, 0,
+  1, 1, 1, 1,
+  2, 2, 2, 2,
+  3, 3, 3, 3,
+  1, 1, 1, 1,
+  2, 2, 2, 2,
+  3, 3, 3, 3,
+  4, 4, 4, 4,
+  2, 2, 2, 2,
+  3, 3, 3, 3,
+  4, 4, 4, 4,
+  5, 5, 5, 5,
+  3, 3, 3, 3,
+  4, 4, 4, 4,
+  5, 5, 5, 5,
+  6, 6, 6, 6 ;
+  } // group groupB
+}
