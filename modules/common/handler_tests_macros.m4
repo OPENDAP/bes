@@ -501,11 +501,11 @@ m4_define([AT_BUILD_DMRPP_H4_TEST], [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-            AT_CHECK([$abs_srcdir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output], [], [stdout])
+            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output], [], [stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-            AT_CHECK([$abs_srcdir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output], [], [stdout])
+            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output], [], [stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 
