@@ -1645,6 +1645,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
     }
 
+    // Blocks for this node
     return true;
 
 }
