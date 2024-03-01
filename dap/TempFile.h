@@ -56,6 +56,8 @@ class TempFile {
     std::string d_fname;
     bool d_keep_temps = false;
 
+    static bool mk_temp_dir(const std::string &dir_name = "/tmp/hyrax_tmp");
+
 public:
     // Odd, but even with TemporaryFileTest declared as a friend, the tests won't
     // compile unless this is declared public.
@@ -71,7 +73,7 @@ public:
 
     ~TempFile();
 
-    bool mk_temp_dir(const std::string &dir_name = "/tmp/hyrax_tmp");
+
 
     std::string create(const std::string &dir_name = "/tmp/hyrax_tmp", const std::string &path_template = "opendap");
 

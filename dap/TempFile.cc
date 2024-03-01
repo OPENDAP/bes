@@ -27,13 +27,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <csignal>
-#include <sys/wait.h> // for wait
-#include <sstream>      // std::stringstream
+#include <sys/wait.h>
+#include <sstream>
 
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
-// #include <vector>
 #include <string>
 #include <memory>
 
@@ -90,7 +89,7 @@ void TempFile::sigpipe_handler(int sig) {
         }
     }
     catch (const std::exception &e) {
-        cerr << "std::exception: " << e.what() << " (location: " << __FILE__ << " at line: " << __LINE__ << ")\n";
+        ERROR_LOG(build_error_msg("std::exception: " + string(e.what()), __FILE__, __LINE__));
     }
 }
 
