@@ -53,9 +53,8 @@
 // I added this for the timeout feature. jhrg 12/28/15
 #define BES_TIMEOUT_ERROR 6
 
+// A BES_HTTP_ERROR is thrown when a 
 #define BES_HTTP_ERROR 7
-#define BES_HTTP_SERVICE_ERROR 8
-
 
 /**
  * @brief Base exception class for the BES with basic string message

@@ -35,7 +35,7 @@
 #include <curl/curl.h>
 
 #include "BESError.h"
-#include "Response.h"
+#include "unused/Response.h"
 
 namespace http {
 

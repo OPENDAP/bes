@@ -383,7 +383,7 @@ public:
     // retained.
     void http_get_test_vector_char_appended() {
         const string url = "http://test.opendap.org/opendap.conf";
-        string buf;
+        vector<char> buf;
         const string twimc = "To whom it may concern:";
         buf.resize(twimc.size());
         memcpy(buf.data(), twimc.c_str(), twimc.size());
@@ -404,7 +404,7 @@ public:
 #if 0
     void http_get_test_string_appended() {
         const string url = "http://test.opendap.org/opendap.conf";
-        string str;
+        vector<char> str;
         const string twimc = "To whom it may concern:";
         str.resize(twimc.size());
         memcpy(str.data(), twimc.c_str(), twimc.size());
