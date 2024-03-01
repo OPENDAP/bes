@@ -37,7 +37,6 @@ DISTCLEANFILES = http.conf
 
 SRCS = CurlUtils.cc \
     HttpError.cc \
-    HttpCache.cc \
     RemoteResource.cc \
     HttpUtils.cc \
     ProxyConfig.cc \
@@ -51,7 +50,6 @@ SRCS = CurlUtils.cc \
 
 HDRS = CurlUtils.h \
     HttpError.h \
-    HttpCache.h \
     RemoteResource.h \
     HttpUtils.h \
     ProxyConfig.h \
@@ -63,6 +61,8 @@ HDRS = CurlUtils.h \
     AccessCredentials.h \
     CredentialsManager.h \
     awsv4.h
+
+# Removed jhrg 2/26/24 HttpCache.h     HttpCache.cc
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = http.conf

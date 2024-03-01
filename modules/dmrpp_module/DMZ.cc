@@ -1856,7 +1856,7 @@ void DMZ::load_chunks(BaseType *btp)
                 // We encounter a special case here. In one NASA file, the fillvalue='\0', so
                 // when converting to string fillvalue becomes "" and the string size is 0. 
                 // This won't correctly pass the fillvalue buffer downstream. So here we 
-                // change the fillvalue to ' ' so that it can sucessfully generate netCDF file via fileout netcdf.
+                // change the fillvalue to ' ' so that it can successfully generate netCDF file via fileout netcdf.
                 // KY 2022-12-22
                 if(dcp->get_fill_value()=="") { 
                     fvalue =" ";

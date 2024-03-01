@@ -274,4 +274,4 @@ BES.DefaultResponseMethod=POST
 # Suggestion: Consider making this '/tmp/bes'; see the comment at
 # BES.CacheDir above.
 HDF4.CacheDir=
-
+H4.EnableDirectDMR=true

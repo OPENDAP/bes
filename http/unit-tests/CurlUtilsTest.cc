@@ -26,7 +26,6 @@
 #include <memory>
 #include <cstring>
 #include <iostream>
-#include <string.h>
 
 #include "BESError.h"
 #include "BESDebug.h"

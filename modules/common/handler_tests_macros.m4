@@ -487,6 +487,32 @@ m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
     AT_CLEANUP
 ])
 
+
+dnl Test to make sure the h4 files can build a dmrpp when build_dmrpp_h4 is run
+dnl
+dnl kln 2/27/24
+m4_define([AT_BUILD_DMRPP_H4_TEST], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([build_dmrpp_h4])
+
+    input=$abs_srcdir/$1
+    output=$abs_srcdir/$1.dmr
+    baseline=$abs_srcdir/$1.dmr.baseline
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+            AT_CHECK([$abs_srcdir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output], [], [stdout])
+            AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+            AT_CHECK([$abs_srcdir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output], [], [stdout])
+            AT_CHECK([diff -b -B $baseline stdout])
+        ])
+
+    AT_CLEANUP
+])
+
+
 dnl Given a filename, remove any date-time string of the form "yyyy-mm-dd hh:mm:ss"
 dnl in that file and put "removed date-time" in its place. This hack keeps the baselines
 dnl more or less true to form without the obvious issue of baselines being broken 

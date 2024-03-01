@@ -161,7 +161,14 @@ void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
 
             vector<string> map_embed;
 
+#if 0
+            // Patch for HYRAX-1334 jhrg 2/14/24
             map->intern_data(*get_eval(), *get_dds());
+#endif
+            if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
+                map->intern_data();
+            else
+                map->intern_data(*get_eval(), *get_dds());
 
             FONcMap *map_found = FONcGrid::InMaps(map);
 

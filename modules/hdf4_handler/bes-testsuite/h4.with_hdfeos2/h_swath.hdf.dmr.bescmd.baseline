@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="h_swath.hdf">
+    <Dimension name="ZDim_Swath" size="4"/>
+    <Dimension name="NDim_Swath" size="8"/>
+    <Dimension name="fakeDim2" size="4"/>
+    <Dimension name="fakeDim3" size="8"/>
+    <Float32 name="temperature">
+        <Dim name="/fakeDim2"/>
+        <Dim name="/fakeDim3"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>21</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.18</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+	GROUP=SWATH_1
+		SwathName=&quot;Swath&quot;
+		GROUP=Dimension
+			OBJECT=Dimension_1
+				DimensionName=&quot;ZDim&quot;
+				Size=4
+			END_OBJECT=Dimension_1
+			OBJECT=Dimension_2
+				DimensionName=&quot;NDim&quot;
+				Size=8
+			END_OBJECT=Dimension_2
+		END_GROUP=Dimension
+		GROUP=DimensionMap
+		END_GROUP=DimensionMap
+		GROUP=IndexDimensionMap
+		END_GROUP=IndexDimensionMap
+		GROUP=GeoField
+			OBJECT=GeoField_1
+				GeoFieldName=&quot;pressure&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;ZDim&quot;)
+			END_OBJECT=GeoField_1
+			OBJECT=GeoField_2
+				GeoFieldName=&quot;Latitude&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;NDim&quot;)
+			END_OBJECT=GeoField_2
+			OBJECT=GeoField_3
+				GeoFieldName=&quot;Longitude&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;NDim&quot;)
+			END_OBJECT=GeoField_3
+		END_GROUP=GeoField
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;temperature&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;ZDim&quot;,&quot;NDim&quot;)
+			END_OBJECT=DataField_1
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=SWATH_1
+END_GROUP=SwathStructure
+GROUP=GridStructure
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Group name="Swath">
+        <Group name="Geolocation_Fields">
+            <Float32 name="pressure">
+                <Dim size="4"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>6</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="Latitude">
+                <Dim size="8"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>7</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="Longitude">
+                <Dim size="8"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>8</Value>
+                </Attribute>
+            </Float32>
+        </Group>
+        <Group name="Data_Fields">
+            <Float32 name="temperature">
+                <Dim name="/ZDim_Swath"/>
+                <Dim name="/NDim_Swath"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>9</Value>
+                </Attribute>
+            </Float32>
+        </Group>
+        <Group name="Swath_Attributes"/>
+    </Group>
+</Dataset>

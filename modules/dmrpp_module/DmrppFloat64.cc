@@ -30,6 +30,7 @@
 #include <BESDebug.h>
 
 #include "DmrppFloat64.h"
+#include "float_byteswap.h"
 
 using namespace libdap;
 using namespace std;
@@ -62,6 +63,12 @@ DmrppFloat64::read()
         return true;
 
     set_value(*reinterpret_cast<dods_float64*>(read_atomic(name())));
+
+    if ( this->twiddle_bytes() ) {
+        auto temp_buf = reinterpret_cast<char*>(&d_buf);
+        swap_float64(temp_buf,1);
+    }
+
 
     set_read_p(true);
 
