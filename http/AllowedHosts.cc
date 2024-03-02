@@ -54,6 +54,7 @@ using namespace std;
 namespace http {
 
 AllowedHosts *AllowedHosts::d_instance = nullptr;
+
 /**
  * Run once_flag for initializing the singleton instance.
  */
@@ -108,7 +109,6 @@ void AllowedHosts::delete_instance() {
  * @return True if the URL may be dereferenced, given the BES's configuration,
  * false otherwise.
  */
-
 bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
     string error_msg;
     return is_allowed(candidate_url, error_msg);
@@ -192,9 +192,6 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
 
         isAllowed = candidate_url->is_trusted() || check(candidate_url->str());
 
-        //if (candidate_url->is_trusted()) {
-        //    INFO_LOG(prolog << "Candidate URL is marked trusted, allowing. url: " << candidate_url->str() <<  endl);
-        //}
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     }
     else {
@@ -206,8 +203,6 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
     BESDEBUG(MODULE, prolog << "END Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     return isAllowed;
 }
-
-
 
 bool AllowedHosts::check(const std::string &url){
     bool isAllowed=false;

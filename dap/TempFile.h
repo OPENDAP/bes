@@ -25,13 +25,10 @@
 #ifndef DAP_TEMPFILE_H_
 #define DAP_TEMPFILE_H_
 
-#include <unistd.h>
-
-#include <vector>
+#include <csignal>
 #include <string>
 #include <map>
 #include <mutex>
-#include <memory>
 
 namespace bes {
 
@@ -44,32 +41,39 @@ namespace bes {
  * of how the caller exits - regularly or via an exception.
  */
 class TempFile {
-private:
+
+    friend class TemporaryFileTest;
+
     // Lifecycle controls
     static struct sigaction cached_sigpipe_handler;
     mutable std::recursive_mutex d_tf_lock_mutex;
-    static void init();
-    static std::once_flag d_init_once;
 
     // Holds the static list of all open files
-    static std::unique_ptr< std::map<std::string, int> > open_files;
+    static std::map<std::string, int, std::less<>> open_files;
 
     // Instance variables
     int d_fd = -1;
     std::string d_fname;
-    bool d_keep_temps;
+    bool d_keep_temps = false;
 
-    static void mk_temp_dir(const std::string &dir_name = "/tmp/hyrax_tmp") ;
-
-    friend class TemporaryFileTest;
+    static bool mk_temp_dir(const std::string &dir_name = "/tmp/hyrax_tmp");
 
 public:
     // Odd, but even with TemporaryFileTest declared as a friend, the tests won't
     // compile unless this is declared public.
     static void sigpipe_handler(int signal);
 
-    explicit TempFile(bool keep_temps = false);
+    TempFile() = default;
+    explicit TempFile(bool keep_temps) : d_keep_temps(keep_temps) {}
+
+    TempFile(const TempFile&) = delete;
+    TempFile& operator=(const TempFile&) = delete;
+    TempFile(TempFile&&) = delete;
+    TempFile& operator=(TempFile&&) = delete;
+
     ~TempFile();
+
+
 
     std::string create(const std::string &dir_name = "/tmp/hyrax_tmp", const std::string &path_template = "opendap");
 
