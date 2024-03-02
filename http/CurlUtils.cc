@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <ctime>
+#include <cstring>
 
 #include <curl/curl.h>
 
