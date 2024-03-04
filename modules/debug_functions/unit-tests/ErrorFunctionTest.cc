@@ -51,6 +51,8 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
+#define prolog std::string("# ErrorFunctionTest::").append(__func__).append("() - ")
+
 namespace libdap {
 
 class ErrorFunctionTest: public CppUnit::TestFixture {
@@ -74,6 +76,8 @@ public:
     // Called before each test
     void setUp()
     {
+        DBG(cerr << prolog << "\n");
+        
         try {
             testDDS = new DDS(&btf);
         }
@@ -102,7 +106,7 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
 
     void internalErrorFunctionTest()
     {
-        DBG(cerr << endl << "internalErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -118,17 +122,17 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
             error_function(1, argv, *testDDS, btpp);
             CPPUNIT_ASSERT(false);
         }
-        catch (BESInternalError e) {
-            DBG(cerr << "internalErrorFunctionTest() - Caught BESInternalError. msg: " << e.get_message() << endl);
+        catch (BESInternalError &e) {
+            DBG(cerr << prolog << "Caught BESInternalError. msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "internalErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
     void internalFatalErrorFunctionTest()
     {
-        DBG(cerr << endl << "internalFatalErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -146,17 +150,17 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
         }
         catch (BESInternalFatalError &e) {
             DBG(
-                cerr << "internalFatalErrorFunctionTest() - Caught BESInternalFatalError. msg: " << e.get_message()
+                cerr << "Caught BESInternalFatalError. msg: " << e.get_message()
                     << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "internalFatalErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
     void syntaxUserErrorFunctionTest()
     {
-        DBG(cerr << endl << "syntaxUserErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -173,16 +177,16 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
             CPPUNIT_ASSERT(false);
         }
         catch (BESSyntaxUserError &e) {
-            DBG(cerr << "syntaxUserErrorFunctionTest() - Caught BESSyntaxUserError. msg: " << e.get_message() << endl);
+            DBG(cerr << prolog << "Caught BESSyntaxUserError. msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "syntaxUserErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
     void forbiddenErrorFunctionTest()
     {
-        DBG(cerr << endl << "forbiddenErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -199,16 +203,16 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
             CPPUNIT_ASSERT(false);
         }
         catch (BESForbiddenError &e) {
-            DBG(cerr << "forbiddenErrorFunctionTest() - Caught BESForbiddenError. msg: " << e.get_message() << endl);
+            DBG(cerr << prolog << "Caught BESForbiddenError. msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "forbiddenErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
     void notFoundErrorFunctionTest()
     {
-        DBG(cerr << endl << "notFoundErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -224,12 +228,12 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
             error_function(1, argv, *testDDS, btpp);
             CPPUNIT_ASSERT(false);
         }
-        catch (BESNotFoundError e) {
-            DBG(cerr << "notFoundErrorFunctionTest() - Caught BESNotFoundError. msg: " << e.get_message() << endl);
+        catch (BESNotFoundError &e) {
+            DBG(cerr << prolog << "Caught BESNotFoundError. msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "notFoundErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
 };
