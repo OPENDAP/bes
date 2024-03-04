@@ -822,6 +822,64 @@ static void process_http_code_helper(long http_code, const string &requested_url
         BESDEBUG(MODULE, prolog << msg.str() << endl);
     }
 
+    msg << "The response from " << last_accessed_url << " (Originally: " << requested_url << ") ";
+    msg << "returned an HTTP status of " << http_code;
+    msg << " which means " << http_status_to_string(http_code) << " ";
+
+    switch (http_code) {
+        case 400: // Bad Request
+        case 401: // Unauthorized
+        case 402: // Payment Required
+        case 403: // Forbidden
+        case 404: // Not Found
+        case 408: // Request Timeout
+        {
+            // These issues are not considered retryable problems so we throw immediately.
+            ERROR_LOG(msg.str() << endl);
+            throw http::HttpError(msg.str(),
+                                  requested_url,
+                                  last_accessed_url,
+                                  CURLE_OK,
+                                  http_code, __FILE__, __LINE__);
+
+        }
+        case 422: // Unprocessable Entity
+        case 500: // Internal server error
+        case 502: // Bad Gateway
+        case 503: // Service Unavailable
+        case 504: // Gateway Timeout
+            {
+                // These problems might actually be retryable, so we check and then act accordingly.
+                if (!is_retryable(last_accessed_url)) {
+                    msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
+                    ERROR_LOG(msg.str() << endl);
+                    throw http::HttpError(msg.str(),
+                                          requested_url,
+                                          last_accessed_url,
+                                          CURLE_OK,
+                                          http_code, __FILE__, __LINE__);
+                } else {
+                    msg << " The HTTP response code of this last accessed URL indicate that it should be retried.";
+                    BESDEBUG(MODULE, prolog << msg.str() << endl);
+                }
+            }
+            break;
+
+        default:
+            ERROR_LOG(msg.str() << endl);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+}
+
+#if 0
+static void process_http_code_helper(long http_code, const string &requested_url, const string &last_accessed_url) {
+    stringstream msg;
+    if (http_code >= 400) {
+        msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
+        msg << "CURLINFO_EFFECTIVE_URL: " << filter_aws_url(last_accessed_url) << " ";
+        BESDEBUG(MODULE, prolog << msg.str() << endl);
+    }
+
     msg << "The response had an HTTP status of " << http_code;
     msg << " which means " << http_status_to_string(http_code) << "";
 
@@ -865,7 +923,7 @@ static void process_http_code_helper(long http_code, const string &requested_url
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 }
-
+#endif
 /**
  * @brief Evaluates the HTTP semantics of a the result of issuing a cURL GET request.
  *
@@ -980,22 +1038,26 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     set_error_buffer(c_handle, error_buffer.data());
     unsigned int attempts = 0;
     useconds_t retry_time = url_retry_time; // 0.25 seconds
-    bool success;
+    bool curl_success{false};
+    bool http_success{false};
     long http_code;
-    do {
+
+    // This either works or throws an exception after retry_limit attempts
+    while (!curl_success || !http_success) {
         ++attempts;
         BESDEBUG(MODULE,
                  prolog << "Requesting URL: " << filter_aws_url(target_url) << " attempt: " << attempts << endl);
 
         CURLcode curl_code = curl_easy_perform(c_handle);
-        success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
-        if (success) {
+        curl_success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
+        if (curl_success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
-            success = eval_http_get_response(c_handle, target_url, http_code);
+            http_success = eval_http_get_response(c_handle, target_url, http_code);
         }
         // If the curl_easy_perform failed, or if the http request failed then
-        // we keep trying until we have exceeded the retry_limit.
-        if (!success) {
+        // we keep trying until we have exceeded the retry_limit at which point we throw
+        // an exception.
+        if (!curl_success || !http_success) {
             string effective_url;
             try {
                 effective_url = filter_aws_url(get_effective_url(c_handle, target_url));
@@ -1010,7 +1072,11 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 msg << "CURLINFO_EFFECTIVE_URL: " << effective_url << " ";
                 msg << "Returned HTTP_STATUS: " << http_code;
                 ERROR_LOG(msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                throw HttpError(msg.str(),
+                                target_url,
+                                effective_url,
+                                curl_code,
+                                http_code, __FILE__, __LINE__);
             }
             else {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
@@ -1024,7 +1090,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                     truncate_file(fd);
             }
         }
-    } while (!success);
+    }
 
     // rewind the file, if the descriptor is valid
     if (fd >= 0) {
