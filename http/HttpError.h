@@ -84,7 +84,7 @@ public:
     HttpError(std::string msg, std::string file, unsigned int line):
         BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) {}
 
-    HttpError(const HttpError &src)  noexcept = default;
+    HttpError(const HttpError &src) = default;
 
     ~HttpError() override = default;
 
