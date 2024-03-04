@@ -141,6 +141,7 @@ private:
     void read_chunks();
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
+    void read_linked_blocks();
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
@@ -156,6 +157,7 @@ private:
     bool check_struct_handling();
 
     bool use_direct_io_opt();
+
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v) :

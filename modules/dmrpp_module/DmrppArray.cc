@@ -1336,6 +1336,83 @@ void DmrppArray::read_chunks_dio_unconstrained()
 }
 
 
+// Retrieve data from the linked blocks.  We don't need to use the super chunk technique
+// since the adjacent blocks are already combined. We just need to read the data
+// from each chunk, combine them and decompress the buffer if necessary.
+void DmrppArray::read_linked_blocks(){
+    unsigned int num_linked_blocks = this->get_total_linked_blocks();
+    if (num_linked_blocks <2)
+        throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
+    //Change to the total storage buffer size to just the compressed buffer size.
+    reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
+ //cout <<"total_linked_block is: "<<num_linked_blocks <<endl;
+
+    vector<unsigned long long> accumulated_lengths;
+    accumulated_lengths.resize(num_linked_blocks);
+    vector<unsigned long long> individual_lengths;
+    individual_lengths.resize(num_linked_blocks);
+
+    // Here we cannot assume that the index of the linked block always increases
+    // in the loop of chunks so we use the linked block index.
+    // For the HDF4 case, the index of the linked block is always consistent with the
+    //  chunk it loops, though.
+    for(const auto& chunk: get_immutable_chunks()) {
+        individual_lengths[chunk->get_linked_block_index()] = chunk->get_size();
+    }
+    accumulated_lengths[0] = 0;
+    for (unsigned int i = 1; i < num_linked_blocks; i++)
+        accumulated_lengths[i] = individual_lengths[i-1] + accumulated_lengths[i-1];
+
+    char *target_buffer = get_buf();
+
+    for(const auto& chunk: get_immutable_chunks()) {
+        chunk->read_chunk();
+      // cout<<"linked_block_index is: " << chunk->get_linked_block_index() <<endl;
+      // cout<<"accumlated_length: "<< accumulated_lengths[chunk->get_linked_block_index()] <<endl;
+        const char *source_buffer = chunk->get_rbuf();
+        memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
+    }
+    set_read_p(true);
+//cout <<"total storage size is: "<< get_var_chunks_storage_size()<<endl;
+
+#if 0
+    // The size in element of each of the array's dimensions
+    const vector<unsigned long long> array_shape = get_shape(true);
+
+    // The size, in elements, of each of the chunk's dimensions
+    const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+
+    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
+
+    if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
+#if DMRPP_ENABLE_THREAD_TIMERS
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog + "Serial SuperChunk Processing.");
+#endif
+        while(!super_chunks.empty()) {
+            auto super_chunk = super_chunks.front();
+            super_chunks.pop();
+            BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
+
+            // Call direct IO routine
+            super_chunk->read_unconstrained_dio();
+        }
+    }
+    else {      // Parallel transfers
+#if DMRPP_ENABLE_THREAD_TIMERS
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
+#endif
+        // Call direct IO routine for parallel transfers
+        read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
+    }
+    set_read_p(true);
+#endif
+
+}
 /// This is the most general version of the read() code. It reads chunked
 /// data that are constrained to be less than the array's whole size.
 
@@ -2192,18 +2269,24 @@ bool DmrppArray::read()
                 array_to_read->read_contiguous();    // Throws on various errors
         }
         else {  // Handle the more complex case where the data is chunked.
-            if (!array_to_read->is_projected()) {
-                BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
-                 // KENT: Only here we need to consider the direct buffer IO.
-                // The best way is to hold another function but with direct buffer
-                if (this->get_dio_flag())
-                    array_to_read->read_chunks_dio_unconstrained();
-                else 
-                    array_to_read->read_chunks_unconstrained();
+            if (get_using_linked_block()) {
+                BESDEBUG(MODULE, prolog << "Reading data linked blocks" << endl);
+                array_to_read->read_linked_blocks();
             }
-            else {
-                BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
-                array_to_read->read_chunks();
+            else
+            {
+                if (!array_to_read->is_projected()) {
+                    BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
+                    // KENT: Only here we need to consider the direct buffer IO.
+                    // The best way is to hold another function but with direct buffer
+                    if (this->get_dio_flag())
+                        array_to_read->read_chunks_dio_unconstrained();
+                    else
+                        array_to_read->read_chunks_unconstrained();
+                } else {
+                    BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+                    array_to_read->read_chunks();
+                }
             }
         }
 

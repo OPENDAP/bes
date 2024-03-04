@@ -138,6 +138,8 @@ class DmrppCommon {
     unsigned long long var_chunks_storage_size = 0;
     std::vector<unsigned int> deflate_levels;
     bool processing_fv_chunks = false;
+    bool using_linked_block = false;
+    unsigned int total_linked_blocks =0;
 
 protected:
     virtual char *read_atomic(const std::string &name);
@@ -173,6 +175,12 @@ public:
     }
     void set_processing_fv_chunks() { processing_fv_chunks = true;}
     bool get_processing_fv_chunks() const { return processing_fv_chunks; }
+
+    void set_using_linked_block() {  using_linked_block = true;}
+    bool get_using_linked_block() const { return  using_linked_block; }
+
+    void set_total_linked_blocks(unsigned tlbs) { total_linked_blocks = tlbs;}
+    unsigned int get_total_linked_blocks() { return total_linked_blocks; }
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();

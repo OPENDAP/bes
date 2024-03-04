@@ -943,9 +943,15 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     if (!has_deflate_filter || (deflate_levels.empty()))
         return;
 
+     // If the datatype is not little-endian, cannot do the direct IO. return.
+     // The big-endian IEEE-floating-point data also needs byteswap. So we cannot do direct IO. KY 2024-03-03
+    if (!is_le)
+        return;
+#if 0
     // If the datatype is integer and this is not little-endian, cannot do the direct IO. return.
     if (!is_le && is_integer_type(t_a->var()->type()))
         return;
+#endif
 
     // Now we need to read the first child of dmrpp:chunks to obtain the chunk sizes.
     vector<unsigned long long>chunk_dim_sizes;
@@ -1494,6 +1500,13 @@ void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element
  * @param dc
  * @param chunk
  */
+/**
+ * @brief Parse a chunk node
+ * There are several different forms a chunk node can take and this handles
+ * all of them.
+ * @param dc
+ * @param chunk
+ */
 void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
 {
     string href;
@@ -1540,6 +1553,44 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         else
             dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), stoul(filter_mask),  chunk_position_in_array);
     }
+
+    dc->accumlate_storage_size(stoull(size));
+}
+
+void DMZ::process_block(DmrppCommon *dc, const xml_node &chunk,unsigned int block_count) const
+{
+    string href;
+    string trust;
+    string offset;
+    string size;
+    string chunk_position_in_array;
+    string filter_mask;
+    bool href_trusted = false;
+
+    for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+        if (is_eq(attr.name(), "href")) {
+            href = attr.value();
+        }
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
+            href_trusted = is_eq(attr.value(), "true");
+        }
+        else if (is_eq(attr.name(), "offset")) {
+            offset = attr.value();
+        }
+        else if (is_eq(attr.name(), "nBytes")) {
+            size = attr.value();
+        }
+    }
+
+    if (offset.empty() || size.empty())
+        throw BESInternalError("Both size and offset are required for a block node.", __FILE__, __LINE__);
+    if (!href.empty()) {
+        shared_ptr<http::url> data_url(new http::url(href, href_trusted));
+        dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset),true, block_count);
+    }
+    else
+        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), true, block_count);
+
 
     dc->accumlate_storage_size(stoull(size));
 }
@@ -1645,7 +1696,32 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
     }
 
-    // Blocks for this node
+    // Blocks for this node, we need to first check if there is only one block. If this is the case,
+    // we should issue an error.
+    unsigned int block_count = 0;
+    for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
+        if (is_eq(chunk.name(), "dmrpp:block")) {
+            block_count++;
+        }
+        if (block_count >1)
+            break;
+    }
+    if (block_count == 1)
+        throw BESInternalError(" The number of linked block is 1, but it should be > 1.", __FILE__, __LINE__);
+    if (block_count >1) {
+        // set using linked block
+        dc(btp)->set_using_linked_block();
+        // reset the count to 0 to process the blocks.
+        block_count = 0;
+        for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:block")) {
+                process_block(dc(btp), chunk, block_count);
+                //cout << "block_count: " << block_count << endl;
+                block_count++;
+            }
+        }
+        dc(btp)->set_total_linked_blocks(block_count);
+    }
     return true;
 
 }
