@@ -18,11 +18,22 @@ std::string HttpError::dump( ) const
     msg << BESIndent::LMarg << "       origin_url: " << d_origin_url << "\n" ;
     msg << BESIndent::LMarg << "last_accessed_url: " << d_redirect_url << "\n" ;
 
-    for(const auto &hdr: d_response_headers) {
-        msg << BESIndent::LMarg << "  response_header: " << hdr << "\n";
+    if(!d_response_headers.empty()) {
+        msg << BESIndent::LMarg << " response_headers: " << d_response_headers.size() << "\n";
+        for (const auto &hdr: d_response_headers) {
+            msg << BESIndent::LMarg << "  response_header: " << hdr << "\n";
+        }
+    }
+    else {
+        msg << BESIndent::LMarg << " response_headers: [NONE]\n";
     }
 
-    msg << BESIndent::LMarg << "    response_body: " << d_response_body << "\n" ;
+    if(!d_response_body.empty()) {
+        msg << BESIndent::LMarg << "    response_body: " << d_response_body << "\n";
+    }
+    else {
+        msg << BESIndent::LMarg << "    response_body: [NONE]\n";
+    }
     BESIndent::UnIndent() ;
 
     return msg.str();
