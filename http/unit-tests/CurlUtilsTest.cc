@@ -437,6 +437,7 @@ public:
     //
     // This test will read from the cloudydap bucket we own.
 
+    // This test will fail with a HttpError exception
     void http_get_test_4() {
         const string url = "https://fail.nowhere.com/README";
         string buf;
@@ -445,7 +446,7 @@ public:
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
 
-    // This test will fail with a BESForbidden exception
+    // This test will fail with a HttpError exception
     void http_get_test_5() {
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         string buf;
@@ -454,7 +455,7 @@ public:
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
 
-    // This test will also fail with a BESForbidden exception
+    // This test will also fail with a HttpError exception
     void http_get_test_6() {
         setenv("CMAC_URL", "https://s3.us-east-1", 1);
         setenv("CMAC_REGION", "us-east-1", 1);
@@ -771,9 +772,9 @@ public:
     //CPPUNIT_TEST(http_get_test_vector_char_appended);
     // CPPUNIT_TEST(http_get_test_string_appended);
 
-    CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
-    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
-    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_4, HttpError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_5, HttpError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_6, HttpError);
 
     CPPUNIT_TEST(http_get_test_7);
 

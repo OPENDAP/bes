@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[http-8080-1:27:bes_request]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDODS>
+        <BESError>
+            <Type>7</Type>
+            <Message>An HttpError was requested.</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <curl_code>0</curl_code>
+            <http_status>403</http_status>
+            <origin_url>https://www.opendap.org</origin_url>
+            <redirect_url>https://www.opendap.org/</redirect_url>
+            <response_headers>
+                <header>server: bes.error.functions</header>
+                <header>location: orbit-0</header>
+            </response_headers>
+            <response_body>Every HTTP request includes an HTTP response. An HTTP response is a set of metadata and a response body, where the body can occasionally be zero bytes and thus nonexistent. An HTTP response however always has response headers.</response_body>
+            <Location>
+                <File>DebugFunctions.cc</File>
+                <Line>441</Line>
+            </Location>
+        </BESError>
+    </getDODS>
+</response>
