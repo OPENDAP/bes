@@ -231,21 +231,21 @@ void BESInfo::add_data_from_file(const string &key, const string &name)
  * @param admin The contact information for the person
  * responsible for this error
  */
-void BESInfo::add_exception(const BESError &e, const string &admin)
+void BESInfo::add_exception(const BESError &error, const string &admin)
 {
     begin_tag("BESError");
     ostringstream stype;
-    stype << e.get_bes_error_type();
+    stype << error.get_bes_error_type();
     add_tag("Type", stype.str());
-    add_tag("Message", e.get_message());
+    add_tag("Message", error.get_message());
     add_tag("Administrator", admin);
 
-    e.add_error_info(this);
+    error.add_my_error_info_to(*this);
 
     begin_tag( "Location" );
-    add_tag( "File", e.get_file() );
+    add_tag( "File", error.get_file() );
     ostringstream sline;
-    sline << e.get_line();
+    sline << error.get_line();
     add_tag( "Line", sline.str() );
     end_tag( "Location" );
 

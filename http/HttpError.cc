@@ -11,21 +11,21 @@
 namespace http {
 
 
-void HttpError::add_error_info(BESInfo *info) const {
+void HttpError::add_my_error_info_to(BESInfo &info) const {
     std::stringstream msg;
     msg << d_curl_code;
-    info->add_tag("curl_code", msg.str());
+    info.add_tag("curl_code", msg.str());
     msg.str("");
     msg << d_http_status;
-    info->add_tag("http_status", msg.str());
-    info->add_tag("origin_url", d_origin_url);
-    info->add_tag("redirect_url", d_redirect_url);
-    info->begin_tag( "response_headers" );
-    for(const auto header:d_response_headers) {
-        info->add_tag("header", header);
+    info.add_tag("http_status", msg.str());
+    info.add_tag("origin_url", d_origin_url);
+    info.add_tag("redirect_url", d_redirect_url);
+    info.begin_tag( "response_headers" );
+    for(const auto &header:d_response_headers) {
+        info.add_tag("header", header);
     }
-    info->end_tag( "response_headers" );
-    info->add_tag( "response_body", d_response_body);
+    info.end_tag( "response_headers" );
+    info.add_tag( "response_body", d_response_body);
 }
 
 

@@ -50,10 +50,10 @@ class HttpError : public BESError {
 public:
     HttpError() = default;
     HttpError(const std::string msg,
-              const std::string origin_url,
-              const std::string redirect_url,
               const CURLcode code,
               const unsigned int http_status,
+              const std::string origin_url,
+              const std::string redirect_url,
               const std::vector<std::string> response_headers,
               const std::string response_body,
               const std::string file,
@@ -97,7 +97,7 @@ public:
     std::string response_body() const { return d_response_body; }
 
 
-    void add_error_info(BESInfo *info) const override;
+    void add_my_error_info_to(BESInfo &info) const override;
 
 
     /** @brief dumps information about this object

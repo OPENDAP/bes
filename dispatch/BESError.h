@@ -37,7 +37,10 @@
 #include <stdexcept>
 
 #include "BESObj.h"
-#include "BESInfo.h"
+
+// Forward declaration of BESInfo since BESInfo.h
+// already includes BESError.h
+class BESInfo;
 
 #define BES_INTERNAL_ERROR 1
 
@@ -113,7 +116,7 @@ public:
      * Used to add error specific details to the BESInfo object
      * @param info
      */
-    virtual void add_error_info(BESInfo *info) const {}
+    virtual void add_my_error_info_to(BESInfo &info) const {}
 
     /** @brief get the error message for this exception
      *

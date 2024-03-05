@@ -1741,10 +1741,10 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                 msg << "Here are the details of the most recent transaction:\n\n";
                 write_response_details(http_status, response_headers, response_body, msg);
                 throw HttpError(msg.str(),
-                                origin_url_str,
-                                redirect_url_str,
                                 CURLE_OK,
                                 http_status,
+                                origin_url_str,
+                                redirect_url_str,
                                 response_headers,
                                 response_body,
                                 __FILE__, __LINE__);
