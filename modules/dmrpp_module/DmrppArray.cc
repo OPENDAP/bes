@@ -37,6 +37,7 @@
 #include <cassert>
 #include <iomanip>
 #include <cmath>
+#include <zlib.h>
 
 #include <libdap/D4Enum.h>
 #include <libdap/D4Attributes.h>
@@ -1343,6 +1344,7 @@ void DmrppArray::read_linked_blocks(){
     unsigned int num_linked_blocks = this->get_total_linked_blocks();
     if (num_linked_blocks <2)
         throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
+
     //Change to the total storage buffer size to just the compressed buffer size.
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
  //cout <<"total_linked_block is: "<<num_linked_blocks <<endl;
@@ -1354,7 +1356,7 @@ void DmrppArray::read_linked_blocks(){
 
     // Here we cannot assume that the index of the linked block always increases
     // in the loop of chunks so we use the linked block index.
-    // For the HDF4 case, the index of the linked block is always consistent with the
+    // For the HDF4 case, we observe the index of the linked block is always consistent with the
     //  chunk it loops, though.
     for(const auto& chunk: get_immutable_chunks()) {
         individual_lengths[chunk->get_linked_block_index()] = chunk->get_size();
@@ -1367,11 +1369,32 @@ void DmrppArray::read_linked_blocks(){
 
     for(const auto& chunk: get_immutable_chunks()) {
         chunk->read_chunk();
-      // cout<<"linked_block_index is: " << chunk->get_linked_block_index() <<endl;
-      // cout<<"accumlated_length: "<< accumulated_lengths[chunk->get_linked_block_index()] <<endl;
+        // cout<<"linked_block_index is: " << chunk->get_linked_block_index() <<endl;
+        // cout<<"accumlated_length: "<< accumulated_lengths[chunk->get_linked_block_index()] <<endl;
         const char *source_buffer = chunk->get_rbuf();
         memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
     }
+
+    string filters_string = this->get_filters();
+    if (filters_string.find("deflate")!=string::npos) {
+        char *in_buf = get_buf();
+
+        char **destp = nullptr;
+        char *dest_deflate = nullptr;
+        unsigned long long out_buf_size = 0;
+        unsigned long long dest_len = get_var_chunks_storage_size();
+        unsigned long long src_len = get_var_chunks_storage_size();
+        dest_deflate = new char[dest_len];
+        destp = &dest_deflate;
+        out_buf_size = inflate_simple(destp, dest_len, in_buf, src_len);
+        this->clear_local_data();
+        reserve_value_capacity_ll_byte(this->width_ll());
+        char *out_buf = get_buf();
+        memcpy(out_buf,dest_deflate,this->width_ll());
+        delete []dest_deflate; 
+    }
+
+
     set_read_p(true);
 //cout <<"total storage size is: "<< get_var_chunks_storage_size()<<endl;
 
@@ -1413,6 +1436,104 @@ void DmrppArray::read_linked_blocks(){
 #endif
 
 }
+
+unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
+
+
+    /* Sanity check */
+
+    if (src_len == 0) {
+        string msg = prolog + "ERROR! The number of bytes to inflate is zero.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (dest_len == 0) {
+        string msg = prolog + "ERROR! The number of bytes to inflate into is zero.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (!destp || !*destp) {
+        string msg = prolog + "ERROR! The destination buffer is NULL.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (!src) {
+        string msg = prolog + "ERROR! The source buffer is NULL.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+
+    /* Input; uncompress */
+    z_stream z_strm; /* zlib parameters */
+
+    /* Set the decompression parameters */
+    memset(&z_strm, 0, sizeof(z_strm));
+    z_strm.next_in = (Bytef *) src;
+    z_strm.avail_in = src_len;
+    z_strm.next_out = (Bytef *) (*destp);
+    z_strm.avail_out = dest_len;
+
+    size_t nalloc = dest_len;
+
+    char *outbuf = *destp;
+
+    /* Initialize the decompression routines */
+    if (Z_OK != inflateInit(&z_strm))
+        throw BESError("Failed to initialize inflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+
+    /* Loop to uncompress the buffer */
+    int status = Z_OK;
+    do {
+        /* Uncompress some data */
+        status = inflate(&z_strm, Z_SYNC_FLUSH);
+
+        /* Check if we are done decompressing data */
+        if (Z_STREAM_END == status) break; /*done*/
+
+        /* Check for error */
+        if (Z_OK != status) {
+            stringstream err_msg;
+            err_msg << "Failed to inflate data chunk.";
+            char const *err_msg_cstr = z_strm.msg;
+            if(err_msg_cstr)
+                err_msg << " zlib message: " << err_msg_cstr;
+            (void) inflateEnd(&z_strm);
+            throw BESError(err_msg.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+            return 0;
+        }
+        else {
+            // If we're not done and just ran out of buffer space, we need to extend the buffer.
+            // We may encounter this case when the deflate filter is used twice. KY 2022-08-03
+            if (0 == z_strm.avail_out) {
+
+                /* Allocate a buffer twice as big */
+                size_t outbuf_size = nalloc;
+                nalloc *= 2;
+                char *new_outbuf = new char[nalloc];
+                memcpy((void*)new_outbuf,(void*)outbuf,outbuf_size);
+                delete[] outbuf;
+                outbuf = new_outbuf;
+
+                /* Update pointers to buffer for next set of uncompressed data */
+                z_strm.next_out = (unsigned char*) outbuf + z_strm.total_out;
+                z_strm.avail_out = (uInt) (nalloc - z_strm.total_out);
+//cerr<<"z_strm.total_out is: "<<z_strm.total_out<<endl;
+
+            } /* end if */
+        } /* end else */
+    } while (true /* status == Z_OK */);    // Exit via the break statement after the call to inflate(). jhrg 11/8/21
+
+    *destp = outbuf;
+    outbuf = nullptr;
+    /* Finish decompressing the stream */
+    (void) inflateEnd(&z_strm);
+
+    return z_strm.total_out;
+}
+
+
+
 /// This is the most general version of the read() code. It reads chunked
 /// data that are constrained to be less than the array's whole size.
 

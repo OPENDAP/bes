@@ -158,6 +158,7 @@ private:
 
     bool use_direct_io_opt();
 
+    unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v) :
