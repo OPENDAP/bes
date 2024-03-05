@@ -350,7 +350,6 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
     }
     else {
         auto param1 = dynamic_cast<const libdap::Int32*>(argv[0]);
-        auto param2 = dynamic_cast<const libdap::Int32*>(argv[1]);
         if (param1) {
             libdap::dods_int32 error_type = param1->value();
 
@@ -387,6 +386,10 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
                 }
 
                 case BES_HTTP_ERROR: {   // 7
+                    const libdap::Int32* param2 = nullptr;
+                    if(argc==2) {
+                        param2 = dynamic_cast<const libdap::Int32 *>(argv[1]);
+                    }
                     /*
                       HttpError(const std::string msg,
                       const std::string origin_url,
@@ -410,7 +413,14 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
                      */
                     string http_err_msg("An HttpError was requested.");
                     CURLcode curl_code = CURLE_OK;
-                    unsigned int http_status = param2->value();
+                    unsigned int http_status;
+                    if(param2) {
+                        http_status = param2->value();
+                    }
+                    else {
+                        http_status=502;
+                    }
+
                     string origin_url("https://www.opendap.org");
                     string redirect_url("https://www.opendap.org/");
                     vector<string> rsp_hdrs;
@@ -422,10 +432,10 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
                                     "however always has response headers.");
 
                     throw http::HttpError(http_err_msg,
-                                          origin_url,
-                                          redirect_url,
                                           curl_code,
                                           http_status,
+                                          origin_url,
+                                          redirect_url,
                                           rsp_hdrs,
                                           rsp_body,
                                           __FILE__, __LINE__);

@@ -262,6 +262,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
                 case BES_SYNTAX_USER_ERROR:
                 case BES_FORBIDDEN_ERROR:
                 case BES_NOT_FOUND_ERROR:
+                case BES_HTTP_ERROR:
                 default:
                     break;
                 }

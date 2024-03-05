@@ -49,6 +49,7 @@ AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/internal_fatal_error.bescmd])
 AT_BESCMD_RESPONSE_TEST([bescmd/syntax_user_error.bescmd])
 AT_BESCMD_RESPONSE_TEST([bescmd/forbidden_error.bescmd])
 AT_BESCMD_RESPONSE_TEST([bescmd/not_found_error.bescmd])
+AT_BESCMD_RESPONSE_TEST([bescmd/http_error_502.bescmd])
 
 dnl These tests are for the timeout feature. The first call should return
 dnl a valid response but the second should timeout, which currently means

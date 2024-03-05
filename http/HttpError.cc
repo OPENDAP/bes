@@ -1,10 +1,32 @@
 //
 // Created by ndp on 2/9/24.
 //
+#include "config.h"
 
+#include <sstream>
+
+#include "BESInfo.h"
 #include "HttpError.h"
 
 namespace http {
+
+
+void HttpError::add_error_info(BESInfo *info) const {
+    std::stringstream msg;
+    msg << d_curl_code;
+    info->add_tag("curl_code", msg.str());
+    msg.str("");
+    msg << d_http_status;
+    info->add_tag("http_status", msg.str());
+    info->add_tag("origin_url", d_origin_url);
+    info->add_tag("redirect_url", d_redirect_url);
+    info->begin_tag( "response_headers" );
+    for(const auto header:d_response_headers) {
+        info->add_tag("header", header);
+    }
+    info->end_tag( "response_headers" );
+    info->add_tag( "response_body", d_response_body);
+}
 
 
 std::string HttpError::dump( ) const

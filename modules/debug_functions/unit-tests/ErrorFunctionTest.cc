@@ -44,6 +44,8 @@
 #include <BESForbiddenError.h>
 #include <BESNotFoundError.h>
 
+#include <HttpError.h>
+
 #include <unistd.h>
 
 static bool debug = false;
@@ -100,9 +102,9 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
     CPPUNIT_TEST(syntaxUserErrorFunctionTest);
     CPPUNIT_TEST(forbiddenErrorFunctionTest);
     CPPUNIT_TEST(notFoundErrorFunctionTest);
+    CPPUNIT_TEST(httpErrorFunctionTest);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
     void internalErrorFunctionTest()
     {
@@ -236,6 +238,36 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
         DBG(cerr << prolog << "END." << endl);
     }
 
+    void httpErrorFunctionTest()
+    {
+        DBG(cerr << prolog << "BEGIN." << endl);
+
+        debug_function::ErrorFunc errorFunc;
+
+        libdap::btp_func error_function = errorFunc.get_btp_func();
+
+        libdap::Int32 error_type("error_type");
+        error_type.set_value(BES_HTTP_ERROR);
+        libdap::Int32 http_status("http_status");
+        http_status.set_value(501);
+        libdap::BaseType *argv[] = { &error_type, &http_status  };
+        libdap::BaseType *result = nullptr;
+        libdap::BaseType **btpp = &result;
+
+        try {
+            error_function(2, argv, *testDDS, btpp);
+            CPPUNIT_ASSERT(false);
+        }
+        catch (http::HttpError &e) {
+            DBG(cerr << prolog << "Caught HttpError...\n");
+            DBG(cerr << prolog << "    message: " << e.get_message() << "\n");
+            DBG(cerr << prolog << "    dump: \n" << e.dump() << "\n");
+            CPPUNIT_ASSERT(true);
+        }
+
+        DBG(cerr << prolog << "END." << endl);
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ErrorFunctionTest);
@@ -282,6 +314,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = libdap::ErrorFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            i++;
         }
     }
 

@@ -37,6 +37,7 @@
 #include <stdexcept>
 
 #include "BESObj.h"
+#include "BESInfo.h"
 
 #define BES_INTERNAL_ERROR 1
 
@@ -53,7 +54,7 @@
 // I added this for the timeout feature. jhrg 12/28/15
 #define BES_TIMEOUT_ERROR 6
 
-// A BES_HTTP_ERROR is thrown when a
+// A BES_HTTP_ERROR is thrown when a request to another service fails.
 #define BES_HTTP_ERROR 7
 
 /**
@@ -107,6 +108,12 @@ public:
     {
         _msg = msg;
     }
+
+    /**
+     * Used to add error specific details to the BESInfo object
+     * @param info
+     */
+    virtual void add_error_info(BESInfo *info) const {}
 
     /** @brief get the error message for this exception
      *

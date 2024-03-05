@@ -34,15 +34,16 @@
 
 #include <curl/curl.h>
 
+#include "BESInfo.h"
 #include "BESError.h"
 
 namespace http {
 
 class HttpError : public BESError {
-    std::string d_origin_url;
-    std::string d_redirect_url;
     CURLcode d_curl_code = CURLE_OK;
     unsigned int d_http_status;
+    std::string d_origin_url;
+    std::string d_redirect_url;
     std::vector<std::string> d_response_headers;
     std::string d_response_body;
 
@@ -58,26 +59,26 @@ public:
               const std::string file,
               const int line):
             BESError(msg, BES_HTTP_ERROR, file, line),
-            d_origin_url(origin_url),
-            d_redirect_url(redirect_url),
             d_curl_code(code),
             d_http_status(http_status),
+            d_origin_url(origin_url),
+            d_redirect_url(redirect_url),
             d_response_headers(response_headers),
             d_response_body(response_body)
     {};
 
     HttpError(const std::string msg,
-              const std::string origin_url,
-              const std::string redirect_url,
               const CURLcode code,
               const unsigned int http_status,
+              const std::string origin_url,
+              const std::string redirect_url,
               const std::string file,
               const int line):
             BESError(msg, BES_HTTP_ERROR, file, line),
-            d_origin_url(origin_url),
-            d_redirect_url(redirect_url),
             d_curl_code(code),
-            d_http_status(http_status)
+            d_http_status(http_status),
+            d_origin_url(origin_url),
+            d_redirect_url(redirect_url)
     {};
 
 
@@ -96,7 +97,7 @@ public:
     std::string response_body() const { return d_response_body; }
 
 
-
+    void add_error_info(BESInfo *info) const override;
 
 
     /** @brief dumps information about this object

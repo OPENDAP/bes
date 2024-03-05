@@ -837,10 +837,11 @@ static void process_http_code_helper(long http_code, const string &requested_url
             // These issues are not considered retryable problems so we throw immediately.
             ERROR_LOG(msg.str() << endl);
             throw http::HttpError(msg.str(),
+                                  CURLE_OK,
+                                  http_code,
                                   requested_url,
                                   last_accessed_url,
-                                  CURLE_OK,
-                                  http_code, __FILE__, __LINE__);
+                                  __FILE__, __LINE__);
 
         }
         case 422: // Unprocessable Entity
@@ -854,10 +855,11 @@ static void process_http_code_helper(long http_code, const string &requested_url
                     msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
                     ERROR_LOG(msg.str() << endl);
                     throw http::HttpError(msg.str(),
+                                          CURLE_OK,
+                                          http_code,
                                           requested_url,
                                           last_accessed_url,
-                                          CURLE_OK,
-                                          http_code, __FILE__, __LINE__);
+                                          __FILE__, __LINE__);
                 } else {
                     msg << " The HTTP response code of this last accessed URL indicate that it should be retried.";
                     BESDEBUG(MODULE, prolog << msg.str() << endl);
@@ -1073,10 +1075,11 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 msg << "Returned HTTP_STATUS: " << http_code;
                 ERROR_LOG(msg.str() << endl);
                 throw HttpError(msg.str(),
+                                curl_code,
+                                http_code,
                                 target_url,
                                 effective_url,
-                                curl_code,
-                                http_code, __FILE__, __LINE__);
+                                __FILE__, __LINE__);
             }
             else {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "

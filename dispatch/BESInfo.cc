@@ -240,6 +240,8 @@ void BESInfo::add_exception(const BESError &e, const string &admin)
     add_tag("Message", e.get_message());
     add_tag("Administrator", admin);
 
+    e.add_error_info(this);
+
     begin_tag( "Location" );
     add_tag( "File", e.get_file() );
     ostringstream sline;
