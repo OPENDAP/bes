@@ -218,7 +218,7 @@ static void catch_sig_term(int sig)
  */
 static void register_signal_handlers()
 {
-    struct sigaction act;
+    struct sigaction act{};
     sigemptyset(&act.sa_mask);
     sigaddset(&act.sa_mask, SIGCHLD);
     sigaddset(&act.sa_mask, SIGPIPE);

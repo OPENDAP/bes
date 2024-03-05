@@ -78,6 +78,11 @@ void show_file(const std::string &filename)
 /**
  * @brief Run the test(s)
  *
+ * @note How to use this:
+ * int main(int argc, char*argv[]) {
+ *     return bes_run_tests<bes::TemporaryFileTest>(argc, argv, "dDh") ? 0 : 1;
+ * }
+ *
  * @tparam CLASS The CppUnit test class to run/test
  * @param argc The argc value passed to main
  * @param argv The command line parameters passed to main()
