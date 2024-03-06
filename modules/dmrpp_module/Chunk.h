@@ -84,6 +84,8 @@ private:
     unsigned long long d_offset{0};
     unsigned long long direct_io_offset{0};
     unsigned int d_filter_mask{0};
+    bool linked_block{false};
+    unsigned int linked_block_index {0};
     bool d_uses_fill_value{false};
     libdap::Type d_fill_value_type{libdap::dods_null_c};
 
@@ -128,6 +130,8 @@ protected:
         d_offset = bs.d_offset;
         direct_io_offset = bs.direct_io_offset;
         d_filter_mask = bs.d_filter_mask;
+        linked_block = bs.linked_block;
+        linked_block_index = bs.linked_block_index;
         d_data_url = bs.d_data_url;
         d_byte_order = bs.d_byte_order;
         d_fill_value = bs.d_fill_value;
@@ -188,6 +192,26 @@ public:
         set_position_in_array(pia_str);
     }
 
+    Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size,
+          unsigned long long offset, bool lb, unsigned int lblock_index,  const std::string &pia_str = "") :
+            d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
+            d_size(size),  d_offset(offset), linked_block(lb),linked_block_index(lblock_index)
+    {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_str);
+    }
+
+    Chunk(std::string order, unsigned long long size, unsigned long long offset,
+         bool lb, unsigned int lblock_index, const std::string &pia_str = "") :
+            d_byte_order(std::move(order)),  d_size(size), d_offset(offset),
+            linked_block(lb), linked_block_index(lblock_index)  {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_str);
+    }
     /**
      * @brief Get a chunk initialized with values
      *
@@ -322,7 +346,15 @@ public:
         return d_filter_mask;
     }
 
-   
+    virtual bool get_linked_block() const
+    {
+        return linked_block;
+    }
+
+    virtual unsigned int get_linked_block_index() const
+    {
+        return linked_block_index;
+    }
 
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
