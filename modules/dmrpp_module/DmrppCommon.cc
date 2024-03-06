@@ -270,6 +270,33 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
+
+unsigned long DmrppCommon::add_chunk(
+        shared_ptr<http::url> data_url,
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        bool linked_block,
+        unsigned int linked_block_index)
+{
+    std::shared_ptr<Chunk> chunk(new Chunk(std::move(data_url), byte_order, size, offset, linked_block,linked_block_index));
+
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        bool linked_block,
+        unsigned int linked_block_index)
+{
+    std::shared_ptr<Chunk> chunk(new Chunk(byte_order, size, offset, linked_block,linked_block_index));
+
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
 /**
  * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
  *
@@ -459,8 +486,32 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     // Start elements "chunk" with dmrpp namespace and attributes:
     for(auto chunk: get_immutable_chunks()) {
 
-        if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
-            throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
+        if (chunk->get_linked_block()) {
+    
+            if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
+                                            (const xmlChar *) "block", nullptr) < 0)
+                throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
+
+            // Get offset string:
+            ostringstream offset;
+            offset << chunk->get_offset();
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "offset",
+                                            (const xmlChar *) offset.str().c_str()) < 0)
+                throw BESInternalError("Could not write attribute offset", __FILE__, __LINE__);
+
+            // Get nBytes string:
+            ostringstream nBytes;
+            nBytes << chunk->get_size();
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "nBytes",
+                                            (const xmlChar *) nBytes.str().c_str()) < 0)
+                throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
+        }
+
+        else {
+
+            if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
+                                            (const xmlChar *) "chunk", nullptr) < 0)
+                throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
             // Get offset string:
             ostringstream offset;
@@ -477,28 +528,31 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
                 throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
 
 
-        if (chunk->get_position_in_array().size() > 0) {
-            // Get position in array string:
-            vector<unsigned long long> pia = chunk->get_position_in_array();
-            ostringstream oss;
-            oss << "[";
+            if (chunk->get_position_in_array().size() > 0) {
+                // Get position in array string:
+                vector<unsigned long long> pia = chunk->get_position_in_array();
+                ostringstream oss;
+                oss << "[";
 
-            // Note: the ostream_iterator previously used unsigned int, which may siliently generate the wrong value when
-            // the size is >4G. Fix it by using unsigned long long. KY 2023-02-09
-            copy(pia.begin(), pia.end(), ostream_iterator<unsigned long long>(oss, ","));
-            string pia_str = oss.str();
-            if (pia.size() > 0) pia_str.replace(pia_str.size() - 1, 1, "]"); // replace the trailing ',' with ']'
-            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) pia_str.c_str()) < 0)
-                throw BESInternalError("Could not write attribute position in array", __FILE__, __LINE__);
+                // Note: the ostream_iterator previously used unsigned int, which may siliently generate the wrong value when
+                // the size is >4G. Fix it by using unsigned long long. KY 2023-02-09
+                copy(pia.begin(), pia.end(), ostream_iterator<unsigned long long>(oss, ","));
+                string pia_str = oss.str();
+                if (pia.size() > 0) pia_str.replace(pia_str.size() - 1, 1, "]"); // replace the trailing ',' with ']'
+                if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "chunkPositionInArray",
+                                                (const xmlChar *) pia_str.c_str()) < 0)
+                    throw BESInternalError("Could not write attribute position in array", __FILE__, __LINE__);
 
-            // Filter mask only applies to the chunking storage. So check here. Get the filter mask string if the filter mask is not zero.
-            if (chunk->get_filter_mask() != 0) {
-                ostringstream fm;
-                fm << chunk->get_filter_mask();
-                if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "fm", (const xmlChar*) fm.str().c_str()) < 0)
-                    throw BESInternalError("Could not write attribute fm(filter mask)", __FILE__, __LINE__);
+                // Filter mask only applies to the chunking storage. So check here. Get the filter mask string if the filter mask is not zero.
+                if (chunk->get_filter_mask() != 0) {
+                    ostringstream fm;
+                    fm << chunk->get_filter_mask();
+                    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "fm",
+                                                    (const xmlChar *) fm.str().c_str()) < 0)
+                        throw BESInternalError("Could not write attribute fm(filter mask)", __FILE__, __LINE__);
+                }
+
             }
-
         }
 
         // End element "chunk":
