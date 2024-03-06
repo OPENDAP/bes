@@ -132,7 +132,7 @@ public:
 
     void reload_keys();
     void reload_keys(const std::string &keys_file_name);
-    
+
     /**
      * @brief Delete the key
      * Added primarily for testing purposes.

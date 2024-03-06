@@ -102,8 +102,10 @@ public:
 
 };
 
+#if 0
 std::once_flag SingletonList::d_init_once;
 std::unique_ptr<SingletonList> SingletonList::d_instance = nullptr;
+#endif
 
 void possibly_lost_function(int /*argc*/, libdap::BaseType */*argv*/[], libdap::DDS &/*dds*/, libdap::BaseType **btpp)
 {
