@@ -106,10 +106,6 @@ class TheBESKeys: public BESObj {
 
     std::set<std::string> d_ingested_key_files;
 
-    bool is_loaded_key_file(const std::string &key_file);
-
-    static std::unique_ptr<TheBESKeys> d_instance;
-
     // Only called by the static TheBESKeys::TheKeys() method.
     explicit TheBESKeys(std::string keys_file_name);
 
@@ -133,8 +129,6 @@ public:
     std::string keys_file_name() const {
         return d_keys_file_name;
     }
-
-    void reload_keys(const std::string &keys_file_name);
 
     void reload_keys();
 

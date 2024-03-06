@@ -56,8 +56,6 @@ using namespace std;
 #define MODULE "bes"
 #define prolog std::string("TheBESKeys::").append(__func__).append("() - ")
 
-std::unique_ptr<TheBESKeys> TheBESKeys::d_instance = nullptr;
-
 /// This is the name of the file that holds the key/value pairs.
 /// However, it will only be used once, when the singleton is created.
 /// To load different sets of keys (e.g., during testing), use the
@@ -121,7 +119,7 @@ TheBESKeys::TheBESKeys(string keys_file_name) : d_keys_file_name(std::move(keys_
 #endif
 }
 
-
+#if 0
 /** @brief Determine if the specified key file has been loaded yet
  *
  * Given the name of the key file, determine if it has already been
@@ -129,6 +127,7 @@ TheBESKeys::TheBESKeys(string keys_file_name) : d_keys_file_name(std::move(keys_
  *
  * @returns true if already started to load, false otherwise
  */
+
 bool TheBESKeys::is_loaded_key_file(const string &key_file)
 {
     const auto it = d_ingested_key_files.find(key_file);
@@ -146,6 +145,7 @@ void TheBESKeys::reload_keys(const std::string &keys_file_name)
     d_keys_file_name = keys_file_name;
     reload_keys();
 }
+#endif
 
 /** @brief Reload the keys.
  * Erase the existing keys and reload them from the file. This
