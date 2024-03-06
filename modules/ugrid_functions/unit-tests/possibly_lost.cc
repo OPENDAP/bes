@@ -40,8 +40,10 @@
 
 class SingletonList {
 private:
+#if 0
     static std::unique_ptr<SingletonList> d_instance;
     static std::once_flag d_init_once;
+#endif
 
     std::multimap<std::string, libdap::ServerFunction *, less<>> d_func_list;
 
@@ -65,6 +67,7 @@ public:
 
     static SingletonList *TheList()
     {
+#if 0
         if (d_instance == nullptr) {
             std::call_once(d_init_once, []() {
                 d_instance.reset(new SingletonList);
@@ -72,6 +75,9 @@ public:
         }
 
         return d_instance.get();
+#endif
+        static SingletonList instance;
+        return &instance;
     }
 
     virtual void add_function(libdap::ServerFunction *func)
