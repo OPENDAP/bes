@@ -2,7 +2,7 @@
 <response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showNode>
         <node count="1" lastModified="removed date-time" name="/CMR/GES_DISC/C1276812863-GES_DISC/2002/03/03">
-            <item dap_url="https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXSLV.removed-version/2002/03/MERRA2_300.tavg1_2d_slv_Nx.20020303.nc4" isData="true" lastModified="removed date-time" name="M2T1NXSLV.removed-version:MERRA2_300.tavg1_2d_slv_Nx.20020303.nc4" size="419315835" type="leaf">
+            <item dap_url="https://opendap.earthdata.nasa.gov/collections/C1276812863-GES_DISC/granules/M2T1NXSLV.removed-version%3AMERRA2_300.tavg1_2d_slv_Nx.20020303.nc4" isData="true" lastModified="removed date-time" name="M2T1NXSLV.removed-version:MERRA2_300.tavg1_2d_slv_Nx.20020303.nc4" size="419315835" type="leaf">
                 <description>M2T1NXSLV.removed-version:MERRA2_300.tavg1_2d_slv_Nx.20020303.nc4</description>
             </item>
         </node>
