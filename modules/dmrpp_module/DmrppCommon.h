@@ -180,7 +180,7 @@ public:
     bool get_using_linked_block() const { return  using_linked_block; }
 
     void set_total_linked_blocks(unsigned tlbs) { total_linked_blocks = tlbs;}
-    unsigned int get_total_linked_blocks() { return total_linked_blocks; }
+    unsigned int get_total_linked_blocks() const { return total_linked_blocks; }
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();

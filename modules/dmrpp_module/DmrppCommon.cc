@@ -489,7 +489,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (chunk->get_linked_block()) {
     
             if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
-                                            (const xmlChar *) "block", NULL) < 0)
+                                            (const xmlChar *) "block", nullptr) < 0)
                 throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
             // Get offset string:
@@ -510,7 +510,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         else {
 
             if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
-                                            (const xmlChar *) "chunk", NULL) < 0)
+                                            (const xmlChar *) "chunk", nullptr) < 0)
                 throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
             // Get offset string:

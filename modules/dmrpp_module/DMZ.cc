@@ -1716,7 +1716,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
             if (is_eq(chunk.name(), "dmrpp:block")) {
                 process_block(dc(btp), chunk, block_count);
-                //cout << "block_count: " << block_count << endl;
+                BESDEBUG(PARSER, prolog << "This count of linked block of this variable is: " << block_count << endl);
                 block_count++;
             }
         }

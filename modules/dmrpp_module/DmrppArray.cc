@@ -1347,7 +1347,6 @@ void DmrppArray::read_linked_blocks(){
 
     //Change to the total storage buffer size to just the compressed buffer size.
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
- //cout <<"total_linked_block is: "<<num_linked_blocks <<endl;
 
     vector<unsigned long long> accumulated_lengths;
     accumulated_lengths.resize(num_linked_blocks);
@@ -1369,8 +1368,8 @@ void DmrppArray::read_linked_blocks(){
 
     for(const auto& chunk: get_immutable_chunks()) {
         chunk->read_chunk();
-        // cout<<"linked_block_index is: " << chunk->get_linked_block_index() <<endl;
-        // cout<<"accumlated_length: "<< accumulated_lengths[chunk->get_linked_block_index()] <<endl;
+        BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
+        BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
         const char *source_buffer = chunk->get_rbuf();
         memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
     }
@@ -1386,7 +1385,8 @@ void DmrppArray::read_linked_blocks(){
         unsigned long long src_len = get_var_chunks_storage_size();
         dest_deflate = new char[dest_len];
         destp = &dest_deflate;
-        out_buf_size = inflate_simple(destp, dest_len, in_buf, src_len);
+        inflate_simple(destp, dest_len, in_buf, src_len);
+        
         this->clear_local_data();
         reserve_value_capacity_ll_byte(this->width_ll());
         char *out_buf = get_buf();
@@ -1500,7 +1500,6 @@ unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long d
                 err_msg << " zlib message: " << err_msg_cstr;
             (void) inflateEnd(&z_strm);
             throw BESError(err_msg.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-            return 0;
         }
         else {
             // If we're not done and just ran out of buffer space, we need to extend the buffer.
@@ -1510,7 +1509,7 @@ unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long d
                 /* Allocate a buffer twice as big */
                 size_t outbuf_size = nalloc;
                 nalloc *= 2;
-                char *new_outbuf = new char[nalloc];
+                char* new_outbuf = new char[nalloc];
                 memcpy((void*)new_outbuf,(void*)outbuf,outbuf_size);
                 delete[] outbuf;
                 outbuf = new_outbuf;
@@ -1518,7 +1517,6 @@ unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long d
                 /* Update pointers to buffer for next set of uncompressed data */
                 z_strm.next_out = (unsigned char*) outbuf + z_strm.total_out;
                 z_strm.avail_out = (uInt) (nalloc - z_strm.total_out);
-//cerr<<"z_strm.total_out is: "<<z_strm.total_out<<endl;
 
             } /* end if */
         } /* end else */
