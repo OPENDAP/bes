@@ -134,6 +134,7 @@ bool TheBESKeys::is_loaded_key_file(const string &key_file)
 
     return it != d_ingested_key_files.end();
 }
+#endif
 
 /** @brief Reload the keys.
  * Erase the existing keys and reload them from the file. This version
@@ -145,7 +146,6 @@ void TheBESKeys::reload_keys(const std::string &keys_file_name)
     d_keys_file_name = keys_file_name;
     reload_keys();
 }
-#endif
 
 /** @brief Reload the keys.
  * Erase the existing keys and reload them from the file. This
