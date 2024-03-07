@@ -228,7 +228,7 @@ public:
 
                 stringstream rss;
                 bi.print(rss);
-                regex rx("<Line>\\d+<\\/Line>");
+                regex rx("(<File>.*<\\/File>)|(<Line>\\d+<\\/Line>)");
                 string result = std::regex_replace (rss.str(),rx,"<Line />");
 
                 if(debug || result != baseline) {
