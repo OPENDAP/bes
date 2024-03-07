@@ -109,6 +109,11 @@ int SDfree_mapping_info(SD_mapping_info_t  *map_info)
 
     return ret_value;
 }
+void close_hdf4_file_ids(int32 sd_id, int32 file_id) {
+    Vend(file_id);
+    Hclose(file_id);
+    SDend(sd_id);
+}
 
 size_t combine_linked_blocks(const SD_mapping_info_t &map_info, vector<int> & merged_lengths, vector<int> &merged_offsets) {
 
@@ -549,19 +554,103 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
     SDendaccess(sdsid);
     return true;
 }
+bool  ingest_vdata_info_to_chunk(int32 file_id, int32 obj_ref, BaseType *btp) {
+
+    int32 vdata_id = VSattach(file_id, obj_ref, "r");
+
+    int32 num_blocks = 0;
+    int32 block_size = 0;
+
+#if 0
+    //if (VSgetblockinfo(vdata_id,nullptr,&num_blocks) ==FAIL) {
+    if (VSgetblockinfo(vdata_id,&block_size,&num_blocks) ==FAIL) {
+        ERROR("VSgetblockinfo failed.");
+        VSdetach(vdata_id);
+        return false;
+    }
+cout <<"num_blocks is: "<<num_blocks <<endl;
+cout <<"block_size is: "<<block_size <<endl;
+ 
+    if (num_blocks >1) {
+        ERROR("Vdata number of data blocks is greater than 1. Currently we only handle the case when the number of data blocks is 1.");
+        VSdetach(vdata_id);
+        return false;
+    }
+#endif
+
+
+    // Retrieve endianess
+    int32 field_datatype = VFfieldtype(vdata_id,0); 
+    string endian_name;
+    hdf_ntinfo_t info;          /* defined in hdf.h near line 142. */
+    int result = Hgetntinfo(field_datatype, &info);
+    if (result == FAIL) {
+        FAIL_ERROR("Hgetntinfo() failed.");
+    }
+    else {
+        if (strncmp(info.byte_order, "bigEndian", 9) == 0)
+            endian_name = "BE";
+        else if (strncmp(info.byte_order, "littleEndian", 12) == 0)
+            endian_name = "LE";
+        else
+            endian_name = "UNKNOWN";
+    }
+
+
+    int32 num_linked_blocks = VSgetdatainfo(vdata_id,0,0,NULL,NULL);
+
+    if (num_linked_blocks == 1) {// most time.
+            int32 offset = 0;
+            int32 length = 0; 
+            VSgetdatainfo(vdata_id,0,1,&offset,&length);           
+cout <<"offset is: "<<offset <<endl;
+cout <<"length is: "<<length <<endl;
+ 
+            auto dc = dynamic_cast<DmrppCommon *>(btp);
+    if (!dc)
+        throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
+        dc->add_chunk(endian_name, (unsigned long long)length, (unsigned long long)offset,"");
+
+
+#if 0
+        int32 total_num_fields = VFnfields(vdata_id);
+        if (total_num_fields == 1) {
+            int32 offset = 0;
+            int32 length = 0; 
+            VSgetdatainfo(vdata_id,0,1,&offset,&length);           
+cout <<"offset is: "<<offset <<endl;
+cout <<"length is: "<<length <<endl;
+            
+        }
+#endif
+
+
+    }
+    else if (num_linked_blocks >1) {
+        //merging the linked blocks.
+
+
+    }
+
+    VSdetach(vdata_id);
+    return true;
+
+}
 /**
  * @note see write_array_chunks_byte_stream() in h4mapwriter for the original version of this code.
  * @param file
  * @param btp
  * @return true if the produced output that seems valid, false otherwise.
  */
-bool get_chunks_for_an_array(int file, BaseType *btp) {
+bool get_chunks_for_an_array(int32 sd_id, int32 file_id, BaseType *btp) {
 
     // Here we need to retrieve the attribute value dmr_sds_ref of btp.
     D4Attributes *d4_attrs = btp->attributes();
-    if (!d4_attrs)
+    if (!d4_attrs) {
+        close_hdf4_file_ids(sd_id,file_id);
         throw BESInternalError("Expected to find an DAP4 attribute list for " + btp->name() + " but did not.",
                                __FILE__, __LINE__);
+    }
 
     // Look for the full name path for this variable
     // If one was not given via an attribute, use BaseType::FQN() which
@@ -573,17 +662,28 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
         is_sds = true;
     else {
         attr = d4_attrs->find("dmr_vdata_ref");
-        if (!attr)
+        if (!attr) {
+            close_hdf4_file_ids(sd_id,file_id);
             throw BESInternalError("Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference for " + btp->name() + " but did not.",
                                __FILE__, __LINE__);
+        }
     }
     obj_ref = stoi(attr->value(0));
     if (is_sds) {
-        if (false == ingest_sds_info_to_chunk(file, obj_ref,btp))
+        if (false == ingest_sds_info_to_chunk(sd_id, obj_ref,btp)) {
+            close_hdf4_file_ids(sd_id,file_id);
             throw BESInternalError("Cannot retrieve SDS information correctly for  " + btp->name() ,
                                __FILE__, __LINE__);
+        }
     }
-    // TODO: Later we will add the support of retrieving data from vdata. KY 02/13/24
+
+    else {
+        if (false == ingest_vdata_info_to_chunk(file_id, obj_ref,btp)) {
+            close_hdf4_file_ids(sd_id,file_id);
+            throw BESInternalError("Cannot retrieve vdata information correctly for  " + btp->name() ,
+                               __FILE__, __LINE__);
+        }
+        
 #if 0
         string name = btp->name();
         const char *sdsName = name.c_str();
@@ -592,26 +692,31 @@ bool get_chunks_for_an_array(int file, BaseType *btp) {
         //  unusual way that HDF4 files are organized. jhrg 12/5/23
         int sds_index = SDnametoindex(file, sdsName);
 #endif
+    }
 
     return true;
 }
 
-bool get_chunks_for_a_variable(int file, BaseType *btp) {
+bool get_chunks_for_a_variable(int32 sd_id, int32 file_id, BaseType *btp) {
 
     switch (btp->type()) {
         case dods_structure_c: {
             auto sp = dynamic_cast<Structure *>(btp);
             //TODO: this needs to be re-written since the data of the whole structure is retrieved. KY-2024-02-26
-            for_each(sp->var_begin(), sp->var_end(), [file](BaseType *btp) { get_chunks_for_a_variable(file, btp); });
+            // TODO: Handle this later. KY 2024-03-07
+            //for_each(sp->var_begin(), sp->var_end(), [file](BaseType *btp) { get_chunks_for_a_variable(file, btp); });
             return true;
         }
         case dods_sequence_c:
             VERBOSE(cerr << btp->FQN() << ": Sequence is not supported by DMR++ for HDF4 at this time.\n");
             return false;
-        case dods_grid_c:
+        case dods_grid_c: {
+            close_hdf4_file_ids(sd_id,file_id);
             throw BESInternalError("Grids are not supported by DAP4.", __FILE__, __LINE__);
+        }
+        
         case dods_array_c:
-            return get_chunks_for_an_array(file, btp);
+            return get_chunks_for_an_array(sd_id,file_id, btp);
         default:
             VERBOSE(cerr << btp->FQN() << ": " << btp->type_name() << " is not supported by DMR++ for HDF4 at this time.\n");
             return false;
@@ -625,13 +730,14 @@ bool get_chunks_for_a_variable(int file, BaseType *btp) {
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
-void get_chunks_for_all_variables(int file, D4Group *group) {
+void get_chunks_for_all_variables(int32 sd_id, int32 file_id, D4Group *group) {
+
     // variables in the group
     for(auto btp : group->variables()) {
         if (btp->type() != dods_group_c) {
             // if this is not a group, it is a variable
             // This is the part where we find out if a variable can be used with DMR++
-            if (!get_chunks_for_a_variable(file, btp)) {
+            if (!get_chunks_for_a_variable(sd_id,file_id, btp)) {
                 ERROR("Could not include DMR++ metadata for variable " << btp->FQN());
             }
         }
@@ -640,13 +746,14 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
             auto g = dynamic_cast<D4Group*>(btp);
             if (!g)
                 throw BESInternalError("Expected "  + btp->name() + " to be a D4Group but it is not.", __FILE__, __LINE__);
-            get_chunks_for_all_variables(file, g);
+            get_chunks_for_all_variables(sd_id,file_id, g);
         }
     }
     // all groups in the group
     for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
-        get_chunks_for_all_variables(file, *g);
+        get_chunks_for_all_variables(sd_id,file_id, *g);
     }
+
 }
 
 /**
@@ -657,23 +764,31 @@ void get_chunks_for_all_variables(int file, D4Group *group) {
 void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
 {
     // Open the hdf4 file
-    int h4file = SDstart(h4_file_name.c_str(), DFACC_READ);
-    if (h4file < 0) {
+    int32 sd_id = SDstart(h4_file_name.c_str(), DFACC_READ);
+    if (sd_id < 0) {
         stringstream msg;
         msg << "Error: HDF4 file '" << h4_file_name << "' cannot be opened." << endl;
         throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
     }
 
+    int32 file_id = Hopen(h4_file_name.c_str(),DFACC_READ,0);
+    if (file_id < 0) {
+        stringstream msg;
+        msg << "Error: HDF4 file '" << h4_file_name << "' Hopen failed." << endl;
+        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+    }
+    
+    if (Vstart(file_id)<0) { 
+        stringstream msg;
+        msg << "Error: HDF4 file '" << h4_file_name << "' Vstart failed." << endl;
+        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+    }
+
+ 
     // iterate over all the variables in the DMR
-    try {
-        get_chunks_for_all_variables(h4file, dmrpp->root());
-        // need to use SDend instead of Hclose. KY 2024-02-22
-        SDend(h4file);
-    }
-    catch (...) {
-        SDend(h4file);
-        throw;
-    }
+    get_chunks_for_all_variables(sd_id,file_id, dmrpp->root());
+
+    close_hdf4_file_ids(sd_id,file_id);
 }
 
 /**
