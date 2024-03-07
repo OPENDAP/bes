@@ -11,7 +11,7 @@
 namespace http {
 
 
-void HttpError::add_my_error_info_to(BESInfo &info) const {
+void HttpError::add_my_error_details_to(BESInfo &info) const {
     std::stringstream msg;
     msg << d_curl_code;
     info.add_tag("curl_code", msg.str());

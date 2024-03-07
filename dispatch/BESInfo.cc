@@ -240,7 +240,7 @@ void BESInfo::add_exception(const BESError &error, const string &admin)
     add_tag("Message", error.get_message());
     add_tag("Administrator", admin);
 
-    error.add_my_error_info_to(*this);
+    error.add_my_error_details_to(*this);
 
     begin_tag( "Location" );
     add_tag( "File", error.get_file() );
