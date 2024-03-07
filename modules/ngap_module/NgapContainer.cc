@@ -35,13 +35,12 @@
 #include "BESStopWatch.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
-#include "BESInternalError.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESContextManager.h"
 #include "CurlUtils.h"
-#include "HttpUtils.h"
+#include "HttpError.h"
 
 #include "NgapRequestHandler.h"
 #include "NgapContainer.h"
@@ -255,8 +254,19 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
     }
 #endif
 
-    // This code throws an exception if there is a problem. jhrg 11/16/23
-    curl::http_get(dmrpp_url_str, dmrpp_string);
+    try {
+        // This code throws an exception if there is a problem. jhrg 11/16/23
+        curl::http_get(dmrpp_url_str, dmrpp_string);
+    }
+    catch(http::HttpError &http_error){
+        string err_msg = "Hyrax encountered a Service Chaining Error while attempting to retrieve a dmr++ file.\n"
+                  "This could be a problem with TEA (the AWS URL signing authority),\n"
+                  "or with accessing the dmr++ file at its resident location (typically S3).\n"
+                  + http_error.get_message();
+        http_error.set_message(err_msg);
+        throw;
+    }
+
 #if 0
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);

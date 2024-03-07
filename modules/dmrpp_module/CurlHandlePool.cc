@@ -31,6 +31,7 @@
 #include <curl/curl.h>
 
 #include "CurlUtils.h"
+#include "HttpError.h"
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -231,7 +232,20 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
 void dmrpp_easy_handle::read_data() {
     // Treat HTTP/S requests specially; retry some kinds of failures.
     if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
-        curl::super_easy_perform(d_handle);
+        try {
+            // This code throws an exception if there is a problem. jhrg 11/16/23
+            curl::super_easy_perform(d_handle);
+        }
+        catch(http::HttpError &http_error){
+            string err_msg = "Hyrax encountered a Service Chaining Error while attempting to acquire "
+                             "granule data from a remote source.\n"
+                             "This could be a problem with TEA (the AWS URL signing authority),\n"
+                             "or with accessing data granule at its resident location (typically S3).\n"
+                             +  http_error.get_message();
+            http_error.set_message(err_msg);
+            throw;
+        }
+
     }
     else {
         CURLcode curl_code = curl_easy_perform(d_handle);

@@ -96,9 +96,7 @@ public:
     std::vector<std::string> response_headers() const { return d_response_headers; }
     std::string response_body() const { return d_response_body; }
 
-
     void add_my_error_details_to(BESInfo &info) const override;
-
 
     /** @brief dumps information about this object
  *

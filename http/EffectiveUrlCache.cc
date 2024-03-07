@@ -36,6 +36,7 @@
 #include "BESStopWatch.h"
 #include "BESUtil.h"
 #include "CurlUtils.h"
+#include "HttpError.h"
 #include "HttpNames.h"
 #include "EffectiveUrl.h"
 #include "EffectiveUrlCache.h"
@@ -122,7 +123,18 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
             if (BESDebug::IsSet(MODULE_TIMER) || BESDebug::IsSet(TIMING_LOG_KEY))
                 sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url->str());
 #endif
-            effective_url = curl::get_redirect_url(source_url);
+            try {
+                // This code throws an HttpError exception if there is a problem.
+                effective_url = curl::get_redirect_url(source_url);
+            }
+            catch(http::HttpError &http_error){
+                string err_msg = "Hyrax encountered a Service Chaining Error while "
+                                 "attempting to retrieve a redirect URL.\n"
+                                 "This is most likely problem with TEA, the AWS URL "
+                                 "signing service.\n" + http_error.get_message();;
+                http_error.set_message(err_msg);
+                throw;
+            }
         }
         BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << " ("
                                 << (source_url->is_trusted() ? "" : "NOT ") << "trusted)" << endl);

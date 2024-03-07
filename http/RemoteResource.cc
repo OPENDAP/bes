@@ -42,6 +42,7 @@
 
 #include "HttpUtils.h"
 #include "CurlUtils.h"
+#include "HttpError.h"
 #include "HttpNames.h"
 #include "RemoteResource.h"
 #include "TheBESKeys.h"
@@ -243,10 +244,18 @@ void RemoteResource::get_url(int fd) {
         BESLog::TheLog()->is_verbose()) {
         besTimer.start(prolog + "source url: " + d_url->str());
     }
+    try {
+        // Throws an HttpError if there is a curl error.
+        curl::http_get_and_write_resource(d_url, fd, &d_response_headers);
+        BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
+    }
+    catch(http::HttpError &http_error){
+        string err_msg = "Hyrax encountered a Service Chaining Error while "
+                         "attempting to retrieve a RemoteResource.\n" + http_error.get_message();;
+        http_error.set_message(err_msg);
+        throw;
+    }
 
-    // Throws BESInternalError if there is a curl error.
-    curl::http_get_and_write_resource(d_url, fd, &d_response_headers);
-    BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
 
     // Moved into curl::super_easy_perform(CURL*, int fd)
 #if 0

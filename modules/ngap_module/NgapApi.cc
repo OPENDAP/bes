@@ -37,7 +37,7 @@
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 #include "CurlUtils.h"
-#include "url_impl.h"
+#include "HttpError.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
@@ -412,7 +412,15 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
     BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
     string cmr_json_string;
-    curl::http_get(cmr_query_url, cmr_json_string);
+    try {
+        curl::http_get(cmr_query_url, cmr_json_string);
+    }
+    catch(http::HttpError &http_error){
+        string err_msg = "Hyrax encountered a Service Chaining Error while "
+                         "attempting to retrieve a CMR record.\n"+http_error.get_message();
+        http_error.set_message(err_msg);
+        throw;
+    }
     rapidjson::Document cmr_response;
     cmr_response.Parse(cmr_json_string.c_str());
     data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);

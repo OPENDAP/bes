@@ -834,7 +834,7 @@ static void process_http_code_helper(long http_code, const string &requested_url
         case 404: // Not Found
         case 408: // Request Timeout
         {
-            // These issues are not considered retryable problems so we throw immediately.
+            // These issues are not considered retryable problems, so we throw immediately.
             ERROR_LOG(msg.str() << endl);
             throw http::HttpError(msg.str(),
                                   CURLE_OK,
