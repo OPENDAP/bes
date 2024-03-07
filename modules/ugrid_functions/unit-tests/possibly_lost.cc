@@ -39,9 +39,6 @@
 #include "modules/common/run_tests_cppunit.h"
 
 class SingletonList {
-private:
-    static std::unique_ptr<SingletonList> d_instance;
-    static std::once_flag d_init_once;
 
     std::multimap<std::string, libdap::ServerFunction *, less<>> d_func_list;
 
@@ -65,13 +62,8 @@ public:
 
     static SingletonList *TheList()
     {
-        if (d_instance == nullptr) {
-            std::call_once(d_init_once, []() {
-                d_instance.reset(new SingletonList);
-            });
-        }
-
-        return d_instance.get();
+        static SingletonList instance;
+        return &instance;
     }
 
     virtual void add_function(libdap::ServerFunction *func)
@@ -95,9 +87,6 @@ public:
     }
 
 };
-
-std::once_flag SingletonList::d_init_once;
-std::unique_ptr<SingletonList> SingletonList::d_instance = nullptr;
 
 void possibly_lost_function(int /*argc*/, libdap::BaseType */*argv*/[], libdap::DDS &/*dds*/, libdap::BaseType **btpp)
 {
