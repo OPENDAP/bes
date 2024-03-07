@@ -61,6 +61,14 @@ using namespace std;
 
 namespace http {
 
+string remove_file_and_line(const string &thing1){
+    regex file_regex("<File>.*<\\/File>");
+    string thing2 = std::regex_replace (thing1,file_regex,"<RemovedFile>");
+
+    regex line_regex("<Line>\\d+<\\/Line>");
+    return std::regex_replace (thing2,line_regex,"<RemovedLine>");
+}
+
 class HttpErrorTest : public CppUnit::TestFixture {
 
 public:
@@ -208,8 +216,8 @@ public:
                                   "            <response_headers/>\n"
                                   "            <response_body/>\n"
                                   "            <Location>\n"
-                                  "                <File>HttpErrorTest.cc</File>\n"
-                                  "                <Line />\n"
+                                  "                <RemovedFile>\n"
+                                  "                <RemovedLine>\n"
                                   "            </Location>\n"
                                   "        </BESError>\n"
                                   "    </test_BESInfo_1>\n"
@@ -228,8 +236,7 @@ public:
 
                 stringstream rss;
                 bi.print(rss);
-                regex rx("(<File>.*<\\/File>)|(<Line>\\d+<\\/Line>)");
-                string result = std::regex_replace (rss.str(),rx,"<Line />");
+                string result = remove_file_and_line(rss.str());
 
                 if(debug || result != baseline) {
                     cerr << "\n";
@@ -280,8 +287,8 @@ public:
                             "            </response_headers>\n"
                             "            <response_body>&lt;/h1&gt;A nautical novel in 20 parts.&lt;/h1&gt;</response_body>\n"
                             "            <Location>\n"
-                            "                <File>HttpErrorTest.cc</File>\n"
-                            "                <Line />\n"
+                            "                <RemovedFile>\n"
+                            "                <RemovedLine>\n"
                             "            </Location>\n"
                             "        </BESError>\n"
                             "    </test_BESInfo_2>\n"
@@ -308,8 +315,7 @@ public:
 
             stringstream rss;
             bi.print(rss);
-            regex rx("<Line>\\d+<\\/Line>");
-            string result = std::regex_replace (rss.str(),rx,"<Line />");
+            string result = remove_file_and_line(rss.str());
 
             if(debug || result != baseline) {
                 cerr << "\n";
