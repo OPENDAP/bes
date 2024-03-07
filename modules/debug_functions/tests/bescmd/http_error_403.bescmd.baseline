@@ -15,8 +15,8 @@
             </response_headers>
             <response_body>Every HTTP request includes an HTTP response. An HTTP response is a set of metadata and a response body, where the body can occasionally be zero bytes and thus nonexistent. An HTTP response however always has response headers.</response_body>
             <Location>
-                <File>DebugFunctions.cc</File>
-                <Line>441</Line>
+                removed file
+                removed line
             </Location>
         </BESError>
     </getDODS>
