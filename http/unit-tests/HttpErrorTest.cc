@@ -231,9 +231,11 @@ public:
                 regex rx("<Line>\\d+<\\/Line>");
                 string result = std::regex_replace (rss.str(),rx,"<Line />");
 
-                DBG( cerr << "\n");
-                DBG( cerr << prolog << "baseline: \n\n" << baseline << "\n");
-                DBG( cerr << prolog << "result: \n\n" << result);
+                if(debug || result != baseline) {
+                    cerr << "\n";
+                    cerr << prolog << "baseline: \n\n" << baseline << "\n";
+                    cerr << prolog << "result: \n\n" << result;
+                }
                 CPPUNIT_ASSERT( result == baseline);
 
             }
@@ -309,9 +311,11 @@ public:
             regex rx("<Line>\\d+<\\/Line>");
             string result = std::regex_replace (rss.str(),rx,"<Line />");
 
-            DBG( cerr << "\n");
-            DBG( cerr << prolog << "baseline: \n\n" << baseline << "\n");
-            DBG( cerr << prolog << "result: \n\n" << result);
+            if(debug || result != baseline) {
+                cerr << "\n";
+                cerr << prolog << "baseline: \n\n" << baseline << "\n";
+                cerr << prolog << "result: \n\n" << result;
+            }
             CPPUNIT_ASSERT( result == baseline);
         }
         catch (http::HttpError he) {
