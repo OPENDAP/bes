@@ -28,6 +28,7 @@
 
 #include <cstdio>
 #include <unistd.h>
+#include <cstring>
 
 #include <sstream>
 #include <string>

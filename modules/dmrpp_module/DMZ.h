@@ -87,6 +87,7 @@ private:
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     static pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
+    void process_block(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk, unsigned int block_count) const;
     bool process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks) const;
 
     static void process_fill_value_chunks(dmrpp::DmrppCommon *dc, const std::set<shape> &chunk_map, const shape &chunk_shape,

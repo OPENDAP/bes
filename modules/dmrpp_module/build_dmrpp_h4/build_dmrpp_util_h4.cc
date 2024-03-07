@@ -532,7 +532,8 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
                 // Also very possible that the offset and length obtained for a block cannot be decompressed directly
                 // like the HDF5 chunks. Significant work needs to be done in the dmrpp module. New information needs
                 // to be added in the dmrpp file. Pending on the ticket HYRAX-1335. KY 02/13/2024.
-                dc->add_chunk(endian_name, merged_lengths[i], merged_offsets[i], position_in_array);
+                dc->add_chunk(endian_name, merged_lengths[i], merged_offsets[i], true,i);
+
             }
         }
     }

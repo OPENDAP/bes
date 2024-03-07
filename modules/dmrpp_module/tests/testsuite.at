@@ -386,4 +386,5 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_fillchunk_alltypes.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_fillchunk_comp.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_chunk_extra_area_constraint.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_comp_constraint.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_unlimited_2.hdf.dap])
 

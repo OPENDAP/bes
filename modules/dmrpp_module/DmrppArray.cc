@@ -37,6 +37,7 @@
 #include <cassert>
 #include <iomanip>
 #include <cmath>
+#include <zlib.h>
 
 #include <libdap/D4Enum.h>
 #include <libdap/D4Attributes.h>
@@ -1336,6 +1337,201 @@ void DmrppArray::read_chunks_dio_unconstrained()
 }
 
 
+// Retrieve data from the linked blocks.  We don't need to use the super chunk technique
+// since the adjacent blocks are already combined. We just need to read the data
+// from each chunk, combine them and decompress the buffer if necessary.
+void DmrppArray::read_linked_blocks(){
+    unsigned int num_linked_blocks = this->get_total_linked_blocks();
+    if (num_linked_blocks <2)
+        throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
+
+    //Change to the total storage buffer size to just the compressed buffer size.
+    reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
+
+    vector<unsigned long long> accumulated_lengths;
+    accumulated_lengths.resize(num_linked_blocks);
+    vector<unsigned long long> individual_lengths;
+    individual_lengths.resize(num_linked_blocks);
+
+    // Here we cannot assume that the index of the linked block always increases
+    // in the loop of chunks so we use the linked block index.
+    // For the HDF4 case, we observe the index of the linked block is always consistent with the
+    //  chunk it loops, though.
+    for(const auto& chunk: get_immutable_chunks()) {
+        individual_lengths[chunk->get_linked_block_index()] = chunk->get_size();
+    }
+    accumulated_lengths[0] = 0;
+    for (unsigned int i = 1; i < num_linked_blocks; i++)
+        accumulated_lengths[i] = individual_lengths[i-1] + accumulated_lengths[i-1];
+
+    char *target_buffer = get_buf();
+
+    for(const auto& chunk: get_immutable_chunks()) {
+        chunk->read_chunk();
+        BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
+        BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
+        const char *source_buffer = chunk->get_rbuf();
+        memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
+    }
+
+    string filters_string = this->get_filters();
+    if (filters_string.find("deflate")!=string::npos) {
+        char *in_buf = get_buf();
+
+        char **destp = nullptr;
+        char *dest_deflate = nullptr;
+        unsigned long long out_buf_size = 0;
+        unsigned long long dest_len = get_var_chunks_storage_size();
+        unsigned long long src_len = get_var_chunks_storage_size();
+        dest_deflate = new char[dest_len];
+        destp = &dest_deflate;
+        inflate_simple(destp, dest_len, in_buf, src_len);
+        
+        this->clear_local_data();
+        reserve_value_capacity_ll_byte(this->width_ll());
+        char *out_buf = get_buf();
+        memcpy(out_buf,dest_deflate,this->width_ll());
+        delete []dest_deflate; 
+    }
+
+
+    set_read_p(true);
+//cout <<"total storage size is: "<< get_var_chunks_storage_size()<<endl;
+
+#if 0
+    // The size in element of each of the array's dimensions
+    const vector<unsigned long long> array_shape = get_shape(true);
+
+    // The size, in elements, of each of the chunk's dimensions
+    const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+
+    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
+
+    if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
+#if DMRPP_ENABLE_THREAD_TIMERS
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog + "Serial SuperChunk Processing.");
+#endif
+        while(!super_chunks.empty()) {
+            auto super_chunk = super_chunks.front();
+            super_chunks.pop();
+            BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
+
+            // Call direct IO routine
+            super_chunk->read_unconstrained_dio();
+        }
+    }
+    else {      // Parallel transfers
+#if DMRPP_ENABLE_THREAD_TIMERS
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
+#endif
+        // Call direct IO routine for parallel transfers
+        read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
+    }
+    set_read_p(true);
+#endif
+
+}
+
+unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
+
+
+    /* Sanity check */
+
+    if (src_len == 0) {
+        string msg = prolog + "ERROR! The number of bytes to inflate is zero.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (dest_len == 0) {
+        string msg = prolog + "ERROR! The number of bytes to inflate into is zero.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (!destp || !*destp) {
+        string msg = prolog + "ERROR! The destination buffer is NULL.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    if (!src) {
+        string msg = prolog + "ERROR! The source buffer is NULL.";
+        BESDEBUG(MODULE, msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+
+    /* Input; uncompress */
+    z_stream z_strm; /* zlib parameters */
+
+    /* Set the decompression parameters */
+    memset(&z_strm, 0, sizeof(z_strm));
+    z_strm.next_in = (Bytef *) src;
+    z_strm.avail_in = src_len;
+    z_strm.next_out = (Bytef *) (*destp);
+    z_strm.avail_out = dest_len;
+
+    size_t nalloc = dest_len;
+
+    char *outbuf = *destp;
+
+    /* Initialize the decompression routines */
+    if (Z_OK != inflateInit(&z_strm))
+        throw BESError("Failed to initialize inflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+
+    /* Loop to uncompress the buffer */
+    int status = Z_OK;
+    do {
+        /* Uncompress some data */
+        status = inflate(&z_strm, Z_SYNC_FLUSH);
+
+        /* Check if we are done decompressing data */
+        if (Z_STREAM_END == status) break; /*done*/
+
+        /* Check for error */
+        if (Z_OK != status) {
+            stringstream err_msg;
+            err_msg << "Failed to inflate data chunk.";
+            char const *err_msg_cstr = z_strm.msg;
+            if(err_msg_cstr)
+                err_msg << " zlib message: " << err_msg_cstr;
+            (void) inflateEnd(&z_strm);
+            throw BESError(err_msg.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        }
+        else {
+            // If we're not done and just ran out of buffer space, we need to extend the buffer.
+            // We may encounter this case when the deflate filter is used twice. KY 2022-08-03
+            if (0 == z_strm.avail_out) {
+
+                /* Allocate a buffer twice as big */
+                size_t outbuf_size = nalloc;
+                nalloc *= 2;
+                char* new_outbuf = new char[nalloc];
+                memcpy((void*)new_outbuf,(void*)outbuf,outbuf_size);
+                delete[] outbuf;
+                outbuf = new_outbuf;
+
+                /* Update pointers to buffer for next set of uncompressed data */
+                z_strm.next_out = (unsigned char*) outbuf + z_strm.total_out;
+                z_strm.avail_out = (uInt) (nalloc - z_strm.total_out);
+
+            } /* end if */
+        } /* end else */
+    } while (true /* status == Z_OK */);    // Exit via the break statement after the call to inflate(). jhrg 11/8/21
+
+    *destp = outbuf;
+    outbuf = nullptr;
+    /* Finish decompressing the stream */
+    (void) inflateEnd(&z_strm);
+
+    return z_strm.total_out;
+}
+
+
+
 /// This is the most general version of the read() code. It reads chunked
 /// data that are constrained to be less than the array's whole size.
 
@@ -2192,18 +2388,24 @@ bool DmrppArray::read()
                 array_to_read->read_contiguous();    // Throws on various errors
         }
         else {  // Handle the more complex case where the data is chunked.
-            if (!array_to_read->is_projected()) {
-                BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
-                 // KENT: Only here we need to consider the direct buffer IO.
-                // The best way is to hold another function but with direct buffer
-                if (this->get_dio_flag())
-                    array_to_read->read_chunks_dio_unconstrained();
-                else 
-                    array_to_read->read_chunks_unconstrained();
+            if (get_using_linked_block()) {
+                BESDEBUG(MODULE, prolog << "Reading data linked blocks" << endl);
+                array_to_read->read_linked_blocks();
             }
-            else {
-                BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
-                array_to_read->read_chunks();
+            else
+            {
+                if (!array_to_read->is_projected()) {
+                    BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
+                    // KENT: Only here we need to consider the direct buffer IO.
+                    // The best way is to hold another function but with direct buffer
+                    if (this->get_dio_flag())
+                        array_to_read->read_chunks_dio_unconstrained();
+                    else
+                        array_to_read->read_chunks_unconstrained();
+                } else {
+                    BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+                    array_to_read->read_chunks();
+                }
             }
         }
 

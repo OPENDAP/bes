@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="SDS_unlimited_2.hdf">
+    <Dimension name="fakeDim0" size="12"/>
+    <Dimension name="fakeDim1" size="10"/>
+    <Dimension name="fakeDim2" size="1"/>
+    <Dimension name="fakeDim3" size="10"/>
+    <Int32 name="AppendableData">
+        <Dim name="/fakeDim0"/>
+        <Dim name="/fakeDim1"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int32>
+    <Int32 name="NormalData">
+        <Dim name="/fakeDim2"/>
+        <Dim name="/fakeDim3"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>112</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int32>
+</Dataset>
+
+The data:
+Int32 AppendableData[fakeDim0 = 12][fakeDim1 = 10] = {{2, 3, 4, 5, 6, 7, 8, 9, 10, 11},{3, 4, 5, 6, 7, 8, 9, 10, 11, 12},{4, 5, 6, 7, 8, 9, 10, 11, 12, 13},{5, 6, 7, 8, 9, 10, 11, 12, 13, 14},{6, 7, 8, 9, 10, 11, 12, 13, 14, 15},{7, 8, 9, 10, 11, 12, 13, 14, 15, 16},{8, 9, 10, 11, 12, 13, 14, 15, 16, 17},{9, 10, 11, 12, 13, 14, 15, 16, 17, 18},{10, 11, 12, 13, 14, 15, 16, 17, 18, 19},{11, 12, 13, 14, 15, 16, 17, 18, 19, 20},{1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009},{2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009}};
+Int32 NormalData[fakeDim2 = 1][fakeDim3 = 10] = {{2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009}};
+
