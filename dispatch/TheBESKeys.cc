@@ -119,23 +119,6 @@ TheBESKeys::TheBESKeys(string keys_file_name) : d_keys_file_name(std::move(keys_
 #endif
 }
 
-#if 0
-/** @brief Determine if the specified key file has been loaded yet
- *
- * Given the name of the key file, determine if it has already been
- * loaded. More specifically, if started to load the file.
- *
- * @returns true if already started to load, false otherwise
- */
-
-bool TheBESKeys::is_loaded_key_file(const string &key_file)
-{
-    const auto it = d_ingested_key_files.find(key_file);
-
-    return it != d_ingested_key_files.end();
-}
-#endif
-
 /** @brief Reload the keys.
  * Erase the existing keys and reload them from the file. This version
  * provides a way to change the name of the file to load the keys from.
