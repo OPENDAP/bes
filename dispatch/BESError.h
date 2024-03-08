@@ -116,7 +116,11 @@ public:
      * Used to add error specific details to the BESInfo object
      * @param info
      */
-    virtual void add_my_error_details_to(BESInfo &info) const {}
+    virtual void add_my_error_details_to(BESInfo &info) const {
+        // Some errors are covered by the basic details and the message.
+        // Others, like HttpError require more information to be carried
+        // in the error so the override this method.
+    }
 
     /** @brief get the error message for this exception
      *

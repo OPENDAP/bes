@@ -176,12 +176,14 @@ static string getCurlAuthTypeName(unsigned long auth_type) {
     return authTypeString;
 }
 
+#if 0
 /**
  * @brief A libcurl callback function that ignores the data entirely. nothing is written. Ever.
  */
 static size_t writeNothing(const char */* data */, size_t /* size */, size_t nmemb, const void * /* userdata */) {
     return nmemb;
 }
+#endif
 
 /**
  * libcurl call back function that is used to write data to a passed open file descriptor (that would

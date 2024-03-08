@@ -346,133 +346,108 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
     string location = "error_ssf";
 
     if (argc < 1 || argc>2) {
-        msg << "Missing error type parameter!  USAGE: " << error_usage;
+        msg << "Missing error type parameter(s)!  USAGE: " << error_usage;
+        response->set_value(msg.str());
+        return;
     }
-    else {
-        auto param1 = dynamic_cast<const libdap::Int32*>(argv[0]);
-        if (param1) {
-            libdap::dods_int32 error_type = param1->value();
 
-            switch (error_type) {
+    auto param1 = dynamic_cast<const libdap::Int32*>(argv[0]);
+    if (! param1) {
+        msg << "This function only accepts integer values " << "for the error type parameter(s).  USAGE: "
+            << error_usage;
+        response->set_value(msg.str());
+        return;
+    }
+    auto param2 = dynamic_cast<const libdap::Int32 *>(argv[1]);
 
-            case BES_INTERNAL_ERROR: {   // 1
-                msg << "A BESInternalError was requested.";
-                throw BESInternalError(msg.str(), location, 0);
+    libdap::dods_int32 error_type = param1->value();
+    switch (error_type) {
+
+        case BES_INTERNAL_ERROR: {   // 1
+            msg << "A BESInternalError was requested.";
+            throw BESInternalError(msg.str(), location, 0);
+        }
+
+        case BES_INTERNAL_FATAL_ERROR: {   // 2
+            msg << "A BESInternalFatalError was requested.";
+            throw BESInternalFatalError(msg.str(), location, 0);
+        }
+
+        case BES_SYNTAX_USER_ERROR: { // ...
+            msg << "A BESSyntaxUserError was requested.";
+            throw BESSyntaxUserError(msg.str(), location, 0);
+        }
+
+        case BES_FORBIDDEN_ERROR: {
+            msg << "A BESForbiddenError was requested.";
+            throw BESForbiddenError(msg.str(), location, 0);
+        }
+
+        case BES_NOT_FOUND_ERROR: {
+            msg << "A BESNotFoundError was requested.";
+            throw BESNotFoundError(msg.str(), location, 0);
+        }
+
+            case BES_TIMEOUT_ERROR: {   // 6
+                msg << "A BESTimeOutError was requested.";
+                throw BESTimeoutError(msg.str(), location, 0);
             }
 
-            case BES_INTERNAL_FATAL_ERROR: {   // 2
-                msg << "A BESInternalFatalError was requested.";
-                throw BESInternalFatalError(msg.str(), location, 0);
-            }
-
-            case BES_SYNTAX_USER_ERROR: { // ...
-                msg << "A BESSyntaxUserError was requested.";
-                throw BESSyntaxUserError(msg.str(), location, 0);
-            }
-
-            case BES_FORBIDDEN_ERROR: {
-                msg << "A BESForbiddenError was requested.";
-                throw BESForbiddenError(msg.str(), location, 0);
-            }
-
-            case BES_NOT_FOUND_ERROR: {
-                msg << "A BESNotFoundError was requested.";
-                throw BESNotFoundError(msg.str(), location, 0);
-            }
-
-                case BES_TIMEOUT_ERROR: {   // 6
-                    msg << "A BESTimeOutError was requested.";
-                    throw BESTimeoutError(msg.str(), location, 0);
+            case BES_HTTP_ERROR: {   // 7
+                string http_err_msg("An HttpError was requested.");
+                CURLcode curl_code = CURLE_OK;
+                unsigned int http_status;
+                if(param2) {
+                    http_status = param2->value();
+                }
+                else {
+                    http_status=502;
                 }
 
-                case BES_HTTP_ERROR: {   // 7
-                    const libdap::Int32* param2 = nullptr;
-                    if(argc==2) {
-                        param2 = dynamic_cast<const libdap::Int32 *>(argv[1]);
-                    }
-                    /*
-                      HttpError(const std::string msg,
-                      const std::string origin_url,
-                      const std::string redirect_url,
-                      const CURLcode code,
-                      const unsigned int http_status,
-                      const std::string file,
-                      const int line):
-                     */
+                string origin_url("https://www.opendap.org");
+                string redirect_url("https://www.opendap.org/");
+                vector<string> rsp_hdrs;
+                rsp_hdrs.emplace_back("server: bes.error.functions");
+                rsp_hdrs.emplace_back("location: orbit-0");
+                string rsp_body("Every HTTP request includes an HTTP response. An HTTP response "
+                                "is a set of metadata and a response body, where the body can "
+                                "occasionally be zero bytes and thus nonexistent. An HTTP response "
+                                "however always has response headers.");
 
-                    /*
-                         HttpError(const std::string msg,
-                          const std::string origin_url,
-                          const std::string redirect_url,
-                          const CURLcode code,
-                          const unsigned int http_status,
-                          const std::vector<std::string> response_headers,
-                          const std::string response_body,
-                          const std::string file,
-                          const int line):
-                     */
-                    string http_err_msg("An HttpError was requested.");
-                    CURLcode curl_code = CURLE_OK;
-                    unsigned int http_status;
-                    if(param2) {
-                        http_status = param2->value();
-                    }
-                    else {
-                        http_status=502;
-                    }
-
-                    string origin_url("https://www.opendap.org");
-                    string redirect_url("https://www.opendap.org/");
-                    vector<string> rsp_hdrs;
-                    rsp_hdrs.emplace_back("server: bes.error.functions");
-                    rsp_hdrs.emplace_back("location: orbit-0");
-                    string rsp_body("Every HTTP request includes an HTTP response. An HTTP response "
-                                    "is a set of metadata and a response body, where the body can "
-                                    "occasionally be zero bytes and thus nonexistent. An HTTP response "
-                                    "however always has response headers.");
-
-                    throw http::HttpError(http_err_msg,
-                                          curl_code,
-                                          http_status,
-                                          origin_url,
-                                          redirect_url,
-                                          rsp_hdrs,
-                                          rsp_body,
-                                          __FILE__, __LINE__);
-                }
-
-                case 666: {
-                msg << "A Segmentation Fault has been requested.";
-                cerr << msg.str() << endl;
-                raise(SIGSEGV);
-                break;
+                throw http::HttpError(http_err_msg,
+                                      curl_code,
+                                      http_status,
+                                      origin_url,
+                                      redirect_url,
+                                      rsp_hdrs,
+                                      rsp_body,
+                                      __FILE__, __LINE__);
             }
 
-            case 314: {
-                msg << "A PIPE signal has been requested.";
-                cerr << msg.str() << endl;
-                raise(SIGPIPE);
-                break;
-            }
-
-            case 11: {
-                throw std::bad_alloc(); // does not take a 'what()' value. jhrg 3/23/22
-            }
-
-            default:
-            msg << "An unrecognized error_type parameter was received. Requested error_type: " << error_type;
+            case 666: {
+            msg << "A Segmentation Fault has been requested.";
+            cerr << msg.str() << endl;
+            raise(SIGSEGV);
             break;
         }
 
-        }
-        else {
-            msg << "This function only accepts integer values " << "for the error type parameter.  USAGE: "
-                << error_usage;
+        case 314: {
+            msg << "A PIPE signal has been requested.";
+            cerr << msg.str() << endl;
+            raise(SIGPIPE);
+            break;
         }
 
+        case 11: {
+            throw std::bad_alloc(); // does not take a 'what()' value. jhrg 3/23/22
+        }
+
+        default:
+        msg << "An unrecognized error_type parameter was received. Requested error_type: " << error_type;
+        response->set_value(msg.str());
+        break;
     }
 
-    response->set_value(msg.str());
 }
 
 } // namespace debug_function
