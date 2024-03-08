@@ -359,11 +359,12 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
         return;
     }
 
+    // Optional second parameter, http status value to return for HttpError
     const libdap::Int32 *param2=nullptr;
     if(argc == 2){
         param2 = dynamic_cast<const libdap::Int32 *>(argv[1]);
     }
-    
+
     libdap::dods_int32 error_type = param1->value();
     switch (error_type) {
 

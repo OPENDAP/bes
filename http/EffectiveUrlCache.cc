@@ -131,7 +131,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
                 string err_msg = "Hyrax encountered a Service Chaining Error while "
                                  "attempting to retrieve a redirect URL.\n"
                                  "This is most likely problem with TEA, the AWS URL "
-                                 "signing service.\n" + http_error.get_message();;
+                                 "signing service.\n" + http_error.get_message();
                 http_error.set_message(err_msg);
                 throw;
             }

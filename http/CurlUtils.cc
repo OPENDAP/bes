@@ -817,7 +817,7 @@ static bool eval_curl_easy_perform_code(
  * @param requested_url
  * @param last_accessed_url
  */
-static void process_http_code_helper(long http_code, const string &requested_url, const string &last_accessed_url) {
+static void process_http_code_helper(unsigned int  http_code, const string &requested_url, const string &last_accessed_url) {
     stringstream msg;
     if (http_code >= 400) {
         msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
@@ -966,7 +966,7 @@ static void process_http_code_helper(long http_code, const string &requested_url
  * @return true if at all worked out, false if it didn't and a retry is reasonable.
  * @throws BESInternalError When something really bad happens.
 */
-static bool eval_http_get_response(CURL *ceh, const string &requested_url, long &http_code) {
+static bool eval_http_get_response(CURL *ceh, const string &requested_url, unsigned int  &http_code) {
     BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
 
     http_code = 0;
@@ -1045,7 +1045,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     useconds_t retry_time = url_retry_time; // 0.25 seconds
     bool curl_success{false};
     bool http_success{false};
-    long http_code;
+    unsigned int http_code;
 
     // This either works or throws an exception after retry_limit attempts
     while (!curl_success || !http_success) {
@@ -1751,7 +1751,6 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                                 response_headers,
                                 response_body,
                                 __FILE__, __LINE__);
-                // throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             success = false;
             break;
