@@ -152,6 +152,8 @@ size_t combine_linked_blocks(const SD_mapping_info_t &map_info, vector<int> & me
     return merged_lengths.size();
 
 }
+
+
 /**
  * @brief Write chunk position in array.
  * @param rank Array rank
@@ -461,10 +463,6 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             
             auto pia = write_chunk_position_in_array(rank, chunk_dimension_sizes.data(), strides.data());
 
-            // Critical TODO:
-            // Very possible that the offset and length obtained for a block cannot be decompressed directly
-            // like the HDF5 chunks. Significant work needs to be done in the dmrpp module. New information needs
-            // to be added in the dmrpp file. Pending on the ticket HYRAX-1335. KY 02/13/2024.
             // We cannot find a chunked case when the number of blocks is greater than 1. We will issue a failure
             // when we encounter such a case for the time being. KY 02/19/2024.
 
@@ -554,30 +552,49 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
     SDendaccess(sdsid);
     return true;
 }
-bool  ingest_vdata_info_to_chunk(int32 file_id, int32 obj_ref, BaseType *btp) {
 
-    int32 vdata_id = VSattach(file_id, obj_ref, "r");
+size_t combine_linked_blocks_vdata( const vector<int>& lengths, const vector<int>& offsets, vector<int> & merged_lengths, vector<int> &merged_offsets) {
 
-    int32 num_blocks = 0;
-    int32 block_size = 0;
+    int num_eles = lengths.size();
 
 #if 0
-    //if (VSgetblockinfo(vdata_id,nullptr,&num_blocks) ==FAIL) {
-    if (VSgetblockinfo(vdata_id,&block_size,&num_blocks) ==FAIL) {
-        ERROR("VSgetblockinfo failed.");
-        VSdetach(vdata_id);
-        return false;
-    }
-cout <<"num_blocks is: "<<num_blocks <<endl;
-cout <<"block_size is: "<<block_size <<endl;
- 
-    if (num_blocks >1) {
-        ERROR("Vdata number of data blocks is greater than 1. Currently we only handle the case when the number of data blocks is 1.");
-        VSdetach(vdata_id);
-        return false;
+    for (int i = 0; i<offset.size(); i++) {
+       cout<<"offset["<<i<<"]= "<<offset[i] <<endl;
+       cout<<"length["<<i<<"]= "<<length[i] <<endl;
     }
 #endif
 
+    // The first element offset should always be fixed.
+    merged_offsets.push_back(offsets[0]);
+    int temp_length = lengths[0];
+
+    for (int i = 0; i <(num_eles-1); i++) {
+
+        // If not contiguous, push back the i's new length;
+        //                    push back the i+1's unchanged offset.
+        //                    save the i+1's length to the temp length variable.
+        if (offsets[i+1] !=(offsets[i] + lengths[i])) {
+            merged_lengths.push_back(temp_length);
+            merged_offsets.push_back(offsets[i+1]);
+            temp_length = lengths[i+1];
+        }
+        else { // contiguous, just update the temp length variable.
+            temp_length +=lengths[i+1];
+        }
+
+    }
+
+    // Update the last length.
+    merged_lengths.push_back(temp_length);
+
+    return merged_lengths.size();
+
+}
+
+
+bool  ingest_vdata_info_to_chunk(int32 file_id, int32 obj_ref, BaseType *btp) {
+
+    int32 vdata_id = VSattach(file_id, obj_ref, "r");
 
     // Retrieve endianess
     int32 field_datatype = VFfieldtype(vdata_id,0); 
@@ -596,20 +613,30 @@ cout <<"block_size is: "<<block_size <<endl;
             endian_name = "UNKNOWN";
     }
 
-
     int32 num_linked_blocks = VSgetdatainfo(vdata_id,0,0,NULL,NULL);
 
     if (num_linked_blocks == 1) {// most time.
-            int32 offset = 0;
-            int32 length = 0; 
-            VSgetdatainfo(vdata_id,0,1,&offset,&length);           
+
+        int32 offset = 0;
+        int32 length = 0; 
+        VSgetdatainfo(vdata_id,0,1,&offset,&length);           
 cout <<"offset is: "<<offset <<endl;
 cout <<"length is: "<<length <<endl;
  
-            auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc)
-        throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
+        auto dc = dynamic_cast<DmrppCommon *>(btp);
+        if (!dc)
+            throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
+
+        auto *da = dynamic_cast<DmrppArray *>(btp);
+        if (!da)
+            throw BESInternalError("Expected to find a DmrppArray instance but did not.", __FILE__, __LINE__);
+cout <<"array length is: "<<da->width_ll()<<endl;
+    
+        if (da->width_ll() != (int64_t)length) 
+            throw BESInternalError("The retrieved vdata size is no equal to the original size.", __FILE__, __LINE__);
+
         dc->add_chunk(endian_name, (unsigned long long)length, (unsigned long long)offset,"");
+
 
 
 #if 0
@@ -624,11 +651,28 @@ cout <<"length is: "<<length <<endl;
         }
 #endif
 
-
     }
     else if (num_linked_blocks >1) {
-        //merging the linked blocks.
 
+        //merging the linked blocks.
+        vector<int>lengths;
+        vector<int>offsets;
+        lengths.resize(num_linked_blocks);
+        offsets.resize(num_linked_blocks);
+        VSgetdatainfo(vdata_id,0,num_linked_blocks,offsets.data(),lengths.data());
+
+        vector<int>merged_lengths;
+        vector<int>merged_offsets;
+        if (1 != combine_linked_blocks_vdata(lengths,offsets,merged_lengths,merged_offsets)) 
+            throw BESInternalError("Expected to find a DmrppArray instance but did not.", __FILE__, __LINE__);
+
+	else {
+            auto dc = dynamic_cast<DmrppCommon *>(btp);
+            if (!dc)
+                throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
+
+            dc->add_chunk(endian_name, (unsigned long long)merged_lengths[0], (unsigned long long)merged_offsets[0],"");
+        }
 
     }
 
