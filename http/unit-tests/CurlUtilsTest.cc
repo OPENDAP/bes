@@ -290,8 +290,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The request headers should be not null.", request_headers != nullptr);
 
         auto request_hdr_itr = request_headers;
-        auto i = baselines.size();
-        i = 0;
+        size_t i = 0;
         while(request_hdr_itr != nullptr || i < baselines.size()){
             string hdr;
             if( i < baselines.size()){
@@ -311,7 +310,7 @@ public:
             }
             i++;
         }
-        CPPUNIT_ASSERT_MESSAGE("There should only be three elements in the list", request_hdr_itr == nullptr);
+        CPPUNIT_ASSERT_MESSAGE("There should only be " + to_string(baselines.size()) + " elements in the list", request_hdr_itr == nullptr);
         if (request_headers) {
             curl_slist_free_all(request_headers);
         }
