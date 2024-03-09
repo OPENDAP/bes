@@ -817,7 +817,7 @@ static bool eval_curl_easy_perform_code(
  * @param requested_url
  * @param last_accessed_url
  */
-static void process_http_code_helper(unsigned int  http_code, const string &requested_url, const string &last_accessed_url) {
+static void process_http_code_helper(const unsigned int  http_code, const string &requested_url, const string &last_accessed_url) {
     stringstream msg;
     if (http_code >= 400) {
         msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
@@ -1059,7 +1059,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
             http_success = eval_http_get_response(c_handle, target_url, http_code);
         }
-        // If the curl_easy_perform failed, or if the http request failed then
+        // If the curl_easy_perform failed, or if the http request failed, then
         // we keep trying until we have exceeded the retry_limit at which point we throw
         // an exception.
         if (!curl_success || !http_success) {

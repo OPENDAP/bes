@@ -353,7 +353,7 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
 
     auto param1 = dynamic_cast<const libdap::Int32*>(argv[0]);
     if (!param1) {
-        msg << "This function only accepts integer values " << "for the error type parameter(s).  USAGE: "
+        msg << "This function only accepts integer values for the error type parameter(s).  USAGE: "
             << error_usage;
         response->set_value(msg.str());
         return;
