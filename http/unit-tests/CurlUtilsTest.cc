@@ -337,8 +337,9 @@ public:
             }
             throw;
         }
-
-        curl_slist_free_all(hdr_itr);
+        if(hdr_itr) {
+            curl_slist_free_all(hdr_itr);
+        }
     }
 
     // The credentials are empty
