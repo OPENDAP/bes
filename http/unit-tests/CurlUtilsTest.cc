@@ -291,6 +291,7 @@ public:
 
         auto request_hdr_itr = request_headers;
         size_t i = 0;
+        size_t hc = 0;
         while(request_hdr_itr != nullptr || i < baselines.size()){
             string hdr;
             if( i < baselines.size()){
@@ -303,6 +304,7 @@ public:
                 if(request_hdr_itr) {
                     hdr = request_hdr_itr->data;
                     DBG(cerr << prolog << "request_headers->data[" << i << "]: " << hdr << endl);
+                    hc++;
                 }
             }
             if(request_hdr_itr != nullptr && i < baselines.size()){
@@ -310,10 +312,7 @@ public:
             }
             i++;
         }
-        CPPUNIT_ASSERT_MESSAGE("There should only be " + to_string(baselines.size()) + " elements in the list", request_hdr_itr == nullptr);
-        if (request_hdr_itr) {
-            curl_slist_free_all(request_hdr_itr);
-        }
+        CPPUNIT_ASSERT_MESSAGE("Header count and baselines should match. baselines: " + to_string(baselines.size()) + " headers: " + to_string(hc), hc == baselines.size());
     }
 
     // We have credentials, but the target url doesn't match the URL_KEY
