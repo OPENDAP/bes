@@ -1034,18 +1034,20 @@ static void truncate_file(int fd) {
 
 // Used here only. jhrg 3/8/23
 static void super_easy_perform(CURL *c_handle, int fd) {
-    string target_url = get_effective_url(c_handle, ""); // This is a trick to get the URL from the cURL handle.
-    // We check the value of target_url to see if the URL was correctly set in the cURL handle.
-    if (target_url.empty())
-        throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
 
-    vector<char> error_buffer(CURL_ERROR_SIZE, 0);
-    set_error_buffer(c_handle, error_buffer.data());
     unsigned int attempts = 0;
     useconds_t retry_time = url_retry_time; // 0.25 seconds
     bool curl_success{false};
     bool http_success{false};
     unsigned int http_code;
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+    
+    set_error_buffer(c_handle, error_buffer.data());
+
+    string target_url = get_effective_url(c_handle, ""); // This is a trick to get the URL from the cURL handle.
+    // We check the value of target_url to see if the URL was correctly set in the cURL handle.
+    if (target_url.empty())
+        throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
 
     // This either works or throws an exception after retry_limit attempts
     while (!curl_success || !http_success) {

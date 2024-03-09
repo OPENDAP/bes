@@ -155,7 +155,7 @@ public:
                 throw http::HttpError(msg, CURLE_OK, 302, origin, redirect, resp_hdrs, body, __FILE__, __LINE__);
             }
         }
-        catch (http::HttpError he) {
+        catch (http::HttpError &he) {
             DBG(cerr << prolog << he.dump() << "\n");
             throw;
         }
@@ -181,7 +181,7 @@ public:
                 throw http::HttpError(msg, CURLE_OK, 302, origin, redirect, __FILE__, __LINE__);
             }
         }
-        catch (http::HttpError he) {
+        catch (http::HttpError &he) {
             DBG(cerr << prolog << he.dump() << "\n");
             throw;
         }
@@ -247,7 +247,7 @@ public:
 
             }
         }
-        catch (http::HttpError he) {
+        catch (http::HttpError &he) {
             DBG(cerr << prolog << he.dump() << "\n");
             throw;
         }
@@ -324,7 +324,7 @@ public:
             }
             CPPUNIT_ASSERT( result == baseline);
         }
-        catch (http::HttpError he) {
+        catch (http::HttpError &he) {
             DBG(cerr << prolog << he.dump() << "\n");
             throw;
         }
