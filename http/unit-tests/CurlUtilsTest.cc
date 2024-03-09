@@ -283,7 +283,8 @@ public:
                 "x-amz-date:"
         };
 
-        auto request_headers = new curl_slist{};
+        // auto request_headers = new curl_slist{};
+        curl_slist *request_headers = nullptr;
         DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
         request_headers = curl::sign_s3_url(target_url, &ac, request_headers);
         DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
@@ -313,6 +314,10 @@ public:
             i++;
         }
         CPPUNIT_ASSERT_MESSAGE("Header count and baselines should match. baselines: " + to_string(baselines.size()) + " headers: " + to_string(hc), hc == baselines.size());
+
+        if(request_headers) {
+            delete request_headers;
+        }
     }
 
     // We have credentials, but the target url doesn't match the URL_KEY
@@ -335,10 +340,11 @@ public:
         }
         catch (...) {
             if(hdr_itr){
-                curl_slist_free_all(hdr_itr);
+                delete hdr_itr;
             }
             throw;
         }
+
         if(hdr_itr) {
            delete hdr_itr;
         }
