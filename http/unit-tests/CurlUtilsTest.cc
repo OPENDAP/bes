@@ -269,6 +269,7 @@ public:
 
     // A case where signing works
     void sign_s3_url_test_1() {
+        string baseline;
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         ac.add(AccessCredentials::ID_KEY, "foo");
@@ -276,34 +277,43 @@ public:
         ac.add(AccessCredentials::REGION_KEY, "oz-1");
         ac.add(AccessCredentials::URL_KEY, "http://test.opendap.org");
 
-        // TODO See if the following unique_ptr really does not leak memory. jhrg 11/3//22
-        std::unique_ptr<curl_slist, void (*)(curl_slist *)> headers2(new curl_slist(), &curl_slist_free_all);
+        vector<string> baselines =  {
+                "Authorization: AWS4-HMAC-SHA256 Credential=foo/",
+                "x-amz-content-sha256: e3b0c4",
+                "x-amz-date:"
+        };
 
-        CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers2->next == nullptr);
-        curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers2.get());
+        auto request_headers = new curl_slist{};
+        DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
+        request_headers = curl::sign_s3_url(target_url, &ac, request_headers);
+        DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
+        CPPUNIT_ASSERT_MESSAGE("The request headers should be not null.", request_headers != nullptr);
 
-        CPPUNIT_ASSERT_MESSAGE("Afterward, it should have three headers", new_headers->next != nullptr);
-        // skip the first element since the data will be NULL given that we passed in
-        // an empty list.
-        new_headers = new_headers->next;
-        string h = new_headers->data;
-        DBG(cerr << "new_headers->data: " << h << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected Authorization: AWS4-HMAC-SHA256 Credential=foo/...",
-                               h.find("Authorization: AWS4-HMAC-SHA256 Credential=foo/") != string::npos);
-
-        new_headers = new_headers->next;
-        h = new_headers->data;
-        DBG(cerr << "new_headers->data: " << h << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected x-amz-content-sha256: e3b0c4...",
-                               h.find("x-amz-content-sha256: e3b0c4") != string::npos);
-
-        new_headers = new_headers->next;
-        h = new_headers->data;
-        DBG(cerr << "new_headers->data: " << h << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected x-amz-date:...", h.find("x-amz-date:") != string::npos);
-
-        new_headers = new_headers->next;
-        CPPUNIT_ASSERT_MESSAGE("There should only be three elements in the list", new_headers == nullptr);
+        auto request_hdr_itr = request_headers;
+        int i = 0;
+        while(request_hdr_itr != nullptr || i < baselines.size()){
+            string hdr;
+            if( i < baselines.size()){
+                baseline = baselines[i];
+                DBG(cerr << prolog << "            baselines[" << i << "]: " << baseline << endl);
+            }
+            if(request_hdr_itr){
+                request_hdr_itr = request_hdr_itr->next;
+                //CPPUNIT_ASSERT_MESSAGE("The request headers should be not null", request_headers != nullptr);
+                if(request_hdr_itr) {
+                    hdr = request_hdr_itr->data;
+                    DBG(cerr << prolog << "request_headers->data[" << i << "]: " << hdr << endl);
+                }
+            }
+            if(request_hdr_itr != nullptr && i < baselines.size()){
+                CPPUNIT_ASSERT_MESSAGE("Expected " + baseline, hdr.find(baseline) != string::npos);
+            }
+            i++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("There should only be three elements in the list", request_hdr_itr == nullptr);
+        if (request_headers) {
+            curl_slist_free_all(request_headers);
+        }
     }
 
     // We have credentials, but the target url doesn't match the URL_KEY
