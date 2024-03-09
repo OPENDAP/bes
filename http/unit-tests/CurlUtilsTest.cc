@@ -340,7 +340,7 @@ public:
             throw;
         }
         if(hdr_itr) {
-            curl_slist_free_all(hdr_itr);
+           delete hdr_itr;
         }
     }
 
