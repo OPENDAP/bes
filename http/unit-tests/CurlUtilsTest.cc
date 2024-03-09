@@ -358,7 +358,7 @@ public:
         curl_slist *headers = nullptr;
 
         try {
-            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
+            //CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
             const curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
