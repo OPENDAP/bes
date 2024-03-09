@@ -1040,8 +1040,8 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     bool curl_success{false};
     bool http_success{false};
     unsigned int http_code;
+
     vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
-    
     set_error_buffer(c_handle, error_buffer.data());
 
     string target_url = get_effective_url(c_handle, ""); // This is a trick to get the URL from the cURL handle.
