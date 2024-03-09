@@ -324,10 +324,12 @@ public:
         ac.add(AccessCredentials::REGION_KEY, "oz-1");
         ac.add(AccessCredentials::URL_KEY, "http://never.org");
         auto headers = new curl_slist{};
-        curl_slist *hdr_itr;
+        DBG(cerr << prolog << "headers: " << (void *)headers << "\n");
+        curl_slist *hdr_itr = nullptr;
         try {
             CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
             hdr_itr = curl::sign_s3_url(target_url, &ac, headers);
+            DBG(cerr << prolog << "hdr_itr: " << (void *)hdr_itr << "\n");
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", hdr_itr->next != nullptr);
         }
