@@ -311,8 +311,8 @@ public:
             i++;
         }
         CPPUNIT_ASSERT_MESSAGE("There should only be " + to_string(baselines.size()) + " elements in the list", request_hdr_itr == nullptr);
-        if (request_headers) {
-            curl_slist_free_all(request_headers);
+        if (request_hdr_itr) {
+            curl_slist_free_all(request_hdr_itr);
         }
     }
 
