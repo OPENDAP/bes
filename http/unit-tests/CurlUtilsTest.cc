@@ -324,18 +324,21 @@ public:
         ac.add(AccessCredentials::REGION_KEY, "oz-1");
         ac.add(AccessCredentials::URL_KEY, "http://never.org");
         auto headers = new curl_slist{};
+        curl_slist *hdr_itr;
         try {
             CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
-            const curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
+            hdr_itr = curl::sign_s3_url(target_url, &ac, headers);
 
-            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
+            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", hdr_itr->next != nullptr);
         }
         catch (...) {
-            curl_slist_free_all(headers);
+            if(hdr_itr){
+                curl_slist_free_all(hdr_itr);
+            }
             throw;
         }
 
-        curl_slist_free_all(headers);
+        curl_slist_free_all(hdr_itr);
     }
 
     // The credentials are empty
