@@ -354,7 +354,9 @@ public:
     void sign_s3_url_test_3() {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
-        auto headers = new curl_slist{};
+        // auto headers = new curl_slist{};
+        curl_slist *headers = nullptr;
+
         try {
             CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
             const curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
