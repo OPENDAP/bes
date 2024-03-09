@@ -724,7 +724,7 @@ public:
             }
 
             unsigned int reps = 2;
-            for (int i=0; i<reps ;i++)
+            for (auto i = 0; i < reps; i++)
             {
                 {
                     BESStopWatch sw;
