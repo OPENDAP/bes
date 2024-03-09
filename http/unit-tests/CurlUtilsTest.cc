@@ -290,7 +290,8 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The request headers should be not null.", request_headers != nullptr);
 
         auto request_hdr_itr = request_headers;
-        int i = 0;
+        auto i = baselines.size();
+        i = 0;
         while(request_hdr_itr != nullptr || i < baselines.size()){
             string hdr;
             if( i < baselines.size()){
