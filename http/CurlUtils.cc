@@ -1108,7 +1108,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     }
 
     // Unset the buffer before it goes out of scope
-    //unset_error_buffer(c_handle);
+    unset_error_buffer(c_handle);
 }
 
 /**
