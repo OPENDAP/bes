@@ -722,9 +722,8 @@ public:
                 // does the effective_url start with the baseline??
                 CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
             }
-
             unsigned int reps = 2;
-            for (auto i = 0; i < reps; i++)
+            for (unsigned int i = 0; i < reps; i++)
             {
                 {
                     BESStopWatch sw;
