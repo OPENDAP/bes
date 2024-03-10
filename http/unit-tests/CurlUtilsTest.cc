@@ -349,6 +349,7 @@ public:
         }
     }
 
+    
     // The credentials are empty
     void sign_s3_url_test_3() {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
