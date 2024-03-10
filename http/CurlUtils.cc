@@ -1087,11 +1087,11 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                                 __FILE__, __LINE__);
             }
             else {
-                cerr << prolog << "url: " << target_url << "\n";
-                cerr << prolog << "attempts: " << attempts << "\n";
-                cerr << prolog << "effective_url: " << effective_url << "\n";
-                cerr << prolog << "http_code: " << http_code << "\n";
-                cerr << prolog << "filter_aws_url{target_url): " << filter_aws_url(target_url) << "\n";
+             //   cerr << prolog << "url: " << target_url << "\n";
+             //   cerr << prolog << "attempts: " << attempts << "\n";
+             //   cerr << prolog << "effective_url: " << effective_url << "\n";
+             //   cerr << prolog << "http_code: " << http_code << "\n";
+             //   cerr << prolog << "filter_aws_url{target_url): " << filter_aws_url(target_url) << "\n";
 
 //                ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
   //                               << filter_aws_url(target_url) << " attempt: " << attempts << "). "
