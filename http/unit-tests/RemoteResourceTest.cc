@@ -102,6 +102,7 @@ public:
 
     // Called before each test
     void setUp() override {
+        debug=true;
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 

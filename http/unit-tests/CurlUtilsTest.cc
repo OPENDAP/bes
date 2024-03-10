@@ -69,6 +69,7 @@ public:
         DBG( cerr << "\n");
         DBG( cerr << "#-----------------------------------------------------------------\n");
         DBG( cerr << "setUp() - BEGIN\n");
+        debug = true;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
         DBG( cerr << "setUp() - Using BES configuration: " << bes_conf << "\n");
         DBG2( show_file(bes_conf));
@@ -349,7 +350,7 @@ public:
         }
     }
 
-    
+
     // The credentials are empty
     void sign_s3_url_test_3() {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
