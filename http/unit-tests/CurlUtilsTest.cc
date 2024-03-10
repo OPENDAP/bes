@@ -283,8 +283,8 @@ public:
                 "x-amz-date:"
         };
 
-        // auto request_headers = new curl_slist{};
-        curl_slist *request_headers = nullptr;
+        auto request_headers = new curl_slist{};
+        //curl_slist *request_headers = nullptr;
         DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
         request_headers = curl::sign_s3_url(target_url, &ac, request_headers);
         DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
