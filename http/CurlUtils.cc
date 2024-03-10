@@ -1035,11 +1035,11 @@ static void truncate_file(int fd) {
 // Used here only. jhrg 3/8/23
 static void super_easy_perform(CURL *c_handle, int fd) {
 
-    unsigned int attempts = 0;
     useconds_t retry_time = url_retry_time; // 0.25 seconds
     bool curl_success{false};
     bool http_success{false};
     unsigned int http_code{0};
+    unsigned int attempts{0};
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
     set_error_buffer(c_handle, error_buffer.data());
