@@ -284,7 +284,6 @@ public:
         };
 
         auto request_headers = new curl_slist{};
-        //curl_slist *request_headers = nullptr;
         DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
         request_headers = curl::sign_s3_url(target_url, &ac, request_headers);
         DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
@@ -309,7 +308,7 @@ public:
                 }
             }
             if(request_hdr_itr != nullptr && i < baselines.size()){
-                //CPPUNIT_ASSERT_MESSAGE("Expected " + baseline, hdr.find(baseline) != string::npos);
+                CPPUNIT_ASSERT_MESSAGE("Expected " + baseline, hdr.find(baseline) != string::npos);
             }
             i++;
         }
