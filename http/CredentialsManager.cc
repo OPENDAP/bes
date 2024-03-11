@@ -47,7 +47,7 @@ using namespace std;
 
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
-#define NGAP_S3_BASE_DEFAULT "https://"
+#define CREDS "creds"
 
 namespace http {
 
@@ -82,7 +82,7 @@ std::string get_env_value(const string &key) {
     const char *cstr = getenv(key.c_str());
     if (cstr) {
         value.assign(cstr);
-        BESDEBUG(HTTP_MODULE, prolog << "From system environment - " << key << ": " << value << endl);
+        BESDEBUG(CREDS, prolog << "From system environment - " << key << ": " << value << endl);
     }
     else {
         value.clear();
@@ -139,8 +139,8 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     creds.insert(std::pair<std::string, AccessCredentials *>(key, ac));
-    BESDEBUG("creds",
-             prolog << "Added AccessCredentials to CredentialsManager. credentials: " << endl << ac->to_json() << endl);
+    BESDEBUG(HTTP_MODULE, prolog << "Added AccessCredentials to CredentialsManager.\n");
+    BESDEBUG(CREDS, prolog << "Credentials: \n" << ac->to_json() << "\n");
 }
 
 /**
