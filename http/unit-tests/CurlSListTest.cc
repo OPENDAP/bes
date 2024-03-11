@@ -215,16 +215,24 @@ public:
     void nullptr_curl_slist_test() {
         string baseline;
         curl_slist *test_slist = nullptr;
+        curl_slist *slist = nullptr;
         DBG(cerr << prolog << "request_headers: " << (void *)test_slist << "\n");
         //CPPUNIT_ASSERT_MESSAGE("request_headers should be not null.", test_slist != nullptr);
 
-        auto slist = load_slist(test_slist);
-        DBG(cerr << prolog << "           hdrs: " << (void *)slist << "\n");
-        CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", slist != nullptr);
+        try {
+            slist = load_slist(test_slist);
+            DBG(cerr << prolog << "           hdrs: " << (void *) slist << "\n");
+            CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", slist != nullptr);
 
-        CPPUNIT_ASSERT(check_slist(slist, slist_baselines));
+            CPPUNIT_ASSERT(check_slist(slist, slist_baselines));
 
-        curl_slist_free_all(slist);
+            curl_slist_free_all(slist);
+        }
+        catch(...){
+            if(slist){
+                curl_slist_free_all(slist);
+            }
+        }
     }
 
 /* TESTS END */
