@@ -68,6 +68,7 @@ public:
     void setUp() override {
         DBG( cerr << "\n");
         DBG( cerr << prolog << "#-----------------------------------------------------------------\n");
+        DBG( cerr << prolog << "BEGIN\n");
         debug = true;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
         DBG( cerr << prolog << "Using BES configuration: " << bes_conf << "\n");
@@ -399,7 +400,9 @@ public:
         DBG( cerr << prolog << "BEGIN\n");
         const string url = "http://test.opendap.org/opendap.conf";
         string str;
+        DBG( cerr << prolog << "Retrieving: " << url << "\n");
         curl::http_get(url, str);
+        DBG( cerr << prolog << "Response Body:\n" << str << "\n");
 
         DBG(cerr << "str.data() = " << string(str.data()) << "\n");
         CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(str.data()).find("<Proxy *>") == 0);
