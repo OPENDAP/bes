@@ -141,7 +141,9 @@ public:
         success = success && (hc == baselines.size());
         //CPPUNIT_ASSERT_MESSAGE("Header count and baselines should match. "
           //                     "baselines: " +to_string(baselines.size()) +
+            //
             //                   " headers: " + to_string(hc), hc == baselines.size());
+        DBG(cerr << prolog << (success?"SUCCEEDED :)":"FAILED :O") << "\n");
 
         return success;
     }
@@ -159,15 +161,15 @@ public:
 
             CPPUNIT_ASSERT_MESSAGE("test_slist and slist should be the same object.", test_slist == slist);
 
-            CPPUNIT_ASSERT(check_slist(slist, slist_baselines));
+            bool check_slist_status = check_slist(slist, slist_baselines);
+            DBG(cerr << prolog << "check_slist_status: " << (check_slist_status?"TRUE":"FALSE") << " (" << check_slist_status << ")\n");
+            CPPUNIT_ASSERT_MESSAGE( prolog + "The check_slist() function did not return true", check_slist_status );
 
             delete test_slist;
         }
         catch(...){
-            if(test_slist) {
-                delete test_slist;
-            }
-
+            delete test_slist;
+            throw;
         }
     }
 
@@ -176,21 +178,22 @@ public:
         curl_slist *test_slist = nullptr;
         curl_slist *slist = nullptr;
         DBG(cerr << prolog << "request_headers: " << (void *)test_slist << "\n");
-        //CPPUNIT_ASSERT_MESSAGE("request_headers should be not null.", test_slist != nullptr);
 
         try {
             slist = load_slist(test_slist);
             DBG(cerr << prolog << "           hdrs: " << (void *) slist << "\n");
             CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", slist != nullptr);
 
-            CPPUNIT_ASSERT(check_slist(slist, slist_baselines));
-
+            bool check_slist_status = check_slist(slist, slist_baselines);
+            DBG(cerr << prolog << "check_slist_status: " << (check_slist_status?"TRUE":"FALSE") << "(" << check_slist_status << ")\n");
+            CPPUNIT_ASSERT_MESSAGE( prolog + "The check_slist() function did not return true", check_slist_status );
             curl_slist_free_all(slist);
         }
         catch(...){
             if(slist){
                 curl_slist_free_all(slist);
             }
+            throw;
         }
     }
 
