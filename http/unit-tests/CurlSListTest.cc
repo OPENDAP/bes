@@ -100,7 +100,7 @@ public:
         string baseline;
         bool success = true;
 
-        DBG(cerr << prolog << "           slist: " << (void *)slist << "\n");
+        DBG(cerr << prolog << "           slist: " << (void **)slist << "\n");
         DBG(cerr << prolog << "baselines.size(): " << baselines.size() << "\n");
         size_t i = 0;
         size_t hc = 0;
@@ -115,7 +115,7 @@ public:
             }
             if(slist){
                 slist = slist->next;
-                DBG(cerr << prolog << " slist_itr->next: " << (void *)slist << "\n");
+                DBG(cerr << prolog << " slist_itr->next: " << (void **)slist << "\n");
                 if(slist) {
                     slist_value.append(slist->data);
                     DBG(cerr << prolog << "  slist_value[" << i << "]: " << slist_value << "\n");
@@ -125,7 +125,7 @@ public:
             else {
                 DBG(cerr << prolog << "The slist_itr is nullptr for pass: " << i << "\n");
             }
-            DBG(cerr << prolog << " slist: " << (void *)slist << " i: " << i << "\n");
+            DBG(cerr << prolog << " slist: " << (void **)slist << " i: " << i << "\n");
             if((slist != nullptr) && (i < baselines.size())){
                 bool matched = baseline == slist_value;
                 DBG(cerr << prolog << "baseline and slist_value " << (matched?"matched.":"did not match.") << "\n");
@@ -152,12 +152,12 @@ public:
     void new_curl_slist_test() {
         string baseline;
         auto test_slist = new curl_slist{};
-        DBG(cerr << prolog << "test_slist: " << (void *)test_slist << "\n");
+        DBG(cerr << prolog << "test_slist: " << (void **)test_slist << "\n");
         CPPUNIT_ASSERT_MESSAGE("test_slist should be not null.", test_slist != nullptr);
 
         try {
             auto slist = load_slist(test_slist);
-            DBG(cerr << prolog << "         slist: " << (void *)slist << "\n");
+            DBG(cerr << prolog << "         slist: " << (void **)slist << "\n");
             CPPUNIT_ASSERT_MESSAGE("slist should be not null.", slist != nullptr);
 
             CPPUNIT_ASSERT_MESSAGE("test_slist and slist should be the same object.", test_slist == slist);
@@ -170,7 +170,7 @@ public:
             delete test_slist;
         }
         catch(...){
-            DBG(cerr << prolog << "Caught exception. Calling delete on test_slist:" << (void *) test_slist << "\n");
+            DBG(cerr << prolog << "Caught exception. Calling delete on test_slist:" << (void **) test_slist << "\n");
             delete test_slist;
             throw;
         }
@@ -180,11 +180,11 @@ public:
         string baseline;
         curl_slist *test_slist = nullptr;
         curl_slist *slist = nullptr;
-        DBG(cerr << prolog << "request_headers: " << (void *)test_slist << "\n");
+        DBG(cerr << prolog << "request_headers: " << (void **)test_slist << "\n");
 
         try {
             slist = load_slist(test_slist);
-            DBG(cerr << prolog << "           hdrs: " << (void *) slist << "\n");
+            DBG(cerr << prolog << "           hdrs: " << (void **) slist << "\n");
             CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", slist != nullptr);
 
             bool check_slist_status = check_slist(slist, slist_baselines);
@@ -194,7 +194,7 @@ public:
             curl_slist_free_all(slist);
         }
         catch(...){
-            DBG(cerr << prolog << "Caught exception. slist: " << (void *) slist << "\n");
+            DBG(cerr << prolog << "Caught exception. slist: " << (void **) slist << "\n");
             if(slist){
                 DBG(cerr << prolog << "Calling curl_slist_free_all(slist)\n");
                 curl_slist_free_all(slist);
