@@ -208,10 +208,8 @@ public:
 /*##################################################################################################*/
 
     CPPUNIT_TEST_SUITE(CurlSListTest);
-
-
+    
     CPPUNIT_TEST(new_curl_slist_test);
-
     CPPUNIT_TEST(nullptr_curl_slist_test);
 
     CPPUNIT_TEST_SUITE_END();
