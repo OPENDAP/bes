@@ -212,21 +212,13 @@ public:
         DBG(cerr << prolog << "request_headers: " << (void *)test_slist << "\n");
         //CPPUNIT_ASSERT_MESSAGE("request_headers should be not null.", test_slist != nullptr);
 
-        try {
-            auto hdrs = load_slist(test_slist);
-            DBG(cerr << prolog << "           hdrs: " << (void *)hdrs << "\n");
-            CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", hdrs != nullptr);
+        auto hdrs = load_slist(test_slist);
+        DBG(cerr << prolog << "           hdrs: " << (void *)hdrs << "\n");
+        CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", hdrs != nullptr);
 
-            check_slist(hdrs, slist_baselines);
+        check_slist(hdrs, slist_baselines);
 
-            delete test_slist;
-        }
-        catch(...){
-            if(test_slist) {
-                delete test_slist;
-            }
-
-        }
+        curl_slist_free_all(hdrs);
     }
 
 /* TESTS END */
