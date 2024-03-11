@@ -411,7 +411,7 @@ static bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url)
 }
 
 // This is used in only one place.
-static CURL *init(CURL *ceh, const string &target_url, const struct curl_slist *http_request_headers,
+static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_request_headers,
                   vector <string> *http_response_hdrs) {
     vector<char> error_buffer(CURL_ERROR_SIZE);
     error_buffer[0] = 0; // Null terminate this string for safety.
@@ -559,7 +559,7 @@ static CURL *init(CURL *ceh, const string &target_url, const struct curl_slist *
  * @return
  */
 CURL *init(const string &target_url,
-           const struct curl_slist *http_request_headers,
+           const curl_slist *http_request_headers,
            vector <string> *http_response_hdrs) {
     CURL *swanky_new_curl_easy_handle = curl_easy_init();
     return init(swanky_new_curl_easy_handle, target_url, http_request_headers, http_response_hdrs);
@@ -592,7 +592,7 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
  * the servers response will be placed.
  * @return A cURL easy handle configured as described above,
  */
-static CURL *init_effective_url_retriever_handle(const string &target_url, struct curl_slist *req_headers,
+static CURL *init_effective_url_retriever_handle(const string &target_url, curl_slist *req_headers,
                                                  vector <string> &resp_hdrs) {
     vector<char> error_buffer(CURL_ERROR_SIZE);
     error_buffer[0] = '\0'; // null terminate empty string
@@ -1512,7 +1512,7 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
 
     BESDEBUG(MODULE, prolog << full_header << endl);
 
-    struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
+    auto temp = curl_slist_append(slist, full_header.c_str());
     if (!temp) {
         stringstream msg;
         msg << prolog << "Encountered cURL Error setting the " << header_name << " header. full_header: "
@@ -1628,7 +1628,7 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
  * @param response_body The returned response body.
  * @return A cURL easy handle configured as described above,
  */
-static CURL *init_no_follow_redirects_handle(const string &target_url, const struct curl_slist *req_headers,
+static CURL *init_no_follow_redirects_handle(const string &target_url, const curl_slist *req_headers,
                                                  vector <string> &resp_hdrs, string &response_body) {
     vector<char> error_buffer(CURL_ERROR_SIZE);
     error_buffer[0] = '\0'; // null terminate empty string

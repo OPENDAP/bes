@@ -1,8 +1,10 @@
 /RemoteResourceTest
 /HttpUtilsTest
 /CurlUtilsTest
+/CurlSListTest
 /EffectiveUrlCacheTest
 /HttpUrlTest
+/HttpErrorTest
 /AllowedHostsTest
 /CredentialsManagerTest
 /HttpCacheTest

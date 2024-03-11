@@ -60,7 +60,7 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http
 
 std::string filter_aws_url(const std::string &eff_url);
 
-CURL *init(const std::string &target_url, const struct curl_slist *http_request_headers,
+CURL *init(const std::string &target_url, const curl_slist *http_request_headers,
            std::vector<std::string> *resp_hdrs);
 
 void set_error_buffer(CURL *ceh, char *error_buffer);
