@@ -586,7 +586,11 @@ size_t combine_linked_blocks_vdata( const vector<int>& lengths, const vector<int
 
     // Update the last length.
     merged_lengths.push_back(temp_length);
+for (int i = 0; i <merged_lengths.size(); i++) {
+cout <<"merged_lengths["<<i<<"]= "<<merged_lengths[i]<<endl;
+cout <<"merged_offsets["<<i<<"]= "<<merged_offsets[i]<<endl;
 
+}
     return merged_lengths.size();
 
 }
@@ -663,16 +667,13 @@ cout <<"length is: "<<length <<endl;
 
         vector<int>merged_lengths;
         vector<int>merged_offsets;
-        if (1 != combine_linked_blocks_vdata(lengths,offsets,merged_lengths,merged_offsets)) 
-            throw BESInternalError("Expected to find a DmrppArray instance but did not.", __FILE__, __LINE__);
+        size_t merged_number_blocks = combine_linked_blocks_vdata(lengths,offsets,merged_lengths,merged_offsets);
+        auto dc = dynamic_cast<DmrppCommon *>(btp);
+        if (!dc)
+            throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
 
-	else {
-            auto dc = dynamic_cast<DmrppCommon *>(btp);
-            if (!dc)
-                throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
-
-            dc->add_chunk(endian_name, (unsigned long long)merged_lengths[0], (unsigned long long)merged_offsets[0],"");
-        }
+        for (unsigned i = 0; i < merged_number_blocks; i++)
+            dc->add_chunk(endian_name, merged_lengths[i], merged_offsets[i],true,i);
 
     }
 

@@ -2965,12 +2965,14 @@ void DmrppArray::read_array_of_structure(vector<char> &values) {
 
     size_t values_offset = 0;
     int64_t nelms = this->length_ll();
+if (this->twiddle_bytes()) 
+    BESDEBUG(dmrpp_3, prolog << "swap bytes " << endl);
 
     for (int64_t element = 0; element < nelms; ++element) {
 
         auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
         try {
-            dmrpp_s->structure_read(values,values_offset);
+            dmrpp_s->structure_read(values,values_offset, this->twiddle_bytes());
         }
         catch(...) {
             delete dmrpp_s;
