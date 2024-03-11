@@ -98,6 +98,7 @@ public:
     }
 
     static bool check_slist(curl_slist *slist, const vector<string> &baselines ){
+        DBG( cerr << prolog << "BEGIN\n");
         string baseline;
         bool success = true;
 
@@ -151,6 +152,7 @@ public:
     }
 
     void new_curl_slist_test() {
+        DBG( cerr << prolog << "BEGIN\n");
         string baseline;
         auto test_slist = new curl_slist{};
         DBG(cerr << prolog << "test_slist: " << (void **)test_slist << "\n");
@@ -175,6 +177,7 @@ public:
             delete test_slist;
             throw;
         }
+        DBG( cerr << prolog << "END\n");
     }
 
     void nullptr_curl_slist_test() {
@@ -202,6 +205,7 @@ public:
             }
             throw;
         }
+        DBG( cerr << prolog << "END\n");
     }
 
 /* TESTS END */
