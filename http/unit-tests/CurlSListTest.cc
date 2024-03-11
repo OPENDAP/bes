@@ -52,7 +52,7 @@
 
 using namespace std;
 
-#define prolog std::string("# CurlSListTest::").append(__func__).append("() - ")
+#define prolog std::string("CurlSListTest::").append(__func__).append("() - ")
 
 namespace http {
 
@@ -128,7 +128,7 @@ public:
             "lorem: "+lorem
     };
 
-    curl_slist *load_slist(curl_slist *request_headers){
+    curl_slist *load_slist(curl_slist *request_headers) const {
         auto hdrs = curl::append_http_header(request_headers,"FirstName", "Willy");
         hdrs = curl::append_http_header(hdrs,"LastName", "Wonka");
         hdrs = curl::append_http_header(hdrs,"kjwhebd", "jkhbvkwjqehv ljhcljhbwvcqwx");
@@ -136,8 +136,9 @@ public:
         return hdrs;
     }
 
-    void check_slist(curl_slist *slist, const vector<string> &baselines ){
+    static bool check_slist(curl_slist *slist, const vector<string> &baselines ){
         string baseline;
+        bool success = true;
 
         DBG(cerr << prolog << "           slist: " << (void *)slist << "\n");
         DBG(cerr << prolog << "baselines.size(): " << baselines.size() << "\n");
@@ -156,7 +157,7 @@ public:
                 slist = slist->next;
                 DBG(cerr << prolog << " slist_itr->next: " << (void *)slist << "\n");
                 if(slist) {
-                    slist_value = slist->data;
+                    slist_value.append(slist->data);
                     DBG(cerr << prolog << "  slist_value[" << i << "]: " << slist_value << "\n");
                     hc++;
                 }
@@ -166,19 +167,24 @@ public:
             }
             DBG(cerr << prolog << " slist: " << (void *)slist << " i: " << i << "\n");
             if((slist != nullptr) && (i < baselines.size())){
-                CPPUNIT_ASSERT(baseline == slist_value);
-                DBG(cerr << prolog << "baseline and slist_value matched.\n");
+                bool matched = baseline == slist_value;
+                DBG(cerr << prolog << "baseline and slist_value " << (matched?"matched.":"did not match.") << "\n");
+                success = success && matched;
+                // CPPUNIT_ASSERT(matched);
             }
             else {
-                DBG(cerr << prolog << "No test performed, one of baseline or slist_value was missing.\n");
+                DBG(cerr << prolog << "No test performed, one or both of baseline or slist_value was missing.\n");
             }
             DBG(cerr << "\n");
 
             i++;
         }
-        CPPUNIT_ASSERT_MESSAGE("Header count and baselines should match. "
-                               "baselines: " +to_string(baselines.size()) +
-                               " headers: " + to_string(hc), hc == baselines.size());
+        success = success && (hc == baselines.size());
+        //CPPUNIT_ASSERT_MESSAGE("Header count and baselines should match. "
+          //                     "baselines: " +to_string(baselines.size()) +
+            //                   " headers: " + to_string(hc), hc == baselines.size());
+
+        return success;
     }
 
     void new_curl_slist_test() {
@@ -194,7 +200,7 @@ public:
 
             CPPUNIT_ASSERT_MESSAGE("test_slist and slist should be the same object.", test_slist == slist);
 
-            check_slist(slist, slist_baselines);
+            CPPUNIT_ASSERT(check_slist(slist, slist_baselines));
 
             delete test_slist;
         }
@@ -212,13 +218,13 @@ public:
         DBG(cerr << prolog << "request_headers: " << (void *)test_slist << "\n");
         //CPPUNIT_ASSERT_MESSAGE("request_headers should be not null.", test_slist != nullptr);
 
-        auto hdrs = load_slist(test_slist);
-        DBG(cerr << prolog << "           hdrs: " << (void *)hdrs << "\n");
-        CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", hdrs != nullptr);
+        auto slist = load_slist(test_slist);
+        DBG(cerr << prolog << "           hdrs: " << (void *)slist << "\n");
+        CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", slist != nullptr);
 
-        check_slist(hdrs, slist_baselines);
+        CPPUNIT_ASSERT(check_slist(slist, slist_baselines));
 
-        curl_slist_free_all(hdrs);
+        curl_slist_free_all(slist);
     }
 
 /* TESTS END */
