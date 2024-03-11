@@ -30,20 +30,7 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
-#include "BESError.h"
-#include "BESDebug.h"
-#include "BESUtil.h"
-#include "BESStopWatch.h"
-#include "BESCatalogList.h"
-#include "TheBESKeys.h"
-#include "BESContextManager.h"
-#include "url_impl.h"
-#include "AccessCredentials.h"
-#include "CredentialsManager.h"
-#include "BESForbiddenError.h"
-#include "BESSyntaxUserError.h"
 #include "CurlUtils.h"
-#include "HttpError.h"
 
 #include "test_config.h"
 
@@ -73,39 +60,11 @@ public:
         DBG( cerr << "#-----------------------------------------------------------------\n");
         DBG( cerr << "setUp() - BEGIN\n");
         debug = true;
-        string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
-        DBG( cerr << "setUp() - Using BES configuration: " << bes_conf << "\n");
-        DBG2( show_file(bes_conf));
-        TheBESKeys::ConfigFile = bes_conf;
-
         DBG( cerr << "setUp() - END\n");
     }
 
     // Called after each test
     void tearDown() override {
-        // These are set in add_edl_auth_headers_test() and not 'unsetting' them
-        // causes other odd behavior in subsequent tests (Forbidden exceptions
-        // become SyntaxUser ones). Adding the unset operations here ensures they
-        // happen even if exceptions are thrown by the add_edl...() test.
-        BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
-        BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
-        BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
-
-        // We have to remove the cookie file between test invocations.
-        // Not doing so can cause the previous test's login success
-        // to propagate to the next test. Which is a problem when testing
-        // behaviors related to authentication success/failure.
-        auto cookie_file = curl::get_cookie_filename();
-        ifstream f(cookie_file.c_str());
-        if(f.good()) {
-            int retval = std::remove(cookie_file.c_str());
-            if (retval != 0 && debug) {
-                stringstream msg;
-                msg << "Failed to delete cookie file: '" << cookie_file << "' ";
-                msg << "Message: " << strerror(errno);
-                DBG(cerr << prolog << msg.str() << "\n");
-            }
-        }
         DBG( cerr << "\n");
     }
 
