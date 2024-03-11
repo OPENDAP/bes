@@ -88,7 +88,7 @@ public:
     };
 
     curl_slist *load_slist(curl_slist *request_headers) const {
-        curl_slist *hdrs;
+        auto hdrs = request_headers;
         //hdrs = curl::append_http_header(request_headers,"Dum", "Dummer");
         hdrs = curl::append_http_header(hdrs,"FirstName", "Willy");
         hdrs = curl::append_http_header(hdrs,"LastName", "Wonka");
