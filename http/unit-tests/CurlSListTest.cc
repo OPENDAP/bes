@@ -165,9 +165,11 @@ public:
             DBG(cerr << prolog << "check_slist_status: " << (check_slist_status?"TRUE":"FALSE") << " (" << check_slist_status << ")\n");
             CPPUNIT_ASSERT_MESSAGE( prolog + "The check_slist() function did not return true", check_slist_status );
 
+            DBG(cerr << prolog << "Calling delete test_slist\n");
             delete test_slist;
         }
         catch(...){
+            DBG(cerr << prolog << "Caught exception. Calling delete on test_slist:" << (void *) test_slist << "\n");
             delete test_slist;
             throw;
         }
@@ -187,10 +189,13 @@ public:
             bool check_slist_status = check_slist(slist, slist_baselines);
             DBG(cerr << prolog << "check_slist_status: " << (check_slist_status?"TRUE":"FALSE") << "(" << check_slist_status << ")\n");
             CPPUNIT_ASSERT_MESSAGE( prolog + "The check_slist() function did not return true", check_slist_status );
+            DBG(cerr << prolog << "Calling curl_slist_free_all(slist)\n");
             curl_slist_free_all(slist);
         }
         catch(...){
+            DBG(cerr << prolog << "Caught exception. slist: " << (void *) slist << "\n");
             if(slist){
+                DBG(cerr << prolog << "Calling curl_slist_free_all(slist)\n");
                 curl_slist_free_all(slist);
             }
             throw;
