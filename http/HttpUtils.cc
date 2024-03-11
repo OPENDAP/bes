@@ -179,20 +179,10 @@ size_t load_max_redirects_from_keys(){
     size_t max_redirects=0;
     bool found = false;
     string value;
-#if 0
-    TheBESKeys *da_keys = TheBESKeys::TheKeys();
-    if(da_keys) {
-        da_keys->get_value(HTTP_MAX_REDIRECTS_KEY, value, found);
-        if (found && !value.empty()) {
-            std::istringstream(value) >> max_redirects; // Returns 0 if the parse fails.
-        }
-    }
-#else
     TheBESKeys::TheKeys()->get_value(HTTP_MAX_REDIRECTS_KEY, value, found);
     if (found && !value.empty()) {
         std::istringstream(value) >> max_redirects; // Returns 0 if the parse fails.
     }
-#endif
     if(!max_redirects){
         max_redirects = HTTP_MAX_REDIRECTS_DEFAULT;
     }
