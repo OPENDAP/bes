@@ -927,6 +927,8 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url, unsig
     if (curl_code != CURLE_OK)
         throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
 
+    BESDEBUG(MODULE, prolog << "http_code: " << http_code << endl);
+
     // Special case for file:// URLs. An HTTP Code is zero means success in that case. jhrg 4/20/23
     if (requested_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
         return true;
@@ -934,11 +936,16 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url, unsig
 #ifndef NDEBUG
     if (BESISDEBUG(MODULE)) {   // BESISDEBUG is a macro that expands to false when NDEBUG is defined. jhrg 4/19/23
         long redirects;
-        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_COUNT, &redirects);
+        curl_code = curl_easy_getinfo(ceh, CURLINFO_REDIRECT_COUNT, &redirects);
+        if (curl_code != CURLE_OK)
+            throw BESInternalError("Error acquiring CURLINFO_REDIRECT_COUNT.", __FILE__, __LINE__);
         BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
 
         char *redirect_url = nullptr;
-        curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &redirect_url);
+        curl_code = curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &redirect_url);
+        if (curl_code != CURLE_OK)
+            throw BESInternalError("Error acquiring CURLINFO_REDIRECT_URL.", __FILE__, __LINE__);
+
         if (redirect_url)
             BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
     }
