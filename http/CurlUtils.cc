@@ -573,53 +573,6 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
     return range.str();
 }
 
-#if 0
-/**
- * @brief Returns an cURL easy handle for tracing redirects.
- *
- * The returned cURL easy handle is configured to make a 4 byte
- * range get from the url. When theis cURL handle is "exercised"
- * at the end the cURL handles CURLINFO_EFFECTIVE_URL value will
- * be the place from which the 4 bytes were retrieved, the
- * terminus if the redirect sequence.
- *
- * @note This is used ony by retrieve_effective_url(). jhrg 3/7/23
- *
- * @param target_url The URL to target
- * @param req_headers A curl_slist containing any necessary request headers
- * to be transmitted with the HTTP request.
- * @param resp_hdrs A vector into which any response headers associated
- * the servers response will be placed.
- * @return A cURL easy handle configured as described above,
- */
-static CURL *init_effective_url_retriever_handle(const string &target_url, curl_slist *req_headers,
-                                                 vector <string> &resp_hdrs) {
-    vector<char> error_buffer(CURL_ERROR_SIZE);
-    error_buffer[0] = '\0'; // null terminate empty string
-
-    CURL *ceh = curl::init(target_url, req_headers, &resp_hdrs);
-
-    set_error_buffer(ceh, error_buffer.data());
-
-    // get the offset to offset + size bytes
-    CURLcode res = curl_easy_setopt(ceh, CURLOPT_RANGE, get_range_arg_string(0, 4).c_str());
-    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", error_buffer.data(), __FILE__, __LINE__);
-
-    res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, writeNothing);
-    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
-
-    // Pass save_raw_http_headers() a pointer to the vector<string> where the
-    // response headers may be stored. Callers can use the resp_hdrs
-    // value/result parameter to get the raw response header information .
-    res = curl_easy_setopt(ceh, CURLOPT_WRITEHEADER, &resp_hdrs);
-    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEHEADER", error_buffer.data(), __FILE__, __LINE__);
-
-    unset_error_buffer(ceh);
-
-    return ceh;
-}
-#endif
-
 /**
  * @brief Sign the URL if it matches S3 credentials held by the CredentialsManager
  *
@@ -1179,16 +1132,14 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
         super_easy_perform(ceh, fd);
 
         // Free the header list
-        if (req_headers)
-            curl_slist_free_all(req_headers);
+        curl_slist_free_all(req_headers);
         if (ceh)
             curl_easy_cleanup(ceh);
 
         BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
     }
     catch (...) {
-        if (req_headers)
-            curl_slist_free_all(req_headers);
+        curl_slist_free_all(req_headers);
         if (ceh)
             curl_easy_cleanup(ceh);
         throw;
@@ -1214,91 +1165,6 @@ string error_message(const CURLcode response_code, const char *error_buffer) {
     oss << "cURL_message: " << curl_easy_strerror(response_code) << " (code: " << (int) response_code << ")";
     return oss.str();
 }
-
-
-#if 0
-/**
- * @brief Callback passed to libcurl to handle reading some number of bytes.
- *
- * Use a vector<char> to read data using HTTP. Assume that the size() returned
- * by the vector<char> is the number of bytes currently held and that any new
- * data will be appended to the vector by first allocating more space and then
- * using memcpy to write the new dat into that space.
- *
- * @note The vector should be empty when this is first called.
- *
- * @param buffer Data from libcurl
- * @param size Number of 'mem' things
- * @param nmemb Number of bytes in 'mem'. Total size of data in this call is 'size * nmemb'
- * @param data Pointer to a vector<char>.
- * @return The number of bytes read
- */
-static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
-    auto vec = reinterpret_cast<vector<char> *>(data);
-    size_t nbytes = size * nmemb;
-    size_t current_size = vec->size();
-    vec->resize(current_size + nbytes);
-    memcpy(vec->data() + current_size, buffer, nbytes);
-    return nbytes;
-}
-
-/**
- * Dereference the target URL and put the response in buf
- *
- * @param target_url The URL to dereference.
- * @param buf The vector<char> into which to put the response. New data will be
- * appended to this vector<char>. In most cases this should be zero-length vector,
- * but setting its capacity() to the suspected size may improve performance.
- * @exception Throws when libcurl encounters a problem.
- */
-void http_get(const string &target_url, vector<char> &buf) {
-    vector<char> error_buffer(CURL_ERROR_SIZE);
-    CURL *ceh = nullptr;     ///< The libcurl handle object.
-    CURLcode res;
-
-    curl_slist *request_headers = nullptr;
-    // Add the authorization headers
-    request_headers = add_edl_auth_headers(request_headers);
-
-    auto url = std::make_shared<http::url>(target_url);
-    request_headers = sign_url_for_s3_if_possible(url, request_headers);
-
-    try {
-        ceh = curl::init(target_url, request_headers, nullptr);
-        if (!ceh)
-            throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
-
-        // Error Buffer (for use during this setup) ----------------------------------------------------------------
-        set_error_buffer(ceh, error_buffer.data());
-
-        // Pass all data to the 'write_data' function --------------------------------------------------------------
-        res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, vector_write_data);
-        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
-
-        // Pass this to write_data as the fourth argument ----------------------------------------------------------
-        res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&buf));
-        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer.data(), __FILE__, __LINE__);
-
-        unset_error_buffer(ceh);
-
-        super_easy_perform(ceh);
-
-        if (request_headers)
-            curl_slist_free_all(request_headers);
-
-        curl_easy_cleanup(ceh);
-
-        buf.push_back('\0');    // add a trailing null byte
-    }
-    catch (...) {
-        if (request_headers)
-            curl_slist_free_all(request_headers);
-        if (ceh)
-            curl_easy_cleanup(ceh);
-        throw;
-    }
-}
-#endif
 
 
 static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
@@ -1329,15 +1195,15 @@ void http_get(const string &target_url, string &buf)
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
-
     curl_slist *request_headers = nullptr;
-    // Add the authorization headers
-    request_headers = add_edl_auth_headers(request_headers);
-
-    auto url = std::make_shared<http::url>(target_url);
-    request_headers = sign_url_for_s3_if_possible(url, request_headers);
 
     try {
+        // Add the authorization headers
+        request_headers = add_edl_auth_headers(request_headers);
+
+        auto url = std::make_shared<http::url>(target_url);
+        request_headers = sign_url_for_s3_if_possible(url, request_headers);
+
         ceh = curl::init(target_url, request_headers, nullptr);
         if (!ceh)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
@@ -1367,8 +1233,9 @@ void http_get(const string &target_url, string &buf)
     catch (...) {
         if (request_headers)
             curl_slist_free_all(request_headers);
-        if (ceh)
+        if (ceh) {
             curl_easy_cleanup(ceh);
+        }
         throw;
     }
 }
@@ -1863,9 +1730,7 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
         }
 
         // Free the header list
-        if (req_headers) {
-            curl_slist_free_all(req_headers);
-        }
+        curl_slist_free_all(req_headers);
         // clean up cURL handle
         if (ceh) {
             curl_easy_cleanup(ceh);
@@ -1875,9 +1740,8 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
     }
     catch (...) {
         // Free the header list
-        if (req_headers) {
-            curl_slist_free_all(req_headers);
-        }
+        curl_slist_free_all(req_headers);
+
         // clean up cURL handle
         if (ceh) {
             curl_easy_cleanup(ceh);

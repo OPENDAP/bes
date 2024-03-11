@@ -234,7 +234,7 @@ public:
     void add_edl_auth_headers_test() {
         DBG( cerr << prolog << "BEGIN\n");
         curl_slist *hdrs = nullptr;
-        curl_slist *temp = nullptr;
+        curl_slist *sl_iter;
         string tokens[] = {"big_bucky_ball", "itsa_authy_token_time", "echo_my_smo:kin_token"};
         BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
         BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
@@ -242,24 +242,29 @@ public:
 
         try {
             hdrs = curl::add_edl_auth_headers(hdrs);
-            temp = hdrs;
+            sl_iter = hdrs;
             size_t index = 0;
-            while (temp) {
-                string value(temp->data);
+            while (sl_iter) {
+                string value(sl_iter->data);
                 DBG(cerr << prolog << "header: " << value << "\n" );
                 size_t found = value.find(tokens[index]);
                 CPPUNIT_ASSERT(found != string::npos);
-                temp = temp->next;
+                sl_iter = sl_iter->next;
                 index++;
             }
+            curl_slist_free_all(hdrs);
         }
         catch (const BESError &be) {
+            curl_slist_free_all(hdrs);
+
             stringstream msg;
             msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: "
                 << be.get_line() << "\n";
             CPPUNIT_FAIL(msg.str());
         }
         catch (const std::exception &se) {
+            curl_slist_free_all(hdrs);
+
             stringstream msg;
             msg << "CAUGHT std::exception message: " << se.what() << "\n";
             cerr << msg.str();
@@ -287,38 +292,43 @@ public:
                 "x-amz-date:"
         };
 
-        auto request_headers = new curl_slist{};
+        curl_slist *request_headers = nullptr;
         DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
         request_headers = curl::sign_s3_url(target_url, &ac, request_headers);
         DBG(cerr << prolog << "request_headers: " << (void *)request_headers << "\n");
         CPPUNIT_ASSERT_MESSAGE("The request headers should be not null.", request_headers != nullptr);
 
         auto request_hdr_itr = request_headers;
-        size_t i = 0;
-        size_t hc = 0;
-        while(request_hdr_itr != nullptr || i < baselines.size()){
-            string hdr;
-            if( i < baselines.size()){
-                baseline = baselines[i];
-                DBG(cerr << prolog << "            baselines[" << i << "]: " << baseline << "\n");
-            }
-            if(request_hdr_itr){
-                request_hdr_itr = request_hdr_itr->next;
-                //CPPUNIT_ASSERT_MESSAGE("The request headers should be not null", request_headers != nullptr);
-                if(request_hdr_itr) {
-                    hdr = request_hdr_itr->data;
-                    DBG(cerr << prolog << "request_headers->data[" << i << "]: " << hdr << "\n");
-                    hc++;
+        try {
+            size_t i = 0;
+            size_t hc = 0;
+            while (request_hdr_itr != nullptr || i < baselines.size()) {
+                string hdr;
+                if (i < baselines.size()) {
+                    baseline = baselines[i];
+                    DBG(cerr << prolog << "            baselines[" << i << "]: " << baseline << "\n");
                 }
+                if (request_hdr_itr) {
+                    request_hdr_itr = request_hdr_itr->next;
+                    //CPPUNIT_ASSERT_MESSAGE("The request headers should be not null", request_headers != nullptr);
+                    if (request_hdr_itr) {
+                        hdr = request_hdr_itr->data;
+                        DBG(cerr << prolog << "request_headers->data[" << i << "]: " << hdr << "\n");
+                        hc++;
+                    }
+                }
+                if (request_hdr_itr != nullptr && i < baselines.size()) {
+                    CPPUNIT_ASSERT_MESSAGE("Expected " + baseline, hdr.find(baseline) != string::npos);
+                }
+                i++;
             }
-            if(request_hdr_itr != nullptr && i < baselines.size()){
-                CPPUNIT_ASSERT_MESSAGE("Expected " + baseline, hdr.find(baseline) != string::npos);
-            }
-            i++;
+            CPPUNIT_ASSERT_MESSAGE(
+                    "Header count and baselines should match. baselines: " + to_string(baselines.size()) +
+                    " headers: " + to_string(hc), hc == baselines.size());
+            curl_slist_free_all(request_headers);
         }
-        CPPUNIT_ASSERT_MESSAGE("Header count and baselines should match. baselines: " + to_string(baselines.size()) + " headers: " + to_string(hc), hc == baselines.size());
-        if(request_headers) {
-            delete request_headers;
+        catch(...){
+            curl_slist_free_all(request_headers);
         }
         DBG( cerr << prolog << "END\n");
     }
@@ -332,24 +342,21 @@ public:
         ac.add(AccessCredentials::KEY_KEY, "secret");
         ac.add(AccessCredentials::REGION_KEY, "oz-1");
         ac.add(AccessCredentials::URL_KEY, "http://never.org");
-        auto headers = new curl_slist{};
+        curl_slist *headers = nullptr;
         DBG(cerr << prolog << "headers: " << (void *)headers << "\n");
-        curl_slist *hdr_itr = nullptr;
+        curl_slist *hdr_itr;
         try {
-            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
+            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be nullptr", headers == nullptr);
             hdr_itr = curl::sign_s3_url(target_url, &ac, headers);
             DBG(cerr << prolog << "hdr_itr: " << (void *)hdr_itr << "\n");
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", hdr_itr->next != nullptr);
 
-            if(hdr_itr) {
-                delete hdr_itr;
-            }
+            curl_slist_free_all(hdr_itr);
+
         }
         catch (...) {
-            if(hdr_itr){
-                delete hdr_itr;
-            }
+            curl_slist_free_all(hdr_itr);
             throw;
         }
         DBG( cerr << prolog << "END\n");
@@ -361,21 +368,20 @@ public:
         DBG( cerr << prolog << "BEGIN\n");
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
-        // auto headers = new curl_slist{};
         curl_slist *headers = nullptr;
+        curl_slist *hdr_itr;
 
         try {
             //CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
-            auto new_headers = curl::sign_s3_url(target_url, &ac, headers);
+            hdr_itr = curl::sign_s3_url(target_url, &ac, headers);
 
-            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
-            curl_slist_free_all(headers);
+            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", hdr_itr->next != nullptr);
+            curl_slist_free_all(hdr_itr);
         }
         catch (...) {
-            curl_slist_free_all(headers);
+            curl_slist_free_all(hdr_itr);
             throw;
         }
-
         DBG( cerr << prolog << "END\n");
     }
 
