@@ -1330,16 +1330,15 @@ void http_get(const string &target_url, string &buf)
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
 
-    auto request_headers = new curl_slist{};
+    curl_slist *request_headers = nullptr;
+    // Add the authorization headers
+    request_headers = add_edl_auth_headers(request_headers);
+
+    auto url = std::make_shared<http::url>(target_url);
+    request_headers = sign_url_for_s3_if_possible(url, request_headers);
 
     try {
-        // Add the authorization headers
-        auto rhdrs = request_headers = add_edl_auth_headers(request_headers);
-
-        auto url = std::make_shared<http::url>(target_url);
-        rhdrs = sign_url_for_s3_if_possible(url, rhdrs);
-
-        ceh = curl::init(target_url, rhdrs, nullptr);
+        ceh = curl::init(target_url, request_headers, nullptr);
         if (!ceh)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
 
@@ -1358,18 +1357,16 @@ void http_get(const string &target_url, string &buf)
 
         super_easy_perform(ceh);
 
-        delete request_headers;
-        //if (request_headers)
-            // curl_slist_free_all(request_headers);
+        if (request_headers)
+            curl_slist_free_all(request_headers);
 
         curl_easy_cleanup(ceh);
 
         buf.push_back('\0');    // add a trailing null byte
     }
     catch (...) {
-        delete request_headers;
-        //if (request_headers)
-        //    curl_slist_free_all(request_headers);
+        if (request_headers)
+            curl_slist_free_all(request_headers);
         if (ceh)
             curl_easy_cleanup(ceh);
         throw;

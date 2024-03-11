@@ -88,13 +88,18 @@ public:
     };
 
     curl_slist *load_slist(curl_slist *request_headers) const {
-        auto hdrs = request_headers;
-        //hdrs = curl::append_http_header(request_headers,"Dum", "Dummer");
-        hdrs = curl::append_http_header(hdrs,"FirstName", "Willy");
-        hdrs = curl::append_http_header(hdrs,"LastName", "Wonka");
-        hdrs = curl::append_http_header(hdrs,"kjwhebd", "jkhbvkwjqehv ljhcljhbwvcqwx");
-        hdrs = curl::append_http_header(hdrs,"lorem", lorem);
-        return hdrs;
+        auto slist = request_headers;
+        //hdrs = curl::append_http_header(hdrs, "Dum", "Dummer");
+        DBG(cerr << prolog << "slist: " << (void **)slist << "\n");
+        slist = curl::append_http_header(slist,"FirstName", "Willy");
+        DBG(cerr << prolog << "slist: " << (void **)slist << "\n");
+        slist = curl::append_http_header(slist,"LastName", "Wonka");
+        DBG(cerr << prolog << "slist: " << (void **)slist << "\n");
+        slist = curl::append_http_header(slist,"kjwhebd", "jkhbvkwjqehv ljhcljhbwvcqwx");
+        DBG(cerr << prolog << "slist: " << (void **)slist << "\n");
+        slist = curl::append_http_header(slist,"lorem", lorem);
+        DBG(cerr << prolog << "slist: " << (void **)slist << "\n");
+        return slist;
     }
 
     static bool check_slist(curl_slist *slist, const vector<string> &baselines ){
@@ -116,7 +121,6 @@ public:
                 DBG(cerr << prolog << "No baseline for index: " << i << "\n");
             }
             if(slist){
-                slist = slist->next;
                 DBG(cerr << prolog << " slist_itr->next: " << (void **)slist << "\n");
                 if(slist) {
                     slist_value.append(slist->data);
@@ -138,7 +142,7 @@ public:
                 DBG(cerr << prolog << "No test performed, one, or both, of baseline and/or slist_value was missing.\n");
             }
             DBG(cerr << "\n");
-
+            slist = slist->next;
             i++;
         }
         success = success && (hc == baselines.size());
@@ -160,10 +164,13 @@ public:
 
         try {
             auto slist = load_slist(test_slist);
-            DBG(cerr << prolog << "         slist: " << (void **)slist << "\n");
+            DBG(cerr << prolog << " slist: " << (void **)slist << "\n");
             CPPUNIT_ASSERT_MESSAGE("slist should be not null.", slist != nullptr);
 
             CPPUNIT_ASSERT_MESSAGE("test_slist and slist should be the same object.", test_slist == slist);
+
+            // DBG( cerr << prolog << "First Header(no advance): " << slist->data << "\n");
+            slist->next;
 
             bool check_slist_status = check_slist(slist, slist_baselines);
             DBG(cerr << prolog << "check_slist_status: " << (check_slist_status?"TRUE":"FALSE") << " (" << check_slist_status << ")\n");
@@ -190,6 +197,8 @@ public:
             slist = load_slist(test_slist);
             DBG(cerr << prolog << "           hdrs: " << (void **) slist << "\n");
             CPPUNIT_ASSERT_MESSAGE("hdrs should be not null.", slist != nullptr);
+
+            DBG( cerr << prolog << "First Header(no advance): " << slist->data << "\n");
 
             bool check_slist_status = check_slist(slist, slist_baselines);
             DBG(cerr << prolog << "check_slist_status: " << (check_slist_status?"TRUE":"FALSE") << "(" << check_slist_status << ")\n");
