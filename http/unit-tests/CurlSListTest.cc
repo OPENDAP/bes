@@ -173,7 +173,7 @@ public:
                 // CPPUNIT_ASSERT(matched);
             }
             else {
-                DBG(cerr << prolog << "No test performed, one or both of baseline or slist_value was missing.\n");
+                DBG(cerr << prolog << "No test performed, one, or both, of baseline and/or slist_value was missing.\n");
             }
             DBG(cerr << "\n");
 
