@@ -29,6 +29,8 @@
 
 #include <iostream>
 
+#include <libxml/xmlerror.h>
+
 using std::cerr;
 using std::endl;
 
@@ -94,7 +96,7 @@ void get_data_values_as_xml(DDS *dds, XMLWriter *writer)
 
     }
     catch (InternalErr &e) {
-        xmlErrorPtr error = xmlGetLastError();
+        const xmlError *error = xmlGetLastError();
         if (error && error->message)
             throw InternalErr(e.get_error_message() + "; libxml: " + error->message);
         else
