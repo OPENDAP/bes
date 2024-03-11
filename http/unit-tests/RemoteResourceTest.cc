@@ -102,6 +102,7 @@ public:
     // Called before each test
     void setUp() override {
         debug=true;
+        bes_debug=true;
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
@@ -132,6 +133,7 @@ public:
         DBG(cerr << prolog << "url: " << url << "\n");
         http::RemoteResource rhr(make_shared<http::url>(url));
         try {
+            DBG(cerr << prolog << "Retrieving resource...\n");
             rhr.retrieve_resource();
             string filename = rhr.get_filename();
             DBG(cerr << prolog << "filename: " << filename << "\n");
