@@ -1141,8 +1141,6 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
         res = curl_easy_setopt(ceh, CURLOPT_FILE, &fd);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FILE", error_buffer.data(), __FILE__, __LINE__);
 
-        unset_error_buffer(ceh);
-
         super_easy_perform(ceh, fd);
 
         // Free the header list
@@ -1237,8 +1235,6 @@ void http_get(const string &target_url, string &buf)
         // Pass this to write_data as the fourth argument ----------------------------------------------------------
         res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&buf));
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer.data(), __FILE__, __LINE__);
-
-        unset_error_buffer(ceh);
 
         super_easy_perform(ceh);
 
