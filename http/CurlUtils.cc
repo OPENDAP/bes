@@ -994,6 +994,7 @@ static void truncate_file(int fd) {
 
 // Used here only. jhrg 3/8/23
 static void super_easy_perform(CURL *c_handle, int fd) {
+    BESDEBUG(MODULE, prolog << "BEGIN\n");
 
     useconds_t retry_time = url_retry_time; // 0.25 seconds
     bool curl_success{false};
@@ -1072,15 +1073,19 @@ cerr << prolog << "filter_aws_url{effective_url): " << filter_aws_url(effective_
         }
     }
 
+    // Unset the buffer before it goes out of scope
+    unset_error_buffer(c_handle);
+
+    BESDEBUG(MODULE, prolog << "cURL operations completed. fd: " << fd << "\n");
+
     // rewind the file, if the descriptor is valid
     if (fd >= 0) {
+        BESDEBUG(MODULE, prolog << "Rewinding fd(" << fd << ")\n");
         auto status = lseek(fd, 0, SEEK_SET);
         if (-1 == status)
             throw BESInternalError("Could not seek within the response file.", __FILE__, __LINE__);
     }
-
-    // Unset the buffer before it goes out of scope
-    unset_error_buffer(c_handle);
+    BESDEBUG(MODULE, prolog << "END\n");
 }
 
 /**
