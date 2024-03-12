@@ -4,7 +4,8 @@
 
 // Copyright (c) 2022 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
-//
+// Copyright (c) The HDF Group
+// Author: Kent Yang <myang6@hdfgroup.org>
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
@@ -109,12 +110,14 @@ int SDfree_mapping_info(SD_mapping_info_t  *map_info)
 
     return ret_value;
 }
+
 void close_hdf4_file_ids(int32 sd_id, int32 file_id) {
     Vend(file_id);
     Hclose(file_id);
     SDend(sd_id);
 }
 
+// Try to combine the adjacent linked blocks to one block. KY 2024-03-12
 size_t combine_linked_blocks(const SD_mapping_info_t &map_info, vector<int> & merged_lengths, vector<int> &merged_offsets) {
 
     int num_eles = map_info.nblocks;
@@ -128,13 +131,14 @@ size_t combine_linked_blocks(const SD_mapping_info_t &map_info, vector<int> & me
 
     // The first element offset should always be fixed.
     merged_offsets.push_back(map_info.offsets[0]);
+
     int temp_length = map_info.lengths[0];
 
     for (int i = 0; i <(num_eles-1); i++) {
 
         // If not contiguous, push back the i's new length;
-        //                    push back the i+1's unchanged offset.
-        //                    save the i+1's length to the temp length variable.
+        //                    push back the i+1's unchanged offset;
+        //                    save the i+1's length to the temp_length variable.
         if (map_info.offsets[i+1] !=(map_info.offsets[i] + map_info.lengths[i])) {
             merged_lengths.push_back(temp_length);
             merged_offsets.push_back(map_info.offsets[i+1]);
@@ -295,22 +299,33 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
     }
     return ret_value;
 }
-void SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
+bool SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
 
     string fill_value = get_sds_fill_value_str(sdsid,datatype);
     if (fill_value.empty()==false) {
          auto dc = dynamic_cast<DmrppCommon *>(btp);
-         if (!dc)
-            throw BESInternalError("Expected to find a DmrppCommon instance but did not.",
-                                    __FILE__, __LINE__);
+         if (!dc) {
+             Error("Expected to find a DmrppCommon instance but did not.");
+             return false;
+         }
         dc->set_uses_fill_value(true);
         dc->set_fill_value_string(fill_value);
     }
+    return true;
 }
 bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
     int32 sds_index = SDreftoindex(file, obj_ref);
+    if (sds_index == FAIL) {
+        ERROR("SDreftoindex() failed");
+        return false;
+    }
+
     int sdsid = SDselect(file, sds_index);
+    if (sdsid == FAIL) {
+        ERROR("SDselect() failed");
+        return false;
+    }
 
     VERBOSE(cerr << "Name: " << btp->name() << endl);
     VERBOSE(cerr << "DMR FQN: " << btp->FQN() << endl);
@@ -324,7 +339,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
     int status = SDgetinfo(sdsid, obj_name, &rank, dimsizes, &data_type, &num_attrs);
     if (status == FAIL) {
-        FAIL_ERROR("SDgetinfo() failed.");
+        ERROR("SDgetinfo() failed.");
+        SDendaccess(sdsid);
+        return false;
     }
 
     HDF_CHUNK_DEF cdef;
@@ -332,7 +349,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
     status = SDgetchunkinfo(sdsid, &cdef, &chunk_flag);
     if (status == FAIL) {
-        FAIL_ERROR("SDgetchunkinfo() failed.");
+        ERROR("SDgetchunkinfo() failed.");
+        SDendaccess(sdsid);
+        return false;
     }
 
     switch (chunk_flag) {
@@ -343,6 +362,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         case HDF_COMP: /* Compression. */
             if (rank <= 0) {
                 ERROR("Invalid rank.");
+                SDendaccess(sdsid);
                 return false;
             }
             VERBOSE(cerr << "HDF_CHUNK or HDF_COMP.\n");
@@ -350,9 +370,11 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         case HDF_NBIT:
             /* NBIT compression. */
             ERROR("NBit Compression chunking not supported.");
+            SDendaccess(sdsid);
             return false;
         default:
             ERROR("Unknown chunking flag.");
+            SDendaccess(sdsid);
             return false;
     }
 
@@ -360,7 +382,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
     hdf_ntinfo_t info;          /* defined in hdf.h near line 142. */
     int result = Hgetntinfo(data_type, &info);
     if (result == FAIL) {
-        FAIL_ERROR("Hgetntinfo() failed.");
+        ERROR("Hgetntinfo() failed.");
+        SDendaccess(sdsid);
+        return false;
     }
     else {
         if (strncmp(info.byte_order, "bigEndian", 9) == 0)
@@ -375,7 +399,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
     int is_empty = 0;
     status = SDcheckempty(sdsid, &is_empty);
     if (status == FAIL) {
-        FAIL_ERROR("SDcheckempty() failed.");
+        ERROR("SDcheckempty() failed.");
+        SDendaccess(sdsid);
+        return false;
     }
 
     if (is_empty) {
@@ -383,12 +409,17 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         // No, this is mostly an SDS with unlimited dimension and the dimension size is 0.
         // Now, we can just ignore since it doesn't contain any data. KY 02/12/24
         VERBOSE(cerr << "SDS is empty." << endl);
+        ERROR("This SDS is empty; we haven't handled this case yet.");
+        SDendaccess(sdsid);
         return false;
     }
 
     auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc)
-        throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
+    if (!dc){
+       ERROR("Expected to find a DmrppCommon instance but did not.");
+       SDendaccess(sdsid);
+       return false;
+    }
 
     // Need to check SDS compression info. Unlike HDF5, HDF4 can be compressed without using chunks.
     // So we need to cover both cases. KY 02/12/2024
@@ -397,7 +428,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
     comp_info                    c_info;
 
     if (SDgetcompinfo(sdsid, &comp_coder_type, &c_info) == FAIL) {
-             FAIL_ERROR("SDgetcompinfo() failed.");
+        ERROR("SDgetcompinfo() failed.");
+        SDendaccess(sdsid);
+        return false;
     }
 
     // Also need to consider the case when the variable is compressed but not chunked.
@@ -418,8 +451,12 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
                 vector<unsigned int> deflate_levels;
                 deflate_levels.push_back(c_info.deflate.level);
                 dc->set_deflate_levels(deflate_levels);
-            } else
-                FAIL_ERROR("Encounter unsupported compression method. Currently only support deflate compression.");
+            } else {
+                SDendaccess(sdsid);
+                ERROR("Encounter unsupported compression method. Currently only support deflate compression.");
+                return false;
+            }
+
         }
         dc->set_chunk_dimension_sizes(chunk_dimension_sizes);
 
@@ -458,7 +495,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         for (int k = 0; k < number_of_chunks; ++k) {
             auto info_count = read_chunk(sdsid, &map_info, strides.data());
             if (info_count == FAIL) {
-                FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
+                ERROR("read_chunk() failed.");
+                SDendaccess(sdsid);
+                return false;
             }
             
             auto pia = write_chunk_position_in_array(rank, chunk_dimension_sizes.data(), strides.data());
@@ -468,9 +507,11 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
             if (map_info.nblocks >1) {
 #if 0
-               cout << "number of blocks in a chunk is: " << map_info.nblocks << endl;
+                cout << "number of blocks in a chunk is: " << map_info.nblocks << endl;
 #endif
-               FAIL_ERROR("Number of blocks in this chunk is greater than 1.");
+                ERROR("Number of blocks in this chunk is greater than 1.");
+                SDendaccess(sdsid);
+                return false;
             }
 
             for (int i = 0; i < map_info.nblocks; i++) {
@@ -505,14 +546,19 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
                 deflate_levels.push_back(c_info.deflate.level);
                 dc->set_deflate_levels(deflate_levels);
             }
-            else
-                FAIL_ERROR("Encounter unsupported compression method. Currently only support deflate compression.");
+            else {
+                ERROR("Encounter unsupported compression method. Currently only support deflate compression.");
+                SDendaccess(sdsid);
+                return false;
+            }
         }
 
         vector<int> origin(rank, 0);
         auto info_count = read_chunk(sdsid, &map_info, origin.data());
         if (info_count == FAIL) {
-            FAIL_ERROR("SDgetedatainfo() failed in read_chunk().");
+            ERROR("read_chunk() failed in the middle of ingest_sds_info_to_chunk().");
+            SDendaccess(sdsid);
+            return false;
         }
         
         vector<unsigned long long> position_in_array(rank, 0);
@@ -530,11 +576,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
                 VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
                 VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
 
-                // Critical TODO:
-                //  Here is a bug. the position cannot be 0 for the second block if this is treated as a chunk.
-                // Also very possible that the offset and length obtained for a block cannot be decompressed directly
-                // like the HDF5 chunks. Significant work needs to be done in the dmrpp module. New information needs
-                // to be added in the dmrpp file. Pending on the ticket HYRAX-1335. KY 02/13/2024.
+                // This has linked blocks. Add this information to the dmrpp:chunks.
                 dc->add_chunk(endian_name, merged_lengths[i], merged_offsets[i], true,i);
 
             }
@@ -542,11 +584,17 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
     }
     else {
         // TODO Handle the other cases. jhrg 12/7/23
-        FAIL_ERROR("Unknown chunking type.");
+        ERROR("Unknown chunking type.");
+        SDendaccess(sdsid);
+        return false;
     }
 
     // Add the fillvalue support
-    SD_set_fill_value(sdsid,data_type, btp);
+    if (false == SD_set_fill_value(sdsid,data_type, btp)) {
+        ERROR("SD_set_fill_value failed");
+        SDendaccess(sdsid);
+        return false;
+    }
 
     // Need to close the SDS interface. KY 2024-02-22
     SDendaccess(sdsid);
@@ -555,7 +603,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
 size_t combine_linked_blocks_vdata( const vector<int>& lengths, const vector<int>& offsets, vector<int> & merged_lengths, vector<int> &merged_offsets) {
 
-    int num_eles = lengths.size();
+    size_t num_eles = lengths.size();
 
 #if 0
     for (int i = 0; i<offset.size(); i++) {
@@ -568,7 +616,7 @@ size_t combine_linked_blocks_vdata( const vector<int>& lengths, const vector<int
     merged_offsets.push_back(offsets[0]);
     int temp_length = lengths[0];
 
-    for (int i = 0; i <(num_eles-1); i++) {
+    for (size_t i = 0; i <(num_eles-1); i++) {
 
         // If not contiguous, push back the i's new length;
         //                    push back the i+1's unchanged offset.
@@ -602,14 +650,26 @@ cout <<"merged_offsets["<<i<<"]= "<<merged_offsets[i]<<endl;
 bool  ingest_vdata_info_to_chunk(int32 file_id, int32 obj_ref, BaseType *btp) {
 
     int32 vdata_id = VSattach(file_id, obj_ref, "r");
+    if (vdata_id == FAIL){
+        ERROR("VSattach() failed.");
+        return false;
+    }
 
     // Retrieve endianess
-    int32 field_datatype = VFfieldtype(vdata_id,0); 
+    int32 field_datatype = VFfieldtype(vdata_id,0);
+    if (field_datatype == FAIL){
+        ERROR("VFfieldtype() failed.");
+        VSdetach(vdata_id);
+        return false;
+    }
+
     string endian_name;
     hdf_ntinfo_t info;          /* defined in hdf.h near line 142. */
     int result = Hgetntinfo(field_datatype, &info);
     if (result == FAIL) {
-        FAIL_ERROR("Hgetntinfo() failed.");
+        ERROR("Hgetntinfo() failed in ingest_vdata_info_to_chunk.");
+        VSdetach(vdata_id);
+        return false;
     }
     else {
         if (strncmp(info.byte_order, "bigEndian", 9) == 0)
@@ -620,28 +680,42 @@ bool  ingest_vdata_info_to_chunk(int32 file_id, int32 obj_ref, BaseType *btp) {
             endian_name = "UNKNOWN";
     }
 
-    int32 num_linked_blocks = VSgetdatainfo(vdata_id,0,0,NULL,NULL);
+    int32 num_linked_blocks = VSgetdatainfo(vdata_id,0,0,nullptr,nullptr);
 
+    if (num_linked_blocks == FAIL){
+        ERROR("VSgetdatainfo() failed in ingest_vdata_info_to_chunk.");
+        VSdetach(vdata_id);
+        return false;
+    }
     if (num_linked_blocks == 1) {// most time.
 
         int32 offset = 0;
         int32 length = 0; 
-        VSgetdatainfo(vdata_id,0,1,&offset,&length);           
+        if (VSgetdatainfo(vdata_id,0,1,&offset,&length) == FAIL){
+            ERROR("VSgetdatainfo() failed, cannot obtain offset and length info.");
+            VSdetach(vdata_id);
+            return false;
+        }
  
         auto dc = dynamic_cast<DmrppCommon *>(btp);
-        if (!dc)
-            throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
+        if (!dc) {
+            ERROR("Expected to find a DmrppCommon instance but did not in ingested_vdata_info_to_chunk");
+            VSdetach(vdata_id);
+            return false;
+        }
+        auto da = dynamic_cast<DmrppArray *>(btp);
+        if (!da) {
+            ERROR("Expected to find a DmrppArray instance but did not in ingested_vdata_info_to_chunk");
+            VSdetach(vdata_id);
+            return false;
+        }
 
-        auto *da = dynamic_cast<DmrppArray *>(btp);
-        if (!da)
-            throw BESInternalError("Expected to find a DmrppArray instance but did not.", __FILE__, __LINE__);
-    
-        if (da->width_ll() != (int64_t)length) 
-            throw BESInternalError("The retrieved vdata size is no equal to the original size.", __FILE__, __LINE__);
-
+        if (da->width_ll() != (int64_t)length) {
+            ERROR("The retrieved vdata size is no equal to the original size.");
+            VSdetach(vdata_id);
+            return false;
+        }
         dc->add_chunk(endian_name, (unsigned long long)length, (unsigned long long)offset,"");
-
-
 
 #if 0
         int32 total_num_fields = VFnfields(vdata_id);
@@ -659,18 +733,24 @@ cout <<"length is: "<<length <<endl;
     else if (num_linked_blocks >1) {
 
         //merging the linked blocks.
-        vector<int>lengths;
-        vector<int>offsets;
+        vector<int> lengths;
+        vector<int> offsets;
         lengths.resize(num_linked_blocks);
         offsets.resize(num_linked_blocks);
-        VSgetdatainfo(vdata_id,0,num_linked_blocks,offsets.data(),lengths.data());
-
+        if (VSgetdatainfo(vdata_id, 0, num_linked_blocks, offsets.data(), lengths.data()) == FAIL) {
+            ERROR("VSgetdatainfo() failed, cannot obtain offset and length info when the num_linked_blocks is >1.");
+            VSdetach(vdata_id);
+            return false;
+        }
         vector<int>merged_lengths;
         vector<int>merged_offsets;
         size_t merged_number_blocks = combine_linked_blocks_vdata(lengths,offsets,merged_lengths,merged_offsets);
         auto dc = dynamic_cast<DmrppCommon *>(btp);
-        if (!dc)
-            throw BESInternalError("Expected to find a DmrppCommon instance but did not.", __FILE__, __LINE__);
+        if (!dc) {
+            ERROR("Expected to find a DmrppArray instance but did not when num_linked_blocks is >1.");
+            VSdetach(vdata_id);
+            return false;
+        }
 
         for (unsigned i = 0; i < merged_number_blocks; i++)
             dc->add_chunk(endian_name, merged_lengths[i], merged_offsets[i],true,i);
@@ -746,11 +826,16 @@ bool get_chunks_for_a_variable(int32 sd_id, int32 file_id, BaseType *btp) {
 
     switch (btp->type()) {
         case dods_structure_c: {
-            auto sp = dynamic_cast<Structure *>(btp);
             //TODO: this needs to be re-written since the data of the whole structure is retrieved. KY-2024-02-26
-            // TODO: Handle this later. KY 2024-03-07
+            // Handle this later. KY 2024-03-07
+            // Comment about the above "TODO", the current HDF4 to DMR direct mapping will never go here. So
+            // we may not need to handle this at all. KY 2024-03-12
+#if 0
+            auto sp = dynamic_cast<Structure *>(btp);
             //for_each(sp->var_begin(), sp->var_end(), [file](BaseType *btp) { get_chunks_for_a_variable(file, btp); });
-            return true;
+#endif
+            close_hdf4_file_ids(sd_id,file_id);
+            throw BESInternalError("Structure scalar is not supported by DAP4 for HDF4 at this time.\n", __FILE__, __LINE__);
         }
         case dods_sequence_c:
             VERBOSE(cerr << btp->FQN() << ": Sequence is not supported by DMR++ for HDF4 at this time.\n");
@@ -759,7 +844,6 @@ bool get_chunks_for_a_variable(int32 sd_id, int32 file_id, BaseType *btp) {
             close_hdf4_file_ids(sd_id,file_id);
             throw BESInternalError("Grids are not supported by DAP4.", __FILE__, __LINE__);
         }
-        
         case dods_array_c:
             return get_chunks_for_an_array(sd_id,file_id, btp);
         default:

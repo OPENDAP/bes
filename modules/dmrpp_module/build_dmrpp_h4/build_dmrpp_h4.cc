@@ -125,7 +125,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
+#if 0
     try {
+#endif
 
         // Check to see if the file is hdf4 compliant
         qc_input_file(h4_file_name);
@@ -151,6 +153,7 @@ int main(int argc, char *argv[]) {
         system(command.c_str());
 #endif
 
+#if 0
     }
     catch (const BESError &e) {
         cerr << "BESError: " << e.get_message() << endl;
@@ -164,6 +167,7 @@ int main(int argc, char *argv[]) {
         cerr << "Unknown error." << endl;
         return EXIT_FAILURE;
     }
+#endif
 
     return EXIT_SUCCESS;
 }

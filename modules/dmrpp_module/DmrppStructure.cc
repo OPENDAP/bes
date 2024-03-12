@@ -143,7 +143,7 @@ void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset,
 
 }
 void 
-DmrppStructure::swap_bytes_in_structure(char *stored_value,Type dap_type,int64_t num) {
+DmrppStructure::swap_bytes_in_structure(char *stored_value,Type dap_type,int64_t num) const{
 
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
     switch (dap_type) {
@@ -158,7 +158,7 @@ DmrppStructure::swap_bytes_in_structure(char *stored_value,Type dap_type,int64_t
         }
         case dods_int32_c:
         case dods_uint32_c: {
-            auto *local = reinterpret_cast<dods_uint32*>(stored_value);;
+            auto *local = reinterpret_cast<dods_uint32*>(stored_value);
             while (num--) {
                 *local = bswap_32(*local);
                 local++;
@@ -167,7 +167,7 @@ DmrppStructure::swap_bytes_in_structure(char *stored_value,Type dap_type,int64_t
         }
         case dods_int64_c:
         case dods_uint64_c: {
-            auto *local = reinterpret_cast<dods_uint64*>(stored_value);;
+            auto *local = reinterpret_cast<dods_uint64*>(stored_value);
             while (num--) {
                 *local = bswap_64(*local);
                 local++;
