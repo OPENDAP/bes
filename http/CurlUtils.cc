@@ -1146,11 +1146,14 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
         super_easy_perform(ceh, fd);
 
         // Free the header list
+        BESDEBUG(MODULE, prolog << "Cleanup request headers. Calling curl_slist_free_all()." << endl);
         curl_slist_free_all(req_headers);
-        if (ceh)
-            curl_easy_cleanup(ceh);
 
-        BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
+        if (ceh) {
+            curl_easy_cleanup(ceh);
+            BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
+        }
+
     }
     catch (...) {
         curl_slist_free_all(req_headers);
@@ -1206,6 +1209,8 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  */
 void http_get(const string &target_url, string &buf)
 {
+    BESDEBUG(MODULE, prolog << "BEGIN\n");
+
     vector<char> error_buffer(CURL_ERROR_SIZE);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
@@ -1237,21 +1242,26 @@ void http_get(const string &target_url, string &buf)
 
         super_easy_perform(ceh);
 
-        if (request_headers)
-            curl_slist_free_all(request_headers);
+        // Free the header list
+        BESDEBUG(MODULE, prolog << "Cleanup request headers. Calling curl_slist_free_all()." << endl);
+        curl_slist_free_all(request_headers);
 
-        curl_easy_cleanup(ceh);
+        if (ceh) {
+            curl_easy_cleanup(ceh);
+            BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
+        }
 
         buf.push_back('\0');    // add a trailing null byte
     }
     catch (...) {
-        if (request_headers)
-            curl_slist_free_all(request_headers);
+        curl_slist_free_all(request_headers);
         if (ceh) {
             curl_easy_cleanup(ceh);
         }
         throw;
     }
+    BESDEBUG(MODULE, prolog << "END\n");
+
 }
 
 /**
