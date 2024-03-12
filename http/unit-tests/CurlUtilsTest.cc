@@ -371,7 +371,7 @@ public:
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         curl_slist *headers = nullptr;
-        curl_slist *hdr_itr;
+        curl_slist *hdr_itr = nullptr;
 
         try {
             //CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
