@@ -305,7 +305,7 @@ bool SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
     if (fill_value.empty()==false) {
          auto dc = dynamic_cast<DmrppCommon *>(btp);
          if (!dc) {
-             Error("Expected to find a DmrppCommon instance but did not.");
+             ERROR("Expected to find a DmrppCommon instance but did not.");
              return false;
          }
         dc->set_uses_fill_value(true);
