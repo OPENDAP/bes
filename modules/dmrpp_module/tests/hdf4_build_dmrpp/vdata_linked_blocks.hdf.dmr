@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="vdata_linked_blocks.hdf">
+    <Float32 name="Solid_Particle_Mass">
+        <Dim size="4"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Solid_Particle2_Mass">
+        <Dim size="2"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </Float32>
+</Dataset>

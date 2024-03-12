@@ -586,11 +586,14 @@ size_t combine_linked_blocks_vdata( const vector<int>& lengths, const vector<int
 
     // Update the last length.
     merged_lengths.push_back(temp_length);
+
+#if 0
 for (int i = 0; i <merged_lengths.size(); i++) {
 cout <<"merged_lengths["<<i<<"]= "<<merged_lengths[i]<<endl;
 cout <<"merged_offsets["<<i<<"]= "<<merged_offsets[i]<<endl;
 
 }
+#endif
     return merged_lengths.size();
 
 }
@@ -624,8 +627,6 @@ bool  ingest_vdata_info_to_chunk(int32 file_id, int32 obj_ref, BaseType *btp) {
         int32 offset = 0;
         int32 length = 0; 
         VSgetdatainfo(vdata_id,0,1,&offset,&length);           
-cout <<"offset is: "<<offset <<endl;
-cout <<"length is: "<<length <<endl;
  
         auto dc = dynamic_cast<DmrppCommon *>(btp);
         if (!dc)
@@ -634,7 +635,6 @@ cout <<"length is: "<<length <<endl;
         auto *da = dynamic_cast<DmrppArray *>(btp);
         if (!da)
             throw BESInternalError("Expected to find a DmrppArray instance but did not.", __FILE__, __LINE__);
-cout <<"array length is: "<<da->width_ll()<<endl;
     
         if (da->width_ll() != (int64_t)length) 
             throw BESInternalError("The retrieved vdata size is no equal to the original size.", __FILE__, __LINE__);

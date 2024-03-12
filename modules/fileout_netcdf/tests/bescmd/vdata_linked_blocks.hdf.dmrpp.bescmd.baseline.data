@@ -1,0 +1,19 @@
+netcdf test {
+dimensions:
+	dim1 = 4 ;
+	dim2 = 2 ;
+variables:
+	float Solid_Particle_Mass(dim1) ;
+		Solid_Particle_Mass:dmr_vdata_ref = 2 ;
+	float Solid_Particle2_Mass(dim2) ;
+		Solid_Particle2_Mass:dmr_vdata_ref = 3 ;
+
+// global attributes:
+		:history = "removed date-timex vdata_linked_blocks.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"vdata_linked_blocks.hdf.dmrpp\"}]}]" ;
+data:
+
+ Solid_Particle_Mass = 0.1, 1.1, 10.1, 11.1 ;
+
+ Solid_Particle2_Mass = 10.1, 11.1 ;
+}
