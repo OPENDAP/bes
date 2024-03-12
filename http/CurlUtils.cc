@@ -942,9 +942,9 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url, unsig
         BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
 
         char *redirect_url = nullptr;
-        curl_code = curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &redirect_url);
-        if (curl_code != CURLE_OK)
-            throw BESInternalError("Error acquiring CURLINFO_REDIRECT_URL.", __FILE__, __LINE__);
+        //curl_code = curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &redirect_url);
+        //if (curl_code != CURLE_OK)
+        //    throw BESInternalError("Error acquiring CURLINFO_REDIRECT_URL.", __FILE__, __LINE__);
 
         if (redirect_url)
             BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
@@ -1020,6 +1020,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
         if (curl_success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
             http_success = eval_http_get_response(c_handle, target_url, http_code);
+            BESDEBUG(MODULE, prolog << "http_success: " << (http_success?"true":"false") << endl);
         }
         // If the curl_easy_perform failed, or if the http request failed, then
         // we keep trying until we have exceeded the retry_limit at which point we throw
