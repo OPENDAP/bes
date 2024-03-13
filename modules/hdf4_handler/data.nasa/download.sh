@@ -54,5 +54,43 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/PODAAC/
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GHRC/LISOTD_HRAC_V2.2.hdf
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MYD09.A2019003.2040.006.2019005020913.hdf
 
+#Cloud
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/3B42.20180802.03.7.HDF
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/3B42.20180802.03.7.HDF.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MOD03.A2000166.0255.061.2017173092154.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MOD03.A2000166.0255.061.2017173092154.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/AMSR_E_L2_Land_V09_200206190615_A.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/AMSR_E_L2_Land_V09_200206190615_A.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/AMSR_E_L3_SeaIce25km_V15_20020601.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/AMSR_E_L3_SeaIce25km_V15_20020601.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/MOD29.A2000166.0255.005.2008189120917.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/NSIDC/MOD29.A2000166.0255.005.2008189120917.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MOD11A1.A2024025.h10v06.061.2024028004317.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MOD11A1.A2024025.h10v06.061.2024028004317.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD19A1.A2024025.h10v06.061.2024027100206.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD19A1.A2024025.h10v06.061.2024027100206.hdf.dmrpp
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.dmrpp
+

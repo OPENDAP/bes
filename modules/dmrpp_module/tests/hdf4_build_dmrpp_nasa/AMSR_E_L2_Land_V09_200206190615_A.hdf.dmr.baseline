@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="AMSR_E_L2_Land_V09_200206190615_A.hdf">
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.14</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+END_GROUP=GridStructure
+GROUP=PointStructure
+	GROUP=POINT_1
+		PointName=&quot;AMSR-E Level 2B Land Data&quot;
+		GROUP=Level
+			GROUP=Level_0
+				LevelName=&quot;Land Parameters&quot;
+				OBJECT=PointField_1
+					PointFieldName=&quot;Time&quot;
+					DataType=DFNT_FLOAT64
+					Order=1
+				END_OBJECT=PointField_1
+				OBJECT=PointField_2
+					PointFieldName=&quot;Latitude&quot;
+					DataType=DFNT_FLOAT32
+					Order=1
+				END_OBJECT=PointField_2
+				OBJECT=PointField_3
+					PointFieldName=&quot;Longitude&quot;
+					DataType=DFNT_FLOAT32
+					Order=1
+				END_OBJECT=PointField_3
+				OBJECT=PointField_4
+					PointFieldName=&quot;Row_Index&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_4
+				OBJECT=PointField_5
+					PointFieldName=&quot;Column_Index&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_5
+				OBJECT=PointField_6
+					PointFieldName=&quot;TB_QC_Flag&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_6
+				OBJECT=PointField_7
+					PointFieldName=&quot;Heterogeneity_Index&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_7
+				OBJECT=PointField_8
+					PointFieldName=&quot;Surface_Type&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_8
+				OBJECT=PointField_9
+					PointFieldName=&quot;Soil_Moisture&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_9
+				OBJECT=PointField_10
+					PointFieldName=&quot;Veg_Water_Content&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_10
+				OBJECT=PointField_11
+					PointFieldName=&quot;Land_Surface_Temp&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_11
+				OBJECT=PointField_12
+					PointFieldName=&quot;Inversion_QC_Flag_1&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_12
+				OBJECT=PointField_13
+					PointFieldName=&quot;Inversion_QC_Flag_2&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_13
+				OBJECT=PointField_14
+					PointFieldName=&quot;Inversion_QC_Flag_3&quot;
+					DataType=DFNT_INT16
+					Order=1
+				END_OBJECT=PointField_14
+			END_GROUP=Level_0
+		END_GROUP=Level
+		GROUP=LevelLink
+		END_GROUP=LevelLink
+	END_GROUP=POINT_1
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Attribute name="CoreMetadata_0" type="String">
+        <Value>GROUP = INVENTORYMETADATA
+   GROUPTYPE = MASTERGROUP
+   GROUP = ECSDATAGRANULE
+      OBJECT = LOCALGRANULEID
+         NUM_VAL = 1
+         VALUE = &quot;AMSR_E_L2_Land_V09_200206190615_A.hdf&quot;
+      END_OBJECT = LOCALGRANULEID
+      OBJECT = PRODUCTIONDATETIME
+         NUM_VAL = 1
+         VALUE = &quot;2009-05-08T16:18:10Z&quot;
+      END_OBJECT = PRODUCTIONDATETIME
+      OBJECT = REPROCESSINGACTUAL
+         NUM_VAL = 1
+         VALUE = &quot;reprocessed once&quot;
+      END_OBJECT = REPROCESSINGACTUAL
+   END_GROUP = ECSDATAGRANULE
+   GROUP = MEASUREDPARAMETER
+      OBJECT = MEASUREDPARAMETERCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = PARAMETERNAME
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = &quot;Surface Soil Moisture&quot;
+         END_OBJECT = PARAMETERNAME
+         GROUP = QAFLAGS
+            CLASS = &quot;1&quot;
+            OBJECT = AUTOMATICQUALITYFLAG
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Passed&quot;
+            END_OBJECT = AUTOMATICQUALITYFLAG
+            OBJECT = AUTOMATICQUALITYFLAGEXPLANATION
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Program Execution Completed&quot;
+            END_OBJECT = AUTOMATICQUALITYFLAGEXPLANATION
+            OBJECT = OPERATIONALQUALITYFLAG
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Not Investigated&quot;
+            END_OBJECT = OPERATIONALQUALITYFLAG
+            OBJECT = OPERATIONALQUALITYFLAGEXPLANATION
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Currently not used&quot;
+            END_OBJECT = OPERATIONALQUALITYFLAGEXPLANATION
+            OBJECT = SCIENCEQUALITYFLAG
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Not Investigated&quot;
+            END_OBJECT = SCIENCEQUALITYFLAG
+            OBJECT = SCIENCEQUALITYFLAGEXPLANATION
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Currently not used&quot;
+            END_OBJECT = SCIENCEQUALITYFLAGEXPLANATION
+         END_GROUP = QAFLAGS
+         GROUP = QASTATS
+            CLASS = &quot;1&quot;
+            OBJECT = QAPERCENTMISSINGDATA
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = 0
+            END_OBJECT = QAPERCENTMISSINGDATA
+            OBJECT = QAPERCENTOUTOFBOUNDSDATA
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = 0
+            END_OBJECT = QAPERCENTOUTOFBOUNDSDATA
+         END_GROUP = QASTATS
+      END_OBJECT = MEASUREDPARAMETERCONTAINER
+   END_GROUP = MEASUREDPARAMETER
+   GROUP = ORBITCALCULATEDSPATIALDOMAIN
+      OBJECT = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = ORBITALMODELNAME
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = &quot;WRS-2&quot;
+         END_OBJECT = ORBITALMODELNAME
+         OBJECT = STARTORBITNUMBER
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = 670
+         END_OBJECT = STARTORBITNUMBER
+         OBJECT = STOPORBITNUMBER
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = 671
+         END_OBJECT = STOPORBITNUMBER
+         OBJECT = EQUATORCROSSINGLONGITUDE
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = 103.00
+         END_OBJECT = EQUATORCROSSINGLONGITUDE
+         OBJECT = EQUATORCROSSINGTIME
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = &quot;06:42:58.95Z&quot;
+         END_OBJECT = EQUATORCROSSINGTIME
+         OBJECT = EQUATORCROSSINGDATE
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = &quot;2002-06-19&quot;
+         END_OBJECT = EQUATORCROSSINGDATE
+      END_OBJECT = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+   END_GROUP = ORBITCALCULATEDSPATIALDOMAIN
+   GROUP = COLLECTIONDESCRIPTIONCLASS
+      OBJECT = SHORTNAME
+         NUM_VAL = 1
+         VALUE = &quot;AE_Land&quot;
+      END_OBJECT = SHORTNAME
+      OBJECT = VERSIONID
+         NUM_VAL = 1
+         VALUE = 2
+      END_OBJECT = VERSIONID
+   END_GROUP = COLLECTIONDESCRIPTIONCLASS
+   GROUP = INPUTGRANULE
+      OBJECT = INPUTPOINTER
+         NUM_VAL = 1
+         VALUE = &quot;AMSR_E_L2A_BrightnessTemperatures_V10_200206190615_A.hdf&quot;
+      END_OBJECT = INPUTPOINTER
+   END_GROUP = INPUTGRANULE
+   GROUP = SPATIALDOMAINCONTAINER
+      GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+         GROUP = GPOLYGON
+            OBJECT = GPOLYGONCONTAINER
+               CLASS = &quot;1&quot;
+               GROUP = GRING
+                  CLASS = &quot;1&quot;
+                  OBJECT = EXCLUSIONGRINGFLAG
+                     NUM_VAL = 1
+                     CLASS = &quot;1&quot;
+                     VALUE = &quot;N&quot;
+                  END_OBJECT = EXCLUSIONGRINGFLAG
+               END_GROUP = GRING
+               GROUP = GRINGPOINT
+                  CLASS = &quot;1&quot;
+                  OBJECT = GRINGPOINTLATITUDE
+                     NUM_VAL = 8
+                     CLASS = &quot;1&quot;
+                     VALUE = (90.0, 0.0, -90.0, -90.0, -90.0, 0.0, 90.0, 90.0)
+                  END_OBJECT = GRINGPOINTLATITUDE
+                  OBJECT = GRINGPOINTLONGITUDE
+                     NUM_VAL = 8
+                     CLASS = &quot;1&quot;
+                     VALUE = (179.0, 179.0, 179.0, 0.0, -179.0, -179.0, -179.0, 0.0)
+                  END_OBJECT = GRINGPOINTLONGITUDE
+                  OBJECT = GRINGPOINTSEQUENCENO
+                     NUM_VAL = 8
+                     CLASS = &quot;1&quot;
+                     VALUE = (1, 2, 3, 4, 5, 6, 7, 8)
+                  END_OBJECT = GRINGPOINTSEQUENCENO
+               END_GROUP = GRINGPOINT
+            END_OBJECT = GPOLYGONCONTAINER
+         END_GROUP = GPOLYGON
+      END_GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+   END_GROUP = SPATIALDOMAINCONTAINER
+   GROUP = RANGEDATETIME
+      OBJECT = RANGEBEGINNINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2002-06-19&quot;
+      END_OBJECT = RANGEBEGINNINGDATE
+      OBJECT = RANGEBEGINNINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;06:15:50.08Z&quot;
+      END_OBJECT = RANGEBEGINNINGTIME
+      OBJECT = RANGEENDINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2002-06-19&quot;
+      END_OBJECT = RANGEENDINGDATE
+      OBJECT = RANGEENDINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;07:05:49.85Z&quot;
+      END_OBJECT = RANGEENDINGTIME
+   END_GROUP = RANGEDATETIME
+   GROUP = PGEVERSIONCLASS
+      OBJECT = PGEVERSION
+         NUM_VAL = 1
+         VALUE = &quot;09&quot;
+      END_OBJECT = PGEVERSION
+   END_GROUP = PGEVERSIONCLASS
+   GROUP = ADDITIONALATTRIBUTES
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;1&quot;
+            NUM_VAL = 1
+            VALUE = &quot;AscendingDescendingFlg&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;1&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Ascending&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;2&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;2&quot;
+            NUM_VAL = 1
+            VALUE = &quot;NominalPassIndex&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;2&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;2&quot;
+               VALUE = &quot;103&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;3&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;3&quot;
+            NUM_VAL = 1
+            VALUE = &quot;StartingPolygonNumber&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;3&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;3&quot;
+               VALUE = &quot;1&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;4&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;4&quot;
+            NUM_VAL = 1
+            VALUE = &quot;EndingPolygonNumber&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;4&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;4&quot;
+               VALUE = &quot;18&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+   END_GROUP = ADDITIONALATTRIBUTES
+END_GROUP = INVENTORYMETADATA
+END
+</Value>
+    </Attribute>
+    <Group name="AMSR_E_Level_2B_Land_Data">
+        <Byte name="LevelWritten">
+            <Dim size="8"/>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>3</Value>
+            </Attribute>
+            <dmrpp:chunks byteOrder="BE">
+                <dmrpp:chunk offset="2502" nBytes="8"/>
+            </dmrpp:chunks>
+        </Byte>
+        <Group name="Data_Vgroup">
+            <Structure name="Land_Parameters">
+                <Float64 name="Time"/>
+                <Float32 name="Latitude"/>
+                <Float32 name="Longitude"/>
+                <Int16 name="Row_Index"/>
+                <Int16 name="Column_Index"/>
+                <Int16 name="TB_QC_Flag"/>
+                <Int16 name="Heterogeneity_Index"/>
+                <Int16 name="Surface_Type"/>
+                <Int16 name="Soil_Moisture"/>
+                <Int16 name="Veg_Water_Content"/>
+                <Int16 name="Land_Surface_Temp"/>
+                <Int16 name="Inversion_QC_Flag_1"/>
+                <Int16 name="Inversion_QC_Flag_2"/>
+                <Int16 name="Inversion_QC_Flag_3"/>
+                <Dim size="25217"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>7</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:block offset="2571" nBytes="38"/>
+                    <dmrpp:block offset="3215" nBytes="61440"/>
+                    <dmrpp:block offset="64689" nBytes="65536"/>
+                    <dmrpp:block offset="130259" nBytes="65536"/>
+                    <dmrpp:block offset="195829" nBytes="65536"/>
+                    <dmrpp:block offset="261399" nBytes="65536"/>
+                    <dmrpp:block offset="326969" nBytes="65536"/>
+                    <dmrpp:block offset="392539" nBytes="65536"/>
+                    <dmrpp:block offset="458109" nBytes="65536"/>
+                    <dmrpp:block offset="523679" nBytes="65536"/>
+                    <dmrpp:block offset="589249" nBytes="65536"/>
+                    <dmrpp:block offset="654819" nBytes="65536"/>
+                    <dmrpp:block offset="720389" nBytes="12288"/>
+                    <dmrpp:block offset="735083" nBytes="53248"/>
+                    <dmrpp:block offset="788365" nBytes="65536"/>
+                    <dmrpp:block offset="853935" nBytes="65536"/>
+                    <dmrpp:block offset="919505" nBytes="44800"/>
+                </dmrpp:chunks>
+            </Structure>
+        </Group>
+        <Group name="Linkage_Vgroup"/>
+        <Group name="Point_Attributes"/>
+    </Group>
+</Dataset>

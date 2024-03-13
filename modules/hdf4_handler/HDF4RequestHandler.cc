@@ -103,7 +103,7 @@ void close_hdf4_fileid(const int sdfd,const int fileid,HDFSP::File*h4file);
 bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool rw_flag);
 bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string & hdf4_filename);
 
-bool HDF4RequestHandler::_direct_dmr               = false;
+bool HDF4RequestHandler::_direct_dmr               = true;
 
 // CF key
 bool HDF4RequestHandler::_usecf                    = false;

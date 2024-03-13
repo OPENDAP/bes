@@ -22,10 +22,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include "config.h"
 
 #include <iostream>
-#include <sstream>
 #include <memory>
 #include <iterator>
 #include <unordered_set>
@@ -52,15 +50,16 @@
 #include "D4ParserSax2.h"
 
 #define COMP_INFO 512 /*!< Max buffer size for compression information.  */
-
+#if 0
 #define FAIL_ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; exit(1); } while(false)
+#endif
+
 #define ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; } while(false)
 
 /*
  * Hold mapping information for SDS objects.
  */
 using SD_mapping_info_t = struct {
-    char comp_info[COMP_INFO];  /*!< compression information */
     int32 nblocks;              /*!< number of data blocks in dataset */
     int32 *offsets;             /*!< offsets of data blocks */
     int32 *lengths;             /*!< lengths (in bytes) of data blocks */
@@ -194,11 +193,12 @@ write_chunk_position_in_array(int rank, const unsigned long long *lengths, const
 
 int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
 {
-    intn  info_count = 0;
     intn  ret_value = SUCCEED;
 
+#if 0
     /* Free any info before resetting. */
     SDfree_mapping_info(map_info);
+#endif
     /* Reset map_info. */
     /* HDmemset(map_info, 0, sizeof(SD_mapping_info_t)); */
 
@@ -206,9 +206,10 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
     /* map_info->id = sdsid; */
 
     // First check if this chunk/data stream has any block of data.
-    info_count = SDgetdatainfo(sdsid, origin, 0, 0, nullptr, nullptr);
+    intn info_count = SDgetdatainfo(sdsid, origin, 0, 0, nullptr, nullptr);
     if (info_count == FAIL) {
-        FAIL_ERROR("SDgetedatainfo() failed in read_chunk().\n");
+        ERROR("SDgetedatainfo() failed in read_chunk().\n");
+        return FAIL;
     }
 
     // If we find it has data, retrieve the offsets and length information for this chunk or data stream.
@@ -216,11 +217,13 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
         map_info->nblocks = (int32) info_count;
         map_info->offsets = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
         if (map_info->offsets == nullptr) {
-            FAIL_ERROR("HDmalloc() failed: Out of Memory");
+            ERROR("HDmalloc() failed: Out of Memory");
+            return FAIL;
         }
         map_info->lengths = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
         if (map_info->lengths == nullptr) {
-            FAIL_ERROR("HDmalloc() failed: Out of Memory");
+            ERROR("HDmalloc() failed: Out of Memory");
+            return FAIL;
         }
 
         ret_value = SDgetdatainfo(sdsid, origin, 0, info_count, map_info->offsets, map_info->lengths);
@@ -302,7 +305,7 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
 bool SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
 
     string fill_value = get_sds_fill_value_str(sdsid,datatype);
-    if (fill_value.empty()==false) {
+    if (!fill_value.empty()) {
          auto dc = dynamic_cast<DmrppCommon *>(btp);
          if (!dc) {
              ERROR("Expected to find a DmrppCommon instance but did not.");
@@ -445,7 +448,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             }
         }
         if (chunk_flag == HDF_COMP) {
-            // Add the deflate level. KY 02/20/24
+            // Add the deflated-compression level. KY 02/20/24
             if (comp_coder_type == COMP_CODE_DEFLATE) {
                 dc->ingest_compression_type("deflate");
                 vector<unsigned int> deflate_levels;
@@ -528,6 +531,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
                 }
                 scale = scale * steps[i];
             }
+            SDfree_mapping_info(&map_info);
         }
     }
     else if (chunk_flag == HDF_NONE) {
@@ -581,6 +585,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
             }
         }
+        SDfree_mapping_info(&map_info);
     }
     else {
         // TODO Handle the other cases. jhrg 12/7/23
