@@ -70,6 +70,10 @@ using namespace std;
 
 #define prolog std::string("CurlUtils::").append(__func__).append("() - ")
 
+#define USE_RESPONSE_HEADERS 1
+
+
+
 namespace curl {
 
 const unsigned int retry_limit = 3; // 10; // Amazon's suggestion
@@ -228,6 +232,8 @@ static size_t writeToOpenFileDescriptor(const char *data, size_t /* size */, siz
  * libcurl will report an error.
  */
 static size_t save_http_response_headers(void *ptr, size_t size, size_t nmemb, void *resp_hdrs) {
+
+#if USE_RESPONSE_HEADERS
     BESDEBUG(MODULE, prolog << "Inside the header parser." << endl);
     auto hdrs = static_cast<vector<string> * >(resp_hdrs);
 
@@ -243,6 +249,7 @@ static size_t save_http_response_headers(void *ptr, size_t size, size_t nmemb, v
         BESDEBUG(MODULE, prolog << "Header line: " << complete_line << endl);
         hdrs->push_back(complete_line);
     }
+#endif
 
     return size * nmemb;
 }
@@ -441,7 +448,7 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
     }
 
 
-    if (false /*http_response_hdrs*/) {
+    if (USE_RESPONSE_HEADERS && http_response_hdrs) {
         res = curl_easy_setopt(ceh, CURLOPT_HEADERFUNCTION, save_http_response_headers);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", error_buffer.data(), __FILE__, __LINE__);
 
@@ -511,8 +518,6 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
 
     res = curl_easy_setopt(ceh, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
     eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", error_buffer.data(), __FILE__, __LINE__);
-
-    // save_http_response_headers
 
     // Follow 302 (redirect) responses
     res = curl_easy_setopt(ceh, CURLOPT_FOLLOWLOCATION, 1L);
