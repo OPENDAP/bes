@@ -624,7 +624,7 @@ sign_url_for_s3_if_possible(const shared_ptr <url> &url, curl_slist *request_hea
  * @param requested_url The original URL that was set in the cURL handle prior to a call to curl_easy_perform.
  * @return  The value of CURLINFO_EFFECTIVE_URL from the cURL handle ceh.
  */
-static string get_effective_url(CURL *ceh, const string &requested_url) {
+static string get_effective_url(CURL *ceh, const string requested_url) {
     char *buff = nullptr;
     CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &buff);
     if (curl_code != CURLE_OK) {
