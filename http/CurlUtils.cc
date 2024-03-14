@@ -359,7 +359,7 @@ static bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url)
 
         if (using_proxy) {
             CURLcode res;
-            vector<char> error_buffer(CURL_ERROR_SIZE);
+            vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
 
             BESDEBUG(MODULE, prolog << "Setting up a proxy server." << endl);
             BESDEBUG(MODULE, prolog << "Proxy host: " << proxyHost << endl);
@@ -413,8 +413,7 @@ static bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url)
 // This is used in only one place.
 static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_request_headers,
                   vector <string> *http_response_hdrs) {
-    vector<char> error_buffer(CURL_ERROR_SIZE);
-    error_buffer[0] = 0; // Null terminate this string for safety.
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
     CURLcode res;
 
     if (!ceh)
@@ -1108,7 +1107,7 @@ cerr << prolog << "filter_aws_url{effective_url): " << filter_aws_url(effective_
 void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
                                  vector <string> *http_response_headers) {
 
-    vector<char> error_buffer(CURL_ERROR_SIZE);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
     CURLcode res;
     CURL *ceh = nullptr;
     curl_slist *req_headers = nullptr;
@@ -1123,12 +1122,14 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    // Add the EDL authorization headers if the Information is in the BES Context Manager
-    req_headers = add_edl_auth_headers(req_headers);
-
-    req_headers = sign_url_for_s3_if_possible(target_url, req_headers);
 
     try {
+
+        // Add the EDL authorization headers if the Information is in the BES Context Manager
+        req_headers = add_edl_auth_headers(req_headers);
+        // Add AWS credentials if they're available.
+        req_headers = sign_url_for_s3_if_possible(target_url, req_headers);
+
         // OK! Make the cURL handle
         ceh = init(target_url->str(), req_headers, http_response_headers);
 
@@ -1140,6 +1141,9 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
         // since curl 7.9.7 CURLOPT_FILE is the same as CURLOPT_WRITEDATA.
         res = curl_easy_setopt(ceh, CURLOPT_FILE, &fd);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FILE", error_buffer.data(), __FILE__, __LINE__);
+
+        // We do this because we know super_easy_perform() is going to set it.
+        unset_error_buffer(ceh);
 
         super_easy_perform(ceh, fd);
 
@@ -1155,8 +1159,9 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
     }
     catch (...) {
         curl_slist_free_all(req_headers);
-        if (ceh)
+        if (ceh) {
             curl_easy_cleanup(ceh);
+        }
         throw;
     }
 
@@ -1195,10 +1200,8 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * Dereference the target URL and put the response in buf.
  *
  * @note The intent here is to read data and store it directly into the string.
- * @see http_get(const string &target_url, vector<char> &buf) for a version that
- * uses a vector<char> to store the data. This version has not been tested to
- * show that the new data will be appended if the string is not empty. The vector<char>
- * version of http_get() will append data to the buf parameter.
+ * @see This version has not been tested to show that the new data will be
+ * appended if the string is not empty.
  *
  * @param target_url The URL to dereference.
  * @param buf The string into which to put the response. New data will be
@@ -1209,7 +1212,7 @@ void http_get(const string &target_url, string &buf)
 {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
-    vector<char> error_buffer(CURL_ERROR_SIZE);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
     curl_slist *request_headers = nullptr;
@@ -1235,6 +1238,9 @@ void http_get(const string &target_url, string &buf)
         // Pass this to write_data as the fourth argument ----------------------------------------------------------
         res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&buf));
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer.data(), __FILE__, __LINE__);
+
+        // We do this because we know super_easy_perform() is going to set it.
+        unset_error_buffer(ceh);
 
         super_easy_perform(ceh);
 
@@ -1517,9 +1523,8 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
  */
 static CURL *init_no_follow_redirects_handle(const string &target_url, const curl_slist *req_headers,
                                                  vector <string> &resp_hdrs, string &response_body) {
-    vector<char> error_buffer(CURL_ERROR_SIZE);
-    error_buffer[0] = '\0'; // null terminate empty string
 
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
     CURL *ceh = curl::init(target_url, req_headers, &resp_hdrs);
 
     set_error_buffer(ceh, error_buffer.data());
@@ -1675,7 +1680,7 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
     bool http_success = false;
     bool curl_success = false;
     CURL *ceh = nullptr;
-    vector<char> error_buffer(CURL_ERROR_SIZE);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
     curl_slist *req_headers = nullptr;
 
     vector<string> response_headers;
