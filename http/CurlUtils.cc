@@ -625,13 +625,17 @@ sign_url_for_s3_if_possible(const shared_ptr <url> &url, curl_slist *request_hea
  * @return  The value of CURLINFO_EFFECTIVE_URL from the cURL handle ceh.
  */
 static string get_effective_url(CURL *ceh, const string &requested_url) {
-    char *effective_url = nullptr;
-    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effective_url);
+    char *buff = nullptr;
+    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &buff);
     if (curl_code != CURLE_OK) {
         stringstream msg;
         msg << prolog << "Unable to determine CURLINFO_EFFECTIVE_URL! Requested URL: " << requested_url;
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+    string effective_url;
+    if(buff) {
+        effective_url = buff;
     }
     return effective_url;
 }
