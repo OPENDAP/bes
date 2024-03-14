@@ -985,7 +985,7 @@ static bool eval_http_get_response(CURL *ceh, const string &target_url, unsigned
             return true;
 
         default:
-            string last_accessed_url = get_effective_url(ceh, requested_url);
+            string last_accessed_url = get_effective_url(ceh, target_url);
             BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): "
                                     << filter_aws_url(last_accessed_url) << endl);
 
@@ -993,7 +993,7 @@ static bool eval_http_get_response(CURL *ceh, const string &target_url, unsigned
             // it throws an exception. Pass the unfiltered last_accessed_url because the
             // query string params might be needed to determine if the URL should be retried.
             // jhrg 4/20/23
-            process_http_code_helper(http_code, requested_url, last_accessed_url);
+            process_http_code_helper(http_code, target_url, last_accessed_url);
             return false;   // if we get here, retry the request
     }
 }
