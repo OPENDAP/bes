@@ -441,7 +441,7 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
     }
 
 
-    if (http_response_hdrs) {
+    if (false /*http_response_hdrs*/) {
         res = curl_easy_setopt(ceh, CURLOPT_HEADERFUNCTION, save_http_response_headers);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", error_buffer.data(), __FILE__, __LINE__);
 
