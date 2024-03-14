@@ -943,15 +943,15 @@ static void process_http_code_helper(long http_code, const string &requested_url
  * @throws BESInternalError When something really bad happens.
 */
 static bool eval_http_get_response(CURL *ceh, const string &target_url, unsigned int  &http_code) {
-    BESDEBUG(MODULE, prolog << "Requested URL: " << target_url << endl);
+    BESDEBUG(MODULE, prolog << "Target URL: " << target_url << endl);
 
     http_code = 0;
     CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
     if (curl_code != CURLE_OK)
         throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
 
-    BESDEBUG(MODULE, prolog << "requested_url: " << target_url << endl);
     BESDEBUG(MODULE, prolog << "http_code: " << http_code << endl);
+    BESDEBUG(MODULE, prolog << "target_url: " << target_url << endl);
 
     // Special case for file:// URLs. An HTTP Code is zero means success in that case. jhrg 4/20/23
     if (target_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
