@@ -635,8 +635,9 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
     }
     string effective_url;
     if(buff) {
-        effective_url = buff;
+        effective_url.append(buff);
     }
+    BESDEBUG(MODULE, prolog << "Got: " << effective_url << "\n");
     return effective_url;
 }
 
@@ -950,6 +951,7 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url, unsig
         throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
 
     BESDEBUG(MODULE, prolog << "http_code: " << http_code << endl);
+    BESDEBUG(MODULE, prolog << "requested_url: " << requested_url << endl);
 
     // Special case for file:// URLs. An HTTP Code is zero means success in that case. jhrg 4/20/23
     if (requested_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
