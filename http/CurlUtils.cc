@@ -1043,6 +1043,8 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     if (target_url.empty())
         throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
 
+    BESDEBUG(MODULE, prolog << "Found target_url: " << target_url << "\n");
+
     // This either works or throws an exception after retry_limit attempts
     while (!curl_success || !http_success) {
         ++attempts;
@@ -1051,8 +1053,9 @@ static void super_easy_perform(CURL *c_handle, int fd) {
 
         CURLcode curl_code = curl_easy_perform(c_handle);
         curl_success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer, attempts);
+        BESDEBUG(MODULE, prolog << "target_url: " << target_url << "\n");
 
-        BESDEBUG(MODULE, prolog << "curl_success: " << (curl_success?"true":"false") << endl);
+        BESDEBUG(MODULE, prolog << "curl_success: " << (curl_success?"true":"false") << " url: " << target_url << "\n");
         if (curl_success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
             http_success = eval_http_get_response(c_handle, target_url, http_code);
