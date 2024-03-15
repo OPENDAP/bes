@@ -1035,13 +1035,13 @@ static void super_easy_perform(CURL *c_handle, int fd) {
 #endif
 
     set_error_buffer(c_handle, error_buffer);
-    string some_empty_string;
-    string target_url = get_effective_url(c_handle, some_empty_string); // This is a trick to get the URL from the cURL handle.
+    // string some_empty_string;
+    string target_url = get_effective_url(c_handle, ""); // This is a trick to get the URL from the cURL handle.
     // We check the value of target_url to see if the URL was correctly set in the cURL handle.
     if (target_url.empty())
         throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
 
-    BESDEBUG(MODULE, prolog << "Found some_empty_string: " << some_empty_string << "\n");
+    //BESDEBUG(MODULE, prolog << "Found some_empty_string: " << some_empty_string << "\n");
     BESDEBUG(MODULE, prolog << "       Found target_url: " << target_url << "\n");
 
     // This either works or throws an exception after retry_limit attempts
