@@ -347,7 +347,7 @@ public:
         ac.add(AccessCredentials::URL_KEY, "http://never.org");
         curl_slist *headers = nullptr;
         DBG(cerr << prolog << "headers: " << (void *)headers << "\n");
-        curl_slist *hdr_itr;
+        curl_slist *hdr_itr = nullptr;
         try {
             CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be nullptr", headers == nullptr);
             hdr_itr = curl::sign_s3_url(target_url, &ac, headers);
@@ -826,9 +826,9 @@ public:
     CPPUNIT_TEST(http_get_test_4);
     CPPUNIT_TEST(http_get_test_4);
     CPPUNIT_TEST(http_get_test_4);
-    //CPPUNIT_TEST_EXCEPTION(http_get_test_4, HttpError);
-    //CPPUNIT_TEST_EXCEPTION(http_get_test_5, HttpError);
-    //CPPUNIT_TEST_EXCEPTION(http_get_test_6, HttpError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
 
     CPPUNIT_TEST(http_get_test_7);
 
