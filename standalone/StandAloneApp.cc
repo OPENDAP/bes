@@ -39,6 +39,8 @@
 #include <string>
 #include <vector>
 
+#include <libxml/parser.h>
+
 #include "StandAloneApp.h"
 #include "StandAloneClient.h"
 #include "BESError.h"

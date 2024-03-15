@@ -30,3 +30,6 @@
 /h5common.h
 
 /tests/timing_log*
+
+/tests/testsuite_dmrpp_builder_h4
+/build_dmrpp_h4/build_dmrpp_h4

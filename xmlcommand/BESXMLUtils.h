@@ -38,6 +38,7 @@
 #include <string>
 
 #include <libxml/encoding.h>
+#include <libxml/tree.h>
 
 class BESXMLUtils {
 private:

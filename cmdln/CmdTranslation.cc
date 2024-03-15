@@ -34,6 +34,8 @@
 #include <list>
 #include <map>
 
+#include <libxml/parser.h>
+
 using std::cerr;
 using std::cout;
 using std::list;

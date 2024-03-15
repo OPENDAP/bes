@@ -51,6 +51,7 @@
 
 #include <cstdio>
 #include <cassert>
+#include <cmath>
 #include <libgen.h>
 
 // STL includes
