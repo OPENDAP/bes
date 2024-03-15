@@ -76,7 +76,7 @@ public:
         DBG2( show_file(bes_conf));
         TheBESKeys::ConfigFile = bes_conf;
 
-        BESDebug::SetUp("cerr,bes,http,curl,curl:timing");
+        //BESDebug::SetUp("cerr,bes,http,curl,curl:timing");
 
         DBG( cerr << prolog << "END\n");
     }
