@@ -70,8 +70,9 @@ using namespace std;
 
 #define prolog std::string("CurlUtils::").append(__func__).append("() - ")
 
-#define USE_RESPONSE_HEADERS 0
+#define USE_RESPONSE_HEADERS 1
 #define USE_VECTOR_ERROR_BUFFER 0
+
 
 namespace curl {
 
