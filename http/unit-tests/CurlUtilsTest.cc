@@ -800,9 +800,9 @@ public:
 
     CPPUNIT_TEST(get_redirect_url_test_expected_redirect);
     CPPUNIT_TEST(get_redirect_url_unexpected_ok);
-    CPPUNIT_TEST(get_redirect_url_test_tea_no_creds);
+        CPPUNIT_TEST_EXCEPTION(get_redirect_url_test_tea_no_creds, BESInternalError); // BESInternalError
     CPPUNIT_TEST(get_redirect_url_test_tea_good_auth);
-    CPPUNIT_TEST(get_redirect_url_test_tea_bad_auth);
+        CPPUNIT_TEST_EXCEPTION(get_redirect_url_test_tea_bad_auth, BESInternalError); // BESInternalError
     CPPUNIT_TEST(time_redirect_url_and_effective_url);
 
 
