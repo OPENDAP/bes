@@ -67,10 +67,10 @@ public:
 
     // Called before each test
     void setUp() override {
+        // debug = true;
         DBG( cerr << "\n");
         DBG( cerr << prolog << "#-----------------------------------------------------------------\n");
         DBG( cerr << prolog << "BEGIN\n");
-        debug = true;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
         DBG( cerr << prolog << "Using BES configuration: " << bes_conf << "\n");
         DBG2( show_file(bes_conf));
