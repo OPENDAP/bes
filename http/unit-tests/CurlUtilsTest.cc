@@ -823,9 +823,6 @@ public:
     //CPPUNIT_TEST(http_get_test_vector_char_appended);
     // CPPUNIT_TEST(http_get_test_string_appended);
 
-    CPPUNIT_TEST(http_get_test_4);
-    CPPUNIT_TEST(http_get_test_4);
-    CPPUNIT_TEST(http_get_test_4);
     CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
     CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
     CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
