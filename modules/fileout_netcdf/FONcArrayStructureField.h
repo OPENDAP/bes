@@ -68,7 +68,7 @@ private:
     void obtain_scalar_data(char *data_buf_ptr, libdap::BaseType* b) const;
 public:
 
-    explicit FONcArrayStructureField(libdap::BaseType *b, libdap::Array* a);
+    explicit FONcArrayStructureField(libdap::BaseType *b, libdap::Array* a, bool is_netCDF4_enhanced);
     ~FONcArrayStructureField();
 
     void convert(vector<string> embed, bool _dap4=true, bool is_dap4_group=false) override;

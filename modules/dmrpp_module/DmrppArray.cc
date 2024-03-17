@@ -1346,7 +1346,7 @@ void DmrppArray::read_linked_blocks(){
         throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
 
     //Change to the total storage buffer size to just the compressed buffer size.
-    reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
+    //reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
 
     vector<unsigned long long> accumulated_lengths;
     accumulated_lengths.resize(num_linked_blocks);
@@ -1364,6 +1364,7 @@ void DmrppArray::read_linked_blocks(){
     for (unsigned int i = 1; i < num_linked_blocks; i++)
         accumulated_lengths[i] = individual_lengths[i-1] + accumulated_lengths[i-1];
 
+#if 0
     char *target_buffer = get_buf();
 
     for(const auto& chunk: get_immutable_chunks()) {
@@ -1373,25 +1374,74 @@ void DmrppArray::read_linked_blocks(){
         const char *source_buffer = chunk->get_rbuf();
         memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
     }
+#endif
 
-    string filters_string = this->get_filters();
-    if (filters_string.find("deflate")!=string::npos) {
-        char *in_buf = get_buf();
+    if (this->var()->type() == dods_structure_c) {
 
-        char **destp = nullptr;
-        char *dest_deflate = nullptr;
-        unsigned long long out_buf_size = 0;
-        unsigned long long dest_len = get_var_chunks_storage_size();
-        unsigned long long src_len = get_var_chunks_storage_size();
-        dest_deflate = new char[dest_len];
-        destp = &dest_deflate;
-        inflate_simple(destp, dest_len, in_buf, src_len);
-        
-        this->clear_local_data();
-        reserve_value_capacity_ll_byte(this->width_ll());
-        char *out_buf = get_buf();
-        memcpy(out_buf,dest_deflate,this->width_ll());
-        delete []dest_deflate; 
+        string filters_str = this->get_filters();
+        if (filters_str.find("deflate")!=string::npos) 
+            throw InternalErr(__FILE__, __LINE__, "We don't handle compressed array of structure now.");
+
+        // Check if we can handle this case. 
+        // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+        bool can_handle_struct = check_struct_handling();
+        if (!can_handle_struct) 
+            throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+
+        vector<char> values;
+        values.resize(get_var_chunks_storage_size());
+        char *target_buffer = values.data();
+    
+        for(const auto& chunk: get_immutable_chunks()) {
+            chunk->read_chunk();
+            BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
+            BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
+            const char *source_buffer = chunk->get_rbuf();
+            memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
+        }
+
+#if 0
+        char *buf_value = the_one_chunk->get_rbuf();
+        unsigned long long value_size = the_one_chunk->get_size();
+        vector<char> values(buf_value,buf_value+value_size);
+#endif
+        read_array_of_structure(values);
+    }
+    else {
+
+        //Change to the total storage buffer size to just the compressed buffer size.
+        reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
+
+
+        char *target_buffer = get_buf();
+    
+        for(const auto& chunk: get_immutable_chunks()) {
+            chunk->read_chunk();
+            BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
+            BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
+            const char *source_buffer = chunk->get_rbuf();
+            memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
+        }
+        string filters_string = this->get_filters();
+        if (filters_string.find("deflate")!=string::npos) {
+    
+            char *in_buf = get_buf();
+    
+            char **destp = nullptr;
+            char *dest_deflate = nullptr;
+            unsigned long long out_buf_size = 0;
+            unsigned long long dest_len = get_var_chunks_storage_size();
+            unsigned long long src_len = get_var_chunks_storage_size();
+            dest_deflate = new char[dest_len];
+            destp = &dest_deflate;
+            inflate_simple(destp, dest_len, in_buf, src_len);
+            
+            this->clear_local_data();
+            reserve_value_capacity_ll_byte(this->width_ll());
+            char *out_buf = get_buf();
+            memcpy(out_buf,dest_deflate,this->width_ll());
+            delete []dest_deflate; 
+        }
     }
 
 
@@ -2390,7 +2440,13 @@ bool DmrppArray::read()
         else {  // Handle the more complex case where the data is chunked.
             if (get_using_linked_block()) {
                 BESDEBUG(MODULE, prolog << "Reading data linked blocks" << endl);
-                array_to_read->read_linked_blocks();
+                if (!array_to_read->is_projected()) {
+                    array_to_read->read_linked_blocks();
+                }
+                else {
+                    throw BESInternalFatalError(prolog + "Not support data subset when linked blocks are used. ",
+                                            __FILE__, __LINE__);
+                }
             }
             else
             {
