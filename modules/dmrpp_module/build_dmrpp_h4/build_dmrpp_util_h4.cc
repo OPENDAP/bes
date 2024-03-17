@@ -222,6 +222,7 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
         }
         map_info->lengths = (int32 *)HDmalloc(sizeof(int32)*map_info->nblocks);
         if (map_info->lengths == nullptr) {
+            HDfree(map_info->offsets);
             ERROR("HDmalloc() failed: Out of Memory");
             return FAIL;
         }
