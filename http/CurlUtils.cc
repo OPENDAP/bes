@@ -904,7 +904,7 @@ static void process_http_code_helper(long http_code, const string &requested_url
  * @return true if at all worked out, false if it didn't and a retry is reasonable.
  * @throws BESInternalError When something really bad happens.
 */
-static bool eval_http_get_response(CURL *ceh, const string &requested_url, long &http_code) {
+static bool eval_http_get_response(CURL *ceh, const string &requested_url, unsigned int &http_code) {
     BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
 
     http_code = 0;
@@ -972,31 +972,40 @@ static void truncate_file(int fd) {
 
 // Used here only. jhrg 3/8/23
 static void super_easy_perform(CURL *c_handle, int fd) {
+    BESDEBUG(MODULE, prolog << "BEGIN\n");
+
+    useconds_t retry_time = url_retry_time; // 0.25 seconds
+    bool curl_success{false};
+    bool http_success{false};
+    unsigned int http_code{0};
+    unsigned int attempts{0};
+
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+    set_error_buffer(c_handle, error_buffer.data());
+
     string target_url = get_effective_url(c_handle, ""); // This is a trick to get the URL from the cURL handle.
     // We check the value of target_url to see if the URL was correctly set in the cURL handle.
     if (target_url.empty())
         throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
 
-    vector<char> error_buffer(CURL_ERROR_SIZE, 0);
-    set_error_buffer(c_handle, error_buffer.data());
-    unsigned int attempts = 0;
-    useconds_t retry_time = url_retry_time; // 0.25 seconds
-    bool success;
-    long http_code;
-    do {
+    // This either works or throws an exception after retry_limit attempts
+    while (!curl_success || !http_success) {
         ++attempts;
         BESDEBUG(MODULE,
                  prolog << "Requesting URL: " << filter_aws_url(target_url) << " attempt: " << attempts << endl);
 
         CURLcode curl_code = curl_easy_perform(c_handle);
-        success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
-        if (success) {
+        curl_success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
+        BESDEBUG(MODULE, prolog << "curl_success: " << (curl_success?"true":"false") << endl);
+        if (curl_success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
-            success = eval_http_get_response(c_handle, target_url, http_code);
+            http_success = eval_http_get_response(c_handle, target_url, http_code);
+            BESDEBUG(MODULE, prolog << "http_success: " << (http_success?"true":"false") << endl);
         }
-        // If the curl_easy_perform failed, or if the http request failed then
-        // we keep trying until we have exceeded the retry_limit.
-        if (!success) {
+        // If the curl_easy_perform failed, or if the http request failed, then
+        // we keep trying until we have exceeded the retry_limit at which point we throw
+        // an exception.
+        if (!curl_success || !http_success) {
             string effective_url;
             try {
                 effective_url = filter_aws_url(get_effective_url(c_handle, target_url));
@@ -1011,13 +1020,33 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 msg << "CURLINFO_EFFECTIVE_URL: " << effective_url << " ";
                 msg << "Returned HTTP_STATUS: " << http_code;
                 ERROR_LOG(msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+#if 0
+                throw HttpError(msg.str(),
+                                curl_code,
+                                http_code,
+                                target_url,
+                                effective_url,
+                                __FILE__, __LINE__);
+#else
+                throw BESInternalError(msg.str(),__FILE__,__LINE__);
+#endif
+
             }
             else {
+#if 0
+cerr << prolog << "                          url: " << target_url << "\n";
+cerr << prolog << "                     attempts: " << attempts << "\n";
+cerr << prolog << "                    http_code: " << http_code << "\n";
+cerr << prolog << "                   target_url: " << target_url << "\n";
+cerr << prolog << "   filter_aws_url{target_url): " << filter_aws_url(target_url) << "\n";
+cerr << prolog << "                effective_url: " << effective_url << "\n";
+cerr << prolog << "filter_aws_url{effective_url): " << filter_aws_url(effective_url) << "\n";
+#endif
+
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
                                  << filter_aws_url(target_url) << " attempt: " << attempts << "). "
                                   << "CURLINFO_EFFECTIVE_URL: " << effective_url << " "
-                                  << "Returned HTTP_STATUS: " << http_code << endl);
+                                  << "Returned HTTP_STATUS: " << http_code << "\n");
                 usleep(retry_time);
                 retry_time *= 2;
 
@@ -1025,17 +1054,21 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                     truncate_file(fd);
             }
         }
-    } while (!success);
+    }
+
+    // Unset the buffer before it goes out of scope
+    unset_error_buffer(c_handle);
+
+    BESDEBUG(MODULE, prolog << "cURL operations completed. fd: " << fd << "\n");
 
     // rewind the file, if the descriptor is valid
     if (fd >= 0) {
+        BESDEBUG(MODULE, prolog << "Rewinding fd(" << fd << ")\n");
         auto status = lseek(fd, 0, SEEK_SET);
         if (-1 == status)
             throw BESInternalError("Could not seek within the response file.", __FILE__, __LINE__);
     }
-
-    // Unset the buffer as it goes out of scope
-    unset_error_buffer(c_handle);
+    BESDEBUG(MODULE, prolog << "END\n");
 }
 
 /**
