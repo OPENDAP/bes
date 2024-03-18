@@ -942,7 +942,7 @@ static void process_http_code_helper(long http_code, const string &requested_url
  * @return true if at all worked out, false if it didn't and a retry is reasonable.
  * @throws BESInternalError When something really bad happens.
 */
-static bool eval_http_get_response(CURL *ceh, const string target_url, unsigned int  &http_code) {
+static bool eval_http_get_response(CURL *ceh, const string target_url, long  &http_code) {
     BESDEBUG(MODULE, prolog << "Target URL: " << target_url << endl);
 
     http_code = 0;
@@ -1023,7 +1023,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     useconds_t retry_time = url_retry_time; // 0.25 seconds
     bool curl_success{false};
     bool http_success{false};
-    unsigned int http_code{0};
+    long http_code{0};
     unsigned int attempts{0};
 
     char *error_buffer;

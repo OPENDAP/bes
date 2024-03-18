@@ -41,7 +41,7 @@ namespace http {
 
 class HttpError : public BESError {
     CURLcode d_curl_code = CURLE_OK;
-    unsigned int d_http_status;
+    long d_http_status;
     std::string d_origin_url;
     std::string d_redirect_url;
     std::vector<std::string> d_response_headers;
@@ -51,7 +51,7 @@ public:
     HttpError() = default;
     HttpError(const std::string msg,
               const CURLcode code,
-              const unsigned int http_status,
+              const long http_status,
               const std::string origin_url,
               const std::string redirect_url,
               const std::vector<std::string> response_headers,
@@ -69,7 +69,7 @@ public:
 
     HttpError(const std::string msg,
               const CURLcode code,
-              const unsigned int http_status,
+              const long http_status,
               const std::string origin_url,
               const std::string redirect_url,
               const std::string file,
@@ -92,7 +92,7 @@ public:
     std::string origin_url() const { return d_origin_url; }
     std::string redirect_url() const { return d_redirect_url; }
     CURLcode curl_code() const { return d_curl_code; }
-    unsigned int http_status() const { return d_http_status; }
+    long http_status() const { return d_http_status; }
     std::vector<std::string> response_headers() const { return d_response_headers; }
     std::string response_body() const { return d_response_body; }
 
