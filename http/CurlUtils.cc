@@ -176,15 +176,6 @@ static string getCurlAuthTypeName(unsigned long auth_type) {
     return authTypeString;
 }
 
-#if 0
-/**
- * @brief A libcurl callback function that ignores the data entirely. nothing is written. Ever.
- */
-static size_t writeNothing(const char */* data */, size_t /* size */, size_t nmemb, const void * /* userdata */) {
-    return nmemb;
-}
-#endif
-
 /**
  * libcurl call back function that is used to write data to a passed open file descriptor (that would
  * be instead of the default open FILE *)
@@ -828,59 +819,6 @@ static void process_http_code_helper(const unsigned int  http_code, const string
     }
 }
 
-#if 0
-static void process_http_code_helper(long http_code, const string &requested_url, const string &last_accessed_url) {
-    stringstream msg;
-    if (http_code >= 400) {
-        msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << filter_aws_url(last_accessed_url) << " ";
-        BESDEBUG(MODULE, prolog << msg.str() << endl);
-    }
-
-    msg << "The response had an HTTP status of " << http_code;
-    msg << " which means " << http_status_to_string(http_code) << "";
-
-    switch (http_code) {
-        case 400: // Bad Request
-            ERROR_LOG(msg.str() << endl);
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-
-        case 401: // Unauthorized
-        case 402: // Payment Required
-        case 403: // Forbidden
-            ERROR_LOG(msg.str() << endl);
-            throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-
-        case 404: // Not Found
-            ERROR_LOG(msg.str() << endl);
-            throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
-
-        case 408: // Request Timeout
-            ERROR_LOG(msg.str() << endl);
-            throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
-
-        case 422: // Unprocessable Entity
-        case 500: // Internal server error
-        case 502: // Bad Gateway
-        case 503: // Service Unavailable
-        case 504: // Gateway Timeout
-            if (!is_retryable(last_accessed_url)) {
-                msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
-                ERROR_LOG(msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-            else {
-                msg << " The HTTP response code of this last accessed URL indicate that it should be retried.";
-                BESDEBUG(MODULE, prolog << msg.str() << endl);
-            }
-            break;
-
-        default:
-            ERROR_LOG(msg.str() << endl);
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
-}
-#endif
 /**
  * @brief Evaluates the HTTP semantics of a the result of issuing a cURL GET request.
  *
@@ -1049,16 +987,6 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                                 __FILE__, __LINE__);
             }
             else {
-#if 0
-cerr << prolog << "                          url: " << target_url << "\n";
-cerr << prolog << "                     attempts: " << attempts << "\n";
-cerr << prolog << "                    http_code: " << http_code << "\n";
-cerr << prolog << "                   target_url: " << target_url << "\n";
-cerr << prolog << "   filter_aws_url{target_url): " << filter_aws_url(target_url) << "\n";
-cerr << prolog << "                effective_url: " << effective_url << "\n";
-cerr << prolog << "filter_aws_url{effective_url): " << filter_aws_url(effective_url) << "\n";
-#endif
-
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
                                  << filter_aws_url(target_url) << " attempt: " << attempts << "). "
                                   << "CURLINFO_EFFECTIVE_URL: " << effective_url << " "

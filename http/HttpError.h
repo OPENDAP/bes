@@ -98,16 +98,20 @@ public:
 
     void add_my_error_details_to(BESInfo &info) const override;
 
-    /** @brief dumps information about this object
- *
- * Displays the pointer value of this instance along with the exception
- * message, the file from which the exception was generated, and the line
- * number in that file.
- *
- * @param strm C++ i/o stream to dump the information to
- */
+    /**
+     * @brief Returns a string describing this object and its state.
+     * @return
+     */
     std::string dump() const;
 
+    /** @brief dumps information about this object
+     *
+     * Displays the pointer value of this instance along with the exception
+     * message, the file from which the exception was generated, and the line
+     * number in that file.
+     *
+     * @param strm C++ i/o stream to dump the information to
+     */
     void dump(std::ostream &strm) const override
     {
         strm << dump();

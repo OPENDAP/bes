@@ -385,22 +385,6 @@ public:
         DBG( cerr << prolog << "END\n");
     }
 
-#if 0
-    // Test the http_get() function that extends as needed a vector<char>
-    void http_get_test_vector_char() {
-        const string url = "http://test.opendap.org/opendap.conf";
-        vector<char> buf;
-        curl::http_get(url, buf);
-
-        DBG(cerr << "buf.data() = " << string(buf.data()) << "\n");
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(buf.data()).find("<Proxy *>") == 0);
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
-                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
-                               string::npos);
-        DBG(cerr << "buf.size() = " << buf.size() << "\n");
-        CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288);
-    }
-#endif
     // Test the http_get() function that extends as needed a C++ std::string
     void http_get_test_string() {
         DBG( cerr << prolog << "BEGIN\n");
@@ -419,51 +403,6 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288);
         DBG( cerr << prolog << "END\n");
     }
-#if 0
-    // Test the http_get() function that extends as needed a vector<char>.
-    // This what happens if the vector already holds data - it should be
-    // retained.
-    void http_get_test_vector_char_appended() {
-        const string url = "http://test.opendap.org/opendap.conf";
-        vector<char> buf;
-        const string twimc = "To whom it may concern:";
-        buf.resize(twimc.size());
-        memcpy(buf.data(), twimc.c_str(), twimc.size());
-        curl::http_get(url, buf);
-
-        DBG(cerr << "buf.data() = " << string(buf.data()) << "\n");
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>",
-                               string(buf.data()).find("<Proxy *>") == twimc.size());
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
-                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
-                               string::npos);
-
-        DBG(cerr << "twimc.size() = " << twimc.size() << "\n");
-        DBG(cerr << "buf.size() = " << buf.size() << "\n");
-        CPPUNIT_ASSERT_MESSAGE("Size should be 288", buf.size() == 288 + twimc.size());
-    }
-#endif
-#if 0
-    void http_get_test_string_appended() {
-        const string url = "http://test.opendap.org/opendap.conf";
-        vector<char> str;
-        const string twimc = "To whom it may concern:";
-        str.resize(twimc.size());
-        memcpy(str.data(), twimc.c_str(), twimc.size());
-        curl::http_get(url, str);
-
-        DBG(cerr << "str.data() = " << string(str.data()) << "\n");
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>",
-                               string(str.data()).find("<Proxy *>") == twimc.size());
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
-                               string(str.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
-                               string::npos);
-
-        DBG(cerr << "twimc.size() = " << twimc.size() << "\n");
-        DBG(cerr << "str.size() = " << str.size() << "\n");
-        CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288 + twimc.size());
-    }
-#endif
 
     // This test is to an S3 bucket and must be signed. Use the ENV_CRED
     // option of CredentialsManager. The environment variables are:
