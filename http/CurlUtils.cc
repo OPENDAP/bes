@@ -1263,24 +1263,19 @@ void http_get(const string &target_url, string &buf)
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
     char *error_buffer;
-#if USE_VECTOR_ERROR_BUFFER
-    vector<char> eb(CURL_ERROR_SIZE, (char)0);
-    error_buffer = eb.data();
-#else
     char eb[CURL_ERROR_SIZE];
     error_buffer = eb;
-#endif
 
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
     curl_slist *request_headers = nullptr;
 
     try {
-    // Add the authorization headers
-    request_headers = add_edl_auth_headers(request_headers);
+        // Add the authorization headers
+        request_headers = add_edl_auth_headers(request_headers);
 
-    auto url = std::make_shared<http::url>(target_url);
-    request_headers = sign_url_for_s3_if_possible(url, request_headers);
+        auto url = std::make_shared<http::url>(target_url);
+        request_headers = sign_url_for_s3_if_possible(url, request_headers);
 
         ceh = curl::init(target_url, request_headers, nullptr);
         if (!ceh)
@@ -1302,14 +1297,15 @@ void http_get(const string &target_url, string &buf)
 
         super_easy_perform(ceh);
 
-        // Free the header list
-        BESDEBUG(MODULE, prolog << "Cleanup request headers. Calling curl_slist_free_all()." << endl);
-            curl_slist_free_all(request_headers);
 
-        if (ceh) {
+        // Free the header list
+        BESDEBUG(MODULE, prolog << "Calling curl_slist_free_all()." << endl);
+        curl_slist_free_all(request_headers);
+        BESDEBUG(MODULE, prolog << "Cleaned request headers." << endl);
+
+        BESDEBUG(MODULE, prolog << "Calling curl_easy_cleanup()." << endl);
         curl_easy_cleanup(ceh);
-            BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
-        }
+        BESDEBUG(MODULE, prolog << "Cleaned up cURL easy handle." << endl);
 
         buf.push_back('\0');    // add a trailing null byte
     }
