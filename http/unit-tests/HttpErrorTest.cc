@@ -226,7 +226,7 @@ public:
                 string msg("Test Error");
                 string origin("http://someserver.somewhere.org");
                 string redirect("https://someserver.somewhere.org/");
-                auto http_error = http::HttpError(msg, CURLE_OK, 302, origin, redirect, __FILE__, __LINE__);
+                http::HttpError http_error(msg, CURLE_OK, 302, origin, redirect, __FILE__, __LINE__);
                 //throw http_error;
                 BESDataHandlerInterface dhi;
                 BESXMLInfo bi;

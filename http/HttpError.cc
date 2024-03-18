@@ -12,12 +12,8 @@ namespace http {
 
 
 void HttpError::add_my_error_details_to(BESInfo &info) const {
-    std::stringstream msg;
-    msg << d_curl_code;
-    info.add_tag("curl_code", msg.str());
-    msg.str("");
-    msg << d_http_status;
-    info.add_tag("http_status", msg.str());
+    info.add_tag("curl_code", std::to_string(d_curl_code));
+    info.add_tag("http_status", std::to_string(d_http_status));
     info.add_tag("origin_url", d_origin_url);
     info.add_tag("redirect_url", d_redirect_url);
     info.begin_tag( "response_headers" );
