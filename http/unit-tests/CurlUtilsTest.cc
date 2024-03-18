@@ -221,9 +221,10 @@ public:
         }
         catch (const BESError &be) {
             stringstream msg;
-            msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: "
+            msg << be.get_message() << " file: " << be.get_file() << " line: "
                 << be.get_line() << "\n";
-            CPPUNIT_FAIL(msg.str());
+            DBG(cerr << prolog << "Caught unexpected BESError! Message: " << msg.str() << "\n");
+            CPPUNIT_FAIL("Caught unexpected BESError!");
         }
         catch (const std::exception &se) {
             stringstream msg;
@@ -563,12 +564,18 @@ public:
 
         shared_ptr<http::url> source_url(new http::url(source_url_str.c_str(), true));
 
-        auto redirect_url = curl::get_redirect_url(source_url);
+        try {
+            auto redirect_url = curl::get_redirect_url(source_url);
 
-        DBG( cerr << prolog << "    baseline_str: " << baseline_str << "\n");
-        DBG( cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
-        CPPUNIT_ASSERT( !redirect_url->str().empty() );
-        CPPUNIT_ASSERT( redirect_url->str() == baseline_str );
+            DBG(cerr << prolog << "    baseline_str: " << baseline_str << "\n");
+            DBG(cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
+            CPPUNIT_ASSERT(!redirect_url->str().empty());
+            CPPUNIT_ASSERT(redirect_url->str() == baseline_str);
+        }
+        catch(BESInternalError &bie){
+            DBG(cerr << prolog << "Caught unexpected BESInternalError. Message: \n" << bie.get_verbose_message());
+            CPPUNIT_FAIL("Caught unexpected BESInternalError.");
+        }
         DBG( cerr << prolog << "END\n");
     }
 
