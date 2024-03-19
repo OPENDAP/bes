@@ -760,7 +760,7 @@ static bool eval_curl_easy_perform_code(
  * @param requested_url
  * @param last_accessed_url
  */
-static void process_http_code_helper(const unsigned int  http_code, const string &requested_url, const string &last_accessed_url) {
+static void process_http_code_helper(const long  http_code, const string &requested_url, const string &last_accessed_url) {
     stringstream msg;
     if (http_code >= 400) {
         msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";

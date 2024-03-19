@@ -49,14 +49,14 @@ class HttpError : public BESError {
 
 public:
     HttpError() = default;
-    HttpError(const std::string msg,
+    HttpError(const std::string &msg,
               const CURLcode code,
               const long http_status,
-              const std::string origin_url,
-              const std::string redirect_url,
-              const std::vector<std::string> response_headers,
-              const std::string response_body,
-              const std::string file,
+              const std::string &origin_url,
+              const std::string &redirect_url,
+              const std::vector<std::string> &response_headers,
+              const std::string &response_body,
+              const std::string &file,
               const int line):
             BESError(msg, BES_HTTP_ERROR, file, line),
             d_curl_code(code),
@@ -67,12 +67,12 @@ public:
             d_response_body(response_body)
     {};
 
-    HttpError(const std::string msg,
+    HttpError(const std::string &msg,
               const CURLcode code,
               const long http_status,
-              const std::string origin_url,
-              const std::string redirect_url,
-              const std::string file,
+              const std::string &origin_url,
+              const std::string &redirect_url,
+              const std::string &file,
               const int line):
             BESError(msg, BES_HTTP_ERROR, file, line),
             d_curl_code(code),
