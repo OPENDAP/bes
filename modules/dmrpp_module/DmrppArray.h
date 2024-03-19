@@ -142,6 +142,7 @@ private:
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
     void read_linked_blocks();
+    void read_linked_blocks_constrained();
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
