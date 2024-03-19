@@ -1501,7 +1501,7 @@ static CURL *init_no_follow_redirects_handle(const string &target_url, const cur
  * @param response_body
  * @param msg
  */
-void write_response_details(const unsigned int http_code,
+void write_response_details(const long http_code,
                           const vector<string> &response_headers,
                           const string &response_body,
                           stringstream &msg){
