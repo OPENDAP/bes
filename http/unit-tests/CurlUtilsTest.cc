@@ -724,14 +724,16 @@ public:
         DBG( cerr << prolog << "END\n");
     }
 
-    void how_big_is_it(){
+    void how_big(){
         DBG( cerr << prolog << "BEGIN\n");
-        DBG( cerr << prolog << "       short: " << sizeof(short) << " bytes\n" );
-        DBG( cerr << prolog << "         int: " << sizeof(int) << " bytes\n" );
-        DBG( cerr << prolog << "unsigned int: " << sizeof(unsigned int) << " bytes\n" );
-        DBG( cerr << prolog << "        long: " << sizeof(long) << " bytes\n" );
-        DBG( cerr << prolog << "   long long: " << sizeof(long long) << " bytes\n" );
+        DBG( cerr << prolog << "        char: " << (sizeof(char) * 8) << " bits\n" );
+        DBG( cerr << prolog << "       short: " << (sizeof(short) * 8) << " bits\n" );
+        DBG( cerr << prolog << "         int: " << (sizeof(int) * 8) << " bits\n" );
+        DBG( cerr << prolog << "unsigned int: " << (sizeof(unsigned int) * 8) << " bits\n" );
+        DBG( cerr << prolog << "        long: " << (sizeof(long) * 8)  << " bits\n" );
+        DBG( cerr << prolog << "   long long: " << (sizeof(long long) * 8)  << " bits\n" );
         DBG( cerr << prolog << "END\n");
+        CPPUNIT_ASSERT("Sizes are sizes");
     }
 
 /* TESTS END */
@@ -739,7 +741,7 @@ public:
 
     CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
-    CPPUNIT_TEST(how_big_is_it);
+    CPPUNIT_TEST(how_big);
 
     CPPUNIT_TEST(get_redirect_url_test_expected_redirect);
     CPPUNIT_TEST(get_redirect_url_unexpected_ok);
