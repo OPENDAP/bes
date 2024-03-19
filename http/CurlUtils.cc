@@ -1528,7 +1528,7 @@ void write_response_details(const unsigned int http_code,
  * @param max_attempts The maximum number af attempts allowed
  * @return
  */
-bool process_get_redirect_http_code(const unsigned int http_code,
+bool process_get_redirect_http_code(const long http_code,
                                       const vector<string> &response_headers,
                                       const string &response_body,
                                       const string &redirect_url_str,
