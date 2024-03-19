@@ -343,20 +343,18 @@ public:
         ac.add(AccessCredentials::REGION_KEY, "oz-1");
         ac.add(AccessCredentials::URL_KEY, "http://never.org");
         curl_slist *headers = nullptr;
-        DBG(cerr << prolog << "headers: " << (void *)headers << "\n");
-        curl_slist *hdr_itr;
         try {
             CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be nullptr", headers == nullptr);
-            hdr_itr = curl::sign_s3_url(target_url, &ac, headers);
-            DBG(cerr << prolog << "hdr_itr: " << (void *)hdr_itr << "\n");
+            headers = curl::sign_s3_url(target_url, &ac, nullptr);
+            DBG(cerr << prolog << "hdr_itr: " << (void *)headers << "\n");
 
-            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", hdr_itr->next != nullptr);
+            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", headers->next != nullptr);
 
-            curl_slist_free_all(hdr_itr);
+            curl_slist_free_all(headers);
 
         }
         catch (...) {
-            curl_slist_free_all(hdr_itr);
+            curl_slist_free_all(headers);
             throw;
         }
         DBG( cerr << prolog << "END\n");
@@ -369,17 +367,15 @@ public:
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         curl_slist *headers = nullptr;
-        curl_slist *hdr_itr = nullptr;
 
         try {
             //CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
-            hdr_itr = curl::sign_s3_url(target_url, &ac, headers);
-
-            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", hdr_itr->next != nullptr);
-            curl_slist_free_all(hdr_itr);
+            headers = curl::sign_s3_url(target_url, &ac, nullptr);
+            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", headers->next != nullptr);
+            curl_slist_free_all(headers);
         }
         catch (...) {
-            curl_slist_free_all(hdr_itr);
+            curl_slist_free_all(headers);
             throw;
         }
         DBG( cerr << prolog << "END\n");
