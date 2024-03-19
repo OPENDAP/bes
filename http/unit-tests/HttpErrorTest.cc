@@ -129,18 +129,6 @@ public:
         try {
 
             {
-                /*
-                      HttpError(const std::string msg,
-                      const CURLcode code,
-                      const unsigned int http_status,
-                      const std::string origin_url,
-                      const std::string redirect_url,
-                      const std::vector<std::string> response_headers,
-                      const std::string response_body,
-                      const std::string file,
-                      const int line):
-
-                 */
                 string msg("Test Error");
                 string origin("http://someserver.somewhere.org");
                 string redirect("https://someserver.somewhere.org/");
@@ -166,15 +154,6 @@ public:
         try {
             {
 
-                /*
-                    HttpError(const std::string msg,
-                            const CURLcode code,
-                            const unsigned int http_status,
-                            const std::string origin_url,
-                            const std::string redirect_url,
-                            const std::string file,
-                            const int line):
-                */
                 string msg("Test Error");
                 string origin("http://someserver.somewhere.org");
                 string redirect("https://someserver.somewhere.org/");
@@ -193,15 +172,6 @@ public:
         try {
             {
 
-                /*
-                    HttpError(const std::string msg,
-                            const CURLcode code,
-                            const unsigned int http_status,
-                            const std::string origin_url,
-                            const std::string redirect_url,
-                            const std::string file,
-                            const int line):
-                */
                 string baseline = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
                                   "<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n"
                                   "    <test_BESInfo_1>\n"
@@ -257,18 +227,6 @@ public:
         DBG( cerr << "\n");
 
         try {
-            /*
-                  HttpError(const std::string msg,
-                  const CURLcode code,
-                  const unsigned int http_status,
-                  const std::string origin_url,
-                  const std::string redirect_url,
-                  const std::vector<std::string> response_headers,
-                  const std::string response_body,
-                  const std::string file,
-                  const int line):
-
-             */
             string baseline("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
                             "<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n"
                             "    <test_BESInfo_2>\n"

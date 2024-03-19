@@ -505,7 +505,7 @@ public:
     }
 
     /**
-     * Tests a no redirect location, i.e. one that returns an HTTP status 200 (OK)
+     * Tests a no redirect location, i.e. one that returns an HTTP code 200 (OK)
      * and a response body of some sort.
      */
     void get_redirect_url_unexpected_ok() {

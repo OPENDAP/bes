@@ -113,20 +113,20 @@ const vector <string> http_server_errors = {
 };
 
 /**
- * @brief Translates an HTTP status code into an error message.
+ * @brief Translates an HTTP code into an error message.
  *
  * It works for those code greater than or equal to 400.
  *
- * @param status The HTTP status to associate with an error message
- * @return The error message associated with status.
+ * @param code The HTTP code to associate with an error message
+ * @return The error message associated with code.
  */
-static string http_status_to_string(long status) {
-    if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)
-        return {http_client_errors[status - CLIENT_ERR_MIN]};
-    else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
-        return {http_server_errors[status - SERVER_ERR_MIN]};
+static string http_code_to_string(long code) {
+    if (code >= CLIENT_ERR_MIN && code <= CLIENT_ERR_MAX)
+        return {http_client_errors[code - CLIENT_ERR_MIN]};
+    else if (code >= SERVER_ERR_MIN && code <= SERVER_ERR_MAX)
+        return {http_server_errors[code - SERVER_ERR_MIN]};
     else {
-        return {"Unknown HTTP Error: " + to_string(status)};
+        return {"Unknown HTTP Error: " + to_string(code)};
     }
 }
 
@@ -229,7 +229,7 @@ static size_t save_http_response_headers(void *ptr, size_t size, size_t nmemb, v
     else
         complete_line.assign(static_cast<char *>(ptr), size * (nmemb - 1));
 
-    // Store all non-empty headers that are not HTTP status codes
+    // Store all non-empty headers that are not HTTP codes
     if (!complete_line.empty() && complete_line.find("HTTP") == string::npos) {
         BESDEBUG(MODULE, prolog << "Header line: " << complete_line << endl);
         hdrs->push_back(complete_line);
@@ -750,8 +750,8 @@ static bool eval_curl_easy_perform_code(
 }
 
 /**
- * Helper for the eval_http_get_response() function that evaluates the HTTP status code. Only call this
- * with HTTP status codes that are >= 400. This returns if the request can be retried. If it cannot
+ * Helper for the eval_http_get_response() function that evaluates the HTTP code. Only call this
+ * with HTTP codes that are >= 400. This returns if the request can be retried. If it cannot
  * be retried then a BESInternalError is thrown (and this never returns).
  *
  * @note: Only call this when there was a problem with the HTTP request.
@@ -769,8 +769,8 @@ static void process_http_code_helper(const long  http_code, const string &reques
     }
 
     msg << "The response from " << last_accessed_url << " (Originally: " << requested_url << ") ";
-    msg << "returned an HTTP status of " << http_code;
-    msg << " which means " << http_status_to_string(http_code) << " ";
+    msg << "returned an HTTP code of " << http_code;
+    msg << " which means " << http_code_to_string(http_code) << " ";
 
     switch (http_code) {
         case 400: // Bad Request
@@ -819,6 +819,25 @@ static void process_http_code_helper(const long  http_code, const string &reques
     }
 }
 
+
+/**
+ *
+ *
+ * @param ceh
+ * @return
+ */
+long get_http_code(CURL *ceh){
+    long http_code = 0;
+    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
+    if (curl_code != CURLE_OK) {
+        throw BESInternalError(prolog + "Error acquiring HTTP response code.", __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE, prolog << "http_code: " << http_code << "\n");
+    return http_code;
+}
+
+
+
 /**
  * @brief Evaluates the HTTP semantics of a the result of issuing a cURL GET request.
  *
@@ -859,12 +878,7 @@ static void process_http_code_helper(const long  http_code, const string &reques
 static bool eval_http_get_response(CURL *ceh, const string &requested_url, long  &http_code) {
     BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
 
-    http_code = 0;
-    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
-    if (curl_code != CURLE_OK)
-        throw BESInternalError("Error acquiring HTTP response code.", __FILE__, __LINE__);
-
-    BESDEBUG(MODULE, prolog << "http_code: " << http_code << endl);
+    http_code = get_http_code(ceh);
 
     // Special case for file:// URLs. An HTTP Code is zero means success in that case. jhrg 4/20/23
     if (requested_url.find(FILE_PROTOCOL) == 0 && http_code == 0)
@@ -872,6 +886,7 @@ static bool eval_http_get_response(CURL *ceh, const string &requested_url, long 
 
 #ifndef NDEBUG
     if (BESISDEBUG(MODULE)) {   // BESISDEBUG is a macro that expands to false when NDEBUG is defined. jhrg 4/19/23
+        CURLcode curl_code;
         long redirects;
         curl_code = curl_easy_getinfo(ceh, CURLINFO_REDIRECT_COUNT, &redirects);
         if (curl_code != CURLE_OK)
@@ -1028,7 +1043,6 @@ static void super_easy_perform(CURL *c_handle, int fd) {
  * @param http_response_headers Value/result parameter for the HTTP Response Headers.
  * @param http_request_headers A pointer to a vector of HTTP request headers. Default is
  * null. These headers will be appended to the list of default headers.
- * @return The HTTP status code.
  * @exception Error Thrown if libcurl encounters a problem; the libcurl
  * error message is stuffed into the Error object.
  */
@@ -1479,36 +1493,21 @@ static CURL *init_no_follow_redirects_handle(const string &target_url, const cur
     return ceh;
 }
 
-/**
- *
- *
- * @param ceh
- * @return
- */
-unsigned int get_http_status(CURL *ceh){
-    unsigned int http_code = 0;
-    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
-    if (curl_code != CURLE_OK) {
-        throw BESInternalError(prolog + "Error acquiring HTTP response code.", __FILE__, __LINE__);
-    }
-    BESDEBUG(MODULE, prolog << "http_code: " << http_code << "\n");
-    return http_code;
-}
 
 /**
  *
- * @param http_status
+ * @param http_code
  * @param response_headers
  * @param response_body
  * @param msg
  */
-void write_response_details(const unsigned int http_status,
+void write_response_details(const unsigned int http_code,
                           const vector<string> &response_headers,
                           const string &response_body,
                           stringstream &msg){
     msg << "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
     msg << "HTTP Response Details\n";
-    msg << "The remote service returned an HTTP status of: " << http_status << "\n";
+    msg << "The remote service returned an HTTP code of: " << http_code << "\n";
     msg << "Response Headers -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
     for (const auto &hdr: response_headers) {
         msg << "  "<<  hdr << "\n";
@@ -1520,7 +1519,7 @@ void write_response_details(const unsigned int http_status,
 
 /**
  * #brief Error handling for the gru_mk_attempt()
- * @param http_status The http status of the response
+ * @param http_code The http code of the response
  * @param response_headers <--
  * @param response_body <--
  * @param redirect_url_str The redirect url string, might be empty if there was a non 3xx response.
@@ -1529,7 +1528,7 @@ void write_response_details(const unsigned int http_status,
  * @param max_attempts The maximum number af attempts allowed
  * @return
  */
-bool process_get_redirect_http_status(const unsigned int http_status,
+bool process_get_redirect_http_code(const unsigned int http_code,
                                       const vector<string> &response_headers,
                                       const string &response_body,
                                       const string &redirect_url_str,
@@ -1537,7 +1536,7 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                                       const unsigned int attempt,
                                       const unsigned int max_attempts){
     bool success = false;
-    switch (http_status) {
+    switch (http_code) {
         case 301: // Moved Permanently
         case 302: // Found (fka Move Temporarily)
         case 303: // See Other
@@ -1553,7 +1552,7 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                     msg << "    " << origin_url_str << "\n" ;
                     msg << "It seems that the provided access credentials are either missing, invalid, or expired.\n";
                     msg << "Here are the details from the most recent attempt:\n\n";
-                    write_response_details(http_status, response_headers, response_body, msg);
+                    write_response_details(http_code, response_headers, response_body, msg);
                     throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
                 }
                 //  EDL is not the redirect we were looking for...
@@ -1574,10 +1573,10 @@ bool process_get_redirect_http_status(const unsigned int http_status,
                 msg << "I was expecting to receive an HTTP redirect code and location header in the response. \n";
                 msg << "Unfortunately this did not happen.\n";
                 msg << "Here are the details of the most recent transaction:\n\n";
-                write_response_details(http_status, response_headers, response_body, msg);
+                write_response_details(http_code, response_headers, response_body, msg);
                 throw HttpError(msg.str(),
                                 CURLE_OK,
-                                http_status,
+                                http_code,
                                 origin_url_str,
                                 redirect_url_str,
                                 response_headers,
@@ -1614,7 +1613,7 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
     vector<string> response_headers;
     string response_body;
     CURLcode curl_code;
-    unsigned int http_status;
+    long http_code;
     string redirect_url_str;
 
     // Add the EDL authorization headers if the Information is in the BES Context Manager
@@ -1648,15 +1647,14 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
                 attempt);
 
         if (curl_success) {
-            http_status = get_http_status(ceh);
-            BESDEBUG(MODULE, prolog << "http_status: " << http_status << "\n");
+            http_code = get_http_code(ceh);
             char *url = nullptr;
             curl_easy_getinfo(ceh, CURLINFO_REDIRECT_URL, &url);
             if (url) {
                 redirect_url_str = url;
             }
             BESDEBUG(MODULE, prolog << "redirect_url_str: " << redirect_url_str << "\n");
-            http_success = process_get_redirect_http_status( http_status,
+            http_success = process_get_redirect_http_code( http_code,
                                                         response_headers,
                                                         response_body,
                                                         redirect_url_str,
@@ -1713,7 +1711,7 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
 /**
  * @brief Gets the redirect url returned by the origin_url
  * The assumption is that the origin_url will always return a redirect, thus
- * an http status of 2xx, 4xx, or 5xx is considered an error.
+ * an http code of 2xx, 4xx, or 5xx is considered an error.
  *
  * @param origin_url The origin url for the request
  * @param redirect_url Returned value parameter for the redirect url.
