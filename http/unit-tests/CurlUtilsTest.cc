@@ -728,11 +728,22 @@ public:
         DBG( cerr << prolog << "END\n");
     }
 
+    void how_big_is_it(){
+        DBG( cerr << prolog << "BEGIN\n");
+        DBG( cerr << prolog << "       short: " << sizeof(short) << " bytes\n" );
+        DBG( cerr << prolog << "         int: " << sizeof(int) << " bytes\n" );
+        DBG( cerr << prolog << "unsigned int: " << sizeof(unsigned int) << " bytes\n" );
+        DBG( cerr << prolog << "        long: " << sizeof(long) << " bytes\n" );
+        DBG( cerr << prolog << "   long long: " << sizeof(long long) << " bytes\n" );
+        DBG( cerr << prolog << "END\n");
+    }
+
 /* TESTS END */
 /*##################################################################################################*/
 
     CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
+    CPPUNIT_TEST(how_big_is_it);
 
     CPPUNIT_TEST(get_redirect_url_test_expected_redirect);
     CPPUNIT_TEST(get_redirect_url_unexpected_ok);
@@ -754,10 +765,7 @@ public:
     CPPUNIT_TEST(sign_s3_url_test_2);
     CPPUNIT_TEST(sign_s3_url_test_3);
 
-    //CPPUNIT_TEST(http_get_test_vector_char);
     CPPUNIT_TEST(http_get_test_string);
-    //CPPUNIT_TEST(http_get_test_vector_char_appended);
-    // CPPUNIT_TEST(http_get_test_string_appended);
 
     CPPUNIT_TEST_EXCEPTION(http_get_test_4, HttpError);
     CPPUNIT_TEST_EXCEPTION(http_get_test_5, HttpError);
