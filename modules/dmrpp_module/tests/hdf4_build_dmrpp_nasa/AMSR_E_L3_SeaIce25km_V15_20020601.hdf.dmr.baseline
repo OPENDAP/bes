@@ -1,0 +1,2326 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="AMSR_E_L3_SeaIce25km_V15_20020601.hdf">
+    <Dimension name="YDim_NpPolarGrid25km" size="448"/>
+    <Dimension name="XDim_NpPolarGrid25km" size="304"/>
+    <Dimension name="YDim_SpPolarGrid25km" size="332"/>
+    <Dimension name="XDim_SpPolarGrid25km" size="316"/>
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.14</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName=&quot;NpPolarGrid25km&quot;
+		XDim=304
+		YDim=448
+		UpperLeftPointMtrs=(-3850000.000000,5850000.000000)
+		LowerRightMtrs=(3750000.000000,-5350000.000000)
+		Projection=GCTP_PS
+		ProjParams=(6378273,-0.0066938830000000,0,0,-45000000,70000000,0,0,0,0,0,0,0)
+		SphereCode=-1
+		GridOrigin=HDFE_GD_UL
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;SI_25km_NH_06V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+			OBJECT=DataField_2
+				DataFieldName=&quot;SI_25km_NH_06V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_2
+			OBJECT=DataField_3
+				DataFieldName=&quot;SI_25km_NH_06V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_3
+			OBJECT=DataField_4
+				DataFieldName=&quot;SI_25km_NH_06H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_4
+			OBJECT=DataField_5
+				DataFieldName=&quot;SI_25km_NH_06H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_5
+			OBJECT=DataField_6
+				DataFieldName=&quot;SI_25km_NH_06H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_6
+			OBJECT=DataField_7
+				DataFieldName=&quot;SI_25km_NH_10V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_7
+			OBJECT=DataField_8
+				DataFieldName=&quot;SI_25km_NH_10V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_8
+			OBJECT=DataField_9
+				DataFieldName=&quot;SI_25km_NH_10V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_9
+			OBJECT=DataField_10
+				DataFieldName=&quot;SI_25km_NH_10H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_10
+			OBJECT=DataField_11
+				DataFieldName=&quot;SI_25km_NH_10H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_11
+			OBJECT=DataField_12
+				DataFieldName=&quot;SI_25km_NH_10H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_12
+			OBJECT=DataField_13
+				DataFieldName=&quot;SI_25km_NH_18V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_13
+			OBJECT=DataField_14
+				DataFieldName=&quot;SI_25km_NH_18V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_14
+			OBJECT=DataField_15
+				DataFieldName=&quot;SI_25km_NH_18V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_15
+			OBJECT=DataField_16
+				DataFieldName=&quot;SI_25km_NH_18H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_16
+			OBJECT=DataField_17
+				DataFieldName=&quot;SI_25km_NH_18H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_17
+			OBJECT=DataField_18
+				DataFieldName=&quot;SI_25km_NH_18H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_18
+			OBJECT=DataField_19
+				DataFieldName=&quot;SI_25km_NH_23V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_19
+			OBJECT=DataField_20
+				DataFieldName=&quot;SI_25km_NH_23V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_20
+			OBJECT=DataField_21
+				DataFieldName=&quot;SI_25km_NH_23V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_21
+			OBJECT=DataField_22
+				DataFieldName=&quot;SI_25km_NH_23H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_22
+			OBJECT=DataField_23
+				DataFieldName=&quot;SI_25km_NH_23H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_23
+			OBJECT=DataField_24
+				DataFieldName=&quot;SI_25km_NH_23H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_24
+			OBJECT=DataField_25
+				DataFieldName=&quot;SI_25km_NH_36V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_25
+			OBJECT=DataField_26
+				DataFieldName=&quot;SI_25km_NH_36V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_26
+			OBJECT=DataField_27
+				DataFieldName=&quot;SI_25km_NH_36V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_27
+			OBJECT=DataField_28
+				DataFieldName=&quot;SI_25km_NH_36H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_28
+			OBJECT=DataField_29
+				DataFieldName=&quot;SI_25km_NH_36H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_29
+			OBJECT=DataField_30
+				DataFieldName=&quot;SI_25km_NH_36H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_30
+			OBJECT=DataField_31
+				DataFieldName=&quot;SI_25km_NH_89V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_31
+			OBJECT=DataField_32
+				DataFieldName=&quot;SI_25km_NH_89V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_32
+			OBJECT=DataField_33
+				DataFieldName=&quot;SI_25km_NH_89V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_33
+			OBJECT=DataField_34
+				DataFieldName=&quot;SI_25km_NH_89H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_34
+			OBJECT=DataField_35
+				DataFieldName=&quot;SI_25km_NH_89H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_35
+			OBJECT=DataField_36
+				DataFieldName=&quot;SI_25km_NH_89H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_36
+			OBJECT=DataField_37
+				DataFieldName=&quot;SI_25km_NH_ICECON_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_37
+			OBJECT=DataField_38
+				DataFieldName=&quot;SI_25km_NH_ICECON_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_38
+			OBJECT=DataField_39
+				DataFieldName=&quot;SI_25km_NH_ICECON_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_39
+			OBJECT=DataField_40
+				DataFieldName=&quot;SI_25km_NH_ICEDIFF_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_40
+			OBJECT=DataField_41
+				DataFieldName=&quot;SI_25km_NH_ICEDIFF_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_41
+			OBJECT=DataField_42
+				DataFieldName=&quot;SI_25km_NH_ICEDIFF_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_42
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+	GROUP=GRID_2
+		GridName=&quot;SpPolarGrid25km&quot;
+		XDim=316
+		YDim=332
+		UpperLeftPointMtrs=(-3950000.000000,4350000.000000)
+		LowerRightMtrs=(3950000.000000,-3950000.000000)
+		Projection=GCTP_PS
+		ProjParams=(6378273,-0.0066938830000000,0,0,0,-70000000,0,0,0,0,0,0,0)
+		SphereCode=-1
+		GridOrigin=HDFE_GD_UL
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;SI_25km_SH_06V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+			OBJECT=DataField_2
+				DataFieldName=&quot;SI_25km_SH_06V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_2
+			OBJECT=DataField_3
+				DataFieldName=&quot;SI_25km_SH_06V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_3
+			OBJECT=DataField_4
+				DataFieldName=&quot;SI_25km_SH_06H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_4
+			OBJECT=DataField_5
+				DataFieldName=&quot;SI_25km_SH_06H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_5
+			OBJECT=DataField_6
+				DataFieldName=&quot;SI_25km_SH_06H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_6
+			OBJECT=DataField_7
+				DataFieldName=&quot;SI_25km_SH_10V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_7
+			OBJECT=DataField_8
+				DataFieldName=&quot;SI_25km_SH_10V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_8
+			OBJECT=DataField_9
+				DataFieldName=&quot;SI_25km_SH_10V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_9
+			OBJECT=DataField_10
+				DataFieldName=&quot;SI_25km_SH_10H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_10
+			OBJECT=DataField_11
+				DataFieldName=&quot;SI_25km_SH_10H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_11
+			OBJECT=DataField_12
+				DataFieldName=&quot;SI_25km_SH_10H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_12
+			OBJECT=DataField_13
+				DataFieldName=&quot;SI_25km_SH_18V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_13
+			OBJECT=DataField_14
+				DataFieldName=&quot;SI_25km_SH_18V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_14
+			OBJECT=DataField_15
+				DataFieldName=&quot;SI_25km_SH_18V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_15
+			OBJECT=DataField_16
+				DataFieldName=&quot;SI_25km_SH_18H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_16
+			OBJECT=DataField_17
+				DataFieldName=&quot;SI_25km_SH_18H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_17
+			OBJECT=DataField_18
+				DataFieldName=&quot;SI_25km_SH_18H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_18
+			OBJECT=DataField_19
+				DataFieldName=&quot;SI_25km_SH_23V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_19
+			OBJECT=DataField_20
+				DataFieldName=&quot;SI_25km_SH_23V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_20
+			OBJECT=DataField_21
+				DataFieldName=&quot;SI_25km_SH_23V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_21
+			OBJECT=DataField_22
+				DataFieldName=&quot;SI_25km_SH_23H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_22
+			OBJECT=DataField_23
+				DataFieldName=&quot;SI_25km_SH_23H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_23
+			OBJECT=DataField_24
+				DataFieldName=&quot;SI_25km_SH_23H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_24
+			OBJECT=DataField_25
+				DataFieldName=&quot;SI_25km_SH_36V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_25
+			OBJECT=DataField_26
+				DataFieldName=&quot;SI_25km_SH_36V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_26
+			OBJECT=DataField_27
+				DataFieldName=&quot;SI_25km_SH_36V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_27
+			OBJECT=DataField_28
+				DataFieldName=&quot;SI_25km_SH_36H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_28
+			OBJECT=DataField_29
+				DataFieldName=&quot;SI_25km_SH_36H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_29
+			OBJECT=DataField_30
+				DataFieldName=&quot;SI_25km_SH_36H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_30
+			OBJECT=DataField_31
+				DataFieldName=&quot;SI_25km_SH_89V_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_31
+			OBJECT=DataField_32
+				DataFieldName=&quot;SI_25km_SH_89V_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_32
+			OBJECT=DataField_33
+				DataFieldName=&quot;SI_25km_SH_89V_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_33
+			OBJECT=DataField_34
+				DataFieldName=&quot;SI_25km_SH_89H_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_34
+			OBJECT=DataField_35
+				DataFieldName=&quot;SI_25km_SH_89H_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_35
+			OBJECT=DataField_36
+				DataFieldName=&quot;SI_25km_SH_89H_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_36
+			OBJECT=DataField_37
+				DataFieldName=&quot;SI_25km_SH_ICECON_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_37
+			OBJECT=DataField_38
+				DataFieldName=&quot;SI_25km_SH_ICECON_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_38
+			OBJECT=DataField_39
+				DataFieldName=&quot;SI_25km_SH_ICECON_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_39
+			OBJECT=DataField_40
+				DataFieldName=&quot;SI_25km_SH_ICEDIFF_ASC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_40
+			OBJECT=DataField_41
+				DataFieldName=&quot;SI_25km_SH_ICEDIFF_DSC&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_41
+			OBJECT=DataField_42
+				DataFieldName=&quot;SI_25km_SH_ICEDIFF_DAY&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_42
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_2
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Attribute name="CoreMetadata_0" type="String">
+        <Value>GROUP = INVENTORYMETADATA
+   GROUPTYPE = MASTERGROUP
+   GROUP = ECSDATAGRANULE
+      OBJECT = LOCALGRANULEID
+         NUM_VAL = 1
+         VALUE = &quot;AMSR_E_L3_SeaIce25km_V15_20020601.hdf&quot;
+      END_OBJECT = LOCALGRANULEID
+      OBJECT = PRODUCTIONDATETIME
+         NUM_VAL = 1
+         VALUE = &quot;2014-08-15T15:58:40Z&quot;
+      END_OBJECT = PRODUCTIONDATETIME
+      OBJECT = REPROCESSINGACTUAL
+         NUM_VAL = 1
+         VALUE = &quot;reprocessed twice&quot;
+      END_OBJECT = REPROCESSINGACTUAL
+   END_GROUP = ECSDATAGRANULE
+   GROUP = MEASUREDPARAMETER
+      OBJECT = MEASUREDPARAMETERCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = PARAMETERNAME
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = &quot;Sea Ice Parameters&quot;
+         END_OBJECT = PARAMETERNAME
+         GROUP = QAFLAGS
+            CLASS = &quot;1&quot;
+            OBJECT = AUTOMATICQUALITYFLAG
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Passed&quot;
+            END_OBJECT = AUTOMATICQUALITYFLAG
+            OBJECT = AUTOMATICQUALITYFLAGEXPLANATION
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Program Execution Completed&quot;
+            END_OBJECT = AUTOMATICQUALITYFLAGEXPLANATION
+            OBJECT = OPERATIONALQUALITYFLAG
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Not Investigated&quot;
+            END_OBJECT = OPERATIONALQUALITYFLAG
+            OBJECT = OPERATIONALQUALITYFLAGEXPLANATION
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Currently not used&quot;
+            END_OBJECT = OPERATIONALQUALITYFLAGEXPLANATION
+            OBJECT = SCIENCEQUALITYFLAG
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Passed&quot;
+            END_OBJECT = SCIENCEQUALITYFLAG
+            OBJECT = SCIENCEQUALITYFLAGEXPLANATION
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;Mask files are recent&quot;
+            END_OBJECT = SCIENCEQUALITYFLAGEXPLANATION
+         END_GROUP = QAFLAGS
+         GROUP = QASTATS
+            CLASS = &quot;1&quot;
+            OBJECT = QAPERCENTMISSINGDATA
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = 0
+            END_OBJECT = QAPERCENTMISSINGDATA
+            OBJECT = QAPERCENTOUTOFBOUNDSDATA
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = 0
+            END_OBJECT = QAPERCENTOUTOFBOUNDSDATA
+         END_GROUP = QASTATS
+      END_OBJECT = MEASUREDPARAMETERCONTAINER
+   END_GROUP = MEASUREDPARAMETER
+   GROUP = COLLECTIONDESCRIPTIONCLASS
+      OBJECT = SHORTNAME
+         NUM_VAL = 1
+         VALUE = &quot;AE_SI25&quot;
+      END_OBJECT = SHORTNAME
+      OBJECT = VERSIONID
+         NUM_VAL = 1
+         VALUE = 3
+      END_OBJECT = VERSIONID
+   END_GROUP = COLLECTIONDESCRIPTIONCLASS
+   GROUP = INPUTGRANULE
+      OBJECT = INPUTPOINTER
+         NUM_VAL = 30
+         VALUE = (&quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010011_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010100_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010149_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010238_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010328_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010417_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010506_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010555_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010645_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010734_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010823_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206010912_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011001_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011050_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011140_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011229_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011318_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011407_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011457_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011546_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011635_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011724_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011813_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011902_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206011952_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206012041_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206012130_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206012219_A.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206012309_D.hdf&quot;,
+                  &quot;AMSR_E_L2A_BrightnessTemperatures_V12_200206012358_A.hdf&quot;)
+      END_OBJECT = INPUTPOINTER
+   END_GROUP = INPUTGRANULE
+   GROUP = SPATIALDOMAINCONTAINER
+      GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+         GROUP = BOUNDINGRECTANGLE
+            OBJECT = WESTBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = -180.0
+            END_OBJECT = WESTBOUNDINGCOORDINATE
+            OBJECT = NORTHBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = 90.0
+            END_OBJECT = NORTHBOUNDINGCOORDINATE
+            OBJECT = EASTBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = 180.0
+            END_OBJECT = EASTBOUNDINGCOORDINATE
+            OBJECT = SOUTHBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = -90.0
+            END_OBJECT = SOUTHBOUNDINGCOORDINATE
+         END_GROUP = BOUNDINGRECTANGLE
+      END_GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+   END_GROUP = SPATIALDOMAINCONTAINER
+   GROUP = RANGEDATETIME
+      OBJECT = RANGEBEGINNINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2002-06-01&quot;
+      END_OBJECT = RANGEBEGINNINGDATE
+      OBJECT = RANGEBEGINNINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;00:11:22.27Z&quot;
+      END_OBJECT = RANGEBEGINNINGTIME
+      OBJECT = RANGEENDINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2002-06-02&quot;
+      END_OBJECT = RANGEENDINGDATE
+      OBJECT = RANGEENDINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;00:48:02.25Z&quot;
+      END_OBJECT = RANGEENDINGTIME
+   END_GROUP = RANGEDATETIME
+   GROUP = PGEVERSIONCLASS
+      OBJECT = PGEVERSION
+         NUM_VAL = 1
+         VALUE = &quot;15&quot;
+      END_OBJECT = PGEVERSION
+   END_GROUP = PGEVERSIONCLASS
+   GROUP = ADDITIONALATTRIBUTES
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;1&quot;
+            NUM_VAL = 1
+            VALUE = &quot;identifier_product_doi&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;1&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;10.5067/AMSR-E/AE_SI25.003&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;2&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;2&quot;
+            NUM_VAL = 1
+            VALUE = &quot;identifier_product_doi_authority&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;2&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;2&quot;
+               VALUE = &quot;http://dx.doi.org&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+   END_GROUP = ADDITIONALATTRIBUTES
+END_GROUP = INVENTORYMETADATA
+END
+</Value>
+    </Attribute>
+    <Attribute name="ISOLineageMetadata_00" type="String">
+        <Value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;gmi:MI_Metadata xmlns:gmi=&quot;http://www.isotc211.org/2005/gmi&quot; xmlns:gmd=&quot;http://www.isotc211.org/2005/gmd&quot; xmlns:gco=&quot;http://www.isotc211.org/2005/gco&quot; xmlns:gmx=&quot;http://www.isotc211.org/2005/gmx&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;
+&lt;gmd:contact/&gt;
+&lt;gmd:dateStamp/&gt;
+&lt;gmd:identificationInfo/&gt;
+&lt;gmd:dataQualityInfo&gt;
+&lt;gmd:DQ_DataQuality&gt;
+&lt;gmd:scope&gt;
+&lt;gmd:DQ_Scope&gt;
+&lt;gmd:level&gt;
+&lt;gmd:MD_ScopeCode codeList=&quot;http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml#MD_ScopeCode&quot; codeListValue=&quot;dataset&quot;&gt;dataset&lt;/gmd:MD_ScopeCode&gt;
+&lt;/gmd:level&gt;
+&lt;/gmd:DQ_Scope&gt;
+&lt;/gmd:scope&gt;
+&lt;gmd:lineage&gt;
+&lt;gmd:LI_Lineage&gt;
+&lt;gmd:processStep&gt;
+&lt;gmi:LE_ProcessStep&gt;
+&lt;gmd:description/&gt;
+&lt;gmd:dateTime&gt;
+&lt;gco:DateTime&gt;2014-08-15T15:58:40Z&lt;/gco:DateTime&gt;
+&lt;/gmd:dateTime&gt;
+&lt;gmd:processor&gt;
+&lt;gmd:CI_ResponsibleParty&gt;
+&lt;gmd:organisationName&gt;
+&lt;gco:CharacterString&gt;AMSR-E Science Investigator-led Processing System at the Global Hydrology Resource Center (AMSR-E SIPS at GHRC), Huntsville, AL USA&lt;/gco:CharacterString&gt;
+&lt;/gmd:organisationName&gt;
+&lt;gmd:contactInfo&gt;
+&lt;gmd:CI_Contact&gt;
+&lt;gmd:address&gt;
+&lt;gmd:CI_Address&gt;
+&lt;gmd:electronicMailAddress&gt;
+&lt;gco:CharacterString&gt;ghrcdaac@itsc.uah.edu&lt;/gco:CharacterString&gt;
+&lt;/gmd:electronicMailAddress&gt;
+&lt;/gmd:CI_Address&gt;
+&lt;/gmd:address&gt;
+&lt;/gmd:CI_Contact&gt;
+&lt;/gmd:contactInfo&gt;
+&lt;gmd:role&gt;
+&lt;gmd:CI_RoleCode codeList=&quot;http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;processor&quot;&gt;processor&lt;/gmd:CI_RoleCode&gt;
+&lt;/gmd:role&gt;
+&lt;/gmd:CI_ResponsibleParty&gt;
+&lt;/gmd:processor&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010011_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010100_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010149_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010238_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010328_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010417_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010506_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010555_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010645_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010734_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010823_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206010912_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011001_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011050_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011140_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011229_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011318_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011407_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011457_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011546_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011635_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011724_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011813_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011902_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206011952_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206012041_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206012130_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206012219_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206012309_D.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L2A_BrightnessTemperatures_V12_200206012358_A.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmi:processingInformation&gt;
+&lt;gmi:LE_Processing&gt;
+&lt;gmi:identifier&gt;
+&lt;gmd:MD_Identifier&gt;
+&lt;gmd:code&gt;
+&lt;gmx:FileName&gt;@L3seaice&lt;/gmx:FileName&gt;
+&lt;/gmd:code&gt;
+&lt;/gmd:MD_Identifier&gt;
+&lt;/gmi:identifier&gt;
+&lt;gmi:runTimeParameters&gt;
+&lt;gco:CharacterString&gt;processing_host=&quot;amsr1&quot; processing_environment=&quot;Reprocessing&quot;&lt;/gco:CharacterString&gt;
+&lt;/gmi:runTimeParameters&gt;
+&lt;/gmi:LE_Processing&gt;
+&lt;/gmi:processingInformation&gt;
+&lt;gmi:output&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AMSR_E_L3_SeaIce25km_V15_20020601.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date&gt;
+&lt;gmd:CI_Date&gt;
+&lt;gmd:date&gt;
+&lt;gco:DateTime&gt;2014-08-15T15:58:40Z&lt;/gco:DateTime&gt;
+&lt;/gmd:date&gt;
+&lt;gmd:dateType&gt;
+&lt;gmd:CI_DateTypeCode
+codeList=&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode&quot;
+codeListValue=&quot;creation&quot;&gt;creation
+&lt;/gmd:CI_DateTypeCode&gt;
+&lt;/gmd:dateType&gt;
+&lt;/gmd:CI_Date&gt;
+&lt;/gmd:date&gt;
+&lt;gmd:identifier&gt;
+&lt;gmd:MD_Identifier&gt;
+&lt;gmd:code&gt;
+&lt;gco:CharacterString&gt;urn:amsr1:Reprocessing:2014-08-15T15:58:40Z:AMSR_E_L3_SeaIce25km_V15_20020601.hdf&lt;/gco:CharacterString&gt;
+&lt;/gmd:code&gt;
+&lt;/gmd:MD_Identifier&gt;
+&lt;/gmd:identifier&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmi:output&gt;
+&lt;/gmi:LE_ProcessStep&gt;
+&lt;/gmd:processStep&gt;
+&lt;/gmd:LI_Lineage&gt;
+&lt;/gmd:lineage&gt;
+&lt;/gmd:DQ_DataQuality&gt;
+&lt;/gmd:dataQualityInfo&gt;
+&lt;gmd:dataQualityInfo&gt;
+&lt;gmd:DQ_DataQuality&gt;
+&lt;gmd:scope&gt;
+&lt;gmd:DQ_Scope&gt;
+&lt;gmd:level&gt;
+&lt;gmd:MD_ScopeCode codeList=&quot;http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml#MD_ScopeCode&quot; codeListValue=&quot;series&quot;&gt;series&lt;/gmd:MD_ScopeCode&gt;
+&lt;/gmd:level&gt;
+&lt;/gmd:DQ_Scope&gt;
+&lt;/gmd:scope&gt;
+&lt;gmd:lineage&gt;
+&lt;gmd:LI_Lineage&gt;
+&lt;gmd:processStep&gt;
+&lt;gmi:LE_ProcessStep&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Brightness Temperatures (TB'S) at 6.9 through 89.0 GHz and sea ice concentration are mapped to a polar stereographic grid at 25 km spatial resolution. TB's are gridded into 25 km grid cells using a drop-in-the-bucket method where the grid cell that contains the center of the observation footprint is given the whole weight of the observation. NT2 sea ice concentrations are calculated using the individual Level-2A TB's in order to make the atmospheric corrections on an orbit-by-orbit basis before obtaining daily average ice concentrations.&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;The AMSR-E/Aqua Level-2A swath product includes brightness temperatures at 6.9 GHz, 10.7 GHz, 18.7 GHz, 23.8 GHz, 36.5 GHz, and 89.0 GHz resampled at resolutions of 56 km, 38 km, 21 km, 12 km, and 5.4 km.&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gco:CharacterString&gt;AMSR-E/Aqua AMSR-E/Aqua L2A Global Swath Spatially-Resampled Brightness Temperatures&lt;/gco:CharacterString&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;gmd:identifier&gt;
+&lt;gmd:MD_Identifier&gt;
+&lt;gmd:code&gt;
+&lt;gmx:Anchor xlink:actuate=&quot;onRequest&quot; xlink:title=&quot;Digital Object Identifier (DOI)&quot; xlink:href=&quot;http://dx.doi.org/10.5067/AMSR-E/AE_L2A.003&quot;&gt;doi:10.5067/AMSR-E/AE_L2A.003&lt;/gmx:Anchor&gt;
+&lt;/gmd:code&gt;
+&lt;gmd:codeSpace&gt;
+&lt;gco:CharacterString&gt;gov.nasa.esdis&lt;/gco:CharacterString&gt;
+&lt;/gmd:codeSpace&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Digital Object Identifier (DOI)&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;/gmd:MD_Identifier&gt;
+&lt;/gmd:identifier&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Coastal boundaries in the northern hemisphere.&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;coast_north.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Coastal boundaries in the southern hemisphere.&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;coast_south.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Land mask in the northern hemisphere.&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;land_north_25.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Land mask in the southern hemisphere.&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;land_south_25.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Sea surface temperatures in the northern hemisphere for a given month (NN, 01-12). Ice concentration pixels corresponding to sst values greater than 278 K are set to zero (open water).&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;sst_n_NN.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Sea surface temperatures in the southern hemisphere for a given month (NN, 01-12). Ice concentration pixels corresponding to sst values greater than 275 K are set to zero (open water).&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;sst_s_NN.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmd:source&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Land mask in the southern hemisphere.&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;land_south_25.hdf&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmd:source&gt;
+&lt;gmi:processingInformation&gt;
+&lt;gmi:LE_Processing&gt;
+&lt;gmi:identifier/&gt;
+&lt;gmi:softwareReference&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gmx:FileName&gt;AE_SI3_V15_20140215_dap.tar&lt;/gmx:FileName&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date&gt;
+&lt;gmd:CI_Date&gt;
+&lt;gmd:date&gt;
+&lt;gco:Date&gt;20140215&lt;/gco:Date&gt;
+&lt;/gmd:date&gt;
+&lt;gmd:dateType&gt;
+&lt;gmd:CI_DateTypeCode codeList=&quot;http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml#CI_DateTypeCode&quot; codeListValue=&quot;lastUpdate&quot;&gt;lastUpdate&lt;/gmd:CI_DateTypeCode&gt;
+&lt;/gmd:dateType&gt;
+&lt;/gmd:CI_Date&gt;
+&lt;/gmd:date&gt;
+&lt;gmd:edition&gt;
+&lt;gco:CharacterString&gt;V15&lt;/gco:CharacterString&gt;
+&lt;/gmd:edition&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmi:softwareReference&gt;
+&lt;gmi:documentation xlink:actuate=&quot;onRequest&quot; xlink:show=&quot;new&quot; xlink:href=&quot;http://nsidc.org/data/ae_si25&quot;/&gt;
+&lt;gmi:algorithm&gt;
+&lt;gmi:LE_Algorithm&gt;
+&lt;gmi:citation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gco:CharacterString&gt;Enhanced NASA Team 2 (NT2)&lt;/gco:CharacterString&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date&gt;
+&lt;gmd:CI_Date&gt;
+&lt;gmd:date&gt;
+&lt;gco:Date&gt;2013-11-12&lt;/gco:Date&gt;
+&lt;/gmd:date&gt;
+&lt;gmd:dateType&gt;
+&lt;gmd:CI_DateTypeCode codeList=&quot;http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml#CI_DateTypeCode&quot; codeListValue=&quot;lastUpdate&quot;&gt;lastUpdate&lt;/gmd:CI_DateTypeCode&gt;
+&lt;/gmd:dateType&gt;
+&lt;/gmd:CI_Date&gt;
+&lt;/gmd:date&gt;
+&lt;gmd:edition&gt;
+&lt;gco:CharacterString&gt;20131112&lt;/gco:CharacterString&gt;
+&lt;/gmd:edition&gt;
+&lt;gmd:citedResponsibleParty&gt;
+&lt;gmd:CI_ResponsibleParty&gt;
+&lt;gmd:individualName&gt;
+&lt;gco:CharacterString&gt;Dr. Thorsten Markus&lt;/gco:CharacterString&gt;
+&lt;/gmd:individualName&gt;
+&lt;gmd:organisationName&gt;
+&lt;gco:CharacterString&gt;NASA / GSFC Cryospheric Sciences Laboratory&lt;/gco:CharacterString&gt;
+&lt;/gmd:organisationName&gt;
+&lt;gmd:contactInfo&gt;
+&lt;gmd:CI_Contact&gt;
+&lt;gmd:address&gt;
+&lt;gmd:CI_Address&gt;
+&lt;gmd:electronicMailAddress&gt;
+&lt;gco:CharacterString&gt;thorsten.markus@nasa.gov&lt;/gco:CharacterString&gt;
+&lt;/gmd:electronicMailAddress&gt;
+&lt;/gmd:CI_Address&gt;
+&lt;/gmd:address&gt;
+&lt;/gmd:CI_Contact&gt;
+&lt;/gmd:contactInfo&gt;
+&lt;gmd:role&gt;
+&lt;gmd:CI_RoleCode codeList=&quot;http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;author&quot;&gt;author&lt;/gmd:CI_RoleCode&gt;
+&lt;/gmd:role&gt;
+&lt;/gmd:CI_ResponsibleParty&gt;
+&lt;/gmd:citedResponsibleParty&gt;
+&lt;gmd:citedResponsibleParty&gt;
+&lt;gmd:CI_ResponsibleParty&gt;
+&lt;gmd:individualName&gt;
+&lt;gco:CharacterString&gt;Dr. Donald Cavalieri&lt;/gco:CharacterString&gt;
+&lt;/gmd:individualName&gt;
+&lt;gmd:organisationName&gt;
+&lt;gco:CharacterString&gt;NASA / GSFC Cryospheric Sciences Laboratory&lt;/gco:CharacterString&gt;
+&lt;/gmd:organisationName&gt;
+&lt;gmd:contactInfo&gt;
+&lt;gmd:CI_Contact&gt;
+&lt;gmd:address&gt;
+&lt;gmd:CI_Address&gt;
+&lt;gmd:electronicMailAddress&gt;
+&lt;gco:CharacterString&gt;donald.j.cavalieri@nasa.gov&lt;/gco:CharacterString&gt;
+&lt;/gmd:electronicMailAddress&gt;
+&lt;/gmd:CI_Address&gt;
+&lt;/gmd:address&gt;
+&lt;/gmd:CI_Contact&gt;
+&lt;/gmd:contactInfo&gt;
+&lt;gmd:role&gt;
+&lt;gmd:CI_RoleCode codeList=&quot;http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;author&quot;&gt;author&lt;/gmd:CI_RoleCode&gt;
+&lt;/gmd:role&gt;
+&lt;/gmd:CI_ResponsibleParty&gt;
+&lt;/gmd:citedResponsibleParty&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmi:citation&gt;
+&lt;gmi:description&gt;
+&lt;gco:CharacterString&gt;Enhanced NASA Team 2 (NT2) sea ice concentrations are calculated using the individual Level-2A TB's. The primary source of error is attributed to conditions in the surface layer such as surface glaze and layering, which can significantly affect the horizontally polarized 18.7 GHz TB, leading to an underestimation of sea ice concentration. The NT2 algorithm uses the 89 GHz channels because the horizontally polarized 89 GHz data are less affected by surface conditions than the horizontally polarized 18.7 GHz data, and the 89 GHz channels have successfully been used in sea ice concentration retrievals under clear atmospheric conditions. As a result, this algorithm can identify more complex ice types resulting from surface glaze and layering in the snow cover. The thin-ice bias is then reduced.&lt;/gco:CharacterString&gt;
+&lt;/gmi:description&gt;
+&lt;/gmi:LE_Algorithm&gt;
+&lt;/gmi:algorithm&gt;
+&lt;gmi:algorithm&gt;
+&lt;gmi:LE_Algorithm&gt;
+&lt;gmi:citation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gco:CharacterString&gt;Bootstrap Basic Algorithm (BBA)&lt;/gco:CharacterString&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date&gt;
+&lt;gmd:CI_Date&gt;
+&lt;gmd:date&gt;
+&lt;gco:Date&gt;2013-11-12&lt;/gco:Date&gt;
+&lt;/gmd:date&gt;
+&lt;gmd:dateType&gt;
+&lt;gmd:CI_DateTypeCode codeList=&quot;http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml#CI_DateTypeCode&quot; codeListValue=&quot;lastUpdate&quot;&gt;lastUpdate&lt;/gmd:CI_DateTypeCode&gt;
+&lt;/gmd:dateType&gt;
+&lt;/gmd:CI_Date&gt;
+&lt;/gmd:date&gt;
+&lt;gmd:edition&gt;
+&lt;gco:CharacterString&gt;20131112&lt;/gco:CharacterString&gt;
+&lt;/gmd:edition&gt;
+&lt;gmd:citedResponsibleParty&gt;
+&lt;gmd:CI_ResponsibleParty&gt;
+&lt;gmd:individualName&gt;
+&lt;gco:CharacterString&gt;Josefino Comiso&lt;/gco:CharacterString&gt;
+&lt;/gmd:individualName&gt;
+&lt;gmd:organisationName&gt;
+&lt;gco:CharacterString&gt;NASA / GSFC Cryospheric Sciences Laboratory&lt;/gco:CharacterString&gt;
+&lt;/gmd:organisationName&gt;
+&lt;gmd:contactInfo&gt;
+&lt;gmd:CI_Contact&gt;
+&lt;gmd:address&gt;
+&lt;gmd:CI_Address&gt;
+&lt;gmd:electronicMailAddress&gt;
+&lt;gco:CharacterString&gt;josefino.c.comiso@nasa.gov&lt;/gco:CharacterString&gt;
+&lt;/gmd:electronicMailAddress&gt;
+&lt;/gmd:CI_Address&gt;
+&lt;/gmd:address&gt;
+&lt;/gmd:CI_Contact&gt;
+&lt;/gmd:contactInfo&gt;
+&lt;gmd:role&gt;
+&lt;gmd:CI_RoleCode codeList=&quot;http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;author&quot;&gt;author&lt;/gmd:CI_RoleCode&gt;
+&lt;/gmd:role&gt;
+&lt;/gmd:CI_ResponsibleParty&gt;
+&lt;/gmd:citedResponsibleParty&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmi:citation&gt;
+&lt;gmi:description&gt;
+&lt;gco:CharacterString&gt;The Bootstrap Basic Algorithm (BBA) uses two sets of channels to identify consolidated ice and open water: 18.7V GHz and 37V GHz, and 37H GHz and 37V GHz. Using these channels for the retrieval of sea ice concentration ensures consistency with historical sea ice products, beginning with SMMR.&lt;/gco:CharacterString&gt;
+&lt;/gmi:description&gt;
+&lt;/gmi:LE_Algorithm&gt;
+&lt;/gmi:algorithm&gt;
+&lt;/gmi:LE_Processing&gt;
+&lt;/gmi:processingInformation&gt;
+&lt;gmi:output&gt;
+&lt;gmi:LE_Source&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;The AMSR-E/Aqua Level-3 25 km daily sea ice product includes 6.9 - 89.0 GHz TBs and sea ice concentration averages (daily, ascending, and descending) on a 25 km polar stereographic grid, generated by the NT2 algorithm using Level-2A TBs. This validated version includes an updated Southern Hemisphere sea ice mask derived from National Ice Center data (June 2011) and updated flags correlating with the new mask.&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;gmd:sourceCitation&gt;
+&lt;gmd:CI_Citation&gt;
+&lt;gmd:title&gt;
+&lt;gco:CharacterString&gt;AMSR-E/Aqua Daily L3 25 km Tb and Sea Ice Concentration Polar Grids&lt;/gco:CharacterString&gt;
+&lt;/gmd:title&gt;
+&lt;gmd:date gco:nilReason=&quot;inapplicable&quot;/&gt;
+&lt;gmd:identifier&gt;
+&lt;gmd:MD_Identifier&gt;
+&lt;gmd:code&gt;
+&lt;gmx:Anchor xlink:actuate=&quot;onRequest&quot; xlink:title=&quot;Digital Object Identifier (DOI)&quot; xlink:href=&quot;http://dx.doi.org/10.5067/AMSR-E/AE_SI25.003&quot;&gt;doi:10.5067/AMSR-E/AE_SI25.003&lt;/gmx:Anchor&gt;
+&lt;/gmd:code&gt;
+&lt;gmd:codeSpace&gt;
+&lt;gco:CharacterString&gt;gov.nasa.esdis&lt;/gco:CharacterString&gt;
+&lt;/gmd:codeSpace&gt;
+&lt;gmd:description&gt;
+&lt;gco:CharacterString&gt;Digital Object Identifier (DOI)&lt;/gco:CharacterString&gt;
+&lt;/gmd:description&gt;
+&lt;/gmd:MD_Identifier&gt;
+&lt;/gmd:identifier&gt;
+&lt;/gmd:CI_Citation&gt;
+&lt;/gmd:sourceCitation&gt;
+&lt;/gmi:LE_Source&gt;
+&lt;/gmi:output&gt;
+&lt;/gmi:LE_ProcessStep&gt;
+&lt;/gmd:processStep&gt;
+&lt;/gmd:LI_Lineage&gt;
+&lt;/gmd:lineage&gt;
+&lt;/gmd:DQ_DataQuality&gt;
+&lt;/gmd:dataQualityInfo&gt;
+&lt;/gmi:MI_Metadata&gt;
+</Value>
+    </Attribute>
+    <Attribute name="Processing_Facility" type="String">
+        <Value>AMSR-E Science Investigator-led Processing System at the Global Hydrology Resource Center (AMSR-E SIPS at GHRC), Huntsville, AL USA</Value>
+    </Attribute>
+    <Attribute name="DOI" type="String">
+        <Value>10.5067/AMSR-E/AE_L2A.003
+10.5067/AMSR-E/AE_SI25.003</Value>
+    </Attribute>
+    <Group name="NpPolarGrid25km">
+        <Group name="Data_Fields">
+            <Int16 name="SI_25km_NH_06V_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="46806" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_06V_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>6</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="5876265" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_06V_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>7</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="11708322" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_06H_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>8</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="529140" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_06H_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>9</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="6358599" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_06H_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>10</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="12190656" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_10V_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="1011474" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_10V_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>12</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="6840933" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_10V_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>13</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="12672990" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_10H_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>14</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="1493808" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_10H_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>15</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="7323267" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_10H_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>16</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="13155324" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_18V_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>17</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="1976142" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_18V_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>18</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="7805601" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_18V_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>19</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="13637658" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_18H_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>20</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="2458476" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_18H_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>21</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="8287935" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_18H_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>22</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="14119992" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_23V_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>23</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="2940810" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_23V_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>24</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="8770269" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_23V_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>25</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="14602326" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_23H_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>26</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="3423144" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_23H_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>27</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="9252603" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_23H_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>28</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="15084660" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_36V_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>29</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="3905478" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_36V_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>30</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="9737343" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_36V_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>31</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="15566994" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_36H_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>32</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="4387812" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_36H_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>33</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="10219677" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_36H_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>34</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="16049328" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_89V_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>35</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="4870146" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_89V_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>36</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="10702011" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_89V_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>37</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="16531662" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_89H_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>38</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="5352480" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_89H_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>39</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="11184345" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_89H_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>40</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="17013996" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_ICECON_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>41</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="17538168" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_ICECON_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>42</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="18083069" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_ICECON_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>43</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="18627970" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_ICEDIFF_ASC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>44</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="17810619" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_ICEDIFF_DSC">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>45</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="18355520" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_NH_ICEDIFF_DAY">
+                <Dim name="/YDim_NpPolarGrid25km"/>
+                <Dim name="/XDim_NpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>46</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="18900421" nBytes="272384" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+        </Group>
+        <Group name="Grid_Attributes"/>
+    </Group>
+    <Group name="SpPolarGrid25km">
+        <Group name="Data_Fields">
+            <Int16 name="SI_25km_SH_06V_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>50</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="319253" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_06V_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>51</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="6148712" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_06V_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>52</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="11980769" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_06H_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>53</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="801587" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_06H_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>54</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="6631046" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_06H_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>55</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="12463103" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_10V_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>56</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="1283921" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_10V_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>57</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="7113380" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_10V_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>58</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="12945437" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_10H_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>59</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="1766255" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_10H_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>60</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="7595714" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_10H_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>61</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="13427771" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_18V_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>62</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="2248589" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_18V_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>63</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="8078048" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_18V_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>64</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="13910105" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_18H_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>65</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="2730923" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_18H_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>66</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="8560382" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_18H_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>67</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="14392439" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_23V_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>68</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="3213257" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_23V_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>69</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="9042716" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_23V_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>70</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="14874773" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_23H_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>71</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="3695591" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_23H_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>72</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="9525050" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_23H_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>73</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="15357107" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_36V_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>74</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="4177925" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_36V_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>75</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="10009790" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_36V_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>76</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="15839441" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_36H_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>77</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="4660259" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_36H_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>78</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="10492124" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_36H_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>79</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="16321775" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_89V_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>80</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="5142593" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_89V_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>81</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="10974458" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_89V_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>82</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="16804109" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_89H_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>83</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="5624927" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_89H_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>84</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="11456792" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_89H_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>85</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="17286443" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_ICECON_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>86</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="19172871" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_ICECON_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>87</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="19592652" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_ICECON_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>88</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="20012433" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_ICEDIFF_ASC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>89</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="19382762" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_ICEDIFF_DSC">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>90</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="19802543" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+            <Int16 name="SI_25km_SH_ICEDIFF_DAY">
+                <Dim name="/YDim_SpPolarGrid25km"/>
+                <Dim name="/XDim_SpPolarGrid25km"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>91</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="20222324" nBytes="209824" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Int16>
+        </Group>
+        <Group name="Grid_Attributes"/>
+    </Group>
+</Dataset>

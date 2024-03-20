@@ -62,7 +62,8 @@ public:
     virtual void dump(ostream & strm) const;
 
 private:
-    void structure_read(vector<char> &values, size_t &values_offset);
+    void structure_read(vector<char> &values, size_t &values_offset, bool byte_swap);
+    void swap_bytes_in_structure(char*swap_value, libdap::Type t_bt, int64_t num_eles) const;
     friend class DmrppArray;
 };
 

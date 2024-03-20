@@ -1,0 +1,1991 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MOD13Q1.A2023353.h17v06.061.2024005131728.hdf">
+    <Dimension name="YDim_MODIS_Grid_16DAY_250m_500m_VI" size="4800"/>
+    <Dimension name="XDim_MODIS_Grid_16DAY_250m_500m_VI" size="4800"/>
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.19</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName=&quot;MODIS_Grid_16DAY_250m_500m_VI&quot;
+		XDim=4800
+		YDim=4800
+		UpperLeftPointMtrs=(-1111950.519667,3335851.559000)
+		LowerRightMtrs=(0.000000,2223901.039333)
+		Projection=GCTP_SNSOID
+		ProjParams=(6371007.181000,0,0,0,0,0,0,0,0,0,0,0,0)
+		SphereCode=-1
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;250m 16 days NDVI&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+			OBJECT=DataField_2
+				DataFieldName=&quot;250m 16 days EVI&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_2
+			OBJECT=DataField_3
+				DataFieldName=&quot;250m 16 days VI Quality&quot;
+				DataType=DFNT_UINT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_3
+			OBJECT=DataField_4
+				DataFieldName=&quot;250m 16 days red reflectance&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_4
+			OBJECT=DataField_5
+				DataFieldName=&quot;250m 16 days NIR reflectance&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_5
+			OBJECT=DataField_6
+				DataFieldName=&quot;250m 16 days blue reflectance&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_6
+			OBJECT=DataField_7
+				DataFieldName=&quot;250m 16 days MIR reflectance&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_7
+			OBJECT=DataField_8
+				DataFieldName=&quot;250m 16 days view zenith angle&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_8
+			OBJECT=DataField_9
+				DataFieldName=&quot;250m 16 days sun zenith angle&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_9
+			OBJECT=DataField_10
+				DataFieldName=&quot;250m 16 days relative azimuth angle&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_10
+			OBJECT=DataField_11
+				DataFieldName=&quot;250m 16 days composite day of the year&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_11
+			OBJECT=DataField_12
+				DataFieldName=&quot;250m 16 days pixel reliability&quot;
+				DataType=DFNT_INT8
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_12
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi" type="String">
+        <Value>10.5067/MODIS/MOD13Q1.061</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
+    <Attribute name="CoreMetadata_0" type="String">
+        <Value>
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = REPROCESSINGPLANNED
+      NUM_VAL              = 1
+      VALUE                = &quot;further update is anticipated&quot;
+    END_OBJECT             = REPROCESSINGPLANNED
+
+    OBJECT                 = REPROCESSINGACTUAL
+      NUM_VAL              = 1
+      VALUE                = &quot;reprocessed&quot;
+    END_OBJECT             = REPROCESSINGACTUAL
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = &quot;MOD13Q1.A2023353.h17v06.061.2024005131728.hdf&quot;
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = DAYNIGHTFLAG
+      NUM_VAL              = 1
+      VALUE                = &quot;Day&quot;
+    END_OBJECT             = DAYNIGHTFLAG
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = &quot;2024-01-05T18:17:28.000Z&quot;
+    END_OBJECT             = PRODUCTIONDATETIME
+
+    OBJECT                 = LOCALVERSIONID
+      NUM_VAL              = 1
+      VALUE                = &quot;6.0.33&quot;
+    END_OBJECT             = LOCALVERSIONID
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = MEASUREDPARAMETER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days NDVI&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;2&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days EVI&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;2&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;2&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;2&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;3&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days VI Quality&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;3&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;3&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;3&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;4&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days red reflectance&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;4&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;4&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;4&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;5&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days NIR reflectance&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;5&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;5&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;5&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;6&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days blue reflectance&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;6&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;6&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;6&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;7&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days MIR reflectance&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;7&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;7&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;7&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;8&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days view zenith angle&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;8&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;8&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;8&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;9&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days sun zenith angle&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;9&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;9&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;9&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;10&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days relative azimuth angle&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;10&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;10&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;10&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;11&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;11&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days composite day of the year&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;11&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;11&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;11&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;12&quot;
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;12&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;250m 16 days pixel reliability&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;12&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;No automatic quality assessment is performed in the PGE&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;12&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&amp;ver=C6 for the product Science Quality status.&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;12&quot;
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTCLOUDCOVER
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTCLOUDCOVER
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+  END_GROUP              = MEASUREDPARAMETER
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = &quot;MOD13Q1&quot;
+    END_OBJECT             = SHORTNAME
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = 61
+    END_OBJECT             = VERSIONID
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 160
+      VALUE                = (&quot;MOD09Q1.A2023353.h17v06.061.2023365115609.hdf&quot;, &quot;MOD09Q1.A2023361.h17v06.061.2024005172906.hdf&quot;, &quot;MOD09A1.A2023353.h17v06.061.2023365115609.hdf&quot;, &quot;MOD09A1.A2023361.h17v06.061.2024005172906.hdf&quot;)
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = SPATIALDOMAINCONTAINER
+
+    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER
+
+      GROUP                  = GPOLYGON
+
+        OBJECT                 = GPOLYGONCONTAINER
+          CLASS                = &quot;1&quot;
+
+          GROUP                  = GRING
+            CLASS                = &quot;1&quot;
+
+            OBJECT                 = EXCLUSIONGRINGFLAG
+              NUM_VAL              = 1
+              CLASS                = &quot;1&quot;
+              VALUE                = &quot;N&quot;
+            END_OBJECT             = EXCLUSIONGRINGFLAG
+
+          END_GROUP              = GRING
+
+          GROUP                  = GRINGPOINT
+            CLASS                = &quot;1&quot;
+
+            OBJECT                 = GRINGPOINTLATITUDE
+              NUM_VAL              = 4
+              CLASS                = &quot;1&quot;
+              VALUE                = (19.9192399947764, 29.9999999973059, 30.0028632916331, 19.9217930153004)
+            END_OBJECT             = GRINGPOINTLATITUDE
+
+            OBJECT                 = GRINGPOINTLONGITUDE
+              NUM_VAL              = 4
+              CLASS                = &quot;1&quot;
+              VALUE                = (-10.6389382706831, -11.5470053824421, 0.0126230931679299, 0.00883899399932026)
+            END_OBJECT             = GRINGPOINTLONGITUDE
+
+            OBJECT                 = GRINGPOINTSEQUENCENO
+              NUM_VAL              = 4
+              CLASS                = &quot;1&quot;
+              VALUE                = (1, 2, 3, 4)
+            END_OBJECT             = GRINGPOINTSEQUENCENO
+
+          END_GROUP              = GRINGPOINT
+
+        END_OBJECT             = GPOLYGONCONTAINER
+
+      END_GROUP              = GPOLYGON
+
+    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER
+
+  END_GROUP              = SPATIALDOMAINCONTAINER
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;00:00:00&quot;
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;23:59:59&quot;
+    END_OBJECT             = RANGEENDINGTIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2023-12-19&quot;
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2024-01-03&quot;
+    END_OBJECT             = RANGEENDINGDATE
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = &quot;6.1.0&quot;
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+  GROUP                  = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+    OBJECT                 = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ASSOCIATEDSENSORSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;MODIS&quot;
+      END_OBJECT             = ASSOCIATEDSENSORSHORTNAME
+
+      OBJECT                 = ASSOCIATEDPLATFORMSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Terra&quot;
+      END_OBJECT             = ASSOCIATEDPLATFORMSHORTNAME
+
+      OBJECT                 = ASSOCIATEDINSTRUMENTSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;MODIS&quot;
+      END_OBJECT             = ASSOCIATEDINSTRUMENTSHORTNAME
+
+    END_OBJECT             = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+
+  END_GROUP              = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+  GROUP                  = ADDITIONALATTRIBUTES
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTGOODQUALITY&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;100&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;2&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTOTHERQUALITY&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;2&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;3&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTNOTPRODUCEDCLOUD&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;3&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;4&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTNOTPRODUCEDOTHER&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;4&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;5&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NDVI250M16DAYQCLASSPERCENTAGE&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;5&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;6&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;EVI250M16DAYQCLASSPERCENTAGE&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;6&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;7&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;HORIZONTALTILENUMBER&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;7&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;17&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;8&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;VERTICALTILENUMBER&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;8&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;06&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;9&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;TileID&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;9&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;51017006&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;10&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;INPUTPRODUCTRESOLUTION&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;10&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;Product input resolution 250m&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;11&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;11&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;identifier_product_doi&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;11&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;10.5067/MODIS/MOD13Q1.061&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;12&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;12&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;identifier_product_doi_authority&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;12&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;http://dx.doi.org&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+  END_GROUP              = ADDITIONALATTRIBUTES
+
+END_GROUP              = INVENTORYMETADATA
+
+END
+</Value>
+    </Attribute>
+    <Attribute name="ArchiveMetadata_0" type="String">
+        <Value>
+GROUP                  = ARCHIVEDMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  OBJECT                 = SPSOPARAMETERS
+    NUM_VAL              = 4
+    VALUE                = (&quot;2749&quot;, &quot;4334&quot;, &quot;2749a&quot;, &quot;4334a&quot;)
+  END_OBJECT             = SPSOPARAMETERS
+
+  OBJECT                 = ALGORITHMPACKAGEACCEPTANCEDATE
+    NUM_VAL              = 1
+    VALUE                = &quot;102004&quot;
+  END_OBJECT             = ALGORITHMPACKAGEACCEPTANCEDATE
+
+  OBJECT                 = ALGORITHMPACKAGEMATURITYCODE
+    NUM_VAL              = 1
+    VALUE                = &quot;Normal&quot;
+  END_OBJECT             = ALGORITHMPACKAGEMATURITYCODE
+
+  OBJECT                 = ALGORITHMPACKAGENAME
+    NUM_VAL              = 1
+    VALUE                = &quot;MOD_PR13A1&quot;
+  END_OBJECT             = ALGORITHMPACKAGENAME
+
+  OBJECT                 = ALGORITHMPACKAGEVERSION
+    NUM_VAL              = 1
+    VALUE                = &quot;6&quot;
+  END_OBJECT             = ALGORITHMPACKAGEVERSION
+
+  OBJECT                 = INSTRUMENTNAME
+    NUM_VAL              = 1
+    VALUE                = &quot;Moderate-Resolution Imaging SpectroRadiometer&quot;
+  END_OBJECT             = INSTRUMENTNAME
+
+  OBJECT                 = LONGNAME
+    NUM_VAL              = 1
+    VALUE                = &quot;MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid&quot;
+  END_OBJECT             = LONGNAME
+
+  OBJECT                 = PROCESSINGCENTER
+    NUM_VAL              = 1
+    VALUE                = &quot;MODAPS&quot;
+  END_OBJECT             = PROCESSINGCENTER
+
+  OBJECT                 = INPUTFILENAME
+    NUM_VAL              = 160
+    VALUE                = (&quot;MOD09Q1.A2023353.h17v06.061.2023365115609.hdf&quot;, &quot;MOD09Q1.A2023361.h17v06.061.2024005172906.hdf&quot;, &quot;MOD09A1.A2023353.h17v06.061.2023365115609.hdf&quot;, &quot;MOD09A1.A2023361.h17v06.061.2024005172906.hdf&quot;)
+  END_OBJECT             = INPUTFILENAME
+
+  GROUP                  = BOUNDINGRECTANGLE
+
+    OBJECT                 = NORTHBOUNDINGCOORDINATE
+      NUM_VAL              = 1
+      VALUE                = 29.9999999973059
+    END_OBJECT             = NORTHBOUNDINGCOORDINATE
+
+    OBJECT                 = SOUTHBOUNDINGCOORDINATE
+      NUM_VAL              = 1
+      VALUE                = 19.9999999982039
+    END_OBJECT             = SOUTHBOUNDINGCOORDINATE
+
+    OBJECT                 = EASTBOUNDINGCOORDINATE
+      NUM_VAL              = 1
+      VALUE                = 0.00962250448538908
+    END_OBJECT             = EASTBOUNDINGCOORDINATE
+
+    OBJECT                 = WESTBOUNDINGCOORDINATE
+      NUM_VAL              = 1
+      VALUE                = -11.5470053824421
+    END_OBJECT             = WESTBOUNDINGCOORDINATE
+
+  END_GROUP              = BOUNDINGRECTANGLE
+
+  OBJECT                 = PROCESSINGENVIRONMENT
+    NUM_VAL              = 1
+    VALUE                = &quot;Linux minion20223 5.4.0-1088-fips #97-Ubuntu SMP Fri Oct 13 08:54:11 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux&quot;
+  END_OBJECT             = PROCESSINGENVIRONMENT
+
+  OBJECT                 = DESCRREVISION
+    NUM_VAL              = 1
+    VALUE                = &quot;6.1&quot;
+  END_OBJECT             = DESCRREVISION
+
+  OBJECT                 = CHARACTERISTICBINANGULARSIZE
+    NUM_VAL              = 1
+    VALUE                = 7.5
+  END_OBJECT             = CHARACTERISTICBINANGULARSIZE
+
+  OBJECT                 = CHARACTERISTICBINSIZE
+    NUM_VAL              = 1
+    VALUE                = 231.656358263889
+  END_OBJECT             = CHARACTERISTICBINSIZE
+
+  OBJECT                 = DATACOLUMNS
+    NUM_VAL              = 1
+    VALUE                = 4800
+  END_OBJECT             = DATACOLUMNS
+
+  OBJECT                 = DATAROWS
+    NUM_VAL              = 1
+    VALUE                = 4800
+  END_OBJECT             = DATAROWS
+
+  OBJECT                 = GLOBALGRIDCOLUMNS
+    NUM_VAL              = 1
+    VALUE                = 172800
+  END_OBJECT             = GLOBALGRIDCOLUMNS
+
+  OBJECT                 = GLOBALGRIDROWS
+    NUM_VAL              = 1
+    VALUE                = 86400
+  END_OBJECT             = GLOBALGRIDROWS
+
+  OBJECT                 = NUMBEROFDAYS
+    NUM_VAL              = 1
+    VALUE                = 16
+  END_OBJECT             = NUMBEROFDAYS
+
+  OBJECT                 = DAYSOFYEAR
+    NUM_VAL              = 16
+    VALUE                = (353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 1, 2, 3)
+  END_OBJECT             = DAYSOFYEAR
+
+  OBJECT                 = GEOANYABNORMAL
+    NUM_VAL              = 1
+    VALUE                = &quot;False&quot;
+  END_OBJECT             = GEOANYABNORMAL
+
+  OBJECT                 = GEOESTMAXRMSERROR
+    NUM_VAL              = 1
+    VALUE                = 50.0
+  END_OBJECT             = GEOESTMAXRMSERROR
+
+  OBJECT                 = QAPERCENTPOORQ250MOR500M16DAYNDVI
+    NUM_VAL              = 16
+    VALUE                = (0, 94, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+  END_OBJECT             = QAPERCENTPOORQ250MOR500M16DAYNDVI
+
+  OBJECT                 = QAPERCENTPOORQ250MOR500M16DAYEVI
+    NUM_VAL              = 16
+    VALUE                = (0, 94, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+  END_OBJECT             = QAPERCENTPOORQ250MOR500M16DAYEVI
+
+  OBJECT                 = PERCENTLAND
+    NUM_VAL              = 1
+    VALUE                = 100
+  END_OBJECT             = PERCENTLAND
+
+  OBJECT                 = DAYSPROCESSED
+    NUM_VAL              = 16
+    VALUE                = (&quot;2023353&quot;, &quot;2023354&quot;, &quot;2023355&quot;, &quot;2023356&quot;, &quot;2023357&quot;, &quot;2023358&quot;, &quot;2023359&quot;, &quot;2023360&quot;, &quot;2023361&quot;, &quot;2023362&quot;, &quot;2023363&quot;, &quot;2023364&quot;, &quot;2023365&quot;, &quot;2024001&quot;, &quot;2024002&quot;, &quot;2024003&quot;)
+  END_OBJECT             = DAYSPROCESSED
+
+  OBJECT                 = PRODUCTIONTYPE
+    NUM_VAL              = 1
+    VALUE                = &quot;Regular Production [1-16,17-32,33-48,...353-2/3]&quot;
+  END_OBJECT             = PRODUCTIONTYPE
+
+  OBJECT                 = QA_STRUCTURE_STYLE
+    NUM_VAL              = 1
+    VALUE                = &quot;C5 or later&quot;
+  END_OBJECT             = QA_STRUCTURE_STYLE
+
+END_GROUP              = ARCHIVEDMETADATA
+
+END
+</Value>
+    </Attribute>
+    <Group name="MODIS_Grid_16DAY_250m_500m_VI">
+        <Group name="Data_Fields">
+            <Int16 name="_250m_16_days_NDVI">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days NDVI</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>NDVI</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-2000</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-3000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_16_days_EVI">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days EVI</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>EVI</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-2000</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-3000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>6</Value>
+                </Attribute>
+            </Int16>
+            <UInt16 name="_250m_16_days_VI_Quality">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days VI Quality</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bit field</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>65534</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>65535</Value>
+                </Attribute>
+                <Attribute name="Legend" type="String">
+                    <Value>
+	 Bit Fields Description (Right to Left): 
+	[0-1] : MODLAND_QA [2 bit range] 
+		 00: VI produced, good quality 
+		 01: VI produced, but check other QA 
+		 10: Pixel produced, but most probably cloudy 
+		 11: Pixel not produced due to other reasons than clouds 
+	[2-5] : VI usefulness [4 bit range] 
+		 0000: Highest quality 
+		 0001: Lower quality  
+		 0010..1010: Decreasing quality 
+		 1100: Lowest quality 
+		 1101: Quality so low that it is not useful 
+		 1110: L1B data faulty 
+		 1111: Not useful for any other reason/not processed 
+	[6-7] : Aerosol quantity [2 bit range] 
+		 00: Climatology 
+		 01: Low 
+		 10: Average 
+		 11: High (11) 
+	[8] : Adjacent cloud detected; [1 bit range] 
+		 1: Yes 
+		 0: No 
+	[9] : Atmosphere BRDF correction performed [1 bit range] 
+		 1: Yes 
+		 0: No 
+	[10] : Mixed clouds  [1 bit range] 
+		 1: Yes 
+		 0: No 
+	[11-13] : Land/Water Flag [3 bit range] 
+		 000: Shallow ocean 
+		 001: Land (Nothing else but land) 
+		 010: Ocean coastlines and lake shorelines 
+		 011: Shallow inland water 
+		 100: Ephemeral water 
+		 101: Deep inland water 
+		 110: Moderate or continental ocean 
+		 111: Deep ocean 
+	[14] : Possible snow/ice [1 bit range] 
+		 1: Yes 
+		 0: No 
+	[15] : Possible shadow [1 bit range] 
+		 1: Yes 
+		 0: No 
+</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>7</Value>
+                </Attribute>
+            </UInt16>
+            <Int16 name="_250m_16_days_red_reflectance">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days red reflectance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>8</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_16_days_NIR_reflectance">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days NIR reflectance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>9</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_16_days_blue_reflectance">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days blue reflectance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>10</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_16_days_MIR_reflectance">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days MIR reflectance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>10000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1000</Value>
+                </Attribute>
+                <Attribute name="Legend" type="String">
+                    <Value>
+	 The MIR band saved in the VI product is MODIS band 7 
+		 Bandwidth : 2105-2155 nm 
+		 Band center: 2130 nm 
+</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>11</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_16_days_view_zenith_angle">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days view zenith angle</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>18000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100.00000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>12</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_16_days_sun_zenith_angle">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days sun zenith angle</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>18000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-10000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100.00000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>13</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_16_days_relative_azimuth_angle">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days relative azimuth angle</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-18000</Value>
+                    <Value>18000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-4000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100.00000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>14</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_16_days_composite_day_of_the_year">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days composite day of the year</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>Julian day of the year </Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>1</Value>
+                    <Value>366</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>15</Value>
+                </Attribute>
+            </Int16>
+            <Int8 name="_250m_16_days_pixel_reliability">
+                <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m 16 days pixel reliability</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>rank</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int8">
+                    <Value>0</Value>
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int8">
+                    <Value>-1</Value>
+                </Attribute>
+                <Attribute name="Legend" type="String">
+                    <Value>
+	 Rank Keys: 
+		[-1]:  Fill/No Data-Not Processed. 
+		 [0]:  Good data      - Use with confidence 
+		 [1]:  Marginal data  - Useful, but look at other QA information 
+		 [2]:  Snow/Ice       - Target covered with snow/ice 
+		 [3]:  Cloudy         - Target not visible, covered with cloud 
+</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>16</Value>
+                </Attribute>
+            </Int8>
+        </Group>
+        <Group name="Grid_Attributes"/>
+    </Group>
+</Dataset>

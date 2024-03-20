@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="testvs2.hdf">
+    <Int32 name="Vdata_DFNT_INT32_Field_DFNT_INT32">
+        <Dim size="1"/>
+        <Dim size="5"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+    </Int32>
+    <UInt32 name="Vdata_DFNT_UINT32_Field_DFNT_UINT32">
+        <Dim size="1"/>
+        <Dim size="3"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </UInt32>
+    <Int16 name="Vdata_DFNT_INT16_Field_DFNT_INT16">
+        <Dim size="1"/>
+        <Dim size="5"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>4</Value>
+        </Attribute>
+    </Int16>
+    <UInt16 name="Vdata_DFNT_UINT16_Field_DFNT_UINT16">
+        <Dim size="1"/>
+        <Dim size="3"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+    </UInt16>
+    <Int8 name="Vdata_DFNT_INT8_Field_DFNT_INT8">
+        <Dim size="1"/>
+        <Dim size="5"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>6</Value>
+        </Attribute>
+    </Int8>
+    <Byte name="Vdata_DFNT_UINT8_Field_DFNT_UINT8">
+        <Dim size="1"/>
+        <Dim size="3"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>7</Value>
+        </Attribute>
+    </Byte>
+    <Float32 name="Vdata_DFNT_FLOAT32_Field_DFNT_FLOAT32">
+        <Dim size="1"/>
+        <Dim size="7"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>8</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Vdata_DFNT_FLOAT64_Field_DFNT_FLOAT64">
+        <Dim size="1"/>
+        <Dim size="7"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>9</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="Vdata_DFNT_CHAR8_Field_DFNT_CHAR8">
+        <Dim size="1"/>
+        <Dim size="5"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>10</Value>
+        </Attribute>
+    </Int8>
+    <Byte name="Vdata_DFNT_UCHAR8_Field_DFNT_UCHAR8">
+        <Dim size="1"/>
+        <Dim size="3"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>11</Value>
+        </Attribute>
+    </Byte>
+</Dataset>

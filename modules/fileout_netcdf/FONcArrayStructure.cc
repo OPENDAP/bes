@@ -100,7 +100,7 @@ void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_
     for (auto &bt: as_v->variables()) {
         if (bt->send_p()) {
             BESDEBUG("fonc", "FONcArrayStructure::convert - converting " << bt->name() << endl);
-            auto fsf = new FONcArrayStructureField(bt, _as);
+            auto fsf = new FONcArrayStructureField(bt, _as, isNetCDF4_ENHANCED());
             _vars.push_back(fsf);
             fsf->convert(embed,_dap4,is_dap4_group);
         }

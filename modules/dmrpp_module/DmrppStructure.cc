@@ -34,6 +34,8 @@
 #include <BESDebug.h>
 
 #include "DmrppStructure.h"
+#include "byteswap_compat.h"
+#include "float_byteswap.h"
 
 using namespace libdap;
 using namespace std;
@@ -68,7 +70,7 @@ DmrppStructure::read()
     vector<char> values(buf_value,buf_value+value_size);
  
     size_t values_offset = 0;
-    structure_read(values, values_offset);
+    structure_read(values, values_offset,this->twiddle_bytes());
     set_read_p(true);
 
     return true;
@@ -76,7 +78,7 @@ DmrppStructure::read()
 
 }
 
-void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset) {
+void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset, bool byte_swap) {
 
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
     Constructor::Vars_iter vi = this->var_begin();
@@ -103,7 +105,16 @@ void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset)
             else 
                 bt->val2buf(values.data() + values_offset);
 #endif
-            bt->val2buf(values.data() + values_offset);
+
+            if (byte_swap) {
+               // Need to swap the bytes.
+               auto stored_value = values.data() + values_offset;
+               BESDEBUG("dmrpp", "swap bytes  " << endl);
+               swap_bytes_in_structure(stored_value,t_bt,1);
+               bt->val2buf(stored_value);
+            }
+            else 
+               bt->val2buf(values.data() + values_offset);
             values_offset += bt->width_ll();
         }
         else if (t_bt == dods_array_c) {
@@ -111,8 +122,15 @@ void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset)
             auto t_a = dynamic_cast<Array *>(bt);
             Type t_array_var = t_a->var()->type();
             if (libdap::is_simple_type(t_array_var) && t_array_var != dods_str_c && t_array_var != dods_url_c && t_array_var!= dods_enum_c && t_array_var!=dods_opaque_c) {
-
-                t_a->val2buf(values.data()+values_offset);
+                if (byte_swap) {
+                    // Need to swap the bytes.
+                    BESDEBUG("dmrpp", "swap array bytes  " << endl);
+                    auto stored_value = values.data() + values_offset;
+                    swap_bytes_in_structure(stored_value,t_array_var,t_a->length_ll());
+                    bt->val2buf(stored_value);
+                }
+                else 
+                    t_a->val2buf(values.data()+values_offset);
                 // update values_offset.
                 values_offset +=t_a->width_ll();
             }
@@ -122,6 +140,51 @@ void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset)
         else 
             throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
     }
+
+}
+void 
+DmrppStructure::swap_bytes_in_structure(char *stored_value,Type dap_type,int64_t num) const{
+
+    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+    switch (dap_type) {
+        case dods_int16_c:
+        case dods_uint16_c: {
+            auto *local = reinterpret_cast<dods_uint16*>(stored_value);
+            while (num--) {
+                *local = bswap_16(*local);
+                local++;
+            }
+            break;
+        }
+        case dods_int32_c:
+        case dods_uint32_c: {
+            auto *local = reinterpret_cast<dods_uint32*>(stored_value);
+            while (num--) {
+                *local = bswap_32(*local);
+                local++;
+            }
+            break;
+        }
+        case dods_int64_c:
+        case dods_uint64_c: {
+            auto *local = reinterpret_cast<dods_uint64*>(stored_value);
+            while (num--) {
+                *local = bswap_64(*local);
+                local++;
+            }
+            break;
+        }
+        case dods_float32_c: {
+            swap_float32(stored_value, num);
+            break;
+        }
+        case dods_float64_c: {
+            swap_float64(stored_value, num);
+            break;
+        }
+        default: break; // Do nothing for all other types.
+    }
+
 
 }
 void
