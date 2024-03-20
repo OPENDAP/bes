@@ -1,0 +1,3 @@
+BES.Include = bes.with_hdfeos2.conf
+
+H4.EnableDirectDMR=false

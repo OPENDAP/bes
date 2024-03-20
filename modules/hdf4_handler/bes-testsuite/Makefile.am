@@ -9,14 +9,14 @@ AM_CPPFLAGS = -I$(top_srcdir)
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
-noinst_DATA = bes.conf bes.with_hdfeos2.conf
+noinst_DATA = bes.conf bes.with_hdfeos2.conf bes.with_hdfeos2_cfdmr.conf
 
-CLEANFILES = bes.conf bes.with_hdfeos2.conf
+CLEANFILES = bes.conf bes.with_hdfeos2.conf bes.with_hdfeos2_cfdmr.conf
 
 EXTRA_DIST = $(srcdir)/hdf4_handlerTest.with_hdfeos2 \
 $(srcdir)/hdf4_handlerTest.with_hdfeos2.at $(srcdir)/hdf4_handlerTest \
 $(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4 atlocal.in \
-bes.conf.in bes.with_hdfeos2.conf.in bes.conf.modules.in \
+bes.conf.in bes.with_hdfeos2.conf.in bes.with_hdfeos2_cfdmr.conf.in bes.conf.modules.in \
 bes.with_hdfeos2.conf.modules.in generate_metadata_baseline.sh.in \
 h4 h4.cf h4.nasa.with_hdfeos2 h4.with_hdfeos2
 
@@ -25,9 +25,12 @@ DISTCLEANFILES = generate_metadata_baseline.sh atconfig
 if DAP_BUILTIN_MODULES
 BES_CONF_IN = bes.conf.modules.in
 BES_HDFEOS_CONF_IN = bes.with_hdfeos2.conf.modules.in
+#No 'modules' version for this one.
+BES_HDFEOS_CFDMR_CONF_IN = bes.with_hdfeos2_cfdmr.conf.in
 else
 BES_CONF_IN = bes.conf.in
 BES_HDFEOS_CONF_IN = bes.with_hdfeos2.conf.in
+BES_HDFEOS_CFDMR_CONF_IN = bes.with_hdfeos2_cfdmr.conf.in
 endif
 
 # Build the bes.conf used for testing so that the value substituted for
@@ -42,6 +45,12 @@ bes.with_hdfeos2.conf: $(BES_HDFEOS_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.with_hdfeos2.conf
+
+bes.with_hdfeos2_cfdmr.conf: $(BES_HDFEOS_CFDMR_CONF_IN) $(top_srcdir)/configure.ac  
+	@clean_abs_top_srcdir=`${PYTHON} -c "import os; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.with_hdfeos2_cfdmr.conf
+
 
 ############## Autotest follows #####################
 
