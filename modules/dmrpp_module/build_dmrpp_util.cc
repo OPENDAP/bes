@@ -443,7 +443,7 @@ string get_hdf5_fill_value_str(hid_t dataset_id)
         if (dtype_id < 0)
             throw BESInternalError("Unable to get HDF5 dataset type id.", __FILE__, __LINE__);
 
-        vector<char> value(H5Tget_size(dtype_id));
+        vector<char> value(H5Tget_size(dtype_id), 0);
         if (H5Pget_fill_value(plist_id, dtype_id, value.data()) < 0)
             throw BESInternalError("Unable to access HDF5 Fill Value.", __FILE__, __LINE__);
 
@@ -684,7 +684,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
     set_filter_information(dataset, dc);
 
     // Get chunking information: rank and dimensions
-    vector<hsize_t> chunk_dims(dataset_rank);
+    vector<hsize_t> chunk_dims(dataset_rank, 0);
 
     unsigned int chunk_rank = 0;
     hid_t plist_id = create_h5plist(dataset);
@@ -705,7 +705,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
     dc->set_chunk_dimension_sizes(chunk_dims);
 
     for (unsigned int i = 0; i < num_chunks; ++i) {
-        vector<hsize_t> chunk_coords(dataset_rank);
+        vector<hsize_t> chunk_coords(dataset_rank, 0);
         haddr_t addr = 0;
         hsize_t size = 0;
 
@@ -742,7 +742,6 @@ void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
     // The variable is a scalar, not an array
 
     VERBOSE(cerr << prolog << "Processing scalar dariable. Storage: compact" << endl);
-    vector<uint8_t> values;
 
     hid_t dtypeid = H5Dget_type(dataset);
     VERBOSE(cerr << prolog << "   H5Dget_type(): " << dtypeid << endl);
@@ -788,7 +787,7 @@ void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
         case dods_int64_c:
         case dods_uint64_c:
         {
-            values.resize(memRequired);
+            vector<uint8_t> values(memRequired, 0);
             get_data(dataset, reinterpret_cast<void *>(values.data()));
             btp->set_read_p(true);
             btp->val2buf(reinterpret_cast<void *>(values.data()));
@@ -810,7 +809,7 @@ void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
             }
             else {
                 // A single string for scalar.
-                values.resize(memRequired);
+                vector<uint8_t> values(memRequired, 0);
                 get_data(dataset, reinterpret_cast<void *>(values.data()));
                 string fstr(values.begin(), values.end());
                 str->set_value(fstr);
@@ -852,7 +851,6 @@ void process_compact_flsa(hid_t dataset, BaseType *btp){
 void process_compact_layout_array(hid_t dataset, BaseType *btp) {
 
     VERBOSE(cerr << prolog << "BEGIN (" << btp->type_name() << " " << btp->name() << ")" << endl);
-    vector<uint8_t> values;
 
     hid_t dtypeid = H5Dget_type(dataset);
     VERBOSE(cerr << prolog << "   H5Dget_type(): " << dtypeid << endl);
@@ -898,7 +896,7 @@ void process_compact_layout_array(hid_t dataset, BaseType *btp) {
         case dods_int64_c:
         case dods_uint64_c:
         {
-            values.resize(memRequired);
+            vector<uint8_t> values(memRequired, 0);
             get_data(dataset, reinterpret_cast<void *>(values.data()));
             array->set_read_p(true);
             array->val2buf(reinterpret_cast<void *>(values.data()));
@@ -1269,8 +1267,7 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     int ndims = H5Sget_simple_extent_ndims(dspace);
     VERBOSE(cerr << prolog << "ndims: " << ndims << "\n");
 
-    vector<hsize_t>count;
-    count.reserve(ndims);
+    vector<hsize_t>count(ndims,0);
     if(H5Sget_simple_extent_dims(dspace, count.data(), nullptr) < 0){
         throw BESInternalError("Failed to get hdf5 count for variable: " + btp->FQN(), __FILE__, __LINE__);
     }
@@ -1283,17 +1280,14 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     }
     VERBOSE(cerr << prolog << msg.str() << "\n");
 
-    vector<hsize_t> offset;
-    offset.reserve(ndims);
+    vector<hsize_t> offset(ndims,0);
     for(int i=0; i<ndims; i++)
         offset.emplace_back(0);
 
     uint64_t num_elements = dap_array->get_size(false);\
     VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
 
-    vector<string> vls_values;
-    vls_values.resize(num_elements);
-
+    vector<string> vls_values(num_elements,"");
     read_vlen_string(dataset,
                      num_elements,
                      offset.data(),
