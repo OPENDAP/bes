@@ -1,0 +1,80 @@
+netcdf test {
+dimensions:
+	dim1 = 1 ;
+	dim2 = 5 ;
+	dim3 = 1 ;
+	dim4 = 3 ;
+	dim5 = 1 ;
+	dim6 = 5 ;
+	dim7 = 1 ;
+	dim8 = 3 ;
+	dim9 = 1 ;
+	dim10 = 5 ;
+	dim11 = 1 ;
+	dim12 = 3 ;
+	dim13 = 1 ;
+	dim14 = 7 ;
+	dim15 = 1 ;
+	dim16 = 7 ;
+	dim17 = 1 ;
+	dim18 = 5 ;
+	dim19 = 1 ;
+	dim20 = 3 ;
+variables:
+	int Vdata_DFNT_INT32_Field_DFNT_INT32(dim1, dim2) ;
+		Vdata_DFNT_INT32_Field_DFNT_INT32:dmr_vdata_ref = 2 ;
+	uint Vdata_DFNT_UINT32_Field_DFNT_UINT32(dim3, dim4) ;
+		Vdata_DFNT_UINT32_Field_DFNT_UINT32:dmr_vdata_ref = 3 ;
+	short Vdata_DFNT_INT16_Field_DFNT_INT16(dim5, dim6) ;
+		Vdata_DFNT_INT16_Field_DFNT_INT16:dmr_vdata_ref = 4 ;
+	ushort Vdata_DFNT_UINT16_Field_DFNT_UINT16(dim7, dim8) ;
+		Vdata_DFNT_UINT16_Field_DFNT_UINT16:dmr_vdata_ref = 5 ;
+	byte Vdata_DFNT_INT8_Field_DFNT_INT8(dim9, dim10) ;
+		Vdata_DFNT_INT8_Field_DFNT_INT8:dmr_vdata_ref = 6 ;
+	ubyte Vdata_DFNT_UINT8_Field_DFNT_UINT8(dim11, dim12) ;
+		Vdata_DFNT_UINT8_Field_DFNT_UINT8:dmr_vdata_ref = 7 ;
+	float Vdata_DFNT_FLOAT32_Field_DFNT_FLOAT32(dim13, dim14) ;
+		Vdata_DFNT_FLOAT32_Field_DFNT_FLOAT32:dmr_vdata_ref = 8 ;
+	double Vdata_DFNT_FLOAT64_Field_DFNT_FLOAT64(dim15, dim16) ;
+		Vdata_DFNT_FLOAT64_Field_DFNT_FLOAT64:dmr_vdata_ref = 9 ;
+	byte Vdata_DFNT_CHAR8_Field_DFNT_CHAR8(dim17, dim18) ;
+		Vdata_DFNT_CHAR8_Field_DFNT_CHAR8:dmr_vdata_ref = 10 ;
+	ubyte Vdata_DFNT_UCHAR8_Field_DFNT_UCHAR8(dim19, dim20) ;
+		Vdata_DFNT_UCHAR8_Field_DFNT_UCHAR8:dmr_vdata_ref = 11 ;
+
+// global attributes:
+		:history = "removed date-timex testvs2.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"testvs2.hdf.dmrpp\"}]}]" ;
+data:
+
+ Vdata_DFNT_INT32_Field_DFNT_INT32 =
+  0, 1, -1, 2147483647, -2147483648 ;
+
+ Vdata_DFNT_UINT32_Field_DFNT_UINT32 =
+  0, 1, _ ;
+
+ Vdata_DFNT_INT16_Field_DFNT_INT16 =
+  0, 1, -1, 32767, -32768 ;
+
+ Vdata_DFNT_UINT16_Field_DFNT_UINT16 =
+  0, 1, _ ;
+
+ Vdata_DFNT_INT8_Field_DFNT_INT8 =
+  0, 1, -1, 127, -128 ;
+
+ Vdata_DFNT_UINT8_Field_DFNT_UINT8 =
+  0, 1, 255 ;
+
+ Vdata_DFNT_FLOAT32_Field_DFNT_FLOAT32 =
+  0, 1, -1, 3.402823e+38, 1.401298e-45, -3.402823e+38, -1.401298e-45 ;
+
+ Vdata_DFNT_FLOAT64_Field_DFNT_FLOAT64 =
+  0, 1, -1, 1.79769313486232e+308, 4.94065645841247e-324, 
+    -1.79769313486232e+308, -4.94065645841247e-324 ;
+
+ Vdata_DFNT_CHAR8_Field_DFNT_CHAR8 =
+  1, -1, 127, -128, 0 ;
+
+ Vdata_DFNT_UCHAR8_Field_DFNT_UCHAR8 =
+  1, 255, 0 ;
+}

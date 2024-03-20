@@ -1345,9 +1345,6 @@ void DmrppArray::read_linked_blocks(){
     if (num_linked_blocks <2)
         throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
 
-    //Change to the total storage buffer size to just the compressed buffer size.
-    reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
-
     vector<unsigned long long> accumulated_lengths;
     accumulated_lengths.resize(num_linked_blocks);
     vector<unsigned long long> individual_lengths;
@@ -1364,40 +1361,72 @@ void DmrppArray::read_linked_blocks(){
     for (unsigned int i = 1; i < num_linked_blocks; i++)
         accumulated_lengths[i] = individual_lengths[i-1] + accumulated_lengths[i-1];
 
-    char *target_buffer = get_buf();
+    if (this->var()->type() == dods_structure_c) {
 
-    for(const auto& chunk: get_immutable_chunks()) {
-        chunk->read_chunk();
-        BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
-        BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
-        const char *source_buffer = chunk->get_rbuf();
-        memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
+        string filters_str = this->get_filters();
+        if (filters_str.find("deflate")!=string::npos) 
+            throw InternalErr(__FILE__, __LINE__, "We don't handle compressed array of structure now.");
+
+        // Check if we can handle this case. 
+        // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+        bool can_handle_struct = check_struct_handling();
+        if (!can_handle_struct) 
+            throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+
+        vector<char> values;
+        values.resize(get_var_chunks_storage_size());
+        char *target_buffer = values.data();
+    
+        for(const auto& chunk: get_immutable_chunks()) {
+            chunk->read_chunk();
+            BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
+            BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
+            const char *source_buffer = chunk->get_rbuf();
+            memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
+        }
+
+        read_array_of_structure(values);
     }
+    else {
 
-    string filters_string = this->get_filters();
-    if (filters_string.find("deflate")!=string::npos) {
-        char *in_buf = get_buf();
+        //Change to the total storage buffer size to just the compressed buffer size.
+        reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
 
-        char **destp = nullptr;
-        char *dest_deflate = nullptr;
-        unsigned long long out_buf_size = 0;
-        unsigned long long dest_len = get_var_chunks_storage_size();
-        unsigned long long src_len = get_var_chunks_storage_size();
-        dest_deflate = new char[dest_len];
-        destp = &dest_deflate;
-        inflate_simple(destp, dest_len, in_buf, src_len);
-        
-        this->clear_local_data();
-        reserve_value_capacity_ll_byte(this->width_ll());
-        char *out_buf = get_buf();
-        memcpy(out_buf,dest_deflate,this->width_ll());
-        delete []dest_deflate; 
+        char *target_buffer = get_buf();
+    
+        for(const auto& chunk: get_immutable_chunks()) {
+            chunk->read_chunk();
+            BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
+            BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
+            const char *source_buffer = chunk->get_rbuf();
+            memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
+        }
+        string filters_string = this->get_filters();
+        if (filters_string.find("deflate")!=string::npos) {
+    
+            char *in_buf = get_buf();
+    
+            char **destp = nullptr;
+            char *dest_deflate = nullptr;
+            unsigned long long out_buf_size = 0;
+            unsigned long long dest_len = get_var_chunks_storage_size();
+            unsigned long long src_len = get_var_chunks_storage_size();
+            dest_deflate = new char[dest_len];
+            destp = &dest_deflate;
+            inflate_simple(destp, dest_len, in_buf, src_len);
+            
+            this->clear_local_data();
+            reserve_value_capacity_ll_byte(this->width_ll());
+            char *out_buf = get_buf();
+            memcpy(out_buf,dest_deflate,this->width_ll());
+            delete []dest_deflate; 
+        }
     }
 
 
     set_read_p(true);
-//cout <<"total storage size is: "<< get_var_chunks_storage_size()<<endl;
 
+    // Leave the following commented code for the time being since we may add this feature in the future. KY 2024-03-20
 #if 0
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
@@ -1436,6 +1465,94 @@ void DmrppArray::read_linked_blocks(){
 #endif
 
 }
+
+void DmrppArray::read_linked_blocks_constrained(){
+
+    unsigned int num_linked_blocks = this->get_total_linked_blocks();
+    if (num_linked_blocks <2)
+        throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
+
+    if (this->var()->type() == dods_structure_c) 
+        throw InternalErr(__FILE__, __LINE__, "We don't handle constrained array of structure now.");
+
+    // Gather information of linked blocks 
+    vector<unsigned long long> accumulated_lengths;
+    accumulated_lengths.resize(num_linked_blocks);
+    vector<unsigned long long> individual_lengths;
+    individual_lengths.resize(num_linked_blocks);
+
+    // Here we cannot assume that the index of the linked block always increases
+    // in the loop of chunks so we use the linked block index.
+    // For the HDF4 case, we observe the index of the linked block is always consistent with the
+    //  chunk it loops, though.
+    for(const auto& chunk: get_immutable_chunks()) {
+        individual_lengths[chunk->get_linked_block_index()] = chunk->get_size();
+    }
+    accumulated_lengths[0] = 0;
+    for (unsigned int i = 1; i < num_linked_blocks; i++)
+        accumulated_lengths[i] = individual_lengths[i-1] + accumulated_lengths[i-1];
+
+    // Allocate the final constrained buffer
+    size_t array_var_type_size = prototype()->width();
+    reserve_value_capacity_ll_byte(array_var_type_size*get_size(true));
+
+    // For the linked block compressed case, we need to obtain the whole buffer to do subsetting. 
+    // Since this is the major use case, we will not do any optimiziaton for the uncompressed case.
+
+    vector<char> values;
+    values.resize(get_var_chunks_storage_size());
+    char *target_buffer = values.data();
+
+    for(const auto& chunk: get_immutable_chunks()) {
+        chunk->read_chunk();
+        BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
+        BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
+        const char *source_buffer = chunk->get_rbuf();
+        memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
+    }
+
+    vector<char>uncompressed_values;
+    bool is_compressed = false;
+    string filters_string = this->get_filters();
+
+    // The linked blocks are compressed.
+    if (filters_string.find("deflate")!=string::npos) {
+
+        char **destp = nullptr;
+        char *dest_deflate = nullptr;
+        unsigned long long dest_len = get_var_chunks_storage_size();
+        unsigned long long src_len = get_var_chunks_storage_size();
+        dest_deflate = new char[dest_len];
+        destp = &dest_deflate;
+        unsigned long long deflated_length = inflate_simple(destp, dest_len, target_buffer, src_len);
+        BESDEBUG(dmrpp_3, prolog << "deflated length: " <<  deflated_length << endl);
+        BESDEBUG(dmrpp_3, prolog << "array size: " <<  deflated_length << endl);
+        
+        uncompressed_values.resize(deflated_length);
+        memcpy(uncompressed_values.data(),dest_deflate,deflated_length);
+#if 0
+        uncompressed_values.resize(this->width_ll());
+        memcpy(uncompressed_values.data(),dest_deflate,this->width_ll());
+#endif
+        delete []dest_deflate; 
+
+        is_compressed = true;
+    }
+
+    // Now this falls to the contiguous constrained case. We just call the existing method.
+    vector<unsigned long long> array_shape = get_shape(false);
+    unsigned long target_index = 0;
+    vector<unsigned long long> subset;
+    if (is_compressed) 
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, uncompressed_values.data());
+    else 
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, values.data());
+
+
+    set_read_p(true);
+}
+
+
 
 unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
 
@@ -2022,7 +2139,7 @@ void DmrppArray::read_contiguous_string()
     set_read_p(true);
 }
 
-string DmrppArray::ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type)
+string DmrppArray::ingest_fixed_length_string(const char *buf, const unsigned long long fixed_str_len, string_pad_type pad_type)
 {
     string value;
     unsigned long long str_len = 0;
@@ -2030,7 +2147,7 @@ string DmrppArray::ingest_fixed_length_string(char *buf, unsigned long long fixe
         case null_pad:
         case null_term:
         {
-            while(buf[str_len]!=0 && str_len < fixed_str_len){
+            while( str_len < fixed_str_len && buf[str_len]!=0 ){
                 str_len++;
             }
             BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
@@ -2040,7 +2157,7 @@ string DmrppArray::ingest_fixed_length_string(char *buf, unsigned long long fixe
         case space_pad:
         {
             str_len = fixed_str_len;
-            while( (buf[str_len-1]==' ' || buf[str_len-1]==0) && str_len>0){
+            while(  str_len>0 && (buf[str_len-1]==' ' || buf[str_len-1]==0)){
                 str_len--;
             }
             BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
@@ -2390,7 +2507,17 @@ bool DmrppArray::read()
         else {  // Handle the more complex case where the data is chunked.
             if (get_using_linked_block()) {
                 BESDEBUG(MODULE, prolog << "Reading data linked blocks" << endl);
-                array_to_read->read_linked_blocks();
+                if (!array_to_read->is_projected()) {
+                    array_to_read->read_linked_blocks();
+                }
+                else {
+                    array_to_read->read_linked_blocks_constrained();
+#if 0
+                    throw BESInternalFatalError(prolog + "Not support data subset when linked blocks are used. ",
+                                           __FILE__, __LINE__);
+#endif
+
+                }
             }
             else
             {
@@ -2965,12 +3092,16 @@ void DmrppArray::read_array_of_structure(vector<char> &values) {
 
     size_t values_offset = 0;
     int64_t nelms = this->length_ll();
+    if (this->twiddle_bytes()) 
+        BESDEBUG(dmrpp_3, prolog << "swap bytes " << endl);
 
     for (int64_t element = 0; element < nelms; ++element) {
 
         auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
+        if(!dmrpp_s)
+            throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer."); 
         try {
-            dmrpp_s->structure_read(values,values_offset);
+            dmrpp_s->structure_read(values,values_offset, this->twiddle_bytes());
         }
         catch(...) {
             delete dmrpp_s;

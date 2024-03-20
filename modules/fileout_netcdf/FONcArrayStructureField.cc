@@ -58,9 +58,10 @@ vector<FONcDim *> FONcArrayStructureField::SDimensions;
  * @param a A DAP Array of structure. It is necessary to retrieve the data and dimension information.
  * @throws BESInternalError if the BaseType is not an int/float array and the Array is not a DAP array.
  */
-FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
+FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is_netCDF4_enhanced)
     : FONcBaseType()
 {
+
     // We only support one-layer of simple int/float array or scalar fields inside an array of structure now.
     Type b_data_type = b->type();
     Type supported_atomic_data_type = b_data_type;
@@ -76,11 +77,11 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a)
     d_a = a;
     d_varname = b->name();
     if (b_data_type == libdap::dods_array_c) {
-        d_array_type = FONcUtils::get_nc_type(b->var(), isNetCDF4_ENHANCED());
+        d_array_type = FONcUtils::get_nc_type(b->var(), is_netCDF4_enhanced);
         d_array_type_size = (b->var()->width_ll())/(b->var()->length_ll());
     }
     else {
-        d_array_type = FONcUtils::get_nc_type(b, isNetCDF4_ENHANCED());
+        d_array_type = FONcUtils::get_nc_type(b, is_netCDF4_enhanced);
         d_array_type_size = (b->width_ll())/(b->length_ll());
     }
     // Need to retrieve dimension information here.
@@ -148,7 +149,7 @@ FONcArrayStructureField::define( int ncid )
             d_dim_ids.push_back(fd->dimid());
             BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
         }
-
+    
         int stax = nc_def_var(ncid, var_name.c_str(), d_array_type, (int)(struct_dims.size()), d_dim_ids.data(), &d_varid);
         if (stax != NC_NOERR) {
             string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;

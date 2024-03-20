@@ -1,0 +1,12 @@
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf -r ../tests/hdf4_build_dmrpp_nasa/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/AMSR_E_L2_Land_V09_200206190615_A.hdf -r ../tests/hdf4_build_dmrpp_nasa/AMSR_E_L2_Land_V09_200206190615_A.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/AMSR_E_L3_SeaIce25km_V15_20020601.hdf -r ../tests/hdf4_build_dmrpp_nasa/AMSR_E_L3_SeaIce25km_V15_20020601.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf -r ../tests/hdf4_build_dmrpp_nasa/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MCD43A4.A2012009.h25v05.061.2021202161101.hdf -r ../tests/hdf4_build_dmrpp_nasa/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MCD19A1.A2024025.h10v06.061.2024027100206.hdf -r ../tests/hdf4_build_dmrpp_nasa/MCD19A1.A2024025.h10v06.061.2024027100206.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD03.A2000166.0255.061.2017173092154.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD03.A2000166.0255.061.2017173092154.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD11A1.A2024025.h10v06.061.2024028004317.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD11A1.A2024025.h10v06.061.2024028004317.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD29.A2000166.0255.005.2008189120917.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD29.A2000166.0255.005.2008189120917.hdf.dmr

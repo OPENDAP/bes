@@ -204,17 +204,19 @@ void read_sd_attrs(D4Group *root_grp, int32 fileid, int32 sdfd);
 void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd);
 void read_lone_sds(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
 void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
-void read_dmr_vlone_groups(D4Group *root_grp, int32 fileid, int32 sdfd, const string &filename);
+void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
 
 // 2. vgroup handlings
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4_group, const string &vgroupname,const string & filename);
-void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4_group, const string &vgroupname);
-void map_vgroup_attr(D4Group *d4g, const string &dap4_attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
-bool reserved_vgroups(const vector<char> &vclass_name);
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4g, const string &vgroupname,const string & filename);
+void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4g, const string &vgroupname);
+void map_vgroup_attr(D4Group *d4g, const string &dap4_attrname,int32 attr_type, int32 attr_count, vector<char> & attr_value);
+bool reserved_vgroups(const vector<char> &vgroup_class);
 
 // 3. SDS handlings
-void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* par_group,const string& filename);
-void convert_sds(int32 fileid, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,const string &filename);
+#if 0
+void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* d4g,const string& filename);
+#endif
+void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,const string &filename);
 void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref);
 void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>&sds_ref);
 void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unordered_set<int32>&sds_ref);
@@ -222,7 +224,7 @@ void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_s
 void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
 
 // 4. Vdata handlings
-void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Group* par_group,const string& filename);
+void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Group* d4g,const string& filename);
 void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nflds, int32 obj_ref, D4Group *d4g, const string &filename);
 void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename);
 void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref);
@@ -230,7 +232,7 @@ void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref);
 // 5. Helper functions
 void add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref);
 BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string & filename);
-D4AttributeType h4type_to_dap4_attrtype(int32 sds_type);
+D4AttributeType h4type_to_dap4_attrtype(int32 h4_type);
 string print_dap4_attr(int32 type, int loc, void *vals);
 void close_vgroup_fileids(int32 fileid, int32 sdfd, int32 vgroup_id);
 
@@ -4750,6 +4752,7 @@ bool reserved_vgroups(const vector<char>& vgroup_class) {
 
 }
 
+#if 0
 void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Group *d4g, const string &filename) {
 
     int num_gobjects = 0; 
@@ -4775,6 +4778,7 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
     }
 
 }
+#endif
 
 void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,const string &vgroupname, const string& filename) {
 
@@ -4905,7 +4909,7 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname
         string tempname (attr_name);
 
         // Here we need to exclude the HDF-EOS2 Grid or Swath specific internal attributes starting from _FV_
-        // These attributes are represented as field attributes already so we don't need to duplicate them.
+        // These attributes are represented as field attributes already, so we don't need to duplicate them.
         if(vgroupname=="Grid Attributes" || vgroupname=="Swath Attributes") {
             if(tempname.size()>4) {
                 string tempname_f4chars = tempname.substr(0,4);
@@ -5323,7 +5327,7 @@ BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filen
 }
 
 // Note: we map the attributes with DFNT_CHAR(char) to DAP4 string since
-//       this is common way that users apply.
+//       this is the common way that users apply.
 D4AttributeType h4type_to_dap4_attrtype(int32 h4_type) {
 
     D4AttributeType dap4_attr_type = attr_null_c;
