@@ -2022,7 +2022,7 @@ void DmrppArray::read_contiguous_string()
     set_read_p(true);
 }
 
-string DmrppArray::ingest_fixed_length_string(char *buf, const unsigned long long fixed_str_len, string_pad_type pad_type)
+string DmrppArray::ingest_fixed_length_string(const char *buf, const unsigned long long fixed_str_len, string_pad_type pad_type)
 {
     string value;
     unsigned long long str_len = 0;
