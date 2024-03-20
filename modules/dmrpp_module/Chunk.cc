@@ -803,7 +803,14 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 throw BESInternalError("fletcher32 filter: buffer size is less than the size of the checksum", __FILE__, __LINE__);
             }
 
-            auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
+            auto f_chksum_ptr = get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM;
+
+            uint32_t f_checksum;
+            auto ui32_ptr = &f_checksum;
+            auto c_ptr = (char *)ui32_ptr;
+            for(uint32_t i=0; i<FLETCHER32_CHECKSUM; i++){
+                c_ptr[i] = f_chksum_ptr[i];
+            }
 
             // If the code should actually use the checksum (they can be expensive to compute), does it match
             // with once computed on the data actually read? Maybe make this a bes.conf parameter?

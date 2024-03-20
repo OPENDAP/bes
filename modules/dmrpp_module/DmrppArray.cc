@@ -2022,7 +2022,7 @@ void DmrppArray::read_contiguous_string()
     set_read_p(true);
 }
 
-string DmrppArray::ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type)
+string DmrppArray::ingest_fixed_length_string(char *buf, const unsigned long long fixed_str_len, string_pad_type pad_type)
 {
     string value;
     unsigned long long str_len = 0;
@@ -2030,7 +2030,7 @@ string DmrppArray::ingest_fixed_length_string(char *buf, unsigned long long fixe
         case null_pad:
         case null_term:
         {
-            while(buf[str_len]!=0 && str_len < fixed_str_len){
+            while( str_len < fixed_str_len && buf[str_len]!=0 ){
                 str_len++;
             }
             BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
@@ -2040,7 +2040,7 @@ string DmrppArray::ingest_fixed_length_string(char *buf, unsigned long long fixe
         case space_pad:
         {
             str_len = fixed_str_len;
-            while( (buf[str_len-1]==' ' || buf[str_len-1]==0) && str_len>0){
+            while(  str_len>0 && (buf[str_len-1]==' ' || buf[str_len-1]==0)){
                 str_len--;
             }
             BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
