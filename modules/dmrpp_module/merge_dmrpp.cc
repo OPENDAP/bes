@@ -1315,7 +1315,7 @@ cerr<<"group name  is "<<gn <<endl;
 
     // Both the group path for this var and the group lines are sorted.
     // group path is from backward. So we match the group line backward.
-    int gl_index = gs_line_nums.size();
+    int gl_index = gs_line_nums.size() - 1; // An gl_index starts at size-1
 
     for (const auto &gpl:grp_path_lines) {
 
