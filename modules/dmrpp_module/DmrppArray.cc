@@ -1345,9 +1345,6 @@ void DmrppArray::read_linked_blocks(){
     if (num_linked_blocks <2)
         throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
 
-    //Change to the total storage buffer size to just the compressed buffer size.
-    //reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
-
     vector<unsigned long long> accumulated_lengths;
     accumulated_lengths.resize(num_linked_blocks);
     vector<unsigned long long> individual_lengths;
@@ -1363,18 +1360,6 @@ void DmrppArray::read_linked_blocks(){
     accumulated_lengths[0] = 0;
     for (unsigned int i = 1; i < num_linked_blocks; i++)
         accumulated_lengths[i] = individual_lengths[i-1] + accumulated_lengths[i-1];
-
-#if 0
-    char *target_buffer = get_buf();
-
-    for(const auto& chunk: get_immutable_chunks()) {
-        chunk->read_chunk();
-        BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
-        BESDEBUG(dmrpp_3, prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()]  << endl);
-        const char *source_buffer = chunk->get_rbuf();
-        memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
-    }
-#endif
 
     if (this->var()->type() == dods_structure_c) {
 
@@ -1400,11 +1385,6 @@ void DmrppArray::read_linked_blocks(){
             memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,chunk->get_size());
         }
 
-#if 0
-        char *buf_value = the_one_chunk->get_rbuf();
-        unsigned long long value_size = the_one_chunk->get_size();
-        vector<char> values(buf_value,buf_value+value_size);
-#endif
         read_array_of_structure(values);
     }
     else {
@@ -1445,8 +1425,8 @@ void DmrppArray::read_linked_blocks(){
 
 
     set_read_p(true);
-//cout <<"total storage size is: "<< get_var_chunks_storage_size()<<endl;
 
+    // Leave the following commented code for the time being since we may add this feature in the future. KY 2024-03-20
 #if 0
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
@@ -3119,6 +3099,8 @@ void DmrppArray::read_array_of_structure(vector<char> &values) {
     for (int64_t element = 0; element < nelms; ++element) {
 
         auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
+        if(!dmrpp_s)
+            throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer."); 
         try {
             dmrpp_s->structure_read(values,values_offset, this->twiddle_bytes());
         }
