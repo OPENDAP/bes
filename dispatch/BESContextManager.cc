@@ -172,7 +172,7 @@ void BESContextManager::list_context(BESInfo &info)
 
     string name;
     string value;
-    std::map<string, string> props;
+    std::map<string, string, std::less<>> props;
     auto i = _context_list.begin();
     auto e = _context_list.end();
     for (; i != e; i++) {

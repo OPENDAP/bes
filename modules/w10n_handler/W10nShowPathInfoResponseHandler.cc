@@ -138,7 +138,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     info->begin_response(W10N_SHOW_PATH_INFO_REQUEST, dhi);
     //string coi = dhi.data[CATALOG_OR_INFO];
 
-    map<string, string> pathInfoAttrs;
+    map<string, string, std::less<>> pathInfoAttrs;
     pathInfoAttrs[PATH] = container;
 
     info->begin_tag(W10N_PATH_INFO_RESPONSE, &pathInfoAttrs);
@@ -180,7 +180,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
     }
 
-    map<string, string> validPathAttrs;
+    map<string, string, std::less<>> validPathAttrs;
     validPathAttrs[IS_DATA] = isData ? "true" : "false";
     validPathAttrs[IS_FILE] = isFile ? "true" : "false";
     validPathAttrs[IS_DIR] = isDir ? "true" : "false";

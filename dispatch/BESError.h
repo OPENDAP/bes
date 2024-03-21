@@ -114,9 +114,9 @@ public:
      * Used to add error specific details to the BESInfo object
      * @param info
      */
-    virtual void add_my_error_details_to(BESInfo &info) const {
-        // Most BESError types have smenatics simple enough that
-        // adding their pertinent information to the BESInfo obect
+    virtual void add_my_error_details_to(BESInfo & /*bes_info*/) const {
+        // Most BESError types have simple semantics.
+        // Adding their pertinent information to the BESInfo object
         // is handled by interrogating the BESError base class methods.
         // This includes the basic details: FILE, LINE, and message.
         // Others error types,  like HttpError, are more complex in both state and

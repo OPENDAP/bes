@@ -294,7 +294,7 @@ bool CSVRequestHandler::csv_build_help(BESDataHandlerInterface &dhi)
 	BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
 	if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	map<string, string> attrs;
+	map<string, string, std::less<>> attrs;
 	attrs["name"] = PACKAGE_NAME;
 	attrs["version"] = PACKAGE_VERSION;
 	string handles = (string) DAS_RESPONSE + "," + DDS_RESPONSE + "," + DATA_RESPONSE + "," + HELP_RESPONSE + ","

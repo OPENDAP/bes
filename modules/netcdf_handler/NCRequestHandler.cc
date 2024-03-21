@@ -625,7 +625,7 @@ bool NCRequestHandler::nc_build_help(BESDataHandlerInterface & dhi)
     if (!info)
         throw BESInternalError("cast error", __FILE__, __LINE__);
 
-    map < string, string > attrs;
+    map < string, string, std::less<> > attrs;
     attrs["name"] = MODULE_NAME ;
     attrs["version"] = MODULE_VERSION ;
 #if 0

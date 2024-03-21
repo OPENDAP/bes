@@ -72,7 +72,7 @@ BESProcIdResponseHandler::execute( BESDataHandlerInterface &dhi )
     info->begin_response( PROCESS_RESPONSE_STR, dhi ) ;
     char mypid[12] ;
     BESUtil::fastpidconverter( mypid, 10 ) ;
-    map<string,string> props ;
+    map<string, string, std::less<>> props ;
     props["pid"] = mypid ;
     info->add_tag( "process", "", &props ) ;
     info->end_response() ;

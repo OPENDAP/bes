@@ -130,7 +130,7 @@ void BESInfo::end_response() {
     }
 }
 
-void BESInfo::begin_tag(const string &tag_name, map<string, string> */*attrs*/) {
+void BESInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> */*attrs*/) {
     _tags.push(tag_name);
 }
 

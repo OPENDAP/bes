@@ -50,7 +50,7 @@ BESContainerStorage::show_container( const string &sym_name,
 				     const string &type,
 				     BESInfo &info )
 {
-    map<string,string> props ;
+    map<string, string, std::less<>> props ;
     props["name"] = sym_name ;
     props["type"] = type ;
     info.add_tag( "container", real_name, &props ) ;

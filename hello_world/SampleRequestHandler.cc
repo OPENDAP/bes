@@ -78,7 +78,7 @@ bool SampleRequestHandler::sample_build_help(BESDataHandlerInterface &dhi)
     BESInfo *info = dynamic_cast<BESInfo *>(response);
     if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
-    map<string, string> attrs;
+    map<string, string, std::less<>> attrs;
     attrs["name"] = PACKAGE_NAME;
     attrs["version"] = PACKAGE_VERSION;
     info->begin_tag("module", &attrs);

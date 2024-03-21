@@ -103,7 +103,7 @@ void BESTextInfo::begin_response(const string &response_name, BESDataHandlerInte
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
-void BESTextInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs)
+void BESTextInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string, std::less<>> *attrs)
 {
     add_data(_indent + tag_name + ": " + tag_data + "\n");
     if (attrs) {
@@ -122,7 +122,7 @@ void BESTextInfo::add_tag(const string &tag_name, const string &tag_data, map<st
  * @param tag_name name of the tag to begin
  * @param attrs map of attributes to begin the tag with
  */
-void BESTextInfo::begin_tag(const string &tag_name, map<string, string> *attrs)
+void BESTextInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs)
 {
     BESInfo::begin_tag(tag_name);
     add_data(_indent + tag_name + "\n");

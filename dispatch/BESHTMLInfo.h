@@ -51,23 +51,26 @@ private:
 public:
     BESHTMLInfo();
     BESHTMLInfo(const std::string &key, std::ostream *strm, bool strm_owned);
-    virtual ~BESHTMLInfo();
+    ~BESHTMLInfo() override;
 
-    virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
-    virtual void end_response();
+    void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi) override;
+    void end_response() override;
 
-    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0);
-    virtual void begin_tag(const std::string &tag_name, std::map<std::string, std::string> *attrs = 0);
-    virtual void end_tag(const std::string &tag_name);
+    void add_tag(const std::string &tag_name,
+                         const std::string &tag_data,
+                         std::map<std::string, std::string, std::less<>> *attrs = nullptr) override;
+    void begin_tag(const std::string &tag_name,
+                           std::map<std::string, std::string, std::less<>> *attrs = nullptr) override;
+    void end_tag(const std::string &tag_name) override;
 
-    virtual void add_data(const std::string &s);
-    virtual void add_space(unsigned long num_spaces);
-    virtual void add_break(unsigned long num_breaks);
+    void add_data(const std::string &s) override;
+    void add_space(unsigned long num_spaces) override;
+    void add_break(unsigned long num_breaks) override;
 
-    virtual void add_data_from_file(const std::string &key, const std::string &name);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void add_data_from_file(const std::string &key, const std::string &name) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESInfo *BuildHTMLInfo(const std::string &info_type);
 };

@@ -364,7 +364,7 @@ void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info)
     string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
 
     // start with the external entry
-    map<string, string> props;
+    map<string, string, std::less<>> props;
     if (entry->get_catalog() == defcatname) {
         props["name"] = entry->get_name();
     }

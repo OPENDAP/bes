@@ -52,64 +52,67 @@ private:
     void add_version(const std::string &type, const std::string &name, const std::string &vers);
 public:
     BESVersionInfo();
-    virtual ~BESVersionInfo();
+    ~BESVersionInfo() override;
 
     virtual void add_library(const std::string &n, const std::string &v);
     virtual void add_module(const std::string &n, const std::string &v);
     virtual void add_service(const std::string &n, const std::list<std::string> &vers);
 
-    virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi)
+    void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi) override
     {
         _info->begin_response(response_name, dhi);
     }
-    virtual void end_response()
+    void end_response() override
     {
         _info->end_response();
     }
 
-    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0)
+    void add_tag(const std::string &tag_name,
+                         const std::string &tag_data,
+                         std::map<std::string, std::string, std::less<>> *attrs = 0) override
     {
         _info->add_tag(tag_name, tag_data, attrs);
     }
-    virtual void begin_tag(const std::string &tag_name, std::map<std::string, std::string> *attrs = 0)
+    void begin_tag(const std::string &tag_name,
+                           std::map<std::string, std::string, std::less<>> *attrs = 0) override
     {
         _info->begin_tag(tag_name, attrs);
     }
-    virtual void end_tag(const std::string &tag_name)
+    void end_tag(const std::string &tag_name) override
     {
         _info->end_tag(tag_name);
     }
 
-    virtual void add_data(const std::string &s)
+    void add_data(const std::string &s) override
     {
         _info->add_data(s);
     }
-    virtual void add_space(unsigned long num_spaces)
+    void add_space(unsigned long num_spaces) override
     {
         _info->add_space(num_spaces);
     }
-    virtual void add_break(unsigned long num_breaks)
+    void add_break(unsigned long num_breaks) override
     {
         _info->add_break(num_breaks);
     }
-    virtual void add_data_from_file(const std::string &key, const std::string &name)
+    void add_data_from_file(const std::string &key, const std::string &name) override
     {
         _info->add_data_from_file(key, name);
     }
-    virtual void add_exception(const BESError &e, const std::string &admin)
+    void add_exception(const BESError &e, const std::string &admin) override
     {
         _info->add_exception(e, admin);
     }
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override
     {
         _info->transmit(transmitter, dhi);
     }
-    virtual void print(std::ostream &strm)
+    void print(std::ostream &strm) override
     {
         _info->print(strm);
     }
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESVersionInfo_h_

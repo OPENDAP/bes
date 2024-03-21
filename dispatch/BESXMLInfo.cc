@@ -266,7 +266,7 @@ void BESXMLInfo::end_response()
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
-void BESXMLInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs)
+void BESXMLInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string, std::less<>> *attrs = nullptr)
 {
     /* Start an element named tag_name. */
     int rc = xmlTextWriterStartElement( _writer, BAD_CAST tag_name.c_str() );
@@ -319,7 +319,7 @@ void BESXMLInfo::add_tag(const string &tag_name, const string &tag_data, map<str
  * @param tag_name name of the tag to begin
  * @param attrs map of attributes to begin the tag with
  */
-void BESXMLInfo::begin_tag(const string &tag_name, map<string, string> *attrs)
+void BESXMLInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs = nullptr)
 {
     begin_tag(tag_name, "", "", attrs);
 }
@@ -331,7 +331,10 @@ void BESXMLInfo::begin_tag(const string &tag_name, map<string, string> *attrs)
  * @param uri namespace uri
  * @param attrs map of attributes to begin the tag with
  */
-void BESXMLInfo::begin_tag(const string &tag_name, const string &ns, const string &uri, map<string, string> *attrs)
+void BESXMLInfo::begin_tag(const string &tag_name,
+                           const string &ns,
+                           const string &uri,
+                           map<string, string, std::less<>> *attrs = nullptr)
 {
     BESInfo::begin_tag(tag_name);
 
@@ -346,7 +349,7 @@ void BESXMLInfo::begin_tag(const string &tag_name, const string &ns, const strin
         }
     }
     else {
-        const char *cns = NULL;
+        const char *cns = nullptr;
         if (!ns.empty()) cns = ns.c_str();
         rc = xmlTextWriterStartElementNS( _writer,
             BAD_CAST cns,

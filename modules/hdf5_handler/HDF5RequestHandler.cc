@@ -1501,7 +1501,7 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 
     string add_info="Just for Test";
 
-    map<string,string> attrs ;
+    map<string, string, std::less<>> attrs ;
     attrs["name"] = MODULE_NAME ;
     attrs["version"] = MODULE_VERSION ;
     list<string> services ;

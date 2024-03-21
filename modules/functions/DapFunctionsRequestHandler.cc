@@ -73,7 +73,7 @@ bool DapFunctionsRequestHandler::build_help(BESDataHandlerInterface &dhi)
     TheBESKeys::TheKeys()->get_value(key, ref, found);
     if (ref.empty()) ref = "https://docs.opendap.org/index.php/Server_Side_Processing_Functions";
 
-    map<string, string> attrs;
+    map<string, string, std::less<>> attrs;
     attrs["name"] = MODULE_NAME;
     attrs["version"] = MODULE_VERSION;
     attrs["reference"] = ref;

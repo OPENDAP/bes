@@ -76,11 +76,16 @@ public:
     virtual ~BESInfo();
 
     virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
-    virtual void begin_response(const std::string &response_name, std::map<std::string, std::string, std::less<>> *attrs, BESDataHandlerInterface &dhi);
+    virtual void begin_response(const std::string &response_name,
+                                std::map<std::string, std::string, std::less<>> *attrs,
+                                BESDataHandlerInterface &dhi);
     virtual void end_response();
 
-    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0) = 0;
-    virtual void begin_tag(const std::string &tag_name, std::map<std::string, std::string> *attrs = 0);
+    virtual void add_tag(const std::string &tag_name,
+                         const std::string &tag_data,
+                         std::map<std::string, std::string, std::less<>> *attrs = nullptr) = 0;
+    virtual void begin_tag(const std::string &tag_name,
+                           std::map<std::string, std::string, std::less<>> *attrs = nullptr);
     virtual void end_tag(const std::string &tag_name);
 
     virtual void add_data(const std::string &s);

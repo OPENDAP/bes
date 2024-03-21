@@ -51,24 +51,28 @@ private:
     bool _ishttp;
     bool _header;
 public:
-    BESTextInfo(bool ishttp = false);
+    explicit BESTextInfo(bool ishttp = false);
     BESTextInfo(const std::string &key, std::ostream *strm, bool strm_owned, bool ishttp = false);
-    virtual ~BESTextInfo();
+    ~BESTextInfo() override;
 
-    virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
+    void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi) override;
 
-    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0);
-    virtual void begin_tag(const std::string &tag_name, std::map<std::string, std::string> *attrs = 0);
-    virtual void end_tag(const std::string &tag_name);
+    void add_tag(const std::string &tag_name,
+                         const std::string &tag_data,
+                         std::map<std::string, std::string, std::less<>> *attrs) override;
 
-    virtual void add_data(const std::string &s);
-    virtual void add_space(unsigned long num_spaces);
-    virtual void add_break(unsigned long num_breaks);
+    void begin_tag(const std::string &tag_name,
+                           std::map<std::string, std::string, std::less<>> *attrs) override;
+    void end_tag(const std::string &tag_name) override;
 
-    virtual void add_data_from_file(const std::string &key, const std::string &name);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void add_data(const std::string &s) override;
+    void add_space(unsigned long num_spaces) override;
+    void add_break(unsigned long num_breaks) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void add_data_from_file(const std::string &key, const std::string &name) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
+
+    void dump(std::ostream &strm) const override;
 
     static BESInfo *BuildTextInfo(const std::string &info_type);
 };
