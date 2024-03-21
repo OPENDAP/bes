@@ -142,6 +142,7 @@ private:
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
     void read_linked_blocks();
+    void read_linked_blocks_constrained();
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
@@ -225,7 +226,7 @@ public:
     void get_ons_objs(vector<ons> &ons_list);
 
     static std::string pad_type_to_str(string_pad_type pad_type);
-    static string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
+    static string ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
 
 
     unsigned int buf2val(void **val) override;

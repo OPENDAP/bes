@@ -79,7 +79,7 @@ DmrppStr::read()
     unsigned long long str_len=0;
     bool done = false;
     while(!done){
-        done = (data[str_len] == 0) || (str_len >= chunk_size);
+        done = (str_len >= chunk_size) || (data[str_len] == 0);
         if(!done) str_len++;
     }
     string value(data,str_len);
