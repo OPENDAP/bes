@@ -520,7 +520,7 @@ bool DapRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
 
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
-    map<string, string> attrs;
+    map<string, string, std::less<>> attrs;
     attrs["name"] = DAPREADER_PACKAGE /* PACKAGE_NAME */;
     attrs["version"] = DAPREADER_VERSION /* PACKAGE_VERSION */;
     list<string> services;

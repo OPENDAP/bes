@@ -64,7 +64,7 @@ using namespace std;
  */
 void CatalogItem::encode_item(BESInfo *info) const
 {
-    map<string, string> props;
+    map<string, string, std::less<>> props;
 
     props[CATALOG_NAME_KEY] = get_name();
     props[CATALOG_TYPE_KEY] = get_type() == leaf ? "leaf": "node";
@@ -84,7 +84,7 @@ void CatalogItem::encode_item(BESInfo *info) const
     info->begin_tag(CATALOG_ITEM_TAG, &props);
     string description = get_description();
     if(!description.empty()){
-        map<string, string> description_props;
+        map<string, string, std::less<>> description_props;
         info->begin_tag(CATALOG_DESCRIPTION_KEY, &description_props);
         info->add_data(description);
         info->end_tag(CATALOG_DESCRIPTION_KEY);

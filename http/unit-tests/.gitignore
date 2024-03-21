@@ -1,8 +1,10 @@
 /RemoteResourceTest
 /HttpUtilsTest
 /CurlUtilsTest
+/CurlSListTest
 /EffectiveUrlCacheTest
 /HttpUrlTest
+/HttpErrorTest
 /AllowedHostsTest
 /CredentialsManagerTest
 /HttpCacheTest
@@ -10,3 +12,4 @@
 /awsv4_test
 /bes_ngap_s3_creds.conf
 /cache
+/unused/*

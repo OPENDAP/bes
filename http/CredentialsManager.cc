@@ -47,7 +47,7 @@ using namespace std;
 
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
-#define NGAP_S3_BASE_DEFAULT "https://"
+#define CREDS "creds"
 
 namespace http {
 
@@ -82,9 +82,8 @@ std::string get_env_value(const string &key) {
     const char *cstr = getenv(key.c_str());
     if (cstr) {
         value.assign(cstr);
-        BESDEBUG(HTTP_MODULE, prolog << "From system environment - " << key << ": " << value << endl);
-    }
-    else {
+        BESDEBUG(CREDS, prolog << "From system environment - " << key << ": " << value << endl);
+    } else {
         value.clear();
     }
     return value;
@@ -139,8 +138,8 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     creds.insert(std::pair<std::string, AccessCredentials *>(key, ac));
-    BESDEBUG(HTTP_MODULE,
-             prolog << "Added AccessCredentials to CredentialsManager. credentials: " << endl << ac->to_json() << endl);
+    BESDEBUG(HTTP_MODULE, prolog << "Added AccessCredentials to CredentialsManager.\n");
+    BESDEBUG(CREDS, prolog << "Credentials: \n" << ac->to_json() << "\n");
 }
 
 /**
@@ -292,7 +291,7 @@ void CredentialsManager::load_credentials() {
         string err{prolog + "CredentialsManager config file "};
         err += config_file + " was specified but is not present.\n";    // Bjarne says to use \n not endl. jhrg 8/25/23
         ERROR_LOG(err);
-        BESDEBUG(HTTP_MODULE,err);
+        BESDEBUG(HTTP_MODULE, err);
         return;
     }
 
@@ -300,7 +299,7 @@ void CredentialsManager::load_credentials() {
         string err{prolog + "CredentialsManager config file "};
         err += config_file + " is not secured! Set the access permissions to -rw------- (600) and try again.\n";
         ERROR_LOG(err);
-        BESDEBUG(HTTP_MODULE,err);
+        BESDEBUG(HTTP_MODULE, err);
         return;
     }
 
@@ -319,8 +318,7 @@ void CredentialsManager::load_credentials() {
         if (mit != credential_sets.end()) {  // New?
             // Nope.
             accessCredentials = mit->second;
-        }
-        else {
+        } else {
             // Make new one
             accessCredentials = new AccessCredentials(creds_name);
             credential_sets.insert(pair<string, AccessCredentials *>(creds_name, accessCredentials));
@@ -345,8 +343,7 @@ void CredentialsManager::load_credentials() {
         string url = accessCredentials->get(AccessCredentials::URL_KEY);
         if (!url.empty()) {
             add(url, accessCredentials);
-        }
-        else {
+        } else {
             bad_creds.push_back(acit.second);
         }
     }
@@ -354,7 +351,7 @@ void CredentialsManager::load_credentials() {
     if (!bad_creds.empty()) {
         stringstream err;
         err << "Encountered " << bad_creds.size() << " AccessCredentials "
-           << " definitions missing an associated URL. offenders: ";
+            << " definitions missing an associated URL. offenders: ";
 
         for (auto &bc: bad_creds) {
             err << bc->name() << "  ";
@@ -362,7 +359,7 @@ void CredentialsManager::load_credentials() {
             delete bc;
         }
         ERROR_LOG(err.str());
-        BESDEBUG(HTTP_MODULE,err.str());
+        BESDEBUG(HTTP_MODULE, err.str());
         return;
     }
     BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << size() << " AccessCredentials" << endl);

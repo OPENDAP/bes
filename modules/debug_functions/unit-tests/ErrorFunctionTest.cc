@@ -44,12 +44,16 @@
 #include <BESForbiddenError.h>
 #include <BESNotFoundError.h>
 
+#include <HttpError.h>
+
 #include <unistd.h>
 
 static bool debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+
+#define prolog std::string("# ErrorFunctionTest::").append(__func__).append("() - ")
 
 namespace libdap {
 
@@ -74,6 +78,8 @@ public:
     // Called before each test
     void setUp()
     {
+        DBG(cerr << prolog << "\n");
+        
         try {
             testDDS = new DDS(&btf);
         }
@@ -96,13 +102,13 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
     CPPUNIT_TEST(syntaxUserErrorFunctionTest);
     CPPUNIT_TEST(forbiddenErrorFunctionTest);
     CPPUNIT_TEST(notFoundErrorFunctionTest);
+    CPPUNIT_TEST(httpErrorFunctionTest);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
     void internalErrorFunctionTest()
     {
-        DBG(cerr << endl << "internalErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -118,17 +124,17 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
             error_function(1, argv, *testDDS, btpp);
             CPPUNIT_ASSERT(false);
         }
-        catch (BESInternalError e) {
-            DBG(cerr << "internalErrorFunctionTest() - Caught BESInternalError. msg: " << e.get_message() << endl);
+        catch (BESInternalError &e) {
+            DBG(cerr << prolog << "Caught BESInternalError. msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "internalErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
     void internalFatalErrorFunctionTest()
     {
-        DBG(cerr << endl << "internalFatalErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -146,17 +152,17 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
         }
         catch (BESInternalFatalError &e) {
             DBG(
-                cerr << "internalFatalErrorFunctionTest() - Caught BESInternalFatalError. msg: " << e.get_message()
+                cerr << "Caught BESInternalFatalError. msg: " << e.get_message()
                     << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "internalFatalErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
     void syntaxUserErrorFunctionTest()
     {
-        DBG(cerr << endl << "syntaxUserErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -173,16 +179,16 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
             CPPUNIT_ASSERT(false);
         }
         catch (BESSyntaxUserError &e) {
-            DBG(cerr << "syntaxUserErrorFunctionTest() - Caught BESSyntaxUserError. msg: " << e.get_message() << endl);
+            DBG(cerr << prolog << "Caught BESSyntaxUserError. msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "syntaxUserErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
     void forbiddenErrorFunctionTest()
     {
-        DBG(cerr << endl << "forbiddenErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -199,16 +205,16 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
             CPPUNIT_ASSERT(false);
         }
         catch (BESForbiddenError &e) {
-            DBG(cerr << "forbiddenErrorFunctionTest() - Caught BESForbiddenError. msg: " << e.get_message() << endl);
+            DBG(cerr << prolog << "Caught BESForbiddenError. msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "forbiddenErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
     }
 
     void notFoundErrorFunctionTest()
     {
-        DBG(cerr << endl << "notFoundErrorFunctionTest() - BEGIN." << endl);
+        DBG(cerr << prolog << "BEGIN." << endl);
 
         debug_function::ErrorFunc errorFunc;
 
@@ -224,12 +230,42 @@ CPPUNIT_TEST_SUITE( ErrorFunctionTest );
             error_function(1, argv, *testDDS, btpp);
             CPPUNIT_ASSERT(false);
         }
-        catch (BESNotFoundError e) {
-            DBG(cerr << "notFoundErrorFunctionTest() - Caught BESNotFoundError. msg: " << e.get_message() << endl);
+        catch (BESNotFoundError &e) {
+            DBG(cerr << prolog << "Caught BESNotFoundError. msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(true);
         }
 
-        DBG(cerr << "notFoundErrorFunctionTest() - END." << endl);
+        DBG(cerr << prolog << "END." << endl);
+    }
+
+    void httpErrorFunctionTest()
+    {
+        DBG(cerr << prolog << "BEGIN." << endl);
+
+        debug_function::ErrorFunc errorFunc;
+
+        libdap::btp_func error_function = errorFunc.get_btp_func();
+
+        libdap::Int32 error_type("error_type");
+        error_type.set_value(BES_HTTP_ERROR);
+        libdap::Int32 http_status("http_status");
+        http_status.set_value(501);
+        libdap::BaseType *argv[] = { &error_type, &http_status  };
+        libdap::BaseType *result = nullptr;
+        libdap::BaseType **btpp = &result;
+
+        try {
+            error_function(2, argv, *testDDS, btpp);
+            CPPUNIT_ASSERT(false);
+        }
+        catch (http::HttpError &e) {
+            DBG(cerr << prolog << "Caught HttpError...\n");
+            DBG(cerr << prolog << "    message: " << e.get_message() << "\n");
+            DBG(cerr << prolog << "    dump: \n" << e.dump() << "\n");
+            CPPUNIT_ASSERT(true);
+        }
+
+        DBG(cerr << prolog << "END." << endl);
     }
 
 };
@@ -278,6 +314,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = libdap::ErrorFunctionTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            i++;
         }
     }
 

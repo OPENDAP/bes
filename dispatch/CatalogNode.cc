@@ -78,7 +78,7 @@ CatalogNode::~CatalogNode()
 void
 CatalogNode::encode_node(BESInfo *info)
 {
-    map<string, string> props;
+    map<string, string, std::less<>> props;
 
     // The node may actually be a leaf. Check and act accordingly.
     CatalogItem *im_a_leaf = get_leaf();

@@ -127,9 +127,9 @@ bool BESDefinitionStorageVolatile::del_definitions()
  */
 void BESDefinitionStorageVolatile::show_definitions(BESInfo &info)
 {
-    std::map<string, string> dprops; // for the definition
-    std::map<string, string> cprops; // for the container
-    std::map<string, string> aprops; // for aggregation
+    std::map<string, string, std::less<>> dprops; // for the definition
+    std::map<string, string, std::less<>> cprops; // for the container
+    std::map<string, string, std::less<>> aprops; // for aggregation
     Define_citer di = _def_list.begin();
     Define_citer de = _def_list.end();
     for (; di != de; di++) {
@@ -140,8 +140,8 @@ void BESDefinitionStorageVolatile::show_definitions(BESInfo &info)
         dprops["name"] = def_name;
         info.begin_tag("definition", &dprops);
 
-        BESDefine::containers_citer ci = def->first_container();
-        BESDefine::containers_citer ce = def->end_container();
+        auto ci = def->first_container();
+        auto ce = def->end_container();
         for (; ci != ce; ci++) {
             cprops.clear();
 

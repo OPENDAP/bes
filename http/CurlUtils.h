@@ -39,7 +39,9 @@
 
 namespace http {
 class AccessCredentials;
+
 class EffectiveUrl;
+
 class url;
 }
 
@@ -47,20 +49,21 @@ namespace curl {
 
 ///@name Get data from a URL
 ///@{
-void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, int fd,
+void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
                                  std::vector<std::string> *http_response_headers);
 
 void http_get(const std::string &target_url, std::vector<char> &buf);
+
 void http_get(const std::string &target_url, std::string &buf);
 
 void super_easy_perform(CURL *ceh);
 ///@}
 
-std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http::url> &url);
+std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &url);
 
 std::string filter_aws_url(const std::string &eff_url);
 
-CURL *init(const std::string &target_url, const struct curl_slist *http_request_headers,
+CURL *init(const std::string &target_url, const curl_slist *http_request_headers,
            std::vector<std::string> *resp_hdrs);
 
 void set_error_buffer(CURL *ceh, char *error_buffer);
@@ -75,7 +78,7 @@ unsigned long max_redirects();
 
 std::string hyrax_user_agent();
 
-void eval_curl_easy_setopt_result(CURLcode result,  const std::string &msg_base, const std::string &opt_name,
+void eval_curl_easy_setopt_result(CURLcode result, const std::string &msg_base, const std::string &opt_name,
                                   const char *ebuf, const std::string &file, unsigned int line);
 
 std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
@@ -89,7 +92,7 @@ curl_slist *append_http_header(curl_slist *slist, const std::string &header_name
 curl_slist *add_edl_auth_headers(curl_slist *request_headers);
 
 curl_slist *sign_s3_url(const std::shared_ptr<http::url> &target_url, http::AccessCredentials *ac,
-                         curl_slist *req_headers);
+                        curl_slist *req_headers);
 } // namespace curl
 
 #endif /*  _bes_http_CURL_UTILS_H_ */

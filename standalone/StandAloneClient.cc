@@ -42,7 +42,9 @@
 #include <sstream>
 
 #ifdef HAVE_UNISTD_H
+
 #include <unistd.h>
+
 #endif
 
 using std::cout;
@@ -58,12 +60,14 @@ using std::ifstream;
 
 #ifdef HAVE_LIBREADLINE
 #  if defined(HAVE_READLINE_READLINE_H)
+
 #    include <readline/readline.h>
+
 #  elif defined(HAVE_READLINE_H)
 #    include <readline.h>
 #  else                         /* !defined(HAVE_READLINE_H) */
 extern "C" {
-	char *readline(const char *);
+    char *readline(const char *);
 }
 #  endif                        /* !defined(HAVE_READLINE_H) */
 char *cmdline = NULL;
@@ -73,14 +77,16 @@ char *cmdline = NULL;
 
 #ifdef HAVE_READLINE_HISTORY
 #  if defined(HAVE_READLINE_HISTORY_H)
+
 #    include <readline/history.h>
+
 #  elif defined(HAVE_HISTORY_H)
 #    include <history.h>
 #  else                         /* !defined(HAVE_HISTORY_H) */
 extern "C" {
-	int add_history(const char *);
-	int write_history(const char *);
-	int read_history(const char *);
+    int add_history(const char *);
+    int write_history(const char *);
+    int read_history(const char *);
 }
 #  endif                        /* defined(HAVE_READLINE_HISTORY_H) */
 /* no history */
@@ -97,16 +103,14 @@ extern "C" {
 #include "StandAloneClient.h"
 #include "CmdTranslation.h"
 
-StandAloneClient::~StandAloneClient()
-{
-	if (_strmCreated && _strm) {
-		_strm->flush();
-		delete _strm;
-		_strm = nullptr;
-	}
-	else if (_strm) {
-		_strm->flush();
-	}
+StandAloneClient::~StandAloneClient() {
+    if (_strmCreated && _strm) {
+        _strm->flush();
+        delete _strm;
+        _strm = nullptr;
+    } else if (_strm) {
+        _strm->flush();
+    }
 }
 
 /** @brief Set the output stream for responses from the BES server.
@@ -125,17 +129,15 @@ StandAloneClient::~StandAloneClient()
  * @see    OutputStream
  * @see    BESError
  */
-void StandAloneClient::setOutput(ostream * strm, bool created)
-{
-	if (_strmCreated && _strm) {
-		_strm->flush();
-		delete _strm;
-	}
-	else if (_strm) {
-		_strm->flush();
-	}
-	_strm = strm;
-	_strmCreated = created;
+void StandAloneClient::setOutput(ostream *strm, bool created) {
+    if (_strmCreated && _strm) {
+        _strm->flush();
+        delete _strm;
+    } else if (_strm) {
+        _strm->flush();
+    }
+    _strm = strm;
+    _strmCreated = created;
 }
 
 /** @brief Executes a client side command
@@ -149,53 +151,49 @@ void StandAloneClient::setOutput(ostream * strm, bool created)
  * @param  cmd  The BES client side command to execute
  * @see    BESError
  */
-void StandAloneClient::executeClientCommand(const string &cmd)
-{
-	string suppress = "suppress";
-	if (cmd.compare(0, suppress.size(), suppress) == 0) {
-		setOutput(nullptr, false);
-		return;
-	}
+void StandAloneClient::executeClientCommand(const string &cmd) {
+    string suppress = "suppress";
+    if (cmd.compare(0, suppress.size(), suppress) == 0) {
+        setOutput(nullptr, false);
+        return;
+    }
 
-	string output = "output to";
-	if (cmd.compare(0, output.size(), output) == 0) {
-		string subcmd = cmd.substr(output.size() + 1);
-		string screen = "screen";
-		if (subcmd.compare(0, screen.size(), screen) == 0) {
-			setOutput(&cout, false);
-		}
-		else {
-			// subcmd is the name of the file - then semicolon
-			string file = subcmd.substr(0, subcmd.size() - 1);
-			auto *fstrm = new ofstream(file.c_str(), ios::app);
-			if (!(*fstrm)) {
-				delete fstrm;
-				cerr << "Unable to set client output to file " << file << endl;
-			}
-			else {
-				setOutput(fstrm, true);
-			}
-		}
-		return;
-	}
+    string output = "output to";
+    if (cmd.compare(0, output.size(), output) == 0) {
+        string subcmd = cmd.substr(output.size() + 1);
+        string screen = "screen";
+        if (subcmd.compare(0, screen.size(), screen) == 0) {
+            setOutput(&cout, false);
+        } else {
+            // subcmd is the name of the file - then semicolon
+            string file = subcmd.substr(0, subcmd.size() - 1);
+            auto *fstrm = new ofstream(file.c_str(), ios::app);
+            if (!(*fstrm)) {
+                delete fstrm;
+                cerr << "Unable to set client output to file " << file << endl;
+            } else {
+                setOutput(fstrm, true);
+            }
+        }
+        return;
+    }
 
-	// load commands from an input file and run them
-	string load = "load";
-	if (cmd.compare(0, load.size(), load) == 0) {
-		string file = cmd.substr(load.size() + 1, cmd.size() - load.size() - 2);
-		ifstream fstrm(file.c_str());
-		if (!fstrm) {
-			cerr << "Unable to load commands from file " << file << ": file does not exist or failed to open file"
-					<< endl;
-		}
-		else {
-			executeCommands(fstrm, 1);
-		}
+    // load commands from an input file and run them
+    string load = "load";
+    if (cmd.compare(0, load.size(), load) == 0) {
+        string file = cmd.substr(load.size() + 1, cmd.size() - load.size() - 2);
+        ifstream fstrm(file.c_str());
+        if (!fstrm) {
+            cerr << "Unable to load commands from file " << file << ": file does not exist or failed to open file"
+                 << endl;
+        } else {
+            executeCommands(fstrm, 1);
+        }
 
-		return;
-	}
+        return;
+    }
 
-	cerr << "Improper client command " << cmd << endl;
+    cerr << "Improper client command " << cmd << endl;
 }
 
 /** @brief Sends a single OpeNDAP request to the OpeNDAP server.
@@ -210,79 +208,76 @@ void StandAloneClient::executeClientCommand(const string &cmd)
  *                      from the server.
  * @see    BESError
  */
-void StandAloneClient::executeCommand(const string & cmd, int repeat)
-{
-	string client = "client";
-	if (cmd.compare(0, client.size(), client) == 0) {
-		executeClientCommand(cmd.substr(client.size() + 1));
-	}
-	else {
-		if (repeat < 1) repeat = 1;
-		for (int i = 0; i < repeat; i++) {
-			ostringstream *show_stream = nullptr;
-			if (CmdTranslation::is_show()) {
-				show_stream = new ostringstream;
-			}
+void StandAloneClient::executeCommand(const string &cmd, int repeat) {
+    string client = "client";
+    if (cmd.compare(0, client.size(), client) == 0) {
+        executeClientCommand(cmd.substr(client.size() + 1));
+    } else {
+        if (repeat < 1) repeat = 1;
+        for (int i = 0; i < repeat; i++) {
+            ostringstream *show_stream = nullptr;
+            if (CmdTranslation::is_show()) {
+                show_stream = new ostringstream;
+            }
 
-			BESDEBUG( "standalone", "StandAloneClient::executeCommand sending: " << cmd << endl );
+            BESDEBUG("standalone", "StandAloneClient::executeCommand sending: " << cmd << endl);
 
-	        BESStopWatch sw;
-	        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("StandAloneClient::executeCommand");
+            BESStopWatch sw;
+            if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("StandAloneClient::executeCommand");
 
-			BESXMLInterface *interface = nullptr;
-			if (show_stream) {
-				interface = new BESXMLInterface(cmd, show_stream);
-			}
-			else {
-				interface = new BESXMLInterface(cmd, _strm);
-			}
+            BESXMLInterface *interface = nullptr;
+            if (show_stream) {
+                interface = new BESXMLInterface(cmd, show_stream);
+            } else {
+                interface = new BESXMLInterface(cmd, _strm);
+            }
 
-			int status = interface->execute_request("standalone");
+            int status = interface->execute_request("standalone");
 
-			*_strm << flush;
+            *_strm << flush;
 
-			// Put the call to finish() here because we're not sending chunked responses back
-			// to a client over PPT. In the BESServerHandler.cc code, we must do that and hence,
-			// break up the call to finish() for the error and no-error cases.
-			status = interface->finish(status);
+            // Put the call to finish() here because we're not sending chunked responses back
+            // to a client over PPT. In the BESServerHandler.cc code, we must do that and hence,
+            // break up the call to finish() for the error and no-error cases.
+            status = interface->finish(status);
 
             if (status == 0) {
                 BESDEBUG("standalone", "StandAloneClient::executeCommand - executed successfully" << endl);
-            }
-            else {
+            } else {
                 // an error has occurred.
                 BESDEBUG("standalone", "StandAloneClient::executeCommand - error occurred" << endl);
                 switch (status) {
-                case BES_INTERNAL_FATAL_ERROR: {
-                    cerr << "Status not OK, dispatcher returned value " << status << endl;
-                    exit(1);
-                }
+                    case BES_INTERNAL_FATAL_ERROR: {
+                        cerr << "Status not OK, dispatcher returned value " << status << endl;
+                        exit(1);
+                    }
 
-                case BES_INTERNAL_ERROR:
-                case BES_SYNTAX_USER_ERROR:
-                case BES_FORBIDDEN_ERROR:
-                case BES_NOT_FOUND_ERROR:
-                default:
-                    break;
+                    case BES_INTERNAL_ERROR:
+                    case BES_SYNTAX_USER_ERROR:
+                    case BES_FORBIDDEN_ERROR:
+                    case BES_NOT_FOUND_ERROR:
+                    case BES_HTTP_ERROR:
+                    default:
+                        break;
                 }
             }
 
-			delete interface;
-			interface = nullptr;
+            delete interface;
+            interface = nullptr;
 
-			if (show_stream) {
-				*(_strm) << show_stream->str() << endl;
-				delete show_stream;
-				show_stream = nullptr;
-			}
+            if (show_stream) {
+                *(_strm) << show_stream->str() << endl;
+                delete show_stream;
+                show_stream = nullptr;
+            }
 
-			_strm->flush();
+            _strm->flush();
 
             if (repeat > 1 && i < repeat - 1) {
                 *_strm << "\nNext-Response:\n" << flush;
             }
-		}
-	}
+        }
+    }
 }
 
 /** @brief Send the command(s) specified to the BES server after wrapping in
@@ -301,25 +296,24 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
  *                   of the responses from the server.
  * @see    BESError
  */
-void StandAloneClient::executeCommands(const string &cmd_list, int repeat)
-{
-	_isInteractive = true;
-	if (repeat < 1) repeat = 1;
+void StandAloneClient::executeCommands(const string &cmd_list, int repeat) {
+    _isInteractive = true;
+    if (repeat < 1) repeat = 1;
 
-	CmdTranslation::set_show(false);
-	try {
-		string doc = CmdTranslation::translate(cmd_list);
-		if (!doc.empty()) {
-			executeCommand(doc, repeat);
-		}
-	}
-	catch (BESError &e) {
-		CmdTranslation::set_show(false);
-		_isInteractive = false;
-		throw e;
-	}
-	CmdTranslation::set_show(false);
-	_isInteractive = false;
+    CmdTranslation::set_show(false);
+    try {
+        string doc = CmdTranslation::translate(cmd_list);
+        if (!doc.empty()) {
+            executeCommand(doc, repeat);
+        }
+    }
+    catch (BESError &e) {
+        CmdTranslation::set_show(false);
+        _isInteractive = false;
+        throw e;
+    }
+    CmdTranslation::set_show(false);
+    _isInteractive = false;
 }
 
 /** @brief Sends the xml request document from the specified file to the server
@@ -340,19 +334,18 @@ void StandAloneClient::executeCommands(const string &cmd_list, int repeat)
  * @see    File
  * @see    BESError
  */
-void StandAloneClient::executeCommands(ifstream & istrm, int repeat)
-{
-	_isInteractive = false;
-	if (repeat < 1) repeat = 1;
-	for (int i = 0; i < repeat; i++) {
-		istrm.clear();
-		istrm.seekg(0, ios::beg);
+void StandAloneClient::executeCommands(ifstream &istrm, int repeat) {
+    _isInteractive = false;
+    if (repeat < 1) repeat = 1;
+    for (int i = 0; i < repeat; i++) {
+        istrm.clear();
+        istrm.seekg(0, ios::beg);
 
-		string cmd;
-		string line;
-		while (getline(istrm, line)) {
-			cmd += line;
-		}
+        string cmd;
+        string line;
+        while (getline(istrm, line)) {
+            cmd += line;
+        }
 
         this->executeCommand(cmd, 1);
 
@@ -377,43 +370,39 @@ void StandAloneClient::executeCommands(ifstream & istrm, int repeat)
  *                      of the responses from the server.
  * @see    BESError
  */
-void StandAloneClient::interact()
-{
-	_isInteractive = true;
+void StandAloneClient::interact() {
+    _isInteractive = true;
 
-	cout << endl << endl << "Type 'exit' to exit the command line client and 'help' or '?' "
-			<< "to display the help screen" << endl << endl;
+    cout << endl << endl << "Type 'exit' to exit the command line client and 'help' or '?' "
+         << "to display the help screen" << endl << endl;
 
-	bool done = false;
-	while (!done) {
-		string message;
-		size_t len = this->readLine(message);
-		if (message == "exit" || message == "exit;") {
-			done = true;
-		}
-		else if (message == "help" || message == "help;" || message == "?") {
-			this->displayHelp();
-		}
-		else if (message.size() > 6 && message.substr(0, 6) == "client") {
-			this->executeCommand(message, 1);
-		}
-		else if (len != 0 && !message.empty()) {
-			CmdTranslation::set_show(false);
-			try {
-				string doc = CmdTranslation::translate(message);
-				if (!doc.empty()) {
-					this->executeCommand(doc, 1);
-				}
-			}
-			catch (BESError &e) {
-				CmdTranslation::set_show(false);
-				_isInteractive = false;
-				throw e;
-			}
-			CmdTranslation::set_show(false);
-		}
-	}
-	_isInteractive = false;
+    bool done = false;
+    while (!done) {
+        string message;
+        size_t len = this->readLine(message);
+        if (message == "exit" || message == "exit;") {
+            done = true;
+        } else if (message == "help" || message == "help;" || message == "?") {
+            this->displayHelp();
+        } else if (message.size() > 6 && message.substr(0, 6) == "client") {
+            this->executeCommand(message, 1);
+        } else if (len != 0 && !message.empty()) {
+            CmdTranslation::set_show(false);
+            try {
+                string doc = CmdTranslation::translate(message);
+                if (!doc.empty()) {
+                    this->executeCommand(doc, 1);
+                }
+            }
+            catch (BESError &e) {
+                CmdTranslation::set_show(false);
+                _isInteractive = false;
+                throw e;
+            }
+            CmdTranslation::set_show(false);
+        }
+    }
+    _isInteractive = false;
 }
 
 /** @brief Read a line from the interactive terminal using the readline library
@@ -421,65 +410,61 @@ void StandAloneClient::interact()
  * @param msg read the line into this string
  * @return number of characters read
  */
-size_t StandAloneClient::readLine(string & msg)
-{
-	size_t len = 0;
-	char *buf = nullptr;
-	buf = ::readline("BESClient> ");
-	if (buf && *buf) {
-		len = strlen(buf);
+size_t StandAloneClient::readLine(string &msg) {
+    size_t len = 0;
+    char *buf = nullptr;
+    buf = ::readline("BESClient> ");
+    if (buf && *buf) {
+        len = strlen(buf);
 #ifdef HAVE_READLINE_HISTORY
-		add_history(buf);
+        add_history(buf);
 #endif
-		if (len > SIZE_COMMUNICATION_BUFFER) {
-			cerr << __FILE__ << __LINE__ <<
-			": incoming data buffer exceeds maximum capacity with length " << len << endl;
-			exit(1);
-		}
-		else {
-			msg = buf;
-		}
-	}
-	else {
-		if (!buf) {
-			// If a null buffer is returned then this means that EOF is
-			// returned. This is different from the user just hitting enter,
-			// which means a character buffer is returned, but is empty.
+        if (len > SIZE_COMMUNICATION_BUFFER) {
+            cerr << __FILE__ << __LINE__ <<
+                 ": incoming data buffer exceeds maximum capacity with length " << len << endl;
+            exit(1);
+        } else {
+            msg = buf;
+        }
+    } else {
+        if (!buf) {
+            // If a null buffer is returned then this means that EOF is
+            // returned. This is different from the user just hitting enter,
+            // which means a character buffer is returned, but is empty.
 
-			// Problem: len is unsigned.
-			len = -1;
-		}
-	}
+            // Problem: len is unsigned.
+            len = -1;
+        }
+    }
 
-	if (buf) {
-		free(buf);
-		buf = nullptr;
-	}
+    if (buf) {
+        free(buf);
+        buf = nullptr;
+    }
 
-	return len;
+    return len;
 }
 
 /** @brief display help information for the command line client
  */
-void StandAloneClient::displayHelp()
-{
-	cout << endl;
-	cout << endl;
-	cout << "BES Command Line Client Help" << endl;
-	cout << endl;
-	cout << "Client commands available:" << endl;
-	cout << "    exit                     - exit the command line interface" << endl;
-	cout << "    help                     - display this help screen" << endl;
-	cout << "    client suppress;         - suppress output from the server" << endl;
-	cout << "    client output to screen; - display server output to the screen" << endl;
-	cout << "    client output to <file>; - display server output to specified file" << endl;
-	cout << endl;
-	cout << "Any commands beginning with 'client' must end with a semicolon" << endl;
-	cout << endl;
-	cout << "To display the list of commands available from the server " << "please type the command 'show help;'"
-			<< endl;
-	cout << endl;
-	cout << endl;
+void StandAloneClient::displayHelp() {
+    cout << endl;
+    cout << endl;
+    cout << "BES Command Line Client Help" << endl;
+    cout << endl;
+    cout << "Client commands available:" << endl;
+    cout << "    exit                     - exit the command line interface" << endl;
+    cout << "    help                     - display this help screen" << endl;
+    cout << "    client suppress;         - suppress output from the server" << endl;
+    cout << "    client output to screen; - display server output to the screen" << endl;
+    cout << "    client output to <file>; - display server output to specified file" << endl;
+    cout << endl;
+    cout << "Any commands beginning with 'client' must end with a semicolon" << endl;
+    cout << endl;
+    cout << "To display the list of commands available from the server " << "please type the command 'show help;'"
+         << endl;
+    cout << endl;
+    cout << endl;
 }
 
 /** @brief dumps information about this object
@@ -488,11 +473,10 @@ void StandAloneClient::displayHelp()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void StandAloneClient::dump(ostream & strm) const
-{
-	strm << BESIndent::LMarg << "StandAloneClient::dump - (" << (void *) this << ")" << endl;
-	BESIndent::Indent();
-	strm << BESIndent::LMarg << "stream: " << (void *) _strm << endl;
-	strm << BESIndent::LMarg << "stream created? " << _strmCreated << endl;
-	BESIndent::UnIndent();
+void StandAloneClient::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "StandAloneClient::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "stream: " << (void *) _strm << endl;
+    strm << BESIndent::LMarg << "stream created? " << _strmCreated << endl;
+    BESIndent::UnIndent();
 }

@@ -374,26 +374,26 @@ BESServiceRegistry::show_services( BESInfo &info )
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    map<string,map<string,service_cmd> >::iterator si = _services.begin() ;
-    map<string,map<string,service_cmd> >::iterator se = _services.end() ;
+    auto si = _services.begin() ;
+    auto se = _services.end() ;
     for( ; si != se; si++ )
     {
-	map<string,string> props ;
+	map<string, string, std::less<>> props ;
 	props["name"] = (*si).first ;
 	info.begin_tag( "serviceDescription", &props ) ;
-	map<string,service_cmd>::iterator ci = (*si).second.begin() ;
-	map<string,service_cmd>::iterator ce = (*si).second.end() ;
+        auto ci = (*si).second.begin() ;
+        auto ce = (*si).second.end() ;
 	for( ; ci != ce; ci++ )
 	{
-	    map<string,string> cprops ;
+	    map<string, string, std::less<>> cprops ;
 	    cprops["name"] = (*ci).first ;
 	    info.begin_tag( "command", &cprops ) ;
 	    info.add_tag( "description", (*ci).second._description ) ;
-	    map<string,string>::iterator fi = (*ci).second._formats.begin() ;
-	    map<string,string>::iterator fe = (*ci).second._formats.end() ;
+        auto fi = (*ci).second._formats.begin() ;
+        auto fe = (*ci).second._formats.end() ;
 	    for( ; fi != fe; fi++ )
 	    {
-		map<string,string> fprops ;
+		map<string, string, std::less<>> fprops ;
 		fprops["name"] = (*fi).first ;
 		info.add_tag( "format", "", &fprops ) ;
 	    }

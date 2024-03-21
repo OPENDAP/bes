@@ -73,7 +73,7 @@ BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
     info->begin_response( CONFIG_RESPONSE_STR, dhi ) ;
     info->add_tag( "file", TheBESKeys::TheKeys()->keys_file_name() ) ;
 
-    map<string,string> props ;
+    map<string,string, std::less<>> props ;
     auto ki = TheBESKeys::TheKeys()->keys_begin() ;
     auto ke = TheBESKeys::TheKeys()->keys_end() ;
     for( ; ki != ke; ki++ )
@@ -81,8 +81,8 @@ BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
 	props.clear() ;
 	props["name"] = (*ki).first ;
 	info->begin_tag( "key", &props ) ;
-	vector<string>::const_iterator v = (*ki).second.begin() ;
-	vector<string>::const_iterator ve = (*ki).second.end() ;
+	auto v = (*ki).second.begin() ;
+	auto ve = (*ki).second.end() ;
 	for( ; v != ve; v++ )
 	{
 	    info->add_tag( "value", (*v) ) ;

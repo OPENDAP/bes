@@ -59,7 +59,7 @@ BESDapRequestHandler::dap_build_help( BESDataHandlerInterface &dhi )
     if( !info )
        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
-    map<string,string> attrs ;
+    map<string,string, std::less<>> attrs ;
     attrs["name"] = libdap_name() ;
     attrs["version"] = libdap_version() ;
     info->begin_tag( "module", &attrs ) ;

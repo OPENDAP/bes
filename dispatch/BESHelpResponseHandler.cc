@@ -80,7 +80,7 @@ BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
     info->begin_response( HELP_RESPONSE_STR, dhi ) ;
     dhi.action_name = HELP_RESPONSE_STR ;
 
-    map<string,string> attrs ;
+    map<string, string, std::less<>> attrs ;
     attrs["name"] = PACKAGE_NAME ;
     attrs["version"] = PACKAGE_VERSION ;
     info->begin_tag( "module", &attrs ) ;

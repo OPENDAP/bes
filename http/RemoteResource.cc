@@ -43,6 +43,7 @@
 
 #include "HttpUtils.h"
 #include "CurlUtils.h"
+#include "HttpError.h"
 #include "HttpNames.h"
 #include "RemoteResource.h"
 #include "TheBESKeys.h"
@@ -76,23 +77,21 @@ std::mutex RemoteResource::d_mkstemp_mutex;
  * @param target_url An instance of http::url that points to the resource to be retrieved.
  * @param uid The user ID to use when retrieving the resource.
  */
-RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
-    : d_url(std::move(target_url)), d_uid(std::move(uid)) {
+RemoteResource::RemoteResource(shared_ptr <http::url> target_url, string uid)
+        : d_url(std::move(target_url)), d_uid(std::move(uid)) {
 
     if (d_url->protocol() == FILE_PROTOCOL) {
         set_filename_for_file_url();
         // d_delete_file is true by default; don't delete things referenced by file:// URLs
         d_delete_file = false;
         d_initialized = true;
-    }
-    else if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
+    } else if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
         BESDEBUG(MODULE, prolog << "URL: " << d_url->str() << endl);
 
         // d_initialized is false until the resource is retrieved (for http/s URLs)
         set_delete_temp_file();
         set_temp_file_dir();
-    }
-    else {
+    } else {
         string err = prolog + "Unsupported protocol: " + d_url->protocol();
         throw BESInternalError(err, __FILE__, __LINE__);
     }
@@ -134,8 +133,7 @@ RemoteResource::~RemoteResource() {
  * The directory is set using the REMOTE_RESOURCE_TMP_DIR_KEY key. If the key is not set then the
  * directory is set to /tmp/bes_rr_tmp.
  */
-void RemoteResource::set_temp_file_dir()
-{
+void RemoteResource::set_temp_file_dir() {
     lock_guard<mutex> lock(d_temp_file_dir_mutex);
 
     // d_temp_file_dir is static, so we only need to set it once.
@@ -215,7 +213,7 @@ void RemoteResource::retrieve_resource() {
     string new_name = d_filename + "_" + d_uid + "#" + d_basename;
     if (rename(d_filename.c_str(), new_name.c_str()) != 0) {
         throw BESInternalError("Could not rename " + d_filename + " to " + new_name + " ("
-                                + ::strerror(errno) + ")", __FILE__, __LINE__);
+                               + ::strerror(errno) + ")", __FILE__, __LINE__);
     }
 
     d_filename = new_name;
@@ -244,17 +242,25 @@ void RemoteResource::get_url(int fd) {
         BESLog::TheLog()->is_verbose()) {
         besTimer.start(prolog + "source url: " + d_url->str());
     }
+    try {
+        // Throws an HttpError if there is a curl error.
+        curl::http_get_and_write_resource(d_url, fd, &d_response_headers);
+        BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
+    }
+    catch (http::HttpError &http_error) {
+        string err_msg = "Hyrax encountered a Service Chaining Error while "
+                         "attempting to retrieve a RemoteResource.\n" + http_error.get_message();
+        http_error.set_message(err_msg);
+        throw;
+    }
 
-    // Throws BESInternalError if there is a curl error.
-    curl::http_get_and_write_resource(d_url, fd, &d_response_headers);
-    BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
 
-    // Moved into curl::super_easy_perform(CURL*, int fd)
+        // Moved into curl::super_easy_perform(CURL*, int fd)
 #if 0
-    auto status = lseek(fd, 0, SEEK_SET);
-    if (-1 == status)
-        throw BESInternalError("Could not seek within the response file.", __FILE__, __LINE__);
-    BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
+        auto status = lseek(fd, 0, SEEK_SET);
+        if (-1 == status)
+            throw BESInternalError("Could not seek within the response file.", __FILE__, __LINE__);
+        BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
 #endif
 
     BESDEBUG(MODULE, prolog << "END" << endl);

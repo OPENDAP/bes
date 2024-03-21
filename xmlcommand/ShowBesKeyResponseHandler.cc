@@ -87,7 +87,7 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
     vector<string> key_values;
     getBesKeyValue(requested_bes_key, key_values);
 
-    map<string, string> attrs;
+    map<string, string, std::less<>> attrs;
 
     attrs[KEY] = requested_bes_key;
 
@@ -95,7 +95,7 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     // I think we can replace/remove 'emptyAttrs' and pass nullptr in its place.
     // jhrg 11/26/18
-    map<string, string> emptyAttrs;
+    map<string, string, std::less<>> emptyAttrs;
     for(unsigned long i = 0; i < key_values.size(); ++i)
         info->add_tag("value", key_values[i], &emptyAttrs);
 

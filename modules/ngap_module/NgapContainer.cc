@@ -35,13 +35,12 @@
 #include "BESStopWatch.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
-#include "BESInternalError.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESContextManager.h"
 #include "CurlUtils.h"
-#include "HttpUtils.h"
+#include "HttpError.h"
 
 #include "NgapRequestHandler.h"
 #include "NgapContainer.h"
@@ -66,7 +65,7 @@ BESContainer *
 NgapContainer::ptr_duplicate() {
     auto container = new NgapContainer;
     _duplicate(*container);
-    BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << " to: " << (void *)container << endl);
+    BESDEBUG(MODULE, prolog << "object address: " << (void *) this << " to: " << (void *) container << endl);
     return container;
 }
 
@@ -83,8 +82,7 @@ NgapContainer::ptr_duplicate() {
  * @note: The cache is global to the NgapRequestHandler class. This is a per-process
  * cache and it is not thread-safe.
  */
-void NgapContainer::set_real_name_using_cmr_or_cache()
-{
+void NgapContainer::set_real_name_using_cmr_or_cache() {
 #ifndef NDEBUG
     BESStopWatch besTimer;
     if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
@@ -106,8 +104,7 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
             CACHE_LOG(prolog + "CMR Cache hit, translated URL: " + get_real_name() + '\n');
             BESDEBUG(MODULE, prolog << "END (obj_addr: " << (void *) this << ")" << endl);
             return;
-        }
-        else {
+        } else {
             CACHE_LOG(prolog + "CMR Cache miss, URL: " + get_real_name() + '\n');
         }
     }
@@ -138,7 +135,7 @@ void NgapContainer::set_real_name_using_cmr_or_cache()
  * resource will be replaced with its associated value.
  * @param content A reference to the C++ string to filter
  */
-void NgapContainer::filter_response(const map<string, string, std::less<>> &content_filters, string &content) const {
+void NgapContainer::filter_response(const map <string, string, std::less<>> &content_filters, string &content) const {
     for (const auto &apair: content_filters) {
         unsigned int replace_count = BESUtil::replace_all(content, apair.first, apair.second);
         BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
@@ -153,21 +150,21 @@ void NgapContainer::filter_response(const map<string, string, std::less<>> &cont
  * @return True if the filters were built, false otherwise
  */
 bool
-NgapContainer::get_content_filters(map<string, string, std::less<>> &content_filters) const
-{
+NgapContainer::get_content_filters(map <string, string, std::less<>> &content_filters) const {
     if (inject_data_url()) {
         const string data_access_url_str = get_real_name();
         const string missing_data_url_str = data_access_url_str + ".missing";
-        const string href=R"(href=")";
-        const string trusted_url_hack=R"(" dmrpp:trust="true")";
+        const string href = R"(href=")";
+        const string trusted_url_hack = R"(" dmrpp:trust="true")";
         const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
         const string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
         const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
         const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
 
         content_filters.clear();
-        content_filters.insert(pair<string,string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-        content_filters.insert(pair<string,string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+        content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
+        content_filters.insert(
+                pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
         return true;
     }
 
@@ -215,8 +212,7 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
             // set_container_type() because access() is called from both the framework and the DMR++ handler
             CACHE_LOG(prolog + "Memory Cache hit, DMR++: " + get_real_name() + '\n');
             return true;
-        }
-        else {
+        } else {
             CACHE_LOG(prolog + "Memory Cache miss, DMR++: " + get_real_name() + '\n');
         }
     }
@@ -233,14 +229,12 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
                 NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
                 CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name() + '\n');
                 return true;
-            }
-            else {
+            } else {
                 ERROR_LOG("NgapContainer::access() - failed to read DMR++ from file cache\n");
                 return false;
             }
-        }
-        else {
-            CACHE_LOG(prolog +  "File Cache miss, DMR++: " + get_real_name() + '\n');
+        } else {
+            CACHE_LOG(prolog + "File Cache miss, DMR++: " + get_real_name() + '\n');
         }
     }   // end of FileCache::Item scope
 
@@ -255,8 +249,19 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
     }
 #endif
 
-    // This code throws an exception if there is a problem. jhrg 11/16/23
-    curl::http_get(dmrpp_url_str, dmrpp_string);
+    try {
+        // This code throws an exception if there is a problem. jhrg 11/16/23
+        curl::http_get(dmrpp_url_str, dmrpp_string);
+    }
+    catch (http::HttpError &http_error) {
+        string err_msg = "Hyrax encountered a Service Chaining Error while attempting to retrieve a dmr++ file.\n"
+                         "This could be a problem with TEA (the AWS URL signing authority),\n"
+                         "or with accessing the dmr++ file at its resident location (typically S3).\n"
+                         + http_error.get_message();
+        http_error.set_message(err_msg);
+        throw;
+    }
+
 #if 0
     vector<char> buffer;
     curl::http_get(dmrpp_url_str, buffer);
@@ -264,7 +269,7 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
     buffer.clear(); // keep the original for as little time as possible.
 #endif
 
-    map<string,string, std::less<>> content_filters;
+    map<string, string, std::less<>> content_filters;
     if (get_content_filters(content_filters)) {
         filter_response(content_filters, dmrpp_string);
     }
@@ -283,8 +288,7 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
                 return false;
             }
             CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
-        }
-        else {
+        } else {
             ERROR_LOG("NgapContainer::access() - failed to put DMR++ in file cache\n");
             return false;
         }

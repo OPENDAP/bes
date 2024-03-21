@@ -112,8 +112,9 @@ void BESHTMLInfo::end_response()
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
-void BESHTMLInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs)
-{
+void BESHTMLInfo::add_tag(const string &tag_name,
+                          const string &tag_data,
+                          map<string, string, std::less<>> *attrs){
     string to_add = tag_name + ": " + tag_data + "<BR />\n";
     add_data(to_add);
     if (attrs) {
@@ -132,7 +133,7 @@ void BESHTMLInfo::add_tag(const string &tag_name, const string &tag_data, map<st
  * @param tag_name name of the tag to begin
  * @param attrs map of attributes to begin the tag with
  */
-void BESHTMLInfo::begin_tag(const string &tag_name, map<string, string> *attrs)
+void BESHTMLInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs)
 {
     BESInfo::begin_tag(tag_name);
     string to_add = tag_name + "<BR />\n";

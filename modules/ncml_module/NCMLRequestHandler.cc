@@ -390,7 +390,7 @@ bool NCMLRequestHandler::ncml_build_help(BESDataHandlerInterface &dhi)
 
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
-    map<string, string> attrs;
+    map<string, string, std::less<>> attrs;
     attrs["name"] = MODULE_NAME;
     attrs["version"] = MODULE_VERSION;
 

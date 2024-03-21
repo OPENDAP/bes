@@ -69,7 +69,7 @@ void BESVersionInfo::add_module(const string &name, const string &vers)
 
 void BESVersionInfo::add_service(const string &name, const list<string> &vers)
 {
-    map<string, string> props;
+    map<string, string, std::less<>> props;
     props["name"] = name;
     begin_tag("serviceVersion", &props);
     list<string>::const_iterator i = vers.begin();
@@ -82,7 +82,7 @@ void BESVersionInfo::add_service(const string &name, const list<string> &vers)
 
 void BESVersionInfo::add_version(const string &type, const string &name, const string &vers)
 {
-    map<string, string> attrs;
+    map<string, string, std::less<>> attrs;
     attrs["name"] = name;
     attrs["version"] = vers;
     add_tag(type, "", &attrs);

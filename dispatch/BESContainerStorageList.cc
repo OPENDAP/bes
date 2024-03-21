@@ -360,7 +360,7 @@ void BESContainerStorageList::show_containers(BESInfo &info)
 
     BESContainerStorageList::persistence_list *pl = _first;
     while (pl) {
-        std::map<string, string> props;
+        std::map<string, string, std::less<>> props;
         props["name"] = pl->_persistence_obj->get_name();
         info.begin_tag("store", &props);
         pl->_persistence_obj->show_containers(info);
