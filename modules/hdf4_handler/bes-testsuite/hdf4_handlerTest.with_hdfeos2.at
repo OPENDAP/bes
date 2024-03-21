@@ -562,6 +562,7 @@ AT_BESCMD_RESPONSE_TEST([SDS_chunk_extra_area.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_chunk_extra_area_comp.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_simple_comp.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_unlimited.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([SDS_simple_unlimited_0.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_fillchunk_comp.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_fillchunk_alltypes.hdf.dmr.bescmd])
 
