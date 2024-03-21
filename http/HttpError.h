@@ -49,6 +49,7 @@ class HttpError : public BESError {
 
 public:
     HttpError() = default;
+
     HttpError(const std::string &msg,
               const CURLcode code,
               const long http_status,
@@ -57,15 +58,14 @@ public:
               const std::vector<std::string> &response_headers,
               const std::string &response_body,
               const std::string &file,
-              const int line):
+              const int line) :
             BESError(msg, BES_HTTP_ERROR, file, line),
             d_curl_code(code),
             d_http_status(http_status),
             d_origin_url(origin_url),
             d_redirect_url(redirect_url),
             d_response_headers(response_headers),
-            d_response_body(response_body)
-    {};
+            d_response_body(response_body) {};
 
     HttpError(const std::string &msg,
               const CURLcode code,
@@ -73,27 +73,31 @@ public:
               const std::string &origin_url,
               const std::string &redirect_url,
               const std::string &file,
-              const int line):
+              const int line) :
             BESError(msg, BES_HTTP_ERROR, file, line),
             d_curl_code(code),
             d_http_status(http_status),
             d_origin_url(origin_url),
-            d_redirect_url(redirect_url)
-    {};
+            d_redirect_url(redirect_url) {};
 
 
-    HttpError(std::string msg, std::string file, unsigned int line):
-        BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) {}
+    HttpError(std::string msg, std::string file, unsigned int line) :
+            BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) {}
 
     HttpError(const HttpError &src) = default;
 
     ~HttpError() override = default;
 
     std::string origin_url() const { return d_origin_url; }
+
     std::string redirect_url() const { return d_redirect_url; }
+
     CURLcode curl_code() const { return d_curl_code; }
+
     long http_status() const { return d_http_status; }
+
     std::vector<std::string> response_headers() const { return d_response_headers; }
+
     std::string response_body() const { return d_response_body; }
 
     void add_my_error_details_to(BESInfo &info) const override;
@@ -112,8 +116,7 @@ public:
      *
      * @param strm C++ i/o stream to dump the information to
      */
-    void dump(std::ostream &strm) const override
-    {
+    void dump(std::ostream &strm) const override {
         strm << dump();
     }
 

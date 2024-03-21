@@ -50,8 +50,7 @@ using namespace std;
  * created
  */
 BESInfo::BESInfo() :
-        _strm(0), _strm_owned(false), _buffered(true), _response_started(false)
-{
+        _strm(0), _strm_owned(false), _buffered(true), _response_started(false) {
     _strm = new ostringstream;
     _strm_owned = true;
 }
@@ -70,10 +69,9 @@ BESInfo::BESInfo() :
  * ownership or not
  */
 BESInfo::BESInfo(const string &key, ostream *strm, bool strm_owned) :
-        _strm(0), _strm_owned(false), _buffered(true), _response_started(false), _response_name("")
-{
+        _strm(0), _strm_owned(false), _buffered(true), _response_started(false), _response_name("") {
     bool found = false;
-    vector < string > vals;
+    vector<string> vals;
     string b;
     TheBESKeys::TheKeys()->get_value(key, b, found);
     if (b == "true" || b == "True" || b == "TRUE" || b == "yes" || b == "Yes" || b == "YES") {
@@ -81,8 +79,7 @@ BESInfo::BESInfo(const string &key, ostream *strm, bool strm_owned) :
         _strm_owned = true;
         _buffered = true;
         if (strm && strm_owned) delete strm;
-    }
-    else {
+    } else {
         if (!strm) {
             string s = "Informational response not buffered but no stream passed";
             throw BESInternalError(s, __FILE__, __LINE__);
@@ -93,8 +90,7 @@ BESInfo::BESInfo(const string &key, ostream *strm, bool strm_owned) :
     }
 }
 
-BESInfo::~BESInfo()
-{
+BESInfo::~BESInfo() {
     if (_strm && _strm_owned) {
         delete _strm;
         _strm = 0;
@@ -108,8 +104,8 @@ BESInfo::~BESInfo()
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void BESInfo::begin_response(const string &response_name, map<string, string> */*attrs*/, BESDataHandlerInterface &/*dhi*/)
-{
+void
+BESInfo::begin_response(const string &response_name, map<string, string> */*attrs*/, BESDataHandlerInterface &/*dhi*/) {
     _response_started = true;
     _response_name = response_name;
 }
@@ -121,14 +117,12 @@ void BESInfo::begin_response(const string &response_name, map<string, string> */
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void BESInfo::begin_response(const string &response_name, BESDataHandlerInterface &/*dhi*/)
-{
+void BESInfo::begin_response(const string &response_name, BESDataHandlerInterface &/*dhi*/) {
     _response_started = true;
     _response_name = response_name;
 }
 
-void BESInfo::end_response()
-{
+void BESInfo::end_response() {
     _response_started = false;
     if (_tags.size()) {
         string s = "Not all tags were ended in info response";
@@ -136,18 +130,15 @@ void BESInfo::end_response()
     }
 }
 
-void BESInfo::begin_tag(const string &tag_name, map<string, string> */*attrs*/)
-{
+void BESInfo::begin_tag(const string &tag_name, map<string, string> */*attrs*/) {
     _tags.push(tag_name);
 }
 
-void BESInfo::end_tag(const string &tag_name)
-{
+void BESInfo::end_tag(const string &tag_name) {
     if (_tags.empty() || _tags.top() != tag_name) {
         string s = (string) "tag " + tag_name + " already ended or not started";
         throw BESInternalError(s, __FILE__, __LINE__);
-    }
-    else {
+    } else {
         _tags.pop();
     }
 }
@@ -157,8 +148,7 @@ void BESInfo::end_tag(const string &tag_name)
  *
  * @param s information to be added to this informational response object
  */
-void BESInfo::add_data(const string &s)
-{
+void BESInfo::add_data(const string &s) {
     // If not buffered then we've been passed a stream to use.
     // If it is buffered then we created the stream.
     (*_strm) << s;
@@ -179,8 +169,7 @@ void BESInfo::add_data(const string &s)
  * @param key Key from the initialization file specifying the file to be
  * @param name A description of what is the information being loaded
  */
-void BESInfo::add_data_from_file(const string &key, const string &name)
-{
+void BESInfo::add_data_from_file(const string &key, const string &name) {
     bool found = false;
     string file;
     try {
@@ -191,8 +180,7 @@ void BESInfo::add_data_from_file(const string &key, const string &name)
     }
     if (found == false) {
         add_data(name + " file key " + key + " not found, information not available\n");
-    }
-    else {
+    } else {
         ifstream ifs(file.c_str());
         int myerrno = errno;
         if (!ifs) {
@@ -206,8 +194,7 @@ void BESInfo::add_data_from_file(const string &key, const string &name)
             serr += "\n";
 
             add_data(serr);
-        }
-        else {
+        } else {
             char line[BES_INFO_FILE_BUFFER_SIZE];
             while (!ifs.eof()) {
                 ifs.getline(line, BES_INFO_FILE_BUFFER_SIZE);
@@ -231,8 +218,7 @@ void BESInfo::add_data_from_file(const string &key, const string &name)
  * @param admin The contact information for the person
  * responsible for this error
  */
-void BESInfo::add_exception(const BESError &error, const string &admin)
-{
+void BESInfo::add_exception(const BESError &error, const string &admin) {
     begin_tag("BESError");
     ostringstream stype;
     stype << error.get_bes_error_type();
@@ -242,12 +228,12 @@ void BESInfo::add_exception(const BESError &error, const string &admin)
 
     error.add_my_error_details_to(*this);
 
-    begin_tag( "Location" );
-    add_tag( "File", error.get_file() );
+    begin_tag("Location");
+    add_tag("File", error.get_file());
     ostringstream sline;
     sline << error.get_line();
-    add_tag( "Line", sline.str() );
-    end_tag( "Location" );
+    add_tag("Line", sline.str());
+    end_tag("Location");
 
     end_tag("BESError");
 }
@@ -260,8 +246,7 @@ void BESInfo::add_exception(const BESError &error, const string &admin)
  *
  * @param strm output to this file descriptor if information buffered.
  */
-void BESInfo::print(ostream &strm)
-{
+void BESInfo::print(ostream &strm) {
     if (_buffered) {
         strm << ((ostringstream *) _strm)->str();
     }
@@ -274,8 +259,7 @@ void BESInfo::print(ostream &strm)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESInfo::dump(ostream &strm) const
-{
+void BESInfo::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "BESInfo::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "response name: " << _response_name << endl;
@@ -284,15 +268,14 @@ void BESInfo::dump(ostream &strm) const
     if (_tags.size()) {
         strm << BESIndent::LMarg << "tags:" << endl;
         BESIndent::Indent();
-        stack < string > temp_tags = _tags;
+        stack<string> temp_tags = _tags;
         while (!temp_tags.empty()) {
             string tag = temp_tags.top();
             strm << BESIndent::LMarg << tag << endl;
             temp_tags.pop();
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "tags: empty" << endl;
     }
     BESIndent::UnIndent();

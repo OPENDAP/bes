@@ -79,8 +79,7 @@ private:
             DBG2(cerr << file_content << "\n");
             DBG2(cerr << "#############################################################################\n");
             return file_content;
-        }
-        else {
+        } else {
             CPPUNIT_FAIL(prolog + "FAILED TO OPEN FILE: " + filename);
         }
         return "";
@@ -101,8 +100,8 @@ public:
 
     // Called before each test
     void setUp() override {
-        debug=true;
-        bes_debug=true;
+        debug = true;
+        bes_debug = true;
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
@@ -146,7 +145,7 @@ public:
         catch (const BESError &e) {
             CPPUNIT_FAIL("Caught BESError! message: " + e.get_verbose_message());
         }
-        DBG( cerr << prolog << "END\n");
+        DBG(cerr << prolog << "END\n");
     }
 
     // A multi-threaded test of retrieveResource().
@@ -154,16 +153,16 @@ public:
         DBG(cerr << "|--------------------------------------------------|\n");
         DBG(cerr << prolog << "BEGIN\n");
 
-         vector<string> urls = {"http://test.opendap.org/data/httpd_catalog/READTHIS",
-                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.das",
-                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds",
-                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dmr",
-                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dap",
-                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dods"};
+        vector<string> urls = {"http://test.opendap.org/data/httpd_catalog/READTHIS",
+                               "http://test.opendap.org/opendap/data/nc/fnoc1.nc.das",
+                               "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds",
+                               "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dmr",
+                               "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dap",
+                               "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dods"};
         try {
             std::vector<std::future<string>> futures;
 
-            for (auto &url : urls) {
+            for (auto &url: urls) {
                 futures.emplace_back(std::async(std::launch::async, [](const string &url) -> string {
                     http::RemoteResource rhr(make_shared<http::url>(url));
                     DBG(cerr << "Start RR\n");
@@ -182,14 +181,15 @@ public:
             for (auto &future: futures) {
                 CPPUNIT_ASSERT_MESSAGE("Invalid future", future.valid());
                 string result;
-                CPPUNIT_ASSERT_NO_THROW_MESSAGE("Expected a return value, not throw an exception", result = future.get());
+                CPPUNIT_ASSERT_NO_THROW_MESSAGE("Expected a return value, not throw an exception",
+                                                result = future.get());
                 DBG(cerr << result << "\n");
             }
         }
         catch (const BESError &e) {
             CPPUNIT_FAIL("Caught BESError! message: " + e.get_verbose_message());
         }
-        DBG( cerr << prolog << "END\n");
+        DBG(cerr << prolog << "END\n");
     }
 
     void get_http_url_test_mt_test_return_content() {
@@ -205,7 +205,7 @@ public:
         try {
             std::vector<std::future<string>> futures;
 
-            for (auto &url : urls) {
+            for (auto &url: urls) {
                 futures.emplace_back(std::async(std::launch::async, [](const string &url) -> string {
                     http::RemoteResource rhr(make_shared<http::url>(url));
                     DBG(cerr << "Start RR\n");
@@ -213,7 +213,8 @@ public:
                     DBG(cerr << "End RR\n");
                     CPPUNIT_ASSERT_MESSAGE("Retrieved resource should not be empty", file_size(rhr.get_filename()) > 0);
                     DBG(cerr << prolog << "filename: " << rhr.get_filename() << "\n");
-                    string expected_content("This is a test. If this was not a test you would have known the answer.\n");
+                    string expected_content(
+                            "This is a test. If this was not a test you would have known the answer.\n");
                     DBG(cerr << prolog << "expected content: " << expected_content << "\n");
                     string content = get_file_as_string(rhr.get_filename());
                     DBG(cerr << prolog << "retrieved content: " << content << "\n");
@@ -230,14 +231,15 @@ public:
             for (auto &future: futures) {
                 CPPUNIT_ASSERT_MESSAGE("Invalid future", future.valid());
                 string result;
-                CPPUNIT_ASSERT_NO_THROW_MESSAGE("Expected a return value, not throw an exception", result = future.get());
+                CPPUNIT_ASSERT_NO_THROW_MESSAGE("Expected a return value, not throw an exception",
+                                                result = future.get());
                 DBG(cerr << result << "\n");
             }
         }
         catch (const BESError &e) {
             CPPUNIT_FAIL("Caught BESError! message: " + e.get_verbose_message());
         }
-        DBG( cerr << prolog << "END\n");
+        DBG(cerr << prolog << "END\n");
     }
 
     void get_file_url_test() {
@@ -261,7 +263,7 @@ public:
         catch (const BESError &e) {
             CPPUNIT_FAIL("Caught BESError! message: " + e.get_verbose_message());
         }
-        DBG( cerr << prolog << "END\n");
+        DBG(cerr << prolog << "END\n");
     }
 
     void set_delete_temp_file_default_ctor_test() {
@@ -270,7 +272,7 @@ public:
         http::RemoteResource rhr;
         CPPUNIT_ASSERT_EQUAL_MESSAGE("The default value for d_delete_file should be true",
                                      true, rhr.d_delete_file);
-        DBG( cerr << prolog << "END\n");
+        DBG(cerr << prolog << "END\n");
     }
 
     void set_delete_temp_file_URL_default_test() {
@@ -280,7 +282,7 @@ public:
         http::RemoteResource rhr(http_url);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("The default value for d_delete_file should be true for a http:// URL.",
                                      true, rhr.d_delete_file);
-        DBG( cerr << prolog << "END\n");
+        DBG(cerr << prolog << "END\n");
     }
 
     void set_delete_temp_file_FILE_default_test() {
@@ -291,7 +293,7 @@ public:
         http::RemoteResource rhr(http_url);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("The default value for d_delete_file should be false for a file:// URL.",
                                      false, rhr.d_delete_file);
-        DBG( cerr << prolog << "END\n");
+        DBG(cerr << prolog << "END\n");
     }
 
     void set_delete_temp_file_URL_test() {
@@ -300,9 +302,10 @@ public:
         TheBESKeys::TheKeys()->set_key("Http.RemoteResource.TmpFile.Delete", "false");
         auto http_url = make_shared<http::url>("http://test.opendap.org/data/httpd_catalog/READTHIS");
         http::RemoteResource rhr(http_url);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("The value for d_delete_file should be false since Http.RemoteResource.TmpFile.Delete is false.",
-                                     false, rhr.d_delete_file);
-        DBG( cerr << prolog << "END\n");
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                "The value for d_delete_file should be false since Http.RemoteResource.TmpFile.Delete is false.",
+                false, rhr.d_delete_file);
+        DBG(cerr << prolog << "END\n");
     }
 
     // Test that when the Http.RemoteResource.TmpFile.Delete key is set to true, and
@@ -316,7 +319,7 @@ public:
         http::RemoteResource rhr(http_url);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("The value for d_delete_file should be false for a file:// URL no matter what",
                                      false, rhr.d_delete_file);
-        DBG( cerr << prolog << "END\n");
+        DBG(cerr << prolog << "END\n");
     }
 
 CPPUNIT_TEST_SUITE(RemoteResourceTest);
@@ -372,8 +375,7 @@ int main(int argc, char *argv[]) {
     bool wasSuccessful = true;
     if (0 == argc) {
         wasSuccessful = runner.run("");         // run them all
-    }
-    else {
+    } else {
         for (int i = 0; i < argc; ++i) {
             DBG(cerr << "Running " << argv[i] << "\n");
             string test = http::RemoteResourceTest::suite()->getName().append("::").append(argv[i]);

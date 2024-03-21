@@ -61,12 +61,12 @@ using namespace std;
 
 namespace http {
 
-string remove_file_and_line(const string &thing1){
+string remove_file_and_line(const string &thing1) {
     regex file_regex("<File>.*<\\/File>");
-    string thing2 = std::regex_replace (thing1,file_regex,"<RemovedFile>");
+    string thing2 = std::regex_replace(thing1, file_regex, "<RemovedFile>");
 
     regex line_regex("<Line>\\d+<\\/Line>");
-    return std::regex_replace (thing2,line_regex,"<RemovedLine>");
+    return std::regex_replace(thing2, line_regex, "<RemovedLine>");
 }
 
 class HttpErrorTest : public CppUnit::TestFixture {
@@ -167,7 +167,6 @@ public:
     }
 
 
-
     void test_BESInfo_1() {
         try {
             {
@@ -208,12 +207,12 @@ public:
                 bi.print(rss);
                 string result = remove_file_and_line(rss.str());
 
-                if(debug || result != baseline) {
+                if (debug || result != baseline) {
                     cerr << "\n";
                     cerr << prolog << "baseline: \n\n" << baseline << "\n";
                     cerr << prolog << "result: \n\n" << result;
                 }
-                CPPUNIT_ASSERT( result == baseline);
+                CPPUNIT_ASSERT(result == baseline);
 
             }
         }
@@ -224,7 +223,7 @@ public:
     }
 
     void test_BESInfo_2() {
-        DBG( cerr << "\n");
+        DBG(cerr << "\n");
 
         try {
             string baseline("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
@@ -275,12 +274,12 @@ public:
             bi.print(rss);
             string result = remove_file_and_line(rss.str());
 
-            if(debug || result != baseline) {
+            if (debug || result != baseline) {
                 cerr << "\n";
                 cerr << prolog << "baseline: \n\n" << baseline << "\n";
                 cerr << prolog << "result: \n\n" << result;
             }
-            CPPUNIT_ASSERT( result == baseline);
+            CPPUNIT_ASSERT(result == baseline);
         }
         catch (http::HttpError &he) {
             DBG(cerr << prolog << he.dump() << "\n");
@@ -294,12 +293,12 @@ public:
 /* TESTS END */
 /*##################################################################################################*/
 
-    CPPUNIT_TEST_SUITE(HttpErrorTest);
+CPPUNIT_TEST_SUITE(HttpErrorTest);
 
-    CPPUNIT_TEST_EXCEPTION(test_with_headers_and_body, http::HttpError);
-    CPPUNIT_TEST_EXCEPTION(test_no_headers_no_body, http::HttpError);
-    CPPUNIT_TEST(test_BESInfo_1);
-    CPPUNIT_TEST(test_BESInfo_2);
+        CPPUNIT_TEST_EXCEPTION(test_with_headers_and_body, http::HttpError);
+        CPPUNIT_TEST_EXCEPTION(test_no_headers_no_body, http::HttpError);
+        CPPUNIT_TEST(test_BESInfo_1);
+        CPPUNIT_TEST(test_BESInfo_2);
 
     CPPUNIT_TEST_SUITE_END();
 };

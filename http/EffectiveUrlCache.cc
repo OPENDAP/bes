@@ -44,8 +44,8 @@
 using namespace std;
 
 constexpr auto MODULE = "euc";
-constexpr auto  MODULE_TIMER = "euc:timer";
-constexpr auto  MODULE_DUMPER = "euc:dump";
+constexpr auto MODULE_TIMER = "euc:timer";
+constexpr auto MODULE_DUMPER = "euc:dump";
 
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
@@ -72,7 +72,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &url_k
  * @param source_url
  * @returns The effective URL
 */
-shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> source_url) {
+shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> source_url) {
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url->str() << endl);
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
@@ -106,8 +106,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
         BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url->str()
                                 << "' does NOT match the skip_regex pattern [" << d_skip_regex->pattern() << "]"
                                 << endl);
-    }
-    else {
+    } else {
         BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET " << endl);
     }
 
@@ -127,7 +126,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
                 // This code throws an HttpError exception if there is a problem.
                 effective_url = curl::get_redirect_url(source_url);
             }
-            catch(http::HttpError &http_error){
+            catch (http::HttpError &http_error) {
                 string err_msg = "Hyrax encountered a Service Chaining Error while "
                                  "attempting to retrieve a redirect URL.\n"
                                  "This is most likely problem with TEA, the AWS URL "
@@ -153,11 +152,10 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
         // is unchanged. Trusted state was established from source_url when effective_url was
         // created in curl::retrieve_effective_url()
         effective_url = make_shared<EffectiveUrl>(effective_url);
-    }
-    else {
+    } else {
         // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
         // Now we need to make a copy to return, inheriting trust from the requesting URL.
-        effective_url =  make_shared<EffectiveUrl>(effective_url, source_url->is_trusted());
+        effective_url = make_shared<EffectiveUrl>(effective_url, source_url->is_trusted());
     }
 
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
@@ -169,8 +167,7 @@ shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> so
 /**
  * @return Is the cache enabled (set in the bes.conf file)?
  */
-bool EffectiveUrlCache::is_enabled()
-{
+bool EffectiveUrlCache::is_enabled() {
     // The first time here, the value of d_enabled is -1. Once we check for it in TheBESKeys
     // The value will be 0 (false) or 1 (true) and TheBESKeys will not be checked again.
     if (d_enabled < 0) {
@@ -196,20 +193,18 @@ void EffectiveUrlCache::set_skip_regex() {
  * @brief dumps information about this object
  * @param strm C++ i/o stream to dump the information to
  */
-void EffectiveUrlCache::dump(ostream &strm) const
-{
+void EffectiveUrlCache::dump(ostream &strm) const {
     strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex?d_skip_regex->pattern():"WAS NOT SET") << endl;
+    strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex ? d_skip_regex->pattern() : "WAS NOT SET") << endl;
     if (!d_effective_urls.empty()) {
         strm << BESIndent::LMarg << "effective url list:" << endl;
         BESIndent::Indent();
-        for (auto const &i : d_effective_urls) {
+        for (auto const &i: d_effective_urls) {
             strm << BESIndent::LMarg << i.first << " --> " << i.second->str();
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "effective url list: EMPTY" << endl;
     }
     BESIndent::UnIndent();

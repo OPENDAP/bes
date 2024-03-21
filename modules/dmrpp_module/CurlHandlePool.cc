@@ -174,7 +174,7 @@ dmrpp_easy_handle::dmrpp_easy_handle() {
 
     curl::set_error_buffer(d_handle, d_errbuf);
 
-    res =  curl_easy_setopt(d_handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+    res = curl_easy_setopt(d_handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
     curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_SSLVERSION", d_errbuf, __FILE__, __LINE__);
 
 #if CURL_VERBOSE
@@ -236,18 +236,17 @@ void dmrpp_easy_handle::read_data() {
             // This code throws an exception if there is a problem. jhrg 11/16/23
             curl::super_easy_perform(d_handle);
         }
-        catch(http::HttpError &http_error){
+        catch (http::HttpError &http_error) {
             string err_msg = "Hyrax encountered a Service Chaining Error while attempting to acquire "
                              "granule data from a remote source.\n"
                              "This could be a problem with TEA (the AWS URL signing authority),\n"
                              "or with accessing data granule at its resident location (typically S3).\n"
-                             +  http_error.get_message();
+                             + http_error.get_message();
             http_error.set_message(err_msg);
             throw;
         }
 
-    }
-    else {
+    } else {
         CURLcode curl_code = curl_easy_perform(d_handle);
         if (CURLE_OK != curl_code) {
             string msg = prolog + "ERROR - Data transfer error: ";
@@ -312,7 +311,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
     string reason = "The requested resource does not match any of the AllowedHost rules.";
     if (!http::AllowedHosts::theHosts()->is_allowed(chunk->get_data_url(), reason)) {
         stringstream ss;
-        ss << "ERROR! The chunk url "<< chunk->get_data_url()->str() << " was rejected because: " << reason;
+        ss << "ERROR! The chunk url " << chunk->get_data_url()->str() << " was rejected because: " << reason;
         throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
     }
 

@@ -61,7 +61,7 @@ std::string NgapApi::get_cmr_search_endpoint_url() {
     if (cmr_search_endpoint_url.empty()) {
         string cmr_hostname = TheBESKeys::TheKeys()->read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
         string cmr_search_endpoint_path = TheBESKeys::TheKeys()->read_string_key(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY,
-                                                                            DEFAULT_CMR_SEARCH_ENDPOINT_PATH);
+                                                                                 DEFAULT_CMR_SEARCH_ENDPOINT_PATH);
         cmr_search_endpoint_url = BESUtil::assemblePath(cmr_hostname, cmr_search_endpoint_path);
     }
 
@@ -159,8 +159,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
         if (use_collection_concept_id) {
             // Add collection_concept_id
             cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
-        }
-        else {
+        } else {
             // Add entry_title
             cmr_url += string(CMR_ENTRY_TITLE).append("=").append(esc_url_content).append("&");
 
@@ -302,9 +301,8 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
     rapidjson::Value &items = cmr_granule_response["items"];
     if (!items.IsArray()) {
         throw BESInternalError(string("ERROR! The CMR response did not contain the data URL information: ")
-                                        + restified_path, __FILE__, __LINE__);
-    }
-    else {
+                               + restified_path, __FILE__, __LINE__);
+    } else {
         // Search the items array for the first item that contains a RelatedUrls array
         if (BESISDEBUG(MODULE)) {
             stringstream ss;
@@ -415,9 +413,9 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
     try {
         curl::http_get(cmr_query_url, cmr_json_string);
     }
-    catch(http::HttpError &http_error){
+    catch (http::HttpError &http_error) {
         string err_msg = "Hyrax encountered a Service Chaining Error while "
-                         "attempting to retrieve a CMR record.\n"+http_error.get_message();
+                         "attempting to retrieve a CMR record.\n" + http_error.get_message();
         http_error.set_message(err_msg);
         throw;
     }
@@ -455,8 +453,7 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
     if (!cf_expires.empty()) { // CloudFront expires header?
         expires = stoll(cf_expires);
         BESDEBUG(MODULE, prolog << "Using " << CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
-    }
-    else if (!aws_expires.empty()) {
+    } else if (!aws_expires.empty()) {
         // AWS Expires header?
         //
         // By default we'll use the time we made the URL object, ingest_time

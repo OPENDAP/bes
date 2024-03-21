@@ -181,6 +181,7 @@ static string getCurlAuthTypeName(unsigned long auth_type) {
  * be instead of the default open FILE *)
  */
 #define CURL_WRITE_TO_FILE_TIMEOUT_MSG  "The function curl::writeToOpenFileDescriptor() was unable to complete the download process because it ran out of time."
+
 static size_t writeToOpenFileDescriptor(const char *data, size_t /* size */, size_t nmemb, const void *userdata) {
 
     const auto fd = static_cast<const int *>(userdata);
@@ -190,7 +191,7 @@ static size_t writeToOpenFileDescriptor(const char *data, size_t /* size */, siz
     BESDEBUG(MODULE, prolog << " Bytes written: " << bytes_written << endl);
 
     // Verify the request hasn't exceeded bes_timeout, and throw if it has...
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(CURL_WRITE_TO_FILE_TIMEOUT_MSG,  __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(CURL_WRITE_TO_FILE_TIMEOUT_MSG, __FILE__, __LINE__);
 
     return bytes_written;
 }
@@ -350,7 +351,7 @@ static bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url)
 
         if (using_proxy) {
             CURLcode res;
-            vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+            vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
 
             BESDEBUG(MODULE, prolog << "Setting up a proxy server." << endl);
             BESDEBUG(MODULE, prolog << "Proxy host: " << proxyHost << endl);
@@ -387,8 +388,7 @@ static bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url)
                                                  __LINE__);
                     BESDEBUG(MODULE, prolog << "CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
                 }
-            }
-            else if (!proxyUserPW.empty()) {
+            } else if (!proxyUserPW.empty()) {
                 res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
                 eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERPWD", error_buffer.data(), __FILE__,
                                              __LINE__);
@@ -404,7 +404,7 @@ static bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url)
 // This is used in only one place.
 static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_request_headers,
                   vector <string> *http_response_hdrs) {
-    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURLcode res;
 
     if (!ceh)
@@ -629,8 +629,7 @@ string filter_aws_url(const string &eff_url) {
     // Check to make sure that the X-Amz prefix is not in the first part of the query string
     if (filtered_url.find("X-Amz-") == string::npos) {
         return filtered_url;
-    }
-    else {
+    } else {
         pos = filtered_url.find('?');
         return filtered_url.substr(0, pos);
     }
@@ -713,8 +712,7 @@ static bool eval_curl_easy_perform_code(
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
-    }
-    else if (curl_code == CURLE_SSL_CACERT_BADFILE) {
+    } else if (curl_code == CURLE_SSL_CACERT_BADFILE) {
         stringstream msg;
         msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. Message: ";
         msg << curl::error_message(curl_code, error_buffer) << ". ";
@@ -723,8 +721,7 @@ static bool eval_curl_easy_perform_code(
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
-    }
-    else if (curl_code == CURLE_GOT_NOTHING) {
+    } else if (curl_code == CURLE_GOT_NOTHING) {
         // First we check to see if the response was empty. This is a cURL error, not an HTTP error
         // so we have to handle it like this. And we do that because this is one of the failure modes
         // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
@@ -736,8 +733,7 @@ static bool eval_curl_easy_perform_code(
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
         return false;
-    }
-    else if (curl_code != CURLE_OK) {
+    } else if (curl_code != CURLE_OK) {
         stringstream msg;
         msg << "ERROR - Problem with data transfer. Message: " << curl::error_message(curl_code, error_buffer);
         msg << " CURLINFO_EFFECTIVE_URL: " << filter_aws_url(eff_req_url);
@@ -760,7 +756,8 @@ static bool eval_curl_easy_perform_code(
  * @param requested_url
  * @param last_accessed_url
  */
-static void process_http_code_helper(const long  http_code, const string &requested_url, const string &last_accessed_url) {
+static void
+process_http_code_helper(const long http_code, const string &requested_url, const string &last_accessed_url) {
     stringstream msg;
     if (http_code >= 400) {
         msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
@@ -795,22 +792,22 @@ static void process_http_code_helper(const long  http_code, const string &reques
         case 502: // Bad Gateway
         case 503: // Service Unavailable
         case 504: // Gateway Timeout
-            {
-                // These problems might actually be retryable, so we check and then act accordingly.
-                if (!is_retryable(last_accessed_url)) {
-                    msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
-                    ERROR_LOG(msg.str() << endl);
-                    throw http::HttpError(msg.str(),
-                                          CURLE_OK,
-                                          http_code,
-                                          requested_url,
-                                          last_accessed_url,
-                                          __FILE__, __LINE__);
-                } else {
-                    msg << " The HTTP response code of this last accessed URL indicate that it should be retried.";
-                    BESDEBUG(MODULE, prolog << msg.str() << endl);
-                }
+        {
+            // These problems might actually be retryable, so we check and then act accordingly.
+            if (!is_retryable(last_accessed_url)) {
+                msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
+                ERROR_LOG(msg.str() << endl);
+                throw http::HttpError(msg.str(),
+                                      CURLE_OK,
+                                      http_code,
+                                      requested_url,
+                                      last_accessed_url,
+                                      __FILE__, __LINE__);
+            } else {
+                msg << " The HTTP response code of this last accessed URL indicate that it should be retried.";
+                BESDEBUG(MODULE, prolog << msg.str() << endl);
             }
+        }
             break;
 
         default:
@@ -826,7 +823,7 @@ static void process_http_code_helper(const long  http_code, const string &reques
  * @param ceh
  * @return
  */
-long get_http_code(CURL *ceh){
+long get_http_code(CURL *ceh) {
     long http_code = 0;
     CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_RESPONSE_CODE, &http_code);
     if (curl_code != CURLE_OK) {
@@ -835,7 +832,6 @@ long get_http_code(CURL *ceh){
     BESDEBUG(MODULE, prolog << "http_code: " << http_code << "\n");
     return http_code;
 }
-
 
 
 /**
@@ -875,7 +871,7 @@ long get_http_code(CURL *ceh){
  * @return true if at all worked out, false if it didn't and a retry is reasonable.
  * @throws BESInternalError When something really bad happens.
 */
-static bool eval_http_get_response(CURL *ceh, const string &requested_url, long  &http_code) {
+static bool eval_http_get_response(CURL *ceh, const string &requested_url, long &http_code) {
     BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
 
     http_code = get_http_code(ceh);
@@ -954,7 +950,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     long http_code{0};
     unsigned int attempts{0};
 
-    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     set_error_buffer(c_handle, error_buffer.data());
 
     string target_url = get_effective_url(c_handle, ""); // This is a trick to get the URL from the cURL handle.
@@ -970,11 +966,11 @@ static void super_easy_perform(CURL *c_handle, int fd) {
 
         CURLcode curl_code = curl_easy_perform(c_handle);
         curl_success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
-        BESDEBUG(MODULE, prolog << "curl_success: " << (curl_success?"true":"false") << endl);
+        BESDEBUG(MODULE, prolog << "curl_success: " << (curl_success ? "true" : "false") << endl);
         if (curl_success) {
             // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
             http_success = eval_http_get_response(c_handle, target_url, http_code);
-            BESDEBUG(MODULE, prolog << "http_success: " << (http_success?"true":"false") << endl);
+            BESDEBUG(MODULE, prolog << "http_success: " << (http_success ? "true" : "false") << endl);
         }
         // If the curl_easy_perform failed, or if the http request failed, then
         // we keep trying until we have exceeded the retry_limit at which point we throw
@@ -984,7 +980,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
             try {
                 effective_url = filter_aws_url(get_effective_url(c_handle, target_url));
             }
-            catch ( BESInternalError &bie){
+            catch (BESInternalError &bie) {
                 effective_url = "Unable_To_Determine_CURLINFO_EFFECTIVE_URL: " + bie.get_message();
             }
             if (attempts == retry_limit) {
@@ -1000,12 +996,11 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                                 target_url,
                                 effective_url,
                                 __FILE__, __LINE__);
-            }
-            else {
+            } else {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
                                  << filter_aws_url(target_url) << " attempt: " << attempts << "). "
-                                  << "CURLINFO_EFFECTIVE_URL: " << effective_url << " "
-                                  << "Returned HTTP_STATUS: " << http_code << "\n");
+                                 << "CURLINFO_EFFECTIVE_URL: " << effective_url << " "
+                                 << "Returned HTTP_STATUS: " << http_code << "\n");
                 usleep(retry_time);
                 retry_time *= 2;
 
@@ -1049,7 +1044,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
 void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
                                  vector <string> *http_response_headers) {
 
-    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURLcode res;
     CURL *ceh = nullptr;
     curl_slist *req_headers = nullptr;
@@ -1134,7 +1129,7 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
     size_t nbytes = size * nmemb;
     size_t current_size = str->size();
     str->resize(current_size + nbytes);
-    memcpy((void *)(str->data() + current_size), buffer, nbytes);
+    memcpy((void *) (str->data() + current_size), buffer, nbytes);
     return nbytes;
 }
 
@@ -1150,11 +1145,10 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * appended to this string. In most cases this should be an empty string.
  * @exception Throws when libcurl encounters a problem.
  */
-void http_get(const string &target_url, string &buf)
-{
+void http_get(const string &target_url, string &buf) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
-    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
     curl_slist *request_headers = nullptr;
@@ -1464,9 +1458,9 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
  * @return A cURL easy handle configured as described above,
  */
 static CURL *init_no_follow_redirects_handle(const string &target_url, const curl_slist *req_headers,
-                                                 vector <string> &resp_hdrs, string &response_body) {
+                                             vector <string> &resp_hdrs, string &response_body) {
 
-    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURL *ceh = curl::init(target_url, req_headers, &resp_hdrs);
 
     set_error_buffer(ceh, error_buffer.data());
@@ -1502,15 +1496,15 @@ static CURL *init_no_follow_redirects_handle(const string &target_url, const cur
  * @param msg
  */
 void write_response_details(const long http_code,
-                          const vector<string> &response_headers,
-                          const string &response_body,
-                          stringstream &msg){
+                            const vector <string> &response_headers,
+                            const string &response_body,
+                            stringstream &msg) {
     msg << "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
     msg << "HTTP Response Details\n";
     msg << "The remote service returned an HTTP code of: " << http_code << "\n";
     msg << "Response Headers -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
     for (const auto &hdr: response_headers) {
-        msg << "  "<<  hdr << "\n";
+        msg << "  " << hdr << "\n";
     }
     msg << "# BEGIN Response Body -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
     msg << response_body << "\n";
@@ -1529,12 +1523,12 @@ void write_response_details(const long http_code,
  * @return
  */
 bool process_get_redirect_http_code(const long http_code,
-                                      const vector<string> &response_headers,
-                                      const string &response_body,
-                                      const string &redirect_url_str,
-                                      const string &origin_url_str,
-                                      const unsigned int attempt,
-                                      const unsigned int max_attempts){
+                                    const vector <string> &response_headers,
+                                    const string &response_body,
+                                    const string &redirect_url_str,
+                                    const string &origin_url_str,
+                                    const unsigned int attempt,
+                                    const unsigned int max_attempts) {
     bool success = false;
     switch (http_code) {
         case 301: // Moved Permanently
@@ -1549,17 +1543,16 @@ bool process_get_redirect_http_code(const long http_code,
                 if (attempt >= max_attempts) {
                     stringstream msg;
                     msg << prolog << "ERROR - I tried " << attempt << " times to access the url:\n";
-                    msg << "    " << origin_url_str << "\n" ;
+                    msg << "    " << origin_url_str << "\n";
                     msg << "It seems that the provided access credentials are either missing, invalid, or expired.\n";
                     msg << "Here are the details from the most recent attempt:\n\n";
                     write_response_details(http_code, response_headers, response_body, msg);
                     throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
                 }
                 //  EDL is not the redirect we were looking for...
-                success =  false;
-            }
-            else {
-                success  = true;
+                success = false;
+            } else {
+                success = true;
             }
             break;
         }
@@ -1598,16 +1591,16 @@ bool process_get_redirect_http_code(const long http_code,
  * @param redirect_url A returned value parameter to receive the redirect url, if located.
  * @return true if the redirect url was found, false otherwise.
  */
-bool gru_mk_attempt(const shared_ptr<url> &origin_url,
-                              const unsigned int attempt,
-                              const unsigned int max_attempts,
-                              shared_ptr<EffectiveUrl> &redirect_url){
+bool gru_mk_attempt(const shared_ptr <url> &origin_url,
+                    const unsigned int attempt,
+                    const unsigned int max_attempts,
+                    shared_ptr <EffectiveUrl> &redirect_url) {
 
     BESDEBUG(MODULE, prolog << " BEGIN This is attempt #" << attempt << " for " << origin_url->str() << "\n");
     bool http_success = false;
     bool curl_success = false;
     CURL *ceh = nullptr;
-    vector<char> error_buffer(CURL_ERROR_SIZE, (char)0);
+    vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     curl_slist *req_headers = nullptr;
 
     vector<string> response_headers;
@@ -1654,20 +1647,19 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
                 redirect_url_str = url;
             }
             BESDEBUG(MODULE, prolog << "redirect_url_str: " << redirect_url_str << "\n");
-            http_success = process_get_redirect_http_code( http_code,
-                                                        response_headers,
-                                                        response_body,
-                                                        redirect_url_str,
-                                                        origin_url->str(),
-                                                        attempt,
-                                                        max_attempts);
-            if(http_success){
+            http_success = process_get_redirect_http_code(http_code,
+                                                          response_headers,
+                                                          response_body,
+                                                          redirect_url_str,
+                                                          origin_url->str(),
+                                                          attempt,
+                                                          max_attempts);
+            if (http_success) {
                 redirect_url = make_shared<http::EffectiveUrl>(redirect_url_str,
                                                                response_headers,
                                                                origin_url->is_trusted());
             }
-        }
-        else if (attempt >= max_attempts) {
+        } else if (attempt >= max_attempts) {
             // Everything is bad now.
             stringstream msg;
             msg << prolog << "ERROR -  I tried " << attempt << " times to access:\n";
@@ -1700,8 +1692,8 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
         }
         throw;
     }
-    BESDEBUG(MODULE, prolog << "curl_success: " << (curl_success?"true":"false") << "\n" );
-    BESDEBUG(MODULE, prolog << "http_success: " << (http_success?"true":"false") << "\n" );
+    BESDEBUG(MODULE, prolog << "curl_success: " << (curl_success ? "true" : "false") << "\n");
+    BESDEBUG(MODULE, prolog << "http_success: " << (http_success ? "true" : "false") << "\n");
     BESDEBUG(MODULE, prolog << " END success: " << ((curl_success && http_success) ? "true" : "false") <<
                             " on attempt #" << attempt << " for " << origin_url->str() << "\n");
 
@@ -1717,8 +1709,7 @@ bool gru_mk_attempt(const shared_ptr<url> &origin_url,
  * @param redirect_url Returned value parameter for the redirect url.
  * @return The redirect URL string.
  */
-std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http::url> &origin_url)
-{
+std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1735,14 +1726,14 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http
     unsigned int attempt = 0;
     bool success = false;
 
-    while ( !success && ( attempt < retry_limit ) ) {
+    while (!success && (attempt < retry_limit)) {
         attempt++;
-        success = gru_mk_attempt(origin_url,attempt, retry_limit, redirect_url);
+        success = gru_mk_attempt(origin_url, attempt, retry_limit, redirect_url);
     }
     // This is a failsafe test - the gru_mk_attempt)_ should detect the errors and throw an exception
     // if the attempt count exceeds the retry_limit, but if for some reason there's flaw in that
     // logic I add this check as well... ndp-12/01/23
-    if(attempt >= retry_limit){
+    if (attempt >= retry_limit) {
         stringstream msg;
         msg << prolog << "ERROR: I tried " << attempt << " times to determine the redirect URL for the origin_url:\n";
         msg << "    " << origin_url->str() << "\n";
@@ -1754,7 +1745,6 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url( const std::shared_ptr<http
     BESDEBUG(MODULE, prolog << "END redirect_url: " << redirect_url->str() << "\n");
     return redirect_url;
 }
-
 
 
 } /* namespace curl */
