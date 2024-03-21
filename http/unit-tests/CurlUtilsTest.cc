@@ -67,7 +67,6 @@ public:
 
     // Called before each test
     void setUp() override {
-        // debug = true;
         DBG( cerr << "\n");
         DBG( cerr << prolog << "#-----------------------------------------------------------------\n");
         DBG( cerr << prolog << "BEGIN\n");
@@ -76,9 +75,7 @@ public:
         DBG2( show_file(bes_conf));
         TheBESKeys::ConfigFile = bes_conf;
 
-        //BESDebug::SetUp("cerr,bes,http,curl,curl:timing");
-
-        DBG( cerr << prolog << "END\n");
+        DBG( cerr << "setUp() - END\n");
     }
 
     // Called after each test
@@ -356,11 +353,11 @@ public:
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", hdr_itr->next != nullptr);
 
-            curl_slist_free_all(hdr_itr);
+            curl_slist_free_all(headers);
 
         }
         catch (...) {
-            curl_slist_free_all(hdr_itr);
+            curl_slist_free_all(headers);
             throw;
         }
         DBG( cerr << prolog << "END\n");
@@ -380,10 +377,10 @@ public:
             hdr_itr = curl::sign_s3_url(target_url, &ac, headers);
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", hdr_itr->next != nullptr);
-            curl_slist_free_all(hdr_itr);
+            curl_slist_free_all(headers);
         }
         catch (...) {
-            curl_slist_free_all(hdr_itr);
+            curl_slist_free_all(headers);
             throw;
         }
         DBG( cerr << prolog << "END\n");
