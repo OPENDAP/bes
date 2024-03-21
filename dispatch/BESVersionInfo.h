@@ -69,12 +69,12 @@ public:
 
     void add_tag(const std::string &tag_name,
                          const std::string &tag_data,
-                         std::map<std::string, std::string, std::less<>> *attrs = 0) override
+                         std::map<std::string, std::string, std::less<>> *attrs = nullptr) override
     {
         _info->add_tag(tag_name, tag_data, attrs);
     }
     void begin_tag(const std::string &tag_name,
-                           std::map<std::string, std::string, std::less<>> *attrs = 0) override
+                           std::map<std::string, std::string, std::less<>> *attrs = nullptr) override
     {
         _info->begin_tag(tag_name, attrs);
     }
