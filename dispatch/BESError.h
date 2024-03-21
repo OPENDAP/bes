@@ -63,12 +63,12 @@ class BESInfo;
 /**
  * @brief Base exception class for the BES with basic string message
  */
-class BESError: public std::exception,  public BESObj {
+class BESError : public std::exception, public BESObj {
 private:
-    std::string _msg {"UNDEFINED"};
-    unsigned int _type {0};
+    std::string _msg{"UNDEFINED"};
+    unsigned int _type{0};
     std::string _file;
-    unsigned int _line {0};
+    unsigned int _line{0};
 
 
 public:
@@ -86,15 +86,14 @@ public:
      * object was created
      */
     BESError(std::string msg, unsigned int type, std::string file, unsigned int line) :
-            _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line)
-    { }
-    
+            _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line) {}
+
     /**
      * @note Define this copy constructor as noexcept. See the web for why (e.g.,
      * https://stackoverflow.com/questions/28627348/noexcept-and-copy-move-constructors)
      */
     BESError(const BESError &src) noexcept
-        : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) { }
+            : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) {}
 
     ~BESError() override = default;
 
@@ -107,8 +106,7 @@ public:
      *
      * @param msg message string
      */
-    void set_message(const std::string &msg)
-    {
+    void set_message(const std::string &msg) {
         _msg = msg;
     }
 
@@ -117,17 +115,22 @@ public:
      * @param info
      */
     virtual void add_my_error_details_to(BESInfo &info) const {
-        // Some errors are covered by the basic details and the message.
-        // Others, like HttpError require more information to be carried
-        // in the error so the override this method.
+        // Most BESError types have smenatics simple enough that
+        // adding their pertinent information to the BESInfo obect
+        // is handled by interrogating the BESError base class methods.
+        // This includes the basic details: FILE, LINE, and message.
+        // Others error types,  like HttpError, are more complex in both state and
+        // API. In order for these types of error to be ingested into a BESInfo
+        // object to be serialized to the BESClient this method is called.
+        // Thus, in many cases the child of BESError does not override this
+        // method, but more complex type like HttpError take advantage of this.
     }
 
     /** @brief get the error message for this exception
      *
      * @return error message
      */
-    std::string get_message() const
-    {
+    std::string get_message() const {
         return _msg;
     }
 
@@ -135,8 +138,7 @@ public:
      *
      * @return file name
      */
-    std::string get_file() const
-    {
+    std::string get_file() const {
         return _file;
     }
 
@@ -144,8 +146,7 @@ public:
      *
      * @return line number
      */
-    unsigned int get_line() const
-    {
+    unsigned int get_line() const {
         return _line;
     }
 
@@ -161,8 +162,7 @@ public:
      * be one of BES_INTERNAL_ERROR, BES_INTERNAL_FATAL_ERROR,
      * BES_SYNTAX_USER_ERROR, BES_FORBIDDEN_ERROR, BES_NOT_FOUND_ERROR
      */
-    void set_bes_error_type(unsigned int type)
-    {
+    void set_bes_error_type(unsigned int type) {
         _type = type;
     }
 
@@ -172,8 +172,7 @@ public:
      * the need to terminate or do something specific base on the error
      * @return context string
      */
-    unsigned int get_bes_error_type() const
-    {
+    unsigned int get_bes_error_type() const {
         return _type;
     }
 
@@ -183,7 +182,7 @@ public:
      * @brief Return a brief message about the exception
      * @return A char* that points to the message and is valid for the lifetime of this instance.
      */
-    const char* what() const noexcept override {
+    const char *what() const noexcept override {
         return _msg.c_str();
     }
 
