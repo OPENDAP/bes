@@ -133,14 +133,14 @@ CPPUNIT_TEST_SUITE( infoT );
         CPPUNIT_ASSERT( BESInfoList::TheList()->add_info_builder( BES_XML_INFO,
                 BESXMLInfo::BuildXMLInfo ) );
 
-        map<string, string> attrs;
+        map<string, string, std::less<>> attrs;
         attrs["attr_name"] = "\"attr_val\"";
 
         cout << "*****************************************" << endl;
         cout << "Set Info type to txt" << endl;
         TheBESKeys::TheKeys()->set_key("BES.Info.Type", "txt");
         BESInfo *info = BESInfoList::TheList()->build_info();
-        BESTextInfo *t_info = dynamic_cast<BESTextInfo *>(info);
+        auto t_info = dynamic_cast<BESTextInfo *>(info);
         CPPUNIT_ASSERT( t_info );
 
         BESDataHandlerInterface dhi;
@@ -158,7 +158,7 @@ CPPUNIT_TEST_SUITE( infoT );
         cout << "Set Info type to html" << endl;
         TheBESKeys::TheKeys()->set_key("BES.Info.Type", "html");
         info = BESInfoList::TheList()->build_info();
-        BESHTMLInfo *h_info = dynamic_cast<BESHTMLInfo *>(info);
+        auto h_info = dynamic_cast<BESHTMLInfo *>(info);
         CPPUNIT_ASSERT( h_info );
 
         h_info->begin_response("testHTMLResponse", dhi);

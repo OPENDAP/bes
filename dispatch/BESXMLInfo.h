@@ -67,8 +67,8 @@ public:
     void begin_response(const std::string &response_name, std::map<std::string, std::string, std::less<>> *attrs, BESDataHandlerInterface &dhi) override;
     void end_response() override;
 
-    void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string, std::less<>> *attrs) override;
-    void begin_tag(const std::string &tag_name, std::map<std::string, std::string, std::less<>> *attrs) override;
+    void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string, std::less<>> *attrs=nullptr) override;
+    void begin_tag(const std::string &tag_name, std::map<std::string, std::string, std::less<>> *attrs=nullptr) override;
     void end_tag(const std::string &tag_name) override;
 
     void add_data(const std::string &s) override;
