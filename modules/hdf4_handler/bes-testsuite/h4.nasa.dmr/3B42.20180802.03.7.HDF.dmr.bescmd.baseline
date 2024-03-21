@@ -2,27 +2,6 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3B42.20180802.03.7.HDF">
     <Dimension name="nlon" size="1440"/>
     <Dimension name="nlat" size="400"/>
-    <Dimension name="fakeDim2" size="0"/>
-    <Dimension name="fakeDim3" size="0"/>
-    <Dimension name="fakeDim4" size="0"/>
-    <Byte name="InputFileNames">
-        <Dim name="/fakeDim2"/>
-        <Attribute name="dmr_sds_ref" type="Int32">
-            <Value>16</Value>
-        </Attribute>
-    </Byte>
-    <Byte name="InputAlgorithmVersions">
-        <Dim name="/fakeDim3"/>
-        <Attribute name="dmr_sds_ref" type="Int32">
-            <Value>17</Value>
-        </Attribute>
-    </Byte>
-    <Byte name="InputGenerationDateTimes">
-        <Dim name="/fakeDim4"/>
-        <Attribute name="dmr_sds_ref" type="Int32">
-            <Value>18</Value>
-        </Attribute>
-    </Byte>
     <Attribute name="FileHeader" type="String">
         <Value>AlgorithmID=3B42;
 AlgorithmVersion=3B42_7.0;
