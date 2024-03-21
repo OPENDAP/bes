@@ -69,7 +69,7 @@ BESInfo::BESInfo() :
  * ownership or not
  */
 BESInfo::BESInfo(const string &key, ostream *strm, bool strm_owned) :
-        _strm(0), _strm_owned(false), _buffered(true), _response_started(false), _response_name("") {
+        _strm(nullptr), _strm_owned(false), _buffered(true), _response_started(false) {
     bool found = false;
     vector<string> vals;
     string b;
