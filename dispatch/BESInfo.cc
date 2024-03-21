@@ -105,7 +105,7 @@ BESInfo::~BESInfo() {
  * @param dhi information about the request and response
  */
 void
-BESInfo::begin_response(const string &response_name, map<string, string> */*attrs*/, BESDataHandlerInterface &/*dhi*/) {
+BESInfo::begin_response(const string &response_name, map<string, string, std::less<>> */*attrs*/, BESDataHandlerInterface &/*dhi*/) {
     _response_started = true;
     _response_name = response_name;
 }

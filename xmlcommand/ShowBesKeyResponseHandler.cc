@@ -87,7 +87,7 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
     vector<string> key_values;
     getBesKeyValue(requested_bes_key, key_values);
 
-    map<string, string> attrs;
+    map<string, string, std::less<>> attrs;
 
     attrs[KEY] = requested_bes_key;
 

@@ -95,7 +95,7 @@ void BESXMLInfo::cleanup()
  */
 void BESXMLInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi)
 {
-    map<string, string> empty_attrs;
+    map<string, string, std::less<>> empty_attrs;
     begin_response(response_name,  &empty_attrs, dhi);
 
 }
@@ -107,7 +107,7 @@ void BESXMLInfo::begin_response(const string &response_name, BESDataHandlerInter
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void BESXMLInfo::begin_response(const string &response_name, map<string, string> *attrs, BESDataHandlerInterface &dhi)
+void BESXMLInfo::begin_response(const string &response_name, map<string, string, std::less<>> *attrs, BESDataHandlerInterface &dhi)
 {
     BESInfo::begin_response(response_name, attrs, dhi);
 

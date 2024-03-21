@@ -61,7 +61,7 @@ public:
     virtual ~BESXMLInfo();
 
     virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
-    virtual void begin_response(const std::string &response_name, std::map<std::string, std::string> *attrs, BESDataHandlerInterface &dhi);
+    virtual void begin_response(const std::string &response_name, std::map<std::string, std::string, std::less<>> *attrs, BESDataHandlerInterface &dhi);
     virtual void end_response();
 
     virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0);
