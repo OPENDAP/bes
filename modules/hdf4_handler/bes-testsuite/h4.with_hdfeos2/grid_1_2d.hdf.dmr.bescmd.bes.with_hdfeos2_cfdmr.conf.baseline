@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.hdf">
+    <Dimension name="Latitude" size="4"/>
+    <Dimension name="Longitude" size="8"/>
+    <Float32 name="temperature">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>temperature</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Latitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Longitude">
+        <Dim name="/Longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_V2.18</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

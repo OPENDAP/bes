@@ -497,6 +497,7 @@ AT_BESCMD_RESPONSE_TEST([vdata_test.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([vs_attr.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([testvs2.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([testvs3.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dmr.bescmd])
 
 #Various chunking/compression cases for the mapping from HDF4 to DMR 
 AT_BESCMD_RESPONSE_TEST([SDS_simple_chunk.hdf.dmr.bescmd])

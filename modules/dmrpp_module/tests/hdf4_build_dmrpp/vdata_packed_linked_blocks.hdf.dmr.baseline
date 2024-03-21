@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="vdata_packed_linked_blocks.hdf">
+    <Structure name="Mixed_Data_Vdata">
+        <Float32 name="Temp"/>
+        <Int16 name="Height"/>
+        <Dim size="4"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="BE">
+            <dmrpp:block offset="294" nBytes="12"/>
+            <dmrpp:block offset="495" nBytes="12"/>
+        </dmrpp:chunks>
+    </Structure>
+    <Float32 name="Solid_Particle2_Height">
+        <Dim size="2"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="BE">
+            <dmrpp:chunk offset="379" nBytes="8"/>
+        </dmrpp:chunks>
+    </Float32>
+</Dataset>

@@ -228,6 +228,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_unlimited_2
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/testvs2.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_test.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_linked_blocks.hdf.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_packed_linked_blocks.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_unlimited_2_constraint.hdf.dmrpp.bescmd>test.nc
 rm -rf test.nc
 rm -rf gr.nc4
