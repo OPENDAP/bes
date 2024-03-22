@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3B42.20180802.03.7.HDF">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="3B42.20180802.03.7.HDF">
     <Dimension name="nlon" size="1440"/>
     <Dimension name="nlat" size="400"/>
     <Attribute name="FileHeader" type="String">
@@ -53,6 +53,9 @@ Origin=SOUTHWEST;
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>4</Value>
             </Attribute>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="5" byteOrder="BE">
+                <dmrpp:chunk offset="601" nBytes="172527" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
         </Float32>
         <Float32 name="relativeError">
             <Dim name="/nlon"/>
@@ -63,6 +66,9 @@ Origin=SOUTHWEST;
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>6</Value>
             </Attribute>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="5" byteOrder="BE">
+                <dmrpp:chunk offset="173144" nBytes="194446" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
         </Float32>
         <Int16 name="satPrecipitationSource">
             <Dim name="/nlon"/>
@@ -70,6 +76,9 @@ Origin=SOUTHWEST;
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>8</Value>
             </Attribute>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="5" byteOrder="BE">
+                <dmrpp:chunk offset="367606" nBytes="17446" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
         </Int16>
         <Float32 name="HQprecipitation">
             <Dim name="/nlon"/>
@@ -80,6 +89,9 @@ Origin=SOUTHWEST;
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>10</Value>
             </Attribute>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="5" byteOrder="BE">
+                <dmrpp:chunk offset="385068" nBytes="114992" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
         </Float32>
         <Float32 name="IRprecipitation">
             <Dim name="/nlon"/>
@@ -90,6 +102,9 @@ Origin=SOUTHWEST;
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>12</Value>
             </Attribute>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="5" byteOrder="BE">
+                <dmrpp:chunk offset="500076" nBytes="145320" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
         </Float32>
         <Int8 name="satObservationTime">
             <Dim name="/nlon"/>
@@ -100,6 +115,9 @@ Origin=SOUTHWEST;
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>14</Value>
             </Attribute>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="5" byteOrder="BE">
+                <dmrpp:chunk offset="645412" nBytes="33775" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
         </Int8>
         <Attribute name="GridHeader" type="String">
             <Value>BinMethod=ARITHMETIC_MEAN;

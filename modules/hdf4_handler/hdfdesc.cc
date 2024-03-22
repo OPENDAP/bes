@@ -4354,6 +4354,8 @@ void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd) {
                 throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
             }
     
+            if (dim_size == 0 && dim_sizes[dimindex] == 0) 
+                continue;
             string dim_name_str (dim_name);
 
             // Make dimension names to follow the CF rule.
@@ -5180,6 +5182,19 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
         throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
     }                        
     
+    bool has_zero_dim_size = false;
+    for (int j = 0; j <sds_rank; j++) {
+        if(dim_sizes[j] == 0) {
+            has_zero_dim_size = true;
+            break;
+        }
+    }
+    
+    if (has_zero_dim_size) {
+        SDendaccess(sds_id);
+        return;
+    }
+
     string sds_name_str(sds_name.begin(),sds_name.end()-1);
 
     // Handle special characters in the sds_name.

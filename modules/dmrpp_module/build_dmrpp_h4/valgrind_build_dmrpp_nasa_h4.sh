@@ -1,4 +1,5 @@
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf -r ../tests/hdf4_build_dmrpp_nasa/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/3B42.20180802.03.7.HDF -r ../tests/hdf4_build_dmrpp_nasa/3B42.20180802.03.7.HDF.dmr
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/AMSR_E_L2_Land_V09_200206190615_A.hdf -r ../tests/hdf4_build_dmrpp_nasa/AMSR_E_L2_Land_V09_200206190615_A.hdf.dmr
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/AMSR_E_L3_SeaIce25km_V15_20020601.hdf -r ../tests/hdf4_build_dmrpp_nasa/AMSR_E_L3_SeaIce25km_V15_20020601.hdf.dmr
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf -r ../tests/hdf4_build_dmrpp_nasa/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf.dmr

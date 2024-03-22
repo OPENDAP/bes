@@ -1,5 +1,6 @@
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf_linked_blocks_constraint.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/3B42.20180802.03.7.HDF.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MCD19A1.A2024025.h10v06.061.2024027100206.hdf.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AMSR_E_L3_SeaIce25km_V15_20020601.hdf.dmrpp.bescmd >nasa_dap4_default_test.nc
