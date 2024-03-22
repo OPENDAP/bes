@@ -6,3 +6,4 @@ valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp/testvs2.hdf -r ../tests/h
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp/vdata_linked_blocks.hdf -r ../tests/hdf4_build_dmrpp/vdata_linked_blocks.hdf.dmr
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp/vdata_test.hdf -r ../tests/hdf4_build_dmrpp/vdata_test.hdf.dmr
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp/vg_hl_test.hdf -r ../tests/hdf4_build_dmrpp/vg_hl_test.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp/SDS_simple_unlimited_0.hdf -r ../tests/hdf4_build_dmrpp/SDS_simple_unlimited_0.hdf.dmr
