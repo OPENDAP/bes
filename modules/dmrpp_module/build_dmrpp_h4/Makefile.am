@@ -24,7 +24,8 @@ include $(top_srcdir)/coverage.mk
 
 # These tests will fail if the DmrApiTest also fails: tests jhrg 6/29/23
 
-noinst_PROGRAMS = build_dmrpp_h4
+#noinst_PROGRAMS = build_dmrpp_h4
+bin_PROGRAMS = build_dmrpp_h4
 
 build_dmrpp_h4_SOURCES = $(SRC) $(HDR)
 

@@ -79,6 +79,7 @@ const string HDF4_NAME="h4";
 
 bool check_beskeys(const string &);
 bool get_beskeys(const string &,string &);
+bool is_beskey_exist(const string &key); 
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
@@ -158,7 +159,8 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 	BESRequestHandler::add_method(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
 	BESRequestHandler::add_method(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 
-        _direct_dmr=check_beskeys("H4.EnableDirectDMR");
+        if (true == is_beskey_exist("H4.EnableDirectDMR"))
+            _direct_dmr=check_beskeys("H4.EnableDirectDMR");
         _usecf = check_beskeys("H4.EnableCF");
 
         // The following keys are only effective when usecf is true.
@@ -1992,6 +1994,14 @@ bool check_beskeys(const string & key) {
     }
     return false;
 
+}
+
+bool is_beskey_exist(const string &key) {
+
+    bool found = false;
+    string doset ="";
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    return found;
 }
 
 bool get_beskeys(const string & key,string &key_value) {
