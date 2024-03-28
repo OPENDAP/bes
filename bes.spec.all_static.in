@@ -209,6 +209,7 @@ exit 0
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 %{_bindir}/get_dmrpp
+%{_bindir}/get_dmrpp_h4
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
 #%{_bindir}/retriever
