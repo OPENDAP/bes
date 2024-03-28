@@ -56,5 +56,6 @@ FUNCTIONS.stareSidecarSuffix = _stare.nc
 # This is needed for the tests to pass. jhrg 6/30/21
 H5.EnableCF=true
 H4.EnableCF=true
+H4.EnableDirectDMR=false
 FONc.ClassicModel=true
 
