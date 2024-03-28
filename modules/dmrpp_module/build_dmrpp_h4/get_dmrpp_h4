@@ -194,7 +194,7 @@ with open(hdf4_file_bescmd, 'w') as f:
 hdf4_dmr_name=hdf4_name_cur_dir+".dmr"
 ret = subprocess.run(["besstandalone", "-c", bes_conf_name, "-i",hdf4_file_bescmd, "-f",hdf4_dmr_name])   
 if ret.returncode!=0:
-    print("Fail generate the HDF4 dmr file. ")
+    print("Fail to generate the HDF4 dmr file. ")
     print("The HDF4 file name is:  ",hdf4_full_path)
     print("Stop. ")
     sys.exit(1)
