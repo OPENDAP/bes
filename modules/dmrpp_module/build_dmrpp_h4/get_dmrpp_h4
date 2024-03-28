@@ -194,7 +194,7 @@ with open(hdf4_file_bescmd, 'w') as f:
 hdf4_dmr_name=hdf4_name_cur_dir+".dmr"
 ret = subprocess.run(["besstandalone", "-c", bes_conf_name, "-i",hdf4_file_bescmd, "-f",hdf4_dmr_name])   
 if ret.returncode!=0:
-    print("Fail to generate the HDF4 dmr file. ")
+    print("Besstandalone fails to generate the HDF4 dmr file. ")
     print("The HDF4 file name is:  ",hdf4_full_path)
     print("Stop. ")
     sys.exit(1)
@@ -205,7 +205,7 @@ if(args.data_url is not None):
 
 ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r",hdf4_dmr_name, "-u", hdf4_url],capture_output=True,text=True)   
 if ret.returncode!=0:
-    print("Fail to generate the HDF4 dmrpp file. ")
+    print("build_dmrpp_h4 fails to generate the HDF4 dmrpp file. ")
     print("The HDF4 file name is:  ",hdf4_full_path)
     print("Stop. ")
     sys.exit(1)
