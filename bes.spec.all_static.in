@@ -201,6 +201,7 @@ exit 0
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
 %{_bindir}/build_dmrpp
+%{_bindir}/build_dmrpp_h4
 %{_bindir}/check_dmrpp
 %{_bindir}/merge_dmrpp
 %{_bindir}/reduce_mdf
