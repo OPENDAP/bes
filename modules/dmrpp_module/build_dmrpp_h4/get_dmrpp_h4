@@ -146,9 +146,9 @@ def generate_bescmd_contents(bes_conf_name,hdf4_name):
      
 
 # Create by KY 2024-04-01
-# We use python 3.7.3.It must be >=python 3.7
-if sys.version_info <=(3, 7):
-    print("The tested version is python 3.7, your version is lower.")
+# We use python 3.6.8.It must be >=python 3.6
+if sys.version_info <=(3, 6):
+    print("The tested version is python 3.6, your version is lower.")
     sys.exit(1)
 
 parser = ap.ArgumentParser(description='Build a dmrpp file for an HDF4 file. ./get_dmrpp_h4 -i h4_file_path ')
@@ -238,7 +238,7 @@ hdf4_url="OPeNDAP_DMRpp_DATA_ACCESS_URL"
 if(args.data_url is not None):
     hdf4_url = args.data_url
 
-ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r",hdf4_dmr_name, "-u", hdf4_url],capture_output=True,text=True)   
+ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r",hdf4_dmr_name, "-u", hdf4_url],stdout=subprocess.PIPE,universal_newlines=True)   
 if ret.returncode!=0:
     print("build_dmrpp_h4 fails to generate the HDF4 dmrpp file. ")
     print("The HDF4 file name is:  ",hdf4_full_path)
