@@ -216,4 +216,3 @@ H4.EnableVgroupAttr=true
 ## the mapping of swath and grid field attributes since the beginning of CF option support.
 H4.EnableSwathGridAttr=true
 H4.DisableSwathDimMap=false
-#

@@ -49,9 +49,9 @@ HDF4.CacheDir=/tmp
 #EnableDirectDMR: generating the dmr by following the direct HDF4 to DAP4 mapping.
 # Note: Make the following key be true is for accessing HDF4 data for the dmrpp module.
 #       The support of accessing the data via the new dmr through the hdf4 handler is not added.
-#       By using this key, the CF option is automatically turned off regarless the key value. 
-#       By default, the key is set to true,uncomment the following line if you don't want to use this feature.
-#H4.EnableDirectDMR=false
+#       By using this key, the CF option for DAP4 access is automatically turned off regarless the EnableCF key value. 
+#       By default, the key is set to false,uncomment the following line if you want to use this feature.
+#H4.EnableDirectDMR=true
 
 # EnableCF: Handle HDF data to follow the CF conventions
 #          (true,yes|false,no, defaults to true)
