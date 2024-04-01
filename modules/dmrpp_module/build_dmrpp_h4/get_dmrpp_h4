@@ -68,10 +68,8 @@ def obtain_bes_conf_file(user_conf):
 def generate_bes_conf_file(user_conf,bes_default_conf):
     bes_conf_name = ''
     if (user_conf is not None):
-        print("coming user_conf");
         bes_conf_name=user_conf
     else:
-        print("coming bes_default_conf");
         bes_default_conf_name=get_obj_name(bes_default_conf)
         temp_bes_conf_path="/tmp/"+bes_default_conf_name
         if os.path.exists(temp_bes_conf_path):
@@ -81,7 +79,6 @@ def generate_bes_conf_file(user_conf,bes_default_conf):
         with open(temp_bes_conf_path,"a") as tempfile:
             tempfile.write("\n");
             tempfile.write("H4.EnableDirectDMR=true")
-        #### CHANGE to the correct value
         bes_conf_name=temp_bes_conf_path
         dest_obj_path=get_obj_path(temp_bes_conf_path)
         dest_module_path=dest_obj_path+"modules"
@@ -89,8 +86,6 @@ def generate_bes_conf_file(user_conf,bes_default_conf):
         src_module_path=src_obj_path+"modules"
         if (os.path.exists(dest_module_path)==False):
             shutil.copytree(src_module_path,dest_module_path)
-        print(dest_obj_path)
-        print(src_obj_path)
     return bes_conf_name
 
 # Check if the HDF4 file is present.
@@ -112,7 +107,6 @@ def generate_bescmd_contents(bes_conf_name,hdf4_name):
 # Obtain the HDF4 file path in the bescmd file that uses to generate the dmr file
 
     bescmd_str=''
-    print(bes_conf_name)
     bes_conf_fid = open(bes_conf_name,'r')
     bes_conf_text = bes_conf_fid.read()
     bes_conf_fid.close()
@@ -151,6 +145,7 @@ def generate_bescmd_contents(bes_conf_name,hdf4_name):
     return bescmd_str
      
 
+# Create by KY 2024-04-01
 # We use python 3.7.3.It must be >=python 3.7
 if sys.version_info <=(3, 7):
     print("The tested version is python 3.7, your version is lower.")
@@ -202,12 +197,11 @@ bes_default_conf_name = obtain_bes_conf_file(args.conf)
 if (bes_default_conf_name ==""):
     sys.exit(1)
 
-if (args.verbosity is True):
-    print("bes configuration file :", bes_default_conf_name)
-
 #Generate the temporary BES configuration file
 bes_conf_name = generate_bes_conf_file(args.conf,bes_default_conf_name)
 
+if (args.verbosity is True):
+    print("bes configuration file :", bes_conf_name)
     
 # Obtain the HDF4 full path
 hdf4_full_path = obtain_hdf4_full_path(hdf4_name)
@@ -225,7 +219,6 @@ if(bescmd_str==""):
 
 # Obtain the HDF4 file name that excludes the path.
 hdf4_name_cur_dir=get_obj_name(hdf4_full_path)
-
 
 # Generate the HDF4 dmr bescmd file.
 hdf4_file_bescmd = hdf4_name_cur_dir+".dmr.bescmd"
