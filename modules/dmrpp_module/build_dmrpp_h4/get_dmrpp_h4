@@ -6,13 +6,22 @@ import subprocess
 import sys
 import argparse as ap
 
-def get_obj_name(hdf4_full_path):
-    last_forward_pos = hdf4_full_path.rfind('/')
+def get_obj_name(full_path):
+    last_forward_pos = full_path.rfind('/')
     if (last_forward_pos == -1):
-        print("Cannot find the HDF4 file name in the current directory.")
+        print("Cannot find the file:",full_path,"in the current directory.")
         return ""
     else:
-        return hdf4_full_path[last_forward_pos+1:]
+        return full_path[last_forward_pos+1:]
+
+def get_obj_path(full_path):
+    last_forward_pos = full_path.rfind('/')
+    if (last_forward_pos == -1):
+        print("Cannot find the file:",full_path,"in the current directory.")
+        return ""
+    else:
+        return full_path[0:last_forward_pos+1]
+
 
 def is_program_present(p_name):
     #Check whether `p_name` is on PATH and marked as executable.
@@ -56,6 +65,34 @@ def obtain_bes_conf_file(user_conf):
 
     return bes_conf_name
 
+def generate_bes_conf_file(user_conf,bes_default_conf):
+    bes_conf_name = ''
+    if (user_conf is not None):
+        print("coming user_conf");
+        bes_conf_name=user_conf
+    else:
+        print("coming bes_default_conf");
+        bes_default_conf_name=get_obj_name(bes_default_conf)
+        temp_bes_conf_path="/tmp/"+bes_default_conf_name
+        if os.path.exists(temp_bes_conf_path):
+            os.remove(temp_bes_conf_path)
+        shutil.copyfile(bes_default_conf,temp_bes_conf_path)
+        os.chmod(temp_bes_conf_path,0o644)
+        with open(temp_bes_conf_path,"a") as tempfile:
+            tempfile.write("\n");
+            tempfile.write("H4.EnableDirectDMR=true")
+        #### CHANGE to the correct value
+        bes_conf_name=temp_bes_conf_path
+        dest_obj_path=get_obj_path(temp_bes_conf_path)
+        dest_module_path=dest_obj_path+"modules"
+        src_obj_path=get_obj_path(bes_default_conf)
+        src_module_path=src_obj_path+"modules"
+        if (os.path.exists(dest_module_path)==False):
+            shutil.copytree(src_module_path,dest_module_path)
+        print(dest_obj_path)
+        print(src_obj_path)
+    return bes_conf_name
+
 # Check if the HDF4 file is present.
 def obtain_hdf4_full_path(hdf4_name):
 
@@ -75,6 +112,7 @@ def generate_bescmd_contents(bes_conf_name,hdf4_name):
 # Obtain the HDF4 file path in the bescmd file that uses to generate the dmr file
 
     bescmd_str=''
+    print(bes_conf_name)
     bes_conf_fid = open(bes_conf_name,'r')
     bes_conf_text = bes_conf_fid.read()
     bes_conf_fid.close()
@@ -119,7 +157,7 @@ if sys.version_info <=(3, 7):
     sys.exit(1)
 
 parser = ap.ArgumentParser(description='Build a dmrpp file for an HDF4 file. ./get_dmrpp_h4 -i h4_file_path ')
-parser.add_argument('-i', "--h4_file_path", nargs=1,
+parser.add_argument("-i",  nargs=1,
                     help='The HDF4 file name should be provided and the file should be under the appropriate data directory. ', required=True)
 parser.add_argument("-c","--conf", 
                     help='Optional parameter: the bes configuration file including the path: /etc/bes.conf')
@@ -159,13 +197,17 @@ if(args.verbosity is True):
 if (check_required_programs()==False):  
     sys.exit(1)
 
-# Obtain the BES configuration file
-bes_conf_name = obtain_bes_conf_file(args.conf)
-if (bes_conf_name ==""):
+# Obtain the default BES configuration file
+bes_default_conf_name = obtain_bes_conf_file(args.conf)
+if (bes_default_conf_name ==""):
     sys.exit(1)
 
 if (args.verbosity is True):
-    print("bes configuration file :", bes_conf_name)
+    print("bes configuration file :", bes_default_conf_name)
+
+#Generate the temporary BES configuration file
+bes_conf_name = generate_bes_conf_file(args.conf,bes_default_conf_name)
+
     
 # Obtain the HDF4 full path
 hdf4_full_path = obtain_hdf4_full_path(hdf4_name)
