@@ -437,4 +437,4 @@ H4.EnableSwathGridAttr=true
 
 H4.DisableSwathDimMap=false
 #
-#H4.EnableDirectDMR=true
+H4.EnableDirectDMR=true

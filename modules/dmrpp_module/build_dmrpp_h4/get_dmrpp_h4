@@ -1,0 +1,254 @@
+#!/usr/bin/env python3
+import os
+import shutil
+import string
+import subprocess
+import sys
+import argparse as ap
+
+def get_obj_name(full_path):
+    last_forward_pos = full_path.rfind('/')
+    if (last_forward_pos == -1):
+        print("Cannot find the file:",full_path,"in the current directory.")
+        return ""
+    else:
+        return full_path[last_forward_pos+1:]
+
+def get_obj_path(full_path):
+    last_forward_pos = full_path.rfind('/')
+    if (last_forward_pos == -1):
+        print("Cannot find the file:",full_path,"in the current directory.")
+        return ""
+    else:
+        return full_path[0:last_forward_pos+1]
+
+
+def is_program_present(p_name):
+    #Check whether `p_name` is on PATH and marked as executable.
+    return shutil.which(p_name) is not None
+
+def check_required_programs():
+    # Sanity check if the necessary programs exist
+    # besstandalone and build_dmrpp_h4 must exist 
+    has_standalone_and_build_dmrpp_h4 =  \
+        is_program_present('besstandalone') and is_program_present('build_dmrpp_h4')
+
+    if(has_standalone_and_build_dmrpp_h4==False):
+        print("Either besstandalone or build_dmrpp_h4 is missing. ")
+        print("They are required to continue, stop!")
+
+    return has_standalone_and_build_dmrpp_h4
+
+def search_default_conf():
+    if(os.path.isfile("/etc/bes.conf")):
+        return "/etc/bes/bes.conf"
+    else:
+        besstandalone_path=shutil.which('besstandalone')
+        cut_string_len=len("bin/besstandalone")
+        besstandalone_parent_path=besstandalone_path[:-cut_string_len]
+        bes_conf_full_path=besstandalone_parent_path+"etc/bes/bes.conf"
+        return bes_conf_full_path
+
+#Obtain BES configuration file.
+def obtain_bes_conf_file(user_conf):
+    # Check if the bes configuration file exists.
+    bes_conf_name = ''
+    if (user_conf is not None):
+        bes_conf_name=user_conf
+    else:
+        bes_conf_name=search_default_conf()
+        if (bes_conf_name ==''):
+            print("BES configuration file is NOT provided")
+            
+    if (bes_conf_name !='' and os.path.isfile(bes_conf_name)!=True):
+        print("The BES configuration file", bes_conf_name,"doesn't exist.")
+
+    return bes_conf_name
+
+def generate_bes_conf_file(user_conf,bes_default_conf):
+    bes_conf_name = ''
+    if (user_conf is not None):
+        bes_conf_name=user_conf
+    else:
+        bes_default_conf_name=get_obj_name(bes_default_conf)
+        temp_bes_conf_path="/tmp/"+bes_default_conf_name
+        if os.path.exists(temp_bes_conf_path):
+            os.remove(temp_bes_conf_path)
+        shutil.copyfile(bes_default_conf,temp_bes_conf_path)
+        os.chmod(temp_bes_conf_path,0o644)
+        with open(temp_bes_conf_path,"a") as tempfile:
+            tempfile.write("\n");
+            tempfile.write("H4.EnableDirectDMR=true")
+        bes_conf_name=temp_bes_conf_path
+        dest_obj_path=get_obj_path(temp_bes_conf_path)
+        dest_module_path=dest_obj_path+"modules"
+        src_obj_path=get_obj_path(bes_default_conf)
+        src_module_path=src_obj_path+"modules"
+        if (os.path.exists(dest_module_path)==False):
+            shutil.copytree(src_module_path,dest_module_path)
+    return bes_conf_name
+
+# Check if the HDF4 file is present.
+def obtain_hdf4_full_path(hdf4_name):
+
+    if '/' not in hdf4_name:
+        hdf4_name=os.getcwd()+'/'+hdf4_name
+    elif hdf4_name[0]!='/':
+        print("Please provide the absolute path name for the HDF4 file such as /tmp/foo.hdf")
+        hdf4_name=''
+    if (os.path.isfile(hdf4_name)!=True):
+        print("The hdf4 file:", hdf4_name,"doesn't exist.")
+        hdf4_name=''
+    return hdf4_name
+
+# Generate the bescmd file content.
+def generate_bescmd_contents(bes_conf_name,hdf4_name):
+
+# Obtain the HDF4 file path in the bescmd file that uses to generate the dmr file
+
+    bescmd_str=''
+    bes_conf_fid = open(bes_conf_name,'r')
+    bes_conf_text = bes_conf_fid.read()
+    bes_conf_fid.close()
+    bes_catalog_root_dir_str="BES.Catalog.catalog.RootDirectory="
+    catalog_root_dir_index = bes_conf_text.find(bes_catalog_root_dir_str)
+    if (catalog_root_dir_index == -1):
+        print("Cannot find the catalog root directory from the bes configuration file: ",bes_conf_name)
+        return bescmd_str
+
+    catalog_root_dir_endline_index = bes_conf_text.find('\n',catalog_root_dir_index)
+    catalog_root_dir=bes_conf_text[catalog_root_dir_index+len(bes_catalog_root_dir_str):catalog_root_dir_endline_index]
+    
+    if(hdf4_name.find(catalog_root_dir)!=0):
+        print("The HDF4 file:",hdf4_name,"is not on the path",catalog_root_dir)
+        print("Please put the HDF4 file under the hyrax root catalog directory")
+        return bescmd_str
+    
+    # obtain the hdf4 file path that needs to be inside the xml file. 
+    hdf4_name_path=hdf4_name[len(catalog_root_dir):]
+    
+    # Generate the bescmd file
+
+    # The first part of the xml string
+    bescmd_str_p1='''<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="data" space="catalog">'''
+    bescmd_str_p1 = bescmd_str_p1+hdf4_name_path+"</setContainer>"
+    bescmd_str_p2 = '''
+    <define name="d">
+        <container name="data" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>'''
+    bescmd_str = bescmd_str_p1 + bescmd_str_p2
+    return bescmd_str
+     
+
+# Create by KY 2024-04-01
+# We use python 3.6.8.It must be >=python 3.6
+if sys.version_info <=(3, 6):
+    print("The tested version is python 3.6, your version is lower.")
+    sys.exit(1)
+
+parser = ap.ArgumentParser(description='Build a dmrpp file for an HDF4 file. ./get_dmrpp_h4 -i h4_file_path ')
+parser.add_argument("-i",  nargs=1,
+                    help='The HDF4 file name should be provided and the file should be under the appropriate data directory. ', required=True)
+parser.add_argument("-c","--conf", 
+                    help='Optional parameter: the bes configuration file including the path: /etc/bes.conf')
+parser.add_argument("-u","--data_url", 
+                    help='Optional parameter: the value of attribute dmrpp:href in the dmrpp file. If not provided, OPeNDAP_DMRpp_DATA_ACCESS_URL will be used by default.')
+parser.add_argument("-o","--dmrpp_file", 
+                    help='Optional parameter: the output file name that stores the dmrpp.')
+parser.add_argument("-v","--verbosity", action='store_true',
+                    help='Detailed description message and other information.' )
+
+args = parser.parse_args()
+hdf4_name = ''.join(args.i)
+
+if(args.verbosity is True): 
+    desc_str='''
+    Given an HDF4 file, running this python script will generate the corresponding dmrpp file.
+
+    The prerequisite besstandalone and build_dmrpp_h4 executables should be found under the user's current environment.
+    besstandalone is used to generate the HDF4 dmr file by the HDF4 handler. build_dmrpp_h4 is the main C++ program that builds the dmrpp for the HDF4 file.
+
+    User can provide the name and the path of the BES configuration file like /tmp/bes.conf.
+         If the BES configuration file is not provided, 
+         the file name bes.conf will be searched to see if it is under /etc/bes, this is the common place for the rpm installation.
+         If still not found, it will search this file according to the path of besstandalone.
+
+    The HDF4 file should be provided somewhere under the directory specified by BES.Catalog.catalog.RootDirectory inside the bes configuration file.
+    User can provide either relative path or absolute path of the HDF4 file.
+
+    Users can provide the url or the path of the HDF4 file that will be stored inside the generated dmrpp file. If not, the string OPeNDAP_DMRpp_DATA_ACCESS_URL will be used. 
+
+    Users can also specify the generated dmrpp file name. Otherwise the HDF4 file name will be used to create the dmrpp file such as tmp.hdf.dmrpp for tmp.hdf.
+    The dmrpp file will be generated under the current directory that runs this python script.
+    '''
+    print(desc_str)
+
+# Sanity check to see if the necessary programs exist
+if (check_required_programs()==False):  
+    sys.exit(1)
+
+# Obtain the default BES configuration file
+bes_default_conf_name = obtain_bes_conf_file(args.conf)
+if (bes_default_conf_name ==""):
+    sys.exit(1)
+
+#Generate the temporary BES configuration file
+bes_conf_name = generate_bes_conf_file(args.conf,bes_default_conf_name)
+
+if (args.verbosity is True):
+    print("bes configuration file :", bes_conf_name)
+    
+# Obtain the HDF4 full path
+hdf4_full_path = obtain_hdf4_full_path(hdf4_name)
+if(hdf4_full_path==""):
+    sys.exit(1)
+
+if (args.verbosity is True):
+    print("The HDF4 file full path :", hdf4_full_path)
+ 
+# Generate the dmr bescmd content for this HDF4 file.
+bescmd_str=generate_bescmd_contents(bes_conf_name,hdf4_full_path)
+if(bescmd_str==""):
+    sys.exit(1) 
+
+
+# Obtain the HDF4 file name that excludes the path.
+hdf4_name_cur_dir=get_obj_name(hdf4_full_path)
+
+# Generate the HDF4 dmr bescmd file.
+hdf4_file_bescmd = hdf4_name_cur_dir+".dmr.bescmd"
+with open(hdf4_file_bescmd, 'w') as f:
+    f.write(bescmd_str)
+
+#Generate the HDF4  dmr file
+hdf4_dmr_name=hdf4_name_cur_dir+".dmr"
+ret = subprocess.run(["besstandalone", "-c", bes_conf_name, "-i",hdf4_file_bescmd, "-f",hdf4_dmr_name])   
+if ret.returncode!=0:
+    print("Besstandalone fails to generate the HDF4 dmr file. ")
+    print("The HDF4 file name is:  ",hdf4_full_path)
+    print("Stop. ")
+    sys.exit(1)
+
+hdf4_url="OPeNDAP_DMRpp_DATA_ACCESS_URL"
+if(args.data_url is not None):
+    hdf4_url = args.data_url
+
+ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r",hdf4_dmr_name, "-u", hdf4_url],stdout=subprocess.PIPE,universal_newlines=True)   
+if ret.returncode!=0:
+    print("build_dmrpp_h4 fails to generate the HDF4 dmrpp file. ")
+    print("The HDF4 file name is:  ",hdf4_full_path)
+    print("Stop. ")
+    sys.exit(1)
+
+hdf4_dmrpp_name=hdf4_name_cur_dir+".dmrpp"
+with open(hdf4_dmrpp_name, 'w') as f:
+    f.write(ret.stdout)
+
+#Remove the temporary dmr and bescmd files.
+subprocess.run(["rm", "-rf", hdf4_dmr_name])   
+subprocess.run(["rm", "-rf", hdf4_file_bescmd])
