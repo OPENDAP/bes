@@ -3374,7 +3374,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
     int32 n_sds      = 0;
     int32 n_sd_attrs = 0;
     bool is_eos      = false;
-    int ret_val      = 1;
+    int ret_val      = 0;
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
@@ -3567,6 +3567,8 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
             if (true == has_dimscale)
                 ret_val = 3;
         }
+        else 
+            ret_val = 1;
 #if 0
         else {// Check if this is an HDF-EOS2 file but not using HDF-EOS2 at all.
              // We turn off this for the time being because 
