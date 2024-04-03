@@ -15,11 +15,17 @@
     <Float32 name="c1">
         <Dim name="/dim1"/>
         <Dim name="/dim2"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
     </Float32>
     <Group name="g1">
         <Float32 name="c2">
             <Dim name="/dim1"/>
             <Dim name="/dim2"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
         </Float32>
         <Float32 name="d1">
             <Dim name="/dim1"/>
