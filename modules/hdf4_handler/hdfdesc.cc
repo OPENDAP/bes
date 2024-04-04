@@ -5763,7 +5763,7 @@ bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eo
     if (is_eos2_file) {
 
         vector<string> eos2_grid_names;
-        ret_value = HDFEOS2::Utility::ReadNamelist((const char*)filename.c_str(),GDinqgrid,eos2_grid_names);
+        ret_value = HDFEOS2::Utility::ReadNamelist(filename.c_str(),GDinqgrid,eos2_grid_names);
         if (ret_value == false)
             return ret_value;
 
