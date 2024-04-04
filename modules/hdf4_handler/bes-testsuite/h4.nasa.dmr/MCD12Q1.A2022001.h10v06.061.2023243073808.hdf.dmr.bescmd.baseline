@@ -699,6 +699,20 @@ END
 </Value>
     </Attribute>
     <Group name="MCD12Q1">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_MCD12Q1"/>
+            <Dim name="/XDim_MCD12Q1"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_MCD12Q1"/>
+            <Dim name="/XDim_MCD12Q1"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <Byte name="LC_Type1">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -770,6 +784,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>4</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Type2">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -832,6 +849,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>6</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Type3">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -885,6 +905,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>8</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Type4">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -931,6 +954,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>10</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="LC_Type5">
@@ -988,6 +1014,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>12</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Prop1_Assessment">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1004,6 +1033,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>14</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop2_Assessment">
@@ -1022,6 +1054,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>16</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Prop3_Assessment">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1038,6 +1073,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>18</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop1">
@@ -1107,6 +1145,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>20</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Prop2">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1160,6 +1201,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>22</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Prop3">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1210,6 +1254,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>24</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="QC">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1227,6 +1274,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>26</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="LW">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1243,6 +1293,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>28</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
             </Byte>
         </Group>

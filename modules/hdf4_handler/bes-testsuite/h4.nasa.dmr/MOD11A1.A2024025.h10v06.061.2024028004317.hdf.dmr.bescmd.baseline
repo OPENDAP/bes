@@ -1117,6 +1117,20 @@ END
         <Value>http://dx.doi.org</Value>
     </Attribute>
     <Group name="MODIS_Grid_Daily_1km_LST">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+            <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
+            <Dim name="/XDim_MODIS_Grid_Daily_1km_LST"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <UInt16 name="LST_Day_1km">
                 <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
@@ -1155,6 +1169,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>4</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
+                </Attribute>
             </UInt16>
             <Byte name="QC_Day">
                 <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
@@ -1174,6 +1191,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>6</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="Day_view_time">
@@ -1212,6 +1232,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>8</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="Day_view_angl">
@@ -1254,6 +1277,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>10</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
+                </Attribute>
             </Byte>
             <UInt16 name="LST_Night_1km">
                 <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
@@ -1292,6 +1318,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>12</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
+                </Attribute>
             </UInt16>
             <Byte name="QC_Night">
                 <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
@@ -1311,6 +1340,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>14</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="Night_view_time">
@@ -1349,6 +1381,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>16</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="Night_view_angl">
@@ -1391,6 +1426,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>18</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="Emis_31">
                 <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
@@ -1428,6 +1466,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>20</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="Emis_32">
@@ -1467,6 +1508,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>22</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
+                </Attribute>
             </Byte>
             <UInt16 name="Clear_day_cov">
                 <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
@@ -1502,6 +1546,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>24</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
+                </Attribute>
             </UInt16>
             <UInt16 name="Clear_night_cov">
                 <Dim name="/YDim_MODIS_Grid_Daily_1km_LST"/>
@@ -1536,6 +1583,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>26</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude</Value>
                 </Attribute>
             </UInt16>
         </Group>
