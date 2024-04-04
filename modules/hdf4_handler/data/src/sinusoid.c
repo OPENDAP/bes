@@ -4,12 +4,12 @@
   
   Compilation instruction:
 
-  %h4cc -I/path/to/hdfeos/include  -L/path/to/hdfeos/lib -o sinsoid \
-        -lhdfeos -lGctp -lm sinsoid.c
+  %h4cc -I/path/to/hdfeos/include  -L/path/to/hdfeos/lib -o sinusoid \
+        -lhdfeos -lGctp -lm sinusoid.c
 
   To generate the test file, run
 
-  %./sinsoid
+  %./sinusoid
 
   Copyright The HDF Group
   
@@ -32,9 +32,10 @@ int main()
   float64* grid1_lon;
   float64* grid1_lat;
   int32 xdim,ydim;
+  char dim_name[]="YDim,XDim";
   float64 uplft[2] = { -2.0e+07, 1.0e+06 }, lowrgt[2] = { -1.9e+07, 0 } ;
 
-  if ((fid = GDopen("sinsoid.hdf", DFACC_CREATE)) < 0) {
+  if ((fid = GDopen("sinusoid.hdf", DFACC_CREATE)) < 0) {
       fprintf(stderr, "error: cannot open the HDF-EOS2 grid file\n");
       return -1;
   }
@@ -54,6 +55,21 @@ int main()
       fprintf(stderr, "error: cannot define the HDF-EOS2 grid\n");
       return -1;
   }
+
+  float32 temp[4][4];
+  /* Fill data. */
+  for (i=0; i < 4; i++)
+      for(j=0; j < 4; j++)
+            temp[i][j] = (float32)(10 + i);
+  if (GDdeffield(gdid, "temperature", dim_name, DFNT_FLOAT32, 0) <0) {
+      fprintf(stderr, "error: cannot define the HDF-EOS2 grid field\n");
+      return -1;
+  }
+  if (GDwritefield(gdid, "temperature", NULL, NULL, NULL, temp) <0) {
+      fprintf(stderr, "error: cannot write the HDF-EOS2 grid field\n");
+      return -1;
+  }
+
     /* Allocate buffer for row */
   if ((grid1_row = malloc(sizeof(int32) * grid1_xdim * grid1_ydim)) == NULL) {
       fprintf(stderr, "error: cannot allocate memory for row\n");

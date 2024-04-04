@@ -15,7 +15,6 @@
   
  */
 
-
 #include "hdf.h"
 #include "HdfEosDef.h"
 #include <stdio.h>
@@ -33,6 +32,7 @@ int main()
   float64* grid1_lat;
   int32 xdim,ydim;
   float64 uplft[2] = { -1.7e+07, 7.3e+06 }, lowrgt[2] = { 1.7e+07, -7.3e+06 } ;
+  char dim_name[]="YDim,XDim";
 
   if ((fid = GDopen("cea.hdf", DFACC_CREATE)) < 0) {
       fprintf(stderr, "error: cannot open the HDF-EOS2 grid file\n");
@@ -56,7 +56,22 @@ int main()
       fprintf(stderr, "error: cannot define the HDF-EOS2 grid\n");
       return -1;
   } 
-    /* Allocate buffer for row */
+
+  float32 temp[8][8];
+  /* Fill data. */
+  for (i=0; i < 8; i++)
+      for(j=0; j < 8; j++)
+            temp[i][j] = (float32)(10 + i);
+  if (GDdeffield(gdid, "temperature", dim_name, DFNT_FLOAT32, 0) <0) {
+      fprintf(stderr, "error: cannot define the HDF-EOS2 grid field\n");
+      return -1;
+  }
+  if (GDwritefield(gdid, "temperature", NULL, NULL, NULL, temp) <0) {
+      fprintf(stderr, "error: cannot write the HDF-EOS2 grid field\n");
+      return -1;
+  }
+
+ /* Allocate buffer for row */
   if ((grid1_row = malloc(sizeof(int32) * grid1_xdim * grid1_ydim)) == NULL) {
       fprintf(stderr, "error: cannot allocate memory for row\n");
       return -1;

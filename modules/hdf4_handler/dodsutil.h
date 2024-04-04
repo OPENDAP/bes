@@ -143,3 +143,20 @@ inline string basename(const string & path)
         return path.substr(path.find_last_of("/") + 1);
 }
 
+inline string first_part_of_full_path(const string &path) {
+
+    string ret_value ="";
+    size_t first_fs_pos = 0;
+    if(path.front()=='/') 
+       first_fs_pos = path.find('/',1);
+    else
+       first_fs_pos = path.find('/',0);
+      
+    if (first_fs_pos == string::npos && path !="/")
+        ret_value = path;
+    else 
+        ret_value = path.substr(0,first_fs_pos);
+
+    return ret_value;
+}
+
