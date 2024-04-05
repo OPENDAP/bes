@@ -1551,12 +1551,18 @@ END
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MODIS_Grid_16DAY_250m_500m_VI lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
             <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MODIS_Grid_16DAY_250m_500m_VI lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">

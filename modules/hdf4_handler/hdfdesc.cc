@@ -5729,8 +5729,13 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
     if (!eos2_grid.oned_latlon)
         ar_lat->append_dim_ll(eos2_grid.xdim,xdim_path);
 
-    // Attribute
+    // Attributes
     add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
+
+    // Add eos latlon predefined attribute eos_latlon that includes the grid name and the lat/lon.
+    string eos_latlon_value = eos2_grid.grid_name +" lat";
+    add_var_dap4_attr(ar_lat,"eos_latlon",attr_str_c,eos_latlon_value);
+
 
     ar_lat->set_is_dap4(true);
     d4_grp->add_var_nocopy(ar_lat);
@@ -5744,6 +5749,10 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
     ar_lon->append_dim_ll(eos2_grid.xdim,xdim_path);
 
     add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
+
+    // Add eos latlon predefined attribute eos_latlon that includes the grid name and the lat/lon.
+    eos_latlon_value = eos2_grid.grid_name +" lon";
+    add_var_dap4_attr(ar_lon,"eos_latlon",attr_str_c,eos_latlon_value);
 
     ar_lon->set_is_dap4(true);
     d4_grp->add_var_nocopy(ar_lon);

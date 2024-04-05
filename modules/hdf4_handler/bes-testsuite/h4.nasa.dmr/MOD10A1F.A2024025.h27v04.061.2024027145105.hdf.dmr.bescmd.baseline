@@ -602,12 +602,18 @@ END
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MOD_Grid_Snow_500m lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/YDim_MOD_Grid_Snow_500m"/>
             <Dim name="/XDim_MOD_Grid_Snow_500m"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MOD_Grid_Snow_500m lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">

@@ -1480,12 +1480,18 @@ codeListValue=&quot;creation&quot;&gt;creation
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>NpPolarGrid25km lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/YDim_NpPolarGrid25km"/>
             <Dim name="/XDim_NpPolarGrid25km"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>NpPolarGrid25km lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">
@@ -1919,12 +1925,18 @@ codeListValue=&quot;creation&quot;&gt;creation
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>SpPolarGrid25km lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/YDim_SpPolarGrid25km"/>
             <Dim name="/XDim_SpPolarGrid25km"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>SpPolarGrid25km lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">

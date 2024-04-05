@@ -914,12 +914,18 @@ END
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MOD_Grid_BRDF lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/YDim_MOD_Grid_BRDF"/>
             <Dim name="/XDim_MOD_Grid_BRDF"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MOD_Grid_BRDF lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">

@@ -121,12 +121,18 @@ END
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>UTMGrid lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/YDim_UTMGrid"/>
             <Dim name="/XDim_UTMGrid"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>UTMGrid lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">
@@ -168,12 +174,18 @@ END
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>PolarGrid lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/YDim_PolarGrid"/>
             <Dim name="/XDim_PolarGrid"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>PolarGrid lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">
@@ -226,11 +238,17 @@ END
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>GEOGrid lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/XDim_GEOGrid"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>GEOGrid lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields"/>

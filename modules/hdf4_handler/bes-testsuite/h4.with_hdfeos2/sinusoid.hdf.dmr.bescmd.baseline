@@ -43,12 +43,18 @@ END
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1 lat</Value>
+            </Attribute>
         </Float64>
         <Float64 name="Longitude">
             <Dim name="/YDim_grid1"/>
             <Dim name="/XDim_grid1"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1 lon</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">
