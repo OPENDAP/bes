@@ -12,7 +12,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=builddmrpp_h4
 M_VER=0.1.0
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/modules/dmrpp_module \
+AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/modules/dmrpp_module \
     -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/http -I$(top_srcdir)/modules/ngap_module -I$(top_srcdir)/dap \
     $(DAP_CFLAGS)
 
@@ -45,12 +45,13 @@ HDR = build_dmrpp_util_h4.h ../Chunk.h ../DMRpp.h ../DMZ.h ../DmrppArray.h ../Dm
 
 build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
 
-build_dmrpp_h4_LDFLAGS = $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
+#build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
+build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
 
 # jhrg 12/18/23 $(top_builddir)/dap/.libs/libdap_module.a
 
 build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDF4_LIBS)
+    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
 
 lib_besdir=$(libdir)/bes
 

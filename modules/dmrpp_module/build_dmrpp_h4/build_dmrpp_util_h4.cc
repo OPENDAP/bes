@@ -31,6 +31,7 @@
 #include "h4config.h"
 #include "hdf.h"  // HDF4 header file
 #include "mfhdf.h"  // Include the HDF4 header file
+#include "HdfEosDef.h"
 
 #include <libdap/Str.h>
 #include <libdap/Structure.h>
@@ -767,14 +768,209 @@ cout <<"length is: "<<length <<endl;
     return true;
 
 }
+
+bool add_missing_eos_latlon(const string &filename,BaseType *btp, D4Attribute *eos_ll_attr, string &err_msg) {
+cerr<<"coming to add_missing_eos_latlon"<<endl;
+    
+    string eos_ll_attr_value = eos_ll_attr->value(0);
+cerr<<"eos_ll_attr_value: "<<eos_ll_attr_value <<endl;
+    size_t space_pos = eos_ll_attr_value.find(' ');
+    if (space_pos ==string::npos) 
+        throw BESInternalError("Attribute eos_latlon must have space inside",__FILE__,__LINE__);
+    string grid_name = eos_ll_attr_value.substr(0,space_pos);
+    string ll_name = eos_ll_attr_value.substr(space_pos+1);
+cerr<<"grid_name: "<<grid_name << " and size: "<< grid_name.size()<<endl;
+cerr<<"ll_name: "<<ll_name<<" and size: "<<ll_name.size()<<endl;
+    bool is_lat = true;
+    if (ll_name =="lon")
+        is_lat = false;
+
+    int32 gridfd = GDopen(const_cast < char *>(filename.c_str()), DFACC_READ);
+    if (gridfd <0) {
+        err_msg = "HDF-EOS: GDopen failed";
+        return false;
+    }
+    int32 gridid = GDattach(gridfd, const_cast<char *>(grid_name.c_str()));
+    if (gridid <0) {
+        err_msg = "HDF-EOS: GDattach failed to attach " + grid_name;
+        GDclose(gridfd);
+        return false;
+    }
+
+    // Declare projection code, zone, etc grid parameters. 
+
+    int32 projcode = -1; 
+    int32 zone     = -1;
+    int32 sphere   = -1;
+    float64 params[16];
+
+    int32 xdim = 0;
+    int32 ydim = 0;
+
+    float64 upleft[2];
+    float64 lowright[2];
+
+    if (GDprojinfo (gridid, &projcode, &zone, &sphere, params) <0) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "GDprojinfo failed for grid name: " + grid_name;
+        return false;
+    }
+
+    // Retrieve dimensions and X-Y coordinates of corners
+    if (GDgridinfo(gridid, &xdim, &ydim, upleft,
+                   lowright) == -1) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "GDgridinfo failed for grid name: " + grid_name;
+        return false;
+    }
+
+ 
+    // Retrieve pixel registration information 
+    int32 pixreg = 0; 
+    intn r = GDpixreginfo (gridid, &pixreg);
+    if (r != 0) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "GDpixreginfo failed for grid name: " + grid_name;
+        return false;
+    }
+
+    //Retrieve grid pixel origin 
+    int32 origin = 0; 
+    r = GDorigininfo (gridid, &origin);
+    if (r != 0) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "GDoriginfo failed for grid name: " + grid_name;
+        return false;
+    }
+
+    vector<int32>rows;
+    vector<int32>cols;
+    vector<float64>lon;
+    vector<float64>lat;
+    rows.resize(xdim*ydim);
+    cols.resize(xdim*ydim);
+    lon.resize(xdim*ydim);
+    lat.resize(xdim*ydim);
+
+
+    int i = 0;
+    int j = 0;
+    int k = 0; 
+
+    //if (ydimmajor) {
+        /* Fill two arguments, rows and columns */
+        // rows             cols
+        //   /- xdim  -/      /- xdim  -/
+        //   0 0 0 ... 0      0 1 2 ... x
+        //   1 1 1 ... 1      0 1 2 ... x
+        //       ...              ...
+        //   y y y ... y      0 1 2 ... x
+
+        for (k = j = 0; j < ydim; ++j) {
+            for (i = 0; i < xdim; ++i) {
+                rows[k] = j;
+                cols[k] = i;
+                ++k;
+            }
+        }
+    //}
+#if 0
+    else {
+        // rows             cols
+        //   /- ydim  -/      /- ydim  -/
+        //   0 1 2 ... y      0 0 0 ... y
+        //   0 1 2 ... y      1 1 1 ... y
+        //       ...              ...
+        //   0 1 2 ... y      2 2 2 ... y
+
+        for (k = j = 0; j < xdim; ++j) {
+            for (i = 0; i < ydim; ++i) {
+                rows[k] = i;
+                cols[k] = j;
+                ++k;
+            }
+        }
+    }
+#endif
+
+
+    r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
+                 xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
+
+    if (r != 0) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "cannot calculate grid latitude and longitude for grid name: " + grid_name;
+        return false;
+    }
+
+cerr<<"longitude:"<<endl;
+for (int i = 0;i<xdim*ydim;i++)
+cerr<<lon[i]<<endl;
+cerr<<"latitude:"<<endl;
+for (int i = 0;i<xdim*ydim;i++)
+cerr<<lat[i]<<endl;
+
+    // SSSTTTOPPP TODO
+    // Check the buffer size
+    // Obtain the datatype size
+
+#if 0
+    size_t orig_buf_size = tmp_data.size()*sizeof(double);
+    uLong ssize = (uLong)orig_buf_size;
+    uLongf csize = (uLongf)ssize*2;
+    vector<Bytef> compressed_src;
+    compressed_src.resize(orig_buf_size*2);
+
+    int retval = compress(compressed_src.data(), &csize, (const Bytef*)tmp_data.data(), ssize);
+    if (retval != 0) {
+        cout<<"Fail to compress the data"<<endl;
+        exit(1);
+    }
+
+    string encoded = base64::Base64::encode(compressed_src.data(),(int)csize);
+
+#endif
+
+    // latitude 
+    if (is_lat) { 
+        // Need to check if CEA or GEO
+        if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
+
+        }
+        else {
+
+        }
+
+    }
+    else {
+        if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
+
+        }
+        else {
+
+        }
+
+    }
+ 
+
+        
+    return true;
+
+}
 /**
  * @note see write_array_chunks_byte_stream() in h4mapwriter for the original version of this code.
  * @param file
  * @param btp
  * @return true if the produced output that seems valid, false otherwise.
  */
-bool get_chunks_for_an_array(int32 sd_id, int32 file_id, BaseType *btp) {
+bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id, BaseType *btp) {
 
+//cerr<<"var name: "<<btp->name() <<endl;
     // Here we need to retrieve the attribute value dmr_sds_ref of btp.
     D4Attributes *d4_attrs = btp->attributes();
     if (!d4_attrs) {
@@ -791,44 +987,54 @@ bool get_chunks_for_an_array(int32 sd_id, int32 file_id, BaseType *btp) {
     bool is_sds = false;
     if (attr)
         is_sds = true;
-    else {
+    else 
         attr = d4_attrs->find("dmr_vdata_ref");
-        if (!attr) {
-            close_hdf4_file_ids(sd_id,file_id);
-            throw BESInternalError("Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference for " + btp->name() + " but did not.",
-                               __FILE__, __LINE__);
-        }
-    }
-    obj_ref = stoi(attr->value(0));
-    if (is_sds) {
-        if (false == ingest_sds_info_to_chunk(sd_id, obj_ref,btp)) {
-            close_hdf4_file_ids(sd_id,file_id);
-            throw BESInternalError("Cannot retrieve SDS information correctly for  " + btp->name() ,
-                               __FILE__, __LINE__);
-        }
-    }
 
-    else {
-        if (false == ingest_vdata_info_to_chunk(file_id, obj_ref,btp)) {
-            close_hdf4_file_ids(sd_id,file_id);
-            throw BESInternalError("Cannot retrieve vdata information correctly for  " + btp->name() ,
-                               __FILE__, __LINE__);
+    if (attr) {
+        obj_ref = stoi(attr->value(0));
+        if (is_sds) {
+            if (false == ingest_sds_info_to_chunk(sd_id, obj_ref,btp)) {
+                close_hdf4_file_ids(sd_id,file_id);
+                throw BESInternalError("Cannot retrieve SDS information correctly for  " + btp->name() ,
+                                   __FILE__, __LINE__);
+            }
         }
-        
-#if 0
-        string name = btp->name();
-        const char *sdsName = name.c_str();
-        // TODO For a more complete version of this, use references and tags, not names.
-        //  Also, the use of FQNs will not, in general, work for HDF4 files, given the
-        //  unusual way that HDF4 files are organized. jhrg 12/5/23
-        int sds_index = SDnametoindex(file, sdsName);
-#endif
+    
+        else {
+            if (false == ingest_vdata_info_to_chunk(file_id, obj_ref,btp)) {
+                close_hdf4_file_ids(sd_id,file_id);
+                throw BESInternalError("Cannot retrieve vdata information correctly for  " + btp->name() ,
+                                   __FILE__, __LINE__);
+            }
+        }
     }
+    else {
+cerr<<"coming to eos_latlon block"<<endl;
+        // Here we will check if the eos_latlon exists. Add dmrpp::missingdata
+        attr = d4_attrs->find("eos_latlon");
+        if (attr) {
+            string err_msg;
+            bool ret_value = add_missing_eos_latlon(filename, btp, attr,err_msg);
+            if (ret_value == false) {
+                close_hdf4_file_ids(sd_id,file_id);
+                throw BESInternalError(err_msg,__FILE__,__LINE__);
+            }
+
+        }
+        else { 
+            if (!attr) {
+                close_hdf4_file_ids(sd_id,file_id);
+                string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon for ";
+                throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
+            }
+        }        
+    }
+ 
 
     return true;
 }
 
-bool get_chunks_for_a_variable(int32 sd_id, int32 file_id, BaseType *btp) {
+bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id, BaseType *btp) {
 
     switch (btp->type()) {
         case dods_structure_c: {
@@ -851,7 +1057,7 @@ bool get_chunks_for_a_variable(int32 sd_id, int32 file_id, BaseType *btp) {
             throw BESInternalError("Grids are not supported by DAP4.", __FILE__, __LINE__);
         }
         case dods_array_c:
-            return get_chunks_for_an_array(sd_id,file_id, btp);
+            return get_chunks_for_an_array(filename,sd_id,file_id, btp);
         default:
             VERBOSE(cerr << btp->FQN() << ": " << btp->type_name() << " is not supported by DMR++ for HDF4 at this time.\n");
             return false;
@@ -865,14 +1071,14 @@ bool get_chunks_for_a_variable(int32 sd_id, int32 file_id, BaseType *btp) {
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
-void get_chunks_for_all_variables(int32 sd_id, int32 file_id, D4Group *group) {
+void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 file_id, D4Group *group) {
 
     // variables in the group
     for(auto btp : group->variables()) {
         if (btp->type() != dods_group_c) {
             // if this is not a group, it is a variable
             // This is the part where we find out if a variable can be used with DMR++
-            if (!get_chunks_for_a_variable(sd_id,file_id, btp)) {
+            if (!get_chunks_for_a_variable(filename,sd_id,file_id, btp)) {
                 ERROR("Could not include DMR++ metadata for variable " << btp->FQN());
             }
         }
@@ -881,12 +1087,12 @@ void get_chunks_for_all_variables(int32 sd_id, int32 file_id, D4Group *group) {
             auto g = dynamic_cast<D4Group*>(btp);
             if (!g)
                 throw BESInternalError("Expected "  + btp->name() + " to be a D4Group but it is not.", __FILE__, __LINE__);
-            get_chunks_for_all_variables(sd_id,file_id, g);
+            get_chunks_for_all_variables(filename,sd_id,file_id, g);
         }
     }
     // all groups in the group
     for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
-        get_chunks_for_all_variables(sd_id,file_id, *g);
+        get_chunks_for_all_variables(filename,sd_id,file_id, *g);
     }
 
 }
@@ -921,7 +1127,7 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
 
  
     // iterate over all the variables in the DMR
-    get_chunks_for_all_variables(sd_id,file_id, dmrpp->root());
+    get_chunks_for_all_variables(h4_file_name, sd_id,file_id, dmrpp->root());
 
     close_hdf4_file_ids(sd_id,file_id);
 }
