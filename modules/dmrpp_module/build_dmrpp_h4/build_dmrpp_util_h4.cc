@@ -22,7 +22,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
 #include <iostream>
 #include <memory>
 #include <iterator>
@@ -769,6 +768,28 @@ cout <<"length is: "<<length <<endl;
 
 }
 
+#if 0
+bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,size_t source_data_size, string &err_msg) {
+
+    uLong ssize = (uLong)source_data_size;
+    uLongf csize = (uLongf)ssize*2;
+    vector<Bytef> compressed_src;
+    compressed_src.resize(source_data_size*2);
+
+    int retval = compress(compressed_src.data(), &csize, source_data, ssize);
+    if (retval != 0) {
+        err_msg = "Fail to compress the data";
+        return false;
+    }
+
+    encoded_str = base64::Base64::encode(compressed_src.data(),(int)csize);
+
+    return true;
+
+}
+#endif
+
+
 bool add_missing_eos_latlon(const string &filename,BaseType *btp, D4Attribute *eos_ll_attr, string &err_msg) {
 cerr<<"coming to add_missing_eos_latlon"<<endl;
     
@@ -915,10 +936,54 @@ cerr<<"latitude:"<<endl;
 for (int i = 0;i<xdim*ydim;i++)
 cerr<<lat[i]<<endl;
 
-    // SSSTTTOPPP TODO
-    // Check the buffer size
-    // Obtain the datatype size
+    auto dc = dynamic_cast<DmrppCommon *>(btp);
+    if (!dc) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_eos_latlon";
+        return false;
+    }
+    auto da = dynamic_cast<DmrppArray *>(btp);
+    if (!da) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "Expected to find a DmrppArray instance but did not in add_missing_eos_latlon";
+        return false;
+    }
 
+    da->set_missing_data(true);
+    
+    if (is_lat) { 
+        // Need to check if CEA or GEO
+        if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
+            vector<float64>out_lat;
+            out_lat.resize(ydim);
+            j=0;
+            for (i =0; i<xdim*ydim;i = i+xdim){
+                out_lat[j] = lat[i];
+                j++;
+            }
+            da->set_value(out_lat.data(),ydim);
+            
+        }
+        else 
+            da->set_value(lat.data(),xdim*ydim);
+    }
+    else {
+        if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
+            vector<float64>out_lon;
+            out_lon.resize(xdim);
+            for (i =0; i<xdim;i++)
+                out_lon[i] = lon[i];
+            da->set_value(out_lon.data(),xdim);
+
+        }
+        else 
+            da->set_value(lon.data(),xdim*ydim);
+
+    }
+    da->set_read_p(true);
+ 
 #if 0
     size_t orig_buf_size = tmp_data.size()*sizeof(double);
     uLong ssize = (uLong)orig_buf_size;
@@ -936,32 +1001,10 @@ cerr<<lat[i]<<endl;
 
 #endif
 
-    // latitude 
-    if (is_lat) { 
-        // Need to check if CEA or GEO
-        if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
-
-        }
-        else {
-
-        }
-
-    }
-    else {
-        if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
-
-        }
-        else {
-
-        }
-
-    }
- 
-
-        
     return true;
 
 }
+
 /**
  * @note see write_array_chunks_byte_stream() in h4mapwriter for the original version of this code.
  * @param file
