@@ -929,12 +929,14 @@ cerr<<"ll_name: "<<ll_name<<" and size: "<<ll_name.size()<<endl;
         return false;
     }
 
+#if 0
 cerr<<"longitude:"<<endl;
 for (int i = 0;i<xdim*ydim;i++)
 cerr<<lon[i]<<endl;
 cerr<<"latitude:"<<endl;
 for (int i = 0;i<xdim*ydim;i++)
 cerr<<lat[i]<<endl;
+#endif
 
     auto dc = dynamic_cast<DmrppCommon *>(btp);
     if (!dc) {
