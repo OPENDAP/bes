@@ -1506,7 +1506,7 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
         throw BESInternalError("The dmrpp::missing_data element must be the child of an array variable", __FILE__, __LINE__);
 
     vector<Bytef> result_bytes;
-    uLongf result_size = (uLongf)(btp->width_ll());
+    auto result_size = (uLongf)(btp->width_ll());
     result_bytes.resize(result_size);
     int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
     if(retval != 0)

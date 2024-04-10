@@ -790,18 +790,22 @@ bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,si
 #endif
 
 
-bool add_missing_eos_latlon(const string &filename,BaseType *btp, D4Attribute *eos_ll_attr, string &err_msg) {
-cerr<<"coming to add_missing_eos_latlon"<<endl;
+bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attribute *eos_ll_attr, string &err_msg) {
+
+    VERBOSE(cerr<<"Coming to add_missing_eos_latlon"<<endl);
     
     string eos_ll_attr_value = eos_ll_attr->value(0);
-cerr<<"eos_ll_attr_value: "<<eos_ll_attr_value <<endl;
+
+    VERBOSE(cerr<<"eos_ll_attr_value: "<<eos_ll_attr_value <<endl);
+
     size_t space_pos = eos_ll_attr_value.find(' ');
     if (space_pos ==string::npos) 
         throw BESInternalError("Attribute eos_latlon must have space inside",__FILE__,__LINE__);
     string grid_name = eos_ll_attr_value.substr(0,space_pos);
     string ll_name = eos_ll_attr_value.substr(space_pos+1);
-cerr<<"grid_name: "<<grid_name << " and size: "<< grid_name.size()<<endl;
-cerr<<"ll_name: "<<ll_name<<" and size: "<<ll_name.size()<<endl;
+
+    VERBOSE(cerr<<"grid_name: "<<grid_name <<endl);
+    VERBOSE(cerr<<"ll_name: "<<ll_name<<endl);
     bool is_lat = true;
     if (ll_name =="lon")
         is_lat = false;
@@ -882,41 +886,21 @@ cerr<<"ll_name: "<<ll_name<<" and size: "<<ll_name.size()<<endl;
     int j = 0;
     int k = 0; 
 
-    //if (ydimmajor) {
-        /* Fill two arguments, rows and columns */
-        // rows             cols
-        //   /- xdim  -/      /- xdim  -/
-        //   0 0 0 ... 0      0 1 2 ... x
-        //   1 1 1 ... 1      0 1 2 ... x
-        //       ...              ...
-        //   y y y ... y      0 1 2 ... x
+    /* Fill two arguments, rows and columns */
+    // rows             cols
+    //   /- xdim  -/      /- xdim  -/
+    //   0 0 0 ... 0      0 1 2 ... x
+    //   1 1 1 ... 1      0 1 2 ... x
+    //       ...              ...
+    //   y y y ... y      0 1 2 ... x
 
-        for (k = j = 0; j < ydim; ++j) {
-            for (i = 0; i < xdim; ++i) {
-                rows[k] = j;
-                cols[k] = i;
-                ++k;
-            }
-        }
-    //}
-#if 0
-    else {
-        // rows             cols
-        //   /- ydim  -/      /- ydim  -/
-        //   0 1 2 ... y      0 0 0 ... y
-        //   0 1 2 ... y      1 1 1 ... y
-        //       ...              ...
-        //   0 1 2 ... y      2 2 2 ... y
-
-        for (k = j = 0; j < xdim; ++j) {
-            for (i = 0; i < ydim; ++i) {
-                rows[k] = i;
-                cols[k] = j;
-                ++k;
-            }
+    for (k = j = 0; j < ydim; ++j) {
+        for (i = 0; i < xdim; ++i) {
+            rows[k] = j;
+            cols[k] = i;
+            ++k;
         }
     }
-#endif
 
 
     r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
@@ -929,14 +913,8 @@ cerr<<"ll_name: "<<ll_name<<" and size: "<<ll_name.size()<<endl;
         return false;
     }
 
-#if 0
-cerr<<"longitude:"<<endl;
-for (int i = 0;i<xdim*ydim;i++)
-cerr<<lon[i]<<endl;
-cerr<<"latitude:"<<endl;
-for (int i = 0;i<xdim*ydim;i++)
-cerr<<lat[i]<<endl;
-#endif
+    VERBOSE(cerr<<"The first value of longtitude: "<<lon[0]<<endl);
+    VERBOSE(cerr<<"The first value of latitude: "<<lat[0]<<endl);
 
     auto dc = dynamic_cast<DmrppCommon *>(btp);
     if (!dc) {
@@ -1015,7 +993,7 @@ cerr<<lat[i]<<endl;
  */
 bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id, BaseType *btp) {
 
-//cerr<<"var name: "<<btp->name() <<endl;
+    VERBOSE(cerr<<"var name: "<<btp->name() <<endl);
     // Here we need to retrieve the attribute value dmr_sds_ref of btp.
     D4Attributes *d4_attrs = btp->attributes();
     if (!d4_attrs) {
@@ -1054,7 +1032,8 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
         }
     }
     else {
-cerr<<"coming to eos_latlon block"<<endl;
+
+        VERBOSE(cerr<<"coming to eos_latlon block"<<endl);
         // Here we will check if the eos_latlon exists. Add dmrpp::missingdata
         attr = d4_attrs->find("eos_latlon");
         if (attr) {

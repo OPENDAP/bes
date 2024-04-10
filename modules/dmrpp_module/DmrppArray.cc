@@ -2841,8 +2841,8 @@ void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
 
 bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,size_t source_data_size, string &err_msg) {
 
-    uLong ssize = (uLong)source_data_size;
-    uLongf csize = (uLongf)ssize*2;
+    auto ssize = (uLong)source_data_size;
+    auto csize = (uLongf)ssize*2;
     vector<Bytef> compressed_src;
     compressed_src.resize(source_data_size*2);
 
