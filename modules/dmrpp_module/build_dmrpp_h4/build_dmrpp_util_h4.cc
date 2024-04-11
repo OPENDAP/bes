@@ -981,6 +981,9 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
 
 #endif
 
+    GDdetach(gridid);
+    GDclose(gridfd);
+    
     return true;
 
 }
@@ -1198,9 +1201,7 @@ void qc_input_file(const string &file_fqn)
     }
 
     //HDF4 signature:
-    int file_id = Hopen(file_fqn.c_str(), DFACC_READ, 0);
     int status = Hishdf(file_fqn.c_str());
-    Hclose(file_id);
 
     //Check if file is NOT an HDF4 file
     if (status != 1) {
