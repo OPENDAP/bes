@@ -1545,6 +1545,26 @@ END
 </Value>
     </Attribute>
     <Group name="MODIS_Grid_16DAY_250m_500m_VI">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+            <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MODIS_Grid_16DAY_250m_500m_VI lat</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+            <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MODIS_Grid_16DAY_250m_500m_VI lon</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <Int16 name="_250m_16_days_NDVI">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1580,6 +1600,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>5</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_EVI">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1614,6 +1637,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>6</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
             </Int16>
             <UInt16 name="_250m_16_days_VI_Quality">
@@ -1682,6 +1708,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>7</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
             </UInt16>
             <Int16 name="_250m_16_days_red_reflectance">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1716,6 +1745,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>8</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_NIR_reflectance">
@@ -1752,6 +1784,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>9</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_blue_reflectance">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1786,6 +1821,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>10</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_MIR_reflectance">
@@ -1829,6 +1867,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>11</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_view_zenith_angle">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1863,6 +1904,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>12</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_sun_zenith_angle">
@@ -1899,6 +1943,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>13</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_relative_azimuth_angle">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1934,6 +1981,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>14</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_composite_day_of_the_year">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1953,6 +2003,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>15</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int8 name="_250m_16_days_pixel_reliability">
@@ -1983,6 +2036,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>16</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
             </Int8>
         </Group>

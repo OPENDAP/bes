@@ -27,6 +27,7 @@
 #include <fstream>
 #include <unordered_set>
 #include <cstring>
+#include <zlib.h>
 
 #include <libdap/BaseType.h>
 #include <libdap/Array.h>
@@ -1356,6 +1357,7 @@ void DMZ::load_all_attributes(libdap::DMR *dmr)
 void
 DMZ::process_compact(BaseType *btp, const xml_node &compact)
 {
+
     dc(btp)->set_compact(true);
 
     auto char_data = compact.child_value();
@@ -1488,8 +1490,32 @@ void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element
     array->set_read_p(true);
 }
 
+void
+DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
+{
+    BESDEBUG(PARSER, prolog << "Coming to process_missing_data() " << endl);
+    dc(btp)->set_missing_data(true);
 
+    auto char_data = missing_data.child_value();
+    if (!char_data)
+        throw BESInternalError("The dmrpp::missing_data doesn't contain  missing data values.",__FILE__,__LINE__);
 
+    std::vector <u_int8_t> decoded = base64::Base64::decode(char_data);
+
+    if (btp->type() != dods_array_c) 
+        throw BESInternalError("The dmrpp::missing_data element must be the child of an array variable", __FILE__, __LINE__);
+
+    vector<Bytef> result_bytes;
+    auto result_size = (uLongf)(btp->width_ll());
+    result_bytes.resize(result_size);
+    int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
+    if(retval != 0)
+        throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
+
+    btp->val2buf(reinterpret_cast<void *>(result_bytes.data()));
+    btp->set_read_p(true);
+ 
+}
 
 
 
@@ -1843,6 +1869,7 @@ void DMZ::load_chunks(BaseType *btp)
     int chunk_found = 0;
     int compact_found = 0;
     int vlsa_found = 0;
+    int missing_data_found = 0;
 
     // Chunked data
     if (process_chunks(btp, var_node)) {
@@ -1960,6 +1987,12 @@ void DMZ::load_chunks(BaseType *btp)
         process_compact(btp, compact);
     }
 
+    auto missing_data = var_node.child("dmrpp:missingdata");
+    if (missing_data) {
+        missing_data_found = 1;
+        process_missing_data(btp, missing_data);
+    }
+
     auto vlsa_element = var_node.child(DMRPP_VLSA_ELEMENT);
     if (vlsa_element) {
         vlsa_found = 1;
@@ -1968,10 +2001,10 @@ void DMZ::load_chunks(BaseType *btp)
 
     // Here we (optionally) check that exactly one of the three types of node was found
     if (DmrppRequestHandler::d_require_chunks) {
-        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found;
+        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found + missing_data_found;
         if (elements_found != 1) {
             ostringstream oss;
-            oss << "Expected chunk, chunks or compact information in the DMR++ data. Found " << elements_found
+            oss << "Expected chunk, chunks or compact or variable length string or missing data information in the DMR++ data. Found " << elements_found
                 << " types of nodes.";
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }

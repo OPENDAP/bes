@@ -176,6 +176,14 @@ struct yy_buffer_state;
 yy_buffer_state *hdfeos_scan_string(const char *str);
 extern int hdfeosparse(libdap::parser_arg *arg);      // defined in hdfeos.tab.c
 
+typedef struct eos2_grid {
+    bool oned_latlon;
+    int32 ydim;
+    int32 xdim;
+    string grid_name;
+
+}eos2_grid_t;
+
 // Functions for the default option
 void AddHDFAttr(DAS & das, const string & varname,
                 const vector < hdf_attr > &hav);
@@ -207,7 +215,7 @@ void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string 
 void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
 
 // 2. vgroup handlings
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4g, const string &vgroupname,const string & filename);
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4g, const string &vgroupname,const string & filename, bool is_eos2_grid);
 void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4g, const string &vgroupname);
 void map_vgroup_attr(D4Group *d4g, const string &dap4_attrname,int32 attr_type, int32 attr_count, vector<char> & attr_value);
 bool reserved_vgroups(const vector<char> &vgroup_class);
@@ -216,7 +224,7 @@ bool reserved_vgroups(const vector<char> &vgroup_class);
 #if 0
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* d4g,const string& filename);
 #endif
-void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,const string &filename);
+void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,const string &filename, bool is_eos2_grid);
 void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref);
 void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>&sds_ref);
 void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unordered_set<int32>&sds_ref);
@@ -229,12 +237,17 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
 void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename);
 void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref);
 
-// 5. Helper functions
+// 5. HDF-EOS2 handlings
+int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls);
+void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string&filename);
+
+// 6. Helper functions
 void add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref);
 BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string & filename);
 D4AttributeType h4type_to_dap4_attrtype(int32 h4_type);
 string print_dap4_attr(int32 type, int loc, void *vals);
 void close_vgroup_fileids(int32 fileid, int32 sdfd, int32 vgroup_id);
+void add_var_dap4_attr(BaseType *d4_var,const string& attr_name, D4AttributeType attr_type, const string& attr_value);
 
 // End of HDF4 to DMR direct mapping functions.
 
@@ -272,6 +285,9 @@ int check_special_eosfile(const string&filename,string&grid_name,int32 sdfd);
 
 // The following blocks only handle HDF-EOS2 objects based on HDF-EOS2 libraries.
 #ifdef USE_HDFEOS2_LIB
+
+bool obtain_eos2_gd_ll_info(const string & fname, const string &grid_name, int32 &ydim, int32 &xdim, bool & oned_ll);
+bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eos2_grid_lls);
 
 // Parse HDF-EOS2's ECS metadata(coremetadata etc.)
 void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata); 
@@ -1907,6 +1923,7 @@ void read_das_use_eos2lib(DAS & das, const string & filename,
     read_das(das, filename);
 }
 
+
 #endif // end of #ifdef USE_HDFEOS2_LIB #endif block
 
 // The wrapper of building DDS function.
@@ -3374,7 +3391,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
     int32 n_sds      = 0;
     int32 n_sd_attrs = 0;
     bool is_eos      = false;
-    int ret_val      = 1;
+    int ret_val      = 0;
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
@@ -3567,6 +3584,8 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
             if (true == has_dimscale)
                 ret_val = 3;
         }
+        else 
+            ret_val = 1;
 #if 0
         else {// Check if this is an HDF-EOS2 file but not using HDF-EOS2 at all.
              // We turn off this for the time being because 
@@ -4388,7 +4407,7 @@ void read_lone_sds(D4Group *root_grp, int32 file_id,int32 sdfd, const string &fi
 
    // Map lone SDS objects and put them under  DAP4's root group.
    for (const auto &sds_ref:ordered_lone_sds_refs) {
-        convert_sds(file_id, sdfd, -1,sds_ref, root_grp, filename);  
+        convert_sds(file_id, sdfd, -1,sds_ref, root_grp, filename,false);  
    }
 
    BESDEBUG("h4"," End read_lone_sds() "<<endl);
@@ -4665,6 +4684,32 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
         return;
     }
 
+    // Check if this is an HDF-EOS2 grid. 
+    vector<eos2_grid_t> eos2_grid_lls;
+ 
+
+#ifdef USE_HDFEOS2_LIB
+    bool ret_value = check_eos2_grids(filename,sdfd,eos2_grid_lls);
+    if (ret_value == false) {
+        close_vgroup_fileids(file_id,sdfd,-1);
+        throw InternalErr(__FILE__, __LINE__, "error in the check_eos2_grid(). ");
+    }
+//HDF-EOS2 DEBUG
+#if 0
+for(const auto& eg:eos2_grid_lls) {
+    cout<<"grid name: "<<eg.grid_name <<endl;
+if (eg.oned_latlon==true) 
+    cout<<"1d latlon "<<endl;
+else
+    cout<<"2d latlon "<<endl;
+    cout<<"xdim: "<< eg.xdim <<endl;
+    cout<<"ydim: "<< eg.ydim <<endl;
+
+
+}
+#endif
+#endif
+    
     ref_array.resize(num_lonevg);
 
     num_lonevg = Vlone(file_id,ref_array.data(),num_lonevg);
@@ -4718,13 +4763,24 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
         }
 
         string vgroup_name_orig_str(vgroup_name.begin(),vgroup_name.end()-1);
+
+        int eos2_grid_lls_index = -1;
+        if (!eos2_grid_lls.empty())
+            eos2_grid_lls_index = is_group_eos2_grid(vgroup_name_orig_str,eos2_grid_lls);
         
         string vgroup_name_str = HDFCFUtil::get_CF_string(vgroup_name_orig_str);
         auto tem_d4_cgroup_ptr = make_unique<D4Group>(vgroup_name_str);
         auto tem_d4_cgroup = tem_d4_cgroup_ptr.release();
         root_grp->add_group_nocopy(tem_d4_cgroup);
         
-        convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,vgroup_name_orig_str,filename);
+        // Add latitude and longitude fields,plus attributes
+        bool is_eos2_grid = false;
+        if (eos2_grid_lls_index >=0) {
+           add_eos2_latlon(tem_d4_cgroup, eos2_grid_lls[eos2_grid_lls_index],filename);
+           is_eos2_grid = true;
+        }
+
+        convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,vgroup_name_orig_str,filename,is_eos2_grid);
 
         Vdetach(vgroup_id);
         
@@ -4782,7 +4838,7 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
 }
 #endif
 
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,const string &vgroupname, const string& filename) {
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,const string &vgroupname, const string& filename, bool is_eos2_grid) {
 
     BESDEBUG("h4"," Start convert_vgroup_objects"<<endl);
 
@@ -4806,7 +4862,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
         
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
-            convert_sds(file_id,sdfd,vgroup_id,obj_ref,d4g,filename);
+            convert_sds(file_id,sdfd,vgroup_id,obj_ref,d4g,filename,is_eos2_grid);
         }
         else if(Visvs(vgroup_id,obj_ref)) {
             convert_vdata(file_id, sdfd, vgroup_id, obj_ref,d4g,filename);
@@ -4877,7 +4933,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             auto d4c_g  = d4c_g_ptr.release();
             d4g->add_group_nocopy(d4c_g);
 
-            convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,vgroup_name_orig_str,filename);
+            convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,vgroup_name_orig_str,filename, is_eos2_grid);
 
             Vdetach(vgroup_cid);
         }
@@ -5144,7 +5200,7 @@ void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref) {
 }
 
 
-void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, const string &filename) {
+void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, const string &filename, bool is_eos2_grid) {
 
     int32 sds_index = 0; 
     int32 sds_id = 0; 
@@ -5255,6 +5311,21 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
             close_vgroup_fileids(file_id,sdfd,vgroup_id);  
             throw InternalErr(__FILE__, __LINE__, "Map SDS attributes to DAP4 failed.");
     }
+
+    if (is_eos2_grid) {
+
+        // If this SDS belongs to an HDF-EOS2 grid. We need to add the coordinates attributes to ensure the CF tools 
+        // to correctly display the data. Not absolutely necessary but highly desireable and useful for end users. 
+        // So add it.
+        string d4_grp_path = d4g->FQN();
+    
+        // Obtain the grid name, it should be the first part of the d4_grp_path.
+        string grid_name = first_part_of_full_path(d4_grp_path);
+        string coordinates =grid_name+"/Longitude ";   
+        coordinates +=grid_name+"/Latitude";
+        add_var_dap4_attr(ar,"coordinates",attr_str_c,coordinates);
+    }
+
     ar->set_is_dap4(true);
     d4g->add_var_nocopy(ar);
 
@@ -5611,3 +5682,160 @@ void close_vgroup_fileids(int32 fileid, int32 sdfd, int32 vgroup_id) {
     Hclose(fileid);
     SDend(sdfd);
 }
+
+// Direct CF to DAP4, helper function to DAP4 variable  attributes.
+void add_var_dap4_attr(BaseType *var,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
+
+    auto d4_attr_unique = make_unique<D4Attribute>(attr_name,attr_type);
+    auto d4_attr = d4_attr_unique.release();
+    d4_attr->add_value(attr_value);
+    var->attributes()->add_attribute_nocopy(d4_attr);
+    
+}     
+
+int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls) {
+    
+    int ret_value = -1;
+    for (int i = 0; i <eos2_grid_lls.size();i++) {
+        if (vgroup_name==eos2_grid_lls[i].grid_name){
+            ret_value = i;
+            break;
+        }
+    }
+        
+    return ret_value;
+}
+
+void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string &filename){
+
+    string ydim_path = "YDim/"+eos2_grid.grid_name;
+    ydim_path = HDFCFUtil::get_CF_string(ydim_path);
+    ydim_path ="/"+ydim_path;
+    string xdim_path = "XDim/"+eos2_grid.grid_name;
+    xdim_path = HDFCFUtil::get_CF_string(xdim_path);
+    xdim_path="/"+xdim_path;
+
+    string lat_name ="Latitude";
+    string lon_name ="Longitude";
+    
+    // Array
+    auto ar_bt_lat_unique = make_unique<Float64>(lat_name);
+    auto ar_bt_lat = ar_bt_lat_unique.get();
+    auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
+    auto ar_lat = ar_lat_unique.release();
+
+    // Dimensions
+    ar_lat->append_dim_ll(eos2_grid.ydim,ydim_path);
+    if (!eos2_grid.oned_latlon)
+        ar_lat->append_dim_ll(eos2_grid.xdim,xdim_path);
+
+    // Attributes
+    add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
+
+    // Add eos latlon predefined attribute eos_latlon that includes the grid name and the lat/lon.
+    string eos_latlon_value = eos2_grid.grid_name +" lat";
+    add_var_dap4_attr(ar_lat,"eos_latlon",attr_str_c,eos_latlon_value);
+
+
+    ar_lat->set_is_dap4(true);
+    d4_grp->add_var_nocopy(ar_lat);
+
+    auto ar_bt_lon_unique = make_unique<Float64>(lon_name);
+    auto ar_bt_lon = ar_bt_lon_unique.get();
+    auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
+    auto ar_lon = ar_lon_unique.release();
+    if (!eos2_grid.oned_latlon)
+        ar_lon->append_dim_ll(eos2_grid.ydim,ydim_path);
+    ar_lon->append_dim_ll(eos2_grid.xdim,xdim_path);
+
+    add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
+
+    // Add eos latlon predefined attribute eos_latlon that includes the grid name and the lat/lon.
+    eos_latlon_value = eos2_grid.grid_name +" lon";
+    add_var_dap4_attr(ar_lon,"eos_latlon",attr_str_c,eos_latlon_value);
+
+    ar_lon->set_is_dap4(true);
+    d4_grp->add_var_nocopy(ar_lon);
+
+}
+
+#ifdef USE_HDFEOS2_LIB
+bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eos2_grid_lls) {
+
+    bool ret_value = true;
+    // Here we need to check if this is an HDF-EOS2 grid file.
+    string dummy_grid_name;
+    bool is_eos2_file = false;
+    if (1 == check_special_eosfile(filename,dummy_grid_name,sdfd))
+        is_eos2_file = true;
+
+    if (is_eos2_file) {
+
+        vector<string> eos2_grid_names;
+        ret_value = HDFEOS2::Utility::ReadNamelist(filename.c_str(),GDinqgrid,eos2_grid_names);
+        if (ret_value == false)
+            return ret_value;
+
+        for (const auto& gname:eos2_grid_names) {
+            int32 ydim = 0;
+            int32 xdim = 0;
+            bool one_d_ll = false;
+            ret_value = obtain_eos2_gd_ll_info(filename,gname,ydim,xdim,one_d_ll);
+            if (ret_value ==false)
+                break;
+
+            eos2_grid_t eg;
+            eg.oned_latlon = one_d_ll;
+            eg.ydim = ydim;
+            eg.xdim = xdim;
+            eg.grid_name = gname;
+            eos2_grid_lls.push_back(eg);
+            
+        }
+    }
+
+    return ret_value;
+}
+
+bool obtain_eos2_gd_ll_info(const string & fname, const string & grid_name, int32 &ydim, int32 &xdim, bool &oned_ll) {
+
+    int32 gfid = GDopen(const_cast<char*>(fname.c_str()),DFACC_READ);
+    if (gfid <0) 
+        return false;
+    int32 gridid = GDattach(gfid, const_cast < char *>(grid_name.c_str ()));
+    if (gridid <0) {
+        GDclose(gfid);
+        return false;
+    }
+
+    /* Declare projection code, zone, etc grid parameters. */
+    int32 projcode = -1;
+    int32 zone     = -1;
+    int32 sphere   = -1;
+    float64 params[16];
+    float64 upleft[2];
+    float64 lowright[2];
+
+    if (GDprojinfo (gridid, &projcode, &zone, &sphere, params) == -1) {
+        GDdetach(gridid);
+        GDclose(gfid);
+        return false;
+    }   
+
+    // Retrieve dimensions and X-Y coordinates of corners
+    if (GDgridinfo(gridid, &xdim, &ydim, upleft,
+                           lowright) == -1) {
+        GDdetach(gridid);
+        GDclose(gfid);
+        return false;
+    }
+    
+    if (GCTP_CEA == projcode || GCTP_GEO == projcode)
+        oned_ll = true;
+
+    GDdetach(gridid);
+    GDclose(gfid);
+
+    return true;
+}
+#endif

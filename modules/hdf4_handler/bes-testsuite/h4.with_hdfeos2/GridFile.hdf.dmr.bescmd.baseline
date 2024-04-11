@@ -115,6 +115,26 @@ END
 </Value>
     </Attribute>
     <Group name="UTMGrid">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_UTMGrid"/>
+            <Dim name="/XDim_UTMGrid"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>UTMGrid lat</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_UTMGrid"/>
+            <Dim name="/XDim_UTMGrid"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>UTMGrid lon</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <Float32 name="Pollution">
                 <Dim name="/Time_UTMGrid"/>
@@ -126,12 +146,18 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>14</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/UTMGrid/Longitude /UTMGrid/Latitude</Value>
+                </Attribute>
             </Float32>
             <Float32 name="Vegetation">
                 <Dim name="/YDim_UTMGrid"/>
                 <Dim name="/XDim_UTMGrid"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>15</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/UTMGrid/Longitude /UTMGrid/Latitude</Value>
                 </Attribute>
             </Float32>
         </Group>
@@ -142,12 +168,35 @@ END
         </Group>
     </Group>
     <Group name="PolarGrid">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_PolarGrid"/>
+            <Dim name="/XDim_PolarGrid"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>PolarGrid lat</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_PolarGrid"/>
+            <Dim name="/XDim_PolarGrid"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>PolarGrid lon</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <Float32 name="Soil_Dryness">
                 <Dim name="/YDim_PolarGrid"/>
                 <Dim name="/XDim_PolarGrid"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>17</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/PolarGrid/Longitude /PolarGrid/Latitude</Value>
                 </Attribute>
             </Float32>
             <Float32 name="MRGFLD_Temperature">
@@ -165,6 +214,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>19</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/PolarGrid/Longitude /PolarGrid/Latitude</Value>
+                </Attribute>
             </Float32>
             <Float64 name="Spectra">
                 <Dim name="/Bands_PolarGrid"/>
@@ -173,11 +225,32 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>21</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/PolarGrid/Longitude /PolarGrid/Latitude</Value>
+                </Attribute>
             </Float64>
         </Group>
         <Group name="Grid_Attributes"/>
     </Group>
     <Group name="GEOGrid">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_GEOGrid"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>GEOGrid lat</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/XDim_GEOGrid"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>GEOGrid lon</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields"/>
         <Group name="Grid_Attributes"/>
     </Group>

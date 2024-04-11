@@ -939,6 +939,26 @@ END
         <Value>https://doi.org</Value>
     </Attribute>
     <Group name="grid1km">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_grid1km"/>
+            <Dim name="/XDim_grid1km"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1km lat</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_grid1km"/>
+            <Dim name="/XDim_grid1km"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1km lon</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <Int16 name="Sur_refl1">
                 <Dim name="/Orbits_grid1km"/>
@@ -965,6 +985,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>4</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl2">
@@ -993,6 +1016,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>6</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sur_refl3">
                 <Dim name="/Orbits_grid1km"/>
@@ -1019,6 +1045,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>8</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl4">
@@ -1047,6 +1076,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>10</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sur_refl5">
                 <Dim name="/Orbits_grid1km"/>
@@ -1073,6 +1105,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>12</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl6">
@@ -1101,6 +1136,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>14</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sur_refl7">
                 <Dim name="/Orbits_grid1km"/>
@@ -1127,6 +1165,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>16</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl8">
@@ -1155,6 +1196,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>18</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sur_refl9">
                 <Dim name="/Orbits_grid1km"/>
@@ -1181,6 +1225,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>20</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl10">
@@ -1209,6 +1256,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>22</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sur_refl11">
                 <Dim name="/Orbits_grid1km"/>
@@ -1235,6 +1285,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>24</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl12">
@@ -1263,6 +1316,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>26</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sigma_BRFn1">
                 <Dim name="/Orbits_grid1km"/>
@@ -1290,6 +1346,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>28</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sigma_BRFn2">
                 <Dim name="/Orbits_grid1km"/>
@@ -1316,6 +1375,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>30</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
                 </Attribute>
             </Int16>
             <UInt16 name="Status_QA">
@@ -1383,11 +1445,34 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>32</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1km/Longitude /grid1km/Latitude</Value>
+                </Attribute>
             </UInt16>
         </Group>
         <Group name="Grid_Attributes"/>
     </Group>
     <Group name="grid500m">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_grid500m"/>
+            <Dim name="/XDim_grid500m"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid500m lat</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_grid500m"/>
+            <Dim name="/XDim_grid500m"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid500m lon</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <Int16 name="Sur_refl_500m1">
                 <Dim name="/Orbits_grid500m"/>
@@ -1414,6 +1499,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>37</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid500m/Longitude /grid500m/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m2">
@@ -1442,6 +1530,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>39</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid500m/Longitude /grid500m/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m3">
                 <Dim name="/Orbits_grid500m"/>
@@ -1468,6 +1559,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>41</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid500m/Longitude /grid500m/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m4">
@@ -1496,6 +1590,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>43</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid500m/Longitude /grid500m/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m5">
                 <Dim name="/Orbits_grid500m"/>
@@ -1522,6 +1619,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>45</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid500m/Longitude /grid500m/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m6">
@@ -1550,6 +1650,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>47</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid500m/Longitude /grid500m/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Sur_refl_500m7">
                 <Dim name="/Orbits_grid500m"/>
@@ -1577,11 +1680,34 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>49</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid500m/Longitude /grid500m/Latitude</Value>
+                </Attribute>
             </Int16>
         </Group>
         <Group name="Grid_Attributes"/>
     </Group>
     <Group name="grid5km">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_grid5km"/>
+            <Dim name="/XDim_grid5km"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid5km lat</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_grid5km"/>
+            <Dim name="/XDim_grid5km"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid5km lon</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <Int16 name="cosSZA">
                 <Dim name="/Orbits_grid5km"/>
@@ -1608,6 +1734,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>54</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="cosVZA">
@@ -1636,6 +1765,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>56</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="RelAZ">
                 <Dim name="/Orbits_grid5km"/>
@@ -1662,6 +1794,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>58</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Scattering_Angle">
@@ -1690,6 +1825,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>60</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SAZ">
                 <Dim name="/Orbits_grid5km"/>
@@ -1716,6 +1854,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>62</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="VAZ">
@@ -1744,6 +1885,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>64</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Glint_Angle">
                 <Dim name="/Orbits_grid5km"/>
@@ -1771,6 +1915,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>66</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
+                </Attribute>
             </Int16>
             <Float32 name="Fv">
                 <Dim name="/Orbits_grid5km"/>
@@ -1792,6 +1939,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>68</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
+                </Attribute>
             </Float32>
             <Float32 name="Fg">
                 <Dim name="/Orbits_grid5km"/>
@@ -1812,6 +1962,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>70</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid5km/Longitude /grid5km/Latitude</Value>
                 </Attribute>
             </Float32>
         </Group>

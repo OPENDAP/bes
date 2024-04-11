@@ -100,6 +100,7 @@ class DmrppCommon {
     friend class DMZTest;
 
     bool d_compact = false;
+    bool d_missing_data = false;
 	std::string d_filters;
 	std::string d_byte_order;
 	std::vector<unsigned long long> d_chunk_dimension_sizes;
@@ -196,6 +197,17 @@ public:
         d_compact = value;
     }
 
+    /// @brief Returns true if this object describes the missing data.
+    virtual bool is_missing_data() const {
+        return d_missing_data;
+    }
+
+    /// @brief Set the value of the compact property
+    void set_missing_data(bool value) {
+        d_missing_data = value;
+    }
+
+
     /// @brief Returns true if this object utilizes shuffle compression.
     virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
 
@@ -269,6 +281,7 @@ public:
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
     void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "");
+    void print_missing_data_element(const libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "") const;
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 

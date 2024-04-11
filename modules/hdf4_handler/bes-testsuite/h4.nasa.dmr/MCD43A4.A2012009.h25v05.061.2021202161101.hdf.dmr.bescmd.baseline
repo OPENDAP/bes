@@ -908,6 +908,26 @@ END
 </Value>
     </Attribute>
     <Group name="MOD_Grid_BRDF">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_MOD_Grid_BRDF"/>
+            <Dim name="/XDim_MOD_Grid_BRDF"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MOD_Grid_BRDF lat</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_MOD_Grid_BRDF"/>
+            <Dim name="/XDim_MOD_Grid_BRDF"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>MOD_Grid_BRDF lon</Value>
+            </Attribute>
+        </Float64>
         <Group name="Data_Fields">
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band1">
                 <Dim name="/YDim_MOD_Grid_BRDF"/>
@@ -933,6 +953,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>4</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band2">
@@ -960,6 +983,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>25</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band3">
                 <Dim name="/YDim_MOD_Grid_BRDF"/>
@@ -985,6 +1011,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>49</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band4">
@@ -1012,6 +1041,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>73</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band5">
                 <Dim name="/YDim_MOD_Grid_BRDF"/>
@@ -1037,6 +1069,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>97</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
                 </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band6">
@@ -1064,6 +1099,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>121</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
+                </Attribute>
             </Byte>
             <Byte name="BRDF_Albedo_Band_Mandatory_Quality_Band7">
                 <Dim name="/YDim_MOD_Grid_BRDF"/>
@@ -1089,6 +1127,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>145</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
                 </Attribute>
             </Byte>
             <Int16 name="Nadir_Reflectance_Band1">
@@ -1125,6 +1166,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>169</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band2">
                 <Dim name="/YDim_MOD_Grid_BRDF"/>
@@ -1159,6 +1203,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>193</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band3">
@@ -1195,6 +1242,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>217</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band4">
                 <Dim name="/YDim_MOD_Grid_BRDF"/>
@@ -1229,6 +1279,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>241</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
                 </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band5">
@@ -1265,6 +1318,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>265</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band6">
                 <Dim name="/YDim_MOD_Grid_BRDF"/>
@@ -1300,6 +1356,9 @@ END
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>289</Value>
                 </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
+                </Attribute>
             </Int16>
             <Int16 name="Nadir_Reflectance_Band7">
                 <Dim name="/YDim_MOD_Grid_BRDF"/>
@@ -1334,6 +1393,9 @@ END
                 </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>313</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude</Value>
                 </Attribute>
             </Int16>
         </Group>

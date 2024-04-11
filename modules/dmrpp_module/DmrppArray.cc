@@ -2839,6 +2839,56 @@ void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
     }
 }
 
+bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,size_t source_data_size, string &err_msg) {
+
+    auto ssize = (uLong)source_data_size;
+    auto csize = (uLongf)ssize*2;
+    vector<Bytef> compressed_src;
+    compressed_src.resize(source_data_size*2);
+
+    int retval = compress(compressed_src.data(), &csize, source_data, ssize);
+    if (retval != 0) {
+        err_msg = "Fail to compress the data";
+        return false;
+    }
+
+    encoded_str = base64::Base64::encode(compressed_src.data(),(int)csize);
+
+    return true;
+
+}
+
+void missing_data_xml_element(const XMLWriter &xml, DmrppArray *da) {
+    switch (da->var()->type()) {
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+        case dods_float32_c:
+        case dods_float64_c: {
+            auto source_data_src = (const Bytef *) (da->get_buf());
+            
+            size_t source_data_size = da->width_ll();
+            string encoded_str;
+            string err_msg;
+            if (false == obtain_compress_encode_data(encoded_str,source_data_src,source_data_size,err_msg)) 
+                throw InternalErr(__FILE__, __LINE__, err_msg);
+
+            da->print_missing_data_element(xml, DmrppCommon::d_ns_prefix, encoded_str);
+            break;
+        }
+
+        default:
+            throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
+    }
+}
+
 /**
  * @brief Print information about one dimension of the array.
  * @param xml
@@ -2955,6 +3005,10 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
     // Not so for an int32.
     if (DmrppCommon::d_print_chunks && is_compact_layout() && read_p()) {
         compact_data_xml_element(xml, *this);
+    }
+
+    if (DmrppCommon::d_print_chunks && is_missing_data() && read_p()) {
+        missing_data_xml_element(xml, this);
     }
 
     // Is it an array of strings? Those have issues so we treat them special.

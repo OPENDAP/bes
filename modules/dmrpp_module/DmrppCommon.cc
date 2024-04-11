@@ -579,6 +579,19 @@ DmrppCommon::print_compact_element(XMLWriter &xml, const string &name_space, con
         throw BESInternalError("Could not write compact element.", __FILE__, __LINE__);
 }
 
+void
+DmrppCommon::print_missing_data_element(const XMLWriter &xml, const string &name_space, const std::string &encoded) const
+{
+    // Write element "missing_data" with dmrpp namespace:
+    ostringstream oss;
+    copy(encoded.begin(), encoded.end(), ostream_iterator<char>(oss, ""));
+    string sizes = oss.str();
+
+    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
+                                    (const xmlChar *) "missingdata", nullptr,
+                                    (const xmlChar *) sizes.c_str()) < 0)
+        throw BESInternalError("Could not write missingdata element.", __FILE__, __LINE__);
+}
 /**
  * @brief Print the DMR++ response for the Scalar types
  *

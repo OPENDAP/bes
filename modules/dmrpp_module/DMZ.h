@@ -98,6 +98,7 @@ private:
     static std::set< std::vector<unsigned long long> > get_chunk_map(const std::vector<std::shared_ptr<Chunk>> &chunks);
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
+    static void process_missing_data(libdap::BaseType *btp, const pugi::xml_node &missing_data);
     static void process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element);
 
     static pugi::xml_node get_variable_xml_node_helper(const pugi::xml_node &var_node, std::stack<libdap::BaseType*> &bt);
