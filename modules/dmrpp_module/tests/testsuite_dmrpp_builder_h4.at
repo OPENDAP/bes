@@ -17,3 +17,6 @@ AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/testvs2.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/vdata_linked_blocks.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/vdata_packed_linked_blocks.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/vdata_test.hdf])
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/sinusoid.hdf])
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/cea.hdf])
+

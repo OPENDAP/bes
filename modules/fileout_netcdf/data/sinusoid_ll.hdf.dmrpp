@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="sinusoid.hdf" dmrpp:href="data/sinusoid.hdf">
+    <Dimension name="YDim_grid1" size="4"/>
+    <Dimension name="XDim_grid1" size="4"/>
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.19</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName=&quot;grid1&quot;
+		XDim=4
+		YDim=4
+		UpperLeftPointMtrs=(-20000000.000000,1000000.000000)
+		LowerRightMtrs=(-19000000.000000,0.000000)
+		Projection=GCTP_SNSOID
+		ProjParams=(6371007.181000,0,0,0,0,0,0,0,0,0,0,0,0)
+		SphereCode=-1
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;temperature&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Group name="grid1">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_grid1"/>
+            <Dim name="/XDim_grid1"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1 lat</Value>
+            </Attribute>
+            <dmrpp:missingdata>eJz7osA562WlvMMXHPT6hL23l1WL4aQvOjy2OvGLCyfd3TC9pvXPR3tcNADQoUJ9</dmrpp:missingdata>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/YDim_grid1"/>
+            <Dim name="/XDim_grid1"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1 lon</Value>
+            </Attribute>
+            <dmrpp:missingdata>eJwBgAB//2IlSTLzcWZAjgbgomtFZsB/Mgl4yvxlwHFeMk0ptGXATdqH5k9zZsAZ7iPVBCtmwOUBwMO54mXArxVcsm6aZcBzDCHxmWFmwNLgp+eHGWbAMbUu3nXRZcCQibXUY4llwLwnh7DHWGbAb0fpDtIQZsAjZ0tt3MhlwNeGrcvmgGXAABlCpA==</dmrpp:missingdata>
+        </Float64>
+        <Group name="Data_Fields">
+            <Float32 name="temperature">
+                <Dim name="/YDim_grid1"/>
+                <Dim name="/XDim_grid1"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1/Longitude /grid1/Latitude</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="2502" nBytes="64" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Float32>
+        </Group>
+        <Group name="Grid_Attributes"/>
+    </Group>
+</Dataset>
