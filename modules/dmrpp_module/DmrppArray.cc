@@ -2858,7 +2858,7 @@ bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,si
 
 }
 
-void missing_data_xml_element(XMLWriter &xml, DmrppArray *da) {
+void missing_data_xml_element(const XMLWriter &xml, DmrppArray *da) {
     switch (da->var()->type()) {
         case dods_byte_c:
         case dods_char_c:
