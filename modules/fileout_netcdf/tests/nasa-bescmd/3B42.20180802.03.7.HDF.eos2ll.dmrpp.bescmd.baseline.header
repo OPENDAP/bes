@@ -1,0 +1,36 @@
+netcdf test {
+dimensions:
+	nlon = 1440 ;
+	nlat = 400 ;
+
+// global attributes:
+		:FileHeader = "AlgorithmID=3B42;\nAlgorithmVersion=3B42_7.0;\nFileName=3B42.20180802.03.7.HDF;\nGenerationDateTime=removed date-time;\nStartGranuleDateTime=removed date-time;\nStopGranuleDateTime=removed date-time;\nGranuleNumber=;\nNumberOfSwaths=0;\nNumberOfGrids=1;\nGranuleStart=;\nTimeInterval=3_HOUR;\nProcessingSystem=PPS;\nProductVersion=7;\nMissingData=;\n" ;
+		:FileInfo = "DataFormatVersion=m;\nTKCodeBuildVersion=1;\nMetadataVersion=m;\nFormatPackage=HDF Version 4.2 Release 4, January 25, 2009;\nBlueprintFilename=TRMM.V7.3B42.blueprint.xml;\nBlueprintVersion=BV_13;\nTKIOVersion=1.6;\nMetadataStyle=PVL;\nEndianType=LITTLE_ENDIAN;\n" ;
+		:GridHeader = "BinMethod=ARITHMETIC_MEAN;\nRegistration=CENTER;\nLatitudeResolution=0.25;\nLongitudeResolution=0.25;\nNorthBoundingCoordinate=50;\nSouthBoundingCoordinate=-50;\nEastBoundingCoordinate=180;\nWestBoundingCoordinate=-180;\nOrigin=SOUTHWEST;\n" ;
+		:history = "removed date-timex 3B42.20180802.03.7.HDF.eos2ll.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"3B42.20180802.03.7.HDF.eos2ll.dmrpp\"}]}]" ;
+
+group: Grid {
+  variables:
+  	float precipitation(nlon, nlat) ;
+  		precipitation:units = "mm/hr" ;
+  		precipitation:dmr_sds_ref = 4 ;
+  	float relativeError(nlon, nlat) ;
+  		relativeError:units = "mm/hr" ;
+  		relativeError:dmr_sds_ref = 6 ;
+  	short satPrecipitationSource(nlon, nlat) ;
+  		satPrecipitationSource:dmr_sds_ref = 8 ;
+  	float HQprecipitation(nlon, nlat) ;
+  		HQprecipitation:units = "mm/hr" ;
+  		HQprecipitation:dmr_sds_ref = 10 ;
+  	float IRprecipitation(nlon, nlat) ;
+  		IRprecipitation:units = "mm/hr" ;
+  		IRprecipitation:dmr_sds_ref = 12 ;
+  	byte satObservationTime(nlon, nlat) ;
+  		satObservationTime:units = "minutes" ;
+  		satObservationTime:dmr_sds_ref = 14 ;
+
+  // group attributes:
+  		:GridHeader = "BinMethod=ARITHMETIC_MEAN;\nRegistration=CENTER;\nLatitudeResolution=0.25;\nLongitudeResolution=0.25;\nNorthBoundingCoordinate=50;\nSouthBoundingCoordinate=-50;\nEastBoundingCoordinate=180;\nWestBoundingCoordinate=-180;\nOrigin=SOUTHWEST;\n" ;
+  } // group Grid
+}
