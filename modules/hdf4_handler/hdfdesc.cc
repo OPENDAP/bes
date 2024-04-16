@@ -241,7 +241,12 @@ void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref);
 int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls);
 void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string&filename);
 
-// 6. Helper functions
+// 6. Special HDF4 handlings
+
+void add_sp_hdf4_info(D4Group *d4_grp, const string &filename);
+void add_sp_hdf4_trim_info(D4Group *d4_grp, const string &filename);
+
+// 7. Helper functions
 void add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref);
 BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string & filename);
 D4AttributeType h4type_to_dap4_attrtype(int32 h4_type);
@@ -4303,9 +4308,15 @@ void read_dmr(DMR *dmr, const string &filename) {
     // SD file attributes under the root group.
     read_sd_attrs(root_grp,fileid, sdfd);
 
+    // Check if this file is a special HDF4 file that needs to add more information
+    // Now the only case is TRMM Level 3B42. We need to add lat/lon fields.
+    add_sp_hdf4_info(root_grp, filename);
+
+
     // Now go to handle HDF4 vgroups and the objects attached to these vgroups.
     read_dmr_vlone_groups(root_grp, fileid, sdfd, filename);
 
+    
     Hclose(fileid);
     SDend(sdfd);
 
@@ -5839,3 +5850,78 @@ bool obtain_eos2_gd_ll_info(const string & fname, const string & grid_name, int3
     return true;
 }
 #endif
+
+void add_sp_hdf4_info(D4Group *d4_grp, const string &filename) {
+
+    BESDEBUG("h4","Coming to add_sp_hdf4_info "<<endl);
+
+    D4Attributes *d4_attrs = d4_grp->attributes();
+    if (d4_attrs->find("FileHeader")) {
+        D4Attribute *d4_attr =  d4_attrs->find("GridHeader");
+        if (d4_attr) {
+            string d_attr_value = d4_attr->value(0);
+            if (d_attr_value.find("Origin")!=string::npos)
+                add_sp_hdf4_trim_info(d4_grp,filename);
+        }  
+    }
+
+}
+
+void add_sp_hdf4_trim_info(D4Group *d4_grp, const string& filename) {
+    
+    BESDEBUG("h4","Coming to add_sp_hdf4_trim_info "<<endl);
+
+    // Obtain the dimension names.
+    D4Dimensions *dims = d4_grp->dims();
+    string lat_name = "nlat";
+    int lat_size = 0;
+    string lon_name = "nlon";
+    int lon_size = 0;
+    
+    int num_dims = 0;
+    for (D4Dimensions::D4DimensionsIter di = dims->dim_begin(), de = dims->dim_end(); di != de; ++di) {
+        num_dims++;
+        if ((*di)->name() == "nlat")
+            lat_size = (*di)->size();          
+        else if ((*di)->name() == "nlon")
+            lon_size = (*di)->size();          
+    }
+
+    if ((lat_size !=0) && (lon_size !=0) && num_dims ==2) {
+
+        // Array
+        auto ar_bt_lat_unique = make_unique<Float64>(lat_name);
+        auto ar_bt_lat = ar_bt_lat_unique.get();
+        auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
+        auto ar_lat = ar_lat_unique.release();
+    
+        // Dimensions
+        ar_lat->append_dim_ll(lat_size,"/"+lat_name);
+    
+        // Attributes
+        add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
+    
+        // Add special HDF4 latlon predefined attribute sp_h4_ll that includes the lat name.
+        string sp_h4_value = "lat";
+        add_var_dap4_attr(ar_lat,"sp_h4_ll",attr_str_c,sp_h4_value);
+        ar_lat->set_is_dap4(true);
+        d4_grp->add_var_nocopy(ar_lat);
+    
+        auto ar_bt_lon_unique = make_unique<Float64>(lon_name);
+        auto ar_bt_lon = ar_bt_lon_unique.get();
+        auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
+        auto ar_lon = ar_lon_unique.release();
+        ar_lon->append_dim_ll(lon_size,"/"+lon_name);
+    
+        add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
+    
+        // Add special HDF4 latlon predefined attribute sp_h4_ll that includes the lon name.
+        sp_h4_value = "lon";
+        add_var_dap4_attr(ar_lon,"sp_h4_ll",attr_str_c,sp_h4_value);
+        ar_lon->set_is_dap4(true);
+        d4_grp->add_var_nocopy(ar_lon);
+    
+    }
+
+}
+  
