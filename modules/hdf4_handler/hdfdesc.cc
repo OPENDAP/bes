@@ -244,7 +244,8 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
 // 6. Special HDF4 handlings
 
 bool add_sp_hdf4_info(D4Group *d4_grp, const string &filename, string & err_msg);
-bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string &filename, D4Attribute *d4_attr, string &err_msg);
+bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string &filename, const D4Attribute *d4_attr, string &err_msg);
+void add_sp_hdf4_additional_info(D4Group *d4_grp);
 
 // 7. Helper functions
 void add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref);
@@ -4311,8 +4312,8 @@ void read_dmr(DMR *dmr, const string &filename) {
     // Check if this file is a special HDF4 file that needs to add more information
     // Now the only case is TRMM Level 3B42. We need to add lat/lon fields.
     string err_msg;
-    bool ret_value = add_sp_hdf4_info(root_grp, filename, err_msg);
-    if (ret_value == false) {
+    bool is_sp_hdf4_file = add_sp_hdf4_info(root_grp, filename, err_msg);
+    if (is_sp_hdf4_file  == false) {
         close_vgroup_fileids(fileid,sdfd,-1); 
         throw InternalErr(__FILE__, __LINE__, err_msg);
     }
@@ -4320,7 +4321,8 @@ void read_dmr(DMR *dmr, const string &filename) {
     // Now go to handle HDF4 vgroups and the objects attached to these vgroups.
     read_dmr_vlone_groups(root_grp, fileid, sdfd, filename);
 
-    
+    if (is_sp_hdf4_file)
+        add_sp_hdf4_additional_info(root_grp);
     Hclose(fileid);
     SDend(sdfd);
 
@@ -5874,7 +5876,7 @@ bool add_sp_hdf4_info(D4Group *d4_grp, const string &filename, string &err_msg) 
 
 }
 
-bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, D4Attribute *d4_attr, string &err_msg) {
+bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attribute *d4_attr, string &err_msg) {
     
     BESDEBUG("h4","Coming to add_sp_hdf4_trmm_info "<<endl);
 
@@ -5890,9 +5892,9 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, D4Attribute 
     for (D4Dimensions::D4DimensionsIter di = dims->dim_begin(), de = dims->dim_end(); di != de; ++di) {
         num_dims++;
         if ((*di)->name() == "nlat")
-            lat_size = (*di)->size();          
+            lat_size = (int)((*di)->size());          
         else if ((*di)->name() == "nlon")
-            lon_size = (*di)->size();          
+            lon_size = (int)((*di)->size());          
     }
 
     if ((lat_size !=0) && (lon_size !=0) && num_dims ==2) {
@@ -5952,9 +5954,24 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, D4Attribute 
         add_var_dap4_attr(ar_lon,"sp_h4_ll",attr_str_c,sp_h4_value);
         ar_lon->set_is_dap4(true);
         d4_grp->add_var_nocopy(ar_lon);
-    
     }
+    
     return ret_value;
 
 }
+
+
+void add_sp_hdf4_additional_info(D4Group *d4_grp) {
+
+    // variable HQprecipitation have the fillvalue -9999.9 but it doesn't have the _FillValue attribute.
+    // Add it here.
+    D4Group* grid_grp = d4_grp->find_child_grp("Grid");
+    if (grid_grp) {
+        BaseType *hq_prec = grid_grp->find_var("HQprecipitation");
+        if (hq_prec) 
+            add_var_dap4_attr(hq_prec,"_FillValue",attr_float32_c,"-9999.9");
+    }
+ 
+}
+
   
