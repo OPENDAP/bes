@@ -990,7 +990,7 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
 
 }
 
-bool add_missing_sp_latlon(const string &filename,BaseType *btp, const D4Attribute *sp_ll_attr, string &err_msg) {
+bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string &err_msg) {
 
     VERBOSE(cerr<<"Coming to add_missing_sp_latlon"<<endl);
     
@@ -1112,7 +1112,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
             attr = d4_attrs->find("sp_h4_ll");
             if (attr) {
                 string err_msg;
-                bool ret_value = add_missing_sp_latlon(filename, btp, attr,err_msg);
+                bool ret_value = add_missing_sp_latlon(btp, attr,err_msg);
                 if (ret_value == false) {
                     close_hdf4_file_ids(sd_id,file_id);
                     throw BESInternalError(err_msg,__FILE__,__LINE__);
