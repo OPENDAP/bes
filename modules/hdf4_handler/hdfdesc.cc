@@ -5864,7 +5864,7 @@ bool add_sp_hdf4_info(D4Group *d4_grp, const string &filename, string &err_msg) 
 
     D4Attributes *d4_attrs = d4_grp->attributes();
     if (d4_attrs->find("FileHeader")) {
-        D4Attribute *d4_attr =  d4_attrs->find("GridHeader");
+        const D4Attribute *d4_attr =  d4_attrs->find("GridHeader");
         if (d4_attr) {
             string d_attr_value = d4_attr->value(0);
             if (d_attr_value.find("Origin")!=string::npos)
