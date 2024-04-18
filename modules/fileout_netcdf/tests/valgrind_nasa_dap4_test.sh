@@ -43,7 +43,10 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/OMPS-NPP_N
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/OMG_Bathy_SBES_L2_20150804000000.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/daymet_v4_daily_na_prcp_2010.nc.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/SMAP_L3_SM_P_20150406_R14010_001.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
+# Comment out this test since the dataset contains fixed-size chunked string arrays and the dmrpp module generates memory leaks
+# when accessing a fixed-size chunked string array. This is documented in the ticket https://bugs.earthdata.nasa.gov/browse/HYRAX-1225
+# We will resume this test until the above ticket is fixed.
+# valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/SMAP_L3_SM_P_20150406_R14010_001.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/big_1d_shuf.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/d_dset_4d.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmrpp.bescmd >nasa_dap4_default_test.nc
