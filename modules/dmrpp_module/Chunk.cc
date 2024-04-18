@@ -117,7 +117,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     if (code == "AccessDenied") {
         stringstream msg;
         msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: "
-            << data_url->protocol() << "://" << data_url->host() << data_url->path() << ") Object Store Message: "
+            << data_url->protocol() /*<< "://"*/ << data_url->host() << data_url->path() << ") Object Store Message: "
             << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str() << endl);
