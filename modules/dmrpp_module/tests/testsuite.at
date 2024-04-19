@@ -52,6 +52,10 @@ AT_BESCMD_RESPONSE_TEST([contiguous/t_compound_simple_scalar_memb_array.h5.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_scalar_memb_array.h5.dap])
 
 
+dnl Check the dmr file that has the group hierarchy
+AT_BESCMD_RESPONSE_TEST([contiguous/nc4_group_atomic_default.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/nc4_group_atomic_default.h5.dap])
+
 dnl Check netCDF's var name = dimension name handling
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/nc4_group_var_dim_name_same.h5.dap])
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_group_atomic_default.h5">
+    <Dimension name="dim1" size="2"/>
+    <Int32 name="dim1">
+        <Dim name="/dim1"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int32>
+    <Float32 name="d1">
+        <Dim name="/dim1"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+        <Map name="/dim1"/>
+    </Float32>
+    <Group name="g1">
+        <Dimension name="dim2" size="3"/>
+        <Int32 name="dim2">
+            <Dim name="/g1/dim2"/>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                removed checksum
+            </Attribute>
+        </Int32>
+        <Float32 name="d2">
+            <Dim name="/dim1"/>
+            <Dim name="/g1/dim2"/>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                removed checksum
+            </Attribute>
+            <Map name="/dim1"/>
+            <Map name="/g1/dim2"/>
+        </Float32>
+    </Group>
+</Dataset>
+
+The data:
+Int32 dim1[dim1 = 2] = {2, 4};
+Float32 d1[dim1 = 2] = {2, 4};
+Int32 dim2[dim2 = 3] = {10, 20, 30};
+Float32 d2[dim1 = 2][dim2 = 3] = {{10, 20, 30},{40, 50, 60}};
+
