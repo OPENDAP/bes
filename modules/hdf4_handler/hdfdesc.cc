@@ -241,7 +241,13 @@ void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref);
 int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls);
 void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string&filename);
 
-// 6. Helper functions
+// 6. Special HDF4 handlings
+
+bool add_sp_hdf4_info(D4Group *d4_grp, const string &filename, string & err_msg);
+bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string &filename, const D4Attribute *d4_attr, string &err_msg);
+void add_sp_hdf4_additional_info(D4Group *d4_grp);
+
+// 7. Helper functions
 void add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref);
 BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string & filename);
 D4AttributeType h4type_to_dap4_attrtype(int32 h4_type);
@@ -4303,9 +4309,20 @@ void read_dmr(DMR *dmr, const string &filename) {
     // SD file attributes under the root group.
     read_sd_attrs(root_grp,fileid, sdfd);
 
+    // Check if this file is a special HDF4 file that needs to add more information
+    // Now the only case is TRMM Level 3B42. We need to add lat/lon fields.
+    string err_msg;
+    bool is_sp_hdf4_file = add_sp_hdf4_info(root_grp, filename, err_msg);
+    if (is_sp_hdf4_file  == false) {
+        close_vgroup_fileids(fileid,sdfd,-1); 
+        throw InternalErr(__FILE__, __LINE__, err_msg);
+    }
+
     // Now go to handle HDF4 vgroups and the objects attached to these vgroups.
     read_dmr_vlone_groups(root_grp, fileid, sdfd, filename);
 
+    if (is_sp_hdf4_file)
+        add_sp_hdf4_additional_info(root_grp);
     Hclose(fileid);
     SDend(sdfd);
 
@@ -5839,3 +5856,122 @@ bool obtain_eos2_gd_ll_info(const string & fname, const string & grid_name, int3
     return true;
 }
 #endif
+
+bool add_sp_hdf4_info(D4Group *d4_grp, const string &filename, string &err_msg) {
+
+    bool ret_value = true;
+    BESDEBUG("h4","Coming to add_sp_hdf4_info "<<endl);
+
+    D4Attributes *d4_attrs = d4_grp->attributes();
+    if (d4_attrs->find("FileHeader")) {
+        const D4Attribute *d4_attr =  d4_attrs->find("GridHeader");
+        if (d4_attr) {
+            string d_attr_value = d4_attr->value(0);
+            if (d_attr_value.find("Origin")!=string::npos)
+                ret_value = add_sp_hdf4_trmm_info(d4_grp,filename,d4_attr, err_msg);
+        }  
+    }
+
+    return ret_value;
+
+}
+
+bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attribute *d4_attr, string &err_msg) {
+    
+    BESDEBUG("h4","Coming to add_sp_hdf4_trmm_info "<<endl);
+
+    bool ret_value = true;
+    // Obtain the dimension names.
+    D4Dimensions *dims = d4_grp->dims();
+    string lat_name = "nlat";
+    int lat_size = 0;
+    string lon_name = "nlon";
+    int lon_size = 0;
+    
+    int num_dims = 0;
+    for (D4Dimensions::D4DimensionsIter di = dims->dim_begin(), de = dims->dim_end(); di != de; ++di) {
+        num_dims++;
+        if ((*di)->name() == "nlat")
+            lat_size = (int)((*di)->size());          
+        else if ((*di)->name() == "nlon")
+            lon_size = (int)((*di)->size());          
+    }
+
+    if ((lat_size !=0) && (lon_size !=0) && num_dims ==2) {
+
+        // Array
+        auto ar_bt_lat_unique = make_unique<Float32>(lat_name);
+        auto ar_bt_lat = ar_bt_lat_unique.get();
+        auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
+        auto ar_lat = ar_lat_unique.release();
+    
+        // Dimensions
+        ar_lat->append_dim_ll(lat_size,"/"+lat_name);
+    
+        // Attributes
+        add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
+    
+        // Retrieve lat/lon starting point and step information.
+        string grid_header_value = d4_attr->value(0);
+        int lat_size_gh = 0;
+        int lon_size_gh = 0;
+        float lat_start = 0;
+        float lon_start = 0;
+        float lat_res = 0;
+        float lon_res = 0;
+        
+        vector<char> grid_header_value_vc(grid_header_value.begin(),grid_header_value.end());
+        HDFCFUtil::parser_trmm_v7_gridheader(grid_header_value_vc,lat_size_gh,lon_size_gh,
+                                         lat_start,lon_start,lat_res,lon_res,false);
+
+        if(lat_size != lat_size_gh || lon_size != lon_size_gh) {
+            err_msg = "Either the latitude size is not the same as the size retrieved from the gridheader";
+            err_msg = " or the longitude size is not the same as the size retrieved from the gridheader\n";
+            err_msg = "The lat_size is " + to_string(lat_size) + '\n';
+            err_msg = "The lat_size retrieved from the header is " + to_string(lat_size_gh) + '\n';
+            err_msg = "The lon_size is " + to_string(lon_size) + '\n';
+            err_msg = "The lon_size retrieved from the header is " + to_string(lon_size_gh) + '\n';
+            ret_value = false;
+            
+        }
+
+        // Add special HDF4 latlon predefined attribute sp_h4_ll that includes the lat name.
+        string sp_h4_value = "lat " + to_string(lat_start) + ' '+to_string(lat_res);
+        add_var_dap4_attr(ar_lat,"sp_h4_ll",attr_str_c,sp_h4_value);
+        ar_lat->set_is_dap4(true);
+        d4_grp->add_var_nocopy(ar_lat);
+    
+        auto ar_bt_lon_unique = make_unique<Float32>(lon_name);
+        auto ar_bt_lon = ar_bt_lon_unique.get();
+        auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
+        auto ar_lon = ar_lon_unique.release();
+        ar_lon->append_dim_ll(lon_size,"/"+lon_name);
+    
+        add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
+    
+        // Add special HDF4 latlon predefined attribute sp_h4_ll that includes the lon name.
+        sp_h4_value = "lon " + to_string(lon_start) + ' '+to_string(lon_res);
+        add_var_dap4_attr(ar_lon,"sp_h4_ll",attr_str_c,sp_h4_value);
+        ar_lon->set_is_dap4(true);
+        d4_grp->add_var_nocopy(ar_lon);
+    }
+    
+    return ret_value;
+
+}
+
+
+void add_sp_hdf4_additional_info(D4Group *d4_grp) {
+
+    // variable HQprecipitation have the fillvalue -9999.9 but it doesn't have the _FillValue attribute.
+    // Add it here.
+    D4Group* grid_grp = d4_grp->find_child_grp("Grid");
+    if (grid_grp) {
+        BaseType *hq_prec = grid_grp->find_var("HQprecipitation");
+        if (hq_prec) 
+            add_var_dap4_attr(hq_prec,"_FillValue",attr_float32_c,"-9999.9");
+    }
+ 
+}
+
+  

@@ -799,8 +799,10 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
     VERBOSE(cerr<<"eos_ll_attr_value: "<<eos_ll_attr_value <<endl);
 
     size_t space_pos = eos_ll_attr_value.find(' ');
-    if (space_pos ==string::npos) 
-        throw BESInternalError("Attribute eos_latlon must have space inside",__FILE__,__LINE__);
+    if (space_pos ==string::npos) { 
+        err_msg = "Attribute eos_latlon must have space inside";
+        return false;
+    }
     string grid_name = eos_ll_attr_value.substr(0,space_pos);
     string ll_name = eos_ll_attr_value.substr(space_pos+1);
 
@@ -988,8 +990,66 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
 
 }
 
+bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string &err_msg) {
+
+    VERBOSE(cerr<<"Coming to add_missing_sp_latlon"<<endl);
+    
+    string sp_ll_attr_value = sp_ll_attr->value(0);
+
+    VERBOSE(cerr<<"sp_ll_attr_value: "<<sp_ll_attr_value <<endl);
+    size_t space_pos = sp_ll_attr_value.find(' ');
+    if (space_pos ==string::npos) { 
+        err_msg = "Attribute sp_h4_ll must have space inside";
+        return false;
+    }
+    string ll_name = sp_ll_attr_value.substr(0,space_pos);
+    VERBOSE(cerr<<"ll_name: "<<ll_name<<endl);
+    
+    size_t sec_space_pos = sp_ll_attr_value.find(' ',space_pos+1);
+    if (sec_space_pos ==string::npos) { 
+        err_msg = "Attribute sp_h4_ll must have two spaces inside";
+        return false;
+    }
+    string ll_start_str = sp_ll_attr_value.substr(space_pos+1,sec_space_pos-space_pos-1);
+    VERBOSE(cerr<<"ll_start: "<<ll_start_str<<endl);
+
+    string ll_res_str = sp_ll_attr_value.substr(sec_space_pos);
+    VERBOSE(cerr<<"ll_res: "<<ll_res_str<<endl);
+
+    float ll_start = stof(ll_start_str);
+    float ll_res   = stof(ll_res_str);
+
+    auto dc = dynamic_cast<DmrppCommon *>(btp);
+    if (!dc) {
+        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_sp_latlon";
+        return false;
+    }
+    auto da = dynamic_cast<DmrppArray *>(btp);
+    if (!da) {
+        err_msg = "Expected to find a DmrppArray instance but did not in add_missing_sp_latlon";
+        return false;
+    }
+
+    if (da->dimensions() !=1){
+        err_msg = "The number of dimensions of the array should be 1.";
+        return false;
+    }
+    
+
+    da->set_missing_data(true);
+ 
+    vector<float32> ll_value;
+    ll_value.resize((size_t)(da->length()));
+    for (int64_t i = 0; i <da->length(); i++) {
+        ll_value[i] = ll_start+ll_res/2+i*ll_res;
+    }
+
+    da->set_value(ll_value.data(),da->length());
+    return true;
+
+
+}
 /**
- * @note see write_array_chunks_byte_stream() in h4mapwriter for the original version of this code.
  * @param file
  * @param btp
  * @return true if the produced output that seems valid, false otherwise.
@@ -1049,11 +1109,21 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
 
         }
         else { 
-            if (!attr) {
+            attr = d4_attrs->find("sp_h4_ll");
+            if (attr) {
+                string err_msg;
+                bool ret_value = add_missing_sp_latlon(btp, attr,err_msg);
+                if (ret_value == false) {
+                    close_hdf4_file_ids(sd_id,file_id);
+                    throw BESInternalError(err_msg,__FILE__,__LINE__);
+                }
+            }
+            else {
                 close_hdf4_file_ids(sd_id,file_id);
-                string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon for ";
+                string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon for ";
                 throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
             }
+            
         }        
     }
  
