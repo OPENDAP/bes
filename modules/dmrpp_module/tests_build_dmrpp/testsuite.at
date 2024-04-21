@@ -73,6 +73,7 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/d_int.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/grid_1_2d.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/grid_2_2d.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/nc4_group_atomic.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/nc4_group_atomic_default.h5])
 #
 # ntypes.h5 has a bunch of really odd variables and default fill values
 # for them all. Not sure where to go with this. Kent suggested that we
