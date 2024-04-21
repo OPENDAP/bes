@@ -177,6 +177,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_int64_dap4_d4.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_int64_dap4_d4_constraint.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_wrong_fvalue_type_dap4_all.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/nc4_var_dim_name_same.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/nc4_group_atomic_cf.h5.dmrpp.bescmd)
 
 dnl Add response that supports group(HDF5 default response et al.)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic.h5.2.bescmd)
