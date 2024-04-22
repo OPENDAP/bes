@@ -50,6 +50,8 @@ AT_BESCMD_RESPONSE_TEST([contiguous/t_compound_simple_scalar.h5.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_scalar.h5.dap])
 AT_BESCMD_RESPONSE_TEST([contiguous/t_compound_simple_scalar_memb_array.h5.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_scalar_memb_array.h5.dap])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_compound_simple_scalar_be.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_scalar_be.h5.dap])
 
 
 dnl Check the dmr file that has the group hierarchy
