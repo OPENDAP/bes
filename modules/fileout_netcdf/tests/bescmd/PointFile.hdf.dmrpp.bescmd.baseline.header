@@ -1,0 +1,75 @@
+netcdf test {
+
+// global attributes:
+		:HDFEOSVersion = "HDFEOS_V2.0" ;
+		:StructMetadata_0 = "GROUP=SwathStructure\nEND_GROUP=SwathStructure\nGROUP=GridStructure\nEND_GROUP=GridStructure\nGROUP=PointStructure\n\tGROUP=POINT_1\n\t\tPointName=\"Simple Point\"\n\t\tGROUP=Level\n\t\t\tGROUP=Level_0\n\t\t\t\tLevelName=\"Sensor\"\n\t\t\t\tOBJECT=PointField_1\n\t\t\t\t\tPointFieldName=\"Time\"\n\t\t\t\t\tDataType=DFNT_FLOAT64\n\t\t\t\t\tOrder=1\n\t\t\t\tEND_OBJECT=PointField_1\n\t\t\t\tOBJECT=PointField_2\n\t\t\t\t\tPointFieldName=\"Concentration\"\n\t\t\t\t\tDataType=DFNT_FLOAT32\n\t\t\t\t\tOrder=4\n\t\t\t\tEND_OBJECT=PointField_2\n\t\t\t\tOBJECT=PointField_3\n\t\t\t\t\tPointFieldName=\"Species\"\n\t\t\t\t\tDataType=DFNT_CHAR8\n\t\t\t\t\tOrder=4\n\t\t\t\tEND_OBJECT=PointField_3\n\t\t\tEND_GROUP=Level_0\n\t\tEND_GROUP=Level\n\t\tGROUP=LevelLink\n\t\tEND_GROUP=LevelLink\n\tEND_GROUP=POINT_1\n\tGROUP=POINT_2\n\t\tPointName=\"FixedBuoy Point\"\n\t\tGROUP=Level\n\t\tEND_GROUP=Level\n\t\tGROUP=LevelLink\n\t\tEND_GROUP=LevelLink\n\tEND_GROUP=POINT_2\n\tGROUP=POINT_3\n\t\tPointName=\"FloatBuoy Point\"\n\t\tGROUP=Level\n\t\tEND_GROUP=Level\n\t\tGROUP=LevelLink\n\t\tEND_GROUP=LevelLink\n\tEND_GROUP=POINT_3\nEND_GROUP=PointStructure\nEND\n" ;
+		:history = "removed date-timex PointFile.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"PointFile.hdf.dmrpp\"}]}]" ;
+
+group: Simple_Point {
+  dimensions:
+  	dim1 = 8 ;
+  variables:
+  	ubyte LevelWritten(dim1) ;
+  		LevelWritten:dmr_vdata_ref = 3 ;
+
+  group: Data_Vgroup {
+    dimensions:
+    	sdim1 = 15 ;
+    	sdim2 = 15 ;
+    	sdim3 = 4 ;
+    	sdim4 = 15 ;
+    	sdim5 = 4 ;
+    variables:
+    	double Sensor.Time(sdim1) ;
+    	float Sensor.Concentration(sdim2, sdim3) ;
+    	byte Sensor.Species(sdim4, sdim5) ;
+    } // group Data_Vgroup
+
+  group: Linkage_Vgroup {
+    } // group Linkage_Vgroup
+
+  group: Point_Attributes {
+    } // group Point_Attributes
+  } // group Simple_Point
+
+group: FixedBuoy_Point {
+  dimensions:
+  	dim2 = 8 ;
+  variables:
+  	ubyte LevelWritten(dim2) ;
+  		LevelWritten:dmr_vdata_ref = 8 ;
+
+  group: Data_Vgroup {
+    } // group Data_Vgroup
+
+  group: Linkage_Vgroup {
+    } // group Linkage_Vgroup
+
+  group: Point_Attributes {
+
+    // group attributes:
+    		:int32 = 9999 ;
+    } // group Point_Attributes
+  } // group FixedBuoy_Point
+
+group: FloatBuoy_Point {
+  dimensions:
+  	dim3 = 8 ;
+  variables:
+  	ubyte LevelWritten(dim3) ;
+  		LevelWritten:dmr_vdata_ref = 13 ;
+
+  group: Data_Vgroup {
+    } // group Data_Vgroup
+
+  group: Linkage_Vgroup {
+    } // group Linkage_Vgroup
+
+  group: Point_Attributes {
+
+    // group attributes:
+    		:float32 = -7.5f ;
+    } // group Point_Attributes
+  } // group FloatBuoy_Point
+}
