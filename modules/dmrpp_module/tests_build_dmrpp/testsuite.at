@@ -90,6 +90,9 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple_scalar_memb_arra
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple_array.h5])
 
+# Test the big-endian scalar compound datatype data.
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/comp_scalar_be.h5])
+
 # Test data files with various fill value schemes. These won't work until
 # more work is done on fill value support. jhrg 4/22/22
 # Works now. jhrg 5/25/22
