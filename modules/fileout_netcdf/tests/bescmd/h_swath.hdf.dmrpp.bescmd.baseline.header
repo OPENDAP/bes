@@ -1,0 +1,42 @@
+netcdf test {
+dimensions:
+	ZDim_Swath = 4 ;
+	NDim_Swath = 8 ;
+	fakeDim2 = 4 ;
+	fakeDim3 = 8 ;
+variables:
+	float temperature(fakeDim2, fakeDim3) ;
+		temperature:dmr_sds_ref = 21 ;
+
+// global attributes:
+		:HDFEOSVersion = "HDFEOS_V2.18" ;
+		:StructMetadata_0 = "GROUP=SwathStructure\n\tGROUP=SWATH_1\n\t\tSwathName=\"Swath\"\n\t\tGROUP=Dimension\n\t\t\tOBJECT=Dimension_1\n\t\t\t\tDimensionName=\"ZDim\"\n\t\t\t\tSize=4\n\t\t\tEND_OBJECT=Dimension_1\n\t\t\tOBJECT=Dimension_2\n\t\t\t\tDimensionName=\"NDim\"\n\t\t\t\tSize=8\n\t\t\tEND_OBJECT=Dimension_2\n\t\tEND_GROUP=Dimension\n\t\tGROUP=DimensionMap\n\t\tEND_GROUP=DimensionMap\n\t\tGROUP=IndexDimensionMap\n\t\tEND_GROUP=IndexDimensionMap\n\t\tGROUP=GeoField\n\t\t\tOBJECT=GeoField_1\n\t\t\t\tGeoFieldName=\"pressure\"\n\t\t\t\tDataType=DFNT_FLOAT32\n\t\t\t\tDimList=(\"ZDim\")\n\t\t\tEND_OBJECT=GeoField_1\n\t\t\tOBJECT=GeoField_2\n\t\t\t\tGeoFieldName=\"Latitude\"\n\t\t\t\tDataType=DFNT_FLOAT32\n\t\t\t\tDimList=(\"NDim\")\n\t\t\tEND_OBJECT=GeoField_2\n\t\t\tOBJECT=GeoField_3\n\t\t\t\tGeoFieldName=\"Longitude\"\n\t\t\t\tDataType=DFNT_FLOAT32\n\t\t\t\tDimList=(\"NDim\")\n\t\t\tEND_OBJECT=GeoField_3\n\t\tEND_GROUP=GeoField\n\t\tGROUP=DataField\n\t\t\tOBJECT=DataField_1\n\t\t\t\tDataFieldName=\"temperature\"\n\t\t\t\tDataType=DFNT_FLOAT32\n\t\t\t\tDimList=(\"ZDim\",\"NDim\")\n\t\t\tEND_OBJECT=DataField_1\n\t\tEND_GROUP=DataField\n\t\tGROUP=MergedFields\n\t\tEND_GROUP=MergedFields\n\tEND_GROUP=SWATH_1\nEND_GROUP=SwathStructure\nGROUP=GridStructure\nEND_GROUP=GridStructure\nGROUP=PointStructure\nEND_GROUP=PointStructure\nEND\n" ;
+		:history = "removed date-timex h_swath.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"h_swath.hdf.dmrpp\"}]}]" ;
+
+group: Swath {
+
+  group: Geolocation_Fields {
+    dimensions:
+    	dim1 = 4 ;
+    	dim2 = 8 ;
+    	dim3 = 8 ;
+    variables:
+    	float pressure(dim1) ;
+    		pressure:dmr_vdata_ref = 6 ;
+    	float Latitude(dim2) ;
+    		Latitude:dmr_vdata_ref = 7 ;
+    	float Longitude(dim3) ;
+    		Longitude:dmr_vdata_ref = 8 ;
+    } // group Geolocation_Fields
+
+  group: Data_Fields {
+    variables:
+    	float temperature(ZDim_Swath, NDim_Swath) ;
+    		temperature:dmr_sds_ref = 9 ;
+    } // group Data_Fields
+
+  group: Swath_Attributes {
+    } // group Swath_Attributes
+  } // group Swath
+}

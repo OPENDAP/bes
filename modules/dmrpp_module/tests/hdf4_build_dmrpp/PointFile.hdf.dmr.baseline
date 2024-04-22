@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="PointFile.hdf">
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.0</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+END_GROUP=GridStructure
+GROUP=PointStructure
+	GROUP=POINT_1
+		PointName=&quot;Simple Point&quot;
+		GROUP=Level
+			GROUP=Level_0
+				LevelName=&quot;Sensor&quot;
+				OBJECT=PointField_1
+					PointFieldName=&quot;Time&quot;
+					DataType=DFNT_FLOAT64
+					Order=1
+				END_OBJECT=PointField_1
+				OBJECT=PointField_2
+					PointFieldName=&quot;Concentration&quot;
+					DataType=DFNT_FLOAT32
+					Order=4
+				END_OBJECT=PointField_2
+				OBJECT=PointField_3
+					PointFieldName=&quot;Species&quot;
+					DataType=DFNT_CHAR8
+					Order=4
+				END_OBJECT=PointField_3
+			END_GROUP=Level_0
+		END_GROUP=Level
+		GROUP=LevelLink
+		END_GROUP=LevelLink
+	END_GROUP=POINT_1
+	GROUP=POINT_2
+		PointName=&quot;FixedBuoy Point&quot;
+		GROUP=Level
+		END_GROUP=Level
+		GROUP=LevelLink
+		END_GROUP=LevelLink
+	END_GROUP=POINT_2
+	GROUP=POINT_3
+		PointName=&quot;FloatBuoy Point&quot;
+		GROUP=Level
+		END_GROUP=Level
+		GROUP=LevelLink
+		END_GROUP=LevelLink
+	END_GROUP=POINT_3
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Group name="Simple_Point">
+        <Byte name="LevelWritten">
+            <Dim size="8"/>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>3</Value>
+            </Attribute>
+            <dmrpp:chunks byteOrder="BE">
+                <dmrpp:chunk offset="2502" nBytes="8"/>
+            </dmrpp:chunks>
+        </Byte>
+        <Group name="Data_Vgroup">
+            <Structure name="Sensor">
+                <Float64 name="Time"/>
+                <Float32 name="Concentration">
+                    <Dim size="4"/>
+                </Float32>
+                <Int8 name="Species">
+                    <Dim size="4"/>
+                </Int8>
+                <Dim size="15"/>
+                <Attribute name="dmr_vdata_ref" type="Int32">
+                    <Value>20</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:block offset="35407" nBytes="28"/>
+                    <dmrpp:block offset="67796" nBytes="392"/>
+                </dmrpp:chunks>
+            </Structure>
+        </Group>
+        <Group name="Linkage_Vgroup"/>
+        <Group name="Point_Attributes"/>
+    </Group>
+    <Group name="FixedBuoy_Point">
+        <Byte name="LevelWritten">
+            <Dim size="8"/>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>8</Value>
+            </Attribute>
+            <dmrpp:chunks byteOrder="BE">
+                <dmrpp:chunk offset="2741" nBytes="8"/>
+            </dmrpp:chunks>
+        </Byte>
+        <Group name="Data_Vgroup"/>
+        <Group name="Linkage_Vgroup"/>
+        <Group name="Point_Attributes">
+            <Attribute name="int32" type="Int32">
+                <Value>9999</Value>
+            </Attribute>
+        </Group>
+    </Group>
+    <Group name="FloatBuoy_Point">
+        <Byte name="LevelWritten">
+            <Dim size="8"/>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>13</Value>
+            </Attribute>
+            <dmrpp:chunks byteOrder="BE">
+                <dmrpp:chunk offset="2983" nBytes="8"/>
+            </dmrpp:chunks>
+        </Byte>
+        <Group name="Data_Vgroup"/>
+        <Group name="Linkage_Vgroup"/>
+        <Group name="Point_Attributes">
+            <Attribute name="float32" type="Float32">
+                <Value>-7.500000000</Value>
+            </Attribute>
+        </Group>
+    </Group>
+</Dataset>

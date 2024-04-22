@@ -18,6 +18,8 @@ AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/vdata_linked_blocks.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/vdata_packed_linked_blocks.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/vdata_test.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/sinusoid.hdf])
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/h_swath.hdf])
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/PointFile.hdf])
 # The reason to comment out this test is that we find the encoded missing data value is little bit different on different platforms.
 # Although the final decoded values are the same for different platforms.
 #AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/cea.hdf])
