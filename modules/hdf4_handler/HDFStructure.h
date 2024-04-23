@@ -56,6 +56,7 @@ class HDFStructure: public libdap::Structure, public ReadTagRef {
     libdap::BaseType *ptr_duplicate() override;
     bool read() override;
     bool read_tagref(int32 tag, int32 ref, int &error) override;
+    bool read_from_value(vector<uint8_t> &values,size_t &values_offset);
     void set_read_p(bool state) override;
 
     void transfer_attributes(libdap::AttrTable *at_container) override;

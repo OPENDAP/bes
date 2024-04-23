@@ -54,6 +54,8 @@
 #include <libdap/Error.h>
 #include <libdap/escaping.h>
 #include <libdap/Sequence.h>
+#include <libdap/Array.h>
+#include <libdap/util.h>
 #include <libdap/debug.h>
 #include <BESDebug.h>
 
@@ -79,6 +81,54 @@ void HDFStructure::set_read_p(bool state) {
 	BaseType::set_read_p(state);
 }
 
+bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offset) {
+
+    Constructor::Vars_iter vi = this->var_begin();
+    Constructor::Vars_iter ve = this->var_end();
+
+    for (; vi != ve; vi++) {
+        BaseType *bt = *vi;
+        Type t_bt = bt->type();
+        if (libdap::is_simple_type(t_bt) && t_bt != dods_str_c && t_bt != dods_url_c && t_bt!= dods_enum_c && t_bt!=dods_opaque_c) {
+
+            BESDEBUG("h4", "var name is: " << bt->name() << "'" << endl);
+            BESDEBUG("h4", "var values_offset is: " << values_offset << "'" << endl);
+#if 0
+            if(t_bt == dods_int32_c) {
+                Int32 *val_int = static_cast<Int32 *>(bt);
+                val_int->set_value(*((dods_int32*)(values.data()+values_offset)));
+                BESDEBUG("dmrpp", "int value is: " << *((dods_int32*)(values.data()+values_offset)) << "'" << endl);
+            }
+            else if (t_bt == dods_float32_c) {
+                Float32 *val_float = static_cast<Float32 *>(bt);
+                val_float->set_value(*((dods_float32*)(values.data()+values_offset)));
+                BESDEBUG("dmrpp", "float value is: " << *((dods_float32*)(values.data()+values_offset)) << "'" << endl);
+            }
+            else 
+                bt->val2buf(values.data() + values_offset);
+#endif
+
+            bt->val2buf(values.data() + values_offset);
+            values_offset += bt->width_ll();
+        }
+        else if (t_bt == dods_array_c) {
+
+            auto t_a = dynamic_cast<Array *>(bt);
+            Type t_array_var = t_a->var()->type();
+            if (libdap::is_simple_type(t_array_var) && t_array_var != dods_str_c && t_array_var != dods_url_c && t_array_var!= dods_enum_c && t_array_var!=dods_opaque_c) {
+                t_a->val2buf(values.data()+values_offset);
+                // update values_offset.
+                values_offset +=t_a->width_ll();
+            }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+        } 
+        else 
+            throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+    }
+
+
+}
 bool HDFStructure::read() {
 	int err = 0;
 	int status = read_tagref(-1, -1, err);
