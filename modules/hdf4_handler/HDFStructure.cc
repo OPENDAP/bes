@@ -95,13 +95,13 @@ bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offse
             BESDEBUG("h4", "var values_offset is: " << values_offset << "'" << endl);
 #if 0
             if(t_bt == dods_int32_c) {
-                Int32 *val_int = static_cast<Int32 *>(bt);
-                val_int->set_value(*((dods_int32*)(values.data()+values_offset)));
+                //Int32 *val_int = static_cast<Int32 *>(bt);
+                //val_int->set_value(*((dods_int32*)(values.data()+values_offset)));
                 BESDEBUG("dmrpp", "int value is: " << *((dods_int32*)(values.data()+values_offset)) << "'" << endl);
             }
             else if (t_bt == dods_float32_c) {
-                Float32 *val_float = static_cast<Float32 *>(bt);
-                val_float->set_value(*((dods_float32*)(values.data()+values_offset)));
+                //Float32 *val_float = static_cast<Float32 *>(bt);
+                //val_float->set_value(*((dods_float32*)(values.data()+values_offset)));
                 BESDEBUG("dmrpp", "float value is: " << *((dods_float32*)(values.data()+values_offset)) << "'" << endl);
             }
             else 
@@ -109,6 +109,7 @@ bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offse
 #endif
 
             bt->val2buf(values.data() + values_offset);
+            bt->set_read_p(true);
             values_offset += bt->width_ll();
         }
         else if (t_bt == dods_array_c) {
@@ -117,6 +118,7 @@ bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offse
             Type t_array_var = t_a->var()->type();
             if (libdap::is_simple_type(t_array_var) && t_array_var != dods_str_c && t_array_var != dods_url_c && t_array_var!= dods_enum_c && t_array_var!=dods_opaque_c) {
                 t_a->val2buf(values.data()+values_offset);
+                t_a->set_read_p(true);
                 // update values_offset.
                 values_offset +=t_a->width_ll();
             }

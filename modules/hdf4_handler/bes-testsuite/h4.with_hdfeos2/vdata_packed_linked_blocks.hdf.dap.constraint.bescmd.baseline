@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="vdata_packed_linked_blocks.hdf">
+    <Structure name="Mixed_Data_Vdata">
+        <Float32 name="Temp"/>
+        <Int16 name="Height"/>
+        <Dim size="2"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>41086004</Value>
+        </Attribute>
+    </Structure>
+    <Float32 name="Solid_Particle2_Height">
+        <Dim size="1"/>
+        <Attribute name="dmr_vdata_ref" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>c6fd2b17</Value>
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Structure {
+    Float32 Temp;
+    Int16 Height;
+} Mixed_Data_Vdata[2] = {{ 2.22, 1 }, { 2.22, 1 }};
+Float32 Solid_Particle2_Height[1] = {11.1};
+

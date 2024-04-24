@@ -119,7 +119,6 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-
     // Prepare the vdata field
     if (VSsetfields (vdata_id, fieldname) == -1) {
         ostringstream eherr;
@@ -128,7 +127,262 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
     }
 
     int32 vdfelms = fdorder * count[0] * step[0];
-    // SSTTOOPP Add more information.
+    int32 fieldtype = VFfieldtype(vdata_id,0);
+    if (fieldtype == -1) 
+        throw InternalErr (__FILE__, __LINE__, "VFfieldtype failed");
+
+    int32 r = -1;
+    // TODO: reduce the following code by not checking each type later.
+
+    // Loop through each data type
+    switch (fieldtype) {
+        case DFNT_INT8:
+        case DFNT_NINT8:
+        case DFNT_CHAR8:
+        {
+            vector<int8> val;
+            val.resize(nelms);
+
+            vector<int8>orival;
+            orival.resize(vdfelms);
+
+            // Read the data
+            r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],FULL_INTERLACE);
+            if (r == -1) {
+                ostringstream eherr;
+                eherr << "VSread failed.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            // Obtain the subset portion of the data
+            if (fdorder > 1) {
+               for (int i = 0; i < count[0]; i++)
+                    for (int j = 0; j < count[1]; j++)
+                        val[i * count[1] + j] =
+                        orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+            }
+            else {
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = orival[i * step[0]];
+            }
+
+            set_value ((dods_int8 *) val.data(), nelms);
+        }
+
+            break;
+        case DFNT_UINT8:
+        case DFNT_NUINT8:
+        case DFNT_UCHAR8:
+        {
+
+            vector<uint8>val;
+            val.resize(nelms);
+      
+            vector<uint8>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, orival.data(), 1+(count[0] -1)* step[0], FULL_INTERLACE);
+            if (r == -1) {
+                ostringstream eherr;
+                eherr << "VSread failed.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            if (fdorder > 1) {
+                for (int i = 0; i < count[0]; i++)
+                    for (int j = 0; j < count[1]; j++)
+                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+            }
+            else {
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = orival[i * step[0]];
+            }
+
+            set_value ((dods_byte *) val.data(), nelms);
+        }
+
+            break;
+
+        case DFNT_INT16:
+        {
+            vector<int16>val;
+            val.resize(nelms);
+            vector<int16>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
+                    FULL_INTERLACE);
+            if (r == -1) {
+                ostringstream eherr;
+                eherr << "VSread failed.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            if (fdorder > 1) {
+                for (int i = 0; i < count[0]; i++)
+                    for (int j = 0; j < count[1]; j++)
+                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+            }
+            else {
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = orival[i * step[0]];
+            }
+
+            set_value ((dods_int16 *) val.data(), nelms);
+        }
+            break;
+
+        case DFNT_UINT16:
+
+        {
+            vector<uint16>val;
+            val.resize(nelms);
+
+            vector<uint16>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
+                    FULL_INTERLACE);
+            if (r == -1) {
+                ostringstream eherr;
+                eherr << "VSread failed.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            if (fdorder > 1) {
+                for (int i = 0; i < count[0]; i++)
+                    for (int j = 0; j < count[1]; j++)
+                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+            }
+            else {
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = orival[i * step[0]];
+            }
+
+            set_value ((dods_uint16 *) val.data(), nelms);
+        }
+            break;
+        case DFNT_INT32:
+        {
+            vector<int32>val;
+            val.resize(nelms);
+            vector<int32>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
+                    FULL_INTERLACE);
+            if (r == -1) {
+                ostringstream eherr;
+                eherr << "VSread failed.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            if (fdorder > 1) {
+                for (int i = 0; i < count[0]; i++)
+                    for (int j = 0; j < count[1]; j++)
+                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+            }
+            else {
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = orival[i * step[0]];
+            }
+
+            set_value ((dods_int32 *) val.data(), nelms);
+        }
+            break;
+
+        case DFNT_UINT32:
+        {
+
+            vector<uint32>val;
+            val.resize(nelms);
+
+            vector<uint32>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
+                    FULL_INTERLACE);
+            if (r == -1) {
+                ostringstream eherr;
+                eherr << "VSread failed.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            if (fdorder > 1) {
+                for (int i = 0; i < count[0]; i++)
+                    for (int j = 0; j < count[1]; j++)
+                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+            }
+            else {
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = orival[i * step[0]];
+            }
+
+            set_value ((dods_uint32 *) val.data(), nelms);
+        }
+            break;
+        case DFNT_FLOAT32:
+        {
+            vector<float32>val;
+            val.resize(nelms);
+            vector<float32>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
+                    FULL_INTERLACE);
+            if (r == -1) {
+                ostringstream eherr;
+                eherr << "VSread failed.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            if (fdorder > 1) {
+                for (int i = 0; i < count[0]; i++)
+                    for (int j = 0; j < count[1]; j++)
+                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+            }
+            else {
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = orival[i * step[0]];
+            }
+
+            set_value ((dods_float32 *) val.data(), nelms);
+        }
+            break;
+        case DFNT_FLOAT64:
+        {
+
+            vector<float64>val;
+            val.resize(nelms);
+
+            vector<float64>orival;
+            orival.resize(vdfelms);
+
+            r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
+                    FULL_INTERLACE);
+            if (r == -1) {
+                ostringstream eherr;
+                eherr << "VSread failed.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            if (fdorder > 1) {
+                for (int i = 0; i < count[0]; i++)
+                    for (int j = 0; j < count[1]; j++)
+                        val[i * count[1] + j] =	orival[i * fdorder * step[0] + offset[1] + j * step[1]];
+            }
+            else {
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = orival[i * step[0]];
+            }
+
+            set_value ((dods_float64 *) val.data(), nelms);
+        }
+            break;
+        default:
+            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+    }
+
 }
 void
 HDFDMRArray_VD::read_multi_fields_vdata(int32 vdata_id,const vector<int>&offset, const vector<int>&count, const vector<int>&step, int nelms) {
@@ -142,9 +396,17 @@ HDFDMRArray_VD::read_multi_fields_vdata(int32 vdata_id,const vector<int>&offset,
     if (VSQuerycount(vdata_id,&n_records) == FAIL) 
         throw InternalErr(__FILE__,__LINE__,"unable to query number of records of vdata");
 
+    char            field_name_list[VSFIELDMAX*FIELDNAMELENMAX];
+    if(VSinquire(vdata_id,nullptr,nullptr,
+                     field_name_list,nullptr,nullptr) == FAIL) {
+        throw InternalErr(__FILE__,__LINE__,"unable to query number of records of vdata");
+    }
+    if(VSsetfields(vdata_id,field_name_list) == FAIL) 
+        throw InternalErr(__FILE__,__LINE__,"unable to set vdata fields");
+
     vector<uint8_t> data_buf;
     data_buf.resize(n_records * vdata_size);
-    if (VSread (vdata_id, data_buf.data(),n_records,FULL_INTERLACE)<0)  
+    if (VSread (vdata_id, (uint8 *)data_buf.data(),n_records,FULL_INTERLACE)<0)  
         throw InternalErr(__FILE__,__LINE__,"unable to read vdata");
 
     vector<uint8_t> subset_buf;
@@ -165,6 +427,7 @@ HDFDMRArray_VD::read_multi_fields_vdata(int32 vdata_id,const vector<int>&offset,
     }
       
     size_t values_offset = 0;
+
     // Write the values to the DAP4
     for (int64_t element = 0; element < nelms; ++element) {
     

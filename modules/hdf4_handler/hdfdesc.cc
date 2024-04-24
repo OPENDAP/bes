@@ -138,6 +138,9 @@
 #include "HDFCFStr.h"
 #include "HDFCFUtil.h"
 
+// HDF4 for direct DAP4(DMR)
+#include "HDFDMRArray_VD.h"
+
 // HDF-EOS2 (including the hybrid) will be handled as HDF-EOS2 objects if the HDF-EOS2 library is configured in
 #ifdef USE_HDFEOS2_LIB
 #include "HDFEOS2.h"
@@ -235,7 +238,7 @@ void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, 
 void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Group* d4g,const string& filename);
 void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nflds, int32 obj_ref, D4Group *d4g, const string &filename);
 void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename);
-void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref);
+void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref);
 
 // 5. HDF-EOS2 handlings
 int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls);
@@ -5095,11 +5098,13 @@ void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_re
     int32 fieldtype = VFfieldtype(vdata_id,0);
     
     BaseType *bt = gen_dap_var(fieldtype,dap4_vdata_str,filename);
-    auto ar_unique = make_unique<HDFArray>(dap4_vdata_str,filename,bt);
+    auto ar_unique = make_unique<HDFDMRArray_VD>(filename,obj_ref,dap4_vdata_str,bt);
     auto ar = ar_unique.release();    
     ar->append_dim_ll(num_elms);
-    if (vdata_field_order != 1)
+    if (vdata_field_order != 1) {
         ar->append_dim_ll(vdata_field_order);
+        ar->set_rank(2);
+    }
 
     // map vdata attributes to dap4. We will ignore vdata field attributes. Haven't seen one in NASA files.
     map_vdata_to_dap4_attrs(ar,vdata_id,obj_ref);
@@ -5156,7 +5161,7 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
         }
     }
 
-    auto ar_unique = make_unique<HDFArray>(vdata_name_str,filename,structure_ptr);
+    auto ar_unique = make_unique<HDFDMRArray_VD>(filename,obj_ref,vdata_name_str,structure_ptr);
     auto ar = ar_unique.release();    
     ar->append_dim_ll(num_elms);
 
@@ -5169,7 +5174,7 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
     delete ar;
 }
 
-void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref) {
+void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref) {
                 
     // Number of attributes 
     int32 nattrs = 0;

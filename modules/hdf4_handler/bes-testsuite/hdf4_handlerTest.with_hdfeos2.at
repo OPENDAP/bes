@@ -116,12 +116,28 @@ AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
+m4_define([_AT_BESCMD_DAP4DATA_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+
+# Use the following AT_CHECK to generate baseline file.
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
+
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/h4.with_hdfeos2/$1], [$abs_srcdir/h4.with_hdfeos2/$1.baseline])
 ])
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/h4.with_hdfeos2/$1], [$abs_srcdir/h4.with_hdfeos2/$1.baseline])
+])
+
+m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
+[_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h4.with_hdfeos2/$1], [$abs_srcdir/h4.with_hdfeos2/$1.baseline])
 ])
 
 
@@ -570,6 +586,12 @@ AT_BESCMD_RESPONSE_TEST([SDS_fillchunk_alltypes.hdf.dmr.bescmd])
 #HDF-EOS2 grid tests.
 AT_BESCMD_RESPONSE_TEST([cea.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([sinusoid.hdf.dmr.bescmd])
+
+#Test the direct HDF4 to DMR data access
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.constraint.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dap.constraint.bescmd])
 
 #CF DMR Test
 AT_BESCMD_BESCONF_RESPONSE_TEST([h4.with_hdfeos2/grid_1_2d.hdf.dmr.bescmd],[bes.with_hdfeos2_cfdmr.conf])

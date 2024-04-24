@@ -41,7 +41,7 @@ class HDFDMRArray_VD:public libdap::Array
     private:
 
         // Field array rank
-        int rank;
+        int rank = 1;
 
         std::string filename;
 

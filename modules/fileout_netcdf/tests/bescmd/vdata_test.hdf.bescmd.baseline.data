@@ -1,0 +1,56 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex vdata_test.hdf\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"vdata_test.hdf\"}]}]" ;
+
+group: vgroup {
+  dimensions:
+  	sdim1 = 10 ;
+  	sdim2 = 10 ;
+  	sdim3 = 10 ;
+  	sdim4 = 10 ;
+  	sdim5 = 3 ;
+  	sdim6 = 10 ;
+  	sdim7 = 2 ;
+  variables:
+  	float Test_Vset_Name.Temp(sdim1) ;
+  	short Test_Vset_Name.Height(sdim2) ;
+  	float Test_Vset_Name.Speed(sdim3) ;
+  	byte Test_Vset_Name.Ident(sdim4, sdim5) ;
+  	float Test_Vset_Name.Position(sdim6, sdim7) ;
+  data:
+
+   Test_Vset_Name.Temp = 1.11, 2.22, 3.33, 4.44, 5.55, 6.66, 7.77, 8.88, 
+      9.99, 11.1 ;
+
+   Test_Vset_Name.Height = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+
+   Test_Vset_Name.Speed = 1.11, 2.22, 3.33, 4.44, 5.55, 6.66, 7.77, 8.88, 
+      9.99, 11.1 ;
+
+   Test_Vset_Name.Ident =
+  65, 97, 48,
+  66, 98, 49,
+  67, 99, 50,
+  68, 100, 51,
+  69, 101, 52,
+  70, 102, 53,
+  71, 103, 54,
+  72, 104, 55,
+  73, 105, 56,
+  74, 106, 57 ;
+
+   Test_Vset_Name.Position =
+  1, 2,
+  1, 2,
+  1, 2,
+  1, 2,
+  1, 2,
+  1, 2,
+  1, 2,
+  1, 2,
+  1, 2,
+  1, 2 ;
+  } // group vgroup
+}
