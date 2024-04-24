@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
-// It retrieves the Vdata fields from NASA HDF4 data products.
-// Each Vdata will be decomposed into individual Vdata fields.
-// Each field will be mapped to A DAP variable.
+// It retrieves HDF4 Vdata values for a direct DMR-mapping DAP4 response.
+// Each Vdata will be mapped to a DAP variable.
 
 //  Authors:   Kent Yang <myang6@hdfgroup.org>
 // Copyright (c) The HDF Group
 /////////////////////////////////////////////////////////////////////////////
+
 
 #include "HDFDMRArray_VD.h"
 #include "HDFStructure.h"
@@ -132,7 +132,7 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
         throw InternalErr (__FILE__, __LINE__, "VFfieldtype failed");
 
     int32 r = -1;
-    // TODO: reduce the following code by not checking each type later.
+    // TODO: reduce the following code by not checking each datatype.
 
     // Loop through each data type
     switch (fieldtype) {
