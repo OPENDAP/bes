@@ -89,3 +89,46 @@ HDFDMRArray_SDS::read ()
     
     return true;
 }
+// Standard way to pass the coordinates of the subsetted region from the client to the handlers
+// Returns the number of elements 
+int
+HDFDMRArray_SDS::format_constraint (int *offset, int *step, int *count)
+{
+    int nels = 1;
+    int id = 0;
+
+    Dim_iter p = dim_begin ();
+    while (p != dim_end ()) {
+
+        int start = dimension_start (p, true);
+        int stride = dimension_stride (p, true);
+        int stop = dimension_stop (p, true);
+
+        // Check for illegal  constraint
+        if (start > stop) {
+            ostringstream oss;
+            oss << "Array/Grid hyperslab start point "<< start <<
+                   " is greater than stop point " <<  stop <<".";
+            throw Error(malformed_expr, oss.str());
+        }
+
+        offset[id] = start;
+        step[id] = stride;
+        count[id] = ((stop - start) / stride) + 1;      // count of elements
+        nels *= count[id];              // total number of values for variable
+
+        BESDEBUG ("h4",
+                         "=format_constraint():"
+                         << "id=" << id << " offset=" << offset[id]
+                         << " step=" << step[id]
+                         << " count=" << count[id]
+                         << endl);
+
+        id++;
+        p++;
+    }
+
+    return nels;
+}
+
+
