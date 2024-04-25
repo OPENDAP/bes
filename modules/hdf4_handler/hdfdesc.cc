@@ -140,6 +140,7 @@
 
 // HDF4 for direct DAP4(DMR)
 #include "HDFDMRArray_VD.h"
+#include "HDFDMRArray_SDS.h"
 
 // HDF-EOS2 (including the hybrid) will be handled as HDF-EOS2 objects if the HDF-EOS2 library is configured in
 #ifdef USE_HDFEOS2_LIB
@@ -231,7 +232,7 @@ void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Gr
 void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref);
 void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>&sds_ref);
 void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unordered_set<int32>&sds_ref);
-void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
+void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
 void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
 
 // 4. Vdata handlings
@@ -5278,7 +5279,8 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
     // Handle special characters in the sds_name.
     sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
     BaseType *bt = gen_dap_var(sds_type,sds_name_str, filename);
-    auto ar_unique = make_unique<HDFArray>(sds_name_str,filename,bt);
+    unsigned int dtype_size = bt->width();
+    auto ar_unique = make_unique<HDFDMRArray_SDS>(filename, obj_ref, sds_rank,dtype_size,sds_name_str,bt);
     auto ar = ar_unique.release();    
 
     // Obtain dimension info. 
@@ -5356,7 +5358,7 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
 }
 
 
-void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs) {
+void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs) {
 
     char attr_name[H4_MAX_NC_NAME];
     for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {

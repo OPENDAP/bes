@@ -91,6 +91,7 @@ HDFDMRArray_VD::read ()
         Hclose(file_id);
         throw;
     }
+    return true;
 
 }
 

@@ -98,7 +98,7 @@ m4_define([_AT_BESCMD_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 > $2 || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 || true], [], [stdout], [stderr])
@@ -592,6 +592,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.constraint.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dap.constraint.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([SDS_simple_comp.hdf.dap.bescmd])
 
 #CF DMR Test
 AT_BESCMD_BESCONF_RESPONSE_TEST([h4.with_hdfeos2/grid_1_2d.hdf.dmr.bescmd],[bes.with_hdfeos2_cfdmr.conf])
