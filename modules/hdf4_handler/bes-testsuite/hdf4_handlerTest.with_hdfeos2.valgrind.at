@@ -533,3 +533,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.constraint.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dap.constraint.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([SDS_simple_comp.hdf.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([SDS_simple_comp.hdf.dap.constraint.bescmd])
+
+
