@@ -238,6 +238,9 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/PointFile.hdf.d
 
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_test.hdf.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_packed_linked_blocks.hdf.bescmd >test.nc
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.constraint.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.bescmd >test.nc
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4
