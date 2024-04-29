@@ -22,12 +22,16 @@ noinst_SCRIPTS = response-split.py
 # Since this code cannot function as a library, I'm going to leave it out.
 # python_PYTHON = response-split.py
 
-bin_PROGRAMS = besstandalone
+bin_PROGRAMS = besstandalone bes_run_commands
 
 besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
     StandAloneApp.h StandAloneClient.h
+
+bes_run_commands_SOURCES = bes_run_commands.cc
 
 # This depends on building in bes/cmdln first. It's not a good way to write
 # teh Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
 besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
     $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
+
+bes_run_commands_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS)
