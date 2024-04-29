@@ -49,7 +49,7 @@
 #include "BESLog.h"
 
 // Make all the error log messages uniform in one small way. This is a macro
-// so we can switch to exceptions if that seems necessary. jhrg 11/06/23
+// so that we can switch to exceptions if that seems necessary. jhrg 11/06/23
 #define ERROR(msg) ERROR_LOG("FileCache: " << msg)
 
 // If this is defined, then the access time of a file is updated when it is
@@ -359,7 +359,7 @@ public:
      * @param cache_dir Directory on some filesystem where the cache will be stored. This
      * directory is made if it does not exist.
      * @param size Allow this many bytes in the cache
-     * @param target_size When purging, remove items until this many bytes remain.
+     * @param purge_size When purging, remove items until this many bytes remain.
      * @return False if the cache object could not be initialized, true otherwise.
      */
     virtual bool initialize(const std::string &cache_dir, long long size, long long purge_size) {

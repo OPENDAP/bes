@@ -6,7 +6,9 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common -I$(top_srcdir)/mod
     -I$(top_srcdir)/dispatch  -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 LIBADD = -L$(top_builddir)/modules/common -lmodules_common $(BES_DISPATCH_LIB) \
-    $(BES_DAP_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+    $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+
+# $(BES_DAP_LIB) Replace with static library explicitly referenced. jhrg 4/29/24
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -74,7 +76,8 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS =  MemoryCacheTest NgapApiTest NgapRequestHandlerTest NgapContainerTest
+UNIT_TESTS =  MemoryCacheTest NgapApiTest NgapRequestHandlerTest NgapContainerTest \
+NgapOwnedContainerTest
 else
 UNIT_TESTS =
 
@@ -91,13 +94,17 @@ clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
 NgapApiTest_SOURCES = NgapApiTest.cc
-NgapApiTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
+NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
 
 NgapRequestHandlerTest_SOURCES = NgapRequestHandlerTest.cc
-NgapRequestHandlerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
+NgapRequestHandlerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
 
 NgapContainerTest_SOURCES = NgapContainerTest.cc
-NgapContainerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
+NgapContainerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
 
 MemoryCacheTest_SOURCES = MemoryCacheTest.cc
-MemoryCacheTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
+MemoryCacheTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
+
+NgapOwnedContainerTest_SOURCES = NgapOwnedContainerTest.cc
+NgapOwnedContainerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
+

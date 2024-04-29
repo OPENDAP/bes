@@ -288,7 +288,7 @@ bool FitsRequestHandler::fits_build_help(BESDataHandlerInterface &dhi)
 	BESInfo *info = dynamic_cast<BESInfo *>(response);
 	if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	map<string, string> attrs;
+	map<string, string, less<>> attrs;
     attrs["name"] = MODULE_NAME ;
     attrs["version"] = MODULE_VERSION ;
 #if 0
@@ -297,7 +297,7 @@ bool FitsRequestHandler::fits_build_help(BESDataHandlerInterface &dhi)
 #endif
 	list<string> services;
 	BESServiceRegistry::TheRegistry()->services_handled(FITS_NAME, services);
-	if (services.size() > 0) {
+	if (!services.empty()) {
 		string handles = BESUtil::implode(services, ',');
 		attrs["handles"] = handles;
 	}
