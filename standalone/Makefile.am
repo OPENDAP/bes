@@ -34,4 +34,5 @@ bes_run_commands_SOURCES = bes_run_commands.cc
 besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
     $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
 
-bes_run_commands_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS)
+bes_run_commands_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la \
+    $(top_builddir)/xmlcommand/libbes_xml_command.la $(XML2_LIBS)

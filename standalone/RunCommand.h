@@ -58,8 +58,8 @@
  * </UL>
  * <p>
  * Response from the requests can sent to any File or OutputStream as
- * specified by using the setOutput methods. If no output is specified using
- * the setOutput methods thent he output is ignored.
+ * specified by using the set_output methods. If no output is specified using
+ * the set_output methods thent he output is ignored.
  *
  * Thread safety of this object has not yet been determined.
  *
@@ -68,34 +68,24 @@
 
 class RunCommand : public BESObj {
 private:
-    std::ostream *_strm;
-    bool _strmCreated;
-    bool _isInteractive;
-
-    size_t readLine(std::string &str);
-
-    void displayHelp();
-
-    void executeCommand(const std::string &cmd, int repeat);
+    std::ostream d_strm;
 
 public:
-    RunCommand() : _strm(0), _strmCreated(false), _isInteractive(false) {}
-
+    RunCommand() = default;
     ~RunCommand();
+    RunCommand(const RunCommand &rhs) = delete;
+    RunCommand &operator=(const RunCommand &rhs) = delete;
+    RunCommand(RunCommand &&rhs) = delete;
+    RunCommand &operator=(RunCommand &&rhs) = delete;
 
-    void setOutput(std::ostream *strm, bool created);
 
-    [[nodiscard]] std::ostream &getOutput() const { return *_strm; }
+    void set_output(std::ostream &strm) { d_strm = strm; }
 
-    void executeClientCommand(const std::string &cmd);
+    [[nodiscard]] std::ostream &get_output() { return d_strm; }
 
-    void executeCommands(const std::string &cmd_list, int repeat);
+    void run(const std::string &cmd);
 
-    void executeCommands(std::ifstream &inputFile, int repeat);
-
-    void interact();
-
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // RunCommand_h

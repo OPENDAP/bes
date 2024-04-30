@@ -30,12 +30,7 @@
 
 #include <cstdlib>
 #include <getopt.h>
-#include <fstream>
 #include <sstream>
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 #include <libxml/parser.h>
 
@@ -43,19 +38,16 @@
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
 #include "TheBESKeys.h"
-#include "BESError.h"
-
-#include "RunCommand.h"
+#include "BESXMLInterface.h"
+#include "BESStopWatch.h"
 
 using namespace std;
 
 class StandAloneApp : public BESModuleApp {
 private:
-#if 0
-    StandAloneClient *_client {nullptr};
-#endif
     std::vector<std::string> d_command_file_names;
-    std::ofstream *d_outputStrm {nullptr};
+    std::ofstream d_output_strm;
+    bool output_file = false;
 
     static void show_version(const string &app_name) {
         cout << app_name << ": version 1.0\n";
@@ -65,18 +57,12 @@ private:
         cout << '\n';
         cout << app_name << ": the following options are available:\n";
         cout << "    -c <file>, --config=<file> - BES configuration file\n";
-        cout << "    -x <command>, --execute=<command> - command for the server \n";
-        cout << "       to execute\n";
         cout << "    -i <file>, --inputfile=<file> - file with a sequence of input \n";
         cout << "       commands, may be used multiple times.\n";
         cout << "    -f <file>, --outputfile=<file> - write output to this file\n";
         cout << "    -d, --debug - turn on debugging for the client session\n";
-        cout << "    -r <num>, --repeat=<num> - repeat the command(s) <num> times\n";
         cout << "    -v, --version - return version information\n";
-        cout << "    -?, --help - display help information\n";
-        cout << '\n';
-        cout << "Note: You may provide a bes command with -x OR you may provide one \n";
-        cout << "      or more BES command file names. One or the other, not neither, not both.\n";
+        cout << "    -h,?, --help - display help information\n";
         cout << '\n';
 
         BESDebug::Help(cout);
@@ -100,9 +86,8 @@ public:
 
         return sig;
     }
-#if 0
-    StandAloneClient *client() { return _client; }
-#endif
+
+    void run_command(const std::string &cmd);
 };
 
 int StandAloneApp::initialize(int argc, char **argv)
@@ -131,6 +116,7 @@ int StandAloneApp::initialize(int argc, char **argv)
                 break;
             case 'f':
                 outputStr = optarg;
+                output_file = true;
                 break;
             case 'i':
                 d_command_file_names.emplace_back(optarg);
@@ -152,8 +138,8 @@ int StandAloneApp::initialize(int argc, char **argv)
     }
 
     if (!outputStr.empty()) {
-        d_outputStrm = new ofstream(outputStr.c_str());
-        if (!(*d_outputStrm)) {
+        d_output_strm.open(outputStr, ios::out | ios::trunc);
+        if (!d_output_strm.is_open()) {
             cerr << "could not open the output file " << outputStr << endl;
             badUsage = true;
         }
@@ -178,40 +164,66 @@ int StandAloneApp::initialize(int argc, char **argv)
     return 0;
 }
 
+void StandAloneApp::run_command(const std::string &cmd)
+{
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("StandAloneApp::run_command");
+
+    ostream &o_strm = d_output_strm.is_open() ? d_output_strm : cout;
+
+    BESXMLInterface interface(cmd, &o_strm);
+
+    int status = interface.execute_request("standalone");
+
+    o_strm << flush;
+
+    // Put the call to finish() here because we're not sending chunked responses back
+    // to a client over PPT. In the BESServerHandler.cc code, we must do that and hence,
+    // break up the call to finish() for the error and no-error cases.
+    status = interface.finish(status);
+
+    if (status != 0) {
+        // an error has occurred.
+        switch (status) {
+            case BES_INTERNAL_FATAL_ERROR: {
+                cerr << "Status not OK, dispatcher returned value " << status << '\n';
+                exit(1);
+            }
+
+            case BES_INTERNAL_ERROR:
+            case BES_SYNTAX_USER_ERROR:
+            case BES_FORBIDDEN_ERROR:
+            case BES_NOT_FOUND_ERROR: {
+                cerr << "Status not OK, dispatcher returned value " << status << ", continuing\n";
+                break;
+            }
+
+            default:
+                break;
+        }
+    }
+}
+
 int StandAloneApp::run()
 {
-    RunCommand run_command;
-    string msg;
     try {
-        if (d_outputStrm) {
-            run_command.setOutput(d_outputStrm, true);
-        }
-        else {
-            run_command.setOutput(&cout, false);
-        }
-    }
-    catch (const BESError &e) {
-        cerr << "FAILED to start StandAloneClient instance. Message: " << e.get_message() << '\n';
-        return 1;
-    }
-
-    try {
+        ostream &o_strm = d_output_strm.is_open() ? d_output_strm : cout;
         unsigned int commands = 0;
-        for (auto &command_filename: d_command_file_names) {
+        for (auto const &command_filename: d_command_file_names) {
             commands++;
-            ifstream cmdStrm(command_filename);
-            if (!cmdStrm.is_open()) {
+            ifstream cmd_strm(command_filename);
+            if (!cmd_strm.is_open())
                 cerr << "FAILED to open the input file '" << command_filename << "' SKIPPING.\n";
-            }
             else {
-                run_command.executeCommands(cmdStrm, 1);
+                string cmd;
+                copy(istreambuf_iterator<char>(cmd_strm), istreambuf_iterator<char>(), cmd.begin());
+                run_command(cmd);
                 if (commands < d_command_file_names.size()) {
-                    run_command.getOutput() << "\nNext-Response:\n" << flush;
+                    o_strm << "\nNext-Response:\n" << flush;
                 }
             }
         }
     }
-
     catch (const BESError &e) {
         cerr << "Error processing commands. Message: " << e.get_message() << '\n';
     }
@@ -222,7 +234,13 @@ int StandAloneApp::run()
 int main(int argc, char **argv)
 {
     try {
-        return main(argc, argv);
+        StandAloneApp app;
+        if (app.initialize(argc, argv))
+            return app.run();
+        else {
+            cerr << "Failed to initialize the command processor.\n";
+            return 1;
+        }
     }
     catch (const BESError &e) {
         std::cerr << "Caught BES Error while starting the command processor: " << e.get_message() << '\n';
