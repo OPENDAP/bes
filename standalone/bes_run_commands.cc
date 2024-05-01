@@ -215,8 +215,22 @@ int StandAloneApp::run()
             if (!cmd_strm.is_open())
                 cerr << "FAILED to open the input file '" << command_filename << "' SKIPPING.\n";
             else {
-                string cmd;
-                copy(istreambuf_iterator<char>(cmd_strm), istreambuf_iterator<char>(), cmd.begin());
+                std::string cmd;
+
+                // Allocate string memory up front
+                cmd_strm.seekg(0, std::ios::end);
+                cmd.reserve(cmd_strm.tellg());
+                cmd_strm.seekg(0, std::ios::beg);
+
+                // Read the file into the string. Note 'extra' parentheses around the
+                // std::istreambuf_iterator<char> constructor. They are mandatory.
+                // They prevent the problem known as the "most vexing parse", which
+                // in this case won't actually give you a compile error like it usually
+                // does, but will give you interesting (read: wrong) results. See Meyers'
+                // 'Most vexing parse.'
+                cmd.assign((std::istreambuf_iterator<char>(cmd_strm)),
+                           std::istreambuf_iterator<char>());
+
                 run_command(cmd);
                 if (commands < d_command_file_names.size()) {
                     o_strm << "\nNext-Response:\n" << flush;
@@ -235,7 +249,7 @@ int main(int argc, char **argv)
 {
     try {
         StandAloneApp app;
-        if (app.initialize(argc, argv))
+        if (app.initialize(argc, argv) == 0)
             return app.run();
         else {
             cerr << "Failed to initialize the command processor.\n";
