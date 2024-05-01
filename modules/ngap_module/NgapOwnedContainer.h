@@ -38,30 +38,22 @@ class RemoteResource;
 
 namespace ngap {
 
-enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
-
 /**
- * @brief Container representing a remote request to information stored in
- * the NASA NGAP/EOSDIS cloud-based data management system.
+ * @brief Container representing a data resource that is 'owned' by NGAP/EDC/NASA
+ * but that is described by a DMR++ that OPeNDAP 'owns.'
  *
  * This container nominally stores the 'restified' URL to a NASA granule.
- * The container handles the two operations needed to access a DMR++ file
+ * The container handles the operation needed to access a DMR++ file
  * that can _then_ be used to read data from that granule.
  *
- * THe first operation is to ask the CMR subsystem to translate the restified
- * path to a true URL that references the actual data granule in S3. We
- * assume that the DMR++ for that granule is 'next to' the granule and is
- * found by appending '.dmrpp' to the granule URL.
- *
- * The second operation is to then retrieve that DMR++ file and store it in
+ * This operation is to retrieve that DMR++ file and store it in
  * a cache as text (DMR++ files are XML).
  *
- * The NgapOwnedContainer::access() method performs the two operations the first
+ * The NgapOwnedContainer::access() method performs this operation the first
  * time it is called. Subsequent calls to NgapOwnedContainer::access() will return
- * cached XML text and not the filename of the DMR++ local file.
- *
- * @note in the future, we may want to store the DMR++ _only_ as a string.
- * jhrg 10/16/23
+ * cached XML text. Like NgapContainer::access(), this object uses the container
+ * attributes to indicate that access() may return a string that holds the
+ * DMR++ XML text.
  *
  * @see NgapOwnedContainerStorage
  */
@@ -75,8 +67,8 @@ class NgapOwnedContainer: public BESContainer {
     // be easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path);
-    bool item_in_cache(std::string &dmrpp_string) const;
-    bool cache_item(const std::string &dmrpp_string) const;
+    bool get_item_from_cache(std::string &dmrpp_string) const;
+    bool put_item_in_cache(const std::string &dmrpp_string) const;
 
     friend class NgapOwnedContainerTest;
 

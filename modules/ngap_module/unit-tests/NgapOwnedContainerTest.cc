@@ -167,7 +167,7 @@ public:
         string dmrpp_string;
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
-        CPPUNIT_ASSERT_MESSAGE("The item should not be in the cache", !container.item_in_cache(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The item should not be in the cache", !container.get_item_from_cache(dmrpp_string));
         CPPUNIT_ASSERT_MESSAGE("The item should empty", dmrpp_string.empty());
     }
 
@@ -178,9 +178,9 @@ public:
         string dmrpp_string = "cached DMR++";
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
-        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache", container.cache_item(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache", container.put_item_in_cache(dmrpp_string));
         string cached_value;
-        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.item_in_cache(cached_value));
+        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.get_item_from_cache(cached_value));
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
     }
 
@@ -191,14 +191,15 @@ public:
         string dmrpp_string = "cached DMR++";
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
-        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache", container.cache_item(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache", container.put_item_in_cache(dmrpp_string));
         string cached_value;
-        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.item_in_cache(cached_value));
+        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.get_item_from_cache(cached_value));
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
 
         // now 'stomp' on the cached item
-        CPPUNIT_ASSERT_MESSAGE("The item should not be added to the cache", !container.cache_item("Over-written cache item"));
-        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.item_in_cache(cached_value));
+        CPPUNIT_ASSERT_MESSAGE("The item should not be added to the cache", !container.put_item_in_cache(
+                "Over-written cache item"));
+        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.get_item_from_cache(cached_value));
         DBG(cerr << "Cached value: " << cached_value << '\n');
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
     }

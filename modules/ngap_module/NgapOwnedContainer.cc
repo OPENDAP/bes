@@ -96,7 +96,7 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
     return dmrpp_url_str;
 }
 
-bool NgapOwnedContainer::item_in_cache(string &dmrpp_string) const {
+bool NgapOwnedContainer::get_item_from_cache(string &dmrpp_string) const {
 
     // Read the cache entry if it exists. jhrg 4/29/24
     if (NgapRequestHandler::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
@@ -132,7 +132,7 @@ bool NgapOwnedContainer::item_in_cache(string &dmrpp_string) const {
     return false;
 }
 
-bool NgapOwnedContainer::cache_item(const string &dmrpp_string) const {
+bool NgapOwnedContainer::put_item_in_cache(const std::string &dmrpp_string) const {
 
     FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
     if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
@@ -169,7 +169,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     BES_STOPWATCH_START(prolog + get_real_name());
 
     // If the DMR++ is cached, return it.
-    if (NgapRequestHandler::d_use_dmrpp_cache && item_in_cache(dmrpp_string)) {
+    if (NgapRequestHandler::d_use_dmrpp_cache && get_item_from_cache(dmrpp_string)) {
         return true;
     }
 
@@ -196,7 +196,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
     // The memory cache is for use by this process, the file cache for other processes/VMs
     if (NgapRequestHandler::d_use_dmrpp_cache) {
-        if (!cache_item(dmrpp_string))
+        if (!put_item_in_cache(dmrpp_string))
             return false;
     }
 
