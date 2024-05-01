@@ -38,16 +38,12 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
-#include "BESContextManager.h"
 #include "CurlUtils.h"
 #include "HttpError.h"
 
 #include "NgapRequestHandler.h"
 #include "NgapOwnedContainer.h"
-#include "NgapApi.h"
 #include "NgapNames.h"
-
-auto OPENDAP_BUCKET_NAME = "dmrpp-sit-poc"; // FIXME: This is a placeholder. jhrg 4/29/24
 
 #define prolog std::string("NgapOwnedContainer::").append(__func__).append("() - ")
 // CACHE_LOG is defined separately from INFO_LOG so that we can turn it off easily. jhrg 11/19/23
@@ -78,20 +74,24 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
     return bytes_read == 0;
 }
 
-string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_path) {
+// Rename to build_reference_to_dmrpp().
+string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_path, const string &data_source) {
     // The PATH part of a URL to the NGAP/DMR++ is an 'NGAP REST path' that has the form:
     // /collections/<ccid>/granules/<granule_id>. In our 'owned' S3 bucket, we use object
     // names of the form: /<ccid>/<granule_id>.dmrpp.
 
-    auto parts =  BESUtil::split(rest_path, '/');
+    auto parts = BESUtil::split(rest_path, '/');
     if (parts.size() != 4 || parts[0] != "collections" || parts[2] != "granules") {
         throw BESSyntaxUserError("Invalid NGAP path: " + rest_path, __FILE__, __LINE__);
     }
 
-    string s3_object = parts[1] + '/' + parts[3] + ".dmrpp";
+    string dmrpp_name = parts[1] + '/' + parts[3] + ".dmrpp";
 
     // http://<bucket_name>.s3.amazonaws.com/<object_key>
-    string dmrpp_url_str = "https://" + string(OPENDAP_BUCKET_NAME) + ".s3.amazonaws.com/" + s3_object;
+    // Chane so the first part is read from a configuration file.
+    // That way it can be a file:// URL for testing, and later can be set
+    // in other ways. jhrg 5/1/24
+    string dmrpp_url_str = data_source + '/' + dmrpp_name;
 
     return dmrpp_url_str;
 }
@@ -136,7 +136,7 @@ bool NgapOwnedContainer::put_item_in_cache(const std::string &dmrpp_string) cons
 
     FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
     if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
-        // Do this in a child thread someday. jhrg 11/14/23
+        // Do this in a child thread someday, but what about the return value. jhrg 11/14/23
         if (write(item.get_fd(), dmrpp_string.data(), dmrpp_string.size()) != dmrpp_string.size()) {
             ERROR_LOG("NgapOwnedContainer::access() - failed to write DMR++ to file cache\n");
             return false;
@@ -175,8 +175,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
 
     // Else, the DMR++ is neither in the memory cache nor the file cache.
     // Read it from S3, etc., and filter it. Put it in the memory cache.
-
-    string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(d_ngap_path);
+    string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
 
     BES_STOPWATCH_START("DMR++ retrieval: " + dmrpp_url_str);
 
@@ -195,9 +194,8 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
 
     // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
     // The memory cache is for use by this process, the file cache for other processes/VMs
-    if (NgapRequestHandler::d_use_dmrpp_cache) {
-        if (!put_item_in_cache(dmrpp_string))
-            return false;
+    if (NgapRequestHandler::d_use_dmrpp_cache && !put_item_in_cache(dmrpp_string)) {
+        return false;
     }
 
     return true;

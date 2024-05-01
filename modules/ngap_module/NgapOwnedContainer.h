@@ -60,13 +60,15 @@ namespace ngap {
 class NgapOwnedContainer: public BESContainer {
 
     std::string d_ngap_path;    // The (in)famous restified path
+    std::string d_data_source_location;
 
     bool get_dmrpp_from_cache_or_remote_source(std::string &dmrpp_string) const;
 
     // I made these static so that they will be in the class' namespace but still
     // be easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
-    static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path);
+    static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
+
     bool get_item_from_cache(std::string &dmrpp_string) const;
     bool put_item_in_cache(const std::string &dmrpp_string) const;
 
@@ -81,9 +83,10 @@ protected:
 public:
     NgapOwnedContainer() = default;
     NgapOwnedContainer(const NgapOwnedContainer &copy_from) = delete;
-    ~NgapOwnedContainer() override = default;
-
+    NgapOwnedContainer(NgapOwnedContainer &&move_from) = delete;
     NgapOwnedContainer &operator=(const NgapOwnedContainer &rhs) = delete;
+    NgapOwnedContainer &operator=(NgapOwnedContainer &&rhs) = delete;
+    ~NgapOwnedContainer() override = default;
 
     /**
      * @brief Creates an instances of NgapOwnedContainer with symbolic name and real
@@ -107,6 +110,11 @@ public:
 
     void set_ngap_path(const std::string &ngap_path) { d_ngap_path = ngap_path; }
     std::string get_ngap_path() const { return d_ngap_path; }
+
+    void set_data_source_location(const std::string &data_source_location) {
+        d_data_source_location = data_source_location;
+    }
+    std::string get_data_source_location() const { return d_data_source_location; }
 
     std::string access() override;
 

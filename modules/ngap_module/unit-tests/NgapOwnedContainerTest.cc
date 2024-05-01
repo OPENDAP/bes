@@ -31,7 +31,6 @@
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 
-#include "NgapNames.h"
 #include "NgapOwnedContainer.h"
 #include "NgapRequestHandler.h"
 
@@ -39,6 +38,9 @@
 #include "test_config.h"
 
 using namespace std;
+
+auto const DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
+auto const TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
 
 #define TEST_NAME DBG(cerr << __PRETTY_FUNCTION__ << "()\n")
 #define prolog string("NgapOwnedContainerTest::").append(__func__).append("() - ")
@@ -91,7 +93,7 @@ public:
     void test_file_to_string() {
         TEST_NAME;
         string content;
-        string file_name = string(TEST_DATA_DIR) + "/chunked_enum.h5.dmrpp";
+        string file_name = string(TEST_SRC_DIR) + "/data/chunked_enum.h5.dmrpp";
         int fd = open(file_name.c_str(), O_RDONLY);
         CPPUNIT_ASSERT_MESSAGE("The file should open", fd > 0);
         CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
@@ -128,36 +130,43 @@ public:
         TEST_NAME;
         string rest_path = "collections/C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
         string expected = "https://dmrpp-sit-poc.s3.amazonaws.com/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
-        CPPUNIT_ASSERT_MESSAGE("The URL should be built", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path) == expected);
+        string actual = NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION);
+        CPPUNIT_ASSERT_MESSAGE("The URL should be built (got: " + actual + " expected: " + expected + ").",
+                               actual == expected);
     }
 
     void test_build_dmrpp_url_to_owned_bucket_bad_path() {
         TEST_NAME;
         string rest_path = "collections/C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc/extra";
-        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
     }
 
     void test_build_dmrpp_url_to_owned_bucket_bad_path_2() {
         TEST_NAME;
         string rest_path = "C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
-        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
     }
 
     void test_build_dmrpp_url_to_owned_bucket_bad_path_3() {
         TEST_NAME;
         string rest_path = "collections/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc";
-        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
     }
 
     void test_build_dmrpp_url_to_owned_bucket_bad_path_4() {
         TEST_NAME;
         string rest_path = "C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc";
-        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
     }
     void test_build_dmrpp_url_to_owned_bucket_bad_path_5() {
         TEST_NAME;
         string rest_path = "";
-        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
     }
 
     void test_item_in_cache() {
@@ -204,6 +213,22 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
     }
 
+    void test_get_dmrpp_from_cache_or_remote_source() {
+        TEST_NAME;
+        set_bes_keys();
+        configure_ngap_handler();
+
+        string dmrpp_string;
+        NgapOwnedContainer container;
+        // The REST path will become data/d_int.h5
+        container.set_real_name("collections/data/granules/d_int.h5");
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        DBG(cerr << "DMR++: " << dmrpp_string << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
+    }
+
     CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
 
     CPPUNIT_TEST(test_file_to_string);
@@ -220,6 +245,8 @@ public:
     CPPUNIT_TEST(test_item_in_cache);
     CPPUNIT_TEST(test_cache_item);
     CPPUNIT_TEST(test_cache_item_stomp);
+
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source);
 
     CPPUNIT_TEST_SUITE_END();
 };
