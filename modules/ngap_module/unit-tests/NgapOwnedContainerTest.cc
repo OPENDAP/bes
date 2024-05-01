@@ -29,9 +29,10 @@
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 
 #include "NgapNames.h"
-#include "NgapContainer.h"
+#include "NgapOwnedContainer.h"
 #include "NgapRequestHandler.h"
 
 #include "run_tests_cppunit.h"
@@ -73,7 +74,7 @@ public:
     // Delete the cache dir after each test; really only needed for the
     // tests toward the end of the suite that test the FileCache.
     void tearDown() override {
-        struct stat sb;
+        struct stat sb{0};
         if (stat(d_cache_dir.c_str(), &sb) == 0) {
             if (S_ISDIR(sb.st_mode)) {
                 // remove the cache dir
@@ -86,6 +87,92 @@ public:
         }
     }
 
+    void test_file_to_string() {
+        string content;
+        string file_name = string(TEST_DATA_DIR) + "/chunked_enum.h5.dmrpp";
+        int fd = open(file_name.c_str(), O_RDONLY);
+        CPPUNIT_ASSERT_MESSAGE("The file should open", fd > 0);
+        CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
+        CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
+        CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
+        DBG(cerr << "Content length : " << content.size() << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The file should be > 1k", content.size() > 1'000);
+    }
+
+    void test_file_to_string_bigger_than_buffer() {
+        string content;
+        string file_name = "NGAPApiTest.cc";    // ~16k while the buffer is 4k
+        int fd = open(file_name.c_str(), O_RDONLY);
+        CPPUNIT_ASSERT_MESSAGE("The file should open", fd > 0);
+        CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
+        CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
+        CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
+        DBG(cerr << "Content length : " << content.size() << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k", content.size() > 16'000);
+    }
+
+    void test_file_to_string_file_not_open() {
+        string content;
+        string file_name = "NGAPApiTest.cc";    // ~16k while the buffer is 4k
+        int fd = -1;
+        CPPUNIT_ASSERT_MESSAGE("The file should open", fd < 0);
+        CPPUNIT_ASSERT_MESSAGE("The function should return false", !NgapOwnedContainer::file_to_string(fd, content));
+        CPPUNIT_ASSERT_MESSAGE("The string should be empty", content.empty());
+    }
+
+    void test_build_dmrpp_url_to_owned_bucket() {
+        string rest_path = "collections/C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
+        string expected = "https://dmrpp-sit-poc.s3.amazonaws.com/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
+        CPPUNIT_ASSERT_MESSAGE("The URL should be built", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path) == expected);
+    }
+
+    void test_build_dmrpp_url_to_owned_bucket_bad_path() {
+        string rest_path = "collections/C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc/extra";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+    }
+
+    void test_build_dmrpp_url_to_owned_bucket_bad_path_2() {
+        string rest_path = "C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+    }
+
+    void test_build_dmrpp_url_to_owned_bucket_bad_path_3() {
+        string rest_path = "collections/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+    }
+
+    void test_build_dmrpp_url_to_owned_bucket_bad_path_4() {
+        string rest_path = "C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+    }
+    void test_build_dmrpp_url_to_owned_bucket_bad_path_5() {
+        string rest_path = "";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw", NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path), BESSyntaxUserError);
+    }
+
+    void test_item_in_cache() {
+        set_bes_keys();
+        configure_ngap_handler();
+        string dmrpp_string;
+        NgapOwnedContainer container;
+        container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
+        CPPUNIT_ASSERT_MESSAGE("The item should not be in the cache", !container.item_in_cache(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The item should empty", dmrpp_string.empty());
+    }
+
+    void test_cache_item() {
+        set_bes_keys();
+        configure_ngap_handler();
+        string dmrpp_string = "cached DMR++";
+        NgapOwnedContainer container;
+        container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
+        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache", container.cache_item(dmrpp_string));
+        string cached_value;
+        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.item_in_cache(cached_value));
+        CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
+    }
+
+#if 0
     void test_inject_data_url_default() {
         NgapContainer container;
         CPPUNIT_ASSERT_MESSAGE("The default value should be false", !container.inject_data_url());
@@ -426,9 +513,27 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The file name should be the cache file name",
                                dmrpp_string.find("<dmrpp:chunkDimensionSizes>50 50</dmrpp:chunkDimensionSizes>") != string::npos);
     }
+#endif
 
     CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
 
+    CPPUNIT_TEST(test_file_to_string);
+    CPPUNIT_TEST(test_file_to_string_bigger_than_buffer);
+    CPPUNIT_TEST(test_file_to_string_file_not_open);
+
+    CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_2);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_3);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_4);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_5);
+
+    CPPUNIT_TEST(test_item_in_cache);
+    CPPUNIT_TEST(test_cache_item);
+
+
+
+#if 0
     CPPUNIT_TEST(test_inject_data_url_default);
     CPPUNIT_TEST(test_inject_data_url_set);
     CPPUNIT_TEST(test_get_content_filters_default);
@@ -447,6 +552,7 @@ public:
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_twice_no_cache);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_clean_mem_cache_2);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_clean_mem_cache);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 };

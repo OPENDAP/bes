@@ -47,8 +47,10 @@ noinst_HEADERS = test_config.h
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
 	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	mod_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
-	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" \
+	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" $< > test_config.h
 
 bes.conf: $(top_srcdir)/configure.ac
 bes.cache.conf: $(top_srcdir)/configure.ac

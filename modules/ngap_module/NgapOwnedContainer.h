@@ -75,6 +75,8 @@ class NgapOwnedContainer: public BESContainer {
     // be easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path);
+    bool item_in_cache(std::string &dmrpp_string) const;
+    bool cache_item(const std::string &dmrpp_string) const;
 
     friend class NgapOwnedContainerTest;
 
