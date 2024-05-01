@@ -134,9 +134,6 @@ bool NgapOwnedContainer::item_in_cache(string &dmrpp_string) const {
 
 bool NgapOwnedContainer::cache_item(const string &dmrpp_string) const {
 
-    NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
-    CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name() + '\n');
-
     FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
     if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
         // Do this in a child thread someday. jhrg 11/14/23
@@ -154,6 +151,9 @@ bool NgapOwnedContainer::cache_item(const string &dmrpp_string) const {
     if (!NgapRequestHandler::d_dmrpp_file_cache.purge()) {
         ERROR_LOG("NgapOwnedContainer::access() - call to FileCache::purge() failed\n");
     }
+
+    NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
+    CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name() + '\n');
 
     return true;
 }

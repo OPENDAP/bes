@@ -172,6 +172,24 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
     }
 
+    void test_cache_item_stomp() {
+        set_bes_keys();
+        configure_ngap_handler();
+        string dmrpp_string = "cached DMR++";
+        NgapOwnedContainer container;
+        container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
+        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache", container.cache_item(dmrpp_string));
+        string cached_value;
+        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.item_in_cache(cached_value));
+        CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
+
+        // now 'stomp' on the cached item
+        CPPUNIT_ASSERT_MESSAGE("The item should not be added to the cache", !container.cache_item("Over-written cache item"));
+        CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.item_in_cache(cached_value));
+        DBG(cerr << "Cached value: " << cached_value << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
+    }
+
 #if 0
     void test_inject_data_url_default() {
         NgapContainer container;
@@ -530,6 +548,7 @@ public:
 
     CPPUNIT_TEST(test_item_in_cache);
     CPPUNIT_TEST(test_cache_item);
+    CPPUNIT_TEST(test_cache_item_stomp);
 
 
 
