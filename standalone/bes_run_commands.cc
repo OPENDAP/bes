@@ -133,8 +133,7 @@ int StandAloneApp::initialize(int argc, char **argv)
 
     bool badUsage = false;
     if (d_command_file_names.empty()) {
-        cerr << "You must either specify an input file\n";
-        badUsage = true;
+        cerr << "No command given, will only initialize the BES\n";
     }
 
     if (!outputStr.empty()) {
