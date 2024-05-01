@@ -48,7 +48,7 @@ auto const TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
 namespace ngap {
 
 class NgapOwnedContainerTest: public CppUnit::TestFixture {
-    string d_cache_dir = string(TEST_BUILD_DIR) + "/cache";
+    string d_cache_dir = string(TEST_BUILD_DIR) + "/owned-cache";
 
 public:
     // Called once before everything gets tested
@@ -72,11 +72,18 @@ public:
         NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
                                                           NgapRequestHandler::d_dmrpp_file_cache_size_mb,
                                                           NgapRequestHandler::d_dmrpp_file_cache_purge_size_mb);
+        NgapRequestHandler::d_dmrpp_mem_cache.initialize(100, 20);
+    }
+
+    void setUp() override {
+        set_bes_keys();
+        configure_ngap_handler();
     }
 
     // Delete the cache dir after each test; really only needed for the
     // tests toward the end of the suite that test the FileCache.
     void tearDown() override {
+#if 0
         struct stat sb{0};
         if (stat(d_cache_dir.c_str(), &sb) == 0) {
             if (S_ISDIR(sb.st_mode)) {
@@ -88,6 +95,10 @@ public:
                 }
             }
         }
+#endif
+
+        NgapRequestHandler::d_dmrpp_file_cache.clear();
+        NgapRequestHandler::d_dmrpp_mem_cache.clear();
     }
 
     void test_file_to_string() {
@@ -171,8 +182,11 @@ public:
 
     void test_item_in_cache() {
 
-        TEST_NAME;set_bes_keys();
+        TEST_NAME;
+#if 0
+        set_bes_keys();
         configure_ngap_handler();
+#endif
         string dmrpp_string;
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
@@ -182,8 +196,10 @@ public:
 
     void test_cache_item() {
         TEST_NAME;
+#if 0
         set_bes_keys();
         configure_ngap_handler();
+#endif
         string dmrpp_string = "cached DMR++";
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
@@ -195,8 +211,10 @@ public:
 
     void test_cache_item_stomp() {
         TEST_NAME;
+#if 0
         set_bes_keys();
         configure_ngap_handler();
+#endif
         string dmrpp_string = "cached DMR++";
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
@@ -215,8 +233,10 @@ public:
 
     void test_get_dmrpp_from_cache_or_remote_source() {
         TEST_NAME;
+#if 0
         set_bes_keys();
         configure_ngap_handler();
+#endif
 
         string dmrpp_string;
         NgapOwnedContainer container;
@@ -229,7 +249,33 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
     }
 
-    CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
+    void test_get_dmrpp_from_cache_or_remote_source_cache_consistency() {
+        TEST_NAME;
+#if 0
+        set_bes_keys();
+        configure_ngap_handler();
+#endif
+
+        string dmrpp_string;
+        NgapOwnedContainer container;
+        // The REST path will become data/d_int.h5
+        container.set_real_name("collections/data/granules/d_int.h5");
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        string cached_value;
+        int status = container.get_item_from_cache(cached_value);
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the cache (found: " + cached_value + ").", !status);
+
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        DBG(cerr << "DMR++: " << dmrpp_string << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
+
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cache", container.get_item_from_cache(cached_value));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cached value", !cached_value.empty());
+    }
+
+CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
 
     CPPUNIT_TEST(test_file_to_string);
     CPPUNIT_TEST(test_file_to_string_bigger_than_buffer);
@@ -247,6 +293,7 @@ public:
     CPPUNIT_TEST(test_cache_item_stomp);
 
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_cache_consistency);
 
     CPPUNIT_TEST_SUITE_END();
 };
