@@ -83,20 +83,6 @@ public:
     // Delete the cache dir after each test; really only needed for the
     // tests toward the end of the suite that test the FileCache.
     void tearDown() override {
-#if 0
-        struct stat sb{0};
-        if (stat(d_cache_dir.c_str(), &sb) == 0) {
-            if (S_ISDIR(sb.st_mode)) {
-                // remove the cache dir
-                string cmd = "rm -rf " + d_cache_dir;
-                int ret = system(cmd.c_str());
-                if (ret != 0) {
-                    CPPUNIT_FAIL("Failed to remove cache dir: " + d_cache_dir + '\n');
-                }
-            }
-        }
-#endif
-
         NgapRequestHandler::d_dmrpp_file_cache.clear();
         NgapRequestHandler::d_dmrpp_mem_cache.clear();
     }
@@ -110,8 +96,8 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
         CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
         CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
-        DBG(cerr << "Content length : " << content.size() << '\n');
-        CPPUNIT_ASSERT_MESSAGE("The file should be > 1k", content.size() > 1'000);
+        DBG2(cerr << "Content length : " << content.size() << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The file should be > 1k (was" + to_string(content.size()) + ").", content.size() > 1'000);
     }
 
     void test_file_to_string_bigger_than_buffer() {
@@ -123,8 +109,8 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
         CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
         CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
-        DBG(cerr << "Content length : " << content.size() << '\n');
-        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k", content.size() > 16'000);
+        DBG2(cerr << "Content length : " << content.size() << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k (was" + to_string(content.size()) + ").", content.size() > 16'000);
     }
 
     void test_file_to_string_file_not_open() {
@@ -181,12 +167,7 @@ public:
     }
 
     void test_item_in_cache() {
-
         TEST_NAME;
-#if 0
-        set_bes_keys();
-        configure_ngap_handler();
-#endif
         string dmrpp_string;
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
@@ -196,10 +177,6 @@ public:
 
     void test_cache_item() {
         TEST_NAME;
-#if 0
-        set_bes_keys();
-        configure_ngap_handler();
-#endif
         string dmrpp_string = "cached DMR++";
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
@@ -211,10 +188,6 @@ public:
 
     void test_cache_item_stomp() {
         TEST_NAME;
-#if 0
-        set_bes_keys();
-        configure_ngap_handler();
-#endif
         string dmrpp_string = "cached DMR++";
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
@@ -227,17 +200,12 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The item should not be added to the cache", !container.put_item_in_cache(
                 "Over-written cache item"));
         CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.get_item_from_cache(cached_value));
-        DBG(cerr << "Cached value: " << cached_value << '\n');
+        DBG2(cerr << "Cached value: " << cached_value << '\n');
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
     }
 
     void test_get_dmrpp_from_cache_or_remote_source() {
         TEST_NAME;
-#if 0
-        set_bes_keys();
-        configure_ngap_handler();
-#endif
-
         string dmrpp_string;
         NgapOwnedContainer container;
         // The REST path will become data/d_int.h5
@@ -245,17 +213,64 @@ public:
         // Set the location of the data as a file:// URL for this test.
         container.set_data_source_location(TEST_DATA_LOCATION);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
-        DBG(cerr << "DMR++: " << dmrpp_string << '\n');
+        DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
     }
 
     void test_get_dmrpp_from_cache_or_remote_source_cache_consistency() {
         TEST_NAME;
-#if 0
-        set_bes_keys();
-        configure_ngap_handler();
-#endif
+        string dmrpp_string;
+        NgapOwnedContainer container;
+        // The REST path will become data/d_int.h5
+        string real_name = "collections/data/granules/d_int.h5";
+        container.set_real_name(real_name);
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
 
+        string cache_value;
+        int status = container.get_item_from_cache(cache_value);
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the cache (found: " + cache_value + ").", !status);
+
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
+
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cache", container.get_item_from_cache(cache_value));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cached value", !cache_value.empty());
+    }
+
+    void test_get_dmrpp_from_cache_or_remote_source_test_both_caches() {
+        TEST_NAME;
+        string dmrpp_string;
+        NgapOwnedContainer container;
+        // The REST path will become data/d_int.h5
+        string real_name = "collections/data/granules/d_int.h5";
+        container.set_real_name(real_name);
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        string key = FileCache::hash_key(real_name);
+        FileCache::Item item;
+        bool result = NgapRequestHandler::d_dmrpp_file_cache.get(key, item, LOCK_SH);
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the file cache.", !result);
+
+        string cache_value;
+        result = NgapRequestHandler::d_dmrpp_mem_cache.get(real_name, cache_value);
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the memory cache.", !result);
+
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
+
+        result = NgapRequestHandler::d_dmrpp_file_cache.get(key, item, LOCK_SH);
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the file cache.", result);
+
+        result = NgapRequestHandler::d_dmrpp_mem_cache.get(real_name, cache_value);
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the memory cache.", result);
+    }
+
+    void test_get_dmrpp_from_cache_or_remote_source_test_cache_use() {
+        TEST_NAME;
         string dmrpp_string;
         NgapOwnedContainer container;
         // The REST path will become data/d_int.h5
@@ -266,16 +281,37 @@ public:
         string cached_value;
         int status = container.get_item_from_cache(cached_value);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the cache (found: " + cached_value + ").", !status);
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the cached value", cached_value.empty());
 
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
-        DBG(cerr << "DMR++: " << dmrpp_string << '\n');
+        DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
 
-        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cache", container.get_item_from_cache(cached_value));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cache", container.get_dmrpp_from_cache_or_remote_source(cached_value));
+        DBG2(cerr << "DMR++: " << cached_value << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cached value", !cached_value.empty());
     }
 
-CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
+    void test_access() {
+        TEST_NAME;
+
+        NgapOwnedContainer container;
+        // The REST path will become data/d_int.h5
+        container.set_real_name("collections/data/granules/d_int.h5");
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        string dmrpp = container.access();
+        DBG2(cerr << "DMR++: " << dmrpp << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp.empty());
+
+        string attrs = container.get_attributes();
+        CPPUNIT_ASSERT_MESSAGE("The container attributes should be 'as-string'", attrs == "as-string");
+
+        CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
+    }
+
+    CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
 
     CPPUNIT_TEST(test_file_to_string);
     CPPUNIT_TEST(test_file_to_string_bigger_than_buffer);
@@ -294,6 +330,10 @@ CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
 
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_cache_consistency);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_both_caches);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_cache_use);
+
+    CPPUNIT_TEST(test_access);
 
     CPPUNIT_TEST_SUITE_END();
 };

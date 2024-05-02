@@ -499,7 +499,7 @@ public:
      * @param item A reference to an Item - a value-result parameter. Release the lock
      * by closing the file.
      * @param lock_type By default, get a shared non-blocking lock.
-     * @return True if the items was found and locked, false otherwise
+     * @return True if the item was found and locked, false otherwise
      */
     bool get(const std::string &key, Item &item, int lock_type = LOCK_SH | LOCK_NB) {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
