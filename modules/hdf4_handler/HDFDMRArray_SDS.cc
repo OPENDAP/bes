@@ -29,8 +29,6 @@ HDFDMRArray_SDS::read ()
     if (length() == 0)
         return true; 
 
-    BESDEBUG("h4","Coming to HDFDMRArray_SDS read "<<endl);
-
     // Declaration of offset,count and step
     vector<int>offset;
     offset.resize(sds_rank);

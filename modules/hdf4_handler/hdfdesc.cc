@@ -141,6 +141,7 @@
 // HDF4 for direct DAP4(DMR)
 #include "HDFDMRArray_VD.h"
 #include "HDFDMRArray_SDS.h"
+#include "HDFDMRArray_EOS2LL.h"
 
 // HDF-EOS2 (including the hybrid) will be handled as HDF-EOS2 objects if the HDF-EOS2 library is configured in
 #ifdef USE_HDFEOS2_LIB
@@ -5745,13 +5746,16 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
     // Array
     auto ar_bt_lat_unique = make_unique<Float64>(lat_name);
     auto ar_bt_lat = ar_bt_lat_unique.get();
-    auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
+    //auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
+    auto ar_lat_unique = make_unique<HDFDMRArray_EOS2LL>(filename, eos2_grid.grid_name, true, lat_name,ar_bt_lat);
     auto ar_lat = ar_lat_unique.release();
 
     // Dimensions
     ar_lat->append_dim_ll(eos2_grid.ydim,ydim_path);
     if (!eos2_grid.oned_latlon)
         ar_lat->append_dim_ll(eos2_grid.xdim,xdim_path);
+    else
+        ar_lat->set_rank(1);
 
     // Attributes
     add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
@@ -5760,16 +5764,18 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
     string eos_latlon_value = eos2_grid.grid_name +" lat";
     add_var_dap4_attr(ar_lat,"eos_latlon",attr_str_c,eos_latlon_value);
 
-
     ar_lat->set_is_dap4(true);
     d4_grp->add_var_nocopy(ar_lat);
 
     auto ar_bt_lon_unique = make_unique<Float64>(lon_name);
     auto ar_bt_lon = ar_bt_lon_unique.get();
-    auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
+    //auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
+    auto ar_lon_unique = make_unique<HDFDMRArray_EOS2LL>(filename,eos2_grid.grid_name, false, lon_name, ar_bt_lon);
     auto ar_lon = ar_lon_unique.release();
     if (!eos2_grid.oned_latlon)
         ar_lon->append_dim_ll(eos2_grid.ydim,ydim_path);
+    else 
+        ar_lon->set_rank(1);
     ar_lon->append_dim_ll(eos2_grid.xdim,xdim_path);
 
     add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
