@@ -4000,8 +4000,13 @@ PointDataset::~PointDataset()
 
 PointDataset * PointDataset::Read(int32 /*fd*/, const string &pointname)
 {
+    return nullptr;
+    // We support the point data via HDF4 APIs. So the following code
+    // is not necessary. Comment out to avoid the memory leaking. KY 2024-04-22
+#if 0
     auto point = new PointDataset(pointname);
     return point;
+#endif
 }
 
 

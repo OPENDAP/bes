@@ -2,6 +2,24 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3B42.20180802.03.7.HDF">
     <Dimension name="nlon" size="1440"/>
     <Dimension name="nlat" size="400"/>
+    <Float32 name="nlat">
+        <Dim name="/nlat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="sp_h4_ll" type="String">
+            <Value>lat -50.000000 0.250000</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nlon">
+        <Dim name="/nlon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="sp_h4_ll" type="String">
+            <Value>lon -180.000000 0.250000</Value>
+        </Attribute>
+    </Float32>
     <Attribute name="FileHeader" type="String">
         <Value>AlgorithmID=3B42;
 AlgorithmVersion=3B42_7.0;
@@ -79,6 +97,9 @@ Origin=SOUTHWEST;
             </Attribute>
             <Attribute name="dmr_sds_ref" type="Int32">
                 <Value>10</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.9</Value>
             </Attribute>
         </Float32>
         <Float32 name="IRprecipitation">

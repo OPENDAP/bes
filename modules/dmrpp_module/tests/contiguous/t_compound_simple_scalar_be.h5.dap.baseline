@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="comp_scalar_be.h5">
+    <Structure name="comp_scalar_be">
+        <Int32 name="a_name"/>
+        <Float32 name="b_name"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Int32 a_name;
+    Float32 b_name;
+} comp_scalar_be = { 10, 100.1 };
+

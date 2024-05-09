@@ -1,0 +1,123 @@
+netcdf test {
+
+// global attributes:
+		:HDFEOSVersion = "HDFEOS_V2.0" ;
+		:StructMetadata_0 = "GROUP=SwathStructure\nEND_GROUP=SwathStructure\nGROUP=GridStructure\nEND_GROUP=GridStructure\nGROUP=PointStructure\n\tGROUP=POINT_1\n\t\tPointName=\"Simple Point\"\n\t\tGROUP=Level\n\t\t\tGROUP=Level_0\n\t\t\t\tLevelName=\"Sensor\"\n\t\t\t\tOBJECT=PointField_1\n\t\t\t\t\tPointFieldName=\"Time\"\n\t\t\t\t\tDataType=DFNT_FLOAT64\n\t\t\t\t\tOrder=1\n\t\t\t\tEND_OBJECT=PointField_1\n\t\t\t\tOBJECT=PointField_2\n\t\t\t\t\tPointFieldName=\"Concentration\"\n\t\t\t\t\tDataType=DFNT_FLOAT32\n\t\t\t\t\tOrder=4\n\t\t\t\tEND_OBJECT=PointField_2\n\t\t\t\tOBJECT=PointField_3\n\t\t\t\t\tPointFieldName=\"Species\"\n\t\t\t\t\tDataType=DFNT_CHAR8\n\t\t\t\t\tOrder=4\n\t\t\t\tEND_OBJECT=PointField_3\n\t\t\tEND_GROUP=Level_0\n\t\tEND_GROUP=Level\n\t\tGROUP=LevelLink\n\t\tEND_GROUP=LevelLink\n\tEND_GROUP=POINT_1\n\tGROUP=POINT_2\n\t\tPointName=\"FixedBuoy Point\"\n\t\tGROUP=Level\n\t\tEND_GROUP=Level\n\t\tGROUP=LevelLink\n\t\tEND_GROUP=LevelLink\n\tEND_GROUP=POINT_2\n\tGROUP=POINT_3\n\t\tPointName=\"FloatBuoy Point\"\n\t\tGROUP=Level\n\t\tEND_GROUP=Level\n\t\tGROUP=LevelLink\n\t\tEND_GROUP=LevelLink\n\tEND_GROUP=POINT_3\nEND_GROUP=PointStructure\nEND\n" ;
+		:history = "removed date-timex PointFile.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"PointFile.hdf.dmrpp\"}]}]" ;
+
+group: Simple_Point {
+  dimensions:
+  	dim1 = 8 ;
+  variables:
+  	ubyte LevelWritten(dim1) ;
+  		LevelWritten:dmr_vdata_ref = 3 ;
+  data:
+
+   LevelWritten = 1, 0, 0, 0, 0, 0, 0, 0 ;
+
+  group: Data_Vgroup {
+    dimensions:
+    	sdim1 = 15 ;
+    	sdim2 = 15 ;
+    	sdim3 = 4 ;
+    	sdim4 = 15 ;
+    	sdim5 = 4 ;
+    variables:
+    	double Sensor.Time(sdim1) ;
+    	float Sensor.Concentration(sdim2, sdim3) ;
+    	byte Sensor.Species(sdim4, sdim5) ;
+    data:
+
+     Sensor.Time = 46353400, 46572420.7, 46853103.3, 47485493.4, 48066418.5, 
+        48474414.6, 48866282.4, 49388188.2, 49858070.5, 50370437.1, 
+        50515373.3, 51257471.8, 51708197.8, 51859454.7, 52433289.8 ;
+
+     Sensor.Concentration =
+  2.98, 3.99, 2.63, 1.41,
+  3.99, 4.52, 2.35, 2.52,
+  2.11, 3.1, 4.81, 1.83,
+  3.39, 3.02, 3.09, 3.9,
+  2.06, 4.49, 1.67, 1.74,
+  1.06, 4.63, 4.44, 3.33,
+  2.18, 2.02, 1.41, 1,
+  3.73, 2, 2.3, 1.46,
+  2.97, 3.75, 2.33, 5.02,
+  4.38, 3.7, 1.96, 3.11,
+  0.24, 1.91, 4.33, 1.49,
+  3.62, 1.4, 0.48, 2.32,
+  3.53, 3.16, 2.01, 1.56,
+  0.62, 0.76, 2.06, 4.01,
+  1.68, 1.35, 1.71, 4.06 ;
+
+     Sensor.Species =
+  67, 79, 0, 0,
+  67, 79, 50, 0,
+  67, 79, 0, 0,
+  67, 79, 50, 0,
+  79, 51, 0, 0,
+  67, 79, 50, 0,
+  79, 51, 0, 0,
+  79, 51, 0, 0,
+  78, 79, 120, 0,
+  78, 79, 120, 0,
+  67, 79, 0, 0,
+  67, 79, 50, 0,
+  79, 51, 0, 0,
+  79, 51, 0, 0,
+  79, 51, 0, 0 ;
+    } // group Data_Vgroup
+
+  group: Linkage_Vgroup {
+    } // group Linkage_Vgroup
+
+  group: Point_Attributes {
+    } // group Point_Attributes
+  } // group Simple_Point
+
+group: FixedBuoy_Point {
+  dimensions:
+  	dim2 = 8 ;
+  variables:
+  	ubyte LevelWritten(dim2) ;
+  		LevelWritten:dmr_vdata_ref = 8 ;
+  data:
+
+   LevelWritten = 0, 0, 0, 0, 0, 0, 0, 0 ;
+
+  group: Data_Vgroup {
+    } // group Data_Vgroup
+
+  group: Linkage_Vgroup {
+    } // group Linkage_Vgroup
+
+  group: Point_Attributes {
+
+    // group attributes:
+    		:int32 = 9999 ;
+    } // group Point_Attributes
+  } // group FixedBuoy_Point
+
+group: FloatBuoy_Point {
+  dimensions:
+  	dim3 = 8 ;
+  variables:
+  	ubyte LevelWritten(dim3) ;
+  		LevelWritten:dmr_vdata_ref = 13 ;
+  data:
+
+   LevelWritten = 0, 0, 0, 0, 0, 0, 0, 0 ;
+
+  group: Data_Vgroup {
+    } // group Data_Vgroup
+
+  group: Linkage_Vgroup {
+    } // group Linkage_Vgroup
+
+  group: Point_Attributes {
+
+    // group attributes:
+    		:float32 = -7.5f ;
+    } // group Point_Attributes
+  } // group FloatBuoy_Point
+}
