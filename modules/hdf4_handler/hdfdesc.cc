@@ -142,6 +142,7 @@
 #include "HDFDMRArray_VD.h"
 #include "HDFDMRArray_SDS.h"
 #include "HDFDMRArray_EOS2LL.h"
+#include "HDFDMRArray_SPLL.h"
 
 // HDF-EOS2 (including the hybrid) will be handled as HDF-EOS2 objects if the HDF-EOS2 library is configured in
 #ifdef USE_HDFEOS2_LIB
@@ -5941,8 +5942,14 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
         // Array
         auto ar_bt_lat_unique = make_unique<Float32>(lat_name);
         auto ar_bt_lat = ar_bt_lat_unique.get();
+
+        auto ar_lat_unique = make_unique<HDFDMRArray_SPLL>(filename, lat_start, lat_res, lat_name,ar_bt_lat);
+        auto ar_lat = ar_lat_unique.release();
+
+#if 0
         auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
         auto ar_lat = ar_lat_unique.release();
+#endif
     
         // Dimensions
         ar_lat->append_dim_ll(lat_size,"/"+lat_name);
@@ -5984,8 +5991,14 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
     
         auto ar_bt_lon_unique = make_unique<Float32>(lon_name);
         auto ar_bt_lon = ar_bt_lon_unique.get();
+
+        auto ar_lon_unique = make_unique<HDFDMRArray_SPLL>(filename,  lon_start,lon_res, lon_name,ar_bt_lon);
+        auto ar_lon = ar_lon_unique.release();
+
+#if 0
         auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
         auto ar_lon = ar_lon_unique.release();
+#endif
         ar_lon->append_dim_ll(lon_size,"/"+lon_name);
     
         add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
