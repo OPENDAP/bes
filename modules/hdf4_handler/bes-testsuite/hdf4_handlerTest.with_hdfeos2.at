@@ -594,6 +594,9 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.constraint.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dap.constraint.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([SDS_simple_comp.hdf.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([SDS_simple_comp.hdf.dap.constraint.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([sinusoid.hdf.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([cea.hdf.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([SDS_simple_comp.hdf.dap.constraint.bescmd])
 
 #CF DMR Test
 AT_BESCMD_BESCONF_RESPONSE_TEST([h4.with_hdfeos2/grid_1_2d.hdf.dmr.bescmd],[bes.with_hdfeos2_cfdmr.conf])

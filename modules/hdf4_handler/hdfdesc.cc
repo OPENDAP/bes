@@ -5912,18 +5912,6 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
 
     if ((lat_size !=0) && (lon_size !=0) && num_dims ==2) {
 
-        // Array
-        auto ar_bt_lat_unique = make_unique<Float32>(lat_name);
-        auto ar_bt_lat = ar_bt_lat_unique.get();
-        auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
-        auto ar_lat = ar_lat_unique.release();
-    
-        // Dimensions
-        ar_lat->append_dim_ll(lat_size,"/"+lat_name);
-    
-        // Attributes
-        add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
-    
         // Retrieve lat/lon starting point and step information.
         string grid_header_value = d4_attr->value(0);
         int lat_size_gh = 0;
@@ -5947,6 +5935,46 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
             ret_value = false;
             
         }
+
+
+
+        // Array
+        auto ar_bt_lat_unique = make_unique<Float32>(lat_name);
+        auto ar_bt_lat = ar_bt_lat_unique.get();
+        auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
+        auto ar_lat = ar_lat_unique.release();
+    
+        // Dimensions
+        ar_lat->append_dim_ll(lat_size,"/"+lat_name);
+    
+        // Attributes
+        add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
+    
+#if 0
+        // Retrieve lat/lon starting point and step information.
+        string grid_header_value = d4_attr->value(0);
+        int lat_size_gh = 0;
+        int lon_size_gh = 0;
+        float lat_start = 0;
+        float lon_start = 0;
+        float lat_res = 0;
+        float lon_res = 0;
+        
+        vector<char> grid_header_value_vc(grid_header_value.begin(),grid_header_value.end());
+        HDFCFUtil::parser_trmm_v7_gridheader(grid_header_value_vc,lat_size_gh,lon_size_gh,
+                                         lat_start,lon_start,lat_res,lon_res,false);
+
+        if(lat_size != lat_size_gh || lon_size != lon_size_gh) {
+            err_msg = "Either the latitude size is not the same as the size retrieved from the gridheader";
+            err_msg = " or the longitude size is not the same as the size retrieved from the gridheader\n";
+            err_msg = "The lat_size is " + to_string(lat_size) + '\n';
+            err_msg = "The lat_size retrieved from the header is " + to_string(lat_size_gh) + '\n';
+            err_msg = "The lon_size is " + to_string(lon_size) + '\n';
+            err_msg = "The lon_size retrieved from the header is " + to_string(lon_size_gh) + '\n';
+            ret_value = false;
+            
+        }
+#endif
 
         // Add special HDF4 latlon predefined attribute sp_h4_ll that includes the lat name.
         string sp_h4_value = "lat " + to_string(lat_start) + ' '+to_string(lat_res);
