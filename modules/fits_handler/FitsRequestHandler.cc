@@ -271,12 +271,9 @@ bool FitsRequestHandler::fits_build_dmr(BESDataHandlerInterface &dhi)
 bool FitsRequestHandler::fits_build_vers(BESDataHandlerInterface &dhi)
 {
 	BESResponseObject *response = dhi.response_handler->get_response_object();
-	BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(response);
+	auto info = dynamic_cast<BESVersionInfo *>(response);
 	if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
-#if 0
-    info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
-#endif
     info->add_module(MODULE_NAME, MODULE_VERSION);
 
 	return true;
@@ -285,19 +282,16 @@ bool FitsRequestHandler::fits_build_vers(BESDataHandlerInterface &dhi)
 bool FitsRequestHandler::fits_build_help(BESDataHandlerInterface &dhi)
 {
 	BESResponseObject *response = dhi.response_handler->get_response_object();
-	BESInfo *info = dynamic_cast<BESInfo *>(response);
+	auto info = dynamic_cast<BESInfo *>(response);
 	if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	map<string, string> attrs;
+	map<string, string, std::less<>> attrs;
     attrs["name"] = MODULE_NAME ;
     attrs["version"] = MODULE_VERSION ;
-#if 0
-    attrs["name"] = PACKAGE_NAME;
-    attrs["version"] = PACKAGE_VERSION;
-#endif
+
 	list<string> services;
 	BESServiceRegistry::TheRegistry()->services_handled(FITS_NAME, services);
-	if (services.size() > 0) {
+	if (!services.empty()) {
 		string handles = BESUtil::implode(services, ',');
 		attrs["handles"] = handles;
 	}
@@ -325,12 +319,12 @@ void FitsRequestHandler::dump(ostream &strm) const
 void FitsRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    auto bdds = dynamic_cast<BESDataDDSResponse *>(response);
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
     DDS *dds = bdds->get_dds();
     string accessed = dhi.container->access();
-	DAS *das = new DAS;
+	auto das = new DAS;
 	BESDASResponse bdas(das);
 	bdas.set_container(dhi.container->get_symbolic_name());
 	string fits_error;
@@ -342,6 +336,5 @@ void FitsRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
 	dds->transfer_attributes(das);
     BESDEBUG(FITS_NAME, "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<accessed << endl);
     bdds->set_ia_flag(true);
-    return;
 }
 
