@@ -2,14 +2,14 @@
 <Dataset name="h02v10_3Files_tif.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
     <Attribute name="GLOBAL" type="Container">
         <Attribute name="Metadata" type="Container">
-            <Attribute name="TIFFTAG_RESOLUTIONUNIT" type="String">
-                <value>2 (pixels/inch)</value>
-            </Attribute>
             <Attribute name="TIFFTAG_XRESOLUTION" type="String">
                 <value>72</value>
             </Attribute>
             <Attribute name="TIFFTAG_YRESOLUTION" type="String">
                 <value>72</value>
+            </Attribute>
+            <Attribute name="TIFFTAG_RESOLUTIONUNIT" type="String">
+                <value>2 (pixels/inch)</value>
             </Attribute>
         </Attribute>
     </Attribute>

@@ -1,9 +1,9 @@
 Attributes {
     GLOBAL {
         Metadata {
-            String TIFFTAG_RESOLUTIONUNIT "2 (pixels/inch)";
             String TIFFTAG_XRESOLUTION "72";
             String TIFFTAG_YRESOLUTION "72";
+            String TIFFTAG_RESOLUTIONUNIT "2 (pixels/inch)";
         }
     }
     SRB1 {
