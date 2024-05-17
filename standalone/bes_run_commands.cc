@@ -87,7 +87,8 @@ public:
         return sig;
     }
 
-    void run_command(const std::string &cmd);
+    void run_xml_commands(ostream &o_strm);
+    void run_xml_command(const std::string &cmd, ostream &o_strm);
 };
 
 int StandAloneApp::initialize(int argc, char **argv)
@@ -163,12 +164,10 @@ int StandAloneApp::initialize(int argc, char **argv)
     return 0;
 }
 
-void StandAloneApp::run_command(const std::string &cmd)
+void StandAloneApp::run_xml_command(const std::string &cmd, ostream &o_strm)
 {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("StandAloneApp::run_command");
-
-    ostream &o_strm = d_output_strm.is_open() ? d_output_strm : cout;
 
     BESXMLInterface interface(cmd, &o_strm);
 
@@ -203,38 +202,50 @@ void StandAloneApp::run_command(const std::string &cmd)
     }
 }
 
+void StandAloneApp::run_xml_commands(ostream &o_strm)
+{
+    StandAloneApp app;
+    unsigned int commands = 0;
+    for (auto const &command_filename: d_command_file_names) {
+        commands++;
+        ifstream cmd_strm(command_filename);
+        if (!cmd_strm.is_open())
+            cerr << "FAILED to open the input file '" << command_filename << "' SKIPPING.\n";
+        else {
+            std::string cmd;
+
+            // Allocate string memory up front
+            cmd_strm.seekg(0, std::ios::end);
+            cmd.reserve(cmd_strm.tellg());
+            cmd_strm.seekg(0, std::ios::beg);
+
+            // Read the file into the string. Note 'extra' parentheses around the
+            // std::istreambuf_iterator<char> constructor. They are mandatory.
+            // They prevent the problem known as the "most vexing parse", which
+            // in this case won't actually give you a compile error like it usually
+            // does, but will give you interesting (read: wrong) results. See Meyers'
+            // 'Most vexing parse.'
+            cmd.assign((std::istreambuf_iterator<char>(cmd_strm)),
+                       std::istreambuf_iterator<char>());
+
+            run_xml_command(cmd, o_strm);
+            if (commands < d_command_file_names.size()) {
+                o_strm << "\nNext-Response:\n" << flush;
+            }
+        }
+    }
+}
+
+
 int StandAloneApp::run()
 {
     try {
         ostream &o_strm = d_output_strm.is_open() ? d_output_strm : cout;
-        unsigned int commands = 0;
-        for (auto const &command_filename: d_command_file_names) {
-            commands++;
-            ifstream cmd_strm(command_filename);
-            if (!cmd_strm.is_open())
-                cerr << "FAILED to open the input file '" << command_filename << "' SKIPPING.\n";
-            else {
-                std::string cmd;
-
-                // Allocate string memory up front
-                cmd_strm.seekg(0, std::ios::end);
-                cmd.reserve(cmd_strm.tellg());
-                cmd_strm.seekg(0, std::ios::beg);
-
-                // Read the file into the string. Note 'extra' parentheses around the
-                // std::istreambuf_iterator<char> constructor. They are mandatory.
-                // They prevent the problem known as the "most vexing parse", which
-                // in this case won't actually give you a compile error like it usually
-                // does, but will give you interesting (read: wrong) results. See Meyers'
-                // 'Most vexing parse.'
-                cmd.assign((std::istreambuf_iterator<char>(cmd_strm)),
-                           std::istreambuf_iterator<char>());
-
-                run_command(cmd);
-                if (commands < d_command_file_names.size()) {
-                    o_strm << "\nNext-Response:\n" << flush;
-                }
-            }
+        if (d_command_file_names.empty()) {
+            cerr << "No command given, will only initialize the BES\n";
+        }
+        else {
+            run_xml_commands(o_strm);
         }
     }
     catch (const BESError &e) {
