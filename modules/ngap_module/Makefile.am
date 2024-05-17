@@ -33,6 +33,7 @@ NGAP_SRC =  NgapRequestHandler.cc \
             NgapContainer.cc \
             NgapContainerStorage.cc \
             NgapOwnedContainer.cc \
+            NgapOwnedContainerStorage.cc \
             NgapApi.cc
 
 # MemoryCache.cc
@@ -43,6 +44,7 @@ NGAP_HDR =  NgapNames.h \
             NgapContainer.h \
             NgapContainerStorage.h \
             NgapOwnedContainer.h \
+            NgapOwnedContainerStorage.h \
             NgapApi.h \
             MemoryCache.h
 

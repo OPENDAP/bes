@@ -40,6 +40,7 @@
 using namespace std;
 
 auto const DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
+auto const DMRPP_TEST_BUCKET_OPENDAP_AWS = "https://s3.amazonaws.com/cloudydap";
 auto const TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
 
 #define TEST_NAME DBG(cerr << __PRETTY_FUNCTION__ << "()\n")
@@ -62,6 +63,10 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
         TheBESKeys::TheKeys()->set_key("AllowedHosts", ".*");
+        // Use the env var creds for real access to DMR++ in S3. This works
+        // only for a given URL. On my machine that is https://s3.amazonaws.com/cloudydap.
+        // jhrg 5/17/24
+        TheBESKeys::TheKeys()->set_key("CredentialsManager.config", "ENV_CREDS");
     }
 
     void configure_ngap_handler() const {
@@ -311,6 +316,33 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
     }
 
+    void test_access_s3() {
+        TEST_NAME;
+
+        if (getenv("CMAC_URL") == nullptr) {
+            DBG(cerr << "Skipping test_access_s3 because AWS_ACCESS_KEY_ID is not set.\n");
+            return;
+        }
+
+        NgapOwnedContainer container;
+        // The REST path will become ngap_owned/d_int.h5. This exists in the S3 bucket
+        // s3-module-test-bucket that DMRPP_TEST_BUCKET_OPENDAP_AWS points toward. jhrg 5/17/24
+        container.set_real_name("collections/ngap_owned/granules/d_int.h5");
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
+
+        string dmrpp = container.access();
+        DBG2(cerr << "DMR++: " << dmrpp << '\n');
+        CPPUNIT_ASSERT_MESSAGE("The response should not be empty", !dmrpp.empty());
+        string dmrpp_str = R"(dmrpp:href="https://s3.amazonaws.com/cloudydap/ngap_owned/d_int.h5")";
+        CPPUNIT_ASSERT_MESSAGE("The response should be a DMR++ XML document", dmrpp.find(dmrpp_str) != string::npos);
+
+        string attrs = container.get_attributes();
+        CPPUNIT_ASSERT_MESSAGE("The container attributes should be 'as-string'", attrs == "as-string");
+
+        CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
+    }
+
     CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
 
     CPPUNIT_TEST(test_file_to_string);
@@ -334,6 +366,7 @@ public:
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_cache_use);
 
     CPPUNIT_TEST(test_access);
+    CPPUNIT_TEST(test_access_s3);
 
     CPPUNIT_TEST_SUITE_END();
 };
