@@ -38,7 +38,7 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
+check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) bes.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
