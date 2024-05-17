@@ -60,7 +60,7 @@ namespace ngap {
 class NgapOwnedContainer: public BESContainer {
 
     std::string d_ngap_path;    // The (in)famous restified path
-    std::string d_data_source_location;
+    std::string d_data_source_location = "https://s3.amazonaws.com/cloudydap"; // FIXME Remove hardcoded value. jhrg 5/17/24
 
     bool get_dmrpp_from_cache_or_remote_source(std::string &dmrpp_string) const;
 
