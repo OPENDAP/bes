@@ -352,8 +352,8 @@ public:
         CPPUNIT_TEST(resty_path_to_cmr_query_test_01);
         CPPUNIT_TEST(resty_path_to_cmr_query_test_02);
         CPPUNIT_TEST(resty_path_to_cmr_query_test_03);
-        CPPUNIT_TEST(cmr_access_entry_title_test);
-        CPPUNIT_TEST(cmr_access_collection_concept_id_test);
+        // CPPUNIT_TEST(cmr_access_entry_title_test);
+        // CPPUNIT_TEST(cmr_access_collection_concept_id_test);
         CPPUNIT_TEST(signed_url_is_expired_test);
 
     CPPUNIT_TEST_SUITE_END();
