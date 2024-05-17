@@ -59,7 +59,7 @@ if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_v
     besTimer.start((x)); \
 } while(false)
 #else
-#define BES_STOPWATCH_START(x)
+#define BES_STOPWATCH_START(module, x)
 #endif
 
 class BESStopWatch;
