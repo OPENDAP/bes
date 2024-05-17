@@ -4,5 +4,5 @@ AT_INIT([bes/modules/ngap_module/tests testsuite])
 
 m4_include([../../common/handler_tests_macros.m4])
 
-AT_BESCMD_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmr.bescmd])
-AT_BESCMD_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST.dmr.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST.dap.bescmd])
