@@ -1160,6 +1160,19 @@ void http_get(const string &target_url, string &buf) {
         auto url = std::make_shared<http::url>(target_url);
         request_headers = sign_url_for_s3_if_possible(url, request_headers);
 
+        // FIXME - This is a hack to get the EDL token from the credentials manager. jhrg 5/19/24
+        //  DO NOT MERGE THIS CODE INTO THE MASTER BRANCH
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(url);
+        if (credentials) {
+            INFO_LOG(prolog << "Looking for EDL Token for URL: " << target_url << '\n');
+            string edl_token = credentials->get("edl_token");
+            if (!edl_token.empty()) {
+                INFO_LOG(prolog << "Using EDL Token for URL: " << target_url << '\n');
+                request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
+            }
+        }
+        // END OF HACK
+
         ceh = curl::init(target_url, request_headers, nullptr);
         if (!ceh)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);

@@ -409,8 +409,10 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         // FIXME DO NOT MERGE THIS. For POC work on DMR++ Ownership.
         //  TRY abuse the credentials mgr to get/use and EDL Token for certain URLs. jhrg 5/18/24
         else if (credentials) {
+            INFO_LOG(prolog << "Looking for EDL Token for URL: " << handle->d_url->str() << '\n');
             string edl_token = credentials->get("edl_token");
             if (!edl_token.empty()) {
+                INFO_LOG(prolog << "Using EDL Token for URL: " << handle->d_url->str() << '\n');
                 handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "Authorization", edl_token);
                 res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
                 curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
