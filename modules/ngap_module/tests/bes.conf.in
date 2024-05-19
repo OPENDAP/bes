@@ -34,6 +34,9 @@ Http.MimeTypes+=h4:application/x-hdf
 Http.MimeTypes+=h5:application/x-hdf5
 
 NGAP.UseDMRppCache = true
+NGAP.DMRppFileCacheDir = @abs_top_builddir@/modules/ngap_module/tests/hyrax_ngap_cache
+NGAP.DMRppFileCacheSize.MB = 10000
+NGAP.DMRppFileCachePurge.MB = 2000
 
 # Defaults: 100 entries and purge 20 entries when the threshold is exceeded.
 # NGAP.DMRppCacheThreshold = 100
@@ -44,4 +47,5 @@ AllowedHosts = ^https?:\/\/localhost(:8080)?\/.*$
 AllowedHosts+= ^https:\/\/s3.amazonaws.com\/cloudydap\/.*$
 AllowedHosts+= ^https:\/\/archive\.podaac\.earthdata\.nasa\.gov\/.*$
 
-CredentialsManager.config = ENV_CREDS
+# CredentialsManager.config = ENV_CREDS
+CredentialsManager.config = @abs_top_srcdir@/modules/ngap_module/tests/CM.config

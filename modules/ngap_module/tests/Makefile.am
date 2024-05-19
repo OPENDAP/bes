@@ -20,7 +20,7 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 $(BES_CONF_IN) $(srcdir)/handler_tests_macros.m4
+$(srcdir)/package.m4 $(BES_CONF_IN) $(srcdir)/CM.config.template
 
 DISTCLEANFILES =  atconfig
 
@@ -39,7 +39,13 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) bes.conf
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	@if [ -n "$${CMAC_ID}" ] || [ -f $(srcdir)/CM.config ]; then \
+	    $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
+	else \
+	    echo "No access credentials available, skipping tests that use S3"; \
+	    true;\
+	fi
+
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -47,7 +53,7 @@ clean-local:
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
