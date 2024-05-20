@@ -107,11 +107,12 @@ endif
 
 TEST_SRC = test_utils.cc test_utils.h
 
+
 ResponseBuilderTest_SOURCES = ResponseBuilderTest.cc $(TEST_SRC)
 ResponseBuilderTest_OBJS = ../BESDapResponseBuilder.o ../BESDataDDSResponse.o \
 ../BESDDSResponse.o ../BESDapResponse.o ../BESDapFunctionResponseCache.o \
 ../BESStoredDapResultCache.o ../DapFunctionUtils.o ../CachedSequence.o ../CacheTypeFactory.o \
-../CacheMarshaller.o ../CacheUnMarshaller.o ../../dispatch/BESFileLockingCache.o
+../CacheMarshaller.o ../CacheUnMarshaller.o
 ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(LDADD)
 
 FunctionResponseCacheTest_SOURCES = FunctionResponseCacheTest.cc $(TEST_SRC)
