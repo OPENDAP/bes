@@ -83,16 +83,20 @@ void HDFStructure::set_read_p(bool state) {
 
 bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offset) {
 
+#if 0
     Constructor::Vars_iter vi = this->var_begin();
     Constructor::Vars_iter ve = this->var_end();
 
     for (; vi != ve; vi++) {
-        BaseType *bt = *vi;
+#endif
+
+    for (auto &bt:this->variables()) {	     
+        //BaseType *bt = *vi;
         Type t_bt = bt->type();
         if (libdap::is_simple_type(t_bt) && t_bt != dods_str_c && t_bt != dods_url_c && t_bt!= dods_enum_c && t_bt!=dods_opaque_c) {
 
-            BESDEBUG("h4", "var name is: " << bt->name() << "'" << endl);
-            BESDEBUG("h4", "var values_offset is: " << values_offset << "'" << endl);
+            //BESDEBUG("h4", "var name is: " << bt->name() << "'" << endl);
+            //BESDEBUG("h4", "var values_offset is: " << values_offset << "'" << endl);
 #if 0
             if(t_bt == dods_int32_c) {
                 //Int32 *val_int = static_cast<Int32 *>(bt);
@@ -111,6 +115,7 @@ bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offse
             bt->val2buf(values.data() + values_offset);
             bt->set_read_p(true);
             values_offset += bt->width_ll();
+
         }
         else if (t_bt == dods_array_c) {
 

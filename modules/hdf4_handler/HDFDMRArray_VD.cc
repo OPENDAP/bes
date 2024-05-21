@@ -10,6 +10,7 @@
 
 #include "HDFDMRArray_VD.h"
 #include "HDFStructure.h"
+#include "HDFCFUtil.h"
 #include <iostream>
 #include <sstream>
 #include <libdap/debug.h>
@@ -427,16 +428,39 @@ HDFDMRArray_VD::read_multi_fields_vdata(int32 vdata_id,const vector<int>&offset,
         }
     }
       
+    vector<string> field_names;
+    char sep =',';
+    HDFCFUtil::Split(field_name_list,sep,field_names);
+#if 0
+for (const auto &fn:field_names)
+	cerr<<fn<<endl;
+#endif
+    unsigned num_fields = field_names.size();
     size_t values_offset = 0;
 
     // Write the values to the DAP4
     for (int64_t element = 0; element < nelms; ++element) {
     
+        //auto vdata_s = dynamic_cast<HDFStructure*>(var(element));
         auto vdata_s = dynamic_cast<HDFStructure*>(var()->ptr_duplicate());
+
         if(!vdata_s)
             throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
+	
         try {
+#if 0
+            int field_offset = 0;
+	    for (unsigned u =0;u<num_fields;u++) {
+
+	        
+
+	    }
+#endif
+//#if 0
             vdata_s->read_from_value(subset_buf,values_offset);
+//#endif
+
+            
         }
         catch(...) {
             delete vdata_s;
