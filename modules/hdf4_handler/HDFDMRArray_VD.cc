@@ -115,7 +115,7 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
     }
 
     // Seek the position of the starting point
-    if (VSseek (vdata_id, (int32) offset[0]) == -1) {
+    if (VSseek (vdata_id, offset[0]) == -1) {
         ostringstream eherr;
         eherr << "VSseek failed at " << offset[0];
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -416,7 +416,7 @@ HDFDMRArray_VD::read_multi_fields_vdata(int32 vdata_id,const vector<int>&offset,
     if (rank !=1) 
         throw InternalErr(__FILE__,__LINE__,"vdata must be 1-D array of structure");
 
-    uint8_t *tmp_buf = data_buf.data() + offset[0]*vdata_size;
+    const uint8_t *tmp_buf = data_buf.data() + offset[0]*vdata_size;
     uint8_t *tmp_subset_buf = subset_buf.data();
     if (step[0] == 1)
         memcpy((void*)tmp_subset_buf,(const void*)tmp_buf,count[0]*vdata_size);
@@ -450,7 +450,6 @@ for (const auto &fn:field_names)
             throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
 	
         try {
-//#if 0
             int field_offset = 0;
 	    for (unsigned u =0;u<num_fields;u++) {
 
@@ -461,7 +460,6 @@ for (const auto &fn:field_names)
 	       field->set_read_p(true);
 
 	    }
-//#endif
 #if 0
             vdata_s->read_from_value(subset_buf,values_offset);
 #endif

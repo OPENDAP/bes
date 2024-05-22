@@ -5747,7 +5747,6 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
     // Array
     auto ar_bt_lat_unique = make_unique<Float64>(lat_name);
     auto ar_bt_lat = ar_bt_lat_unique.get();
-    //auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
     auto ar_lat_unique = make_unique<HDFDMRArray_EOS2LL>(filename, eos2_grid.grid_name, true, lat_name,ar_bt_lat);
     auto ar_lat = ar_lat_unique.release();
 
@@ -5770,7 +5769,6 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
 
     auto ar_bt_lon_unique = make_unique<Float64>(lon_name);
     auto ar_bt_lon = ar_bt_lon_unique.get();
-    //auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
     auto ar_lon_unique = make_unique<HDFDMRArray_EOS2LL>(filename,eos2_grid.grid_name, false, lon_name, ar_bt_lon);
     auto ar_lon = ar_lon_unique.release();
     if (!eos2_grid.oned_latlon)

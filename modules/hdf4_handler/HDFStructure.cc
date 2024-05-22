@@ -95,8 +95,6 @@ bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offse
         Type t_bt = bt->type();
         if (libdap::is_simple_type(t_bt) && t_bt != dods_str_c && t_bt != dods_url_c && t_bt!= dods_enum_c && t_bt!=dods_opaque_c) {
 
-            //BESDEBUG("h4", "var name is: " << bt->name() << "'" << endl);
-            //BESDEBUG("h4", "var values_offset is: " << values_offset << "'" << endl);
 #if 0
             if(t_bt == dods_int32_c) {
                 //Int32 *val_int = static_cast<Int32 *>(bt);
@@ -134,7 +132,7 @@ bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offse
             throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
     }
 
-
+    return true;
 }
 bool HDFStructure::read() {
 	int err = 0;

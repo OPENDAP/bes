@@ -157,11 +157,21 @@ HDFDMRArray_EOS2LL::read ()
                 out_lat[j] = lat[i];
                 j++;
             }
-            set_value(out_lat.data(),ydim);
+
+            // Need to consider the subset case.
+            vector<float64>out_lat_subset;
+            out_lat_subset.resize(nelms);
+            for (i=0;i<count[0];i++)
+                out_lat_subset[i] = out_lat[offset[0]+i*step[0]];
+            set_value(out_lat_subset.data(),nelms);
             
         }
-        else 
-            set_value(lat.data(),xdim*ydim);
+        else  {
+            vector<float64>out_lat_subset;
+            out_lat_subset.resize(nelms);
+            LatLon2DSubset(out_lat_subset.data(),xdim,lat.data(),offset.data(),count.data(),step.data());
+            set_value(out_lat_subset.data(),nelms);
+        }
     }
     else {
         if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
@@ -169,11 +179,21 @@ HDFDMRArray_EOS2LL::read ()
             out_lon.resize(xdim);
             for (i =0; i<xdim;i++)
                 out_lon[i] = lon[i];
-            set_value(out_lon.data(),xdim);
 
+            // Need to consider the subset case.
+            vector<float64>out_lon_subset;
+            out_lon_subset.resize(nelms);
+            for (i=0;i<count[0];i++)
+                out_lon_subset[i] = out_lon[offset[0]+i*step[0]];
+            set_value(out_lon_subset.data(),nelms);
+ 
         }
-        else 
-            set_value(lon.data(),xdim*ydim);
+        else { 
+            vector<float64>out_lon_subset;
+            out_lon_subset.resize(nelms);
+            LatLon2DSubset(out_lon_subset.data(),xdim,lon.data(),offset.data(),count.data(),step.data());
+            set_value(out_lon_subset.data(),nelms);
+        }
 
     }
     set_read_p(true);
@@ -222,6 +242,42 @@ HDFDMRArray_EOS2LL::format_constraint (int *offset, int *step, int *count)
     return nels;
 }
 
+// Map the subset of the lat/lon buffer to the corresponding 2D array.
+template<class T> void
+HDFDMRArray_EOS2LL::LatLon2DSubset (T * outlatlon, 
+                                          int minordim, T * latlon,
+                                          const int * offset, const int * count,
+                                          const int * step) const
+{               
+    int i = 0;      
+    int j = 0;          
+        
+    // do subsetting
+    // Find the correct index
+    int dim0count = count[0];
+    int dim1count = count[1];
+    int dim0index[dim0count];
+    int dim1index[dim1count];
+            
+    for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension
+        dim0index[i] = offset[0] + i * step[0];
+                        
+                            
+    for (j = 0; j < count[1]; j++)
+        dim1index[j] = offset[1] + j * step[1];
+            
+    // Now assign the subsetting data
+    int k = 0;
+            
+    for (i = 0; i < count[0]; i++) {
+        for (j = 0; j < count[1]; j++) {
+
+            outlatlon[k] = *(latlon + (dim0index[i] * minordim) + dim1index[j]);
+            k++;
+
+        }
+    }
+}
 
 
 

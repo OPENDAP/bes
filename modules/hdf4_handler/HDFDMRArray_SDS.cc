@@ -51,7 +51,7 @@ HDFDMRArray_SDS::read ()
     BESDEBUG("h4","Coming to HDFDMRArray_SDS read "<<endl);
     BESDEBUG("h4","After SDstart "<<endl);
     // Obtain the SDS index based on the input sds reference number.
-    int32 sdsindex = SDreftoindex (sdid, (int32) sds_ref);
+    int32 sdsindex = SDreftoindex (sdid, sds_ref);
     if (sdsindex == -1) {
         SDend(sdid);
         ostringstream eherr;
