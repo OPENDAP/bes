@@ -46,6 +46,22 @@
 static const std::string TIMING_LOG_KEY = "timing";
 static const std::string MISSING_LOG_PARAM;
 
+// This macro is used to start a timer if any of the BESDebug flags it tests are set.
+// The advantage of this macro is that it drops to zero code when NDEBUG is defined.
+// Our code often uses a macro that leaves the BESStopWatch object definition in the
+// code when NDEBUG is defined. This is not a problem, but it does make the code a bit
+// slower. jhrg 5/17/24
+#ifndef NDEBUG
+#define BES_STOPWATCH_START(module, x) \
+do { \
+BESStopWatch besTimer; \
+if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) \
+    besTimer.start((x)); \
+} while(false)
+#else
+#define BES_STOPWATCH_START(module, x)
+#endif
+
 class BESStopWatch;
 
 namespace bes_timing {
