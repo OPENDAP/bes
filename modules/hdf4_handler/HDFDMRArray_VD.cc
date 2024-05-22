@@ -438,27 +438,33 @@ for (const auto &fn:field_names)
     unsigned num_fields = field_names.size();
     size_t values_offset = 0;
 
+    HDFStructure *vdata_s = nullptr;
     // Write the values to the DAP4
     for (int64_t element = 0; element < nelms; ++element) {
     
         //auto vdata_s = dynamic_cast<HDFStructure*>(var(element));
-        auto vdata_s = dynamic_cast<HDFStructure*>(var()->ptr_duplicate());
+        vdata_s = dynamic_cast<HDFStructure*>(var()->ptr_duplicate());
+	size_t struct_elem_offset = values_offset + vdata_size*element;
 
         if(!vdata_s)
             throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
 	
         try {
-#if 0
+//#if 0
             int field_offset = 0;
 	    for (unsigned u =0;u<num_fields;u++) {
 
-	        
+	       BaseType * field = vdata_s->var(field_names[u]);        
+	       int field_size = VFfieldisize(vdata_id,u);
+	       field->val2buf(subset_buf.data() + struct_elem_offset + field_offset);
+	       field_offset +=field_size;
+	       field->set_read_p(true);
 
 	    }
-#endif
-//#if 0
-            vdata_s->read_from_value(subset_buf,values_offset);
 //#endif
+#if 0
+            vdata_s->read_from_value(subset_buf,values_offset);
+#endif
 
             
         }
