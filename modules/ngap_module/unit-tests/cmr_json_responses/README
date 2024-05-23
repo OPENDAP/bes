@@ -1,0 +1,6 @@
+How to build these CMR granule_ur responses
+
+burl -o <granule_name>.json \
+'https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?pretty=true&collection_concept_id=<ccid>>&granule_ur=<GranuleUR>'
+
+You can use ask_cmr in the pydmr project, but that requires some work on the response it prints.

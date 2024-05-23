@@ -25,7 +25,7 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf bes.cache.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in bes.conf.in bes.cache.conf.in
+EXTRA_DIST = test_config.h.in bes.conf.in bes.cache.conf.in cmr_json_responses
 
 check_PROGRAMS = $(UNIT_TESTS)
 
@@ -91,7 +91,7 @@ clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
 NgapApiTest_SOURCES = NgapApiTest.cc
-NgapApiTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
+NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
 
 NgapRequestHandlerTest_SOURCES = NgapRequestHandlerTest.cc
 NgapRequestHandlerTest_LDADD = -L$(top_builddir)/modules/ngap_module/.libs -lngap_module $(LIBADD)
