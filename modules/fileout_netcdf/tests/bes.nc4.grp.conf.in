@@ -87,7 +87,10 @@ H5.EnableCF=false
 H5.DefaultHandleDimension=true
 
 NC.PromoteByteToShort=true
+
 # For HDF4
+# We need to add this key to ensure the DAP4 response is from the HDF4 to DMR direct mapping.
+H4.EnableDirectDMR=true
 
 # Note that changing H4.EnableCF will change the output of the HDF4 tests.
 # If CF is enabled, the HDF4 handler will turn Sequecnes into arrays.

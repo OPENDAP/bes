@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="vdata_test.hdf">
+    <Group name="vgroup">
+        <Structure name="Test_Vset_Name">
+            <Float32 name="Temp"/>
+            <Int16 name="Height"/>
+            <Float32 name="Speed"/>
+            <Int8 name="Ident">
+                <Dim size="3"/>
+            </Int8>
+            <Float32 name="Position">
+                <Dim size="2"/>
+            </Float32>
+            <Dim size="3"/>
+            <Attribute name="vdata_attr" type="Int32">
+                <Value>32</Value>
+                <Value>16</Value>
+                <Value>32</Value>
+                <Value>8</Value>
+            </Attribute>
+            <Attribute name="dmr_vdata_ref" type="Int32">
+                <Value>3</Value>
+            </Attribute>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                <Value>98171b8b</Value>
+            </Attribute>
+        </Structure>
+    </Group>
+</Dataset>
+
+The data:
+Structure {
+    Float32 Temp;
+    Int16 Height;
+    Float32 Speed;
+    Int8 Ident[3];
+    Float32 Position[2];
+} Test_Vset_Name[3] = {{ 2.22, 1, 2.22, {66, 98, 49}, {1, 2} }, { 4.44, 3, 4.44, {68, 100, 51}, {1, 2} }, { 6.66, 5, 6.66, {70, 102, 53}, {1, 2} }};
+

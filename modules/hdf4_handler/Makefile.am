@@ -60,7 +60,7 @@ libhdf4_module_la_LIBADD = $(LIBADD)
 # eosdas_test_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 
 HDFTYPE_SRC = 	$(GRAM_SRC) \
-        HDFArray.cc HDFGrid.cc HDFSequence.cc HDFUInt32.cc \
+        HDFDMRArray_SPLL.cc HDFDMRArray_EOS2LL.cc HDFDMRArray_SDS.cc HDFDMRArray_VD.cc HDFArray.cc HDFGrid.cc HDFSequence.cc HDFUInt32.cc \
 	HDFInt8.cc HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
@@ -76,7 +76,7 @@ HDFCF_SRC = HDFCFUtil.cc BESH4MCache.cc HDFCFStr.cc HDFEOS2.cc HDFEOS2CFStr.cc H
 
 HDFTYPE_SRC += $(HDFCF_SRC)
 
-HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
+HDFTYPE_HDR = HDFDMRArray_SPLL.h HDFDMRArray_EOS2LL.h HDFDMRArray_SDS.h HDFDMRArray_VD.h HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFInt8.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h 
 
