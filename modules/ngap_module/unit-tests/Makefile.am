@@ -25,7 +25,7 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf bes.cache.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in bes.conf.in bes.cache.conf.in
+EXTRA_DIST = test_config.h.in bes.conf.in bes.cache.conf.in cmr_json_responses
 
 check_PROGRAMS = $(UNIT_TESTS)
 
