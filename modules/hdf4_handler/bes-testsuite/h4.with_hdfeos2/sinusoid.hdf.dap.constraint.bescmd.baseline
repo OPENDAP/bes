@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="sinusoid.hdf">
-    <Dimension name="YDim_grid1" size="4"/>
-    <Dimension name="XDim_grid1" size="4"/>
     <Attribute name="HDFEOSVersion" type="String">
         <Value>HDFEOS_V2.19</Value>
     </Attribute>
@@ -38,8 +36,8 @@ END
     </Attribute>
     <Group name="grid1">
         <Float64 name="Latitude">
-            <Dim name="/YDim_grid1"/>
-            <Dim name="/XDim_grid1"/>
+            <Dim size="2"/>
+            <Dim size="3"/>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
@@ -51,8 +49,8 @@ END
             </Attribute>
         </Float64>
         <Float64 name="Longitude">
-            <Dim name="/YDim_grid1"/>
-            <Dim name="/XDim_grid1"/>
+            <Dim size="2"/>
+            <Dim size="2"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
             </Attribute>
@@ -63,27 +61,10 @@ END
                 removed checksum
             </Attribute>
         </Float64>
-        <Group name="Data_Fields">
-            <Float32 name="temperature">
-                <Dim name="/YDim_grid1"/>
-                <Dim name="/XDim_grid1"/>
-                <Attribute name="dmr_sds_ref" type="Int32">
-                    <Value>5</Value>
-                </Attribute>
-                <Attribute name="coordinates" type="String">
-                    <Value>/grid1/Longitude /grid1/Latitude</Value>
-                </Attribute>
-                <Attribute name="DAP4_Checksum_CRC32" type="String">
-                    removed checksum
-                </Attribute>
-            </Float32>
-        </Group>
-        <Group name="Grid_Attributes"/>
     </Group>
 </Dataset>
 
 The data:
-Float64 Latitude[YDim_grid1 = 4][XDim_grid1 = 4] = {{7.86905518227308, 7.86905518227308, 7.86905518227308, 7.86905518227308},{5.62075370162363, 5.62075370162363, 5.62075370162363, 5.62075370162363},{3.37245222097418, 3.37245222097418, 3.37245222097418, 3.37245222097418},{1.12415074032473, 1.12415074032473, 1.12415074032473, 1.12415074032473}};
-Float64 Longitude[YDim_grid1 = 4][XDim_grid1 = 4] = {{179.560937064041, -178.169389188337, -175.899715440715, -173.630041693093},{-179.603503480279, -177.34433991449, -175.0851763487, -172.82601278291},{-179.050041737125, -176.797839954269, -174.545638171412, -172.293436388555},{-178.774376167274, -176.525641875861, -174.276907584449, -172.028173293037}};
-Float32 temperature[YDim_grid1 = 4][XDim_grid1 = 4] = {{10, 10, 10, 10},{11, 11, 11, 11},{12, 12, 12, 12},{13, 13, 13, 13}};
+Float64 Latitude[2][3] = {{5.62075370162363, 5.62075370162363, 5.62075370162363},{1.12415074032473, 1.12415074032473, 1.12415074032473}};
+Float64 Longitude[2][2] = {{-179.603503480279, -175.0851763487},{-178.774376167274, -174.276907584449}};
 

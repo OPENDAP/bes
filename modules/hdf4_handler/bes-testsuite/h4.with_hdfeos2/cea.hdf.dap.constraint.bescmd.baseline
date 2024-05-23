@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="cea.hdf">
-    <Dimension name="YDim_grid1" size="8"/>
-    <Dimension name="XDim_grid1" size="8"/>
     <Attribute name="HDFEOSVersion" type="String">
         <Value>HDFEOS_V2.19</Value>
     </Attribute>
@@ -38,7 +36,7 @@ END
     </Attribute>
     <Group name="grid1">
         <Float64 name="Latitude">
-            <Dim name="/YDim_grid1"/>
+            <Dim size="4"/>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
             </Attribute>
@@ -50,7 +48,7 @@ END
             </Attribute>
         </Float64>
         <Float64 name="Longitude">
-            <Dim name="/XDim_grid1"/>
+            <Dim size="4"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
             </Attribute>
@@ -61,27 +59,10 @@ END
                 removed checksum
             </Attribute>
         </Float64>
-        <Group name="Data_Fields">
-            <Float32 name="temperature">
-                <Dim name="/YDim_grid1"/>
-                <Dim name="/XDim_grid1"/>
-                <Attribute name="dmr_sds_ref" type="Int32">
-                    <Value>5</Value>
-                </Attribute>
-                <Attribute name="coordinates" type="String">
-                    <Value>/grid1/Longitude /grid1/Latitude</Value>
-                </Attribute>
-                <Attribute name="DAP4_Checksum_CRC32" type="String">
-                    removed checksum
-                </Attribute>
-            </Float32>
-        </Group>
-        <Group name="Grid_Attributes"/>
     </Group>
 </Dataset>
 
 The data:
-Float64 Latitude[YDim_grid1 = 8] = {30.0845210595659, 20.9807944682567, 12.4057297402778, 4.10652290585727, -4.10652290585727, -12.4057297402778, -20.9807944682567, -30.0845210595659};
-Float64 Longitude[XDim_grid1 = 8] = {92.4613966861331, 168.900997632952, -114.659401420229, -38.2198004734096, 38.2198004734096, 114.659401420229, -168.900997632952, -92.4613966861331};
-Float32 temperature[YDim_grid1 = 8][XDim_grid1 = 8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13},{14, 14, 14, 14, 14, 14, 14, 14},{15, 15, 15, 15, 15, 15, 15, 15},{16, 16, 16, 16, 16, 16, 16, 16},{17, 17, 17, 17, 17, 17, 17, 17}};
+Float64 Latitude[4] = {20.9807944682567, 4.10652290585727, -12.4057297402778, -30.0845210595659};
+Float64 Longitude[4] = {168.900997632952, -38.2198004734096, 114.659401420229, -92.4613966861331};
 
