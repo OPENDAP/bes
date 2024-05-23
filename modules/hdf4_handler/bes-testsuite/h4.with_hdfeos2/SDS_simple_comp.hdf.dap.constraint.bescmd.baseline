@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="SDS_simple_comp.hdf">
+    <Int32 name="SDS_simple_comp">
+        <Dim size="1"/>
+        <Dim size="2"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>b015e9b4</Value>
+        </Attribute>
+    </Int32>
+</Dataset>
+
+The data:
+Int32 SDS_simple_comp[1][2] = {{5, 7}};
+

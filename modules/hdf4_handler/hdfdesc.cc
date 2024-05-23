@@ -138,6 +138,12 @@
 #include "HDFCFStr.h"
 #include "HDFCFUtil.h"
 
+// HDF4 for direct DAP4(DMR)
+#include "HDFDMRArray_VD.h"
+#include "HDFDMRArray_SDS.h"
+#include "HDFDMRArray_EOS2LL.h"
+#include "HDFDMRArray_SPLL.h"
+
 // HDF-EOS2 (including the hybrid) will be handled as HDF-EOS2 objects if the HDF-EOS2 library is configured in
 #ifdef USE_HDFEOS2_LIB
 #include "HDFEOS2.h"
@@ -228,14 +234,14 @@ void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Gr
 void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref);
 void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>&sds_ref);
 void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unordered_set<int32>&sds_ref);
-void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
+void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs);
 void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, int32 attr_count, vector<char> & attr_value);
 
 // 4. Vdata handlings
 void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Group* d4g,const string& filename);
 void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nflds, int32 obj_ref, D4Group *d4g, const string &filename);
 void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename);
-void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref);
+void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref);
 
 // 5. HDF-EOS2 handlings
 int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls);
@@ -5095,11 +5101,13 @@ void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_re
     int32 fieldtype = VFfieldtype(vdata_id,0);
     
     BaseType *bt = gen_dap_var(fieldtype,dap4_vdata_str,filename);
-    auto ar_unique = make_unique<HDFArray>(dap4_vdata_str,filename,bt);
+    auto ar_unique = make_unique<HDFDMRArray_VD>(filename,obj_ref,dap4_vdata_str,bt);
     auto ar = ar_unique.release();    
     ar->append_dim_ll(num_elms);
-    if (vdata_field_order != 1)
+    if (vdata_field_order != 1) {
         ar->append_dim_ll(vdata_field_order);
+        ar->set_rank(2);
+    }
 
     // map vdata attributes to dap4. We will ignore vdata field attributes. Haven't seen one in NASA files.
     map_vdata_to_dap4_attrs(ar,vdata_id,obj_ref);
@@ -5156,7 +5164,7 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
         }
     }
 
-    auto ar_unique = make_unique<HDFArray>(vdata_name_str,filename,structure_ptr);
+    auto ar_unique = make_unique<HDFDMRArray_VD>(filename,obj_ref,vdata_name_str,structure_ptr);
     auto ar = ar_unique.release();    
     ar->append_dim_ll(num_elms);
 
@@ -5169,7 +5177,7 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
     delete ar;
 }
 
-void map_vdata_to_dap4_attrs(HDFArray *ar, int32 vdata_id, int32 obj_ref) {
+void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref) {
                 
     // Number of attributes 
     int32 nattrs = 0;
@@ -5273,7 +5281,8 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
     // Handle special characters in the sds_name.
     sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
     BaseType *bt = gen_dap_var(sds_type,sds_name_str, filename);
-    auto ar_unique = make_unique<HDFArray>(sds_name_str,filename,bt);
+    unsigned int dtype_size = bt->width();
+    auto ar_unique = make_unique<HDFDMRArray_SDS>(filename, obj_ref, sds_rank,dtype_size,sds_name_str,bt);
     auto ar = ar_unique.release();    
 
     // Obtain dimension info. 
@@ -5351,7 +5360,7 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
 }
 
 
-void map_sds_var_dap4_attrs(HDFArray *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs) {
+void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs) {
 
     char attr_name[H4_MAX_NC_NAME];
     for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {
@@ -5738,13 +5747,15 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
     // Array
     auto ar_bt_lat_unique = make_unique<Float64>(lat_name);
     auto ar_bt_lat = ar_bt_lat_unique.get();
-    auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
+    auto ar_lat_unique = make_unique<HDFDMRArray_EOS2LL>(filename, eos2_grid.grid_name, true, lat_name,ar_bt_lat);
     auto ar_lat = ar_lat_unique.release();
 
     // Dimensions
     ar_lat->append_dim_ll(eos2_grid.ydim,ydim_path);
     if (!eos2_grid.oned_latlon)
         ar_lat->append_dim_ll(eos2_grid.xdim,xdim_path);
+    else
+        ar_lat->set_rank(1);
 
     // Attributes
     add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
@@ -5753,16 +5764,17 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
     string eos_latlon_value = eos2_grid.grid_name +" lat";
     add_var_dap4_attr(ar_lat,"eos_latlon",attr_str_c,eos_latlon_value);
 
-
     ar_lat->set_is_dap4(true);
     d4_grp->add_var_nocopy(ar_lat);
 
     auto ar_bt_lon_unique = make_unique<Float64>(lon_name);
     auto ar_bt_lon = ar_bt_lon_unique.get();
-    auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
+    auto ar_lon_unique = make_unique<HDFDMRArray_EOS2LL>(filename,eos2_grid.grid_name, false, lon_name, ar_bt_lon);
     auto ar_lon = ar_lon_unique.release();
     if (!eos2_grid.oned_latlon)
         ar_lon->append_dim_ll(eos2_grid.ydim,ydim_path);
+    else 
+        ar_lon->set_rank(1);
     ar_lon->append_dim_ll(eos2_grid.xdim,xdim_path);
 
     add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
@@ -5899,18 +5911,6 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
 
     if ((lat_size !=0) && (lon_size !=0) && num_dims ==2) {
 
-        // Array
-        auto ar_bt_lat_unique = make_unique<Float32>(lat_name);
-        auto ar_bt_lat = ar_bt_lat_unique.get();
-        auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
-        auto ar_lat = ar_lat_unique.release();
-    
-        // Dimensions
-        ar_lat->append_dim_ll(lat_size,"/"+lat_name);
-    
-        // Attributes
-        add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
-    
         // Retrieve lat/lon starting point and step information.
         string grid_header_value = d4_attr->value(0);
         int lat_size_gh = 0;
@@ -5935,6 +5935,52 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
             
         }
 
+
+
+        // Array
+        auto ar_bt_lat_unique = make_unique<Float32>(lat_name);
+        auto ar_bt_lat = ar_bt_lat_unique.get();
+
+        auto ar_lat_unique = make_unique<HDFDMRArray_SPLL>(filename, lat_start, lat_res, lat_name,ar_bt_lat);
+        auto ar_lat = ar_lat_unique.release();
+
+#if 0
+        auto ar_lat_unique = make_unique<HDFArray>(lat_name,filename,ar_bt_lat);
+        auto ar_lat = ar_lat_unique.release();
+#endif
+    
+        // Dimensions
+        ar_lat->append_dim_ll(lat_size,"/"+lat_name);
+    
+        // Attributes
+        add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
+    
+#if 0
+        // Retrieve lat/lon starting point and step information.
+        string grid_header_value = d4_attr->value(0);
+        int lat_size_gh = 0;
+        int lon_size_gh = 0;
+        float lat_start = 0;
+        float lon_start = 0;
+        float lat_res = 0;
+        float lon_res = 0;
+        
+        vector<char> grid_header_value_vc(grid_header_value.begin(),grid_header_value.end());
+        HDFCFUtil::parser_trmm_v7_gridheader(grid_header_value_vc,lat_size_gh,lon_size_gh,
+                                         lat_start,lon_start,lat_res,lon_res,false);
+
+        if(lat_size != lat_size_gh || lon_size != lon_size_gh) {
+            err_msg = "Either the latitude size is not the same as the size retrieved from the gridheader";
+            err_msg = " or the longitude size is not the same as the size retrieved from the gridheader\n";
+            err_msg = "The lat_size is " + to_string(lat_size) + '\n';
+            err_msg = "The lat_size retrieved from the header is " + to_string(lat_size_gh) + '\n';
+            err_msg = "The lon_size is " + to_string(lon_size) + '\n';
+            err_msg = "The lon_size retrieved from the header is " + to_string(lon_size_gh) + '\n';
+            ret_value = false;
+            
+        }
+#endif
+
         // Add special HDF4 latlon predefined attribute sp_h4_ll that includes the lat name.
         string sp_h4_value = "lat " + to_string(lat_start) + ' '+to_string(lat_res);
         add_var_dap4_attr(ar_lat,"sp_h4_ll",attr_str_c,sp_h4_value);
@@ -5943,8 +5989,14 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
     
         auto ar_bt_lon_unique = make_unique<Float32>(lon_name);
         auto ar_bt_lon = ar_bt_lon_unique.get();
+
+        auto ar_lon_unique = make_unique<HDFDMRArray_SPLL>(filename,  lon_start,lon_res, lon_name,ar_bt_lon);
+        auto ar_lon = ar_lon_unique.release();
+
+#if 0
         auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
         auto ar_lon = ar_lon_unique.release();
+#endif
         ar_lon->append_dim_ll(lon_size,"/"+lon_name);
     
         add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="data" space="catalog">/data/vdata_packed_linked_blocks.hdf</setContainer>
+    <define name="d">
+	<container name="data" />
+            <dap4constraint>/Mixed_Data_Vdata[1:2:3];Solid_Particle2_Height[1:1:1]</dap4constraint>
+    </define>
+    <get type="dap" definition="d" />
+</request>
