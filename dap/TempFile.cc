@@ -24,6 +24,7 @@
 
 #include "config.h"
 
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <csignal>
@@ -174,7 +175,11 @@ string TempFile::create(const std::string &dir_name, const std::string &temp_fil
         }
     }
 
-    string target_file = BESUtil::pathConcat(dir_name, temp_file_prefix + "_XXXXXX");
+    // Added process id (ala getpid()) to tempfile name to see if that affects
+    // our troubles with permission denied errors. This may need to be revisted if this
+    // is going to be utilized in a place where multiple threads could end up in this spot.
+    //   - ndp 04/03/24
+    string target_file = BESUtil::pathConcat(dir_name, temp_file_prefix + "_" + to_string(getpid()) + "_XXXXXX");
 
     BESDEBUG(MODULE, prolog << "target_file: " << target_file << endl);
 

@@ -212,16 +212,18 @@ class FileCache {
         return sb.st_size;
     }
 
-    /// Open the cache info file and write a zero to it.
+    /// Open the cache info file. If the file is empty, write a zero to it.
     /// Assign the file descriptor to d_cache_info_fd.
     /// d_cache_dir must be set.
     bool open_cache_info() {
         if (d_cache_dir.empty())
             return false;
         if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT | O_EXCL, 0666)) >= 0) {
-            unsigned long long size = 0;
-            if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
-                return false;
+            if (get_file_size(d_cache_info_fd) == 0) {
+                unsigned long long size = 0;
+                if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
+                    return false;
+            }
         }
         else if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR, 0666)) < 0) {
             return false;
@@ -280,8 +282,8 @@ public:
     class Item {
         int d_fd = -1;
 
-        // This is static because two threads might want each want to lock the same file. jhrg 11/01/23
-        std::mutex item_mtx; // Overkill to make a static mutex? jhrg 11/01/23
+        // Should this be static (two threads want to lock the same file)? jhrg 5/17/24
+        std::mutex item_mtx;
 
     public:
         Item() = default;

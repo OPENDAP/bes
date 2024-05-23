@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="c" space="catalog">/data/3B42.20180802.03.7.HDF</setContainer>
+    <define name="d">
+	   <container name="c" />
+             <dap4constraint>/nlat[0:10:89];/nlon[0:20:179]</dap4constraint>
+    </define>
+    <get type="dap" definition="d"/>
+</request>
