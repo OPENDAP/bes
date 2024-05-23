@@ -144,7 +144,7 @@ HDFDMRArray_EOS2LL::read ()
         GDdetach(gridid);
         GDclose(gridfd);
         err_msg = "cannot calculate grid latitude and longitude for grid name: " + gridname;
-        return false;
+        throw InternalErr (__FILE__, __LINE__, err_msg);
     }
     
     if (is_lat) { 

@@ -91,7 +91,6 @@ bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offse
 #endif
 
     for (auto &bt:this->variables()) {	     
-        //BaseType *bt = *vi;
         Type t_bt = bt->type();
         if (libdap::is_simple_type(t_bt) && t_bt != dods_str_c && t_bt != dods_url_c && t_bt!= dods_enum_c && t_bt!=dods_opaque_c) {
 
