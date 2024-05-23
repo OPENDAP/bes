@@ -41,8 +41,24 @@ m4_define([AT_BESCMD_RESPONSE_TEST],
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/h4.nasa.dmr/$1], [$abs_srcdir/h4.nasa.dmr/$1.baseline])
 ])
+m4_define([_AT_BESCMD_DAP4DATA_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+
+# Use the following AT_CHECK to generate baseline file.
+#AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+
+AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h4.nasa.dmr.valgrind.log], [], [ignore],[],[])
+AT_CLEANUP])
+
+m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
+[_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h4.nasa.dmr/$1], [$abs_srcdir/h4.nasa.dmr/$1.baseline])
+])
 
 AT_BESCMD_RESPONSE_TEST([3B42.20180802.03.7.HDF.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([3B42.20180802.03.7.HDF.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST([AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([AMSR_E_L2_Land_V09_200206190615_A.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([AMSR_E_L3_SeaIce25km_V15_20020601.hdf.dmr.bescmd])
