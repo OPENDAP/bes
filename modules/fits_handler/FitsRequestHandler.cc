@@ -286,8 +286,9 @@ bool FitsRequestHandler::fits_build_help(BESDataHandlerInterface &dhi)
 	if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
 
 	map<string, string, std::less<>> attrs;
-    attrs["name"] = MODULE_NAME ;
-    attrs["version"] = MODULE_VERSION ;
+  attrs["name"] = MODULE_NAME ;
+  attrs["version"] = MODULE_VERSION ;
+
 	list<string> services;
 	BESServiceRegistry::TheRegistry()->services_handled(FITS_NAME, services);
 	if (services.size() > 0) {
