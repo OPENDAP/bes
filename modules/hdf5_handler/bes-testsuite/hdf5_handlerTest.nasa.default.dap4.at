@@ -36,7 +36,7 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-# AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
@@ -201,6 +201,9 @@ AT_BESCMD_RESPONSE_TEST([eos5_sin_multi_grids.h5.dmr.bescmd])
 
 #HYRAX-1061 CLARREO_CERES (no coverage)
 AT_BESCMD_RESPONSE_TEST([CLARREO_CERES_NPP_L4.SIM_b001.20170101.091658.PT04M54S.20230307154549.nc.h5.dmr.bescmd])
+
+#compound datatype that contains variable length string
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([GEDI04_A_2019107224731_O01958_01_T02638_02_002_02_V002.h5.dap.bescmd])
 
 #Big array size tests
 AT_BESCMD_RESPONSE_TEST([dset_big.dmr.bescmd])
