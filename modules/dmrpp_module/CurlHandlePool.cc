@@ -382,6 +382,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         // TODO Code between here and below may have been turned into a method in AccessCredentials. jhrg 11/2/22
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
+        INFO_LOG(prolog << "Looked for credentials for: " << handle->d_url->str() << '\n');
         if (credentials && credentials->is_s3_cred()) {
             BESDEBUG(DMRPP_CURL, prolog << "Got AccessCredentials instance:\n" << credentials->to_json() << '\n');
             // If there are available credentials, and they are S3 credentials then we need to sign the request

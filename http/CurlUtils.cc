@@ -1626,6 +1626,18 @@ bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     req_headers = add_edl_auth_headers(req_headers);
     req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
 
+    // FIXME Hackery for DMR++ Ownership POC code - see dmrpp_module CurlHandlePool.cc
+    //  for more info. jhrg 5/24/24
+    AccessCredentials *credentials = CredentialsManager::theCM()->get(origin_url);
+    if (credentials) {
+        INFO_LOG(prolog << "Looking for EDL Token for URL: " << origin_url->str() << '\n');
+        string edl_token = credentials->get("edl_token");
+        if (!edl_token.empty()) {
+            INFO_LOG(prolog << "Using EDL Token for URL: " << origin_url->str() << '\n');
+            req_headers = curl::append_http_header(req_headers, "Authorization", edl_token);
+        }
+    }
+
     try {
 
         // OK! Make the cURL handle
