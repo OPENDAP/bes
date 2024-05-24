@@ -87,7 +87,7 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/S
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/NASAHDF/SMAP_L1C_S0_HIRES_02298_A_20150707T160502_R13080_001.h5
 
 #LPDAAC GEDI level 2: contains compound datatype data
-GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/GEDI04_A_2019107224731_O01958_01_T02638_02_002_02_V002.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/GEDI04_A_2019107224731_O01958_01_T02638_02_002_02_V002.h5
 $
 #ICESAT-2 ATL 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/ATL03_20181014084920_02400109_003_01.h5
