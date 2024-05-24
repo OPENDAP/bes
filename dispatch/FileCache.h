@@ -212,18 +212,18 @@ class FileCache {
         return sb.st_size;
     }
 
-    /// Open the cache info file. If the file is empty, write a zero to it.
+    /// Open the cache info file. If the file does not exist, make and write a zero to it.
     /// Assign the file descriptor to d_cache_info_fd.
     /// d_cache_dir must be set.
     bool open_cache_info() {
         if (d_cache_dir.empty())
             return false;
+        // If  O_CREAT and O_EXCL are used together and the file already exists, then open()
+        // fails with the error EEXIST. In that case, try to open the file using simple RDWR.
         if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT | O_EXCL, 0666)) >= 0) {
-            if (get_file_size(d_cache_info_fd) == 0) {
-                unsigned long long size = 0;
-                if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
-                    return false;
-            }
+            unsigned long long size = 0;
+            if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
+                return false;
         }
         else if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR, 0666)) < 0) {
             return false;

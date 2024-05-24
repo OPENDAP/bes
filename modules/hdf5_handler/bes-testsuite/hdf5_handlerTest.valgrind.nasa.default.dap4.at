@@ -180,6 +180,9 @@ AT_BESCMD_RESPONSE_TEST([20160409062000-OSPO-L2P_GHRSST-SSTsubskin-VIIRS_NPP-ACS
 #HYRAX-968 local constraint with additional maps
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([S-MODE_PFC_OC2108A_adcp_os75nb.h5.dap4constraint.bescmd])
 
+#compound datatype that contains variable length string
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([GEDI04_A_2019107224731_O01958_01_T02638_02_002_02_V002.h5.dap.bescmd])
+
 #HYRAX-973 map variables in front of the non-map variables
 AT_BESCMD_RESPONSE_TEST([SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5.dmr.bescmd])
 

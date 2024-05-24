@@ -22,7 +22,7 @@
                 <Value>3</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                <Value>98171b8b</Value>
+                removed checksum
             </Attribute>
         </Structure>
     </Group>

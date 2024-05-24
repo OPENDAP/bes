@@ -24,21 +24,18 @@
 #include "config.h"
 
 #include <memory>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
+#include <unistd.h>
+#include <libdap/util.h>
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-#include <unistd.h>
-#include <libdap/util.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -50,24 +47,16 @@
 #include "url_impl.h"
 #include "RemoteResource.h"
 
-#include "test_config.h"
-
-
 #include "NgapApi.h"
 #include "NgapContainer.h"
 #include "NgapNames.h"
-// #include "NgapError.h"
-// #include "rjson_utils.h"
+
+#include "test_config.h"
+#include "run_tests_cppunit.h"
+#include "read_test_baseline.h"
 
 using namespace std;
 using namespace rapidjson;
-
-static bool debug = false;
-static bool Debug = false;
-static bool bes_debug = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 
 #define prolog std::string("NgapApiTest::").append(__func__).append("() - ")
 
@@ -90,7 +79,7 @@ private:
         }
     }
     void purge_http_cache(){
-        if(Debug) cerr << prolog << "Purging cache!" << endl;
+        DBG2(cerr << prolog << "Purging cache!" << endl);
         string cache_dir;
         bool found_dir;
         TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found_dir);
@@ -99,17 +88,17 @@ private:
         TheBESKeys::TheKeys()->get_value(HTTP_CACHE_PREFIX_KEY,cache_prefix,found_prefix);
 
         if(found_dir && found_prefix){
-            if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
-            if(Debug) cerr << prolog << "Purging " << cache_dir << " of files with prefix: " << cache_prefix << endl;
+            DBG2(cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl);
+            DBG2(cerr << prolog << "Purging " << cache_dir << " of files with prefix: " << cache_prefix << endl);
             string sys_cmd = "mkdir -p "+ cache_dir;
-            if(Debug) cerr << "Running system command: " << sys_cmd << endl;
+            DBG2(cerr << "Running system command: " << sys_cmd << endl);
             system(sys_cmd.c_str());
 
             sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,cache_prefix);
             sys_cmd =  sys_cmd.append("*");
-            if(Debug) cerr << "Running system command: " << sys_cmd << endl;
+            DBG2(cerr << "Running system command: " << sys_cmd << endl);
             system(sys_cmd.c_str());
-            if(Debug) cerr << prolog << "The HTTP cache has been purged." << endl;
+            DBG2(cerr << prolog << "The HTTP cache has been purged." << endl);
         }
     }
 
@@ -123,20 +112,18 @@ public:
     // Called before each test
     void setUp() override
     {
-        if(debug) cerr << endl;
-        if(Debug) cerr << "setUp() - BEGIN" << endl;
+        DBG(cerr << endl);
+        DBG2(cerr << "setUp() - BEGIN" << endl);
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-        if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+        DBG2(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,ngap,http");
-
-        if (Debug) show_file(bes_conf);
+        if (debug2) show_file(bes_conf);
 
         purge_http_cache();
 
-        if(Debug) cerr << "setUp() - END" << endl;
+        DBG2(cerr << "setUp() - END" << endl);
     }
 
     void show_vector(vector<string> v){
@@ -167,12 +154,12 @@ public:
      * /providers/<provider_id>/collections/<entry_title>/granules/<granule_ur>
      */
     void resty_path_to_cmr_query_test_01() {
-        if(debug) cerr << prolog << "BEGIN" << endl;
+        DBG(cerr << prolog << "BEGIN" << endl);
 
         string resty_path("providers/POCLOUD"
                           "/collections/Sentinel-6A MF/Jason-CS L2 Advanced Microwave Radiometer (AMR-C) NRT Geophysical Parameters"
                           "/granules/S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00");
-        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
+        DBG(cerr << prolog << "resty_path: " << resty_path << endl);
 
         string expected_cmr_url(
                 "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
@@ -183,8 +170,8 @@ public:
         try {
             string cmr_query_url;
             cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
-            if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
-            if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
+            DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
+            DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
         catch(BESError e){
@@ -192,7 +179,7 @@ public:
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
         }
-        if(debug) cerr << prolog << "END" << endl;
+        DBG(cerr << prolog << "END" << endl);
     }
 
     /**
@@ -202,10 +189,10 @@ public:
      * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
      */
     void resty_path_to_cmr_query_test_02() {
-        if(debug) cerr << prolog << "BEGIN" << endl;
+        DBG(cerr << prolog << "BEGIN" << endl);
 
         string resty_path("/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
-        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
+        DBG(cerr << prolog << "resty_path: " << resty_path << endl);
 
         string expected_cmr_url(
                 "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
@@ -215,8 +202,8 @@ public:
         try {
             string cmr_query_url;
             cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
-            if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
-            if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
+            DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
+            DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
         catch(BESError e){
@@ -233,10 +220,10 @@ public:
      * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
      */
     void resty_path_to_cmr_query_test_03() {
-        if(debug) cerr << prolog << "BEGIN" << endl;
+        DBG(cerr << prolog << "BEGIN" << endl);
 
         string resty_path("/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
-        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
+        DBG(cerr << prolog << "resty_path: " << resty_path << endl);
 
         string expected_cmr_url(
                 "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
@@ -246,8 +233,8 @@ public:
         try {
             string cmr_query_url;
             cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
-            if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
-            if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
+            DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
+            DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
         catch(BESError e){
@@ -257,8 +244,9 @@ public:
         }
     }
 
+#if 0
     void cmr_access_entry_title_test() {
-        if(debug) cerr << prolog << "BEGIN" << endl;
+        DBG(cerr << prolog << "BEGIN" << endl);
         string provider_name;
         string collection_name;
         string granule_name;
@@ -282,11 +270,11 @@ public:
         string expected;
         expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
         compare_results(granule_name, data_access_url, expected);
-        if(debug) cerr << prolog << "END" << endl;
+        DBG(cerr << prolog << "END" << endl);
     }
 
     void cmr_access_collection_concept_id_test() {
-        if(debug) cerr << prolog << "BEGIN" << endl;
+        DBG(cerr << prolog << "BEGIN" << endl);
         string provider_name;
         string collection_concept_id;
         string granule_name;
@@ -309,11 +297,12 @@ public:
         }
         string expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
         compare_results(granule_name, data_access_url, expected);
-        if(debug) cerr << prolog << "END" << endl;
+        DBG(cerr << prolog << "END" << endl);
     }
+#endif
 
     void signed_url_is_expired_test(){
-        if(debug) cerr << prolog << "BEGIN" << endl;
+        DBG(cerr << prolog << "BEGIN" << endl);
         string signed_url_str;
         std::map<std::string,std::string> url_info;
         bool is_expired;
@@ -343,8 +332,36 @@ public:
         signed_url.set_ingest_time(then);
         is_expired = NgapApi::signed_url_is_expired(signed_url);
         CPPUNIT_ASSERT(is_expired == true);
-        if(debug) cerr << prolog << "END" << endl;
+        DBG(cerr << prolog << "END" << endl);
 
+    }
+
+    void test_find_get_data_url_in_granules_umm_json_v1_4_lpdaac() {
+        // not a test baseline, but a canned response from LPDAAC
+        string cmr_canned_response_lpdaac = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.json");
+        rapidjson::Document cmr_response;
+        cmr_response.Parse(cmr_canned_response_lpdaac.c_str());
+
+        string data_url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder_for_restified_url", cmr_response);
+
+        DBG(cerr << prolog << "data_url: " << data_url << endl);
+        CPPUNIT_ASSERT_MESSAGE("data_url should not be empty", !data_url.empty());
+        string expected = "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/ECO_L1B_GEO.002/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.h5";
+        CPPUNIT_ASSERT_MESSAGE("data_url should be '" + expected + " but was '" + data_url, data_url == expected);
+    }
+
+    // C2251464384-POCLOUD, cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json. jhrg 5/22/24
+    void test_find_get_data_url_in_granules_umm_json_v1_4_podaac() {
+        string cmr_canned_response_podaac = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json");
+        rapidjson::Document cmr_response;
+        cmr_response.Parse(cmr_canned_response_podaac.c_str());
+
+        string data_url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder_for_restified_url", cmr_response);
+
+        DBG(cerr << prolog << "data_url: " << data_url << endl);
+        CPPUNIT_ASSERT_MESSAGE("data_url should not be empty", !data_url.empty());
+        string expected = "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc";
+        CPPUNIT_ASSERT_MESSAGE("data_url should be '" + expected + " but was '" + data_url, data_url == expected);
     }
 
     CPPUNIT_TEST_SUITE( NgapApiTest );
@@ -352,9 +369,13 @@ public:
         CPPUNIT_TEST(resty_path_to_cmr_query_test_01);
         CPPUNIT_TEST(resty_path_to_cmr_query_test_02);
         CPPUNIT_TEST(resty_path_to_cmr_query_test_03);
-        // CPPUNIT_TEST(cmr_access_entry_title_test);
-        // CPPUNIT_TEST(cmr_access_collection_concept_id_test);
+#if 0
+        CPPUNIT_TEST(cmr_access_entry_title_test);
+        CPPUNIT_TEST(cmr_access_collection_concept_id_test);
+#endif
         CPPUNIT_TEST(signed_url_is_expired_test);
+        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_lpdaac);
+        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_podaac);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -363,49 +384,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(NgapApiTest);
 
 } // namespace dmrpp
 
-int main(int argc, char*argv[])
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dbD")) != -1)
-        switch (option_char) {
-        case 'd':
-            debug = true;  // debug is a static global
-            break;
-        case 'D':
-            Debug = true;  // Debug is a static global
-            break;
-        case 'b':
-            bes_debug = true;  // debug is a static global
-            break;
-        default:
-            break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    /*cerr << "    debug: " << (debug?"enabled":"disabled") << endl;
-    cerr << "    Debug: " << (Debug?"enabled":"disabled") << endl;
-    cerr << "bes_debug: " << (bes_debug?"enabled":"disabled") << endl;*/
-
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = ngap::NgapApiTest::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+int main(int argc, char*argv[]) {
+    return bes_run_tests<ngap::NgapApiTest>(argc, argv, "cerr,ngap,http") ? 0 : 1;
 }
