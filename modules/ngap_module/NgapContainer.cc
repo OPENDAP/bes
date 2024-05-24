@@ -91,6 +91,7 @@ void NgapContainer::set_real_name_using_cmr_or_cache() {
 #endif
 
     bool found;
+    // FIXME This should look for a token from the OLFS, too. jhrg 5/24/24
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
