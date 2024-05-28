@@ -580,7 +580,18 @@ sign_url_for_s3_if_possible(const shared_ptr <url> &url, curl_slist *request_hea
     if (CredentialsManager::theCM()->size() > 0) {
         auto ac = CredentialsManager::theCM()->get(url);
         if (ac && ac->is_s3_cred()) {
+            BESDEBUG(MODULE, prolog << "Located S3 credentials for url: " << url->str()
+                    << " Using request headers to hold AWS signature\n");
             request_headers = sign_s3_url(url, ac, request_headers);
+        }
+        else {
+            if(ac){
+                BESDEBUG(MODULE, prolog << "Located credentials for url: " << url->str()  << "They are " << (ac->is_s3_cred()?"":"NOT ") << "S3 credentials.\n");
+
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "Unable to locate credentials for url: " << url->str() << "\n");
+            }
         }
     }
 
@@ -1433,6 +1444,7 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
                                                        ac->get(AccessCredentials::KEY_KEY),
                                                        ac->get(AccessCredentials::REGION_KEY), "s3");
 
+    BESDEBUG(MODULE, prolog << "Authorization: " << auth_header << "\n");
     req_headers = append_http_header(req_headers, "Authorization", auth_header);
     req_headers = append_http_header(req_headers, "x-amz-content-sha256",
                                      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
