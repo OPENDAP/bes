@@ -10,7 +10,8 @@
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
       <!-- y = mx + b -->
-        <bes:constraint>make_array(String,"[1]","1.0"),make_array(String,"[2][3]","1.0",test,"test and set","2.0",TEST,"TEST and SET"),make_array(Url,"[2]","http://opendap.org","http::/google.com")</bes:constraint>
+      <!--bes:constraint>make_array(String,"[1]","1.0"),make_array(String,"[2][3]","1.0",test,"test and set","2.0",TEST,"TEST and SET"),make_array(Url,"[2]","http://opendap.org","http::/google.com")</bes:constraint -->
+      <bes:constraint>make_array(Url,"[2]","http://opendap.org","http::/google.com")</bes:constraint>
     </bes:container>
   </bes:define>
   
