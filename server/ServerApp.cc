@@ -524,32 +524,14 @@ int ServerApp::run()
 
             if (sighup) {
                 BESDEBUG("ppt2", "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
-
                 INFO_LOG("Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
-
-#if 0
-                d_ppt_server->closeConnection();
-                close(BESLISTENER_PIPE_FD);
-#endif
                 return SERVER_EXIT_RESTART;
-#if 0
-                ::exit(SERVER_EXIT_RESTART);
-#endif
             }
 
             if (sigterm) {
                 BESDEBUG("ppt2", "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
-
                 INFO_LOG("Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
-
-#if 0
-                d_ppt_server->closeConnection();
-                close(BESLISTENER_PIPE_FD);
-#endif
                 return SERVER_EXIT_NORMAL_SHUTDOWN;
-#if 0
-                ::exit(SERVER_EXIT_NORMAL_SHUTDOWN);
-#endif
             }
 
             sigchild = 0;   // Only reset this signal, all others cause an exit/restart
@@ -562,35 +544,17 @@ int ServerApp::run()
             // This call blocks, using select(), until a client asks for another beslistener.
             d_ppt_server->initConnection();
         }
-#if 0
-        d_ppt_server->closeConnection();
-#endif
     }
     catch (BESError &se) {
         BESDEBUG("beslistener", "beslistener: caught BESError (" << se.get_message() << ")" << endl);
 
         ERROR_LOG(se.get_message() << endl);
-#if 0
-        int status = SERVER_EXIT_FATAL_CANNOT_START;
-        write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
-        close(MASTER_TO_DAEMON_PIPE_FD);
-#endif
         return SERVER_EXIT_FATAL_CANNOT_START;
     }
     catch (...) {
         ERROR_LOG("caught unknown exception initializing sockets" << endl);
-#if 0
-        int status = SERVER_EXIT_FATAL_CANNOT_START;
-        write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
-        close(MASTER_TO_DAEMON_PIPE_FD);
-#endif
         return SERVER_EXIT_FATAL_CANNOT_START;
     }
-
-#if 0
-    close(BESLISTENER_PIPE_FD);
-    return 0;
-#endif
 }
 
 // The BESApp::main() method will call terminate() with the return value of
