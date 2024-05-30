@@ -69,7 +69,6 @@ PPTConnection::~PPTConnection()
 {
 	if (_inBuff) {
 		delete[] _inBuff;
-		_inBuff = 0;
 	}
 }
 

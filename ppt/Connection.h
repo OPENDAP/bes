@@ -52,7 +52,7 @@ protected:
 	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions) = 0;
 
 public:
-	virtual ~Connection() = default;
+	~Connection() override = default;
 
 	virtual void initConnection() = 0;
 	virtual void closeConnection() = 0;
@@ -62,7 +62,7 @@ public:
 	virtual void send(const std::string &buffer, std::map<std::string, std::string> &extensions) = 0;
 	virtual void sendExtensions(std::map<std::string, std::string> &extensions) = 0;
 	virtual void sendExit() = 0;
-	virtual bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = 0) = 0;
+	virtual bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = nullptr) = 0;
 
 	virtual Socket * getSocket()
 	{
@@ -92,7 +92,7 @@ public:
 	virtual unsigned int getRecvChunkSize() = 0;
 	virtual unsigned int getSendChunkSize() = 0;
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // Connection_h

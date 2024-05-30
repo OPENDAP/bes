@@ -48,42 +48,39 @@ private:
 
 	PPTConnection() = default;
 
-	virtual int readChunkHeader(char *inBuff,
-	int buff_size);
-	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions);
+	virtual int readChunkHeader(char *inBuff, int buff_size);
+	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions) override;
 	virtual void receive(std::ostream &strm, const int len);
 
 protected:
-	PPTConnection(int timeout) : _timeout(timeout)
-	{
-	}
+	explicit PPTConnection(int timeout) : _timeout(timeout) { }
 
 	virtual int readBuffer(char *inBuff, const unsigned int buff_size);
-	virtual int readBufferNonBlocking(char *inBuff, const /*unsigned*/int buff_size);
+	virtual int readBufferNonBlocking(char *inBuff, const int buff_size);
 
-	virtual void send(const std::string &buffer);
+	virtual void send(const std::string &buffer) override;
 	virtual void read_extensions(std::map<std::string, std::string> &extensions, const std::string &xstr);
 
 public:
-	virtual ~PPTConnection();
+	~PPTConnection() override;
 
-	virtual void initConnection() = 0;
-	virtual void closeConnection() = 0;
+	virtual void initConnection() override = 0;
+	virtual void closeConnection() override = 0;
 
-	virtual std::string exit()
+	std::string exit() override
 	{
 		return PPT_EXIT_NOW;
 	}
 
-	virtual void send(const std::string &buffer, std::map<std::string, std::string> &extensions);
-	virtual void sendExtensions(std::map<std::string, std::string> &extensions);
-	virtual void sendExit();
-	virtual bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = 0);
+	void send(const std::string &buffer, std::map<std::string, std::string> &extensions) override;
+	void sendExtensions(std::map<std::string, std::string> &extensions) override;
+	void sendExit() override;
+	bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = nullptr) override;
 
-	virtual unsigned int getRecvChunkSize();
-	virtual unsigned int getSendChunkSize();
+	virtual unsigned int getRecvChunkSize() override;
+	virtual unsigned int getSendChunkSize() override;
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // PPTConnection_h
