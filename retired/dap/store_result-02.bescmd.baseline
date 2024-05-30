@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<dap:AsynchronousResponse status="required" xmlns:dap="http://xml.opendap.org/ns/DAP/4.0#">
-    <dap:expectedDelay seconds="0"/>
-    <dap:responseLifetime seconds="0"/>
-</dap:AsynchronousResponse>
