@@ -44,6 +44,7 @@
 #include "PPTConnection.h"
 #include "PPTProtocolNames.h"
 #include "Socket.h"
+#include "BESLog.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 
@@ -68,7 +69,6 @@ PPTConnection::~PPTConnection()
 {
 	if (_inBuff) {
 		delete[] _inBuff;
-		_inBuff = 0;
 	}
 }
 
@@ -191,13 +191,6 @@ void PPTConnection::send(const string &buffer)
 {
 	BESDEBUG(MODULE, prolog << "Sending " << buffer << endl);
 	_mySock->send(buffer, 0, buffer.size());
-
-#if 0
-	// was calling fsync() which is not defined for sockets. There might be some
-	// 'sync' operation needed in the future, but for now this is an empty call. removed
-	// jhrg 5/5/11
-	_mySock->sync();
-#endif
 }
 
 /** @brief read a buffer of data from the socket
@@ -273,8 +266,20 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 	// if x then extensions follow, if d then data follows.
 	int bytesRead = readChunkHeader(_inBuff, 8);
 	BESDEBUG( MODULE, prolog << "Reading header, read " << bytesRead << " bytes" << endl );
-	if (bytesRead != 8)
-		throw BESInternalError(prolog + "Failed to read chunk header", __FILE__, __LINE__);
+    if (bytesRead == 0) {
+        INFO_LOG("PPTConnection::receive: read EOF from the OLFS, beslistener exiting.\n");
+        // Since this is the exit condition, set extensions["status"] so that it's value is PPT_EXIT_NOW.
+        // See BESServerHandler::execute(Connection *connection) and note that Connection::exit()
+        // returns a string value (!). It does not do what unix exit() does! This is how the server
+        // knows to exit. jhrg 5/30/24
+        // Note that when this child listener exits, it will use exit code '6' and that will be picked up
+        // by the master listener. That will show up in the bes.log. jhrg 5/30/24
+        extensions["status"] = PPT_EXIT_NOW;
+        return true;
+    }
+    else if (bytesRead != 8) {
+        throw BESInternalError(prolog + "Failed to read chunk header", __FILE__, __LINE__);
+    }
 
 	char lenbuffer[8];
 	lenbuffer[0] = _inBuff[0];
@@ -424,14 +429,8 @@ int PPTConnection::readBufferNonBlocking(char *inBuff, const /* unsigned*/int bu
     arr[0].fd = getSocket()->getSocketDescriptor();
     arr[0].events = POLLIN;
     arr[0].revents = 0;
-#if 0
-    struct pollfd p = {};
-    p.fd = getSocket()->getSocketDescriptor();
-    p.events = POLLIN;
-    struct pollfd arr[1];
-    arr[0] = p;
-#endif
-	// Lets loop _timeout times with a delay block on poll of 1000 milliseconds
+
+	// Let's loop _timeout times with a delay block on poll of 1000 milliseconds
 	// and see if there are any data.
 	for (int j = 0; j < _timeout; j++) {
 		if (poll(arr, 1, 1000) < 0) {

@@ -89,12 +89,6 @@ PPTServer::PPTServer(ServerHandler *handler, SocketListener *listener, bool isSe
 	}
 }
 
-#if 0
-PPTServer::~PPTServer()
-{
-}
-#endif
-
 void PPTServer::get_secure_files()
 {
 	bool found = false;
@@ -177,7 +171,7 @@ int PPTServer::welcomeClient()
 	const unsigned int ppt_buffer_size = 64;
 	char inBuff[ppt_buffer_size + 1];
 
-	// Doing a non blocking read in case the connection is being initiated
+	// Doing a non-blocking read in case the connection is being initiated
 	// by a non-bes client. Don't want this to block. pcw - 3/5/07
 	// int bytesRead = _mySock->receive( inBuff, ppt_buffer_size ) ;
 	//
