@@ -44,6 +44,7 @@
 #include "PPTConnection.h"
 #include "PPTProtocolNames.h"
 #include "Socket.h"
+#include "BESLog.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 
@@ -272,6 +273,8 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
         // See BESServerHandler::execute(Connection *connection) and note that Connection::exit()
         // returns a string value (!). It does not do what unix exit() does! This is how the server
         // knows to exit. jhrg 5/30/24
+        // Note that when this child listener exits, it will use exit code '6' and that will be picked up
+        // by the master listener. That will show up in the bes.log. jhrg 5/30/24
         extensions["status"] = PPT_EXIT_NOW;
         return true;
     }
