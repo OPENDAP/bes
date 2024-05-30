@@ -268,7 +268,7 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 	int bytesRead = readChunkHeader(_inBuff, 8);
 	BESDEBUG( MODULE, prolog << "Reading header, read " << bytesRead << " bytes" << endl );
     if (bytesRead == 0) {
-        INFO_LOG("PPTConnection::receive: read EOF from the OLFS, beslistener exiting.");
+        INFO_LOG("PPTConnection::receive: read EOF from the OLFS, beslistener exiting.\n");
         // Since this is the exit condition, set extensions["status"] so that it's value is PPT_EXIT_NOW.
         // See BESServerHandler::execute(Connection *connection) and note that Connection::exit()
         // returns a string value (!). It does not do what unix exit() does! This is how the server
