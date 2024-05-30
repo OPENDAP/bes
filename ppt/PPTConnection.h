@@ -49,7 +49,7 @@ private:
 	PPTConnection() = default;
 
 	virtual int readChunkHeader(char *inBuff, int buff_size);
-	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions) override;
+	void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions) override;
 	virtual void receive(std::ostream &strm, const int len);
 
 protected:
@@ -58,14 +58,14 @@ protected:
 	virtual int readBuffer(char *inBuff, const unsigned int buff_size);
 	virtual int readBufferNonBlocking(char *inBuff, const int buff_size);
 
-	virtual void send(const std::string &buffer) override;
+	void send(const std::string &buffer) override;
 	virtual void read_extensions(std::map<std::string, std::string> &extensions, const std::string &xstr);
 
 public:
 	~PPTConnection() override;
 
-	virtual void initConnection() override = 0;
-	virtual void closeConnection() override = 0;
+	void initConnection() override = 0;
+	void closeConnection() override = 0;
 
 	std::string exit() override
 	{
@@ -77,8 +77,8 @@ public:
 	void sendExit() override;
 	bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = nullptr) override;
 
-	virtual unsigned int getRecvChunkSize() override;
-	virtual unsigned int getSendChunkSize() override;
+	unsigned int getRecvChunkSize() override;
+	unsigned int getSendChunkSize() override;
 
 	void dump(std::ostream &strm) const override;
 };
