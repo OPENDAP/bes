@@ -42,22 +42,17 @@
 
 class Connection: public BESObj {
 protected:
-	Socket *_mySock;
-	std::ostream *_out;
-	bool _brokenPipe;
+	Socket *_mySock = nullptr;
+	std::ostream *_out = nullptr;
+	bool _brokenPipe = false;
 
-	Connection() :
-			_mySock(0), _out(0), _brokenPipe(false)
-	{
-	}
+	Connection() = default;
 
 	virtual void send(const std::string &buffer) = 0;
 	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions) = 0;
 
 public:
-	virtual ~Connection()
-	{
-	}
+	virtual ~Connection() = default;
 
 	virtual void initConnection() = 0;
 	virtual void closeConnection() = 0;

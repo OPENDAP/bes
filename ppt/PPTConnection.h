@@ -42,24 +42,19 @@ class Socket;
 
 class PPTConnection: public Connection {
 private:
-	int _timeout;
-	char * _inBuff;
-	int _inBuff_len;
-#if 0
-	int _bytesRead;
-#endif
+	int _timeout = 0;
+	char * _inBuff = nullptr;
+	int _inBuff_len = 0;
 
-	PPTConnection() : _timeout(0), _inBuff(0), _inBuff_len(0) //, _bytesRead(0)
-	{
-	}
+	PPTConnection() = default;
 
 	virtual int readChunkHeader(char *inBuff,
-	/*unsigned*/int buff_size);
+	int buff_size);
 	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions);
-	virtual void receive(std::ostream &strm, const /*unsigned*/int len);
+	virtual void receive(std::ostream &strm, const int len);
 
 protected:
-	PPTConnection(int timeout) : _timeout(timeout), _inBuff(0), _inBuff_len(0) //, _bytesRead(0)
+	PPTConnection(int timeout) : _timeout(timeout)
 	{
 	}
 

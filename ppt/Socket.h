@@ -73,11 +73,7 @@ public:
 	virtual void close();
 	virtual void send(const std::string &str, int start, int end);
 	virtual int receive(char *inBuff, const int inSize);
-#if 0
-	// sync() was calling fsync() which is not defined for a socket.
-	// jhrg 5/5/11
-	virtual void sync();
-#endif
+
 	virtual int getSocketDescriptor()
 	{
 		return _socket;

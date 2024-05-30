@@ -210,24 +210,10 @@ void UnixSocket::close()
 {
     Socket::close();
     if (_tempSocket != "") {
-#if 0
-	// This is flaggeed as a 'Time of check, time of use' error by
-	// coverity. I think the test to see if the file exists is not
-	// needed since the code ignores the error return by remove.
-	// jhrg 10/23/15
-        if (!access(_tempSocket.c_str(), F_OK)) {
-            (void) remove(_tempSocket.c_str());
-        }
-#endif
 	(void) remove(_tempSocket.c_str());
         _connected = false;
     }
     if (_listening && _unixSocket != "") {
-#if 0
-        if (!access(_unixSocket.c_str(), F_OK)) {
-            (void) remove(_unixSocket.c_str());
-        }
-#endif
 	(void) remove(_unixSocket.c_str());
         _listening = false;
     }
