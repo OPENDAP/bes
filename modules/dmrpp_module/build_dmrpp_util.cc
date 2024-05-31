@@ -986,6 +986,259 @@ void set_fill_value(hid_t dataset, BaseType *btp){
     }
 }
 
+unsigned short is_supported_compound_type(hid_t h5_type) {
+
+    unsigned short ret_value = 1;
+    bool has_string_memb_type = false;
+    hid_t memtype = -1;
+    if ((memtype = H5Tget_native_type(h5_type, H5T_DIR_ASCEND)) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
+    }
+    
+    hid_t  memb_id = -1;
+    H5T_class_t memb_cls = H5T_NO_CLASS;
+    int nmembs = 0;
+    char *memb_name = nullptr;
+
+    if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+    }
+
+    for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
+
+        if ((memb_id = H5Tget_member_type(memtype, u)) < 0)
+            throw InternalErr(__FILE__, __LINE__,
+                              "Fail to obtain the datatype of an HDF5 compound datatype member.");
+
+        // Get member type class
+        memb_cls = H5Tget_member_class(memtype, u);
+
+        // Get member name
+        memb_name = H5Tget_member_name(memtype, u);
+        if (memb_name == nullptr)
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
+
+        if (memb_cls == H5T_COMPOUND) 
+            ret_value = 0;
+        else if (memb_cls == H5T_ARRAY) {
+
+            hid_t at_base_type = H5Tget_super(memb_id);
+            H5T_class_t array_cls = H5Tget_class(at_base_type);
+            if (array_cls != H5T_INTEGER && array_cls != H5T_FLOAT && array_cls != H5T_STRING)
+                ret_value = 0;
+            else if (array_cls == H5T_STRING && has_string_memb_type == false)
+                has_string_memb_type = true;
+            H5Tclose(at_base_type);
+
+
+        } else if (memb_cls != H5T_INTEGER && memb_cls != H5T_FLOAT) {
+            if (memb_cls == H5T_STRING) { 
+                if (has_string_memb_type == false)
+                    has_string_memb_type = true;
+            }
+            else 
+                ret_value = 0;
+        } 
+
+        // Close member type ID
+        H5Tclose(memb_id);
+        free(memb_name);
+        if (ret_value == 0) 
+            break;
+    } // end for
+
+    if (has_string_memb_type)
+        ret_value = 2;
+    return ret_value;
+
+}
+
+
+void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
+
+    hid_t mspace   = -1;
+    hid_t memtype  = -1;
+    size_t ty_size = -1;
+
+    bool is_scalar = false;
+
+    if ((memtype = H5Tget_native_type(type_id, H5T_DIR_ASCEND))<0) 
+        throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
+
+    ty_size = H5Tget_size(memtype);
+
+    hid_t dspace = -1;
+    if ((dspace = H5Dget_space(dataset))<0) {
+        H5Tclose(memtype);
+        throw InternalErr (__FILE__, __LINE__, "Cannot obtain data space.");
+    }
+
+    hssize_t num_elms = H5Sget_simple_extent_npoints(dspace);
+    if (num_elms < 0) {
+        H5Tclose(memtype);
+        H5Sclose(dspace);
+        throw InternalErr (__FILE__, __LINE__, "Cannot obtain the number of elements of the data space.");
+    }
+
+    vector<char> struct_value;
+    struct_value.resize(num_elms*ty_size);
+    if (H5Dread(dataset,memtype, H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)struct_value.data())<0) {
+        H5Tclose(memtype);
+        H5Sclose(dspace);
+        throw InternalErr (__FILE__, __LINE__, "Cannot read the dataset.");
+    }
+string temp_str(struct_value.begin(),struct_value.end());
+cerr<<"temp_str: "<<temp_str <<endl;
+
+    if (H5S_SCALAR == H5Sget_simple_extent_type(dspace))
+        is_scalar = true;
+
+    vector<char> encoded_struct_value;
+
+    size_t values_offset = 0;
+
+    // Loop through all the elements in this compound datatype variable.
+    for (int64_t element = 0; element < num_elms; ++element) { 
+
+        int                 nmembs           = 0;
+        size_t              struct_elem_offset = ty_size*element;
+
+        if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+            H5Tclose(memtype);
+            H5Sclose(dspace);
+            throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+        }
+
+        // We only need to retrieve the values and re-assemble them.
+        // Coming here, we will only have the one-layer string-contained structure to handle.
+        // We do need to know the memb type to put the special handling of a string.
+        for (unsigned int u = 0; u < (unsigned)nmembs; u++) {
+
+            hid_t  memb_id  = -1;
+            H5T_class_t         memb_cls         = H5T_NO_CLASS;
+            size_t              memb_offset      = 0;
+            // Get member type ID
+            if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
+                H5Tclose(memtype);
+                H5Sclose(dspace);
+                throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype of an HDF5 compound datatype member.");
+            }
+        
+            // Get member type class
+            if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
+                H5Tclose(memtype);
+                H5Sclose(dspace);
+                throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype class of an HDF5 compound datatype member.");
+            }
+
+            size_t memb_size = H5Tget_size(memb_id);
+        
+            // Get member offset,H5Tget_member_offset only fails
+            // when H5Tget_memeber_class fails. Sinc H5Tget_member_class
+            // is checked above. So no need to check the return value.
+            memb_offset= H5Tget_member_offset(memtype,u);
+
+            // Here we have the offset from the original structure variable.
+            values_offset = struct_elem_offset + memb_offset; 
+            if (memb_cls ==  H5T_ARRAY) {
+
+                hid_t at_base_type = H5Tget_super(memb_id);
+                size_t at_base_type_size = H5Tget_size(at_base_type);
+
+                H5T_class_t array_cls = H5Tget_class(at_base_type);
+
+                vector<char> structure_value;
+
+                // Need to retrieve the number of elements of the array
+                // and encode each string with base64 and then separate them 
+                // with ";".
+                // memb_id, obtain the number of dimensions
+                int at_ndims = H5Tget_array_ndims(memb_id);
+                if (at_ndims <= 0) {
+                    H5Tclose(at_base_type);
+                    throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
+                }
+            
+                vector<hsize_t>at_dims_h(at_ndims,0);
+            
+                // Obtain the number of elements for each dims
+                if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
+                    H5Tclose(at_base_type);
+                    throw InternalErr (__FILE__, __LINE__, "Fail to obtain dimensions of the array datatype.");
+                }
+
+                vector<hsize_t>at_dims_offset(at_ndims,0);                   
+                size_t total_array_nums = 1;
+                for (const auto & ad:at_dims_h)
+                    total_array_nums *=ad;
+
+                if (array_cls == H5T_STRING) {
+
+                    vector<string> str_val;
+                    str_val.resize(total_array_nums);
+                    
+                    if (H5Tis_variable_str(at_base_type) >0){
+                        auto src = (void*)(struct_value.data()+values_offset);
+                        auto temp_bp =(char*)src;
+                        for (int64_t i = 0;i <total_array_nums; i++){
+                            string tempstrval;
+                            get_vlen_str_data(temp_bp,tempstrval);
+                            str_val[i] = tempstrval;
+                            temp_bp += at_base_type_size;
+                        }
+                    }
+                    else {
+                        auto src = (void*)(struct_value.data()+values_offset);
+                        vector<char> fix_str_val;
+                        fix_str_val.resize(total_array_nums*at_base_type_size);
+                        memcpy((void*)fix_str_val.data(),src,total_array_nums*at_base_type_size);
+                        string total_in_one_string(fix_str_val.begin(),fix_str_val.end());
+                        for (int64_t i = 0; i<total_array_nums;i++)
+                            str_val[i] = total_in_one_string.substr(i*at_base_type_size,at_base_type_size);
+                    }
+for (int i = 0; i <str_val.size();i++)
+cerr<<"str_val["<<i<<"]= "<<str_val[i] <<endl;
+
+                }
+                else { // integer or float array, just obtain the whole value.
+                    vector<char> int_float_array;
+                    int_float_array.resize(total_array_nums*at_base_type_size);
+                    memcpy((void*)int_float_array.data(),struct_value.data()+values_offset,total_array_nums*at_base_type_size);
+                }
+                H5Tclose(at_base_type);
+
+            }
+            else if (memb_cls == H5T_STRING) {// Scalar string
+
+                if (H5Tis_variable_str(memb_id) >0){
+                    auto src = (void*)(struct_value.data()+values_offset);
+                    auto temp_bp =(char*)src;
+                    string tempstrval;
+                    get_vlen_str_data(temp_bp,tempstrval);
+cerr<<"tempstrval - vlstring: "<<tempstrval <<endl;
+                }
+                else {
+                    auto src = (void*)(struct_value.data()+values_offset);
+                    vector<char> fix_str_val;
+                    fix_str_val.resize(memb_size);
+                    memcpy((void*)fix_str_val.data(),src,memb_size);
+                    string fix_str_value(fix_str_val.begin(),fix_str_val.end());
+                }
+
+            }
+            else {// Scalar int/float
+                vector<char> int_float_array;
+                int_float_array.resize(memb_size);
+                memcpy((void*)int_float_array.data(),struct_value.data()+values_offset,memb_size);
+            }
+            // STOP, we need to encode string and put them to a new buffer.
+
+        } // end "for(unsigned u = 0)"
+    } // end "for (int element=0"
+
+
+
+}
 
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
@@ -1009,6 +1262,20 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
     }
     // Added support for HDF5 Fill Value. jhrg 4/22/22
     set_fill_value(dataset, btp);
+
+    // Here we want to chunk if this dataset is a compound datatype that contains string.
+    hid_t type_id = H5Dget_type(dataset);
+    if (type_id <0) {
+        string err_msg = "Cannot obtain the HDF5 data type of the dataset: " + btp->name() ;
+        throw BESInternalError(err_msg, __FILE__, __LINE__);
+    }
+    if (H5T_COMPOUND == H5Tget_class(type_id) && is_supported_compound_type(type_id)==2) {
+        process_string_in_structure(dataset,type_id, btp);
+        H5Tclose(type_id);
+        return;
+    }
+    else 
+       H5Tclose(type_id);
 
     hid_t plist_id = create_h5plist(dataset);
     uint8_t layout_type = 0;
@@ -1067,62 +1334,7 @@ string get_type_decl(BaseType *btp){
     return type_decl.str();
 }
 
-bool is_supported_compound_type(hid_t h5_type) {
 
-    bool ret_value = true;
-    hid_t memtype = -1;
-    if ((memtype = H5Tget_native_type(h5_type, H5T_DIR_ASCEND)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
-    }
-    
-    hid_t  memb_id = -1;
-    H5T_class_t memb_cls = H5T_NO_CLASS;
-    int nmembs = 0;
-    char *memb_name = nullptr;
-
-    if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
-    }
-
-    for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
-
-        if ((memb_id = H5Tget_member_type(memtype, u)) < 0)
-            throw InternalErr(__FILE__, __LINE__,
-                              "Fail to obtain the datatype of an HDF5 compound datatype member.");
-
-        // Get member type class
-        memb_cls = H5Tget_member_class(memtype, u);
-
-        // Get member name
-        memb_name = H5Tget_member_name(memtype, u);
-        if (memb_name == nullptr)
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
-
-        if (memb_cls == H5T_COMPOUND) 
-            ret_value = false;
-        else if (memb_cls == H5T_ARRAY) {
-
-            hid_t at_base_type = H5Tget_super(memb_id);
-            H5T_class_t array_cls = H5Tget_class(at_base_type);
-            if (array_cls != H5T_INTEGER && array_cls != H5T_FLOAT)
-                ret_value = false;
-            H5Tclose(at_base_type);
-
-
-        } else if (memb_cls != H5T_INTEGER && memb_cls != H5T_FLOAT) {
-            ret_value = false;
-        } 
-
-        // Close member type ID
-        H5Tclose(memb_id);
-        free(memb_name);
-        if (ret_value == false) 
-            break;
-    } // end for
-
-    return ret_value;
-
-}
 bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     VERBOSE(cerr << prolog << "BEGIN " << get_type_decl(btp) << endl);
 
@@ -1163,8 +1375,8 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
             break;
         }
         case H5T_COMPOUND: {
-            bool supported_compound_type = is_supported_compound_type(h5_type_id);
-            if (supported_compound_type == false) {
+            unsigned short supported_compound_type = is_supported_compound_type(h5_type_id);
+            if (supported_compound_type == 0) {
                 stringstream msgs;
                 msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
                 msgs << get_type_decl(btp) << " ";

@@ -92,6 +92,8 @@ private:
     string_pad_type d_fixed_length_string_pad_type = not_set;
     vector<u_int8_t> d_compact_str_buf;
 
+    vector<char> d_structure_array_str_buf;
+ 
     bool is_projected();
 
     DmrppArray::dimension get_dimension(unsigned int dim_num);
@@ -232,6 +234,7 @@ public:
     unsigned int buf2val(void **val) override;
     vector<u_int8_t> &compact_str_buffer(){ return d_compact_str_buf; }
 
+    vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
 };
 
 /**
