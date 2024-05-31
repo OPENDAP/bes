@@ -411,7 +411,8 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if  (errno == EEXIST)
+            if (errno == EEXIST)
+                ERROR("Could not create the key/file because it already exists: " << key << " " << get_errno() << '\n');
                 return false;
             else {
                 ERROR("Error creating key/file: " << key << " " << get_errno() << '\n');
@@ -460,7 +461,7 @@ public:
      * the item. The called can write directly to the item, rewind the descriptor
      * and read from it and then close the file descriptor to release the Exclusive
      * lock.
-     * @note when the PutIem goes out of scope, the cache_info file is updated.
+     * @note when the PutItem goes out of scope, the cache_info file is updated.
      * @param key The key that can be used to access the file
      * @param item A value-result parameter than is a reference to a PutItem instance.
      * @return True if the PutItem holds an open, locked, file descriptor, otherwise
@@ -476,10 +477,12 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if  (errno == EEXIST)
-                return false;
+            if (errno == EEXIST)
+                ERROR("Could not create the key/file because it already exists (2): " << key << " " << get_errno() << '\n');
+
+            return false;
             else {
-                ERROR("Error creating key/file: " << key << " " << get_errno() << '\n');
+                ERROR("Error creating key/file (2): " << key << " " << get_errno() << '\n');
                 return false;
             }
         }
