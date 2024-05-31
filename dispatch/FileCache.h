@@ -411,9 +411,10 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if (errno == EEXIST)
-                ERROR("Could not create the key/file because it already exists: " << key << " " << get_errno() << '\n');
+            if (errno == EEXIST) {
+                ERROR("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
                 return false;
+            }
             else {
                 ERROR("Error creating key/file: " << key << " " << get_errno() << '\n');
                 return false;
@@ -477,10 +478,10 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if (errno == EEXIST)
-                ERROR("Could not create the key/file because it already exists (2): " << key << " " << get_errno() << '\n');
-
-            return false;
+            if (errno == EEXIST) {
+                ERROR("Could not create the key/file; it already exists (2): " << key << " " << get_errno() << '\n');
+                return false;
+            }
             else {
                 ERROR("Error creating key/file (2): " << key << " " << get_errno() << '\n');
                 return false;
@@ -488,10 +489,13 @@ public:
         }
 
         // The Item instance will take care of closing the file.
-        item.set_fd(fd);
+        item.
+                set_fd(fd);
 
         // Lock the file for writing; released when the file descriptor is closed.
-        if (!item.lock_the_item(LOCK_EX, "Error locking the just created key/file: " + key))
+        if (!item.
+                lock_the_item(LOCK_EX,
+                              "Error locking the just created key/file: " + key))
             return false;
 
         // The Item instances will take care of closing (and thus unlocking) the files.
