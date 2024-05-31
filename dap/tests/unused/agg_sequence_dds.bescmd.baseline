@@ -1,7 +1,0 @@
-Dataset {
-    Sequence {
-        Int32 i;
-        Int32 j;
-        Float32 k;
-    } s;
-} sequence_1.dds_to_sequence_1.dds;

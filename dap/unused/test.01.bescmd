@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="c" space="gateway">http://opendap.rpi.edu/ESG/b30.004.cam2.h0.FICE_zav.0100-01_cat_0119-12.nc.dds</setContainer>
-    <define name="d">
-	<container name="c" />
-    </define>
-    <get type="dds" definition="d" />
-</request>

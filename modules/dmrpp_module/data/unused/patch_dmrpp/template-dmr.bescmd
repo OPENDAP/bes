@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="c" space="catalog"> </setContainer>
-    <define name="d">
-	   <container name="c" />
-    </define>
-    <get type="dmr" definition="d" />
-</request>
