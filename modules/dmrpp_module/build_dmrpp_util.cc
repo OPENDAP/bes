@@ -42,6 +42,8 @@
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
 
+#include <Base64.h>
+
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
@@ -53,6 +55,7 @@
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppArray.h"
+#include "DmrppStructure.h"
 #include "D4ParserSax2.h"
 
 #include "UnsupportedTypeException.h"
@@ -1053,6 +1056,201 @@ unsigned short is_supported_compound_type(hid_t h5_type) {
 
 }
 
+bool obtain_structure_string_value(hid_t memtype, size_t ty_size, hssize_t num_elms, vector<char>& encoded_struct_value,const vector<char>& struct_value, string & err_msg) {
+
+    bool ret_value = true;
+    size_t values_offset = 0;
+
+    // Loop through all the elements in this compound datatype variable.
+    for (int64_t element = 0; element < num_elms; ++element) { 
+
+        int                 nmembs           = 0;
+        size_t              struct_elem_offset = ty_size*element;
+
+        if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+            err_msg = "Fail to obtain number of HDF5 compound datatype.";
+            ret_value = false;
+            break;
+        }
+
+        // We only need to retrieve the values and re-assemble them.
+        // Coming here, we will only have the one-layer string-contained structure to handle.
+        // We do need to know the memb type to put the special handling of a string.
+        for (unsigned int u = 0; u < (unsigned)nmembs; u++) {
+
+            hid_t  memb_id  = -1;
+            H5T_class_t         memb_cls         = H5T_NO_CLASS;
+            size_t              memb_offset      = 0;
+
+            // Get member type ID
+            if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
+                err_msg =  "Fail to obtain the datatype of an HDF5 compound datatype member.";
+                ret_value = false;
+                break;
+            }
+        
+            // Get member type class
+            if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
+                H5Tclose(memb_id);
+                err_msg =  "Fail to obtain the datatype class of an HDF5 compound datatype member.";
+                ret_value = false;
+                break;
+            }
+
+            size_t memb_size = H5Tget_size(memb_id);
+        
+            // Get member offset,H5Tget_member_offset only fails
+            // when H5Tget_memeber_class fails. Sinc H5Tget_member_class
+            // is checked above. So no need to check the return value.
+            memb_offset= H5Tget_member_offset(memtype,u);
+
+            // Here we have the offset from the original structure variable.
+            values_offset = struct_elem_offset + memb_offset; 
+            if (memb_cls ==  H5T_ARRAY) {
+
+                hid_t at_base_type = H5Tget_super(memb_id);
+                size_t at_base_type_size = H5Tget_size(at_base_type);
+                H5T_class_t array_cls = H5Tget_class(at_base_type);
+
+                // Need to retrieve the number of elements of the array
+                // and encode each string with base64 and then separate them 
+                // with ";".
+                // memb_id, obtain the number of dimensions
+                int at_ndims = H5Tget_array_ndims(memb_id);
+                if (at_ndims <= 0) {
+                    H5Tclose(at_base_type);
+                    H5Tclose(memb_id);
+                    err_msg =  "Fail to obtain number of dimensions of the array datatype.";
+                    ret_value = false;
+                    break;
+                }
+            
+                vector<hsize_t>at_dims_h(at_ndims,0);
+            
+                // Obtain the number of elements for each dims
+                if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
+                    H5Tclose(at_base_type);
+                    H5Tclose(memb_id);
+                    err_msg =  "Fail to obtain each imension size of the array datatype.";
+                    ret_value = false;
+                    break;
+                }
+
+                vector<hsize_t>at_dims_offset(at_ndims,0);                   
+                size_t total_array_nums = 1;
+                for (const auto & ad:at_dims_h)
+                    total_array_nums *=ad;
+
+                if (array_cls == H5T_STRING) {
+
+                    vector<string> str_val;
+                    str_val.resize(total_array_nums);
+                    
+                    if (H5Tis_variable_str(at_base_type) >0){
+                        auto src = (void*)(struct_value.data()+values_offset);
+                        auto temp_bp =(char*)src;
+                        for (int64_t i = 0;i <total_array_nums; i++){
+                            string tempstrval;
+                            get_vlen_str_data(temp_bp,tempstrval);
+                            str_val[i] = tempstrval;
+                            temp_bp += at_base_type_size;
+                        }
+                    }
+                    else {
+                        auto src = (void*)(struct_value.data()+values_offset);
+                        vector<char> fix_str_val;
+                        fix_str_val.resize(total_array_nums*at_base_type_size);
+                        memcpy((void*)fix_str_val.data(),src,total_array_nums*at_base_type_size);
+                        string total_in_one_string(fix_str_val.begin(),fix_str_val.end());
+                        for (int64_t i = 0; i<total_array_nums;i++)
+                            str_val[i] = total_in_one_string.substr(i*at_base_type_size,at_base_type_size);
+                    }
+for (int i = 0; i <str_val.size();i++)
+cerr<<"str_val["<<i<<"]= "<<str_val[i] <<endl;
+
+                    vector<string> encoded_str_val;
+                    encoded_str_val.resize(str_val.size());
+                    // "Matthew John;James Peter" becomes "base64(Matthew);base64(John;James);base64(Peter);"
+                    for (int i = 0; i < str_val.size(); i++) {
+
+                          string temp_str = str_val[i];
+                          vector<u_int8_t>temp_val(temp_str.begin(),temp_str.end());
+                          encoded_str_val[i] =  base64::Base64::encode(temp_val.data(), temp_str.size()) + ";";
+                   
+                    }
+for (int i = 0; i <encoded_str_val.size();i++)
+cerr<<"encoded_str_val["<<i<<"]= "<<encoded_str_val[i] <<endl;
+                    // TODO: use memcpy or other more efficient method later. We expect the size is not big.
+                    for (int i = 0; i <encoded_str_val.size();i++) {
+                        string temp_str = encoded_str_val[i];
+                        for(int j = 0; j<temp_str.size();j++)
+                            encoded_struct_value.push_back(temp_str[j]);
+                    }
+
+                }
+                else { // integer or float array, just obtain the whole value.
+                    vector<char> int_float_array;
+                    int_float_array.resize(total_array_nums*at_base_type_size);
+                    memcpy((void*)int_float_array.data(),struct_value.data()+values_offset,total_array_nums*at_base_type_size);
+                    for (const auto &int_float:int_float_array) 
+                        encoded_struct_value.push_back(int_float);
+                }
+                H5Tclose(at_base_type);
+
+            }
+            else if (memb_cls == H5T_STRING) {// Scalar string
+
+                string encoded_str;
+
+                if (H5Tis_variable_str(memb_id) >0){
+                    auto src = (void*)(struct_value.data()+values_offset);
+                    auto temp_bp =(char*)src;
+                    string tempstrval;
+                    get_vlen_str_data(temp_bp,tempstrval);
+cerr<<"tempstrval - vlstring: "<<tempstrval <<endl;
+
+                    vector<u_int8_t>temp_val(tempstrval.begin(),tempstrval.end());
+                    encoded_str =  base64::Base64::encode(temp_val.data(), tempstrval.size()) + ";";
+
+                }
+                else {
+                    auto src = (void*)(struct_value.data()+values_offset);
+                    vector<char> fix_str_val;
+                    fix_str_val.resize(memb_size);
+                    memcpy((void*)fix_str_val.data(),src,memb_size);
+                    string fix_str_value(fix_str_val.begin(),fix_str_val.end());
+                    vector<u_int8_t>temp_val(fix_str_value.begin(),fix_str_value.end());
+                    encoded_str =  base64::Base64::encode(temp_val.data(), fix_str_value.size()) + ";";
+                }
+                for (const auto &es:encoded_str)
+                        encoded_struct_value.push_back(es);
+ 
+            }
+            else {// Scalar int/float
+                vector<char> int_float;
+                int_float.resize(memb_size);
+                memcpy((void*)int_float.data(),struct_value.data()+values_offset,memb_size);
+                    int_float.resize(memb_size);
+                    memcpy((void*)int_float.data(),struct_value.data()+values_offset,memb_size);
+                    for (const auto &int_f:int_float) 
+                        encoded_struct_value.push_back(int_f);
+            }
+
+        } // end "for(unsigned u = 0)"
+
+        if (ret_value == false) 
+            break;
+    } // end "for (int element=0"
+
+string temp_encoded_struct_str(encoded_struct_value.begin(),encoded_struct_value.end());
+cerr<<"temp_encoded_struct_str: "<<temp_encoded_struct_str<<endl;
+string final_encoded_str = base64::Base64::encode((uint8_t*)(encoded_struct_value.data()),encoded_struct_value.size());
+cerr<<"final_encoded_str: "<<final_encoded_str<<endl;
+
+   return ret_value;
+
+
+}
 
 void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
 
@@ -1093,8 +1291,32 @@ cerr<<"temp_str: "<<temp_str <<endl;
     if (H5S_SCALAR == H5Sget_simple_extent_type(dspace))
         is_scalar = true;
 
-    vector<char> encoded_struct_value;
+    H5Sclose(dspace);
 
+    bool ret_value = false;
+    string err_msg;
+    if (is_scalar) {
+        auto ds = dynamic_cast<DmrppStructure *>(btp);
+        vector<char> & ds_buffer = ds->get_structure_str_buffer();
+        ret_value = obtain_structure_string_value(memtype,ty_size,num_elms,ds_buffer,struct_value,err_msg);
+        ds->set_special_structure_flag(true);
+        ds->set_read_p(true);
+    }
+    else {
+        auto da = dynamic_cast<DmrppArray *>(btp);
+        vector<char> &da_buffer = da->get_structure_array_str_buffer();
+        ret_value = obtain_structure_string_value(memtype,ty_size,num_elms,da_buffer,struct_value,err_msg);
+cerr<<"da->get_structure_array_str_buffer size: "<<(da->get_structure_array_str_buffer()).size() <<endl;
+        da->set_special_structure_flag(true);
+        da->set_read_p(true);
+    }
+
+    H5Tclose(memtype);
+    if (ret_value == false) 
+        throw InternalErr (__FILE__, __LINE__, err_msg);
+    
+
+#if 0
     size_t values_offset = 0;
 
     // Loop through all the elements in this compound datatype variable.
@@ -1105,7 +1327,6 @@ cerr<<"temp_str: "<<temp_str <<endl;
 
         if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
             H5Tclose(memtype);
-            H5Sclose(dspace);
             throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
         }
 
@@ -1117,17 +1338,17 @@ cerr<<"temp_str: "<<temp_str <<endl;
             hid_t  memb_id  = -1;
             H5T_class_t         memb_cls         = H5T_NO_CLASS;
             size_t              memb_offset      = 0;
+
             // Get member type ID
             if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
                 H5Tclose(memtype);
-                H5Sclose(dspace);
                 throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype of an HDF5 compound datatype member.");
             }
         
             // Get member type class
             if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
+                H5Tclose(memb_id);
                 H5Tclose(memtype);
-                H5Sclose(dspace);
                 throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype class of an HDF5 compound datatype member.");
             }
 
@@ -1144,10 +1365,7 @@ cerr<<"temp_str: "<<temp_str <<endl;
 
                 hid_t at_base_type = H5Tget_super(memb_id);
                 size_t at_base_type_size = H5Tget_size(at_base_type);
-
                 H5T_class_t array_cls = H5Tget_class(at_base_type);
-
-                vector<char> structure_value;
 
                 // Need to retrieve the number of elements of the array
                 // and encode each string with base64 and then separate them 
@@ -1156,6 +1374,8 @@ cerr<<"temp_str: "<<temp_str <<endl;
                 int at_ndims = H5Tget_array_ndims(memb_id);
                 if (at_ndims <= 0) {
                     H5Tclose(at_base_type);
+                    H5Tclose(memb_id);
+                    H5Tclose(memtype);
                     throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
                 }
             
@@ -1164,6 +1384,8 @@ cerr<<"temp_str: "<<temp_str <<endl;
                 // Obtain the number of elements for each dims
                 if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
                     H5Tclose(at_base_type);
+                    H5Tclose(memb_id);
+                    H5Tclose(memtype);
                     throw InternalErr (__FILE__, __LINE__, "Fail to obtain dimensions of the array datatype.");
                 }
 
@@ -1199,16 +1421,39 @@ cerr<<"temp_str: "<<temp_str <<endl;
 for (int i = 0; i <str_val.size();i++)
 cerr<<"str_val["<<i<<"]= "<<str_val[i] <<endl;
 
+                    vector<string> encoded_str_val;
+                    encoded_str_val.resize(str_val.size());
+                    // "Matthew John;James Peter" becomes "base64(Matthew);base64(John;James);base64(Peter);"
+                    for (int i = 0; i < str_val.size(); i++) {
+
+                          string temp_str = str_val[i];
+                          vector<u_int8_t>temp_val(temp_str.begin(),temp_str.end());
+                          encoded_str_val[i] =  base64::Base64::encode(temp_val.data(), temp_str.size()) + ";";
+                   
+                    }
+for (int i = 0; i <encoded_str_val.size();i++)
+cerr<<"encoded_str_val["<<i<<"]= "<<encoded_str_val[i] <<endl;
+                    // TODO: use memcpy or other more efficient method later. We expect the size is not big.
+                    for (int i = 0; i <encoded_str_val.size();i++) {
+                        string temp_str = encoded_str_val[i];
+                        for(int j = 0; j<temp_str.size();j++)
+                            encoded_struct_value.push_back(temp_str[j]);
+                    }
+
                 }
                 else { // integer or float array, just obtain the whole value.
                     vector<char> int_float_array;
                     int_float_array.resize(total_array_nums*at_base_type_size);
                     memcpy((void*)int_float_array.data(),struct_value.data()+values_offset,total_array_nums*at_base_type_size);
+                    for (const auto &int_float:int_float_array) 
+                        encoded_struct_value.push_back(int_float);
                 }
                 H5Tclose(at_base_type);
 
             }
             else if (memb_cls == H5T_STRING) {// Scalar string
+
+                string encoded_str;
 
                 if (H5Tis_variable_str(memb_id) >0){
                     auto src = (void*)(struct_value.data()+values_offset);
@@ -1216,6 +1461,10 @@ cerr<<"str_val["<<i<<"]= "<<str_val[i] <<endl;
                     string tempstrval;
                     get_vlen_str_data(temp_bp,tempstrval);
 cerr<<"tempstrval - vlstring: "<<tempstrval <<endl;
+
+                    vector<u_int8_t>temp_val(tempstrval.begin(),tempstrval.end());
+                    encoded_str =  base64::Base64::encode(temp_val.data(), tempstrval.size()) + ";";
+
                 }
                 else {
                     auto src = (void*)(struct_value.data()+values_offset);
@@ -1223,19 +1472,33 @@ cerr<<"tempstrval - vlstring: "<<tempstrval <<endl;
                     fix_str_val.resize(memb_size);
                     memcpy((void*)fix_str_val.data(),src,memb_size);
                     string fix_str_value(fix_str_val.begin(),fix_str_val.end());
+                    vector<u_int8_t>temp_val(fix_str_value.begin(),fix_str_value.end());
+                    encoded_str =  base64::Base64::encode(temp_val.data(), fix_str_value.size()) + ";";
                 }
-
+                for (const auto &es:encoded_str)
+                        encoded_struct_value.push_back(es);
+ 
             }
             else {// Scalar int/float
-                vector<char> int_float_array;
-                int_float_array.resize(memb_size);
-                memcpy((void*)int_float_array.data(),struct_value.data()+values_offset,memb_size);
+                vector<char> int_float;
+                int_float.resize(memb_size);
+                memcpy((void*)int_float.data(),struct_value.data()+values_offset,memb_size);
+                    int_float.resize(memb_size);
+                    memcpy((void*)int_float.data(),struct_value.data()+values_offset,memb_size);
+                    for (const auto &int_f:int_float) 
+                        encoded_struct_value.push_back(int_f);
             }
-            // STOP, we need to encode string and put them to a new buffer.
 
         } // end "for(unsigned u = 0)"
     } // end "for (int element=0"
 
+string temp_encoded_struct_str(encoded_struct_value.begin(),encoded_struct_value.end());
+cerr<<"temp_encoded_struct_str: "<<temp_encoded_struct_str<<endl;
+string final_encoded_str = base64::Base64::encode((uint8_t*)(encoded_struct_value.data()),encoded_struct_value.size());
+cerr<<"final_encoded_str: "<<final_encoded_str<<endl;
+
+
+#endif
 
 
 }

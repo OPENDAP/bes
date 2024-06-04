@@ -592,6 +592,23 @@ DmrppCommon::print_missing_data_element(const XMLWriter &xml, const string &name
                                     (const xmlChar *) sizes.c_str()) < 0)
         throw BESInternalError("Could not write missingdata element.", __FILE__, __LINE__);
 }
+
+// TODO: may check why using ostringstream to write. This is adapted from print_compact_element(). KY 2024-06-04
+void
+DmrppCommon::print_special_structure_element(const XMLWriter &xml, const string &name_space, const std::string &encoded) const
+{
+    // Write element "missing_data" with dmrpp namespace:
+    ostringstream oss;
+    copy(encoded.begin(), encoded.end(), ostream_iterator<char>(oss, ""));
+    string sizes = oss.str();
+
+    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
+                                    (const xmlChar *) "specialstructuredata", nullptr,
+                                    (const xmlChar *) sizes.c_str()) < 0)
+        throw BESInternalError("Could not write missingdata element.", __FILE__, __LINE__);
+
+}
+ 
 /**
  * @brief Print the DMR++ response for the Scalar types
  *

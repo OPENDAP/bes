@@ -86,6 +86,7 @@ private:
     bool is_variable_length_string_array = false;
     bool is_fixed_length_string_array = false;
 
+
     // In the dmr++ XML:
     //     <dmrpp:fStringArray string_length="##" pad="null_pad | null_term | space_pad" />
     unsigned long long d_fixed_str_length = 0;
@@ -93,6 +94,7 @@ private:
     vector<u_int8_t> d_compact_str_buf;
 
     vector<char> d_structure_array_str_buf;
+    bool is_special_structure = false;
  
     bool is_projected();
 
@@ -235,6 +237,10 @@ public:
     vector<u_int8_t> &compact_str_buffer(){ return d_compact_str_buf; }
 
     vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
+
+    void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;}
+    bool get_special_structure_flag() { return is_special_structure;} 
+ 
 };
 
 /**

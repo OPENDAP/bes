@@ -36,6 +36,7 @@
 #include "DmrppStructure.h"
 #include "byteswap_compat.h"
 #include "float_byteswap.h"
+#include "Base64.h"
 
 using namespace libdap;
 using namespace std;
@@ -196,6 +197,20 @@ DmrppStructure::set_send_p(bool state)
     Structure::set_send_p(state);
 }
 
+void special_structure_data_xml_element(const XMLWriter &xml, DmrppStructure *ds) {
+
+    if (ds->type() == dods_structure_c) {
+        vector<char> struct_str_buf = ds->get_structure_str_buffer();
+        //string temp_struct_array_str_buf(struct_array_str_buf.begin(),struct_array_str_buf.end());
+        string final_encoded_str = base64::Base64::encode((uint8_t*)(struct_str_buf.data()),struct_str_buf.size());
+        
+        ds->print_special_structure_element(xml, DmrppCommon::d_ns_prefix, final_encoded_str);
+
+    }
+
+}
+
+
 void 
 DmrppStructure::print_dap4(libdap::XMLWriter &writer, bool constrained) {
 
@@ -227,6 +242,11 @@ DmrppStructure::print_dap4(libdap::XMLWriter &writer, bool constrained) {
 
     if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
         print_chunks_element(writer, DmrppCommon::d_ns_prefix);
+
+    // Special structure string array.
+    if (DmrppCommon::d_print_chunks && get_special_structure_flag() && read_p()) {
+        special_structure_data_xml_element(writer, this);
+    }
 
        // print scalar value for compact storage.
        // TODO: add this later.

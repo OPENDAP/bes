@@ -1517,8 +1517,100 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
  
 }
 
+bool 
+DMZ::supported_special_structure_type_internal(Constructor *var_ctor) {
+
+    bool ret_value = true;
+    Constructor::Vars_iter vi = var_ctor->var_begin();
+    Constructor::Vars_iter ve = var_ctor->var_end();
+    for (; vi != ve; vi++) {
+
+        BaseType *bt = *vi;
+        Type t_bt = bt->type();
+
+        // Only support array or scalar of float/int/string.
+        if (libdap::is_simple_type(t_bt) == false) {
+
+            if (t_bt != dods_array_c) {
+                ret_value = false;
+                break;
+            }
+            else {
+                auto t_a = dynamic_cast<Array *>(bt);
+                Type t_array_var = t_a->var()->type();
+                if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
+                    ret_value = false;
+                    break;
+                }
+            }
+        }
+        else if (t_bt == dods_url_c || t_bt == dods_enum_c || t_bt==dods_opaque_c) {
+            ret_value = false;
+            break;
+        }
+    }
+
+    return ret_value;
+
+}
+
+bool 
+DMZ::supported_special_structure_type(BaseType *btp)
+{
+    bool ret_value = false;
+    Type t = btp->type();
+    BaseType *btp_var = btp->var();
+    if ((t == dods_array_c && btp->var()->type() == dods_structure_c) || t==dods_structure_c) {
+
+        auto var_constructor = dynamic_cast<Constructor*>(btp->var());   
+        if (!var_constructor){
+            throw BESInternalError(
+                        prolog + "Failed to cast  " + btp->var()->type_name() + " " + btp->name() +
+                        " to an instance of Constructor." , __FILE__, __LINE__);
+        }
+ 
+        ret_value = supported_special_structure_type_internal(var_constructor);       
+
+    }
+    return ret_value;
+
+}
+
+void
+DMZ::process_special_structure_data(BaseType *btp, const xml_node &special_structure_data)
+{
+    BESDEBUG(PARSER, prolog << "Coming to process_special_structure_data() " << endl);
+
+    if (supported_special_structure_type(btp) == false) 
+        throw BESInternalError("The dmrpp::the datatype is not a supported special  structure variable", __FILE__, __LINE__);
+
+#if 0
+    auto ss_data_value = special_structure_data.child_value();
 
 
+    dc(btp)->set_missing_data(true);
+
+    auto char_data = missing_data.child_value();
+    if (!char_data)
+        throw BESInternalError("The dmrpp::missing_data doesn't contain  missing data values.",__FILE__,__LINE__);
+
+    std::vector <u_int8_t> decoded = base64::Base64::decode(char_data);
+
+    if (btp->type() != dods_array_c) 
+        throw BESInternalError("The dmrpp::missing_data element must be the child of an array variable", __FILE__, __LINE__);
+
+    vector<Bytef> result_bytes;
+    auto result_size = (uLongf)(btp->width_ll());
+    result_bytes.resize(result_size);
+    int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
+    if(retval != 0)
+        throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
+
+    btp->val2buf(reinterpret_cast<void *>(result_bytes.data()));
+    btp->set_read_p(true);
+#endif
+ 
+}
 /**
  * @brief Parse a chunk node
  * There are several different forms a chunk node can take and this handles
@@ -1870,6 +1962,7 @@ void DMZ::load_chunks(BaseType *btp)
     int compact_found = 0;
     int vlsa_found = 0;
     int missing_data_found = 0;
+    int special_structure_data_found = 0;
 
     // Chunked data
     if (process_chunks(btp, var_node)) {
@@ -1993,6 +2086,12 @@ void DMZ::load_chunks(BaseType *btp)
         process_missing_data(btp, missing_data);
     }
 
+    auto special_structure_data = var_node.child("dmrpp:specialstructuredata");
+    if (special_structure_data) {
+        special_structure_data_found = 1;
+        process_special_structure_data(btp, special_structure_data);
+    }
+    
     auto vlsa_element = var_node.child(DMRPP_VLSA_ELEMENT);
     if (vlsa_element) {
         vlsa_found = 1;
@@ -2001,10 +2100,10 @@ void DMZ::load_chunks(BaseType *btp)
 
     // Here we (optionally) check that exactly one of the three types of node was found
     if (DmrppRequestHandler::d_require_chunks) {
-        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found + missing_data_found;
+        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found + missing_data_found + special_structure_data_found;
         if (elements_found != 1) {
             ostringstream oss;
-            oss << "Expected chunk, chunks or compact or variable length string or missing data information in the DMR++ data. Found " << elements_found
+            oss << "Expected chunk, chunks or compact or variable length string or missing data or special structure data information in the DMR++ data. Found " << elements_found
                 << " types of nodes.";
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }

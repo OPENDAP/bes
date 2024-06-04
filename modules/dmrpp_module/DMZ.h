@@ -99,6 +99,9 @@ private:
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
     static void process_missing_data(libdap::BaseType *btp, const pugi::xml_node &missing_data);
+    static void process_special_structure_data(libdap::BaseType *btp, const pugi::xml_node &special_structure_data);
+    static bool supported_special_structure_type(libdap::BaseType *btp);
+    static bool supported_special_structure_type_internal(libdap::Constructor *var_ctor);
     static void process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element);
 
     static pugi::xml_node get_variable_xml_node_helper(const pugi::xml_node &var_node, std::stack<libdap::BaseType*> &bt);
