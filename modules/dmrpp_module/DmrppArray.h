@@ -96,7 +96,6 @@ private:
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
  
-    bool is_projected();
 
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
@@ -240,6 +239,7 @@ public:
 
     void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;}
     bool get_special_structure_flag() { return is_special_structure;} 
+    bool is_projected();
  
 };
 

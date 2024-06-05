@@ -54,6 +54,7 @@
 #include "Chunk.h"
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
+#include "DmrppStructure.h"
 #include "DmrppStr.h"
 #include "DmrppUrl.h"
 #include "DmrppD4Group.h"
@@ -1523,6 +1524,7 @@ DMZ::supported_special_structure_type_internal(Constructor *var_ctor) {
     bool ret_value = true;
     Constructor::Vars_iter vi = var_ctor->var_begin();
     Constructor::Vars_iter ve = var_ctor->var_end();
+cerr<<"after constructor "<<endl;
     for (; vi != ve; vi++) {
 
         BaseType *bt = *vi;
@@ -1559,11 +1561,16 @@ DMZ::supported_special_structure_type(BaseType *btp)
 {
     bool ret_value = false;
     Type t = btp->type();
-    BaseType *btp_var = btp->var();
     if ((t == dods_array_c && btp->var()->type() == dods_structure_c) || t==dods_structure_c) {
-
-        auto var_constructor = dynamic_cast<Constructor*>(btp->var());   
+cerr<<"if check structure"<<endl;
+        Constructor *var_constructor = nullptr;
+        if (t==dods_structure_c)
+            var_constructor = dynamic_cast<Constructor*>(btp);
+        else 
+            var_constructor = dynamic_cast<Constructor*>(btp->var());   
+cerr <<"After dynamic_cast "<<endl;
         if (!var_constructor){
+cerr<<"if wrong "<<endl;
             throw BESInternalError(
                         prolog + "Failed to cast  " + btp->var()->type_name() + " " + btp->name() +
                         " to an instance of Constructor." , __FILE__, __LINE__);
@@ -1583,6 +1590,128 @@ DMZ::process_special_structure_data(BaseType *btp, const xml_node &special_struc
 
     if (supported_special_structure_type(btp) == false) 
         throw BESInternalError("The dmrpp::the datatype is not a supported special  structure variable", __FILE__, __LINE__);
+cerr<<"Pass the special structure check "<<endl;
+
+    auto char_data = special_structure_data.child_value();
+    if (!char_data)
+        throw BESInternalError("The dmrpp::special_structure_data doesn't contain special structure data values.",__FILE__,__LINE__);
+
+    std::vector <u_int8_t> values = base64::Base64::decode(char_data);
+    size_t total_value_size = values.size();
+
+    if(btp->type() == dods_array_c) {
+
+        auto ar = dynamic_cast<DmrppArray *>(btp);
+        if(ar->is_projected())
+            throw BESInternalError("The dmrpp::currently we don't support subsetting of special_structure_data.",__FILE__,__LINE__);
+
+        size_t values_offset = 0;
+        int64_t nelms = ar->length_ll();
+
+        for (int64_t element = 0; element < nelms; ++element) {
+        
+            auto dmrpp_s = dynamic_cast<DmrppStructure*>(ar->var()->ptr_duplicate());
+            if(!dmrpp_s)                   
+                throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
+
+            Constructor::Vars_iter vi = dmrpp_s->var_begin();
+            Constructor::Vars_iter ve = dmrpp_s->var_end();
+        
+            for (; vi != ve; vi++) {
+                BaseType *bt = *vi;
+                Type t_bt = bt->type();
+                if (libdap::is_simple_type(t_bt) && t_bt != dods_str_c && t_bt != dods_url_c && t_bt!= dods_enum_c && t_bt!=dods_opaque_c) {
+        
+                    BESDEBUG("dmrpp", "var name is: " << bt->name() << "'" << endl);
+                    BESDEBUG("dmrpp", "var values_offset is: " << values_offset << "'" << endl);
+        #if 0
+                    if(t_bt == dods_int32_c) {
+                        Int32 *val_int = static_cast<Int32 *>(bt);
+                        val_int->set_value(*((dods_int32*)(values.data()+values_offset)));
+                        BESDEBUG("dmrpp", "int value is: " << *((dods_int32*)(values.data()+values_offset)) << "'" << endl);
+                    }
+                    else if (t_bt == dods_float32_c) {
+                        Float32 *val_float = static_cast<Float32 *>(bt);
+                        val_float->set_value(*((dods_float32*)(values.data()+values_offset)));
+                        BESDEBUG("dmrpp", "float value is: " << *((dods_float32*)(values.data()+values_offset)) << "'" << endl);
+                    }
+                    else
+                        bt->val2buf(values.data() + values_offset);
+        #endif
+        
+                    bt->val2buf(values.data() + values_offset);
+                    values_offset += bt->width_ll();
+                }
+                else if (t_bt == dods_str_c) {
+                    size_t rest_buf_size = total_value_size - values_offset;
+                    u_int8_t* start_pointer = values.data() + values_offset;
+                    vector<char>temp_buf;
+                    temp_buf.resize(rest_buf_size);
+                    memcpy(temp_buf.data(),(void*)start_pointer,rest_buf_size);
+                    // find the index of first ";", the separator
+                    size_t string_stop_index =0;
+                    vector<char> string_value;
+                    for (size_t i = 0; i <rest_buf_size; i++) {
+                        if(temp_buf[i] == ';') {
+                            string_stop_index = i;
+                            break;
+                        }
+                        else
+                           string_value.push_back(temp_buf[i]);
+                    }
+                    string encoded_str(string_value.begin(),string_value.end());
+                    vector <u_int8_t> decoded_str = base64::Base64::decode(encoded_str);
+                    vector <char> decoded_vec;
+                    decoded_vec.resize(decoded_str.size());
+                    memcpy(decoded_vec.data(),(void*)decoded_str.data(),decoded_str.size());
+                    string final_str(decoded_vec.begin(),decoded_vec.end());
+cerr<<"final_str before passing: "<<final_str <<endl;
+
+                    bt->val2buf(&final_str);
+                    values_offset = values_offset + string_stop_index+1;
+                }
+
+                else if (t_bt == dods_array_c) {
+        
+#if 0
+                    auto t_a = dynamic_cast<Array *>(bt);
+                    Type t_array_var = t_a->var()->type();
+                    if (libdap::is_simple_type(t_array_var) && t_array_var != dods_str_c && t_array_var != dods_url_c && t_array_var!= dods_enum_c && t_array_var!=dods_opaque_c) {
+                        if (byte_swap) {
+                            // Need to swap the bytes.
+                            BESDEBUG("dmrpp", "swap array bytes  " << endl);
+                            auto stored_value = values.data() + values_offset;
+                            swap_bytes_in_structure(stored_value,t_array_var,t_a->length_ll());
+                            bt->val2buf(stored_value);
+                        }
+                        else
+                            t_a->val2buf(values.data()+values_offset);
+                        // update values_offset.
+                        values_offset +=t_a->width_ll();
+                    }
+                    else
+                        throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+#endif
+                }
+                else
+                    throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+            }
+
+            dmrpp_s->set_read_p(true);
+            ar->set_vec_ll((uint64_t)element,dmrpp_s);
+            delete dmrpp_s;
+
+        }
+
+    }
+    else {
+
+
+
+    }
+
+   
+    btp->set_read_p(true);
 
 #if 0
     auto ss_data_value = special_structure_data.child_value();
@@ -2098,7 +2227,7 @@ void DMZ::load_chunks(BaseType *btp)
         process_vlsa(btp, vlsa_element);
     }
 
-    // Here we (optionally) check that exactly one of the three types of node was found
+    // Here we (optionally) check that exactly one of the supported types of node was found
     if (DmrppRequestHandler::d_require_chunks) {
         int elements_found = chunks_found + chunk_found + compact_found + vlsa_found + missing_data_found + special_structure_data_found;
         if (elements_found != 1) {
