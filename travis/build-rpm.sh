@@ -16,7 +16,7 @@
 # u: treat unset env vars in substitutions as an error
 set -eux
 
-yum update -y
+# yum update -y
 
 # This script will start with /root as the CWD since that's how the
 # centos6/7 hyrax build containers are configured. The PATH will be 
@@ -92,5 +92,3 @@ make -j16 all-static-rpm
 
 # Just a little reassurance... jhrg 3/23/21
 ls -l $HOME/rpmbuild/RPMS/x86_64/
-
-################################################################################################
