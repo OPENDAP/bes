@@ -1614,6 +1614,9 @@ cerr<<"Pass the special structure check "<<endl;
             if(!dmrpp_s)                   
                 throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
 
+            process_special_structure_data_internal(dmrpp_s, values, total_value_size, values_offset);
+
+#if 0
             Constructor::Vars_iter vi = dmrpp_s->var_begin();
             Constructor::Vars_iter ve = dmrpp_s->var_end();
         
@@ -1778,6 +1781,9 @@ cerr<<"final string arrray["<<i<<"]= "<<final_str[i] <<endl;
             }
 
             dmrpp_s->set_read_p(true);
+#endif
+
+
             ar->set_vec_ll((uint64_t)element,dmrpp_s);
             delete dmrpp_s;
 
@@ -1791,6 +1797,8 @@ cerr<<"final string arrray["<<i<<"]= "<<final_str[i] <<endl;
             if(!dmrpp_s)                   
                 throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
 
+        process_special_structure_data_internal(dmrpp_s,  values , total_value_size, values_offset);
+#if 0
             Constructor::Vars_iter vi = dmrpp_s->var_begin();
             Constructor::Vars_iter ve = dmrpp_s->var_end();
         
@@ -1954,6 +1962,7 @@ cerr<<"final string arrray["<<i<<"]= "<<final_str[i] <<endl;
                 }
             }
             dmrpp_s->set_read_p(true);
+#endif
         }
     
 
@@ -1987,6 +1996,179 @@ cerr<<"final string arrray["<<i<<"]= "<<final_str[i] <<endl;
 #endif
  
 }
+
+void DMZ::process_special_structure_data_internal(DmrppStructure * dmrpp_s,  std::vector<u_int8_t> &values , size_t total_value_size, size_t & values_offset){
+
+                Constructor::Vars_iter vi = dmrpp_s->var_begin();
+            Constructor::Vars_iter ve = dmrpp_s->var_end();
+        
+            for (; vi != ve; vi++) {
+                BaseType *bt = *vi;
+                Type t_bt = bt->type();
+                if (libdap::is_simple_type(t_bt) && t_bt != dods_str_c && t_bt != dods_url_c && t_bt!= dods_enum_c && t_bt!=dods_opaque_c) {
+        
+                    BESDEBUG("dmrpp", "var name is: " << bt->name() << "'" << endl);
+                    BESDEBUG("dmrpp", "var values_offset is: " << values_offset << "'" << endl);
+        #if 0
+                    if(t_bt == dods_int32_c) {
+                        Int32 *val_int = static_cast<Int32 *>(bt);
+                        val_int->set_value(*((dods_int32*)(values.data()+values_offset)));
+                        BESDEBUG("dmrpp", "int value is: " << *((dods_int32*)(values.data()+values_offset)) << "'" << endl);
+                    }
+                    else if (t_bt == dods_float32_c) {
+                        Float32 *val_float = static_cast<Float32 *>(bt);
+                        val_float->set_value(*((dods_float32*)(values.data()+values_offset)));
+                        BESDEBUG("dmrpp", "float value is: " << *((dods_float32*)(values.data()+values_offset)) << "'" << endl);
+                    }
+                    else
+                        bt->val2buf(values.data() + values_offset);
+        #endif
+        
+                    bt->val2buf(values.data() + values_offset);
+                    values_offset += bt->width_ll();
+                }
+                else if (t_bt == dods_str_c) {
+                     BESDEBUG("dmrpp", "var string name is: " << bt->name() << "'" << endl);
+                    BESDEBUG("dmrpp", "var string values_offset is: " << values_offset << "'" << endl);
+                    if (total_value_size < values_offset)
+                        throw InternalErr(__FILE__, __LINE__, "The offset of the retrieved value is out of the boundary.");
+                    size_t rest_buf_size = total_value_size - values_offset;
+                    u_int8_t* start_pointer = values.data() + values_offset;
+                    vector<char>temp_buf;
+                    temp_buf.resize(rest_buf_size);
+                    memcpy(temp_buf.data(),(void*)start_pointer,rest_buf_size);
+                    // find the index of first ";", the separator
+                    size_t string_stop_index =0;
+                    vector<char> string_value;
+                    for (size_t i = 0; i <rest_buf_size; i++) {
+                        if(temp_buf[i] == ';') {
+                            string_stop_index = i;
+                            break;
+                        }
+                        else
+                           string_value.push_back(temp_buf[i]);
+                    }
+                    string encoded_str(string_value.begin(),string_value.end());
+                    vector <u_int8_t> decoded_str = base64::Base64::decode(encoded_str);
+                    vector <char> decoded_vec;
+                    decoded_vec.resize(decoded_str.size());
+                    memcpy(decoded_vec.data(),(void*)decoded_str.data(),decoded_str.size());
+                    string final_str(decoded_vec.begin(),decoded_vec.end());
+cerr<<"final_str before passing: "<<final_str <<endl;
+
+                    bt->val2buf(&final_str);
+                    values_offset = values_offset + string_stop_index+1;
+                }
+
+                else if (t_bt == dods_array_c) {
+                    BESDEBUG("dmrpp", "var array name is: " << bt->name() << "'" << endl);
+                    BESDEBUG("dmrpp", "var array values_offset is: " << values_offset << "'" << endl);
+ 
+                    auto t_a = dynamic_cast<Array *>(bt);
+                    Type ar_basetype = t_a->var()->type();
+                    if (libdap::is_simple_type(ar_basetype) && ar_basetype != dods_str_c && ar_basetype != dods_url_c && ar_basetype!= dods_enum_c && ar_basetype!=dods_opaque_c) {
+            
+            #if 0
+                        if(t_bt == dods_int32_c) {
+                            Int32 *val_int = static_cast<Int32 *>(bt);
+                            val_int->set_value(*((dods_int32*)(values.data()+values_offset)));
+                            BESDEBUG("dmrpp", "int value is: " << *((dods_int32*)(values.data()+values_offset)) << "'" << endl);
+                        }
+                        else if (t_bt == dods_float32_c) {
+                            Float32 *val_float = static_cast<Float32 *>(bt);
+                            val_float->set_value(*((dods_float32*)(values.data()+values_offset)));
+                            BESDEBUG("dmrpp", "float value is: " << *((dods_float32*)(values.data()+values_offset)) << "'" << endl);
+                        }
+                        else
+                            bt->val2buf(values.data() + values_offset);
+            #endif
+            
+                        bt->val2buf(values.data() + values_offset);
+                        values_offset += bt->width_ll();
+                    }
+                    else if (ar_basetype == dods_str_c) {
+
+                        if(total_value_size < values_offset)
+                            throw InternalErr(__FILE__, __LINE__, "The offset of the retrieved value is out of the boundary.");
+
+                        size_t rest_buf_size = total_value_size - values_offset;
+                        u_int8_t* start_pointer = values.data() + values_offset;
+                        vector<char>temp_buf;
+                        temp_buf.resize(rest_buf_size);
+                        memcpy(temp_buf.data(),(void*)start_pointer,rest_buf_size);
+
+                        int64_t num_ar_elems = t_a->length_ll();
+
+                        // We need to create a vector of string to pass the string array.
+                        // Each string's encoded value is separated by ';'.
+                        // find the index of first ";", the separator
+                        vector<string> encoded_str;
+                        encoded_str.resize(num_ar_elems);
+
+                        unsigned int str_index = 0;
+                        size_t string_stop_index = 0;
+                        for (size_t i = 0; i <rest_buf_size; i++) {
+                            if(temp_buf[i] != ';') 
+                                encoded_str[str_index].push_back(temp_buf[i]);
+                            else {
+                                str_index++;
+                                if (str_index == num_ar_elems) {
+                                    string_stop_index = i;
+                                    break;
+                                }
+                            }
+                        }
+ 
+                        vector<string> final_str;
+                        final_str.resize(num_ar_elems);
+
+                        for (size_t i = 0; i <num_ar_elems; i++) {
+
+                            string temp_encoded_str(encoded_str[i].begin(),encoded_str[i].end());
+                            vector <u_int8_t> decoded_str = base64::Base64::decode(temp_encoded_str);
+                            vector <char> decoded_vec;
+                            decoded_vec.resize(decoded_str.size());
+                            memcpy(decoded_vec.data(),(void*)decoded_str.data(),decoded_str.size());
+                            string temp_final_str(decoded_vec.begin(),decoded_vec.end());
+                            final_str[i] = temp_final_str;
+cerr<<"final string arrray["<<i<<"]= "<<final_str[i] <<endl;
+                        }
+
+                        t_a->set_value_ll(final_str,num_ar_elems);
+                        values_offset = values_offset + string_stop_index+1;
+            
+    #if 0
+                        auto t_a = dynamic_cast<Array *>(bt);
+                        Type t_array_var = t_a->var()->type();
+                        if (libdap::is_simple_type(t_array_var) && t_array_var != dods_str_c && t_array_var != dods_url_c && t_array_var!= dods_enum_c && t_array_var!=dods_opaque_c) {
+                            if (byte_swap) {
+                                // Need to swap the bytes.
+                                BESDEBUG("dmrpp", "swap array bytes  " << endl);
+                                auto stored_value = values.data() + values_offset;
+                                swap_bytes_in_structure(stored_value,t_array_var,t_a->length_ll());
+                                bt->val2buf(stored_value);
+                            }
+                            else
+                                t_a->val2buf(values.data()+values_offset);
+                            // update values_offset.
+                            values_offset +=t_a->width_ll();
+                        }
+                        else
+                            throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+    #endif
+                    }
+                    else
+                        throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float or string.  Currently it is not supported.");
+                }
+            }
+            dmrpp_s->set_read_p(true);
+ 
+
+
+
+}
+
+
 /**
  * @brief Parse a chunk node
  * There are several different forms a chunk node can take and this handles
