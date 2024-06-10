@@ -62,7 +62,7 @@ public:
     vector<char> & get_structure_str_buffer() { return d_structure_str_buf;}
 
     void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;} 
-    bool get_special_structure_flag() { return is_special_structure;} 
+    bool get_special_structure_flag() const { return is_special_structure;} 
 
 private:
     void structure_read(vector<char> &values, size_t &values_offset, bool byte_swap);

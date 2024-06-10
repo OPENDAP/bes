@@ -678,7 +678,7 @@ DmrppArray::operator=(const DmrppArray &rhs)
  * @brief Is this Array subset?
  * @return True if the array has a projection expression, false otherwise
  */
-bool DmrppArray::is_projected()
+bool DmrppArray::is_projected() 
 {
     for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p)
         if (dimension_size_ll(p, true) != dimension_size_ll(p, false)) return true;
@@ -2893,12 +2893,8 @@ void special_structure_array_data_xml_element(const XMLWriter &xml, DmrppArray *
 
     if (da->var()->type() == dods_structure_c) {
         vector<char> struct_array_str_buf = da->get_structure_array_str_buffer();
-        //string temp_struct_array_str_buf(struct_array_str_buf.begin(),struct_array_str_buf.end());
         string final_encoded_str = base64::Base64::encode((uint8_t*)(struct_array_str_buf.data()),struct_array_str_buf.size());
-cerr<<"final_encoded_str: "<<final_encoded_str <<endl;
-        
         da->print_special_structure_element(xml, DmrppCommon::d_ns_prefix, final_encoded_str);
-
     }
 
 }
