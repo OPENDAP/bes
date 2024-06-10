@@ -39,6 +39,13 @@ fi
 
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
+
+# HACK until we get the hyrax dependencies working for rocky8. jhrg 6/9/24
+if test -n $OS -a $OS = rocky8
+then
+  aws s3 cp s3://opendap.travis.build/hyrax-dependencies-centos-stream8-static.tar.gz /tmp/
+fi
+
 aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
 
 
@@ -49,6 +56,10 @@ aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
 if test -n $OS -a $OS = centos-stream8
 then
   tar -C /$HOME -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
+elif test -n $OS -a $OS = rocky8
+then
+  # HACK. jhrg 6/9/24
+  tar -C /$HOME -xzvf /tmp/hyrax-dependencies-centos-stream8-static.tar.gz
 else
   tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 fi
@@ -70,7 +81,7 @@ cd $HOME/travis
 # The build needs these environment variables because CentOS 8 lacks the stock
 # XDR/RPC libraries. Those were added to the docker image via the tirpc package.
 # jhrg 2/11/22
-if test -n $OS -a $OS = centos-stream8
+if test -n $OS -a $OS = centos-stream8 -o $OS = rocky8
 then
   export CPPFLAGS=-I/usr/include/tirpc
   export LDFLAGS=-ltirpc
