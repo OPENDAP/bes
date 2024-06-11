@@ -171,7 +171,7 @@ jobs:
             --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
             --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
             --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-            opendap/centos-stream8_hyrax_builder:1.1 /root/travis/travis/build-rpm.sh
+            opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rpm.sh
 
     - stage: build-and-package
       name: "dist"

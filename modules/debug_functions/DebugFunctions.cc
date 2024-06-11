@@ -290,10 +290,10 @@ void sum_until_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::B
     double start_time = (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000; // convert tv_sec & tv_usec to millisecond
     double end_time = start_time;
 
-    long fib;
-    long one_past = 1;
-    long two_past = 0;
-    long n = 1;
+    uint64_t fib;
+    uint64_t one_past = 1;
+    uint64_t two_past = 0;
+    uint64_t n = 1;
 
     bool done = false;
     while (!done) {

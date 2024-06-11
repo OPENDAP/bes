@@ -42,53 +42,45 @@ class Socket;
 
 class PPTConnection: public Connection {
 private:
-	int _timeout;
-	char * _inBuff;
-	int _inBuff_len;
-#if 0
-	int _bytesRead;
-#endif
+	int _timeout = 0;
+	char * _inBuff = nullptr;
+	int _inBuff_len = 0;
 
-	PPTConnection() : _timeout(0), _inBuff(0), _inBuff_len(0) //, _bytesRead(0)
-	{
-	}
+	PPTConnection() = default;
 
-	virtual int readChunkHeader(char *inBuff,
-	/*unsigned*/int buff_size);
-	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions);
-	virtual void receive(std::ostream &strm, const /*unsigned*/int len);
+	virtual int readChunkHeader(char *inBuff, int buff_size);
+	void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions) override;
+	virtual void receive(std::ostream &strm, const int len);
 
 protected:
-	PPTConnection(int timeout) : _timeout(timeout), _inBuff(0), _inBuff_len(0) //, _bytesRead(0)
-	{
-	}
+	explicit PPTConnection(int timeout) : _timeout(timeout) { }
 
 	virtual int readBuffer(char *inBuff, const unsigned int buff_size);
-	virtual int readBufferNonBlocking(char *inBuff, const /*unsigned*/int buff_size);
+	virtual int readBufferNonBlocking(char *inBuff, const int buff_size);
 
-	virtual void send(const std::string &buffer);
+	void send(const std::string &buffer) override;
 	virtual void read_extensions(std::map<std::string, std::string> &extensions, const std::string &xstr);
 
 public:
-	virtual ~PPTConnection();
+	~PPTConnection() override;
 
-	virtual void initConnection() = 0;
-	virtual void closeConnection() = 0;
+	void initConnection() override = 0;
+	void closeConnection() override = 0;
 
-	virtual std::string exit()
+	std::string exit() override
 	{
 		return PPT_EXIT_NOW;
 	}
 
-	virtual void send(const std::string &buffer, std::map<std::string, std::string> &extensions);
-	virtual void sendExtensions(std::map<std::string, std::string> &extensions);
-	virtual void sendExit();
-	virtual bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = 0);
+	void send(const std::string &buffer, std::map<std::string, std::string> &extensions) override;
+	void sendExtensions(std::map<std::string, std::string> &extensions) override;
+	void sendExit() override;
+	bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = nullptr) override;
 
-	virtual unsigned int getRecvChunkSize();
-	virtual unsigned int getSendChunkSize();
+	unsigned int getRecvChunkSize() override;
+	unsigned int getSendChunkSize() override;
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // PPTConnection_h

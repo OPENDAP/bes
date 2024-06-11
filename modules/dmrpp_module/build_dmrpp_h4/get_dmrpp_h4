@@ -151,15 +151,13 @@ if sys.version_info <=(3, 6):
     print("The tested version is python 3.6, your version is lower.")
     sys.exit(1)
 
-parser = ap.ArgumentParser(description='Build a dmrpp file for an HDF4 file. ./get_dmrpp_h4 -i h4_file_path ')
+parser = ap.ArgumentParser(description='Build a dmrpp file for an HDF4 file. get_dmrpp_h4 -i h4_file_path . A dmrpp file that uses the HDF4 file name will be generated.')
 parser.add_argument("-i",  nargs=1,
                     help='The HDF4 file name should be provided and the file should be under the appropriate data directory. ', required=True)
 parser.add_argument("-c","--conf", 
                     help='Optional parameter: the bes configuration file including the path: /etc/bes.conf')
 parser.add_argument("-u","--data_url", 
                     help='Optional parameter: the value of attribute dmrpp:href in the dmrpp file. If not provided, OPeNDAP_DMRpp_DATA_ACCESS_URL will be used by default.')
-parser.add_argument("-o","--dmrpp_file", 
-                    help='Optional parameter: the output file name that stores the dmrpp.')
 parser.add_argument("-v","--verbosity", action='store_true',
                     help='Detailed description message and other information.' )
 

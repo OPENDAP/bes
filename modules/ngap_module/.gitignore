@@ -6,3 +6,7 @@
 
 *.trace
 /build_dmrpp
+
+tests/hyrax_ngap_cache/*
+unit-tests/owned-cache/*
+
