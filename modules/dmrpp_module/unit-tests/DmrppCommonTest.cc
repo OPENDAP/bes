@@ -38,6 +38,7 @@
 #include <BESDebug.h>
 #include <url_impl.h>
 
+#include "Base64.h"
 #include "DmrppCommon.h"
 #include "Chunk.h"
 
@@ -552,7 +553,84 @@ public:
         }
     }
 
-CPPUNIT_TEST_SUITE( DmrppCommonTest );
+    void test_print_compact_element_base64_encoded_data() {
+        // Arrange
+        XMLWriter writer;
+
+        std::string nameSpace = "dmrpp";
+        std::string encodedData = "YWJjZA=="; // Base364 encoded data (example)
+
+        // Act
+        CPPUNIT_ASSERT_NO_THROW(d_dc.print_compact_element(writer, nameSpace, encodedData));
+
+        // Assert (limited assertion due to mock)
+        string element = writer.get_doc();
+        DBG(cerr << element << endl);
+
+        CPPUNIT_ASSERT_MESSAGE("The element should contain the encoded data, got: " + element,
+                               element.find(encodedData) != string::npos);
+    }
+
+    void test_print_missing_data_element_base64_encoded_data() {
+        // Arrange
+        XMLWriter writer;
+
+        std::string nameSpace = "dmrpp";
+        std::string encodedData = "YWJjZA=="; // Base364 encoded data (example)
+
+        // Act
+        CPPUNIT_ASSERT_NO_THROW(d_dc.print_missing_data_element(writer, nameSpace, encodedData));
+
+        // Assert (limited assertion due to mock)
+        string element = writer.get_doc();
+        DBG(cerr << element << endl);
+
+        CPPUNIT_ASSERT_MESSAGE("The element should contain the encoded data, got: " + element,
+                               element.find(encodedData) != string::npos);
+    }
+
+    // Test the missing data element builder that handles the base encoding of the raw data
+    void test_print_missing_data_element_raw_data() {
+        // Arrange
+        XMLWriter writer;
+
+        std::string nameSpace = "dmrpp";
+        char raw_data[4] = {61, 62, 63, 64}; // Raw data (example)
+        std::string encodedData = "PT4/QA=="; // Base364 encoded data (example)
+
+        // Act
+        CPPUNIT_ASSERT_NO_THROW(d_dc.print_missing_data_element(writer, nameSpace, raw_data, sizeof(raw_data)));
+
+        // Assert (limited assertion due to mock)
+        string element = writer.get_doc();
+        DBG(cerr << element << endl);
+
+        CPPUNIT_ASSERT_MESSAGE("The element should contain the encoded data, got: " + element,
+                               element.find(encodedData) != string::npos);
+    }
+
+    // Does the xmlTextWriterWriteBase64() function encode the binary data just as Base64::encode() does?
+    void test_base64_versus_libxml2() {
+        // Arrange
+        XMLWriter writer;
+
+        std::string nameSpace = "dmrpp";
+        u_int8_t raw_data[4] = {61, 62, 63, 64}; // Raw data (example)
+        std::string encodedData = base64::Base64::encode(raw_data, sizeof(raw_data)); // Base364 encoded data (example)
+        DBG(cerr << "Encoded data: " << encodedData << '\n');
+
+        // Act
+        CPPUNIT_ASSERT_NO_THROW(d_dc.print_missing_data_element(writer, nameSpace, (char *)raw_data, sizeof(raw_data)));
+
+        // Assert (limited assertion due to mock)
+        string element = writer.get_doc();
+        DBG(cerr << element << endl);
+
+        CPPUNIT_ASSERT_MESSAGE("The element should contain the encoded data, got: " + element,
+                               element.find(encodedData) != string::npos);
+    }
+
+    CPPUNIT_TEST_SUITE( DmrppCommonTest );
 
         CPPUNIT_TEST(test_ingest_chunk_dimension_sizes_1);
         CPPUNIT_TEST(test_ingest_chunk_dimension_sizes_2);
@@ -573,6 +651,11 @@ CPPUNIT_TEST_SUITE( DmrppCommonTest );
         CPPUNIT_TEST(test_print_chunks_element_3);
         CPPUNIT_TEST(test_print_chunks_element_4);
         CPPUNIT_TEST(test_print_chunks_element_5);
+
+        CPPUNIT_TEST(test_print_compact_element_base64_encoded_data);
+        CPPUNIT_TEST(test_print_missing_data_element_base64_encoded_data);
+        CPPUNIT_TEST(test_base64_versus_libxml2);
+        CPPUNIT_TEST(test_print_missing_data_element_raw_data);
 
     CPPUNIT_TEST_SUITE_END();
 };
