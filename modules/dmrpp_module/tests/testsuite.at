@@ -349,11 +349,16 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_compact.h5.dmrpp.dap
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cont.h5.dmrpp.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cstr.h5.dmrpp.dap])
 
-# compound datatype tests. The dap response test will be added later.
+# compound datatype array and string basetype tests. 
 AT_BESCMD_RESPONSE_TEST([chunked/compound_simple.h5.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_simple.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_simple_array.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_simple_array_constraint.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_scalar_vlen_str.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_scalar_memb_str_array.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_array_fix_str_only.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_array_fix_str.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_array_fix_vlen_str.h5.dap])
 
 
 #############################################################################

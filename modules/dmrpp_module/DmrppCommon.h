@@ -283,6 +283,7 @@ public:
     void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "") const;
     void print_missing_data_element(const libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "") const;
     void print_missing_data_element(const libdap::XMLWriter &xml, const std::string &name_space, const char *data, int length) const;
+    void print_special_structure_element(const libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "") const;
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 

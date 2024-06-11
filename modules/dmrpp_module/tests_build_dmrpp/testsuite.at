@@ -90,6 +90,10 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple_scalar_memb_arra
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple_array.h5])
 
+# Test data files with simple compound datatypes that contains strings. 
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_simple_scalar_vlen_str.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_array_fix_vlen_str.h5])
+
 # Test the big-endian scalar compound datatype data.
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/comp_scalar_be.h5])
 

@@ -678,7 +678,7 @@ DmrppArray::operator=(const DmrppArray &rhs)
  * @brief Is this Array subset?
  * @return True if the array has a projection expression, false otherwise
  */
-bool DmrppArray::is_projected()
+bool DmrppArray::is_projected() 
 {
     for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p)
         if (dimension_size_ll(p, true) != dimension_size_ll(p, false)) return true;
@@ -2889,6 +2889,16 @@ void missing_data_xml_element(const XMLWriter &xml, DmrppArray *da) {
     }
 }
 
+void special_structure_array_data_xml_element(const XMLWriter &xml, DmrppArray *da) {
+
+    if (da->var()->type() == dods_structure_c) {
+        vector<char> struct_array_str_buf = da->get_structure_array_str_buffer();
+        string final_encoded_str = base64::Base64::encode((uint8_t*)(struct_array_str_buf.data()),struct_array_str_buf.size());
+        da->print_special_structure_element(xml, DmrppCommon::d_ns_prefix, final_encoded_str);
+    }
+
+}
+
 /**
  * @brief Print information about one dimension of the array.
  * @param xml
@@ -3010,6 +3020,13 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
     if (DmrppCommon::d_print_chunks && is_missing_data() && read_p()) {
         missing_data_xml_element(xml, this);
     }
+
+    // Special structure string array.
+    if (DmrppCommon::d_print_chunks && get_special_structure_flag() && read_p()) {
+        special_structure_array_data_xml_element(xml, this);
+    }
+
+
 
     // Is it an array of strings? Those have issues so we treat them special.
     if (var()->type() == dods_str_c) {
