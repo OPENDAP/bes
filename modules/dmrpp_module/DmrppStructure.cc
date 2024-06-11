@@ -201,7 +201,6 @@ void special_structure_data_xml_element(const XMLWriter &xml, DmrppStructure *ds
 
     if (ds->type() == dods_structure_c) {
         vector<char> struct_str_buf = ds->get_structure_str_buffer();
-        //string temp_struct_array_str_buf(struct_array_str_buf.begin(),struct_array_str_buf.end());
         string final_encoded_str = base64::Base64::encode((uint8_t*)(struct_str_buf.data()),struct_str_buf.size());
         
         ds->print_special_structure_element(xml, DmrppCommon::d_ns_prefix, final_encoded_str);

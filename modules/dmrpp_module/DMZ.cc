@@ -1612,17 +1612,14 @@ DMZ::process_special_structure_data(BaseType *btp, const xml_node &special_struc
             process_special_structure_data_internal(dmrpp_s, values, total_value_size, values_offset);
             ar->set_vec_ll((uint64_t)element,dmrpp_s);
             delete dmrpp_s;
-
         }
-
     }
     else {
 
         size_t values_offset = 0;
-            auto dmrpp_s = dynamic_cast<DmrppStructure*>(btp);
-            if(!dmrpp_s)                   
+        auto dmrpp_s = dynamic_cast<DmrppStructure*>(btp);
+        if(!dmrpp_s)                   
                 throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
-
         process_special_structure_data_internal(dmrpp_s,  values , total_value_size, values_offset);
     }
    
@@ -1701,7 +1698,6 @@ void DMZ::process_special_structure_data_internal(DmrppStructure * dmrpp_s,  std
 
                 // We need to create a vector of string to pass the string array.
                 // Each string's encoded value is separated by ';'.
-                // find the index of first ";", the separator
                 vector<string> encoded_str;
                 encoded_str.resize(num_ar_elems);
 
@@ -1722,6 +1718,7 @@ void DMZ::process_special_structure_data_internal(DmrppStructure * dmrpp_s,  std
                 vector<string> final_str;
                 final_str.resize(num_ar_elems);
 
+                // decode the encoded string
                 for (size_t i = 0; i <num_ar_elems; i++) {
 
                     string temp_encoded_str(encoded_str[i].begin(),encoded_str[i].end());

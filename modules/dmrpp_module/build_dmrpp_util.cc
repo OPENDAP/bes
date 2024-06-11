@@ -1074,7 +1074,7 @@ bool obtain_structure_string_value(hid_t memtype, size_t ty_size, hssize_t num_e
         }
 
         // We only need to retrieve the values and re-assemble them.
-        // Coming here, we will only have the one-layer string-contained structure to handle.
+        // We will only have the one-layer string-contained structure to handle.
         // We do need to know the memb type to put the special handling of a string.
         for (unsigned int u = 0; u < (unsigned)nmembs; u++) {
 
@@ -1167,21 +1167,20 @@ bool obtain_structure_string_value(hid_t memtype, size_t ty_size, hssize_t num_e
                     }
                     vector<string> encoded_str_val;
                     encoded_str_val.resize(str_val.size());
+
                     // "Matthew John;James Peter" becomes "base64(Matthew);base64(John;James);base64(Peter);"
                     for (int i = 0; i < str_val.size(); i++) {
-
                           string temp_str = str_val[i];
                           vector<u_int8_t>temp_val(temp_str.begin(),temp_str.end());
                           encoded_str_val[i] =  base64::Base64::encode(temp_val.data(), temp_str.size()) + ";";
                    
                     }
                     // TODO: use memcpy or other more efficient method later. We expect the size is not big.
-                    //for (int i = 0; i <encoded_str_val.size();i++) {
                     for (const auto &es_val:encoded_str_val) {
                         string temp_str = es_val;
                         for(const auto &ts:temp_str) 
                             encoded_struct_value.push_back(ts);
-                   }
+                    }
 
                 }
                 else { // integer or float array, just obtain the whole value.
