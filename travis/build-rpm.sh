@@ -40,26 +40,15 @@ fi
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
 
-# HACK until we get the hyrax dependencies working for rocky8. jhrg 6/9/24
-if test -n $OS -a $OS = rocky8
-then
-  aws s3 cp s3://opendap.travis.build/hyrax-dependencies-centos-stream8-static.tar.gz /tmp/
-fi
-
 aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
-
 
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
 # The Centos7 dependencies are tarred so they include /root for a reason
 # that escapes me. For CentOS Stream8, we have to CD to /root before expanding
 # the tar ball to get the dependencies in /root/install. jhrg 2/11/22
-if test -n $OS -a $OS = centos-stream8
+if test -n $OS -a $OS = rocky8 -o centos-stream8
 then
   tar -C /$HOME -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
-elif test -n $OS -a $OS = rocky8
-then
-  # HACK. jhrg 6/9/24
-  tar -C /$HOME -xzvf /tmp/hyrax-dependencies-centos-stream8-static.tar.gz
 else
   tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 fi
