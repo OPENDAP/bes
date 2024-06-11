@@ -158,7 +158,7 @@ jobs:
         - make distcheck -j16 GZIP_ENV=--fast
 
     - stage: build-and-package
-      name: "Enterprise Linux 8 RPMs (via CentOS-Stream8)"
+      name: "Enterprise Linux 8 RPMs (via Rocky8)"
       script:
         - export BES_BUILD=centos-stream8
         - mkdir -p $prefix/rpmbuild
