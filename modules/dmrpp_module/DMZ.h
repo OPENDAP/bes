@@ -37,6 +37,7 @@
 
 #include <libdap/Type.h>
 #include <DmrppStructure.h>
+#include <DmrppArray.h>
 
 namespace libdap {
 class DMR;
@@ -100,6 +101,10 @@ private:
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
     static void process_missing_data(libdap::BaseType *btp, const pugi::xml_node &missing_data);
+    static void handle_subset(dmrpp::DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsigned long & subset_index, std::vector<unsigned long long> & subset_pos,
+                              std::vector<unsigned char>& subset_buf, const std::vector<unsigned char>& whole_buf);
+    static size_t INDEX_nD_TO_1D (const std::vector <unsigned long long > &dims, const std::vector < unsigned long long> &pos) ;
+
     static void process_special_structure_data(libdap::BaseType *btp, const pugi::xml_node &special_structure_data);
     static void process_special_structure_data_internal(DmrppStructure * dmrpp_s, std::vector<u_int8_t> &values , size_t total_value_size, size_t & values_offset);
     static bool supported_special_structure_type(libdap::BaseType *btp);
