@@ -400,5 +400,6 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_simple_comp_constraint.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/SDS_unlimited_2.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/sinusoid_ll.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/sinusoid_ll_constraint.hdf.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/sinusoid_ll_constraint2.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/sinusoid_ll_constraint_var.hdf.dap])
 

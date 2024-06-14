@@ -2265,7 +2265,7 @@ void DMZ::load_chunks(BaseType *btp)
 }
 
 void DMZ::handle_subset(DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsigned long & subset_index, vector<unsigned long long> & subset_pos,
-                        vector<unsigned char>& subset_buf, const vector<unsigned char>& whole_buf) {
+                        vector<unsigned char>& subset_buf, vector<unsigned char>& whole_buf) {
 
     vector<unsigned long long> da_dims = da->get_shape(false);
 #if 0
@@ -2303,6 +2303,14 @@ cerr<<"stride: "<<stride<<endl;
 
         // Copy data block from start_index to stop_index
         // TODO Replace this loop with a call to std::memcpy()
+
+        unsigned char * temp_subset_buf = subset_buf.data() + subset_index*bytes_per_elem;
+        unsigned char * temp_whole_buf = whole_buf.data() + start_index*bytes_per_elem;
+        size_t num_bytes_to_copy = (stop_index-start_index+1)*bytes_per_elem;
+        memcpy(temp_subset_buf,temp_whole_buf,num_bytes_to_copy);
+        subset_index = subset_index +(stop_index-start_index+1);
+
+#if 0
         for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
             uint64_t target_byte = subset_index * bytes_per_elem;
             uint64_t source_byte = source_index * bytes_per_elem;
@@ -2312,6 +2320,7 @@ cerr<<"stride: "<<stride<<endl;
             }
             subset_index++;
         }
+#endif
 
     }
     else {
@@ -2331,6 +2340,11 @@ cerr<<"stride: "<<stride<<endl;
                 unsigned int sourceIndex = INDEX_nD_TO_1D( da_dims,subset_pos); 
                 subset_pos.pop_back();
 
+                unsigned char * temp_subset_buf = subset_buf.data() + subset_index*bytes_per_elem;
+                unsigned char * temp_whole_buf = whole_buf.data() + sourceIndex*bytes_per_elem;
+                memcpy(temp_subset_buf,temp_whole_buf,bytes_per_elem);
+ 
+#if 0
                 // Copy a single value.
                 uint64_t target_byte = subset_index * bytes_per_elem;
                 uint64_t source_byte = sourceIndex * bytes_per_elem;
@@ -2338,6 +2352,7 @@ cerr<<"stride: "<<stride<<endl;
                 for (unsigned int i = 0; i < bytes_per_elem; i++) {
                     subset_buf[target_byte++] = whole_buf[source_byte++];
                 }
+#endif
                 subset_index++;
             }
         }
@@ -2355,12 +2370,13 @@ size_t DMZ::INDEX_nD_TO_1D (const std::vector < unsigned long long > &dims,
     size_t sum = 0;
     size_t  start = 1;
 
-    for (size_t p = 0; p < pos.size (); p++) {
+    //for (size_t p = 0; p < pos.size (); p++) {
+    for (const auto & one_pos:pos) {
         size_t m = 1;
 
         for (size_t j = start; j < dims.size (); j++)
             m *= dims[j];
-        sum += m * pos[p];
+        sum += m * one_pos;
         start++;
     }
     return sum;
