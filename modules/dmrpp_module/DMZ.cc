@@ -1506,15 +1506,36 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
     if (btp->type() != dods_array_c) 
         throw BESInternalError("The dmrpp::missing_data element must be the child of an array variable", __FILE__, __LINE__);
 
+    auto *da = dynamic_cast<DmrppArray *>(btp);
+
     vector<Bytef> result_bytes;
-    auto result_size = (uLongf)(btp->width_ll());
+
+    // We need to obtain the total buffer size to retrieve the whole array. 
+    // We cannot use width_ll() since it will return the number of selected elements.
+    auto result_size = (uLongf)(da->get_size(false) *da->prototype()->width());
     result_bytes.resize(result_size);
+
     int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
-    if(retval != 0)
+    if (retval != 0)
         throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
 
-    btp->val2buf(reinterpret_cast<void *>(result_bytes.data()));
-    btp->set_read_p(true);
+    if (da->is_projected()) {
+
+        int64_t num_buf_bytes = da->width_ll(true);
+        vector<unsigned char> buf_bytes;
+        buf_bytes.resize(num_buf_bytes); 
+        vector<unsigned long long> da_dims = da->get_shape(false);
+        unsigned long subset_index = 0;
+        vector<unsigned long long> subset_pos;
+        handle_subset(da,da->dim_begin(),subset_index, subset_pos,buf_bytes,result_bytes);
+
+        da->val2buf(reinterpret_cast<void *>(buf_bytes.data()));
+
+    }
+    else 
+        da->val2buf(reinterpret_cast<void *>(result_bytes.data()));
+
+    da->set_read_p(true);
  
 }
 
@@ -2242,6 +2263,96 @@ void DMZ::load_chunks(BaseType *btp)
     }
 
     dc(btp)->set_chunks_loaded(true);
+}
+
+void DMZ::handle_subset(DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsigned long & subset_index, vector<unsigned long long> & subset_pos,
+                        vector<unsigned char>& subset_buf, vector<unsigned char>& whole_buf) {
+
+    // Obtain the number of elements in each dimension 
+    vector<unsigned long long> da_dims = da->get_shape(false);
+
+    // Obtain the number of bytes of each element
+    unsigned int bytes_per_elem = da->prototype()->width();
+
+    // Obtain the start, stop and stride for this each dimension
+    uint64_t start = da->dimension_start_ll(dim_iter, true);
+    uint64_t stop = da->dimension_stop_ll(dim_iter, true);
+    uint64_t stride = da->dimension_stride_ll(dim_iter, true);
+
+    dim_iter++;
+
+    // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
+    // See the else clause for the general case.
+    if (dim_iter == da->dim_end() && stride == 1) {
+
+        // For the start and stop indexes of the subset, get the matching indexes in the whole array.
+        subset_pos.push_back(start);
+        unsigned long long start_index = INDEX_nD_TO_1D( da_dims,subset_pos);
+        subset_pos.pop_back();
+
+        subset_pos.push_back(stop);
+        unsigned long long stop_index = INDEX_nD_TO_1D( da_dims,subset_pos);
+        subset_pos.pop_back();
+
+        // Copy data block from start_index to stop_index
+        unsigned char * temp_subset_buf = subset_buf.data() + subset_index*bytes_per_elem;
+        unsigned char * temp_whole_buf = whole_buf.data() + start_index*bytes_per_elem;
+        size_t num_bytes_to_copy = (stop_index-start_index+1)*bytes_per_elem;
+
+        memcpy(temp_subset_buf,temp_whole_buf,num_bytes_to_copy);
+
+        // Move the subset_index to the next location.
+        subset_index = subset_index +(stop_index-start_index+1);
+
+    }
+    else {
+        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+
+            // Is it the last dimension?
+            if (dim_iter != da->dim_end()) {
+                // Nope! Then we recurse to the last dimension to read stuff
+                subset_pos.push_back(myDimIndex);
+
+                // The recursive function will fill in the subset_pos until the dim_end().
+                handle_subset(da,dim_iter,subset_index, subset_pos,subset_buf,whole_buf);
+                subset_pos.pop_back();
+            }
+            else {
+                // We are at the last (innermost) dimension, so it's time to copy values.
+                subset_pos.push_back(myDimIndex);
+                unsigned int sourceIndex = INDEX_nD_TO_1D( da_dims,subset_pos); 
+                subset_pos.pop_back();
+
+                unsigned char * temp_subset_buf = subset_buf.data() + subset_index*bytes_per_elem;
+                unsigned char * temp_whole_buf = whole_buf.data() + sourceIndex*bytes_per_elem;
+                memcpy(temp_subset_buf,temp_whole_buf,bytes_per_elem);
+ 
+                subset_index++;
+            }
+        }
+    }
+}
+
+// Return the index of the pos in nD array to the equivalent pos in 1D array
+size_t DMZ::INDEX_nD_TO_1D (const std::vector < unsigned long long > &dims,
+                                 const std::vector < unsigned long long > &pos) {
+    //
+    //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"
+    //  "int b[10][2] // &b[1][1] == b + (2*1 + 1)"
+    //
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (const auto & one_pos:pos) {
+        size_t m = 1;
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * one_pos;
+        start++;
+    }
+    return sum;
 }
 
 /// @}
