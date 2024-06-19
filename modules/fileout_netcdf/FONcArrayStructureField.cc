@@ -67,54 +67,65 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
     Type supported_atomic_data_type = b_data_type;
     if(b_data_type == libdap::dods_array_c)
         supported_atomic_data_type = b->var()->type();
-    if (!is_simple_type(supported_atomic_data_type) || supported_atomic_data_type == dods_str_c
+   // if (!is_simple_type(supported_atomic_data_type) || supported_atomic_data_type == dods_str_c
+     if (!is_simple_type(supported_atomic_data_type)
         || supported_atomic_data_type == dods_url_c
         || supported_atomic_data_type == dods_enum_c || supported_atomic_data_type ==dods_opaque_c) {
         string s = "File out netcdf, only support one-layer of simple int/float fields inside an array of structure.";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
 
-    d_a = a;
-    d_varname = b->name();
-    if (b_data_type == libdap::dods_array_c) {
-        d_array_type = FONcUtils::get_nc_type(b->var(), is_netCDF4_enhanced);
-        d_array_type_size = (b->var()->width_ll())/(b->var()->length_ll());
-    }
-    else {
-        d_array_type = FONcUtils::get_nc_type(b, is_netCDF4_enhanced);
-        d_array_type_size = (b->width_ll())/(b->length_ll());
-    }
-    // Need to retrieve dimension information here.
-    // In this version, we only try to get the dimension size right.
-    Array::Dim_iter di = d_a->dim_begin();
-    Array::Dim_iter de = d_a->dim_end();
-    for (; di != de; di++) {
-        int64_t size = d_a->dimension_size_ll(di, true);
-        struct_dim_sizes.push_back(size);
-        total_nelements *= size;
-        FONcDim *use_dim = find_sdim(d_a->dimension_name(di), size);
-        struct_dims.push_back(use_dim);
-    }
-    if (b_data_type == libdap::dods_array_c) {
-        auto db_a = dynamic_cast<Array *>(b);
-        if (!db_a){
-            string s = "File out netcdf, FONcArrayStructField was passed a variable that is not a DAP Array";
-            throw BESInternalError(s, __FILE__, __LINE__);
-        }
-        Array::Dim_iter b_di = db_a->dim_begin();
-        Array::Dim_iter b_de = db_a->dim_end();
-        for (; b_di != b_de; b_di++) {
-            int64_t size = d_a->dimension_size_ll(b_di, true);
-            struct_dim_sizes.push_back(size);
-            total_nelements *= size;
-            field_nelements *= size;
-            FONcDim *use_dim = find_sdim(db_a->dimension_name(b_di), size);
-            struct_dims.push_back(use_dim);
-        }
-    }
+     if (supported_atomic_data_type == dods_str_c)
+         handle_structure_string_field(b,a,is_netCDF4_enhanced);
+     else {
+         d_a = a;
+         d_varname = b->name();
+         if (b_data_type == libdap::dods_array_c) {
+             d_array_type = FONcUtils::get_nc_type(b->var(), is_netCDF4_enhanced);
+             auto t_b = dynamic_cast<Array *>(b);
+             size_t temp_length = t_b->length_ll();
+             d_array_type_size = (t_b->width_ll()) / (t_b->length_ll());
+         } else {
+             d_array_type = FONcUtils::get_nc_type(b, is_netCDF4_enhanced);
+             // Need to handle string properly WRONG: STOP
+             d_array_type_size = (b->width_ll()) / (b->length_ll());
+         }
+         // Need to retrieve dimension information here.
+         // In this version, we only try to get the dimension size right.
+         Array::Dim_iter di = d_a->dim_begin();
+         Array::Dim_iter de = d_a->dim_end();
+         for (; di != de; di++) {
+             int64_t size = d_a->dimension_size_ll(di, true);
+             struct_dim_sizes.push_back(size);
+             total_nelements *= size;
+             FONcDim *use_dim = find_sdim(d_a->dimension_name(di), size);
+             struct_dims.push_back(use_dim);
+         }
+         if (b_data_type == libdap::dods_array_c) {
+             auto db_a = dynamic_cast<Array *>(b);
+             if (!db_a) {
+                 string s = "File out netcdf, FONcArrayStructField was passed a variable that is not a DAP Array";
+                 throw BESInternalError(s, __FILE__, __LINE__);
+             }
+             Array::Dim_iter b_di = db_a->dim_begin();
+             Array::Dim_iter b_de = db_a->dim_end();
+             for (; b_di != b_de; b_di++) {
+                 int64_t size = d_a->dimension_size_ll(b_di, true);
+                 struct_dim_sizes.push_back(size);
+                 total_nelements *= size;
+                 field_nelements *= size;
+                 FONcDim *use_dim = find_sdim(db_a->dimension_name(b_di), size);
+                 struct_dims.push_back(use_dim);
+             }
+         }
+     }
 
 }
+void
+FONcArrayStructureField::handle_structure_string_field(BaseType *b, Array* a, bool is_netCDF4_enhanced){
 
+
+}
 FONcArrayStructureField::~FONcArrayStructureField() {
 
     for (auto &dim: struct_dims) {
@@ -175,6 +186,10 @@ void
 FONcArrayStructureField::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcArrayStructureField::write for var " << d_varname << endl ) ;
+
+   if (d_array_type == NC_CHAR) {
+       write_str(ncid);
+   }
 
     vector<char> data_buf;
 
@@ -299,6 +314,10 @@ void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b
     }
 }
 
+void FONcArrayStructureField::write_str(int ncid){
+
+
+}
 /** @brief returns the name of the array structure field
  *
  * @returns The name of the array structure field

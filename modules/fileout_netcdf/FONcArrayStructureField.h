@@ -66,6 +66,8 @@ private:
 
     FONcDim * find_sdim(const std::string &name, int64_t size);
     void obtain_scalar_data(char *data_buf_ptr, libdap::BaseType* b) const;
+    void handle_structure_string_field(libdap::BaseType *b, libdap::Array* a, bool is_netCDF4_enhanced);
+    void write_str(int ncid);
 public:
 
     explicit FONcArrayStructureField(libdap::BaseType *b, libdap::Array* a, bool is_netCDF4_enhanced);

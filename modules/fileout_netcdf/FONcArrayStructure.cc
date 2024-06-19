@@ -85,6 +85,8 @@ void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_
     set_is_dap4(_dap4);
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
     embed.push_back(name());
+    if (d_is_dap4)
+        _as->intern_data();
 
     auto as_v = dynamic_cast<Structure *>(_as->var());
     if (!as_v) {

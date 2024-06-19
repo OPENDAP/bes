@@ -97,6 +97,12 @@ FONcStructure::~FONcStructure()
  */
 void FONcStructure::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
 {
+
+               if (_dap4)
+        _s->intern_data();
+    else
+        _s->intern_data(*get_eval(),*get_dds());
+
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
     embed.push_back(name());
     Constructor::Vars_iter vi = _s->var_begin();
@@ -137,6 +143,14 @@ void FONcStructure::define(int ncid)
 {
     if (!d_defined) {
         BESDEBUG("fonc", "FONcStructure::define - defining " << d_varname << endl);
+
+#if 0
+            if (d_is_dap4)
+        _s->intern_data();
+    else
+        _s->intern_data(*get_eval(),*get_dds());
+#endif
+
         vector<FONcBaseType *>::const_iterator i = _vars.begin();
         vector<FONcBaseType *>::const_iterator e = _vars.end();
         for (; i != e; i++) {
@@ -160,12 +174,12 @@ void FONcStructure::define(int ncid)
  */
 void FONcStructure::write(int ncid)
 {
-
+#if 0
     if (d_is_dap4) 
         _s->intern_data();
     else 
         _s->intern_data(*get_eval(),*get_dds());
-
+#endif
     BESDEBUG("fonc", "FONcStructure::write - writing " << d_varname << endl);
     vector<FONcBaseType *>::const_iterator i = _vars.begin();
     vector<FONcBaseType *>::const_iterator e = _vars.end();
