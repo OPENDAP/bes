@@ -182,6 +182,7 @@ FONcArrayStructureField::handle_structure_string_field(BaseType *b){
     for (; di != de; di++) {
         int64_t size = d_a->dimension_size_ll(di, true);
         struct_dim_sizes.push_back(size);
+        total_nelements *= size;
         FONcDim *use_dim = find_sdim(d_a->dimension_name(di), size);
         struct_dims.push_back(use_dim);
     }
@@ -198,6 +199,8 @@ FONcArrayStructureField::handle_structure_string_field(BaseType *b){
         for (; b_di != b_de; b_di++) {
             int64_t size = d_a->dimension_size_ll(b_di, true);
             struct_dim_sizes.push_back(size);
+            total_nelements *= size;
+            field_nelements *= size;
             FONcDim *use_dim = find_sdim(db_a->dimension_name(b_di), size);
             struct_dims.push_back(use_dim);
         }
@@ -272,10 +275,10 @@ FONcArrayStructureField::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcArrayStructureField::write for var " << d_varname << endl ) ;
 
-   if (d_array_type == NC_CHAR) {
-       write_str(ncid);
-       return;
-   }
+    if (d_array_type == NC_CHAR) {
+        write_str(ncid);
+        return;
+    }
 
     vector<char> data_buf;
 
@@ -400,11 +403,15 @@ void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b
     }
 }
 
+// Note: TODO: if the string is equal-size, we can optimize as write_equal_length_string_array() in FONcArray.cc.
+//             However, for netCDF-4, the better way is to map DAP4 string to netCDF-4 string. 
+
 void FONcArrayStructureField::write_str(int ncid){
 
-// Adding new code to retrieve data.
+    size_t d_ndims = struct_dims.size();
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
+
     int dim = 0;
     for (dim = 0; dim < d_ndims; dim++) {
         // the count for each of the dimensions will always be 1 except
@@ -418,38 +425,98 @@ void FONcArrayStructureField::write_str(int ncid){
         var_start[dim] = 0;
     }
 
-    auto const &d_a_str = d_a->get_str();
-    for (size_t element = 0; element < d_nelements; element++) {
-        var_count[d_ndims - 1] = d_a_str[element].size() + 1;
-        var_start[d_ndims - 1] = 0;
+    // Obtain the compound_buf; this is for gathering the data for individual fields.
+    vector<BaseType*> compound_buf = d_a->get_compound_buf();
 
-        // write out the string
-        int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
-                                    d_a_str[element].c_str());
-
-        if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
-            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+    for (unsigned i= 0; i<d_a->length_ll();i++) {
+        BaseType *cb = compound_buf[i];
+        if (cb->type()!=libdap::dods_structure_c){
+            throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
         }
+        auto structure_elem = dynamic_cast<Structure *>(cb);
+        if (!structure_elem)
+            throw BESInternalError("Fileout netcdf: Dynamic cast failed. This is not array of structure", __FILE__, __LINE__);
 
-        // bump up the start.
-        if (element + 1 < d_nelements) {
-            bool done = false;
-            dim = d_ndims - 2;
-            while (!done) {
-                var_start[dim] = var_start[dim] + 1;
-                if (var_start[dim] == d_dim_sizes[dim]) {
-                    var_start[dim] = 0;
-                    dim--;
-                }
-                else {
-                    done = true;
+        for (auto &bt:structure_elem->variables()) {
+
+            if (bt->send_p()) {
+
+                if (bt->name() == d_varname) {
+                    if (bt->type() == libdap::dods_array_c) {
+                        auto memb_array = dynamic_cast<Array *>(bt);
+                        if (!memb_array)
+                            throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
+
+                        auto const &m_a_str = memb_array->get_str();
+                        // array of string, use field_nelements.
+                        for (int64_t element = 0; element < field_nelements; element++) {
+                            var_count[d_ndims -1] = m_a_str[element].size() +1;
+                            var_start[d_ndims - 1] = 0;
+
+                            // write out the string
+                            int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
+                                                       m_a_str[element].c_str());
+
+                            if (stax != NC_NOERR) {
+                                string err = (string) "fileout.netcdf - Failed to create array of strings in a DAP4 structure for " + d_varname ;
+                                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                            }
+                    
+                            // bump up the start.
+                            //if (element + 1 < d_nelements) {
+                                bool done = false;
+                                dim = d_ndims - 2;
+                                while (!done) {
+                                    var_start[dim] = var_start[dim] + 1;
+                                    if (var_start[dim] == struct_dim_sizes[dim]) {
+                                        var_start[dim] = 0;
+                                        dim--;
+                                    }
+                                    else {
+                                        done = true;
+                                    }
+                                }
+                            //}
+                        }
+                    } else {// Need to switch to different data types
+                        auto memb_type= dynamic_cast<Str *>(bt);
+                        if (!memb_type)
+                            throw BESInternalError("Fileout netcdf: This structure member is not a string", __FILE__, __LINE__);
+                        auto const & str_value = memb_type->value();
+                             var_count[d_ndims -1] = str_value.size() +1;
+                            var_start[d_ndims - 1] = 0;
+
+                            // write out the string
+                            int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
+                                                       str_value.c_str());
+
+                            if (stax != NC_NOERR) {
+                                string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
+                                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                            }
+                    
+                            // bump up the start.
+                            if (i + 1 < d_a->length_ll()) {
+                                bool done = false;
+                                dim = d_ndims - 2;
+                                while (!done) {
+                                    var_start[dim] = var_start[dim] + 1;
+                                    if (var_start[dim] == struct_dim_sizes[dim]) {
+                                        var_start[dim] = 0;
+                                        dim--;
+                                    }
+                                    else {
+                                        done = true;
+                                    }
+                                }
+                            }
+  
+                    }
                 }
             }
         }
     }
-
-    d_a->get_str().clear();
+    //d_a->get_str().clear();
 
 
 
