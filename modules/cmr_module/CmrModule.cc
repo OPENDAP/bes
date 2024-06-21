@@ -51,6 +51,7 @@ using std::string;
 
 #include <BESLog.h>
 #include <BESDebug.h>
+#include <TheBESKeys.h>
 
 // #include "CmrRequestHandler.h"
 #include "CmrNames.h"
@@ -63,18 +64,23 @@ using std::string;
 void CmrModule::initialize(const string &modname)
 {
     BESDebug::Register(MODULE);
-    BESDEBUG(MODULE, prolog << "Initializing CMR Module: " << modname << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN (modname: " << modname << ")" << endl);
 	if (!BESCatalogList::TheCatalogList()->ref_catalog(CMR_CATALOG_NAME)) {
+        BESDEBUG(MODULE, prolog << "Enabling Cmr Catalog Module." << endl);
 		BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 	}
+    else {
+        BESDEBUG(MODULE, prolog << "CMR Catalog Module is not enabled." << endl);
+    }
 
-	if (!BESContainerStorageList::TheList()->ref_persistence(CMR_CATALOG_NAME)) {
+	if (!BESContainerStorageList::TheList()->ref_persistence(CMR_CATALOG_NAME) &&
+        TheBESKeys::TheKeys()->read_bool_key("CMR.UseContainerAccess", false) ){
+        BESDEBUG(MODULE, prolog << "Enabling CmrContainerStorage for access." << endl);
 		BESContainerStorageList::TheList()->add_persistence(new cmr::CmrContainerStorage(CMR_CATALOG_NAME));
 	}
-
-
-    // BESDEBUG(modname, prolog << "Adding " << modname << " container storage" << endl);
-    // BESContainerStorageList::TheList()->add_persistence(new cmr::CmrContainerStorage(modname));
+    else {
+        BESDEBUG(MODULE, prolog << "CmrContainerStorage is not enabled." << endl);
+    }
 
 	BESDEBUG(MODULE, "Done Initializing CMR Handler: " << modname << endl);
 }
