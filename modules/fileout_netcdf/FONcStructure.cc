@@ -29,6 +29,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <libdap/util.h>        // is_simple_type()
+#include <libdap/Array.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
@@ -51,6 +53,32 @@ FONcStructure::FONcStructure(BaseType *b) :
     if (!_s) {
         string s = (string) "File out netcdf, write_structure was passed a " + "variable that is not a structure";
         throw BESInternalError(s, __FILE__, __LINE__);
+    }
+    
+    for (const auto &bt:_s->variables()) {
+         
+        Type t_bt = bt->type();
+        // Only support array or scalar of float/int/string.
+        if (libdap::is_simple_type(t_bt) == false) {
+
+            if (t_bt != dods_array_c) {
+                can_handle_str_memb = false;
+                break;
+            }
+            else {
+                auto t_a = dynamic_cast<Array *>(bt);
+                Type t_array_var = t_a->var()->type();
+                if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
+                    can_handle_str_memb = false;
+                    break;
+                }
+            }
+        }
+        else if (t_bt == dods_url_c || t_bt == dods_enum_c || t_bt==dods_opaque_c) {
+            can_handle_str_memb= false;
+            break;
+        }
+        
     }
 }
 
@@ -98,10 +126,13 @@ FONcStructure::~FONcStructure()
 void FONcStructure::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
 {
 
+     if(can_handle_str_memb) {
+
                if (_dap4)
         _s->intern_data();
     else
         _s->intern_data(*get_eval(),*get_dds());
+    }
 
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
     embed.push_back(name());
@@ -145,10 +176,12 @@ void FONcStructure::define(int ncid)
         BESDEBUG("fonc", "FONcStructure::define - defining " << d_varname << endl);
 
 #if 0
+    if (!can_handle_str_memb) {
             if (d_is_dap4)
         _s->intern_data();
     else
         _s->intern_data(*get_eval(),*get_dds());
+    }
 #endif
 
         vector<FONcBaseType *>::const_iterator i = _vars.begin();
@@ -174,12 +207,15 @@ void FONcStructure::define(int ncid)
  */
 void FONcStructure::write(int ncid)
 {
-#if 0
+//#if 0
+
+    if (!can_handle_str_memb) {
     if (d_is_dap4) 
         _s->intern_data();
     else 
         _s->intern_data(*get_eval(),*get_dds());
-#endif
+    }
+//#endif
     BESDEBUG("fonc", "FONcStructure::write - writing " << d_varname << endl);
     vector<FONcBaseType *>::const_iterator i = _vars.begin();
     vector<FONcBaseType *>::const_iterator e = _vars.end();
