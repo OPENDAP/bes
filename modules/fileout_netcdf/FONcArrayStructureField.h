@@ -68,7 +68,7 @@ private:
 
     FONcDim * find_sdim(const std::string &name, int64_t size);
     void obtain_scalar_data(char *data_buf_ptr, libdap::BaseType* b) const;
-    size_t obtain_maximum_string_length(libdap::BaseType *b);
+    size_t obtain_maximum_string_length();
     void handle_structure_string_field(libdap::BaseType *b);
     void write_str(int ncid);
 public:

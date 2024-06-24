@@ -68,8 +68,8 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
     Type supported_atomic_data_type = b_data_type;
     if(b_data_type == libdap::dods_array_c)
         supported_atomic_data_type = b->var()->type();
-   // if (!is_simple_type(supported_atomic_data_type) || supported_atomic_data_type == dods_str_c
-     if (!is_simple_type(supported_atomic_data_type)
+
+    if (!is_simple_type(supported_atomic_data_type)
         || supported_atomic_data_type == dods_url_c
         || supported_atomic_data_type == dods_enum_c || supported_atomic_data_type ==dods_opaque_c) {
         string s = "File out netcdf, only support one-layer of simple int/float fields inside an array of structure.";
@@ -122,9 +122,10 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
 }
 
 size_t
-FONcArrayStructureField::obtain_maximum_string_length(BaseType *b){
+FONcArrayStructureField::obtain_maximum_string_length( ){
 
-    size_t max_str_len = 0;
+    size_t asf_max_str_len = 0;
+
     // Obtain the compound_buf; this is for gathering the data for individual fields.
     vector<BaseType*> compound_buf = d_a->get_compound_buf();
     for (unsigned i= 0; i<d_a->length_ll();i++) {
@@ -145,26 +146,24 @@ FONcArrayStructureField::obtain_maximum_string_length(BaseType *b){
                         auto memb_array = dynamic_cast<Array *>(bt);
                         if (!memb_array)
                             throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
-                        for (int64_t i = 0; i < memb_array->length_ll(); i++) {
-                            if (memb_array->get_str()[i].size() > max_str_len) {
-                                max_str_len = memb_array->get_str()[i].size();
+                        for (int64_t ma_i = 0; ma_i < memb_array->length_ll(); ma_i++) {
+                            if (memb_array->get_str()[ma_i].size() > asf_max_str_len) {
+                                asf_max_str_len = memb_array->get_str()[ma_i].size();
                             }
                         }
 
                     } else {// Need to switch to different data types
                        auto memb_str = dynamic_cast<Str *>(bt);
-                       if ((size_t)(memb_str->length_ll())>max_str_len)
-                            max_str_len = memb_str->length_ll();
+                       if ((size_t)(memb_str->length_ll())>asf_max_str_len)
+                            asf_max_str_len = memb_str->length_ll();
                        
                     }
                 }
             }
         }
-        BESDEBUG("fonc","inside the loop: max_str_len is "<<max_str_len <<endl);
     }
-    max_str_len++;
-    BESDEBUG("fonc","max_str_len is "<<max_str_len <<endl);
-    return max_str_len;
+    asf_max_str_len++;
+    return asf_max_str_len;
 }
 
 void
@@ -204,12 +203,11 @@ FONcArrayStructureField::handle_structure_string_field(BaseType *b){
             struct_dims.push_back(use_dim);
         }
     }
-    size_t max_length = obtain_maximum_string_length(b);
+    size_t max_length = obtain_maximum_string_length();
     struct_dim_sizes.push_back(max_length);
     string last_dim_name = d_a->name()+"_"+b->name() +"_len";
     FONcDim *use_dim = find_sdim(last_dim_name,max_length);
     struct_dims.push_back(use_dim);
-    
 
 }
 
@@ -460,57 +458,56 @@ void FONcArrayStructureField::write_str(int ncid){
                             }
                     
                             // bump up the start.
-                                bool done = false;
-                                dim = d_ndims - 2;
-				
-                                while (!done) {
-                                    var_start[dim] = var_start[dim] + 1;
-                                    if (var_start[dim] == struct_dim_sizes[dim]) {
-                                        var_start[dim] = 0;
-                                        dim--;
-					if (dim <0)
-						break;
-                                    }
-                                    else {
-                                        done = true;
-                                    }
+                            bool done = false;
+                            dim = d_ndims - 2;
+    			
+                            while (!done) {
+                                var_start[dim] = var_start[dim] + 1;
+                                if (var_start[dim] == struct_dim_sizes[dim]) {
+                                    var_start[dim] = 0;
+                                    dim--;
+    				    if (dim <0)
+    					break;
                                 }
+                                else {
+                                    done = true;
+                                }
+                            }
                         }
                     } else {// Need to switch to different data types
                         auto memb_type= dynamic_cast<Str *>(bt);
                         if (!memb_type)
                             throw BESInternalError("Fileout netcdf: This structure member is not a string", __FILE__, __LINE__);
                         auto const & str_value = memb_type->value();
-                             var_count[d_ndims -1] = str_value.size() +1;
-                            var_start[d_ndims - 1] = 0;
+                        var_count[d_ndims -1] = str_value.size() +1;
+                        var_start[d_ndims - 1] = 0;
 
-                            // write out the string
-                            int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
-                                                       str_value.c_str());
+                        // write out the string
+                        int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
+                                                   str_value.c_str());
 
-                            if (stax != NC_NOERR) {
-                                string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
-                                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                            }
-                    
-                            // bump up the start.
-                            if (i + 1 < d_a->length_ll()) {
-                                bool done = false;
-                                dim = d_ndims - 2;
-                                while (!done) {
-                                    var_start[dim] = var_start[dim] + 1;
-                                    if (var_start[dim] == struct_dim_sizes[dim]) {
-                                        var_start[dim] = 0;
-                                        dim--;
-					if (dim <0)
-					   break;
-                                    }
-                                    else {
-                                        done = true;
-                                    }
+                        if (stax != NC_NOERR) {
+                            string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
+                            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                        }
+                
+                        // bump up the start.
+                        if (i + 1 < d_a->length_ll()) {
+                            bool done = false;
+                            dim = d_ndims - 2;
+                            while (!done) {
+                                var_start[dim] = var_start[dim] + 1;
+                                if (var_start[dim] == struct_dim_sizes[dim]) {
+                                    var_start[dim] = 0;
+                                    dim--;
+    				if (dim <0)
+    				   break;
+                                }
+                                else {
+                                    done = true;
                                 }
                             }
-  
+                        }
                     }
                 }
             }

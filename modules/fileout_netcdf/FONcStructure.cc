@@ -75,7 +75,7 @@ FONcStructure::FONcStructure(BaseType *b) :
             }
         }
         else if (t_bt == dods_url_c || t_bt == dods_enum_c || t_bt==dods_opaque_c) {
-            can_handle_str_memb= false;
+            can_handle_str_memb = false;
             break;
         }
         
@@ -126,12 +126,11 @@ FONcStructure::~FONcStructure()
 void FONcStructure::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
 {
 
-     if(can_handle_str_memb) {
-
-               if (_dap4)
-        _s->intern_data();
-    else
-        _s->intern_data(*get_eval(),*get_dds());
+    if (can_handle_str_memb) {
+        if (_dap4)
+            _s->intern_data();
+        else
+            _s->intern_data(*get_eval(),*get_dds());
     }
 
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
@@ -146,9 +145,6 @@ void FONcStructure::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
             if(true == isNetCDF4_ENHANCED())
                 is_classic_model = false;
             FONcBaseType *fbt = FONcUtils::convert(bt, this->d_ncVersion, is_classic_model);
-            //fbt->setVersion(this->_ncVersion);
-            //if(true == isNetCDF4())
-            //    fbt->setNC4DataModel(this->_nc4_datamodel);
             _vars.push_back(fbt);
             fbt->convert(embed,_dap4,is_dap4_group);
         }
@@ -174,15 +170,6 @@ void FONcStructure::define(int ncid)
 {
     if (!d_defined) {
         BESDEBUG("fonc", "FONcStructure::define - defining " << d_varname << endl);
-
-#if 0
-    if (!can_handle_str_memb) {
-            if (d_is_dap4)
-        _s->intern_data();
-    else
-        _s->intern_data(*get_eval(),*get_dds());
-    }
-#endif
 
         vector<FONcBaseType *>::const_iterator i = _vars.begin();
         vector<FONcBaseType *>::const_iterator e = _vars.end();

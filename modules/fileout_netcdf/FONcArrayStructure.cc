@@ -83,15 +83,10 @@ FONcArrayStructure::~FONcArrayStructure()
  * structure
  */
 void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_group){
+
     set_is_dap4(_dap4);
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
     embed.push_back(name());
-#if 0
-    if (d_is_dap4)
-        _as->intern_data();
-    else 
-        _as->intern_data(*get_eval(),*get_dds());
-#endif
 
     auto as_v = dynamic_cast<Structure *>(_as->var());
     if (!as_v) {
@@ -103,11 +98,11 @@ void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_
         throw BESInternalError("Fileout netcdf: We don't support array of structure for the classical model now. ",
                                __FILE__, __LINE__);
     }
-
     
     for (auto &bt: as_v->variables()) {
 
         Type t_bt = bt->type();
+
         // Only support array or scalar of float/int/string.
         if (libdap::is_simple_type(t_bt) == false) {
 
@@ -130,13 +125,13 @@ void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_
         }
     }
     
+    // If we handle the structure that contains the string, we need to obtain the data here.
     if(can_handle_str_memb) {
-    if (d_is_dap4)
-        _as->intern_data();
-    else 
-        _as->intern_data(*get_eval(),*get_dds());
+        if (d_is_dap4)
+            _as->intern_data();
+        else 
+            _as->intern_data(*get_eval(),*get_dds());
     }
-
 
     for (auto &bt: as_v->variables()) {
         if (bt->send_p()) {
@@ -193,11 +188,12 @@ void FONcArrayStructure::write(int ncid)
 {
 
     BESDEBUG("fonc", "FONcArrayStructure::write - writing " << d_varname << endl);
+    // If we don't handle the structure that contains strings, we can obtain the data at this time.
     if(!can_handle_str_memb) {
-    if (d_is_dap4)
-        _as->intern_data();
-    else
-        _as->intern_data(*get_eval(),*get_dds());
+        if (d_is_dap4)
+            _as->intern_data();
+        else
+            _as->intern_data(*get_eval(),*get_dds());
     }
 
     for (const auto &var:_vars) {

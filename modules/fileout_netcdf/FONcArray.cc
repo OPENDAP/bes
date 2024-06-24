@@ -381,12 +381,11 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // This routine is called in the convert(). So it should not called in define().
         // FIXME Patch for HYRAX-1334 jhrg 2/14/24
 
-//#if 0
         if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
             d_a->intern_data();
         else
             d_a->intern_data(*get_eval(), *get_dds());
-//#endif
+
         // get the data from the dap array
         int array_length = d_a->length();
 #if 0
