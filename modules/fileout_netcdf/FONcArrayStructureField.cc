@@ -84,7 +84,6 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
          if (b_data_type == libdap::dods_array_c) {
              d_array_type = FONcUtils::get_nc_type(b->var(), is_netCDF4_enhanced);
              auto t_b = dynamic_cast<Array *>(b);
-             size_t temp_length = t_b->length_ll();
              d_array_type_size = (t_b->width_ll()) / (t_b->length_ll());
          } else {
              d_array_type = FONcUtils::get_nc_type(b, is_netCDF4_enhanced);
@@ -146,7 +145,6 @@ FONcArrayStructureField::obtain_maximum_string_length(BaseType *b){
                         auto memb_array = dynamic_cast<Array *>(bt);
                         if (!memb_array)
                             throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
-                        BESDEBUG("fonc","string_array_length is "<<memb_array->length_ll()<<endl);
                         for (int64_t i = 0; i < memb_array->length_ll(); i++) {
                             if (memb_array->get_str()[i].size() > max_str_len) {
                                 max_str_len = memb_array->get_str()[i].size();
@@ -155,13 +153,14 @@ FONcArrayStructureField::obtain_maximum_string_length(BaseType *b){
 
                     } else {// Need to switch to different data types
                        auto memb_str = dynamic_cast<Str *>(bt);
-                       if (memb_str->length_ll()>max_str_len)
+                       if ((size_t)(memb_str->length_ll())>max_str_len)
                             max_str_len = memb_str->length_ll();
                        
                     }
                 }
             }
         }
+        BESDEBUG("fonc","inside the loop: max_str_len is "<<max_str_len <<endl);
     }
     max_str_len++;
     BESDEBUG("fonc","max_str_len is "<<max_str_len <<endl);
@@ -440,13 +439,11 @@ void FONcArrayStructureField::write_str(int ncid){
         for (auto &bt:structure_elem->variables()) {
 
             if (bt->send_p()) {
-
                 if (bt->name() == d_varname) {
                     if (bt->type() == libdap::dods_array_c) {
                         auto memb_array = dynamic_cast<Array *>(bt);
                         if (!memb_array)
                             throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
-
                         auto const &m_a_str = memb_array->get_str();
                         // array of string, use field_nelements.
                         for (int64_t element = 0; element < field_nelements; element++) {
@@ -463,20 +460,21 @@ void FONcArrayStructureField::write_str(int ncid){
                             }
                     
                             // bump up the start.
-                            //if (element + 1 < d_nelements) {
                                 bool done = false;
                                 dim = d_ndims - 2;
+				
                                 while (!done) {
                                     var_start[dim] = var_start[dim] + 1;
                                     if (var_start[dim] == struct_dim_sizes[dim]) {
                                         var_start[dim] = 0;
                                         dim--;
+					if (dim <0)
+						break;
                                     }
                                     else {
                                         done = true;
                                     }
                                 }
-                            //}
                         }
                     } else {// Need to switch to different data types
                         auto memb_type= dynamic_cast<Str *>(bt);
@@ -504,6 +502,8 @@ void FONcArrayStructureField::write_str(int ncid){
                                     if (var_start[dim] == struct_dim_sizes[dim]) {
                                         var_start[dim] = 0;
                                         dim--;
+					if (dim <0)
+					   break;
                                     }
                                     else {
                                         done = true;
@@ -516,9 +516,6 @@ void FONcArrayStructureField::write_str(int ncid){
             }
         }
     }
-    //d_a->get_str().clear();
-
-
 
 }
 /** @brief returns the name of the array structure field

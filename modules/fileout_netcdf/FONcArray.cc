@@ -1053,6 +1053,8 @@ void FONcArray::write_string_array(int ncid) {
                 if (var_start[dim] == d_dim_sizes[dim]) {
                     var_start[dim] = 0;
                     dim--;
+		    if (dim <0)
+	                 break;
                 }
                 else {
                     done = true;
