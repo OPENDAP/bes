@@ -659,8 +659,8 @@ void FONcTransform::transform_dap4() {
     besDRB.set_async_accepted(d_dhi->data[ASYNC]);
     besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
 
-    // Will check if direct_io_flag is set for any Array variables. Note: This is for temporary memory usage optimization.
-    // Once we can support the define() with or without dio for individual array, this function is not necessary. KY 11/29/23
+    // Check if direct_io_flag is set for any Array variables. If the global dio flag is false, we don't need to loop through
+    // every variable to check if the direct IO can be applied. 
     if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model) {
         global_dio_flag = _dmr->get_global_dio_flag();
 

@@ -47,6 +47,9 @@ AllowedHosts += ^https:\/\/ngap-ssmis\.s3\.amazonaws\.com\/.*$
 # The default for DMRPP.MaxParallelTransfers is 8
 # DMRPP.MaxParallelTransfers = 8
 
+# The default for DMPP.DisableDirectIO is false
+# DMRPP.DisableDirectIO= false
+
 CredentialsManager.config=ENV_CREDS
 
 Http.Cache.dir=/tmp/hyrax_http

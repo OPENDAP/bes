@@ -128,6 +128,9 @@ bool DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
 bool DmrppRequestHandler::is_netcdf4_enhanced_response = false;
 bool DmrppRequestHandler::is_netcdf4_classic_response = false;
 
+// The direct IO feature is turned on by default.
+bool DmrppRequestHandler::disable_direct_io = false;
+
 // There are methods in TheBESKeys that should be used instead of these.
 // jhrg 9/26/23
 static void read_key_value(const std::string &key_name, bool &key_value) {
@@ -217,9 +220,17 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
     INFO_LOG(msg.str());
 
-    // Is this response a netCDF-4 classic from fileout netCDF
-    // We will check if FONc.ClassicModel is set to true.
-    read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
+    // Whether the default direct IO feature is disabled. Read the key in.
+    read_key_value(DMRPP_DISABLE_DIRECT_IO,disable_direct_io);
+
+    // If the disable_direct_io key is true, no need to check the netCDF-4 response.
+    if (disable_direct_io == true) {
+        // Is this response a netCDF-4 classic from fileout netCDF
+        // We will check if FONc.ClassicModel is set to true.
+        read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
+    }
+
+    
 
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_transfer_threads)
@@ -324,7 +335,8 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             dmz->build_thin_dmr(dmr);
 
             BESDEBUG("dmrpp","Before calling set_up_all_direct_io_flags"<<endl);
-            if (DmrppRequestHandler::is_netcdf4_enhanced_response == true) { 
+            if (DmrppRequestHandler::is_netcdf4_enhanced_response == true &&
+                DmrppRequestHandler::disable_direct_io == false) { 
                 BESDEBUG("dmrpp","calling set_up_all_direct_io_flags"<<endl);
                 bool global_dio_flag = dmz->set_up_all_direct_io_flags_phase_1(dmr);
                 if (global_dio_flag) {

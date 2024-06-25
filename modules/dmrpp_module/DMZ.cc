@@ -796,6 +796,10 @@ void DMZ::build_thin_dmr(DMR *dmr)
     }
 }
 
+// This method will check if any variable in this file can apply the direct IO feature.
+// If there is none,a global dio flag will be set to false. By checking the  global flag, 
+// the fileout netCDF module may not need to check every variable in the file to see if 
+// the direct IO can be applied. 
 bool DMZ::set_up_all_direct_io_flags_phase_1(DMR *dmr) {
 
     if (d_xml_doc == nullptr){
