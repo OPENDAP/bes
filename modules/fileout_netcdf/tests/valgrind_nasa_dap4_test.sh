@@ -54,6 +54,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/daymet_v4_
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/big_1d_shuf.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/d_dset_4d.h5_dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/GEDI04.dmrpp.bescmd >nasa_dap4_default_test.nc
 
 
 

@@ -57,6 +57,8 @@ private:
     string var_name;
     std::vector<FONcDim *> struct_dims;
     vector<size_t> struct_dim_sizes;
+
+    // The following variables are not used for structure string handling.
     size_t total_nelements = 1;
     size_t field_nelements = 1;
     size_t d_array_type_size;
@@ -66,6 +68,9 @@ private:
 
     FONcDim * find_sdim(const std::string &name, int64_t size);
     void obtain_scalar_data(char *data_buf_ptr, libdap::BaseType* b) const;
+    size_t obtain_maximum_string_length();
+    void handle_structure_string_field(libdap::BaseType *b);
+    void write_str(int ncid);
 public:
 
     explicit FONcArrayStructureField(libdap::BaseType *b, libdap::Array* a, bool is_netCDF4_enhanced);

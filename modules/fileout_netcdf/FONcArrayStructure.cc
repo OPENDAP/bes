@@ -22,6 +22,7 @@
 // You can contact The HDF Group, Inc. at 410 E University Ave,
 // Suite 200, Champaign, IL 61820
 
+#include <libdap/util.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
@@ -82,6 +83,7 @@ FONcArrayStructure::~FONcArrayStructure()
  * structure
  */
 void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_group){
+
     set_is_dap4(_dap4);
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
     embed.push_back(name());
@@ -95,6 +97,40 @@ void FONcArrayStructure::convert(vector<string> embed, bool _dap4, bool is_dap4_
     if (false == isNetCDF4_ENHANCED()) {
         throw BESInternalError("Fileout netcdf: We don't support array of structure for the classical model now. ",
                                __FILE__, __LINE__);
+    }
+    
+    for (auto &bt: as_v->variables()) {
+
+        Type t_bt = bt->type();
+
+        // Only support array or scalar of float/int/string.
+        if (libdap::is_simple_type(t_bt) == false) {
+
+            if (t_bt != dods_array_c) {
+                can_handle_str_memb = false;
+                break;
+            }
+            else {
+                auto t_a = dynamic_cast<Array *>(bt);
+                Type t_array_var = t_a->var()->type();
+                if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
+                    can_handle_str_memb = false;
+                    break;
+                }
+            }
+        }
+        else if (t_bt == dods_url_c || t_bt == dods_enum_c || t_bt==dods_opaque_c) {
+            can_handle_str_memb= false;
+            break;
+        }
+    }
+    
+    // If we handle the structure that contains the string, we need to obtain the data here.
+    if(can_handle_str_memb) {
+        if (d_is_dap4)
+            _as->intern_data();
+        else 
+            _as->intern_data(*get_eval(),*get_dds());
     }
 
     for (auto &bt: as_v->variables()) {
@@ -152,8 +188,13 @@ void FONcArrayStructure::write(int ncid)
 {
 
     BESDEBUG("fonc", "FONcArrayStructure::write - writing " << d_varname << endl);
-    if (d_is_dap4)
-        _as->intern_data();
+    // If we don't handle the structure that contains strings, we can obtain the data at this time.
+    if(!can_handle_str_memb) {
+        if (d_is_dap4)
+            _as->intern_data();
+        else
+            _as->intern_data(*get_eval(),*get_dds());
+    }
 
     for (const auto &var:_vars) {
         var->write(ncid);
