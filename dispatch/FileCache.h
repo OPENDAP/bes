@@ -412,7 +412,7 @@ public:
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
             if (errno == EEXIST) {
-                ERROR("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
+                INFO("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
                 return false;
             }
             else {
@@ -479,7 +479,7 @@ public:
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
             if (errno == EEXIST) {
-                ERROR("Could not create the key/file; it already exists (2): " << key << " " << get_errno() << '\n');
+                INFO("Could not create the key/file; it already exists (2): " << key << " " << get_errno() << '\n');
                 return false;
             }
             else {
