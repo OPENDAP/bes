@@ -861,7 +861,7 @@ void FONcTransform::transform_dap4_no_group() {
             if ((*vi)->send_p()) {
                 BaseType *v = *vi;
     
-                BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
+                BESDEBUG(MODULE, prolog << "Direct IO is off, Converting variable '" << v->name() << "'" << endl);
     
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);

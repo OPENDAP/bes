@@ -920,6 +920,7 @@ void DmrppArray::insert_constrained_contiguous_structure(Dim_iter dim_iter, unsi
 void DmrppArray::read_contiguous()
 {
 
+    BESDEBUG(dmrpp_3, prolog << "NOT using direct IO " << endl);
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
@@ -1100,6 +1101,7 @@ void DmrppArray::read_contiguous()
 
 void DmrppArray::read_one_chunk_dio() {
 
+    BESDEBUG(dmrpp_3, prolog << "Using direct IO " << endl);
     // Get the single chunk that makes up this one-chunk compressed variable.
     if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);

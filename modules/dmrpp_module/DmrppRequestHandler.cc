@@ -222,15 +222,14 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     // Whether the default direct IO feature is disabled. Read the key in.
     read_key_value(DMRPP_DISABLE_DIRECT_IO,disable_direct_io);
+if (DmrppRequestHandler::disable_direct_io) 
+    BESDEBUG("dmrpp","disable_direct_io is true"<<endl);
+else 
+    BESDEBUG("dmrpp","disable_direct_io is false"<<endl);
 
-    // If the disable_direct_io key is true, no need to check the netCDF-4 response.
-    if (disable_direct_io == true) {
-        // Is this response a netCDF-4 classic from fileout netCDF
-        // We will check if FONc.ClassicModel is set to true.
-        read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
-    }
-
-    
+    // Check the value of FONc.ClassicModel to determine if this response is a netCDF-4 classic from fileout netCDF
+    // This must be done here since direct IO flag for individual variables  should NOT be set for netCDF-4 classic response.
+    read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
 
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_transfer_threads)
@@ -363,9 +362,10 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             dmz->parse_xml_doc(data_pathname);
 
             dmz->build_thin_dmr(dmr);
-            BESDEBUG("dmrpp","Before calling set_up_all_direct_io_flags"<<endl);
-            if (DmrppRequestHandler::is_netcdf4_enhanced_response == true) { 
-                BESDEBUG("dmrpp","calling set_up_all_direct_io_flags"<<endl);
+            BESDEBUG("dmrpp","Before calling set_up_all_direct_io_flags: second"<<endl);
+            if (DmrppRequestHandler::is_netcdf4_enhanced_response == true &&
+                DmrppRequestHandler::disable_direct_io == false) { 
+                BESDEBUG("dmrpp","calling set_up_all_direct_io_flags: second"<<endl);
                 bool global_dio_flag = dmz->set_up_all_direct_io_flags_phase_1(dmr);
                 if (global_dio_flag) {
                     BESDEBUG("dmrpp","global_dio_flags is true."<<endl);
