@@ -108,59 +108,6 @@ m4_define([AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST],  [dnl
     AT_CLEANUP
 ])
 
-# Adapted from AT_BESCONF_RESPONSE_TEST. Check compression with different configuration.
-m4_define([AT_BESCMD_BESCONF_NETCDF_NC4_COMPRESSION], [dnl
-
-    AT_SETUP([$1])
-    AT_KEYWORDS([bescmd data compression])
-
-    input=$abs_srcdir/$1
-
-    # Here the bes_conf var is set using parameter number 2. This shadows the
-    # value that can be set using the optional -c (--conf) argument (see the top
-    # of this file). We might improve on this! jhrg 3/11/22
-    bes_conf=$2
-
-    # The baseline needs to contain something to tie it to the bes conf file since
-    # the same bescmd file may produce different output with a different bes conf.
-    baseline=$abs_srcdir/$1.$2.baseline
-
-    # Oddly, setting 'pass' to $3 and then using $pass in AT_XFAIL_IF() does not work,
-    # but using $3 does. This might be a function of when the AT_XFAIL_IF() macro is
-    # expanded. jhrg 3.20.20
-    repeat=$3
-
-    compression="Deflate"
-    shuffle="Shuffle"
- 
-    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
-
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
-
-    AS_IF([test -n "$baselines" -a x$baselines = xyes],
-        [
-         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input > test.nc])
-         AT_CHECK([ncdump -sh test.nc > tmp])
-         AT_CHECK([grep -m 1 $compression tmp >$baseline.comp.tmp]) 
-         AT_CHECK([grep -m 1 $shuffle tmp >>$baseline.comp.tmp]) 
-        ],
-        [
-         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
-         AT_CHECK([ncdump -sh test.nc > tmp])
-         dnl only need to check if the deflate compression appears.
-         AT_CHECK([grep -m 1 $compression tmp >tmp2]) 
-         AT_CHECK([grep -m 1 $shuffle tmp >>tmp2]) 
-         AT_CHECK([diff -b -B $baseline.comp tmp2])
-        
-         AT_XFAIL_IF([test z$2 = zxfail])
-
-        ])
-
-    AT_CLEANUP
-])
-
-
-
 dnl Add NC4 enhanced macros, mainly I have to use another BES conf for these tests.
 dnl There may be a better approach. Handle them in the future if necessary. KY 2020-02-12
 m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED], [dnl

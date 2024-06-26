@@ -935,9 +935,8 @@ void FONcArray::write_for_nc3_types(int ncid) {
                 // There's no practical way to get rid of the value copy, be here we
                 // read directly from libdap::Array object's memory.
                 vector<short> data(d_nelements);
-                for (size_t d_i = 0; d_i < d_nelements; d_i++) {
+                for (size_t d_i = 0; d_i < d_nelements; d_i++) 
                     data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
-                }
 
                 int stax = nc_put_var_short(ncid, d_varid, data.data());
                 if (stax != NC_NOERR) {

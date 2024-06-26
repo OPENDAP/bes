@@ -222,10 +222,6 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     // Whether the default direct IO feature is disabled. Read the key in.
     read_key_value(DMRPP_DISABLE_DIRECT_IO,disable_direct_io);
-if (DmrppRequestHandler::disable_direct_io) 
-    BESDEBUG("dmrpp","disable_direct_io is true"<<endl);
-else 
-    BESDEBUG("dmrpp","disable_direct_io is false"<<endl);
 
     // Check the value of FONc.ClassicModel to determine if this response is a netCDF-4 classic from fileout netCDF
     // This must be done here since direct IO flag for individual variables  should NOT be set for netCDF-4 classic response.
