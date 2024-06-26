@@ -1,0 +1,14 @@
+netcdf test {
+dimensions:
+	dim1 = 3 ;
+	DSC_scalar_base_array.desc_len = 13 ;
+	dim2 = 2 ;
+variables:
+	int DSC_scalar_base_array.Orbit ;
+	char DSC_scalar_base_array.desc(dim1, DSC_scalar_base_array.desc_len) ;
+	float DSC_scalar_base_array.Temperature(dim2) ;
+
+// global attributes:
+		:history = "removed date-timex compound_simple_scalar_memb_str_array.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"compound_simple_scalar_memb_str_array.h5.dmrpp\"}]}]" ;
+}

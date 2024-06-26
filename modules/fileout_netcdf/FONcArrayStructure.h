@@ -49,6 +49,7 @@ class FONcArrayStructure : public FONcBaseType
 private:
     libdap::Array *			_as = nullptr;
     vector<FONcArrayStructureField *>	_vars ;
+    bool can_handle_str_memb = true;
 public:
     explicit FONcArrayStructure( libdap::BaseType *b ) ;
     ~FONcArrayStructure() override;

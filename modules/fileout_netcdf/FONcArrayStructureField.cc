@@ -38,6 +38,7 @@
 #include <libdap/UInt64.h>
 #include <libdap/Float32.h>
 #include <libdap/Float64.h>
+#include <libdap/Str.h>
 #include <libdap/util.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
@@ -67,7 +68,8 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
     Type supported_atomic_data_type = b_data_type;
     if(b_data_type == libdap::dods_array_c)
         supported_atomic_data_type = b->var()->type();
-    if (!is_simple_type(supported_atomic_data_type) || supported_atomic_data_type == dods_str_c
+
+    if (!is_simple_type(supported_atomic_data_type)
         || supported_atomic_data_type == dods_url_c
         || supported_atomic_data_type == dods_enum_c || supported_atomic_data_type ==dods_opaque_c) {
         string s = "File out netcdf, only support one-layer of simple int/float fields inside an array of structure.";
@@ -75,17 +77,104 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
     }
 
     d_a = a;
-    d_varname = b->name();
-    if (b_data_type == libdap::dods_array_c) {
-        d_array_type = FONcUtils::get_nc_type(b->var(), is_netCDF4_enhanced);
-        d_array_type_size = (b->var()->width_ll())/(b->var()->length_ll());
-    }
+    if (supported_atomic_data_type == dods_str_c)
+         handle_structure_string_field(b);
     else {
-        d_array_type = FONcUtils::get_nc_type(b, is_netCDF4_enhanced);
-        d_array_type_size = (b->width_ll())/(b->length_ll());
+         d_varname = b->name();
+         if (b_data_type == libdap::dods_array_c) {
+             d_array_type = FONcUtils::get_nc_type(b->var(), is_netCDF4_enhanced);
+             auto t_b = dynamic_cast<Array *>(b);
+             d_array_type_size = (t_b->width_ll()) / (t_b->length_ll());
+         } else {
+             d_array_type = FONcUtils::get_nc_type(b, is_netCDF4_enhanced);
+             d_array_type_size = (b->width_ll()) / (b->length_ll());
+         }
+         // Need to retrieve dimension information here.
+         // In this version, we only try to get the dimension size right.
+         Array::Dim_iter di = d_a->dim_begin();
+         Array::Dim_iter de = d_a->dim_end();
+         for (; di != de; di++) {
+             int64_t size = d_a->dimension_size_ll(di, true);
+             struct_dim_sizes.push_back(size);
+             total_nelements *= size;
+             FONcDim *use_dim = find_sdim(d_a->dimension_name(di), size);
+             struct_dims.push_back(use_dim);
+         }
+         if (b_data_type == libdap::dods_array_c) {
+             auto db_a = dynamic_cast<Array *>(b);
+             if (!db_a) {
+                 string s = "File out netcdf, FONcArrayStructField was passed a variable that is not a DAP Array";
+                 throw BESInternalError(s, __FILE__, __LINE__);
+             }
+             Array::Dim_iter b_di = db_a->dim_begin();
+             Array::Dim_iter b_de = db_a->dim_end();
+             for (; b_di != b_de; b_di++) {
+                 int64_t size = d_a->dimension_size_ll(b_di, true);
+                 struct_dim_sizes.push_back(size);
+                 total_nelements *= size;
+                 field_nelements *= size;
+                 FONcDim *use_dim = find_sdim(db_a->dimension_name(b_di), size);
+                 struct_dims.push_back(use_dim);
+             }
+         }
+     }
+
+}
+
+size_t
+FONcArrayStructureField::obtain_maximum_string_length( ){
+
+    size_t asf_max_str_len = 0;
+
+    // Obtain the compound_buf; this is for gathering the data for individual fields.
+    vector<BaseType*> compound_buf = d_a->get_compound_buf();
+    for (unsigned i= 0; i<d_a->length_ll();i++) {
+        BaseType *cb = compound_buf[i];
+        if (cb->type()!=libdap::dods_structure_c){
+            throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
+        }
+        auto structure_elem = dynamic_cast<Structure *>(cb);
+        if (!structure_elem)
+            throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
+
+        for (auto &bt:structure_elem->variables()) {
+
+            if (bt->send_p()) {
+
+                if (bt->name() == d_varname) {
+                    if (bt->type() == libdap::dods_array_c) {
+                        auto memb_array = dynamic_cast<Array *>(bt);
+                        if (!memb_array)
+                            throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
+                        for (int64_t ma_i = 0; ma_i < memb_array->length_ll(); ma_i++) {
+                            if (memb_array->get_str()[ma_i].size() > asf_max_str_len) {
+                                asf_max_str_len = memb_array->get_str()[ma_i].size();
+                            }
+                        }
+
+                    } else {// Need to switch to different data types
+                       auto memb_str = dynamic_cast<Str *>(bt);
+                       if ((size_t)(memb_str->length_ll())>asf_max_str_len)
+                            asf_max_str_len = memb_str->length_ll();
+                       
+                    }
+                }
+            }
+        }
     }
-    // Need to retrieve dimension information here.
-    // In this version, we only try to get the dimension size right.
+    asf_max_str_len++;
+    return asf_max_str_len;
+}
+
+void
+FONcArrayStructureField::handle_structure_string_field(BaseType *b){
+
+    d_varname = b->name();
+    d_array_type = NC_CHAR;
+
+    BESDEBUG("fonc","d_varname is: "<<d_varname <<endl);
+
+    // We need to obtain the dimension information.
     Array::Dim_iter di = d_a->dim_begin();
     Array::Dim_iter de = d_a->dim_end();
     for (; di != de; di++) {
@@ -95,9 +184,11 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
         FONcDim *use_dim = find_sdim(d_a->dimension_name(di), size);
         struct_dims.push_back(use_dim);
     }
-    if (b_data_type == libdap::dods_array_c) {
+
+    // If this structure member is an array of string, we also need to retrieve its dimension.
+    if (b->type() == libdap::dods_array_c) {
         auto db_a = dynamic_cast<Array *>(b);
-        if (!db_a){
+        if (!db_a) {
             string s = "File out netcdf, FONcArrayStructField was passed a variable that is not a DAP Array";
             throw BESInternalError(s, __FILE__, __LINE__);
         }
@@ -112,6 +203,11 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
             struct_dims.push_back(use_dim);
         }
     }
+    size_t max_length = obtain_maximum_string_length();
+    struct_dim_sizes.push_back(max_length);
+    string last_dim_name = d_a->name()+"_"+b->name() +"_len";
+    FONcDim *use_dim = find_sdim(last_dim_name,max_length);
+    struct_dims.push_back(use_dim);
 
 }
 
@@ -176,13 +272,18 @@ FONcArrayStructureField::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcArrayStructureField::write for var " << d_varname << endl ) ;
 
+    if (d_array_type == NC_CHAR) {
+        write_str(ncid);
+        return;
+    }
+
     vector<char> data_buf;
 
     // Obtain the total data buffer.
     data_buf.resize(total_nelements*d_array_type_size);
     char* data_buf_ptr = data_buf.data();
 
-    // Obtain the compound_buf, this is from gathering the data for individual fields.
+    // Obtain the compound_buf; this is for gathering the data for individual fields.
     vector<BaseType*> compound_buf = d_a->get_compound_buf();
     for (unsigned i= 0; i<d_a->length_ll();i++) {
         BaseType *cb = compound_buf[i];
@@ -299,6 +400,121 @@ void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b
     }
 }
 
+// Note: TODO: if the string is equal-size, we can optimize as write_equal_length_string_array() in FONcArray.cc.
+//             However, for netCDF-4, the better way is to map DAP4 string to netCDF-4 string. 
+
+void FONcArrayStructureField::write_str(int ncid){
+
+    size_t d_ndims = struct_dims.size();
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+
+    int dim = 0;
+    for (dim = 0; dim < d_ndims; dim++) {
+        // the count for each of the dimensions will always be 1 except
+        // for the string length dimension.
+        // The size of the last dimension (var_count[d_ndims-1]) is set
+        // separately for each element below. jhrg 10/3/22
+        var_count[dim] = 1;
+
+        // the start for each of the dimensions will start at 0. We will
+        // bump this up in the while loop below
+        var_start[dim] = 0;
+    }
+
+    // Obtain the compound_buf; this is for gathering the data for individual fields.
+    vector<BaseType*> compound_buf = d_a->get_compound_buf();
+
+    for (unsigned i= 0; i<d_a->length_ll();i++) {
+        BaseType *cb = compound_buf[i];
+        if (cb->type()!=libdap::dods_structure_c){
+            throw BESInternalError("Fileout netcdf: This is not array of structure", __FILE__, __LINE__);
+        }
+        auto structure_elem = dynamic_cast<Structure *>(cb);
+        if (!structure_elem)
+            throw BESInternalError("Fileout netcdf: Dynamic cast failed. This is not array of structure", __FILE__, __LINE__);
+
+        for (auto &bt:structure_elem->variables()) {
+
+            if (bt->send_p()) {
+                if (bt->name() == d_varname) {
+                    if (bt->type() == libdap::dods_array_c) {
+                        auto memb_array = dynamic_cast<Array *>(bt);
+                        if (!memb_array)
+                            throw BESInternalError("Fileout netcdf: This structure member is not an array", __FILE__, __LINE__);
+                        auto const &m_a_str = memb_array->get_str();
+                        // array of string, use field_nelements.
+                        for (int64_t element = 0; element < field_nelements; element++) {
+                            var_count[d_ndims -1] = m_a_str[element].size() +1;
+                            var_start[d_ndims - 1] = 0;
+
+                            // write out the string
+                            int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
+                                                       m_a_str[element].c_str());
+
+                            if (stax != NC_NOERR) {
+                                string err = (string) "fileout.netcdf - Failed to create array of strings in a DAP4 structure for " + d_varname ;
+                                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                            }
+                    
+                            // bump up the start.
+                            bool done = false;
+                            dim = d_ndims - 2;
+    			
+                            while (!done) {
+                                var_start[dim] = var_start[dim] + 1;
+                                if (var_start[dim] == struct_dim_sizes[dim]) {
+                                    var_start[dim] = 0;
+                                    dim--;
+    				    if (dim <0)
+    					break;
+                                }
+                                else {
+                                    done = true;
+                                }
+                            }
+                        }
+                    } else {// Need to switch to different data types
+                        auto memb_type= dynamic_cast<Str *>(bt);
+                        if (!memb_type)
+                            throw BESInternalError("Fileout netcdf: This structure member is not a string", __FILE__, __LINE__);
+                        auto const & str_value = memb_type->value();
+                        var_count[d_ndims -1] = str_value.size() +1;
+                        var_start[d_ndims - 1] = 0;
+
+                        // write out the string
+                        int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
+                                                   str_value.c_str());
+
+                        if (stax != NC_NOERR) {
+                            string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
+                            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                        }
+                
+                        // bump up the start.
+                        if (i + 1 < d_a->length_ll()) {
+                            bool done = false;
+                            dim = d_ndims - 2;
+                            while (!done) {
+                                var_start[dim] = var_start[dim] + 1;
+                                if (var_start[dim] == struct_dim_sizes[dim]) {
+                                    var_start[dim] = 0;
+                                    dim--;
+    				if (dim <0)
+    				   break;
+                                }
+                                else {
+                                    done = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
 /** @brief returns the name of the array structure field
  *
  * @returns The name of the array structure field

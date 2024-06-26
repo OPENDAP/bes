@@ -53,6 +53,7 @@ class FONcStructure : public FONcBaseType
 private:
     libdap::Structure *			_s ;
     vector<FONcBaseType *>	_vars ;
+    bool can_handle_str_memb = true;
 public:
     				FONcStructure( libdap::BaseType *b ) ;
     virtual			~FONcStructure() ;
