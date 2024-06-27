@@ -935,7 +935,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
                 // There's no practical way to get rid of the value copy, be here we
                 // read directly from libdap::Array object's memory.
                 vector<short> data(d_nelements);
-                for (size_t d_i = 0; d_i < d_nelements; d_i++)
+                for (size_t d_i = 0; d_i < d_nelements; d_i++) 
                     data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
 
                 int stax = nc_put_var_short(ncid, d_varid, data.data());
@@ -1310,6 +1310,7 @@ void FONcArray::write_direct_io_data(int ncid, int d_varid) {
 
     char dummy_buffer[1];
 
+    BESDEBUG("fonc", "FONcArray() - direct IO write " << endl);
     // The following call doesn't write any data but set up the necessary operations for sending data directly.
     int stax = nc_put_var(ncid, d_varid, dummy_buffer);
     if (stax != NC_NOERR) {
@@ -1322,7 +1323,6 @@ void FONcArray::write_direct_io_data(int ncid, int d_varid) {
     for (const auto & var_chunk_info:dmrpp_vs_info.var_chunk_info) {
 
         Array::var_chunk_info_t vci = var_chunk_info;
-
         // May use the vector to replace new[] later. 
         auto chunk_buf = new char[vci.chunk_buffer_size];
         memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);

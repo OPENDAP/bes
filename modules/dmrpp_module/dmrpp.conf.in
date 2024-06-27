@@ -62,6 +62,9 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 # Disable at your own risk.
 # DMRPP.Elide.Unsupported = false
 
+# The default for DMPP.DisableDirectIO is false
+# If you want to disable the direct IO feature, uncomment the following line.
+# DMRPP.DisableDirectIO= true
 
 # NB: Providing/Defining CredentialsManager.config will cause the CredentialsManager
 # to locate and read from that file. If the file does not exist, or if it cannot be
