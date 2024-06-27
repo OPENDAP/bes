@@ -51,6 +51,7 @@
 // Make all the error log messages uniform in one small way. This is a macro
 // so we can switch to exceptions if that seems necessary. jhrg 11/06/23
 #define ERROR(msg) ERROR_LOG("FileCache: " << msg)
+#define INFO(msg) INFO_LOG("FileCache: " << msg)
 
 // If this is defined, then the access time of a file is updated when it is
 // closed by the Item dtor. This is a hack to get around the fact that the
@@ -412,7 +413,7 @@ public:
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
             if (errno == EEXIST) {
-                INFO("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
+                INFO_LOG("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
                 return false;
             }
             else {
