@@ -23,4 +23,6 @@ AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/PointFile.hdf])
 # The reason to comment out this test is that we find the encoded missing data value is little bit different on different platforms.
 # Although the final decoded values are the same for different platforms.
 #AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/cea.hdf])
+#Build dmrpp without generating the missing data inside the dmrpp file.
+AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA([hdf4_build_dmrpp/no_missing_data/sinusoid.hdf])
 

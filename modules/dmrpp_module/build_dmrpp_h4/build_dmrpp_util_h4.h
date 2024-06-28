@@ -44,7 +44,7 @@ void inject_version_and_configuration(dmrpp::DMRpp *dmrpp);
 void qc_input_file(const std::string &file_name);
 
 void build_dmrpp_from_dmr_file(const std::string &dmrpp_href_value, const std::string &dmr_filename, const std::string &h4_file_fqn,
-                               bool add_production_metadata, const std::string &bes_conf_file_used_to_create_dmr, int argc, char *argv[]);
+                               bool add_production_metadata, bool disable_missing_data, const std::string &bes_conf_file_used_to_create_dmr, int argc, char *argv[]);
 
 extern bool verbose;
 }
