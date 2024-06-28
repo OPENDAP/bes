@@ -1,0 +1,12 @@
+netcdf test {
+dimensions:
+	DSC_scalar.year_len = 5 ;
+variables:
+	int DSC_scalar.Orbit ;
+	float DSC_scalar.Temperature ;
+	char DSC_scalar.year(DSC_scalar.year_len) ;
+
+// global attributes:
+		:history = "removed date-timex compound_simple_scalar_vlen_str.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"compound_simple_scalar_vlen_str.h5\"}]}]" ;
+}

@@ -1,0 +1,24 @@
+netcdf test {
+dimensions:
+	sdim1 = 2 ;
+	sdim2 = 2 ;
+	sdim3 = 3 ;
+	DSC_array_year_len = 5 ;
+	sdim4 = 2 ;
+	sdim5 = 2 ;
+	sdim6 = 2 ;
+	DSC_array_month_len = 3 ;
+	sdim7 = 2 ;
+	sdim8 = 3 ;
+	DSC_array_day_len = 3 ;
+variables:
+	int DSC_array.Orbit(sdim1) ;
+	char DSC_array.year(sdim2, sdim3, DSC_array_year_len) ;
+	float DSC_array.Temperature(sdim4, sdim5) ;
+	char DSC_array.month(sdim6, DSC_array_month_len) ;
+	char DSC_array.day(sdim7, sdim8, DSC_array_day_len) ;
+
+// global attributes:
+		:history = "removed date-timex compound_array_fix_vlen_str.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"compound_array_fix_vlen_str.h5\"}]}]" ;
+}
