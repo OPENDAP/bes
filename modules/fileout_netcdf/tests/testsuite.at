@@ -303,6 +303,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic_comp.h5.
 #Structure support
 # The netcdf handler generates memory leaking for the following test. So turn off the test.
 #AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/ref_tst_compounds.nc.dap2.bescmd)
+# Via dmrpp module
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar_memb_array.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_array.h5.dmrpp.bescmd)
@@ -311,6 +312,16 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_group_simple.h5.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar_vlen_str.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar_memb_str_array.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_array_fix_vlen_str.h5.dmrpp.bescmd)
+
+# Via the HDF5 handler
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar_memb_array.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_array.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_group_simple.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar_vlen_str.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_scalar_memb_str_array.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_array_fix_vlen_str.h5.bescmd)
+
 
 # HDF4 dmrpp
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vg_hl_test.hdf.dmrpp.bescmd)

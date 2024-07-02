@@ -1,0 +1,20 @@
+netcdf test {
+dimensions:
+	sdim1 = 2 ;
+	sdim2 = 2 ;
+	sdim3 = 2 ;
+variables:
+	int DSC_memb_array.Orbit(sdim1) ;
+	float DSC_memb_array.Temperature(sdim2, sdim3) ;
+
+// global attributes:
+		:history = "removed date-timex compound_simple_array.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"compound_simple_array.h5\"}]}]" ;
+data:
+
+ DSC_memb_array.Orbit = 1153, 1184 ;
+
+ DSC_memb_array.Temperature =
+  53.23, 53.87,
+  55.12, 55.95 ;
+}
