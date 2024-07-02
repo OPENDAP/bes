@@ -94,6 +94,8 @@
 #include <libdap/InternalErr.h>
 #include <libdap/debug.h>
 
+#include <libdap/Array.h>
+
 #include <BESDebug.h>
 #include <BESLog.h>
 
@@ -221,7 +223,7 @@ void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string 
 void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
 
 // 2. vgroup handlings
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4g, const string &vgroupname,const string & filename, bool is_eos2_grid);
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4g, D4Group *root_grp, const string &vgroupname,const string & filename, bool is_eos2_grid);
 void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4g, const string &vgroupname);
 void map_vgroup_attr(D4Group *d4g, const string &dap4_attrname,int32 attr_type, int32 attr_count, vector<char> & attr_value);
 bool reserved_vgroups(const vector<char> &vgroup_class);
@@ -230,7 +232,7 @@ bool reserved_vgroups(const vector<char> &vgroup_class);
 #if 0
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* d4g,const string& filename);
 #endif
-void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,const string &filename, bool is_eos2_grid);
+void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,D4Group *root_grp, const string &filename, bool is_eos2_grid);
 void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref);
 void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>&sds_ref);
 void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unordered_set<int32>&sds_ref);
@@ -245,7 +247,7 @@ void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref);
 
 // 5. HDF-EOS2 handlings
 int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls);
-void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string&filename);
+void add_eos2_latlon(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const string&filename);
 
 // 6. Special HDF4 handlings
 
@@ -260,6 +262,7 @@ D4AttributeType h4type_to_dap4_attrtype(int32 h4_type);
 string print_dap4_attr(int32 type, int loc, void *vals);
 void close_vgroup_fileids(int32 fileid, int32 sdfd, int32 vgroup_id);
 void add_var_dap4_attr(BaseType *d4_var,const string& attr_name, D4AttributeType attr_type, const string& attr_value);
+void dims_transform_to_dap4(Array *ar,D4Group *root_grp, bool missing_vars); 
 
 // End of HDF4 to DMR direct mapping functions.
 
@@ -4430,7 +4433,7 @@ void read_lone_sds(D4Group *root_grp, int32 file_id,int32 sdfd, const string &fi
 
    // Map lone SDS objects and put them under  DAP4's root group.
    for (const auto &sds_ref:ordered_lone_sds_refs) {
-        convert_sds(file_id, sdfd, -1,sds_ref, root_grp, filename,false);  
+        convert_sds(file_id, sdfd, -1,sds_ref, root_grp, root_grp, filename,false);  
    }
 
    BESDEBUG("h4"," End read_lone_sds() "<<endl);
@@ -4799,11 +4802,11 @@ else
         // Add latitude and longitude fields,plus attributes
         bool is_eos2_grid = false;
         if (eos2_grid_lls_index >=0) {
-           add_eos2_latlon(tem_d4_cgroup, eos2_grid_lls[eos2_grid_lls_index],filename);
+           add_eos2_latlon(tem_d4_cgroup, root_grp, eos2_grid_lls[eos2_grid_lls_index],filename);
            is_eos2_grid = true;
         }
 
-        convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,vgroup_name_orig_str,filename,is_eos2_grid);
+        convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,root_grp, vgroup_name_orig_str,filename,is_eos2_grid);
 
         Vdetach(vgroup_id);
         
@@ -4861,7 +4864,7 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
 }
 #endif
 
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,const string &vgroupname, const string& filename, bool is_eos2_grid) {
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,D4Group *root_grp, const string &vgroupname, const string& filename, bool is_eos2_grid) {
 
     BESDEBUG("h4"," Start convert_vgroup_objects"<<endl);
 
@@ -4885,7 +4888,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
         
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
-            convert_sds(file_id,sdfd,vgroup_id,obj_ref,d4g,filename,is_eos2_grid);
+            convert_sds(file_id,sdfd,vgroup_id,obj_ref,d4g,root_grp, filename,is_eos2_grid);
         }
         else if(Visvs(vgroup_id,obj_ref)) {
             convert_vdata(file_id, sdfd, vgroup_id, obj_ref,d4g,filename);
@@ -4956,7 +4959,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             auto d4c_g  = d4c_g_ptr.release();
             d4g->add_group_nocopy(d4c_g);
 
-            convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,vgroup_name_orig_str,filename, is_eos2_grid);
+            convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,root_grp,vgroup_name_orig_str,filename, is_eos2_grid);
 
             Vdetach(vgroup_cid);
         }
@@ -5225,7 +5228,7 @@ void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref) 
 }
 
 
-void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, const string &filename, bool is_eos2_grid) {
+void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, D4Group *root_grp,const string &filename, bool is_eos2_grid) {
 
     int32 sds_index = 0; 
     int32 sds_id = 0; 
@@ -5321,10 +5324,11 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
 
         // We add a "/" in front of dim_name_str for the dimension name to make it FQN 
         // since current build_dmrpp requires this.
-        dim_name_str = "/" + dim_name_str;
+        //dim_name_str = "/" + dim_name_str;
         ar->append_dim_ll(dim_sizes[dimindex], dim_name_str);
 
     }
+    dims_transform_to_dap4(ar,root_grp,false);
     
     // map sds var attributes to dap4
     try {
@@ -5732,14 +5736,14 @@ int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid
     return ret_value;
 }
 
-void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string &filename){
+void add_eos2_latlon(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const string &filename){
 
     string ydim_path = "YDim/"+eos2_grid.grid_name;
     ydim_path = HDFCFUtil::get_CF_string(ydim_path);
-    ydim_path ="/"+ydim_path;
+    //ydim_path ="/"+ydim_path;
     string xdim_path = "XDim/"+eos2_grid.grid_name;
     xdim_path = HDFCFUtil::get_CF_string(xdim_path);
-    xdim_path="/"+xdim_path;
+    //xdim_path="/"+xdim_path;
 
     string lat_name ="Latitude";
     string lon_name ="Longitude";
@@ -5756,6 +5760,8 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
         ar_lat->append_dim_ll(eos2_grid.xdim,xdim_path);
     else
         ar_lat->set_rank(1);
+
+    dims_transform_to_dap4(ar_lat,root_grp,true);
 
     // Attributes
     add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
@@ -5776,6 +5782,8 @@ void add_eos2_latlon(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const string
     else 
         ar_lon->set_rank(1);
     ar_lon->append_dim_ll(eos2_grid.xdim,xdim_path);
+
+    dims_transform_to_dap4(ar_lon,root_grp,true);
 
     add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
 
@@ -5935,8 +5943,6 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
             
         }
 
-
-
         // Array
         auto ar_bt_lat_unique = make_unique<Float32>(lat_name);
         auto ar_bt_lat = ar_bt_lat_unique.get();
@@ -5950,8 +5956,10 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
 #endif
     
         // Dimensions
-        ar_lat->append_dim_ll(lat_size,"/"+lat_name);
-    
+        //ar_lat->append_dim_ll(lat_size,"/"+lat_name);
+        ar_lat->append_dim_ll(lat_size,lat_name);
+        dims_transform_to_dap4(ar_lat,d4_grp,true);
+
         // Attributes
         add_var_dap4_attr(ar_lat,"units",attr_str_c,"degrees_north");
     
@@ -5997,8 +6005,10 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
         auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
         auto ar_lon = ar_lon_unique.release();
 #endif
-        ar_lon->append_dim_ll(lon_size,"/"+lon_name);
-    
+        //ar_lon->append_dim_ll(lon_size,"/"+lon_name);
+        ar_lon->append_dim_ll(lon_size,lon_name);
+        dims_transform_to_dap4(ar_lon,d4_grp,true);
+
         add_var_dap4_attr(ar_lon,"units",attr_str_c,"degrees_east");
     
         // Add special HDF4 latlon predefined attribute sp_h4_ll that includes the lon name.
@@ -6026,4 +6036,32 @@ void add_sp_hdf4_additional_info(D4Group *d4_grp) {
  
 }
 
+void dims_transform_to_dap4(Array *ar,D4Group *root_grp, bool missing_vars) {
+
+    D4Dimensions *root_dims = root_grp->dims();
+    for (Array::Dim_iter d = ar->dim_begin(), e = ar->dim_end(); d != e; ++d) {
+        if (false == (*d).name.empty()) {
+//cerr<<"coming dimension name "<<endl;
+            D4Dimension *d4_dim = root_dims->find_dim((*d).name);
+            if (d4_dim == nullptr) {
+//cerr<<"ar name: "<<ar->name() <<endl;
+//cerr<<"dimension name: "<<(*d).name <<endl;
+                if (missing_vars) {
+                     auto d4_dim_unique = make_unique<D4Dimension>((*d).name, (*d).size);
+                     d4_dim = d4_dim_unique.release();
+                     root_dims->add_dim_nocopy(d4_dim);
+                     (*d).dim = d4_dim;
+                }
+                else 
+                    throw InternalErr(__FILE__,__LINE__, "DAP4 Dimension name should be found. ");
+            }
+            else {
+                (*d).dim = d4_dim;
+//cerr<<"add the DAP4 dimension for this dimension"<<endl;
+            }
+        }
+
+    }
+
+} 
   
