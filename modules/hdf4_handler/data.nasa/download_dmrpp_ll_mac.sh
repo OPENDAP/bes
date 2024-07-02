@@ -29,4 +29,6 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_L
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf.eos2ll.dmrpp
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/MCD19A1.A2024025.h10v06.061.2024027100206.hdf.eos2ll.dmrpp
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.eos2ll.dmrpp
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/MCD43A4.A2012009.h25v05.061.2021202161101_ll_vars.nc
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.eos2ll_nmd.dmrpp
 
