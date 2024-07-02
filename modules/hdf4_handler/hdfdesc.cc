@@ -5324,7 +5324,6 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
 
         // We add a "/" in front of dim_name_str for the dimension name to make it FQN 
         // since current build_dmrpp requires this.
-        //dim_name_str = "/" + dim_name_str;
         ar->append_dim_ll(dim_sizes[dimindex], dim_name_str);
 
     }
@@ -5740,10 +5739,8 @@ void add_eos2_latlon(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2
 
     string ydim_path = "YDim/"+eos2_grid.grid_name;
     ydim_path = HDFCFUtil::get_CF_string(ydim_path);
-    //ydim_path ="/"+ydim_path;
     string xdim_path = "XDim/"+eos2_grid.grid_name;
     xdim_path = HDFCFUtil::get_CF_string(xdim_path);
-    //xdim_path="/"+xdim_path;
 
     string lat_name ="Latitude";
     string lon_name ="Longitude";
@@ -5956,7 +5953,6 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
 #endif
     
         // Dimensions
-        //ar_lat->append_dim_ll(lat_size,"/"+lat_name);
         ar_lat->append_dim_ll(lat_size,lat_name);
         dims_transform_to_dap4(ar_lat,d4_grp,true);
 
@@ -6005,7 +6001,6 @@ bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attr
         auto ar_lon_unique = make_unique<HDFArray>(lon_name,filename,ar_bt_lon);
         auto ar_lon = ar_lon_unique.release();
 #endif
-        //ar_lon->append_dim_ll(lon_size,"/"+lon_name);
         ar_lon->append_dim_ll(lon_size,lon_name);
         dims_transform_to_dap4(ar_lon,d4_grp,true);
 
@@ -6041,11 +6036,8 @@ void dims_transform_to_dap4(Array *ar,D4Group *root_grp, bool missing_vars) {
     D4Dimensions *root_dims = root_grp->dims();
     for (Array::Dim_iter d = ar->dim_begin(), e = ar->dim_end(); d != e; ++d) {
         if (false == (*d).name.empty()) {
-//cerr<<"coming dimension name "<<endl;
             D4Dimension *d4_dim = root_dims->find_dim((*d).name);
             if (d4_dim == nullptr) {
-//cerr<<"ar name: "<<ar->name() <<endl;
-//cerr<<"dimension name: "<<(*d).name <<endl;
                 if (missing_vars) {
                      auto d4_dim_unique = make_unique<D4Dimension>((*d).name, (*d).size);
                      d4_dim = d4_dim_unique.release();
@@ -6057,7 +6049,6 @@ void dims_transform_to_dap4(Array *ar,D4Group *root_grp, bool missing_vars) {
             }
             else {
                 (*d).dim = d4_dim;
-//cerr<<"add the DAP4 dimension for this dimension"<<endl;
             }
         }
 
