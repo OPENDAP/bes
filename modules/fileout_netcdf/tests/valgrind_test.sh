@@ -237,6 +237,10 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_unlimited_2
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_unlimited_0.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid_ll.hdf.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid_ll_constraint.hdf.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid.hdf.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid_ll_constraint.hdf.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid_nmd.hdf.dmrpp.bescmd >test.nc
+
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/cea_ll.hdf.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h_swath.hdf.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/PointFile.hdf.dmrpp.bescmd >test.nc

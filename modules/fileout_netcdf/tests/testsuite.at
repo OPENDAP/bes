@@ -349,6 +349,10 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vdata_test.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vdata_packed_linked_blocks.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_simple_comp.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_simple_comp.hdf.constraint.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/sinusoid.hdf.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/sinusoid_ll_constraint.hdf.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/sinusoid_nmd.hdf.dmrpp.bescmd)
+
 
 #Disable direct IO tests
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])

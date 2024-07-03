@@ -1,9 +1,9 @@
 netcdf test {
 dimensions:
-	_fakeDim0 = 1 ;
-	_fakeDim1 = 2 ;
+	fakeDim0 = 1 ;
+	fakeDim1 = 2 ;
 variables:
-	int SDS_simple_comp(_fakeDim0, _fakeDim1) ;
+	int SDS_simple_comp(fakeDim0, fakeDim1) ;
 		SDS_simple_comp:dmr_sds_ref = 2 ;
 
 // global attributes:

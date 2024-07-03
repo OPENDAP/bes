@@ -13,3 +13,5 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MOD10A1F.A
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MOD03.A2000166.0255.061.2017173092154.hdf.eos2ll.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf.eos2ll.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.eos2ll.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.eos2ll_nmd.dmrpp.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MCD43A4.A2012009.h25v05.061.2021202161101_ll_constraint.hdf.bescmd>nasa_dap4_default_test.nc
