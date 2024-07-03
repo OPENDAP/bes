@@ -197,7 +197,8 @@ HDFDMRArray_EOS2LL::read ()
 
     }
     set_read_p(true);
- 
+    GDdetach(gridid);
+    GDclose(gridfd);
     return true;
 }
 // Standard way to pass the coordinates of the subsetted region from the client to the handlers
