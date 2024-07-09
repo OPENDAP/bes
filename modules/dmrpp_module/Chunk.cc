@@ -965,6 +965,10 @@ void Chunk::load_fill_values() {
         is_big_endian = true;
     const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value,is_big_endian);
 
+    if(d_fill_value_type == libdap::dods_str_c && d_fill_value==""){
+        d_fill_value = ' ';
+        value_size = 1;
+    }
     unsigned long long num_values = get_rbuf_size() / value_size;
 
     char *buffer = get_rbuf();
