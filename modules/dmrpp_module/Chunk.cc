@@ -965,6 +965,14 @@ void Chunk::load_fill_values() {
         is_big_endian = true;
     const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value,is_big_endian);
 
+    // If a string is empty, current build_dmrpp will assign an "" to fillvalue and causes the value size to be 0.
+    if(d_fill_value_type == libdap::dods_str_c && d_fill_value==""){
+        d_fill_value = ' ';
+        value_size = 1;
+    }
+
+    if (value_size == 0) 
+       throw BESInternalError("The size of fill value should NOT be 0.", __FILE__,__LINE__);
     unsigned long long num_values = get_rbuf_size() / value_size;
 
     char *buffer = get_rbuf();
