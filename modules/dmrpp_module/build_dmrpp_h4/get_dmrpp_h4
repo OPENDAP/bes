@@ -239,13 +239,14 @@ parser.add_argument("-i",  nargs=1,
                     help='The HDF4 file name should be provided under the current directory. and the file should be under the appropriate data directory. ', required=True)
 parser.add_argument("-c","--conf", 
                     help='Optional parameter: the bes configuration file including the path: /etc/bes.conf. Check -v for details. ')
-parser.add_argument("-u","--data_url", 
-                    help='Optional parameter: the value of attribute dmrpp:href in the dmrpp file. If not provided, OPeNDAP_DMRpp_DATA_ACCESS_URL will be used by system.')
-parser.add_argument("-v","--verbosity", action='store_true',
-                    help='Detailed description message and other information.' )
-
 parser.add_argument("-s","--system_conf", action='store_true',
                     help='Use the BES configuration provided by the current System. The HDF4 file should be under the appropriate data directory. Check -v for details.' )
+parser.add_argument("-u","--data_url", 
+                    help='Optional parameter: the value of attribute dmrpp:href in the dmrpp file. If not provided, OPeNDAP_DMRpp_DATA_ACCESS_URL will be used by system.')
+parser.add_argument("-D","--disable_missing_data",action='store_true',
+                    help='Optional parameter: the missing HDF-EOS2/HDF4 latitude/longitude data will NOT be put into the dmrpp file.')
+parser.add_argument("-v","--verbosity", action='store_true',
+                    help='Detailed description message and other information.' )
 
 
 args = parser.parse_args()
@@ -271,6 +272,8 @@ if(args.verbosity is True):
 
     Users can use the -u option to provide the url or the path of the HDF4 file that will be stored inside the generated dmrpp file. If not, the string OPeNDAP_DMRpp_DATA_ACCESS_URL will be used. 
 
+    Users should use the -D option to make this program not put the calculated HDF-EOS2/HDF4 latitude/longitude values in the dmrpp file if the latitude/longitude needs to be calculated.
+
     The HDF4 file name is used for the final dmrpp file name such as tmp.hdf.dmrpp for tmp.hdf.
     The dmrpp file will be generated under the current directory that runs this python script.
 
@@ -278,6 +281,7 @@ if(args.verbosity is True):
     get_dmrpp_h4 -s -i h4_file_name (The HDF4 file must be put under the appropriate directory specified by the system's BES configuration file)
     get_dmrpp_h4 -i h4_file_name -c user_bes_conf  (The HDF4 file must be put under the appropriate directory specified by the user's BES configuration file)
     get_dmrpp_h4 -i h4_file_name -u user_provided_url_to_h4_file 
+    get_dmrpp_h4 -D -i h4_file_name (The calculated HDF-EOS2/HDF4 latitude/longitude values are not put inside the dmrpp file)
     '''
     print(desc_str)
 
@@ -350,7 +354,10 @@ hdf4_url="OPeNDAP_DMRpp_DATA_ACCESS_URL"
 if(args.data_url is not None):
     hdf4_url = args.data_url
 
-ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r",hdf4_dmr_name, "-u", hdf4_url],stdout=subprocess.PIPE,universal_newlines=True)   
+if(args.disable_missing_data is True):
+    ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r",hdf4_dmr_name, "-u", hdf4_url,"-D"],stdout=subprocess.PIPE,universal_newlines=True)   
+else:
+    ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r",hdf4_dmr_name, "-u", hdf4_url],stdout=subprocess.PIPE,universal_newlines=True)   
 if ret.returncode!=0:
     print("build_dmrpp_h4 fails to generate the HDF4 dmrpp file. ")
     print("The HDF4 file name is:  ",hdf4_full_path)
