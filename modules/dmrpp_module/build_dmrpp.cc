@@ -61,7 +61,8 @@ void usage() {
     Other options:
         -v: Verbose
         -d: Turn on BES software debugging output
-        -M: Add information about the build_dmrpp software, incl versions, to the built DMR++)";
+        -M: Add information about the build_dmrpp software, incl versions, to the built DMR++
+        -D: Disable Direct IO feature)";
 
     cerr << help << endl;
 }
@@ -80,9 +81,10 @@ int main(int argc, char *argv[]) {
     string dmrpp_href_value;
     string bes_conf_file_used_to_create_dmr;
     bool add_production_metadata = false;
+    bool disable_dio = false;
 
     int option_char;
-    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVM")) != -1) {
+    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVMD")) != -1) {
         switch (option_char) {
             case 'V':
                 cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-"
@@ -117,6 +119,10 @@ int main(int argc, char *argv[]) {
                 add_production_metadata = true;
                 break;
 
+            case 'D':
+                disable_dio = true;
+                break;
+
             case 'h':
                 usage();
                 exit(EXIT_FAILURE);
@@ -144,6 +150,7 @@ int main(int argc, char *argv[]) {
                 h5_file_name,
                 add_production_metadata,
                 bes_conf_file_used_to_create_dmr,
+                disable_dio,
                 argc,  argv);
 
     }

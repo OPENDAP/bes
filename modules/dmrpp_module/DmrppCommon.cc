@@ -454,6 +454,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
                 throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
  
         }
+
     }
 
     if (d_uses_fill_value && !d_fill_value_str.empty()) {
@@ -470,6 +471,14 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         }
     }
 
+    // If the disable_dio flag is true, we will set the DIO=off attribute.
+
+    if (!d_filters.empty() && d_disable_dio == true) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "DIO",
+                                        (const xmlChar *) "off") < 0)
+        throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+    }
+ 
     if (!d_chunk_dimension_sizes.empty()) { //d_chunk_dimension_sizes.size() > 0) {
         // Write element "chunkDimensionSizes" with dmrpp namespace:
         ostringstream oss;
