@@ -476,7 +476,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     if (!d_filters.empty() && d_disable_dio == true) {
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "DIO",
                                         (const xmlChar *) "off") < 0)
-        throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+            throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
     }
  
     if (!d_chunk_dimension_sizes.empty()) { //d_chunk_dimension_sizes.size() > 0) {
