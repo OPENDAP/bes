@@ -209,7 +209,7 @@ DmrppArray *toDA(BaseType *btp){
  * @param dataset_id The HDF5 dataset id
  * @param dc A pointer to the DmrppCommon instance for that dataset_id
  */
-static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
+static void set_filter_information(hid_t dataset_id, DmrppCommon *dc, bool disable_dio) {
 
     hid_t plist_id = create_h5plist(dataset_id);
 
@@ -251,6 +251,8 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
         filters = filters.substr(0, filters.size() - 1);
         dc->set_filter(filters);
         dc->set_deflate_levels(deflate_levels);
+        if (!filters.empty())
+            dc->set_disable_dio(disable_dio);
     }
     catch (...) {
         H5Pclose(plist_id);
@@ -668,7 +670,7 @@ void process_contiguous_layout_dariable(hid_t dataset, BaseType *btp){
  * @param dataset The hdf5 dataset that is mate to the BaseType instance btp.
  * @param btp The dap BaseType variable which is to hold the information gleand from the hdf5 dataset.
  */
-void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
+void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_dio) {
 
     DmrppCommon *dc = toDC(btp);
     hid_t fspace_id = H5Dget_space(dataset);
@@ -684,7 +686,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
     VERBOSE(cerr << prolog << "Storage: chunked." << endl);
     VERBOSE(cerr << prolog << "Number of chunks is: " << num_chunks << endl);
 
-    set_filter_information(dataset, dc);
+    set_filter_information(dataset, dc, disable_dio);
 
     // Get chunking information: rank and dimensions
     vector<hsize_t> chunk_dims(dataset_rank, 0);
@@ -1310,7 +1312,7 @@ void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
  *
  * @exception BESError is thrown on error.
  */
-static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
+static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_dio) {
 
     if(verbose) {
         string type_name = btp->type_name();
@@ -1354,7 +1356,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
             break;
         }
         case H5D_CHUNKED: { /* Chunked Storage Layout */
-            process_chunked_layout_dariable(dataset, btp);
+            process_chunked_layout_dariable(dataset, btp, disable_dio);
             break;
         }
         case H5D_COMPACT: { /* Compact Storage Layout */
@@ -1690,7 +1692,7 @@ void mk_nc4_non_coord_candidates(D4Group *group, unordered_set<string> &nc4_non_
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
-void get_chunks_for_all_variables(hid_t file, D4Group *group) {
+void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) {
 
     unordered_set<string> nc4_non_coord_candidate;
     mk_nc4_non_coord_candidates(group,nc4_non_coord_candidate);
@@ -1718,7 +1720,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                 if (!process_variable_length_string_scalar(dataset, btp) && !process_variable_length_string_array(dataset,btp)) {
 
                     VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
-                    get_variable_chunk_info(dataset, btp);
+                    get_variable_chunk_info(dataset, btp, disable_dio);
 
                     VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
                     add_string_array_info(dataset, btp);
@@ -1739,7 +1741,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
     // all groups in the group
     for(auto g:group->groups()) {
-        get_chunks_for_all_variables(file, g);
+        get_chunks_for_all_variables(file, g,disable_dio);
     }
 
 }
@@ -1749,7 +1751,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
  * @param h5_file_name Read information from this file
  * @param dmrpp Dump the chunk information here
  */
-void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
+void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp, bool disable_dio)
 {
     // Open the hdf5 file
     hid_t file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -1761,7 +1763,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
 
     // iterate over all the variables in the DMR
     try {
-        get_chunks_for_all_variables(file, dmrpp->root());
+        get_chunks_for_all_variables(file, dmrpp->root(), disable_dio);
         H5Fclose(file);
     }
     catch (...) {
@@ -1986,7 +1988,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
  * @param argv The arguments for build_dmrpp.
  */
 void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h5_file_fqn,
-        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, int argc, char *argv[])
+        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, bool disable_dio, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
@@ -1997,7 +1999,7 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h5_file_fqn, &dmrpp);
+    add_chunk_information(h5_file_fqn, &dmrpp,disable_dio);
 
     if (add_production_metadata) {
         inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);

@@ -250,6 +250,11 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_packed_li
 
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.constraint.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.bescmd >test.nc
+
+#disable dio
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.disable_dio.conf -i tests/bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd>test.nc
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4
