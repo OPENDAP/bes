@@ -1867,6 +1867,26 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
     return ss.str();
 }
 
+/**
+ * @brief Returns an ISO-8601 date time string for the time at which this function is called.
+ * @return An ISO-8601 date time string
+ */
+std::string get_time_str_now(){
+    // Get current time as a time_point
+    auto now = std::chrono::system_clock::now();
+
+    // Convert to system time (time_t)
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to tm structure (GMT time)
+    std::tm* gmt_time = std::gmtime(&time_t_now);
+
+    // Format the time using a stringstream
+    std::stringstream ss;
+    ss << std::put_time(gmt_time, "%Y-%m-%dT%H:%M:%S");
+
+    return ss.str();
+}
 
 /**
  * @brief This worker method provides a SSOT for how the version and configuration information are added to the DMR++
@@ -1882,6 +1902,10 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 
     // Build the version attributes for the DMR++
     auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+
+    auto creation_date = new D4Attribute("creation_date", StringToD4AttributeType("string"));
+    creation_date->add_value(get_time_str_now());
+    version->attributes()->add_attribute_nocopy(creation_date);
 
     auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
     build_dmrpp_version->add_value(CVER);
