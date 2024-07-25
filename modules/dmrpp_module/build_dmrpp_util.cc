@@ -28,7 +28,8 @@
 #include <memory>
 #include <iterator>
 #include <unordered_set>
-#include <iomanip>      // std::put_time
+#include <iomanip>      // std::put_time()
+#include <time.h>      // std::gmtime_r()
 
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
@@ -1881,7 +1882,8 @@ std::string what_time_is_it(){
     auto time_t_now = std::chrono::system_clock::to_time_t(now);
 
     // Convert to tm structure (GMT time)
-    std::tm* gmt_time = std::gmtime(&time_t_now);
+    struct tm tbuf{};
+    const std::tm* gmt_time = gmtime_r(&time_t_now, &tbuf);
 
     // Format the time using a stringstream
     std::stringstream ss;
