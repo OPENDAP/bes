@@ -138,7 +138,7 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         build_dmrpp_util::add_chunk_information(dataset_name, &dmrpp);
 
         if (add_production_metadata) {
-            build_dmrpp_util::inject_version_and_configuration(&dmrpp);
+            build_dmrpp_util::inject_build_dmrpp_metadata(&dmrpp);
         }
 
         XMLWriter dmrpp_writer;
