@@ -1870,9 +1870,10 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
 
 /**
  * @brief Returns an ISO-8601 date time string for the time at which this function is called.
+ * Tip-o-the-hat to Morris Day and The Time...
  * @return An ISO-8601 date time string
  */
-std::string get_time_str_now(){
+std::string what_time_is_it(){
     // Get current time as a time_point
     auto now = std::chrono::system_clock::now();
 
@@ -1905,7 +1906,7 @@ void inject_build_dmrpp_metadata_worker( DMRpp *dmrpp, const string &bes_conf_do
     auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
 
     auto creation_date = new D4Attribute("created", StringToD4AttributeType("string"));
-    creation_date->add_value(get_time_str_now());
+    creation_date->add_value(what_time_is_it());
     version->attributes()->add_attribute_nocopy(creation_date);
 
     auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
