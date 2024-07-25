@@ -96,6 +96,7 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
         NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
+        REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
@@ -103,6 +104,7 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
         NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
+        REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
 
