@@ -28,6 +28,7 @@
 #include <memory>
 #include <iterator>
 #include <unordered_set>
+#include <iomanip>      // std::put_time
 
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
