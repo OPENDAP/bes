@@ -1883,7 +1883,7 @@ std::string get_time_str_now(){
 
     // Format the time using a stringstream
     std::stringstream ss;
-    ss << std::put_time(gmt_time, "%Y-%m-%dT%H:%M:%S");
+    ss << std::put_time(gmt_time, "%Y-%m-%dT%H:%M:%SZ");
 
     return ss.str();
 }
