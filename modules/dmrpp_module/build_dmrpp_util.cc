@@ -1893,7 +1893,7 @@ std::string what_time_is_it(){
 }
 
 /**
- * @brief This worker method provides a SSOT for how the version and configuration information are added to the DMR++
+ * @brief This worker method provides a SSOT for how the build_dmrpp metadata (creation time, version, and configuration information) are added to the DMR++
  *
  * @param dmrpp The DMR++ to annotate
  * @param bes_conf_doc The BES configuration document used to produce the source DMR.
