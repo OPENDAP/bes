@@ -28,6 +28,8 @@
 #include <memory>
 #include <iterator>
 #include <unordered_set>
+#include <iomanip>      // std::put_time()
+#include <ctime>      // std::gmtime_r()
 
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
@@ -1869,21 +1871,47 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
     return ss.str();
 }
 
+/**
+ * @brief Returns an ISO-8601 date time string for the time at which this function is called.
+ * Tip-o-the-hat to Morris Day and The Time...
+ * @return An ISO-8601 date time string
+ */
+std::string what_time_is_it(){
+    // Get current time as a time_point
+    auto now = std::chrono::system_clock::now();
+
+    // Convert to system time (time_t)
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to tm structure (GMT time)
+    struct tm tbuf{};
+    const std::tm* gmt_time = gmtime_r(&time_t_now, &tbuf);
+
+    // Format the time using a stringstream
+    std::stringstream ss;
+    ss << std::put_time(gmt_time, "%Y-%m-%dT%H:%M:%SZ");
+
+    return ss.str();
+}
 
 /**
- * @brief This worker method provides a SSOT for how the version and configuration information are added to the DMR++
+ * @brief This worker method provides a SSOT for how the build_dmrpp metadata (creation time, version, and configuration information) are added to the DMR++
  *
  * @param dmrpp The DMR++ to annotate
  * @param bes_conf_doc The BES configuration document used to produce the source DMR.
  * @param invocation The invocation of the build_dmrpp program, or the request URL if the running server was used to
  * create the DMR file that is being annotated into a DMR++.
  */
-void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
+void inject_build_dmrpp_metadata_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
 {
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
     auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+
+    auto creation_date = new D4Attribute("created", StringToD4AttributeType("string"));
+    creation_date->add_value(what_time_is_it());
+    version->attributes()->add_attribute_nocopy(creation_date);
 
     auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
     build_dmrpp_version->add_value(CVER);
@@ -1930,7 +1958,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
  * @param dmrpp The DMR++ instance to anontate.
  * @note The DMRpp instance will free all memory allocated by this method.
 */
- void inject_version_and_configuration(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
+ void inject_build_dmrpp_metadata(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
 {
     string bes_configuration;
     string invocation;
@@ -1942,7 +1970,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 
     invocation = recreate_cmdln_from_args(argc, argv);
 
-    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+    inject_build_dmrpp_metadata_worker(dmrpp, bes_configuration, invocation);
 
 }
 
@@ -1956,7 +1984,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
  * @param dmrpp The DMRpp instance to annotate.
  * @note The DMRpp instance will free all memory allocated by this method.
 */
-void inject_version_and_configuration(DMRpp *dmrpp)
+void inject_build_dmrpp_metadata(DMRpp *dmrpp)
 {
     bool found;
 
@@ -1971,7 +1999,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
     invocation = BESContextManager::TheManager()->get_context(INVOCATION_CONTEXT, found);
 
     // Do the work now...
-    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+    inject_build_dmrpp_metadata_worker(dmrpp, bes_configuration, invocation);
 }
 
 
@@ -2002,7 +2030,7 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     add_chunk_information(h5_file_fqn, &dmrpp,disable_dio);
 
     if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+        inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
 
     XMLWriter writer;
