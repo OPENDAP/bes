@@ -1780,7 +1780,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp, bool disabl
  *
  * The supplied file is going to be used by build_dmrpp as the source of variable/dataset chunk information.
  * At the time of this writing only netcdf-4 and hdf5 file encodings are supported (Note that netcdf-4 is a subset of
- * hdf5 and all netcdf-4 files are defacto hdf5 files.)
+ * hdf5 and all netcdf-4 files are de facto hdf5 files.)
  *
  * To that end this function will:
  * * Test that the file exists and can be read from.
