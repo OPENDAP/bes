@@ -116,6 +116,9 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/d_dset_4d.h5_dio
 # We will resume this test until the above ticket is fixed.
 #AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/SMAP_L3_SM_P_20150406_R14010_001.h5_dio.dmrpp.bescmd)
 
+# Handle structure that contains string. 
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/GEDI04.dmrpp.bescmd)
+
 # HDF4
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmrpp.bescmd)
 #AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf_linked_blocks_constraint.dmrpp.bescmd)

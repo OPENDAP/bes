@@ -117,7 +117,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     if (code == "AccessDenied") {
         stringstream msg;
         msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: "
-            << data_url->protocol() << "://" << data_url->host() << data_url->path() << ") Object Store Message: "
+            << data_url->protocol() << data_url->host() << data_url->path() << " Object Store Message: "
             << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str() << endl);
@@ -965,6 +965,14 @@ void Chunk::load_fill_values() {
         is_big_endian = true;
     const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value,is_big_endian);
 
+    // If a string is empty, current build_dmrpp will assign an "" to fillvalue and causes the value size to be 0.
+    if(d_fill_value_type == libdap::dods_str_c && d_fill_value==""){
+        d_fill_value = ' ';
+        value_size = 1;
+    }
+
+    if (value_size == 0) 
+       throw BESInternalError("The size of fill value should NOT be 0.", __FILE__,__LINE__);
     unsigned long long num_values = get_rbuf_size() / value_size;
 
     char *buffer = get_rbuf();

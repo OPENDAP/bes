@@ -216,6 +216,10 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_array.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple2_array.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_group_simple.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_scalar_vlen_str.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_scalar_memb_str_array.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_array_fix_vlen_str.h5.dmrpp.bescmd>test.nc
+
 
 #HDF4 support
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vg_hl_test.hdf.dmrpp.bescmd>test.nc
@@ -232,9 +236,25 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_packed_li
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_unlimited_2_constraint.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_unlimited_0.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid_ll.hdf.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid_ll_constraint.hdf.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid.hdf.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid_ll_constraint.hdf.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/sinusoid_nmd.hdf.dmrpp.bescmd >test.nc
+
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/cea_ll.hdf.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h_swath.hdf.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/PointFile.hdf.dmrpp.bescmd >test.nc
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_test.hdf.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_packed_linked_blocks.hdf.bescmd >test.nc
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.constraint.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.bescmd >test.nc
+
+#disable dio
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.disable_dio.conf -i tests/bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd>test.nc
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4

@@ -8,6 +8,8 @@
 #define HDFCFUTIL_H
 
 #include <stdlib.h>
+#include <sys/file.h>
+#include <cstring>
 #include <string>
 #include <iostream>
 #include <sstream>

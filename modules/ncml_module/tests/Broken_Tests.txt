@@ -1,0 +1,12 @@
+
+These are the tests that often break in the CI/CD build. jhrg 3/31/23
+
+587: Comparing dds response for agg/joinExist_ugrid_scan.ncml to baseline ${abs_srcdir}/baselines/agg/joinExist_ugrid_scan.ncml  ok
+586: Comparing das response for agg/joinExist_ugrid_scan.ncml to baseline ${abs_srcdir}/baselines/agg/joinExist_ugrid_scan.ncml  ok
+588: Comparing ddx response for agg/joinExist_ugrid_scan.ncml to baseline ${abs_srcdir}/baselines/agg/joinExist_ugrid_scan.ncml  ok
+
+621: Comparing ddx response for agg/joinExisting_load_ncoords.ncml to baseline ${abs_srcdir}/baselines/agg/joinExisting_load_ncoords.ncml  ok
+623: Comparing das response for agg/joinExist_scan.ncml to baseline ${abs_srcdir}/baselines/agg/joinExist_scan.ncml  ok
+624: Comparing dds response for agg/joinExist_scan.ncml to baseline ${abs_srcdir}/baselines/agg/joinExist_scan.ncml  ok
+
+All the failing tests use NCML with the scan element except for 621.

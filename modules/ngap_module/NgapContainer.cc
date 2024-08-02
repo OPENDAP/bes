@@ -91,6 +91,7 @@ void NgapContainer::set_real_name_using_cmr_or_cache() {
 #endif
 
     bool found;
+    // FIXME This should look for a token from the OLFS, too. jhrg 5/24/24
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
@@ -200,12 +201,7 @@ bool NgapContainer::inject_data_url() {
  * @exception BESError if there is a problem making the remote request if one is needed.
  */
 bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) const {
-#ifndef NDEBUG
-    BESStopWatch besTimer;
-    if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
-        besTimer.start("NGAP Container access: " + get_real_name());
-    }
-#endif
+    BES_STOPWATCH_START(MODULE, "NGAP Container access: " + get_real_name());
 
     if (NgapRequestHandler::d_use_dmrpp_cache) {
         if (NgapRequestHandler::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
@@ -242,32 +238,20 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
 
     // Else, the DMR++ is neither in the memory cache nor the file cache.
     // Read it from S3, etc., and filter it. Put it in the memory cache.
-#ifndef NDEBUG
-    BESStopWatch besTimer2;
-    if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
-        besTimer2.start("DMR++ retrieval: " + dmrpp_url_str);
-    }
-#endif
+    BES_STOPWATCH_START(MODULE, "DMR++ retrieval: " + dmrpp_url_str);
 
     try {
         // This code throws an exception if there is a problem. jhrg 11/16/23
         curl::http_get(dmrpp_url_str, dmrpp_string);
     }
     catch (http::HttpError &http_error) {
-        string err_msg = "Hyrax encountered a Service Chaining Error while attempting to retrieve a dmr++ file.\n"
+        string err_msg = prolog + "Hyrax encountered a Service Chaining Error while attempting to retrieve a dmr++ file.\n"
                          "This could be a problem with TEA (the AWS URL signing authority),\n"
                          "or with accessing the dmr++ file at its resident location (typically S3).\n"
                          + http_error.get_message();
         http_error.set_message(err_msg);
         throw;
     }
-
-#if 0
-    vector<char> buffer;
-    curl::http_get(dmrpp_url_str, buffer);
-    copy(buffer.begin(), buffer.end(), back_inserter(dmrpp_string));
-    buffer.clear(); // keep the original for as little time as possible.
-#endif
 
     map<string, string, std::less<>> content_filters;
     if (get_content_filters(content_filters)) {
@@ -281,15 +265,16 @@ bool NgapContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) 
         CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name() + '\n');
 
         FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
-        if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
+        auto key = FileCache::hash_key(get_real_name());
+        if (NgapRequestHandler::d_dmrpp_file_cache.put(key, item)) {
             // Do this in a child thread someday. jhrg 11/14/23
             if (write(item.get_fd(), dmrpp_string.data(), dmrpp_string.size()) != dmrpp_string.size()) {
                 ERROR_LOG("NgapContainer::access() - failed to write DMR++ to file cache\n");
                 return false;
             }
-            CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
+            CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + ", key: " + key + '\n');
         } else {
-            ERROR_LOG("NgapContainer::access() - failed to put DMR++ in file cache\n");
+            ERROR_LOG("NgapContainer::access() - failed to put DMR++ in file cache: " + get_real_name() + ", key: " + key + '\n');
             return false;
         }
 

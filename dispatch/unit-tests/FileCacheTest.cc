@@ -422,40 +422,6 @@ public:
             // child process
             // sleep here to give the parent a head start, not much use.
             bool xor_status = multiple_put_operations(fc, source_file);
-#if 0
-            auto f1 = async(launch::async,
-                            [source_file, &fc](const string &key) -> bool {
-                                // give the other threads a head start
-                                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-                                bool status = fc.put(key, source_file);
-                                return status;
-                            },
-                            "key1");
-            auto f2 = async(launch::async,
-                            [source_file, &fc](const string &key) -> bool {
-                                bool status = fc.put(key, source_file);
-                                return status;
-                            },
-                            "key1");
-            auto f3 = async(launch::async,
-                            [source_file, &fc](const string &key) -> bool {
-                                bool status = fc.put(key, source_file);
-                                return status;
-                            },
-                            "key1");
-
-            DBG(cerr << "Start querying\n" );
-
-            bool f1_status = f1.get();
-            bool f2_status = f2.get();
-            bool f3_status = f3.get();
-            DBG(cerr << "f1_status: " << f1_status << '\n');
-            DBG(cerr << "f2_status: " << f2_status << '\n');
-            DBG(cerr << "f3_status: " << f3_status << '\n');
-            bool xor_status = (f1_status && !f2_status && !f3_status) ||
-                              (!f1_status && f2_status && !f3_status) ||
-                              (!f1_status && !f2_status && f3_status);
-#endif
 
             DBG(cerr << prolog << "child process put() status: " << xor_status << '\n');
             exit(xor_status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
@@ -466,40 +432,7 @@ public:
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
             bool xor_status = multiple_put_operations(fc, source_file);
-#if 0
-            auto f1 = async(launch::async,
-                            [source_file, &fc](const string &key) -> bool {
-                                // give the other threads a head start
-                                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-                                bool status = fc.put(key, source_file);
-                                return status;
-                            },
-                            "key1");
-            auto f2 = async(launch::async,
-                            [source_file, &fc](const string &key) -> bool {
-                                bool status = fc.put(key, source_file);
-                                return status;
-                            },
-                            "key1");
-            auto f3 = async(launch::async,
-                            [source_file, &fc](const string &key) -> bool {
-                                bool status = fc.put(key, source_file);
-                                return status;
-                            },
-                            "key1");
 
-            DBG(cerr << "Start querying\n" );
-
-            bool f1_status = f1.get();
-            bool f2_status = f2.get();
-            bool f3_status = f3.get();
-            DBG(cerr << "f1_status: " << f1_status << '\n');
-            DBG(cerr << "f2_status: " << f2_status << '\n');
-            DBG(cerr << "f3_status: " << f3_status << '\n');
-            bool xor_status = (f1_status && !f2_status && !f3_status) ||
-                              (!f1_status && f2_status && !f3_status) ||
-                              (!f1_status && !f2_status && f3_status);
-#endif
             int child_status;
             wait(&child_status);
             DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');

@@ -7,11 +7,10 @@ BES.Group = group_name
 BES.LogName = ./bes.log
 BES.LogVerbose = no
 
-BES.modules = dap,cmd,dmrpp,h5,builddmrpp
+BES.modules = dap,cmd,dmrpp,h5
 BES.module.dap = @abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd = @abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dmrpp = @abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
-BES.module.builddmrpp = @abs_top_builddir@/modules/builddmrpp_module/.libs/libbuilddmrpp_module.so
 BES.module.h5 = @abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/dmrpp_module
@@ -47,6 +46,9 @@ AllowedHosts += ^https:\/\/ngap-ssmis\.s3\.amazonaws\.com\/.*$
 
 # The default for DMRPP.MaxParallelTransfers is 8
 # DMRPP.MaxParallelTransfers = 8
+
+# The default for DMPP.DisableDirectIO is false
+# DMRPP.DisableDirectIO= false
 
 CredentialsManager.config=ENV_CREDS
 

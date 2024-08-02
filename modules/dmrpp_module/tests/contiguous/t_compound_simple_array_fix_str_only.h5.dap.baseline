@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_simple_array_fix_str_only.h5">
+    <Structure name="DSC">
+        <String name="year"/>
+        <Dim size="2"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    String year;
+} DSC[2] = {{ "2023" }, { "2024" }};
+

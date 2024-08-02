@@ -454,6 +454,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
                 throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
  
         }
+
     }
 
     if (d_uses_fill_value && !d_fill_value_str.empty()) {
@@ -470,6 +471,14 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         }
     }
 
+    // If the disable_dio flag is true, we will set the DIO=off attribute.
+
+    if (!d_filters.empty() && d_disable_dio == true) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "DIO",
+                                        (const xmlChar *) "off") < 0)
+            throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+    }
+ 
     if (!d_chunk_dimension_sizes.empty()) { //d_chunk_dimension_sizes.size() > 0) {
         // Write element "chunkDimensionSizes" with dmrpp namespace:
         ostringstream oss;
@@ -564,34 +573,61 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
 
 /**
  * @brief Print the Compact base64-encoded information.
+ * @see https://gnome.pages.gitlab.gnome.org/libxml2/devhelp/libxml2-xmlwriter.html#xmlTextWriterWriteElementNS
  */
 void
-DmrppCommon::print_compact_element(XMLWriter &xml, const string &name_space, const std::string &encoded)
+DmrppCommon::print_compact_element(XMLWriter &xml, const string &name_space, const std::string &encoded) const
 {
-    // Write element "compact" with dmrpp namespace:
-    ostringstream oss;
-    copy(encoded.begin(), encoded.end(), ostream_iterator<char>(oss, ""));
-    string sizes = oss.str();
-
     if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
                                     (const xmlChar *) "compact", NULL,
-                                    (const xmlChar *) sizes.c_str()) < 0)
+                                    (const xmlChar *) encoded.c_str()) < 0)
         throw BESInternalError("Could not write compact element.", __FILE__, __LINE__);
 }
 
 void
 DmrppCommon::print_missing_data_element(const XMLWriter &xml, const string &name_space, const std::string &encoded) const
 {
-    // Write element "missing_data" with dmrpp namespace:
-    ostringstream oss;
-    copy(encoded.begin(), encoded.end(), ostream_iterator<char>(oss, ""));
-    string sizes = oss.str();
 
     if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
                                     (const xmlChar *) "missingdata", nullptr,
-                                    (const xmlChar *) sizes.c_str()) < 0)
+                                    (const xmlChar *) encoded.c_str()) < 0)
         throw BESInternalError("Could not write missingdata element.", __FILE__, __LINE__);
 }
+
+void
+DmrppCommon::print_special_structure_element(const XMLWriter &xml, const string &name_space, const std::string &encoded) const
+{
+
+    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
+                                    (const xmlChar *) "specialstructuredata", nullptr,
+                                    (const xmlChar *) encoded.c_str()) < 0)
+        throw BESInternalError("Could not write special structure element.", __FILE__, __LINE__);
+
+}
+ 
+/**
+ * @brief Print the DMR++ missing data XML element
+ * @param xml
+ * @param name_space
+ * @param data
+ * @param length
+ */
+void
+DmrppCommon::print_missing_data_element(const XMLWriter &xml, const string &name_space, const char *data, int length) const
+{
+
+    if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
+                                    (const xmlChar *) "missingdata", nullptr) < 0)
+        throw BESInternalError("Could not start missingdata element.", __FILE__, __LINE__);
+
+    if (xmlTextWriterWriteBase64(xml.get_writer(), data, 0, length) < 0)
+        throw BESInternalError("Could not write the base 64 data for the  missingdata element.", __FILE__, __LINE__);
+
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw BESInternalError("Could not end missingdata element.", __FILE__, __LINE__);
+}
+
+
 /**
  * @brief Print the DMR++ response for the Scalar types
  *

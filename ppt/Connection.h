@@ -42,22 +42,17 @@
 
 class Connection: public BESObj {
 protected:
-	Socket *_mySock;
-	std::ostream *_out;
-	bool _brokenPipe;
+	Socket *_mySock = nullptr;
+	std::ostream *_out = nullptr;
+	bool _brokenPipe = false;
 
-	Connection() :
-			_mySock(0), _out(0), _brokenPipe(false)
-	{
-	}
+	Connection() = default;
 
 	virtual void send(const std::string &buffer) = 0;
 	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions) = 0;
 
 public:
-	virtual ~Connection()
-	{
-	}
+	~Connection() override = default;
 
 	virtual void initConnection() = 0;
 	virtual void closeConnection() = 0;
@@ -67,7 +62,7 @@ public:
 	virtual void send(const std::string &buffer, std::map<std::string, std::string> &extensions) = 0;
 	virtual void sendExtensions(std::map<std::string, std::string> &extensions) = 0;
 	virtual void sendExit() = 0;
-	virtual bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = 0) = 0;
+	virtual bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = nullptr) = 0;
 
 	virtual Socket * getSocket()
 	{
@@ -97,7 +92,7 @@ public:
 	virtual unsigned int getRecvChunkSize() = 0;
 	virtual unsigned int getSendChunkSize() = 0;
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // Connection_h

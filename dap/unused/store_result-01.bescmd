@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<request reqID="some_unique_value">
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="c" space="catalog">/data/nc/fnoc1.nc</setContainer>
-    <define name="d">
-        <container name="c"/>
-    </define>
-    <get type="dods" definition="d" async="0" store_result="http://localhost:8080/opendap"/>
-</request>

@@ -54,6 +54,7 @@
 #include "Chunk.h"
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
+#include "DmrppStructure.h"
 #include "DmrppStr.h"
 #include "DmrppUrl.h"
 #include "DmrppD4Group.h"
@@ -795,6 +796,10 @@ void DMZ::build_thin_dmr(DMR *dmr)
     }
 }
 
+// This method will check if any variable in this file can apply the direct IO feature.
+// If there is none,a global dio flag will be set to false. By checking the  global flag, 
+// the fileout netCDF module may not need to check every variable in the file to see if 
+// the direct IO can be applied. 
 bool DMZ::set_up_all_direct_io_flags_phase_1(DMR *dmr) {
 
     if (d_xml_doc == nullptr){
@@ -938,6 +943,11 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
             if (endian_str=="LE")
                 is_le = true;
         }
+
+        else if (is_eq(attr.name(), "DIO") && is_eq(attr.value(),"off")) {
+            dc(btp)->set_disable_dio(true);
+            BESDEBUG(PARSER, prolog << "direct IO is disabled : the variable name is: " <<btp->name() << endl);
+        }
     }
 
     // If no deflate filter is used or the deflate_levels is not defined, cannot do the direct IO. return.
@@ -947,6 +957,9 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
      // If the datatype is not little-endian, cannot do the direct IO. return.
      // The big-endian IEEE-floating-point data also needs byteswap. So we cannot do direct IO. KY 2024-03-03
     if (!is_le)
+        return;
+
+    if (dc(btp)->is_disable_dio())
         return;
 #if 0
     // If the datatype is integer and this is not little-endian, cannot do the direct IO. return.
@@ -1505,18 +1518,262 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
     if (btp->type() != dods_array_c) 
         throw BESInternalError("The dmrpp::missing_data element must be the child of an array variable", __FILE__, __LINE__);
 
+    auto *da = dynamic_cast<DmrppArray *>(btp);
+
     vector<Bytef> result_bytes;
-    auto result_size = (uLongf)(btp->width_ll());
+
+    // We need to obtain the total buffer size to retrieve the whole array. 
+    // We cannot use width_ll() since it will return the number of selected elements.
+    auto result_size = (uLongf)(da->get_size(false) *da->prototype()->width());
     result_bytes.resize(result_size);
+
     int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
-    if(retval != 0)
+    if (retval != 0)
         throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
 
-    btp->val2buf(reinterpret_cast<void *>(result_bytes.data()));
+    if (da->is_projected()) {
+
+        int64_t num_buf_bytes = da->width_ll(true);
+        vector<unsigned char> buf_bytes;
+        buf_bytes.resize(num_buf_bytes); 
+        vector<unsigned long long> da_dims = da->get_shape(false);
+        unsigned long subset_index = 0;
+        vector<unsigned long long> subset_pos;
+        handle_subset(da,da->dim_begin(),subset_index, subset_pos,buf_bytes,result_bytes);
+
+        da->val2buf(reinterpret_cast<void *>(buf_bytes.data()));
+
+    }
+    else 
+        da->val2buf(reinterpret_cast<void *>(result_bytes.data()));
+
+    da->set_read_p(true);
+ 
+}
+
+bool 
+DMZ::supported_special_structure_type_internal(Constructor *var_ctor) {
+
+    bool ret_value = true;
+    Constructor::Vars_iter vi = var_ctor->var_begin();
+    Constructor::Vars_iter ve = var_ctor->var_end();
+    for (; vi != ve; vi++) {
+
+        BaseType *bt = *vi;
+        Type t_bt = bt->type();
+
+        // Only support array or scalar of float/int/string.
+        if (libdap::is_simple_type(t_bt) == false) {
+
+            if (t_bt != dods_array_c) {
+                ret_value = false;
+                break;
+            }
+            else {
+                auto t_a = dynamic_cast<Array *>(bt);
+                Type t_array_var = t_a->var()->type();
+                if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
+                    ret_value = false;
+                    break;
+                }
+            }
+        }
+        else if (t_bt == dods_url_c || t_bt == dods_enum_c || t_bt==dods_opaque_c) {
+            ret_value = false;
+            break;
+        }
+    }
+
+    return ret_value;
+
+}
+
+bool 
+DMZ::supported_special_structure_type(BaseType *btp)
+{
+    bool ret_value = false;
+    Type t = btp->type();
+    if ((t == dods_array_c && btp->var()->type() == dods_structure_c) || t==dods_structure_c) {
+        Constructor *var_constructor = nullptr;
+        if (t==dods_structure_c)
+            var_constructor = dynamic_cast<Constructor*>(btp);
+        else 
+            var_constructor = dynamic_cast<Constructor*>(btp->var());   
+        if (!var_constructor){
+            throw BESInternalError(
+                        prolog + "Failed to cast  " + btp->var()->type_name() + " " + btp->name() +
+                        " to an instance of Constructor." , __FILE__, __LINE__);
+        }
+ 
+        ret_value = supported_special_structure_type_internal(var_constructor);       
+
+    }
+    return ret_value;
+
+}
+
+void
+DMZ::process_special_structure_data(BaseType *btp, const xml_node &special_structure_data)
+{
+    BESDEBUG(PARSER, prolog << "Coming to process_special_structure_data() " << endl);
+
+    if (supported_special_structure_type(btp) == false) 
+        throw BESInternalError("The dmrpp::the datatype is not a supported special  structure variable", __FILE__, __LINE__);
+
+    auto char_data = special_structure_data.child_value();
+    if (!char_data)
+        throw BESInternalError("The dmrpp::special_structure_data doesn't contain special structure data values.",__FILE__,__LINE__);
+
+    std::vector <u_int8_t> values = base64::Base64::decode(char_data);
+    size_t total_value_size = values.size();
+
+    if(btp->type() == dods_array_c) {
+
+        auto ar = dynamic_cast<DmrppArray *>(btp);
+        if(ar->is_projected())
+            throw BESInternalError("The dmrpp::currently we don't support subsetting of special_structure_data.",__FILE__,__LINE__);
+
+        int64_t nelms = ar->length_ll();
+        size_t values_offset = 0;
+
+        for (int64_t element = 0; element < nelms; ++element) {
+        
+            auto dmrpp_s = dynamic_cast<DmrppStructure*>(ar->var()->ptr_duplicate());
+            if(!dmrpp_s)                   
+                throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
+
+            process_special_structure_data_internal(dmrpp_s, values, total_value_size, values_offset);
+            ar->set_vec_ll((uint64_t)element,dmrpp_s);
+            delete dmrpp_s;
+        }
+    }
+    else {
+
+        size_t values_offset = 0;
+        auto dmrpp_s = dynamic_cast<DmrppStructure*>(btp);
+        if(!dmrpp_s)                   
+                throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
+        process_special_structure_data_internal(dmrpp_s,  values , total_value_size, values_offset);
+    }
+   
     btp->set_read_p(true);
  
 }
 
+void DMZ::process_special_structure_data_internal(DmrppStructure * dmrpp_s,  std::vector<u_int8_t> &values , size_t total_value_size, size_t & values_offset){
+
+    Constructor::Vars_iter vi = dmrpp_s->var_begin();
+    Constructor::Vars_iter ve = dmrpp_s->var_end();
+
+    for (; vi != ve; vi++) {
+        BaseType *bt = *vi;
+        Type t_bt = bt->type();
+        if (libdap::is_simple_type(t_bt) && t_bt != dods_str_c && t_bt != dods_url_c && t_bt!= dods_enum_c && t_bt!=dods_opaque_c) {
+
+            BESDEBUG("dmrpp", "var name is: " << bt->name() << "'" << endl);
+            BESDEBUG("dmrpp", "var values_offset is: " << values_offset << "'" << endl);
+            bt->val2buf(values.data() + values_offset);
+            values_offset += bt->width_ll();
+        }
+        else if (t_bt == dods_str_c) {
+             BESDEBUG("dmrpp", "var string name is: " << bt->name() << "'" << endl);
+            BESDEBUG("dmrpp", "var string values_offset is: " << values_offset << "'" << endl);
+            if (total_value_size < values_offset)
+                throw InternalErr(__FILE__, __LINE__, "The offset of the retrieved value is out of the boundary.");
+            size_t rest_buf_size = total_value_size - values_offset;
+            u_int8_t* start_pointer = values.data() + values_offset;
+            vector<char>temp_buf;
+            temp_buf.resize(rest_buf_size);
+            memcpy(temp_buf.data(),(void*)start_pointer,rest_buf_size);
+            // find the index of first ";", the separator
+            size_t string_stop_index =0;
+            vector<char> string_value;
+            for (size_t i = 0; i <rest_buf_size; i++) {
+                if(temp_buf[i] == ';') {
+                    string_stop_index = i;
+                    break;
+                }
+                else
+                   string_value.push_back(temp_buf[i]);
+            }
+            string encoded_str(string_value.begin(),string_value.end());
+            vector <u_int8_t> decoded_str = base64::Base64::decode(encoded_str);
+            vector <char> decoded_vec;
+            decoded_vec.resize(decoded_str.size());
+            memcpy(decoded_vec.data(),(void*)decoded_str.data(),decoded_str.size());
+            string final_str(decoded_vec.begin(),decoded_vec.end());
+            bt->val2buf(&final_str);
+            values_offset = values_offset + string_stop_index+1;
+        }
+
+        else if (t_bt == dods_array_c) {
+            BESDEBUG("dmrpp", "var array name is: " << bt->name() << "'" << endl);
+            BESDEBUG("dmrpp", "var array values_offset is: " << values_offset << "'" << endl);
+
+            auto t_a = dynamic_cast<Array *>(bt);
+            Type ar_basetype = t_a->var()->type();
+            if (libdap::is_simple_type(ar_basetype) && ar_basetype != dods_str_c && ar_basetype != dods_url_c && ar_basetype!= dods_enum_c && ar_basetype!=dods_opaque_c) {
+                bt->val2buf(values.data() + values_offset);
+                values_offset += bt->width_ll();
+            }
+            else if (ar_basetype == dods_str_c) {
+
+                if(total_value_size < values_offset)
+                    throw InternalErr(__FILE__, __LINE__, "The offset of the retrieved value is out of the boundary.");
+
+                size_t rest_buf_size = total_value_size - values_offset;
+                u_int8_t* start_pointer = values.data() + values_offset;
+                vector<char>temp_buf;
+                temp_buf.resize(rest_buf_size);
+                memcpy(temp_buf.data(),(void*)start_pointer,rest_buf_size);
+
+                int64_t num_ar_elems = t_a->length_ll();
+
+                // We need to create a vector of string to pass the string array.
+                // Each string's encoded value is separated by ';'.
+                vector<string> encoded_str;
+                encoded_str.resize(num_ar_elems);
+
+                unsigned int str_index = 0;
+                size_t string_stop_index = 0;
+                for (size_t i = 0; i <rest_buf_size; i++) {
+                    if(temp_buf[i] != ';') 
+                        encoded_str[str_index].push_back(temp_buf[i]);
+                    else {
+                        str_index++;
+                        if (str_index == num_ar_elems) {
+                            string_stop_index = i;
+                            break;
+                        }
+                    }
+                }
+
+                vector<string> final_str;
+                final_str.resize(num_ar_elems);
+
+                // decode the encoded string
+                for (size_t i = 0; i <num_ar_elems; i++) {
+
+                    string temp_encoded_str(encoded_str[i].begin(),encoded_str[i].end());
+                    vector <u_int8_t> decoded_str = base64::Base64::decode(temp_encoded_str);
+                    vector <char> decoded_vec;
+                    decoded_vec.resize(decoded_str.size());
+                    memcpy(decoded_vec.data(),(void*)decoded_str.data(),decoded_str.size());
+                    string temp_final_str(decoded_vec.begin(),decoded_vec.end());
+                    final_str[i] = temp_final_str;
+                }
+
+                t_a->set_value_ll(final_str,num_ar_elems);
+                values_offset = values_offset + string_stop_index+1;
+    
+            }
+            else
+                throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float or string.  Currently it is not supported.");
+        }
+    }
+    dmrpp_s->set_read_p(true);
+ 
+}
 
 
 /**
@@ -1706,6 +1963,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
         else if (is_eq(attr.name(), "byteOrder"))
             dc(btp)->ingest_byte_order(attr.value());
+        
     }
 
     // reset one_chunk_fillvalue to false if has_fill_value = false
@@ -1870,6 +2128,7 @@ void DMZ::load_chunks(BaseType *btp)
     int compact_found = 0;
     int vlsa_found = 0;
     int missing_data_found = 0;
+    int special_structure_data_found = 0;
 
     // Chunked data
     if (process_chunks(btp, var_node)) {
@@ -1993,24 +2252,120 @@ void DMZ::load_chunks(BaseType *btp)
         process_missing_data(btp, missing_data);
     }
 
+    auto special_structure_data = var_node.child("dmrpp:specialstructuredata");
+    if (special_structure_data) {
+        special_structure_data_found = 1;
+        process_special_structure_data(btp, special_structure_data);
+    }
+    
     auto vlsa_element = var_node.child(DMRPP_VLSA_ELEMENT);
     if (vlsa_element) {
         vlsa_found = 1;
         process_vlsa(btp, vlsa_element);
     }
 
-    // Here we (optionally) check that exactly one of the three types of node was found
+    // Here we (optionally) check that exactly one of the supported types of node was found
     if (DmrppRequestHandler::d_require_chunks) {
-        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found + missing_data_found;
+        int elements_found = chunks_found + chunk_found + compact_found + vlsa_found + missing_data_found + special_structure_data_found;
         if (elements_found != 1) {
             ostringstream oss;
-            oss << "Expected chunk, chunks or compact or variable length string or missing data information in the DMR++ data. Found " << elements_found
+            oss << "Expected chunk, chunks or compact or variable length string or missing data or special structure data information in the DMR++ data. Found " << elements_found
                 << " types of nodes.";
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
     }
 
     dc(btp)->set_chunks_loaded(true);
+}
+
+void DMZ::handle_subset(DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsigned long & subset_index, vector<unsigned long long> & subset_pos,
+                        vector<unsigned char>& subset_buf, vector<unsigned char>& whole_buf) {
+
+    // Obtain the number of elements in each dimension 
+    vector<unsigned long long> da_dims = da->get_shape(false);
+
+    // Obtain the number of bytes of each element
+    unsigned int bytes_per_elem = da->prototype()->width();
+
+    // Obtain the start, stop and stride for this each dimension
+    uint64_t start = da->dimension_start_ll(dim_iter, true);
+    uint64_t stop = da->dimension_stop_ll(dim_iter, true);
+    uint64_t stride = da->dimension_stride_ll(dim_iter, true);
+
+    dim_iter++;
+
+    // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
+    // See the else clause for the general case.
+    if (dim_iter == da->dim_end() && stride == 1) {
+
+        // For the start and stop indexes of the subset, get the matching indexes in the whole array.
+        subset_pos.push_back(start);
+        unsigned long long start_index = INDEX_nD_TO_1D( da_dims,subset_pos);
+        subset_pos.pop_back();
+
+        subset_pos.push_back(stop);
+        unsigned long long stop_index = INDEX_nD_TO_1D( da_dims,subset_pos);
+        subset_pos.pop_back();
+
+        // Copy data block from start_index to stop_index
+        unsigned char * temp_subset_buf = subset_buf.data() + subset_index*bytes_per_elem;
+        unsigned char * temp_whole_buf = whole_buf.data() + start_index*bytes_per_elem;
+        size_t num_bytes_to_copy = (stop_index-start_index+1)*bytes_per_elem;
+
+        memcpy(temp_subset_buf,temp_whole_buf,num_bytes_to_copy);
+
+        // Move the subset_index to the next location.
+        subset_index = subset_index +(stop_index-start_index+1);
+
+    }
+    else {
+        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+
+            // Is it the last dimension?
+            if (dim_iter != da->dim_end()) {
+                // Nope! Then we recurse to the last dimension to read stuff
+                subset_pos.push_back(myDimIndex);
+
+                // The recursive function will fill in the subset_pos until the dim_end().
+                handle_subset(da,dim_iter,subset_index, subset_pos,subset_buf,whole_buf);
+                subset_pos.pop_back();
+            }
+            else {
+                // We are at the last (innermost) dimension, so it's time to copy values.
+                subset_pos.push_back(myDimIndex);
+                unsigned int sourceIndex = INDEX_nD_TO_1D( da_dims,subset_pos); 
+                subset_pos.pop_back();
+
+                unsigned char * temp_subset_buf = subset_buf.data() + subset_index*bytes_per_elem;
+                unsigned char * temp_whole_buf = whole_buf.data() + sourceIndex*bytes_per_elem;
+                memcpy(temp_subset_buf,temp_whole_buf,bytes_per_elem);
+ 
+                subset_index++;
+            }
+        }
+    }
+}
+
+// Return the index of the pos in nD array to the equivalent pos in 1D array
+size_t DMZ::INDEX_nD_TO_1D (const std::vector < unsigned long long > &dims,
+                                 const std::vector < unsigned long long > &pos) {
+    //
+    //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"
+    //  "int b[10][2] // &b[1][1] == b + (2*1 + 1)"
+    //
+    if(dims.size () != pos.size ())
+        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");
+    size_t sum = 0;
+    size_t  start = 1;
+
+    for (const auto & one_pos:pos) {
+        size_t m = 1;
+        for (size_t j = start; j < dims.size (); j++)
+            m *= dims[j];
+        sum += m * one_pos;
+        start++;
+    }
+    return sum;
 }
 
 /// @}

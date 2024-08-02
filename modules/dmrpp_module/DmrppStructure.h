@@ -58,12 +58,17 @@ public:
 
     void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override;
 
-
     virtual void dump(ostream & strm) const;
+    vector<char> & get_structure_str_buffer() { return d_structure_str_buf;}
+
+    void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;} 
+    bool get_special_structure_flag() const { return is_special_structure;} 
 
 private:
     void structure_read(vector<char> &values, size_t &values_offset, bool byte_swap);
     void swap_bytes_in_structure(char*swap_value, libdap::Type t_bt, int64_t num_eles) const;
+    vector<char> d_structure_str_buf;
+    bool is_special_structure = false;
     friend class DmrppArray;
 };
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_simple_scalar_vlen_str.h5" dmrpp:version="3.21.0" dmrpp:href="data/dmrpp/compound_simple_scalar_vlen_str.h5">
+    <Structure name="DSC_scalar">
+        <Int32 name="Orbit"/>
+        <Float32 name="Temperature"/>
+        <String name="year"/>
+        <dmrpp:chunks fillValue="0"/>
+        <dmrpp:specialstructuredata>gQQAAIXrVEJNakF5TXc9PTs=</dmrpp:specialstructuredata>
+    </Structure>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.0</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>/Users/myang6/work/opendap/hyrax-1295/bes/modules/dmrpp_module/.libs/build_dmrpp -f compound_simple_scalar_vlen_str.h5 -r compound_simple_scalar_vlen_str.h5.dmr.bescmd.baseline -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

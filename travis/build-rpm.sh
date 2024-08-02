@@ -39,14 +39,14 @@ fi
 
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
-aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
 
+aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
 
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
 # The Centos7 dependencies are tarred so they include /root for a reason
 # that escapes me. For CentOS Stream8, we have to CD to /root before expanding
 # the tar ball to get the dependencies in /root/install. jhrg 2/11/22
-if test -n $OS -a $OS = centos-stream8
+if test -n $OS -a $OS = rocky8 -o $OS = centos-stream8
 then
   tar -C /$HOME -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 else
@@ -70,7 +70,7 @@ cd $HOME/travis
 # The build needs these environment variables because CentOS 8 lacks the stock
 # XDR/RPC libraries. Those were added to the docker image via the tirpc package.
 # jhrg 2/11/22
-if test -n $OS -a $OS = centos-stream8
+if test -n $OS -a $OS = rocky8 -o $OS = centos-stream8
 then
   export CPPFLAGS=-I/usr/include/tirpc
   export LDFLAGS=-ltirpc
@@ -92,5 +92,3 @@ make -j16 all-static-rpm
 
 # Just a little reassurance... jhrg 3/23/21
 ls -l $HOME/rpmbuild/RPMS/x86_64/
-
-################################################################################################

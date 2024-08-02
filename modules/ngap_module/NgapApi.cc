@@ -285,7 +285,13 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
  * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
  * NGAP API restified path. This method will parse the CMR response to the query and extract the
  * granule's "GET DATA" URL and return it.
- * @param restified_path THe restified path used to form the CMR query
+ *
+ * @note This method uses a heuristic to get an HTTPS URL to the granule from the CMR UMM-G
+ * JSON. The process it follows is, look in the RelatedUrls array for an entry with a
+ *  1. A TYPE of Type 'GET DATA' with a URL that uses the https:// protocol where that URL does
+ *  not end in 'xml'. The latter characteristic was added for records added by LPDAAC. jhrg 5/22/24
+ *
+ * @param restified_path The restified path used to form the CMR query (only used for error messages)
  * @param cmr_granules The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  The "GET DATA" URL for the granule.
  */
@@ -294,8 +300,8 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
     const rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
     if (hits < 1) {
-        throw BESNotFoundError(string("The specified path '").append(restified_path).append(
-                "' does not identify a granule in CMR."), __FILE__, __LINE__);
+        throw BESNotFoundError(string("The specified path '") + restified_path
+                + "' does not identify a granule in CMR.", __FILE__, __LINE__);
     }
 
     rapidjson::Value &items = cmr_granule_response["items"];
@@ -322,6 +328,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
         if (mitr == umm.MemberEnd()) {
             throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
         }
+
         rapidjson::Value &related_urls = mitr->value;
 
         if (!related_urls.IsArray()) {
@@ -363,8 +370,11 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
 
                 // Because a member of RelatedUrls may contain a URL of Type GET DATA with the s3:// protocol
                 // as well as a Type GET DATA URL which uses https:// or http://
+                // Added test that the URL does not end in 'xml' to avoid the LPDAAC .cmr.xml records. jhrg 5/22/24
                 string candidate_url = r_url.GetString();
-                if (candidate_url.compare(0, 8, "https://") == 0 || candidate_url.compare(0, 7, "http://") == 0) {
+
+                if ((candidate_url.rfind("https://", 0) == 0 || candidate_url.rfind("http://", 0) == 0)
+                    && candidate_url.find(".xml", candidate_url.size()-5) == string::npos) {
                     data_access_url = candidate_url;
                 }
             }
@@ -383,7 +393,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
  * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
  *
  * The NGAP module's "restified" interface utilizes a google-esque set of
- * ordered key value pairs using the "/" character as field seperatror.
+ * ordered key value pairs using the "/" character as field separator.
  *
  * The NGAP container the "restified_path" will follow the template:
  *
@@ -414,7 +424,7 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
         curl::http_get(cmr_query_url, cmr_json_string);
     }
     catch (http::HttpError &http_error) {
-        string err_msg = "Hyrax encountered a Service Chaining Error while "
+        string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "
                          "attempting to retrieve a CMR record.\n" + http_error.get_message();
         http_error.set_message(err_msg);
         throw;

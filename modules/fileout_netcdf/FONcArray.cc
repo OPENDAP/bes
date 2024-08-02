@@ -268,7 +268,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
     // may be time and one year is 365 days. We want to still keep the one day per slice if possible. 512 is not too big. 
     // The chunk overhead is not that big.
     // KY 2023-01-29
-    // One more optimiziation: if the sizes of two fastest changing dimensions are much less than 1M(1024x1024),given
+    // One more optimization: if the sizes of two fastest changing dimensions are much less than 1M(1024x1024),given
     // that the higher dimension size may be large, we allow the chunk size grow to 1M and then if we still find the number of
     // higher dimension size is >512, we then grow the chunk size gradually. This will make the bigger array size not hold
     // too many chunks.
@@ -292,8 +292,8 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         BESDEBUG("fonc", "FONcArray::CHUNK - two fastest dimchunk_sizes " << two_fastest_chunk_dim_sizes << endl);
 
         // Set the chunk sizes for the rest dimensions if the array size is not too big.
-        // Calculate the dimension index when the total chunk sizes exceed 1024x1024.
-        // Without doing this, an extreme case is that a 511x1x1 array will set chunk size to 1x1x1, we don't want this to happen. 
+        // Calculate the dimension index when the size of the total chunk size exceeds 1024x1024.
+        // Without doing this, an extreme case such as a 511x1x1 array will set chunk size to 1x1x1, we don't want this to happen.
  
         size_t rest_dim_stop_index = d_a->dimensions()-2;
 
@@ -352,7 +352,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
             }
             else {
                 d_chunksize_it = d_chunksizes.insert(d_chunksize_it,left_higher_dim_chunk_size);
-                // Set the left higher dim chunk size to 1 since all the left hgher chunk dimension size(if any) should be 1.
+                // Set the left higher dim chunk size to 1 since all the left higher chunk dimension size(if any) should be 1.
                 left_higher_dim_chunk_size = 1;
             }
         }
@@ -380,6 +380,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // For NC_CHAR, the module needs to call the intern_data().  
         // This routine is called in the convert(). So it should not called in define().
         // FIXME Patch for HYRAX-1334 jhrg 2/14/24
+
         if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
             d_a->intern_data();
         else
@@ -934,7 +935,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
                 // There's no practical way to get rid of the value copy, be here we
                 // read directly from libdap::Array object's memory.
                 vector<short> data(d_nelements);
-                for (size_t d_i = 0; d_i < d_nelements; d_i++)
+                for (size_t d_i = 0; d_i < d_nelements; d_i++) 
                     data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
 
                 int stax = nc_put_var_short(ncid, d_varid, data.data());
@@ -1051,6 +1052,8 @@ void FONcArray::write_string_array(int ncid) {
                 if (var_start[dim] == d_dim_sizes[dim]) {
                     var_start[dim] = 0;
                     dim--;
+		    if (dim <0)
+	                 break;
                 }
                 else {
                     done = true;
@@ -1307,6 +1310,7 @@ void FONcArray::write_direct_io_data(int ncid, int d_varid) {
 
     char dummy_buffer[1];
 
+    BESDEBUG("fonc", "FONcArray() - direct IO write " << endl);
     // The following call doesn't write any data but set up the necessary operations for sending data directly.
     int stax = nc_put_var(ncid, d_varid, dummy_buffer);
     if (stax != NC_NOERR) {
@@ -1319,7 +1323,6 @@ void FONcArray::write_direct_io_data(int ncid, int d_varid) {
     for (const auto & var_chunk_info:dmrpp_vs_info.var_chunk_info) {
 
         Array::var_chunk_info_t vci = var_chunk_info;
-
         // May use the vector to replace new[] later. 
         auto chunk_buf = new char[vci.chunk_buffer_size];
         memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);

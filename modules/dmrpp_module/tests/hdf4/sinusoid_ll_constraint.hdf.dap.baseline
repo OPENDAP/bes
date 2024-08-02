@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="sinusoid.hdf">
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.19</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName=&quot;grid1&quot;
+		XDim=4
+		YDim=4
+		UpperLeftPointMtrs=(-20000000.000000,1000000.000000)
+		LowerRightMtrs=(-19000000.000000,0.000000)
+		Projection=GCTP_SNSOID
+		ProjParams=(6371007.181000,0,0,0,0,0,0,0,0,0,0,0,0)
+		SphereCode=-1
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;temperature&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Group name="grid1">
+        <Float64 name="Longitude">
+            <Dim size="2"/>
+            <Dim size="2"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1 lon</Value>
+            </Attribute>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                removed checksum
+            </Attribute>
+        </Float64>
+    </Group>
+</Dataset>
+
+The data:
+Float64 Longitude[2][2] = {{-178.169389188337, -175.899715440715},{-176.797839954269, -174.545638171412}};
+

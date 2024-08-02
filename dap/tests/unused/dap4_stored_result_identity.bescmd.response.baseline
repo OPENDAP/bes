@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<?xml-stylesheet type='text/xsl' href='/opendap/xsl/asyncResponse.xsl'?>
-<dap:AsynchronousResponse status="accepted" xmlns:dap="http://xml.opendap.org/ns/DAP/4.0#">
-    <dap:expectedDelay seconds="0"/>
-    <dap:responseLifetime seconds="0"/>
-    <dap:link href="http:/localhost:8080/opendap/data/stored_results/result_13321039658414318825.dap"/>
-</dap:AsynchronousResponse>

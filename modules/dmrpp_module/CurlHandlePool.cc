@@ -237,7 +237,7 @@ void dmrpp_easy_handle::read_data() {
             curl::super_easy_perform(d_handle);
         }
         catch (http::HttpError &http_error) {
-            string err_msg = "Hyrax encountered a Service Chaining Error while attempting to acquire "
+            string err_msg = prolog + "Hyrax encountered a Service Chaining Error while attempting to acquire "
                              "granule data from a remote source.\n"
                              "This could be a problem with TEA (the AWS URL signing authority),\n"
                              "or with accessing data granule at its resident location (typically S3).\n"

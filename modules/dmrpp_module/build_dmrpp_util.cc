@@ -28,6 +28,8 @@
 #include <memory>
 #include <iterator>
 #include <unordered_set>
+#include <iomanip>      // std::put_time()
+#include <ctime>      // std::gmtime_r()
 
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
@@ -42,6 +44,8 @@
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
 
+#include <Base64.h>
+
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
@@ -53,6 +57,7 @@
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppArray.h"
+#include "DmrppStructure.h"
 #include "D4ParserSax2.h"
 
 #include "UnsupportedTypeException.h"
@@ -206,7 +211,7 @@ DmrppArray *toDA(BaseType *btp){
  * @param dataset_id The HDF5 dataset id
  * @param dc A pointer to the DmrppCommon instance for that dataset_id
  */
-static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
+static void set_filter_information(hid_t dataset_id, DmrppCommon *dc, bool disable_dio) {
 
     hid_t plist_id = create_h5plist(dataset_id);
 
@@ -248,6 +253,8 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
         filters = filters.substr(0, filters.size() - 1);
         dc->set_filter(filters);
         dc->set_deflate_levels(deflate_levels);
+        if (!filters.empty())
+            dc->set_disable_dio(disable_dio);
     }
     catch (...) {
         H5Pclose(plist_id);
@@ -665,7 +672,7 @@ void process_contiguous_layout_dariable(hid_t dataset, BaseType *btp){
  * @param dataset The hdf5 dataset that is mate to the BaseType instance btp.
  * @param btp The dap BaseType variable which is to hold the information gleand from the hdf5 dataset.
  */
-void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
+void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_dio) {
 
     DmrppCommon *dc = toDC(btp);
     hid_t fspace_id = H5Dget_space(dataset);
@@ -681,7 +688,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
     VERBOSE(cerr << prolog << "Storage: chunked." << endl);
     VERBOSE(cerr << prolog << "Number of chunks is: " << num_chunks << endl);
 
-    set_filter_information(dataset, dc);
+    set_filter_information(dataset, dc, disable_dio);
 
     // Get chunking information: rank and dimensions
     vector<hsize_t> chunk_dims(dataset_rank, 0);
@@ -986,6 +993,316 @@ void set_fill_value(hid_t dataset, BaseType *btp){
     }
 }
 
+unsigned short is_supported_compound_type(hid_t h5_type) {
+
+    unsigned short ret_value = 1;
+    bool has_string_memb_type = false;
+    hid_t memtype = -1;
+    if ((memtype = H5Tget_native_type(h5_type, H5T_DIR_ASCEND)) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
+    }
+    
+    hid_t  memb_id = -1;
+    H5T_class_t memb_cls = H5T_NO_CLASS;
+    int nmembs = 0;
+    char *memb_name = nullptr;
+
+    if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+    }
+
+    for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
+
+        if ((memb_id = H5Tget_member_type(memtype, u)) < 0)
+            throw InternalErr(__FILE__, __LINE__,
+                              "Fail to obtain the datatype of an HDF5 compound datatype member.");
+
+        // Get member type class
+        memb_cls = H5Tget_member_class(memtype, u);
+
+        // Get member name
+        memb_name = H5Tget_member_name(memtype, u);
+        if (memb_name == nullptr)
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
+
+        if (memb_cls == H5T_COMPOUND) 
+            ret_value = 0;
+        else if (memb_cls == H5T_ARRAY) {
+
+            hid_t at_base_type = H5Tget_super(memb_id);
+            H5T_class_t array_cls = H5Tget_class(at_base_type);
+            if (array_cls != H5T_INTEGER && array_cls != H5T_FLOAT && array_cls != H5T_STRING)
+                ret_value = 0;
+            else if (array_cls == H5T_STRING && has_string_memb_type == false)
+                has_string_memb_type = true;
+            H5Tclose(at_base_type);
+
+
+        } else if (memb_cls != H5T_INTEGER && memb_cls != H5T_FLOAT) {
+            if (memb_cls == H5T_STRING) { 
+                if (has_string_memb_type == false)
+                    has_string_memb_type = true;
+            }
+            else 
+                ret_value = 0;
+        } 
+
+        // Close member type ID
+        H5Tclose(memb_id);
+        free(memb_name);
+        if (ret_value == 0) 
+            break;
+    } // end for
+
+    if (has_string_memb_type)
+        ret_value = 2;
+    return ret_value;
+
+}
+
+bool obtain_structure_string_value(hid_t memtype, size_t ty_size, hssize_t num_elms, vector<char>& encoded_struct_value,const vector<char>& struct_value, string & err_msg) {
+
+    bool ret_value = true;
+    size_t values_offset = 0;
+
+    // Loop through all the elements in this compound datatype variable.
+    for (int64_t element = 0; element < num_elms; ++element) { 
+
+        int                 nmembs           = 0;
+        size_t              struct_elem_offset = ty_size*element;
+
+        if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+            err_msg = "Fail to obtain number of HDF5 compound datatype.";
+            ret_value = false;
+            break;
+        }
+
+        // We only need to retrieve the values and re-assemble them.
+        // We will only have the one-layer string-contained structure to handle.
+        // We do need to know the memb type to put the special handling of a string.
+        for (unsigned int u = 0; u < (unsigned)nmembs; u++) {
+
+            hid_t  memb_id  = -1;
+            H5T_class_t         memb_cls         = H5T_NO_CLASS;
+            size_t              memb_offset      = 0;
+
+            // Get member type ID
+            if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
+                err_msg =  "Fail to obtain the datatype of an HDF5 compound datatype member.";
+                ret_value = false;
+                break;
+            }
+        
+            // Get member type class
+            if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
+                H5Tclose(memb_id);
+                err_msg =  "Fail to obtain the datatype class of an HDF5 compound datatype member.";
+                ret_value = false;
+                break;
+            }
+
+            size_t memb_size = H5Tget_size(memb_id);
+        
+            // Get member offset,H5Tget_member_offset only fails
+            // when H5Tget_memeber_class fails. Sinc H5Tget_member_class
+            // is checked above. So no need to check the return value.
+            memb_offset= H5Tget_member_offset(memtype,u);
+
+            // Here we have the offset from the original structure variable.
+            values_offset = struct_elem_offset + memb_offset; 
+            if (memb_cls ==  H5T_ARRAY) {
+
+                hid_t at_base_type = H5Tget_super(memb_id);
+                size_t at_base_type_size = H5Tget_size(at_base_type);
+                H5T_class_t array_cls = H5Tget_class(at_base_type);
+
+                // Need to retrieve the number of elements of the array
+                // and encode each string with base64 and then separate them 
+                // with ";".
+                // memb_id, obtain the number of dimensions
+                int at_ndims = H5Tget_array_ndims(memb_id);
+                if (at_ndims <= 0) {
+                    H5Tclose(at_base_type);
+                    H5Tclose(memb_id);
+                    err_msg =  "Fail to obtain number of dimensions of the array datatype.";
+                    ret_value = false;
+                    break;
+                }
+            
+                vector<hsize_t>at_dims_h(at_ndims,0);
+            
+                // Obtain the number of elements for each dims
+                if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
+                    H5Tclose(at_base_type);
+                    H5Tclose(memb_id);
+                    err_msg =  "Fail to obtain each imension size of the array datatype.";
+                    ret_value = false;
+                    break;
+                }
+
+                vector<hsize_t>at_dims_offset(at_ndims,0);                   
+                size_t total_array_nums = 1;
+                for (const auto & ad:at_dims_h)
+                    total_array_nums *=ad;
+
+                if (array_cls == H5T_STRING) {
+
+                    vector<string> str_val;
+                    str_val.resize(total_array_nums);
+                    
+                    if (H5Tis_variable_str(at_base_type) >0){
+                        auto src = (void*)(struct_value.data()+values_offset);
+                        auto temp_bp =(char*)src;
+                        for (int64_t i = 0;i <total_array_nums; i++){
+                            string tempstrval;
+                            get_vlen_str_data(temp_bp,tempstrval);
+                            str_val[i] = tempstrval;
+                            temp_bp += at_base_type_size;
+                        }
+                    }
+                    else {
+                        auto src = (void*)(struct_value.data()+values_offset);
+                        vector<char> fix_str_val;
+                        fix_str_val.resize(total_array_nums*at_base_type_size);
+                        memcpy((void*)fix_str_val.data(),src,total_array_nums*at_base_type_size);
+                        string total_in_one_string(fix_str_val.begin(),fix_str_val.end());
+                        for (int64_t i = 0; i<total_array_nums;i++)
+                            str_val[i] = total_in_one_string.substr(i*at_base_type_size,at_base_type_size);
+                    }
+                    vector<string> encoded_str_val;
+                    encoded_str_val.resize(str_val.size());
+
+                    // "Matthew John;James Peter" becomes "base64(Matthew);base64(John;James);base64(Peter);"
+                    for (int i = 0; i < str_val.size(); i++) {
+                          string temp_str = str_val[i];
+                          vector<u_int8_t>temp_val(temp_str.begin(),temp_str.end());
+                          encoded_str_val[i] =  base64::Base64::encode(temp_val.data(), temp_str.size()) + ";";
+                   
+                    }
+                    // TODO: use memcpy or other more efficient method later. We expect the size is not big.
+                    for (const auto &es_val:encoded_str_val) {
+                        string temp_str = es_val;
+                        for(const auto &ts:temp_str) 
+                            encoded_struct_value.push_back(ts);
+                    }
+
+                }
+                else { // integer or float array, just obtain the whole value.
+                    vector<char> int_float_array;
+                    int_float_array.resize(total_array_nums*at_base_type_size);
+                    memcpy((void*)int_float_array.data(),struct_value.data()+values_offset,total_array_nums*at_base_type_size);
+                    for (const auto &int_float:int_float_array) 
+                        encoded_struct_value.push_back(int_float);
+                }
+                H5Tclose(at_base_type);
+
+            }
+            else if (memb_cls == H5T_STRING) {// Scalar string
+
+                string encoded_str;
+
+                if (H5Tis_variable_str(memb_id) >0){
+                    auto src = (void*)(struct_value.data()+values_offset);
+                    auto temp_bp =(char*)src;
+                    string tempstrval;
+                    get_vlen_str_data(temp_bp,tempstrval);
+                    vector<u_int8_t>temp_val(tempstrval.begin(),tempstrval.end());
+                    encoded_str =  base64::Base64::encode(temp_val.data(), tempstrval.size()) + ";";
+
+                }
+                else {
+                    auto src = (void*)(struct_value.data()+values_offset);
+                    vector<char> fix_str_val;
+                    fix_str_val.resize(memb_size);
+                    memcpy((void*)fix_str_val.data(),src,memb_size);
+                    string fix_str_value(fix_str_val.begin(),fix_str_val.end());
+                    vector<u_int8_t>temp_val(fix_str_value.begin(),fix_str_value.end());
+                    encoded_str =  base64::Base64::encode(temp_val.data(), fix_str_value.size()) + ";";
+                }
+                for (const auto &es:encoded_str)
+                        encoded_struct_value.push_back(es);
+ 
+            }
+            else {// Scalar int/float
+                vector<char> int_float;
+                int_float.resize(memb_size);
+                memcpy((void*)int_float.data(),struct_value.data()+values_offset,memb_size);
+                    int_float.resize(memb_size);
+                    memcpy((void*)int_float.data(),struct_value.data()+values_offset,memb_size);
+                    for (const auto &int_f:int_float) 
+                        encoded_struct_value.push_back(int_f);
+            }
+
+        } // end "for(unsigned u = 0)"
+
+        if (ret_value == false) 
+            break;
+    } // end "for (int element=0"
+
+    return ret_value;
+
+}
+
+void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
+
+    hid_t memtype  = -1;
+    size_t ty_size = -1;
+
+    bool is_scalar = false;
+
+    if ((memtype = H5Tget_native_type(type_id, H5T_DIR_ASCEND))<0) 
+        throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
+
+    ty_size = H5Tget_size(memtype);
+
+    hid_t dspace = -1;
+    if ((dspace = H5Dget_space(dataset))<0) {
+        H5Tclose(memtype);
+        throw InternalErr (__FILE__, __LINE__, "Cannot obtain data space.");
+    }
+
+    hssize_t num_elms = H5Sget_simple_extent_npoints(dspace);
+    if (num_elms < 0) {
+        H5Tclose(memtype);
+        H5Sclose(dspace);
+        throw InternalErr (__FILE__, __LINE__, "Cannot obtain the number of elements of the data space.");
+    }
+
+    vector<char> struct_value;
+    struct_value.resize(num_elms*ty_size);
+    if (H5Dread(dataset,memtype, H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)struct_value.data())<0) {
+        H5Tclose(memtype);
+        H5Sclose(dspace);
+        throw InternalErr (__FILE__, __LINE__, "Cannot read the dataset.");
+    }
+
+    if (H5S_SCALAR == H5Sget_simple_extent_type(dspace))
+        is_scalar = true;
+
+    H5Sclose(dspace);
+
+    bool ret_value = false;
+    string err_msg;
+    if (is_scalar) {
+        auto ds = dynamic_cast<DmrppStructure *>(btp);
+        vector<char> & ds_buffer = ds->get_structure_str_buffer();
+        ret_value = obtain_structure_string_value(memtype,ty_size,num_elms,ds_buffer,struct_value,err_msg);
+        ds->set_special_structure_flag(true);
+        ds->set_read_p(true);
+    }
+    else {
+        auto da = dynamic_cast<DmrppArray *>(btp);
+        vector<char> &da_buffer = da->get_structure_array_str_buffer();
+        ret_value = obtain_structure_string_value(memtype,ty_size,num_elms,da_buffer,struct_value,err_msg);
+        da->set_special_structure_flag(true);
+        da->set_read_p(true);
+    }
+
+    H5Tclose(memtype);
+    if (ret_value == false) 
+        throw InternalErr (__FILE__, __LINE__, err_msg);
+
+}
 
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
@@ -997,7 +1314,7 @@ void set_fill_value(hid_t dataset, BaseType *btp){
  *
  * @exception BESError is thrown on error.
  */
-static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
+static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_dio) {
 
     if(verbose) {
         string type_name = btp->type_name();
@@ -1009,6 +1326,20 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
     }
     // Added support for HDF5 Fill Value. jhrg 4/22/22
     set_fill_value(dataset, btp);
+
+    // Here we want to chunk if this dataset is a compound datatype that contains string.
+    hid_t type_id = H5Dget_type(dataset);
+    if (type_id <0) {
+        string err_msg = "Cannot obtain the HDF5 data type of the dataset: " + btp->name() ;
+        throw BESInternalError(err_msg, __FILE__, __LINE__);
+    }
+    if (H5T_COMPOUND == H5Tget_class(type_id) && is_supported_compound_type(type_id)==2) {
+        process_string_in_structure(dataset,type_id, btp);
+        H5Tclose(type_id);
+        return;
+    }
+    else 
+       H5Tclose(type_id);
 
     hid_t plist_id = create_h5plist(dataset);
     uint8_t layout_type = 0;
@@ -1027,7 +1358,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
             break;
         }
         case H5D_CHUNKED: { /* Chunked Storage Layout */
-            process_chunked_layout_dariable(dataset, btp);
+            process_chunked_layout_dariable(dataset, btp, disable_dio);
             break;
         }
         case H5D_COMPACT: { /* Compact Storage Layout */
@@ -1067,62 +1398,7 @@ string get_type_decl(BaseType *btp){
     return type_decl.str();
 }
 
-bool is_supported_compound_type(hid_t h5_type) {
 
-    bool ret_value = true;
-    hid_t memtype = -1;
-    if ((memtype = H5Tget_native_type(h5_type, H5T_DIR_ASCEND)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
-    }
-    
-    hid_t  memb_id = -1;
-    H5T_class_t memb_cls = H5T_NO_CLASS;
-    int nmembs = 0;
-    char *memb_name = nullptr;
-
-    if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
-    }
-
-    for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
-
-        if ((memb_id = H5Tget_member_type(memtype, u)) < 0)
-            throw InternalErr(__FILE__, __LINE__,
-                              "Fail to obtain the datatype of an HDF5 compound datatype member.");
-
-        // Get member type class
-        memb_cls = H5Tget_member_class(memtype, u);
-
-        // Get member name
-        memb_name = H5Tget_member_name(memtype, u);
-        if (memb_name == nullptr)
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
-
-        if (memb_cls == H5T_COMPOUND) 
-            ret_value = false;
-        else if (memb_cls == H5T_ARRAY) {
-
-            hid_t at_base_type = H5Tget_super(memb_id);
-            H5T_class_t array_cls = H5Tget_class(at_base_type);
-            if (array_cls != H5T_INTEGER && array_cls != H5T_FLOAT)
-                ret_value = false;
-            H5Tclose(at_base_type);
-
-
-        } else if (memb_cls != H5T_INTEGER && memb_cls != H5T_FLOAT) {
-            ret_value = false;
-        } 
-
-        // Close member type ID
-        H5Tclose(memb_id);
-        free(memb_name);
-        if (ret_value == false) 
-            break;
-    } // end for
-
-    return ret_value;
-
-}
 bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
     VERBOSE(cerr << prolog << "BEGIN " << get_type_decl(btp) << endl);
 
@@ -1163,8 +1439,8 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
             break;
         }
         case H5T_COMPOUND: {
-            bool supported_compound_type = is_supported_compound_type(h5_type_id);
-            if (supported_compound_type == false) {
+            unsigned short supported_compound_type = is_supported_compound_type(h5_type_id);
+            if (supported_compound_type == 0) {
                 stringstream msgs;
                 msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
                 msgs << get_type_decl(btp) << " ";
@@ -1418,7 +1694,7 @@ void mk_nc4_non_coord_candidates(D4Group *group, unordered_set<string> &nc4_non_
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
-void get_chunks_for_all_variables(hid_t file, D4Group *group) {
+void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) {
 
     unordered_set<string> nc4_non_coord_candidate;
     mk_nc4_non_coord_candidates(group,nc4_non_coord_candidate);
@@ -1446,7 +1722,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                 if (!process_variable_length_string_scalar(dataset, btp) && !process_variable_length_string_array(dataset,btp)) {
 
                     VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
-                    get_variable_chunk_info(dataset, btp);
+                    get_variable_chunk_info(dataset, btp, disable_dio);
 
                     VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
                     add_string_array_info(dataset, btp);
@@ -1467,7 +1743,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
     // all groups in the group
     for(auto g:group->groups()) {
-        get_chunks_for_all_variables(file, g);
+        get_chunks_for_all_variables(file, g,disable_dio);
     }
 
 }
@@ -1477,7 +1753,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
  * @param h5_file_name Read information from this file
  * @param dmrpp Dump the chunk information here
  */
-void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
+void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp, bool disable_dio)
 {
     // Open the hdf5 file
     hid_t file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -1489,7 +1765,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
 
     // iterate over all the variables in the DMR
     try {
-        get_chunks_for_all_variables(file, dmrpp->root());
+        get_chunks_for_all_variables(file, dmrpp->root(), disable_dio);
         H5Fclose(file);
     }
     catch (...) {
@@ -1504,7 +1780,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
  *
  * The supplied file is going to be used by build_dmrpp as the source of variable/dataset chunk information.
  * At the time of this writing only netcdf-4 and hdf5 file encodings are supported (Note that netcdf-4 is a subset of
- * hdf5 and all netcdf-4 files are defacto hdf5 files.)
+ * hdf5 and all netcdf-4 files are de facto hdf5 files.)
  *
  * To that end this function will:
  * * Test that the file exists and can be read from.
@@ -1595,21 +1871,47 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
     return ss.str();
 }
 
+/**
+ * @brief Returns an ISO-8601 date time string for the time at which this function is called.
+ * Tip-o-the-hat to Morris Day and The Time...
+ * @return An ISO-8601 date time string
+ */
+std::string what_time_is_it(){
+    // Get current time as a time_point
+    auto now = std::chrono::system_clock::now();
+
+    // Convert to system time (time_t)
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to tm structure (GMT time)
+    struct tm tbuf{};
+    const std::tm* gmt_time = gmtime_r(&time_t_now, &tbuf);
+
+    // Format the time using a stringstream
+    std::stringstream ss;
+    ss << std::put_time(gmt_time, "%Y-%m-%dT%H:%M:%SZ");
+
+    return ss.str();
+}
 
 /**
- * @brief This worker method provides a SSOT for how the version and configuration information are added to the DMR++
+ * @brief This worker method provides a SSOT for how the build_dmrpp metadata (creation time, version, and configuration information) are added to the DMR++
  *
  * @param dmrpp The DMR++ to annotate
  * @param bes_conf_doc The BES configuration document used to produce the source DMR.
  * @param invocation The invocation of the build_dmrpp program, or the request URL if the running server was used to
  * create the DMR file that is being annotated into a DMR++.
  */
-void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
+void inject_build_dmrpp_metadata_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
 {
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
     auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+
+    auto creation_date = new D4Attribute("created", StringToD4AttributeType("string"));
+    creation_date->add_value(what_time_is_it());
+    version->attributes()->add_attribute_nocopy(creation_date);
 
     auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
     build_dmrpp_version->add_value(CVER);
@@ -1656,7 +1958,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
  * @param dmrpp The DMR++ instance to anontate.
  * @note The DMRpp instance will free all memory allocated by this method.
 */
- void inject_version_and_configuration(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
+ void inject_build_dmrpp_metadata(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
 {
     string bes_configuration;
     string invocation;
@@ -1668,7 +1970,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 
     invocation = recreate_cmdln_from_args(argc, argv);
 
-    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+    inject_build_dmrpp_metadata_worker(dmrpp, bes_configuration, invocation);
 
 }
 
@@ -1682,7 +1984,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
  * @param dmrpp The DMRpp instance to annotate.
  * @note The DMRpp instance will free all memory allocated by this method.
 */
-void inject_version_and_configuration(DMRpp *dmrpp)
+void inject_build_dmrpp_metadata(DMRpp *dmrpp)
 {
     bool found;
 
@@ -1697,7 +1999,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
     invocation = BESContextManager::TheManager()->get_context(INVOCATION_CONTEXT, found);
 
     // Do the work now...
-    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+    inject_build_dmrpp_metadata_worker(dmrpp, bes_configuration, invocation);
 }
 
 
@@ -1714,7 +2016,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
  * @param argv The arguments for build_dmrpp.
  */
 void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h5_file_fqn,
-        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, int argc, char *argv[])
+        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, bool disable_dio, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
@@ -1725,10 +2027,10 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h5_file_fqn, &dmrpp);
+    add_chunk_information(h5_file_fqn, &dmrpp,disable_dio);
 
     if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+        inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
 
     XMLWriter writer;

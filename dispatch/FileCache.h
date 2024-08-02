@@ -212,12 +212,14 @@ class FileCache {
         return sb.st_size;
     }
 
-    /// Open the cache info file and write a zero to it.
+    /// Open the cache info file. If the file does not exist, make and write a zero to it.
     /// Assign the file descriptor to d_cache_info_fd.
     /// d_cache_dir must be set.
     bool open_cache_info() {
         if (d_cache_dir.empty())
             return false;
+        // If  O_CREAT and O_EXCL are used together and the file already exists, then open()
+        // fails with the error EEXIST. In that case, try to open the file using simple RDWR.
         if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT | O_EXCL, 0666)) >= 0) {
             unsigned long long size = 0;
             if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
@@ -280,8 +282,8 @@ public:
     class Item {
         int d_fd = -1;
 
-        // This is static because two threads might want each want to lock the same file. jhrg 11/01/23
-        std::mutex item_mtx; // Overkill to make a static mutex? jhrg 11/01/23
+        // Should this be static (two threads want to lock the same file)? jhrg 5/17/24
+        std::mutex item_mtx;
 
     public:
         Item() = default;
@@ -409,8 +411,10 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if  (errno == EEXIST)
+            if (errno == EEXIST) {
+                ERROR("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
                 return false;
+            }
             else {
                 ERROR("Error creating key/file: " << key << " " << get_errno() << '\n');
                 return false;
@@ -458,7 +462,7 @@ public:
      * the item. The called can write directly to the item, rewind the descriptor
      * and read from it and then close the file descriptor to release the Exclusive
      * lock.
-     * @note when the PutIem goes out of scope, the cache_info file is updated.
+     * @note when the PutItem goes out of scope, the cache_info file is updated.
      * @param key The key that can be used to access the file
      * @param item A value-result parameter than is a reference to a PutItem instance.
      * @return True if the PutItem holds an open, locked, file descriptor, otherwise
@@ -474,19 +478,24 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if  (errno == EEXIST)
+            if (errno == EEXIST) {
+                ERROR("Could not create the key/file; it already exists (2): " << key << " " << get_errno() << '\n');
                 return false;
+            }
             else {
-                ERROR("Error creating key/file: " << key << " " << get_errno() << '\n');
+                ERROR("Error creating key/file (2): " << key << " " << get_errno() << '\n');
                 return false;
             }
         }
 
         // The Item instance will take care of closing the file.
-        item.set_fd(fd);
+        item.
+                set_fd(fd);
 
         // Lock the file for writing; released when the file descriptor is closed.
-        if (!item.lock_the_item(LOCK_EX, "Error locking the just created key/file: " + key))
+        if (!item.
+                lock_the_item(LOCK_EX,
+                              "Error locking the just created key/file: " + key))
             return false;
 
         // The Item instances will take care of closing (and thus unlocking) the files.

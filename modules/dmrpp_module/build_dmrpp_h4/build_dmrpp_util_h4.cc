@@ -1054,7 +1054,7 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
  * @param btp
  * @return true if the produced output that seems valid, false otherwise.
  */
-bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id, BaseType *btp) {
+bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data) {
 
     VERBOSE(cerr<<"var name: "<<btp->name() <<endl);
     // Here we need to retrieve the attribute value dmr_sds_ref of btp.
@@ -1094,7 +1094,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
             }
         }
     }
-    else {
+    else if (disable_missing_data == false){
 
         VERBOSE(cerr<<"coming to eos_latlon block"<<endl);
         // Here we will check if the eos_latlon exists. Add dmrpp::missingdata
@@ -1131,7 +1131,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
     return true;
 }
 
-bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id, BaseType *btp) {
+bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data) {
 
     switch (btp->type()) {
         case dods_structure_c: {
@@ -1154,7 +1154,7 @@ bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id
             throw BESInternalError("Grids are not supported by DAP4.", __FILE__, __LINE__);
         }
         case dods_array_c:
-            return get_chunks_for_an_array(filename,sd_id,file_id, btp);
+            return get_chunks_for_an_array(filename,sd_id,file_id, btp,disable_missing_data);
         default:
             VERBOSE(cerr << btp->FQN() << ": " << btp->type_name() << " is not supported by DMR++ for HDF4 at this time.\n");
             return false;
@@ -1168,14 +1168,14 @@ bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
-void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 file_id, D4Group *group) {
+void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 file_id, D4Group *group, bool disable_missing_data) {
 
     // variables in the group
     for(auto btp : group->variables()) {
         if (btp->type() != dods_group_c) {
             // if this is not a group, it is a variable
             // This is the part where we find out if a variable can be used with DMR++
-            if (!get_chunks_for_a_variable(filename,sd_id,file_id, btp)) {
+            if (!get_chunks_for_a_variable(filename,sd_id,file_id, btp, disable_missing_data)) {
                 ERROR("Could not include DMR++ metadata for variable " << btp->FQN());
             }
         }
@@ -1184,12 +1184,12 @@ void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 fil
             auto g = dynamic_cast<D4Group*>(btp);
             if (!g)
                 throw BESInternalError("Expected "  + btp->name() + " to be a D4Group but it is not.", __FILE__, __LINE__);
-            get_chunks_for_all_variables(filename,sd_id,file_id, g);
+            get_chunks_for_all_variables(filename,sd_id,file_id, g, disable_missing_data);
         }
     }
     // all groups in the group
     for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
-        get_chunks_for_all_variables(filename,sd_id,file_id, *g);
+        get_chunks_for_all_variables(filename,sd_id,file_id, *g, disable_missing_data);
     }
 
 }
@@ -1199,7 +1199,7 @@ void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 fil
  * @param h4_file_name Read information from this file
  * @param dmrpp Dump the chunk information here
  */
-void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
+void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disable_missing_data)
 {
     // Open the hdf4 file
     int32 sd_id = SDstart(h4_file_name.c_str(), DFACC_READ);
@@ -1224,7 +1224,7 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp)
 
  
     // iterate over all the variables in the DMR
-    get_chunks_for_all_variables(h4_file_name, sd_id,file_id, dmrpp->root());
+    get_chunks_for_all_variables(h4_file_name, sd_id,file_id, dmrpp->root(),disable_missing_data);
 
     close_hdf4_file_ids(sd_id,file_id);
 }
@@ -1421,7 +1421,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
  * @param argv The arguments for build_dmrpp.
  */
 void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h4_file_fqn,
-        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, int argc, char *argv[])
+        bool add_production_metadata, bool disable_missing_data, const string &bes_conf_file_used_to_create_dmr, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
@@ -1432,11 +1432,14 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h4_file_fqn, &dmrpp);
+    add_chunk_information(h4_file_fqn, &dmrpp,disable_missing_data);
 
 #if 0
     if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+        // I updated this function call to reflect the changes I made to the build_dmrpp_util.cc
+        // I see that it is not currently in service but it's clear that something like this
+        // will be needed to establish history/provenance of the dmr++ file. - ndp 07/26/24
+        inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
 #endif
 

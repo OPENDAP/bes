@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="cea.hdf">
+    <Dimension name="YDim_grid1" size="8"/>
+    <Dimension name="XDim_grid1" size="8"/>
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.19</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName=&quot;grid1&quot;
+		XDim=8
+		YDim=8
+		UpperLeftPointMtrs=(-17000000.000000,7300000.000000)
+		LowerRightMtrs=(17000000.000000,-7300000.000000)
+		Projection=GCTP_CEA
+		ProjParams=(6371228,0,0,0,0,300000000,0,0,0,0,0,0,0)
+		SphereCode=-1
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;temperature&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Group name="grid1">
+        <Float64 name="Latitude">
+            <Dim name="/YDim_grid1"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1 lat</Value>
+            </Attribute>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                removed checksum
+            </Attribute>
+        </Float64>
+        <Float64 name="Longitude">
+            <Dim name="/XDim_grid1"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>grid1 lon</Value>
+            </Attribute>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                removed checksum
+            </Attribute>
+        </Float64>
+        <Group name="Data_Fields">
+            <Float32 name="temperature">
+                <Dim name="/YDim_grid1"/>
+                <Dim name="/XDim_grid1"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="coordinates" type="String">
+                    <Value>/grid1/Longitude /grid1/Latitude</Value>
+                </Attribute>
+                <Attribute name="DAP4_Checksum_CRC32" type="String">
+                    removed checksum
+                </Attribute>
+            </Float32>
+        </Group>
+        <Group name="Grid_Attributes"/>
+    </Group>
+</Dataset>
+
+The data:
+Float64 Latitude[YDim_grid1 = 8] = {30.0845210595659, 20.9807944682567, 12.4057297402778, 4.10652290585727, -4.10652290585727, -12.4057297402778, -20.9807944682567, -30.0845210595659};
+Float64 Longitude[XDim_grid1 = 8] = {92.4613966861331, 168.900997632952, -114.659401420229, -38.2198004734096, 38.2198004734096, 114.659401420229, -168.900997632952, -92.4613966861331};
+Float32 temperature[YDim_grid1 = 8][XDim_grid1 = 8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13},{14, 14, 14, 14, 14, 14, 14, 14},{15, 15, 15, 15, 15, 15, 15, 15},{16, 16, 16, 16, 16, 16, 16, 16},{17, 17, 17, 17, 17, 17, 17, 17}};
+

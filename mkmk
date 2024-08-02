@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if test -z "$prefix" 
+then
+    echo "The environment variable \"prefix\" has not been set to a usable value!" >&2
+    exit 2
+fi
+
+which getdap
+if test $? -ne 0
+then
+    echo "Unable to locate the getdap application." >&2
+    exit 2
+fi
+
+which getdap4
+if test $? -ne 0
+then
+    echo "Unable to locate the getdap4 application." >&2
+    exit 2
+
+fi
+
+# Define options string
+OPTSTRING="hvda"	# --enable-developer, --enable-asan
+
+# Initialize variables
+developer=
+asan=
+verbose=false
+
+# Process options using getopts
+while getopts "$OPTSTRING" opt; do
+  case $opt in
+    h)
+      echo "Usage: $0 [-h] [-d] [-a] [-v]"
+      exit 0
+      ;;
+    v)
+      verbose=true
+      ;;
+    d)
+      developer="--enable-developer"
+      ;;
+    a)
+      asan="--enable-asan"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [[ verbose ]]; then
+ echo "./configure --prefix=$prefix --with-dependencies=$prefix/deps $developer $asan"
+fi 
+    
+./configure --prefix=$prefix --with-dependencies=$prefix/deps $developer $asan
+

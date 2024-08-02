@@ -678,7 +678,7 @@ DmrppArray::operator=(const DmrppArray &rhs)
  * @brief Is this Array subset?
  * @return True if the array has a projection expression, false otherwise
  */
-bool DmrppArray::is_projected()
+bool DmrppArray::is_projected() 
 {
     for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p)
         if (dimension_size_ll(p, true) != dimension_size_ll(p, false)) return true;
@@ -920,6 +920,7 @@ void DmrppArray::insert_constrained_contiguous_structure(Dim_iter dim_iter, unsi
 void DmrppArray::read_contiguous()
 {
 
+    BESDEBUG(dmrpp_3, prolog << "NOT using direct IO " << endl);
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
@@ -1039,6 +1040,7 @@ void DmrppArray::read_contiguous()
             throw;
         }
     }
+    BESDEBUG(dmrpp_3, prolog << "Before is_filter " << endl);
 
     // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty() && !get_one_chunk_fill_value()) {
@@ -1096,10 +1098,13 @@ void DmrppArray::read_contiguous()
     }
 
     set_read_p(true);
+
+    BESDEBUG(dmrpp_3, prolog << " NOT using direct IO : end of this method." << endl);
 }
 
 void DmrppArray::read_one_chunk_dio() {
 
+    BESDEBUG(dmrpp_3, prolog << "Using direct IO " << endl);
     // Get the single chunk that makes up this one-chunk compressed variable.
     if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
@@ -2453,6 +2458,7 @@ bool DmrppArray::read()
 #endif
 
     if (this->get_dio_flag()) {
+        BESDEBUG(MODULE, prolog << "dio is turned  on" << endl);
 
         Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
 
@@ -2889,6 +2895,16 @@ void missing_data_xml_element(const XMLWriter &xml, DmrppArray *da) {
     }
 }
 
+void special_structure_array_data_xml_element(const XMLWriter &xml, DmrppArray *da) {
+
+    if (da->var()->type() == dods_structure_c) {
+        vector<char> struct_array_str_buf = da->get_structure_array_str_buffer();
+        string final_encoded_str = base64::Base64::encode((uint8_t*)(struct_array_str_buf.data()),struct_array_str_buf.size());
+        da->print_special_structure_element(xml, DmrppCommon::d_ns_prefix, final_encoded_str);
+    }
+
+}
+
 /**
  * @brief Print information about one dimension of the array.
  * @param xml
@@ -3010,6 +3026,13 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
     if (DmrppCommon::d_print_chunks && is_missing_data() && read_p()) {
         missing_data_xml_element(xml, this);
     }
+
+    // Special structure string array.
+    if (DmrppCommon::d_print_chunks && get_special_structure_flag() && read_p()) {
+        special_structure_array_data_xml_element(xml, this);
+    }
+
+
 
     // Is it an array of strings? Those have issues so we treat them special.
     if (var()->type() == dods_str_c) {

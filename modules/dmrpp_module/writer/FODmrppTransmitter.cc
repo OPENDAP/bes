@@ -135,10 +135,14 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         string dataset_name = (*(dhi.containers.begin()))->access();
         string href_url = (*(dhi.containers.begin()))->get_real_name();
 
-        build_dmrpp_util::add_chunk_information(dataset_name, &dmrpp);
+        // Currently the disable_dio flag is always false. 
+        // One cannot pass a different value of the disable_dio flag for this build_dmrpp module. 
+        // The build_dmrpp module will not generate a dmrpp file that turns off the direct IO feature.
+        // One has to use the build_dmrpp utility to do this. KY 2024-07-17
+        build_dmrpp_util::add_chunk_information(dataset_name, &dmrpp, false);
 
         if (add_production_metadata) {
-            build_dmrpp_util::inject_version_and_configuration(&dmrpp);
+            build_dmrpp_util::inject_build_dmrpp_metadata(&dmrpp);
         }
 
         XMLWriter dmrpp_writer;

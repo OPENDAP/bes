@@ -7,6 +7,8 @@
     <Dimension name="XDim_PolarGrid" size="100"/>
     <Dimension name="MRGDIM_PolarGrid_2" size="2"/>
     <Dimension name="Bands_PolarGrid" size="3"/>
+    <Dimension name="YDim_GEOGrid" size="40"/>
+    <Dimension name="XDim_GEOGrid" size="60"/>
     <Attribute name="HDFEOSVersion" type="String">
         <Value>HDFEOS_V2.0</Value>
     </Attribute>
