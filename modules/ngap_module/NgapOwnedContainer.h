@@ -59,7 +59,7 @@ namespace ngap {
  */
 class NgapOwnedContainer: public BESContainer {
 
-    std::string d_ngap_path;    // The (in)famous restified path
+    std::string d_ngap_path;    // The (in)famous REST path
     std::string d_data_source_location = "https://s3.amazonaws.com/cloudydap"; // FIXME Remove hardcoded value. jhrg 5/17/24
 
     bool get_dmrpp_from_cache_or_remote_source(std::string &dmrpp_string) const;
@@ -68,9 +68,12 @@ class NgapOwnedContainer: public BESContainer {
     // be easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
+    static std::string build_dmrpp_url_to_daac_bucket(const std::string &rest_path);
 
-    bool get_item_from_cache(std::string &dmrpp_string) const;
-    bool put_item_in_cache(const std::string &dmrpp_string) const;
+    void set_real_name_using_cmr_or_cache();
+
+    bool get_item_from_dmrpp_cache(std::string &dmrpp_string) const;
+    bool put_item_in_dmrpp_cache(const std::string &dmrpp_string) const;
 
     friend class NgapOwnedContainerTest;
 

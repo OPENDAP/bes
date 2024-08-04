@@ -382,6 +382,24 @@ public:
         DBG(cerr << prolog << "END\n");
     }
 
+    void http_head_test() {
+        DBG(cerr << prolog << "BEGIN\n");
+        const string url = "http://test.opendap.org/opendap.conf";
+        DBG(cerr << prolog << "Retrieving: " << url << "\n");
+        bool result = curl::http_head(url);
+        CPPUNIT_ASSERT_MESSAGE("The HEAD request should have succeeded.", result);
+        DBG(cerr << prolog << "END\n");
+    }
+
+    void http_head_test_404() {
+        DBG(cerr << prolog << "BEGIN\n");
+        const string url = "http://test.opendap.org/not_there";
+        DBG(cerr << prolog << "Retrieving: " << url << "\n");
+        bool result = curl::http_head(url);
+        CPPUNIT_ASSERT_MESSAGE("The HEAD request should have failed.", !result);
+        DBG(cerr << prolog << "END\n");
+    }
+
     // Test the http_get() function that extends as needed a C++ std::string
     void http_get_test_string() {
         DBG(cerr << prolog << "BEGIN\n");
@@ -763,6 +781,9 @@ CPPUNIT_TEST_SUITE(CurlUtilsTest);
         CPPUNIT_TEST(sign_s3_url_test_1);
         CPPUNIT_TEST(sign_s3_url_test_2);
         CPPUNIT_TEST(sign_s3_url_test_3);
+
+        CPPUNIT_TEST(http_head_test);
+        CPPUNIT_TEST(http_head_test_404);
 
         CPPUNIT_TEST(http_get_test_string);
 

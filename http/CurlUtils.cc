@@ -424,7 +424,6 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
     // d_request_headers->push_back(string("Pragma: no-cache"));
     // d_request_headers->push_back(string("Cache-Control: no-cache"));
 
-    //TODO Do we need this test? what if the pointer is null? Probably it's fine...
     if (http_request_headers) {
         // Add the http_request_headers to the cURL handle.
         res = curl_easy_setopt(ceh, CURLOPT_HTTPHEADER, http_request_headers);
@@ -1144,6 +1143,83 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
     return nbytes;
 }
 
+// TODO Remove if not used. jhrg 8/3/24
+/**
+ * @brief Perform an HTTP HEAD request.
+ * @param target_url
+ * @param tries Default is 3.
+ * @param wait_time_us Default is 1'000'000 (1 second).
+ * @return True if the HEAD request was successful, false otherwise.
+ */
+bool http_head(const string &target_url, int tries, unsigned long wait_time_us) {
+    //CURL *ceh = nullptr;     ///< The libcurl handle object.
+    curl_slist *request_headers = nullptr;
+
+    try {
+        // TODO Factor this from here and http_get() below. jhrg 8/3/24
+        // Add the authorization headers
+        request_headers = add_edl_auth_headers(request_headers);
+
+        auto url = std::make_shared<http::url>(target_url);
+        request_headers = sign_url_for_s3_if_possible(url, request_headers);
+
+        // FIXME - This is a hack to get the EDL token from the credentials manager. jhrg 5/19/24
+        //  DO NOT MERGE THIS CODE INTO THE MASTER BRANCH
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(url);
+        if (credentials) {
+            INFO_LOG(prolog << "Looking for EDL Token for URL: " << target_url << '\n');
+            string edl_token = credentials->get("edl_token");
+            if (!edl_token.empty()) {
+                INFO_LOG(prolog << "Using EDL Token for URL: " << target_url << '\n');
+                request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
+            }
+        }
+        // FIXME END OF HACK
+
+        CURL *ceh = curl::init(target_url, request_headers, nullptr);
+        if (!ceh)
+            throw BESInternalError("Failed to acquire cURL Easy Handle!", __FILE__, __LINE__);
+
+        vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
+        set_error_buffer(ceh, error_buffer.data());
+
+        curl_easy_setopt(ceh, CURLOPT_NOBODY, 1L);
+
+        int attempts = 0;
+        bool status = false;
+        do {
+            CURLcode curl_code = curl_easy_perform(ceh);
+            if (curl_code == CURLE_OK && get_http_code(ceh) == 200) {
+                status = true;
+                break;
+            } else if (curl_code == CURLE_OK && get_http_code(ceh) == 500) {
+                usleep(wait_time_us);
+                attempts++;
+            } else if (curl_code != CURLE_OK || get_http_code(ceh) != 200) {
+                ERROR_LOG(string("Problem with data transfer: ") + curl::error_message(curl_code, error_buffer.data()));
+                status = false;
+                break;
+            }
+        } while (attempts++ < tries);
+
+        if (attempts >= tries) {
+            ERROR_LOG(string("Failed to get a 200 response after ") + to_string(tries) + " attempts.");
+            status = false;
+        }
+
+        unset_error_buffer(ceh);
+        curl_easy_cleanup(ceh);
+        curl_slist_free_all(request_headers);
+        return status;
+    }
+    catch (...) {
+        curl_slist_free_all(request_headers);
+        throw;
+    }
+
+    return true;
+}
+
 /**
  * Dereference the target URL and put the response in buf.
  *
@@ -1223,7 +1299,6 @@ void http_get(const string &target_url, string &buf) {
         throw;
     }
     BESDEBUG(MODULE, prolog << "END\n");
-
 }
 
 /**
@@ -1255,7 +1330,7 @@ void super_easy_perform(CURL *c_handle) {
 
 // used only in one place here. jhrg 3/8/23
 static string get_cookie_file_base() {
-    return TheBESKeys::TheKeys()->read_string_key(HTTP_COOKIES_FILE_KEY, HTTP_DEFAULT_COOKIES_FILE);
+    return TheBESKeys::read_string_key(HTTP_COOKIES_FILE_KEY, HTTP_DEFAULT_COOKIES_FILE);
 }
 
 // used here in init() and clear_cookies (which itself is never used) and in dmrpp_module
@@ -1278,7 +1353,7 @@ string get_cookie_filename() {
  * string of none was specified.
  */
 string get_netrc_filename() {
-    return TheBESKeys::TheKeys()->read_string_key(HTTP_NETRC_FILE_KEY, "");
+    return TheBESKeys::read_string_key(HTTP_NETRC_FILE_KEY, "");
 }
 
 /**
