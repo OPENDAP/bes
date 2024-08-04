@@ -755,10 +755,7 @@ public:
         CPPUNIT_ASSERT("Sizes are sizes");
     }
 
-/* TESTS END */
-/*##################################################################################################*/
-
-CPPUNIT_TEST_SUITE(CurlUtilsTest);
+    CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
         CPPUNIT_TEST(how_big);
 

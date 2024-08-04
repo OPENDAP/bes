@@ -37,9 +37,6 @@
 
 #include "BESContextManager.h"
 #include "BESSyntaxUserError.h"
-#include "BESForbiddenError.h"
-#include "BESNotFoundError.h"
-#include "BESTimeoutError.h"
 #include "BESInternalError.h"
 #include "HttpError.h"
 #include "BESDebug.h"
@@ -1152,7 +1149,6 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * @return True if the HEAD request was successful, false otherwise.
  */
 bool http_head(const string &target_url, int tries, unsigned long wait_time_us) {
-    //CURL *ceh = nullptr;     ///< The libcurl handle object.
     curl_slist *request_headers = nullptr;
 
     try {
@@ -1189,21 +1185,24 @@ bool http_head(const string &target_url, int tries, unsigned long wait_time_us) 
         bool status = false;
         do {
             CURLcode curl_code = curl_easy_perform(ceh);
-            if (curl_code == CURLE_OK && get_http_code(ceh) == 200) {
+            long http_code = 0;
+            if (curl_code == CURLE_OK)
+                http_code = get_http_code(ceh);
+            if (curl_code == CURLE_OK && http_code == 200) {
                 status = true;
                 break;
-            } else if (curl_code == CURLE_OK && get_http_code(ceh) == 500) {
+            } else if (curl_code == CURLE_OK && http_code == 500) {
                 usleep(wait_time_us);
                 attempts++;
-            } else if (curl_code != CURLE_OK || get_http_code(ceh) != 200) {
-                ERROR_LOG(string("Problem with data transfer: ") + curl::error_message(curl_code, error_buffer.data()));
+            } else if (curl_code != CURLE_OK || http_code != 200) {
+                ERROR_LOG(string("Problem with HEAD request, HTTP response: ") + to_string(http_code) + '\n');
                 status = false;
                 break;
             }
         } while (attempts++ < tries);
 
         if (attempts >= tries) {
-            ERROR_LOG(string("Failed to get a 200 response after ") + to_string(tries) + " attempts.");
+            ERROR_LOG(string("HEAD request, failed after ") + to_string(tries) + " attempts.\n");
             status = false;
         }
 
