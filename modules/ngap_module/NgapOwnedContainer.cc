@@ -30,6 +30,10 @@
 
 #include "config.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <sstream>
 #include <string>
 
@@ -56,13 +60,34 @@ using namespace bes;
 
 namespace ngap {
 
+/**
+ * @brief Read data from a file descriptor into a string.
+ * @param fd The file descriptor to read from.
+ * @param content The string to read the data into.
+ * @return True if all the bytes were read, false otherwise.
+ */
 bool NgapOwnedContainer::file_to_string(int fd, string &content) {
+    // The file size is needed later; this doubles as a check that the file in open.
+    struct stat statbuf{};
+    if (fstat(fd, &statbuf) < 0) {
+        ERROR_LOG("NgapOwnedContainer::file_to_string() - failed to get file descriptor status\n");
+        return false;
+    }
+
+    // read the data in 4k chunks
     vector<char> buffer(4096);
     ssize_t bytes_read;
     while ((bytes_read = read(fd, buffer.data(), buffer.size())) > 0) {
         content.append(buffer.data(), bytes_read);
     }
-    return bytes_read == 0;
+
+    // did we get it all
+    if (statbuf.st_size != content.size()) {
+        ERROR_LOG("NgapOwnedContainer::file_to_string() - failed to read all bytes from file cache\n");
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -195,46 +220,53 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
 /**
  * @brief Get the DMR++ from a remote source or a cache
  *
-  * @param dmrpp_string Value-result parameter that will contain the DMR++ as a string
+ * This method will try to read a DMR++ from an S3 bucket if that DMR++ cannot be found in the
+ * DMR++ cache. If the DMR++ cannot be read from a S3 bucket, it will throw an exception. The
+ * method returns false if the DMR++ was read but for some reason could not be cached.
+ *
+ * @param dmrpp_string Value-result parameter that will contain the DMR++ as a string
+ *
  * @return True if the DMR++ was found and no caching issues were encountered, false if there
  * was a failure of the caching system. Error messages are logged if there is a caching issue.
- * @exception BESError if there is a problem making the remote request if one is needed.
+ * Note that if this methods cannot get the DMR++ from the remote source, it will throw an exception.
+ *
+ * @exception http::HttpError if there is a problem making the remote request if one is needed.
  */
 bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) const {
     BES_STOPWATCH_START(MODULE, prolog + get_real_name());
 
-    // If the DMR++ is cached, return it.
+    // If the DMR++ is cached, return it. NB: This cache holds OPeNDAP- and DAAC-owned DMR++ documents.
     if (NgapRequestHandler::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
         return true;
+    } else{
+        // Else, the DMR++ is neither in the memory cache nor the file cache.
+        // Read it from S3, etc., and filter it. Put it in the memory cache.
+       try {
+            // This code throws an exception if there is a problem. jhrg 11/16/23
+            string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
+            curl::http_get(dmrpp_url_str, dmrpp_string);
+        }
+        catch (http::HttpError &http_error) {
+            http_error.set_message(http_error.get_message() + ". This error for an OPeNDAP-owned DMR++ could be from Hyrax or S3.");
+            try {
+                // This code throws an exception if there is a problem. jhrg 11/16/23
+                string dmrpp_url_str = build_dmrpp_url_to_daac_bucket(get_real_name());
+                curl::http_get(dmrpp_url_str, dmrpp_string);
+            }
+            catch (http::HttpError &http_error) {
+                http_error.set_message(http_error.get_message() + ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
+                throw http_error;
+            }
+        }
+
+        // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
+        // The memory cache is for use by this process, the file cache for other processes/VMs
+        if (NgapRequestHandler::d_use_dmrpp_cache && !put_item_in_dmrpp_cache(dmrpp_string)) {
+            return false;
+        }
+
+        return true;
     }
-
-    // Else, the DMR++ is neither in the memory cache nor the file cache.
-    // Read it from S3, etc., and filter it. Put it in the memory cache.
-    string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
-
-    // TODO Issue a HEAD request to see if the thing exists.
-    // TODO else, use CMR to get the URL and then the DMR++.
-    //  dmrpp_url_str = build_dmrpp_url_to_daac_bucket(get_real_name());
-    //  This mess should be removed once we stop using the DAAC bucket.
-    //  See http_head() in curl_utils.cc. jhrg 8/3/24
-
-    try {
-        // This code throws an exception if there is a problem. jhrg 11/16/23
-        curl::http_get(dmrpp_url_str, dmrpp_string);
-    }
-    catch (http::HttpError &http_error) {
-        http_error.set_message(http_error.get_message() + ". This error could be from Hyrax, CMR, TEA, or S3.");
-        throw;
-    }
-
-
-    // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
-    // The memory cache is for use by this process, the file cache for other processes/VMs
-    if (NgapRequestHandler::d_use_dmrpp_cache && !put_item_in_dmrpp_cache(dmrpp_string)) {
-        return false;
-    }
-
-    return true;
 }
 
 /**
