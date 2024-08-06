@@ -10,7 +10,7 @@ AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
 
-noinst_PROGRAMS =
+noinst_PROGRAMS = FileLockingCacheTest
 
 EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in $(srcdir)/package.m4 \
 test_config.h.in

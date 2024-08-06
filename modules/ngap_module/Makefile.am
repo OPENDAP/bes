@@ -48,7 +48,7 @@ NGAP_HDR =  NgapNames.h \
             NgapApi.h \
             MemoryCache.h
 
-EXTRA_DIST = ngap.conf.in data
+EXTRA_DIST = ngap.conf.in
 
 CLEANFILES = *~ ngap.conf
 
