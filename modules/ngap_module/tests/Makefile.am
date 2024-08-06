@@ -3,7 +3,6 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-# AM_CPPFLAGS =
 AM_CXXFLAGS =
 
 BES_CONF_IN = bes.conf.in
@@ -20,9 +19,9 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 $(BES_CONF_IN) $(srcdir)/CM.config.template
+CM.config.template package.m4 $(BES_CONF_IN)
 
-DISTCLEANFILES =  atconfig
+DISTCLEANFILES = atconfig
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
