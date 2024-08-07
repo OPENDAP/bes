@@ -110,7 +110,7 @@ public:
         string content;
         string file_name = "NGAPApiTest.cc";    // ~16k while the buffer is 4k
         int fd = open(file_name.c_str(), O_RDONLY);
-        CPPUNIT_ASSERT_MESSAGE("The file should open", fd > 0);
+        CPPUNIT_ASSERT_MESSAGE("The file should open be", fd != -1);
         CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
         CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
         CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
