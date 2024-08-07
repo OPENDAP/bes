@@ -1593,8 +1593,15 @@ void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_
 
     vector <HE5Dim> grp_dims;
     for (const auto &eos5dim:dim_list) {  
+
+        // Here we need to remove the Unlimited dimension if the size is -1 since we currently don't support unlimited dimension.
+        // TODO: need to rehandle this when adding the unlimited dimension support.
+        if (eos5dim.name =="Unlimited" && eos5dim.size == -1)
+            continue;
+
         HE5Dim eos5_dimp;
         string new_eos5dim_name = eos5dim.name;
+
         string dim_fpath = eos5_grp_path +"/" + handle_string_special_characters(new_eos5dim_name);
         eos5_dimp.name = dim_fpath;
         eos5_dimp.size = eos5dim.size;
