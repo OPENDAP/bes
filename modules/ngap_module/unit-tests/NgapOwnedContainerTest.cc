@@ -108,7 +108,7 @@ public:
     void test_file_to_string_bigger_than_buffer() {
         TEST_NAME;
         string content;
-        string file_name = string(TEST_SRC_DIR) + "/NGAPApiTest.cc";    // ~16k while the buffer is 4k
+        string file_name = string(TEST_SRC_DIR) + "/NgapApiTest.cc";    // ~16k while the buffer is 4k
         int fd = open(file_name.c_str(), O_RDONLY);
         CPPUNIT_ASSERT_MESSAGE("The file " + file_name + " should be open", fd != -1);
         CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
