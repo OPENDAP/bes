@@ -77,9 +77,10 @@ $(abs_builddir)/static-cache:
 # Unit Tests
 #
 
+# NgapContainerTest
+
 if CPPUNIT
-UNIT_TESTS =  MemoryCacheTest NgapApiTest NgapRequestHandlerTest NgapContainerTest \
-NgapOwnedContainerTest
+UNIT_TESTS =  MemoryCacheTest NgapApiTest NgapRequestHandlerTest NgapOwnedContainerTest
 else
 UNIT_TESTS =
 

@@ -30,23 +30,22 @@ libngap_module_la_LIBADD = $(LIBADD)
 
 NGAP_SRC =  NgapRequestHandler.cc \
             NgapModule.cc \
-            NgapContainer.cc \
-            NgapContainerStorage.cc \
             NgapOwnedContainer.cc \
             NgapOwnedContainerStorage.cc \
             NgapApi.cc
 
-# MemoryCache.cc
+# MemoryCache.cc NgapContainer.cc NgapContainerStorage.cc
+
 
 NGAP_HDR =  NgapNames.h \
             NgapRequestHandler.h \
             NgapModule.h \
-            NgapContainer.h \
-            NgapContainerStorage.h \
             NgapOwnedContainer.h \
             NgapOwnedContainerStorage.h \
             NgapApi.h \
             MemoryCache.h
+
+# NgapContainer.h NgapContainerStorage.h
 
 EXTRA_DIST = ngap.conf.in
 

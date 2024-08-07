@@ -38,7 +38,7 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) bes.conf
-	@if [ -n "$${CMAC_ID}" ] || [ -f $(srcdir)/CM.config ]; then \
+	@if [ -f $(srcdir)/CM.config ]; then \
 	    $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
 	else \
 	    echo "No access credentials available, skipping tests that use S3"; \

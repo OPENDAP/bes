@@ -121,9 +121,8 @@ public:
     void test_file_to_string_file_not_open() {
         TEST_NAME;
         string content;
-        string file_name = "NGAPApiTest.cc";    // ~16k while the buffer is 4k
         int fd = -1;
-        CPPUNIT_ASSERT_MESSAGE("The file should open", fd < 0);
+        CPPUNIT_ASSERT_MESSAGE("The file descriptor should be -1", fd == -1);
         CPPUNIT_ASSERT_MESSAGE("The function should return false", !NgapOwnedContainer::file_to_string(fd, content));
         CPPUNIT_ASSERT_MESSAGE("The string should be empty", content.empty());
     }
