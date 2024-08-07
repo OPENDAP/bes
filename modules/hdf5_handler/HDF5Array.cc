@@ -608,15 +608,21 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
         throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
 
     for (int64_t i = 0; i < nelms; i++) {
+
+        hdset_reg_ref_t *temp_rbuf = rbuf + offset[0]+i*step[0];
         // Let's assume that URL array is always 1 dimension.
+#if 0
         BESDEBUG("h5", "=read() rbuf[" << i << "]" <<
                                        rbuf[offset[0] + i * step[0]] << endl);
+#endif
 
-        if (rbuf[offset[0] + i * step[0]][0] != '\0') {
+        //if (rbuf[offset[0] + i * step[0]][0] != '\0') {
+        if (temp_rbuf!= nullptr) {
 
             char r_name[DODS_NAMELEN];
 
-            hid_t did_r = H5RDEREFERENCE(d_dset_id, H5R_DATASET_REGION, rbuf[offset[0] + i * step[0]]);
+            //hid_t did_r = H5RDEREFERENCE(d_dset_id, H5R_DATASET_REGION, rbuf[offset[0] + i * step[0]]);
+            hid_t did_r = H5RDEREFERENCE(d_dset_id, H5R_DATASET_REGION, (const void*)(temp_rbuf));
             if (did_r < 0)
                 throw InternalErr(__FILE__, __LINE__, "H5RDEREFERENCE() failed.");
 
@@ -626,7 +632,8 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
             BESDEBUG("h5", "=read() dereferenced name is " << r_name << endl);
 
             string varname(r_name);
-            hid_t space_id = H5Rget_region(did_r, H5R_DATASET_REGION, rbuf[offset[0] + i * step[0]]);
+            //hid_t space_id = H5Rget_region(did_r, H5R_DATASET_REGION, rbuf[offset[0] + i * step[0]]);
+            hid_t space_id = H5Rget_region(did_r, H5R_DATASET_REGION, (const void*)(temp_rbuf));
             if (space_id < 0)
                 throw InternalErr(__FILE__, __LINE__, "H5Rget_region() failed.");
 
