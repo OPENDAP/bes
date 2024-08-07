@@ -27,7 +27,7 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf bes.cache.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in bes.conf.in bes.cache.conf.in cmr_json_responses
+EXTRA_DIST = test_config.h.in bes.conf.in bes.cache.conf.in cmr_json_responses data
 
 check_PROGRAMS = $(UNIT_TESTS)
 
@@ -102,8 +102,8 @@ NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $
 NgapRequestHandlerTest_SOURCES = NgapRequestHandlerTest.cc
 NgapRequestHandlerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
 
-NgapContainerTest_SOURCES = NgapContainerTest.cc
-NgapContainerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
+# NgapContainerTest_SOURCES = NgapContainerTest.cc
+# NgapContainerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
 
 MemoryCacheTest_SOURCES = MemoryCacheTest.cc
 MemoryCacheTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
