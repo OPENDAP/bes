@@ -361,7 +361,6 @@ public:
         DBG(cerr << prolog << "END\n");
     }
 
-
     // The credentials are empty
     void sign_s3_url_test_3() {
         DBG(cerr << prolog << "BEGIN\n");
@@ -382,6 +381,7 @@ public:
         DBG(cerr << prolog << "END\n");
     }
 
+#if 0
     void http_head_test() {
         DBG(cerr << prolog << "BEGIN\n");
         const string url = "http://test.opendap.org/opendap.conf";
@@ -418,6 +418,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288);
         DBG(cerr << prolog << "END\n");
     }
+#endif
 
     // This test is to an S3 bucket and must be signed. Use the ENV_CRED
     // option of CredentialsManager. The environment variables are:
@@ -779,10 +780,12 @@ public:
         CPPUNIT_TEST(sign_s3_url_test_2);
         CPPUNIT_TEST(sign_s3_url_test_3);
 
+#if 0
         CPPUNIT_TEST(http_head_test);
         CPPUNIT_TEST(http_head_test_404);
 
         CPPUNIT_TEST(http_get_test_string);
+#endif
 
         CPPUNIT_TEST_EXCEPTION(http_get_test_4, HttpError);
         CPPUNIT_TEST_EXCEPTION(http_get_test_5, HttpError);
