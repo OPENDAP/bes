@@ -71,7 +71,7 @@ public:
 
     void configure_ngap_handler() const {
         NgapRequestHandler::d_use_dmrpp_cache = true;
-        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;
+        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;   // This is made if it doesn't exist
         NgapRequestHandler::d_dmrpp_file_cache_size_mb = 100 * MEGABYTE; // MB
         NgapRequestHandler::d_dmrpp_file_cache_purge_size_mb = 20 * MEGABYTE; // MB
         NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,

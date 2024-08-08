@@ -1140,6 +1140,7 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
     return nbytes;
 }
 
+#if 0
 // TODO Remove if not used. jhrg 8/3/24
 /**
  * @brief Perform an HTTP HEAD request.
@@ -1216,8 +1217,8 @@ bool http_head(const string &target_url, int tries, unsigned long wait_time_us) 
         throw;
     }
 
-    return true;
 }
+#endif
 
 /**
  * Dereference the target URL and put the response in buf.

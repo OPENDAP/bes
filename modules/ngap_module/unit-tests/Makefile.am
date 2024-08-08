@@ -69,7 +69,7 @@ $(abs_builddir)/static-cache:
 	@echo "# abs_top_builddir: $(abs_top_builddir)"
 	@echo "# abs_builddir: $(abs_builddir)"
 	@echo "# builddir: $(builddir)"
-	@echo "# Coping preloaded NGAP cache from: '$(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
+	@echo "# Copying preloaded NGAP cache from: '$(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
 	cp -r $(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests $(builddir)/static-cache
 	chmod -R ug+w $(builddir)/static-cache
 
@@ -80,7 +80,7 @@ $(abs_builddir)/static-cache:
 # NgapContainerTest
 
 if CPPUNIT
-UNIT_TESTS =  MemoryCacheTest NgapApiTest NgapRequestHandlerTest NgapOwnedContainerTest
+UNIT_TESTS = MemoryCacheTest NgapApiTest NgapRequestHandlerTest NgapOwnedContainerTest
 else
 UNIT_TESTS =
 
@@ -94,7 +94,7 @@ check-local:
 endif
 
 clean-local:
-	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
+	test ! -d $(builddir)/owned-cache || rm -rf $(builddir)/owned-cache
 
 NgapApiTest_SOURCES = NgapApiTest.cc
 NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
