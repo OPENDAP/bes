@@ -325,6 +325,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
             catch (http::HttpError &http_error) {
                 // Assumption - when S3 returns a 404, the things is not there. jhrg 8/9/24
                 if (http_error.http_status() == 404) {
+                    dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
                     use_daac_bucket = true;
                 }
                 else {
