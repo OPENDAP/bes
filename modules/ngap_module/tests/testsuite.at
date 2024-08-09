@@ -4,29 +4,5 @@ AT_INIT([bes/modules/ngap_module/tests testsuite])
 
 m4_include([../../common/handler_tests_macros.m4])
 
-# Test setting the NGAP Container - these tests don't include a <get> directive.
-# Only the container is set. jhrg 3/11/20
-#AT_BESCMD_RESPONSE_TEST([ngap/amsua15_2020.028_12915_1139_1324_WI.nc.dds.bescmd])
-
-# Utilizing GHRC_CLOUD/ACES_CONTINUOUS_DATA_V1 to get netcdf files
-#AT_BESCMD_RESPONSE_TEST([ngap/amsua15_2020.028_12915_1139_1324_WI.nc.dds.bescmd])
-#AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.dds.bescmd])
-#AT_BESCMD_RESPONSE_TEST([ngap/olslit77.nov_analog.hdf.dds.bescmd])
-
-#AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.das.bescmd])
-#AT_BESCMD_BINARYDATA_RESPONSE_TEST([ngap/aces1cont.nc.nc.dods.bescmd])
-#AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.dmr.bescmd])
-
-#AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/aces1cont.nc.nc.dap.bescmd])
-
-# Utilizing dapreader to read returned and cached DAP2 responses.
-#AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.dods.das.bescmd])
-#AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.dods.dds.bescmd])
-#AT_BESCMD_BINARYDATA_RESPONSE_TEST([ngap/aces1cont.nc.dods.dods.bescmd])
-
-
-# Utilizing dapreader to read returned and cached DAP4 responses.
-#AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.dap.dmr.bescmd])
-#AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/aces1cont.nc.dap.dap.bescmd])
-
-
+AT_BESCMD_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST.dmr.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST.dap.bescmd])

@@ -54,14 +54,16 @@ class NgapRequestHandler : public BESRequestHandler {
     static bool d_use_dmrpp_cache;
     static MemoryCache<std::string> d_dmrpp_mem_cache;
 
-    static unsigned long long d_dmrpp_file_cache_size_mb;
-    static unsigned long long d_dmrpp_file_cache_purge_size_mb;
+    static long long d_dmrpp_file_cache_size_mb;
+    static long long d_dmrpp_file_cache_purge_size_mb;
     static std::string d_dmrpp_file_cache_dir;
 
     static FileCache d_dmrpp_file_cache;
 
     friend class NgapContainer;   // give NgapContainer access to the cache parameters
+    friend class NgapOwnedContainer;    // give NgapOwnedContainer access to the cache parameters. jhrg 4/29/24
     friend class NgapContainerTest;
+    friend class NgapOwnedContainerTest;
     friend class NgapRequestHandlerTest;
 
 public:
