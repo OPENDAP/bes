@@ -1,0 +1,9 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/ngap_module/tests testsuite])
+
+m4_include([../../common/handler_tests_macros.m4])
+
+# must use a different bes.conf for these
+AT_BESCMD_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-pocloud.dmr.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-pocloud.dap.bescmd])
