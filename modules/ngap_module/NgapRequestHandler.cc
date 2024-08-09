@@ -62,7 +62,7 @@ MemoryCache<std::string> NgapRequestHandler::d_dmrpp_mem_cache;
 
 long long NgapRequestHandler::d_dmrpp_file_cache_size_mb = 10'000;    // 10,000 MB ~= 10GB, roughly
 long long NgapRequestHandler::d_dmrpp_file_cache_purge_size_mb = 2'000;  // 2,000 MB ~= 2GB
-string NgapRequestHandler::d_dmrpp_file_cache_dir = "/tmp";     // Please change this!
+string NgapRequestHandler::d_dmrpp_file_cache_dir = "/tmp/hyrax_dmrpp_cache";
 
 FileCache NgapRequestHandler::d_dmrpp_file_cache;
 
