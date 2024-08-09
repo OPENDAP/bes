@@ -60,17 +60,30 @@ namespace ngap {
 class NgapOwnedContainer: public BESContainer {
 
     std::string d_ngap_path;    // The (in)famous REST path
-    std::string d_data_source_location = "https://s3.amazonaws.com/cloudydap"; // FIXME Remove hardcoded value. jhrg 5/17/24
+    static std::string d_data_source_location;
+    static bool d_use_opendap_bucket;
+    static bool d_inject_data_url;
 
     bool get_dmrpp_from_cache_or_remote_source(std::string &dmrpp_string) const;
 
     // I made these static so that they will be in the class' namespace but still
     // be easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
+
+    static bool get_content_filters(const std::string &data_url, std::map<std::string, std::string, std::less<>> &content_filters);
+    static void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content);
+
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
-    static std::string build_dmrpp_url_to_daac_bucket(const std::string &rest_path);
+    static std::string build_data_url_to_daac_bucket(const std::string &rest_path);
+
+#if 0
+
+    bool try_opendap_bucket(std::string &dmrpp_string, std::string &error) const;
+    bool try_nasa_bucket(std::string &dmrpp_string, std::string &error) const;
 
     void set_real_name_using_cmr_or_cache();
+
+#endif
 
     bool get_item_from_dmrpp_cache(std::string &dmrpp_string) const;
     bool put_item_in_dmrpp_cache(const std::string &dmrpp_string) const;
@@ -91,19 +104,7 @@ public:
     NgapOwnedContainer &operator=(NgapOwnedContainer &&rhs) = delete;
     ~NgapOwnedContainer() override = default;
 
-    /**
-     * @brief Creates an instances of NgapOwnedContainer with symbolic name and real
-     * name, which is the remote request.
-     *
-     * The real_name is the remote request URL.
-     *
-     * @param sym_name symbolic name representing this remote container
-     * @param real_name The NGAP restified path.
-     * @throws BESSyntaxUserError if the url does not validate
-     * @see NgapUtils
-     */
-    NgapOwnedContainer(const std::string &sym_name, const std::string &real_name, const std::string &)
-            : BESContainer(sym_name, real_name, "owned-ngap"), d_ngap_path(real_name) {}
+    NgapOwnedContainer(const std::string &sym_name, const std::string &real_name, const std::string &);
 
     BESContainer *ptr_duplicate() override {
         auto container = std::make_unique<NgapOwnedContainer>();

@@ -43,6 +43,7 @@
 #include "BESContextManager.h"
 #include "HttpError.h"
 #include "BESLog.h"
+#include "TheBESKeys.h"
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
@@ -59,6 +60,31 @@ using namespace std;
 using namespace bes;
 
 namespace ngap {
+
+std::string NgapOwnedContainer::d_data_source_location = "https://s3.amazonaws.com/cloudydap";  // TODO change this poor default value. jhrg 8/9/24
+bool NgapOwnedContainer::d_use_opendap_bucket = true;
+bool NgapOwnedContainer::d_inject_data_url = true;
+
+/**
+ * @brief Creates an instances of NgapOwnedContainer with symbolic name and real
+ * name, which is the remote request.
+ *
+ * The real_name is the remote request URL.
+ *
+ * @param sym_name symbolic name representing this remote container
+ * @param real_name The NGAP restified path.
+ * @throws BESSyntaxUserError if the url does not validate
+ * @see NgapUtils
+ */
+NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &real_name, const string &)
+        : BESContainer(sym_name, real_name, "owned-ngap"), d_ngap_path(real_name) {
+    NgapOwnedContainer::d_data_source_location
+        = TheBESKeys::read_string_key(DATA_SOURCE_LOCATION, NgapOwnedContainer::d_data_source_location);
+    NgapOwnedContainer::d_use_opendap_bucket
+        = TheBESKeys::read_bool_key(USE_OPENDAP_BUCKET, NgapOwnedContainer::d_use_opendap_bucket);
+    NgapOwnedContainer::d_inject_data_url
+        = TheBESKeys::read_bool_key(NGAP_INJECT_DATA_URL_KEY, NgapOwnedContainer::d_inject_data_url);
+}
 
 /**
  * @brief Read data from a file descriptor into a string.
@@ -103,8 +129,8 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  * @note: The cache is global to the NgapRequestHandler class. This is a per-process
  * cache and it is not thread-safe.
  */
-string NgapOwnedContainer::build_dmrpp_url_to_daac_bucket(const string &rest_path) {
-    BES_STOPWATCH_START(MODULE, "build_dmrpp_url_to_daac_bucket: " + rest_path);
+string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
+    BES_STOPWATCH_START(MODULE, "build_data_url_to_daac_bucket: " + rest_path);
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
@@ -112,25 +138,25 @@ string NgapOwnedContainer::build_dmrpp_url_to_daac_bucket(const string &rest_pat
 
     // If using the cache, look there. Note that the UID is part of the key to the cached data.
     string url_key = rest_path + ':' + uid;
-    string dmrpp_url_string;
+    string data_url;
     if (NgapRequestHandler::d_use_cmr_cache) {
-        if (NgapRequestHandler::d_cmr_mem_cache.get(url_key, dmrpp_url_string)) {
-            CACHE_LOG(prolog + "CMR Cache hit, translated URL: " + dmrpp_url_string + '\n');
-            return dmrpp_url_string;
+        if (NgapRequestHandler::d_cmr_mem_cache.get(url_key, data_url)) {
+            CACHE_LOG(prolog + "CMR Cache hit, translated URL: " + data_url + '\n');
+            return data_url;
         } else {
             CACHE_LOG(prolog + "CMR Cache miss, REST path: " + url_key + '\n');
         }
     }
 
-    dmrpp_url_string = NgapApi::convert_ngap_resty_path_to_data_access_url(rest_path);
+    data_url = NgapApi::convert_ngap_resty_path_to_data_access_url(rest_path);
 
     // If using the CMR cache, cache the response.
     if (NgapRequestHandler::d_use_cmr_cache) {
-        NgapRequestHandler::d_cmr_mem_cache.put(url_key, dmrpp_url_string);
-        CACHE_LOG(prolog + "CMR Cache put, translated URL: " + dmrpp_url_string + '\n');
+        NgapRequestHandler::d_cmr_mem_cache.put(url_key, data_url);
+        CACHE_LOG(prolog + "CMR Cache put, translated URL: " + data_url + '\n');
     }
 
-    return dmrpp_url_string;
+    return data_url;
 }
 
 // Rename to build_reference_to_dmrpp().
@@ -218,6 +244,53 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
 }
 
 /**
+ * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
+ *
+ * WARNING: Does not lock cache. This method assumes that the process has already
+ * acquired an exclusive lock on the cache file.
+ *
+ * WARNING: This method will overwrite the cached data with the filtered result.
+ *
+ * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
+ * resource will be replaced with its associated value.
+ * @param content A reference to the C++ string to filter
+ */
+void NgapOwnedContainer::filter_response(const map <string, string, std::less<>> &content_filters, string &content) {
+    for (const auto &apair: content_filters) {
+        unsigned int replace_count = BESUtil::replace_all(content, apair.first, apair.second);
+        BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
+                 apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
+    }
+}
+
+/**
+ * Build the content filters if needed
+ * @note If the filters are built, clear the content_filters value/result parameter first.
+ * @param content_filters Value-result parameter
+ * @return True if the filters were built, false otherwise
+ */
+bool NgapOwnedContainer::get_content_filters(const string &data_url, map<string, string, std::less<>> &content_filters) {
+    if (NgapOwnedContainer::d_inject_data_url) {
+        // data_url was get_real_name(). jhrg 8/9/24
+        const string missing_data_url_str = data_url + ".missing";
+        const string href = R"(href=")";
+        const string trusted_url_hack = R"(" dmrpp:trust="true")";
+        const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
+        const string data_access_url_with_trusted_attr_str = href + data_url + trusted_url_hack;
+        const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
+        const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+
+        content_filters.clear();
+        content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
+        content_filters.insert(
+                pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * @brief Get the DMR++ from a remote source or a cache
  *
  * This method will try to read a DMR++ from an S3 bucket if that DMR++ cannot be found in the
@@ -238,35 +311,59 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     // If the DMR++ is cached, return it. NB: This cache holds OPeNDAP- and DAAC-owned DMR++ documents.
     if (NgapRequestHandler::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
         return true;
-    } else{
+    }
+    else {
         // Else, the DMR++ is neither in the memory cache nor the file cache.
-        // Read it from S3, etc., and filter it. Put it in the memory cache.
-       try {
-            // This code throws an exception if there is a problem. jhrg 11/16/23
-            string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
-            curl::http_get(dmrpp_url_str, dmrpp_string);
-        }
-        catch (http::HttpError &http_error) {
-            http_error.set_message(http_error.get_message() + ". This error for an OPeNDAP-owned DMR++ could be from Hyrax or S3.");
+        // Read it from S3, etc., and filter it. Put it in the memory cache
+        bool use_daac_bucket = false;
+
+        if (NgapOwnedContainer::d_use_opendap_bucket) {
             try {
-                // This code throws an exception if there is a problem. jhrg 11/16/23
-                string dmrpp_url_str = build_dmrpp_url_to_daac_bucket(get_real_name());
+                string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
                 curl::http_get(dmrpp_url_str, dmrpp_string);
+             }
+            catch (http::HttpError &http_error) {
+                // Assumption - when S3 returns a 404, the things is not there. jhrg 8/9/24
+                if (http_error.http_status() == 404) {
+                    use_daac_bucket = true;
+                }
+                else {
+                    http_error.set_message(http_error.get_message() + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
+                    throw;
+                }
+
+            }
+        }
+
+        // Try the DAAC bucket if either the OPeNDAP bucket is not used or the OPeNDAP bucket failed
+        if (!NgapOwnedContainer::d_use_opendap_bucket || use_daac_bucket) {
+            try {
+                string data_url = build_data_url_to_daac_bucket(get_real_name());
+                string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
+                curl::http_get(dmrpp_url_str, dmrpp_string);
+                // filter the DMRPP from teh DAAC's bucket to replace the template href with the data_url
+                map <string, string, std::less<>> content_filters;
+                if (!get_content_filters(data_url, content_filters)) {
+                    throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
+                }
+                filter_response(content_filters, dmrpp_string);
+
             }
             catch (http::HttpError &http_error) {
-                http_error.set_message(http_error.get_message() + ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
-                throw http_error;
+                http_error.set_message(http_error.get_message() +
+                                       ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
+                throw;
             }
         }
-
-        // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
-        // The memory cache is for use by this process, the file cache for other processes/VMs
-        if (NgapRequestHandler::d_use_dmrpp_cache && !put_item_in_dmrpp_cache(dmrpp_string)) {
-            return false;
-        }
-
-        return true;
     }
+
+    // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
+    // The memory cache is for use by this process, the file cache for other processes/VMs
+    if (NgapRequestHandler::d_use_dmrpp_cache && !put_item_in_dmrpp_cache(dmrpp_string)) {
+        return false;
+    }
+
+    return true;
 }
 
 /**

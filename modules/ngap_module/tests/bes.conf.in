@@ -56,3 +56,20 @@ CredentialsManager.config = @abs_top_srcdir@/modules/ngap_module/tests/CM.config
 Http.cache.effective.urls = true
 Http.cache.effective.urls.skip.regex.pattern = ^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
 
+# Note: By default, the tests in this directory read from a DMR++ in an OPeNDAP-owned
+# S3 bucket. Credentials to read from this bucket are provided in the CM.config file.
+# An EDL token is needed to read the data. With that token, you can also read the DMR++
+# from the DAAC-owned S3 bucket. The DMR++ files are a little different and so the tests
+# for that case will need different baselines, but it's easy to see that the responses
+# OK. Neither of these buckets are public and so the tests are not run by CICD. jhrg 8/9/24
+
+# This is the default value - used for 'OPeNDAP-Owned' S3 bucket tests.
+# Set this to your own S3 bucket where DMR++ documents can be found.
+NGAP.DataSourceLocation = https://s3.amazonaws.com/cloudydap
+
+# Set this to true to try the OPeNDAP bucket for DMR++ documents.
+NGAP.UseOPeNDAPBucket = true
+
+# set this to true to substitute data URLs in the DMR++ for the template href value.
+NGAP.inject_data_urls = false
+

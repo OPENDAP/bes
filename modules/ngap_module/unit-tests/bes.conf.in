@@ -39,3 +39,10 @@ NGAP.UseCMRCache = true
 # Same defaults and meaning as for the CMR cache
 # NGAP.CMRCacheSize = 100
 # NGAP.CMRCachePurge = 20
+
+# This is the default value - used for tests.
+# Set this to your own S3 bucket where DMR++ documents can be found.
+# NGAP.DataSourceLocation = https://s3.amazonaws.com/cloudydap
+
+# Set this to true to try the OPeNDAP bucket for DMR++ documents.
+NGAP.UseOPeNDAPBucket = false
