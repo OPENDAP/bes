@@ -35,7 +35,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 bes-daac.conf: $(BES_DAAC_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes-daac.conf
 
 ############## Autotest follows #####################
 
