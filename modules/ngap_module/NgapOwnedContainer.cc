@@ -61,7 +61,9 @@ using namespace bes;
 
 namespace ngap {
 
-std::string NgapOwnedContainer::d_data_source_location = "https://s3.amazonaws.com/cloudydap";  // TODO change this poor default value. jhrg 8/9/24
+// This data source location currently (8/10/24) is a S3 bucket where the DMR++ files are stored
+// for the OPeNDAP-owned data used by the tests. jhrg 8/10/24
+std::string NgapOwnedContainer::d_data_source_location = "https://s3.amazonaws.com/cloudydap";
 bool NgapOwnedContainer::d_use_opendap_bucket = true;
 bool NgapOwnedContainer::d_inject_data_url = true;
 
@@ -72,7 +74,7 @@ bool NgapOwnedContainer::d_inject_data_url = true;
  * The real_name is the remote request URL.
  *
  * @param sym_name symbolic name representing this remote container
- * @param real_name The NGAP restified path.
+ * @param real_name The NGAP REST path.
  * @throws BESSyntaxUserError if the url does not validate
  * @see NgapUtils
  */

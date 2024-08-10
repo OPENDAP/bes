@@ -115,10 +115,11 @@ public:
     void set_ngap_path(const std::string &ngap_path) { d_ngap_path = ngap_path; }
     std::string get_ngap_path() const { return d_ngap_path; }
 
-    void set_data_source_location(const std::string &data_source_location) {
+    /// @brief Set the S3 bucket used for 'owned' DMR++ documents.
+    static void set_data_source_location(const std::string &data_source_location) {
         d_data_source_location = data_source_location;
     }
-    std::string get_data_source_location() const { return d_data_source_location; }
+    static std::string get_data_source_location() { return d_data_source_location; }
 
     std::string access() override;
 
