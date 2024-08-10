@@ -19,7 +19,7 @@ noinst_DATA = bes.conf bes-daac.conf
 
 CLEANFILES = bes.conf bes-daac.conf
 
-EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) atlocal.in \
+EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_DAAC).at $(TESTSUITE_DAAC) atlocal.in \
 CM.config.template package.m4 $(BES_CONF_IN) $(BES_DAAC_CONF_IN)
 
 DISTCLEANFILES = atconfig
