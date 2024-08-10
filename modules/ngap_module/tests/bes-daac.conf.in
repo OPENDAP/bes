@@ -71,7 +71,10 @@ Http.cache.effective.urls.skip.regex.pattern = ^https:\/\/.*s3(\.|-).*\.amazonaw
 NGAP.DataSourceLocation = https://s3.amazonaws.com/cloudydap
 
 # Set this to true to try the OPeNDAP bucket for DMR++ documents.
-NGAP.UseOPeNDAPBucket = true
+
+# Use this to with the tests that use the DAAC bucket even though the granules
+# are in our bucket too. jhrg 8/9/24
+NGAP.UseOPeNDAPBucket = false
 
 # set this to true to substitute data URLs in the DMR++ for the template href value.
 NGAP.inject_data_urls = true
