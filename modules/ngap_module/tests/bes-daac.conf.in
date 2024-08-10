@@ -33,7 +33,10 @@ Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf
 Http.MimeTypes+=h5:application/x-hdf5
 
+# Note: Cache is off for these tests since we get the same data from two sources.
+
 NGAP.UseDMRppCache = false
+
 NGAP.DMRppFileCacheDir = @abs_top_builddir@/modules/ngap_module/tests/hyrax_ngap_cache
 NGAP.DMRppFileCacheSize.MB = 10000
 NGAP.DMRppFileCachePurge.MB = 2000
@@ -74,5 +77,5 @@ NGAP.DataSourceLocation = https://s3.amazonaws.com/cloudydap
 NGAP.UseOPeNDAPBucket = false
 
 # set this to true to substitute data URLs in the DMR++ for the template href value.
-NGAP.inject_data_urls = false
+NGAP.inject_data_urls = true
 
