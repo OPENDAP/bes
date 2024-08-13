@@ -69,6 +69,7 @@ static string build_error_msg(const string &msg, const string &file = "", int li
  * We need to make sure that all of the open temporary files get cleaned up if
  * bad things happen. So far, SIGPIPE is the only bad thing we know about
  * at least with respect to the TempFile class.
+ * FIXME This code needs to restore the existing SIGPIPE handler. See server/ServerApp.cc. jhrg 8/13/24
  */
 void TempFile::sigpipe_handler(int sig) {
     try {
@@ -161,6 +162,7 @@ bool TempFile::mk_temp_dir(const std::string &dir_name) {
  * @return The name of the temporary file.
  */
 string TempFile::create(const std::string &dir_name, const std::string &temp_file_prefix) {
+    // TODO The lock can be moved down to the section with the shared resource. jhrg 8/13/24
     std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "dir_name: " << dir_name << endl);
@@ -176,7 +178,7 @@ string TempFile::create(const std::string &dir_name, const std::string &temp_fil
     }
 
     // Added process id (ala getpid()) to tempfile name to see if that affects
-    // our troubles with permission denied errors. This may need to be revisted if this
+    // our troubles with permission denied errors. This may need to be revisited if this
     // is going to be utilized in a place where multiple threads could end up in this spot.
     //   - ndp 04/03/24
     string target_file = BESUtil::pathConcat(dir_name, temp_file_prefix + "_" + to_string(getpid()) + "_XXXXXX");
@@ -198,6 +200,7 @@ string TempFile::create(const std::string &dir_name, const std::string &temp_fil
 
     d_fname.assign(target_file);
 
+    // TODO Lock only this section. jhrg 8/13/24
     // Check to see if there are already active TempFile things,
     // we can tell because if open_files->size() is zero then this
     // is the first, and we need to register SIGPIPE handler.
@@ -207,6 +210,7 @@ string TempFile::create(const std::string &dir_name, const std::string &temp_fil
         sigaddset(&act.sa_mask, SIGPIPE);
         act.sa_flags = 0;
 
+        // FIXME Save the existing signal handler. jhrg 8/13/24
         act.sa_handler = bes::TempFile::sigpipe_handler;
 
         if (sigaction(SIGPIPE, &act, &cached_sigpipe_handler)) {
@@ -243,6 +247,7 @@ TempFile::~TempFile() {
             if (open_files.empty()) {
                 // No more files means we can unload the SIGPIPE handler
                 // If more files are created at a later time then it will get reloaded.
+                // FIXME Restore saved signal handler. jhrg 8/13/24
                 if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
                     ERROR_LOG(build_error_msg("Could not remove SIGPIPE handler" , __FILE__, __LINE__));
                 }
