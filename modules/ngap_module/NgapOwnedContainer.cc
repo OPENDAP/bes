@@ -63,7 +63,7 @@ namespace ngap {
 
 // This data source location currently (8/10/24) is a S3 bucket where the DMR++ files are stored
 // for the OPeNDAP-owned data used by the tests. jhrg 8/10/24
-std::string NgapOwnedContainer::d_data_source_location = "https://s3.amazonaws.com/cloudydap";
+std::string NgapOwnedContainer::d_data_source_location = "https://cloudydap.s3.amazonaws.com";
 bool NgapOwnedContainer::d_use_opendap_bucket = false;
 bool NgapOwnedContainer::d_inject_data_url = true;
 
@@ -175,7 +175,7 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
     string dmrpp_name = parts[1] + '/' + parts[3] + ".dmrpp";
 
     // http://<bucket_name>.s3.amazonaws.com/<object_key>
-    // Chane so the first part is read from a configuration file.
+    // Change so the first part is read from a configuration file.
     // That way it can be a file:// URL for testing, and later can be set
     // in other ways. jhrg 5/1/24
     string dmrpp_url_str = data_source + '/' + dmrpp_name;
