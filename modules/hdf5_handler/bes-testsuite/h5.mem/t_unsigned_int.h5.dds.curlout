@@ -1,6 +1,0 @@
-Dataset {
-    UInt16 d16_1[2];
-    UInt16 d16_2[2][2];
-    UInt32 d32_1[2][2][2];
-    UInt32 d32_2[2][2][2][2][2];
-} t_unsigned_int.h5;

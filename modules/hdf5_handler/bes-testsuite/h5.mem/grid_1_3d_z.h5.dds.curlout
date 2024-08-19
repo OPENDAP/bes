@@ -1,7 +1,0 @@
-Dataset {
-    Float32 temperature[pressure = 2][lat = 4][lon = 8];
-    String StructMetadata_0;
-    Float32 lon[lon = 8];
-    Float32 lat[lat = 4];
-    Float32 pressure[pressure = 2];
-} grid_1_3d_z.h5;

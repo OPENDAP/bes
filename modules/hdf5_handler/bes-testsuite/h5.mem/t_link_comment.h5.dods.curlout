@@ -1,6 +1,0 @@
-The data:
-Int32 dset1[5] = {0, 1, 2, 3, 4};
-Int32 g1_dset2[5] = {0, 1, 2, 3, 4};
-Int32 g1_g3_dset1_hard[5] = {0, 1, 2, 3, 4};
-Int32 g2_dset1_hard[5] = {0, 1, 2, 3, 4};
-

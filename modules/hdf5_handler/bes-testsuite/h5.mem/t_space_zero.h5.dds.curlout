@@ -1,3 +1,0 @@
-Dataset {
-    Int16 dataset_2d[0][0];
-} t_space_zero.h5;

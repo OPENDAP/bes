@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
-  <bes:setContext name="dap_format">dap2</bes:setContext>
-  <bes:setContainer name="catalogContainer" space="catalog">/data/hdf5/fnc_test/dim_scale.h5</bes:setContainer>
-  <bes:define name="d1">
-    <bes:container name="catalogContainer"/>
-  </bes:define>
-  <bes:get type="dods" definition="d1" returnAs="netcdf-4" />
-</bes:request>
