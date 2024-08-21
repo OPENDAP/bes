@@ -6,13 +6,14 @@ AM_CPPFLAGS = -I$(top_srcdir)
 AM_CXXFLAGS =
 
 BES_CONF_IN = bes.conf.in
+BES_DAAC_CONF_IN = bes-daac.conf.in
 
 noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf mds_ledger.txt bes.log
 
-EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-CM.config.template package.m4 $(BES_CONF_IN)
+EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_DAAC).at $(TESTSUITE_DAAC) atlocal.in \
+CM.config.template package.m4 $(BES_CONF_IN) $(BES_DAAC_CONF_IN)
 
 DISTCLEANFILES = atconfig
 
@@ -29,7 +30,6 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
-#TESTSUITE_DAAC = $(srcdir)/testsuite-daac
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) bes.conf bes-daac.conf
 	@if [ -f $(srcdir)/CM.config ]; then \
