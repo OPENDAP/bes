@@ -3,8 +3,9 @@
 // This file is part of ngap_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2020, 2024 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>,
+//         James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -75,15 +76,6 @@ class NgapOwnedContainer: public BESContainer {
 
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
     static std::string build_data_url_to_daac_bucket(const std::string &rest_path);
-
-#if 0
-
-    bool try_opendap_bucket(std::string &dmrpp_string, std::string &error) const;
-    bool try_nasa_bucket(std::string &dmrpp_string, std::string &error) const;
-
-    void set_real_name_using_cmr_or_cache();
-
-#endif
 
     bool get_item_from_dmrpp_cache(std::string &dmrpp_string) const;
     bool put_item_in_dmrpp_cache(const std::string &dmrpp_string) const;
