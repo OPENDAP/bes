@@ -12,7 +12,7 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf mds_ledger.txt bes.log
 
 EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-CM.config.template package.m4 $(BES_CONF_IN)
+CM.config.template package.m4 $(BES_CONF_IN) bes-daac.conf
 
 DISTCLEANFILES = atconfig
 
