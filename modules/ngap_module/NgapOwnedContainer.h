@@ -72,6 +72,7 @@ class NgapOwnedContainer: public BESContainer {
     static bool file_to_string(int fd, std::string &content);
 
     static bool get_daac_content_filters(const std::string &data_url, std::map<std::string, std::string, std::less<>> &content_filters);
+    static bool get_opendap_content_filters(std::map<std::string, std::string, std::less<>> &content_filters);
     static void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content);
 
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);

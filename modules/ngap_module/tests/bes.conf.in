@@ -10,7 +10,8 @@ BES.Group = group_name
 BES.LogName = ./bes.log
 BES.LogVerbose = no
 
-BES.modules = dap,cmd,ngap,dmrpp,fonc
+BES.modules = dap,cmd,ngap,dmrpp
+# ,fonc
 BES.module.dap = @abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd = @abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dmrpp = @abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
@@ -28,16 +29,13 @@ BES.Catalog.catalog.Exclude = ^\..*;
 # Note: Cache is off for these tests since we get the same data from two sources.
 NGAP.UseDMRppCache = false
 
+# This is how we tell the server that it's OK to use HTTP GET to access the DMR++ documents.
 AllowedHosts = ^https://cloudydap.s3.us-east-1.amazonaws.com/.*$
-# AllowedHosts += ^https://archive\.podaac\.earthdata\.nasa\.gov/.*$
-
-# This is needed if Http.cache.effective.urls = true. jhrg 5/24/24
-# AllowedHosts += ^https://deotb6e7tfubr\.cloudfront\.net/.*$
 
 CredentialsManager.config = @abs_top_srcdir@/modules/ngap_module/tests/CM.config
 
 Http.cache.effective.urls = true
-Http.cache.effective.urls.skip.regex.pattern = ^https://.*s3(\.|-).*\.amazonaws\.com/.*$
+Http.cache.effective.urls.skip.regex.pattern = ^https://.*\.s3\..*\.amazonaws\.com/.*$
 
 # Note: By default, the tests in this directory read from a DMR++ in an OPeNDAP-owned
 # S3 bucket. Credentials to read from this bucket are provided in the CM.config file.

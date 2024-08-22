@@ -291,30 +291,30 @@ bool NgapOwnedContainer::get_daac_content_filters(const string &data_url, map<st
     return false;
 }
 
-#if 0
+/**
+ * @brief Get the content filters for the OPeNDAP-owned DMR++.
+ * Build filters to use the BESUtils::replace_all() method to insert the 'dmrpp:trust="true"'
+ * XML attribute. Adding this means that we do not have to add the strange cloudfront host names
+ * to the BES AllowedHosts list.
+ * @param content_filters Value-result parameter that is the map of values to replace in the DMR++
+ * @return True if the filters were built, false otherwise
+ */
+bool NgapOwnedContainer::get_opendap_content_filters(map<string, string, std::less<>> &content_filters) {
+    if (NgapOwnedContainer::d_inject_data_url) {    // Hmmm, this is a bit of a hack. jhrg 8/22/24
 
-bool NgapOwnedContainer::get_opendap_content_filters(const string &data_url, map<string, string, std::less<>> &content_filters) {
-    if (NgapOwnedContainer::d_inject_data_url) {
-        // data_url was get_real_name(). jhrg 8/9/24
-        const string missing_data_url_str = data_url + ".missing";
-        const string href = R"(href=")";
-        const string trusted_url_hack = R"(" dmrpp:trust="true")";
-        const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
-        const string data_access_url_with_trusted_attr_str = href + data_url + trusted_url_hack;
-        const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
-        const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+        const string version_attribute = "dmrpp:version";
+        const string trusted_attribute = R"(dmrpp:trust="true" )";
+        // The 'trust' attribute is inserted _before_ the 'version' attribute. jhrg 8/22/24
+        const string trusted_and_version = trusted_attribute + version_attribute;
 
         content_filters.clear();
-        content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-        content_filters.insert(
-                pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+        content_filters.insert(pair<string, string>(version_attribute, trusted_and_version));
+
         return true;
     }
 
     return false;
 }
-
-#endif
 
 /**
  * @brief Get the DMR++ from a remote source or a cache
@@ -341,12 +341,17 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     else {
         // Else, the DMR++ is neither in the memory cache nor the file cache.
         // Read it from S3, etc., and filter it. Put it in the memory cache
-        bool use_daac_bucket = false;
+        bool use_daac_bucket = false;   // TODO Fix the tortured logic here. jhrg 8/22/24
 
         if (NgapOwnedContainer::d_use_opendap_bucket) {
             try {
                 string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
                 curl::http_get(dmrpp_url_str, dmrpp_string);
+                map <string, string, std::less<>> content_filters;
+                if (!get_opendap_content_filters(content_filters)) {
+                    throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
+                }
+                filter_response(content_filters, dmrpp_string);
             }
             catch (http::HttpError &http_error) {
                 // Assumption - when S3 returns a 404, the things is not there. jhrg 8/9/24
