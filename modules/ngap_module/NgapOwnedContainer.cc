@@ -161,7 +161,6 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
     return data_url;
 }
 
-// Rename to build_reference_to_dmrpp().
 /**
  * @brief Build a URL to the granule in the OPeNDAP S3 bucket
  * @param rest_path The REST path of the granule: '/collections/<ccid>/granules/<granule_id>'
