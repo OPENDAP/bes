@@ -271,7 +271,7 @@ void NgapOwnedContainer::filter_response(const map <string, string, std::less<>>
  * @param content_filters Value-result parameter
  * @return True if the filters were built, false otherwise
  */
-bool NgapOwnedContainer::get_content_filters(const string &data_url, map<string, string, std::less<>> &content_filters) {
+bool NgapOwnedContainer::get_daac_content_filters(const string &data_url, map<string, string, std::less<>> &content_filters) {
     if (NgapOwnedContainer::d_inject_data_url) {
         // data_url was get_real_name(). jhrg 8/9/24
         const string missing_data_url_str = data_url + ".missing";
@@ -290,6 +290,31 @@ bool NgapOwnedContainer::get_content_filters(const string &data_url, map<string,
 
     return false;
 }
+
+#if 0
+
+bool NgapOwnedContainer::get_opendap_content_filters(const string &data_url, map<string, string, std::less<>> &content_filters) {
+    if (NgapOwnedContainer::d_inject_data_url) {
+        // data_url was get_real_name(). jhrg 8/9/24
+        const string missing_data_url_str = data_url + ".missing";
+        const string href = R"(href=")";
+        const string trusted_url_hack = R"(" dmrpp:trust="true")";
+        const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
+        const string data_access_url_with_trusted_attr_str = href + data_url + trusted_url_hack;
+        const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
+        const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+
+        content_filters.clear();
+        content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
+        content_filters.insert(
+                pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+        return true;
+    }
+
+    return false;
+}
+
+#endif
 
 /**
  * @brief Get the DMR++ from a remote source or a cache
@@ -344,7 +369,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
                 curl::http_get(dmrpp_url_str, dmrpp_string);
                 // filter the DMRPP from teh DAAC's bucket to replace the template href with the data_url
                 map <string, string, std::less<>> content_filters;
-                if (!get_content_filters(data_url, content_filters)) {
+                if (!get_daac_content_filters(data_url, content_filters)) {
                     throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
                 }
                 filter_response(content_filters, dmrpp_string);
