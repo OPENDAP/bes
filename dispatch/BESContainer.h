@@ -98,13 +98,14 @@ protected:
     //  copying. See _duplicate() that takes an object to copy to instead of
     //  copy from. jhrg 10/18/22
     BESContainer(const BESContainer &copy_from);
-    BESContainer& operator=(const BESContainer& other) = delete;
 
     void _duplicate(BESContainer &copy_to);
 
 public:
 
     ~BESContainer() override = default;
+
+    BESContainer& operator=(const BESContainer& other) = delete;
 
     /** @brief pure abstract method to duplicate this instances of BESContainer
      */
