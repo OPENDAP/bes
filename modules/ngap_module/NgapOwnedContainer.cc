@@ -284,8 +284,7 @@ bool NgapOwnedContainer::get_content_filters(const string &data_url, map<string,
 
         content_filters.clear();
         content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-        content_filters.insert(
-                pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+        content_filters.insert(pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
         return true;
     }
 
@@ -323,7 +322,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
             try {
                 string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
                 curl::http_get(dmrpp_url_str, dmrpp_string);
-             }
+            }
             catch (http::HttpError &http_error) {
                 // Assumption - when S3 returns a 404, the things is not there. jhrg 8/9/24
                 if (http_error.http_status() == 404) {
@@ -334,7 +333,6 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
                     http_error.set_message(http_error.get_message() + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
                     throw;
                 }
-
             }
         }
 
@@ -350,11 +348,9 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
                     throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
                 }
                 filter_response(content_filters, dmrpp_string);
-
             }
             catch (http::HttpError &http_error) {
-                http_error.set_message(http_error.get_message() +
-                                       ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
+                http_error.set_message(http_error.get_message() + ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
                 throw;
             }
         }
