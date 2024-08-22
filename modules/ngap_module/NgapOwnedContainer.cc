@@ -343,6 +343,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
         // Read it from S3, etc., and filter it. Put it in the memory cache
         bool try_daac_bucket = true;
 
+        // If the server is set up to try the OPeNDAP bucket, look there first.
         if (NgapOwnedContainer::d_use_opendap_bucket) {
             try {
                 string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
