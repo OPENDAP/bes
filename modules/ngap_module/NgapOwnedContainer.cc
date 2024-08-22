@@ -162,6 +162,12 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
 }
 
 // Rename to build_reference_to_dmrpp().
+/**
+ * @brief Build a URL to the granule in the OPeNDAP S3 bucket
+ * @param rest_path The REST path of the granule: '/collections/<ccid>/granules/<granule_id>'
+ * @param data_source The protocol and host name part of the URL
+ * @return The URL to the item in a S3 bucket
+ */
 string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_path, const string &data_source) {
     // The PATH part of a URL to the NGAP/DMR++ is an 'NGAP REST path' that has the form:
     // /collections/<ccid>/granules/<granule_id>. In our 'owned' S3 bucket, we use object
@@ -317,6 +323,61 @@ bool NgapOwnedContainer::get_opendap_content_filters(map<string, string, std::le
 }
 
 /**
+ * @brief Read the DMR++ from the OPeNDAP S3 bucket
+ * @param dmrpp_string value-result parameter for the DMR++ doc as a string
+ * @return True if the document was found, false otherwise
+ */
+bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) const {
+    bool dmrpp_read = false;
+    try {
+        string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
+        curl::http_get(dmrpp_url_str, dmrpp_string);
+        map <string, string, std::less<>> content_filters;
+        if (!get_opendap_content_filters(content_filters)) {
+            throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
+        }
+        filter_response(content_filters, dmrpp_string);
+        dmrpp_read = true;
+    }
+    catch (http::HttpError &http_error) {
+        // Assumption - when S3 returns a 404, the things is not there. jhrg 8/9/24
+        if (http_error.http_status() == 404) {
+            dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
+            dmrpp_read = false;
+        }
+        else {
+            http_error.set_message(http_error.get_message() + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
+            throw;
+        }
+    }
+
+    return dmrpp_read;
+}
+
+/**
+ * @brief Read the DMR++ from a DAAC S3 bucket
+ * @param dmrpp_string value-result parameter for the DMR++ doc as a string
+ * @exception http::HttpError if the granule is not found
+ */
+void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const {
+    try {
+        string data_url = build_data_url_to_daac_bucket(get_real_name());
+        string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
+        curl::http_get(dmrpp_url_str, dmrpp_string);
+        // filter the DMRPP from the DAAC's bucket to replace the template href with the data_url
+        map <string, string, std::less<>> content_filters;
+        if (!get_daac_content_filters(data_url, content_filters)) {
+            throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
+        }
+        filter_response(content_filters, dmrpp_string);
+    }
+    catch (http::HttpError &http_error) {
+        http_error.set_message(http_error.get_message() + ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
+        throw;
+    }
+}
+
+/**
  * @brief Get the DMR++ from a remote source or a cache
  *
  * This method will try to read a DMR++ from an S3 bucket if that DMR++ cannot be found in the
@@ -341,49 +402,18 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     else {
         // Else, the DMR++ is neither in the memory cache nor the file cache.
         // Read it from S3, etc., and filter it. Put it in the memory cache
-        bool try_daac_bucket = true;
+        bool dmrpp_read = false;
 
         // If the server is set up to try the OPeNDAP bucket, look there first.
         if (NgapOwnedContainer::d_use_opendap_bucket) {
-            try {
-                string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
-                curl::http_get(dmrpp_url_str, dmrpp_string);
-                map <string, string, std::less<>> content_filters;
-                if (!get_opendap_content_filters(content_filters)) {
-                    throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
-                }
-                filter_response(content_filters, dmrpp_string);
-                try_daac_bucket = false;
-            }
-            catch (http::HttpError &http_error) {
-                // Assumption - when S3 returns a 404, the things is not there. jhrg 8/9/24
-                if (http_error.http_status() == 404) {
-                    dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
-                }
-                else {
-                    http_error.set_message(http_error.get_message() + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
-                    throw;
-                }
-            }
+            // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
+            // we don't also try the DAAC bucket.
+            dmrpp_read = dmrpp_read_from_opendap_bucket(dmrpp_string);
         }
 
         // Try the DAAC bucket if either the OPeNDAP bucket is not used or the OPeNDAP bucket failed
-        if (try_daac_bucket) {
-            try {
-                string data_url = build_data_url_to_daac_bucket(get_real_name());
-                string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
-                curl::http_get(dmrpp_url_str, dmrpp_string);
-                // filter the DMRPP from the DAAC's bucket to replace the template href with the data_url
-                map <string, string, std::less<>> content_filters;
-                if (!get_daac_content_filters(data_url, content_filters)) {
-                    throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
-                }
-                filter_response(content_filters, dmrpp_string);
-            }
-            catch (http::HttpError &http_error) {
-                http_error.set_message(http_error.get_message() + ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
-                throw;
-            }
+        if (!dmrpp_read) {
+            dmrpp_read_from_daac_bucket(dmrpp_string);
         }
     }
 

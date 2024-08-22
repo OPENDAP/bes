@@ -78,6 +78,9 @@ class NgapOwnedContainer: public BESContainer {
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
     static std::string build_data_url_to_daac_bucket(const std::string &rest_path);
 
+    bool dmrpp_read_from_opendap_bucket(std::string &dmrpp_string) const;
+    void dmrpp_read_from_daac_bucket(std::string &dmrpp_string) const;
+
     bool get_item_from_dmrpp_cache(std::string &dmrpp_string) const;
     bool put_item_in_dmrpp_cache(const std::string &dmrpp_string) const;
 
