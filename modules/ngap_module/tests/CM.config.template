@@ -10,7 +10,7 @@
 # The name to the left (e.g., 'cloudydap') is arbitrary and only serves to group these
 # five strings together.
 #
-cloudydap = url:https://s3.amazonaws.com/cloudydap/
+cloudydap = url:https://cloudydap.s3.us-east-1.amazonaws.com
 cloudydap += id:SOME_VALID_ID
 cloudydap += key:SOME_VALID_KEY
 cloudydap += region:us-east-1

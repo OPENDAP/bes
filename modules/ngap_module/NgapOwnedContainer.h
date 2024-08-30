@@ -3,8 +3,9 @@
 // This file is part of ngap_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2020, 2024 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>,
+//         James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -70,20 +71,15 @@ class NgapOwnedContainer: public BESContainer {
     // be easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
 
-    static bool get_content_filters(const std::string &data_url, std::map<std::string, std::string, std::less<>> &content_filters);
+    static bool get_daac_content_filters(const std::string &data_url, std::map<std::string, std::string, std::less<>> &content_filters);
+    static bool get_opendap_content_filters(std::map<std::string, std::string, std::less<>> &content_filters);
     static void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content);
 
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
     static std::string build_data_url_to_daac_bucket(const std::string &rest_path);
 
-#if 0
-
-    bool try_opendap_bucket(std::string &dmrpp_string, std::string &error) const;
-    bool try_nasa_bucket(std::string &dmrpp_string, std::string &error) const;
-
-    void set_real_name_using_cmr_or_cache();
-
-#endif
+    bool dmrpp_read_from_opendap_bucket(std::string &dmrpp_string) const;
+    void dmrpp_read_from_daac_bucket(std::string &dmrpp_string) const;
 
     bool get_item_from_dmrpp_cache(std::string &dmrpp_string) const;
     bool put_item_in_dmrpp_cache(const std::string &dmrpp_string) const;
