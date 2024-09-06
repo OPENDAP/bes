@@ -101,7 +101,7 @@ public:
         TheBESKeys::TheKeys()->set_key(NGAP_INJECT_DATA_URL_KEY, "false"); // clear this to the default
         NgapContainer container;
         map<string, string, std::less<>> content_filters;
-        bool do_content_filtering = container.get_content_filters(content_filters);
+        bool do_content_filtering = container.get_daac_content_filters(content_filters);
         CPPUNIT_ASSERT_MESSAGE("The without setting the key, 'do_content_filtering' should be false", !do_content_filtering);
         CPPUNIT_ASSERT_MESSAGE("The content_filters v/r parameter should be empty (unaltered)", content_filters.empty());
     }
@@ -112,7 +112,7 @@ public:
         NgapContainer container;
         container.set_real_name("https://foo/bar.h5");
 
-        bool do_content_filtering = container.get_content_filters(content_filters);
+        bool do_content_filtering = container.get_daac_content_filters(content_filters);
         CPPUNIT_ASSERT_MESSAGE("The key is set, 'do_content_filtering' should be tru", do_content_filtering);
         CPPUNIT_ASSERT_MESSAGE("The content_filters v/r parameter should have the filter values", !content_filters.empty());
 
@@ -139,7 +139,7 @@ public:
         NgapContainer container;
         container.set_real_name("https://foo/bar.h5");
 
-        bool do_content_filtering = container.get_content_filters(content_filters);
+        bool do_content_filtering = container.get_daac_content_filters(content_filters);
         CPPUNIT_ASSERT_MESSAGE("The key is set, 'do_content_filtering' should be true", do_content_filtering);
         CPPUNIT_ASSERT_MESSAGE("The content_filters v/r parameter should have the filter values", !content_filters.empty());
 
@@ -162,7 +162,7 @@ public:
         NgapContainer container;
         container.set_real_name("https://foo/bar.h5");
 
-        bool do_content_filtering = container.get_content_filters(content_filters);
+        bool do_content_filtering = container.get_daac_content_filters(content_filters);
         CPPUNIT_ASSERT_MESSAGE("The key is set, 'do_content_filtering' should be true", do_content_filtering);
 
         string xml_content = R"(<Dataset name="foo" href="OPeNDAP_DMRpp_DATA_ACCESS_URL" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL">)";

@@ -26,7 +26,7 @@ NGAP.DMRppFileCachePurge.MB = 2000
 # This is the default value - used for 'OPeNDAP-Owned' S3 bucket tests.
 # Set this to your own S3 bucket where DMR++ documents can be found.
 # Not used when UseOPeNDAPBucket is false.
-NGAP.DataSourceLocation = https://s3.amazonaws.com/cloudydap
+NGAP.DataSourceLocation = https://cloudydap.s3.us-east-1.amazonaws.com
 
 # Set this to true to try the OPeNDAP bucket for DMR++ documents. Default is false.
 NGAP.UseOPeNDAPBucket = false

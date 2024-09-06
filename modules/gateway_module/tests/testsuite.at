@@ -43,7 +43,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.dap.dap.bescmd])
 # that the type="stream" part of the GatewayContainer is apparently
 # ignored. Each test returns the DDS from fnoc1.nc.
 #
-AT_BESCMD_RESPONSE_TEST([gateway/test_streaming.bescmd])
-AT_BESCMD_RESPONSE_TEST([gateway/test_streaming2.bescmd])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([gateway/test_streaming2_dods.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/test_streaming2_dap.bescmd])
+AT_BESCMD_RESPONSE_TEST([gateway/test_streaming.bescmd], xpass)
+AT_BESCMD_RESPONSE_TEST([gateway/test_streaming2.bescmd], xpass)
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([gateway/test_streaming2_dods.bescmd], xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/test_streaming2_dap.bescmd], xpass)
