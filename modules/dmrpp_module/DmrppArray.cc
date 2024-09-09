@@ -2458,6 +2458,7 @@ bool DmrppArray::read()
 #endif
 
     if (this->get_dio_flag()) {
+        BESDEBUG(MODULE, prolog << "dio is turned  on" << endl);
 
         Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
 

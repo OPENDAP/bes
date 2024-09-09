@@ -39,7 +39,7 @@ BUILT_SOURCES = test_config.h
 noinst_HEADERS = test_config.h
 
 # This way of building the header ensures it's in the build dir and that there
-# are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
+# are no '../' sequences in the paths. The BES will reject paths with 'dot dot'
 # in them in certain circumstances. jhrg 1/21/18
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \

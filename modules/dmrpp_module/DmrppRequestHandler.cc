@@ -61,7 +61,7 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-#include "NgapContainer.h"
+#include "NgapOwnedContainer.h"
 
 #include "DapUtils.h"
 
