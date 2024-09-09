@@ -943,6 +943,11 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
             if (endian_str=="LE")
                 is_le = true;
         }
+
+        else if (is_eq(attr.name(), "DIO") && is_eq(attr.value(),"off")) {
+            dc(btp)->set_disable_dio(true);
+            BESDEBUG(PARSER, prolog << "direct IO is disabled : the variable name is: " <<btp->name() << endl);
+        }
     }
 
     // If no deflate filter is used or the deflate_levels is not defined, cannot do the direct IO. return.
@@ -952,6 +957,9 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
      // If the datatype is not little-endian, cannot do the direct IO. return.
      // The big-endian IEEE-floating-point data also needs byteswap. So we cannot do direct IO. KY 2024-03-03
     if (!is_le)
+        return;
+
+    if (dc(btp)->is_disable_dio())
         return;
 #if 0
     // If the datatype is integer and this is not little-endian, cannot do the direct IO. return.
@@ -1955,6 +1963,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
         else if (is_eq(attr.name(), "byteOrder"))
             dc(btp)->ingest_byte_order(attr.value());
+        
     }
 
     // reset one_chunk_fillvalue to false if has_fill_value = false

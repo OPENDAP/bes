@@ -101,6 +101,8 @@ class DmrppCommon {
 
     bool d_compact = false;
     bool d_missing_data = false;
+    bool d_disable_dio = false;
+
 	std::string d_filters;
 	std::string d_byte_order;
 	std::vector<unsigned long long> d_chunk_dimension_sizes;
@@ -206,6 +208,18 @@ public:
     void set_missing_data(bool value) {
         d_missing_data = value;
     }
+
+    /// @brief Returns true if this object describes the missing data.
+    virtual bool is_disable_dio() const {
+        return d_disable_dio;
+    }
+
+    /// @brief Set the value of the compact property
+    void set_disable_dio(bool value) {
+        d_disable_dio = value;
+    }
+
+   
 
 
     /// @brief Returns true if this object utilizes shuffle compression.

@@ -32,7 +32,7 @@
 #define S3_NAME "s3"    // Used when the handler is added to the services registry
 #define MODULE S3_NAME  // Used for BESDEBUG calls
 
-// These are text that can appear in a DMR++. This text is replaces with an actual
+// These are text items that can appear in a DMR++. This text is replaced with an actual
 // URL to some data.
 #define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
 #define MISSING_DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"
