@@ -15,6 +15,9 @@
         <dmrpp:FixedLengthStringArray string_length="8" pad="null_pad"/>
     </String>
     <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>removed date string</Value>
+        </Attribute>
         <Attribute name="build_dmrpp" type="String">
             <Value>removed version</Value>
         </Attribute>

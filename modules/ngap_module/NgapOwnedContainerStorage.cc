@@ -23,35 +23,41 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
-#ifndef NgapContainerStorage_h_
-#define NgapContainerStorage_h_ 1
+#include "config.h"
 
-#include "BESContainerStorageVolatile.h"
+#include <string>
 
-class BESCatalogUtils;
+#include "NgapOwnedContainerStorage.h"
+#include "NgapOwnedContainer.h"
+
+using namespace std;
 
 namespace ngap {
 
-/** @brief implementation of BESContainerStorageVolatile that represents a
- * resource managed by the NASA NGAP/EOSDIS cloud-based data system. These
- * resources are stored in S3 and must be transferred to the server before
- * they can be used. In the Hyrax server, these are DMR++ (i.e., XML) files,
- * not the actual data files. The data files are stored in S3 but are subset
- * directly from S3 using information in the (much smaller) DMR++ files
+/** @brief adds a container with the provided information
  *
- * @see BESContainerStorageVolatile
- * @see GatewayContainer
+ * @param s_name symbolic name for the container
+ * @param r_name the remote request url
+ * @param type ignored. The type of the target response is determined by the
+ * request response, or could be passed in
  */
-class NgapContainerStorage: public BESContainerStorageVolatile {
-public:
-    explicit NgapContainerStorage(const std::string &n) : BESContainerStorageVolatile(n) {}
-    ~NgapContainerStorage() override = default;
+void NgapOwnedContainerStorage::add_container(const string &s_name, const string &r_name, const string &type) {
+    auto c = new NgapOwnedContainer(s_name, r_name, type);
+    BESContainerStorageVolatile::add_container(c);
+}
 
-    void add_container(const std::string &s_name, const std::string &r_name, const std::string &type) override;
-
-    void dump(std::ostream &strm) const override;
-};
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * each of the GatewayContainers already stored.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void NgapOwnedContainerStorage::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "NgapOwnedContainerStorage::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESContainerStorageVolatile::dump(strm);
+    BESIndent::UnIndent();
+}
 
 } // namespace ngap
-
-#endif // NgapContainerStorage_h_
