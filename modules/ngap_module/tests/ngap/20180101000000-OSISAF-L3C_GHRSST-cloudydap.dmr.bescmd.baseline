@@ -1,0 +1,1179 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.nc">
+    <Dimension name="lat" size="2400"/>
+    <Dimension name="lon" size="2400"/>
+    <Dimension name="time" size="1"/>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="long_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-90.00000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>geographical coordinates, WGS84 projection</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/lat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="long_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-180.0000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>geographical coordinates, WGS84 projection</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lon</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/lon</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>reference time of sst file</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1981-01-01 00:00:00</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/time</Value>
+        </Attribute>
+    </Int32>
+    <Int8 name="wind_speed">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>10m wind speed</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>wind_speed</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="height" type="String">
+            <Value>10 m</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>These wind speeds were created by the ECMWF and represent winds at 10 metres above the sea surface. </Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>WSP-ECMWF-Forecast</Value>
+        </Attribute>
+        <Attribute name="time_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>wind_speed</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/wind_speed</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int16 name="or_longitude">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>original longitude of the SST value</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-18000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>18000</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Original longitude of the SST value</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>or_longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/or_longitude</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int16>
+    <Int8 name="sses_standard_deviation">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SSES standard deviation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Standard deviation estimate derived using the techniques described at http://www.ghrsst.org/SSES-Description-of-schemes.html</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sses_standard_deviation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/sses_standard_deviation</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int32 name="sst_dtime">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483648</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>time difference from reference time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>2147483647</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>time plus sst_dtime gives seconds after 00:00:00 UTC January 1, 1981</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sst_dtime</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/sst_dtime</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int32>
+    <Int8 name="solar_zenith_angle">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>solar zenith angle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>angular_degree</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>90.000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-90</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>90</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>The solar zenith angle at the time of the SST observations.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>solar_zenith_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/solar_zenith_angle</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="sea_ice_fraction">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sea ice fraction</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_ice_area_fraction</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value></Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>100</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Fractional sea ice cover from OSISAF ice product</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ICE-OSISAF</Value>
+        </Attribute>
+        <Attribute name="time_offset" type="Float64">
+            <Value>-36.000000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sea_ice_fraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/sea_ice_fraction</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int32 name="l2p_flags">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="long_name" type="String">
+            <Value>L2P flags</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>15</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>microwave land ice lake</Value>
+        </Attribute>
+        <Attribute name="flag_masks" type="Int16">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>4</Value>
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>These flags are important to properly use the data.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>l2p_flags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/l2p_flags</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int32>
+    <Int8 name="sources_of_adi">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sources of aerosol dynamic indicator</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>no_data AOD-NAAPS-ADI SDI-OSISAF-ADI</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>This variable provides a pixel by pixel description of where aerosol optical depth were derived from.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sources_of_adi</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/sources_of_adi</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="aerosol_dynamic_indicator">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>aerosol dynamic indicator</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value></Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.10000000000000001</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>sources_of_adi</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>aerosol_dynamic_indicator</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/aerosol_dynamic_indicator</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int16 name="sea_surface_temperature">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sea surface subskin temperature</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_surface_subskin_temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>273.14999999999998</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-300</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>4500</Value>
+        </Attribute>
+        <Attribute name="depth" type="String">
+            <Value>1 millimeter</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>GOES_Imager</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Temperature of the subskin of the ocean</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sea_surface_temperature</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/sea_surface_temperature</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int16>
+    <Int8 name="quality_level">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>quality level of SST pixel</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>no_data bad_data worst_quality low_quality acceptable_quality best_quality</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>These are the overall quality indicators and are used for all GHRSST SSTs</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>quality_level</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/quality_level</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="dt_analysis">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>deviation from SST analysis or reference climatology</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.10000000000000001</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>The difference between this SST and the previous day's SST analysis</Value>
+        </Attribute>
+        <Attribute name="reference" type="String">
+            <Value>OSTIA</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>dt_analysis</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/dt_analysis</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="satellite_zenith_angle">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>satellite zenith angle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>angular_degree</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-90</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>90</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>The satellite zenith angle at the time of the SST observations.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>satellite_zenith_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/satellite_zenith_angle</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="adi_dtime_from_sst">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>time difference of ADI data from sst measurement</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hour</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.10000000000000001</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Difference in hours between the ADI and SST data</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>adi_dtime_from_sst</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/adi_dtime_from_sst</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int16 name="or_latitude">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>original latitude of the SST value</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-9000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>9000</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Original latitude of the SST value</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>or_latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/or_latitude</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int16>
+    <Int8 name="sses_bias">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SSES bias estimate</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Bias estimate derived using the techniques described at http://www.ghrsst.org/SSES-Description-of-schemes.html</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sses_bias</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/sses_bias</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.4</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>Sea Surface Temperature</Value>
+    </Attribute>
+    <Attribute name="summary" type="String">
+        <Value>The L3C product derived from GOES16/ABI brightness temperatures.</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>Geostationary Sea Surface Temperature Product User Manual, http://www.osi-saf.org</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>OSISAF</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>METEO-FRANCE/CMS SAFOS processor</Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>All intellectual property rights of the Ocean &amp; Sea Ice SAF products belong to EUMETSAT. The use of these products is granted to every user, free of charge. If users wish to use these products, EUMETSAT's copyright credit must be shown by displaying the words 'Copyright EUMETSAT' under each of the products shown. EUMETSAT offers no warranty and accepts no liability in respect of the Ocean &amp; Sea Ice SAF products. EUMETSAT neither commits to nor guarantees the continuity, availability, or quality or suitability for any purpose of, the Ocean &amp; Sea Ice SAF products.</Value>
+    </Attribute>
+    <Attribute name="id" type="String">
+        <Value>GOES16-OSISAF-L3C-v1.0</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>org.ghrsst</Value>
+    </Attribute>
+    <Attribute name="product_version" type="String">
+        <Value>1.0</Value>
+    </Attribute>
+    <Attribute name="gds_version_id" type="String">
+        <Value>2.0</Value>
+    </Attribute>
+    <Attribute name="spatial_resolution" type="String">
+        <Value>0.05 degree</Value>
+    </Attribute>
+    <Attribute name="northernmost_latitude" type="Float32">
+        <Value>60.00000000</Value>
+    </Attribute>
+    <Attribute name="southernmost_latitude" type="Float32">
+        <Value>-60.00000000</Value>
+    </Attribute>
+    <Attribute name="easternmost_longitude" type="Float32">
+        <Value>-15.00000000</Value>
+    </Attribute>
+    <Attribute name="westernmost_longitude" type="Float32">
+        <Value>-135.0000000</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>GOES_ABI</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>GOES16</Value>
+    </Attribute>
+    <Attribute name="sensor" type="String">
+        <Value>GOES_ABI</Value>
+    </Attribute>
+    <Attribute name="Metadata_Conventions" type="String">
+        <Value>Unidata Dataset Discovery v1.0</Value>
+    </Attribute>
+    <Attribute name="metadata_link" type="String">
+        <Value>N/A</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>Oceans &gt; Ocean Temperature &gt; Sea Surface Temperature </Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>NASA Global Change Master Directory (GCMD) Science Keywords</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>NetCDF Climate and Forecast (CF) Metadata Convention</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>degrees_north</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_resolution" type="Float64">
+        <Value>0.050000000000000003</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>degrees_east</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_resolution" type="Float64">
+        <Value>0.050000000000000003</Value>
+    </Attribute>
+    <Attribute name="acknowledgment" type="String">
+        <Value>In case SAF data (pre-operational or operational) has been used for the study described in a paper the following sentence would be an appropriate reference to the funding coming from EUMETSAT: The data from the EUMETSAT Satellite Application Facility on Ocean &amp; Sea Ice  used in this study are accessible through the SAF's homepage http://www.osi-saf.org</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>O&amp;SI SAF</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>osi-saf.helpdesk@meteo.fr</Value>
+    </Attribute>
+    <Attribute name="creator_url" type="String">
+        <Value>http://www.osi-saf.org</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>Group for High Resolution Sea Surface Temperature</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>The GHRSST Project Office</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>http://www.ghrsst.org</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>ghrsst-po@nceo.ac.uk</Value>
+    </Attribute>
+    <Attribute name="processing_level" type="String">
+        <Value>L3C</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>grid</Value>
+    </Attribute>
+    <Attribute name="date_created" type="String">
+        <Value>20180101T020918Z</Value>
+    </Attribute>
+    <Attribute name="file_quality_level" type="Int32">
+        <Value>2</Value>
+    </Attribute>
+    <Attribute name="start_time" type="String">
+        <Value>20171231T233000Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>20171231T233000Z</Value>
+    </Attribute>
+    <Attribute name="stop_time" type="String">
+        <Value>20180101T003000Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>20180101T003000Z</Value>
+    </Attribute>
+    <Attribute name="uuid" type="String">
+        <Value>D9299038-EE98-11E7-B2C3-0024E836CC1A</Value>
+    </Attribute>
+    <Attribute name="netcdf_version_id" type="String">
+        <Value>4.3.2</Value>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.0-300</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.0-300</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.0-70</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/localhost(:8080)?\/.*$ # needed for tests
+AllowedHosts+=^https:\/\/(sit\.|uat\.)?urs\.earthdata\.nasa.gov\/.*$
+AllowedHosts+=^https:\/\/cmr.(uat.|sit.)?earthdata.nasa.gov\/.*$
+AllowedHosts+=^https:\/\/goldsmr4\.gesdisc\.eosdis\.nasa\.gov\/.*$
+AllowedHosts+=^file:\/\/\/home\/centos\/hyrax\/build\/share\/hyrax\/.*$
+BES.CancelTimeoutOnSend=true
+BES.Catalog.CMR.RootDirectory=UNUSED
+BES.Catalog.CMR.TypeMatch=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.CMR.TypeMatch+=h4:.*\.(hdf|HDF|eos|HDFEOS)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.CMR.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.CMR.TypeMatch+=ncml:.*\.ncml(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.Default=catalog
+BES.Catalog.RemoteResources.RootDirectory=UNUSED
+BES.Catalog.RemoteResources.TypeMatch=unused:unused;
+BES.Catalog.catalog.Exclude=(^\..*$)|(^.*\.das$);
+BES.Catalog.catalog.FollowSymLinks=No
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.RootDirectory=/usr/share/hyrax
+BES.Catalog.catalog.TypeMatch=csv:.*\.csv(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=reader:.*\.(dds|dods|data_ddx|dmr|dap)$;
+BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=ff:.*\.dat(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=gdal:.*\.(tif|TIF)$|.*\.grb\.(bz2|gz|Z)?$|.*\.jp2$|.*/gdal/.*\.jpg$;
+BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF|eos|HDFEOS)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(HDF5|h5|he5|H5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=ncml:.*\.ncml(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(HDF5|h5|he5|nc|nc4)(\.bz2|\.gz|\.Z)?$;
+BES.Container.Persistence=strict
+BES.Data.RootDirectory=/dev/null
+BES.FollowSymLinks=No
+BES.Group=bes
+BES.Help.HTML=/usr/share/bes/bes_help.html
+BES.Help.TXT=/usr/share/bes/bes_help.txt
+BES.Help.XML=/usr/share/bes/bes_help.xml
+BES.Include=modules/.*\.conf$
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=fonc.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=dap.conf
+BES.Include+=site.conf
+BES.Info.Buffered=no
+BES.Info.Type=xml
+BES.LogName=/var/log/bes/bes.log
+BES.LogUnixTime=true
+BES.LogVerbose=false
+BES.MaxResponseSize.bytes=8329006592
+BES.MaxVariableSize.bytes=8589934592
+BES.Memory.GlobalArea.ControlHeap=no
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.ProcessManagerMethod=multiple
+BES.ServerAdministrator=email:ngap@opendap.org
+BES.ServerAdministrator+=organization:OPeNDAP Inc.
+BES.ServerAdministrator+=street:165 NW Dean Knauss Dr.
+BES.ServerAdministrator+=city:Narragansett
+BES.ServerAdministrator+=region:RI
+BES.ServerAdministrator+=postalCode:02882
+BES.ServerAdministrator+=country:US
+BES.ServerAdministrator+=telephone:+1.401.575.4835
+BES.ServerAdministrator+=website:http://www.opendap.org
+BES.ServerPort=10022
+BES.ServerSecure=no
+BES.SetSockRecvSize=No
+BES.SetSockSendSize=No
+BES.SockRecvSize=65535
+BES.SockSendSize=65535
+BES.UncompressCache.dir=/var/cache/bes/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.User=bes
+BES.module.ascii=/usr/lib64/bes/libascii_module.so
+BES.module.builddmrpp=/usr/lib64/bes/libbuilddmrpp_module.so
+BES.module.cmr=/usr/lib64/bes/libcmr_module.so
+BES.module.csv=/usr/lib64/bes/libcsv_module.so
+BES.module.dap=/usr/lib64/bes/libdap_module.so
+BES.module.dapcmd=/usr/lib64/bes/libdap_xml_module.so
+BES.module.dmrpp=/usr/lib64/bes/libdmrpp_module.so
+BES.module.ff=/usr/lib64/bes/libff_module.so
+BES.module.focovjson=/usr/lib64/bes/libfocovjson_module.so
+BES.module.fojson=/usr/lib64/bes/libfojson_module.so
+BES.module.fonc=/usr/lib64/bes/libfonc_module.so
+BES.module.functions=/usr/lib64/bes/libfunctions_module.so
+BES.module.gateway=/usr/lib64/bes/libgateway_module.so
+BES.module.gdal=/usr/lib64/bes/libgdal_module.so
+BES.module.h4=/usr/lib64/bes/libhdf4_module.so
+BES.module.h5=/usr/lib64/bes/libhdf5_module.so
+BES.module.httpd=/usr/lib64/bes/libhttpd_catalog_module.so
+BES.module.nc=/usr/lib64/bes/libnc_module.so
+BES.module.ncml=/usr/lib64/bes/libncml_module.so
+BES.module.ngap=/usr/lib64/bes/libngap_module.so
+BES.module.reader=/usr/lib64/bes/libdapreader_module.so
+BES.module.s3=/usr/lib64/bes/libs3_reader.so
+BES.module.sample=/usr/lib64/bes/libsample_module.so
+BES.module.ugrid_functions=/usr/lib64/bes/libugrid_functions.so
+BES.module.usage=/usr/lib64/bes/libusage_module.so
+BES.module.w10n=/usr/lib64/bes/libw10n_handler.so
+BES.module.xml_data=/usr/lib64/bes/libxml_data_module.so
+BES.modules=dap,dapcmd
+BES.modules+=ascii
+BES.modules+=builddmrpp
+BES.modules+=csv
+BES.modules+=reader
+BES.modules+=fonc
+BES.modules+=dmrpp
+BES.modules+=ff
+BES.modules+=focovjson
+BES.modules+=fojson
+BES.modules+=functions
+BES.modules+=gateway
+BES.modules+=gdal
+BES.modules+=h4
+BES.modules+=h5
+BES.modules+=nc
+BES.modules+=ncml
+BES.modules+=ngap
+BES.modules+=s3
+BES.modules+=sample
+BES.modules+=ugrid_functions
+BES.modules+=usage
+BES.modules+=w10n
+BES.modules+=xml_data
+CMR.Collections=C1276812863-GES_DISC
+CMR.Collections+=C1222931489-GHRC_CLOUD
+CMR.Collections+=C1222931739-GHRC_CLOUD
+CMR.Facets=temporal
+CMR.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_CMR_Catalog
+CMR.host.url=https://cmr.earthdata.nasa.gov
+DAP.Async.StyleSheet.Ref=/opendap/xsl/asyncResponse.xsl
+DAP.FunctionResponseCache.path=/tmp/hyrax_func
+DAP.FunctionResponseCache.prefix=func_
+DAP.FunctionResponseCache.size=20000
+DAP.GlobalMetadataStore.ledger=/usr/share/mds/mds_ledger.txt
+DAP.GlobalMetadataStore.prefix=mds_
+DAP.GlobalMetadataStore.size=200
+DAP.Help.HTML=/usr/share/bes/dap_help.html
+DAP.Help.TXT=/usr/share/bes/dap_help.txt
+DAP.Help.XML=/usr/share/bes/dap_help.xml
+DAP.StoredResultsCache.prefix=result_
+DAP.StoredResultsCache.size=20000
+DAP.StoredResultsCache.subdir=stored_results
+DMRPP.MaxComputeThreads=512
+DMRPP.MaxParallelTransfers=16
+DMRPP.UseComputeThreads=true
+DMRPP.UseParallelTransfers=false
+DR.UseSeriesValues=false
+DR.UseTestTypes=true
+FONc.ChunkSize=4096
+FONc.ClassicModel=false
+FONc.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcdf
+FONc.RequestMaxSizeKB=0
+FONc.Tempdir=/tmp/hyrax_fonc
+FONc.UseCompression=true
+FONg.GeoTiff.band.type.byte=true
+FONg.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_GDAL
+FONg.Tempdir=/tmp/hyrax_fong
+FONg.default_gcs=WGS84
+FoCovJson.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_CovJSON
+FoCovJson.Tempdir=/tmp
+FoJson.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_JSON
+FoJson.Tempdir=/tmp
+Gateway.Cache.dir=/tmp/hyrax_gw
+Gateway.Cache.prefix=gw_
+Gateway.Cache.size=500
+Gateway.MimeTypes=nc:application/x-netcdf
+Gateway.MimeTypes+=h4:application/x-hdf
+Gateway.MimeTypes+=h5:application/x-hdf5
+H4.Cache.metadata.path=/tmp/md
+H4.DisableECSMetaDataAll=false
+H4.DisableECSMetaDataMin=true
+H4.DisableScaleOffsetComp=true
+H4.DisableStructMetaAttr=true
+H4.DisableSwathDimMap=false
+H4.DisableVdataNameclashingCheck=true
+H4.EnableCERESMERRAShortName=true
+H4.EnableCERESVdata=false
+H4.EnableCF=true
+H4.EnableCheckMODISGeoFile=false
+H4.EnableCheckScaleOffsetType=false
+H4.EnableDataCacheFile=false
+H4.EnableEOSGeoCacheFile=false
+H4.EnableHybridVdata=true
+H4.EnableMetaDataCacheFile=false
+H4.EnablePassFileID=false
+H4.EnableSpecialEOS=true
+H4.EnableSwathGridAttr=true
+H4.EnableVdataDescAttr=false
+H4.EnableVdata_to_Attr=true
+H4.EnableVgroupAttr=true
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+H5.CheckIgnoreObj=false
+H5.DefaultHandleDimension=true
+H5.DisableECSMetaAttr=false
+H5.DisableStructMetaAttr=true
+H5.DiskCacheComp=false
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=100
+H5.DiskCacheDataPath=/tmp
+H5.DiskCacheFilePrefix=c
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheSize=100000
+H5.EnableAddPathAttrs=true
+H5.EnableCF=true
+H5.EnableCFDMR=true
+H5.EnableCheckNameClashing=false
+H5.EnableCoorattrAddPath=true
+H5.EnableDAP4Coverage=true
+H5.EnableDMR64bitInt=true
+H5.EnableDiskDataCache=false
+H5.EnableDiskMetaDataCache=false
+H5.EnableDropLongString=true
+H5.EnableEOSGeoCacheFile=false
+H5.EnableFillValueCheck=true
+H5.EnablePassFileID=false
+H5.EscapeUTF8Attr=true
+H5.ForceFlattenNDCoorAttr=true
+H5.KeepVarLeadingUnderscore=false
+H5.LargeDataMemCacheConfig=false
+H5.LargeDataMemCacheEntries=0
+H5.MetaDataMemCacheEntries=1000
+H5.NoZeroSizeFullnameAttr=false
+H5.RmConventionAttrPath=true
+H5.SmallDataMemCacheEntries=0
+HDF4.Cache.latlon.path=/tmp/latlon
+HDF4.Cache.latlon.prefix=l
+HDF4.Cache.latlon.size=20000
+HDF4.CacheDir=/tmp
+Http.Cookies.File=/tmp/hyrax_cookies/cf
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
+Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
+Http.UserAgent=hyrax-prod
+Http.cache.effective.urls=true
+Http.cache.effective.urls.skip.regex.pattern=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
+Http.netrc.file=/etc/bes/ngap_netrc
+Httpd_Catalog.Collections=test:http://test.opendap.org/data/
+Httpd_Catalog.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_Httpd_Catalog
+NC.CacheEntries=100
+NC.PromoteByteToShort=true
+NC.ShowSharedDimensions=true
+NC.UseMDS=false
+NCML.DimensionCache.directory=/tmp/hyrax_ncml
+NCML.DimensionCache.prefix=ncml_
+NCML.DimensionCache.size=2000
+NGAP.CMRCachePurge=20
+NGAP.CMRCacheSize=100
+NGAP.DMRppCachePurge=20
+NGAP.DMRppCacheSize=100
+NGAP.DMRppFileCacheDir=/tmp/hyrax_ngap_cache
+NGAP.DMRppFileCachePurge.MB=2000
+NGAP.DMRppFileCacheSize.MB=10000
+NGAP.UseCMRCache=true
+NGAP.UseDMRppCache=true
+NGAP.cmr_host_url=https://cmr.earthdata.nasa.gov
+NGAP.inject_data_urls=true
+Say.LogName=@prefix@/var/say.log
+SupportEmail=support@opendap.org
+s3.inject_data_urls=true
+w10n.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_w10n_handler
+w10n.Tempdir=/tmp
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>https://opendap.earthdata.nasa.gov/build_dmrpp/collections/C2036877806-POCLOUD/granules/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

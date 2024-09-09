@@ -361,7 +361,6 @@ public:
         DBG(cerr << prolog << "END\n");
     }
 
-
     // The credentials are empty
     void sign_s3_url_test_3() {
         DBG(cerr << prolog << "BEGIN\n");
@@ -379,25 +378,6 @@ public:
             curl_slist_free_all(headers);
             throw;
         }
-        DBG(cerr << prolog << "END\n");
-    }
-
-    // Test the http_get() function that extends as needed a C++ std::string
-    void http_get_test_string() {
-        DBG(cerr << prolog << "BEGIN\n");
-        const string url = "http://test.opendap.org/opendap.conf";
-        string str;
-        DBG(cerr << prolog << "Retrieving: " << url << "\n");
-        curl::http_get(url, str);
-        DBG(cerr << prolog << "Response Body:\n" << str << "\n");
-
-        DBG(cerr << "str.data() = " << string(str.data()) << "\n");
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(str.data()).find("<Proxy *>") == 0);
-        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
-                               string(str.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
-                               string::npos);
-        DBG(cerr << "str.size() = " << str.size() << "\n");
-        CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288);
         DBG(cerr << prolog << "END\n");
     }
 
@@ -737,10 +717,7 @@ public:
         CPPUNIT_ASSERT("Sizes are sizes");
     }
 
-/* TESTS END */
-/*##################################################################################################*/
-
-CPPUNIT_TEST_SUITE(CurlUtilsTest);
+    CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
         CPPUNIT_TEST(how_big);
 
@@ -763,8 +740,6 @@ CPPUNIT_TEST_SUITE(CurlUtilsTest);
         CPPUNIT_TEST(sign_s3_url_test_1);
         CPPUNIT_TEST(sign_s3_url_test_2);
         CPPUNIT_TEST(sign_s3_url_test_3);
-
-        CPPUNIT_TEST(http_get_test_string);
 
         CPPUNIT_TEST_EXCEPTION(http_get_test_4, HttpError);
         CPPUNIT_TEST_EXCEPTION(http_get_test_5, HttpError);

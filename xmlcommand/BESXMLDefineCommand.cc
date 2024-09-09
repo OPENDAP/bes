@@ -327,7 +327,7 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
  *
  * The handler and cmd properties are required
  *
- * @todo I remove support for aggregations as the BES has defined them. jhrg 2/11/18
+ * @todo I removed support for aggregations as the BES has defined them. jhrg 2/11/18
  *
  * @param action we are working on
  * @param node xml node element for the container

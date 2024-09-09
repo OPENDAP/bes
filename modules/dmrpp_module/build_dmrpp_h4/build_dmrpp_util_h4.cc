@@ -1436,7 +1436,10 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
 
 #if 0
     if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+        // I updated this function call to reflect the changes I made to the build_dmrpp_util.cc
+        // I see that it is not currently in service but it's clear that something like this
+        // will be needed to establish history/provenance of the dmr++ file. - ndp 07/26/24
+        inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
 #endif
 

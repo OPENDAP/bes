@@ -382,6 +382,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         // TODO Code between here and below may have been turned into a method in AccessCredentials. jhrg 11/2/22
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
+        INFO_LOG(prolog << "Looked for credentials for: " << handle->d_url->str() << '\n');
         if (credentials && credentials->is_s3_cred()) {
             BESDEBUG(DMRPP_CURL, prolog << "Got AccessCredentials instance:\n" << credentials->to_json() << '\n');
             // If there are available credentials, and they are S3 credentials then we need to sign the request
@@ -405,6 +406,18 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             // TODO here. jhrg 11/2/22
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+        }
+        // FIXME DO NOT MERGE THIS. For POC work on DMR++ Ownership.
+        //  TRY abuse the credentials mgr to get/use and EDL Token for certain URLs. jhrg 5/18/24
+        else if (credentials) {
+            INFO_LOG(prolog << "Looking for EDL Token for URL: " << handle->d_url->str() << '\n');
+            string edl_token = credentials->get("edl_token");
+            if (!edl_token.empty()) {
+                INFO_LOG(prolog << "Using EDL Token for URL: " << handle->d_url->str() << '\n');
+                handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "Authorization", edl_token);
+                res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
+                curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+            }
         }
     }
 

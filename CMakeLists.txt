@@ -1625,8 +1625,10 @@ add_executable(
 	modules/ngap_module/NgapApi.h
 	modules/ngap_module/NgapContainerStorage.cc
 	modules/ngap_module/NgapContainerStorage.h
-	modules/ngap_module/NgapContainer.cc
-	modules/ngap_module/NgapContainer.h
+		modules/ngap_module/NgapContainer.cc
+		modules/ngap_module/NgapContainer.h
+		# modules/ngap_module/NgapOwnedContainer.cc
+		# modules/ngap_module/NgapOwnedContainer.h
 	# modules/ngap_module/NgapError.h
 	modules/ngap_module/NgapModule.cc
 	modules/ngap_module/NgapModule.h

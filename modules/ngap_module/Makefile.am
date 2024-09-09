@@ -10,7 +10,8 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=ngap_module
 M_VER=1.0.9
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/http $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
+-I$(top_srcdir)/http $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
@@ -30,21 +31,23 @@ libngap_module_la_LIBADD = $(LIBADD)
 
 NGAP_SRC =  NgapRequestHandler.cc \
             NgapModule.cc \
-            NgapContainer.cc \
-            NgapContainerStorage.cc \
+            NgapOwnedContainer.cc \
+            NgapOwnedContainerStorage.cc \
             NgapApi.cc
 
-# MemoryCache.cc
+# MemoryCache.cc NgapContainer.cc NgapContainerStorage.cc
 
 NGAP_HDR =  NgapNames.h \
             NgapRequestHandler.h \
             NgapModule.h \
-            NgapContainer.h \
-            NgapContainerStorage.h \
+            NgapOwnedContainer.h \
+            NgapOwnedContainerStorage.h \
             NgapApi.h \
             MemoryCache.h
 
-EXTRA_DIST = ngap.conf.in data
+# NgapContainer.h NgapContainerStorage.h
+
+EXTRA_DIST = ngap.conf.in
 
 CLEANFILES = *~ ngap.conf
 

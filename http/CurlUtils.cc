@@ -37,9 +37,6 @@
 
 #include "BESContextManager.h"
 #include "BESSyntaxUserError.h"
-#include "BESForbiddenError.h"
-#include "BESNotFoundError.h"
-#include "BESTimeoutError.h"
 #include "BESInternalError.h"
 #include "HttpError.h"
 #include "BESDebug.h"
@@ -424,7 +421,6 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
     // d_request_headers->push_back(string("Pragma: no-cache"));
     // d_request_headers->push_back(string("Cache-Control: no-cache"));
 
-    //TODO Do we need this test? what if the pointer is null? Probably it's fine...
     if (http_request_headers) {
         // Add the http_request_headers to the cURL handle.
         res = curl_easy_setopt(ceh, CURLOPT_HTTPHEADER, http_request_headers);
@@ -1171,6 +1167,18 @@ void http_get(const string &target_url, string &buf) {
         auto url = std::make_shared<http::url>(target_url);
         request_headers = sign_url_for_s3_if_possible(url, request_headers);
 
+#ifdef DEVELOPER
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(url);
+        if (credentials) {
+            INFO_LOG(prolog << "Looking for EDL Token for URL: " << target_url << '\n');
+            string edl_token = credentials->get("edl_token");
+            if (!edl_token.empty()) {
+                INFO_LOG(prolog << "Using EDL Token for URL: " << target_url << '\n');
+                request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
+            }
+        }
+#endif
+
         ceh = curl::init(target_url, request_headers, nullptr);
         if (!ceh)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
@@ -1210,7 +1218,6 @@ void http_get(const string &target_url, string &buf) {
         throw;
     }
     BESDEBUG(MODULE, prolog << "END\n");
-
 }
 
 /**
@@ -1242,7 +1249,7 @@ void super_easy_perform(CURL *c_handle) {
 
 // used only in one place here. jhrg 3/8/23
 static string get_cookie_file_base() {
-    return TheBESKeys::TheKeys()->read_string_key(HTTP_COOKIES_FILE_KEY, HTTP_DEFAULT_COOKIES_FILE);
+    return TheBESKeys::read_string_key(HTTP_COOKIES_FILE_KEY, HTTP_DEFAULT_COOKIES_FILE);
 }
 
 // used here in init() and clear_cookies (which itself is never used) and in dmrpp_module
@@ -1265,7 +1272,7 @@ string get_cookie_filename() {
  * string of none was specified.
  */
 string get_netrc_filename() {
-    return TheBESKeys::TheKeys()->read_string_key(HTTP_NETRC_FILE_KEY, "");
+    return TheBESKeys::read_string_key(HTTP_NETRC_FILE_KEY, "");
 }
 
 /**
@@ -1624,6 +1631,18 @@ bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     // Add the EDL authorization headers if the Information is in the BES Context Manager
     req_headers = add_edl_auth_headers(req_headers);
     req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
+
+    // FIXME Hackery for DMR++ Ownership POC code - see dmrpp_module CurlHandlePool.cc
+    //  for more info. jhrg 5/24/24
+    AccessCredentials *credentials = CredentialsManager::theCM()->get(origin_url);
+    if (credentials) {
+        INFO_LOG(prolog << "Looking for EDL Token for URL: " << origin_url->str() << '\n');
+        string edl_token = credentials->get("edl_token");
+        if (!edl_token.empty()) {
+            INFO_LOG(prolog << "Using EDL Token for URL: " << origin_url->str() << '\n');
+            req_headers = curl::append_http_header(req_headers, "Authorization", edl_token);
+        }
+    }
 
     try {
 
