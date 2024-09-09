@@ -103,7 +103,7 @@ def add_module_path(f_str,conf_mod_name,mod_path):
     return temp_text
 
 # Generate the temporary BES configuration file.
-def generate_tmp_bes_conf_file(user_conf):
+def generate_tmp_bes_conf_file(user_conf,out_conf):
     bes_conf_name = ''
     if (user_conf is not None):
         bes_conf_name=user_conf
@@ -139,7 +139,10 @@ def generate_tmp_bes_conf_file(user_conf):
             print("You may also try the option -u by providing your own BES configuration file.") 
             sys.exit(1)
 
-        bes_conf_name= "bes.tmp.conf";
+        if (out_conf is not None):
+            bes_conf_name=out_conf
+        else:
+            bes_conf_name= "bes.tmp.conf";
         bes_tmp_conf_str='''BES.LogName=./bes.log
 BES.modules=dap,cmd,h4
 BES.module.dap=
@@ -247,7 +250,8 @@ parser.add_argument("-D","--disable_missing_data",action='store_true',
                     help='Optional parameter: the missing HDF-EOS2/HDF4 latitude/longitude data will NOT be put into the dmrpp file.')
 parser.add_argument("-v","--verbosity", action='store_true',
                     help='Detailed description message and other information.' )
-
+parser.add_argument("-o","--out_conf", 
+                    help='Optional parameter: A BES configuration file will be generated with the name the user specifies. Check -v for details. ')
 
 args = parser.parse_args()
 hdf4_name = ''.join(args.i)
@@ -271,8 +275,11 @@ if(args.verbosity is True):
     Users can provide either the file or the absolute path of the HDF4 file.
 
     Users can use the -u option to provide the url or the path of the HDF4 file that will be stored inside the generated dmrpp file. If not, the string OPeNDAP_DMRpp_DATA_ACCESS_URL will be used. 
-
     Users should use the -D option to make this program not put the calculated HDF-EOS2/HDF4 latitude/longitude values in the dmrpp file if the latitude/longitude needs to be calculated.
+
+    Users can use the -o option to keep the temporary BES configuration file for future use. Users should provide the temporary BES configuration file name. 
+    The intention for this option is to avoid creating a temporary BES configuration file each time a dmrpp file is generated. However, users should use this BES configuration file under
+    the current directory and with the current Hyrax besstandalone and build_dmrpp_h4 programs.
 
     The HDF4 file name is used for the final dmrpp file name such as tmp.hdf.dmrpp for tmp.hdf.
     The dmrpp file will be generated under the current directory that runs this python script.
@@ -282,6 +289,7 @@ if(args.verbosity is True):
     get_dmrpp_h4 -i h4_file_name -c user_bes_conf  (The HDF4 file must be put under the appropriate directory specified by the user's BES configuration file)
     get_dmrpp_h4 -i h4_file_name -u user_provided_url_to_h4_file 
     get_dmrpp_h4 -D -i h4_file_name (The calculated HDF-EOS2/HDF4 latitude/longitude values are not put inside the dmrpp file)
+    get_dmrpp_h4 -i h4_file_name -o user_bes_conf  (The HDF4 file should be put under the current directory; a BES configuration file will be generated in addition to the dmrpp file.)
     '''
     print(desc_str)
 
@@ -301,7 +309,7 @@ if (args.system_conf is True):
     #Generate the temporary BES configuration file
     bes_conf_name = generate_bes_sys_conf_file(args.conf,bes_system_conf_name)
 else:
-    bes_conf_name = generate_tmp_bes_conf_file(args.conf)
+    bes_conf_name = generate_tmp_bes_conf_file(args.conf,args.out_conf)
 
 # Print BES configuration file name and contents with the verbose option.
 if (args.verbosity is True):
@@ -361,6 +369,15 @@ else:
 if ret.returncode!=0:
     print("build_dmrpp_h4 fails to generate the HDF4 dmrpp file. ")
     print("The HDF4 file name is:  ",hdf4_full_path)
+
+    # Remove the temporary dmr and bescmd files.
+    subprocess.run(["rm", "-rf", hdf4_dmr_name])
+    subprocess.run(["rm", "-rf", hdf4_file_bescmd])
+    if (args.system_conf is False and args.conf is None):
+        subprocess.run(["rm", "-rf", "bes.log"])   
+        subprocess.run(["rm", "-rf", "mds_ledger.txt"])
+        if (args.out_conf is None):
+            subprocess.run(["rm", "-rf", "bes.tmp.conf"])
     print("Stop. ")
     sys.exit(1)
 
@@ -376,6 +393,7 @@ subprocess.run(["rm", "-rf", hdf4_file_bescmd])
 if (args.system_conf is False and args.conf is None):
     subprocess.run(["rm", "-rf", "bes.log"])   
     subprocess.run(["rm", "-rf", "mds_ledger.txt"])
-    subprocess.run(["rm", "-rf", "bes.tmp.conf"])
+    if (args.out_conf is None):
+        subprocess.run(["rm", "-rf", "bes.tmp.conf"])
 
 
