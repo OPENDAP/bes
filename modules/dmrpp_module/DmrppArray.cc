@@ -1040,6 +1040,7 @@ void DmrppArray::read_contiguous()
             throw;
         }
     }
+    BESDEBUG(dmrpp_3, prolog << "Before is_filter " << endl);
 
     // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty() && !get_one_chunk_fill_value()) {
@@ -1097,6 +1098,8 @@ void DmrppArray::read_contiguous()
     }
 
     set_read_p(true);
+
+    BESDEBUG(dmrpp_3, prolog << " NOT using direct IO : end of this method." << endl);
 }
 
 void DmrppArray::read_one_chunk_dio() {
@@ -2455,6 +2458,7 @@ bool DmrppArray::read()
 #endif
 
     if (this->get_dio_flag()) {
+        BESDEBUG(MODULE, prolog << "dio is turned  on" << endl);
 
         Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
 

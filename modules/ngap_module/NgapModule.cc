@@ -35,7 +35,7 @@
 
 #include "NgapModule.h"
 #include "NgapRequestHandler.h"
-#include "NgapContainerStorage.h"
+#include "NgapOwnedContainerStorage.h"
 
 using namespace std;
 using namespace ngap;
@@ -47,8 +47,11 @@ void NgapModule::initialize(const string &modname)
     BESDEBUG(modname, "    adding " << modname << " request handler" << endl);
     BESRequestHandlerList::TheList()->add_handler(modname, new NgapRequestHandler(modname));
 
-    BESDEBUG(modname, "    adding " << modname << " container storage" << endl);
-    BESContainerStorageList::TheList()->add_persistence(new NgapContainerStorage(modname));
+    BESDEBUG(modname, "    adding OWNED " << modname << " container storage" << endl);
+    // FIXME Do NOT merge this code as is since it breaks the handler needed for NGAP.
+    //  This is a POC modification to test access to data using DMR++ documents that
+    //  OPeNDAP 'owns.' jhrg 5/17/24
+    BESContainerStorageList::TheList()->add_persistence(new NgapOwnedContainerStorage(modname));
 
     BESDEBUG(modname, "    adding NGAP debug context" << endl);
     BESDebug::Register(modname);

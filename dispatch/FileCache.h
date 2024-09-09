@@ -49,8 +49,9 @@
 #include "BESLog.h"
 
 // Make all the error log messages uniform in one small way. This is a macro
-// so we can switch to exceptions if that seems necessary. jhrg 11/06/23
+// so that we can switch to exceptions if that seems necessary. jhrg 11/06/23
 #define ERROR(msg) ERROR_LOG("FileCache: " << msg)
+#define INFO(msg) INFO_LOG("FileCache: " << msg)
 
 // If this is defined, then the access time of a file is updated when it is
 // closed by the Item dtor. This is a hack to get around the fact that the
@@ -361,7 +362,7 @@ public:
      * @param cache_dir Directory on some filesystem where the cache will be stored. This
      * directory is made if it does not exist.
      * @param size Allow this many bytes in the cache
-     * @param target_size When purging, remove items until this many bytes remain.
+     * @param purge_size When purging, remove items until this many bytes remain.
      * @return False if the cache object could not be initialized, true otherwise.
      */
     virtual bool initialize(const std::string &cache_dir, long long size, long long purge_size) {
@@ -412,7 +413,7 @@ public:
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
             if (errno == EEXIST) {
-                ERROR("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
+                INFO_LOG("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
                 return false;
             }
             else {
@@ -479,7 +480,7 @@ public:
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
             if (errno == EEXIST) {
-                ERROR("Could not create the key/file; it already exists (2): " << key << " " << get_errno() << '\n');
+                INFO("Could not create the key/file; it already exists (2): " << key << " " << get_errno() << '\n');
                 return false;
             }
             else {
@@ -508,7 +509,7 @@ public:
      * @param item A reference to an Item - a value-result parameter. Release the lock
      * by closing the file.
      * @param lock_type By default, get a shared non-blocking lock.
-     * @return True if the items was found and locked, false otherwise
+     * @return True if the item was found and locked, false otherwise
      */
     bool get(const std::string &key, Item &item, int lock_type = LOCK_SH | LOCK_NB) {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit

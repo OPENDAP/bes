@@ -360,3 +360,6 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.b
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/One_chunk_shuf_deflate.h5.dmrpp_dio.compression.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION_2(bescmd/One_chunk_shuf_deflate.h5.dmrpp_disable_dio.compression.bescmd)
 
+# The dio=off is in the dmrpp file
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.compression.bescmd)
