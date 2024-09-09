@@ -261,15 +261,10 @@ parser.add_argument("-u", "--data_url",
                     help='Optional parameter: the value of attribute dmrpp:href in the dmrpp file. If not provided, OPeNDAP_DMRpp_DATA_ACCESS_URL will be used by system.')
 parser.add_argument("-D", "--disable_missing_data", action='store_true',
                     help='Optional parameter: the missing HDF-EOS2/HDF4 latitude/longitude data will NOT be put into the dmrpp file.')
-<<<<<<< HEAD
 parser.add_argument("-v","--verbosity", action='store_true',
                     help='Detailed description message and other information.' )
 parser.add_argument("-o","--out_conf", 
                     help='Optional parameter: A BES configuration file will be generated with the name the user specifies. Check -v for details. ')
-=======
-parser.add_argument("-v", "--verbosity", action='store_true',
-                    help='Detailed description message and other information.')
->>>>>>> master
 
 args = parser.parse_args()
 hdf4_name = ''.join(args.i)
@@ -388,7 +383,6 @@ else:
                          stdout=subprocess.PIPE, universal_newlines=True)
 if ret.returncode != 0:
     print("build_dmrpp_h4 fails to generate the HDF4 dmrpp file. ")
-<<<<<<< HEAD
     print("The HDF4 file name is:  ",hdf4_full_path)
 
     # Remove the temporary dmr and bescmd files.
@@ -399,9 +393,6 @@ if ret.returncode != 0:
         subprocess.run(["rm", "-rf", "mds_ledger.txt"])
         if (args.out_conf is None):
             subprocess.run(["rm", "-rf", "bes.tmp.conf"])
-=======
-    print("The HDF4 file name is:  ", hdf4_full_path)
->>>>>>> master
     print("Stop. ")
     sys.exit(1)
 
@@ -417,11 +408,6 @@ subprocess.run(["rm", "-rf", hdf4_file_bescmd])
 if (args.system_conf is False and args.conf is None):
     subprocess.run(["rm", "-rf", "bes.log"])
     subprocess.run(["rm", "-rf", "mds_ledger.txt"])
-<<<<<<< HEAD
     if (args.out_conf is None):
         subprocess.run(["rm", "-rf", "bes.tmp.conf"])
 
-
-=======
-    subprocess.run(["rm", "-rf", "bes.tmp.conf"])
->>>>>>> master
