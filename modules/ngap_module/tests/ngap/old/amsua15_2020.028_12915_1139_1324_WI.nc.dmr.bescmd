@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-nio-8080-exec-6:40:ngap_request][bes_client:/-0]">
+
+  <bes:setContext name="bes_timeout">300</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+
+  <bes:setContainer name="ngap-1" space="ngap">collections/C1995583255-GHRC_DAAC/granules/TRMM_LIS_BG.04.3_2015.098.99100</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="ngap-1" />
+  </bes:define>
+  <bes:get type="dmr" definition="d1" />
+</bes:request>

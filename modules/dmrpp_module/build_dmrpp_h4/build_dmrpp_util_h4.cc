@@ -798,11 +798,12 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
 
     VERBOSE(cerr<<"eos_ll_attr_value: "<<eos_ll_attr_value <<endl);
 
-    size_t space_pos = eos_ll_attr_value.find(' ');
+    size_t space_pos = eos_ll_attr_value.find_last_of(' ');
     if (space_pos ==string::npos) { 
         err_msg = "Attribute eos_latlon must have space inside";
         return false;
     }
+
     string grid_name = eos_ll_attr_value.substr(0,space_pos);
     string ll_name = eos_ll_attr_value.substr(space_pos+1);
 
@@ -1436,7 +1437,10 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
 
 #if 0
     if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+        // I updated this function call to reflect the changes I made to the build_dmrpp_util.cc
+        // I see that it is not currently in service but it's clear that something like this
+        // will be needed to establish history/provenance of the dmr++ file. - ndp 07/26/24
+        inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
 #endif
 

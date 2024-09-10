@@ -28,6 +28,8 @@
 #include <memory>
 #include <iterator>
 #include <unordered_set>
+#include <iomanip>      // std::put_time()
+#include <ctime>      // std::gmtime_r()
 
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
@@ -209,7 +211,7 @@ DmrppArray *toDA(BaseType *btp){
  * @param dataset_id The HDF5 dataset id
  * @param dc A pointer to the DmrppCommon instance for that dataset_id
  */
-static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
+static void set_filter_information(hid_t dataset_id, DmrppCommon *dc, bool disable_dio) {
 
     hid_t plist_id = create_h5plist(dataset_id);
 
@@ -251,6 +253,8 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
         filters = filters.substr(0, filters.size() - 1);
         dc->set_filter(filters);
         dc->set_deflate_levels(deflate_levels);
+        if (!filters.empty())
+            dc->set_disable_dio(disable_dio);
     }
     catch (...) {
         H5Pclose(plist_id);
@@ -668,7 +672,7 @@ void process_contiguous_layout_dariable(hid_t dataset, BaseType *btp){
  * @param dataset The hdf5 dataset that is mate to the BaseType instance btp.
  * @param btp The dap BaseType variable which is to hold the information gleand from the hdf5 dataset.
  */
-void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
+void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_dio) {
 
     DmrppCommon *dc = toDC(btp);
     hid_t fspace_id = H5Dget_space(dataset);
@@ -684,7 +688,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
     VERBOSE(cerr << prolog << "Storage: chunked." << endl);
     VERBOSE(cerr << prolog << "Number of chunks is: " << num_chunks << endl);
 
-    set_filter_information(dataset, dc);
+    set_filter_information(dataset, dc, disable_dio);
 
     // Get chunking information: rank and dimensions
     vector<hsize_t> chunk_dims(dataset_rank, 0);
@@ -1310,7 +1314,7 @@ void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
  *
  * @exception BESError is thrown on error.
  */
-static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
+static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_dio) {
 
     if(verbose) {
         string type_name = btp->type_name();
@@ -1354,7 +1358,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
             break;
         }
         case H5D_CHUNKED: { /* Chunked Storage Layout */
-            process_chunked_layout_dariable(dataset, btp);
+            process_chunked_layout_dariable(dataset, btp, disable_dio);
             break;
         }
         case H5D_COMPACT: { /* Compact Storage Layout */
@@ -1690,7 +1694,7 @@ void mk_nc4_non_coord_candidates(D4Group *group, unordered_set<string> &nc4_non_
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
-void get_chunks_for_all_variables(hid_t file, D4Group *group) {
+void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) {
 
     unordered_set<string> nc4_non_coord_candidate;
     mk_nc4_non_coord_candidates(group,nc4_non_coord_candidate);
@@ -1718,7 +1722,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                 if (!process_variable_length_string_scalar(dataset, btp) && !process_variable_length_string_array(dataset,btp)) {
 
                     VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
-                    get_variable_chunk_info(dataset, btp);
+                    get_variable_chunk_info(dataset, btp, disable_dio);
 
                     VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
                     add_string_array_info(dataset, btp);
@@ -1739,7 +1743,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
     // all groups in the group
     for(auto g:group->groups()) {
-        get_chunks_for_all_variables(file, g);
+        get_chunks_for_all_variables(file, g,disable_dio);
     }
 
 }
@@ -1749,7 +1753,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
  * @param h5_file_name Read information from this file
  * @param dmrpp Dump the chunk information here
  */
-void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
+void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp, bool disable_dio)
 {
     // Open the hdf5 file
     hid_t file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -1761,7 +1765,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
 
     // iterate over all the variables in the DMR
     try {
-        get_chunks_for_all_variables(file, dmrpp->root());
+        get_chunks_for_all_variables(file, dmrpp->root(), disable_dio);
         H5Fclose(file);
     }
     catch (...) {
@@ -1776,7 +1780,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
  *
  * The supplied file is going to be used by build_dmrpp as the source of variable/dataset chunk information.
  * At the time of this writing only netcdf-4 and hdf5 file encodings are supported (Note that netcdf-4 is a subset of
- * hdf5 and all netcdf-4 files are defacto hdf5 files.)
+ * hdf5 and all netcdf-4 files are de facto hdf5 files.)
  *
  * To that end this function will:
  * * Test that the file exists and can be read from.
@@ -1867,21 +1871,47 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
     return ss.str();
 }
 
+/**
+ * @brief Returns an ISO-8601 date time string for the time at which this function is called.
+ * Tip-o-the-hat to Morris Day and The Time...
+ * @return An ISO-8601 date time string
+ */
+std::string what_time_is_it(){
+    // Get current time as a time_point
+    auto now = std::chrono::system_clock::now();
+
+    // Convert to system time (time_t)
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to tm structure (GMT time)
+    struct tm tbuf{};
+    const std::tm* gmt_time = gmtime_r(&time_t_now, &tbuf);
+
+    // Format the time using a stringstream
+    std::stringstream ss;
+    ss << std::put_time(gmt_time, "%Y-%m-%dT%H:%M:%SZ");
+
+    return ss.str();
+}
 
 /**
- * @brief This worker method provides a SSOT for how the version and configuration information are added to the DMR++
+ * @brief This worker method provides a SSOT for how the build_dmrpp metadata (creation time, version, and configuration information) are added to the DMR++
  *
  * @param dmrpp The DMR++ to annotate
  * @param bes_conf_doc The BES configuration document used to produce the source DMR.
  * @param invocation The invocation of the build_dmrpp program, or the request URL if the running server was used to
  * create the DMR file that is being annotated into a DMR++.
  */
-void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
+void inject_build_dmrpp_metadata_worker( DMRpp *dmrpp, const string &bes_conf_doc, const string &invocation)
 {
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
     auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+
+    auto creation_date = new D4Attribute("created", StringToD4AttributeType("string"));
+    creation_date->add_value(what_time_is_it());
+    version->attributes()->add_attribute_nocopy(creation_date);
 
     auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
     build_dmrpp_version->add_value(CVER);
@@ -1928,7 +1958,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
  * @param dmrpp The DMR++ instance to anontate.
  * @note The DMRpp instance will free all memory allocated by this method.
 */
- void inject_version_and_configuration(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
+ void inject_build_dmrpp_metadata(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
 {
     string bes_configuration;
     string invocation;
@@ -1940,7 +1970,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 
     invocation = recreate_cmdln_from_args(argc, argv);
 
-    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+    inject_build_dmrpp_metadata_worker(dmrpp, bes_configuration, invocation);
 
 }
 
@@ -1954,7 +1984,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
  * @param dmrpp The DMRpp instance to annotate.
  * @note The DMRpp instance will free all memory allocated by this method.
 */
-void inject_version_and_configuration(DMRpp *dmrpp)
+void inject_build_dmrpp_metadata(DMRpp *dmrpp)
 {
     bool found;
 
@@ -1969,7 +1999,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
     invocation = BESContextManager::TheManager()->get_context(INVOCATION_CONTEXT, found);
 
     // Do the work now...
-    inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+    inject_build_dmrpp_metadata_worker(dmrpp, bes_configuration, invocation);
 }
 
 
@@ -1986,7 +2016,7 @@ void inject_version_and_configuration(DMRpp *dmrpp)
  * @param argv The arguments for build_dmrpp.
  */
 void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h5_file_fqn,
-        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, int argc, char *argv[])
+        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, bool disable_dio, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
@@ -1997,10 +2027,10 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h5_file_fqn, &dmrpp);
+    add_chunk_information(h5_file_fqn, &dmrpp,disable_dio);
 
     if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+        inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
     }
 
     XMLWriter writer;

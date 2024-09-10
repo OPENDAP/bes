@@ -943,6 +943,11 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
             if (endian_str=="LE")
                 is_le = true;
         }
+
+        else if (is_eq(attr.name(), "DIO") && is_eq(attr.value(),"off")) {
+            dc(btp)->set_disable_dio(true);
+            BESDEBUG(PARSER, prolog << "direct IO is disabled : the variable name is: " <<btp->name() << endl);
+        }
     }
 
     // If no deflate filter is used or the deflate_levels is not defined, cannot do the direct IO. return.
@@ -952,6 +957,9 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
      // If the datatype is not little-endian, cannot do the direct IO. return.
      // The big-endian IEEE-floating-point data also needs byteswap. So we cannot do direct IO. KY 2024-03-03
     if (!is_le)
+        return;
+
+    if (dc(btp)->is_disable_dio())
         return;
 #if 0
     // If the datatype is integer and this is not little-endian, cannot do the direct IO. return.
@@ -1377,8 +1385,20 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
     // Obtain the datatype for array and scalar.
     Type dtype =btp->type();
-    if (dtype == dods_array_c)
-        dtype = btp->var()->type();
+    bool is_array_subset = false;
+    if (dtype == dods_array_c) {
+        auto *da = dynamic_cast<DmrppArray *>(btp);
+        if (da->is_projected())
+            is_array_subset = true;
+        else 
+            dtype = btp->var()->type();
+    }
+
+    if (is_array_subset) {
+        auto *da = dynamic_cast<DmrppArray *>(btp);
+        process_compact_subset(da,decoded);
+        return;
+    }
 
     switch (dtype) {
         case dods_array_c:
@@ -1464,7 +1484,23 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
     }
 }
 
+void DMZ::process_compact_subset(DmrppArray *da, std::vector<u_int8_t> &decoded) {
 
+    if (da->var()->type() == dods_str_c || da->var()->type() == dods_url_c) 
+        throw BESInternalError("Currently we don't support the subset for the compacted array of string",__FILE__,__LINE__);
+
+    int64_t num_buf_bytes = da->width_ll(true);
+    vector<unsigned char> buf_bytes;
+    buf_bytes.resize(num_buf_bytes); 
+    vector<unsigned long long> da_dims = da->get_shape(false);
+    unsigned long subset_index = 0;
+    vector<unsigned long long> subset_pos;
+    handle_subset(da,da->dim_begin(),subset_index, subset_pos,buf_bytes,decoded);
+
+    da->val2buf(reinterpret_cast<void *>(buf_bytes.data()));
+
+    da->set_read_p(true);
+}
 
 void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element)
 {
@@ -1955,6 +1991,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
         else if (is_eq(attr.name(), "byteOrder"))
             dc(btp)->ingest_byte_order(attr.value());
+        
     }
 
     // reset one_chunk_fillvalue to false if has_fill_value = false
