@@ -1,6 +1,0 @@
-Dataset {
-    Float32 temp[FakeDim2 = 2][lat = 180][lon = 360];
-    Float32 lat[lat = 180];
-    Float32 lon[lon = 360];
-    Int32 FakeDim2[FakeDim2 = 2];
-} t_cf_1dllz.h5;

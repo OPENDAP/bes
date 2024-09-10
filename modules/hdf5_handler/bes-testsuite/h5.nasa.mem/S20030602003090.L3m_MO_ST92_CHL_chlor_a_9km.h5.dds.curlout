@@ -1,8 +1,0 @@
-Dataset {
-    Float32 geophysical_data_chlor_a[rows = 2160][columns = 4320];
-    String palette[rgb = 3][eightbitcolor = 256];
-    Float32 columns[columns = 4320];
-    Float32 eightbitcolor[eightbitcolor = 256];
-    Float32 rgb[rgb = 3];
-    Float32 rows[rows = 2160];
-} S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5;
