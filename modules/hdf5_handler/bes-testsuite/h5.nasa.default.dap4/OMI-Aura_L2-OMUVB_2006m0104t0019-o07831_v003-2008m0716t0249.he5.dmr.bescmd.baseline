@@ -96,7 +96,6 @@
             <Group name="UVB">
                 <Dimension name="nXtrack" size="60"/>
                 <Dimension name="nTimes" size="1"/>
-                <Dimension name="Unlimited" size="18446744073709551615"/>
                 <Group name="Data_Fields">
                     <Float32 name="CSErythemalDailyDose">
                         <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
