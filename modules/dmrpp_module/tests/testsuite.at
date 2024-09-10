@@ -257,6 +257,8 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact_str.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact_vlstr.dap])
 
+dnl compact array subset 
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/compact_array_subset.dap])
 
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dmr])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dds])

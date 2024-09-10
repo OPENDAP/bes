@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.nc">
+    <Dimension name="time" size="1"/>
+    <Dimension name="lat" size="2400"/>
+    <Dimension name="lon" size="2400"/>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>reference time of sst file</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1981-01-01 00:00:00</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="long_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-180.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>180.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>geographical coordinates, WGS84 projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="long_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-90.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>geographical coordinates, WGS84 projection</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="wind_speed">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>10m wind speed</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>wind_speed</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="height" type="String">
+            <Value>10 m</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>These wind speeds were created by the ECMWF and represent winds at 10 metres above the sea surface. </Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>WSP-ECMWF-Forecast</Value>
+        </Attribute>
+        <Attribute name="time_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="sses_standard_deviation">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SSES standard deviation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.01</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Standard deviation estimate derived using the techniques described at http://www.ghrsst.org/SSES-Description-of-schemes.html</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int32 name="sst_dtime">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483648</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>time difference from reference time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>2147483647</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>time plus sst_dtime gives seconds after 00:00:00 UTC January 1, 1981</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int32>
+    <Int8 name="solar_zenith_angle">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>solar zenith angle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>angular_degree</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>90.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-90</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>90</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>The solar zenith angle at the time of the SST observations.</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="sea_ice_fraction">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sea ice fraction</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_ice_area_fraction</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value></Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.01</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>100</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Fractional sea ice cover from OSISAF ice product</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ICE-OSISAF</Value>
+        </Attribute>
+        <Attribute name="time_offset" type="Float64">
+            <Value>-36.</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int32 name="l2p_flags">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="long_name" type="String">
+            <Value>L2P flags</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>15</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>microwave land ice lake</Value>
+        </Attribute>
+        <Attribute name="flag_masks" type="Int16">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>4</Value>
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>These flags are important to properly use the data.</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int32>
+    <Int8 name="sources_of_adi">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sources of aerosol dynamic indicator</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>no_data AOD-NAAPS-ADI SDI-OSISAF-ADI</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>This variable provides a pixel by pixel description of where aerosol optical depth were derived from.</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="aerosol_dynamic_indicator">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>aerosol dynamic indicator</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value></Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.10000000000000001</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value></Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>sources_of_adi</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int16 name="sea_surface_temperature">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sea surface subskin temperature</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_surface_subskin_temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>273.14999999999998</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.01</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-300</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>4500</Value>
+        </Attribute>
+        <Attribute name="depth" type="String">
+            <Value>1 millimeter</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>GOES_Imager</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Temperature of the subskin of the ocean</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int16>
+    <Int8 name="quality_level">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>quality level of SST pixel</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>no_data bad_data worst_quality low_quality acceptable_quality best_quality</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>These are the overall quality indicators and are used for all GHRSST SSTs</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="dt_analysis">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>deviation from SST analysis or reference climatology</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.10000000000000001</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>The difference between this SST and the previous day's SST analysis</Value>
+        </Attribute>
+        <Attribute name="reference" type="String">
+            <Value>OSTIA</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int8 name="satellite_zenith_angle">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>satellite zenith angle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>angular_degree</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-90</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>90</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>The satellite zenith angle at the time of the SST observations.</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int16 name="or_longitude">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>original longitude of the SST value</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.01</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-18000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>18000</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Original longitude of the SST value</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int16>
+    <Int8 name="adi_dtime_from_sst">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>time difference of ADI data from sst measurement</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hour</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.10000000000000001</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Difference in hours between the ADI and SST data</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Int16 name="or_latitude">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32768</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>original latitude of the SST value</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.01</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int16">
+            <Value>-9000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int16">
+            <Value>9000</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Original latitude of the SST value</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int16>
+    <Int8 name="sses_bias">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-128</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SSES bias estimate</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.01</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>127</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Bias estimate derived using the techniques described at http://www.ghrsst.org/SSES-Description-of-schemes.html</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Int8>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.4</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>Sea Surface Temperature</Value>
+    </Attribute>
+    <Attribute name="summary" type="String">
+        <Value>The L3C product derived from GOES16/ABI brightness temperatures.</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>Geostationary Sea Surface Temperature Product User Manual, http://www.osi-saf.org</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>OSISAF</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>METEO-FRANCE/CMS SAFOS processor</Value>
+    </Attribute>
+    <Attribute name="comment" type="String">
+        <Value></Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>All intellectual property rights of the Ocean &amp; Sea Ice SAF products belong to EUMETSAT. The use of these products is granted to every user, free of charge. If users wish to use these products, EUMETSAT's copyright credit must be shown by displaying the words 'Copyright EUMETSAT' under each of the products shown. EUMETSAT offers no warranty and accepts no liability in respect of the Ocean &amp; Sea Ice SAF products. EUMETSAT neither commits to nor guarantees the continuity, availability, or quality or suitability for any purpose of, the Ocean &amp; Sea Ice SAF products.</Value>
+    </Attribute>
+    <Attribute name="id" type="String">
+        <Value>GOES16-OSISAF-L3C-v1.0</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>org.ghrsst</Value>
+    </Attribute>
+    <Attribute name="product_version" type="String">
+        <Value>1.0</Value>
+    </Attribute>
+    <Attribute name="gds_version_id" type="String">
+        <Value>2.0</Value>
+    </Attribute>
+    <Attribute name="spatial_resolution" type="String">
+        <Value>0.05 degree</Value>
+    </Attribute>
+    <Attribute name="northernmost_latitude" type="Float32">
+        <Value>60.</Value>
+    </Attribute>
+    <Attribute name="southernmost_latitude" type="Float32">
+        <Value>-60.</Value>
+    </Attribute>
+    <Attribute name="easternmost_longitude" type="Float32">
+        <Value>-15.</Value>
+    </Attribute>
+    <Attribute name="westernmost_longitude" type="Float32">
+        <Value>-135.</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>GOES_ABI</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>GOES16</Value>
+    </Attribute>
+    <Attribute name="sensor" type="String">
+        <Value>GOES_ABI</Value>
+    </Attribute>
+    <Attribute name="Metadata_Conventions" type="String">
+        <Value>Unidata Dataset Discovery v1.0</Value>
+    </Attribute>
+    <Attribute name="metadata_link" type="String">
+        <Value>N/A</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>Oceans &gt; Ocean Temperature &gt; Sea Surface Temperature </Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>NASA Global Change Master Directory (GCMD) Science Keywords</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>NetCDF Climate and Forecast (CF) Metadata Convention</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>degrees_north</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_resolution" type="Float64">
+        <Value>0.050000000000000003</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>degrees_east</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_resolution" type="Float64">
+        <Value>0.050000000000000003</Value>
+    </Attribute>
+    <Attribute name="acknowledgment" type="String">
+        <Value>In case SAF data (pre-operational or operational) has been used for the study described in a paper the following sentence would be an appropriate reference to the funding coming from EUMETSAT: The data from the EUMETSAT Satellite Application Facility on Ocean &amp; Sea Ice  used in this study are accessible through the SAF's homepage http://www.osi-saf.org</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>O&amp;SI SAF</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>osi-saf.helpdesk@meteo.fr</Value>
+    </Attribute>
+    <Attribute name="creator_url" type="String">
+        <Value>http://www.osi-saf.org</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>Group for High Resolution Sea Surface Temperature</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>The GHRSST Project Office</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>http://www.ghrsst.org</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>ghrsst-po@nceo.ac.uk</Value>
+    </Attribute>
+    <Attribute name="processing_level" type="String">
+        <Value>L3C</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>grid</Value>
+    </Attribute>
+    <Attribute name="date_created" type="String">
+        <Value>20180101T020918Z</Value>
+    </Attribute>
+    <Attribute name="file_quality_level" type="Int32">
+        <Value>2</Value>
+    </Attribute>
+    <Attribute name="start_time" type="String">
+        <Value>20171231T233000Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>20171231T233000Z</Value>
+    </Attribute>
+    <Attribute name="stop_time" type="String">
+        <Value>20180101T003000Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>20180101T003000Z</Value>
+    </Attribute>
+    <Attribute name="uuid" type="String">
+        <Value>D9299038-EE98-11E7-B2C3-0024E836CC1A</Value>
+    </Attribute>
+    <Attribute name="netcdf_version_id" type="String">
+        <Value>4.3.2</Value>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.13-664</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.13-664</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.11-198</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=/tmp/tmpxqbuljki/
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.module.cmd=/usr/lib64/bes/libdap_xml_module.so
+BES.module.dap=/usr/lib64/bes/libdap_module.so
+BES.module.dmrpp=/usr/lib64/bes/libdmrpp_module.so
+BES.module.fonc=/usr/lib64/bes/libfonc_module.so
+BES.module.h5=/usr/lib64/bes/libhdf5_module.so
+BES.module.nc=/usr/lib64/bes/libnc_module.so
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /tmp/bes_conf_lvQa -f /tmp/tmpxqbuljki//20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.nc -r /tmp/dmr__mtGDjT -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

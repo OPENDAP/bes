@@ -3,7 +3,7 @@
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/http/data
 BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 
-BES.LogName=/dev/null
+BES.LogName = ./bes.log
 
 Http.Cache.dir=@abs_top_builddir@/http/unit-tests/cache
 Http.Cache.prefix=hut_

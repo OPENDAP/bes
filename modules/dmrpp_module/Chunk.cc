@@ -1111,6 +1111,18 @@ string Chunk::to_string() const {
     return oss.str();
 }
 
+/**
+ * @brief Get the data URL for this chunk
+ *
+ * This method returns the data URL for this chunk. If the data URL is not
+ * set, it returns nullptr.
+ *
+ * @note The call to get_effective_url() will call EffectiveUrlCache::get_effective_url()
+ * which will call CurlUtils.cc get_redirect_url() which will call gru_mk_attempt() and
+ * will look for an HTTP 302 response and return the redirect URL in that response.
+ *
+ * @return The data URL for this chunk
+ */
 std::shared_ptr<http::url> Chunk::get_data_url() const {
 
     // The d_data_url may be nullptr(fillvalue case). 
