@@ -798,11 +798,12 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
 
     VERBOSE(cerr<<"eos_ll_attr_value: "<<eos_ll_attr_value <<endl);
 
-    size_t space_pos = eos_ll_attr_value.find(' ');
+    size_t space_pos = eos_ll_attr_value.find_last_of(' ');
     if (space_pos ==string::npos) { 
         err_msg = "Attribute eos_latlon must have space inside";
         return false;
     }
+
     string grid_name = eos_ll_attr_value.substr(0,space_pos);
     string ll_name = eos_ll_attr_value.substr(space_pos+1);
 
