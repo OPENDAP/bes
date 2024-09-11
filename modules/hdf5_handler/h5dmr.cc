@@ -1858,6 +1858,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         if (H5Sget_simple_extent_type(did_space) != H5S_SIMPLE) {
             H5Aclose(attr_id);
             H5Tclose(atype_id);
+            H5Sclose(did_space);
             H5Dclose(dset_id);
             H5Dclose(did_ref);
             string msg = "The dataspace must be a simple HDF5 dataspace for the variable  " + dname;
@@ -1868,19 +1869,19 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         if (did_space_num_dims <0) {
             H5Aclose(attr_id);
             H5Tclose(atype_id);
+            H5Sclose(did_space);
             H5Dclose(dset_id);
             H5Dclose(did_ref);
             string msg = "The number of dimensions must be > 0 for the variable  " + dname;
             throw InternalErr(__FILE__, __LINE__, msg);
         }
-        vector<hsize_t> did_dims;
-        vector<hsize_t> did_max_dims;
-        did_dims.resize(did_space_num_dims);
-        did_max_dims.resize(did_space_num_dims);
+        vector<hsize_t> did_dims(did_space_num_dims);
+        vector<hsize_t> did_max_dims(did_space_num_dims);
 
         if (H5Sget_simple_extent_dims(did_space,did_dims.data(),did_max_dims.data()) <0) {
             H5Aclose(attr_id);
             H5Tclose(atype_id);
+            H5Sclose(did_space);
             H5Dclose(dset_id);
             H5Dclose(did_ref);
             string msg = "Cannot obtain the dimension information for the variable  " + dname;
