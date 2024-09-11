@@ -1,9 +1,0 @@
-The data:
-Float32 t[time = 0][lat = 10][lon = 5] = {};
-Float64 p[time = 0][lat = 10][lon = 5] = {};
-Float32 z[time = 0][lat = 10][lon = 5] = {};
-Int32 rh[time = 0][lat = 10][lon = 5] = {};
-Int32 lat[lat = 10] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
-Int32 lon[lon = 5] = {-140, -118, -96, -84, -52};
-Int32 time[time = 0] = {};
-

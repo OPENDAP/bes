@@ -1,6 +1,0 @@
-Attributes {
-    dataset_2d {
-        String origname "dataset_2d";
-        String fullnamepath "/dataset_2d";
-    }
-}

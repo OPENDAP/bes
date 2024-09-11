@@ -1,7 +1,0 @@
-Dataset {
-    Float32 OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3[OMI_Column_Amount_O3_lat = 720][OMI_Column_Amount_O3_lon = 1440];
-    Float32 OMI_Column_Amount_O3_Data_Fields_Reflectivity331[OMI_Column_Amount_O3_lat = 720][OMI_Column_Amount_O3_lon = 1440];
-    Float32 OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex[OMI_Column_Amount_O3_lat = 720][OMI_Column_Amount_O3_lon = 1440];
-    Float64 OMI_Column_Amount_O3_lat[OMI_Column_Amount_O3_lat = 720];
-    Float64 OMI_Column_Amount_O3_lon[OMI_Column_Amount_O3_lon = 1440];
-} OMI_L3.nc4.h5;

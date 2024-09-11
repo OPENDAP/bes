@@ -1,6 +1,0 @@
-Dataset {
-    Int32 /dset1[5];
-} d_link_soft.h5;
-Dataset {
-    Int32 /dset1[5];
-} d_link_soft.h5;
