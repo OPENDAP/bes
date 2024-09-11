@@ -263,10 +263,10 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
  * @param content A reference to the C++ string to filter
  */
 void NgapOwnedContainer::filter_response(const map <string, string, std::less<>> &content_filters, string &content) {
-    for (const auto &apair: content_filters) {
-        unsigned int replace_count = BESUtil::replace_all(content, apair.first, apair.second);
-        BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
-                 apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
+    for (const auto &filter: content_filters) {
+        unsigned int replace_count = BESUtil::replace_all(content, filter.first, filter.second);
+        BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" << filter.first
+                 << ") with " << filter.second << " in cached RemoteResource" << endl);
     }
 }
 
@@ -342,7 +342,33 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
     }
     catch (http::HttpError &http_error) {
         // Assumption - when S3 returns a 404, the things is not there. jhrg 8/9/24
-        if (http_error.http_status() == 404) {
+        // But, sometimes AWS/S3 returns 400 for a missing object. jhrg 9/10/24
+        //
+        // for 400 and 500 errors, try the DAAC bucket.
+        // for a 404, do not log an error, just return false.
+        // for other errors, log the error and return false
+        switch (http_error.http_status()) {
+            case 400:
+            case 401:
+            case 403:
+                ERROR_LOG(prolog << "Looked in the OPeNDAP bucket for the DMRpp for: " << get_real_name()
+                                 << " but got HTTP Status: " << http_error.http_status() << '\n');
+                dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
+                dmrpp_read = false;
+                break;
+
+            case 404:
+                dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
+                dmrpp_read = false;
+                break;
+
+            default:
+                http_error.set_message(http_error.get_message()
+                    + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
+                throw;
+        }
+#if 0
+        if (http_error.http_status() == 404 || http_error.http_status() == 400) {
             dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
             dmrpp_read = false;
         }
@@ -350,6 +376,7 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
             http_error.set_message(http_error.get_message() + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
             throw;
         }
+#endif
     }
 
     return dmrpp_read;
