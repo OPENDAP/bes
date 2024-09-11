@@ -1894,23 +1894,6 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         
         ret_value = cur_unlimited_dim_size;
 
-        // The following code assumes that the variable has only one dimension, which may not be right. Leave the code here
-        // in case we need to handle multiple unlimited dimensions in a variable in the future.
-#if 0
-        hssize_t num_ele_dim = H5Sget_simple_extent_npoints(did_space);
-        if (num_ele_dim < 0) {
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Dclose(dset_id);
-            H5Dclose(did_ref);
-            H5Sclose(did_space);
-            string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-
-        ret_value =(hsize_t)num_ele_dim;
-#endif
-
         H5Dclose(did_ref);
         H5Sclose(did_space);
     }
