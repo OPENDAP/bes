@@ -68,6 +68,10 @@ void print_float_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_pt
 
 D4AttributeType daptype_strrep_to_dap4_attrtype(const std::string & s);
 
+libdap::BaseType *Get_bt_enhanced(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, const std::string &var_path,
+                         const std::string &dataset, hid_t datatype);
+
+
 libdap::BaseType *Get_bt(const std::string &vname, const std::string &var_path,
                          const std::string &dataset, hid_t datatype, bool is_dap4);
 
@@ -95,6 +99,9 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
 
 void write_vlen_str_attrs(hid_t attr_id, hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr,
                           libdap::AttrTable* d2_attr, bool is_dap4);
+
+libdap::D4EnumDef map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, hid_t datatype);
+void obtain_enum_def_name_value(hid_t base_datatype, hid_t datatype, vector<string>& labels, vector<int64_t> &label_values);
 
 bool check_if_utf8_str(hid_t ty_id);
 bool check_str_attr_value(hid_t attr_id, hid_t atype_id, const string & value_to_compare, bool is_substr);

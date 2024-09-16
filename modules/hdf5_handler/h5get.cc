@@ -47,9 +47,11 @@
 #include "HDF5Str.h"
 #include "HDF5Float32.h"
 #include "HDF5Float64.h"
+#include "HDF5D4Enum.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
 #include "HDF5RequestHandler.h"
+#include "util.h"
 
 #include <BESDebug.h>
 #include <BESSyntaxUserError.h>
@@ -651,13 +653,22 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     // These datatype classes are unsupported. Note we do support
     // variable length string and the variable length string class is
     // H5T_STRING rather than H5T_VLEN.
+#if 0
     if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
         || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM) || (ty_class == H5T_VLEN)) {
         string msg = "unexpected datatype of HDF5 dataset  ";
         msg += dname;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
-   
+#endif
+
+    if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
+        || (ty_class == H5T_OPAQUE) || (ty_class == H5T_VLEN)) {
+        string msg = "unexpected datatype of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+  
     hid_t dspace = -1;
     if ((dspace = H5Dget_space(dset)) < 0) {
         H5Tclose(dtype);
@@ -1151,9 +1162,8 @@ BaseType *Get_bt(const string &vname,
             }
                 break;
 
-                // The array datatype is rarely,rarely used. So this
-                // part of code is not reviewed.
-                // Reference map to DAP URL, check the technical note.
+            // The array datatype is rarely,rarely used. Turn off the support now.
+            // Reference map to DAP URL, check the technical note.
             case H5T_REFERENCE: {
                 auto hdf5_url = make_unique<HDF5Url>(vname, vpath, dataset);
                 btp = hdf5_url.release();
@@ -1179,6 +1189,95 @@ BaseType *Get_bt(const string &vname,
     BESDEBUG("h5", "<Get_bt()" << endl);
     return btp;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \fn Get_bt_enhanced(D4Group*d4_grp, hid_t pid, const string &varname,  const string  &dataset, hid_t datatype)
+/// returns the pointer to the base type
+///
+/// This function will create a new DODS object that corresponds to HDF5
+/// dataset and return the pointer of a new object of DODS datatype. If an
+/// error is found, an exception of type InternalErr is thrown. 
+///
+/// \param d4_grp DAP4 group
+/// \param pid HDF5 (parent) group id
+/// \param varname object name
+/// \param dataset name of dataset where this object comes from
+/// \param datatype datatype id
+/// \return pointer to BaseType
+///////////////////////////////////////////////////////////////////////////////
+BaseType *Get_bt_enhanced(D4Group *d4_grp,
+                          hid_t pid,
+                          const string &vname,
+                          const string &vpath,
+                          const string &dataset,
+                          hid_t datatype)
+{
+    BaseType *btp = nullptr;
+
+    try {
+
+        BESDEBUG("h5", ">Get_bt_enhanced  varname=" << vname << " datatype=" << datatype
+                                          << endl);
+
+        switch (H5Tget_class(datatype)) {
+
+            case H5T_INTEGER:
+                btp = Get_integer_bt(vname, vpath, dataset, datatype, true);
+                break;
+
+            case H5T_FLOAT:
+                btp = Get_float_bt(vname, vpath, dataset, datatype);
+                break;
+            case H5T_STRING: {
+                auto hdf5_str = make_unique<HDF5Str>(vname, vpath, dataset);
+                btp = hdf5_str.release();
+            }
+                break;
+
+            // The array datatype is rarely,rarely used. Turn off the support now.
+            // Reference map to DAP URL, check the technical note.
+            case H5T_REFERENCE: {
+                auto hdf5_url = make_unique<HDF5Url>(vname, vpath, dataset);
+                btp = hdf5_url.release();
+            }
+                break;
+
+            case H5T_ENUM: {
+                    // retrieve enum information
+                    D4EnumDef enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,vname,datatype);
+cerr<<"after map_hdf5_enum_to_dap4"<<endl;
+                    auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, enum_def.type());
+                    hdf5_enum->set_enumeration(&enum_def);
+                    btp = hdf5_enum.release();
+                    
+#if 0
+                    auto hdf5_enum= make_unique<HDF5Url>(vname, vpath, dataset);
+                    btp = hdf5_enum.release();
+#endif
+                
+            }
+                break;
+
+            default: {
+                throw InternalErr(__FILE__, __LINE__, string("Unsupported HDF5 type:  ") + vname);
+            }
+
+        }
+    }
+    catch (...) {
+        delete btp;
+        throw;
+    }
+
+    if (!btp)
+        throw InternalErr(__FILE__, __LINE__,
+                          string("Could not make a DAP variable for: ")
+                          + vname);
+
+    BESDEBUG("h5", "<Get_bt()" << endl);
+    return btp;
+}
+
 
 BaseType *Get_integer_bt(const string &vname, const string &vpath, const string &dataset,
                         hid_t datatype, bool is_dap4) {
@@ -1485,6 +1584,218 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
         throw;
     }
 }
+
+string obtain_enum_def_name(hid_t pid, hid_t datatype) {
+    
+    string ret_value;
+
+    H5G_info_t g_info;
+    H5Gget_info(pid,&g_info);
+    hsize_t nelms = g_info.nlinks;
+
+cerr<<"nelms: "<<nelms <<endl;
+
+    for (hsize_t i = 0; i < nelms; i++) {
+
+        ssize_t oname_size = H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
+                                                  nullptr,0, H5P_DEFAULT);
+        if (oname_size <0)
+            throw InternalErr(__FILE__, __LINE__, "H5Lget_name_by_idx fails to obtain the object name size.");
+
+        vector<char> oname(oname_size + 1);
+
+        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),(size_t)(oname_size+1),H5P_DEFAULT)<0)
+            throw InternalErr(__FILE__, __LINE__, "H5Lget_name_by_idx fails to obtain the object name.");
+
+        string s_oname(oname.begin(),oname.end()-1);
+
+        // Obtain the object type, such as group or dataset.
+        H5O_info_t oinfo;
+        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,i,&oinfo,H5P_DEFAULT)<0)
+            throw InternalErr(__FILE__, __LINE__, "H5Oget_info_by_idx fails to obtain enum type name.");
+
+        H5O_type_t obj_type = oinfo.type;
+        if(H5O_TYPE_NAMED_DATATYPE == obj_type) {
+            hid_t obj_datatype = H5Topen2(pid,oname.data(),H5P_DEFAULT);
+            if (H5Tget_class(obj_datatype) == H5T_ENUM) {
+                if (H5Tequal(obj_datatype,datatype)>0) {
+                    ret_value =s_oname;
+                    break;
+                }
+            }
+        }
+
+    }
+cerr<<"enum defined name: "<<ret_value <<endl;
+    return ret_value;
+
+}
+
+int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
+
+    int64_t ret_value = 0;
+    size_t dsize = H5Tget_size(base_datatype);
+    if (dsize == 0){
+        throw InternalErr(__FILE__, __LINE__,
+                          "size of enum base datatype is invalid");
+    }
+
+    H5T_sign_t sign = H5Tget_sign(base_datatype);
+    if (sign < 0){
+        throw InternalErr(__FILE__, __LINE__,
+                          "sign of enum base datatype is invalid");
+    }
+
+
+    switch (dsize) {
+
+    case 1:
+        if (sign == H5T_SGN_NONE) {
+            uint8_t val = 255;
+            if (H5Tget_member_value(datatype,i,&val)<0)  {
+                throw InternalErr(__FILE__, __LINE__,
+                          "H5Tget_member_value is invalid");
+            }
+            ret_value = (int64_t)val;
+
+        } 
+        else {
+            int8_t val = -127;
+            if (H5Tget_member_value(datatype,i,&val)<0)  {
+                throw InternalErr(__FILE__, __LINE__,
+                          "H5Tget_member_value is invalid");
+            }
+            ret_value = (int64_t)val;
+
+        }
+        break;
+
+    case 2:
+
+        if (sign == H5T_SGN_NONE) {
+            uint16_t val = 65535;
+            if (H5Tget_member_value(datatype,i,&val)<0)  {
+                throw InternalErr(__FILE__, __LINE__,
+                          "H5Tget_member_value is invalid");
+            }
+            ret_value = (int64_t)val;
+
+        } 
+        else {
+            int16_t val = -32768;
+            if (H5Tget_member_value(datatype,i,&val)<0)  {
+                throw InternalErr(__FILE__, __LINE__,
+                          "H5Tget_member_value is invalid");
+            }
+            ret_value = (int64_t)val;
+
+        }
+
+        break;
+
+    case 4:
+        if (sign == H5T_SGN_NONE) {
+            uint32_t val = 4294967295;
+            if (H5Tget_member_value(datatype,i,&val)<0)  {
+                throw InternalErr(__FILE__, __LINE__,
+                          "H5Tget_member_value is invalid");
+            }
+            ret_value = (int64_t)val;
+
+        } 
+        else {
+            int32_t val = -2147483647-1;
+            if (H5Tget_member_value(datatype,i,&val)<0)  {
+                throw InternalErr(__FILE__, __LINE__,
+                          "H5Tget_member_value is invalid");
+            }
+            ret_value = (int64_t)val;
+
+        }
+        break;
+
+    case 8:
+        if (sign == H5T_SGN_NONE) {
+            uint64_t val = 0;
+            if (H5Tget_member_value(datatype,i,&val)<0)  {
+                throw InternalErr(__FILE__, __LINE__,
+                          "H5Tget_member_value is invalid");
+            }
+            int64_t int64_max = (int64_t)~(1L<<64-1);
+            if(val >(uint64_t)int64_max) {
+                throw InternalErr(__FILE__, __LINE__,
+                          "The value exceeds the maximum value of 64-bit integer.");
+            } 
+            ret_value = (int64_t)val;
+
+        } 
+        else {
+            int64_t val = 0;
+            if (H5Tget_member_value(datatype,i,&val)<0)  {
+                throw InternalErr(__FILE__, __LINE__,
+                          "H5Tget_member_value is invalid");
+            }
+            ret_value = val;
+
+        }
+
+        break;
+    default:
+        break;
+    }
+ 
+
+    return ret_value;
+}
+
+void obtain_enum_def_name_value(hid_t base_datatype, hid_t datatype, vector<string>& labels, vector<int64_t> &label_values) {
+
+    int num_enums = H5Tget_nmembers(datatype);
+    for (int i = 0; i <num_enums; i++) {
+
+        char *name = H5Tget_member_name(datatype,i);
+        string enum_def_name(name);
+cerr<<"enum_def_name: "<<enum_def_name<<endl;
+        labels.push_back(enum_def_name);
+        H5free_memory(name);
+        int64_t label_value = obtain_enum_def_value(base_datatype,datatype,i);
+printf("label_value is %d\n",(int)label_value);
+        label_values.push_back(label_value);
+
+    }
+}
+
+D4EnumDef map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, hid_t datatype) {
+
+    // Check if this HDF5 enum type has a name,if yes, return the name.
+    string enum_def_name = obtain_enum_def_name(pid,datatype);
+
+    // Obtain the base type of this enum type
+    hid_t base_hdf5_type = H5Tget_super(datatype);
+
+    string enum_def_type_str = get_dap_integer_type(base_hdf5_type,true);
+cerr<<"enum_def_type: "<<enum_def_type_str <<endl;
+    Type enum_def_type = get_type(enum_def_type_str.c_str());
+
+
+    // Obtain this HDF5 enum type's defined names and values.
+    vector<string> labels;
+    vector<int64_t> label_values;   
+    obtain_enum_def_name_value(base_hdf5_type, datatype,labels,label_values);
+    H5Tclose(base_hdf5_type);
+    D4EnumDef enum_def(enum_def_name,enum_def_type);
+    for (unsigned i = 0; i <labels.size(); i++) 
+        enum_def.add_value(labels[i],label_values[i]);
+
+    D4EnumDefs * d4enumdefs = d4_grp->enum_defs();
+    if (d4_grp->find_enum_def(enum_def_name)==nullptr) 
+        d4enumdefs->add_enum_nocopy(&enum_def);
+
+    return enum_def;
+
+}
+
+
 // Function to use H5OVISIT to check if dimension scale attributes exist.
 bool check_dimscale(hid_t fileid) {
 
