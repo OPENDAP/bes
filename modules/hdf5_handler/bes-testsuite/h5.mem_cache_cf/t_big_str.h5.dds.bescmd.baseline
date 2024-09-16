@@ -1,8 +1,0 @@
-Dataset {
-    String arr_dset[2];
-    Int16 dset[2];
-} t_big_str.h5;
-Dataset {
-    String arr_dset[2];
-    Int16 dset[2];
-} t_big_str.h5;

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" 
+dapVersion="4.0" dmrVersion="1.0" name="chunked_enum.h5" dmrpp:href="/data/dmrpp/chunked_enum.h5">
+    <Int64 name="DS1">
+        <Attribute name="A1" type="null">
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+            <Value>UNKNOWN</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="2144" nBytes="8"/>
+        </dmrpp:chunks>
+    </Int64>
+</Dataset>

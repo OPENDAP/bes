@@ -48,7 +48,7 @@
 #include "RemoteResource.h"
 
 #include "NgapApi.h"
-#include "NgapContainer.h"
+// #include "NgapContainer.h"
 #include "NgapNames.h"
 
 #include "test_config.h"

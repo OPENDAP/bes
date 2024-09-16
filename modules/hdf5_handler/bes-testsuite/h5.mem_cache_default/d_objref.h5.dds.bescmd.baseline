@@ -1,8 +1,0 @@
-Dataset {
-    Url /DS1[2];
-    Int32 /DS2[5][6];
-} d_objref.h5;
-Dataset {
-    Url /DS1[2];
-    Int32 /DS2[5][6];
-} d_objref.h5;

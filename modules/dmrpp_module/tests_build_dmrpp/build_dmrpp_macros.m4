@@ -96,6 +96,7 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
         NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
+        REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
@@ -103,6 +104,7 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
         NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
+        REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -309,6 +311,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
+    REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([${output_file}])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
     AT_CHECK([mv ${output_file} ${baseline}.tmp])
 ],
@@ -319,6 +322,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
+    REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([${output_file}])
     AS_IF([test -z "$at_verbose"], [
         echo ""
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
@@ -427,6 +431,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
+    REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([${output_file}])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data dmrpp result to ${dmrpp_baseline}.tmp"])
     AT_CHECK([mv ${output_file} ${dmrpp_baseline}.tmp])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data result to ${missing_baseline}.missing.tmp"])
@@ -440,6 +445,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
+    REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([${output_file}])
     AS_IF([test -z "$at_verbose"], [
         echo ""
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
@@ -560,6 +566,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR_VALUE([${output_file}])
+    REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([${output_file}])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data dmrpp result to ${dmrpp_baseline}.tmp"])
     AT_CHECK([mv ${output_file} ${dmrpp_baseline}.tmp])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data result to ${missing_baseline}.missing.tmp"])
@@ -584,6 +591,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     ])
     
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR_VALUE([${output_file}])
+    REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([${output_file}])
     AS_IF([test -z "$at_verbose"], [
         echo ""
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
@@ -709,6 +717,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
+    REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([${output_file}])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
     AT_CHECK([mv ${output_file} ${baseline}.tmp])
 ],
@@ -719,6 +728,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
+    REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE([${output_file}])
     AS_IF([test -z "$at_verbose"], [
         echo ""
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
@@ -742,6 +752,16 @@ AT_CLEANUP
 # Usage: REMOVE_BUILD_DMRPP_INVOCATION_ATTR_VALUE(file_name)
 m4_define([REMOVE_BUILD_DMRPP_INVOCATION_ATTR_VALUE], [dnl
     sed -e 's@<Value>build_dmrpp.*<\/Value>@<Value>Removed</Value>@g'  < $1 > $1.sed
+    mv $1.sed $1
+])
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# Remove the build_dmrpp creation time attribute value, an ISO-68601 date string
+# ndp 07/25/24
+# Usage: REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE(file_name)
+#             <Value>2024-07-25T18:22:54Z</Value>
+m4_define([REMOVE_BUILD_DMRPP_CREATED_ATTR_VALUE], [dnl
+    sed -e 's@<Value>[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}\:[[0-9]]\{2\}\:[[0-9]]\{2\}Z</Value>@<Value>removed date string</Value>@g'  < $1 > $1.sed
     mv $1.sed $1
 ])
 

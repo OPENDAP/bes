@@ -1,9 +1,0 @@
-Dataset {
-    Float32 t[time = 0][lat = 10][lon = 5];
-    Float64 p[time = 0][lat = 10][lon = 5];
-    Float32 z[time = 0][lat = 10][lon = 5];
-    Int32 rh[time = 0][lat = 10][lon = 5];
-    Int32 lat[lat = 10];
-    Int32 lon[lon = 5];
-    Int32 time[time = 0];
-} nc4_unlimited_0.h5;

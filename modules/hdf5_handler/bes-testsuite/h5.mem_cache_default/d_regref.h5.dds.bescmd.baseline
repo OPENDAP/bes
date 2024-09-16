@@ -1,8 +1,0 @@
-Dataset {
-    Url /DS1[2];
-    Int16 /DS2[3][16];
-} d_regref.h5;
-Dataset {
-    Url /DS1[2];
-    Int16 /DS2[3][16];
-} d_regref.h5;

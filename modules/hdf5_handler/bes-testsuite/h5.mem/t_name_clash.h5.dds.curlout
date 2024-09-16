@@ -1,8 +1,0 @@
-Dataset {
-    Int32 d1_[1][2];
-    Int32 g_dset1[1][2];
-    Int32 g_dset1_1[1][2];
-    Int32 g_dset1_2[1][2];
-    Float64 g_dset1_3[2][2];
-    Float64 g_dset1_1_1[2][2];
-} t_name_clash.h5;

@@ -1,6 +1,0 @@
-Dataset {
-    Float32 l3m_data[lat = 180][lon = 360];
-    Byte palette[3][256];
-    Float32 lat[lat = 180];
-    Float32 lon[lon = 360];
-} Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5;

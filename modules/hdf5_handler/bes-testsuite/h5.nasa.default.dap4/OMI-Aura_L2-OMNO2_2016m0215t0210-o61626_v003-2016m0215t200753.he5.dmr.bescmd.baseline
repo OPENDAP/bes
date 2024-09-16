@@ -528,7 +528,6 @@
                 <Dimension name="nTimesSmallPixel" size="10"/>
                 <Dimension name="nSmallPixelPointer" size="2"/>
                 <Dimension name="nSWLevels" size="35"/>
-                <Dimension name="Unlimited" size="18446744073709551615"/>
                 <Dimension name="nCorners" size="4"/>
                 <Attribute name="NumTimes" type="Int32">
                     <Value>1644</Value>

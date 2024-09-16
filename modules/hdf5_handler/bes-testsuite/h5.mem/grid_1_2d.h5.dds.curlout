@@ -1,6 +1,0 @@
-Dataset {
-    Float32 temperature[lat = 4][lon = 8];
-    String StructMetadata_0;
-    Float32 lon[lon = 8];
-    Float32 lat[lat = 4];
-} grid_1_2d.h5;

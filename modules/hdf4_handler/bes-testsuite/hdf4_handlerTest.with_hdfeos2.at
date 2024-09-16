@@ -1,4 +1,4 @@
-# Copyright (C) 2013-2014 The HDF Group
+# Copyright (C) The HDF Group
 # All rights reserved.
 #
 # Process with autom4te to create an -*- Autotest -*- test suite.
@@ -98,7 +98,7 @@ m4_define([_AT_BESCMD_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 > $2 || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 || true], [], [stdout], [stderr])
@@ -268,19 +268,7 @@ AT_BESCMD_RESPONSE_TEST([PointFile.hdf.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([PointFile.hdf.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([PointFile.hdf.data.bescmd])
 
-# This fails because of bad _FillValue attributes
-# ./hdf4_handlerTest.with_hdfeos2.at:178: diff -b -B $abs_srcdir/h4.with_hdfeos2/SwathFile.hdf.das.bescmd.baseline stdout || diff -b -B $abs_srcdir/h4.with_hdfeos2/SwathFile.hdf.das.bescmd.baseline stderr
-# stdout:
-# 34c34
-# <         Float64 _FillValue -9999.0000000000000;
-# ---
-# >         Float64 _FillValue 6.9532224897966966e-310;
-# 39c39
-# <         Float64 _FillValue -9999.0000000000000;
-# ---
-# >         Float64 _FillValue 6.9532224897966966e-310;
-
-# AT_BESCMD_RESPONSE_TEST([SwathFile.hdf.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([SwathFile.hdf.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([SwathFile.hdf.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([SwathFile.hdf.data.bescmd])
 
@@ -362,11 +350,12 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_2d_xy_dim_mismatch.hdf.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_dim_mismatch.hdf.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_dim_mismatch.hdf.ddx.bescmd])
 #
-# These tests fails because cahnges to libdap4 altered the contents
-# of the metada. The associated ticket is:
-# https://opendap.atlassian.net/browse/HYRAX-399
-# and this test should be enabled once the ticket is resolved.
-#
+# These tests fail because the CF option of the current handler doesn't
+# handle the case when there is no dimension name for one of swath field dimension.
+# That dimension is treated as a missing field. However, this missing field doesn't
+# have a name and this causes the failure when dap4 reads the data.
+# Since we haven't encountered a real case, we just document here and will handle the
+# issue in the future if necessary. KY 2024-08-20 
 # AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_no_dim.hdf.das.bescmd])
 # AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_2d_xy_no_dim.hdf.data.bescmd])
 # AT_BESCMD_RESPONSE_TEST([swath_1_2d_xy_no_dim.hdf.dds.bescmd])
@@ -501,11 +490,12 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_2d_xyz.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_3d_2x2yz_fv_t_mis.hdf.s.data.bescmd])
 
-#Test Swath with multiple dimension maps.
+# Swath with multiple dimension maps.
 AT_BESCMD_RESPONSE_TEST([swath_3_3d_dimmap.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_3_3d_dimmap.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_3_3d_dimmap.data.bescmd])
 
+# General data reading
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testan1.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfp1.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfr1.hdf.s.data.bescmd])
@@ -560,6 +550,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([tvsempty.hdf.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([tvsempty.hdf.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([tvsempty.hdf.ddx.bescmd])
 AT_BESCMD_RESPONSE_TEST([tvset.hdf.das.bescmd])
+
 #data reading for tvset.hdf is not right. So comment them out now.
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST([tvset.hdf.data.bescmd])
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST([tvset.hdf.s.data.bescmd])
@@ -572,6 +563,7 @@ AT_BESCMD_RESPONSE_TEST([tvset.hdf.dds.bescmd])
 
 #Test the direct HDF4 to DMR
 
+# vgroup, vdata, sds, HDF-EOS2 grid, swath and point general tests.
 AT_BESCMD_RESPONSE_TEST([vgroup_attr.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([vg_hl_test.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([testsds1.hdf.dmr.bescmd])
@@ -597,7 +589,7 @@ AT_BESCMD_RESPONSE_TEST([SDS_simple_unlimited_0.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_fillchunk_comp.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_fillchunk_alltypes.hdf.dmr.bescmd])
 
-#HDF-EOS2 grid tests.
+#HDF-EOS2 several grid tests.
 AT_BESCMD_RESPONSE_TEST([cea.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([sinusoid.hdf.dmr.bescmd])
 

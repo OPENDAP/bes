@@ -1,6 +1,0 @@
-Dataset {
-    String array_1d[4];
-    String array_2d[2][2];
-    String array_special_case[1][1];
-    String scalar;
-} t_vl_string.h5;

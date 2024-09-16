@@ -1596,8 +1596,15 @@ void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_
 
     vector <HE5Dim> grp_dims;
     for (const auto &eos5dim:dim_list) {  
+
+        // Here we need to remove the Unlimited dimension if the size is -1 since we currently don't support unlimited dimension.
+        // TODO: need to rehandle this when adding the unlimited dimension support.
+        if (eos5dim.name =="Unlimited" && eos5dim.size == -1)
+            continue;
+
         HE5Dim eos5_dimp;
         string new_eos5dim_name = eos5dim.name;
+
         string dim_fpath = eos5_grp_path +"/" + handle_string_special_characters(new_eos5dim_name);
         eos5_dimp.name = dim_fpath;
         eos5_dimp.size = eos5dim.size;
@@ -1850,18 +1857,53 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
-        hssize_t num_ele_dim = H5Sget_simple_extent_npoints(did_space);
-        if (num_ele_dim < 0) {
+        // Check if this is a simple 
+        if (H5Sget_simple_extent_type(did_space) != H5S_SIMPLE) {
             H5Aclose(attr_id);
             H5Tclose(atype_id);
+            H5Sclose(did_space);
             H5Dclose(dset_id);
             H5Dclose(did_ref);
-            H5Sclose(did_space);
-            string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
+            string msg = "The dataspace must be a simple HDF5 dataspace for the variable  " + dname;
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
-        ret_value =(hsize_t)num_ele_dim;
+        int did_space_num_dims = H5Sget_simple_extent_ndims(did_space);
+        if (did_space_num_dims <0) {
+            H5Aclose(attr_id);
+            H5Tclose(atype_id);
+            H5Sclose(did_space);
+            H5Dclose(dset_id);
+            H5Dclose(did_ref);
+            string msg = "The number of dimensions must be > 0 for the variable  " + dname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+        vector<hsize_t> did_dims(did_space_num_dims);
+        vector<hsize_t> did_max_dims(did_space_num_dims);
+
+        if (H5Sget_simple_extent_dims(did_space,did_dims.data(),did_max_dims.data()) <0) {
+            H5Aclose(attr_id);
+            H5Tclose(atype_id);
+            H5Sclose(did_space);
+            H5Dclose(dset_id);
+            H5Dclose(did_ref);
+            string msg = "Cannot obtain the dimension information for the variable  " + dname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+        
+        hsize_t cur_unlimited_dim_size  = 0;
+
+        int num_unlimited_dims = 0;
+        for (unsigned i = 0; i<did_space_num_dims; i++) {
+            if (did_max_dims[i] == H5S_UNLIMITED) {
+                cur_unlimited_dim_size = did_dims[i];
+                num_unlimited_dims++;
+            }
+        }
+        if (num_unlimited_dims >1)
+            throw InternalErr(__FILE__,__LINE__,"This variable has more than 1 unlimited dimensions. This is not supported.");
+        
+        ret_value = cur_unlimited_dim_size;
 
         H5Dclose(did_ref);
         H5Sclose(did_space);

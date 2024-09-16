@@ -1385,8 +1385,20 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
     // Obtain the datatype for array and scalar.
     Type dtype =btp->type();
-    if (dtype == dods_array_c)
-        dtype = btp->var()->type();
+    bool is_array_subset = false;
+    if (dtype == dods_array_c) {
+        auto *da = dynamic_cast<DmrppArray *>(btp);
+        if (da->is_projected())
+            is_array_subset = true;
+        else 
+            dtype = btp->var()->type();
+    }
+
+    if (is_array_subset) {
+        auto *da = dynamic_cast<DmrppArray *>(btp);
+        process_compact_subset(da,decoded);
+        return;
+    }
 
     switch (dtype) {
         case dods_array_c:
@@ -1472,7 +1484,23 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
     }
 }
 
+void DMZ::process_compact_subset(DmrppArray *da, std::vector<u_int8_t> &decoded) {
 
+    if (da->var()->type() == dods_str_c || da->var()->type() == dods_url_c) 
+        throw BESInternalError("Currently we don't support the subset for the compacted array of string",__FILE__,__LINE__);
+
+    int64_t num_buf_bytes = da->width_ll(true);
+    vector<unsigned char> buf_bytes;
+    buf_bytes.resize(num_buf_bytes); 
+    vector<unsigned long long> da_dims = da->get_shape(false);
+    unsigned long subset_index = 0;
+    vector<unsigned long long> subset_pos;
+    handle_subset(da,da->dim_begin(),subset_index, subset_pos,buf_bytes,decoded);
+
+    da->val2buf(reinterpret_cast<void *>(buf_bytes.data()));
+
+    da->set_read_p(true);
+}
 
 void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element)
 {

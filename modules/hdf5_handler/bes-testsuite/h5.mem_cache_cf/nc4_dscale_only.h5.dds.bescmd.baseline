@@ -1,8 +1,0 @@
-Dataset {
-    Int32 sca;
-    Float32 dim[dim = 2];
-} nc4_dscale_only.h5;
-Dataset {
-    Int32 sca;
-    Float32 dim[dim = 2];
-} nc4_dscale_only.h5;
