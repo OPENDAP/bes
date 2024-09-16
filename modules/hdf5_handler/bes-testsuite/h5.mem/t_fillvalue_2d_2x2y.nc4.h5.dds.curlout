@@ -1,5 +1,0 @@
-Dataset {
-    Float32 FVattr_yes[xc = 4][yc = 4];
-    Float32 lat[xc = 4][yc = 4];
-    Float32 lon[xc = 4][yc = 4];
-} t_fillvalue_2d_2x2y.nc4.h5;

@@ -100,6 +100,7 @@ private:
     static std::set< std::vector<unsigned long long> > get_chunk_map(const std::vector<std::shared_ptr<Chunk>> &chunks);
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
+    static void process_compact_subset(DmrppArray *da, std::vector<u_int8_t>& decoded);
     static void process_missing_data(libdap::BaseType *btp, const pugi::xml_node &missing_data);
     static void handle_subset(dmrpp::DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsigned long & subset_index, std::vector<unsigned long long> & subset_pos,
                               std::vector<unsigned char>& subset_buf, std::vector<unsigned char>& whole_buf);

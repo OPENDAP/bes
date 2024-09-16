@@ -4,8 +4,16 @@ AT_INIT([bes/modules/ngap_module/tests testsuite])
 
 m4_include([../../common/handler_tests_macros.m4])
 
-AT_BESCMD_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-cloudydap.dmr.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-cloudydap.dap.bescmd])
+# This granule (20180101000000-OSISAF-L3C_GHRSST) is available from both pocloud and the
+# cloudydap S3 bucket (cloudydap is in us-east-1).
+AT_BESCMD_BESCONF_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-cloudydap.dmr.bescmd], [bes.conf])
+AT_BESCMD_BESCONF_BINARY_DAP4_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-cloudydap.dap.bescmd], [bes.conf])
 
-AT_BESCMD_RESPONSE_TEST([ngap/20240809210000-OSISAF-L3C_GHRSST-pocloud-only.dmr.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/20240809210000-OSISAF-L3C_GHRSST-pocloud-only.dap.bescmd])
+# This granule (20240809210000-OSISAF-L3C_GHRSST) is only available from pocloud.
+AT_BESCMD_BESCONF_RESPONSE_TEST([ngap/20240809210000-OSISAF-L3C_GHRSST-pocloud-only.dmr.bescmd], [bes.conf])
+AT_BESCMD_BESCONF_BINARY_DAP4_RESPONSE_TEST([ngap/20240809210000-OSISAF-L3C_GHRSST-pocloud-only.dap.bescmd], [bes.conf])
+
+# Must use a different bes.conf for these - This tests the case where the server only looks
+# in the DAAC bucket.
+AT_BESCMD_BESCONF_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-pocloud.dmr.bescmd], [bes-daac.conf])
+AT_BESCMD_BESCONF_BINARY_DAP4_RESPONSE_TEST([ngap/20180101000000-OSISAF-L3C_GHRSST-pocloud.dap.bescmd], [bes-daac.conf])

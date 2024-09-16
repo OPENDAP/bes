@@ -11,6 +11,14 @@ Attributes {
         String units "degrees_north";
         String long_name "Latitude";
     }
+    Latitude_1 {
+        String units "degrees_north";
+        String long_name "Latitude_1";
+    }
+    Longitude_1 {
+        String units "degrees_east";
+        String long_name "Longitude_1";
+    }
     Bands {
         String units "level";
         String long_name "Bands(fake)";
@@ -30,12 +38,12 @@ Attributes {
         String long_name "Temperature";
     }
     Pressure {
-        String coordinates "Latitude Longitude";
+        String coordinates "Latitude_1 Longitude_1";
         Float64 _FillValue -9999.0000000000000;
         String long_name "Pressure";
     }
     Spectra {
-        String coordinates "Bands Latitude Longitude";
+        String coordinates "Bands Latitude_1 Longitude_1";
         Float64 _FillValue -9999.0000000000000;
         String long_name "Spectra";
     }
