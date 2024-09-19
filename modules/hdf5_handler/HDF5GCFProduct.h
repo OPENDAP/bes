@@ -83,6 +83,9 @@ static const std::string SeaWiFS_ATTR3_L3FPVALUE ="SWDB_L3";
 // Aquarius level 3
 static const char Aquarius_ATTR1_NAME[] ="Sensor";
 static const char Aquarius_ATTR2_NAME[] ="Title";
+static const char Aquarius_ATTR1_NAME2[] ="instrument";
+static const char Aquarius_ATTR2_NAME2[] ="title";
+
 static const std::string Aquarius_ATTR1_VALUE ="Aquarius";
 static const std::string Aquarius_ATTR2_PVALUE ="Level-3";
 

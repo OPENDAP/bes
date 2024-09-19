@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="fnc4test" space="catalog">/data/Q2012034.L3m_DAY_SCI_V5.0_SSS_1deg.h5</setContainer>
+    <define name="d">
+    <container name="fnc4test" />
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>
