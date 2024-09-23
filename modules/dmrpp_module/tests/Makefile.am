@@ -12,7 +12,7 @@ CLEANFILES = bes.conf bes.log bes_serial.conf
 EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays hdf4 hdf4_build_dmrpp\
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3) $(TESTSUITE_S3).at $(TESTSUITE_DMRPP_BUILDER) \
 $(TESTSUITE_DMRPP_BUILDER).at atlocal.in bes.conf.in bes_serial.conf.in $(srcdir)/package.m4 \
-multi_input_tests.m4 $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_DMRPP_BUILDER_H4).at
+multi_input_tests.m4 $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_DMRPP_BUILDER_H4).at $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_CHECK_DMRPP).at
 
 DISTCLEANFILES = atconfig
 
@@ -41,10 +41,13 @@ TESTSUITE_DMRPP_BUILDER = $(srcdir)/testsuite_dmrpp_builder
 
 TESTSUITE_DMRPP_BUILDER_H4 = $(srcdir)/testsuite_dmrpp_builder_h4
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
+TESTSUITE_CHECK_DMRPP = $(srcdir)/testsuite_check_dmrpp
+
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_CHECK_DMRPP)' $(TESTSUITEFLAGS)
 	@echo "\n# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
@@ -66,6 +69,7 @@ clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
 	test ! -f '$(TESTSUITE_DMRPP_BUILDER_H4)' || $(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' --clean
+	test ! -f '$(TESTSUITE_CHECK_DMRPP)' || $(SHELL) '$(TESTSUITE_CHECK_DMRPP)' --clean
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
@@ -77,6 +81,8 @@ $(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4 $(top_srcdir)/modules/c
 $(TESTSUITE_DMRPP_BUILDER): $(TESTSUITE_DMRPP_BUILDER).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 $(TESTSUITE_DMRPP_BUILDER_H4): $(TESTSUITE_DMRPP_BUILDER_H4).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
+
+$(TESTSUITE_CHECK_DMRPP): $(TESTSUITE_CHECK_DMRPP).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

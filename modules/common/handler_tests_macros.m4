@@ -582,6 +582,51 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA], [dnl
 
     AT_CLEANUP
 ])
+
+m4_define([AT_CHECK_DMRPP_TEST], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([check_dmrpp])
+
+    input=$abs_srcdir/$1
+    output=$abs_srcdir/$1.missvars
+    baseline=$abs_srcdir/$1.missvars.baseline
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+            AT_CHECK([check_dmrpp $input $output], [], [stdout])
+            AT_CHECK([mv $output $baseline.tmp])
+        ],
+        [
+            AT_CHECK([check_dmrpp $input $output], [], [stdout])
+            AT_CHECK([diff -b -B $baseline $output])
+        ])
+
+    AT_CLEANUP
+])
+
+dnl this macro tests for those dmrpp files that are supposed not to have any missing variables.
+dnl If any missing variable comes up, the test will fail.
+m4_define([AT_CHECK_DMRPP_TEST_NO_MISSING_VARS], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([check_dmrpp])
+
+    input=$abs_srcdir/$1
+    output=$abs_srcdir/$1.missvars
+    baseline=$abs_srcdir/$1.missvars.baseline
+    GET_CHECK_DMRPP_OUTPUT([input],[output])
+
+    AS_IF([ test -f $output],
+        [
+            AT_CHECK([ls $baseline], [], [stdout])
+        ],
+        [
+            AT_CHECK([ls $input], [], [stdout])
+        ])
+
+    AT_CLEANUP
+])
+
+
 dnl Given a filename, remove any date-time string of the form "yyyy-mm-dd hh:mm:ss"
 dnl in that file and put "removed date-time" in its place. This hack keeps the baselines
 dnl more or less true to form without the obvious issue of baselines being broken 
@@ -699,3 +744,11 @@ m4_define([GET_GDAL_INFO], [dnl
     AS_IF([test -z "$at_verbose"], [echo "gdalinfo: $1.txt"; more $1.txt])
     mv $1.txt $1
 ])
+
+dnl check_dmrpp will generate a text file if there is any missing data variable.
+dnl this marco will return that text file.
+m4_define([GET_CHECK_DMRPP_OUTPUT], [dnl
+    check_dmrpp $1 $2
+])
+
+
