@@ -599,9 +599,12 @@ m4_define([AT_CHECK_DMRPP_TEST], [dnl
         [
             AT_CHECK([check_dmrpp $input $output], [], [stdout])
             AT_CHECK([diff -b -B $baseline $output])
-            AT_CHECK([rm $output])
         ])
 
+    AS_IF([test -f $output],
+	[AT_CHECK([rm -f $output],[],[stdout])
+        ],
+        [])
     AT_CLEANUP
 ])
 
