@@ -599,6 +599,7 @@ m4_define([AT_CHECK_DMRPP_TEST], [dnl
         [
             AT_CHECK([check_dmrpp $input $output], [], [stdout])
             AT_CHECK([diff -b -B $baseline $output])
+            AT_CHECK([rm $output])
         ])
 
     AT_CLEANUP
@@ -750,5 +751,4 @@ dnl this marco will return that text file.
 m4_define([GET_CHECK_DMRPP_OUTPUT], [dnl
     check_dmrpp $1 $2
 ])
-
 

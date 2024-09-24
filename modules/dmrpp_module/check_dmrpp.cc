@@ -327,7 +327,10 @@ bool find_data_offset(const string &str) {
 bool find_embedded_data_info(const string &str) {
 
     bool ret = false;
-    vector<string> embedded_data_block_list = {"<dmrpp:compact>","<dmrpp:missingdata>"};
+    vector<string> embedded_data_block_list = {"<dmrpp:compact>",
+                                               "<dmrpp:missingdata>",
+                                               "<dmrpp:vlsa>",
+                                               "<dmrpp:specialstructuredata>"};
 
     for (const auto & embedded_data_block:embedded_data_block_list) {
         size_t embedded_data_block_pos = str.find(embedded_data_block);

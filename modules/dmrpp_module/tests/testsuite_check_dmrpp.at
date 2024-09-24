@@ -15,8 +15,14 @@ AT_CHECK_DMRPP_TEST([check_dmrpp/grid_2_2d_sin.h5.dmrpp])
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/vdata_packed_linked_blocks.hdf.dmrpp])
 # Linked blocks
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/SDS_unlimited_2.hdf.dmrpp])
-# Scalar Structure 
+# Scalar structure 
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_simple_scalar.h5.dmrpp])
+# Variable length string
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/t_vl_string_1d.h5.dmrpp])
+# Structure array that contains strings
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_array_fix_vlen_str.h5.dmrpp])
+# Structure scalar that contains strings
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_simple_scalar_vlen_str.h5.dmrpp])
 # Compound group 
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_group_simple.h5.dmrpp])
 # netCDF-4 group 
