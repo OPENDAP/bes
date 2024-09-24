@@ -596,6 +596,7 @@ dnl output=$abs_srcdir/$1.missvars
             AT_CHECK([ls >tmp])
             AT_CHECK([check_dmrpp $input tmp], [], [stdout])
             dnl AT_CHECK([mv $output $baseline.tmp])
+            AT_CHECK([mv tmp $baseline.tmp])
         ],
         [
             AT_CHECK([ls >tmp])
