@@ -588,17 +588,19 @@ m4_define([AT_CHECK_DMRPP_TEST], [dnl
     AT_KEYWORDS([check_dmrpp])
 
     input=$abs_srcdir/$1
-    output=$abs_srcdir/$1.missvars
+dnl output=$abs_srcdir/$1.missvars
     baseline=$abs_srcdir/$1.missvars.baseline
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-            AT_CHECK([check_dmrpp $input $output], [], [stdout])
-            AT_CHECK([mv $output $baseline.tmp])
+            AT_CHECK([ls >tmp])
+            AT_CHECK([check_dmrpp $input tmp], [], [stdout])
+            dnl AT_CHECK([mv $output $baseline.tmp])
         ],
         [
-            AT_CHECK([check_dmrpp $input $output], [], [stdout])
-            AT_CHECK([diff -b -B $baseline $output])
+            AT_CHECK([ls >tmp])
+            AT_CHECK([check_dmrpp $input tmp], [], [stdout])
+            AT_CHECK([diff -b -B $baseline tmp])
         ])
 
 dnl    AS_IF([test -f $output],
