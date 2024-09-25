@@ -23,6 +23,10 @@ AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/t_vl_string_1d.h5.dmrpp])
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_array_fix_vlen_str.h5.dmrpp])
 # Structure scalar that contains strings
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_simple_scalar_vlen_str.h5.dmrpp])
+# Contains fillvalue
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_string.h5.dmrpp])
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_uint64.h5.dmrpp])
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_scalar_cont.h5.dmrpp])
 # Compound group 
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_group_simple.h5.dmrpp])
 # netCDF-4 group 

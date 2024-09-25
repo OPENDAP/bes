@@ -13,6 +13,7 @@ bool find_var(const string &str, const vector<string> &var_type_list,
 bool find_endvar(const string &str,const string &vtype);
 
 bool find_raw_data_location_info(const string &str);
+bool find_fillValue_in_chunks(const string &str);
 bool find_data_offset(const string &str);
 bool find_embedded_data_info(const string &str);
 
@@ -290,12 +291,31 @@ bool find_var_helper(const string &str, const vector<string> &var_type_list,
 bool find_raw_data_location_info(const string &dmrpp_line) {
 
     bool ret = false;
-    ret  = find_data_offset(dmrpp_line);
+    ret  = find_fillValue_in_chunks(dmrpp_line);
+
+    if (ret == false)
+        ret  = find_data_offset(dmrpp_line);
 
     // Also need to find dmrpp:block, dmrpp:compact and dmrpp:missingdata like finding chunks.
     if (false == ret) 
         ret = find_embedded_data_info(dmrpp_line);
 
+    return ret;
+
+}
+
+// Find if this var block contains dmrpp:chunks and fillValue 
+bool find_fillValue_in_chunks(const string &str) {
+
+    bool ret = false;
+    string fvalue_mark = "fillValue";
+    string dmrpp_chunks_mark = "<dmrpp:chunks ";
+
+    size_t dmrpp_chunks_mark_pos = str.find(dmrpp_chunks_mark);
+    if (dmrpp_chunks_mark_pos != string::npos) {
+        if (string::npos != str.find(fvalue_mark, dmrpp_chunks_mark_pos+dmrpp_chunks_mark.size())) 
+            ret = true;
+    }
     return ret;
 
 }
