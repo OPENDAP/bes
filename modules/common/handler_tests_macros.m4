@@ -588,47 +588,37 @@ m4_define([AT_CHECK_DMRPP_TEST], [dnl
     AT_KEYWORDS([check_dmrpp])
 
     input=$abs_srcdir/$1
-dnl output=$abs_srcdir/$1.missvars
     baseline=$abs_srcdir/$1.missvars.baseline
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
             AT_CHECK([ls >tmp])
-            AT_CHECK([check_dmrpp $input tmp], [], [stdout])
-            dnl AT_CHECK([mv $output $baseline.tmp])
+            AT_CHECK([$abs_builddir/../check_dmrpp $input tmp], [], [stdout])
             AT_CHECK([mv tmp $baseline.tmp])
         ],
         [
             AT_CHECK([ls >tmp])
-            AT_CHECK([check_dmrpp $input tmp], [], [stdout])
+            AT_CHECK([$abs_builddir/../check_dmrpp $input tmp], [], [stdout])
             AT_CHECK([diff -b -B $baseline tmp])
         ])
 
-dnl    AS_IF([test -f $output],
-dnl 	[AT_CHECK([rm -f $output],[],[stdout])
-dnl      ],
-dnl   [])
     AT_CLEANUP
 ])
 
 dnl this macro tests for those dmrpp files that are supposed not to have any missing variables.
 dnl If any missing variable comes up, the test will fail.
+dnl We deliberately add one test that will generate missing data variables.
+dnl That test will fail expectedly. If it gets passed, something is wrong.
 m4_define([AT_CHECK_DMRPP_TEST_NO_MISSING_VARS], [dnl
     AT_SETUP([$1])
     AT_KEYWORDS([check_dmrpp])
 
     input=$abs_srcdir/$1
-    output=$abs_srcdir/$1.missvars
-    baseline=$abs_srcdir/$1.missvars.baseline
-    GET_CHECK_DMRPP_OUTPUT([input],[output])
-
-    AS_IF([ test -f $output],
-        [
-            AT_CHECK([ls $baseline], [], [stdout])
-        ],
-        [
-            AT_CHECK([ls $input], [], [stdout])
-        ])
+    dnl output=$abs_srcdir/$1.missvars
+    AT_XFAIL_IF([test z$2 = zxfail])
+    AT_CHECK([cp -f $input tmp],[],[stdout])
+    AT_CHECK([$abs_builddir/../check_dmrpp $input tmp], [], [stdout])
+    AT_CHECK([diff -b -B $input tmp])
 
     AT_CLEANUP
 ])
@@ -752,9 +742,4 @@ m4_define([GET_GDAL_INFO], [dnl
     mv $1.txt $1
 ])
 
-dnl check_dmrpp will generate a text file if there is any missing data variable.
-dnl this marco will return that text file.
-m4_define([GET_CHECK_DMRPP_OUTPUT], [dnl
-    check_dmrpp $1 $2
-])
 
