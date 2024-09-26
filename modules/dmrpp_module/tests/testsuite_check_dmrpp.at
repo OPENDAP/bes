@@ -6,10 +6,12 @@ m4_include([../../common/handler_tests_macros.m4])
 
 dnl - check_dmrpp tests for any variable that doesn't have data in the current data file.
 # No-group hierarchy dmrpp file that has missing data variables.
-#AT_CHECK_DMRPP_TEST([check_dmrpp/grid_1_2d_missing.h5.dmrpp])
+AT_CHECK_DMRPP_TEST([check_dmrpp/grid_1_2d_missing.h5.dmrpp])
 # Group hierarchy dmrpp file that has missing data variables.
-#AT_CHECK_DMRPP_TEST([check_dmrpp/grid_2_2d_sin.h5.dmrpp])
+AT_CHECK_DMRPP_TEST([check_dmrpp/grid_2_2d_sin.h5.dmrpp])
 
+# This file has the missing data variables, so expect to fail.
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/sinusoid.hdf.nmd.dmrpp],[xfail])
 # No missing data variable tests.
 # Structure and data in linked blocks 
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/vdata_packed_linked_blocks.hdf.dmrpp])

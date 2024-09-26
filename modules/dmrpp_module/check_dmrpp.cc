@@ -204,10 +204,8 @@ int main (int argc, char** argv)
             }
             i++;
         }
-        return 0;
     }
-    else 
-        return 1;
+    return 0;
 
 }
 
