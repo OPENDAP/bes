@@ -614,7 +614,6 @@ m4_define([AT_CHECK_DMRPP_TEST_NO_MISSING_VARS], [dnl
     AT_KEYWORDS([check_dmrpp])
 
     input=$abs_srcdir/$1
-    dnl output=$abs_srcdir/$1.missvars
     AT_XFAIL_IF([test z$2 = zxfail])
     AT_CHECK([cp -f $input tmp],[],[stdout])
     AT_CHECK([chmod u+w tmp],[],[stdout])
@@ -742,5 +741,3 @@ m4_define([GET_GDAL_INFO], [dnl
     AS_IF([test -z "$at_verbose"], [echo "gdalinfo: $1.txt"; more $1.txt])
     mv $1.txt $1
 ])
-
-

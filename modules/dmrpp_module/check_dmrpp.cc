@@ -289,12 +289,16 @@ bool find_var_helper(const string &str, const vector<string> &var_type_list,
 bool find_raw_data_location_info(const string &dmrpp_line) {
 
     bool ret = false;
+
+    // Check if this var contains data storage key word fillValue.
     ret  = find_fillValue_in_chunks(dmrpp_line);
 
+    // Check if this var contains the key word chunk or block and offset.
     if (ret == false)
         ret  = find_data_offset(dmrpp_line);
 
-    // Also need to find dmrpp:block, dmrpp:compact and dmrpp:missingdata like finding chunks.
+    // Also need to find if having a key word such as dmrpp:missingdata.
+    // These key words indicate the data is stored inside the dmrpp file.
     if (false == ret) 
         ret = find_embedded_data_info(dmrpp_line);
 
@@ -341,7 +345,8 @@ bool find_data_offset(const string &str) {
 }
 
 // Find whether there are embedded_data_info in this var block.
-// Currently the embedded_data_info includes <dmrpp:compact> and <dmrpp:missingdata>.
+// Currently the embedded_data_info includes <dmrpp:compact>, <dmrpp:missingdata>, <dmrpp:vlsa>
+// and <dmrpp:specialstructuredata>.
 bool find_embedded_data_info(const string &str) {
 
     bool ret = false;
