@@ -111,6 +111,10 @@ int main(int argc,char**argv)
         cout<<"  The second is the original dmrpp file. "<<endl;
         cout<<"  The third one is the href to the missing variables HDF5 file. "<<endl;
         cout<<"  The fourth one is the text file that includes the missing variable information. "<<endl;
+        cout <<endl;
+        cout <<" Warning: before running this program, one must run the check_dmrpp program first to see "
+             <<"if the original dmrpp file contains any missing variable, the variable that cannot find the"
+             <<" data in the original data file. "<<endl; 
         return 0;
     }
 
@@ -185,7 +189,7 @@ cout<<"chunk_info_list["<<i<<"] "<< chunk_info_list[i] << endl;
     }
 
     // Check if the dmrpp file that contains just the missing variables has groups.
-    // Note: we don't need to consider if there are groups the original dmrpp file since
+    // Note: we don't need to consider if there are groups in the original dmrpp file since
     //       we only care about the insertion of the chunk info for the missing variables.
     bool handle_grp = false;
     for (const auto &mv_name:missing_vname_list) {
@@ -337,14 +341,27 @@ for (const auto &mcil:missing_chunk_info_lines)
     }
     else {
 
+#if 0
+cout <<"coming to the nogroup case"<<endl;
+#endif
+
         // Remove the additional variables added by the filenetCDF-4 module.
         vector<string> new_var_types;
         vector<string> new_var_names;
         vector<string> new_chunk_info_list;
 
+        // Trim missing_vname_list if the missing_vname_list includes the root path /.
+        vector<string> missing_vname_list_trim;
+        for (size_t j = 0; j <missing_vname_list.size();j++) {
+            string temp_str = missing_vname_list[j];
+            if (temp_str[0] == '/') 
+                temp_str = temp_str.substr(1);
+            missing_vname_list_trim.push_back(temp_str);
+        }
+
         for (size_t i =0; i<var_names.size();i++) {
-            for (size_t j = 0; j<missing_vname_list.size();j++) {
-                if (var_names[i] == missing_vname_list[j]) {
+            for (size_t j = 0; j<missing_vname_list_trim.size();j++) {
+                if (var_names[i] == missing_vname_list_trim[j]) {
                     new_var_names.push_back(var_names[i]);
                     new_var_types.push_back(var_types[i]);
                     new_chunk_info_list.push_back(chunk_info_list[i]);
