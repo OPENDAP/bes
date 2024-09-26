@@ -617,6 +617,7 @@ m4_define([AT_CHECK_DMRPP_TEST_NO_MISSING_VARS], [dnl
     dnl output=$abs_srcdir/$1.missvars
     AT_XFAIL_IF([test z$2 = zxfail])
     AT_CHECK([cp -f $input tmp],[],[stdout])
+    AT_CHECK([chmod u+w tmp],[],[stdout])
     AT_CHECK([$abs_builddir/../check_dmrpp $input tmp], [], [stdout])
     AT_CHECK([diff -b -B $input tmp])
 
