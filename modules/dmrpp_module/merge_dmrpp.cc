@@ -107,14 +107,17 @@ int main(int argc,char**argv)
 
     if(argc != 5) {
         cout<<"Please provide four arguments: "<< endl;
-        cout<<"  The first is the dmrpp file that contains the missing variable value information. "<<endl;
-        cout<<"  The second is the original dmrpp file. "<<endl;
-        cout<<"  The third one is the href to the missing variables HDF5 file. "<<endl;
-        cout<<"  The fourth one is the text file that includes the missing variable information. "<<endl;
+        cout<<"  The first is the dmrpp file that contains the information of the variable of which ";
+        cout<<"  the data cannot be found in the original HDF5/4 file but can be found" 
+            <<" from the HDF5 file pointed by this dmrpp file. "<<endl;
+        cout<<"  The second is the dmrpp file for the original HDF5/4 file. "<<endl;
+        cout<<"  The third one is the href to HDF5/HDF4 file of which the missing data is stored. "<<endl;
+        cout<<"  The fourth one is the text file that includes the variable path of which"
+            <<" the data cannot be found in the original HDF5/4 file. "<<endl;
         cout <<endl;
         cout <<" Warning: before running this program, one must run the check_dmrpp program first to see "
-             <<"if the original dmrpp file contains any missing variable, the variable that cannot find the"
-             <<" data in the original data file. "<<endl; 
+             <<"if the original dmrpp file contains any missing variable of which the data cannot be found "
+             <<"in the original HDF5/HDF4 file. "<<endl; 
         return 0;
     }
 
@@ -352,11 +355,11 @@ cout <<"coming to the nogroup case"<<endl;
 
         // Trim missing_vname_list if the missing_vname_list includes the root path /.
         vector<string> missing_vname_list_trim;
-        for (size_t j = 0; j <missing_vname_list.size();j++) {
-            string temp_str = missing_vname_list[j];
+        for (const auto &mvname:missing_vname_list) {
+            string temp_str = mvname;
             if (temp_str[0] == '/') 
                 temp_str = temp_str.substr(1);
-            missing_vname_list_trim.push_back(temp_str);
+            missing_vname_list_trim.emplace_back(temp_str);
         }
 
         for (size_t i =0; i<var_names.size();i++) {
