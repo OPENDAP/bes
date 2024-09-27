@@ -363,8 +363,8 @@ cout <<"coming to the nogroup case"<<endl;
         }
 
         for (size_t i =0; i<var_names.size();i++) {
-            for (size_t j = 0; j<missing_vname_list_trim.size();j++) {
-                if (var_names[i] == missing_vname_list_trim[j]) {
+            for (const auto &mvname:missing_vname_list_trim) {
+                if (var_names[i] == mvname) {
                     new_var_names.push_back(var_names[i]);
                     new_var_types.push_back(var_types[i]);
                     new_chunk_info_list.push_back(chunk_info_list[i]);
