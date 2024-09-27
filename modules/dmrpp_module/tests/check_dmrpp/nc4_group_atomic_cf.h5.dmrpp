@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_group_atomic.h5" dmrpp:href="data/nc4_group_atomic.h5">
+    <Dimension name="dim1" size="2"/>
+    <Dimension name="g1_dim2" size="3"/>
+    <Float32 name="g1_d2">
+        <Dim name="/dim1"/>
+        <Dim name="/g1_dim2"/>
+        <Attribute name="origname" type="String">
+            <Value>d2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/g1/d2</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="6220" nBytes="24"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="d1">
+        <Dim name="/dim1"/>
+        <Attribute name="origname" type="String">
+            <Value>d1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d1</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="6200" nBytes="8"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Int32 name="dim1">
+        <Dim name="/dim1"/>
+        <Attribute name="origname" type="String">
+            <Value>dim1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/dim1</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="6192" nBytes="8"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="g1_dim2">
+        <Dim name="/g1_dim2"/>
+        <Attribute name="origname" type="String">
+            <Value>dim2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/g1/dim2</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="6208" nBytes="12"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="g1" type="Container"/>
+</Dataset>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_scalar_cont.h5" dmrpp:href="data/fill_value/FValue_scalar_cont.h5" dmrpp:version="3.20.13">
+    <Int32 name="cont_scalar_fill">
+        <Attribute name="origname" type="String">
+            <Value>cont_scalar_fill</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/cont_scalar_fill</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-99"/>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.10</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>/Users/myang6/work/opendap/hyrax-792/bes/modules/dmrpp_module/.libs/build_dmrpp -f FValue_scalar_cont.h5 -r FValue_scalar_cont.h5.dmr -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
