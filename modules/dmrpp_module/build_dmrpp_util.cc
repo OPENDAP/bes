@@ -1737,7 +1737,44 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) 
         else {
             VERBOSE(cerr << prolog << "Unable to open " << btp->FQN()
             << " with the hdf5 api. Skipping chunk production. "
-            << "Everything will be ok." << endl);
+            << "Need to check if we need to embed the data to the dmrpp file." << endl);
+
+            // Currently we only check if this is the artificial coordinate added by the HDF5 handler.
+            D4Attributes *d4_attrs = btp->attributes();
+            
+            if (d4_attrs) {
+
+                D4Attribute *attr = d4_attrs->find("units");
+                if (attr) {
+                    string attr_value = attr->value(0);
+                    if (attr_value == "level") {
+                        auto dc = dynamic_cast<DmrppCommon *>(btp);
+                        if (!dc) {
+                            string err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_sp_latlon";
+                            throw BESInternalError(err_msg, __FILE__, __LINE__);
+                        }
+                        auto da = dynamic_cast<DmrppArray *>(btp);
+                        if (!da) {
+                            string err_msg = "Expected to find a DmrppArray instance but did not in add_missing_sp_latlon";
+                            throw BESInternalError(err_msg, __FILE__, __LINE__);
+                        }
+                    
+                        if (da->dimensions() ==1 && btp->var()->type() == dods_int32_c){
+                
+                            da->set_missing_data(true);
+                 
+                            vector<int> level_value;
+                            level_value.resize((size_t)(da->length()));
+                            for (int32_t i = 0; i <da->length(); i++) 
+                                level_value[i] = i;
+                
+                            da->set_value(level_value.data(),da->length());
+                            da->set_missing_data(true);
+                            da->set_read_p(true);
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -1,0 +1,81 @@
+netcdf test {
+dimensions:
+	lat = 3 ;
+	lon = 6 ;
+	FakeDim2 = 2 ;
+variables:
+	float lat(lat) ;
+		lat:long_name = "latitude" ;
+		lat:units = "degrees_north" ;
+		lat:standard_name = "latitude" ;
+		lat:origname = "lat" ;
+		lat:fullnamepath = "/lat" ;
+	float lon(lon) ;
+		lon:long_name = "longitude" ;
+		lon:units = "degrees_east" ;
+		lon:standard_name = "longitude" ;
+		lon:origname = "lon" ;
+		lon:fullnamepath = "/lon" ;
+	int FakeDim2(FakeDim2) ;
+		FakeDim2:units = "level" ;
+	float temp(FakeDim2, lat, lon) ;
+		temp:long_name = "temperature" ;
+		temp:units = "kelvin" ;
+		temp:valid_min = 0.f ;
+		temp:valid_max = 400.f ;
+		temp:valid_range = 275.f, 305.f ;
+		temp:_FillValue = -999.f ;
+		temp:scale_factor = 1.f ;
+		temp:add_offset = 10.f ;
+		temp:origname = "temp" ;
+		temp:fullnamepath = "/temp" ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.0" ;
+		:build_dmrpp_metadata.bes = "3.21.0" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.0" ;
+		:build_dmrpp_metadata.configuration = "\n",
+			"# TheBESKeys::get_as_config()\n",
+			"AllowedHosts=^https?:\\/\\/\n",
+			"BES.Catalog.catalog.FollowSymLinks=Yes\n",
+			"BES.Catalog.catalog.RootDirectory=.\n",
+			"BES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\n",
+			"BES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\n",
+			"BES.Data.RootDirectory=/dev/null\n",
+			"BES.LogName=./bes.log\n",
+			"BES.UncompressCache.dir=/tmp/hyrax_ux\n",
+			"BES.UncompressCache.prefix=ux_\n",
+			"BES.UncompressCache.size=500\n",
+			"BES.module.cmd=/Users/myang6/work/opendap/hyrax-1536/bes/xmlcommand/.libs/libdap_xml_module.so\n",
+			"BES.module.dap=/Users/myang6/work/opendap/hyrax-1536/bes/dap/.libs/libdap_module.so\n",
+			"BES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1536/bes/modules/dmrpp_module/.libs/libdmrpp_module.so\n",
+			"BES.module.fonc=/Users/myang6/work/opendap/hyrax-1536/bes/modules/fileout_netcdf/.libs/libfonc_module.so\n",
+			"BES.module.h5=/Users/myang6/work/opendap/hyrax-1536/bes/modules/hdf5_handler/.libs/libhdf5_module.so\n",
+			"BES.module.nc=/Users/myang6/work/opendap/hyrax-1536/bes/modules/netcdf_handler/.libs/libnc_module.so\n",
+			"BES.modules=dap,cmd,h5,dmrpp,nc,fonc\n",
+			"FONc.ClassicModel=false\n",
+			"FONc.NoGlobalAttrs=true\n",
+			"H5.EnableCF=true\n",
+			"H5.EnableCheckNameClashing=true\n",
+			"" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.68JicbwGuP -f ./t_cf_1dllzs.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.i61HmdPUxY -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex t_cf_1dllzs.h5.dmrpp\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_cf_1dllzs.h5.dmrpp\"}]}]" ;
+data:
+
+ lat = -90, -30, 30 ;
+
+ lon = -180, -120, -60, 0, 60, 120 ;
+
+ FakeDim2 = 0, 1 ;
+
+ temp =
+  280, 280, 280, 280, 280, 280,
+  300, 300, 300, 300, 300, 300,
+  280, 280, 280, 280, 280, 280,
+  270, 270, 270, 270, 270, 270,
+  290, 290, 290, 290, 290, 290,
+  270, 270, 270, 270, 270, 270 ;
+}

@@ -238,6 +238,10 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/nc4_var_dim_name_same_2.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/nc4_group_var_dim_name_same_2.h5.bescmd)
 
+dnl Add the support of inserting missing artifical coordinate data into the dmrpp file
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/t_cf_1dllzs.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/t_cf_1dllzs2.h5.dmrpp.bescmd)
+
 dnl Add tests for the special character excaping feature. One for DAP2 and one for DAP4
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_special_char_attr.h5_dap2_nc4.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_special_char_attr.h5_dap4_nc4.bescmd)

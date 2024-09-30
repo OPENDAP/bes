@@ -1555,9 +1555,13 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
     auto result_size = (uLongf)(da->get_size(false) *da->prototype()->width());
     result_bytes.resize(result_size);
 
-    int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
-    if (retval != 0)
-        throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
+    if (da->get_size(false) == 1) 
+        memcpy(result_bytes.data(),decoded.data(),result_size);
+    else {
+        int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
+        if (retval != 0)
+            throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
+    }
 
     if (da->is_projected()) {
 
