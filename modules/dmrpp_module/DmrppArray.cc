@@ -2845,20 +2845,24 @@ void compact_data_xml_element(XMLWriter &xml, DmrppArray &a) {
     }
 }
 
-bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,size_t source_data_size, string &err_msg) {
+bool obtain_compress_encode_data(size_t num_elms, string &encoded_str, const Bytef*source_data,size_t source_data_size, string &err_msg) {
 
-    auto ssize = (uLong)source_data_size;
-    auto csize = (uLongf)ssize*2;
-    vector<Bytef> compressed_src;
-    compressed_src.resize(source_data_size*2);
-
-    int retval = compress(compressed_src.data(), &csize, source_data, ssize);
-    if (retval != 0) {
-        err_msg = "Fail to compress the data";
-        return false;
+    if (num_elms  == 1) {
+        encoded_str = base64::Base64::encode(source_data,(int)source_data_size);
     }
-
-    encoded_str = base64::Base64::encode(compressed_src.data(),(int)csize);
+    else {
+        auto ssize = (uLong)source_data_size;
+        auto csize = (uLongf)ssize*2;
+        vector<Bytef> compressed_src;
+        compressed_src.resize(source_data_size*2);
+    
+        int retval = compress(compressed_src.data(), &csize, source_data, ssize);
+        if (retval != 0) {
+            err_msg = "Fail to compress the data";
+            return false;
+        }
+        encoded_str = base64::Base64::encode(compressed_src.data(),(int)csize);
+    }
 
     return true;
 
@@ -2883,8 +2887,10 @@ void missing_data_xml_element(const XMLWriter &xml, DmrppArray *da) {
             size_t source_data_size = da->width_ll();
             string encoded_str;
             string err_msg;
-            if (false == obtain_compress_encode_data(encoded_str,source_data_src,source_data_size,err_msg)) 
+            if (false == obtain_compress_encode_data(da->get_size(false),encoded_str,source_data_src,source_data_size,err_msg)) {
+                err_msg = "variable name: " + da->name() + " "+err_msg;  
                 throw InternalErr(__FILE__, __LINE__, err_msg);
+            }
 
             da->print_missing_data_element(xml, DmrppCommon::d_ns_prefix, encoded_str);
             break;

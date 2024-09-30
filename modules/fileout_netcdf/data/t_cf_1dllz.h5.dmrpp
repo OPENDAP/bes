@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="t_cf_1dllz.h5" dmrpp:href="data/t_cf_1dllz.h5">
+    <Dimension name="lat" size="180"/>
+    <Dimension name="lon" size="360"/>
+    <Dimension name="FakeDim2" size="2"/>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="long_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/lat</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="9496" nBytes="720"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="long_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lon</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/lon</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="13672" nBytes="1440"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Int32 name="FakeDim2">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+        <dmrpp:missingdata>eJxjYGBgYARiAAAMAAI=</dmrpp:missingdata>
+    </Int32>
+    <Float32 name="temp">
+        <Dim name="/FakeDim2"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="long_name" type="String">
+            <Value>temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kelvin</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>400.0000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>275.0000000</Value>
+            <Value>305.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>10.00000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>temp</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/temp</Value>
+        </Attribute>
+        <Map name="/FakeDim2"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 180 360</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="10216" nBytes="543" chunkPositionInArray="[0,0,0]"/>
+        </dmrpp:chunks>
+    </Float32>
+</Dataset>
