@@ -623,6 +623,34 @@ m4_define([AT_CHECK_DMRPP_TEST_NO_MISSING_VARS], [dnl
     AT_CLEANUP
 ])
 
+m4_define([AT_MERGE_DMRPP_TEST], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([merge_dmrpp])
+
+    mvs_dmrpp=$abs_srcdir/$1
+    orig_dmrpp=$abs_srcdir/$2
+    file_path=$3
+    mvs_list=$abs_srcdir/$4
+    
+    baseline=$abs_srcdir/$2.mrg.baseline
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+            AT_CHECK([cp -f $orig_dmrpp tmp],[],[stdout])
+            AT_CHECK([chmod u+w tmp],[],[stdout])
+            AT_CHECK([$abs_builddir/../merge_dmrpp $mvs_dmrpp tmp $file_path $mvs_list], [], [stdout])
+            AT_CHECK([mv tmp $baseline.tmp])
+        ],
+        [
+            AT_CHECK([cp -f $orig_dmrpp tmp],[],[stdout])
+            AT_CHECK([chmod u+w tmp],[],[stdout])
+            AT_CHECK([$abs_builddir/../merge_dmrpp $mvs_dmrpp tmp $file_path $mvs_list], [], [stdout])
+            AT_CHECK([diff -b -B $baseline tmp])
+        ])
+
+    AT_CLEANUP
+])
+
 
 dnl Given a filename, remove any date-time string of the form "yyyy-mm-dd hh:mm:ss"
 dnl in that file and put "removed date-time" in its place. This hack keeps the baselines

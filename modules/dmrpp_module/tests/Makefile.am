@@ -9,10 +9,11 @@ CLEANFILES = bes.conf bes.log bes_serial.conf
 
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
-EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays hdf4 hdf4_build_dmrpp check_dmrpp\
+EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays hdf4 hdf4_build_dmrpp check_dmrpp merge_dmrpp\
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3) $(TESTSUITE_S3).at $(TESTSUITE_DMRPP_BUILDER) \
 $(TESTSUITE_DMRPP_BUILDER).at atlocal.in bes.conf.in bes_serial.conf.in $(srcdir)/package.m4 \
-multi_input_tests.m4 $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_DMRPP_BUILDER_H4).at $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_CHECK_DMRPP).at
+multi_input_tests.m4 $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_DMRPP_BUILDER_H4).at $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_CHECK_DMRPP).at \
+$(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_MERGE_DMRPP).at
 
 DISTCLEANFILES = atconfig
 
@@ -43,11 +44,14 @@ TESTSUITE_DMRPP_BUILDER_H4 = $(srcdir)/testsuite_dmrpp_builder_h4
 
 TESTSUITE_CHECK_DMRPP = $(srcdir)/testsuite_check_dmrpp
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
+TESTSUITE_MERGE_DMRPP = $(srcdir)/testsuite_merge_dmrpp
+
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_CHECK_DMRPP)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_MERGE_DMRPP)' $(TESTSUITEFLAGS)
 	@echo "\n# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
@@ -70,6 +74,7 @@ clean-local:
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
 	test ! -f '$(TESTSUITE_DMRPP_BUILDER_H4)' || $(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' --clean
 	test ! -f '$(TESTSUITE_CHECK_DMRPP)' || $(SHELL) '$(TESTSUITE_CHECK_DMRPP)' --clean
+	test ! -f '$(TESTSUITE_MERGE_DMRPP)' || $(SHELL) '$(TESTSUITE_MERGE_DMRPP)' --clean
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
@@ -83,6 +88,8 @@ $(TESTSUITE_DMRPP_BUILDER): $(TESTSUITE_DMRPP_BUILDER).at $(srcdir)/package.m4 $
 $(TESTSUITE_DMRPP_BUILDER_H4): $(TESTSUITE_DMRPP_BUILDER_H4).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 $(TESTSUITE_CHECK_DMRPP): $(TESTSUITE_CHECK_DMRPP).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
+
+$(TESTSUITE_MERGE_DMRPP): $(TESTSUITE_MERGE_DMRPP).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

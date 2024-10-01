@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_sin_msv.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.0">
+    <Attribute name="history" type="String">
+        <Value>2024-09-30 14:34:20 Hyrax grid_2_2d_sin.h5
+</Value>
+    </Attribute>
+    <Attribute name="history_json" type="String">
+        <Value>[{&quot;$schema&quot;:&quot;https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json&quot;,&quot;date_time&quot;:&quot;2024-09-30 14:34:20&quot;,&quot;program&quot;:&quot;hyrax&quot;,&quot;version&quot;:&quot;1.16.3&quot;,&quot;parameters&quot;:[{&quot;request_url&quot;:&quot;grid_2_2d_sin.h5&quot;}]}]</Value>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2024-09-30T19:10:23Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.0</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.module.cmd=/Users/myang6/work/opendap/hyrax-1524/bes/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dap=/Users/myang6/work/opendap/hyrax-1524/bes/dap/.libs/libdap_module.so
+BES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1524/bes/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.fonc=/Users/myang6/work/opendap/hyrax-1524/bes/modules/fileout_netcdf/.libs/libfonc_module.so
+BES.module.h5=/Users/myang6/work/opendap/hyrax-1524/bes/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.nc=/Users/myang6/work/opendap/hyrax-1524/bes/modules/netcdf_handler/.libs/libnc_module.so
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.GU3EpY6Qs7 -f ./grid_2_2d_sin_msv.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.7M2fReF3Ox -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="HDFEOS">
+        <Group name="GRIDS">
+            <Group name="SinGrid1">
+                <Dimension name="YDim" size="2"/>
+                <Dimension name="XDim" size="2"/>
+                <Float64 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_x_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>x coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoX</Value>
+                    </Attribute>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="12639" nBytes="25" chunkPositionInArray="[0]"/>
+                    </dmrpp:chunks>
+                </Float64>
+                <Float64 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_y_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>y coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoY</Value>
+                    </Attribute>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="12664" nBytes="24" chunkPositionInArray="[0]"/>
+                    </dmrpp:chunks>
+                </Float64>
+                <Byte name="eos5_cf_projection">
+                    <Attribute name="grid_mapping_name" type="String">
+                        <Value>sinusoidal</Value>
+                    </Attribute>
+                    <Attribute name="longitude_of_central_meridian" type="Float64">
+                        <Value>0.</Value>
+                    </Attribute>
+                    <Attribute name="earth_radius" type="Float64">
+                        <Value>6371007.1809999999</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisTypes" type="String">
+                        <Value>GeoX GeoY</Value>
+                    </Attribute>
+                    <dmrpp:chunks fillValue="0" byteOrder="LE">
+                        <dmrpp:chunk offset="12638" nBytes="1"/>
+                    </dmrpp:chunks>
+                </Byte>
+                <Float64 name="Longitude">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                    <Map name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                    <Map name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="12716" nBytes="41" chunkPositionInArray="[0,0]"/>
+                    </dmrpp:chunks>
+                </Float64>
+                <Float64 name="Latitude">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                    <Map name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                    <Map name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="12688" nBytes="28" chunkPositionInArray="[0,0]"/>
+                    </dmrpp:chunks>
+                </Float64>
+            </Group>
+            <Group name="SinGrid2">
+                <Dimension name="YDim" size="4"/>
+                <Dimension name="XDim" size="4"/>
+                <Float64 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_x_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>x coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoX</Value>
+                    </Attribute>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="12758" nBytes="43" chunkPositionInArray="[0]"/>
+                    </dmrpp:chunks>
+                </Float64>
+                <Float64 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_y_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>y coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoY</Value>
+                    </Attribute>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="12801" nBytes="40" chunkPositionInArray="[0]"/>
+                    </dmrpp:chunks>
+                </Float64>
+                <Byte name="eos5_cf_projection">
+                    <Attribute name="grid_mapping_name" type="String">
+                        <Value>sinusoidal</Value>
+                    </Attribute>
+                    <Attribute name="longitude_of_central_meridian" type="Float64">
+                        <Value>0.</Value>
+                    </Attribute>
+                    <Attribute name="earth_radius" type="Float64">
+                        <Value>6371007.1809999999</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisTypes" type="String">
+                        <Value>GeoX GeoY</Value>
+                    </Attribute>
+                    <dmrpp:chunks fillValue="0" byteOrder="LE">
+                        <dmrpp:chunk offset="12757" nBytes="1"/>
+                    </dmrpp:chunks>
+                </Byte>
+                <Float64 name="Longitude">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                    <Map name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                    <Map name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="12887" nBytes="139" chunkPositionInArray="[0,0]"/>
+                    </dmrpp:chunks>
+                </Float64>
+                <Float64 name="Latitude">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                    <Map name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                    <Map name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="12841" nBytes="46" chunkPositionInArray="[0,0]"/>
+                    </dmrpp:chunks>
+                </Float64>
+            </Group>
+        </Group>
+    </Group>
+</Dataset>
