@@ -178,6 +178,13 @@ cout<<"chunk_info_list["<<i<<"] "<< chunk_info_list[i] << endl;
 
     // Read the missing variable names to a string and tokenize the string to a vector of string.
     file_to_string(mvar_fname,missing_vname_str);
+    // The data-missing variable list must not be empty.
+    if (missing_vname_str.empty()) {
+        cout<<"  The text file that has the data-missing variable path is empty." <<endl; 
+        cout<<" Please check the file. "<<endl;
+        return 0;
+    }
+
     if (missing_vname_str[missing_vname_str.size()-1]=='\n')
         missing_vname_str = missing_vname_str.substr(0,missing_vname_str.size()-1);
 
