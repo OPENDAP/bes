@@ -178,6 +178,12 @@ cout<<"chunk_info_list["<<i<<"] "<< chunk_info_list[i] << endl;
 
     // Read the missing variable names to a string and tokenize the string to a vector of string.
     file_to_string(mvar_fname,missing_vname_str);
+    if (missing_vname_str[missing_vname_str.size()-1]=='\n')
+        missing_vname_str = missing_vname_str.substr(0,missing_vname_str.size()-1);
+
+#if 0
+cout<<"missing_vname_str: "<<missing_vname_str<<endl;
+#endif
 
     vector<string> missing_vname_list;
 
