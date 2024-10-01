@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d_msv.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.0">
+    <Group name="HDFEOS">
+        <Group name="GRIDS">
+            <Group name="GeoGrid">
+                <Dimension name="YDim" size="4"/>
+                <Dimension name="XDim" size="8"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/GeoGrid/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="6219" nBytes="22" chunkPositionInArray="[0]"/>
+                    </dmrpp:chunks>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/GeoGrid/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                    <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                        <dmrpp:chunkDimensionSizes>8</dmrpp:chunkDimensionSizes>
+                        <dmrpp:chunk offset="6241" nBytes="33" chunkPositionInArray="[0]"/>
+                    </dmrpp:chunks>
+                </Float32>
+            </Group>
+        </Group>
+    </Group>
+</Dataset>
