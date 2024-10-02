@@ -1,0 +1,15 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/dmrpp_module/tests testsuite_merge_dmrpp])
+
+m4_include([../../common/handler_tests_macros.m4])
+
+dnl - merge_dmrpp tests the merging of storage information of the variables that are stored in another dmrpp file to the current dmrpp file.
+# Group hierarchy dmrpp file that has missing data variables.
+AT_MERGE_DMRPP_TEST([merge_dmrpp/grid_1_2d_msv.h5.dmrpp],[merge_dmrpp/grid_1_2d.h5.dmrpp],[merge_dmrpp/grid_1_2d_msv.h5],[merge_dmrpp/grid_1_2d.h5.dmrpp.missvars])
+AT_MERGE_DMRPP_TEST([merge_dmrpp/grid_2_2d_sin_msv.h5.dmrpp],[merge_dmrpp/grid_2_2d_sin.h5.dmrpp],[merge_dmrpp/grid_2_2d_sin_msv.h5],[merge_dmrpp/grid_2_2d_sin.h5.dmrpp.missvars])
+# No-group hierarchy dmrpp file that has missing data variables.
+AT_MERGE_DMRPP_TEST([merge_dmrpp/grid_1_2d_msv_dap2.h5.dmrpp],[merge_dmrpp/grid_1_2d_dap2.h5.dmrpp],[merge_dmrpp/grid_1_2d_msv_dap2.h5],[merge_dmrpp/grid_1_2d_dap2.h5.dmrpp.missvars])
+# extra non-existed variable path 
+AT_MERGE_DMRPP_TEST([merge_dmrpp/grid_1_2d_msv_extra_missing.h5.dmrpp],[merge_dmrpp/grid_1_2d_extra_missing.h5.dmrpp],[merge_dmrpp/grid_1_2d_msv.h5],[merge_dmrpp/grid_1_2d_extra_missing.dmrpp.missvars])
+

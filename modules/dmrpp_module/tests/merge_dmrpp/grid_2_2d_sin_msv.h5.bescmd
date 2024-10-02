@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContainer name="c" space="catalog">/data/grid_2_2d_sin.h5</setContainer>
+    <define name="d">
+      <container name="c">
+            <dap4constraint>/HDFEOS/GRIDS/SinGrid1/eos5_cf_projection;/HDFEOS/GRIDS/SinGrid1/XDim;/HDFEOS/GRIDS/SinGrid1/YDim;/HDFEOS/GRIDS/SinGrid1/Latitude;/HDFEOS/GRIDS/SinGrid1/Longitude;/HDFEOS/GRIDS/SinGrid2/eos5_cf_projection;/HDFEOS/GRIDS/SinGrid2/XDim;/HDFEOS/GRIDS/SinGrid2/YDim;/HDFEOS/GRIDS/SinGrid2/Latitude;/HDFEOS/GRIDS/SinGrid2/Longitude</dap4constraint>
+        </container>
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4" />
+</request>
+

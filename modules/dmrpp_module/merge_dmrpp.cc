@@ -107,7 +107,7 @@ int main(int argc,char**argv)
 
     if(argc != 5) {
         cout<<"Please provide four arguments: "<< endl;
-        cout<<"  The first is the dmrpp file that contains the information of the variable of which ";
+        cout<<"  The first is the dmrpp file that contains the information of the variable of which";
         cout<<"  the data cannot be found in the original HDF5/4 file but can be found" 
             <<" from the HDF5 file pointed by this dmrpp file. "<<endl;
         cout<<"  The second is the dmrpp file for the original HDF5/4 file. "<<endl;
@@ -178,6 +178,19 @@ cout<<"chunk_info_list["<<i<<"] "<< chunk_info_list[i] << endl;
 
     // Read the missing variable names to a string and tokenize the string to a vector of string.
     file_to_string(mvar_fname,missing_vname_str);
+    // The data-missing variable list must not be empty.
+    if (missing_vname_str.empty()) {
+        cout<<"  The text file that has the data-missing variable path is empty." <<endl; 
+        cout<<" Please check the file. "<<endl;
+        return 0;
+    }
+
+    if (missing_vname_str[missing_vname_str.size()-1]=='\n')
+        missing_vname_str = missing_vname_str.substr(0,missing_vname_str.size()-1);
+
+#if 0
+cout<<"missing_vname_str: "<<missing_vname_str<<endl;
+#endif
 
     vector<string> missing_vname_list;
 

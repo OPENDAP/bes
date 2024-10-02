@@ -29,6 +29,8 @@ AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_simple_scalar_vlen_str
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_string.h5.dmrpp])
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_uint64.h5.dmrpp])
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_scalar_cont.h5.dmrpp])
+# Contains missingdata xml attribute
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/t_cf_1dllzs.h5.dmrpp])
 # Compound group 
 AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_group_simple.h5.dmrpp])
 # netCDF-4 group 
