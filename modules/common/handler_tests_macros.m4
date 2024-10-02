@@ -589,16 +589,17 @@ m4_define([AT_CHECK_DMRPP_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.missvars.baseline
+    dap2_form=$2
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
             AT_CHECK([ls >tmp])
-            AT_CHECK([$abs_builddir/../check_dmrpp $input tmp], [], [stdout])
+            AT_CHECK([$abs_builddir/../check_dmrpp $input tmp $dap2_form], [], [stdout])
             AT_CHECK([mv tmp $baseline.tmp])
         ],
         [
             AT_CHECK([ls >tmp])
-            AT_CHECK([$abs_builddir/../check_dmrpp $input tmp], [], [stdout])
+            AT_CHECK([$abs_builddir/../check_dmrpp $input tmp $dap2_form], [], [stdout])
             AT_CHECK([diff -b -B $baseline tmp])
         ])
 
