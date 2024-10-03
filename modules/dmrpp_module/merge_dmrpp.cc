@@ -108,7 +108,7 @@ int main(int argc,char**argv)
     if(argc != 5) {
         cout<<"Please provide four arguments: "<< endl;
         cout<<"  The first is the dmrpp file that contains the information of the variable of which";
-        cout<<"  the data cannot be found in the original HDF5/4 file but can be found" 
+        cout<<" the data cannot be found in the original HDF5/4 file but can be found" 
             <<" from the HDF5 file pointed by this dmrpp file. "<<endl;
         cout<<"  The second is the dmrpp file for the original HDF5/4 file. "<<endl;
         cout<<"  The third one is the href to HDF5/HDF4 file of which the missing data is stored. "<<endl;

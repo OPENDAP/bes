@@ -35,9 +35,23 @@ bool obtain_grp_info(const string &fname, vector<string> &grp_names, vector<unsi
 int main (int argc, char** argv)
 {
     // Provide the dmrpp file name and the file name to store the variables that miss values
-    if(argc !=3) {
-        cout<<"Please provide the dmrpp file name to be checked and the output name."<<endl;
+    if (argc <3 || argc >4) {
+
+        cout<<"Provide the dmrpp file name to be checked and the output file name that includes the missing data variables."<<endl;
+        cout<<"If you need to use the DAP2 constraint delimiter for the missing data variables, add -dap2 as the last argument."<<endl; 
         return -1;
+    }
+
+    bool dap2_output = false;
+    if (argc == 4) {
+        string dap2_str(argv[3]);
+        if (dap2_str =="-dap2")
+            dap2_output = true;
+        else { 
+            cout<<"To use the DAP2 constraint delimiter for the missing data variables, the last argument must be -dap2."<<endl;
+            cout<<"The program is terminated. "<<endl;
+            return -1;
+        }
     }
 
     string fname(argv[1]);
@@ -194,10 +208,10 @@ int main (int argc, char** argv)
                 // get_dmrpp still uses the DAP2 constraint. To keep it compatible with get_dmrpp for the non-group case,
                 // I still keep comma.
                 if (i != last_missing_chunk_index) {
-                    if (has_grps) 
-                        dmrpp_ofstream<<var_str <<";";
-                    else
+                    if (dap2_output) 
                         dmrpp_ofstream<<var_str <<",";
+                    else 
+                        dmrpp_ofstream<<var_str <<";";
                 }
                 else  
                     dmrpp_ofstream<<var_str;

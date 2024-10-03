@@ -9,7 +9,7 @@
         </Attribute>
         <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>8</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="3884" nBytes="33" chunkPositionInArray="[0]" href="merge_dmrpp/grid_1_2d_msv_dap2.h5" />
+            <dmrpp:chunk offset="3884" nBytes="33" chunkPositionInArray="[0]" href="merge_dmrpp/grid_1_2d_msv_cfdap2.h5" />
         </dmrpp:chunks>
     </Float32>
     <Float32 name="lat">
@@ -19,7 +19,7 @@
         </Attribute>
         <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="6013" nBytes="22" chunkPositionInArray="[0]" href="merge_dmrpp/grid_1_2d_msv_dap2.h5" />
+            <dmrpp:chunk offset="6013" nBytes="22" chunkPositionInArray="[0]" href="merge_dmrpp/grid_1_2d_msv_cfdap2.h5" />
         </dmrpp:chunks>
     </Float32>
     <Float32 name="temperature">
