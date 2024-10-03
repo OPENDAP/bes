@@ -60,6 +60,10 @@ Write the DMR++ for INPUT_DATA_FILE (a hdf5/netcdf-4 file) to stdout
     If option 'p' is not used; missing variable chunk href will contain
     OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL. If option 'p' is selected; missing
     variable chunk href will contain the argument provided to that option
+-m: This option is similar to the -M option except that this option uses the DAP4
+    constraint and it applies to a dmrpp file that has either group or non-group
+    hierarchy. So one should use this option to create and merge missing data variables
+    if possible. For other information, please check the -M option.
 -p: The value to use for each missing variable's dmrpp:chunk/@dmrpp:href attribute.
     If option '-p' is not used; the missing variable dmrpp:chunk/@dmrpp:href
     attributes will contain the template string OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL
