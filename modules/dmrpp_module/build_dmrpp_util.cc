@@ -1634,14 +1634,15 @@ hid_t get_h5_dataset_id(hid_t file, BaseType *btp, const unordered_set<string> &
             FQN = btp->FQN();
 
         VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
-        // Here we have a case to handle the netCDF-4 coming from the fileout netCDF-4 module.
-        // The fullnamepath is kept to remember the original HDF5 file, but the new
-        // netCDF-4/HDF5, this is no longer the case. The CF option makes everything flattened.
-        // So if the H5Dopen2 fails with FQN, we should directly open the variable without any path.
+        // Here we have a case to handle the netCDF-4 file coming from the fileout netCDF-4 module.
+        // The fullnamepath is kept to remember the original HDF5 file, but for the netCDF-4 file generated
+        // from the fileout netCDF-4 module, this is no longer the case. The CF option makes everything flattened.
+        // So if the H5Dopen2 fails with the name obtained from the fullnamepath attribute, 
+        // we should directly open the variable with the name.
+
         H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
         dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
         if (dataset < 0) {
-
             // We have one more try with the variable name before throwing an error.
             dataset = H5Dopen2(file,btp->name().c_str(),H5P_DEFAULT);           
             if (dataset <0) 
