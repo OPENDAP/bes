@@ -1569,7 +1569,7 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
 #if 0
     //uint64_t num_elements = dap_array->get_size(false);
 #endif 
-    uint64_t num_elements = H5Sget_simple_extent_npoints(dspace);
+    hssize_t num_elements = H5Sget_simple_extent_npoints(dspace);
     if (num_elements < 0) {
         H5Sclose(dspace);
         H5Tclose(h5_type_id);
@@ -1634,9 +1634,18 @@ hid_t get_h5_dataset_id(hid_t file, BaseType *btp, const unordered_set<string> &
             FQN = btp->FQN();
 
         VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
+        // Here we have a case to handle the netCDF-4 coming from the fileout netCDF-4 module.
+        // The fullnamepath is kept to remember the original HDF5 file, but the new
+        // netCDF-4/HDF5, this is no longer the case. The CF option makes everything flattened.
+        // So if the H5Dopen2 fails with FQN, we should directly open the variable without any path.
+        H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
         dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
         if (dataset < 0) {
-            throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+
+            // We have one more try with the variable name before throwing an error.
+            dataset = H5Dopen2(file,btp->name().c_str(),H5P_DEFAULT);           
+            if (dataset <0) 
+                throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
         }
     }
     else {
