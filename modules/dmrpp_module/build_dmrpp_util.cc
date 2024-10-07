@@ -1545,6 +1545,9 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
 
     vector<hsize_t>count(ndims,0);
     if(H5Sget_simple_extent_dims(dspace, count.data(), nullptr) < 0){
+        H5Sclose(dspace);
+        H5Tclose(h5_type_id);
+        H5Dclose(dataset);
         throw BESInternalError("Failed to get hdf5 count for variable: " + btp->FQN(), __FILE__, __LINE__);
     }
 
@@ -1560,7 +1563,20 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     for(int i=0; i<ndims; i++)
         offset.emplace_back(0);
 
-    uint64_t num_elements = dap_array->get_size(false);\
+
+    // The following line causes an issue on a 1-element VLSA. The num_elements becomes 0.
+    // See https://bugs.earthdata.nasa.gov/browse/HYRAX-1538
+#if 0
+    //uint64_t num_elements = dap_array->get_size(false);
+#endif 
+    uint64_t num_elements = H5Sget_simple_extent_npoints(dspace);
+    if (num_elements < 0) {
+        H5Sclose(dspace);
+        H5Tclose(h5_type_id);
+        H5Dclose(dataset);
+        throw BESInternalError("Failed to obtain the number of elements for the variable : " + btp->FQN(), __FILE__, __LINE__);
+    }
+
     VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
 
     vector<string> vls_values(num_elements,"");
