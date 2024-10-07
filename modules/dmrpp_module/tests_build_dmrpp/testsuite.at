@@ -130,3 +130,7 @@ AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_compact.h5])
 AT_GET_DMRPP_3_20([VariableLengthStringScalar - VLSS], [Scalar_contiguous_vlstr.h5],[vlss.baseline] )
 AT_GET_DMRPP_3_20([VariableLengthStringArray - VLSA], [t_vl_string_1d.h5],[vlsa.baseline] )
 
+################################################################################
+# Test an HDF5 file that has fullnamepath attribute 
+#
+AT_GET_DMRPP_3_20([Variable with fullnamepath attribute], [nc4_group_atomic_fonc.nc4], [nc4_group_atomic_fonc.nc4.baseline] )

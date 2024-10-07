@@ -1545,6 +1545,9 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
 
     vector<hsize_t>count(ndims,0);
     if(H5Sget_simple_extent_dims(dspace, count.data(), nullptr) < 0){
+        H5Sclose(dspace);
+        H5Tclose(h5_type_id);
+        H5Dclose(dataset);
         throw BESInternalError("Failed to get hdf5 count for variable: " + btp->FQN(), __FILE__, __LINE__);
     }
 
@@ -1560,7 +1563,20 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     for(int i=0; i<ndims; i++)
         offset.emplace_back(0);
 
-    uint64_t num_elements = dap_array->get_size(false);\
+
+    // The following line causes an issue on a 1-element VLSA. The num_elements becomes 0.
+    // See https://bugs.earthdata.nasa.gov/browse/HYRAX-1538
+#if 0
+    //uint64_t num_elements = dap_array->get_size(false);
+#endif 
+    hssize_t num_elements = H5Sget_simple_extent_npoints(dspace);
+    if (num_elements < 0) {
+        H5Sclose(dspace);
+        H5Tclose(h5_type_id);
+        H5Dclose(dataset);
+        throw BESInternalError("Failed to obtain the number of elements for the variable : " + btp->FQN(), __FILE__, __LINE__);
+    }
+
     VERBOSE(cerr << prolog << "num_elements: " << num_elements << "\n");
 
     vector<string> vls_values(num_elements,"");
@@ -1618,9 +1634,19 @@ hid_t get_h5_dataset_id(hid_t file, BaseType *btp, const unordered_set<string> &
             FQN = btp->FQN();
 
         VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
+        // Here we have a case to handle the netCDF-4 file coming from the fileout netCDF-4 module.
+        // The fullnamepath is kept to remember the original HDF5 file, but for the netCDF-4 file generated
+        // from the fileout netCDF-4 module, this is no longer the case. The CF option makes everything flattened.
+        // So if the H5Dopen2 fails with the name obtained from the fullnamepath attribute, 
+        // we should directly open the variable with the name.
+
+        H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
         dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
         if (dataset < 0) {
-            throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+            // We have one more try with the variable name before throwing an error.
+            dataset = H5Dopen2(file,btp->name().c_str(),H5P_DEFAULT);           
+            if (dataset <0) 
+                throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
         }
     }
     else {
