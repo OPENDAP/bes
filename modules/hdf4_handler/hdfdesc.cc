@@ -5028,7 +5028,7 @@ void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Gr
     }
 
     // Vdata class
-    char vdata_class[VSNAMELENMAX];
+    char vdata_class[VSNAMELENMAX+1];
 
     if (VSgetclass (vdata_id, vdata_class) == FAIL) {
         VSdetach (vdata_id);
