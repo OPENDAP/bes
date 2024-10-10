@@ -166,6 +166,10 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
  
         f->Remove_Unused_FakeDimVars();
         f->Rename_NC4_NonCoordVars();
+#if 0
+        if (f->HaveUnlimitedDim())
+            f->Update_NC4_PureDimSize();
+#endif
     }
     catch (HDF5CF::Exception &e){
         throw InternalErr(e.what());
@@ -363,6 +367,9 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
             f->Add_Path_Coord_Attr();
 
         f->Update_Bounds_Attr();
+
+        if (f->HaveUnlimitedDim()) 
+            f->Update_NC4_PureDimSize();
 
     }
     catch (HDF5CF::Exception &e){

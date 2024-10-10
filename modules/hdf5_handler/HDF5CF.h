@@ -923,6 +923,8 @@ public:
     /// Update the Bounds attribute to follow the CF conventions
     void Update_Bounds_Attr();
    
+    /// Update the netCDF-4 pure dimension size when the pure dimension is an unlimited dimension
+    void Update_NC4_PureDimSize();
 
     /// Obtain ignored info. flag
     bool Get_IgnoredInfo_Flag() override
