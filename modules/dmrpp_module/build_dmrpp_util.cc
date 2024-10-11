@@ -1602,7 +1602,7 @@ bool process_variable_length_string_array(const hid_t dataset, BaseType *btp){
     return true;
 }
 
-bool check_enable_cf_fake_cv(BaseType *btp, string FQN) {
+bool check_enable_cf_fake_cv(BaseType *btp, const string& FQN) {
 
     bool ret_value = false;
     if (FQN.find_last_of('/')==0) {
@@ -1615,7 +1615,7 @@ bool check_enable_cf_fake_cv(BaseType *btp, string FQN) {
             // Must be 1-D floating data.
             if (btp->var()->type() == dods_float32_c && da->dimensions() == 1) {
                 // Must not have attributes and the dimension name is the same as the variable name(FQN).
-                D4Attributes *d4_attrs = btp->attributes();
+                const D4Attributes *d4_attrs = btp->attributes();
                 if (d4_attrs) { 
                     if (d4_attrs->empty()) {
                         // Now we can check dimension name.
