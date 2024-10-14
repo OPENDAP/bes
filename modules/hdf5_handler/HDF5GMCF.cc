@@ -6941,6 +6941,29 @@ void GMFile::Update_Bounds_Attr() {
         }
     }
 
+}
+
+void GMFile::Update_NC4_PureDimSize() {
+
+    for (auto &cvar:this->cvars) {
+        if (cvar->getRank() == 1) {
+            Dimension *dim = cvar->dims[0];
+            if (dim->HaveUnlimitedDim()==true && dim->getSize()==0) {
+                bool correct_dim_size = false;
+                for (const auto &var:this->vars) {
+                    for (auto & vdim:var->dims) {
+                        if (vdim->unlimited_dim && vdim->newname == dim->newname) {
+                            dim->size = vdim->size;
+                            correct_dim_size = true;
+                            break;
+                        }
+                    }
+                    if (correct_dim_size)
+                        break;
+                }
+            }
+        }
+    }
 
 }
 
