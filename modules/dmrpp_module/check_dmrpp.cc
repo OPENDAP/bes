@@ -10,9 +10,12 @@ bool find_var_helper(const string &str, const vector<string> &var_type_list,
 bool find_var(const string &str, const vector<string> &var_type_list,
               vector<string> &var_type, vector<string> &var_name,
               vector<unsigned int> &var_lines, unsigned int line_num);
-
 bool find_endvar(const string &str,const string &vtype);
-bool find_chunk(const string &str);
+
+bool find_raw_data_location_info(const string &str);
+bool find_fillValue_in_chunks(const string &str);
+bool find_data_offset(const string &str);
+bool find_embedded_data_info(const string &str);
 
 string obtain_var_grp_paths(const vector<unsigned int> &gs_line_nums,
                             const vector<unsigned int> &ge_line_nums,
@@ -32,9 +35,23 @@ bool obtain_grp_info(const string &fname, vector<string> &grp_names, vector<unsi
 int main (int argc, char** argv)
 {
     // Provide the dmrpp file name and the file name to store the variables that miss values
-    if(argc !=3) {
-        cout<<"Please provide the dmrpp file name to be checked and the output name."<<endl;
+    if (argc <3 || argc >4) {
+
+        cout<<"Provide the dmrpp file name to be checked and the output file name that includes the missing data variables."<<endl;
+        cout<<"If you need to use the DAP2 constraint delimiter for the missing data variables, add -dap2 as the last argument."<<endl; 
         return -1;
+    }
+
+    bool dap2_output = false;
+    if (argc == 4) {
+        string dap2_str(argv[3]);
+        if (dap2_str =="-dap2")
+            dap2_output = true;
+        else { 
+            cout<<"To use the DAP2 constraint delimiter for the missing data variables, the last argument must be -dap2."<<endl;
+            cout<<"The program is terminated. "<<endl;
+            return -1;
+        }
     }
 
     string fname(argv[1]);
@@ -57,24 +74,25 @@ int main (int argc, char** argv)
     var_type_list.push_back("UInt64");
     var_type_list.push_back("UInt8");
     var_type_list.push_back("Char");
+    var_type_list.push_back("Structure");
     
     // var_type and var_name should be var data type and var name in the dmrpp file
     vector<string> var_type;
     vector<string> var_name;
     vector<unsigned int> var_lines;
 
-    //The vector to check if chunk block inside this var block(<var ..> </var>) 
-    vector<bool> chunk_exist;
+    //The vector to check if there is raw data info inside this var block(<var ..> </var>) 
+    vector<bool> data_exist;
 
     // The following flags are used to check the variables that miss the values.
     // In a dmrpp file, an example of variable block may start from
     // <Float32 name="temperature"> and end with </Float32>
     // fin_vb_start: flag to find the start of the var block
     // fin_vb_end: flag  to find the end of the var block
-    // chunk_found: flag to find is chunking information is inside the var block
+    // data_found: flag to find if raw data information is inside the var block
     bool fin_vb_start = false;
     bool fin_vb_end = false;
-    bool chunk_found = false;
+    bool data_found = false;
 
     unsigned int line_num = 0;
 
@@ -94,25 +112,28 @@ int main (int argc, char** argv)
             if (false == fin_vb_end)
                 fin_vb_end = find_endvar(dmrpp_line, var_type[var_type.size()-1]);
 
-            // If find the end of var block, check if the chunk is already found in the var block.
+            // If find the end of var block, check if the raw data info is already found in the var block.
             if (true == fin_vb_end) {
 
-                if (false == chunk_found)
-                    chunk_exist.push_back(false);
+                if (false == data_found)
+                    data_exist.push_back(false);
 
                 // If we find the end of this var block, 
                 // reset all bools for the next variable.
                 fin_vb_start = false;
                 fin_vb_end = false;
-                chunk_found = false;
+                data_found = false;
             }
-            else {// Check if having chunks within this var block.
+            else {// Check if having raw data info. within this var block.
 
-                if (false == chunk_found) {
-                    chunk_found = find_chunk(dmrpp_line);
-                    // When finding the chunk info, update the chunk_exist vector.
-                    if (true == chunk_found)
-                        chunk_exist.push_back(true);
+                if (false == data_found) {
+
+                    data_found = find_raw_data_location_info(dmrpp_line);
+
+                    // When finding the raw data location info in this dmrpp file, update the data_exist vector.
+                    if (true == data_found)
+                        data_exist.push_back(true);
+                        
                 }
             }
         }
@@ -122,9 +143,9 @@ int main (int argc, char** argv)
         line_num++;
     }
 
-    //Sanity check to make sure the chunk_exist vector is the same as var_type vector.
+    //Sanity check to make sure the data_exist vector is the same as var_type vector.
     //If not, something is wrong with this dmrpp file.
-    if (chunk_exist.size() != var_type.size()) {
+    if (data_exist.size() != var_type.size()) {
         cout<<"Number of chunk check is not consistent with the number of var check."<<endl;
         cout<< "The dmrpp file is "<<fname<<endl;
         return -1;
@@ -139,7 +160,7 @@ int main (int argc, char** argv)
         auto ritr = var_type.rbegin();
         size_t i = var_type.size() - 1;
         while (ritr != var_type.rend()) {
-            if (!chunk_exist[i]) {
+            if (!data_exist[i]) {
                 has_missing_info = true;
                 last_missing_chunk_index = i;
                 break;
@@ -166,11 +187,13 @@ int main (int argc, char** argv)
         // fname2 is the output file that contains the missing variable information.
         ofstream dmrpp_ofstream;
         string fname2(argv[2]);
-        dmrpp_ofstream.open(fname2.c_str(),ofstream::out);
+        dmrpp_ofstream.open(fname2.c_str(),ofstream::out | ofstream::trunc);
 
+        // We need to loop through every variable. Note: we just another index to obtain the corresponding
+        // variable lines and variable names.
         size_t i = 0;
         for (auto vt:var_type) {
-            if(!chunk_exist[i]) {
+            if(!data_exist[i]) {
                 string var_str;
                 if (has_grps) {
                     // We need to obtain the missing variable FQN.
@@ -185,10 +208,10 @@ int main (int argc, char** argv)
                 // get_dmrpp still uses the DAP2 constraint. To keep it compatible with get_dmrpp for the non-group case,
                 // I still keep comma.
                 if (i != last_missing_chunk_index) {
-                    if (has_grps) 
-                        dmrpp_ofstream<<var_str <<";";
-                    else
+                    if (dap2_output) 
                         dmrpp_ofstream<<var_str <<",";
+                    else 
+                        dmrpp_ofstream<<var_str <<";";
                 }
                 else  
                     dmrpp_ofstream<<var_str;
@@ -196,7 +219,6 @@ int main (int argc, char** argv)
             i++;
         }
     }
-
     return 0;
 
 }
@@ -277,21 +299,86 @@ bool find_var_helper(const string &str, const vector<string> &var_type_list,
     return ret;    
 }
 
-// Find whether there are chunks inside the var block.
-// Any chunk info(chunk or contiguous) should include
-// "<dmrpp:chunk " and "offset".
-bool find_chunk(const string &str) {
+// Find if this var block contains the raw data info.
+bool find_raw_data_location_info(const string &dmrpp_line) {
 
     bool ret = false;
-    string chunk_mark = "<dmrpp:chunk ";
-    string offset_mark = "offset";
-    size_t chunk_mark_pos = str.find(chunk_mark);
-    if (chunk_mark_pos != string::npos) {
-        if (string::npos != str.find(offset_mark, chunk_mark_pos+chunk_mark.size()))
+
+    // Check if this var contains data storage key word fillValue.
+    ret  = find_fillValue_in_chunks(dmrpp_line);
+
+    // Check if this var contains the key word chunk or block and offset.
+    if (ret == false)
+        ret  = find_data_offset(dmrpp_line);
+
+    // Also need to find if having a key word such as dmrpp:missingdata.
+    // These key words indicate the data is stored inside the dmrpp file.
+    if (false == ret) 
+        ret = find_embedded_data_info(dmrpp_line);
+
+    return ret;
+
+}
+
+// Find if this var block contains dmrpp:chunks and fillValue 
+bool find_fillValue_in_chunks(const string &str) {
+
+    bool ret = false;
+    string fvalue_mark = "fillValue";
+    string dmrpp_chunks_mark = "<dmrpp:chunks ";
+
+    size_t dmrpp_chunks_mark_pos = str.find(dmrpp_chunks_mark);
+    if (dmrpp_chunks_mark_pos != string::npos) {
+        if (string::npos != str.find(fvalue_mark, dmrpp_chunks_mark_pos+dmrpp_chunks_mark.size())) 
             ret = true;
     }
     return ret;
+
 }
+
+// Find whether there are chunks or blocks inside the var block.
+// Any chunk info(chunk or contiguous) should include
+// "<dmrpp:chunk " / "<dmrpp:block " and "offset".
+bool find_data_offset(const string &str) {
+
+    bool ret = false;
+    string offset_mark = "offset";
+    vector<string> data_storage_mark_list = {"<dmrpp:chunk ","<dmrpp:block "};
+
+    for (const auto & data_storage_mark:data_storage_mark_list) {
+
+        size_t data_storage_mark_pos = str.find(data_storage_mark);
+        if (data_storage_mark_pos != string::npos) {
+            if (string::npos != str.find(offset_mark, data_storage_mark_pos+data_storage_mark.size())) {
+                ret = true;
+                break;
+            }
+        }
+    }
+    return ret;
+}
+
+// Find whether there are embedded_data_info in this var block.
+// Currently the embedded_data_info includes <dmrpp:compact>, <dmrpp:missingdata>, <dmrpp:vlsa>
+// and <dmrpp:specialstructuredata>.
+bool find_embedded_data_info(const string &str) {
+
+    bool ret = false;
+    vector<string> embedded_data_block_list = {"<dmrpp:compact>",
+                                               "<dmrpp:missingdata>",
+                                               "<dmrpp:vlsa>",
+                                               "<dmrpp:specialstructuredata>"};
+
+    for (const auto & embedded_data_block:embedded_data_block_list) {
+        size_t embedded_data_block_pos = str.find(embedded_data_block);
+        if (embedded_data_block_pos != string::npos) {
+            ret = true;
+            break;
+        }
+    }
+    return ret;
+}
+
 
 // Find the end of var block such as </Int32>
 // There may be space before </Int32>
@@ -466,6 +553,7 @@ string obtain_var_grp_paths(const vector<unsigned int> &gs_line_nums,
                 end_grp_index++;
             }
         }
+        // end group </Group> will always be at last.
         if (end_grp_index < (max_grp_index+1)) {
                 gse_line_nums.push_back(ge_line_nums[end_grp_index]);
                 is_group_start.push_back(false);
@@ -504,6 +592,7 @@ cerr<<"gse_line_index: "<<gse_line_index <<endl;
         int temp_index = gse_line_index;
 
         // temp_rem_grp_index indicates the groups we need to remove for this var.
+        // The removed groups are groups that don't contain this variable.
         unsigned int temp_rem_grp_index = 0;
 
         // We have to search backward.
@@ -562,7 +651,7 @@ cerr<<"ret_value is "<<ret_value <<endl;
 
 }
 
-// Obtain the start_end_group line index just before the the variable line.
+// Obtain the start_end_group line index just before the variable line.
 // The returned value is -1 if there is no group before this var.
 int obtain_gse_line_index(const vector<unsigned int> &gse_line_nums, unsigned int var_line) {
 

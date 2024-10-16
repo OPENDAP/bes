@@ -595,8 +595,48 @@ bool check_aquarius(hid_t s_root_id,int & s_level) {
             }
         }
     }
-    else if (0 == has_aquarius_attr1) 
-        ;// no op
+    else if (0 == has_aquarius_attr1) {
+        htri_t has_aquarius_attr1_2 = H5Aexists(s_root_id,Aquarius_ATTR1_NAME2);
+        if (has_aquarius_attr1_2 >0) {
+            string attr1_value = "";
+            obtain_gm_attr_value(s_root_id, Aquarius_ATTR1_NAME2, attr1_value);
+            if (0 == attr1_value.compare(Aquarius_ATTR1_VALUE)) {
+                htri_t has_aquarius_attr2 = -1;
+                has_aquarius_attr2 = H5Aexists(s_root_id,Aquarius_ATTR2_NAME2);
+                if (has_aquarius_attr2 >0) {
+                    string attr2_value ="";
+                    obtain_gm_attr_value(s_root_id,Aquarius_ATTR2_NAME2, attr2_value);
+    
+                    // The "Title" of Aquarius should include "Level-3".
+                    if (attr2_value.find(Aquarius_ATTR2_PVALUE)!=string::npos){
+                        // Set it to level 3
+                        s_level = 3;
+                        ret_flag = true; 
+                    }
+                }
+                // else if long_name or short_name don't exist, not what we supported.
+                else if (0 == has_aquarius_attr2)
+                         ; // no op
+                else {
+                    string msg = "Fail to determine if the HDF5 attribute  ";
+                    msg += string(Aquarius_ATTR2_NAME2);
+                    msg +=" exists ";
+                    H5Gclose(s_root_id);
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
+            }
+    
+        }
+        else if (0 == has_aquarius_attr1_2)
+                     ; // no op
+        else {
+            string msg = "Fail to determine if the HDF5 attribute  ";
+            msg += string(Aquarius_ATTR1_NAME2);
+            msg +=" exists ";
+            H5Gclose(s_root_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+    }
     else {
         string msg = "Fail to determine if the HDF5 attribute  ";
         msg += string(Aquarius_ATTR1_NAME);

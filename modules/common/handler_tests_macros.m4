@@ -582,6 +582,77 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA], [dnl
 
     AT_CLEANUP
 ])
+
+m4_define([AT_CHECK_DMRPP_TEST], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([check_dmrpp])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.missvars.baseline
+    dap2_form=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+            AT_CHECK([ls >tmp])
+            AT_CHECK([$abs_builddir/../check_dmrpp $input tmp $dap2_form], [], [stdout])
+            AT_CHECK([mv tmp $baseline.tmp])
+        ],
+        [
+            AT_CHECK([ls >tmp])
+            AT_CHECK([$abs_builddir/../check_dmrpp $input tmp $dap2_form], [], [stdout])
+            AT_CHECK([diff -b -B $baseline tmp])
+        ])
+
+    AT_CLEANUP
+])
+
+dnl this macro tests for those dmrpp files that are supposed not to have any missing variables.
+dnl If any missing variable comes up, the test will fail.
+dnl We deliberately add one test that will generate missing data variables.
+dnl That test will fail expectedly. If it gets passed, something is wrong.
+m4_define([AT_CHECK_DMRPP_TEST_NO_MISSING_VARS], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([check_dmrpp])
+
+    input=$abs_srcdir/$1
+    AT_XFAIL_IF([test z$2 = zxfail])
+    AT_CHECK([cp -f $input tmp],[],[stdout])
+    AT_CHECK([chmod u+w tmp],[],[stdout])
+    AT_CHECK([$abs_builddir/../check_dmrpp $input tmp], [], [stdout])
+    AT_CHECK([diff -b -B $input tmp])
+
+    AT_CLEANUP
+])
+
+m4_define([AT_MERGE_DMRPP_TEST], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([merge_dmrpp])
+
+    mvs_dmrpp=$abs_srcdir/$1
+    orig_dmrpp=$abs_srcdir/$2
+    file_path=$3
+    mvs_list=$abs_srcdir/$4
+    
+    baseline=$abs_srcdir/$2.mrg.baseline
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+            AT_CHECK([cp -f $orig_dmrpp tmp],[],[stdout])
+            AT_CHECK([chmod u+w tmp],[],[stdout])
+            AT_CHECK([$abs_builddir/../merge_dmrpp $mvs_dmrpp tmp $file_path $mvs_list], [], [stdout])
+            AT_CHECK([mv tmp $baseline.tmp])
+        ],
+        [
+            AT_CHECK([cp -f $orig_dmrpp tmp],[],[stdout])
+            AT_CHECK([chmod u+w tmp],[],[stdout])
+            AT_CHECK([$abs_builddir/../merge_dmrpp $mvs_dmrpp tmp $file_path $mvs_list], [], [stdout])
+            AT_CHECK([diff -b -B $baseline tmp])
+        ])
+
+    AT_CLEANUP
+])
+
+
 dnl Given a filename, remove any date-time string of the form "yyyy-mm-dd hh:mm:ss"
 dnl in that file and put "removed date-time" in its place. This hack keeps the baselines
 dnl more or less true to form without the obvious issue of baselines being broken 

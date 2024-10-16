@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_group_atomic_fonc.nc4" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" removed dmrpp:version>
+    <Dimension name="g1_dim2" size="3"/>
+    <Dimension name="dim1" size="2"/>
+    <Int32 name="g1_dim2">
+        <Dim name="/g1_dim2"/>
+        <Attribute name="origname" type="String">
+            <Value>dim2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/g1/dim2</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="shuffle deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>3</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="16092" nBytes="13" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="dim1">
+        <Dim name="/dim1"/>
+        <Attribute name="origname" type="String">
+            <Value>dim1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/dim1</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="shuffle deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="16080" nBytes="12" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Float32 name="g1_d2">
+        <Dim name="/dim1"/>
+        <Dim name="/g1_dim2"/>
+        <Attribute name="origname" type="String">
+            <Value>d2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/g1/d2</Value>
+        </Attribute>
+        <Map name="/dim1"/>
+        <Map name="/g1_dim2"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 3</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="16105" nBytes="27" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="d1">
+        <Dim name="/dim1"/>
+        <Attribute name="origname" type="String">
+            <Value>d1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d1</Value>
+        </Attribute>
+        <Map name="/dim1"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="16132" nBytes="16" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Attribute name="history" type="String">
+        <Value>2024-10-07 15:01:02 Hyrax nc4_group_atomic.h5
+</Value>
+    </Attribute>
+    <Attribute name="history_json" type="String">
+        <Value>[{&quot;$schema&quot;:&quot;https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json&quot;,&quot;date_time&quot;:&quot;2024-10-07 15:01:02&quot;,&quot;program&quot;:&quot;hyrax&quot;,&quot;version&quot;:&quot;1.16.3&quot;,&quot;parameters&quot;:[{&quot;request_url&quot;:&quot;nc4_group_atomic.h5&quot;}]}]</Value>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>removed date string</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=< path_removed >
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.module.cmd=< library_path_removed >
+BES.module.dap=< library_path_removed >
+BES.module.dmrpp=< library_path_removed >
+BES.module.fonc=< library_path_removed >
+BES.module.h5=< library_path_removed >
+BES.module.nc=< library_path_removed >
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="Removed(invocation)">
+        </Attribute>
+    </Attribute>
+</Dataset>

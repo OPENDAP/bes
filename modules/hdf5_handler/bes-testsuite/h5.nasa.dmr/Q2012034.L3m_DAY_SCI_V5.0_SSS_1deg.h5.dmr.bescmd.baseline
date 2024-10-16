@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q2012034.L3m_DAY_SCI_V5.0_SSS_1deg.h5">
+    <Dimension name="lat" size="180"/>
+    <Dimension name="lon" size="360"/>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="l3m_data">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="Scaling" type="String">
+            <Value>linear</Value>
+        </Attribute>
+        <Attribute name="Scaling_Equation" type="String">
+            <Value>(Slope*l3m_data) + Intercept = Parameter value</Value>
+        </Attribute>
+        <Attribute name="Slope" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="Intercept" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-32767.00000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>l3m_data</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/l3m_data</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>14.71156025</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>38.76707840</Value>
+        </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Float32>
+    <Byte name="palette">
+        <Dim size="3"/>
+        <Dim size="256"/>
+        <Attribute name="origname" type="String">
+            <Value>palette</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/palette</Value>
+        </Attribute>
+    </Byte>
+    <Attribute name="product_name" type="String">
+        <Value>Q2012034.L3m_DAY_SCI_V5.0_SSS_1deg</Value>
+    </Attribute>
+    <Attribute name="instrument" type="String">
+        <Value>Aquarius</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>Aquarius Level-3 Standard Mapped Image</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>Ocean Biology Processing Group (NASA/GSFC/OBPG)</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>SAC-D Aquarius</Value>
+    </Attribute>
+    <Attribute name="temporal_range" type="String">
+        <Value>DAY</Value>
+    </Attribute>
+    <Attribute name="processing_version" type="String">
+        <Value>V5.0</Value>
+    </Attribute>
+    <Attribute name="date_created" type="String">
+        <Value>2017-10-21T04:47:10.000Z</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>smigen par=Q2012034.L3m_DAY_SCI_V5.0_SSS_1deg.param</Value>
+    </Attribute>
+    <Attribute name="l2_flag_names" type="String">
+        <Value>POINTING,NAV,LANDRED,ICERED,REFL_1STOKESMOONRED,REFL_1STOKESGAL,TFTADIFFRED,RFI_REGION,SAOVERFLOW,COLDWATERRED,WINDRED,TBCONS</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>2012-02-03T00:35:10.881Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>2012-02-04T00:52:07.543Z</Value>
+    </Attribute>
+    <Attribute name="start_orbit_number" type="Int32">
+        <Value>3494</Value>
+    </Attribute>
+    <Attribute name="end_orbit_number" type="Int32">
+        <Value>3508</Value>
+    </Attribute>
+    <Attribute name="map_projection" type="String">
+        <Value>Equidistant Cylindrical</Value>
+    </Attribute>
+    <Attribute name="latitude_units" type="String">
+        <Value>degrees_north</Value>
+    </Attribute>
+    <Attribute name="longitude_units" type="String">
+        <Value>degrees_east</Value>
+    </Attribute>
+    <Attribute name="northernmost_latitude" type="Float32">
+        <Value>90.00000000</Value>
+    </Attribute>
+    <Attribute name="southernmost_latitude" type="Float32">
+        <Value>-90.00000000</Value>
+    </Attribute>
+    <Attribute name="westernmost_longitude" type="Float32">
+        <Value>-180.0000000</Value>
+    </Attribute>
+    <Attribute name="easternmost_longitude" type="Float32">
+        <Value>180.0000000</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_max" type="Float32">
+        <Value>90.00000000</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_min" type="Float32">
+        <Value>-90.00000000</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_max" type="Float32">
+        <Value>180.0000000</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_min" type="Float32">
+        <Value>-180.0000000</Value>
+    </Attribute>
+    <Attribute name="grid_mapping_name" type="String">
+        <Value>latitude_longitude</Value>
+    </Attribute>
+    <Attribute name="latitude_step" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="longitude_step" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="sw_point_latitude" type="Float32">
+        <Value>-89.50000000</Value>
+    </Attribute>
+    <Attribute name="sw_point_longitude" type="Float32">
+        <Value>-179.5000000</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_resolution" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_resolution" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>deg</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>deg</Value>
+    </Attribute>
+    <Attribute name="spatialResolution" type="String">
+        <Value>1.00 deg</Value>
+    </Attribute>
+    <Attribute name="data_bins" type="Int32">
+        <Value>10788</Value>
+    </Attribute>
+    <Attribute name="number_of_lines" type="Int32">
+        <Value>180</Value>
+    </Attribute>
+    <Attribute name="number_of_columns" type="Int32">
+        <Value>360</Value>
+    </Attribute>
+    <Attribute name="measure" type="String">
+        <Value>Mean</Value>
+    </Attribute>
+    <Attribute name="data_minimum" type="Float32">
+        <Value>14.71156025</Value>
+    </Attribute>
+    <Attribute name="data_maximum" type="Float32">
+        <Value>38.76707840</Value>
+    </Attribute>
+    <Attribute name="suggested_image_scaling_minimum" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="suggested_image_scaling_maximum" type="Float32">
+        <Value>70.00000000</Value>
+    </Attribute>
+    <Attribute name="suggested_image_scaling_type" type="String">
+        <Value>ATAN</Value>
+    </Attribute>
+    <Attribute name="suggested_image_scaling_applied" type="String">
+        <Value>No</Value>
+    </Attribute>
+    <Attribute name="_lastModified" type="String">
+        <Value>2017-10-21T04:47:10.000Z</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>NASA Goddard Space Flight Center, Ocean Ecology Laboratory, Ocean Biology Processing Group</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>NetCDF Climate and Forecast (CF) Metadata Convention</Value>
+    </Attribute>
+    <Attribute name="Metadata_Conventions" type="String">
+        <Value>Unidata Dataset Discovery v1.0</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>gov.nasa.gsfc.sci.oceandata</Value>
+    </Attribute>
+    <Attribute name="id" type="String">
+        <Value>Q2012034.L3b_DAY_SCI_V5.0.main/L3/Q2012034.L3b_DAY_SCI_V5.0.main</Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>http://science.nasa.gov/earth-science/earth-science-data/data-information-policy/</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>NASA/GSFC/OBPG</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>NASA/GSFC/OBPG</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>data@oceancolor.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>data@oceancolor.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="creator_url" type="String">
+        <Value>http://oceandata.sci.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>http://oceandata.sci.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="processing_level" type="String">
+        <Value>L3 Mapped</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>grid</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>SURFACE SALINITY, SALINITY, AQUARIUS, Jet Propulsion Laboratory, NASA, http://aquarius.nasa.gov/, AQUARIUS SAC-D, Aquarius Scatterometer, Aquarius Radiometer</Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>NASA Global Change Master Directory (GCMD) Science Keywords</Value>
+    </Attribute>
+    <Attribute name="software_name" type="String">
+        <Value>smigen</Value>
+    </Attribute>
+    <Attribute name="software_version" type="String">
+        <Value>5.20</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>Q2012034.L3b_DAY_SCI_V5.0.main</Value>
+    </Attribute>
+</Dataset>

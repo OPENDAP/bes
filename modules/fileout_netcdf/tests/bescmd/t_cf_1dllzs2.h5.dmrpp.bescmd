@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <!-- setContainer name="c" space="catalog">/data/grid_1_2d.h5.dds</setContainer -->
+    <setContainer name="c" space="catalog">/data/t_cf_1dllzs2.h5.dmrpp</setContainer>
+    <define name="d">
+	   <container name="c" />
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf"/>
+</request>
