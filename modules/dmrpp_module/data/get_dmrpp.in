@@ -1854,6 +1854,12 @@ function main() {
         return $status
     fi
 
+    # At this point, return an error for a zero-length DMR++ document.
+    if test ! -s "${OUTPUT_FILE}"; then
+        echo "ERROR : mk_dmrpp() - The DMR++ file is zero-length. Exiting..." >&2
+        return 1
+    fi
+
     # if test -n "${VERBOSE}"; then echo "main() - TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
 
     if test -n "${VERBOSE}";then
@@ -1923,6 +1929,7 @@ function main() {
         fi
         set -e
     fi
+
     if test -n "${VERBOSE}"; then
         echo "#######################################################################################" >&2
         if test -n "${MERGE_MISSING_VARS}"; then
@@ -1931,6 +1938,7 @@ function main() {
         echo "# END main()" >&2
         echo "#######################################################################################" >&2
     fi
+
     return 0
 }
 
