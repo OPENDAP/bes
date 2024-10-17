@@ -115,6 +115,7 @@ def mk_bes_conf(user_supplied_conf_file, site_conf_file):
 
     return tmp_conf_file
 
+
 def main():
     global VERBOSE, VERY_VERBOSE, JUST_DMR, DMRPP_URL, BES_CONF_FILE, SITE_CONF_FILE, OUTPUT_FILE, S3_UPLOAD, CLEANUP_TEMP_FILES
     parser = argparse.ArgumentParser()
@@ -147,7 +148,7 @@ def main():
 
     # Generate DMR file
     dmr_file = make_temp_file("dmr")
-    run_subprocess(["mkDapRequest", bes_conf_file, INPUT_DATA_FILE, "dmr"], capture_output=True)
+    generate_dap2_bes(INPUT_DATA_FILE, "dmr", dmr_file)
 
     if JUST_DMR:
         if OUTPUT_FILE:
@@ -159,6 +160,9 @@ def main():
 
     # Build DMR++
     mk_dmrpp(bes_conf_file, INPUT_DATA_FILE, dmr_file, OUTPUT_FILE)
+
+    # Run tests
+    run_tests(bes_conf_file, dmr_file, OUTPUT_FILE)
 
     if S3_UPLOAD:
         if not OUTPUT_FILE:
