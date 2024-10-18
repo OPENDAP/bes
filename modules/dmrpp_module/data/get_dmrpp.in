@@ -1140,7 +1140,7 @@ function dap4_attributes() {
 # The sed command:
 # - removes leading and trailing whitespace from each line
 # - removes both /> and > from each line because making the dmr++ may add chunks (a kind of metadata) to
-#   variables that had no metedata (Attributes) previously, thus their termination may legitimately change
+#   variables that had no metadata (Attributes) previously, thus their termination may legitimately change
 #   from /> to >
 # The output of the sed command is sorted to normalize changes in order caused by the creation of the dmr++.
 #
@@ -1855,7 +1855,7 @@ function main() {
     fi
 
     # At this point, return an error for a zero-length DMR++ document.
-    if test ! -s "${OUTPUT_FILE}"; then
+    if test -n "${OUTPUT_FILE}" -a ! -s "${OUTPUT_FILE}"; then
         echo "ERROR : mk_dmrpp() - The DMR++ file is zero-length. Exiting..." >&2
         return 1
     fi

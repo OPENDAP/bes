@@ -367,16 +367,6 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
                     + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
                 throw;
         }
-#if 0
-        if (http_error.http_status() == 404 || http_error.http_status() == 400) {
-            dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
-            dmrpp_read = false;
-        }
-        else {
-            http_error.set_message(http_error.get_message() + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
-            throw;
-        }
-#endif
     }
 
     return dmrpp_read;
