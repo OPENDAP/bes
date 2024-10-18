@@ -46,6 +46,8 @@ class TempFile {
 
     // Lifecycle controls
     static struct sigaction cached_sigpipe_handler;
+    // FIXME This needs to be static if the intent is to lock something shared by
+    //  two or more TempFile instances at once. jhrg 8/13/24
     mutable std::recursive_mutex d_tf_lock_mutex;
 
     // Holds the static list of all open files
@@ -61,6 +63,7 @@ class TempFile {
 public:
     // Odd, but even with TemporaryFileTest declared as a friend, the tests won't
     // compile unless this is declared public.
+    // FIXME This code needs to restore the existing SIGPIPE handler. See server/ServerApp.cc. jhrg 8/13/24
     static void sigpipe_handler(int signal);
 
     TempFile() = default;
