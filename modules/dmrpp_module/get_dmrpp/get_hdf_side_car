@@ -1,0 +1,323 @@
+#!/usr/bin/env python3
+import os
+import shutil
+import string
+import subprocess
+import sys
+import argparse as ap
+
+
+def get_obj_name(full_path):
+    last_forward_pos = full_path.rfind('/')
+    if (last_forward_pos == -1):
+        print("Cannot find the file:", full_path, "in the current directory.")
+        return ""
+    else:
+        return full_path[last_forward_pos + 1:]
+
+
+def get_obj_path(full_path):
+    last_forward_pos = full_path.rfind('/')
+    if (last_forward_pos == -1):
+        print("Cannot find the file:", full_path, "in the current directory.")
+        return ""
+    else:
+        return full_path[0:last_forward_pos + 1]
+
+
+def is_program_present(p_name):
+    # Check whether `p_name` is on PATH and marked as executable.
+    return shutil.which(p_name) is not None
+
+
+def check_required_programs():
+    # Sanity check if the necessary programs exist
+    # besstandalone  must exist 
+    has_standalone =  is_program_present('besstandalone') 
+
+    if (has_standalone == False):
+        print("besstandalone is missing. ")
+        print("They are required to continue, stop!")
+
+    return has_standalone
+
+
+# The function module_exist() checks if the module file exists.
+def module_exist(module_path):
+    return (os.path.isfile(module_path) == True)
+
+# The function add_module_path() adds the module path
+def add_module_path(f_str, conf_mod_name, mod_path):
+    index = f_str.find(conf_mod_name) + len(conf_mod_name)
+    if (f_str[index] != '\n'):
+        print(conf_mod_name)
+        print(f_str[index])
+        print("The module path should be empty.")
+        sys.exit(1)
+    temp_text = f_str[:index] + mod_path + f_str[index:]
+    return temp_text
+
+
+# Generate the temporary BES configuration file.
+def generate_tmp_bes_conf_file(enable_cf):
+    bes_conf_name = ''
+    bes_cmd = 'besstandalone'
+    locate = shutil.which(bes_cmd)
+    # print(locate)
+
+    # Remove the end characters, bin/besstandalone
+    locate_par_dir = locate[:len(locate) - 17]
+    # print(locate_par_dir)
+
+    locate_lib_path = locate_par_dir
+    if (locate_par_dir == '/usr/'):
+        if (os.path.isfile('/usr/lib64/bes/libdap_module.so') == True):
+            locate_lib_path = '/usr/lib64/bes/'
+        else:
+            locate_lib_path = '/usr/lib/bes/'
+    else:
+        locate_lib_path = locate_par_dir + 'lib/bes/'
+
+    libdap_path = locate_lib_path + 'libdap_module.so'
+    libdap_xml_path = locate_lib_path + 'libdap_xml_module.so'
+    libhdf4_path = locate_lib_path + 'libhdf4_module.so'
+    libhdf5_path = locate_lib_path + 'libhdf5_module.so'
+    libfonc_path = locate_lib_path + 'libfonc_module.so'
+
+    # debugging
+    # libfakepath='fake.so'
+    has_all_modules = module_exist(libdap_path) and module_exist(libdap_xml_path) \
+                      and module_exist(libhdf4_path)
+    if (has_all_modules == False):
+        print("Some required modules don't exist; cannot generate the bes configuration file.")
+        sys.exit(1)
+
+    bes_conf_name= "bes.tmp.conf";
+    bes_tmp_conf_str='''BES.LogName=./bes.log
+BES.modules=dap,cmd,fonc,h4,h5
+BES.module.dap=
+BES.module.cmd=
+BES.module.h4=
+BES.module.h5=
+BES.module.fonc=
+BES.Catalog.catalog.RootDirectory=
+BES.Data.RootDirectory=/dev/null
+BES.Catalog.catalog.TypeMatch=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5|HDF5|nc|nc4)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
+FONc.UseCompression=true
+FONc.ChunkSize=4096
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H4.EnableDirectDMR=true
+H5.DefaultHandleDimension=true'''
+
+    if (enable_cf is True):
+        bes_tmp_conf_str = bes_tmp_conf_str + "\nH5.EnableCF=true"
+    else:
+        bes_tmp_conf_str = bes_tmp_conf_str + "\nH5.EnableCF=false"
+
+    temp_text = add_module_path(bes_tmp_conf_str, "BES.module.dap=", libdap_path)
+    temp_text = add_module_path(temp_text, "BES.module.cmd=", libdap_xml_path)
+    temp_text = add_module_path(temp_text, "BES.module.h4=", libhdf4_path)
+    temp_text = add_module_path(temp_text, "BES.module.h5=", libhdf5_path)
+    temp_text = add_module_path(temp_text, "BES.module.fonc=", libfonc_path)
+    cur_dir = os.getcwd()
+    temp_text = add_module_path(temp_text, "BES.Catalog.catalog.RootDirectory=", cur_dir)
+
+    # print(bes_tmp_conf_str)
+    # print(temp_text)
+    bc_fid = open(bes_conf_name, 'w')
+    bc_fid.write(temp_text)
+    bc_fid.close()
+
+    return bes_conf_name
+
+
+# Check if the HDF file is present.
+def obtain_hdf_full_path(hdf_name):
+    if '/' not in hdf_name:
+        hdf_name = os.getcwd() + '/' + hdf_name
+    elif ".." in hdf_name:
+        print("If using the relative path, the HDF file name must be under the current directory such as tmp/foo.hdf")
+        hdf_name = ''
+    elif hdf_name[0] != '/':
+        hdf_name = os.getcwd() + '/' + hdf_name
+    if (os.path.isfile(hdf_name) != True):
+        print("The hdf4 file:", hdf_name, "doesn't exist.")
+        hdf_name = ''
+    return hdf_name
+
+
+# Generate the bescmd file content.
+def generate_bescmd_contents(bes_conf_name, hdf_name, hdf_dmrpp_mvs):
+
+    bescmd_str = ''
+    bes_conf_fid = open(bes_conf_name, 'r')
+    bes_conf_text = bes_conf_fid.read()
+    bes_conf_fid.close()
+    bes_catalog_root_dir_str = "BES.Catalog.catalog.RootDirectory="
+    catalog_root_dir_index = bes_conf_text.find(bes_catalog_root_dir_str)
+    if (catalog_root_dir_index == -1):
+        print("Cannot find the catalog root directory from the bes configuration file: ", bes_conf_name)
+        return bescmd_str
+
+    catalog_root_dir_endline_index = bes_conf_text.find('\n', catalog_root_dir_index)
+    catalog_root_dir = bes_conf_text[
+                       catalog_root_dir_index + len(bes_catalog_root_dir_str):catalog_root_dir_endline_index]
+
+    if (hdf_name.find(catalog_root_dir) != 0):
+        print("The HDF file:", hdf_name, "is not on the path", catalog_root_dir)
+        print("Please put the HDF file under the hyrax root catalog directory")
+        return bescmd_str
+
+    # Obtain the hdf4 file path that needs to be inside the xml file. 
+    hdf_name_path = hdf_name[len(catalog_root_dir):]
+
+    # Obtain the miss data variable information.
+    dmrpp_mvs_fid = open(hdf_dmrpp_mvs, 'r')
+    dmrpp_mvs_text = dmrpp_mvs_fid.read()
+    dmrpp_mvs_fid.close()
+ 
+    # Generate the bescmd file
+
+    # The first part of the xml string
+    bescmd_str_p1 = '''<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="data" space="catalog">'''
+    bescmd_str_p1 = bescmd_str_p1 + hdf_name_path + "</setContainer>"
+    bescmd_str_p2 = '''
+    <define name="d">
+        <container name="data" >'''
+ 
+    bescmd_str_p3 = "\n            <dap4constraint>" + dmrpp_mvs_text +"</dap4constraint>"
+    bescmd_str_p4 = '''
+        </container>
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>'''
+    bescmd_str = bescmd_str_p1 + bescmd_str_p2 + bescmd_str_p3 + bescmd_str_p4
+    # print(bescmd_str)
+    return bescmd_str
+
+
+# Create by KY 2024-10-14
+# We use python 3.6.8.It must be >=python 3.6
+if sys.version_info <= (3, 6):
+    print("The tested version is python 3.6, your version is lower.")
+    sys.exit(1)
+
+parser = ap.ArgumentParser(
+    description='Generate a dmrpp side car file in netCDF4/HDF5 format. get_hdf_side_car -i hdf/h5_file_name dmrpp_missing_data_var_names. ')
+parser.add_argument("-i", nargs=2,
+                    help='The HDF4/5 file and the dmrpp missing data file(plain text that contains the variable names) must be provided under the current directory. ',
+                    required=True)
+parser.add_argument("-o",nargs=1, 
+                    help='The netCDF4/HDF5 side car file name can be provided with this option. ')
+parser.add_argument("-c", action='store_true',
+                    help='For the netCDF4/HDF5 files, the side car file will be generated via the EnableCF option. ')
+parser.add_argument("-v","--verbosity", action='store_true',
+                    help='Detailed description message and other information.' )
+
+args = parser.parse_args()
+
+if (args.verbosity is True):
+    desc_str = '''
+    Given an HDF4 or an HDF5 file and a plain text file that contains the missing data variable names, running this python script will generate a netCDF-4/HDF5 file that
+    contains the missing data variable values.
+
+    The prerequisite besstandalone should be found under the user's current environment.
+    besstandalone is used to generate the output netCDF4/HDF5 file.
+
+    By default, a temporary BES configuration file will be created to use for generation of the dmr. It will be deleted before the end of this program. 
+  
+    The HDF4/5 file must be under the current or children directories. If put under a child directory, the file name can be something like foo/foo1.hdf.
+
+    Users can use the -c option to generate the output netCDF-4/HDF5 file with the EnableCF option.
+
+    The side car file name will be the original HDF file name + "_mvs.h5" such as foo.hdf_mvs.h5. The file is under the directory
+    Users can use the -o option to specify the netCDF4/HDF5 side car file name. The file name can include the path. 
+    Without having the path,  the side car file is put under the directory where the python script is run.
+    where the original HDF file is located.
+
+    '''
+    print(desc_str)
+
+# Sanity check to see if the necessary programs exist
+if (check_required_programs() == False):
+    sys.exit(1)
+
+# Generate the temporary bes conf.
+bes_conf_name = generate_tmp_bes_conf_file(args.c)
+
+# Print BES configuration file name and contents with the verbose option.
+if (args.verbosity is True):
+    print("BES configuration file name:", bes_conf_name)
+    bc_fid = open(bes_conf_name, 'r')
+    bc_text = bc_fid.read()
+    print("The BES configure file content: ")
+    print(bc_text)
+    bc_fid.close()
+
+# Obtain the HDF4/5 full path
+hdf_full_path = obtain_hdf_full_path(args.i[0])
+if (hdf_full_path == ""):
+    sys.exit(1)
+
+if os.path.isfile(args.i[1])==False:
+    print("The HDF missing var text doesn't exist.")
+    sys.exit(1)
+
+# Print the HDF file path if the verbose option is on.
+if (args.verbosity is True):
+    print('\n')
+    print("The HDF file full path :", hdf_full_path)
+
+bescmd_str = generate_bescmd_contents(bes_conf_name, hdf_full_path,args.i[1])
+if (bescmd_str == ""):
+    sys.exit(1)
+elif (args.verbosity is True):
+    print('\n')
+    print("The bescmd xml for generating the dmr:")
+    print(bescmd_str)
+
+# Obtain the HDF file name that excludes the path.
+hdf_name_cur_dir = get_obj_name(hdf_full_path)
+if (args.verbosity is True):
+    print('\n')
+    print("The current directory of the HDF file is: ",hdf_name_cur_dir)
+# Obtain the path of the HDF file
+hdf_name_path_only = get_obj_path(hdf_full_path)
+
+# Generate the HDF4/5 fileout netCDF bescmd file.
+hdf_file_bescmd = hdf_name_cur_dir + ".fonc.bescmd"
+with open(hdf_file_bescmd, 'w') as f:
+    f.write(bescmd_str)
+
+# Generate the HDF5 file that stores the missing data 
+mvs_name = hdf_name_path_only + hdf_name_cur_dir + "_mvs.h5"
+if(args.o is not None):
+    mvs_name = str(args.o[0])
+ret = subprocess.run(["besstandalone", "-c", bes_conf_name, "-i", hdf_file_bescmd, "-f", mvs_name])
+if ret.returncode != 0:
+    print("Besstandalone fails to generate the netCDF-4 file based on the fileout netCDF module. ")
+    print("The HDF file name is:  ", hdf_full_path)
+    subprocess.run(["rm", "-rf", bes_conf_name])
+    subprocess.run(["rm", "-rf", hdf_file_bescmd])
+    subprocess.run(["rm", "-rf", "bes.log"])   
+    subprocess.run(["rm", "-rf", "mds_ledger.txt"])
+    print("Stop. ")
+    sys.exit(1)
+
+subprocess.run(["rm", "-rf", bes_conf_name])
+subprocess.run(["rm", "-rf", hdf_file_bescmd])
+subprocess.run(["rm", "-rf", "bes.log"])   
+subprocess.run(["rm", "-rf", "mds_ledger.txt"])
+ 
