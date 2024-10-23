@@ -2055,18 +2055,19 @@ void inject_build_dmrpp_metadata_worker( DMRpp *dmrpp, const string &bes_conf_do
     version->attributes()->add_attribute_nocopy(libdap4_version);
 
     if(!bes_conf_doc.empty()) {
-        std::stringstream ss(bes_conf_doc);
-        std::string line, new_bes_conf;
+        stringstream ss(bes_conf_doc);
+        string line;
+        string new_bes_conf;
 
         // Iterate through each line and remove the bes module library path
-        while (std::getline(ss, line)) {
+        while (getline(ss, line)) {
             // Check if the line contains "BES.module."
-            if (line.find("BES.module.") == std::string::npos) {
+            if (line.find("BES.module.") == string::npos) {
                 // If the line doesn't contain "BES.module.", add it to the result
                 new_bes_conf += line + "\n";
             }
         }
-        
+
         // Add the BES configuration used to create the base DMR
         auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
         config->add_value(new_bes_conf);
