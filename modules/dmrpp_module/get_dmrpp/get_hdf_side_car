@@ -32,7 +32,7 @@ def is_program_present(p_name):
 def check_required_programs():
     # Sanity check if the necessary programs exist
     # besstandalone  must exist 
-    has_standalone =  is_program_present('besstandalone') 
+    has_standalone = is_program_present('besstandalone')
 
     if (has_standalone == False):
         print("besstandalone is missing. ")
@@ -44,6 +44,7 @@ def check_required_programs():
 # The function module_exist() checks if the module file exists.
 def module_exist(module_path):
     return (os.path.isfile(module_path) == True)
+
 
 # The function add_module_path() adds the module path
 def add_module_path(f_str, conf_mod_name, mod_path):
@@ -90,8 +91,8 @@ def generate_tmp_bes_conf_file(enable_cf):
         print("Some required modules don't exist; cannot generate the bes configuration file.")
         sys.exit(1)
 
-    bes_conf_name= "bes.tmp.conf"
-    bes_tmp_conf_str='''BES.LogName=./bes.log
+    bes_conf_name = "bes.tmp.conf"
+    bes_tmp_conf_str = '''BES.LogName=./bes.log
 BES.modules=dap,cmd,fonc,h4,h5
 BES.module.dap=
 BES.module.cmd=
@@ -155,7 +156,6 @@ def obtain_hdf_full_path(hdf_name):
 
 # Generate the bescmd file content.
 def generate_bescmd_contents(bes_conf_name, hdf_name, hdf_dmrpp_mvs):
-
     bescmd_str = ''
     bes_conf_fid = open(bes_conf_name, 'r')
     bes_conf_text = bes_conf_fid.read()
@@ -182,7 +182,7 @@ def generate_bescmd_contents(bes_conf_name, hdf_name, hdf_dmrpp_mvs):
     dmrpp_mvs_fid = open(hdf_dmrpp_mvs, 'r')
     dmrpp_mvs_text = dmrpp_mvs_fid.read()
     dmrpp_mvs_fid.close()
- 
+
     # Generate the bescmd file
 
     # The first part of the xml string
@@ -194,8 +194,8 @@ def generate_bescmd_contents(bes_conf_name, hdf_name, hdf_dmrpp_mvs):
     bescmd_str_p2 = '''
     <define name="d">
         <container name="data" >'''
- 
-    bescmd_str_p3 = "\n            <dap4constraint>" + dmrpp_mvs_text +"</dap4constraint>"
+
+    bescmd_str_p3 = "\n            <dap4constraint>" + dmrpp_mvs_text + "</dap4constraint>"
     bescmd_str_p4 = '''
         </container>
     </define>
@@ -204,6 +204,7 @@ def generate_bescmd_contents(bes_conf_name, hdf_name, hdf_dmrpp_mvs):
     bescmd_str = bescmd_str_p1 + bescmd_str_p2 + bescmd_str_p3 + bescmd_str_p4
     # print(bescmd_str)
     return bescmd_str
+
 
 def main():
     # Create by KY 2024-10-14
@@ -217,12 +218,12 @@ def main():
     parser.add_argument("-i", nargs=2,
                         help='The HDF4/5 file and the dmrpp missing data file(plain text that contains the variable names) must be provided under the current directory. ',
                         required=True)
-    parser.add_argument("-o",nargs=1,
+    parser.add_argument("-o", nargs=1,
                         help='The netCDF4/HDF5 side car file name can be provided with this option. ')
     parser.add_argument("-c", action='store_true',
                         help='For the netCDF4/HDF5 files, the side car file will be generated via the EnableCF option. ')
-    parser.add_argument("-v","--verbosity", action='store_true',
-                        help='Detailed description message and other information.' )
+    parser.add_argument("-v", "--verbosity", action='store_true',
+                        help='Detailed description message and other information.')
 
     args = parser.parse_args()
 
@@ -269,7 +270,7 @@ def main():
     if (hdf_full_path == ""):
         sys.exit(1)
 
-    if os.path.isfile(args.i[1])==False:
+    if os.path.isfile(args.i[1]) == False:
         print("The HDF missing var text doesn't exist.")
         sys.exit(1)
 
@@ -278,7 +279,7 @@ def main():
         print('\n')
         print("The HDF file full path :", hdf_full_path)
 
-    bescmd_str = generate_bescmd_contents(bes_conf_name, hdf_full_path,args.i[1])
+    bescmd_str = generate_bescmd_contents(bes_conf_name, hdf_full_path, args.i[1])
     if (bescmd_str == ""):
         sys.exit(1)
     elif (args.verbosity is True):
@@ -290,7 +291,7 @@ def main():
     hdf_name_cur_dir = get_obj_name(hdf_full_path)
     if (args.verbosity is True):
         print('\n')
-        print("The current directory of the HDF file is: ",hdf_name_cur_dir)
+        print("The current directory of the HDF file is: ", hdf_name_cur_dir)
     # Obtain the path of the HDF file
     hdf_name_path_only = get_obj_path(hdf_full_path)
 
@@ -301,7 +302,7 @@ def main():
 
     # Generate the HDF5 file that stores the missing data
     mvs_name = hdf_name_path_only + hdf_name_cur_dir + "_mvs.h5"
-    if(args.o is not None):
+    if (args.o is not None):
         mvs_name = str(args.o[0])
     ret = subprocess.run(["besstandalone", "-c", bes_conf_name, "-i", hdf_file_bescmd, "-f", mvs_name])
     if ret.returncode != 0:
@@ -318,6 +319,7 @@ def main():
     subprocess.run(["rm", "-rf", hdf_file_bescmd])
     subprocess.run(["rm", "-rf", "bes.log"])
     subprocess.run(["rm", "-rf", "mds_ledger.txt"])
- 
+
+
 if __name__ == "__main__":
     main()
