@@ -286,7 +286,11 @@ void CurlHandlePool::initialize() {
 
 CurlHandlePool::~CurlHandlePool() {
     // See https://curl.se/libcurl/c/curl_share_cleanup.html
+    cerr << "~CurlHandlePool() 1\n";
+
     curl_share_cleanup(d_share);
+
+    cerr << "~CurlHandlePool() 2\n";
 }
 
 /**

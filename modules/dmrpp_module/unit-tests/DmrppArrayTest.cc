@@ -61,6 +61,7 @@ namespace dmrpp {
 
 class DmrppArrayTest: public CppUnit::TestFixture {
 private:
+    dmrpp::DmrppRequestHandler *drh = nullptr;
 
 public:
     DmrppArrayTest() = default;
@@ -85,12 +86,14 @@ public:
 
         // Various things will gripe about this not being used... This is how the
         // CurlHandlePool gets instantiated. jhrg 4/22/22
-        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
+        //auto foo = new dmrpp::DmrppRequestHandler("Chaos");
+        drh = new dmrpp::DmrppRequestHandler("Chaos");
     }
 
     // Called after each test
     void tearDown() override
     {
+        delete drh;
     }
 
     void read_contiguous_sc_test() {
