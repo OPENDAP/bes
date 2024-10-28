@@ -4748,8 +4748,6 @@ else
     cout<<"2d latlon "<<endl;
     cout<<"xdim: "<< eg.xdim <<endl;
     cout<<"ydim: "<< eg.ydim <<endl;
-
-
 }
 for(const auto& eg:eos2_grids_info) {
     cout<<"eg.proj_code:  "<< eg.projcode << endl;
@@ -5962,8 +5960,9 @@ void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_g
 
     auto ar_bt_dim0_unique = make_unique<Float64>("YDim");
     auto ar_bt_dim0 = ar_bt_dim0_unique.get();
-    auto ar_dim0_unique = make_unique<HDFEOS2GeoCF1D>(eos2_grid_info.projcode, eos2_grid_info.upleft[1], eos2_grid_info.lowright[1],
-                                                        eos2_grid.ydim, "YDim", ar_bt_dim0);
+    auto ar_dim0_unique = make_unique<HDFEOS2GeoCF1D>(eos2_grid_info.projcode, 
+                                                      eos2_grid_info.upleft[1], eos2_grid_info.lowright[1],
+                                                      eos2_grid.ydim, "YDim", ar_bt_dim0);
     auto ar_dim0 = ar_dim0_unique.release();
     ar_dim0->append_dim_ll(eos2_grid.ydim, ydim_path);
     dims_transform_to_dap4(ar_dim0,root_grp,true);
