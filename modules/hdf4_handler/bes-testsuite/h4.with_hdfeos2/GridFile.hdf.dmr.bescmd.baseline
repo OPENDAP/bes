@@ -170,7 +170,7 @@ END
         </Group>
     </Group>
     <Group name="PolarGrid">
-        <Byte name="eos5_cf_projection">
+        <Byte name="eos_cf_projection">
             <Attribute name="grid_mapping_name" type="String">
                 <Value>polar_stereographic</Value>
             </Attribute>
@@ -192,6 +192,9 @@ END
             <Attribute name="_CoordinateAxisTypes" type="String">
                 <Value>GeoX GeoY</Value>
             </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>PolarGrid eos_cf_projection</Value>
+            </Attribute>
         </Byte>
         <Float64 name="XDim">
             <Dim name="/XDim_PolarGrid"/>
@@ -207,6 +210,9 @@ END
             <Attribute name="_CoordinateAxisType" type="String">
                 <Value>GeoX</Value>
             </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>PolarGrid XDim</Value>
+            </Attribute>
         </Float64>
         <Float64 name="YDim">
             <Dim name="/YDim_PolarGrid"/>
@@ -221,6 +227,9 @@ END
             </Attribute>
             <Attribute name="_CoordinateAxisType" type="String">
                 <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>PolarGrid YDim</Value>
             </Attribute>
         </Float64>
         <Float64 name="Latitude">
