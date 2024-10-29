@@ -5928,7 +5928,7 @@ void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_info_t &eg_info) {
 
     string dummy_proj_cf_name = "eos5_cf_projection";
     auto dummy_proj_cf_unique = make_unique<HDFEOS2GeoCFProj>(dummy_proj_cf_name, dummy_proj_cf_name);
-    HDFEOS2GeoCFProj *dummy_proj_cf = dummy_proj_cf_unique.release();
+    HDFEOS2GeoCFProj *dummy_proj_cf = dummy_proj_cf_unique.get();
     dummy_proj_cf->set_is_dap4(true);
 
     if (eg_info.projcode == GCTP_SNSOID) {
@@ -5941,7 +5941,7 @@ void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_info_t &eg_info) {
         add_ps_cf_grid_mapping_attrs(dummy_proj_cf, eg_info);
     else if (eg_info.projcode == GCTP_LAMAZ)
         add_lamaz_cf_grid_mapping_attrs(dummy_proj_cf, eg_info);
-    d4_grp->add_var_nocopy(dummy_proj_cf);
+    d4_grp->add_var_nocopy(dummy_proj_cf_unique.release());
 
 }
 
@@ -5951,25 +5951,25 @@ void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_g
     auto ar_bt_dim1 = ar_bt_dim1_unique.get();
     auto ar_dim1_unique = make_unique<HDFEOS2GeoCF1D>(eos2_grid_info.projcode, eos2_grid_info.upleft[0], eos2_grid_info.lowright[0],
                                                         eos2_grid.xdim, "XDim", ar_bt_dim1);
-    auto ar_dim1 = ar_dim1_unique.release();
+    auto ar_dim1 = ar_dim1_unique.get();
     ar_dim1->append_dim_ll(eos2_grid.xdim, xdim_path);
     dims_transform_to_dap4(ar_dim1,root_grp,true);
     ar_dim1->set_is_dap4(true);
     add_CF_1D_cv_attrs(ar_dim1,false);
-    d4_grp->add_var_nocopy(ar_dim1);
+    d4_grp->add_var_nocopy(ar_dim1_unique.release());
 
     auto ar_bt_dim0_unique = make_unique<Float64>("YDim");
     auto ar_bt_dim0 = ar_bt_dim0_unique.get();
     auto ar_dim0_unique = make_unique<HDFEOS2GeoCF1D>(eos2_grid_info.projcode, 
                                                       eos2_grid_info.upleft[1], eos2_grid_info.lowright[1],
                                                       eos2_grid.ydim, "YDim", ar_bt_dim0);
-    auto ar_dim0 = ar_dim0_unique.release();
+    auto ar_dim0 = ar_dim0_unique.get();
     ar_dim0->append_dim_ll(eos2_grid.ydim, ydim_path);
     dims_transform_to_dap4(ar_dim0,root_grp,true);
 
     ar_dim0->set_is_dap4(true);
     add_CF_1D_cv_attrs(ar_dim0,true);
-    d4_grp->add_var_nocopy(ar_dim0);
+    d4_grp->add_var_nocopy(ar_dim0_unique.release());
 
 }
 
