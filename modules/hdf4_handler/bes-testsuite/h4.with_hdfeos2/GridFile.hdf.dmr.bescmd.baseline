@@ -170,6 +170,59 @@ END
         </Group>
     </Group>
     <Group name="PolarGrid">
+        <Byte name="eos5_cf_projection">
+            <Attribute name="grid_mapping_name" type="String">
+                <Value>polar_stereographic</Value>
+            </Attribute>
+            <Attribute name="straight_vertical_longitude_from_pole" type="Float64">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="standard_parallel" type="Float64">
+                <Value>90</Value>
+            </Attribute>
+            <Attribute name="false_easting" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="false_northing" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="latitude_of_projection_origin" type="Float64">
+                <Value>+90.0</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisTypes" type="String">
+                <Value>GeoX GeoY</Value>
+            </Attribute>
+        </Byte>
+        <Float64 name="XDim">
+            <Dim name="/XDim_PolarGrid"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_x_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoX</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="YDim">
+            <Dim name="/YDim_PolarGrid"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_y_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoY</Value>
+            </Attribute>
+        </Float64>
         <Float64 name="Latitude">
             <Dim name="/YDim_PolarGrid"/>
             <Dim name="/XDim_PolarGrid"/>
@@ -200,6 +253,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/PolarGrid/Longitude /PolarGrid/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/PolarGrid/eos_cf_projection</Value>
+                </Attribute>
             </Float32>
             <Float32 name="MRGFLD_Temperature">
                 <Dim name="/MRGDIM_PolarGrid_2"/>
@@ -219,6 +275,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/PolarGrid/Longitude /PolarGrid/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/PolarGrid/eos_cf_projection</Value>
+                </Attribute>
             </Float32>
             <Float64 name="Spectra">
                 <Dim name="/Bands_PolarGrid"/>
@@ -229,6 +288,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/PolarGrid/Longitude /PolarGrid/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/PolarGrid/eos_cf_projection</Value>
                 </Attribute>
             </Float64>
         </Group>
