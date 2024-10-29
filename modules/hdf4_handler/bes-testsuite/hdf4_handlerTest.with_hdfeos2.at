@@ -592,6 +592,7 @@ AT_BESCMD_RESPONSE_TEST([SDS_fillchunk_alltypes.hdf.dmr.bescmd])
 #HDF-EOS2 several grid tests.
 AT_BESCMD_RESPONSE_TEST([cea.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([sinusoid.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([grid_2_2d_ps.hdf.dmr.bescmd])
 
 #Test the direct HDF4 to DMR data access
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.bescmd])
@@ -600,7 +601,6 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_test.hdf.dap.constraint.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([vdata_packed_linked_blocks.hdf.dap.constraint.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([SDS_simple_comp.hdf.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([SDS_simple_comp.hdf.dap.constraint.bescmd])
-AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_2_2d_ps.hdf.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([sinusoid.hdf.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([sinusoid.hdf.dap.constraint.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([cea.hdf.dap.bescmd])
