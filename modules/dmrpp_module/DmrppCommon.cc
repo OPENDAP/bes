@@ -34,6 +34,7 @@
 
 #include <libdap/BaseType.h>
 #include <libdap/Str.h>
+#include <libdap/Byte.h>
 #include <libdap/D4Attributes.h>
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>
@@ -663,6 +664,21 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
     // If the scalar variable with contiguous contains a fillvalue, also needs to output. ky 07/12/22
     if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
+
+    // print scalar value for special missing variables. 
+    if (DmrppCommon::d_print_chunks && is_missing_data() && bt.read_p())  {
+        // Now we only handle dods_byte_c.
+        if (bt.type() == dods_byte_c) {
+            auto sca_var = dynamic_cast<libdap::Byte*>(this); 
+            uint8_t sca_var_value = sca_var->value();
+            string encoded = base64::Base64::encode(&sca_var_value, 1);
+            print_missing_data_element(xml, DmrppCommon::d_ns_prefix, encoded);
+        }
+        else {
+            string err_msg = "Bad type for scalar missing variable: " + bt.name();
+            throw BESInternalError(err_msg, __FILE__, __LINE__);
+        }
+    }
 
     // print scalar value for compact storage.
     if (DmrppCommon::d_print_chunks && is_compact_layout() && bt.read_p())  {

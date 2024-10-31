@@ -55,6 +55,7 @@
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
 #include "DmrppStructure.h"
+#include "DmrppByte.h"
 #include "DmrppStr.h"
 #include "DmrppUrl.h"
 #include "DmrppD4Group.h"
@@ -1543,9 +1544,15 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
 
     std::vector <u_int8_t> decoded = base64::Base64::decode(char_data);
 
-    if (btp->type() != dods_array_c) 
-        throw BESInternalError("The dmrpp::missing_data element must be the child of an array variable", __FILE__, __LINE__);
+    if (btp->type() != dods_array_c && btp->type() !=dods_byte_c) 
+        throw BESInternalError("The dmrpp::missing_data element must be the child of an array or a unsigned char scalar variable", __FILE__, __LINE__);
 
+    if (btp->type() == dods_byte_c) {
+        auto db = dynamic_cast<DmrppByte *>(btp);
+        db->set_value(decoded[0]);
+        db->set_read_p(true);
+        return;
+    }
     auto *da = dynamic_cast<DmrppArray *>(btp);
 
     vector<Bytef> result_bytes;

@@ -11,21 +11,24 @@ dimensions:
 
 group: grid1 {
   variables:
-  	ubyte eos5_cf_projection ;
-  		eos5_cf_projection:grid_mapping_name = "sinusoidal" ;
-  		eos5_cf_projection:longitude_of_central_meridian = 0. ;
-  		eos5_cf_projection:earth_radius = 6371007.181 ;
-  		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "sinusoidal" ;
+  		eos_cf_projection:longitude_of_central_meridian = 0. ;
+  		eos_cf_projection:earth_radius = 6371007.181 ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "grid1 eos_cf_projection" ;
   	double XDim(XDim_grid1) ;
   		XDim:standard_name = "projection_x_coordinate" ;
   		XDim:long_name = "x coordinate of projection " ;
   		XDim:units = "meter" ;
   		XDim:_CoordinateAxisType = "GeoX" ;
+  		XDim:eos_cf_grid = "grid1 XDim" ;
   	double YDim(YDim_grid1) ;
   		YDim:standard_name = "projection_y_coordinate" ;
   		YDim:long_name = "y coordinate of projection " ;
   		YDim:units = "meter" ;
   		YDim:_CoordinateAxisType = "GeoY" ;
+  		YDim:eos_cf_grid = "grid1 YDim" ;
   	double Latitude(YDim_grid1, XDim_grid1) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "grid1 lat" ;
