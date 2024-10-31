@@ -857,7 +857,7 @@ bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute
 
     da->set_missing_data(true);
  
-    size_t total_num = (is_xdim)?xdim:ydim;
+    int total_num = is_xdim?xdim:ydim;
     vector<double>val(total_num);    
     double evalue = 0;
     double svalue = 0;
@@ -1250,7 +1250,7 @@ bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, stri
     D4Attributes *d4_attrs = btp->attributes();
     if (d4_attrs->empty() == false && btp->type() == dods_byte_c) {
 
-        D4Attribute *attr = d4_attrs->find("eos_cf_grid_mapping");
+        auto attr = d4_attrs->find("eos_cf_grid_mapping");
 
         if (disable_missing_data == false) {
 
