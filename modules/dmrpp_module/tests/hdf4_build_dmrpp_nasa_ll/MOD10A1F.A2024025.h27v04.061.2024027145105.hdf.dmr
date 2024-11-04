@@ -596,6 +596,59 @@ END
 </Value>
     </Attribute>
     <Group name="MOD_Grid_Snow_500m">
+        <Byte name="eos_cf_projection">
+            <Attribute name="grid_mapping_name" type="String">
+                <Value>sinusoidal</Value>
+            </Attribute>
+            <Attribute name="longitude_of_central_meridian" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="earth_radius" type="Float64">
+                <Value>6371007.181</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisTypes" type="String">
+                <Value>GeoX GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>MOD_Grid_Snow_500m eos_cf_projection</Value>
+            </Attribute>
+        </Byte>
+        <Float64 name="XDim">
+            <Dim name="/XDim_MOD_Grid_Snow_500m"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_x_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoX</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>MOD_Grid_Snow_500m XDim</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="YDim">
+            <Dim name="/YDim_MOD_Grid_Snow_500m"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_y_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>MOD_Grid_Snow_500m YDim</Value>
+            </Attribute>
+        </Float64>
         <Float64 name="Latitude">
             <Dim name="/YDim_MOD_Grid_Snow_500m"/>
             <Dim name="/XDim_MOD_Grid_Snow_500m"/>
@@ -639,6 +692,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MOD_Grid_Snow_500m/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="Cloud_Persistence">
                 <Dim name="/YDim_MOD_Grid_Snow_500m"/>
@@ -662,6 +718,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MOD_Grid_Snow_500m/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="Basic_QA">
                 <Dim name="/YDim_MOD_Grid_Snow_500m"/>
@@ -684,6 +743,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MOD_Grid_Snow_500m/eos_cf_projection</Value>
                 </Attribute>
             </Byte>
             <Byte name="Algorithm_Flags_QA">
@@ -717,6 +779,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MOD_Grid_Snow_500m/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="MOD10A1_NDSI_Snow_Cover">
                 <Dim name="/YDim_MOD_Grid_Snow_500m"/>
@@ -739,6 +804,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MOD_Grid_Snow_500m/eos_cf_projection</Value>
                 </Attribute>
             </Byte>
         </Group>

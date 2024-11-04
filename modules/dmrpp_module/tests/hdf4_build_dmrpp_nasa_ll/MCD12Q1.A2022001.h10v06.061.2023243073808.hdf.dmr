@@ -699,6 +699,59 @@ END
 </Value>
     </Attribute>
     <Group name="MCD12Q1">
+        <Byte name="eos_cf_projection">
+            <Attribute name="grid_mapping_name" type="String">
+                <Value>sinusoidal</Value>
+            </Attribute>
+            <Attribute name="longitude_of_central_meridian" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="earth_radius" type="Float64">
+                <Value>6371007.181</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisTypes" type="String">
+                <Value>GeoX GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>MCD12Q1 eos_cf_projection</Value>
+            </Attribute>
+        </Byte>
+        <Float64 name="XDim">
+            <Dim name="/XDim_MCD12Q1"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_x_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoX</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>MCD12Q1 XDim</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="YDim">
+            <Dim name="/YDim_MCD12Q1"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_y_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>MCD12Q1 YDim</Value>
+            </Attribute>
+        </Float64>
         <Float64 name="Latitude">
             <Dim name="/YDim_MCD12Q1"/>
             <Dim name="/XDim_MCD12Q1"/>
@@ -793,6 +846,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Type2">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -858,6 +914,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Type3">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -914,6 +973,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Type4">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -963,6 +1025,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
                 </Attribute>
             </Byte>
             <Byte name="LC_Type5">
@@ -1023,6 +1088,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Prop1_Assessment">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1042,6 +1110,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop2_Assessment">
@@ -1063,6 +1134,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Prop3_Assessment">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1082,6 +1156,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
                 </Attribute>
             </Byte>
             <Byte name="LC_Prop1">
@@ -1154,6 +1231,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Prop2">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1210,6 +1290,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="LC_Prop3">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1263,6 +1346,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="QC">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1283,6 +1369,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
+                </Attribute>
             </Byte>
             <Byte name="LW">
                 <Dim name="/YDim_MCD12Q1"/>
@@ -1302,6 +1391,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MCD12Q1/Longitude /MCD12Q1/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MCD12Q1/eos_cf_projection</Value>
                 </Attribute>
             </Byte>
         </Group>
