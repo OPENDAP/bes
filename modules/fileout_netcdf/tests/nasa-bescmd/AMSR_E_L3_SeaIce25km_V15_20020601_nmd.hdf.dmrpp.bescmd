@@ -5,7 +5,7 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
          
-  <bes:setContainer name="c" space="catalog">data/AMSR_E_L3_SeaIce25km_V15_20020601_nmd.hdf.dmrpp</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">data/AMSR_E_L3_SeaIce25km_V15_20020601.hdf.nmd.dmrpp</bes:setContainer>
          
   <bes:define name="d1" space="default">
     <bes:container name="c">
