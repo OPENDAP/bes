@@ -16,6 +16,24 @@ dimensions:
 
 group: MOD_Grid_Snow_500m {
   variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "sinusoidal" ;
+  		eos_cf_projection:longitude_of_central_meridian = 0. ;
+  		eos_cf_projection:earth_radius = 6371007.181 ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "MOD_Grid_Snow_500m eos_cf_projection" ;
+  	double XDim(XDim_MOD_Grid_Snow_500m) ;
+  		XDim:standard_name = "projection_x_coordinate" ;
+  		XDim:long_name = "x coordinate of projection " ;
+  		XDim:units = "meter" ;
+  		XDim:_CoordinateAxisType = "GeoX" ;
+  		XDim:eos_cf_grid = "MOD_Grid_Snow_500m XDim" ;
+  	double YDim(YDim_MOD_Grid_Snow_500m) ;
+  		YDim:standard_name = "projection_y_coordinate" ;
+  		YDim:long_name = "y coordinate of projection " ;
+  		YDim:units = "meter" ;
+  		YDim:_CoordinateAxisType = "GeoY" ;
+  		YDim:eos_cf_grid = "MOD_Grid_Snow_500m YDim" ;
   	double Latitude(YDim_MOD_Grid_Snow_500m, XDim_MOD_Grid_Snow_500m) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "MOD_Grid_Snow_500m lat" ;
@@ -32,6 +50,7 @@ group: MOD_Grid_Snow_500m {
     		CGF_NDSI_Snow_Cover:Key = "0-100=NDSI snow, 200=missing data, 201=no decision, 211=night, 237=inland water, 239=ocean, 250=cloud, 254=detector saturated, 255=fill" ;
     		CGF_NDSI_Snow_Cover:dmr_sds_ref = 5 ;
     		CGF_NDSI_Snow_Cover:coordinates = "/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude" ;
+    		CGF_NDSI_Snow_Cover:grid_mapping = "/MOD_Grid_Snow_500m/eos_cf_projection" ;
     	ubyte Cloud_Persistence(YDim_MOD_Grid_Snow_500m, XDim_MOD_Grid_Snow_500m) ;
     		Cloud_Persistence:long_name = "cloud persistence for preceding days" ;
     		Cloud_Persistence:valid_range = 0UB, 254UB ;
@@ -39,6 +58,7 @@ group: MOD_Grid_Snow_500m {
     		Cloud_Persistence:Key = "count of consecutive preceding days of cloud cover" ;
     		Cloud_Persistence:dmr_sds_ref = 7 ;
     		Cloud_Persistence:coordinates = "/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude" ;
+    		Cloud_Persistence:grid_mapping = "/MOD_Grid_Snow_500m/eos_cf_projection" ;
     	ubyte Basic_QA(YDim_MOD_Grid_Snow_500m, XDim_MOD_Grid_Snow_500m) ;
     		Basic_QA:long_name = "CGF snow cover general quality value" ;
     		Basic_QA:valid_range = 0UB, 4UB ;
@@ -46,12 +66,14 @@ group: MOD_Grid_Snow_500m {
     		Basic_QA:Key = "0=best, 1=good, 2=ok, 3=poor-not used, 4=other-not used, 211=night, 239=ocean, 255=unusable L1B data or no data" ;
     		Basic_QA:dmr_sds_ref = 9 ;
     		Basic_QA:coordinates = "/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude" ;
+    		Basic_QA:grid_mapping = "/MOD_Grid_Snow_500m/eos_cf_projection" ;
     	ubyte Algorithm_Flags_QA(YDim_MOD_Grid_Snow_500m, XDim_MOD_Grid_Snow_500m) ;
     		Algorithm_Flags_QA:long_name = "CGF algorithm bit flags" ;
     		Algorithm_Flags_QA:format = "bit flag" ;
     		Algorithm_Flags_QA:Key = "bit on means: \n            bit 0: inland water flag \n            bit 1: low visible screen failed, reversed snow detection\n            bit 2: low NDSI screen failed, reversed snow detection\n            bit 3: combined temperature and height screen failed, snow reversed because too warm and too low\n                  \t This screen is also used to flag a high elevation too warm snow detection,\n                  \t in this case the snow detection is not changed but this bit is set.\n            bit 4: too high swir screen and applied at two thresholds:\n                   \t QA bit flag set if band6 TOA > 25% & band6 TOA <= 45%, \n                  \t indicative of unusual snow conditon, or snow commission error;\n                  \t snow detection reversed if band6 TOA > 45%\n            bit 5: MOD35_L2 probably cloudy\n            bit 6: MOD35_L2 probably clear\n            bit 7: solar zenith screen, indicates increased uncertainty in results" ;
     		Algorithm_Flags_QA:dmr_sds_ref = 11 ;
     		Algorithm_Flags_QA:coordinates = "/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude" ;
+    		Algorithm_Flags_QA:grid_mapping = "/MOD_Grid_Snow_500m/eos_cf_projection" ;
     	ubyte MOD10A1_NDSI_Snow_Cover(YDim_MOD_Grid_Snow_500m, XDim_MOD_Grid_Snow_500m) ;
     		MOD10A1_NDSI_Snow_Cover:long_name = "NDSI snow cover from current day MOD10A1" ;
     		MOD10A1_NDSI_Snow_Cover:valid_range = 0UB, 100UB ;
@@ -59,6 +81,7 @@ group: MOD_Grid_Snow_500m {
     		MOD10A1_NDSI_Snow_Cover:Key = "0-100=NDSI snow, 200=missing data, 201=no decision, 211=night, 237=inland water, 239=ocean, 250=cloud, 254=detector saturated, 255=fill" ;
     		MOD10A1_NDSI_Snow_Cover:dmr_sds_ref = 13 ;
     		MOD10A1_NDSI_Snow_Cover:coordinates = "/MOD_Grid_Snow_500m/Longitude /MOD_Grid_Snow_500m/Latitude" ;
+    		MOD10A1_NDSI_Snow_Cover:grid_mapping = "/MOD_Grid_Snow_500m/eos_cf_projection" ;
     } // group Data_Fields
 
   group: Grid_Attributes {

@@ -37,6 +37,70 @@ END
 </Value>
     </Attribute>
     <Group name="grid1">
+        <Byte name="eos_cf_projection">
+            <Attribute name="grid_mapping_name" type="String">
+                <Value>sinusoidal</Value>
+            </Attribute>
+            <Attribute name="longitude_of_central_meridian" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="earth_radius" type="Float64">
+                <Value>6371007.181</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisTypes" type="String">
+                <Value>GeoX GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>grid1 eos_cf_projection</Value>
+            </Attribute>
+            <dmrpp:chunks fillValue="0" byteOrder="LE">
+                <dmrpp:chunk offset="8608" nBytes="1" href="data/sinusoid.hdf_mvs.h5" />
+            </dmrpp:chunks>
+        </Byte>
+        <Float64 name="XDim">
+            <Dim name="/XDim_grid1"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_x_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoX</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>grid1 XDim</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="8609" nBytes="32" chunkPositionInArray="[0]" href="data/sinusoid.hdf_mvs.h5" />
+            </dmrpp:chunks>
+        </Float64>
+        <Float64 name="YDim">
+            <Dim name="/YDim_grid1"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_y_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>grid1 YDim</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="8641" nBytes="30" chunkPositionInArray="[0]" href="data/sinusoid.hdf_mvs.h5" />
+            </dmrpp:chunks>
+        </Float64>
         <Float64 name="Latitude">
             <Dim name="/YDim_grid1"/>
             <Dim name="/XDim_grid1"/>
@@ -48,7 +112,7 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="13335" nBytes="48" chunkPositionInArray="[0,0]" href="data/sinusoid_ll.hdf.nc" />
+                <dmrpp:chunk offset="8671" nBytes="48" chunkPositionInArray="[0,0]" href="data/sinusoid.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
         <Float64 name="Longitude">
@@ -62,7 +126,7 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="13383" nBytes="139" chunkPositionInArray="[0,0]" href="data/sinusoid_ll.hdf.nc" />
+                <dmrpp:chunk offset="8719" nBytes="139" chunkPositionInArray="[0,0]" href="data/sinusoid.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
         <Group name="Data_Fields">
@@ -74,6 +138,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/grid1/Longitude /grid1/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/grid1/eos_cf_projection</Value>
                 </Attribute>
                 <dmrpp:chunks byteOrder="BE">
                     <dmrpp:chunk offset="2502" nBytes="64" chunkPositionInArray="[0,0]"/>

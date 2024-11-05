@@ -37,7 +37,7 @@ END
 </Value>
     </Attribute>
     <Group name="grid1">
-        <Byte name="eos5_cf_projection">
+        <Byte name="eos_cf_projection">
             <Attribute name="grid_mapping_name" type="String">
                 <Value>sinusoidal</Value>
             </Attribute>
@@ -49,6 +49,9 @@ END
             </Attribute>
             <Attribute name="_CoordinateAxisTypes" type="String">
                 <Value>GeoX GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>grid1 eos_cf_projection</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
                 removed checksum
@@ -68,6 +71,9 @@ END
             <Attribute name="_CoordinateAxisType" type="String">
                 <Value>GeoX</Value>
             </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>grid1 XDim</Value>
+            </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
                 removed checksum
             </Attribute>
@@ -85,6 +91,9 @@ END
             </Attribute>
             <Attribute name="_CoordinateAxisType" type="String">
                 <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>grid1 YDim</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
                 removed checksum
@@ -139,7 +148,7 @@ END
 </Dataset>
 
 The data:
-Byte eos5_cf_projection = 112;
+Byte eos_cf_projection = 112;
 Float64 XDim[XDim_grid1 = 4] = {-20000000, -19750000, -19500000, -19250000};
 Float64 YDim[YDim_grid1 = 4] = {1000000, 750000, 500000, 250000};
 Float64 Latitude[YDim_grid1 = 4][XDim_grid1 = 4] = {{7.86905518227308, 7.86905518227308, 7.86905518227308, 7.86905518227308},{5.62075370162363, 5.62075370162363, 5.62075370162363, 5.62075370162363},{3.37245222097418, 3.37245222097418, 3.37245222097418, 3.37245222097418},{1.12415074032473, 1.12415074032473, 1.12415074032473, 1.12415074032473}};

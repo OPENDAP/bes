@@ -1545,6 +1545,59 @@ END
 </Value>
     </Attribute>
     <Group name="MODIS_Grid_16DAY_250m_500m_VI">
+        <Byte name="eos_cf_projection">
+            <Attribute name="grid_mapping_name" type="String">
+                <Value>sinusoidal</Value>
+            </Attribute>
+            <Attribute name="longitude_of_central_meridian" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="earth_radius" type="Float64">
+                <Value>6371007.181</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisTypes" type="String">
+                <Value>GeoX GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>MODIS_Grid_16DAY_250m_500m_VI eos_cf_projection</Value>
+            </Attribute>
+        </Byte>
+        <Float64 name="XDim">
+            <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_x_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoX</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>MODIS_Grid_16DAY_250m_500m_VI XDim</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="YDim">
+            <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_y_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>MODIS_Grid_16DAY_250m_500m_VI YDim</Value>
+            </Attribute>
+        </Float64>
         <Float64 name="Latitude">
             <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
             <Dim name="/XDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1603,6 +1656,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_EVI">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1640,6 +1696,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <UInt16 name="_250m_16_days_VI_Quality">
@@ -1711,6 +1770,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
+                </Attribute>
             </UInt16>
             <Int16 name="_250m_16_days_red_reflectance">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1748,6 +1810,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_NIR_reflectance">
@@ -1787,6 +1852,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_blue_reflectance">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1824,6 +1892,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_MIR_reflectance">
@@ -1870,6 +1941,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_view_zenith_angle">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1907,6 +1981,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_sun_zenith_angle">
@@ -1946,6 +2023,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_relative_azimuth_angle">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -1984,6 +2064,9 @@ END
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="_250m_16_days_composite_day_of_the_year">
                 <Dim name="/YDim_MODIS_Grid_16DAY_250m_500m_VI"/>
@@ -2006,6 +2089,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int8 name="_250m_16_days_pixel_reliability">
@@ -2039,6 +2125,9 @@ END
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection</Value>
                 </Attribute>
             </Int8>
         </Group>

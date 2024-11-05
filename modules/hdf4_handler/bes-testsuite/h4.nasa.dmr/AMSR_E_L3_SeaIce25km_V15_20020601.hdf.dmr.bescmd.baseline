@@ -1474,6 +1474,68 @@ codeListValue=&quot;creation&quot;&gt;creation
 10.5067/AMSR-E/AE_SI25.003</Value>
     </Attribute>
     <Group name="NpPolarGrid25km">
+        <Byte name="eos_cf_projection">
+            <Attribute name="grid_mapping_name" type="String">
+                <Value>polar_stereographic</Value>
+            </Attribute>
+            <Attribute name="straight_vertical_longitude_from_pole" type="Float64">
+                <Value>-45</Value>
+            </Attribute>
+            <Attribute name="standard_parallel" type="Float64">
+                <Value>70</Value>
+            </Attribute>
+            <Attribute name="false_easting" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="false_northing" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="latitude_of_projection_origin" type="Float64">
+                <Value>+90.0</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisTypes" type="String">
+                <Value>GeoX GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>NpPolarGrid25km eos_cf_projection</Value>
+            </Attribute>
+        </Byte>
+        <Float64 name="XDim">
+            <Dim name="/XDim_NpPolarGrid25km"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_x_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoX</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>NpPolarGrid25km XDim</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="YDim">
+            <Dim name="/YDim_NpPolarGrid25km"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_y_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>NpPolarGrid25km YDim</Value>
+            </Attribute>
+        </Float64>
         <Float64 name="Latitude">
             <Dim name="/YDim_NpPolarGrid25km"/>
             <Dim name="/XDim_NpPolarGrid25km"/>
@@ -1504,6 +1566,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06V_DSC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1513,6 +1578,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06V_DAY">
@@ -1524,6 +1592,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06H_ASC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1533,6 +1604,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06H_DSC">
@@ -1544,6 +1618,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_06H_DAY">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1553,6 +1630,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10V_ASC">
@@ -1564,6 +1644,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10V_DSC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1573,6 +1656,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10V_DAY">
@@ -1584,6 +1670,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10H_ASC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1593,6 +1682,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10H_DSC">
@@ -1604,6 +1696,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_10H_DAY">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1613,6 +1708,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18V_ASC">
@@ -1624,6 +1722,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18V_DSC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1633,6 +1734,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18V_DAY">
@@ -1644,6 +1748,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18H_ASC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1653,6 +1760,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18H_DSC">
@@ -1664,6 +1774,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_18H_DAY">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1673,6 +1786,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23V_ASC">
@@ -1684,6 +1800,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23V_DSC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1693,6 +1812,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23V_DAY">
@@ -1704,6 +1826,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23H_ASC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1713,6 +1838,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23H_DSC">
@@ -1724,6 +1852,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_23H_DAY">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1733,6 +1864,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36V_ASC">
@@ -1744,6 +1878,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36V_DSC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1753,6 +1890,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36V_DAY">
@@ -1764,6 +1904,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36H_ASC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1773,6 +1916,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36H_DSC">
@@ -1784,6 +1930,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_36H_DAY">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1793,6 +1942,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89V_ASC">
@@ -1804,6 +1956,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89V_DSC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1813,6 +1968,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89V_DAY">
@@ -1824,6 +1982,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89H_ASC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1833,6 +1994,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89H_DSC">
@@ -1844,6 +2008,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_89H_DAY">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1853,6 +2020,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICECON_ASC">
@@ -1864,6 +2034,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICECON_DSC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1873,6 +2046,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICECON_DAY">
@@ -1884,6 +2060,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICEDIFF_ASC">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1893,6 +2072,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICEDIFF_DSC">
@@ -1904,6 +2086,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_NH_ICEDIFF_DAY">
                 <Dim name="/YDim_NpPolarGrid25km"/>
@@ -1914,11 +2099,76 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/NpPolarGrid25km/Longitude /NpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/NpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
         </Group>
         <Group name="Grid_Attributes"/>
     </Group>
     <Group name="SpPolarGrid25km">
+        <Byte name="eos_cf_projection">
+            <Attribute name="grid_mapping_name" type="String">
+                <Value>polar_stereographic</Value>
+            </Attribute>
+            <Attribute name="straight_vertical_longitude_from_pole" type="Float64">
+                <Value>0</Value>
+            </Attribute>
+            <Attribute name="standard_parallel" type="Float64">
+                <Value>-70</Value>
+            </Attribute>
+            <Attribute name="false_easting" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="false_northing" type="Float64">
+                <Value>0.0</Value>
+            </Attribute>
+            <Attribute name="latitude_of_projection_origin" type="Float64">
+                <Value>-90.0</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisTypes" type="String">
+                <Value>GeoX GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>SpPolarGrid25km eos_cf_projection</Value>
+            </Attribute>
+        </Byte>
+        <Float64 name="XDim">
+            <Dim name="/XDim_SpPolarGrid25km"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_x_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoX</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>SpPolarGrid25km XDim</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="YDim">
+            <Dim name="/YDim_SpPolarGrid25km"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_y_coordinate</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinate of projection </Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>meter</Value>
+            </Attribute>
+            <Attribute name="_CoordinateAxisType" type="String">
+                <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>SpPolarGrid25km YDim</Value>
+            </Attribute>
+        </Float64>
         <Float64 name="Latitude">
             <Dim name="/YDim_SpPolarGrid25km"/>
             <Dim name="/XDim_SpPolarGrid25km"/>
@@ -1949,6 +2199,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06V_DSC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -1958,6 +2211,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06V_DAY">
@@ -1969,6 +2225,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06H_ASC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -1978,6 +2237,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06H_DSC">
@@ -1989,6 +2251,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_06H_DAY">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -1998,6 +2263,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10V_ASC">
@@ -2009,6 +2277,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10V_DSC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2018,6 +2289,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10V_DAY">
@@ -2029,6 +2303,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10H_ASC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2038,6 +2315,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10H_DSC">
@@ -2049,6 +2329,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_10H_DAY">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2058,6 +2341,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18V_ASC">
@@ -2069,6 +2355,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18V_DSC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2078,6 +2367,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18V_DAY">
@@ -2089,6 +2381,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18H_ASC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2098,6 +2393,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18H_DSC">
@@ -2109,6 +2407,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_18H_DAY">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2118,6 +2419,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23V_ASC">
@@ -2129,6 +2433,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23V_DSC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2138,6 +2445,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23V_DAY">
@@ -2149,6 +2459,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23H_ASC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2158,6 +2471,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23H_DSC">
@@ -2169,6 +2485,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_23H_DAY">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2178,6 +2497,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36V_ASC">
@@ -2189,6 +2511,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36V_DSC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2198,6 +2523,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36V_DAY">
@@ -2209,6 +2537,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36H_ASC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2218,6 +2549,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36H_DSC">
@@ -2229,6 +2563,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_36H_DAY">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2238,6 +2575,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89V_ASC">
@@ -2249,6 +2589,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89V_DSC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2258,6 +2601,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89V_DAY">
@@ -2269,6 +2615,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89H_ASC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2278,6 +2627,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89H_DSC">
@@ -2289,6 +2641,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_89H_DAY">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2298,6 +2653,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICECON_ASC">
@@ -2309,6 +2667,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICECON_DSC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2318,6 +2679,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICECON_DAY">
@@ -2329,6 +2693,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICEDIFF_ASC">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2338,6 +2705,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICEDIFF_DSC">
@@ -2349,6 +2719,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
                 </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
+                </Attribute>
             </Int16>
             <Int16 name="SI_25km_SH_ICEDIFF_DAY">
                 <Dim name="/YDim_SpPolarGrid25km"/>
@@ -2358,6 +2731,9 @@ codeListValue=&quot;creation&quot;&gt;creation
                 </Attribute>
                 <Attribute name="coordinates" type="String">
                     <Value>/SpPolarGrid25km/Longitude /SpPolarGrid25km/Latitude</Value>
+                </Attribute>
+                <Attribute name="grid_mapping" type="String">
+                    <Value>/SpPolarGrid25km/eos_cf_projection</Value>
                 </Attribute>
             </Int16>
         </Group>

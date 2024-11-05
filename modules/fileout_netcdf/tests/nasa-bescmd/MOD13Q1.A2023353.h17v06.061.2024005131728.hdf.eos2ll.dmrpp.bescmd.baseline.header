@@ -15,6 +15,24 @@ dimensions:
 
 group: MODIS_Grid_16DAY_250m_500m_VI {
   variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "sinusoidal" ;
+  		eos_cf_projection:longitude_of_central_meridian = 0. ;
+  		eos_cf_projection:earth_radius = 6371007.181 ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "MODIS_Grid_16DAY_250m_500m_VI eos_cf_projection" ;
+  	double XDim(XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
+  		XDim:standard_name = "projection_x_coordinate" ;
+  		XDim:long_name = "x coordinate of projection " ;
+  		XDim:units = "meter" ;
+  		XDim:_CoordinateAxisType = "GeoX" ;
+  		XDim:eos_cf_grid = "MODIS_Grid_16DAY_250m_500m_VI XDim" ;
+  	double YDim(YDim_MODIS_Grid_16DAY_250m_500m_VI) ;
+  		YDim:standard_name = "projection_y_coordinate" ;
+  		YDim:long_name = "y coordinate of projection " ;
+  		YDim:units = "meter" ;
+  		YDim:_CoordinateAxisType = "GeoY" ;
+  		YDim:eos_cf_grid = "MODIS_Grid_16DAY_250m_500m_VI YDim" ;
   	double Latitude(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "MODIS_Grid_16DAY_250m_500m_VI lat" ;
@@ -36,6 +54,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_NDVI:calibrated_nt = 5 ;
     		_250m_16_days_NDVI:dmr_sds_ref = 5 ;
     		_250m_16_days_NDVI:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_NDVI:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_EVI(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_EVI:long_name = "250m 16 days EVI" ;
     		_250m_16_days_EVI:units = "EVI" ;
@@ -48,6 +67,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_EVI:calibrated_nt = 5 ;
     		_250m_16_days_EVI:dmr_sds_ref = 6 ;
     		_250m_16_days_EVI:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_EVI:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	ushort _250m_16_days_VI_Quality(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_VI_Quality:long_name = "250m 16 days VI Quality" ;
     		_250m_16_days_VI_Quality:units = "bit field" ;
@@ -56,6 +76,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_VI_Quality:Legend = "\n\t Bit Fields Description (Right to Left): \n\t[0-1] : MODLAND_QA [2 bit range] \n\t\t 00: VI produced, good quality \n\t\t 01: VI produced, but check other QA \n\t\t 10: Pixel produced, but most probably cloudy \n\t\t 11: Pixel not produced due to other reasons than clouds \n\t[2-5] : VI usefulness [4 bit range] \n\t\t 0000: Highest quality \n\t\t 0001: Lower quality  \n\t\t 0010..1010: Decreasing quality \n\t\t 1100: Lowest quality \n\t\t 1101: Quality so low that it is not useful \n\t\t 1110: L1B data faulty \n\t\t 1111: Not useful for any other reason/not processed \n\t[6-7] : Aerosol quantity [2 bit range] \n\t\t 00: Climatology \n\t\t 01: Low \n\t\t 10: Average \n\t\t 11: High (11) \n\t[8] : Adjacent cloud detected; [1 bit range] \n\t\t 1: Yes \n\t\t 0: No \n\t[9] : Atmosphere BRDF correction performed [1 bit range] \n\t\t 1: Yes \n\t\t 0: No \n\t[10] : Mixed clouds  [1 bit range] \n\t\t 1: Yes \n\t\t 0: No \n\t[11-13] : Land/Water Flag [3 bit range] \n\t\t 000: Shallow ocean \n\t\t 001: Land (Nothing else but land) \n\t\t 010: Ocean coastlines and lake shorelines \n\t\t 011: Shallow inland water \n\t\t 100: Ephemeral water \n\t\t 101: Deep inland water \n\t\t 110: Moderate or continental ocean \n\t\t 111: Deep ocean \n\t[14] : Possible snow/ice [1 bit range] \n\t\t 1: Yes \n\t\t 0: No \n\t[15] : Possible shadow [1 bit range] \n\t\t 1: Yes \n\t\t 0: No \n" ;
     		_250m_16_days_VI_Quality:dmr_sds_ref = 7 ;
     		_250m_16_days_VI_Quality:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_VI_Quality:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_red_reflectance(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_red_reflectance:long_name = "250m 16 days red reflectance" ;
     		_250m_16_days_red_reflectance:units = "reflectance" ;
@@ -68,6 +89,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_red_reflectance:calibrated_nt = 5 ;
     		_250m_16_days_red_reflectance:dmr_sds_ref = 8 ;
     		_250m_16_days_red_reflectance:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_red_reflectance:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_NIR_reflectance(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_NIR_reflectance:long_name = "250m 16 days NIR reflectance" ;
     		_250m_16_days_NIR_reflectance:units = "reflectance" ;
@@ -80,6 +102,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_NIR_reflectance:calibrated_nt = 5 ;
     		_250m_16_days_NIR_reflectance:dmr_sds_ref = 9 ;
     		_250m_16_days_NIR_reflectance:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_NIR_reflectance:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_blue_reflectance(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_blue_reflectance:long_name = "250m 16 days blue reflectance" ;
     		_250m_16_days_blue_reflectance:units = "reflectance" ;
@@ -92,6 +115,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_blue_reflectance:calibrated_nt = 5 ;
     		_250m_16_days_blue_reflectance:dmr_sds_ref = 10 ;
     		_250m_16_days_blue_reflectance:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_blue_reflectance:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_MIR_reflectance(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_MIR_reflectance:long_name = "250m 16 days MIR reflectance" ;
     		_250m_16_days_MIR_reflectance:units = "reflectance" ;
@@ -105,6 +129,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_MIR_reflectance:calibrated_nt = 5 ;
     		_250m_16_days_MIR_reflectance:dmr_sds_ref = 11 ;
     		_250m_16_days_MIR_reflectance:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_MIR_reflectance:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_view_zenith_angle(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_view_zenith_angle:long_name = "250m 16 days view zenith angle" ;
     		_250m_16_days_view_zenith_angle:units = "degrees" ;
@@ -117,6 +142,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_view_zenith_angle:calibrated_nt = 5 ;
     		_250m_16_days_view_zenith_angle:dmr_sds_ref = 12 ;
     		_250m_16_days_view_zenith_angle:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_view_zenith_angle:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_sun_zenith_angle(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_sun_zenith_angle:long_name = "250m 16 days sun zenith angle" ;
     		_250m_16_days_sun_zenith_angle:units = "degrees" ;
@@ -129,6 +155,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_sun_zenith_angle:calibrated_nt = 5 ;
     		_250m_16_days_sun_zenith_angle:dmr_sds_ref = 13 ;
     		_250m_16_days_sun_zenith_angle:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_sun_zenith_angle:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_relative_azimuth_angle(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_relative_azimuth_angle:long_name = "250m 16 days relative azimuth angle" ;
     		_250m_16_days_relative_azimuth_angle:units = "degrees" ;
@@ -141,6 +168,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_relative_azimuth_angle:calibrated_nt = 5 ;
     		_250m_16_days_relative_azimuth_angle:dmr_sds_ref = 14 ;
     		_250m_16_days_relative_azimuth_angle:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_relative_azimuth_angle:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	short _250m_16_days_composite_day_of_the_year(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_composite_day_of_the_year:long_name = "250m 16 days composite day of the year" ;
     		_250m_16_days_composite_day_of_the_year:units = "Julian day of the year " ;
@@ -148,6 +176,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_composite_day_of_the_year:_FillValue = -1s ;
     		_250m_16_days_composite_day_of_the_year:dmr_sds_ref = 15 ;
     		_250m_16_days_composite_day_of_the_year:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_composite_day_of_the_year:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     	byte _250m_16_days_pixel_reliability(YDim_MODIS_Grid_16DAY_250m_500m_VI, XDim_MODIS_Grid_16DAY_250m_500m_VI) ;
     		_250m_16_days_pixel_reliability:long_name = "250m 16 days pixel reliability" ;
     		_250m_16_days_pixel_reliability:units = "rank" ;
@@ -156,6 +185,7 @@ group: MODIS_Grid_16DAY_250m_500m_VI {
     		_250m_16_days_pixel_reliability:Legend = "\n\t Rank Keys: \n\t\t[-1]:  Fill/No Data-Not Processed. \n\t\t [0]:  Good data      - Use with confidence \n\t\t [1]:  Marginal data  - Useful, but look at other QA information \n\t\t [2]:  Snow/Ice       - Target covered with snow/ice \n\t\t [3]:  Cloudy         - Target not visible, covered with cloud \n" ;
     		_250m_16_days_pixel_reliability:dmr_sds_ref = 16 ;
     		_250m_16_days_pixel_reliability:coordinates = "/MODIS_Grid_16DAY_250m_500m_VI/Longitude /MODIS_Grid_16DAY_250m_500m_VI/Latitude" ;
+    		_250m_16_days_pixel_reliability:grid_mapping = "/MODIS_Grid_16DAY_250m_500m_VI/eos_cf_projection" ;
     } // group Data_Fields
 
   group: Grid_Attributes {

@@ -260,7 +260,7 @@ void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref);
 // 5. HDF-EOS2 handlings(Not need the hdf-eos2 library)
 int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls);
 void add_eos2_latlon_info(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t &eos2_grid_info, const string&filename);
-void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_info_t &eos2_grid_info);
+void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t &eos2_grid_info);
 void add_ps_cf_grid_mapping_attrs(libdap::BaseType *var, const eos2_grid_info_t & eg_info);
 void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *var, const eos2_grid_info_t & eg_info);
 void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t &eos2_grid_info, const string& xdim_path, const string &ydim_path);
@@ -5778,7 +5778,7 @@ void add_eos2_latlon_info(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t 
     int32 proj_code = eos2_grid_info.projcode;
     if (proj_code == GCTP_SNSOID || proj_code == GCTP_PS || proj_code == GCTP_LAMAZ) {
         // Add grid_mapping dummy variable
-        add_dummy_grid_cv(d4_grp, eos2_grid_info);
+        add_dummy_grid_cv(d4_grp, eos2_grid, eos2_grid_info);
         // Add 1-D CF grid coordinates
         add_CF_1D_cvs(d4_grp,root_grp,eos2_grid,eos2_grid_info,xdim_path,ydim_path);
     }
@@ -5924,9 +5924,9 @@ bool obtain_eos2_gd_ll_info(const string & fname, const string & grid_name, int3
 
     return true;
 }
-void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_info_t &eg_info) {
+void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_t & eos2_grid, const eos2_grid_info_t &eg_info) {
 
-    string dummy_proj_cf_name = "eos5_cf_projection";
+    string dummy_proj_cf_name = "eos_cf_projection";
     auto dummy_proj_cf_unique = make_unique<HDFEOS2GeoCFProj>(dummy_proj_cf_name, dummy_proj_cf_name);
     HDFEOS2GeoCFProj *dummy_proj_cf = dummy_proj_cf_unique.get();
     dummy_proj_cf->set_is_dap4(true);
@@ -5941,6 +5941,9 @@ void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_info_t &eg_info) {
         add_ps_cf_grid_mapping_attrs(dummy_proj_cf, eg_info);
     else if (eg_info.projcode == GCTP_LAMAZ)
         add_lamaz_cf_grid_mapping_attrs(dummy_proj_cf, eg_info);
+
+    string eos_cf_grid_value = eos2_grid.grid_name + " eos_cf_projection";
+    add_var_dap4_attr(dummy_proj_cf,"eos_cf_grid_mapping",attr_str_c,eos_cf_grid_value);
     d4_grp->add_var_nocopy(dummy_proj_cf_unique.release());
 
 }
@@ -5956,6 +5959,9 @@ void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_g
     dims_transform_to_dap4(ar_dim1,root_grp,true);
     ar_dim1->set_is_dap4(true);
     add_CF_1D_cv_attrs(ar_dim1,false);
+
+    string eos_cf_grid_value = eos2_grid.grid_name + " XDim";
+    add_var_dap4_attr(ar_dim1,"eos_cf_grid",attr_str_c,eos_cf_grid_value);
     d4_grp->add_var_nocopy(ar_dim1_unique.release());
 
     auto ar_bt_dim0_unique = make_unique<Float64>("YDim");
@@ -5969,6 +5975,10 @@ void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_g
 
     ar_dim0->set_is_dap4(true);
     add_CF_1D_cv_attrs(ar_dim0,true);
+
+    eos_cf_grid_value = eos2_grid.grid_name + " YDim";
+    add_var_dap4_attr(ar_dim0,"eos_cf_grid",attr_str_c,eos_cf_grid_value);
+
     d4_grp->add_var_nocopy(ar_dim0_unique.release());
 
 }
