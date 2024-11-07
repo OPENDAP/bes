@@ -3066,7 +3066,7 @@ void DmrppArray::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-unsigned int DmrppArray::buf2val(void **val){
+uint64_t DmrppArray::buf2val(void **val){
 
     if (!val) {
         throw BESInternalError("NULL pointer encountered.", __FILE__, __LINE__);
@@ -3086,7 +3086,7 @@ unsigned int DmrppArray::buf2val(void **val){
         memcpy(*val, str_buf.data(), buf_size);
         return buf_size;
     }
-    return Vector::buf2val(val);
+    return Vector::buf2val_ll(void **val);
 }
 
 // Check if direct chunk IO can be used. 
