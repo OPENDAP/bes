@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="comp_scalar2_udf_fv.h5">
+    <Structure name="comp_scalar">
+        <Float64 name="a_name"/>
+        <Int16 name="b_name">
+            <Dim size="3"/>
+        </Int16>
+        <Float32 name="c_name">
+            <Dim size="2"/>
+        </Float32>
+    </Structure>
+</Dataset>

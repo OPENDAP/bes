@@ -834,8 +834,74 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     d_is_inflated = true;
 }
 
-static unsigned int get_value_size(libdap::Type type) 
+unsigned int Chunk::obtain_compound_udf_type_size() {
+
+    int ret_value = 0;
+
+    for (const auto &cudf_type_elm:compound_udf_type_elms) {
+
+        auto dtype = cudf_type_elm.first;
+        int type_size = 1;
+
+        switch(dtype) {
+        case libdap::dods_int8_c:
+            type_size = sizeof(int8_t);
+            break;
+            
+        case libdap::dods_int16_c:
+            type_size = sizeof(int16_t);
+            break;
+            
+        case libdap::dods_int32_c:
+            type_size =  sizeof(int32_t);
+            break;
+            
+        case libdap::dods_int64_c:
+            type_size =  sizeof(int64_t);
+            break;
+            
+        case libdap::dods_uint8_c:
+        case libdap::dods_byte_c:
+            type_size = sizeof(uint8_t);
+            break;
+            
+        case libdap::dods_uint16_c:
+            type_size = sizeof(uint16_t);
+            break;
+            
+        case libdap::dods_uint32_c:
+            type_size = sizeof(uint32_t);
+            break;
+            
+        case libdap::dods_uint64_c:
+            type_size = sizeof(uint64_t);
+            break;
+
+        case libdap::dods_float32_c:
+            type_size = sizeof(float);
+            break;
+            
+        case libdap::dods_float64_c:
+            type_size = sizeof(double);
+            break;
+
+        default:
+            throw BESInternalError("Unsupported user-defined fill value compound base type.", __FILE__, __LINE__);
+        }
+
+        ret_value += cudf_type_elm.second *type_size;
+    }
+
+    return ret_value;
+
+}
+
+unsigned int Chunk::get_value_size(libdap::Type type) 
 {
+
+    if (type == libdap::dods_structure_c && !compound_udf_type_elms.empty()) {
+        return obtain_compound_udf_type_size();
+    }
     switch(type) {
         case libdap::dods_int8_c:
             return sizeof(int8_t);
@@ -873,8 +939,152 @@ static unsigned int get_value_size(libdap::Type type)
     }
 }
 
-const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v, bool is_big_endian)
+void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) {
+
+    vector<string> fv_str;
+    obtain_fv_strs(fv_str,v);
+
+    char * temp_compound_fvalue = compound_fvalue.data();
+    //char * temp_compound_fvalue = compound_fvalue_ptr;
+    size_t fvalue_count = 0;
+
+    for (const auto &cudf_type_elm:compound_udf_type_elms) {
+
+        auto dtype = cudf_type_elm.first;
+        auto num_elms = cudf_type_elm.second;
+        int type_size = 1;
+
+        switch(dtype) {
+        case libdap::dods_int8_c: 
+            type_size = sizeof(int8_t);
+            for (int i = 0; i<num_elms;i++) {
+                int8_t temp_value = (int8_t)stoi(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+            
+        case libdap::dods_int16_c:
+            type_size = sizeof(int16_t);
+            for (int i = 0; i<num_elms;i++) {
+                int16_t temp_value = (int16_t)stoi(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+ 
+            break;
+            
+        case libdap::dods_int32_c:
+            type_size =  sizeof(int32_t);
+            for (int i = 0; i<num_elms;i++) {
+                int32_t temp_value = (int32_t)stoi(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+            
+        case libdap::dods_int64_c:
+            type_size =  sizeof(int64_t);
+            for (int i = 0; i<num_elms;i++) {
+                int64_t temp_value = (int64_t)stoll(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+            
+        case libdap::dods_uint8_c:
+        case libdap::dods_byte_c:
+            type_size = sizeof(uint8_t);
+            for (int i = 0; i<num_elms;i++) {
+                uint8_t temp_value = (uint8_t)stoi(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+            
+        case libdap::dods_uint16_c:
+            type_size = sizeof(uint16_t);
+            for (int i = 0; i<num_elms;i++) {
+                uint16_t temp_value = (uint16_t)stoi(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+            
+        case libdap::dods_uint32_c:
+            type_size = sizeof(uint32_t);
+            for (int i = 0; i<num_elms;i++) {
+                uint32_t temp_value = (uint32_t)stoul(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+            
+        case libdap::dods_uint64_c:
+            type_size = sizeof(uint64_t);
+            for (int i = 0; i<num_elms;i++) {
+                uint64_t temp_value = (uint64_t)stoull(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+
+        case libdap::dods_float32_c:
+            type_size = sizeof(float);
+            for (int i = 0; i<num_elms;i++) {
+                float temp_value = (float)stof(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+            
+        case libdap::dods_float64_c:
+            type_size = sizeof(double);
+            for (int i = 0; i<num_elms;i++) {
+                double temp_value = (double)stod(fv_str[fvalue_count]);
+                memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
+                fvalue_count++;
+                temp_compound_fvalue +=type_size;
+            }
+            break;
+
+        default:
+            throw BESInternalError("Unsupported user-defined fill value compound base type.", __FILE__, __LINE__);
+        }
+
+        //ret_value += cudf_type_elm.second *type_size;
+    }
+
+
+}
+
+void Chunk::obtain_fv_strs(vector<string>& fv_str, const string &v) {
+
+    string::size_type start = 0;
+    string::size_type end = 0;
+    char sep=' ';
+
+    while ((end = v.find(sep, start)) != string::npos) {
+        fv_str.push_back(v.substr(start, end - start));
+        start = end + 1;
+    }
+    fv_str.push_back(v.substr(start));
+
+}
+
+
+const char * Chunk::get_value_ptr(fill_value &fv, libdap::Type type, const string &v, bool is_big_endian)
 {
+    
     switch(type) {
         case libdap::dods_int8_c:
             fv.int8 = (int8_t)stoi(v);
@@ -954,7 +1164,7 @@ void Chunk::load_fill_values() {
 
     fill_value fv;
     unsigned int value_size = 0;
-    
+ 
     if (d_fill_value_type == libdap::dods_str_c) 
         value_size = (unsigned int)d_fill_value.size();
     else 
@@ -963,7 +1173,22 @@ void Chunk::load_fill_values() {
     bool is_big_endian = false;
     if (d_byte_order == "BE")
         is_big_endian = true;
-    const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value,is_big_endian);
+    
+    const char *value = nullptr;
+    vector<char> compound_fvalue;
+
+    if (d_fill_value_type == libdap::dods_structure_c && !compound_udf_type_elms.empty()) {
+
+        if (value_size == 0) 
+            throw BESInternalError("The size of fill value should NOT be 0.", __FILE__,__LINE__);
+        compound_fvalue.resize(value_size);
+        get_compound_fvalue(d_fill_value,compound_fvalue);
+        value = compound_fvalue.data();
+
+    }
+    else {
+    
+    value = get_value_ptr(fv, d_fill_value_type, d_fill_value,is_big_endian);
 
     // If a string is empty, current build_dmrpp will assign an "" to fillvalue and causes the value size to be 0.
     if(d_fill_value_type == libdap::dods_str_c && d_fill_value==""){
@@ -973,7 +1198,10 @@ void Chunk::load_fill_values() {
 
     if (value_size == 0) 
        throw BESInternalError("The size of fill value should NOT be 0.", __FILE__,__LINE__);
+    }
+
     unsigned long long num_values = get_rbuf_size() / value_size;
+
 
     char *buffer = get_rbuf();
 

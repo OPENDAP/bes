@@ -449,7 +449,6 @@ get_compound_base_fill_value_as_string(hid_t h5_type_id, char* value_ptr)
                 default:
                     throw BESInternalError("Unable to extract integer fill value.", __FILE__, __LINE__);
             }
-            break;
         }
 
         case H5T_FLOAT: {
@@ -466,11 +465,11 @@ get_compound_base_fill_value_as_string(hid_t h5_type_id, char* value_ptr)
                 default:
                     throw BESInternalError("Unable to extract float fill value.", __FILE__, __LINE__);
             }
-            break;
         }
         default:
         throw BESInternalError("The member of compound datatype that has user-defined datatype has to be either integer or float..", __FILE__, __LINE__);
     }
+    return "";
 
 }
 
@@ -478,15 +477,16 @@ string obtain_compound_user_defined_fvalues(hid_t dtype_id, hid_t h5_plist_id, v
 
     string ret_value;
     hid_t memtype  = -1;
-    size_t ty_size = -1;
 
-    if ((memtype = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND))<0) 
+    if ((memtype = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND))<0)  {
+        H5Pclose(h5_plist_id);
         throw BESInternalError ("Fail to obtain memory datatype.", __FILE__, __LINE__);
-
-    ty_size = H5Tget_size(memtype);
+    }
 
     int                 nmembs           = 0;
     if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+        H5Tclose(memtype);
+        H5Pclose(h5_plist_id);
         string err_msg = "Fail to obtain number of HDF5 compound datatype.";
         throw BESInternalError (err_msg, __FILE__, __LINE__);
     }
@@ -502,19 +502,21 @@ string obtain_compound_user_defined_fvalues(hid_t dtype_id, hid_t h5_plist_id, v
 
         // Get member type ID
         if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
+            H5Tclose(memtype);
+            H5Pclose(h5_plist_id);
             string err_msg =  "Fail to obtain the datatype of an HDF5 compound datatype member.";
             throw BESInternalError (err_msg, __FILE__, __LINE__);
         }
     
         // Get member type class
         if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
+            H5Pclose(h5_plist_id);
+            H5Tclose(memtype);
             H5Tclose(memb_id);
             string err_msg =  "Fail to obtain the datatype class of an HDF5 compound datatype member.";
             throw BESInternalError (err_msg, __FILE__, __LINE__);
         }
 
-        size_t memb_size = H5Tget_size(memb_id);
-    
         // Get member offset,H5Tget_member_offset only fails
         // when H5Tget_memeber_class fails. Sinc H5Tget_member_class
         // is checked above. So no need to check the return value.
@@ -526,9 +528,18 @@ string obtain_compound_user_defined_fvalues(hid_t dtype_id, hid_t h5_plist_id, v
             size_t at_base_type_size = H5Tget_size(at_base_type);
             H5T_class_t array_cls = H5Tget_class(at_base_type);
 
+            if (array_cls != H5T_INTEGER && array_cls !=H5T_FLOAT) {
+                H5Tclose(memtype);
+                H5Tclose(memb_id);
+                string err_msg =  "The base class of an HDF5 compound datatype member must be integer or float.";
+                throw BESInternalError (err_msg, __FILE__, __LINE__);
+            }
+
             // Need to retrieve the number of elements of the array
             int at_ndims = H5Tget_array_ndims(memb_id);
             if (at_ndims <= 0) {
+                H5Pclose(h5_plist_id);
+                H5Tclose(memtype);
                 H5Tclose(at_base_type);
                 H5Tclose(memb_id);
                 string err_msg =  "Fail to obtain number of dimensions of the array datatype.";
@@ -539,6 +550,8 @@ string obtain_compound_user_defined_fvalues(hid_t dtype_id, hid_t h5_plist_id, v
         
             // Obtain the number of elements for each dims
             if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
+                H5Pclose(h5_plist_id);
+                H5Tclose(memtype);
                 H5Tclose(at_base_type);
                 H5Tclose(memb_id);
                 string err_msg =  "Fail to obtain each imension size of the array datatype.";
@@ -573,7 +586,11 @@ string obtain_compound_user_defined_fvalues(hid_t dtype_id, hid_t h5_plist_id, v
             else 
                 ret_value = ret_value + ' '+ tmp_value;
         }
+        H5Tclose(memb_id);
     }
+
+    H5Tclose(memtype);
+
     return ret_value;
 }
 
@@ -1244,14 +1261,64 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
 void set_fill_value(hid_t dataset, BaseType *btp){
     short fill_value_defined = is_hdf5_fill_value_defined(dataset);
     if (fill_value_defined >0) {
+#if 0
+if (btp->name()=="housekeeping_data") {
+    cerr<<"coming to compound fill_value_defined"<<endl;
+
+}
+#endif
         string fill_value = get_hdf5_fill_value_str(dataset);
+#if 0
+if (btp->name()=="housekeeping_data") {
+    cerr<<"fill_value: "<<fill_value <<endl;
+
+}
+#endif
         auto dc = toDC(btp);
         dc->set_uses_fill_value(fill_value_defined);
         dc->set_fill_value_string(fill_value);
+#if 0
         if (fill_value_defined == 2 && btp->type() == libdap::dods_structure_c) {
-            vector<pair<libdap::Type,int> > strucutre_type_element;
+ auto t_a = dynamic_cast<Array *>(bt);
+                        Type t_array_var = t_a->var()->type();
+            vector<pair<libdap::Type,int> > structure_type_element;
+            auto ds=dynamic_cast<DmrppStructure *>(btp);
+            
+            for (const auto &bt:ds->variables()) {
+
+                Type t_bt = bt->type();
+
+                // Only support array or scalar of float/int/string.
+                if (libdap::is_simple_type(t_bt) == false) {
+                    if (t_bt != dods_array_c) 
+                        throw BESInternalError("For HDF5 compound user-defined fill value,only support the array constructor type.", __FILE__, __LINE__);
+                    else {
+                        auto t_a = dynamic_cast<Array *>(bt);
+                        Type t_array_var = t_a->var()->type();
+                        if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) 
+                            throw BESInternalError("For HDF5 compound user-defined fill value,only support the integer or float base class array.", __FILE__, __LINE__);
+                        pair<Type,int> temp_pair;
+                        int64_t num_eles= t_a->length_ll();
+                        temp_pair.first = t_array_var;
+                        temp_pair.second = (int)(num_eles);;
+                        structure_type_element.push_back(temp_pair);
+                    }
+                }
+                else if (t_bt == dods_url_c || t_bt == dods_enum_c || t_bt==dods_opaque_c || t_bt==dods_str_c) {
+                    throw BESInternalError("For HDF5 compound user-defined fill value scalar case ,only support the integer or float type.", __FILE__, __LINE__);
+                }
+                else {
+                    pair<Type,int> temp_pair;
+                    temp_pair.first = t_bt;
+                    temp_pair.second = 1;
+                    structure_type_element.push_back(temp_pair);
+                }
+            }
+
+            dc->set_compound_udf_info(structure_type_element);
 
         }
+#endif
     }
 }
 

@@ -50,6 +50,7 @@
 #include "DMZ.h"
 #include "Chunk.h"
 #include "DmrppCommon.h"
+#include "DmrppInt32.h"
 #include "DmrppArray.h"
 #include "DmrppTypeFactory.h"
 #include "Base64.h"
@@ -789,7 +790,7 @@ public:
 
     // Test the case when there are no chunks in the DMR++ - the array is all fill values
     void test_process_fill_value_chunks_all_fill() {
-        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        unique_ptr<DmrppInt32> dc(new DmrppInt32("dummy"));
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
         dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
@@ -818,7 +819,7 @@ public:
     }
 
     void test_process_fill_value_chunks_some_fill() {
-        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        unique_ptr<DmrppInt32> dc(new DmrppInt32("dummy"));
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
         dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
@@ -857,7 +858,7 @@ public:
     }
 
     void test_process_fill_value_chunks_some_fill_2D() {
-        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        unique_ptr<DmrppInt32> dc(new DmrppInt32("dummy"));
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
         dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
@@ -902,7 +903,7 @@ public:
     }
 
     void test_process_fill_value_chunks_all_fill_2D() {
-        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        unique_ptr<DmrppInt32> dc(new DmrppInt32("dummy"));
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
         dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";

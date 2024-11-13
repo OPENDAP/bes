@@ -1,0 +1,27 @@
+netcdf test {
+dimensions:
+	sdim1 = 2 ;
+	sdim2 = 2 ;
+	sdim3 = 3 ;
+	sdim4 = 2 ;
+	sdim5 = 2 ;
+variables:
+	double comp_array.a_name(sdim1) ;
+	short comp_array.b_name(sdim2, sdim3) ;
+	float comp_array.c_name(sdim4, sdim5) ;
+
+// global attributes:
+		:history = "removed date-timex comp_array2_udf_fv_chunk.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"comp_array2_udf_fv_chunk.h5.dmrpp\"}]}]" ;
+data:
+
+ comp_array.a_name = -9999.9, -9999.9 ;
+
+ comp_array.b_name =
+  32767, 32766, 32765,
+  32767, 32766, 32765 ;
+
+ comp_array.c_name =
+  999.9, 899.9,
+  999.9, 899.9 ;
+}
