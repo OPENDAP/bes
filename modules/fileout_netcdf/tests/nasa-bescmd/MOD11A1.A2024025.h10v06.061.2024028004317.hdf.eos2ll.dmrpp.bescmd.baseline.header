@@ -15,6 +15,24 @@ dimensions:
 
 group: MODIS_Grid_Daily_1km_LST {
   variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "sinusoidal" ;
+  		eos_cf_projection:longitude_of_central_meridian = 0. ;
+  		eos_cf_projection:earth_radius = 6371007.181 ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "MODIS_Grid_Daily_1km_LST eos_cf_projection" ;
+  	double XDim(XDim_MODIS_Grid_Daily_1km_LST) ;
+  		XDim:standard_name = "projection_x_coordinate" ;
+  		XDim:long_name = "x coordinate of projection " ;
+  		XDim:units = "meter" ;
+  		XDim:_CoordinateAxisType = "GeoX" ;
+  		XDim:eos_cf_grid = "MODIS_Grid_Daily_1km_LST XDim" ;
+  	double YDim(YDim_MODIS_Grid_Daily_1km_LST) ;
+  		YDim:standard_name = "projection_y_coordinate" ;
+  		YDim:long_name = "y coordinate of projection " ;
+  		YDim:units = "meter" ;
+  		YDim:_CoordinateAxisType = "GeoY" ;
+  		YDim:eos_cf_grid = "MODIS_Grid_Daily_1km_LST YDim" ;
   	double Latitude(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "MODIS_Grid_Daily_1km_LST lat" ;
@@ -37,6 +55,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		LST_Day_1km:calibrated_nt = 5 ;
     		LST_Day_1km:dmr_sds_ref = 4 ;
     		LST_Day_1km:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		LST_Day_1km:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ubyte QC_Day(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		QC_Day:long_name = "Quality control for daytime LST and emissivity" ;
     		QC_Day:Number_Type = "uint8" ;
@@ -44,6 +63,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		QC_Day:_FillValue = 0UB ;
     		QC_Day:dmr_sds_ref = 6 ;
     		QC_Day:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		QC_Day:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ubyte Day_view_time(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		Day_view_time:long_name = "Time of daytime Land-surface Temperature observation" ;
     		Day_view_time:units = "hrs" ;
@@ -57,6 +77,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		Day_view_time:calibrated_nt = 5 ;
     		Day_view_time:dmr_sds_ref = 8 ;
     		Day_view_time:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		Day_view_time:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ubyte Day_view_angl(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		Day_view_angl:long_name = "View zenith angle of daytime Land-surface Temperature" ;
     		Day_view_angl:units = "deg" ;
@@ -71,6 +92,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		Day_view_angl:calibrated_nt = 5 ;
     		Day_view_angl:dmr_sds_ref = 10 ;
     		Day_view_angl:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		Day_view_angl:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ushort LST_Night_1km(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		LST_Night_1km:long_name = "Daily nighttime 1km grid Land-surface Temperature" ;
     		LST_Night_1km:units = "K" ;
@@ -84,6 +106,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		LST_Night_1km:calibrated_nt = 5 ;
     		LST_Night_1km:dmr_sds_ref = 12 ;
     		LST_Night_1km:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		LST_Night_1km:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ubyte QC_Night(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		QC_Night:long_name = "Quality control for nighttime LST and emissivity" ;
     		QC_Night:Number_Type = "uint8" ;
@@ -91,6 +114,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		QC_Night:_FillValue = 0UB ;
     		QC_Night:dmr_sds_ref = 14 ;
     		QC_Night:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		QC_Night:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ubyte Night_view_time(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		Night_view_time:long_name = "Time of nighttime Land-surface Temperature observation" ;
     		Night_view_time:units = "hrs" ;
@@ -104,6 +128,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		Night_view_time:calibrated_nt = 5 ;
     		Night_view_time:dmr_sds_ref = 16 ;
     		Night_view_time:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		Night_view_time:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ubyte Night_view_angl(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		Night_view_angl:long_name = "View zenith angle of nighttime Land-surface Temperature" ;
     		Night_view_angl:units = "deg" ;
@@ -118,6 +143,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		Night_view_angl:calibrated_nt = 5 ;
     		Night_view_angl:dmr_sds_ref = 18 ;
     		Night_view_angl:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		Night_view_angl:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ubyte Emis_31(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		Emis_31:long_name = "Band 31 emissivity" ;
     		Emis_31:Number_Type = "uint8" ;
@@ -131,6 +157,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		Emis_31:calibrated_nt = 5 ;
     		Emis_31:dmr_sds_ref = 20 ;
     		Emis_31:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		Emis_31:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ubyte Emis_32(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		Emis_32:long_name = "Band 32 emissivity" ;
     		Emis_32:Number_Type = "uint8" ;
@@ -144,6 +171,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		Emis_32:calibrated_nt = 5 ;
     		Emis_32:dmr_sds_ref = 22 ;
     		Emis_32:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		Emis_32:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ushort Clear_day_cov(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		Clear_day_cov:long_name = "day clear-sky coverage" ;
     		Clear_day_cov:Number_Type = "uint16" ;
@@ -156,6 +184,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		Clear_day_cov:calibrated_nt = 5 ;
     		Clear_day_cov:dmr_sds_ref = 24 ;
     		Clear_day_cov:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		Clear_day_cov:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     	ushort Clear_night_cov(YDim_MODIS_Grid_Daily_1km_LST, XDim_MODIS_Grid_Daily_1km_LST) ;
     		Clear_night_cov:long_name = "night clear-sky coverage" ;
     		Clear_night_cov:Number_Type = "uint16" ;
@@ -168,6 +197,7 @@ group: MODIS_Grid_Daily_1km_LST {
     		Clear_night_cov:calibrated_nt = 5 ;
     		Clear_night_cov:dmr_sds_ref = 26 ;
     		Clear_night_cov:coordinates = "/MODIS_Grid_Daily_1km_LST/Longitude /MODIS_Grid_Daily_1km_LST/Latitude" ;
+    		Clear_night_cov:grid_mapping = "/MODIS_Grid_Daily_1km_LST/eos_cf_projection" ;
     } // group Data_Fields
 
   group: Grid_Attributes {

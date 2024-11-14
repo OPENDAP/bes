@@ -1140,7 +1140,7 @@ function dap4_attributes() {
 # The sed command:
 # - removes leading and trailing whitespace from each line
 # - removes both /> and > from each line because making the dmr++ may add chunks (a kind of metadata) to
-#   variables that had no metedata (Attributes) previously, thus their termination may legitimately change
+#   variables that had no metadata (Attributes) previously, thus their termination may legitimately change
 #   from /> to >
 # The output of the sed command is sorted to normalize changes in order caused by the creation of the dmr++.
 #
@@ -1773,9 +1773,7 @@ function main() {
         echo "# BEGIN main()" >&2
         echo "#" >&2
     fi
-
     local status=0
-
     # Here we test to see if the input file name is actually an S3 URL
     # and if it is we adjust the INPUT_DATA_FILE and go out and get the
     # object from S3.
@@ -1815,7 +1813,6 @@ function main() {
         echo "# Missing file (if needed): ${s3_local_side_car_missing_file}" >&2
         set -e
     fi
-
     if test -n "${VERBOSE}";then
         echo "#######################################################################################" >&2
         echo "# BUILDING INITIAL DMR" >&2
@@ -1855,7 +1852,7 @@ function main() {
     fi
 
     # At this point, return an error for a zero-length DMR++ document.
-    if test ! -s "${OUTPUT_FILE}"; then
+    if test -n "${OUTPUT_FILE}" -a ! -s "${OUTPUT_FILE}"; then
         echo "ERROR : mk_dmrpp() - The DMR++ file is zero-length. Exiting..." >&2
         return 1
     fi
@@ -1929,7 +1926,6 @@ function main() {
         fi
         set -e
     fi
-
     if test -n "${VERBOSE}"; then
         echo "#######################################################################################" >&2
         if test -n "${MERGE_MISSING_VARS}"; then
@@ -1938,7 +1934,6 @@ function main() {
         echo "# END main()" >&2
         echo "#######################################################################################" >&2
     fi
-
     return 0
 }
 

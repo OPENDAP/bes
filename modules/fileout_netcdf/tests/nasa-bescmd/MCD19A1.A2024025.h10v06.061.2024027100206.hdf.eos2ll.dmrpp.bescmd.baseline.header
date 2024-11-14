@@ -24,6 +24,24 @@ dimensions:
 
 group: grid1km {
   variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "sinusoidal" ;
+  		eos_cf_projection:longitude_of_central_meridian = 0. ;
+  		eos_cf_projection:earth_radius = 6371007.181 ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "grid1km eos_cf_projection" ;
+  	double XDim(XDim_grid1km) ;
+  		XDim:standard_name = "projection_x_coordinate" ;
+  		XDim:long_name = "x coordinate of projection " ;
+  		XDim:units = "meter" ;
+  		XDim:_CoordinateAxisType = "GeoX" ;
+  		XDim:eos_cf_grid = "grid1km XDim" ;
+  	double YDim(YDim_grid1km) ;
+  		YDim:standard_name = "projection_y_coordinate" ;
+  		YDim:long_name = "y coordinate of projection " ;
+  		YDim:units = "meter" ;
+  		YDim:_CoordinateAxisType = "GeoY" ;
+  		YDim:eos_cf_grid = "grid1km YDim" ;
   	double Latitude(YDim_grid1km, XDim_grid1km) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "grid1km lat" ;
@@ -42,6 +60,7 @@ group: grid1km {
     		Sur_refl1:valid_range = -100s, 16000s ;
     		Sur_refl1:dmr_sds_ref = 4 ;
     		Sur_refl1:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl1:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl2(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl2:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band2" ;
     		Sur_refl2:scale_factor = 0.0001 ;
@@ -51,6 +70,7 @@ group: grid1km {
     		Sur_refl2:valid_range = -100s, 16000s ;
     		Sur_refl2:dmr_sds_ref = 6 ;
     		Sur_refl2:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl2:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl3(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl3:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band3" ;
     		Sur_refl3:scale_factor = 0.0001 ;
@@ -60,6 +80,7 @@ group: grid1km {
     		Sur_refl3:valid_range = -100s, 16000s ;
     		Sur_refl3:dmr_sds_ref = 8 ;
     		Sur_refl3:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl3:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl4(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl4:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band4" ;
     		Sur_refl4:scale_factor = 0.0001 ;
@@ -69,6 +90,7 @@ group: grid1km {
     		Sur_refl4:valid_range = -100s, 16000s ;
     		Sur_refl4:dmr_sds_ref = 10 ;
     		Sur_refl4:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl4:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl5(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl5:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band5" ;
     		Sur_refl5:scale_factor = 0.0001 ;
@@ -78,6 +100,7 @@ group: grid1km {
     		Sur_refl5:valid_range = -100s, 16000s ;
     		Sur_refl5:dmr_sds_ref = 12 ;
     		Sur_refl5:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl5:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl6(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl6:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band6" ;
     		Sur_refl6:scale_factor = 0.0001 ;
@@ -87,6 +110,7 @@ group: grid1km {
     		Sur_refl6:valid_range = -100s, 16000s ;
     		Sur_refl6:dmr_sds_ref = 14 ;
     		Sur_refl6:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl6:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl7(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl7:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band7" ;
     		Sur_refl7:scale_factor = 0.0001 ;
@@ -96,6 +120,7 @@ group: grid1km {
     		Sur_refl7:valid_range = -100s, 16000s ;
     		Sur_refl7:dmr_sds_ref = 16 ;
     		Sur_refl7:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl7:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl8(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl8:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band8" ;
     		Sur_refl8:scale_factor = 0.0001 ;
@@ -105,6 +130,7 @@ group: grid1km {
     		Sur_refl8:valid_range = -100s, 16000s ;
     		Sur_refl8:dmr_sds_ref = 18 ;
     		Sur_refl8:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl8:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl9(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl9:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band9" ;
     		Sur_refl9:scale_factor = 0.0001 ;
@@ -114,6 +140,7 @@ group: grid1km {
     		Sur_refl9:valid_range = -100s, 16000s ;
     		Sur_refl9:dmr_sds_ref = 20 ;
     		Sur_refl9:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl9:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl10(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl10:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band10" ;
     		Sur_refl10:scale_factor = 0.0001 ;
@@ -123,6 +150,7 @@ group: grid1km {
     		Sur_refl10:valid_range = -100s, 16000s ;
     		Sur_refl10:dmr_sds_ref = 22 ;
     		Sur_refl10:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl10:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl11(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl11:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band11" ;
     		Sur_refl11:scale_factor = 0.0001 ;
@@ -132,6 +160,7 @@ group: grid1km {
     		Sur_refl11:valid_range = -100s, 16000s ;
     		Sur_refl11:dmr_sds_ref = 24 ;
     		Sur_refl11:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl11:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sur_refl12(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sur_refl12:long_name = "Surface_bidirectinal_reflectance_factor_1km, Band12" ;
     		Sur_refl12:scale_factor = 0.0001 ;
@@ -141,6 +170,7 @@ group: grid1km {
     		Sur_refl12:valid_range = -100s, 16000s ;
     		Sur_refl12:dmr_sds_ref = 26 ;
     		Sur_refl12:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sur_refl12:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sigma_BRFn1(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sigma_BRFn1:long_name = "BRFn uncertainties over time, Band1" ;
     		Sigma_BRFn1:scale_factor = 0.0001 ;
@@ -150,6 +180,7 @@ group: grid1km {
     		Sigma_BRFn1:valid_range = -100s, 16000s ;
     		Sigma_BRFn1:dmr_sds_ref = 28 ;
     		Sigma_BRFn1:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sigma_BRFn1:grid_mapping = "/grid1km/eos_cf_projection" ;
     	short Sigma_BRFn2(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Sigma_BRFn2:long_name = "BRFn uncertainties over time, Band2" ;
     		Sigma_BRFn2:scale_factor = 0.0001 ;
@@ -159,6 +190,7 @@ group: grid1km {
     		Sigma_BRFn2:valid_range = -100s, 16000s ;
     		Sigma_BRFn2:dmr_sds_ref = 30 ;
     		Sigma_BRFn2:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Sigma_BRFn2:grid_mapping = "/grid1km/eos_cf_projection" ;
     	ushort Status_QA(Orbits_grid1km, YDim_grid1km, XDim_grid1km) ;
     		Status_QA:long_name = "Status_QA" ;
     		Status_QA:unit = "none" ;
@@ -167,6 +199,7 @@ group: grid1km {
     		Status_QA:valid_range = 1US, 65535US ;
     		Status_QA:dmr_sds_ref = 32 ;
     		Status_QA:coordinates = "/grid1km/Longitude /grid1km/Latitude" ;
+    		Status_QA:grid_mapping = "/grid1km/eos_cf_projection" ;
     } // group Data_Fields
 
   group: Grid_Attributes {
@@ -175,6 +208,24 @@ group: grid1km {
 
 group: grid500m {
   variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "sinusoidal" ;
+  		eos_cf_projection:longitude_of_central_meridian = 0. ;
+  		eos_cf_projection:earth_radius = 6371007.181 ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "grid500m eos_cf_projection" ;
+  	double XDim(XDim_grid500m) ;
+  		XDim:standard_name = "projection_x_coordinate" ;
+  		XDim:long_name = "x coordinate of projection " ;
+  		XDim:units = "meter" ;
+  		XDim:_CoordinateAxisType = "GeoX" ;
+  		XDim:eos_cf_grid = "grid500m XDim" ;
+  	double YDim(YDim_grid500m) ;
+  		YDim:standard_name = "projection_y_coordinate" ;
+  		YDim:long_name = "y coordinate of projection " ;
+  		YDim:units = "meter" ;
+  		YDim:_CoordinateAxisType = "GeoY" ;
+  		YDim:eos_cf_grid = "grid500m YDim" ;
   	double Latitude(YDim_grid500m, XDim_grid500m) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "grid500m lat" ;
@@ -193,6 +244,7 @@ group: grid500m {
     		Sur_refl_500m1:valid_range = -100s, 16000s ;
     		Sur_refl_500m1:dmr_sds_ref = 37 ;
     		Sur_refl_500m1:coordinates = "/grid500m/Longitude /grid500m/Latitude" ;
+    		Sur_refl_500m1:grid_mapping = "/grid500m/eos_cf_projection" ;
     	short Sur_refl_500m2(Orbits_grid500m, YDim_grid500m, XDim_grid500m) ;
     		Sur_refl_500m2:long_name = "Surface_bidirectinal_reflectance_factor_500m, Band2" ;
     		Sur_refl_500m2:scale_factor = 0.0001 ;
@@ -202,6 +254,7 @@ group: grid500m {
     		Sur_refl_500m2:valid_range = -100s, 16000s ;
     		Sur_refl_500m2:dmr_sds_ref = 39 ;
     		Sur_refl_500m2:coordinates = "/grid500m/Longitude /grid500m/Latitude" ;
+    		Sur_refl_500m2:grid_mapping = "/grid500m/eos_cf_projection" ;
     	short Sur_refl_500m3(Orbits_grid500m, YDim_grid500m, XDim_grid500m) ;
     		Sur_refl_500m3:long_name = "Surface_bidirectinal_reflectance_factor_500m, Band3" ;
     		Sur_refl_500m3:scale_factor = 0.0001 ;
@@ -211,6 +264,7 @@ group: grid500m {
     		Sur_refl_500m3:valid_range = -100s, 16000s ;
     		Sur_refl_500m3:dmr_sds_ref = 41 ;
     		Sur_refl_500m3:coordinates = "/grid500m/Longitude /grid500m/Latitude" ;
+    		Sur_refl_500m3:grid_mapping = "/grid500m/eos_cf_projection" ;
     	short Sur_refl_500m4(Orbits_grid500m, YDim_grid500m, XDim_grid500m) ;
     		Sur_refl_500m4:long_name = "Surface_bidirectinal_reflectance_factor_500m, Band4" ;
     		Sur_refl_500m4:scale_factor = 0.0001 ;
@@ -220,6 +274,7 @@ group: grid500m {
     		Sur_refl_500m4:valid_range = -100s, 16000s ;
     		Sur_refl_500m4:dmr_sds_ref = 43 ;
     		Sur_refl_500m4:coordinates = "/grid500m/Longitude /grid500m/Latitude" ;
+    		Sur_refl_500m4:grid_mapping = "/grid500m/eos_cf_projection" ;
     	short Sur_refl_500m5(Orbits_grid500m, YDim_grid500m, XDim_grid500m) ;
     		Sur_refl_500m5:long_name = "Surface_bidirectinal_reflectance_factor_500m, Band5" ;
     		Sur_refl_500m5:scale_factor = 0.0001 ;
@@ -229,6 +284,7 @@ group: grid500m {
     		Sur_refl_500m5:valid_range = -100s, 16000s ;
     		Sur_refl_500m5:dmr_sds_ref = 45 ;
     		Sur_refl_500m5:coordinates = "/grid500m/Longitude /grid500m/Latitude" ;
+    		Sur_refl_500m5:grid_mapping = "/grid500m/eos_cf_projection" ;
     	short Sur_refl_500m6(Orbits_grid500m, YDim_grid500m, XDim_grid500m) ;
     		Sur_refl_500m6:long_name = "Surface_bidirectinal_reflectance_factor_500m, Band6" ;
     		Sur_refl_500m6:scale_factor = 0.0001 ;
@@ -238,6 +294,7 @@ group: grid500m {
     		Sur_refl_500m6:valid_range = -100s, 16000s ;
     		Sur_refl_500m6:dmr_sds_ref = 47 ;
     		Sur_refl_500m6:coordinates = "/grid500m/Longitude /grid500m/Latitude" ;
+    		Sur_refl_500m6:grid_mapping = "/grid500m/eos_cf_projection" ;
     	short Sur_refl_500m7(Orbits_grid500m, YDim_grid500m, XDim_grid500m) ;
     		Sur_refl_500m7:long_name = "Surface_bidirectinal_reflectance_factor_500m, Band7" ;
     		Sur_refl_500m7:scale_factor = 0.0001 ;
@@ -247,6 +304,7 @@ group: grid500m {
     		Sur_refl_500m7:valid_range = -100s, 16000s ;
     		Sur_refl_500m7:dmr_sds_ref = 49 ;
     		Sur_refl_500m7:coordinates = "/grid500m/Longitude /grid500m/Latitude" ;
+    		Sur_refl_500m7:grid_mapping = "/grid500m/eos_cf_projection" ;
     } // group Data_Fields
 
   group: Grid_Attributes {
@@ -255,6 +313,24 @@ group: grid500m {
 
 group: grid5km {
   variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "sinusoidal" ;
+  		eos_cf_projection:longitude_of_central_meridian = 0. ;
+  		eos_cf_projection:earth_radius = 6371007.181 ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "grid5km eos_cf_projection" ;
+  	double XDim(XDim_grid5km) ;
+  		XDim:standard_name = "projection_x_coordinate" ;
+  		XDim:long_name = "x coordinate of projection " ;
+  		XDim:units = "meter" ;
+  		XDim:_CoordinateAxisType = "GeoX" ;
+  		XDim:eos_cf_grid = "grid5km XDim" ;
+  	double YDim(YDim_grid5km) ;
+  		YDim:standard_name = "projection_y_coordinate" ;
+  		YDim:long_name = "y coordinate of projection " ;
+  		YDim:units = "meter" ;
+  		YDim:_CoordinateAxisType = "GeoY" ;
+  		YDim:eos_cf_grid = "grid5km YDim" ;
   	double Latitude(YDim_grid5km, XDim_grid5km) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "grid5km lat" ;
@@ -273,6 +349,7 @@ group: grid5km {
     		cosSZA:valid_range = 0s, 10000s ;
     		cosSZA:dmr_sds_ref = 54 ;
     		cosSZA:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		cosSZA:grid_mapping = "/grid5km/eos_cf_projection" ;
     	short cosVZA(Orbits_grid5km, YDim_grid5km, XDim_grid5km) ;
     		cosVZA:long_name = "cosine of View Zenith Angle" ;
     		cosVZA:scale_factor = 0.0001 ;
@@ -282,6 +359,7 @@ group: grid5km {
     		cosVZA:valid_range = 0s, 10000s ;
     		cosVZA:dmr_sds_ref = 56 ;
     		cosVZA:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		cosVZA:grid_mapping = "/grid5km/eos_cf_projection" ;
     	short RelAZ(Orbits_grid5km, YDim_grid5km, XDim_grid5km) ;
     		RelAZ:long_name = "Relative Azimuth Angle" ;
     		RelAZ:scale_factor = 0.01 ;
@@ -291,6 +369,7 @@ group: grid5km {
     		RelAZ:valid_range = -18000s, 18000s ;
     		RelAZ:dmr_sds_ref = 58 ;
     		RelAZ:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		RelAZ:grid_mapping = "/grid5km/eos_cf_projection" ;
     	short Scattering_Angle(Orbits_grid5km, YDim_grid5km, XDim_grid5km) ;
     		Scattering_Angle:long_name = "Scattering Angle" ;
     		Scattering_Angle:scale_factor = 0.01 ;
@@ -300,6 +379,7 @@ group: grid5km {
     		Scattering_Angle:valid_range = -18000s, 18000s ;
     		Scattering_Angle:dmr_sds_ref = 60 ;
     		Scattering_Angle:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		Scattering_Angle:grid_mapping = "/grid5km/eos_cf_projection" ;
     	short SAZ(Orbits_grid5km, YDim_grid5km, XDim_grid5km) ;
     		SAZ:long_name = "Solar Azimuth Angle" ;
     		SAZ:scale_factor = 0.01 ;
@@ -309,6 +389,7 @@ group: grid5km {
     		SAZ:valid_range = -18000s, 18000s ;
     		SAZ:dmr_sds_ref = 62 ;
     		SAZ:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		SAZ:grid_mapping = "/grid5km/eos_cf_projection" ;
     	short VAZ(Orbits_grid5km, YDim_grid5km, XDim_grid5km) ;
     		VAZ:long_name = "View Azimuth Angle" ;
     		VAZ:scale_factor = 0.01 ;
@@ -318,6 +399,7 @@ group: grid5km {
     		VAZ:valid_range = -18000s, 18000s ;
     		VAZ:dmr_sds_ref = 64 ;
     		VAZ:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		VAZ:grid_mapping = "/grid5km/eos_cf_projection" ;
     	short Glint_Angle(Orbits_grid5km, YDim_grid5km, XDim_grid5km) ;
     		Glint_Angle:long_name = "Glint Angle" ;
     		Glint_Angle:scale_factor = 0.01 ;
@@ -327,6 +409,7 @@ group: grid5km {
     		Glint_Angle:valid_range = -18000s, 18000s ;
     		Glint_Angle:dmr_sds_ref = 66 ;
     		Glint_Angle:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		Glint_Angle:grid_mapping = "/grid5km/eos_cf_projection" ;
     	float Fv(Orbits_grid5km, YDim_grid5km, XDim_grid5km) ;
     		Fv:long_name = "Volumetric kernel" ;
     		Fv:unit = "none" ;
@@ -334,6 +417,7 @@ group: grid5km {
     		Fv:valid_range = -100.f, 100.f ;
     		Fv:dmr_sds_ref = 68 ;
     		Fv:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		Fv:grid_mapping = "/grid5km/eos_cf_projection" ;
     	float Fg(Orbits_grid5km, YDim_grid5km, XDim_grid5km) ;
     		Fg:long_name = "Geometric kernel" ;
     		Fg:unit = "none" ;
@@ -341,6 +425,7 @@ group: grid5km {
     		Fg:valid_range = -100.f, 100.f ;
     		Fg:dmr_sds_ref = 70 ;
     		Fg:coordinates = "/grid5km/Longitude /grid5km/Latitude" ;
+    		Fg:grid_mapping = "/grid5km/eos_cf_projection" ;
     } // group Data_Fields
 
   group: Grid_Attributes {

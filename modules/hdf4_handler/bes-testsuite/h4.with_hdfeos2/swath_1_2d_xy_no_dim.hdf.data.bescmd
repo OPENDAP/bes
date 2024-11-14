@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="swath_1_2d_xy_no_dim" space="catalog">/data/swath_1_2d_xy_no_dim.hdf</setContainer>
-    <define name="d">
-	<container name="swath_1_2d_xy_no_dim" />
-    </define>
-    <get type="dods" definition="d" />
-</request>
