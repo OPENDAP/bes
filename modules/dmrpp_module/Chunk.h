@@ -123,10 +123,10 @@ private:
     friend class DmrppCommonTest;
     friend class MockChunk;
 
-    unsigned int obtain_compound_udf_type_size();
+    unsigned int obtain_compound_udf_type_size() const;
     unsigned int get_value_size(libdap::Type);
     const char* get_value_ptr(fill_value &,libdap::Type, const std::string &,bool);
-    void obtain_fv_strs(vector<string>& fv_str, const string &v);
+    void obtain_fv_strs(vector<string>& fv_str, const string &v) const;
     void get_compound_fvalue(const string &v, vector<char> &compound_fvalue);
 
 protected:
@@ -292,9 +292,9 @@ public:
         set_position_in_array(pia_str);
     }
 
-    Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long chunk_size, std::vector<unsigned long long> pia, std::vector<std::pair<libdap::Type,int>> compound_udf_type_elms) :
+    Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long chunk_size, std::vector<unsigned long long> pia, const std::vector<std::pair<libdap::Type,int>> & compound_udf_type_elms) :
             d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_size(chunk_size),
-            d_uses_fill_value(true), d_fill_value_type(fv_type), d_chunk_position_in_array(std::move(pia) ) {
+            d_uses_fill_value(true), d_fill_value_type(fv_type), d_chunk_position_in_array(std::move(pia)) {
         set_compound_udf_info(compound_udf_type_elms);
 
     }

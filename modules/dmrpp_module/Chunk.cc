@@ -834,7 +834,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     d_is_inflated = true;
 }
 
-unsigned int Chunk::obtain_compound_udf_type_size() {
+unsigned int Chunk::obtain_compound_udf_type_size() const {
 
     int ret_value = 0;
 
@@ -945,7 +945,6 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
     obtain_fv_strs(fv_str,v);
 
     char * temp_compound_fvalue = compound_fvalue.data();
-    //char * temp_compound_fvalue = compound_fvalue_ptr;
     size_t fvalue_count = 0;
 
     for (const auto &cudf_type_elm:compound_udf_type_elms) {
@@ -958,7 +957,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_int8_c: 
             type_size = sizeof(int8_t);
             for (int i = 0; i<num_elms;i++) {
-                int8_t temp_value = (int8_t)stoi(fv_str[fvalue_count]);
+                auto temp_value = (int8_t)stoi(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -968,7 +967,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_int16_c:
             type_size = sizeof(int16_t);
             for (int i = 0; i<num_elms;i++) {
-                int16_t temp_value = (int16_t)stoi(fv_str[fvalue_count]);
+                auto temp_value = (int16_t)stoi(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -979,7 +978,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_int32_c:
             type_size =  sizeof(int32_t);
             for (int i = 0; i<num_elms;i++) {
-                int32_t temp_value = (int32_t)stoi(fv_str[fvalue_count]);
+                auto temp_value = (int32_t)stoi(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -989,7 +988,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_int64_c:
             type_size =  sizeof(int64_t);
             for (int i = 0; i<num_elms;i++) {
-                int64_t temp_value = (int64_t)stoll(fv_str[fvalue_count]);
+                auto temp_value = (int64_t)stoll(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -1000,7 +999,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_byte_c:
             type_size = sizeof(uint8_t);
             for (int i = 0; i<num_elms;i++) {
-                uint8_t temp_value = (uint8_t)stoi(fv_str[fvalue_count]);
+                auto temp_value = (uint8_t)stoi(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -1010,7 +1009,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_uint16_c:
             type_size = sizeof(uint16_t);
             for (int i = 0; i<num_elms;i++) {
-                uint16_t temp_value = (uint16_t)stoi(fv_str[fvalue_count]);
+                auto temp_value = (uint16_t)stoi(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -1020,7 +1019,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_uint32_c:
             type_size = sizeof(uint32_t);
             for (int i = 0; i<num_elms;i++) {
-                uint32_t temp_value = (uint32_t)stoul(fv_str[fvalue_count]);
+                auto temp_value = (uint32_t)stoul(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -1030,7 +1029,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_uint64_c:
             type_size = sizeof(uint64_t);
             for (int i = 0; i<num_elms;i++) {
-                uint64_t temp_value = (uint64_t)stoull(fv_str[fvalue_count]);
+                auto temp_value = (uint64_t)stoull(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -1040,7 +1039,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_float32_c:
             type_size = sizeof(float);
             for (int i = 0; i<num_elms;i++) {
-                float temp_value = (float)stof(fv_str[fvalue_count]);
+                auto temp_value = (float)stof(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -1050,7 +1049,7 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
         case libdap::dods_float64_c:
             type_size = sizeof(double);
             for (int i = 0; i<num_elms;i++) {
-                double temp_value = (double)stod(fv_str[fvalue_count]);
+                auto temp_value = (double)stod(fv_str[fvalue_count]);
                 memcpy(temp_compound_fvalue,(char *)&temp_value,type_size);
                 fvalue_count++;
                 temp_compound_fvalue +=type_size;
@@ -1061,13 +1060,11 @@ void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) 
             throw BESInternalError("Unsupported user-defined fill value compound base type.", __FILE__, __LINE__);
         }
 
-        //ret_value += cudf_type_elm.second *type_size;
     }
-
 
 }
 
-void Chunk::obtain_fv_strs(vector<string>& fv_str, const string &v) {
+void Chunk::obtain_fv_strs(vector<string>& fv_str, const string &v) const{
 
     string::size_type start = 0;
     string::size_type end = 0;

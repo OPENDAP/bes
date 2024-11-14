@@ -469,7 +469,6 @@ get_compound_base_fill_value_as_string(hid_t h5_type_id, char* value_ptr)
         default:
         throw BESInternalError("The member of compound datatype that has user-defined datatype has to be either integer or float..", __FILE__, __LINE__);
     }
-    return "";
 
 }
 
