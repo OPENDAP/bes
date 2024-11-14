@@ -393,11 +393,10 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_ARRAY as a fillValue type. "
                                 "This is not yet supported by the dmr++ creation machinery."
                                 "The variable/dataset type screening code should intercepted this prior.");
-            string str_fv(value.begin(),value.end());
             throw UnsupportedTypeException(msg);
         }
         case H5T_COMPOUND: {
-            string str_fv(value.begin(),value.end());
+            // the fill value of compound datatype is obtained by calling get_compound_fv_as_string() else where. So here just break. 
             break;
         }
 
