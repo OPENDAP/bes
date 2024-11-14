@@ -112,6 +112,20 @@ ostream &add_memory_info(ostream &out)
     return out;
 }
 
+/**
+ * @brief "Sanitizes" the string by replacing any 0x0A (new line) or 0x0D (carriage return) characters with 0x20 (space)
+ * @param msg The string to "sanitize"
+ * @return A reference to the sanitized string.
+ */
+static std::string &remove_crlf(std::string &str) {
+    auto the_bad_things ="\r\n";
+    size_t pos = 0;
+    while ((pos = str.find_first_of(the_bad_things, pos)) != std::string::npos) {
+        str[pos] = ' ';
+    }
+    return str;
+}
+
 static void log_error(const BESError &e)
 {
     string error_name;
@@ -141,14 +155,15 @@ static void log_error(const BESError &e)
         error_name = "BES Error";
         break;
     }
+    string err_msg(e.get_message());
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << add_memory_info << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg) << add_memory_info << "\n");
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message()
+        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg)
             << " (" << e.get_file() << ":" << e.get_line() << ")"
-            << add_memory_info << endl);
+            << add_memory_info << "\n");
     }
 }
 
