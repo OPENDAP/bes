@@ -117,13 +117,13 @@ ostream &add_memory_info(ostream &out)
  * @param msg The string to "sanitize"
  * @return A reference to the sanitized string.
  */
-static std::string &remove_crlf(std::string &msg) {
-    for(int i=0; i<msg.length(); i++){
-        if (msg[i] == '\n' || msg[i] == '\r') {
-            msg[i] = ' ';
-        }
+static std::string &remove_crlf(std::string &str) {
+    const char *the_bad_things ="\r\n";
+    size_t pos = 0;
+    while ((pos = str.find_first_of(the_bad_things, pos)) != std::string::npos) {
+        str[pos] = ' ';
     }
-    return msg;
+    return str;
 }
 
 static void log_error(const BESError &e)
