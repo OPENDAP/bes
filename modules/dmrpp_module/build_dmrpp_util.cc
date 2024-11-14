@@ -269,7 +269,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc, bool disab
  * @param dataset_id
  * @return
  */
-bool
+short
 is_hdf5_fill_value_defined(hid_t dataset_id)
 {
 
@@ -278,20 +278,25 @@ is_hdf5_fill_value_defined(hid_t dataset_id)
 
     auto plist_id = create_h5plist(dataset_id);
 
-    try {
-        // How the fill value is defined?
-        H5D_fill_value_t status;
-        if ((H5Pfill_value_defined(plist_id, &status)) < 0) {
-            H5Pclose(plist_id);
-            throw BESInternalError("Unable to access HDF5 Fillvalue information.", __FILE__, __LINE__);
-        }
+    // ret_value 0: UNDEFINED
+    // ret_value 1: DEFAULT
+    // ret_value 2: USER_DEFINED 
+    short ret_value = -1;
+
+    // How the fill value is defined?
+    H5D_fill_value_t status;
+    if ((H5Pfill_value_defined(plist_id, &status)) < 0) {
         H5Pclose(plist_id);
-        return status != H5D_FILL_VALUE_UNDEFINED;
+        throw BESInternalError("Unable to access HDF5 Fillvalue information.", __FILE__, __LINE__);
     }
-    catch (...) {
-        H5Pclose(plist_id);
-        throw;
-    }
+    if (status == H5D_FILL_VALUE_DEFAULT)
+        ret_value = 1;
+    else if (status == H5D_FILL_VALUE_USER_DEFINED)
+        ret_value = 2;
+    else if (status == H5D_FILL_VALUE_UNDEFINED)
+        ret_value = 0;
+   
+    return ret_value;
 
 }
 
@@ -339,7 +344,7 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                         return to_string(*(uint64_t *) (value.data()));
 
                 default:
-                    throw BESInternalError("Unable extract integer fill value.", __FILE__, __LINE__);
+                    throw BESInternalError("Unable to extract integer fill value.", __FILE__, __LINE__);
             }
             break;
         }
@@ -356,7 +361,7 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
                     return oss.str();
 
                 default:
-                    throw BESInternalError("Unable extract float fill value.", __FILE__, __LINE__);
+                    throw BESInternalError("Unable to extract float fill value.", __FILE__, __LINE__);
             }
             break;
         }
@@ -388,24 +393,270 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_ARRAY as a fillValue type. "
                                 "This is not yet supported by the dmr++ creation machinery."
                                 "The variable/dataset type screening code should intercepted this prior.");
-            string str_fv(value.begin(),value.end());
             throw UnsupportedTypeException(msg);
         }
         case H5T_COMPOUND: {
-            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as user-defined fillValue type. "
-                   "This is not yet supported by the dmr++ creation machinery. ");
-            string str_fv(value.begin(),value.end());
-            throw UnsupportedTypeException(msg);
+            // the fill value of compound datatype is obtained by calling get_compound_fv_as_string() else where. So here just break. 
+            break;
         }
 
         case H5T_REFERENCE:
         default: {
-            throw BESInternalError("Unable extract fill value from HDF5 file.", __FILE__, __LINE__);
+            throw BESInternalError("Unable to extract fill value from HDF5 file.", __FILE__, __LINE__);
         }
     }
 }
+
 string
-get_compound_fv_as_string(hid_t h5_plist_id, vector<char> &value)
+get_compound_base_fill_value_as_string(hid_t h5_type_id, char* value_ptr)
+{
+    H5T_class_t class_type = H5Tget_class(h5_type_id);
+    switch (class_type) {
+        case H5T_INTEGER: {
+            int sign;
+            sign = H5Tget_sign(h5_type_id);
+            switch (H5Tget_size(h5_type_id)) {
+                case 1:
+                    if (sign == H5T_SGN_2)
+                        return to_string(*(int8_t *) value_ptr);
+                    else
+                        return to_string(*(uint8_t *) value_ptr);
+
+                case 2:
+                    if (sign == H5T_SGN_2)
+                        return to_string(*(int16_t *) value_ptr);
+                    else
+                        return to_string(*(uint16_t *) value_ptr);
+
+                case 4:
+                    if (sign == H5T_SGN_2)
+                        return to_string(*(int32_t *) value_ptr);
+                    else
+                        return to_string(*(uint32_t *) value_ptr);
+
+                case 8:
+                    if (sign == H5T_SGN_2)
+                        return to_string(*(int64_t *) value_ptr);
+                    else
+                        return to_string(*(uint64_t *) value_ptr);
+
+                default:
+                    throw BESInternalError("Unable to extract integer fill value.", __FILE__, __LINE__);
+            }
+        }
+
+        case H5T_FLOAT: {
+            ostringstream oss;
+            switch (H5Tget_size(h5_type_id)) {
+                case 4:
+                    oss << *(float *) value_ptr;
+                    return oss.str();
+
+                case 8:
+                    oss << *(double *) value_ptr;
+                    return oss.str();
+
+                default:
+                    throw BESInternalError("Unable to extract float fill value.", __FILE__, __LINE__);
+            }
+        }
+        default:
+        throw BESInternalError("The member of compound datatype that has user-defined datatype has to be either integer or float..", __FILE__, __LINE__);
+    }
+
+}
+
+string obtain_compound_user_defined_fvalues(hid_t dtype_id, hid_t h5_plist_id, vector<char> &value) {
+
+    string ret_value;
+    hid_t memtype  = -1;
+
+    if ((memtype = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND))<0)  {
+        H5Pclose(h5_plist_id);
+        throw BESInternalError ("Fail to obtain memory datatype.", __FILE__, __LINE__);
+    }
+
+    int                 nmembs           = 0;
+    if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+        H5Tclose(memtype);
+        H5Pclose(h5_plist_id);
+        string err_msg = "Fail to obtain number of HDF5 compound datatype.";
+        throw BESInternalError (err_msg, __FILE__, __LINE__);
+    }
+
+    // We only need to retrieve the values and save them as strings.
+    // We will only have the one-layer int/float structure to handle.
+    // We do need to know the memb type to put the special handling of a string.
+    for (unsigned int u = 0; u < (unsigned)nmembs; u++) {
+
+        hid_t  memb_id  = -1;
+        H5T_class_t         memb_cls         = H5T_NO_CLASS;
+        size_t              memb_offset      = 0;
+
+        // Get member type ID
+        if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
+            H5Tclose(memtype);
+            H5Pclose(h5_plist_id);
+            string err_msg =  "Fail to obtain the datatype of an HDF5 compound datatype member.";
+            throw BESInternalError (err_msg, __FILE__, __LINE__);
+        }
+    
+        // Get member type class
+        if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
+            H5Pclose(h5_plist_id);
+            H5Tclose(memtype);
+            H5Tclose(memb_id);
+            string err_msg =  "Fail to obtain the datatype class of an HDF5 compound datatype member.";
+            throw BESInternalError (err_msg, __FILE__, __LINE__);
+        }
+
+        // Get member offset,H5Tget_member_offset only fails
+        // when H5Tget_memeber_class fails. Sinc H5Tget_member_class
+        // is checked above. So no need to check the return value.
+        memb_offset= H5Tget_member_offset(memtype,u);
+
+        if (memb_cls ==  H5T_ARRAY) {
+
+            hid_t at_base_type = H5Tget_super(memb_id);
+            size_t at_base_type_size = H5Tget_size(at_base_type);
+            H5T_class_t array_cls = H5Tget_class(at_base_type);
+
+            if (array_cls != H5T_INTEGER && array_cls !=H5T_FLOAT) {
+                H5Tclose(memtype);
+                H5Tclose(memb_id);
+                string err_msg =  "The base class of an HDF5 compound datatype member must be integer or float.";
+                throw BESInternalError (err_msg, __FILE__, __LINE__);
+            }
+
+            // Need to retrieve the number of elements of the array
+            int at_ndims = H5Tget_array_ndims(memb_id);
+            if (at_ndims <= 0) {
+                H5Pclose(h5_plist_id);
+                H5Tclose(memtype);
+                H5Tclose(at_base_type);
+                H5Tclose(memb_id);
+                string err_msg =  "Fail to obtain number of dimensions of the array datatype.";
+                throw BESInternalError (err_msg, __FILE__, __LINE__);
+            }
+        
+            vector<hsize_t>at_dims_h(at_ndims,0);
+        
+            // Obtain the number of elements for each dims
+            if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
+                H5Pclose(h5_plist_id);
+                H5Tclose(memtype);
+                H5Tclose(at_base_type);
+                H5Tclose(memb_id);
+                string err_msg =  "Fail to obtain each imension size of the array datatype.";
+                throw BESInternalError (err_msg, __FILE__, __LINE__);
+            }
+
+            vector<hsize_t>at_dims_offset(at_ndims,0);                   
+            size_t total_array_nums = 1;
+            for (const auto & ad:at_dims_h)
+                total_array_nums *=ad;
+
+            // We need to convert each value to a string and save that string as one value of a string.
+            for (unsigned ar_index = 0; ar_index <total_array_nums; ar_index++) {
+                char *value_ptr = value.data() + memb_offset + ar_index *at_base_type_size;
+                string tmp_value = get_compound_base_fill_value_as_string(at_base_type,value_ptr);
+                if (u == 0 && ar_index== 0) 
+                    ret_value = tmp_value;
+                else
+                    ret_value = ret_value + ' '+ tmp_value;
+            }
+
+            H5Tclose(at_base_type);
+
+        }
+        else {// Scalar int/float
+
+            //We need to figure out the datatype and convert each data value to a string.
+            char *value_ptr = value.data() + memb_offset;
+            string tmp_value = get_compound_base_fill_value_as_string(memb_id,value_ptr);
+            if ( u == 0)
+                ret_value = tmp_value;
+            else 
+                ret_value = ret_value + ' '+ tmp_value;
+        }
+        H5Tclose(memb_id);
+    }
+
+    H5Tclose(memtype);
+
+    return ret_value;
+}
+
+unsigned short is_supported_compound_type(hid_t h5_type) {
+
+    unsigned short ret_value = 1;
+    bool has_string_memb_type = false;
+    hid_t memtype = -1;
+    if ((memtype = H5Tget_native_type(h5_type, H5T_DIR_ASCEND)) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
+    }
+    
+    hid_t  memb_id = -1;
+    H5T_class_t memb_cls = H5T_NO_CLASS;
+    int nmembs = 0;
+    char *memb_name = nullptr;
+
+    if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+    }
+
+    for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
+
+        if ((memb_id = H5Tget_member_type(memtype, u)) < 0)
+            throw InternalErr(__FILE__, __LINE__,
+                              "Fail to obtain the datatype of an HDF5 compound datatype member.");
+
+        // Get member type class
+        memb_cls = H5Tget_member_class(memtype, u);
+
+        // Get member name
+        memb_name = H5Tget_member_name(memtype, u);
+        if (memb_name == nullptr)
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
+
+        if (memb_cls == H5T_COMPOUND) 
+            ret_value = 0;
+        else if (memb_cls == H5T_ARRAY) {
+
+            hid_t at_base_type = H5Tget_super(memb_id);
+            H5T_class_t array_cls = H5Tget_class(at_base_type);
+            if (array_cls != H5T_INTEGER && array_cls != H5T_FLOAT && array_cls != H5T_STRING)
+                ret_value = 0;
+            else if (array_cls == H5T_STRING && has_string_memb_type == false)
+                has_string_memb_type = true;
+            H5Tclose(at_base_type);
+
+
+        } else if (memb_cls != H5T_INTEGER && memb_cls != H5T_FLOAT) {
+            if (memb_cls == H5T_STRING) { 
+                if (has_string_memb_type == false)
+                    has_string_memb_type = true;
+            }
+            else 
+                ret_value = 0;
+        } 
+
+        // Close member type ID
+        H5Tclose(memb_id);
+        free(memb_name);
+        if (ret_value == 0) 
+            break;
+    } // end for
+
+    if (has_string_memb_type)
+        ret_value = 2;
+    return ret_value;
+
+}
+
+
+string
+get_compound_fv_as_string(hid_t dtype_id, hid_t h5_plist_id, vector<char> &value)
 {
     H5D_fill_value_t fill_value_status;
     if (H5Pfill_value_defined(h5_plist_id, &fill_value_status)<0) { 
@@ -418,11 +669,18 @@ get_compound_fv_as_string(hid_t h5_plist_id, vector<char> &value)
     if (fill_value_status == H5D_FILL_VALUE_DEFAULT)
         ret_str = H5_Default_fvalue;
     else if (fill_value_status == H5D_FILL_VALUE_USER_DEFINED) {
-        H5Pclose(h5_plist_id);
-        string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as user-defined fillValue type. "
-               "This is not yet supported by the dmr++ creation machinery. ");
-        string str_fv(value.begin(),value.end());
-        throw UnsupportedTypeException(msg);
+
+        // We don't support when a compound datatype has a string member and the fill value is user-defined. 
+        if (is_supported_compound_type(dtype_id) == 2) {
+
+            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as user-defined fillValue type"
+                       "and one member of H5T_COMPOUND is a string. " 
+                       "This is not yet supported by the dmr++ creation machinery. ");
+            string str_fv(value.begin(),value.end());
+            throw UnsupportedTypeException(msg);
+        }
+
+        ret_str = obtain_compound_user_defined_fvalues(dtype_id, h5_plist_id, value);       
     }
     else if (fill_value_status == H5D_FILL_VALUE_UNDEFINED) {
         H5Pclose(h5_plist_id);
@@ -458,7 +716,7 @@ string get_hdf5_fill_value_str(hid_t dataset_id)
         string fvalue_str;
         // The fill value of the compound datatype needs to be handled separately.
         if (H5Tget_class(dtype_id) == H5T_COMPOUND) 
-            fvalue_str = get_compound_fv_as_string(plist_id,value);
+            fvalue_str = get_compound_fv_as_string(dtype_id,plist_id,value);
         else 
             fvalue_str =  get_value_as_string(dtype_id, value);
 
@@ -985,8 +1243,8 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
  * @param btp
  */
 void set_fill_value(hid_t dataset, BaseType *btp){
-    bool fill_value_defined = is_hdf5_fill_value_defined(dataset);
-    if (fill_value_defined) {
+    short fill_value_defined = is_hdf5_fill_value_defined(dataset);
+    if (fill_value_defined >0) {
         string fill_value = get_hdf5_fill_value_str(dataset);
         auto dc = toDC(btp);
         dc->set_uses_fill_value(fill_value_defined);
@@ -994,72 +1252,6 @@ void set_fill_value(hid_t dataset, BaseType *btp){
     }
 }
 
-unsigned short is_supported_compound_type(hid_t h5_type) {
-
-    unsigned short ret_value = 1;
-    bool has_string_memb_type = false;
-    hid_t memtype = -1;
-    if ((memtype = H5Tget_native_type(h5_type, H5T_DIR_ASCEND)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
-    }
-    
-    hid_t  memb_id = -1;
-    H5T_class_t memb_cls = H5T_NO_CLASS;
-    int nmembs = 0;
-    char *memb_name = nullptr;
-
-    if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
-    }
-
-    for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
-
-        if ((memb_id = H5Tget_member_type(memtype, u)) < 0)
-            throw InternalErr(__FILE__, __LINE__,
-                              "Fail to obtain the datatype of an HDF5 compound datatype member.");
-
-        // Get member type class
-        memb_cls = H5Tget_member_class(memtype, u);
-
-        // Get member name
-        memb_name = H5Tget_member_name(memtype, u);
-        if (memb_name == nullptr)
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
-
-        if (memb_cls == H5T_COMPOUND) 
-            ret_value = 0;
-        else if (memb_cls == H5T_ARRAY) {
-
-            hid_t at_base_type = H5Tget_super(memb_id);
-            H5T_class_t array_cls = H5Tget_class(at_base_type);
-            if (array_cls != H5T_INTEGER && array_cls != H5T_FLOAT && array_cls != H5T_STRING)
-                ret_value = 0;
-            else if (array_cls == H5T_STRING && has_string_memb_type == false)
-                has_string_memb_type = true;
-            H5Tclose(at_base_type);
-
-
-        } else if (memb_cls != H5T_INTEGER && memb_cls != H5T_FLOAT) {
-            if (memb_cls == H5T_STRING) { 
-                if (has_string_memb_type == false)
-                    has_string_memb_type = true;
-            }
-            else 
-                ret_value = 0;
-        } 
-
-        // Close member type ID
-        H5Tclose(memb_id);
-        free(memb_name);
-        if (ret_value == 0) 
-            break;
-    } // end for
-
-    if (has_string_memb_type)
-        ret_value = 2;
-    return ret_value;
-
-}
 
 bool obtain_structure_string_value(hid_t memtype, size_t ty_size, hssize_t num_elms, vector<char>& encoded_struct_value,const vector<char>& struct_value, string & err_msg) {
 
@@ -1328,7 +1520,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_d
     // Added support for HDF5 Fill Value. jhrg 4/22/22
     set_fill_value(dataset, btp);
 
-    // Here we want to chunk if this dataset is a compound datatype that contains string.
+    // Here we want to check if this dataset is a compound datatype that contains string.
     hid_t type_id = H5Dget_type(dataset);
     if (type_id <0) {
         string err_msg = "Cannot obtain the HDF5 data type of the dataset: " + btp->name() ;

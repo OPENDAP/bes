@@ -109,6 +109,12 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_c_b.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/deflate_twice/cmprss_big_1.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/deflate_twice/cmprss_big_2.h5])
 
+# Test data files with user-defined compound datatype fill values. 
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_scalar_udf_fv.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_scalar2_udf_fv.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_scalar_udf_nfv_right.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_array2_udf_fv.h5])
+
 
 
 # Test build_dmrpp with the -M option

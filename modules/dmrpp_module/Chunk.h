@@ -88,6 +88,7 @@ private:
     unsigned int linked_block_index {0};
     bool d_uses_fill_value{false};
     libdap::Type d_fill_value_type{libdap::dods_null_c};
+    std::vector<std::pair<libdap::Type,int>> compound_udf_type_elms;
 
     std::vector<unsigned long long> d_chunk_position_in_array;
 
@@ -121,6 +122,12 @@ private:
     friend class ChunkTest;
     friend class DmrppCommonTest;
     friend class MockChunk;
+
+    unsigned int obtain_compound_udf_type_size() const;
+    unsigned int get_value_size(libdap::Type);
+    const char* get_value_ptr(fill_value &,libdap::Type, const std::string &,bool);
+    void obtain_fv_strs(vector<string>& fv_str, const string &v) const;
+    void get_compound_fvalue(const string &v, vector<char> &compound_fvalue) const;
 
 protected:
 
@@ -283,6 +290,13 @@ public:
         add_tracking_query_param();
 #endif
         set_position_in_array(pia_str);
+    }
+
+    Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long chunk_size, std::vector<unsigned long long> pia, const std::vector<std::pair<libdap::Type,int>> & compound_udf_type_elms) :
+            d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_size(chunk_size),
+            d_uses_fill_value(true), d_fill_value_type(fv_type), d_chunk_position_in_array(std::move(pia)) {
+        set_compound_udf_info(compound_udf_type_elms);
+
     }
 
 
@@ -456,6 +470,18 @@ public:
 
     void set_position_in_array(const std::string &pia);
     void set_position_in_array(const std::vector<unsigned long long> &pia);
+
+    void set_compound_udf_info(const std::vector<std::pair<libdap::Type,int>> &structure_type_element){
+
+        for (const auto &ste:structure_type_element) {
+            
+            std::pair<libdap::Type,int> temp_pair;
+            temp_pair.first = ste.first;
+            temp_pair.second = ste.second;
+            compound_udf_type_elms.push_back(temp_pair);
+        }
+
+    }
 
     virtual void read_chunk();
     virtual void read_chunk_dio();
