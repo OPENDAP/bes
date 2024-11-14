@@ -118,7 +118,7 @@ ostream &add_memory_info(ostream &out)
  * @return A reference to the sanitized string.
  */
 static std::string &remove_crlf(std::string &str) {
-    const char *the_bad_things ="\r\n";
+    auto the_bad_things ="\r\n";
     size_t pos = 0;
     while ((pos = str.find_first_of(the_bad_things, pos)) != std::string::npos) {
         str[pos] = ' ';
