@@ -289,23 +289,6 @@ public:
     /// @return Return true if this variable contains one chunk and the data are all 'fill value.'
     virtual bool get_one_chunk_fill_value() const { return d_one_chunk_fill_value; }
 
-#if 0
-    virtual void set_compound_udf_info(const std::vector<std::pair<libdap::Type,int>> &structure_type_element){
-
-        for (const auto &ste:structure_type_element) {
-
-            std::pair<libdap::Type,int> temp_pair;
-            temp_pair.first = ste.first;
-            temp_pair.second = ste.second;
-            compound_udf_type_elms.push_back(temp_pair);
-        }
-
-    }
-    virtual std::vector<std::pair<libdap::Type,int>> & get_compound_udf_info() {
-        return compound_udf_type_elms;
-    }
-#endif
-
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
     void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "") const;

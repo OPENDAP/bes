@@ -836,7 +836,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
 unsigned int Chunk::obtain_compound_udf_type_size() const {
 
-    int ret_value = 0;
+    unsigned int ret_value = 0;
 
     for (const auto &cudf_type_elm:compound_udf_type_elms) {
 

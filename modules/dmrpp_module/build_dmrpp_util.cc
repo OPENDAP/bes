@@ -397,11 +397,6 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             throw UnsupportedTypeException(msg);
         }
         case H5T_COMPOUND: {
-#if 0
-            string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as user-defined fillValue type. "
-                   "This is not yet supported by the dmr++ creation machinery. ");
-            throw UnsupportedTypeException(msg);
-#endif
             string str_fv(value.begin(),value.end());
             break;
         }
@@ -687,15 +682,6 @@ get_compound_fv_as_string(hid_t dtype_id, hid_t h5_plist_id, vector<char> &value
         }
 
         ret_str = obtain_compound_user_defined_fvalues(dtype_id, h5_plist_id, value);       
-#if 0
-        string temp_ret_str(value.begin(),value.end());
-        ret_str = temp_ret_str;
-        H5Pclose(h5_plist_id);
-        string msg(prolog + "UnsupportedTypeException: Your data granule contains an H5T_COMPOUND as user-defined fillValue type. "
-               "This is not yet supported by the dmr++ creation machinery. ");
-        string str_fv(value.begin(),value.end());
-        throw UnsupportedTypeException(msg);
-#endif
     }
     else if (fill_value_status == H5D_FILL_VALUE_UNDEFINED) {
         H5Pclose(h5_plist_id);
@@ -1260,64 +1246,10 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
 void set_fill_value(hid_t dataset, BaseType *btp){
     short fill_value_defined = is_hdf5_fill_value_defined(dataset);
     if (fill_value_defined >0) {
-#if 0
-if (btp->name()=="housekeeping_data") {
-    cerr<<"coming to compound fill_value_defined"<<endl;
-
-}
-#endif
         string fill_value = get_hdf5_fill_value_str(dataset);
-#if 0
-if (btp->name()=="housekeeping_data") {
-    cerr<<"fill_value: "<<fill_value <<endl;
-
-}
-#endif
         auto dc = toDC(btp);
         dc->set_uses_fill_value(fill_value_defined);
         dc->set_fill_value_string(fill_value);
-#if 0
-        if (fill_value_defined == 2 && btp->type() == libdap::dods_structure_c) {
- auto t_a = dynamic_cast<Array *>(bt);
-                        Type t_array_var = t_a->var()->type();
-            vector<pair<libdap::Type,int> > structure_type_element;
-            auto ds=dynamic_cast<DmrppStructure *>(btp);
-            
-            for (const auto &bt:ds->variables()) {
-
-                Type t_bt = bt->type();
-
-                // Only support array or scalar of float/int/string.
-                if (libdap::is_simple_type(t_bt) == false) {
-                    if (t_bt != dods_array_c) 
-                        throw BESInternalError("For HDF5 compound user-defined fill value,only support the array constructor type.", __FILE__, __LINE__);
-                    else {
-                        auto t_a = dynamic_cast<Array *>(bt);
-                        Type t_array_var = t_a->var()->type();
-                        if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) 
-                            throw BESInternalError("For HDF5 compound user-defined fill value,only support the integer or float base class array.", __FILE__, __LINE__);
-                        pair<Type,int> temp_pair;
-                        int64_t num_eles= t_a->length_ll();
-                        temp_pair.first = t_array_var;
-                        temp_pair.second = (int)(num_eles);;
-                        structure_type_element.push_back(temp_pair);
-                    }
-                }
-                else if (t_bt == dods_url_c || t_bt == dods_enum_c || t_bt==dods_opaque_c || t_bt==dods_str_c) {
-                    throw BESInternalError("For HDF5 compound user-defined fill value scalar case ,only support the integer or float type.", __FILE__, __LINE__);
-                }
-                else {
-                    pair<Type,int> temp_pair;
-                    temp_pair.first = t_bt;
-                    temp_pair.second = 1;
-                    structure_type_element.push_back(temp_pair);
-                }
-            }
-
-            dc->set_compound_udf_info(structure_type_element);
-
-        }
-#endif
     }
 }
 

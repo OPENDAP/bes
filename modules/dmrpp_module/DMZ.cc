@@ -1989,10 +1989,6 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
 
             if (btp->type() == dods_structure_c) {
                 string fvalue_str = attr.value();
-#if 0
-                if (fvalue_str !="0")
-                    throw BESInternalError("Fill Value chunks for structure are only supported when the fill value is 0 .", __FILE__, __LINE__);
-#endif
             }
 
             if (btp->type() == dods_array_c) {
