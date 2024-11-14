@@ -112,6 +112,11 @@ ostream &add_memory_info(ostream &out)
     return out;
 }
 
+/**
+ * @brief "Sanitizes" the string by replacing any 0x0A (new line) or 0x0D (carriage return) characters with 0x20 (space)
+ * @param msg The string to "sanitize"
+ * @return A reference to the sanitized string.
+ */
 static std::string &remove_crlf(std::string &msg) {
     for(int i=0; i<msg.length(); i++){
         if (msg[i] == '\n' || msg[i] == '\r') {
@@ -120,17 +125,7 @@ static std::string &remove_crlf(std::string &msg) {
     }
     return msg;
 }
-static std::string replace_newlines(std::string str) {
-        size_t pos = 0;
-        while ((pos = str.find('\n', pos)) != std::string::npos) {
-            str[pos] = ' ';
-        }
-        pos = 0;
-        while ((pos = str.find('\r', pos)) != std::string::npos) {
-            str[pos] = ' ';
-        }
-        return str;
-}
+
 static void log_error(const BESError &e)
 {
     string error_name;
