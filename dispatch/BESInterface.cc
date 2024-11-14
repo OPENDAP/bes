@@ -112,6 +112,15 @@ ostream &add_memory_info(ostream &out)
     return out;
 }
 
+static std::string &remove_crlf(std::string &msg) {
+    for(int i=0; i<msg.length(); i++){
+        if (msg[i] == '\n' || msg[i] == '\r') {
+            msg[i] = ' ';
+        }
+    }
+    return msg;
+}
+
 static void log_error(const BESError &e)
 {
     string error_name;
@@ -141,14 +150,15 @@ static void log_error(const BESError &e)
         error_name = "BES Error";
         break;
     }
+    string err_msg(e.get_message());
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << add_memory_info << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg) << add_memory_info << "\n");
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message()
+        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg)
             << " (" << e.get_file() << ":" << e.get_line() << ")"
-            << add_memory_info << endl);
+            << add_memory_info << "\n");
     }
 }
 
