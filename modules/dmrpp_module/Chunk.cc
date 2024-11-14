@@ -939,7 +939,7 @@ unsigned int Chunk::get_value_size(libdap::Type type)
     }
 }
 
-void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) {
+void Chunk::get_compound_fvalue(const string &v, vector<char> &compound_fvalue) const{
 
     vector<string> fv_str;
     obtain_fv_strs(fv_str,v);

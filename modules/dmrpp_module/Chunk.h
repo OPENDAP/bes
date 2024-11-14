@@ -127,7 +127,7 @@ private:
     unsigned int get_value_size(libdap::Type);
     const char* get_value_ptr(fill_value &,libdap::Type, const std::string &,bool);
     void obtain_fv_strs(vector<string>& fv_str, const string &v) const;
-    void get_compound_fvalue(const string &v, vector<char> &compound_fvalue);
+    void get_compound_fvalue(const string &v, vector<char> &compound_fvalue) const;
 
 protected:
 

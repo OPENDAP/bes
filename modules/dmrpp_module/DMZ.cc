@@ -2361,7 +2361,7 @@ bool DMZ::is_simple_dap_structure_scalar_array(BaseType *btp, vector<pair<Type,i
     return ret_value;
 }
 
-bool DMZ::is_simple_dap_structure_internal(Structure *ds, vector<pair<Type,int>> &structure_type_element) {
+bool DMZ::is_simple_dap_structure_internal(const Structure *ds, vector<pair<Type,int>> &structure_type_element) {
 
     bool ret_value = true;
     for (const auto &bt:ds->variables()) {
@@ -2377,7 +2377,7 @@ bool DMZ::is_simple_dap_structure_internal(Structure *ds, vector<pair<Type,int>>
                 pair<Type,int> temp_pair;
                 int64_t num_eles= t_a->length_ll();
                 temp_pair.first = t_array_var;
-                temp_pair.second = (int)(num_eles);;
+                temp_pair.second = (int)(num_eles);
                 structure_type_element.push_back(temp_pair);
             }
             else {

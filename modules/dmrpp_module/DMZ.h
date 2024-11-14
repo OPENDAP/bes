@@ -96,7 +96,7 @@ private:
                                    const shape &array_shape, unsigned long long chunk_size);
 
     static bool is_simple_dap_structure_scalar_array(libdap::BaseType *btp, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
-    static bool is_simple_dap_structure_internal(libdap::Structure *ds, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
+    static bool is_simple_dap_structure_internal(const libdap::Structure *ds, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
 
     static std::vector<unsigned long long int> get_array_dims(libdap::Array *array);
     static size_t logical_chunks(const std::vector<unsigned long long> &array_dim_sizes, const dmrpp::DmrppCommon *dc);
