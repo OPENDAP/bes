@@ -120,7 +120,17 @@ static std::string &remove_crlf(std::string &msg) {
     }
     return msg;
 }
-
+static std::string replace_newlines(std::string str) {
+        size_t pos = 0;
+        while ((pos = str.find('\n', pos)) != std::string::npos) {
+            str[pos] = ' ';
+        }
+        pos = 0;
+        while ((pos = str.find('\r', pos)) != std::string::npos) {
+            str[pos] = ' ';
+        }
+        return str;
+}
 static void log_error(const BESError &e)
 {
     string error_name;
