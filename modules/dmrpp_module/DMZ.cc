@@ -1989,8 +1989,6 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
 
             if (btp->type() == dods_structure_c) {
                 string fvalue_str = attr.value();
-                if (fvalue_str !="0")
-                    throw BESInternalError("Fill Value chunks for structure are only supported when the fill value is 0 .", __FILE__, __LINE__);
             }
 
             if (btp->type() == dods_array_c) {
@@ -2127,17 +2125,25 @@ set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chu
  * @param array_shape The shape of the array
  * @param chunk_size the number of bytes in the chunk
  */
-void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map, const shape &chunk_shape,
+void DMZ::process_fill_value_chunks(BaseType *btp, const set<shape> &chunk_map, const shape &chunk_shape,
                                     const shape &array_shape, unsigned long long chunk_size)
 {
+    auto dcp = dc(btp);
     // Use an Odometer to walk over each potential chunk
     DmrppChunkOdometer odometer(array_shape, chunk_shape);
     do {
         const auto &s = odometer.indices();
         if (chunk_map.find(s) == chunk_map.end()) {
+
             // Fill Value chunk
             // what we need byte order, pia, fill value
-            dc->add_chunk(dc->get_byte_order(), dc->get_fill_value(), dc->get_fill_value_type(), chunk_size, s);
+            // We also need to check the user-defined fill value case.
+            vector<pair<Type,int>> structure_type_element;
+            bool ret_value = is_simple_dap_structure_scalar_array(btp,structure_type_element);
+            if (ret_value) 
+                dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s, structure_type_element);
+            else 
+                dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s);
         }
     } while (odometer.next());
 }
@@ -2188,7 +2194,7 @@ void DMZ::load_chunks(BaseType *btp)
                 unsigned long long chunk_size_bytes = array->var()->width(); // start with the element size in bytes
                 for (auto dim_size: chunk_shape)
                     chunk_size_bytes *= dim_size;
-                process_fill_value_chunks(dc(btp), chunk_map, dc(btp)->get_chunk_dimension_sizes(),
+                process_fill_value_chunks(btp, chunk_map, dc(btp)->get_chunk_dimension_sizes(),
                                           array_shape, chunk_size_bytes);
                 // Now we need to check if this var only contains one chunk.
                 // If yes, we will go ahead to set one_chunk_fill_value be true. 
@@ -2235,7 +2241,14 @@ void DMZ::load_chunks(BaseType *btp)
             }
             else {
                 array_size_bytes *= array->var()->width();
-                dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia);
+
+                // We also need to check the user-defined fill value case.
+                vector<pair<Type,int>> structure_type_element;
+                bool ret_value = is_simple_dap_structure_scalar_array(btp,structure_type_element);
+                if (ret_value) 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia, structure_type_element);
+                else 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia);
             }
  
         }
@@ -2266,8 +2279,14 @@ void DMZ::load_chunks(BaseType *btp)
                 }
                 dcp->add_chunk(dcp->get_byte_order(), fvalue, dcp->get_fill_value_type(), array_size, pia);
             }
-            else 
-                dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), btp->width(), pia);
+            else {
+                vector<pair<Type,int>> structure_type_element;
+                bool ret_value = is_simple_dap_structure_scalar_array(btp,structure_type_element);
+                if (ret_value) 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), btp->width(), pia, structure_type_element);
+                else 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), btp->width(), pia);
+            }
                 
         }
     }
@@ -2315,6 +2334,66 @@ void DMZ::load_chunks(BaseType *btp)
     }
 
     dc(btp)->set_chunks_loaded(true);
+}
+
+bool DMZ::is_simple_dap_structure_scalar_array(BaseType *btp, vector<pair<Type,int>> &structure_type_element) {
+
+    bool ret_value = false;
+
+    if (btp->type()==dods_array_c) {
+
+        auto t_a = dynamic_cast<Array *>(btp);
+        Type t_array_var = t_a->var()->type();
+        if (t_array_var == dods_structure_c) {
+            auto t_s = dynamic_cast<Structure *>(t_a->var());
+            ret_value = is_simple_dap_structure_internal(t_s, structure_type_element);
+        }
+    }
+    else if (btp->type() == dods_structure_c) { 
+        auto t_s = dynamic_cast<Structure *>(btp);
+        ret_value = is_simple_dap_structure_internal(t_s, structure_type_element);
+    }
+
+    return ret_value;
+}
+
+bool DMZ::is_simple_dap_structure_internal(const Structure *ds, vector<pair<Type,int>> &structure_type_element) {
+
+    bool ret_value = true;
+    for (const auto &bt:ds->variables()) {
+ 
+        Type t_bt = bt->type();
+ 
+        // Only support array or scalar of float/int.
+        if (t_bt == dods_array_c) {
+            auto t_a = dynamic_cast<Array *>(bt);
+            Type t_array_var = t_a->var()->type();
+
+            if (libdap::is_simple_type(t_array_var) == true && t_array_var != dods_str_c) {
+                pair<Type,int> temp_pair;
+                int64_t num_eles= t_a->length_ll();
+                temp_pair.first = t_array_var;
+                temp_pair.second = (int)(num_eles);
+                structure_type_element.push_back(temp_pair);
+            }
+            else {
+                ret_value = false;
+                break;
+            }
+        }
+        else if (libdap::is_simple_type(t_bt) == true && t_bt != dods_str_c) {
+            pair<Type,int> temp_pair;
+            temp_pair.first = t_bt;
+            temp_pair.second = 1;
+            structure_type_element.push_back(temp_pair);
+        }
+        else {
+            ret_value = false;
+            break;
+        }
+    }
+
+    return ret_value;
 }
 
 void DMZ::handle_subset(DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsigned long & subset_index, vector<unsigned long long> & subset_pos,

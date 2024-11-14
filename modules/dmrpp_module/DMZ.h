@@ -92,8 +92,11 @@ private:
     void process_block(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk, unsigned int block_count) const;
     bool process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks) const;
 
-    static void process_fill_value_chunks(dmrpp::DmrppCommon *dc, const std::set<shape> &chunk_map, const shape &chunk_shape,
+    static void process_fill_value_chunks(libdap::BaseType *btp, const std::set<shape> &chunk_map, const shape &chunk_shape,
                                    const shape &array_shape, unsigned long long chunk_size);
+
+    static bool is_simple_dap_structure_scalar_array(libdap::BaseType *btp, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
+    static bool is_simple_dap_structure_internal(const libdap::Structure *ds, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
 
     static std::vector<unsigned long long int> get_array_dims(libdap::Array *array);
     static size_t logical_chunks(const std::vector<unsigned long long> &array_dim_sizes, const dmrpp::DmrppCommon *dc);
