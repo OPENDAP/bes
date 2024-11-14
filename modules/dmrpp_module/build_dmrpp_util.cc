@@ -396,8 +396,11 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             throw UnsupportedTypeException(msg);
         }
         case H5T_COMPOUND: {
-            // the fill value of compound datatype is obtained by calling get_compound_fv_as_string() else where. So here just break. 
-            break;
+            // The fill value of compound datatype is obtained by calling get_compound_fv_as_string() else where. 
+            // An error should generate and be thrown.
+            string msg(prolog + "UnsupportedTypeException: The fill value of a compound datatype should not be obtained in this function. "
+                                "get_compound_fv_as_string() is the right function to get the value.");
+            throw UnsupportedTypeException(msg);
         }
 
         case H5T_REFERENCE:

@@ -3204,36 +3204,33 @@ void DmrppArray::read_array_of_structure(vector<char> &values) {
 bool DmrppArray::check_struct_handling() {
 
     bool ret_value = true;
-    // Currently doesn't support compressed array of structure.
-    if (this->get_filters().empty()) {
 
-        if (this->var()->type() == dods_structure_c) {
+    if (this->var()->type() == dods_structure_c) {
 
-            auto array_base = dynamic_cast<DmrppStructure*>(this->var());
-            Constructor::Vars_iter vi = array_base->var_begin();
-            Constructor::Vars_iter ve = array_base->var_end();
-            for (; vi != ve; vi++) { 
+        auto array_base = dynamic_cast<DmrppStructure*>(this->var());
+        Constructor::Vars_iter vi = array_base->var_begin();
+        Constructor::Vars_iter ve = array_base->var_end();
+        for (; vi != ve; vi++) { 
 
-                BaseType *bt = *vi;
-                Type t_bt = bt->type();
+            BaseType *bt = *vi;
+            Type t_bt = bt->type();
 
-                // Only support array or scalar of float/int.
-                if (libdap::is_simple_type(t_bt) == false) {
+            // Only support array or scalar of float/int.
+            if (libdap::is_simple_type(t_bt) == false) {
 
-                    if (t_bt == dods_array_c) {
+                if (t_bt == dods_array_c) {
 
-                        auto t_a = dynamic_cast<Array *>(bt);
-                        Type t_array_var = t_a->var()->type();
-                        if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_str_c || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
-                            ret_value = false;
-                            break;
-                        }
+                    auto t_a = dynamic_cast<Array *>(bt);
+                    Type t_array_var = t_a->var()->type();
+                    if (!libdap::is_simple_type(t_array_var) || t_array_var == dods_str_c || t_array_var == dods_url_c || t_array_var == dods_enum_c || t_array_var==dods_opaque_c) {
+                        ret_value = false;
+                        break;
                     }
                 }
-                else if (t_bt == dods_str_c || t_bt == dods_url_c || t_bt == dods_enum_c || t_bt == dods_opaque_c) {
-                    ret_value = false;
-                    break;
-                }
+            }
+            else if (t_bt == dods_str_c || t_bt == dods_url_c || t_bt == dods_enum_c || t_bt == dods_opaque_c) {
+                ret_value = false;
+                break;
             }
         }
     }

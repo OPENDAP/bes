@@ -318,6 +318,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_scalar2_udf_fv.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_scalar_udf_nfv_right.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_fv.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_fv_chunk.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv_chunk_cmp_right.h5.dap])
 
 
 # Test chunked data where chunks are compressed twice (and thus must be
