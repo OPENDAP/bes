@@ -4,6 +4,10 @@
 /testsuite_mds_tests
 /testsuite_s3_tests
 /testsuite_s3_tests.dir/
+/testsuite_check_dmrpp
+/testsuite_check_dmrpp.dir
+/testsuite_merge_dmrpp
+/testsuite_merge_dmrpp.dir
 /mds_for_tests/
 *.bin
 AIRS_test_data/*
