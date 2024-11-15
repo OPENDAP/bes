@@ -85,7 +85,10 @@ def main():
                         help='For the netCDF4/HDF5 files, the dmrpp and the side car files will be generated via the EnableCF option. ')
     parser.add_argument("-H", "--HDF4", action='store_true',
                         help='Generate dmrpp from an HDF4 file.')
-    # TODO: later add the option for users to provide the path or URL used by the dmrpp file that points to the location where the original or sidecar file resides.
+    parser.add_argument("-u", "--URL", nargs=1,
+                        help='The URL that provides the location of the HDF4/5 file or the side car file.') 
+    parser.add_argument("-s", "--SURL", nargs=1,
+                        help='The URL that provides the location of the side car file.')
     parser.add_argument("-v", "--verbosity", action='store_true',
                         help='Detailed description message and other information.')
 
@@ -102,6 +105,18 @@ def main():
     
         The dmrpp file name will be the original HDF file name +".dmrpp" such as foo.hdf.dmrpp.
         The side car file name will be the original HDF file name + "_mvs.h5" such as foo.hdf_mvs.h5.
+
+        Users can use the -u option to provide the location(like an URL) of the original HDF5 file in the dmrpp file. 
+        If -s option is not provided, the -u option is also used for the location to point to the side car file in the dmrpp file.
+        If option '-u' is not used; then dap4:Dataset/@dmrpp:href attribute will contain the template string OPeNDAP_DMRpp_DATA_ACCESS_URL, which can be
+        replaced at runtime. 
+        
+        Users can use the -s option to provide the location of the side car file in the DMR++ file.
+
+        Note: when using this script, the dmrpp and the side car files are generated under the SAME location of the original HDF4/5 file. Users are responsible
+        to move these files to locations where they are going to be served.
+        The -u and -s options are only used to specify the location information of the HDF4/5 file and the side car file inside the dmrpp file. 
+        This script will add a '/' at the end of the location info that the -u or the -s options provide.
     
         '''
         print(desc_str)
@@ -147,8 +162,15 @@ def main():
         print("hdf_abs_dir: ", hdf_abs_dir)
 
     tmp_use_cf_conf_name = ""
+    hdf_url=""
+    if (args.URL is not None):
+        hdf_url = ' '.join(args.URL)
     if (args.HDF4 is True):
-        ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-D"],
+        if (args.URL is not None):
+            ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-u", hdf_url, "-D"],
+                             stdout=subprocess.PIPE, universal_newlines=True)
+        else:
+            ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-D"],
                              stdout=subprocess.PIPE, universal_newlines=True)
         if ret.returncode != 0:
             print("get_dmrpp_h4 fails to generate the dmrpp file for the HDF4 file. ")
@@ -168,10 +190,17 @@ def main():
             use_cf_conf_id = open(tmp_use_cf_conf_name, 'w')
             use_cf_conf_id.write(tmp_use_cf_conf_contents)
             use_cf_conf_id.close()
-            ret = subprocess.run(
-                ["get_dmrpp", "-A", "-b.", "-s", tmp_use_cf_conf_name, "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
+            if (args.URL is not None):
+                ret = subprocess.run(
+                    ["get_dmrpp", "-A", "-b.", "-s", tmp_use_cf_conf_name, "-u", hdf_url, "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
+            else: 
+                ret = subprocess.run(
+                    ["get_dmrpp", "-A", "-b.", "-s", tmp_use_cf_conf_name, "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
         else:
-            ret = subprocess.run(["get_dmrpp", "-A", "-b.", "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
+            if (args.URL is not None):
+                ret = subprocess.run(["get_dmrpp", "-A", "-b.", "-u", hdf_url, "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
+            else: 
+                ret = subprocess.run(["get_dmrpp", "-A", "-b.", "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
 
         if ret.returncode != 0:
             err_msg = "get_dmrpp fails to generate the dmrpp file for the HDF5 file. "
@@ -251,6 +280,13 @@ def main():
             print_error(err_msg, args.c, tmp_use_cf_conf_name)
 
     # Now we come to the merge_dmrpp part.
+    # We need to check if the user provides the location information for the side car file.
+    if (args.SURL is not None):
+        surl_str = ' '.join(args.SURL)
+        fsidecar_rel_path = surl_str +"/"+fsidecar
+    elif(args.URL is not None):
+        fsidecar_rel_path = hdf_url +"/"+fsidecar
+        
     ret = subprocess.run(
         ["merge_dmrpp", fsidecar_dmrpp_full_path, file_dmrpp_full_path, fsidecar_rel_path, f1_full_path])
     if ret.returncode != 0:
