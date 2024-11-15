@@ -114,6 +114,7 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_scalar_udf_fv.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_scalar2_udf_fv.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_scalar_udf_nfv_right.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_array2_udf_fv.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_array2_udf_nfv_chunk_cmp_right.h5])
 
 
 
