@@ -47,6 +47,12 @@
 
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
+// set to 1 to abuse the credentials mgr to get/use and EDL Token for certain URLs.
+// This is very expensive since it is run in code that is used when _each chunk_ is
+// transferred. jhrg 5/18/24
+// Turned this off in the master branch. jhrg 11/15/24
+#define POC_DMRpp_OWNERSHIP 0
+
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 using namespace dmrpp;
@@ -407,6 +413,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
         }
+#if POC_DMRpp_OWNERSHIP
         // FIXME DO NOT MERGE THIS. For POC work on DMR++ Ownership.
         //  TRY abuse the credentials mgr to get/use and EDL Token for certain URLs. jhrg 5/18/24
         else if (credentials) {
@@ -419,6 +426,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                 curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
             }
         }
+#endif
     }
 
     return handle.release();
