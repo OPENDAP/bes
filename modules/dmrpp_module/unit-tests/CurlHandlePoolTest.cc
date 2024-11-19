@@ -416,6 +416,26 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
+#if 0
+Write tests for get_easy_handle() and test the signed URL below. jhrg 11/19/24
+dmrpp_easy_handle *
+CurlHandlePool::get_easy_handle(Chunk *chunk)
+
+Test using:
+https://podaac-ops-cumulus-protected.s3.us-west-2.amazonaws.com/CYGNSS_L1_V3.1/cyg03.ddmi.
+s20180801-000000-e20180801-235959.l1.power-brcs.a31.d32.nc?A-userid=jhrg&X-Amz-Algorithm=AWS4-HMAC-SHA256
+        &X-Amz-Credential=ASIAxxxxxxxxxxxxxxxxus-west-2%2Fs3%2Faws4_request
+&X-Amz-Date=20241119T222214Z
+&X-Amz-Expires=3600
+&X-Amz-Security-Token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+&X-Amz-SignedHeaders=host
+&X-Amz-Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+#endif
+
     CPPUNIT_TEST_SUITE(CurlHandlePoolTest);
 
     CPPUNIT_TEST(process_one_chunk_test);
