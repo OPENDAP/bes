@@ -15,6 +15,24 @@ dimensions:
 
 group: MOD_Grid_BRDF {
   variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "sinusoidal" ;
+  		eos_cf_projection:longitude_of_central_meridian = 0. ;
+  		eos_cf_projection:earth_radius = 6371007.181 ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "MOD_Grid_BRDF eos_cf_projection" ;
+  	double XDim(XDim_MOD_Grid_BRDF) ;
+  		XDim:standard_name = "projection_x_coordinate" ;
+  		XDim:long_name = "x coordinate of projection " ;
+  		XDim:units = "meter" ;
+  		XDim:_CoordinateAxisType = "GeoX" ;
+  		XDim:eos_cf_grid = "MOD_Grid_BRDF XDim" ;
+  	double YDim(YDim_MOD_Grid_BRDF) ;
+  		YDim:standard_name = "projection_y_coordinate" ;
+  		YDim:long_name = "y coordinate of projection " ;
+  		YDim:units = "meter" ;
+  		YDim:_CoordinateAxisType = "GeoY" ;
+  		YDim:eos_cf_grid = "MOD_Grid_BRDF YDim" ;
   	double Latitude(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "MOD_Grid_BRDF lat" ;
@@ -32,6 +50,7 @@ group: MOD_Grid_BRDF {
     		BRDF_Albedo_Band_Mandatory_Quality_Band1:Description = "Mandatory QA:\n  0 = processed, good quality (full BRDF inversions)\n  1 = processed, see other QA (magnitude BRDF inversions)\n" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band1:dmr_sds_ref = 4 ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band1:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		BRDF_Albedo_Band_Mandatory_Quality_Band1:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	ubyte BRDF_Albedo_Band_Mandatory_Quality_Band2(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band2:long_name = "BRDF_Albedo_Band_Mandatory_Quality_Band2" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band2:units = "concatenated flags" ;
@@ -40,6 +59,7 @@ group: MOD_Grid_BRDF {
     		BRDF_Albedo_Band_Mandatory_Quality_Band2:Description = "Mandatory QA:\n  0 = processed, good quality (full BRDF inversions)\n  1 = processed, see other QA (magnitude BRDF inversions)\n" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band2:dmr_sds_ref = 25 ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band2:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		BRDF_Albedo_Band_Mandatory_Quality_Band2:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	ubyte BRDF_Albedo_Band_Mandatory_Quality_Band3(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band3:long_name = "BRDF_Albedo_Band_Mandatory_Quality_Band3" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band3:units = "concatenated flags" ;
@@ -48,6 +68,7 @@ group: MOD_Grid_BRDF {
     		BRDF_Albedo_Band_Mandatory_Quality_Band3:Description = "Mandatory QA:\n  0 = processed, good quality (full BRDF inversions)\n  1 = processed, see other QA (magnitude BRDF inversions)\n" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band3:dmr_sds_ref = 49 ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band3:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		BRDF_Albedo_Band_Mandatory_Quality_Band3:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	ubyte BRDF_Albedo_Band_Mandatory_Quality_Band4(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band4:long_name = "BRDF_Albedo_Band_Mandatory_Quality_Band4" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band4:units = "concatenated flags" ;
@@ -56,6 +77,7 @@ group: MOD_Grid_BRDF {
     		BRDF_Albedo_Band_Mandatory_Quality_Band4:Description = "Mandatory QA:\n  0 = processed, good quality (full BRDF inversions)\n  1 = processed, see other QA (magnitude BRDF inversions)\n" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band4:dmr_sds_ref = 73 ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band4:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		BRDF_Albedo_Band_Mandatory_Quality_Band4:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	ubyte BRDF_Albedo_Band_Mandatory_Quality_Band5(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band5:long_name = "BRDF_Albedo_Band_Mandatory_Quality_Band5" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band5:units = "concatenated flags" ;
@@ -64,6 +86,7 @@ group: MOD_Grid_BRDF {
     		BRDF_Albedo_Band_Mandatory_Quality_Band5:Description = "Mandatory QA:\n  0 = processed, good quality (full BRDF inversions)\n  1 = processed, see other QA (magnitude BRDF inversions)\n" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band5:dmr_sds_ref = 97 ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band5:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		BRDF_Albedo_Band_Mandatory_Quality_Band5:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	ubyte BRDF_Albedo_Band_Mandatory_Quality_Band6(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band6:long_name = "BRDF_Albedo_Band_Mandatory_Quality_Band6" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band6:units = "concatenated flags" ;
@@ -72,6 +95,7 @@ group: MOD_Grid_BRDF {
     		BRDF_Albedo_Band_Mandatory_Quality_Band6:Description = "Mandatory QA:\n  0 = processed, good quality (full BRDF inversions)\n  1 = processed, see other QA (magnitude BRDF inversions)\n" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band6:dmr_sds_ref = 121 ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band6:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		BRDF_Albedo_Band_Mandatory_Quality_Band6:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	ubyte BRDF_Albedo_Band_Mandatory_Quality_Band7(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band7:long_name = "BRDF_Albedo_Band_Mandatory_Quality_Band7" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band7:units = "concatenated flags" ;
@@ -80,6 +104,7 @@ group: MOD_Grid_BRDF {
     		BRDF_Albedo_Band_Mandatory_Quality_Band7:Description = "Mandatory QA:\n  0 = processed, good quality (full BRDF inversions)\n  1 = processed, see other QA (magnitude BRDF inversions)\n" ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band7:dmr_sds_ref = 145 ;
     		BRDF_Albedo_Band_Mandatory_Quality_Band7:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		BRDF_Albedo_Band_Mandatory_Quality_Band7:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	short Nadir_Reflectance_Band1(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		Nadir_Reflectance_Band1:long_name = "Nadir_Reflectance_Band1" ;
     		Nadir_Reflectance_Band1:units = "reflectance, no units" ;
@@ -92,6 +117,7 @@ group: MOD_Grid_BRDF {
     		Nadir_Reflectance_Band1:calibrated_nt = 5 ;
     		Nadir_Reflectance_Band1:dmr_sds_ref = 169 ;
     		Nadir_Reflectance_Band1:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		Nadir_Reflectance_Band1:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	short Nadir_Reflectance_Band2(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		Nadir_Reflectance_Band2:long_name = "Nadir_Reflectance_Band2" ;
     		Nadir_Reflectance_Band2:units = "reflectance, no units" ;
@@ -104,6 +130,7 @@ group: MOD_Grid_BRDF {
     		Nadir_Reflectance_Band2:calibrated_nt = 5 ;
     		Nadir_Reflectance_Band2:dmr_sds_ref = 193 ;
     		Nadir_Reflectance_Band2:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		Nadir_Reflectance_Band2:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	short Nadir_Reflectance_Band3(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		Nadir_Reflectance_Band3:long_name = "Nadir_Reflectance_Band3" ;
     		Nadir_Reflectance_Band3:units = "reflectance, no units" ;
@@ -116,6 +143,7 @@ group: MOD_Grid_BRDF {
     		Nadir_Reflectance_Band3:calibrated_nt = 5 ;
     		Nadir_Reflectance_Band3:dmr_sds_ref = 217 ;
     		Nadir_Reflectance_Band3:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		Nadir_Reflectance_Band3:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	short Nadir_Reflectance_Band4(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		Nadir_Reflectance_Band4:long_name = "Nadir_Reflectance_Band4" ;
     		Nadir_Reflectance_Band4:units = "reflectance, no units" ;
@@ -128,6 +156,7 @@ group: MOD_Grid_BRDF {
     		Nadir_Reflectance_Band4:calibrated_nt = 5 ;
     		Nadir_Reflectance_Band4:dmr_sds_ref = 241 ;
     		Nadir_Reflectance_Band4:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		Nadir_Reflectance_Band4:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	short Nadir_Reflectance_Band5(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		Nadir_Reflectance_Band5:long_name = "Nadir_Reflectance_Band5" ;
     		Nadir_Reflectance_Band5:units = "reflectance, no units" ;
@@ -140,6 +169,7 @@ group: MOD_Grid_BRDF {
     		Nadir_Reflectance_Band5:calibrated_nt = 5 ;
     		Nadir_Reflectance_Band5:dmr_sds_ref = 265 ;
     		Nadir_Reflectance_Band5:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		Nadir_Reflectance_Band5:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	short Nadir_Reflectance_Band6(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		Nadir_Reflectance_Band6:long_name = "Nadir_Reflectance_Band6" ;
     		Nadir_Reflectance_Band6:units = "reflectance, no units" ;
@@ -152,6 +182,7 @@ group: MOD_Grid_BRDF {
     		Nadir_Reflectance_Band6:calibrated_nt = 5 ;
     		Nadir_Reflectance_Band6:dmr_sds_ref = 289 ;
     		Nadir_Reflectance_Band6:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		Nadir_Reflectance_Band6:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     	short Nadir_Reflectance_Band7(YDim_MOD_Grid_BRDF, XDim_MOD_Grid_BRDF) ;
     		Nadir_Reflectance_Band7:long_name = "Nadir_Reflectance_Band7" ;
     		Nadir_Reflectance_Band7:units = "reflectance, no units" ;
@@ -164,6 +195,7 @@ group: MOD_Grid_BRDF {
     		Nadir_Reflectance_Band7:calibrated_nt = 5 ;
     		Nadir_Reflectance_Band7:dmr_sds_ref = 313 ;
     		Nadir_Reflectance_Band7:coordinates = "/MOD_Grid_BRDF/Longitude /MOD_Grid_BRDF/Latitude" ;
+    		Nadir_Reflectance_Band7:grid_mapping = "/MOD_Grid_BRDF/eos_cf_projection" ;
     } // group Data_Fields
 
   group: Grid_Attributes {

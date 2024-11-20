@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <utility>
 
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
@@ -219,9 +220,6 @@ public:
         d_disable_dio = value;
     }
 
-   
-
-
     /// @brief Returns true if this object utilizes shuffle compression.
     virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
 
@@ -290,7 +288,6 @@ public:
 
     /// @return Return true if this variable contains one chunk and the data are all 'fill value.'
     virtual bool get_one_chunk_fill_value() const { return d_one_chunk_fill_value; }
-
 
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
@@ -393,14 +390,20 @@ public:
             unsigned int filter_mask,
             const std::vector<unsigned long long> &position_in_array);
 
-
-
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             const std::string &fill_value,
             libdap::Type fv_type,
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            const std::string &fill_value,
+            libdap::Type fv_type,
+            unsigned long long chunk_size,
+            const std::vector<unsigned long long> &position_in_array,
+            const std::vector<std::pair<libdap::Type,int>> &structure_type_element);
 
     void accumlate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
     unsigned long long get_var_chunks_storage_size() const {return var_chunks_storage_size; }

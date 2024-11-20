@@ -32,4 +32,7 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_L
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.eos2ll.dmrpp
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/MCD43A4.A2012009.h25v05.061.2021202161101_ll_vars.nc
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.eos2ll_nmd.dmrpp
-
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/nmd/AMSR_E_L3_SeaIce25km_V15_20020601.hdf.nmd.dmrpp
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/nmd/AMSR_E_L3_SeaIce25km_V15_20020601.hdf_mvs.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/nmd/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf.nmd.dmrpp
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/DMRPP_LL_TESTS/nmd/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf_mvs.h5

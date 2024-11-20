@@ -212,6 +212,9 @@ exit 0
 %{_bindir}/get_dmrpp_h4
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
+%{_bindir}/gen_dmrpp_side_car
+%{_bindir}/get_hdf_side_car
+
 #%{_bindir}/retriever
 # There is now a separate project for a new build_sidecar program. This should not
 # be installed. jhrg 8/20/20

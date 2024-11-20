@@ -123,6 +123,6 @@ all-static-rpm: dist
 
 .PHONY: clion-source-discovery
 clion-source-discovery:
-	$(MAKE) $(MFLAGS)
-	$(MAKE) $(MFLAGS) check
-
+	-$(MAKE) $(MFLAGS)
+	-$(MAKE) $(MFLAGS) check
+	true

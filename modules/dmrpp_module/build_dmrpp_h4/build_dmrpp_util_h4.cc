@@ -47,6 +47,7 @@
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppArray.h"
+#include "DmrppByte.h"
 #include "D4ParserSax2.h"
 
 #define COMP_INFO 512 /*!< Max buffer size for compression information.  */
@@ -789,6 +790,103 @@ bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,si
 }
 #endif
 
+bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute *eos_cf_attr, string &err_msg) {
+
+    VERBOSE(cerr<<"Coming to add_missing_cf_grid"<<endl);
+    
+    string eos_cf_attr_value = eos_cf_attr->value(0);
+
+    VERBOSE(cerr<<"eos_cf_attr_value: "<<eos_cf_attr_value <<endl);
+
+    size_t space_pos = eos_cf_attr_value.find_last_of(' ');
+    if (space_pos ==string::npos) { 
+        err_msg = "Attribute eos_latlon must have space inside";
+        return false;
+    }
+
+    string grid_name = eos_cf_attr_value.substr(0,space_pos);
+    string cf_name = eos_cf_attr_value.substr(space_pos+1);
+
+    VERBOSE(cerr<<"grid_name: "<<grid_name <<endl);
+    VERBOSE(cerr<<"cf_name: "<<cf_name<<endl);
+    bool is_xdim = true;
+    if (cf_name =="YDim")
+        is_xdim = false;
+
+    int32 gridfd = GDopen(const_cast < char *>(filename.c_str()), DFACC_READ);
+    if (gridfd <0) {
+        err_msg = "HDF-EOS: GDopen failed";
+        return false;
+    }
+    int32 gridid = GDattach(gridfd, const_cast<char *>(grid_name.c_str()));
+    if (gridid <0) {
+        err_msg = "HDF-EOS: GDattach failed to attach " + grid_name;
+        GDclose(gridfd);
+        return false;
+    }
+
+    int32 xdim = 0;
+    int32 ydim = 0;
+
+    float64 upleft[2];
+    float64 lowright[2];
+
+    // Retrieve dimensions and X-Y coordinates of corners
+    if (GDgridinfo(gridid, &xdim, &ydim, upleft,
+                   lowright) == -1) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "GDgridinfo failed for grid name: " + grid_name;
+        return false;
+    }
+
+    auto dc = dynamic_cast<DmrppCommon *>(btp);
+    if (!dc) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_cf_grid";
+        return false;
+    }
+    auto da = dynamic_cast<DmrppArray *>(btp);
+    if (!da) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "Expected to find a DmrppArray instance but did not in add_missing_cf_grid";
+        return false;
+    }
+
+    da->set_missing_data(true);
+ 
+    int total_num = is_xdim?xdim:ydim;
+    vector<double>val(total_num);    
+    double evalue = 0;
+    double svalue = 0;
+
+    if (is_xdim) {
+        svalue = upleft[0];
+        evalue = lowright[0];
+    }
+    else {
+        svalue = upleft[1];
+        evalue = lowright[1];
+    }
+
+    double step_v = (evalue - svalue)/total_num;
+
+    val[0] = svalue;
+    for(int i = 1;i<total_num; i++)
+        val[i] = val[i-1] + step_v;
+
+    da->set_value(val.data(),total_num);
+    da->set_read_p(true);
+       
+
+    GDdetach(gridid);
+    GDclose(gridfd);
+ 
+    return true;
+
+}
 
 bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attribute *eos_ll_attr, string &err_msg) {
 
@@ -1035,7 +1133,6 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
         err_msg = "The number of dimensions of the array should be 1.";
         return false;
     }
-    
 
     da->set_missing_data(true);
  
@@ -1120,9 +1217,21 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
                 }
             }
             else {
-                close_hdf4_file_ids(sd_id,file_id);
-                string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon for ";
-                throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
+                attr = d4_attrs->find("eos_cf_grid");
+                if (attr) {
+                    string err_msg;
+                    bool ret_value = add_missing_cf_grid(filename, btp, attr,err_msg);
+                    if (ret_value == false) {
+                        close_hdf4_file_ids(sd_id,file_id);
+                        throw BESInternalError(err_msg,__FILE__,__LINE__);
+                    }
+                
+                }
+                else {
+                    close_hdf4_file_ids(sd_id,file_id);
+                    string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon or special cf grid for ";
+                    throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
+                }
             }
             
         }        
@@ -1130,6 +1239,49 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
  
 
     return true;
+}
+
+bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, string &err_msg) {
+
+    bool ret_value = false;
+
+    VERBOSE(cerr<<"For none_array: var name: "<<btp->name() <<endl);
+
+    D4Attributes *d4_attrs = btp->attributes();
+    if (d4_attrs->empty() == false && btp->type() == dods_byte_c) {
+
+        auto attr = d4_attrs->find("eos_cf_grid_mapping");
+
+        if (disable_missing_data == false) {
+
+            // Here we don't bother to check the attribute value since this CF grid variable value is dummy.
+            if (attr) {
+    
+                auto dc = dynamic_cast<DmrppCommon *>(btp);
+                if (!dc) {
+                    err_msg = "Expected to find a DmrppCommon instance but did not in handle_chunks_for_none_array";
+                    return false;
+                }
+                auto db = dynamic_cast<DmrppByte *>(btp);
+                if (!db) {
+                    err_msg = "Expected to find a DmrppByte instance but did not in handle_chunks_for_none_array";
+                    return false;
+                }
+
+                VERBOSE(cerr<<"For none_array cf dummy grid variable: var name: "<<btp->name() <<endl);
+
+                char buf='p';
+                db->set_missing_data(true);
+                db->set_value((dods_byte)buf);
+                db->set_read_p(true);
+    
+            }
+        }
+        ret_value = true;
+    }
+
+    return ret_value;
+ 
 }
 
 bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data) {
@@ -1156,9 +1308,19 @@ bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id
         }
         case dods_array_c:
             return get_chunks_for_an_array(filename,sd_id,file_id, btp,disable_missing_data);
-        default:
-            VERBOSE(cerr << btp->FQN() << ": " << btp->type_name() << " is not supported by DMR++ for HDF4 at this time.\n");
-            return false;
+        default: {
+            string err_msg;
+            bool ret_value = handle_chunks_for_none_array(btp,disable_missing_data,err_msg);
+            if (ret_value == false) {
+                if (err_msg.empty() == false) { 
+                    close_hdf4_file_ids(sd_id,file_id);
+                    throw BESInternalError(err_msg, __FILE__, __LINE__);
+                }
+                else 
+                    VERBOSE(cerr << btp->FQN() << ": " << btp->type_name() << " is not supported by DMR++ for HDF4 at this time.\n");
+            }
+            return ret_value;
+        }
     }
 }
 
