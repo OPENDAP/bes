@@ -53,6 +53,7 @@ bool FONcRequestHandler::use_compression;
 bool FONcRequestHandler::use_shuffle;
 unsigned long long  FONcRequestHandler::chunk_size;
 bool FONcRequestHandler::classic_model;
+bool FONcRequestHandler::reduce_dim;
 bool FONcRequestHandler::no_global_attrs;
 unsigned long long FONcRequestHandler::request_max_size_kb;
 bool FONcRequestHandler::nc3_classic_format;
@@ -162,6 +163,8 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
 
     read_key_value(FONC_CLASSIC_MODEL_KEY, FONcRequestHandler::classic_model, FONC_CLASSIC_MODEL);
 
+    read_key_value(FONC_REDUCE_DIM_KEY, FONcRequestHandler::reduce_dim, FONC_REDUCE_DIM);
+
     read_key_value(FONC_NO_GLOBAL_ATTRS_KEY, FONcRequestHandler::no_global_attrs, FONC_NO_GLOBAL_ATTRS);
 
     read_key_value(FONC_REQUEST_MAX_SIZE_KB_KEY, FONcRequestHandler::request_max_size_kb, FONC_REQUEST_MAX_SIZE_KB);
@@ -174,6 +177,7 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
     BESDEBUG("fonc", "FONcRequestHandler::use_shuffle: " << FONcRequestHandler::use_shuffle << endl);
     BESDEBUG("fonc", "FONcRequestHandler::chunk_size: " << FONcRequestHandler::chunk_size << endl);
     BESDEBUG("fonc", "FONcRequestHandler::classic_model: " << FONcRequestHandler::classic_model << endl);
+    BESDEBUG("fonc", "FONcRequestHandler::reduce_dim: " << FONcRequestHandler::reduce_dim << endl);
     BESDEBUG("fonc", "FONcRequestHandler::turn_off_global_attrs: " << FONcRequestHandler::no_global_attrs << endl);
     BESDEBUG("fonc", "FONcRequestHandler::request_max_size_kb: " << FONcRequestHandler::request_max_size_kb << endl);
     BESDEBUG("fonc", "FONcRequestHandler::nc3_classic_format " << FONcRequestHandler::nc3_classic_format << endl);
