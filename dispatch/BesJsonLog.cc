@@ -53,7 +53,6 @@
 using namespace std;
 
 BesJsonLog *BesJsonLog::d_instance = nullptr;
-const string BesJsonLog::mark = string("|&|");
 
 static auto TIME_KEY = "bes_start_time";
 static auto PID_KEY = "pid";
