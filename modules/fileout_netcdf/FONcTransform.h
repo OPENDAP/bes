@@ -77,7 +77,6 @@ private:
     bool global_dio_flag = false; 
 
     bool do_reduce_dim = false;
-    //std::unordered_map<int64_t, std::string> reduced_dimsize_to_dimname;
     std::unordered_map<int64_t, std::vector<std::string>> dimsize_to_dup_dimnames;
     int reduced_dim_num = 0;
 
