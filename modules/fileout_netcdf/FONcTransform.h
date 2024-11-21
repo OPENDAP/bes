@@ -107,9 +107,8 @@ private:
     virtual bool check_reduce_dim();
     virtual bool check_reduce_dim_internal(libdap::D4Group *grp);
     virtual bool check_var_dim(libdap::BaseType *bt);
-    virtual void build_reduced_dimsize_to_dimname();
-    virtual void build_reduced_dimsize_to_dimname_internal(libdap::D4Group *grp, libdap::D4Group *root_grp);
     virtual void build_reduce_dim();
+    virtual void build_reduce_dim_internal(libdap::D4Group *grp, libdap::D4Group *root_grp);
 
     virtual bool is_streamable();
     virtual bool is_dds_streamable();

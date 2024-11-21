@@ -1,0 +1,17 @@
+netcdf test {
+dimensions:
+	dim0 = 2 ;
+	dim1 = 3 ;
+	dim2 = 2 ;
+	dim3 = 2 ;
+variables:
+	short d16_1(dim0) ;
+	short d16_2(dim0, dim1) ;
+	int d32_1(dim0, dim2, dim1) ;
+	int d32_2(dim0, dim2, dim1) ;
+	int d32_3(dim0, dim2, dim1, dim3) ;
+
+// global attributes:
+		:history = "removed date-timex d_int_2.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"d_int_2.h5\"}]}]" ;
+}

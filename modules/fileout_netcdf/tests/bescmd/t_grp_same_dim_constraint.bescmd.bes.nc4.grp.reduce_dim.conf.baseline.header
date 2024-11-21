@@ -1,0 +1,25 @@
+netcdf test {
+dimensions:
+	dim0 = 2 ;
+	dim1 = 2 ;
+	dim2 = 3 ;
+	dim3 = 4 ;
+
+// global attributes:
+		:history = "removed date-timex t_cf_geo_grp_2dlatlon.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_cf_geo_grp_2dlatlon.h5\"}]}]" ;
+
+group: Data {
+  variables:
+  	float temp(dim0, dim1) ;
+  		temp:units = "kelvin" ;
+  } // group Data
+
+group: Geolocation {
+  variables:
+  	float lat(dim0, dim1) ;
+  		lat:units = "degrees_north" ;
+  	float lon(dim2, dim3) ;
+  		lon:units = "degrees_east" ;
+  } // group Geolocation
+}

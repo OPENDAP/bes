@@ -662,40 +662,36 @@ void FONcTransform::transform_dap4() {
     // Here we need to check if we need to reduce the redundant dimension names.
     if (FONcRequestHandler::reduce_dim == true) {
         do_reduce_dim = check_reduce_dim();
-        if (do_reduce_dim) {
-            build_reduced_dimsize_to_dimname();
+        if (do_reduce_dim) 
             build_reduce_dim();
-        }
-if(do_reduce_dim) 
-    BESDEBUG(MODULE, prolog << "reduced dimensions" << endl);
-else
-    BESDEBUG(MODULE, prolog << "Not reduced dimensions" << endl);
-
-// Check if dimension name change can be recongnized by the _dmr.
-#define KENT 1
-#if KENT
-
-    D4Group *root_grp_debug = _dmr->root();
-    for (auto &var:root_grp_debug->variables()) {
-
-        if (var->type() == dods_array_c) {
-            auto t_a = dynamic_cast<Array *>(var);
-            Array::Dim_iter dim_i = t_a->dim_begin();
-            Array::Dim_iter dim_e = t_a->dim_end();
-            for (; dim_i != dim_e; dim_i++) {
-BESDEBUG(MODULE, prolog << "CHANGED dim name: " << dim_i->name<<endl);
+#if !NDEBUG        
+        if (do_reduce_dim) 
+            BESDEBUG(MODULE, prolog << "reduced dimensions" << endl);
+        else
+            BESDEBUG(MODULE, prolog << "Not reduced dimensions" << endl);
+    
+        if (do_reduce_dim) {
+            D4Group *root_grp_debug = _dmr->root();
+            for (auto &var:root_grp_debug->variables()) {
+        
+                if (var->type() == dods_array_c) {
+                    auto t_a = dynamic_cast<Array *>(var);
+                    Array::Dim_iter dim_i = t_a->dim_begin();
+                    Array::Dim_iter dim_e = t_a->dim_end();
+                    for (; dim_i != dim_e; dim_i++) {
+                        BESDEBUG(MODULE, prolog << "CHANGED dim name: " << dim_i->name<<endl);
+                    }
+                }
+            }
+        
+            D4Dimensions *root_dims = root_grp_debug->dims();
+            for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+                BESDEBUG(MODULE,  prolog << "transform_dap4() - check dimensions" << endl);
+                BESDEBUG(MODULE,  prolog << "transform_dap4() - dim name is: " << (*di)->name() << endl);
+                BESDEBUG(MODULE,  prolog << "transform_dap4() - dim size is: " << (*di)->size() << endl);
+                BESDEBUG(MODULE,  prolog << "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
             }
         }
-    }
-
-    D4Dimensions *root_dims = root_grp_debug->dims();
-    for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
-        BESDEBUG(MODULE,  prolog << "transform_dap4() - check dimensions" << endl);
-        BESDEBUG(MODULE,  prolog << "transform_dap4() - dim name is: " << (*di)->name() << endl);
-        BESDEBUG(MODULE,  prolog << "transform_dap4() - dim size is: " << (*di)->size() << endl);
-        BESDEBUG(MODULE,  prolog << "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
-    }
-
  
 #endif
     }
@@ -1517,20 +1513,19 @@ bool FONcTransform::check_var_dim(BaseType *var) {
     return ret_value;
 }
 
-void FONcTransform::build_reduced_dimsize_to_dimname() {
+void FONcTransform::build_reduce_dim() {
 
     D4Group *root_grp = _dmr->root();
-    build_reduced_dimsize_to_dimname_internal(root_grp, root_grp);
+    build_reduce_dim_internal(root_grp, root_grp);
 }
 
-void FONcTransform::build_reduced_dimsize_to_dimname_internal(D4Group *grp, D4Group *root_grp) {
+void FONcTransform::build_reduce_dim_internal(D4Group *grp, D4Group *root_grp) {
 
     for (auto &var:grp->variables()) {
 
         if (var->type() == dods_array_c && var->send_p()) {
             auto t_a = dynamic_cast<Array *>(var);
 
-            //unordered_map<int64_t, string> local_dsize_to_dname;
             unordered_map<int64_t,int> local_dsize_count;
  
             Array::Dim_iter dim_i = t_a->dim_begin();
@@ -1541,7 +1536,7 @@ void FONcTransform::build_reduced_dimsize_to_dimname_internal(D4Group *grp, D4Gr
    
                     int64_t dimsize = t_a->dimension_size_ll(dim_i, true);
 
-                    // We need to update the number of times this dim size is used in this array.
+                    // We need to update the number of occurences this dim size is used in this array.
                     bool local_dsize_found = false;
                     if(local_dsize_count.find(dimsize)!=local_dsize_count.end()) {
                         int prev_count = local_dsize_count[dimsize];
@@ -1580,7 +1575,7 @@ void FONcTransform::build_reduced_dimsize_to_dimname_internal(D4Group *grp, D4Gr
                             dim_name_exist = true;
                         }
                     }
-                    else {
+                    else { // This dimension has not been assigned a name in this file so far,assign it.
                         string dim_name_suffix= to_string(reduced_dim_num);
                         (*dim_i).name ="dim" + dim_name_suffix;
                         reduced_dim_num++;
@@ -1599,132 +1594,23 @@ void FONcTransform::build_reduced_dimsize_to_dimname_internal(D4Group *grp, D4Gr
                             (*dim_i).dim= d4_dim;
                     }
                     else {
-                    // We need to add D4Dimension and group dimensions.
-                     auto d4_dim0_unique = make_unique<D4Dimension>((*dim_i).name, dimsize);
-                     (*dim_i).dim=d4_dim0_unique.get();
-    
-                     // The DAP4 group needs also to store these dimensions. 
-                     D4Dimensions *dims = root_grp->dims();
-                     dims->add_dim_nocopy(d4_dim0_unique.release());
-                     }
-
-BESDEBUG(MODULE, prolog << "New dim name: " << dim_i->name<<endl);
+                        // We need to add D4Dimension and group dimensions.
+                         auto d4_dim0_unique = make_unique<D4Dimension>((*dim_i).name, dimsize);
+                         (*dim_i).dim=d4_dim0_unique.get();
+        
+                         // The DAP4 group needs also to store these dimensions. 
+                         D4Dimensions *dims = root_grp->dims();
+                         dims->add_dim_nocopy(d4_dim0_unique.release());
+                    }
                 }
             }
         }
     }
+
     for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) 
-        build_reduced_dimsize_to_dimname_internal(*gi,root_grp); 
+        build_reduce_dim_internal(*gi,root_grp); 
 
 }
-
-
-#if 0
-void FONcTransform::build_reduced_dimsize_to_dimname_internal(D4Group *grp, D4Group *root_grp) {
-
-    for (auto &var:grp->variables()) {
-
-        if (var->type() == dods_array_c && var->send_p()) {
-            auto t_a = dynamic_cast<Array *>(var);
-
-            unordered_map<int64_t, string> local_dsize_to_dname;
-            unordered_map<int64_t,int> local_dup_dsize_count;
- 
-            Array::Dim_iter dim_i = t_a->dim_begin();
-            Array::Dim_iter dim_e = t_a->dim_end();
-            for (; dim_i != dim_e; dim_i++) {
-                if ((*dim_i).name == "") {
-   
-                    int64_t dimsize = t_a->dimension_size_ll(dim_i, true);
-                    bool dim_name_exist = false;
-                    auto it_sn=reduced_dimsize_to_dimname.find(dimsize);
-                    if (it_sn !=reduced_dimsize_to_dimname.end()) {
-
-                        auto it_lsn=local_dsize_to_dname.find(dimsize);
-                        if (it_lsn !=local_dsize_to_dname.end()) {
-
-#if 0
-                            // We need to see if we can use an existing dimension name used by other arrays.
-                            // STOP, also need to have a local map to match the other array's dimension. 
-                            bool need_new_dim_name = false;
-                            string temp_dim_name;
-                            vector<string>temp_same_size_dimnames;
-                            for (const auto &gpair:dimname_to_dup_dimsize) {
-                                if (gpair.second == dimsize) 
-                                    temp_same_size_dimnames.push_back(gpair.first);
-                            }
-                            // We need to loop these existing dimension names and see if one of them can be used.
-                            set<string> local_temp_same_size_dimnames;
-                            for (const auto &lpair:local_dup_dname_to_dsize) {
-                                if (lpair.second == dimsize) 
-                                    local_temp_same_size_dimnames.insert(lpair.first);
-                            }
-                            {
-                               {
-                                   {
-                                // This dimension name has been used, we need to create one.
-                                        if (lpair.first == gpair.first) {
-                                            need_new_dim_name = true;
-                                            break;
-                                        }
-                                    }
-                                    if (need_new_dim_name == true)
-                                        break;
-                                }
-                            }
-#endif
-                            (*dim_i).name = "dim" + to_string(reduced_dim_num);
-                            reduced_dim_num++;
-                        }
-                        else {
-                            (*dim_i).name = reduced_dimsize_to_dimname[dimsize];
-                            local_dsize_to_dname[dimsize] = (*dim_i).name;
-                            dim_name_exist = true;
-                        } 
-                    }
-                    else {
-                        string dim_name_suffix= to_string(reduced_dim_num);
-                        (*dim_i).name ="dim" + dim_name_suffix;
-                        reduced_dimsize_to_dimname[dimsize] = (*dim_i).name;
-                        local_dsize_to_dname[dimsize] = (*dim_i).name;
-
-                        reduced_dim_num++;
-                    }
-
-                    if (dim_name_exist) {
-
-                        D4Dimensions *dims = root_grp->dims();
-                        D4Dimension *d4_dim = dims->find_dim((*dim_i).name);
-                        if(d4_dim == nullptr)
-                            throw BESInternalError("D4 dimension cannot be found", __FILE__, __LINE__);
-                        else 
-                            (*dim_i).dim= d4_dim;
-                    }
-                    else {
-                    // We need to add D4Dimension and group dimensions.
-                     auto d4_dim0_unique = make_unique<D4Dimension>((*dim_i).name, dimsize);
-                     (*dim_i).dim=d4_dim0_unique.get();
-    
-                     // The DAP4 group needs also to store these dimensions. 
-                     D4Dimensions *dims = root_grp->dims();
-                     dims->add_dim_nocopy(d4_dim0_unique.release());
-                     }
-
-BESDEBUG(MODULE, prolog << "New dim name: " << dim_i->name<<endl);
-                }
-            }
-        }
-    }
-    for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) 
-        build_reduced_dimsize_to_dimname_internal(*gi,root_grp); 
-
-}
-#endif
-
-void FONcTransform::build_reduce_dim() {
-
-}
-
 
 
 /** @brief dumps information about this transformation object for debugging
