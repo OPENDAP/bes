@@ -52,7 +52,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 # Sources and Headers
 
 SRCS = BESInterface.cc \
-	BESLog.cc TheBESKeys.cc			\
+	BESLog.cc BesJsonLog.cc TheBESKeys.cc			\
 	kvp_utils.cc \
 	BESContainer.cc BESFileContainer.cc				\
 	BESContainerStorage.cc BESContainerStorageFile.cc		\
@@ -102,7 +102,7 @@ SRCS = BESInterface.cc \
 
 #	BESAggFactory.cc BESAggregationServer.cc BESContainerStorageCatalog.cc
 
-HDRS = BESInterface.h BESLog.h 			\
+HDRS = BESInterface.h BESLog.h BesJsonLog.h			\
 	TheBESKeys.h BESStatus.h 				\
 	kvp_utils.h \
 	BESNames.h \

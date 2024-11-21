@@ -66,7 +66,8 @@ protected:
 
     void clean() override;
 
-    void log_the_command(); // added for just this code. jhrg 4/20/22
+    void log_the_command_OLD(); // added for just this code. jhrg 4/20/22
+    void log_the_command();
 
 public:
     BESXMLInterface(const std::string &cmd, std::ostream *strm);

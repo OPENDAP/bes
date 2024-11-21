@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <nlohmann/json.hpp>
 
 #include "BESXMLInterface.h"
 #include "BESXMLCommand.h"
@@ -49,6 +50,7 @@
 
 #include "BESDebug.h"
 #include "BESLog.h"
+#include "BesJsonLog.h"
 #include "BESSyntaxUserError.h"
 #include "RequestServiceTimer.h"
 
@@ -250,7 +252,7 @@ void BESXMLInterface::build_data_request_plan()
 /**
  * @brief Log information about the command
  */
-void BESXMLInterface::log_the_command()
+void BESXMLInterface::log_the_command_OLD()
 {
     // In 'verbose' logging mode, log all the commands.
     VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
@@ -278,25 +280,112 @@ void BESXMLInterface::log_the_command()
 
         new_log_info.append(d_dhi_ptr->action);
 
-        if (!d_dhi_ptr->data[RETURN_CMD].empty())
+        if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
             new_log_info.append(log_delim).append(d_dhi_ptr->data[RETURN_CMD]);
+        }
 
         // Assume this is DAP and thus there is at most one container. Log a warning if that's
         // not true. jhrg 11/14/17
         BESContainer *c = *(d_dhi_ptr->containers.begin());
         if (c) {
-            if (!c->get_real_name().empty()) new_log_info.append(log_delim).append(c->get_real_name());
 
+
+            // Add the "path" of the requested data to the log line
+            if (!c->get_real_name().empty()) {
+                new_log_info.append(log_delim).append(c->get_real_name());
+            }
+
+            // Add the constraint expression to the log line
+            // Try for a DAP2 CE first
             if (!c->get_constraint().empty()) {
                 new_log_info.append(log_delim).append(c->get_constraint());
             }
             else {
-                if (!c->get_dap4_constraint().empty()) new_log_info.append(log_delim).append(c->get_dap4_constraint());
-                if (!c->get_dap4_function().empty()) new_log_info.append(log_delim).append(c->get_dap4_function());
+                // No DAP2 CE? Try DAP4...
+                if (!c->get_dap4_constraint().empty()) {
+                    new_log_info.append(log_delim).append(c->get_dap4_constraint());
+                }
+                if (!c->get_dap4_function().empty()) {
+                    new_log_info.append(log_delim).append(c->get_dap4_function());
+                }
             }
         }
-
         REQUEST_LOG(new_log_info << endl);
+        if (d_dhi_ptr->containers.size() > 1)
+            ERROR_LOG("The previous command had multiple containers defined, but only the first was logged.");
+    }
+#else
+    if (!BESLog::TheLog()->is_verbose()) {
+            if (d_dhi_ptr->action.find("set.context") == string::npos
+                && d_dhi_ptr->action.find("show.catalog") == string::npos) {
+                LOG(d_dhi_ptr->data[LOG_INFO] << endl);
+            }
+        }
+#endif
+}
+
+/**
+ * @brief Log information about the command
+ */
+void BESXMLInterface::log_the_command()
+{
+    // In 'verbose' logging mode, log all the commands.
+    VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
+
+    // This is the main log entry when the server is not in 'verbose' mode.
+    // There are two ways we can do this, one writes a log line for only the
+    // get commands, the other write the set container, define and get commands.
+    // TODO Make this configurable? jhrg 11/14/17
+#ifdef LOG_ONLY_GET_COMMANDS
+    // Special logging action for the 'get' command. In non-verbose logging mode,
+    // only log the get command.
+    if (d_dhi_ptr->action.find("get.") != string::npos) {
+
+        nlohmann::json log_entry;
+
+        // If the OLFS sent its log info, integrate that into the log output
+        bool found = false;
+        string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
+        if(found){
+            log_entry = nlohmann::json::parse(olfs_log_line);
+        }
+
+        log_entry["action"] = d_dhi_ptr->action;
+
+        if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
+            log_entry["return_as"] = d_dhi_ptr->data[RETURN_CMD];
+        }
+        else {
+            log_entry["return_as"] = "-";
+        }
+
+        // Assume this is DAP and thus there is at most one container. Log a warning if that's
+        // not true. jhrg 11/14/17
+        BESContainer *c = *(d_dhi_ptr->containers.begin());
+        if (c) {
+
+
+            // Add the "path" of the requested data to the log line
+            if (!c->get_real_name().empty()) {
+                log_entry["local_path"] = c->get_real_name();
+            }
+
+            // Add the constraint expression to the log line
+            // Try for a DAP2 CE first
+            if (!c->get_constraint().empty()) {
+                log_entry["constraint_expression"] = c->get_real_name();
+            }
+            else {
+                // No DAP2 CE? Try DAP4...
+                if (!c->get_dap4_constraint().empty()) {
+                    log_entry["constraint_expression"] = c->get_dap4_constraint();
+                }
+                if (!c->get_dap4_function().empty()) {
+                    log_entry["dap4_function"] = c->get_dap4_constraint();
+                }
+            }
+        }
+        JSON_REQUEST_LOG(log_entry);
 
         if (d_dhi_ptr->containers.size() > 1)
             ERROR_LOG("The previous command had multiple containers defined, but only the first was logged.");

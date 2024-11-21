@@ -35,7 +35,8 @@ reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test \
-RequestTimerTest BESFileLockingCacheTest FileCacheTest
+RequestTimerTest BESFileLockingCacheTest FileCacheTest \
+BesJsonLogTest
 
 # removed cacheT jhrg 1/11/23
 # FIXME keysT removed to see if it's the only blocker. jhrg 2/2/23
@@ -190,3 +191,7 @@ BESFileLockingCacheTest_SOURCES = BESFileLockingCacheTest.cc
 FileCacheTest_SOURCES = FileCacheTest.cc
 FileCacheTest_CPPFLAGS = $(AM_CPPFLAGS) $(OPENSSL_INC)
 FileCacheTest_LDADD = $(LDADD) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
+
+BesJsonLogTest_SOURCES = BesJsonLogTest.cc
+BesJsonLogTest_CPPFLAGS = $(AM_CPPFLAGS)
+BesJsonLogTest_LDADD = $(LDADD)
