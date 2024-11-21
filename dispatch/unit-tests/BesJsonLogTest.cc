@@ -145,6 +145,13 @@ public:
         JSON_VERBOSE_LOG(msg);
     }
 
+    void special_chars_log_test_1() {
+        string msg = prolog + "This is a test.\t\\If it had no\"t been a test you would\" have known \n\nthe answers.";
+        DBG(cerr << prolog << "Sending string to INFO Log: " << msg << "\n");
+        BesJsonLog::TheLog()->info(msg);
+    }
+
+
     CPPUNIT_TEST_SUITE(BesJsonLogTest);
 
     CPPUNIT_TEST(request_log_test_1);
@@ -158,6 +165,8 @@ public:
 
     CPPUNIT_TEST(verbose_log_test_1);
     CPPUNIT_TEST(verbose_log_test_2);
+
+    CPPUNIT_TEST(special_chars_log_test_1);
 
     CPPUNIT_TEST_SUITE_END();
 };
