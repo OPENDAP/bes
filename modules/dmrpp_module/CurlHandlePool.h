@@ -150,7 +150,7 @@ public:
     void initialize();
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
-    void release_handle(dmrpp_easy_handle *h);
+    static void release_handle(dmrpp_easy_handle *h);
 };
 
 } // namespace dmrpp

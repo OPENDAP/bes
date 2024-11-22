@@ -386,9 +386,21 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
         }
 
-        // TODO Code between here and below may have been turned into a method in AccessCredentials. jhrg 11/2/22
+        // If the URL is not signed for S3, then we need to look for credentials
+        // in the credentials manager.
+        if (!curl::is_url_signed_for_s3(handle->d_url->str())) {
+            AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
+            if (credentials && credentials->is_s3_cred()) {
+                handle->d_request_headers = curl::sign_s3_url(handle->d_url, credentials, handle->d_request_headers);
+                res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
+                curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+            }
+        }
+#if 0
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         INFO_LOG(prolog << "Looked for credentials for: " << handle->d_url->str() << '\n');
+        // TODO Replace with: curl_slist *sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slist *req_headers)
+        //  jhrg 11/22/24
         if (credentials && credentials->is_s3_cred()) {
             BESDEBUG(DMRPP_CURL, prolog << "Got AccessCredentials instance:\n" << credentials->to_json() << '\n');
             // If there are available credentials, and they are S3 credentials then we need to sign the request
@@ -413,6 +425,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
         }
+#endif
 #if POC_DMRpp_OWNERSHIP
         // FIXME DO NOT MERGE THIS. For POC work on DMR++ Ownership.
         //  TRY abuse the credentials mgr to get/use and EDL Token for certain URLs. jhrg 5/18/24

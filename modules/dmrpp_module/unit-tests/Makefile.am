@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 # TODO set these with configure. jhrg 11/26/19
 # OPENSSL_LIBS=-lcrypto
 
-AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)  -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
     -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/modules/common \
     -I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS)
 
