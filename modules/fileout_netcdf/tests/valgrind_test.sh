@@ -256,6 +256,13 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_packed_li
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.constraint.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.bescmd >test.nc
 
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_dim.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_same_dim_constraint.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_dim_constraint.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_int_dim.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_int_dim.dimpp.bescmd > test.nc
+
 #disable dio
 
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd>test.nc

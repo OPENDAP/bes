@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="nc4_group_mlls" space="catalog">/data/t_cf_geo_grp_2dlatlon.h5</setContainer>
+    <define name="d">
+	<container name="nc4_group_mlls" >
+        <dap4constraint>/Data/temp[0:1:0][0:2:3];/Geolocation/lat[0:1:0][0:2:3];/Geolocation/lon[0:1:2][0:2:6]</dap4constraint>
+        </container>
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>

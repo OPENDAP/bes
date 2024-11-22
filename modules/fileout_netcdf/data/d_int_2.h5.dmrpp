@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="d_int_2.h5" dmrpp:href="data/d_int_2.h5" dmrpp:version="3.21.0">
+    <Int16 name="d16_1">
+        <Dim size="2"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="2488" nBytes="4"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Int16 name="d16_2">
+        <Dim size="2"/>
+        <Dim size="3"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="2492" nBytes="12"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Int32 name="d32_1">
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <Dim size="3"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="2504" nBytes="48"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="d32_2">
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <Dim size="3"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="2552" nBytes="48"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="d32_3">
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <Dim size="3"/>
+        <Dim size="2"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunk offset="2600" nBytes="96"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2024-11-20T22:10:30Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.0</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.02YDT7dRdM -f ./d_int_2.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.pTnkRRzeum -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
