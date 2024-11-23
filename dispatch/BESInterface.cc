@@ -46,6 +46,8 @@
 
 #include "BESInterface.h"
 
+#include <BesJsonLog.h>
+
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
 
@@ -108,8 +110,24 @@ ostream &add_memory_info(ostream &out)
     else {
         out << ", current memory usage is unknown.";
     }
-
     return out;
+}
+
+/**
+ * @brief Returns a string whose value is a phrase that describes the current RSS for this process
+ * @param out Write to this stream
+ */
+string get_memory_info()
+{
+    long mem_size = BESUtil::get_current_memory_usage();
+    string mem_info;
+    if (mem_size) {
+        mem_info =  ", current memory usage is " + to_string(mem_size) + " KB.";
+    }
+    else {
+        mem_info = ", current memory usage is unknown.";
+    }
+    return mem_info;
 }
 
 /**
@@ -159,11 +177,16 @@ static void log_error(const BESError &e)
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
         ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg) << add_memory_info << "\n");
+        JSON_ERROR_LOG("ERROR: " + error_name + ": " + err_msg + get_memory_info() + "\n");
     }
     else {
         ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg)
             << " (" << e.get_file() << ":" << e.get_line() << ")"
             << add_memory_info << "\n");
+
+        JSON_ERROR_LOG("ERROR: " + error_name + ": " +  err_msg
+            + " (" + e.get_file() + ":" + to_string(e.get_line()) + ")"
+            + get_memory_info() + "\n");
     }
 }
 

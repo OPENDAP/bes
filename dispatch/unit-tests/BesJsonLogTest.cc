@@ -22,6 +22,9 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <BESLog.h>
+#include <BESStopWatch.h>
+
 #include "config.h"
 
 #include <string>
@@ -52,6 +55,18 @@ using namespace std;
 class BesJsonLogTest : public CppUnit::TestFixture {
 private:
 
+    string the_test_text = "Stephen could remember an evening when he had sat there in the warm,\n"
+                       "deepening twilight, watching the sea; it had barely a ruffle on its surface,\n"
+                       "and yet the Sophie picked up enough moving air with her topgallants\n"
+                       "to draw a long straight whispering furrow across the water, a line\n"
+                       "brilliant with unearthly phosphorescence, visible for quarter of a mile behind her.\n"
+                       "Days and nights of unbelievable purity. Nights when the steady Ionian breeze\n"
+                       "rounded the square mainsail – not a brace to be touched, watch relieving watch –\n"
+                       "and he and Jack on deck, sawing away, sawing away, lost in their music,\n"
+                       "until the falling dew untuned their strings. And days when the perfection\n"
+                       "of dawn was so great, the emptiness so entire, that men were almost afraid to speak.\n";
+
+    string speed_test_msg = "This is a test. If it had not been a test you would have known the answers.\n";
 
 public:
     // Called once before everything gets tested
@@ -61,6 +76,7 @@ public:
     ~BesJsonLogTest() override = default;
 
     string log_file_name;
+    unsigned long speed_test_reps = 1048576;
 
     // Called before each test
     void setUp() override {
@@ -72,9 +88,27 @@ public:
         TheBESKeys::TheKeys()->get_value(BESKeys_LOG_NAME_KEY, log_file_name, found);
 
         if(!found) {
-            throw new BESInternalError("Failed to locate a BES log file.", __FILE__, __LINE__);
+            throw new BESInternalError("Failed to locate a BES log file name.", __FILE__, __LINE__);
         }
         DBG(cerr << prolog << "BES Log File Set To " << log_file_name << "\n");
+        int result = remove( log_file_name.c_str() );
+        if( result == 0 ){
+            DBG(cerr << prolog << "Successfully removed the log file: " << log_file_name << "\n");
+        } else {
+            DBG(cerr << prolog << "Did not remove the  log file: " << log_file_name <<
+                " errno: " << errno << " (" << strerror( errno ) << ")\n");
+        }
+
+        string json_log_file_name = log_file_name + ".json";
+        DBG(cerr << prolog << "BES JSON Log File Set To " << json_log_file_name << "\n");
+        result = remove( json_log_file_name.c_str() );
+        if( result == 0 ){
+            DBG(cerr << prolog << "Successfully removed the log file: " << json_log_file_name << "\n");
+        } else {
+            DBG(cerr << prolog << "Did not remove the  log file: " << json_log_file_name <<
+                " errno: " << errno << " (" << strerror( errno ) << ")\n");
+        }
+
     }
 
     // Called after each test
@@ -151,6 +185,35 @@ public:
         BesJsonLog::TheLog()->info(msg);
     }
 
+    void info_log_speed_test() {
+        DBG(cerr << prolog << "Speed test message: " << speed_test_msg << "\n");
+        BesJsonLog::TheLog()->info(speed_test_msg);
+
+        unsigned long i;
+        {
+            DBG(cerr << prolog << "Writing " << speed_test_reps << " messages of length " << speed_test_msg.length() << " to original info log.\n");
+            string log_name = "info_log-"+to_string(speed_test_reps)+"-laps";
+            BESStopWatch sw(log_name);
+            sw.start(log_name);
+            for(i=0; i<speed_test_reps ;i++) {
+                INFO_LOG(speed_test_msg);
+            }
+        }
+    }
+    void json_info_log_speed_test() {
+        DBG(cerr << prolog << "Speed test message: " << speed_test_msg << "\n");
+
+        unsigned long i;
+        {
+            DBG(cerr << prolog << "Writing " << speed_test_reps << " messages of length " << speed_test_msg.length() << " to json info log.\n");
+            string log_name = "json_info_log-"+to_string(speed_test_reps)+"-laps";
+            BESStopWatch sw(log_name);
+            sw.start(log_name);
+            for(i=0; i<speed_test_reps ;i++) {
+                JSON_INFO_LOG(speed_test_msg);
+            }
+        }
+    }
 
     CPPUNIT_TEST_SUITE(BesJsonLogTest);
 
@@ -167,6 +230,9 @@ public:
     CPPUNIT_TEST(verbose_log_test_2);
 
     CPPUNIT_TEST(special_chars_log_test_1);
+    
+    CPPUNIT_TEST(info_log_speed_test);
+    CPPUNIT_TEST(json_info_log_speed_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
