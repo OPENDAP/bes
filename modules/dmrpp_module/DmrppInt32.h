@@ -45,18 +45,18 @@ public:
     DmrppInt32(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Int32(n, d), DmrppCommon(std::move(dmz)) { }
     DmrppInt32(const DmrppInt32 &) = default;
 
-    virtual ~DmrppInt32() = default;
+    ~DmrppInt32() override = default;
 
     DmrppInt32 &operator=(const DmrppInt32 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppInt32(*this);
     }
 
     bool read() override;
     void set_send_p(bool state) override;
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override
     {
         DmrppCommon::print_dmrpp(writer, constrained);
     }

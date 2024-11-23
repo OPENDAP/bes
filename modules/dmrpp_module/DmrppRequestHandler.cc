@@ -81,7 +81,11 @@ using namespace http;
 using namespace libdap;
 using namespace std;
 
+// These should be set in the Makefile.am. jhrg 11/23/24
+#ifndef MODULE_NAME
 #define MODULE_NAME "dmrpp_module"
+#endif
+
 #ifndef MODULE_VERSION
 #define MODULE_VERSION "unset"      // Set this in the Makefile.am
 #endif

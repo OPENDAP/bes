@@ -49,7 +49,7 @@ public:
 
     DmrppInt64 &operator=(const DmrppInt64 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppInt64(*this);
     }
 

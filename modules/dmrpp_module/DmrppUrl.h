@@ -49,7 +49,7 @@ public:
 
     DmrppUrl &operator=(const DmrppUrl &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() override {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppUrl(*this);
     }
 

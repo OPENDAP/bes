@@ -51,7 +51,7 @@ class dmrpp_easy_handle {
 #if 0
     //char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
 #endif
-    std::vector<char> d_errbuf; ///< raw error message info from libcurl
+    std::vector<char> d_errbuf = std::vector<char>(CURL_ERROR_SIZE, '\0'); ///< raw error message info from libcurl
 
     CURL *d_handle = nullptr;     ///< The libcurl handle object.
     curl_slist *d_request_headers = nullptr; ///< Holds the list of authorization headers, if needed.
