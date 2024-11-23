@@ -25,22 +25,16 @@
 
 #include <string>
 #include <sstream>
-#include <ctime>
 #include <mutex>
 
 #include <curl/curl.h>
 
 #include "CurlUtils.h"
 #include "HttpError.h"
-#include "BESLog.h"
-#include "BESDebug.h"
-#include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "AllowedHosts.h"
 
 #include "DmrppCommon.h"
-#include "DmrppNames.h"
-#include "awsv4.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "CredentialsManager.h"
@@ -171,17 +165,17 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 }
 #endif
 
-dmrpp_easy_handle::dmrpp_easy_handle() {
+dmrpp_easy_handle::dmrpp_easy_handle(): d_errbuf(CURL_ERROR_SIZE, '\0') {
 
     CURLcode res;
 
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
-    curl::set_error_buffer(d_handle, d_errbuf);
+    curl::set_error_buffer(d_handle, d_errbuf.data());
 
     res = curl_easy_setopt(d_handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_SSLVERSION", d_errbuf, __FILE__, __LINE__);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_SSLVERSION", d_errbuf.data(), __FILE__, __LINE__);
 
 #if CURL_VERBOSE
     res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace);
@@ -193,11 +187,11 @@ dmrpp_easy_handle::dmrpp_easy_handle() {
 #endif
 
     res = curl_easy_setopt(d_handle, CURLOPT_HEADERFUNCTION, chunk_header_callback);
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", d_errbuf, __FILE__, __LINE__);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", d_errbuf.data(), __FILE__, __LINE__);
 
     // Pass all data to the 'write_data' function
     res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data);
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", d_errbuf, __FILE__, __LINE__);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", d_errbuf.data(), __FILE__, __LINE__);
 
 #ifdef CURLOPT_TCP_KEEPALIVE
     /* enable TCP keep-alive for this transfer */
@@ -256,7 +250,7 @@ void dmrpp_easy_handle::read_data() {
         CURLcode curl_code = curl_easy_perform(d_handle);
         if (CURLE_OK != curl_code) {
             string msg = prolog + "ERROR - Data transfer error: ";
-            throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
+            throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf.data())), __FILE__, __LINE__);
         }
     }
 
@@ -331,59 +325,59 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         handle->d_chunk = chunk;
 
         CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url()->str().c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         res = curl_easy_setopt(handle->d_handle, CURLOPT_SHARE, d_share);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_SHARE", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_SHARE", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // Pass this to chunk_header_callback as the fourth argument
         res = curl_easy_setopt(handle->d_handle, CURLOPT_HEADERDATA, reinterpret_cast<void *>(chunk));
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERDATA", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERDATA", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // Pass this to chunk_write_data as the fourth argument
         res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(chunk));
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // store the easy_handle so that we can call release_handle in multi_handle::read_data()
         res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void *>(handle.get()));
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PRIVATE", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PRIVATE", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // Enabled cookies
         res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, d_cookies_filename.c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, d_cookies_filename.c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // Follow 302 (redirect) responses
         res = curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         res = curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS, d_max_redirects);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // Set the user agent something otherwise TEA will never redirect to URS.
         res = curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, d_hyrax_user_agent.c_str());
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_USERAGENT", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_USERAGENT", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
         // choosing the the 'safest' one supported by the server.
         // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
         res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // Enable using the .netrc credentials file.
         res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         // If the configuration specifies a particular .netrc credentials file, use it.
         if (!d_netrc_file.empty()) {
             res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, d_netrc_file.c_str());
-            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf.data(), __FILE__, __LINE__);
         }
 
         // If the URL is not signed for S3, then we need to look for credentials
@@ -393,7 +387,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             if (credentials && credentials->is_s3_cred()) {
                 handle->d_request_headers = curl::sign_s3_url(handle->d_url, credentials, handle->d_request_headers);
                 res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
-                curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+                curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf.data(), __FILE__, __LINE__);
             }
         }
 #if 0
@@ -423,7 +417,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                                                                  AWSV4::ISO8601_date(request_time));
             // TODO here. jhrg 11/2/22
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
-            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf.data(), __FILE__, __LINE__);
         }
 #endif
 #if POC_DMRpp_OWNERSHIP
@@ -436,7 +430,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                 INFO_LOG(prolog << "Using EDL Token for URL: " << handle->d_url->str() << '\n');
                 handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "Authorization", edl_token);
                 res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
-                curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+                curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf.data(), __FILE__, __LINE__);
             }
         }
 #endif

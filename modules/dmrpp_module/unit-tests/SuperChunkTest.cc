@@ -60,43 +60,46 @@ static string bes_conf_file = "/bes.conf";
 namespace dmrpp {
 
 class SuperChunkTest: public CppUnit::TestFixture {
-private:
+    dmrpp::DmrppRequestHandler *foo = nullptr;
 
 public:
     // Called once before everything gets tested
-    SuperChunkTest()
-    {
-    }
+    SuperChunkTest() = default;
 
     // Called at the end of the test
-    ~SuperChunkTest()
-    {
-    }
+    ~SuperChunkTest() override = default;
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
         DBG(cerr << endl);
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         DBG(cerr << prolog << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
+#if 0
         string val;
         bool found;
         TheBESKeys::TheKeys()->get_value("ff",val,found);
+#endif
 
         if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
 
-        unsigned long long int max_threads = 8;
+        unsigned int max_threads = 8;
         dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
         dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
 
         // This call instantiates the curlHandlePool. jhrg 5/24/22
-        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
+        foo = new dmrpp::DmrppRequestHandler("Chaos");
     }
 
     // Called after each test
-    void tearDown()
+    void tearDown() override
     {
+        delete foo;
+    }
+
+    void empty_test() {
+        CPPUNIT_ASSERT(true);
     }
 
     void sc_one_chunk_test() {
@@ -288,17 +291,12 @@ public:
                     CPPUNIT_ASSERT(chunk->get_is_read());
                     DBG(cerr << prolog << "chunk->get_bytes_read(): "<< chunk->get_bytes_read() << endl);
                     CPPUNIT_ASSERT(chunk->get_bytes_read() == 100);
-                    char *rbuf = chunk->get_rbuf();
+                    auto const *rbuf = chunk->get_rbuf();
                     for (size_t i = 0; i < 100; i++) {
-                        // DBG( cerr << prolog << "rbuf["<<i<<"]: '"<< rbuf[i] << "'" << endl);
                         CPPUNIT_ASSERT(rbuf[i] == target_is[letter_index]);
                     }
                     letter_index++;
                 }
-
-                //char target_a[] = "a";
-                //char target_test[] = "test";
-
             }
 
         }
@@ -322,6 +320,7 @@ public:
 
     CPPUNIT_TEST_SUITE( SuperChunkTest );
 
+        CPPUNIT_TEST(empty_test);
         CPPUNIT_TEST(sc_one_chunk_test);
         CPPUNIT_TEST(sc_chunks_test_01);
         CPPUNIT_TEST(sc_chunks_test_02);

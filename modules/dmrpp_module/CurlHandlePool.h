@@ -48,7 +48,10 @@ class dmrpp_easy_handle {
     bool d_in_use = false;      ///< Is this easy_handle in use?
     std::shared_ptr<http::url> d_url;  ///< The libcurl handle reads from this URL.
     Chunk *d_chunk = nullptr;     ///< This easy_handle reads the data for \arg chunk.
-    char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+#if 0
+    //char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+#endif
+    std::vector<char> d_errbuf; ///< raw error message info from libcurl
 
     CURL *d_handle = nullptr;     ///< The libcurl handle object.
     curl_slist *d_request_headers = nullptr; ///< Holds the list of authorization headers, if needed.

@@ -1119,14 +1119,14 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
  * @note Used here and in dmrpp_module in one place. jhrg 3/8/23
  * @param response_code
  * @param error_buf
- * @return
+ * @return A formated error message in a C++ string.
  */
 string error_message(const CURLcode response_code, const char *error_buffer) {
     string msg;
     if (error_buffer) {
         msg = string("cURL_error_buffer: ") + error_buffer + ", ";
     }
-    msg = string("cURL_message: ") + curl_easy_strerror(response_code) + " (code: "
+    msg += string("cURL_message: ") + curl_easy_strerror(response_code) + " (code: "
             + to_string(response_code) + ")\n";
     return msg;
 }
@@ -1471,8 +1471,9 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
  * @return True if the URL is signed for S3, false otherwise.
  */
 bool is_url_signed_for_s3(const std::string &url) {
-    static const std::regex s3_signature_regex("X-Amz-Algorithm=|X-Amz-Credential=|X-Amz-Signature=");
-    return std::regex_search(url, s3_signature_regex);
+    return url.find("X-Amz-Algorithm=") != string::npos &&
+           url.find("X-Amz-Credential=") != string::npos &&
+           url.find("X-Amz-Signature=") != string::npos;
 }
 
 /**

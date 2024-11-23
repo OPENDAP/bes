@@ -1413,7 +1413,9 @@ void DmrppArray::read_linked_blocks(){
     
             char **destp = nullptr;
             char *dest_deflate = nullptr;
+#if 0
             unsigned long long out_buf_size = 0;
+#endif
             unsigned long long dest_len = get_var_chunks_storage_size();
             unsigned long long src_len = get_var_chunks_storage_size();
             dest_deflate = new char[dest_len];
