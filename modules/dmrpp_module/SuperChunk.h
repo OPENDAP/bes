@@ -63,8 +63,10 @@ class SuperChunk {
 
 public:
     // TODO Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
-    explicit SuperChunk(const std::string sc_id, DmrppArray *parent=nullptr):
-    d_id(sc_id), d_parent_array(parent), d_data_url(nullptr), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
+    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) :
+            d_id(sc_id), d_parent_array(parent), d_data_url(nullptr), d_offset(0), d_size(0), d_is_read(false),
+            d_read_buffer(nullptr)
+    {}
 
     virtual ~SuperChunk(){
         delete[] d_read_buffer;

@@ -75,7 +75,7 @@ public:
 	explicit DmrppRequestHandler(const std::string &name);
 	~DmrppRequestHandler() override;
 
-    static std::unique_ptr<CurlHandlePool> curl_handle_pool;
+    static CurlHandlePool *curl_handle_pool;
 
     static bool d_use_transfer_threads;
     static unsigned int d_max_transfer_threads;

@@ -97,8 +97,11 @@ unique_ptr<ObjMemCache> DmrppRequestHandler::dds_cache{nullptr};
 shared_ptr<DMZ> DmrppRequestHandler::dmz{nullptr};
 
 // This is used to maintain a pool of reusable curl handles that enable connection
-// reuse. jhrg
-unique_ptr<CurlHandlePool> DmrppRequestHandler::curl_handle_pool{nullptr};
+// reuse. I tried making this a unique_ptr, but that caused tests to fail because
+// the DmrppRequestHandler dtor did not free this object every time the handler
+// was instantiated. That's not an issue for the BES, but it was/is for unit tests
+// that make and delete many of these objects. jhrg 11/22/24
+CurlHandlePool *DmrppRequestHandler::curl_handle_pool{nullptr};
 
 // These now only affect the DDS and DAS ObjMemCaches; the DMR++
 // is cached in the NGAP module. Once issues with the DMR++ object's
@@ -178,7 +181,8 @@ static void read_key_value(const std::string &key_name, double &key_value) {
  * knows what kinds of things we handle.
  */
 DmrppRequestHandler::DmrppRequestHandler(const string &name) :
-        BESRequestHandler(name) {
+       BESRequestHandler(name)
+{
     add_method(DMR_RESPONSE, dap_build_dmr);
     add_method(DAP4DATA_RESPONSE, dap_build_dap4data);
     add_method(DAS_RESPONSE, dap_build_das);
@@ -221,7 +225,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     INFO_LOG(msg.str());
 
     // Whether the default direct IO feature is disabled. Read the key in.
-    read_key_value(DMRPP_DISABLE_DIRECT_IO,disable_direct_io);
+    read_key_value(DMRPP_DISABLE_DIRECT_IO, disable_direct_io);
 
     // Check the value of FONc.ClassicModel to determine if this response is a netCDF-4 classic from fileout netCDF
     // This must be done here since direct IO flag for individual variables  should NOT be set for netCDF-4 classic response.
@@ -233,7 +237,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 #endif
 
     if (!curl_handle_pool) {
-        curl_handle_pool = make_unique<CurlHandlePool>();
+        curl_handle_pool = new CurlHandlePool();
         curl_handle_pool->initialize();
     }
 
@@ -256,6 +260,11 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 }
 
 DmrppRequestHandler::~DmrppRequestHandler() {
+    delete curl_handle_pool;
+    // generally, this is not necessary, but for this to be used in the unit tests, where the DmrppRequestHandler
+    // is made and destroyed many times, it is necessary. That is because the curl handle pool is a static pointer.
+    // jhrg 11/22/24
+    curl_handle_pool = nullptr;
     curl_global_cleanup();
 }
 
