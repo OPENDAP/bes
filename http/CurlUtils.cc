@@ -28,7 +28,6 @@
 #include <fcntl.h>
 #include <ctime>
 #include <cstring>
-#include <regex>
 
 #include <curl/curl.h>
 
