@@ -186,33 +186,39 @@ public:
     }
 
     void info_log_speed_test() {
-        DBG(cerr << prolog << "Speed test message: " << speed_test_msg << "\n");
-        BesJsonLog::TheLog()->info(speed_test_msg);
+        string &test_msg = the_test_text;
+        DBG(cerr << prolog << "Speed test message: " << test_msg << "\n");
+        BesJsonLog::TheLog()->info(test_msg);
 
         unsigned long i;
         {
-            DBG(cerr << prolog << "Writing " << speed_test_reps << " messages of length " << speed_test_msg.length() << " to original info log.\n");
+            DBG(cerr << prolog << "Writing " << speed_test_reps << " messages of length " << test_msg.length() << " to original info log.\n");
             string log_name = "info_log-"+to_string(speed_test_reps)+"-laps";
             BESStopWatch sw(log_name);
             sw.start(log_name);
             for(i=0; i<speed_test_reps ;i++) {
-                INFO_LOG(speed_test_msg);
+                INFO_LOG(test_msg);
             }
         }
     }
     void json_info_log_speed_test() {
-        DBG(cerr << prolog << "Speed test message: " << speed_test_msg << "\n");
+        string &test_msg = the_test_text;
+        DBG(cerr << prolog << "Speed test message: " << test_msg << "\n");
 
         unsigned long i;
         {
-            DBG(cerr << prolog << "Writing " << speed_test_reps << " messages of length " << speed_test_msg.length() << " to json info log.\n");
+            DBG(cerr << prolog << "Writing " << speed_test_reps << " messages of length " << test_msg.length() << " to json info log.\n");
             string log_name = "json_info_log-"+to_string(speed_test_reps)+"-laps";
             BESStopWatch sw(log_name);
             sw.start(log_name);
             for(i=0; i<speed_test_reps ;i++) {
-                JSON_INFO_LOG(speed_test_msg);
+                JSON_INFO_LOG(test_msg);
             }
         }
+    }
+    void combined_log_speed_test() {
+        json_info_log_speed_test();
+        info_log_speed_test();
     }
 
     CPPUNIT_TEST_SUITE(BesJsonLogTest);
@@ -230,9 +236,10 @@ public:
     CPPUNIT_TEST(verbose_log_test_2);
 
     CPPUNIT_TEST(special_chars_log_test_1);
-    
+
     CPPUNIT_TEST(info_log_speed_test);
     CPPUNIT_TEST(json_info_log_speed_test);
+    CPPUNIT_TEST(combined_log_speed_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
