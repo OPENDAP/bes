@@ -166,7 +166,6 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 #endif
 
 dmrpp_easy_handle::dmrpp_easy_handle() {
-    //d_errbuf = vector<char>(CURL_ERROR_SIZE, '\0'); // Initialize the error buffer
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
