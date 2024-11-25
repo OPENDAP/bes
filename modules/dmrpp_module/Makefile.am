@@ -18,7 +18,7 @@ AM_CPPFLAGS += $(OPENSSL_INC)
 M_NAME=dmrpp_module
 M_VER=1.1.7
 
-AM_CPPFLAGS += -DMODULE_VERSION=\"$(M_VER)\"
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\"  -DMODULE_VERSION=\"$(M_VER)\"
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:

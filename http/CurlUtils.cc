@@ -1118,16 +1118,16 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
  * @note Used here and in dmrpp_module in one place. jhrg 3/8/23
  * @param response_code
  * @param error_buf
- * @return
+ * @return A formated error message in a C++ string.
  */
 string error_message(const CURLcode response_code, const char *error_buffer) {
-    std::ostringstream oss;
-    size_t len = strlen(error_buffer);
-    if (len) {
-        oss << "cURL_error_buffer: " << error_buffer << ", ";
+    string msg;
+    if (error_buffer) {
+        msg = string("cURL_error_buffer: ") + error_buffer + ", ";
     }
-    oss << "cURL_message: " << curl_easy_strerror(response_code) << " (code: " << (int) response_code << ")";
-    return oss.str();
+    msg += string("cURL_message: ") + curl_easy_strerror(response_code) + " (code: "
+            + to_string(response_code) + ")\n";
+    return msg;
 }
 
 
@@ -1460,6 +1460,33 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
     return req_headers;
 }
 
+/**
+ * @brief Checks if a URL has been signed for S3.
+ *
+ * This function looks for the presence of specific query parameters
+ * that are typically used in S3 signed URLs.
+ *
+ * @param url The URL to check.
+ * @return True if the URL is signed for S3, false otherwise.
+ */
+bool is_url_signed_for_s3(const std::string &url) {
+    return url.find("X-Amz-Algorithm=") != string::npos &&
+           url.find("X-Amz-Credential=") != string::npos &&
+           url.find("X-Amz-Signature=") != string::npos;
+}
+
+/**
+ * @brief Checks if a URL has been signed for S3.
+ *
+ * This function looks for the presence of specific query parameters
+ * that are typically used in S3 signed URLs.
+ *
+ * @param target_url The URL to check.
+ * @return True if the URL is signed for S3, false otherwise.
+ */
+bool is_url_signed_for_s3(const std::shared_ptr<http::url> &target_url) {
+    return is_url_signed_for_s3(target_url->str());
+}
 
 /**
  * @brief Returns an cURL easy handle for recovering the location
