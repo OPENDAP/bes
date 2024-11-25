@@ -340,8 +340,7 @@ void BESXMLInterface::execute_data_request_plan()
                 prolog + "The BES ran out of time before the data could be transmitted.",
                 __FILE__,__LINE__);
 
-        transmit_data();    // TODO move method body in here? jhrg 11/8/17
-
+        transmit_data();
     }
 }
 
