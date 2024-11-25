@@ -121,7 +121,7 @@ void BESXMLInterface::build_data_request_plan()
         if (root_name != "request")
             throw BESSyntaxUserError(
                     string("The root element should be a request element, name is ").append(
-                            (char *) root_element->name),
+                            (const char *)root_element->name),
                     __FILE__, __LINE__);
 
         if (!root_val.empty())
