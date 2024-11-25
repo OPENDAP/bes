@@ -43,6 +43,8 @@
 
 #include "BESObj.h"
 
+#define COMMAND_TIMING 1
+
 static const std::string TIMING_LOG_KEY = "timing";
 static const std::string MISSING_LOG_PARAM;
 
@@ -60,6 +62,20 @@ if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_v
 } while(false)
 #else
 #define BES_STOPWATCH_START(module, x)
+#endif
+
+// This macro is used specifically to time the execution of a command. It does not depend
+// on the code being built in developer mode. jhrg 11/24/24
+// To get the timing messages written to the log, 'timing' must be set in the bes debug keys.
+// jhrg 11/24/24
+#ifdef COMMAND_TIMING
+#define BES_COMMAND_TIMING(message) \
+do { \
+BESStopWatch besTimer; \
+besTimer.start((message)); \
+} while(false)
+#else
+#define BES_COMMAND_TIMING(message)
 #endif
 
 class BESStopWatch;

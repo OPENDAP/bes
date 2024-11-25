@@ -157,7 +157,7 @@ static void log_error(const BESError &e)
     }
     string err_msg(e.get_message());
 
-    if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
+    if (TheBESKeys::read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
         ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg) << add_memory_info << "\n");
     }
     else {
@@ -396,13 +396,19 @@ int BESInterface::execute_request(const string &from)
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
 
+    BES_COMMAND_TIMING(prolog);
+
+    BES_STOPWATCH_START("BES", "execute_request - macro");
+
+#if 1
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) {
         // It would be great to have more info to put here, but that is buried in
         // BESXMLInterface::build_data_request_plan() where the XML document is
         // parsed. jhrg 11/9/17
-        sw.start("BESInterface::execute_request", d_dhi_ptr->data[REQUEST_ID]);
+        sw.start("BESInterface::execute_request"/*, d_dhi_ptr->data[REQUEST_ID]*/);
     }
+#endif
 
     // TODO These never change for the life of a BES, so maybe they can move out of
     //  code that runs for every request? jhrg 11/8/17
