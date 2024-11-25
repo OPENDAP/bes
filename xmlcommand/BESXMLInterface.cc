@@ -56,7 +56,7 @@ using namespace std;
 
 #define LOG_ONLY_GET_COMMANDS
 #define MODULE "bes"
-#define prolog std::string("BESXMLInterface::").append(__func__).append("() - ")
+#define prolog string("BESXMLInterface::").append(__func__).append("() - ")
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
         BESInterface(strm), d_xml_document(xml_doc)
@@ -99,7 +99,7 @@ void BESXMLInterface::build_data_request_plan()
                             nullptr /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
         if (doc == nullptr) {
-            std::string err = "Problem parsing the request xml document:\n";
+            string err = "Problem parsing the request xml document:\n";
             bool isfirst = true;
             for (const auto &parseerror: parseerrors) {
                 if (!isfirst && parseerror.compare(0, 6, "Entity") == 0) {
@@ -403,7 +403,7 @@ void BESXMLInterface::log_status()
             d_dhi_ptr = &cmd->get_xmlcmd_dhi();
 
             // IF the DHI's error_info object pointer is null, the request was successful.
-            std::string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
+            string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             // This is only printed for verbose logging.
             VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << std::endl);
