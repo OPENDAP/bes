@@ -73,7 +73,7 @@ BESStopWatch::start(const string &name) {
  * NB: This method will attempt to write logging
  * information to the BESDebug::GetStrm() stream.
  * @param name The name of the timer.
- * @param reqID The client's request ID associated with this activity.
+ * @param reqID The client's request ID associated with this activity. Not used.
  * Available from the DataHandlerInterface object.
  */
 bool
