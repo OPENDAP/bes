@@ -41,8 +41,8 @@ class DmrppStr: public libdap::Str, public DmrppCommon {
 public:
     explicit DmrppStr(const std::string &n) : libdap::Str(n), DmrppCommon() { }
     DmrppStr(const std::string &n, const std::string &d) : libdap::Str(n, d), DmrppCommon() { }
-    DmrppStr(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Str(n), DmrppCommon(dmz) { }
-    DmrppStr(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Str(n, d), DmrppCommon(dmz) { }
+    DmrppStr(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Str(n), DmrppCommon(std::move(dmz)) { }
+    DmrppStr(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Str(n, d), DmrppCommon(std::move(dmz)) { }
     DmrppStr(const DmrppStr &) = default;
 
     ~DmrppStr() override = default;

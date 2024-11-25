@@ -114,6 +114,8 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
     return is_allowed(candidate_url, error_msg);
 }
 
+// TODO change this so that it does not throw an exception for the last case. OR, it always throws.
+//  jhrg 11/22/24
 bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &why_not) {
     BESDEBUG(MODULE, prolog << "BEGIN candidate_url: " << candidate_url->str() << endl);
     bool isAllowed = false;

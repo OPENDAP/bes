@@ -109,6 +109,56 @@ public:
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
+    void test_is_url_signed_for_s3_WithSignedUrl() {
+        // Test a URL that contains all the required S3 signature parameters
+        std::string signedUrl = "https://example.com/myfile?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=some-credential&X-Amz-Signature=abc123";
+        CPPUNIT_ASSERT(curl::is_url_signed_for_s3(signedUrl));
+    }
+
+    void test_is_url_signed_for_s3_with_one_key_only() {
+        // Test a URL that contains all the required S3 signature parameters
+        std::string signedUrl = "https://example.com/myfile?X-Amz-Algorithm=AWS4-HMAC-SHA256";
+        CPPUNIT_ASSERT(!curl::is_url_signed_for_s3(signedUrl));
+    }
+
+    void test_is_url_signed_for_s3_WithoutSignedUrl() {
+        // Test a URL that does not contain any S3 signature parameters
+        std::string unsignedUrl = "https://example.com/myfile";
+        CPPUNIT_ASSERT(!curl::is_url_signed_for_s3(unsignedUrl));
+    }
+
+    void test_is_url_signed_for_s3_EmptyUrl() {
+        // Test an empty URL string
+        std::string emptyUrl = "";
+        CPPUNIT_ASSERT(!curl::is_url_signed_for_s3(emptyUrl));
+    }
+
+    void test_is_url_signed_for_s3_PartialMatch() {
+        // Test a URL with similar parameters but not exact S3 signature keys
+        std::string partialMatchUrl = "https://example.com/myfile?X-Amz-InvalidParam=test";
+        CPPUNIT_ASSERT(!curl::is_url_signed_for_s3(partialMatchUrl));
+    }
+
+    // This does not test if the buffer (arg #2) is corrupted, If that's the case error_message()
+    // response is not reliable. jhrg 11/22/24
+    void test_error_message_with_buffer()
+    {
+        // Test with a non-empty error buffer
+        CPPUNIT_ASSERT_EQUAL(
+                std::string(
+                "cURL_error_buffer: Test error buffer, cURL_message: Couldn't resolve host name (code: 6)\n"),
+                curl::error_message(CURLE_COULDNT_RESOLVE_HOST, "Test error buffer")
+        );
+    }
+    void test_error_message_without_buffer()
+    {
+        // Test with an empty error buffer
+        CPPUNIT_ASSERT_EQUAL(
+                std::string("cURL_message: Couldn't resolve host name (code: 6)\n"),
+                curl::error_message(CURLE_COULDNT_RESOLVE_HOST, nullptr)
+        );
+    }
+
     void is_retryable_test() {
         DBG(cerr << prolog << "BEGIN\n");
         bool isRetryable;
@@ -718,6 +768,15 @@ public:
     }
 
     CPPUNIT_TEST_SUITE(CurlUtilsTest);
+
+        CPPUNIT_TEST(test_is_url_signed_for_s3_WithSignedUrl);
+        CPPUNIT_TEST(test_is_url_signed_for_s3_with_one_key_only);
+        CPPUNIT_TEST(test_is_url_signed_for_s3_WithoutSignedUrl);
+        CPPUNIT_TEST(test_is_url_signed_for_s3_EmptyUrl);
+        CPPUNIT_TEST(test_is_url_signed_for_s3_PartialMatch);
+
+        CPPUNIT_TEST(test_error_message_with_buffer);
+        CPPUNIT_TEST(test_error_message_without_buffer);
 
         CPPUNIT_TEST(how_big);
 

@@ -1218,7 +1218,7 @@ void DmrppArray::read_chunks_unconstrained()
     stringstream sc_id;
     sc_id << name() << "-" << sc_count++;
     queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this)) ;
+    auto current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this) ;
     super_chunks.push(current_super_chunk);
 
     // Make the SuperChunks using all the chunks.
@@ -1227,7 +1227,7 @@ void DmrppArray::read_chunks_unconstrained()
         if (!added) {
             sc_id.str(std::string());
             sc_id << name() << "-" << sc_count++;
-            current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this));
+            current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
             super_chunks.push(current_super_chunk);
             if (!current_super_chunk->add_chunk(chunk)) {
                 stringstream msg ;
@@ -1413,7 +1413,9 @@ void DmrppArray::read_linked_blocks(){
     
             char **destp = nullptr;
             char *dest_deflate = nullptr;
+#if 0
             unsigned long long out_buf_size = 0;
+#endif
             unsigned long long dest_len = get_var_chunks_storage_size();
             unsigned long long src_len = get_var_chunks_storage_size();
             dest_deflate = new char[dest_len];

@@ -608,10 +608,10 @@ void SuperChunk::read_aggregate_bytes()
 
     try {
         handle->read_data();  // throws if error
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        dmrpp::CurlHandlePool::release_handle(handle);
     }
     catch(...) {
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        dmrpp::CurlHandlePool::release_handle(handle);
         throw;
     }
 
@@ -687,6 +687,7 @@ void SuperChunk::retrieve_data() {
         chunk->set_bytes_read(chunk->get_size());
     }
 }
+
 // Direct chunk IO routine for retrieve_data, it clones from retrieve_data(). To ensure
 // the regular operations. Still use a separate method.
 void SuperChunk::retrieve_data_dio() {
@@ -868,8 +869,6 @@ void SuperChunk::read_unconstrained_dio() {
 
         process_chunks_unconstrained_concurrent_dio(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
     }
-
-
 }
 
 } // namespace dmrpp

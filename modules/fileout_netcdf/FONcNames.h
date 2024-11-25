@@ -31,6 +31,9 @@
 #define FONC_CLASSIC_MODEL false
 #define FONC_CLASSIC_MODEL_KEY "FONc.ClassicModel"
 
+#define FONC_REDUCE_DIM false
+#define FONC_REDUCE_DIM_KEY "FONc.ReduceDim"
+
 #define FONC_NO_GLOBAL_ATTRS false
 #define FONC_NO_GLOBAL_ATTRS_KEY "FONc.NoGlobalAttrs"
 
