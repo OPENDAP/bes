@@ -55,11 +55,9 @@ static const std::string MISSING_LOG_PARAM;
 // slower. jhrg 5/17/24
 #ifndef NDEBUG
 #define BES_STOPWATCH_START(module, x) \
-do { \
 BESStopWatch besTimer; \
 if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) \
-    besTimer.start((x)); \
-} while(false)
+    besTimer.start((x));
 #else
 #define BES_STOPWATCH_START(module, x)
 #endif
@@ -70,10 +68,8 @@ if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_v
 // jhrg 11/24/24
 #ifdef COMMAND_TIMING
 #define BES_COMMAND_TIMING(message) \
-do { \
 BESStopWatch besTimer; \
-besTimer.start((message)); \
-} while(false)
+besTimer.start((message));
 #else
 #define BES_COMMAND_TIMING(message)
 #endif

@@ -397,10 +397,8 @@ int BESInterface::execute_request(const string &from)
     }
 
     BES_COMMAND_TIMING(prolog);
-
-    BES_STOPWATCH_START("BES", "execute_request - macro");
-
-#if 1
+    
+#if 0
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) {
         // It would be great to have more info to put here, but that is buried in
