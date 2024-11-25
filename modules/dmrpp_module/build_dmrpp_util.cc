@@ -63,29 +63,6 @@
 
 #include "UnsupportedTypeException.h"
 
-#if 0
-#define H5S_MAX_RANK    32
-#define H5O_LAYOUT_NDIMS    (H5S_MAX_RANK+1)
-
-/*
- * "Generic" chunk record.  Each chunk is keyed by the minimum logical
- * N-dimensional coordinates and the datatype size of the chunk.
- * The fastest-varying dimension is assumed to reference individual bytes of
- * the array, so a 100-element 1-D array of 4-byte integers would really be a
- * 2-D array with the slow varying dimension of size 100 and the fast varying
- * dimension of size 4 (the storage dimensionality has very little to do with
- * the real dimensionality).
- *
- * The chunk's file address, filter mask and size on disk are not key values.
- */
-typedef struct H5D_chunk_rec_t {
-    hsize_t scaled[H5O_LAYOUT_NDIMS];    /* Logical offset to start */
-    uint32_t nbytes;                      /* Size of stored data */
-    uint32_t filter_mask;                 /* Excluded filters */
-    haddr_t chunk_addr;                  /* Address of chunk in file */
-} H5D_chunk_rec_t;
-#endif
-
 using namespace std;
 using namespace libdap;
 using namespace dmrpp;
@@ -404,6 +381,7 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
         }
     }
 }
+
 string
 get_compound_fv_as_string(hid_t h5_plist_id, vector<char> &value)
 {
@@ -431,6 +409,7 @@ get_compound_fv_as_string(hid_t h5_plist_id, vector<char> &value)
 
     return ret_str;
 }
+
 /**
  * @brief Get the value of the File Value as a string
  * @param dataset_id
@@ -526,8 +505,6 @@ string_pad_type get_pad_type(const hid_t dataset) {
     }
     return convert_h5_str_pad_type(str_pad);
 }
-
-
 
 /**
  * Adds the fixed length string array information to the array variable array_var. If the array_var is not an
@@ -2167,7 +2144,7 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h5_file_fqn, &dmrpp,disable_dio);
+    add_chunk_information(h5_file_fqn, &dmrpp, disable_dio);
 
     if (add_production_metadata) {
         inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
@@ -2176,7 +2153,6 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     XMLWriter writer;
     dmrpp.print_dmrpp(writer, dmrpp_href_value);
     cout << writer.get_doc();
-
 }
 
 
