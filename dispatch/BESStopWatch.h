@@ -67,9 +67,7 @@ if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_v
 // To get the timing messages written to the log, 'timing' must be set in the bes debug keys.
 // jhrg 11/24/24
 #ifdef COMMAND_TIMING
-#define BES_COMMAND_TIMING(message) \
-BESStopWatch besTimer; \
-besTimer.start((message));
+#define BES_COMMAND_TIMING(message) BESStopWatch commandTimer; commandTimer.start(string("Command timing: ") + (message));
 #else
 #define BES_COMMAND_TIMING(message)
 #endif
