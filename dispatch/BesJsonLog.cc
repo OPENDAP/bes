@@ -69,10 +69,10 @@ const static auto BES_START_TIME_KEY = "bes_start_time";
 const static auto PID_KEY = "pid";
 const static auto TYPE_KEY = "type";
 const static auto MESSAGE_KEY = "message";
-const static auto REQUEST_LOG_KEY = "request";
-const static auto ERROR_LOG_KEY = "error";
-const static auto INFO_LOG_KEY = "info";
-const static auto VERBOSE_LOG_KEY = "verbose";
+const static auto REQUEST_LOG_TYPE = "request";
+const static auto ERROR_LOG_TYPE = "error";
+const static auto INFO_LOG_TYPE = "info";
+const static auto VERBOSE_LOG_TYPE = "verbose";
 const static auto ACTION_KEY = "action";
 const static auto RETURN_AS_KEY = "return_as";
 const static auto LOCAL_PATH_KEY = "local_path";
@@ -558,18 +558,18 @@ void BesJsonLog::message_log_worker(const std::string &type, std::string &msg, c
 }
 
 void BesJsonLog::info_log(std::string &msg){
-    message_log_worker(INFO_LOG_KEY, msg, false);
+    message_log_worker(INFO_LOG_TYPE, msg, false);
     // message_worker("info", msg);
 }
 
 void BesJsonLog::error_log(std::string &msg){
-    message_log_worker(ERROR_LOG_KEY, msg, true);
+    message_log_worker(ERROR_LOG_TYPE, msg, true);
     // message_worker("error", msg);
 }
 
 void BesJsonLog::verbose_log(std::string &msg){
   	if(is_verbose()){
-        message_log_worker(VERBOSE_LOG_KEY, msg, false);
+        message_log_worker(VERBOSE_LOG_TYPE, msg, false);
     	// message_worker("verbose", msg);
     }
 }
@@ -589,6 +589,7 @@ void BesJsonLog::request_log(BESDataHandlerInterface *d_dhi_ptr, std::ostream *l
 
     kvp_json_number(log_stream, TIME_KEY, to_string(now), COMMA_SPACE);
     kvp_json_number(log_stream, PID_KEY, to_string(getpid()), COMMA_SPACE);
+    kvp_json_number(log_stream, TYPE_KEY, REQUEST_LOG_TYPE, COMMA_SPACE);
 
     // If the OLFS sent its log info, integrate that into the log output
     bool found = false;

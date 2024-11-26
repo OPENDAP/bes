@@ -391,7 +391,7 @@ void BESXMLInterface::execute_data_request_plan()
         d_dhi_ptr = &bescmd->get_xmlcmd_dhi();
 
         if( TheBESKeys::TheKeys()->read_bool_key("BES.LogAsJson",false)) {
-            log_the_command_json;
+            log_the_command_json();
         }
         else {
             log_the_command();
