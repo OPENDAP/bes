@@ -56,10 +56,10 @@ using namespace std;
 
 #define LOG_ONLY_GET_COMMANDS
 #define MODULE "bes"
-#define prolog std::string("BESXMLInterface::").append(__func__).append("() - ")
+#define prolog string("BESXMLInterface::").append(__func__).append("() - ")
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
-    BESInterface(strm), d_xml_document(xml_doc)
+        BESInterface(strm), d_xml_document(xml_doc)
 {
     // This is needed because we want the parent to have access to the information
     // added to the DHI
@@ -95,24 +95,21 @@ void BESXMLInterface::build_data_request_plan()
         xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
 
         // XML_PARSE_NONET
-        doc = xmlReadMemory(d_xml_document.c_str(), (int)d_xml_document.size(), "" /* base URL */,
+        doc = xmlReadMemory(d_xml_document.c_str(), (int) d_xml_document.size(), "" /* base URL */,
                             nullptr /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
         if (doc == nullptr) {
             string err = "Problem parsing the request xml document:\n";
             bool isfirst = true;
-            vector<string>::const_iterator i = parseerrors.begin();
-            vector<string>::const_iterator e = parseerrors.end();
-            for (; i != e; i++) {
-                if (!isfirst && (*i).compare(0, 6, "Entity") == 0) {
+            for (const auto &parseerror: parseerrors) {
+                if (!isfirst && parseerror.compare(0, 6, "Entity") == 0) {
                     err += "\n";
                 }
-                err += (*i);
+                err += parseerror;
                 isfirst = false;
             }
             throw BESSyntaxUserError(err, __FILE__, __LINE__);
         }
-
         // get the root element and make sure it exists and is called request
         root_element = xmlDocGetRootElement(doc);
         if (!root_element) throw BESSyntaxUserError("There is no root element in the xml document", __FILE__, __LINE__);
@@ -123,15 +120,16 @@ void BESXMLInterface::build_data_request_plan()
         BESXMLUtils::GetNodeInfo(root_element, root_name, root_val, attributes);
         if (root_name != "request")
             throw BESSyntaxUserError(
-                string("The root element should be a request element, name is ").append((char *) root_element->name),
-                __FILE__, __LINE__);
+                    string("The root element should be a request element, name is ").append(
+                            (const char *)root_element->name),
+                    __FILE__, __LINE__);
 
         if (!root_val.empty())
             throw BESSyntaxUserError(string("The request element must not contain a value, ").append(root_val),
-            __FILE__, __LINE__);
+                                     __FILE__, __LINE__);
 
         // there should be a request id property with one value.
-        string &reqId = attributes[REQUEST_ID];
+        string const &reqId = attributes[REQUEST_ID];
         if (reqId.empty()) throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
 
         d_dhi_ptr->data[REQUEST_ID] = reqId;
@@ -193,7 +191,8 @@ void BESXMLInterface::build_data_request_plan()
                     // will be deleted by the BESXMLInterface destructor when that iterates through
                     // d_xml_cmd_list. jhrg 5/11/22
                     delete current_cmd;
-                } else {
+                }
+                else {
                     // push this new command to the back of the list
                     d_xml_cmd_list.push_back(current_cmd);
 
@@ -283,7 +282,7 @@ void BESXMLInterface::log_the_command()
 
         // Assume this is DAP and thus there is at most one container. Log a warning if that's
         // not true. jhrg 11/14/17
-        BESContainer *c = *(d_dhi_ptr->containers.begin());
+        auto const *c = *(d_dhi_ptr->containers.begin());
         if (c) {
             if (!c->get_real_name().empty()) new_log_info.append(log_delim).append(c->get_real_name());
 
@@ -315,6 +314,8 @@ void BESXMLInterface::log_the_command()
  */
 void BESXMLInterface::execute_data_request_plan()
 {
+    BES_COMMAND_TIMING(prolog);
+
     for(auto bescmd : d_xml_cmd_list){
         bescmd->prep_request();
 
@@ -339,8 +340,7 @@ void BESXMLInterface::execute_data_request_plan()
                 prolog + "The BES ran out of time before the data could be transmitted.",
                 __FILE__,__LINE__);
 
-        transmit_data();    // TODO move method body in here? jhrg 11/8/17
-
+        transmit_data();
     }
 }
 
@@ -359,6 +359,8 @@ void BESXMLInterface::execute_data_request_plan()
  */
 void BESXMLInterface::transmit_data()
 {
+    BES_COMMAND_TIMING(prolog);
+
     if (d_dhi_ptr->error_info) {
         VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
                 << d_dhi_ptr->data[LOG_INFO] << "] Error" << endl);
@@ -397,28 +399,22 @@ void BESXMLInterface::transmit_data()
 void BESXMLInterface::log_status()
 {
     if (BESLog::TheLog()->is_verbose()) {
-        vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
-        vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
-        for (; i != e; i++) {
-            d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
+        for (auto &cmd : d_xml_cmd_list) {
+            d_dhi_ptr = &cmd->get_xmlcmd_dhi();
 
             // IF the DHI's error_info object pointer is null, the request was successful.
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             // This is only printed for verbose logging.
-            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << std::endl);
         }
     }
 }
-
 /** @brief Clean up after the request is completed
  */
 void BESXMLInterface::clean()
 {
-    vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
-    vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
-    for (; i != e; i++) {
-        BESXMLCommand *cmd = *i;
+    for (auto *cmd : d_xml_cmd_list) {
         d_dhi_ptr = &cmd->get_xmlcmd_dhi();
 
         if (d_dhi_ptr) {
@@ -432,7 +428,6 @@ void BESXMLInterface::clean()
 
     d_xml_cmd_list.clear();
 }
-
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance
@@ -441,15 +436,11 @@ void BESXMLInterface::clean()
  */
 void BESXMLInterface::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESXMLInterface::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESXMLInterface::dump - (" << static_cast<const void *>(this) << ")" << endl;
     BESIndent::Indent();
     BESInterface::dump(strm);
-    vector<BESXMLCommand *>::const_iterator i = d_xml_cmd_list.begin();
-    vector<BESXMLCommand *>::const_iterator e = d_xml_cmd_list.end();
-    for (; i != e; i++) {
-        BESXMLCommand *cmd = *i;
+    for (const auto &cmd : d_xml_cmd_list) {
         cmd->dump(strm);
     }
     BESIndent::UnIndent();
 }
-

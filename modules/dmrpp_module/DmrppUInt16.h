@@ -45,23 +45,23 @@ public:
     DmrppUInt16(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::UInt16(n, d), DmrppCommon(dmz) { }
     DmrppUInt16(const DmrppUInt16 &) = default;
 
-    virtual ~DmrppUInt16()= default;
+    ~DmrppUInt16() override = default;
 
     DmrppUInt16 &operator=(const DmrppUInt16 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppUInt16(*this);
     }
 
     bool read() override;
     void set_send_p(bool state) override;
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override
     {
         DmrppCommon::print_dmrpp(writer, constrained);
     }
 
-    virtual void dump(ostream & strm) const;
+    void dump(ostream & strm) const override;
 };
 
 } // namespace dmrpp

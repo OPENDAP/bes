@@ -45,23 +45,23 @@ public:
 
     DmrppD4Enum(const DmrppD4Enum &) = default;
 
-    virtual ~DmrppD4Enum() = default;
+    ~DmrppD4Enum() override = default;
 
     DmrppD4Enum &operator=(const DmrppD4Enum &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppD4Enum(*this);
     }
 
     bool read() override;
     void set_send_p(bool state) override;
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override
     {
         DmrppCommon::print_dmrpp(writer, constrained);
     }
 
-    virtual void dump(ostream & strm) const;
+    void dump(ostream & strm) const override;
 };
 
 } // namespace dmrpp

@@ -94,6 +94,10 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers);
 
 curl_slist *sign_s3_url(const std::shared_ptr<http::url> &target_url, http::AccessCredentials *ac,
                         curl_slist *req_headers);
+
+bool is_url_signed_for_s3(const std::string &url);
+bool is_url_signed_for_s3(const std::shared_ptr<http::url> &target_url);
+
 } // namespace curl
 
 #endif /*  _bes_http_CURL_UTILS_H_ */
