@@ -419,13 +419,7 @@ int BESInterface::execute_request(const string &from)
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) {
-        // It would be great to have more info to put here, but that is buried in
-        // BESXMLInterface::build_data_request_plan() where the XML document is
-        // parsed. jhrg 11/9/17
-        sw.start("BESInterface::execute_request", d_dhi_ptr->data[REQUEST_ID]);
-    }
+    BES_COMMAND_TIMING(prolog);
 
     // TODO These never change for the life of a BES, so maybe they can move out of
     //  code that runs for every request? jhrg 11/8/17
@@ -434,9 +428,13 @@ int BESInterface::execute_request(const string &from)
 
     // TODO If this is only used for logging, it is not needed since the log has a copy
     //  of the BES PID. jhrg 11/13/17
+#if 0
     ostringstream ss;
     ss << getpid();
     d_dhi_ptr->data[SERVER_PID] = ss.str();
+#endif
+    d_dhi_ptr->data[SERVER_PID] = to_string(getpid());
+
 
     // We split up the calls for the reason that if we catch an
     // exception during the initialization, building, execution, or response

@@ -46,13 +46,13 @@ class SuperChunk {
     friend class SuperChunkTest;
 
     std::string d_id;
-    DmrppArray *d_parent_array;
+    DmrppArray *d_parent_array = nullptr;
     std::shared_ptr<http::url> d_data_url;
     std::vector<std::shared_ptr<Chunk>> d_chunks;
-    unsigned long long d_offset;
-    unsigned long long d_size;
-    bool d_is_read;
-    char *d_read_buffer;
+    unsigned long long d_offset = 0;
+    unsigned long long d_size = 0;
+    bool d_is_read = false;
+    char *d_read_buffer = nullptr;
 
     bool d_uses_fill_value{false};
 
@@ -62,9 +62,10 @@ class SuperChunk {
     void read_fill_value_chunk();
 
 public:
-    // TODO Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
-    explicit SuperChunk(const std::string sc_id, DmrppArray *parent=nullptr):
-    d_id(sc_id), d_parent_array(parent), d_data_url(nullptr), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
+    // Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
+    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) :
+            d_id(sc_id), d_parent_array(parent)
+    {}
 
     virtual ~SuperChunk(){
         delete[] d_read_buffer;
@@ -95,7 +96,7 @@ public:
     virtual void process_child_chunks();
     virtual void process_child_chunks_unconstrained();
 
-    virtual bool empty(){ return d_chunks.empty(); }
+    virtual bool empty() const { return d_chunks.empty(); }
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;
@@ -112,7 +113,7 @@ struct one_chunk_args {
     DmrppArray *array;
     const vector<unsigned long long> &array_shape;
 
-    one_chunk_args(const string sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned long long> &a_s)
+    one_chunk_args(const std::string &sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const std::vector<unsigned long long> &a_s)
             : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)), array(a), array_shape(a_s) {}
 };
 
@@ -129,8 +130,8 @@ struct one_chunk_unconstrained_args {
     const vector<unsigned long long> &array_shape;
     const vector<unsigned long long> &chunk_shape;
 
-    one_chunk_unconstrained_args(const string sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned long long> &a_s,
-                                 const vector<unsigned long long> &c_s)
+    one_chunk_unconstrained_args(const std::string &sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const std::vector<unsigned long long> &a_s,
+                                 const std::vector<unsigned long long> &c_s)
             : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)),
             array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
@@ -154,8 +155,6 @@ void process_chunks_unconstrained_concurrent_dio(
         const std::vector<unsigned long long> &chunk_shape,
         DmrppArray *array,
         const std::vector<unsigned long long> &array_shape);
-
-
 
 } // namespace dmrpp
 

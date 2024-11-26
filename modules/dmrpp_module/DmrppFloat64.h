@@ -41,27 +41,27 @@ class DmrppFloat64: public libdap::Float64, public DmrppCommon {
 public:
     DmrppFloat64(const std::string &n) : libdap::Float64(n), DmrppCommon() { }
     DmrppFloat64(const std::string &n, const std::string &d) : libdap::Float64(n, d), DmrppCommon() { }
-    DmrppFloat64(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Float64(n), DmrppCommon(dmz) { }
-    DmrppFloat64(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Float64(n, d), DmrppCommon(dmz) { }
+    DmrppFloat64(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Float64(n), DmrppCommon(std::move(dmz)) { }
+    DmrppFloat64(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Float64(n, d), DmrppCommon(std::move(dmz)) { }
     DmrppFloat64(const DmrppFloat64 &) = default;
 
-    virtual ~DmrppFloat64() = default;
+    ~DmrppFloat64() override = default;
 
     DmrppFloat64 &operator=(const DmrppFloat64 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppFloat64(*this);
     }
 
     bool read() override;
     void set_send_p(bool state) override;
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override
     {
         DmrppCommon::print_dmrpp(writer, constrained);
     }
 
-    virtual void dump(ostream & strm) const;
+    void dump(ostream & strm) const override;
 };
 
 } // namespace dmrpp
