@@ -34,7 +34,6 @@
 
 #include <iostream>
 #include <sstream>
-#include <nlohmann/json.hpp>
 
 #include "BESXMLInterface.h"
 #include "BESXMLCommand.h"
@@ -59,8 +58,6 @@ using namespace std;
 #define LOG_ONLY_GET_COMMANDS
 #define MODULE "bes"
 #define prolog string("BESXMLInterface::").append(__func__).append("() - ")
-
-
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
         BESInterface(strm), d_xml_document(xml_doc)
@@ -253,7 +250,7 @@ void BESXMLInterface::build_data_request_plan()
 /**
  * @brief Log information about the command
  */
-void BESXMLInterface::log_the_command_OLD()
+void BESXMLInterface::log_the_command()
 {
     // In 'verbose' logging mode, log all the commands.
     VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
@@ -289,13 +286,10 @@ void BESXMLInterface::log_the_command_OLD()
         // not true. jhrg 11/14/17
         auto const *c = *(d_dhi_ptr->containers.begin());
         if (c) {
-
-
             // Add the "path" of the requested data to the log line
             if (!c->get_real_name().empty()) {
                 new_log_info.append(log_delim).append(c->get_real_name());
             }
-
             // Add the constraint expression to the log line
             // Try for a DAP2 CE first
             if (!c->get_constraint().empty()) {
@@ -311,9 +305,12 @@ void BESXMLInterface::log_the_command_OLD()
                 }
             }
         }
+
         REQUEST_LOG(new_log_info << endl);
-        if (d_dhi_ptr->containers.size() > 1)
+
+        if (d_dhi_ptr->containers.size() > 1) {
             ERROR_LOG("The previous command had multiple containers defined, but only the first was logged.");
+        }
     }
 #else
     if (!BESLog::TheLog()->is_verbose()) {
@@ -324,62 +321,6 @@ void BESXMLInterface::log_the_command_OLD()
         }
 #endif
 }
-#if 0 // Remove old and intermediate logging implementations at some point
-
-void get_log_line_as_nlohmann_json(BESDataHandlerInterface *d_dhi_ptr, nlohmann::json &log_entry) {
-
-
-    time_t now;
-    time(&now);
-
-
-    // If the OLFS sent its log info, integrate that into the log output
-    bool found = false;
-    string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
-    if(found){
-        log_entry = nlohmann::json::parse(olfs_log_line);
-    }
-
-    log_entry[TIME_KEY] = now;
-    log_entry[PID_KEY] = getpid();
-
-    log_entry[ACTION_KEY] = d_dhi_ptr->action;
-
-    if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
-        log_entry[RETURN_AS_KEY] = d_dhi_ptr->data[RETURN_CMD];
-    }
-    else {
-        log_entry[RETURN_AS_KEY] = "-";
-    }
-
-    // Assume this is DAP and thus there is at most one container. Log a warning if that's
-    // not true. jhrg 11/14/17
-    BESContainer *c = *(d_dhi_ptr->containers.begin());
-    if (c) {
-
-
-        // Add the "path" of the requested data to the log line
-        if (!c->get_real_name().empty()) {
-            log_entry[LOCAL_PATH_KEY] = c->get_real_name();
-        }
-
-        // Add the constraint expression to the log line
-        // Try for a DAP2 CE first
-        if (!c->get_constraint().empty()) {
-            log_entry[CE_KEY] = c->get_constraint();
-        }
-        else {
-            // No DAP2 CE? Try DAP4...
-            if (!c->get_dap4_constraint().empty()) {
-                log_entry[CE_KEY] = c->get_dap4_constraint();
-            }
-            if (!c->get_dap4_function().empty()) {
-                log_entry[D4_FUNCTION_KEY] = c->get_dap4_constraint();
-            }
-        }
-    }
-}
-#endif
 
 
 
@@ -387,7 +328,7 @@ void get_log_line_as_nlohmann_json(BESDataHandlerInterface *d_dhi_ptr, nlohmann:
 /**
  * @brief Log information about the command
  */
-void BESXMLInterface::log_the_command()
+void BESXMLInterface::log_the_command_json()
 {
     // In 'verbose' logging mode, log all the commands.
     VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
@@ -401,7 +342,7 @@ void BESXMLInterface::log_the_command()
     // only log the get command.
     if (d_dhi_ptr->action.find("get.") != string::npos) {
 
-#if 1 // @TODO REMOVE BEFORE MERGE
+#if 0 // @TODO REMOVE BEFORE MERGE
         unsigned long total_reps=1048676UL;
         {
             string log_name = "old_log reps=" + to_string(total_reps);
@@ -422,7 +363,7 @@ void BESXMLInterface::log_the_command()
             }
         }
 #else
-        BesJsonLog::TheLog()->request(d_dhi_ptr, BesJsonLog::TheLog()->get_log_ostream());
+        BesJsonLog::TheLog()->request_log(d_dhi_ptr, BesJsonLog::TheLog()->get_log_ostream());
 #endif
 
         if (d_dhi_ptr->containers.size() > 1)
@@ -449,7 +390,12 @@ void BESXMLInterface::execute_data_request_plan()
 
         d_dhi_ptr = &bescmd->get_xmlcmd_dhi();
 
-        log_the_command();
+        if( TheBESKeys::TheKeys()->read_bool_key("BES.LogAsJson",false)) {
+            log_the_command_json;
+        }
+        else {
+            log_the_command();
+        }
 
         // Here's where we could look at the dynamic type to do something different
         // for a new kind of XMLCommand (e.g., SimpleXMLCommand). for that new command,

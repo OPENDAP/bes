@@ -85,8 +85,8 @@ static auto BESKeys_LOG_NAME_KEY = "BES.LogName";
 static auto BESKeys_LOG_TIME_LOCAL_KEY = "BES.LogTimeLocal";
 static auto BESKeys_LOG_VERBOSE_KEY = "BES.LogVerbose";
 static auto BESKeys_LOG_UNIXTIME_KEY = "BES.LogUnixTime";
-/** @brief boolean to string
- *
+/**
+ * @brief boolean to string
  */
 static string torf(bool v){
   return v?"true":"false";
@@ -201,7 +201,7 @@ BesJsonLog::~BesJsonLog()
 {
     d_file_buffer->close();
     delete d_file_buffer;
-    d_file_buffer = 0;
+    d_file_buffer = nullptr;
 }
 
 
