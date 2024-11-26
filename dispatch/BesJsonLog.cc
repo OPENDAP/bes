@@ -37,6 +37,11 @@
 #include <sstream>
 
 #include "BesJsonLog.h"
+
+#include <BESContextManager.h>
+#include <BESDataHandlerInterface.h>
+#include <BESDataNames.h>
+
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
@@ -54,17 +59,32 @@ using namespace std;
 
 BesJsonLog *BesJsonLog::d_instance = nullptr;
 
-static auto TIME_KEY = "bes_start_time";
-static auto PID_KEY = "pid";
-static auto TYPE_KEY = "type";
-static auto MESSAGE_KEY = "message";
-static auto REQUEST_LOG_KEY = "request";
-static auto ERROR_LOG_KEY = "error";
-static auto INFO_LOG_KEY = "info";
-static auto VERBOSE_LOG_KEY = "verbose";
+/**
+ * @TODO Is this better or possibly worse than a #define in a .cc file??
+ *   How can we make this a single source of truth? Like move these to BesJsonLog
+ *   So we have BesJsonLog::PID_KEY etc. What could go wrong?
+ */
+const static auto TIME_KEY = "time";
+const static auto BES_START_TIME_KEY = "bes_start_time";
+const static auto PID_KEY = "pid";
+const static auto TYPE_KEY = "type";
+const static auto MESSAGE_KEY = "message";
+const static auto REQUEST_LOG_KEY = "request";
+const static auto ERROR_LOG_KEY = "error";
+const static auto INFO_LOG_KEY = "info";
+const static auto VERBOSE_LOG_KEY = "verbose";
+const static auto ACTION_KEY = "action";
+const static auto RETURN_AS_KEY = "return_as";
+const static auto LOCAL_PATH_KEY = "local_path";
+const static auto CE_KEY = "constraint_expression";
+const static auto D4_FUNCTION_KEY = "dap4_function";
+const static auto COMMA_SPACE = ", ";
+
 
 static auto BESKeys_LOG_NAME_KEY = "BES.LogName";
-
+static auto BESKeys_LOG_TIME_LOCAL_KEY = "BES.LogTimeLocal";
+static auto BESKeys_LOG_VERBOSE_KEY = "BES.LogVerbose";
+static auto BESKeys_LOG_UNIXTIME_KEY = "BES.LogUnixTime";
 /** @brief boolean to string
  *
  */
@@ -98,7 +118,7 @@ BesJsonLog::BesJsonLog() :
     // By default, use UTC in the logs.
     string local_time;
     try {
-        TheBESKeys::TheKeys()->get_value("BES.LogTimeLocal", local_time, found);
+        TheBESKeys::TheKeys()->get_value(BESKeys_LOG_TIME_LOCAL_KEY, local_time, found);
         d_use_local_time = found && (BESUtil::lowercase(local_time) == "yes");
         BESDEBUG(MODULE, prolog << "d_use_local_time: " << torf(d_use_local_time) << endl);
         init_state.append("d_use_local_time=").append(torf(d_use_local_time));
@@ -113,14 +133,14 @@ BesJsonLog::BesJsonLog() :
 
     found = false;
     string s;
-    TheBESKeys::TheKeys()->get_value("BES.LogVerbose", s, found);
+    TheBESKeys::TheKeys()->get_value(BESKeys_LOG_VERBOSE_KEY, s, found);
     d_verbose = found && (BESUtil::lowercase(s) == "yes");
     BESDEBUG(MODULE, prolog << "d_verbose: " << torf(d_verbose) << endl);
     init_state.append(" d_verbose=").append(torf(d_verbose));
 
     found = false;
     s = "";
-    TheBESKeys::TheKeys()->get_value("BES.LogUnixTime", s, found);
+    TheBESKeys::TheKeys()->get_value(BESKeys_LOG_UNIXTIME_KEY, s, found);
     d_use_unix_time = found && (BESUtil::lowercase(s)=="true");
     BESDEBUG(MODULE, prolog << "d_use_unix_time: " << torf(d_use_unix_time) << endl);
     init_state.append(" d_use_unix_time=").append(torf(d_use_unix_time));
@@ -167,7 +187,7 @@ BesJsonLog::BesJsonLog() :
     }
     BESDEBUG(MODULE, prolog << "Successfully opened BES log file: " << d_file_name << "\n");
     BESDEBUG(MODULE, init_state << "\n");
-    info(init_state);
+    info_log(init_state);
     flush_me();
 
 
@@ -184,57 +204,6 @@ BesJsonLog::~BesJsonLog()
     d_file_buffer = 0;
 }
 
-
-
-/** @brief Protected method that dumps the date/time and the pid to the log_entry
- *
- * Depending on the compile-time constant ISO8601_TIME_IN_LOGS,
- * the time is dumped to the log file in the format:
- * "MDT Thu Sep  9 11:05:16 2004", or in ISO8601 format:
- * "YYYY-MM-DDTHH:MM:SS zone"
- */
-void BesJsonLog::add_time_and_pid(nlohmann::json &log_entry)
-{
-    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-
-
-#ifdef ISO8601_TIME_IN_LOGS
-    time_t now;
-    time(&now);
-
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
-    if(d_use_unix_time){
-        log_entry[TIME_KEY] = now;
-    }
-    else {
-        struct tm date_time{};
-        if (!d_use_local_time){
-            gmtime_r(&now, &date_time);
-        }
-        else{
-            localtime_r(&now, &date_time);
-        }
-        (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
-         log_entry[TIME_KEY] =  buf;
-    }
-#else
-
-    const time_t sctime = time(NULL);
-    const struct tm *sttime = localtime(&sctime);
-    char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
-    char *b = asctime(sttime);
-
-    string time_str = zone_name + " ";
-    for (register int j = 0; b[j] != '\n'; j++){
-        time_str += b[j];
-    }
-    log_entry[TIME_KEY] = time_str;
-#endif
-    log_entry[PID_KEY] = getpid();
-    d_flushed = 0;
-    BESDEBUG(MODULE, prolog << "END" << "\n");
-}
 
 //#######################################################################
 #if USE_OPERATORS
@@ -527,16 +496,6 @@ void BesJsonLog::flush_me(){
     d_flushed = 1;
 }
 
-void BesJsonLog::message_worker(const std::string &type, const std::string &msg){
-    nlohmann::json log_entry;
-    if (!d_suspended) {
-        add_time_and_pid(log_entry);
-        log_entry[TYPE_KEY] = type;
-        log_entry[MESSAGE_KEY] = msg;
-        *d_file_buffer << log_entry.dump() << "\n" << flush;
-    }
-}
-
 static std::string &json_sanitize(std::string &str) {
     const auto the_bad_things ="\r\n\"\\\t";
     //const auto the_bad_things ="\n";
@@ -547,25 +506,47 @@ static std::string &json_sanitize(std::string &str) {
     return str;
 }
 
-void BesJsonLog::kvp_json_string_esc(std::ostream *os, const std::string &key, std::string& value)
+/**
+ * @brief Write a kvp as json where the value is a "json santizied" string.
+ * @param os The output stream to which to write characters.
+ * @param key The key name to be used in the kvp pair.
+ * @param value The value, will be sanitized and modified!!
+ * @param trailer A string that will be appended to the end of the value expression.
+ */
+void BesJsonLog::kvp_json_string_esc(std::ostream *os, const std::string &key, std::string& value, const std::string &trailer)
 {
-    *os << "\"" << key << "\": \"" << json_sanitize(value) << "\"";
+    *os << "\"" << key << "\": \"" << json_sanitize(value) << "\"" << trailer;
 }
-void BesJsonLog::kvp_json_string(std::ostream *os, const std::string &key, const std::string& value)
+/**
+ * @brief Write a kvp as json where the value is a  string.
+ * @param os The output stream to which to write characters.
+ * @param key The key name to be used in the kvp pair.
+ * @param value The value.
+ */
+void BesJsonLog::kvp_json_string(std::ostream *os, const std::string &key, const std::string& value, const std::string &trailer)
 {
-    *os << "\"" << key << "\": \"" << value << "\"";
+    *os << "\"" << key << "\": \"" << value << "\"" << trailer;
 }
 
-void BesJsonLog::message_worker_no_nlohmann(const std::string &type, std::string &msg, const bool escape){
+/**
+ * @brief Write a kvp as json where the value is numeric.
+ * @param os The outout stream to which to write characters.
+ * @param key The key name to be used in the kvp pair.
+ * @param value The numeric value to be used as the value. Must be submitted as a string.
+ */
+void BesJsonLog::kvp_json_number(std::ostream *os, const std::string &key, const std::string& value, const std::string &trailer)
+{
+    *os << "\"" << key << "\": " << value << trailer;
+}
+
+void BesJsonLog::message_log_worker(const std::string &type, std::string &msg, const bool escape){
     if (!d_suspended) {
         time_t now;
         time(&now);
         *d_file_buffer << "{";
-        *d_file_buffer << " \"" << TIME_KEY << "\": " << now ;
-        *d_file_buffer << ", \"" << PID_KEY << "\": " << getpid();
-        *d_file_buffer << ", ";
-        kvp_json_string(d_file_buffer, TYPE_KEY, type);
-        *d_file_buffer << ", ";
+        kvp_json_number(d_file_buffer , TIME_KEY, to_string(now), COMMA_SPACE);
+        kvp_json_number(d_file_buffer , PID_KEY, to_string(getpid()), COMMA_SPACE);
+        kvp_json_string(d_file_buffer, TYPE_KEY, type, COMMA_SPACE);
         if(escape) {
             kvp_json_string_esc(d_file_buffer, MESSAGE_KEY, msg);
 
@@ -576,32 +557,89 @@ void BesJsonLog::message_worker_no_nlohmann(const std::string &type, std::string
    }
 }
 
-void BesJsonLog::request(nlohmann::json &log_entry){
-    if (!d_suspended) {
-        log_entry[TYPE_KEY] = REQUEST_LOG_KEY;
-        add_time_and_pid(log_entry);
-        check_ostream(*d_file_buffer);
-        *d_file_buffer << log_entry.dump() << "\n" << flush;
-    }
-}
-
-void BesJsonLog::info(std::string &msg){
-    message_worker_no_nlohmann(INFO_LOG_KEY, msg, false);
+void BesJsonLog::info_log(std::string &msg){
+    message_log_worker(INFO_LOG_KEY, msg, false);
     // message_worker("info", msg);
 }
 
-void BesJsonLog::error(std::string &msg){
-    message_worker_no_nlohmann(ERROR_LOG_KEY, msg, true);
+void BesJsonLog::error_log(std::string &msg){
+    message_log_worker(ERROR_LOG_KEY, msg, true);
     // message_worker("error", msg);
 }
 
-void BesJsonLog::verbose(std::string &msg){
+void BesJsonLog::verbose_log(std::string &msg){
   	if(is_verbose()){
-        message_worker_no_nlohmann(VERBOSE_LOG_KEY, msg, false);
+        message_log_worker(VERBOSE_LOG_KEY, msg, false);
     	// message_worker("verbose", msg);
     }
 }
 
+/**
+ * @brief Writes the request log record, as a json, to the log_stream.
+ *
+ * @param d_dhi_ptr The BESDataHandlerInterface for the current request.
+ * @param log_stream The stream to which the request log message will be written.
+ */
+void BesJsonLog::request_log(BESDataHandlerInterface *d_dhi_ptr, std::ostream *log_stream)
+{
+    *log_stream << "{ ";
+
+    time_t now;
+    time(&now);
+
+    kvp_json_number(log_stream, TIME_KEY, to_string(now), COMMA_SPACE);
+    kvp_json_number(log_stream, PID_KEY, to_string(getpid()), COMMA_SPACE);
+
+    // If the OLFS sent its log info, integrate that into the log output
+    bool found = false;
+    string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
+    if(found){
+        *log_stream << "\"olfs\": " << olfs_log_line << COMMA_SPACE;
+    }
+
+    kvp_json_string(log_stream, ACTION_KEY, d_dhi_ptr->action, COMMA_SPACE);
+
+    string return_as("-");
+    if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
+        return_as = d_dhi_ptr->data[RETURN_CMD];
+    }
+    kvp_json_string(log_stream, RETURN_AS_KEY, return_as, COMMA_SPACE);
+
+    // Assume this is DAP and thus there is at most one container. Log a warning if that's
+    // not true. jhrg 11/14/17
+    BESContainer *c = *(d_dhi_ptr->containers.begin());
+    if (c) {
+        // Add the "path" of the requested data to the log line
+        string path("-");
+        if (!c->get_real_name().empty()) {
+            path = c->get_real_name();
+        }
+        kvp_json_string(log_stream, LOCAL_PATH_KEY, path, COMMA_SPACE);
+
+        // Add the constraint expression to the log line
+        // Try for a DAP2 CE first
+        string ce("-");
+        string d4_func("-");
+        if (!c->get_constraint().empty()) {
+            ce = c->get_constraint();
+        }
+        else {
+            // No DAP2 CE? Try DAP4...
+            if (!c->get_dap4_constraint().empty()) {
+                ce = c->get_dap4_constraint();
+            }
+            if (!c->get_dap4_function().empty()) {
+                d4_func= c->get_dap4_function();
+            }
+        }
+        // We need the escaping version because a ce may have legit double quotes.
+        kvp_json_string_esc(log_stream, CE_KEY, ce, COMMA_SPACE);
+        // We need the escaping version because a dap4 ce may have legit double quotes.
+        kvp_json_string_esc(log_stream, D4_FUNCTION_KEY, d4_func);
+    }
+    *log_stream << "}\n";
+    *log_stream << flush;
+}
 
 /** @brief dumps information about this object
  *

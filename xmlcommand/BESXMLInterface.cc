@@ -60,6 +60,8 @@ using namespace std;
 #define MODULE "bes"
 #define prolog string("BESXMLInterface::").append(__func__).append("() - ")
 
+
+
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
         BESInterface(strm), d_xml_document(xml_doc)
 {
@@ -322,8 +324,14 @@ void BESXMLInterface::log_the_command_OLD()
         }
 #endif
 }
+#if 0 // Remove old and intermediate logging implementations at some point
 
 void get_log_line_as_nlohmann_json(BESDataHandlerInterface *d_dhi_ptr, nlohmann::json &log_entry) {
+
+
+    time_t now;
+    time(&now);
+
 
     // If the OLFS sent its log info, integrate that into the log output
     bool found = false;
@@ -332,13 +340,16 @@ void get_log_line_as_nlohmann_json(BESDataHandlerInterface *d_dhi_ptr, nlohmann:
         log_entry = nlohmann::json::parse(olfs_log_line);
     }
 
-    log_entry["action"] = d_dhi_ptr->action;
+    log_entry[TIME_KEY] = now;
+    log_entry[PID_KEY] = getpid();
+
+    log_entry[ACTION_KEY] = d_dhi_ptr->action;
 
     if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
-        log_entry["return_as"] = d_dhi_ptr->data[RETURN_CMD];
+        log_entry[RETURN_AS_KEY] = d_dhi_ptr->data[RETURN_CMD];
     }
     else {
-        log_entry["return_as"] = "-";
+        log_entry[RETURN_AS_KEY] = "-";
     }
 
     // Assume this is DAP and thus there is at most one container. Log a warning if that's
@@ -349,90 +360,28 @@ void get_log_line_as_nlohmann_json(BESDataHandlerInterface *d_dhi_ptr, nlohmann:
 
         // Add the "path" of the requested data to the log line
         if (!c->get_real_name().empty()) {
-            log_entry["local_path"] = c->get_real_name();
+            log_entry[LOCAL_PATH_KEY] = c->get_real_name();
         }
 
         // Add the constraint expression to the log line
         // Try for a DAP2 CE first
         if (!c->get_constraint().empty()) {
-            log_entry["constraint_expression"] = c->get_constraint();
+            log_entry[CE_KEY] = c->get_constraint();
         }
         else {
             // No DAP2 CE? Try DAP4...
             if (!c->get_dap4_constraint().empty()) {
-                log_entry["constraint_expression"] = c->get_dap4_constraint();
+                log_entry[CE_KEY] = c->get_dap4_constraint();
             }
             if (!c->get_dap4_function().empty()) {
-                log_entry["dap4_function"] = c->get_dap4_constraint();
+                log_entry[D4_FUNCTION_KEY] = c->get_dap4_constraint();
             }
         }
     }
 }
+#endif
 
-#define ACTION_KEY "action"
-#define RETURN_AS_KEY "return_as"
-#define LOCAL_PATH_KEY "local_path"
-#define CE_KEY "constraint_expression"
-#define D4_FUNCTION_KEY "dap4_function"
 
-void  write_request_log_line_as_json(BESDataHandlerInterface *d_dhi_ptr) {
-
-    auto logStream = BesJsonLog::TheLog()->get_log_ostream();
-    *logStream << "{ ";
-
-    // If the OLFS sent its log info, integrate that into the log output
-    bool found = false;
-    string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
-    if(found){
-        *logStream << "\"olfs\": " << olfs_log_line << ", ";
-    }
-
-    BesJsonLog::kvp_json_string(logStream, ACTION_KEY, d_dhi_ptr->action);
-    *logStream << ", ";
-
-    string return_as("-");
-    if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
-        return_as = d_dhi_ptr->data[RETURN_CMD];
-    }
-    BesJsonLog::kvp_json_string(logStream, RETURN_AS_KEY, return_as);
-    *logStream << ", ";
-
-    // Assume this is DAP and thus there is at most one container. Log a warning if that's
-    // not true. jhrg 11/14/17
-    BESContainer *c = *(d_dhi_ptr->containers.begin());
-    if (c) {
-        // Add the "path" of the requested data to the log line
-        string path("-");
-        if (!c->get_real_name().empty()) {
-            path = c->get_real_name();
-        }
-        BesJsonLog::kvp_json_string(logStream, LOCAL_PATH_KEY, path);
-        *logStream << ", ";
-
-        // Add the constraint expression to the log line
-        // Try for a DAP2 CE first
-        string ce("-");
-        string d4_func("-");
-        if (!c->get_constraint().empty()) {
-            ce = c->get_constraint();
-        }
-        else {
-            // No DAP2 CE? Try DAP4...
-            if (!c->get_dap4_constraint().empty()) {
-                ce = c->get_dap4_constraint();
-            }
-            if (!c->get_dap4_function().empty()) {
-                d4_func= c->get_dap4_function();
-            }
-        }
-        // We need the escaping version because a dap4 ce may have legit double quotes.
-        BesJsonLog::kvp_json_string_esc(logStream, CE_KEY, ce);
-        *logStream << ", ";
-        BesJsonLog::kvp_json_string_esc(logStream, D4_FUNCTION_KEY, d4_func);
-    }
-    *logStream << "}\n";
-
-}
 
 
 /**
@@ -452,12 +401,28 @@ void BESXMLInterface::log_the_command()
     // only log the get command.
     if (d_dhi_ptr->action.find("get.") != string::npos) {
 
-#if 0
-        nlohmann::json log_entry;
-        get_log_line_as_nlohmann_json(d_dhi_ptr, log_entry);
-        JSON_REQUEST_LOG(log_entry);
+#if 1 // @TODO REMOVE BEFORE MERGE
+        unsigned long total_reps=1048676UL;
+        {
+            string log_name = "old_log reps=" + to_string(total_reps);
+            BESStopWatch sw(log_name);
+            sw.start(log_name);
+            for(unsigned long i=0; i<total_reps; i++) {
+                log_the_command_OLD();
+            }
+
+        }
+
+        {
+            string log_name = "string_json reps=" + to_string(total_reps);
+            BESStopWatch sw(log_name);
+            sw.start(log_name);
+            for(unsigned long i=0; i<total_reps; i++) {
+                BesJsonLog::TheLog()->request_log(d_dhi_ptr, BesJsonLog::TheLog()->get_log_ostream());
+            }
+        }
 #else
-        write_request_log_line_as_json(d_dhi_ptr);
+        BesJsonLog::TheLog()->request(d_dhi_ptr, BesJsonLog::TheLog()->get_log_ostream());
 #endif
 
         if (d_dhi_ptr->containers.size() > 1)

@@ -124,26 +124,11 @@ public:
     }
 
     // Test that we can open the files and find all the vars in the DMR files.
-    void request_log_test_1() {
-        nlohmann::json j_obj;
-        j_obj["user_id"] = "foobar";
-        j_obj["source"] = prolog;
-        DBG(cerr << prolog << "Sending JSON object to Request Log: " << j_obj.dump() << "\n");
-        BesJsonLog::TheLog()->request(j_obj);
-    }
-
-    void request_log_test_2() {
-        nlohmann::json j_obj;
-        j_obj["user_id"] = "foobar";
-        j_obj["source"] = prolog + "Testing JSON_REQUEST_LOG macro.";
-        DBG(cerr << prolog << "Sending JSON object to Request Log: " << j_obj.dump() << "\n");
-        JSON_REQUEST_LOG(j_obj);
-    }
 
     void info_log_test_1() {
         string msg = prolog + "This is a test. If it had not been a test you would have known the answers.";
         DBG(cerr << prolog << "Sending string to INFO Log: " << msg << "\n");
-        BesJsonLog::TheLog()->info(msg);
+        BesJsonLog::TheLog()->info_log(msg);
     }
 
     void info_log_test_2() {
@@ -155,7 +140,7 @@ public:
     void error_log_test_1() {
         string msg = prolog + "This is a test of the error log.";
         DBG(cerr << prolog << "Sending string to ERROR Log: " << msg << "\n");
-        BesJsonLog::TheLog()->error(msg);
+        BesJsonLog::TheLog()->error_log(msg);
     }
 
     void error_log_test_2() {
@@ -168,7 +153,7 @@ public:
         string msg = prolog + "This is a test of the verbose log.";
         enable_verbose_logging();
         DBG(cerr << prolog << "Sending string to VERBOSE Log: " << msg << "\n");
-        BesJsonLog::TheLog()->verbose(msg);
+        BesJsonLog::TheLog()->verbose_log(msg);
     }
 
     void verbose_log_test_2() {
@@ -181,13 +166,13 @@ public:
     void special_chars_log_test_1() {
         string msg = prolog + "This is a test.\t\\If it had no\"t been a test you would\" have known \n\nthe answers.";
         DBG(cerr << prolog << "Sending string to INFO Log: " << msg << "\n");
-        BesJsonLog::TheLog()->info(msg);
+        BesJsonLog::TheLog()->info_log(msg);
     }
 
     void info_log_speed_test() {
         string &test_msg = the_test_text;
         DBG(cerr << prolog << "Speed test message: " << test_msg << "\n");
-        BesJsonLog::TheLog()->info(test_msg);
+        BesJsonLog::TheLog()->info_log(test_msg);
 
         unsigned long i;
         {
@@ -215,6 +200,11 @@ public:
             }
         }
     }
+    void combined_log_speed_test() {
+        json_info_log_speed_test();
+        info_log_speed_test();
+    }
+
     void alternating_info_log_speed_test() {
         string &test_msg = the_test_text;
         DBG(cerr << prolog << "Speed test message: " << test_msg << "\n");
@@ -231,15 +221,25 @@ public:
             }
         }
     }
-    void combined_log_speed_test() {
-        json_info_log_speed_test();
-        info_log_speed_test();
+
+    void alternating_error_log_speed_test() {
+        string &test_msg = the_test_text;
+        DBG(cerr << prolog << "Speed test message: " << test_msg << "\n");
+
+        unsigned long i;
+        {
+            DBG(cerr << prolog << "Writing " << speed_test_reps << " messages of length " << test_msg.length() << " to both error logs.\n");
+            string log_name = prolog + to_string(speed_test_reps)+" laps";
+            BESStopWatch sw(log_name);
+            sw.start(log_name);
+            for(i=0; i<speed_test_reps ;i++) {
+                JSON_ERROR_LOG(test_msg);
+                ERROR_LOG(test_msg);
+            }
+        }
     }
 
     CPPUNIT_TEST_SUITE(BesJsonLogTest);
-
-    CPPUNIT_TEST(request_log_test_1);
-    CPPUNIT_TEST(request_log_test_2);
 
     CPPUNIT_TEST(info_log_test_1);
     CPPUNIT_TEST(info_log_test_2);
@@ -256,6 +256,7 @@ public:
     CPPUNIT_TEST(json_info_log_speed_test);
     CPPUNIT_TEST(combined_log_speed_test);
     CPPUNIT_TEST(alternating_info_log_speed_test);
+    CPPUNIT_TEST(alternating_error_log_speed_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

@@ -36,8 +36,15 @@
 
 #include <fstream>
 #include <string>
-
 #include <nlohmann/json.hpp>
+
+#include "BESObj.h"
+#include "BESInterface.h"
+
+
+
+
+
 
 // #define MR_JSON_LOG(tag, msg) do { *(BESLog::TheLog()) << " \"type\": " << tag << ", \"message:\"" << msg << "}\n" ; BESLog::TheLog()->flush_me() ; } while( 0 )
 
@@ -49,14 +56,12 @@
 // is written from. jhrg 11/14/17
 
 #if 1
-#define JSON_REQUEST_LOG(msg) do { BesJsonLog::TheLog()->request(msg);}  while( 0 )
-#define JSON_INFO_LOG(msg) do { BesJsonLog::TheLog()->info(msg);}  while( 0 )
-#define JSON_ERROR_LOG(msg) do { BesJsonLog::TheLog()->error(msg);}  while( 0 )
-#define JSON_VERBOSE_LOG(msg) do { BesJsonLog::TheLog()->verbose(msg);}  while( 0 )
+#define JSON_REQUEST_LOG(dhi, strm) do { BesJsonLog::TheLog()->request_log(dhi, strm);}  while( 0 )
+#define JSON_INFO_LOG(msg) do { BesJsonLog::TheLog()->info_log(msg);}  while( 0 )
+#define JSON_ERROR_LOG(msg) do { BesJsonLog::TheLog()->error_log(msg);}  while( 0 )
+#define JSON_VERBOSE_LOG(msg) do { BesJsonLog::TheLog()->verbose_log(msg);}  while( 0 )
 #endif
 
-
-#include "BESObj.h"
 
 /** @brief Provides a mechanism for applications to log information to an
  * external file.
@@ -120,10 +125,7 @@ private:
 protected:
     BesJsonLog();
 
-    // Dumps the current system time.
-    void add_time_and_pid(nlohmann::json &log_entry);
-    void message_worker(const std::string &type, const std::string &msg);
-    void message_worker_no_nlohmann(const std::string &type, std::string &msg, bool escape);
+    void message_log_worker(const std::string &type, std::string &msg, bool escape);
 
 public:
     ~BesJsonLog() override;
@@ -189,13 +191,14 @@ public:
         return d_verbose;
     }
 
-    void request(nlohmann::json &request_log_entry);
-    void info( std::string &info_msg);
-    void error(  std::string &error_msg);
-    void verbose(  std::string &verbose_msg);
+    void request_log(BESDataHandlerInterface *d_dhi_ptr, std::ostream *log_stream);
+    void info_log( std::string &info_msg);
+    void error_log(  std::string &error_msg);
+    void verbose_log(  std::string &verbose_msg);
 
-    static void kvp_json_string(std::ostream *os, const std::string &key, const std::string &value) ;
-    static void kvp_json_string_esc(std::ostream *os, const std::string &key, std::string &value) ;
+    static void kvp_json_number(std::ostream *os, const std::string &key, const std::string &value, const std::string &trailer="") ;
+    static void kvp_json_string(std::ostream *os, const std::string &key, const std::string &value, const std::string &trailer="") ;
+    static void kvp_json_string_esc(std::ostream *os, const std::string &key, std::string &value, const std::string &trailer="") ;
 
 #define USE_OPERATORS false
 
