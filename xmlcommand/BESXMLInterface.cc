@@ -324,6 +324,118 @@ void BESXMLInterface::log_the_command_OLD()
 #endif
 }
 
+void get_log_line_as_nlohmann_json(BESDataHandlerInterface *d_dhi_ptr, nlohmann::json &log_entry) {
+
+    // If the OLFS sent its log info, integrate that into the log output
+    bool found = false;
+    string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
+    if(found){
+        log_entry = nlohmann::json::parse(olfs_log_line);
+    }
+
+    log_entry["action"] = d_dhi_ptr->action;
+
+    if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
+        log_entry["return_as"] = d_dhi_ptr->data[RETURN_CMD];
+    }
+    else {
+        log_entry["return_as"] = "-";
+    }
+
+    // Assume this is DAP and thus there is at most one container. Log a warning if that's
+    // not true. jhrg 11/14/17
+    BESContainer *c = *(d_dhi_ptr->containers.begin());
+    if (c) {
+
+
+        // Add the "path" of the requested data to the log line
+        if (!c->get_real_name().empty()) {
+            log_entry["local_path"] = c->get_real_name();
+        }
+
+        // Add the constraint expression to the log line
+        // Try for a DAP2 CE first
+        if (!c->get_constraint().empty()) {
+            log_entry["constraint_expression"] = c->get_constraint();
+        }
+        else {
+            // No DAP2 CE? Try DAP4...
+            if (!c->get_dap4_constraint().empty()) {
+                log_entry["constraint_expression"] = c->get_dap4_constraint();
+            }
+            if (!c->get_dap4_function().empty()) {
+                log_entry["dap4_function"] = c->get_dap4_constraint();
+            }
+        }
+    }
+}
+
+#define ACTION_KEY "action"
+#define RETURN_AS_KEY "return_as"
+#define LOCAL_PATH_KEY "local_path"
+#define CE_KEY "constraint_expression"
+#define D4_FUNCTION_KEY "dap4_function"
+
+void  write_request_log_line_as_json(BESDataHandlerInterface *d_dhi_ptr) {
+
+    auto logStream = BesJsonLog::TheLog()->get_log_ostream();
+    *logStream << "{ ";
+
+    // If the OLFS sent its log info, integrate that into the log output
+    bool found = false;
+    string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
+    if(found){
+        *logStream << "\"olfs\": " << olfs_log_line << ", ";
+    }
+
+    BesJsonLog::kvp_json_string(logStream, ACTION_KEY, d_dhi_ptr->action);
+    *logStream << ", ";
+
+    string return_as("-");
+    if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
+        return_as = d_dhi_ptr->data[RETURN_CMD];
+    }
+    BesJsonLog::kvp_json_string(logStream, RETURN_AS_KEY, return_as);
+    *logStream << ", ";
+
+    // Assume this is DAP and thus there is at most one container. Log a warning if that's
+    // not true. jhrg 11/14/17
+    BESContainer *c = *(d_dhi_ptr->containers.begin());
+    if (c) {
+        // Add the "path" of the requested data to the log line
+        string path("-");
+        if (!c->get_real_name().empty()) {
+            path = c->get_real_name();
+        }
+        BesJsonLog::kvp_json_string(logStream, LOCAL_PATH_KEY, path);
+        *logStream << ", ";
+
+        // Add the constraint expression to the log line
+        // Try for a DAP2 CE first
+        string ce("-");
+        string d4_func("-");
+        if (!c->get_constraint().empty()) {
+            ce = c->get_constraint();
+        }
+        else {
+            // No DAP2 CE? Try DAP4...
+            if (!c->get_dap4_constraint().empty()) {
+                ce = c->get_dap4_constraint();
+            }
+            if (!c->get_dap4_function().empty()) {
+                d4_func= c->get_dap4_function();
+            }
+        }
+        // We need the escaping version because a dap4 ce may have legit double quotes.
+        BesJsonLog::kvp_json_string_esc(logStream, CE_KEY, ce);
+        *logStream << ", ";
+        BesJsonLog::kvp_json_string_esc(logStream, D4_FUNCTION_KEY, d4_func);
+    }
+    *logStream << "}\n";
+
+}
+
+
 /**
  * @brief Log information about the command
  */
@@ -341,51 +453,13 @@ void BESXMLInterface::log_the_command()
     // only log the get command.
     if (d_dhi_ptr->action.find("get.") != string::npos) {
 
+#if 0
         nlohmann::json log_entry;
-
-        // If the OLFS sent its log info, integrate that into the log output
-        bool found = false;
-        string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
-        if(found){
-            log_entry = nlohmann::json::parse(olfs_log_line);
-        }
-
-        log_entry["action"] = d_dhi_ptr->action;
-
-        if (!d_dhi_ptr->data[RETURN_CMD].empty()) {
-            log_entry["return_as"] = d_dhi_ptr->data[RETURN_CMD];
-        }
-        else {
-            log_entry["return_as"] = "-";
-        }
-
-        // Assume this is DAP and thus there is at most one container. Log a warning if that's
-        // not true. jhrg 11/14/17
-        BESContainer *c = *(d_dhi_ptr->containers.begin());
-        if (c) {
-
-
-            // Add the "path" of the requested data to the log line
-            if (!c->get_real_name().empty()) {
-                log_entry["local_path"] = c->get_real_name();
-            }
-
-            // Add the constraint expression to the log line
-            // Try for a DAP2 CE first
-            if (!c->get_constraint().empty()) {
-                log_entry["constraint_expression"] = c->get_real_name();
-            }
-            else {
-                // No DAP2 CE? Try DAP4...
-                if (!c->get_dap4_constraint().empty()) {
-                    log_entry["constraint_expression"] = c->get_dap4_constraint();
-                }
-                if (!c->get_dap4_function().empty()) {
-                    log_entry["dap4_function"] = c->get_dap4_constraint();
-                }
-            }
-        }
+        get_log_line_as_nlohmann_json(d_dhi_ptr, log_entry);
         JSON_REQUEST_LOG(log_entry);
+#else
+        write_request_log_line_as_json(d_dhi_ptr);
+#endif
 
         if (d_dhi_ptr->containers.size() > 1)
             ERROR_LOG("The previous command had multiple containers defined, but only the first was logged.");

@@ -176,17 +176,17 @@ static void log_error(const BESError &e)
     string err_msg(e.get_message());
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg) << add_memory_info << "\n");
-        JSON_ERROR_LOG("ERROR: " + error_name + ": " + err_msg + get_memory_info() + "\n");
+        err_msg = "ERROR: " + error_name + ": " + err_msg + get_memory_info();
+        ERROR_LOG(err_msg);
+        JSON_ERROR_LOG(err_msg);
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg)
-            << " (" << e.get_file() << ":" << e.get_line() << ")"
-            << add_memory_info << "\n");
+        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg) << " (" << e.get_file() << ":" << e.get_line() << ")" << add_memory_info << "\n");
 
-        JSON_ERROR_LOG("ERROR: " + error_name + ": " +  err_msg
+        err_msg = "ERROR: " + error_name + ": " +  err_msg
             + " (" + e.get_file() + ":" + to_string(e.get_line()) + ")"
-            + get_memory_info() + "\n");
+            + get_memory_info() + "\n";
+        JSON_ERROR_LOG(err_msg);
     }
 }
 

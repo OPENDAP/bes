@@ -22,6 +22,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <BESDataHandlerInterface.h>
 #include <BESLog.h>
 #include <BESStopWatch.h>
 
@@ -34,8 +35,6 @@
 #include <unistd.h>
 
 #include "BESInternalError.h"
-#include "BESInternalFatalError.h"
-#include "BESNotFoundError.h"
 #include "TheBESKeys.h"
 
 #include "modules/common/run_tests_cppunit.h"
@@ -216,6 +215,22 @@ public:
             }
         }
     }
+    void alternating_info_log_speed_test() {
+        string &test_msg = the_test_text;
+        DBG(cerr << prolog << "Speed test message: " << test_msg << "\n");
+
+        unsigned long i;
+        {
+            DBG(cerr << prolog << "Writing " << speed_test_reps << " messages of length " << test_msg.length() << " to both logs.\n");
+            string log_name = prolog + to_string(speed_test_reps)+" laps";
+            BESStopWatch sw(log_name);
+            sw.start(log_name);
+            for(i=0; i<speed_test_reps ;i++) {
+                JSON_INFO_LOG(test_msg);
+                INFO_LOG(test_msg);
+            }
+        }
+    }
     void combined_log_speed_test() {
         json_info_log_speed_test();
         info_log_speed_test();
@@ -240,6 +255,7 @@ public:
     CPPUNIT_TEST(info_log_speed_test);
     CPPUNIT_TEST(json_info_log_speed_test);
     CPPUNIT_TEST(combined_log_speed_test);
+    CPPUNIT_TEST(alternating_info_log_speed_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

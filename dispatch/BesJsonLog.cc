@@ -56,10 +56,20 @@ BesJsonLog *BesJsonLog::d_instance = nullptr;
 
 static auto TIME_KEY = "bes_start_time";
 static auto PID_KEY = "pid";
+static auto TYPE_KEY = "type";
+static auto MESSAGE_KEY = "message";
+static auto REQUEST_LOG_KEY = "request";
+static auto ERROR_LOG_KEY = "error";
+static auto INFO_LOG_KEY = "info";
+static auto VERBOSE_LOG_KEY = "verbose";
+
 static auto BESKeys_LOG_NAME_KEY = "BES.LogName";
 
+/** @brief boolean to string
+ *
+ */
 static string torf(bool v){
-  return (v?"true":"false");
+  return v?"true":"false";
 }
 /** @brief constructor that sets up logging for the application.
  *
@@ -90,7 +100,7 @@ BesJsonLog::BesJsonLog() :
     try {
         TheBESKeys::TheKeys()->get_value("BES.LogTimeLocal", local_time, found);
         d_use_local_time = found && (BESUtil::lowercase(local_time) == "yes");
-        BESDEBUG(MODULE, prolog << "d_use_local_time: " << (d_use_local_time?"true":"false") << endl);
+        BESDEBUG(MODULE, prolog << "d_use_local_time: " << torf(d_use_local_time) << endl);
         init_state.append("d_use_local_time=").append(torf(d_use_local_time));
     }
     catch (...) {
@@ -105,14 +115,14 @@ BesJsonLog::BesJsonLog() :
     string s;
     TheBESKeys::TheKeys()->get_value("BES.LogVerbose", s, found);
     d_verbose = found && (BESUtil::lowercase(s) == "yes");
-    BESDEBUG(MODULE, prolog << "d_verbose: " << (d_verbose?"true":"false") << endl);
+    BESDEBUG(MODULE, prolog << "d_verbose: " << torf(d_verbose) << endl);
     init_state.append(" d_verbose=").append(torf(d_verbose));
 
     found = false;
     s = "";
     TheBESKeys::TheKeys()->get_value("BES.LogUnixTime", s, found);
     d_use_unix_time = found && (BESUtil::lowercase(s)=="true");
-    BESDEBUG(MODULE, prolog << "d_use_unix_time: " << (d_use_unix_time?"true":"false") << endl);
+    BESDEBUG(MODULE, prolog << "d_use_unix_time: " << torf(d_use_unix_time) << endl);
     init_state.append(" d_use_unix_time=").append(torf(d_use_unix_time));
 
     found = false;
@@ -174,50 +184,6 @@ BesJsonLog::~BesJsonLog()
     d_file_buffer = 0;
 }
 
-void BesJsonLog::dump_time(){
-#ifdef ISO8601_TIME_IN_LOGS
-    time_t now;
-    time(&now);
-
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
-    if(d_use_unix_time){
-        (*d_file_buffer) << "\"" << TIME_KEY <<"\": " << now << ", ";
-    }
-    else {
-        struct tm date_time{};
-        if (!d_use_local_time){
-            gmtime_r(&now, &date_time);
-        }
-        else{
-            localtime_r(&now, &date_time);
-        }
-        (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
-        (*d_file_buffer) << "\"" << TIME_KEY <<"\": \"" << buf << "\", ";
-    }
-#else
-    const time_t sctime = time(NULL);
-    const struct tm *sttime = localtime(&sctime);
-    char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
-    char *b = asctime(sttime);
-
-    (*d_file_buffer) << zone_name << " ";
-    for (register int j = 0; b[j] != '\n'; j++)
-        (*d_file_buffer) << b[j];
-
-    string time_str = zone_name + " ";
-    for (register int j = 0; b[j] != '\n'; j++){
-        time_str += b[j];
-    }
-    (*d_file_buffer) << "\"" << TIME_KEY <<"\": \"" << time_str << "\", ";
-#endif
-
-    (*d_file_buffer) << "\"" << PID_KEY <<"\": " << getpid() << ", ";
-
-
-    d_flushed = 0;
-
-}
 
 
 /** @brief Protected method that dumps the date/time and the pid to the log_entry
@@ -263,7 +229,7 @@ void BesJsonLog::add_time_and_pid(nlohmann::json &log_entry)
     for (register int j = 0; b[j] != '\n'; j++){
         time_str += b[j];
     }
-    log_entry[time_key] = time_str;
+    log_entry[TIME_KEY] = time_str;
 #endif
     log_entry[PID_KEY] = getpid();
     d_flushed = 0;
@@ -272,6 +238,50 @@ void BesJsonLog::add_time_and_pid(nlohmann::json &log_entry)
 
 //#######################################################################
 #if USE_OPERATORS
+void BesJsonLog::dump_time(){
+#ifdef ISO8601_TIME_IN_LOGS
+    time_t now;
+    time(&now);
+
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
+    if(d_use_unix_time){
+        (*d_file_buffer) << "\"" << TIME_KEY <<"\": " << now << ", ";
+    }
+    else {
+        struct tm date_time{};
+        if (!d_use_local_time){
+            gmtime_r(&now, &date_time);
+        }
+        else{
+            localtime_r(&now, &date_time);
+        }
+        (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
+        (*d_file_buffer) << "\"" << TIME_KEY <<"\": \"" << buf << "\", ";
+    }
+#else
+    const time_t sctime = time(NULL);
+    const struct tm *sttime = localtime(&sctime);
+    char zone_name[10];
+    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
+    char *b = asctime(sttime);
+
+    (*d_file_buffer) << zone_name << " ";
+    for (register int j = 0; b[j] != '\n'; j++)
+        (*d_file_buffer) << b[j];
+
+    string time_str = zone_name + " ";
+    for (register int j = 0; b[j] != '\n'; j++){
+        time_str += b[j];
+    }
+    (*d_file_buffer) << "\"" << TIME_KEY <<"\": \"" << time_str << "\", ";
+#endif
+
+    (*d_file_buffer) << "\"" << PID_KEY <<"\": " << getpid() << ", ";
+
+
+    d_flushed = 0;
+
+}
 /** @brief Overloaded inserter that writes the specified string.
  *
  * @todo Decide if this is really necessary.
@@ -452,6 +462,51 @@ BesJsonLog& BesJsonLog::operator<<(p_ios_manipulator val)
     return *this;
 }
 
+void BesJsonLog::dump_time(){
+#ifdef ISO8601_TIME_IN_LOGS
+    time_t now;
+    time(&now);
+
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
+    if(d_use_unix_time){
+        (*d_file_buffer) << "\"" << TIME_KEY <<"\": " << now << ", ";
+    }
+    else {
+        struct tm date_time{};
+        if (!d_use_local_time){
+            gmtime_r(&now, &date_time);
+        }
+        else{
+            localtime_r(&now, &date_time);
+        }
+        (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
+        (*d_file_buffer) << "\"" << TIME_KEY <<"\": \"" << buf << "\", ";
+    }
+#else
+    const time_t sctime = time(NULL);
+    const struct tm *sttime = localtime(&sctime);
+    char zone_name[10];
+    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
+    char *b = asctime(sttime);
+
+    (*d_file_buffer) << zone_name << " ";
+    for (register int j = 0; b[j] != '\n'; j++)
+        (*d_file_buffer) << b[j];
+
+    string time_str = zone_name + " ";
+    for (register int j = 0; b[j] != '\n'; j++){
+        time_str += b[j];
+    }
+    (*d_file_buffer) << "\"" << TIME_KEY <<"\": \"" << time_str << "\", ";
+#endif
+
+    (*d_file_buffer) << "\"" << PID_KEY <<"\": " << getpid() << ", ";
+
+
+    d_flushed = 0;
+
+}
+
 #endif
 //#######################################################################
 
@@ -476,32 +531,74 @@ void BesJsonLog::message_worker(const std::string &type, const std::string &msg)
     nlohmann::json log_entry;
     if (!d_suspended) {
         add_time_and_pid(log_entry);
-        log_entry["type"] = type;
-        log_entry["message"] = msg;
+        log_entry[TYPE_KEY] = type;
+        log_entry[MESSAGE_KEY] = msg;
         *d_file_buffer << log_entry.dump() << "\n" << flush;
     }
 }
 
+static std::string &json_sanitize(std::string &str) {
+    const auto the_bad_things ="\r\n\"\\\t";
+    //const auto the_bad_things ="\n";
+    size_t pos = 0;
+    while ((pos = str.find_first_of(the_bad_things, pos)) != std::string::npos) {
+        str[pos] = ' ';
+    }
+    return str;
+}
+
+void BesJsonLog::kvp_json_string_esc(std::ostream *os, const std::string &key, std::string& value)
+{
+    *os << "\"" << key << "\": \"" << json_sanitize(value) << "\"";
+}
+void BesJsonLog::kvp_json_string(std::ostream *os, const std::string &key, const std::string& value)
+{
+    *os << "\"" << key << "\": \"" << value << "\"";
+}
+
+void BesJsonLog::message_worker_no_nlohmann(const std::string &type, std::string &msg, const bool escape){
+    if (!d_suspended) {
+        time_t now;
+        time(&now);
+        *d_file_buffer << "{";
+        *d_file_buffer << " \"" << TIME_KEY << "\": " << now ;
+        *d_file_buffer << ", \"" << PID_KEY << "\": " << getpid();
+        *d_file_buffer << ", ";
+        kvp_json_string(d_file_buffer, TYPE_KEY, type);
+        *d_file_buffer << ", ";
+        if(escape) {
+            kvp_json_string_esc(d_file_buffer, MESSAGE_KEY, msg);
+
+        } else {
+            kvp_json_string(d_file_buffer, MESSAGE_KEY, msg);
+        }
+         *d_file_buffer << "}\n" << flush;
+   }
+}
+
 void BesJsonLog::request(nlohmann::json &log_entry){
     if (!d_suspended) {
-        log_entry["type"] = "request";
+        log_entry[TYPE_KEY] = REQUEST_LOG_KEY;
         add_time_and_pid(log_entry);
         check_ostream(*d_file_buffer);
         *d_file_buffer << log_entry.dump() << "\n" << flush;
     }
 }
 
-void BesJsonLog::info(const std::string &msg){
-    message_worker("info", msg);
+void BesJsonLog::info(std::string &msg){
+    message_worker_no_nlohmann(INFO_LOG_KEY, msg, false);
+    // message_worker("info", msg);
 }
 
-void BesJsonLog::error(const std::string &msg){
-    message_worker("error", msg);
+void BesJsonLog::error(std::string &msg){
+    message_worker_no_nlohmann(ERROR_LOG_KEY, msg, true);
+    // message_worker("error", msg);
 }
 
-void BesJsonLog::verbose(const std::string &msg){
+void BesJsonLog::verbose(std::string &msg){
   	if(is_verbose()){
-    	message_worker("verbose", msg);
+        message_worker_no_nlohmann(VERBOSE_LOG_KEY, msg, false);
+    	// message_worker("verbose", msg);
     }
 }
 

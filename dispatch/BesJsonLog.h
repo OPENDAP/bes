@@ -121,9 +121,9 @@ protected:
     BesJsonLog();
 
     // Dumps the current system time.
-    void dump_time();
     void add_time_and_pid(nlohmann::json &log_entry);
     void message_worker(const std::string &type, const std::string &msg);
+    void message_worker_no_nlohmann(const std::string &type, std::string &msg, bool escape);
 
 public:
     ~BesJsonLog() override;
@@ -190,13 +190,19 @@ public:
     }
 
     void request(nlohmann::json &request_log_entry);
-    void info(const std::string &info_msg);
-    void error(const std::string &error_msg);
-    void verbose(const std::string &verbose_msg);
+    void info( std::string &info_msg);
+    void error(  std::string &error_msg);
+    void verbose(  std::string &verbose_msg);
+
+    static void kvp_json_string(std::ostream *os, const std::string &key, const std::string &value) ;
+    static void kvp_json_string_esc(std::ostream *os, const std::string &key, std::string &value) ;
 
 #define USE_OPERATORS false
 
 #if USE_OPERATORS
+protected:
+    void dump_time();
+public:
     /// Defines a data type p_ios_manipulator "pointer to function that takes ios& and returns ios&".
     typedef std::ios& (*p_ios_manipulator)(std::ios&);
     /// Defines a data type p_std::ostream_manipulator "pointer to function that takes std::ostream& and returns std::ostream&".
