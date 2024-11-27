@@ -342,29 +342,7 @@ void BESXMLInterface::log_the_command_json()
     // only log the get command.
     if (d_dhi_ptr->action.find("get.") != string::npos) {
 
-#if 0 // @TODO REMOVE BEFORE MERGE
-        unsigned long total_reps=1048676UL;
-        {
-            string log_name = "old_log reps=" + to_string(total_reps);
-            BESStopWatch sw(log_name);
-            sw.start(log_name);
-            for(unsigned long i=0; i<total_reps; i++) {
-                log_the_command_OLD();
-            }
-
-        }
-
-        {
-            string log_name = "string_json reps=" + to_string(total_reps);
-            BESStopWatch sw(log_name);
-            sw.start(log_name);
-            for(unsigned long i=0; i<total_reps; i++) {
-                BesJsonLog::TheLog()->request_log(d_dhi_ptr, BesJsonLog::TheLog()->get_log_ostream());
-            }
-        }
-#else
         BesJsonLog::TheLog()->request_log(d_dhi_ptr, BesJsonLog::TheLog()->get_log_ostream());
-#endif
 
         if (d_dhi_ptr->containers.size() > 1)
             ERROR_LOG("The previous command had multiple containers defined, but only the first was logged.");
@@ -373,7 +351,8 @@ void BESXMLInterface::log_the_command_json()
     if (!BESLog::TheLog()->is_verbose()) {
             if (d_dhi_ptr->action.find("set.context") == string::npos
                 && d_dhi_ptr->action.find("show.catalog") == string::npos) {
-                LOG(d_dhi_ptr->data[LOG_INFO] << endl);
+                // LOG(d_dhi_ptr->data[LOG_INFO] << endl);
+                JSON_INFO_LOG(d_dhi_ptr->data[LOG_INFO]);
             }
         }
 #endif

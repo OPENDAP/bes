@@ -225,7 +225,6 @@ public:
     BesJsonLog& operator<<(p_ostream_manipulator);
     BesJsonLog& operator<<(p_ios_manipulator);
 
-    BesJsonLog& operator <<(nlohmann::json&);
 #endif
     void dump(std::ostream &strm) const override;
 
