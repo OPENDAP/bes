@@ -112,6 +112,20 @@ ostream &add_memory_info(ostream &out)
     return out;
 }
 
+/**
+ * @brief "Sanitizes" the string by replacing any 0x0A (new line) or 0x0D (carriage return) characters with 0x20 (space)
+ * @param msg The string to "sanitize"
+ * @return A reference to the sanitized string.
+ */
+static std::string &remove_crlf(std::string &str) {
+    const auto the_bad_things ="\r\n";
+    size_t pos = 0;
+    while ((pos = str.find_first_of(the_bad_things, pos)) != std::string::npos) {
+        str[pos] = ' ';
+    }
+    return str;
+}
+
 static void log_error(const BESError &e)
 {
     string error_name;
@@ -141,14 +155,15 @@ static void log_error(const BESError &e)
         error_name = "BES Error";
         break;
     }
+    string err_msg(e.get_message());
 
-    if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << add_memory_info << endl);
+    if (TheBESKeys::read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
+        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg) << add_memory_info << "\n");
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message()
+        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg)
             << " (" << e.get_file() << ":" << e.get_line() << ")"
-            << add_memory_info << endl);
+            << add_memory_info << "\n");
     }
 }
 
@@ -381,13 +396,7 @@ int BESInterface::execute_request(const string &from)
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) {
-        // It would be great to have more info to put here, but that is buried in
-        // BESXMLInterface::build_data_request_plan() where the XML document is
-        // parsed. jhrg 11/9/17
-        sw.start("BESInterface::execute_request", d_dhi_ptr->data[REQUEST_ID]);
-    }
+    BES_COMMAND_TIMING(prolog);
 
     // TODO These never change for the life of a BES, so maybe they can move out of
     //  code that runs for every request? jhrg 11/8/17
@@ -396,9 +405,13 @@ int BESInterface::execute_request(const string &from)
 
     // TODO If this is only used for logging, it is not needed since the log has a copy
     //  of the BES PID. jhrg 11/13/17
+#if 0
     ostringstream ss;
     ss << getpid();
     d_dhi_ptr->data[SERVER_PID] = ss.str();
+#endif
+    d_dhi_ptr->data[SERVER_PID] = to_string(getpid());
+
 
     // We split up the calls for the reason that if we catch an
     // exception during the initialization, building, execution, or response

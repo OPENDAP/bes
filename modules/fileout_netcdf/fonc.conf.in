@@ -40,6 +40,10 @@ FONc.RequestMaxSizeKB = 0
 # The old default value was: FONc.ClassicModel = true. This breaks Int64 support.
 # jhrg 6/15/20
 
+# This key will remove the duplicate module generated dimension names.
+# Uncomment this key if you somehow don't want this behavior.
+FONc.ReduceDim=true
+
 # Uncomment the following line to suppress the output of global attributes.
 # FONc.NoGlobalAttrs = true
 

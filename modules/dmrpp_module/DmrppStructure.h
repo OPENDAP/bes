@@ -37,19 +37,27 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppStructure: public libdap::Structure, public DmrppCommon {
+private:
+    void structure_read(vector<char> &values, size_t &values_offset, bool byte_swap);
+    void swap_bytes_in_structure(char*swap_value, libdap::Type t_bt, int64_t num_eles) const;
+    vector<char> d_structure_str_buf;
+    bool is_special_structure = false;
+    friend class DmrppArray;
 
 public:
     DmrppStructure(const std::string &n) : libdap::Structure(n), DmrppCommon() { }
     DmrppStructure(const std::string &n, const std::string &d) : libdap::Structure(n, d), DmrppCommon() { }
-    DmrppStructure(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Structure(n), DmrppCommon(dmz) { }
-    DmrppStructure(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Structure(n, d), DmrppCommon(dmz) { }
+    DmrppStructure(const std::string &n, std::shared_ptr<DMZ> dmz)
+        : libdap::Structure(n), DmrppCommon(std::move(dmz)) { }
+    DmrppStructure(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz)
+        : libdap::Structure(n, d), DmrppCommon(std::move(dmz)) { }
     DmrppStructure(const DmrppStructure &) = default;
 
-    virtual ~DmrppStructure() = default;
+    ~DmrppStructure() override = default;
 
     DmrppStructure &operator=(const DmrppStructure &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate()  {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppStructure(*this);
     }
 
@@ -58,18 +66,11 @@ public:
 
     void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override;
 
-    virtual void dump(ostream & strm) const;
-    vector<char> & get_structure_str_buffer() { return d_structure_str_buf;}
+    void dump(ostream & strm) const override;
+    vector<char> & get_structure_str_buffer() { return d_structure_str_buf; }
 
-    void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;} 
-    bool get_special_structure_flag() const { return is_special_structure;} 
-
-private:
-    void structure_read(vector<char> &values, size_t &values_offset, bool byte_swap);
-    void swap_bytes_in_structure(char*swap_value, libdap::Type t_bt, int64_t num_eles) const;
-    vector<char> d_structure_str_buf;
-    bool is_special_structure = false;
-    friend class DmrppArray;
+    void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct; }
+    bool get_special_structure_flag() const { return is_special_structure; }
 };
 
 } // namespace dmrpp

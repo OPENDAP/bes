@@ -55,6 +55,7 @@ public:
     static bool use_shuffle;
     static unsigned long long chunk_size;
     static bool classic_model;
+    static bool reduce_dim;
     static bool no_global_attrs;
     static unsigned long long request_max_size_kb;
     static bool nc3_classic_format;

@@ -41,11 +41,11 @@ class DmrppD4Group: public libdap::D4Group, public DmrppCommon {
 public:
     DmrppD4Group(const std::string &n) : D4Group(n), DmrppCommon() { }
     DmrppD4Group(const std::string &n, const std::string &d) : D4Group(n, d), DmrppCommon() { }
-    DmrppD4Group(const std::string &n, std::shared_ptr<DMZ> dmz) : D4Group(n), DmrppCommon(dmz) { }
-    DmrppD4Group(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : D4Group(n, d), DmrppCommon(dmz) { }
+    DmrppD4Group(const std::string &n, std::shared_ptr<DMZ> dmz) : D4Group(n), DmrppCommon(std::move(dmz)) { }
+    DmrppD4Group(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : D4Group(n, d), DmrppCommon(std::move(dmz)) { }
     DmrppD4Group(const DmrppD4Group &) = default;
 
-    virtual ~DmrppD4Group() = default;
+    ~DmrppD4Group() override = default;
 
     DmrppD4Group &operator=(const DmrppD4Group &rhs);
 

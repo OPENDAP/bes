@@ -149,6 +149,11 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_wrong_fvalue_
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c_c.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/fill_some_chunks_s_c_c.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/comp_scalar_udf_fv.h5.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/comp_scalar_udf_nfv_right.h5.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/comp_array2_udf_fv_chunk.h5.dmrpp.bescmd >test.nc
+
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_grid.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_grid.h5.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_2_grids.h5.bescmd >test.nc
@@ -250,6 +255,13 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_packed_li
 
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.constraint.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.bescmd >test.nc
+
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_dim.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_same_dim_constraint.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_dim_constraint.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_int_dim.bescmd > test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_int_dim.dimpp.bescmd > test.nc
 
 #disable dio
 

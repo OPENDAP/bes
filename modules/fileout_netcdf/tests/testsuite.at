@@ -195,6 +195,11 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_wrong_fvalue_type_dap4_
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_s_c.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/fill_some_chunks_s_c_c.dmrpp.bescmd)
+# user-defined compound datatype fillvalue
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/comp_scalar_udf_fv.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/comp_scalar_udf_nfv_right.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/comp_array2_udf_fv_chunk.h5.dmrpp.bescmd)
+
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/eos5_grid.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/eos5_grid.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/eos5_2_grids.h5.bescmd)
@@ -372,3 +377,12 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION_2(bescmd/One_chunk_shuf_deflate.h
 # The dio=off is in the dmrpp file
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.compression.bescmd)
+
+# reduce dimension name
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd], [bes.nc4.grp.reduce_dim.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_grp_dim.bescmd], [bes.nc4.grp.reduce_dim.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_grp_same_dim_constraint.bescmd], [bes.nc4.grp.reduce_dim.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_grp_dim_constraint.bescmd], [bes.nc4.grp.reduce_dim.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_int_dim.bescmd], [bes.nc4.grp.reduce_dim.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_int_dim.dmrpp.bescmd], [bes.nc4.grp.reduce_dim.conf])
+

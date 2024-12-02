@@ -375,6 +375,20 @@ unsigned long DmrppCommon::add_chunk(
     return d_chunks.size();
 }
 
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        const string &fill_value,
+        libdap::Type fv_type,
+        unsigned long long chunk_size,
+        const vector<unsigned long long> &position_in_array,
+        const vector<pair<Type,int>> &structure_type_element)
+{
+    shared_ptr<Chunk> chunk(new Chunk(byte_order, fill_value, fv_type, chunk_size, position_in_array,structure_type_element));
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+
 /**
  * @brief read method for the atomic types
  *
