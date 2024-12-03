@@ -3180,12 +3180,15 @@ void DmrppArray::read_array_of_structure(vector<char> &values) {
     if (this->twiddle_bytes()) 
         BESDEBUG(dmrpp_3, prolog << "swap bytes " << endl);
 
+    vector<unsigned int> s_offs = this->get_struct_offsets();
+
     for (int64_t element = 0; element < nelms; ++element) {
 
         auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
         if(!dmrpp_s)
             throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer."); 
         try {
+            dmrpp_s->set_struct_offsets(s_offs);
             dmrpp_s->structure_read(values,values_offset, this->twiddle_bytes());
         }
         catch(...) {

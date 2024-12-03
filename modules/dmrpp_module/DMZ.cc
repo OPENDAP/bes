@@ -2000,6 +2000,16 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
         else if (is_eq(attr.name(), "byteOrder"))
             dc(btp)->ingest_byte_order(attr.value());
+        else if (is_eq(attr.name(), "structOffset")) {
+            string so_str = attr.value();
+            // decompose the string.
+            vector<string> so_str_vec = BESUtil::split(so_str, ' ' );
+            vector<unsigned int> struct_offsets;
+            for (const auto &s_off:so_str_vec)
+                struct_offsets.push_back(stoul(s_off));
+            dc(btp)->set_struct_offsets(struct_offsets);
+        }
+        
         
     }
 

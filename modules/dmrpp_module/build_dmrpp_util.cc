@@ -902,6 +902,46 @@ string byte_order_str(hid_t dataset){
     return byte_order_string;
 }
 
+void obtain_structure_offset(hid_t dataset, vector<unsigned int>& struct_offsets) {
+
+    hid_t dtypeid = H5Dget_type(dataset);
+
+    hid_t memb_id;
+    size_t memb_offset = 0;
+
+    int nmembs = H5Tget_nmembers(dtypeid);
+    if (nmembs <0) {
+        H5Tclose(dtypeid);
+        throw BESInternalError("Cannot get the number of base datatypes in a compound datatype.", __FILE__, __LINE__);
+    }
+
+    for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
+
+        if ((memb_id = H5Tget_member_type(dtypeid, u)) < 0) {
+            H5Tclose(dtypeid);
+            throw BESInternalError("Cannot get the number of base datatypes in a compound datatype.", __FILE__, __LINE__);
+        }
+
+        // Get member offset
+        memb_offset = H5Tget_member_offset(dtypeid, u);
+        if (u !=0)
+            struct_offsets.push_back(memb_offset);
+            
+        H5Tclose(memb_id);
+
+    }
+
+    // We need to add the size of the datatype to correctly retrieve the value of the next element.
+    size_t type_size = H5Tget_size(dtypeid);
+    if (type_size == 0) {
+        H5Tclose(dtypeid);
+        throw BESInternalError("Cannot get the correct data type size.", __FILE__, __LINE__);
+    }
+    struct_offsets.push_back(type_size);
+    H5Tclose(dtypeid);
+ 
+}
+
 
 
 /**
@@ -925,9 +965,7 @@ void process_contiguous_layout_dariable(hid_t dataset, BaseType *btp){
         VERBOSE(cerr << prolog << "     Before add_chunk: " <<btp->name() << endl);
         dc->add_chunk(byte_order, cont_size, cont_addr, "");
     }
-
 }
-
 
 /**
  * Processes the hdf5 storage information for a variable whose data is stored in the H5D_CHUNKED storage layout.
@@ -972,7 +1010,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
                 __LINE__);
 
     dc->set_chunk_dimension_sizes(chunk_dims);
-
+ 
     for (unsigned int i = 0; i < num_chunks; ++i) {
         vector<hsize_t> chunk_coords(dataset_rank, 0);
         haddr_t addr = 0;
@@ -1523,30 +1561,41 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_d
     // Added support for HDF5 Fill Value. jhrg 4/22/22
     set_fill_value(dataset, btp);
 
-    // Here we want to check if this dataset is a compound datatype that contains string.
+    // Here we want to check if this dataset is a compound datatype 
     hid_t type_id = H5Dget_type(dataset);
     if (type_id <0) {
         string err_msg = "Cannot obtain the HDF5 data type of the dataset: " + btp->name() ;
         throw BESInternalError(err_msg, __FILE__, __LINE__);
     }
-    if (H5T_COMPOUND == H5Tget_class(type_id) && is_supported_compound_type(type_id)==2) {
-        process_string_in_structure(dataset,type_id, btp);
-        H5Tclose(type_id);
-        return;
+    if (H5T_COMPOUND == H5Tget_class(type_id)) {
+
+        unsigned short supported_compound_type = is_supported_compound_type(type_id);
+        if (supported_compound_type ==2) {
+            // When the compound datatype contains string, we need to process this dataset differently.
+            process_string_in_structure(dataset,type_id, btp);
+            H5Tclose(type_id);
+            return;
+        }
+        else if (supported_compound_type ==1) {
+
+            auto layout_type = get_h5_storage_layout(dataset);
+
+            // For contiguous or chunk storage layouts, the compound member offset and size need to be saved.
+            if (layout_type != H5D_COMPACT) {
+
+                vector<unsigned int> struct_offsets;
+                obtain_structure_offset(dataset,struct_offsets);
+                VERBOSE(cerr << prolog << "struct_offsets[0]: " << struct_offsets[0]<< endl);
+                // Add struct offset
+                auto dc = toDC(btp);
+                dc->set_structure_offsets(struct_offsets);
+            }
+        }
     }
     else 
        H5Tclose(type_id);
 
-    hid_t plist_id = create_h5plist(dataset);
-    uint8_t layout_type = 0;
-    try {
-        layout_type = H5Pget_layout(plist_id);
-        H5Pclose(plist_id);
-    }
-    catch (...) {
-        H5Pclose(plist_id);
-        throw;
-    }
+    auto layout_type = get_h5_storage_layout(dataset);
 
     switch (layout_type) {
         case H5D_CONTIGUOUS: { /* Contiguous Storage Layout */

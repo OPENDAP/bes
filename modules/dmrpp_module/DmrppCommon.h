@@ -145,6 +145,8 @@ class DmrppCommon {
     bool using_linked_block = false;
     unsigned int total_linked_blocks =0;
 
+    // Structure offset 
+    std::vector<unsigned int> struct_offsets;
 protected:
     virtual char *read_atomic(const std::string &name);
       virtual char *read_atomic(const std::string &name, size_t & buf_size);
@@ -177,6 +179,12 @@ public:
          for(const auto &def_level:def_levels)
             deflate_levels.push_back(def_level);
     }
+    void set_struct_offsets(const std::vector<unsigned int>& s_offs) {
+         for(const auto &s_o:s_offs)
+            struct_offsets.push_back(s_o);
+    }
+    const std::vector<unsigned int> & get_struct_offsets() const { return struct_offsets;}
+
     void set_processing_fv_chunks() { processing_fv_chunks = true;}
     bool get_processing_fv_chunks() const { return processing_fv_chunks; }
 
@@ -305,6 +313,12 @@ public:
         for (auto chunk_dim : chunk_dims) {
             d_chunk_dimension_sizes.emplace_back(chunk_dim);
         }
+    }
+
+    void set_structure_offsets(const std::vector<unsigned int> &structure_offset) {
+        struct_offsets.clear();
+        for (const auto so : structure_offset) 
+            struct_offsets.emplace_back(so);
     }
 
     // These two functions duplicate code in DMZ but provides access to the DMZ::load_chunks()

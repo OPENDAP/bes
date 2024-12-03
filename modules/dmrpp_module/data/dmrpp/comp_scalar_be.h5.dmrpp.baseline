@@ -3,7 +3,7 @@
     <Structure name="comp_scalar_be">
         <Int32 name="a_name"/>
         <Float32 name="b_name"/>
-        <dmrpp:chunks fillValue="0" byteOrder="BE">
+        <dmrpp:chunks fillValue="0" byteOrder="BE" structOffset="4 8">
             <dmrpp:chunk offset="2048" nBytes="8"/>
         </dmrpp:chunks>
     </Structure>
