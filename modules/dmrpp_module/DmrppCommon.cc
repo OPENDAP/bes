@@ -486,6 +486,20 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         }
     }
 
+    if (!d_chunks.empty() && !struct_offsets.empty()) {
+
+        string sos;
+        for (unsigned int i = 0; i <struct_offsets.size(); i++) {
+            if ( i != struct_offsets.size()-1)
+                sos = sos + to_string(struct_offsets[i]) + " ";
+            else 
+                sos = sos +to_string(struct_offsets[i]);
+        }
+        BESDEBUG(dmrpp_3, "Structure offset: " << sos<<endl);
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "structOffset", (const xmlChar*) sos.c_str()) < 0)
+            throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
+
+    }
     // If the disable_dio flag is true, we will set the DIO=off attribute.
 
     if (!d_filters.empty() && d_disable_dio == true) {

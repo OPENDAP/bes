@@ -5,7 +5,7 @@
         <Float32 name="Temperature">
             <Dim size="2"/>
         </Float32>
-        <dmrpp:chunks fillValue="0" byteOrder="LE">
+        <dmrpp:chunks fillValue="0" byteOrder="LE" structOffset="4 12">
             <dmrpp:chunk offset="2048" nBytes="12"/>
         </dmrpp:chunks>
     </Structure>

@@ -153,6 +153,9 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/fill_some_chunk
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/comp_scalar_udf_fv.h5.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/comp_scalar_udf_nfv_right.h5.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/comp_array2_udf_fv_chunk.h5.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/comp_scalar_udf_nfv.h5.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/comp_array2_udf_nfv2.h5.dmrpp.bescmd >test.nc
+
 
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_grid.dmrpp.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/eos5_grid.h5.bescmd >test.nc
