@@ -1588,7 +1588,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_d
                 VERBOSE(cerr << prolog << "struct_offsets[0]: " << struct_offsets[0]<< endl);
                 // Add struct offset
                 auto dc = toDC(btp);
-                dc->set_structure_offsets(struct_offsets);
+                dc->set_struct_offsets(struct_offsets);
             }
         }
     }

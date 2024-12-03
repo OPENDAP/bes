@@ -315,12 +315,6 @@ public:
         }
     }
 
-    void set_structure_offsets(const std::vector<unsigned int> &structure_offset) {
-        struct_offsets.clear();
-        for (const auto so : structure_offset) 
-            struct_offsets.emplace_back(so);
-    }
-
     // These two functions duplicate code in DMZ but provides access to the DMZ::load_chunks()
     // method without having to cast a BaseType to a DmrppCommon in order to use it. jhrg 11/12/21
     virtual void load_chunks(libdap::BaseType *btp);
