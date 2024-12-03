@@ -320,6 +320,12 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_fv.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_fv_chunk.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv_chunk_cmp_right.h5.dap])
 
+# Test the reading of compound data when the fill value is not used.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_scalar_udf_nfv.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_scalar_udf_nfv_right_offset.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv2.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv_chunk_cmp_right_offset.h5.dap])
 
 # Test chunked data where chunks are compressed twice (and thus must be
 # inflated twice). The first file uses deflate once, the second uses it
