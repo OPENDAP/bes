@@ -107,7 +107,9 @@ BESStopWatch::start(const string &name, const string &reqID) {
 #endif
     // either we started the stop watch, or failed to start it. Either way,
     // no timings are available, so set stopped to false.
+#if 0
     d_stopped = false;
+#endif
     return d_started;
 }
 
@@ -141,11 +143,16 @@ BESStopWatch::~BESStopWatch() {
 
         if (!get_time_of_day(d_stop_usage)) {
             d_started = false;
+#if 0
             d_stopped = false;
+#endif
             return;
         }
 
+#i 0
         d_stopped = true;
+#endif
+#if 0
         if (BESDebug::GetStrm()) {
             std::unique_lock<std::mutex> lck(bes_debug_log_mutex);
             std::stringstream msg;
@@ -158,6 +165,7 @@ BESStopWatch::~BESStopWatch() {
             msg << "[" << d_timer_name << "]";
             *(BESDebug::GetStrm()) << msg.str() << endl;
         }
+#endif
         std::stringstream msg;
         msg << "elapsed_us" << BESLog::mark << get_elapsed_us() << BESLog::mark;
         msg << "start_us" << BESLog::mark << get_start_us() << BESLog::mark;
@@ -178,11 +186,11 @@ unsigned long int BESStopWatch::get_elapsed_us() const {
 }
 
 unsigned long int BESStopWatch::get_start_us() const {
-    return d_start_usage.tv_sec * 1000 * 1000 + d_start_usage.tv_usec;
+    return d_start_usage.tv_sec * 1'000'000 + d_start_usage.tv_usec;
 }
 
 unsigned long int BESStopWatch::get_stop_us() const {
-    return d_stop_usage.tv_sec * 1000 * 1000 + d_stop_usage.tv_usec;
+    return d_stop_usage.tv_sec * 1'000'000 + d_stop_usage.tv_usec;
 }
 
 

@@ -84,7 +84,9 @@ class BESStopWatch : public BESObj {
 	std::string d_req_id;
 	std::string d_log_name = TIMING_LOG_KEY;
     bool d_started = false;
+#if 0 // This is not used in the code. jhrg 12/04/24
     bool d_stopped = false;
+#endif
 
 	struct timeval d_start_usage{};
 	struct timeval d_stop_usage{};
