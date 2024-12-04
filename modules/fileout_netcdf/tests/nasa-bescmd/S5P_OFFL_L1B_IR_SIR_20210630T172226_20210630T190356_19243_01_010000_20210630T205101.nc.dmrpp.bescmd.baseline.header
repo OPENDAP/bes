@@ -1,0 +1,3136 @@
+netcdf test {
+
+// global attributes:
+		:Conventions = "CF-1.6" ;
+		:institution = "KNMI" ;
+		:library_information = "\n/s5p_gpfs02/sw/IPF_S5P_L01b/S5P_IPF_L1B_V01.00.00/lib/libCOREFoundation.so (TROPOMI L01b CORE library) v1.0.0.19183 Build 201803121815 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl\n/s5p_gpfs02/sw/IPF_S5P_L01b/S5P_IPF_L1B_V01.00.00/lib/libGeo.so (TROPOMI L01b Geolocation library) v1.0.0.19183 Build 201803121817 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl\n/s5p_gpfs02/sw/IPF_S5P_L01b/S5P_IPF_L1B_V01.00.00/lib/libMath.so (TROPOMI L01b MATH library) v1.0.0.19183 Build 201803121817 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl\n/mnt/sw/IPF_S5P_L01b/current/lib/TROP_L0InputSubsystem.so (TROPOMI L0 Input Subsystem) v1.0.0.19194 Build 201803131217 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl\n/mnt/sw/IPF_S5P_L01b/current/lib/TROP_KeyDataSubSystem.so (TROPOMI Key Data Input Subsystem) v1.0.0.19194 Build 201803131218 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl\n/mnt/sw/IPF_S5P_L01b/current/lib/TROP_L1BOutputSubsystem.so (TROPOMI L1b Output Subsystem) v1.0.0.19194 Build 201803131217 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl\n/mnt/sw/IPF_S5P_L01b/current/lib/TROP_Algorithms.so (TROPOMI L0-1b Algorithm Library) v1.0.0.19194 Build 201803131218 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl\n/mnt/sw/IPF_S5P_L01b/current/lib/TROP_L0InputAlgo.so (TROP L0 Input Algorithm Library) v1.0.0.19194 Build 201803131217 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl\n/mnt/sw/IPF_S5P_L01b/current/lib/TROP_L1BOutputAlgo.so (TROP L1b Output Algorithm Library) v1.0.0.19194 Build 201803131217 by tropdev@knmi-tropd-l01o.knmi.ssc-campus.nl" ;
+		:orbit = 19243 ;
+		:orbit_begin_icid = 1902 ;
+		:orbit_end_icid = 1952 ;
+		:orbit_type = "D01" ;
+		:orbit_type_id = 2 ;
+		:processor_version = "1.0.0.19194" ;
+		:summary = "Irradiance product SWIR module" ;
+		:time_coverage_end = "removed date-time" ;
+		:time_coverage_start = "removed date-time" ;
+		:time_reference = "removed date-time" ;
+		:title = "Sentinel-5p TROPOMI Level 1b Irradiance product SWIR module" ;
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.0" ;
+		:build_dmrpp_metadata.bes = "3.21.0" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.0" ;
+		:build_dmrpp_metadata.configuration = "\n# TheBESKeys::get_as_config()\nAllowedHosts=^https?:\\/\\/\nBES.Catalog.catalog.FollowSymLinks=Yes\nBES.Catalog.catalog.RootDirectory=.\nBES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\nBES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\nBES.Data.RootDirectory=/dev/null\nBES.LogName=./bes.log\nBES.UncompressCache.dir=/tmp/hyrax_ux\nBES.UncompressCache.prefix=ux_\nBES.UncompressCache.size=500\nBES.modules=dap,cmd,h5,dmrpp,nc,fonc\nFONc.ClassicModel=false\nFONc.NoGlobalAttrs=true\nH5.EnableCF=false\nH5.EnableCheckNameClashing=true\n" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.8wHCS5xwLi -f ./S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.nc -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.9xlUC4nIK3 -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.nc.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.nc.dmrpp\"}]}]" ;
+
+group: BAND7_IRRADIANCE {
+
+  group: STANDARD_MODE {
+    dimensions:
+    	scanline = 1 ;
+    	spectral_channel = 480 ;
+    	pixel = 215 ;
+    	time = 1 ;
+    	nsettings = 1 ;
+
+    group: OBSERVATIONS {
+      variables:
+      	int spectral_channel(spectral_channel) ;
+      		spectral_channel:comment = "This dimension variable defines the indices spectral dimension; index starts at 0" ;
+      		spectral_channel:long_name = "wavelength dimension index" ;
+      		spectral_channel:units = "1" ;
+      	ushort detector_row_qualification(time, scanline, pixel) ;
+      		detector_row_qualification:comment = "Qualification flag indicating row type or state" ;
+      		detector_row_qualification:_FillValue = 65535US ;
+      		detector_row_qualification:flag_values = 0US, 1US, 2US, 4US, 8US, 16US, 256US, 4096US, 8192US ;
+      		detector_row_qualification:flag_masks = 0US, 9US, 2US, 4US, 9US, 16US, 256US, 4096US, 8192US ;
+      		detector_row_qualification:flag_meanings = "no_qualification uvn_ror uvn_dump uvn_covered uvn_overscan uvn_higain swir_reference gen_transistion gen_non_illuminated" ;
+      		detector_row_qualification:long_name = "Detector row qualification flags" ;
+      		detector_row_qualification:max_val = 65534US ;
+      		detector_row_qualification:min_val = 0US ;
+      		detector_row_qualification:units = "1" ;
+      	ushort measurement_quality(time, scanline) ;
+      		measurement_quality:comment = "Overall quality information for a measurement" ;
+      		measurement_quality:_FillValue = 65535US ;
+      		measurement_quality:long_name = "measurement quality flag" ;
+      		measurement_quality:flag_values = 0US, 1US, 2US, 16US, 32US, 128US, 256US, 4096US ;
+      		measurement_quality:flag_masks = 0US, 1US, 2US, 16US, 32US, 128US, 256US, 4096US ;
+      		measurement_quality:flag_meanings = "no_error proc_skipped no_residual saa spacecraft_manoeuvre sub_grp irr_out_of_range sub_group" ;
+      		measurement_quality:max_val = 65534US ;
+      		measurement_quality:min_val = 0US ;
+      		measurement_quality:units = "1" ;
+      	float irradiance(time, scanline, pixel, spectral_channel) ;
+      		irradiance:ancilary_vars = "irradiance_noise irradiance_error quality_level spectral_channel_quality" ;
+      		irradiance:comment = "Measured spectral irradiance for each spectral pixel" ;
+      		irradiance:_FillValue = 9.96921e+36f ;
+      		irradiance:long_name = "spectral photon irradiance" ;
+      		irradiance:units = "mol.m-2.nm-1.s-1" ;
+      		irradiance:detector_row_offset = "12" ;
+      		irradiance:detector_column_offset = "20" ;
+      	int pixel(pixel) ;
+      		pixel:comment = "This dimension variable defines the indices across track; index starts at 0" ;
+      		pixel:long_name = "across track dimension index" ;
+      		pixel:units = "1" ;
+      	byte irradiance_error(time, scanline, pixel, spectral_channel) ;
+      		irradiance_error:comment = "The irradiance_error is a measure for the one standard deviation error of the bias of the irradiance measurement; it is expressed in decibel (dB), i.e. 10 times the base-10 logarithmic value of the ratio between the irradiance and the estimation error." ;
+      		irradiance_error:_FillValue = -127b ;
+      		irradiance_error:long_name = "spectral irradiance  error, one standard deviation" ;
+      		irradiance_error:units = "1" ;
+      	int time(time) ;
+      		time:comment = "Reference time of the measurements. The reference time is set to yyyy-mm-ddT00:00:00 UTC, where yyyy-mm-dd is the day on which the measurements of a particular data granule start." ;
+      		time:long_name = "reference start time of measurement" ;
+      		time:standard_name = "time" ;
+      		time:units = "seconds since removed date-time" ;
+      	byte irradiance_noise(time, scanline, pixel, spectral_channel) ;
+      		irradiance_noise:comment = "The irradiance_noise is a measure for the one standard deviation random error of the irradiance measurement; it is expressed in decibel (dB), i.e. 10 times the base-10 logarithmic value of the ratio between the irradiance and the random error." ;
+      		irradiance_noise:_FillValue = -127b ;
+      		irradiance_noise:long_name = "spectral photon irradiance noise, one standard deviation" ;
+      		irradiance_noise:units = "1" ;
+      	ushort detector_column_qualification(time, scanline, spectral_channel) ;
+      		detector_column_qualification:comment = "Qualification flag indicating column indicating column type or state" ;
+      		detector_column_qualification:units = "1" ;
+      		detector_column_qualification:_FillValue = 65535US ;
+      		detector_column_qualification:flag_values = 0US, 1US, 16US, 32US, 64US, 256US, 512US, 1024US, 2048US ;
+      		detector_column_qualification:flag_masks = 0US, 1US, 16US, 98US, 98US, 3840US, 3840US, 3840US, 3840US ;
+      		detector_column_qualification:flag_meanings = "no_qualification skipped uvn_odd uvn_prepost uvn_overscan swir_adc0 swir_adc1 swir_adc2 swir_adc3" ;
+      		detector_column_qualification:long_name = "Detector column qualification flags" ;
+      		detector_column_qualification:max_val = 65534US ;
+      		detector_column_qualification:min_val = 0US ;
+      	ubyte quality_level(time, scanline, pixel, spectral_channel) ;
+      		quality_level:comment = "Overall quality assessment information for each (spectral) pixel" ;
+      		quality_level:_FillValue = 255UB ;
+      		quality_level:long_name = "qualiy level of spectral channel" ;
+      		quality_level:max_val = 100UB ;
+      		quality_level:min_val = 0UB ;
+      		quality_level:units = "1" ;
+      	ubyte spectral_channel_quality(time, scanline, pixel, spectral_channel) ;
+      		spectral_channel_quality:comment = "Quality assessment information for each (spectral) pixel" ;
+      		spectral_channel_quality:_FillValue = 255UB ;
+      		spectral_channel_quality:flag_values = 0UB, 1UB, 2UB, 8UB, 16UB, 32UB, 64UB, 128UB ;
+      		spectral_channel_quality:flag_masks = 0UB, 1UB, 2UB, 8UB, 16UB, 32UB, 64UB, 128UB ;
+      		spectral_channel_quality:long_name = "spectral channel quality flag" ;
+      		spectral_channel_quality:flag_meanings = "no_error missing bad_pixel processing_error saturated transient rts underflow" ;
+      		spectral_channel_quality:max_val = 254UB ;
+      		spectral_channel_quality:min_val = 0UB ;
+      		spectral_channel_quality:units = "1" ;
+      	int delta_time(time, scanline) ;
+      		delta_time:comment = "Time difference with time for each measurement" ;
+      		delta_time:_FillValue = -2147483647 ;
+      		delta_time:long_name = "offset from the reference start time of measurement" ;
+      		delta_time:units = "milliseconds since removed date-time" ;
+      	int scanline(scanline) ;
+      		scanline:comment = "This dimension variable defines the indices along track; index starts at 0" ;
+      		scanline:long_name = "along track dimension index" ;
+      		scanline:units = "1" ;
+      } // group OBSERVATIONS
+
+    group: INSTRUMENT {
+      dimensions:
+      	time = 1 ;
+      	scanline = 1 ;
+      	pixel = 215 ;
+      	nsettings = 1 ;
+      variables:
+      	float calibrated_wavelength_error(/BAND7_IRRADIANCE/STANDARD_MODE/time, /BAND7_IRRADIANCE/STANDARD_MODE/pixel, spectral_channel) ;
+      		calibrated_wavelength_error:comment = "Standard deviation on the calibrated wavelength of each spectral pixel" ;
+      		calibrated_wavelength_error:_FillValue = 9.96921e+36f ;
+      		calibrated_wavelength_error:units = "1e-09 m" ;
+      		calibrated_wavelength_error:long_name = "spectral channel calibrated wavelength error" ;
+      		calibrated_wavelength_error:standard_name = "radiation_wavelength standard_error" ;
+      	short measurement_to_detector_row_table.det_start_row(time, scanline, pixel) ;
+      	short measurement_to_detector_row_table.det_end_row(time, scanline, pixel) ;
+      	float nominal_wavelength_error(/BAND7_IRRADIANCE/STANDARD_MODE/time, /BAND7_IRRADIANCE/STANDARD_MODE/pixel, spectral_channel) ;
+      		nominal_wavelength_error:comment = "The nominal spectral wavelength error for each cross track pixel as a function of the spectral channel." ;
+      		nominal_wavelength_error:units = "1e-09 m" ;
+      		nominal_wavelength_error:_FillValue = 9.96921e+36f ;
+      		nominal_wavelength_error:long_name = "spectral channel nominal wavelength error" ;
+      		nominal_wavelength_error:standard_name = "radiation_wavelength standard_error" ;
+      	float calibrated_wavelength(/BAND7_IRRADIANCE/STANDARD_MODE/time, /BAND7_IRRADIANCE/STANDARD_MODE/pixel, spectral_channel) ;
+      		calibrated_wavelength:comment = "Calibrated wavelength of each spectral pixel" ;
+      		calibrated_wavelength:_FillValue = 9.96921e+36f ;
+      		calibrated_wavelength:long_name = "spectral channel calibrated wavelength" ;
+      		calibrated_wavelength:units = "1e-09 m" ;
+      		calibrated_wavelength:standard_name = "radiation_wavelength" ;
+      	float housekeeping_data.temp_det1(time, scanline) ;
+      	float housekeeping_data.temp_det2(time, scanline) ;
+      	float housekeeping_data.temp_det3(time, scanline) ;
+      	float housekeeping_data.temp_det4(time, scanline) ;
+      	float housekeeping_data.data_offset_s(time, scanline) ;
+      	float housekeeping_data.temp_tss_up_neg_x(time, scanline) ;
+      	float housekeeping_data.temp_tss_up_neg_y(time, scanline) ;
+      	float housekeeping_data.temp_tss_up_pos_x(time, scanline) ;
+      	float housekeeping_data.temp_tss_up_pos_y(time, scanline) ;
+      	float housekeeping_data.temp_tss_up_mid(time, scanline) ;
+      	float housekeeping_data.temp_tss_low_mid(time, scanline) ;
+      	float housekeeping_data.temp_low_uvn_obm(time, scanline) ;
+      	float housekeeping_data.temp_up_uvn_obm(time, scanline) ;
+      	float housekeeping_data.temp_obm_swir(time, scanline) ;
+      	float housekeeping_data.temp_obm_solar_baffle(time, scanline) ;
+      	float housekeeping_data.temp_cu_sls_stim(time, scanline) ;
+      	float housekeeping_data.temp_obm_swir_grating(time, scanline) ;
+      	float housekeeping_data.temp_obm_swir_if(time, scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls1(time, scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls2(time, scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls3(time, scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls4(time, scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls5(time, scanline) ;
+      	ubyte housekeeping_data.difm_status(time, scanline) ;
+      	ubyte housekeeping_data.fmm_status(time, scanline) ;
+      	ubyte housekeeping_data.det1_led_status(time, scanline) ;
+      	ubyte housekeeping_data.det2_led_status(time, scanline) ;
+      	ubyte housekeeping_data.det3_led_status(time, scanline) ;
+      	ubyte housekeeping_data.det4_led_status(time, scanline) ;
+      	ubyte housekeeping_data.common_led_status(time, scanline) ;
+      	ubyte housekeeping_data.sls1_status(time, scanline) ;
+      	ubyte housekeeping_data.sls2_status(time, scanline) ;
+      	ubyte housekeeping_data.sls3_status(time, scanline) ;
+      	ubyte housekeeping_data.sls4_status(time, scanline) ;
+      	ubyte housekeeping_data.sls5_status(time, scanline) ;
+      	ubyte housekeeping_data.wls_status(time, scanline) ;
+      	ubyte housekeeping_data.filler_char1(time, scanline) ;
+      	float housekeeping_data.swir_vdet_bias(time, scanline) ;
+      	int instrument_settings.ic_id(nsettings) ;
+      	short instrument_settings.ic_version(nsettings) ;
+      	short instrument_settings.ic_set(nsettings) ;
+      	short instrument_settings.ic_idx(nsettings) ;
+      	short instrument_settings.processing_class(nsettings) ;
+      	float instrument_settings.master_cycle_period(nsettings) ;
+      	float instrument_settings.coaddition_period(nsettings) ;
+      	float instrument_settings.exposure_time(nsettings) ;
+      	float instrument_settings.msmt_mcp_ft_offset(nsettings) ;
+      	float instrument_settings.msmt_ft_msmt_start_offset(nsettings) ;
+      	float instrument_settings.msmt_duration(nsettings) ;
+      	float instrument_settings.reset_time(nsettings) ;
+      	short instrument_settings.nr_coadditions(nsettings) ;
+      	int instrument_settings.master_cycle_period_us(nsettings) ;
+      	int instrument_settings.coaddition_period_us(nsettings) ;
+      	int instrument_settings.exposure_time_us(nsettings) ;
+      	int instrument_settings.exposure_period_us(nsettings) ;
+      	short instrument_settings.small_pixel_column(nsettings) ;
+      	short instrument_settings.stop_column_read(nsettings) ;
+      	short instrument_settings.start_column_coad(nsettings) ;
+      	short instrument_settings.stop_column_coad(nsettings) ;
+      	uint instrument_settings.int_hold(nsettings) ;
+      	ushort instrument_settings.int_delay(nsettings) ;
+      	ubyte instrument_settings.clipping(nsettings) ;
+      	int sample_cycle_length(/BAND7_IRRADIANCE/STANDARD_MODE/time, /BAND7_IRRADIANCE/STANDARD_MODE/scanline) ;
+      		sample_cycle_length:comment = "Length of sample_cycle" ;
+      		sample_cycle_length:_FillValue = -2147483647 ;
+      		sample_cycle_length:long_name = "length of sample cycle" ;
+      		sample_cycle_length:units = "ms" ;
+      	short processing_class(/BAND7_IRRADIANCE/STANDARD_MODE/time, /BAND7_IRRADIANCE/STANDARD_MODE/scanline) ;
+      		processing_class:comment = "The processing_class defines the type of measurement at a very high level. Contrary to Instrument Configuration IDs, only a limited, fixed set of processing classes is identified. Examples of processing classes are Earth_radiance, Sun_irradiance, CLED, WLS, Dark, Background, ...;" ;
+      		processing_class:_FillValue = -32767s ;
+      		processing_class:long_name = "processing class" ;
+      		processing_class:max_val = 255s ;
+      		processing_class:min_val = 0s ;
+      		processing_class:units = "1" ;
+      	float nominal_wavelength(/BAND7_IRRADIANCE/STANDARD_MODE/time, /BAND7_IRRADIANCE/STANDARD_MODE/pixel, spectral_channel) ;
+      		nominal_wavelength:comment = "The nominal spectral wavelength for each cross track pixel as a function of the spectral channel." ;
+      		nominal_wavelength:units = "1e-09 m" ;
+      		nominal_wavelength:_FillValue = 9.96921e+36f ;
+      		nominal_wavelength:long_name = "spectral channel nominal wavelength" ;
+      		nominal_wavelength:standard_name = "radiation_wavelength" ;
+      	int sample_cycle(/BAND7_IRRADIANCE/STANDARD_MODE/time, /BAND7_IRRADIANCE/STANDARD_MODE/scanline) ;
+      		sample_cycle:comment = "sample_cycle provides a sample_cycle index for each scanline; index starts at 0" ;
+      		sample_cycle:_FillValue = -2147483647 ;
+      		sample_cycle:long_name = "sample cycle" ;
+      		sample_cycle:units = "1" ;
+      	int instrument_configuration.ic_id(time, scanline) ;
+      	short instrument_configuration.ic_version(time, scanline) ;
+      } // group INSTRUMENT
+
+    group: GEODATA {
+      variables:
+      	float earth_sun_distance(time) ;
+      		earth_sun_distance:comment = "1 au equals 149,597,870,700 meters" ;
+      		earth_sun_distance:_FillValue = 9.96921e+36f ;
+      		earth_sun_distance:long_name = "distance between the earth and the sun" ;
+      		earth_sun_distance:max_val = 1.02f ;
+      		earth_sun_distance:units = "au" ;
+      		earth_sun_distance:min_val = 0.98f ;
+      } // group GEODATA
+    } // group STANDARD_MODE
+  } // group BAND7_IRRADIANCE
+
+group: BAND8_IRRADIANCE {
+
+  group: STANDARD_MODE {
+    dimensions:
+    	scanline = 1 ;
+    	spectral_channel = 480 ;
+    	pixel = 215 ;
+    	time = 1 ;
+    	nsettings = 1 ;
+
+    group: OBSERVATIONS {
+      variables:
+      	int spectral_channel(spectral_channel) ;
+      		spectral_channel:comment = "This dimension variable defines the indices spectral dimension; index starts at 0" ;
+      		spectral_channel:long_name = "wavelength dimension index" ;
+      		spectral_channel:units = "1" ;
+      	ushort detector_row_qualification(time, scanline, pixel) ;
+      		detector_row_qualification:comment = "Qualification flag indicating row type or state" ;
+      		detector_row_qualification:_FillValue = 65535US ;
+      		detector_row_qualification:flag_values = 0US, 1US, 2US, 4US, 8US, 16US, 256US, 4096US, 8192US ;
+      		detector_row_qualification:flag_masks = 0US, 9US, 2US, 4US, 9US, 16US, 256US, 4096US, 8192US ;
+      		detector_row_qualification:flag_meanings = "no_qualification uvn_ror uvn_dump uvn_covered uvn_overscan uvn_higain swir_reference gen_transistion gen_non_illuminated" ;
+      		detector_row_qualification:long_name = "Detector row qualification flags" ;
+      		detector_row_qualification:max_val = 65534US ;
+      		detector_row_qualification:min_val = 0US ;
+      		detector_row_qualification:units = "1" ;
+      	ushort measurement_quality(time, scanline) ;
+      		measurement_quality:comment = "Overall quality information for a measurement" ;
+      		measurement_quality:_FillValue = 65535US ;
+      		measurement_quality:long_name = "measurement quality flag" ;
+      		measurement_quality:flag_values = 0US, 1US, 2US, 16US, 32US, 128US, 256US, 4096US ;
+      		measurement_quality:flag_masks = 0US, 1US, 2US, 16US, 32US, 128US, 256US, 4096US ;
+      		measurement_quality:flag_meanings = "no_error proc_skipped no_residual saa spacecraft_manoeuvre sub_grp irr_out_of_range sub_group" ;
+      		measurement_quality:max_val = 65534US ;
+      		measurement_quality:min_val = 0US ;
+      		measurement_quality:units = "1" ;
+      	float irradiance(time, scanline, pixel, spectral_channel) ;
+      		irradiance:ancilary_vars = "irradiance_noise irradiance_error quality_level spectral_channel_quality" ;
+      		irradiance:comment = "Measured spectral irradiance for each spectral pixel" ;
+      		irradiance:_FillValue = 9.96921e+36f ;
+      		irradiance:long_name = "spectral photon irradiance" ;
+      		irradiance:units = "mol.m-2.nm-1.s-1" ;
+      		irradiance:detector_row_offset = "12" ;
+      		irradiance:detector_column_offset = "0" ;
+      	int pixel(pixel) ;
+      		pixel:comment = "This dimension variable defines the indices across track; index starts at 0" ;
+      		pixel:long_name = "across track dimension index" ;
+      		pixel:units = "1" ;
+      	byte irradiance_error(time, scanline, pixel, spectral_channel) ;
+      		irradiance_error:_FillValue = -127b ;
+      		irradiance_error:comment = "The irradiance_error is a measure for the one standard deviation error of the bias of the irradiance measurement; it is expressed in decibel (dB), i.e. 10 times the base-10 logarithmic value of the ratio between the irradiance and the estimation error." ;
+      		irradiance_error:long_name = "spectral irradiance  error, one standard deviation" ;
+      		irradiance_error:units = "1" ;
+      	int time(time) ;
+      		time:comment = "Reference time of the measurements. The reference time is set to yyyy-mm-ddT00:00:00 UTC, where yyyy-mm-dd is the day on which the measurements of a particular data granule start." ;
+      		time:long_name = "reference start time of measurement" ;
+      		time:standard_name = "time" ;
+      		time:units = "seconds since removed date-time" ;
+      	byte irradiance_noise(time, scanline, pixel, spectral_channel) ;
+      		irradiance_noise:comment = "The irradiance_noise is a measure for the one standard deviation random error of the irradiance measurement; it is expressed in decibel (dB), i.e. 10 times the base-10 logarithmic value of the ratio between the irradiance and the random error." ;
+      		irradiance_noise:_FillValue = -127b ;
+      		irradiance_noise:long_name = "spectral photon irradiance noise, one standard deviation" ;
+      		irradiance_noise:units = "1" ;
+      	ushort detector_column_qualification(time, scanline, spectral_channel) ;
+      		detector_column_qualification:comment = "Qualification flag indicating column indicating column type or state" ;
+      		detector_column_qualification:units = "1" ;
+      		detector_column_qualification:_FillValue = 65535US ;
+      		detector_column_qualification:flag_values = 0US, 1US, 16US, 32US, 64US, 256US, 512US, 1024US, 2048US ;
+      		detector_column_qualification:flag_masks = 0US, 1US, 16US, 98US, 98US, 3840US, 3840US, 3840US, 3840US ;
+      		detector_column_qualification:flag_meanings = "no_qualification skipped uvn_odd uvn_prepost uvn_overscan swir_adc0 swir_adc1 swir_adc2 swir_adc3" ;
+      		detector_column_qualification:long_name = "Detector column qualification flags" ;
+      		detector_column_qualification:max_val = 65534US ;
+      		detector_column_qualification:min_val = 0US ;
+      	ubyte quality_level(time, scanline, pixel, spectral_channel) ;
+      		quality_level:_FillValue = 255UB ;
+      		quality_level:comment = "Overall quality assessment information for each (spectral) pixel" ;
+      		quality_level:long_name = "qualiy level of spectral channel" ;
+      		quality_level:max_val = 100UB ;
+      		quality_level:min_val = 0UB ;
+      		quality_level:units = "1" ;
+      	ubyte spectral_channel_quality(time, scanline, pixel, spectral_channel) ;
+      		spectral_channel_quality:comment = "Quality assessment information for each (spectral) pixel" ;
+      		spectral_channel_quality:_FillValue = 255UB ;
+      		spectral_channel_quality:flag_values = 0UB, 1UB, 2UB, 8UB, 16UB, 32UB, 64UB, 128UB ;
+      		spectral_channel_quality:flag_masks = 0UB, 1UB, 2UB, 8UB, 16UB, 32UB, 64UB, 128UB ;
+      		spectral_channel_quality:flag_meanings = "no_error missing bad_pixel processing_error saturated transient rts underflow" ;
+      		spectral_channel_quality:long_name = "spectral channel quality flag" ;
+      		spectral_channel_quality:max_val = 254UB ;
+      		spectral_channel_quality:min_val = 0UB ;
+      		spectral_channel_quality:units = "1" ;
+      	int delta_time(time, scanline) ;
+      		delta_time:comment = "Time difference with time for each measurement" ;
+      		delta_time:_FillValue = -2147483647 ;
+      		delta_time:long_name = "offset from the reference start time of measurement" ;
+      		delta_time:units = "milliseconds since removed date-time" ;
+      	int scanline(scanline) ;
+      		scanline:comment = "This dimension variable defines the indices along track; index starts at 0" ;
+      		scanline:long_name = "along track dimension index" ;
+      		scanline:units = "1" ;
+      } // group OBSERVATIONS
+
+    group: INSTRUMENT {
+      variables:
+      	float calibrated_wavelength_error(time, pixel, spectral_channel) ;
+      		calibrated_wavelength_error:comment = "Standard deviation on the calibrated wavelength of each spectral pixel" ;
+      		calibrated_wavelength_error:_FillValue = 9.96921e+36f ;
+      		calibrated_wavelength_error:units = "1e-09 m" ;
+      		calibrated_wavelength_error:long_name = "spectral channel calibrated wavelength error" ;
+      		calibrated_wavelength_error:standard_name = "radiation_wavelength standard_error" ;
+      	short measurement_to_detector_row_table.det_start_row(/PROCESSOR/time, /PROCESSOR/scanline, /PROCESSOR/pixel) ;
+      	short measurement_to_detector_row_table.det_end_row(/PROCESSOR/time, /PROCESSOR/scanline, /PROCESSOR/pixel) ;
+      	float nominal_wavelength_error(time, pixel, spectral_channel) ;
+      		nominal_wavelength_error:comment = "The nominal spectral wavelength error for each cross track pixel as a function of the spectral channel." ;
+      		nominal_wavelength_error:units = "1e-09 m" ;
+      		nominal_wavelength_error:_FillValue = 9.96921e+36f ;
+      		nominal_wavelength_error:long_name = "spectral channel nominal wavelength error" ;
+      		nominal_wavelength_error:standard_name = "radiation_wavelength standard_error" ;
+      	float calibrated_wavelength(time, pixel, spectral_channel) ;
+      		calibrated_wavelength:comment = "Calibrated wavelength of each spectral pixel" ;
+      		calibrated_wavelength:_FillValue = 9.96921e+36f ;
+      		calibrated_wavelength:long_name = "spectral channel calibrated wavelength" ;
+      		calibrated_wavelength:units = "1e-09 m" ;
+      		calibrated_wavelength:standard_name = "radiation_wavelength" ;
+      	float housekeeping_data.temp_det1(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_det2(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_det3(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_det4(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.data_offset_s(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_tss_up_neg_x(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_tss_up_neg_y(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_tss_up_pos_x(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_tss_up_pos_y(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_tss_up_mid(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_tss_low_mid(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_low_uvn_obm(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_up_uvn_obm(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_obm_swir(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_obm_solar_baffle(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_cu_sls_stim(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_obm_swir_grating(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_obm_swir_if(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls1(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls2(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls3(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls4(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.temp_pelt_cu_sls5(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.difm_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.fmm_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.det1_led_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.det2_led_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.det3_led_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.det4_led_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.common_led_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.sls1_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.sls2_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.sls3_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.sls4_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.sls5_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.wls_status(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	ubyte housekeeping_data.filler_char1(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	float housekeeping_data.swir_vdet_bias(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	int instrument_settings.ic_id(/PROCESSOR/nsettings) ;
+      	short instrument_settings.ic_version(/PROCESSOR/nsettings) ;
+      	short instrument_settings.ic_set(/PROCESSOR/nsettings) ;
+      	short instrument_settings.ic_idx(/PROCESSOR/nsettings) ;
+      	short instrument_settings.processing_class(/PROCESSOR/nsettings) ;
+      	float instrument_settings.master_cycle_period(/PROCESSOR/nsettings) ;
+      	float instrument_settings.coaddition_period(/PROCESSOR/nsettings) ;
+      	float instrument_settings.exposure_time(/PROCESSOR/nsettings) ;
+      	float instrument_settings.msmt_mcp_ft_offset(/PROCESSOR/nsettings) ;
+      	float instrument_settings.msmt_ft_msmt_start_offset(/PROCESSOR/nsettings) ;
+      	float instrument_settings.msmt_duration(/PROCESSOR/nsettings) ;
+      	float instrument_settings.reset_time(/PROCESSOR/nsettings) ;
+      	short instrument_settings.nr_coadditions(/PROCESSOR/nsettings) ;
+      	int instrument_settings.master_cycle_period_us(/PROCESSOR/nsettings) ;
+      	int instrument_settings.coaddition_period_us(/PROCESSOR/nsettings) ;
+      	int instrument_settings.exposure_time_us(/PROCESSOR/nsettings) ;
+      	int instrument_settings.exposure_period_us(/PROCESSOR/nsettings) ;
+      	short instrument_settings.small_pixel_column(/PROCESSOR/nsettings) ;
+      	short instrument_settings.stop_column_read(/PROCESSOR/nsettings) ;
+      	short instrument_settings.start_column_coad(/PROCESSOR/nsettings) ;
+      	short instrument_settings.stop_column_coad(/PROCESSOR/nsettings) ;
+      	uint instrument_settings.int_hold(/PROCESSOR/nsettings) ;
+      	ushort instrument_settings.int_delay(/PROCESSOR/nsettings) ;
+      	ubyte instrument_settings.clipping(/PROCESSOR/nsettings) ;
+      	int sample_cycle_length(time, scanline) ;
+      		sample_cycle_length:comment = "Length of sample_cycle" ;
+      		sample_cycle_length:_FillValue = -2147483647 ;
+      		sample_cycle_length:long_name = "length of sample cycle" ;
+      		sample_cycle_length:units = "ms" ;
+      	short processing_class(time, scanline) ;
+      		processing_class:comment = "The processing_class defines the type of measurement at a very high level. Contrary to Instrument Configuration IDs, only a limited, fixed set of processing classes is identified. Examples of processing classes are Earth_radiance, Sun_irradiance, CLED, WLS, Dark, Background, ...;" ;
+      		processing_class:_FillValue = -32767s ;
+      		processing_class:long_name = "processing class" ;
+      		processing_class:max_val = 255s ;
+      		processing_class:min_val = 0s ;
+      		processing_class:units = "1" ;
+      	float nominal_wavelength(time, pixel, spectral_channel) ;
+      		nominal_wavelength:comment = "The nominal spectral wavelength for each cross track pixel as a function of the spectral channel." ;
+      		nominal_wavelength:units = "1e-09 m" ;
+      		nominal_wavelength:_FillValue = 9.96921e+36f ;
+      		nominal_wavelength:long_name = "spectral channel nominal wavelength" ;
+      		nominal_wavelength:standard_name = "radiation_wavelength" ;
+      	int sample_cycle(time, scanline) ;
+      		sample_cycle:comment = "sample_cycle provides a sample_cycle index for each scanline; index starts at 0" ;
+      		sample_cycle:_FillValue = -2147483647 ;
+      		sample_cycle:long_name = "sample cycle" ;
+      		sample_cycle:units = "1" ;
+      	int instrument_configuration.ic_id(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      	short instrument_configuration.ic_version(/PROCESSOR/time, /PROCESSOR/scanline) ;
+      } // group INSTRUMENT
+
+    group: GEODATA {
+      variables:
+      	float earth_sun_distance(time) ;
+      		earth_sun_distance:comment = "1 au equals 149,597,870,700 meters" ;
+      		earth_sun_distance:_FillValue = 9.96921e+36f ;
+      		earth_sun_distance:long_name = "distance between the earth and the sun" ;
+      		earth_sun_distance:max_val = 1.02f ;
+      		earth_sun_distance:units = "au" ;
+      		earth_sun_distance:min_val = 0.98f ;
+      } // group GEODATA
+    } // group STANDARD_MODE
+  } // group BAND8_IRRADIANCE
+
+group: PROCESSOR {
+  dimensions:
+  	job_configuration_dim = 169 ;
+  	algorithm_configuration_dim = 247 ;
+  	processing_configuration_dim = 1692 ;
+  	algorithm_configuration_len1 = 133 ;
+  	job_configuration_len2 = 268 ;
+  	processing_configuration_len3 = 260 ;
+  variables:
+  	char algorithm_configuration(algorithm_configuration_dim, algorithm_configuration_len1) ;
+  		algorithm_configuration:description = "Overview of the algorithms that were used in de L01b data processing for this data product" ;
+  	char job_configuration(job_configuration_dim, job_configuration_len2) ;
+  		job_configuration:description = "Internal representation of the job configuration of the L01b data processing for this data product" ;
+  	char processing_configuration(processing_configuration_dim, processing_configuration_len3) ;
+  		processing_configuration:description = "Overview of all the processing steps, the algorithm order and data flow of the L01b data processing for this data product" ;
+  } // group PROCESSOR
+
+group: METADATA {
+
+  group: ISO_METADATA {
+
+    // group attributes:
+    		:gmd_fileIdentifier = "S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.xml" ;
+    		:gmd_hierarchyLevelName = "EO Product Collection" ;
+    		:gmd_metadataStandardName = "ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for imagery and gridded data" ;
+    		:gmd_metadataStandardVersion = "ISO 19115-2:2009(E), S5P profile" ;
+    		:objectType = "gmi:MI_Metadata" ;
+
+    group: gmd\:dateStamp {
+
+      // group attributes:
+      		:gco_Date = "removed date-time" ;
+      } // group gmd\:dateStamp
+
+    group: gmd\:characterSet {
+
+      // group attributes:
+      		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" ;
+      		:objectType = "gmd:MD_CharacterSetCode" ;
+      		:codeListValue = "utf8" ;
+      } // group gmd\:characterSet
+
+    group: gmd\:hierarchyLevel {
+
+      // group attributes:
+      		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" ;
+      		:objectType = "gmd:MD_ScopeCode" ;
+      		:codeListValue = "dataset" ;
+      } // group gmd\:hierarchyLevel
+
+    group: gmd\:language {
+
+      // group attributes:
+      		:codeList = "http://www.loc.gov/standards/iso639-2/" ;
+      		:codeListValue = "eng" ;
+      		:objectType = "gmd:LanguageCode" ;
+      } // group gmd\:language
+
+    group: gmd\:identificationInfo {
+
+      // group attributes:
+      		:gmd_language = "eng" ;
+      		:objectType = "gmd:MD_DataIdentification" ;
+      		:gmd_abstract = "The S5p mission is a single-payload satellite in a low Earth orbit that provides daily global information on concentrations of trace gases and aerosols important for air quality, climate forcing, and the ozone layer. The payload of the mission is the TROPOspheric Monitoring Instrument (TROPOMI), which is jointly developed by The Netherlands and ESA. The instrument consists of a spectrometer with spectral bands in the ultraviolet, the visible, the near-infrared and the shortwave infrared. The selected wavelength range for TROPOMI allows observation of key atmospheric constituents, including ozone (O3), nitrogen dioxide (NO2), carbon monoxide (CO), sulfur dioxide (SO2), methane (CH4), formaldehyde (CH2O), aerosols and clouds." ;
+      		:gmd_topicCategory = "climatologyMeteorologyAtmosphere" ;
+
+      group: gmd\:pointOfContact {
+
+        // group attributes:
+        		:gmd_organisationName = "Copernicus Space Component Data Access System, ESA, Services Coordinated Interface" ;
+        		:objectType = "gmd:CI_ResponsibleParty" ;
+
+        group: gmd\:contactInfo {
+
+          // group attributes:
+          		:objectType = "gmd:CI_Contact" ;
+
+          group: gmd\:address {
+
+            // group attributes:
+            		:gmd_electronicMailAddress = "EOSupport@copernicus.esa.int" ;
+            		:objectType = "gmd:CI_Address" ;
+            } // group gmd\:address
+          } // group gmd\:contactInfo
+
+        group: gmd\:role {
+
+          // group attributes:
+          		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" ;
+          		:codeListValue = "distributor" ;
+          		:objectType = "gmd:CI_RoleCode" ;
+          } // group gmd\:role
+        } // group gmd\:pointOfContact
+
+      group: gmd\:descriptiveKeywords {
+
+        // group attributes:
+        		:gmd_keyword = "Atmospheric conditions" ;
+        		:objectType = "gmd:MD_Keywords" ;
+
+        group: gmd\:type {
+
+          // group attributes:
+          		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" ;
+          		:codeListValue = "theme" ;
+          		:objectType = "gmd:MD_KeywordTypeCode" ;
+          } // group gmd\:type
+
+        group: gmd\:thesaurusName {
+
+          // group attributes:
+          		:gmd_title = "GEMET - INSPIRE themes, version 1.0" ;
+          		:objectType = "gmd:CI_Citation" ;
+
+          group: gmd\:date {
+
+            // group attributes:
+            		:gmd_date = "2008-06-01" ;
+            		:objectType = "gmd:CI_Date" ;
+
+            group: gmd\:dateType {
+
+              // group attributes:
+              		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+              		:codeListValue = "publication" ;
+              		:objectType = "gmd:CI_DateTypeCode" ;
+              } // group gmd\:dateType
+            } // group gmd\:date
+          } // group gmd\:thesaurusName
+        } // group gmd\:descriptiveKeywords
+
+      group: gmd\:resourceConstraints {
+
+        // group attributes:
+        		:gmd_classification = "unclassified" ;
+        		:gmd_useLimitation = "no conditions apply" ;
+        		:objectType = "gmd:MD_LegalConstraints" ;
+
+        group: gmd\:accessConstraints {
+
+          // group attributes:
+          		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" ;
+          		:codeListValue = "copyright" ;
+          		:objectType = "gmd:MD_RestrictionCode" ;
+          } // group gmd\:accessConstraints
+
+        group: gmd\:otherConstraints {
+
+          // group attributes:
+          		:gco_CharacterString = "no limitations" ;
+          } // group gmd\:otherConstraints
+        } // group gmd\:resourceConstraints
+
+      group: gmd\:spatialRepresentationType {
+
+        // group attributes:
+        		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" ;
+        		:codeListValue = "grid" ;
+        		:objectType = "gmd:MD_SpatialRepresentationTypeCode" ;
+        } // group gmd\:spatialRepresentationType
+
+      group: gmd\:spatialResolution {
+
+        // group attributes:
+        		:gmd_distance = "7.0" ;
+        		:objectType = "gmd:MD_Resolution" ;
+        		:uom = "km" ;
+        } // group gmd\:spatialResolution
+
+      group: gmd\:characterSet {
+
+        // group attributes:
+        		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" ;
+        		:codeListValue = "utf8" ;
+        		:objectType = "gmd:MD_CharacterSetCode" ;
+        } // group gmd\:characterSet
+
+      group: gmd\:citation {
+
+        // group attributes:
+        		:gmd_title = "Sentinel-5p TROPOMI Level 1b Irradiance product SWIR module" ;
+        		:objectType = "gmd:CI_Citation" ;
+
+        group: gmd\:date {
+
+          // group attributes:
+          		:gmd_date = "removed date-time" ;
+          		:objectType = "gmd:CI_Date" ;
+
+          group: gmd\:dateType {
+
+            // group attributes:
+            		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+            		:codeListValue = "creation" ;
+            		:objectType = "gmd:CI_DateTypeCode" ;
+            } // group gmd\:dateType
+          } // group gmd\:date
+
+        group: gmd\:identifier {
+
+          // group attributes:
+          		:gmd_code = "S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101" ;
+          		:objectType = "gmd:MD_Identifier" ;
+          } // group gmd\:identifier
+        } // group gmd\:citation
+      } // group gmd\:identificationInfo
+
+    group: gmd\:dataQualityInfo {
+
+      // group attributes:
+      		:objectType = "gmd:DQ_DataQuality" ;
+
+      group: gmd\:scope {
+
+        // group attributes:
+        		:objectType = "gmd:DQ_Scope" ;
+
+        group: gmd\:level {
+
+          // group attributes:
+          		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" ;
+          		:codeListValue = "dataset" ;
+          		:objectType = "gmd:MD_ScopeCode" ;
+          } // group gmd\:level
+        } // group gmd\:scope
+
+      group: gmd\:report {
+
+        // group attributes:
+        		:objectType = "gmd:DQ_DomainConsistency" ;
+
+        group: gmd\:result {
+
+          // group attributes:
+          		:objectType = "gmd:DQ_ConformanceResult" ;
+
+          group: gmd\:specification {
+
+            // group attributes:
+            		:gmd_title = "INSPIRE Data Specification on Orthoimagery - Guidelines, version 3.0rc3" ;
+            		:objectType = "gmd:CI_Citation" ;
+
+            group: gmd\:date {
+
+              // group attributes:
+              		:gmd_date = "2013-02-04" ;
+              		:objectType = "gmd:CI_Date" ;
+
+              group: gmd\:dateType {
+
+                // group attributes:
+                		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                		:codeListValue = "publication" ;
+                		:objectType = "gmd:CI_DateTypeCode" ;
+                } // group gmd\:dateType
+              } // group gmd\:date
+            } // group gmd\:specification
+
+          group: gmd\:explanation {
+
+            // group attributes:
+            		:gco_CharacterString = "" ;
+            } // group gmd\:explanation
+
+          group: gmd\:pass {
+
+            // group attributes:
+            		:gco_Boolean = "true" ;
+            } // group gmd\:pass
+          } // group gmd\:result
+        } // group gmd\:report
+
+      group: gmd\:lineage {
+
+        // group attributes:
+        		:gmd_statement = "L1b Irradiance dataset for SWIR module produced by the DLR PDGS from the S5p TROPOMI L0 product" ;
+        		:objectType = "gmd:LI_Lineage" ;
+
+        group: gmd\:processStep {
+
+          // group attributes:
+          		:gmd_description = "Processing of L0 to L1b data using the KNMI TROPOMI L01b processor" ;
+          		:objectType = "gmi:LE_ProcessStep" ;
+
+          group: gmd\:source\#12 {
+
+            // group attributes:
+            		:gmd_description = "L0 Band 8 SWIR science data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T190159_20210630T192003_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T174400_20210630T180323_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T184929_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument data for band 8" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T180324_20210630T182159_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T172325_20210630T173833_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T182159_20210630T184004_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T170801_20210630T172324_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#12
+
+          group: gmd\:source\#07 {
+
+            // group attributes:
+            		:gmd_description = "L0 Band 3 UVIS science data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T190159_20210630T192001_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T174400_20210630T180323_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T184929_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument data for band 3" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T180324_20210630T182159_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T172325_20210630T173831_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T182200_20210630T184004_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T170802_20210630T172322_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#07
+
+          group: gmd\:source\#08 {
+
+            // group attributes:
+            		:gmd_description = "L0 Band 4 UVIS science data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T190159_20210630T192004_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T174400_20210630T180323_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T184929_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument data for band 4" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T180324_20210630T182159_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T172326_20210630T173834_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T182200_20210630T184004_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T170803_20210630T172323_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#08
+
+          group: gmd\:source\#02 {
+
+            // group attributes:
+            		:gmd_description = "In-flight UVN Calibration Key Data product" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "In-flight Calibration Key Data Set UVN" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_TEST_ICM_CKDUVN_20170601T000001_20501231T235959_00000_01_001200_20170601T120000.h5" ;
+                } // group gmd\:alternateTitle
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#02
+
+          group: gmd\:source\#04 {
+
+            // group attributes:
+            		:gmd_description = "L0 Engineering data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T190200_20210630T192159_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T174325_20210630T180324_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T184200_20210630T190159_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument engineering data" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T180325_20210630T182201_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T172325_20210630T174324_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T182202_20210630T184159_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T170325_20210630T172324_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#04
+
+          group: gmd\:source\#06 {
+
+            // group attributes:
+            		:gmd_description = "L0 Band 2 UV science data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T190159_20210630T192001_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T174400_20210630T180323_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T184929_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument data for band 2" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T180324_20210630T182159_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T172325_20210630T173831_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T182200_20210630T184004_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T170802_20210630T172322_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#06
+
+          group: gmd\:source\#13 {
+
+            // group attributes:
+            		:gmd_description = "L0 Ancillary data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T190159_20210630T192159_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T174325_20210630T180324_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T184200_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument ancillary data" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T180325_20210630T182201_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T172325_20210630T174324_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T182202_20210630T184159_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T170325_20210630T172324_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#13
+
+          group: gmd\:source\#11 {
+
+            // group attributes:
+            		:gmd_description = "L0 Band 7 SWIR science data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T190159_20210630T192003_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T174400_20210630T180323_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T184929_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument data for band 7" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T180324_20210630T182159_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T172325_20210630T173833_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T182200_20210630T184004_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T170801_20210630T172324_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#11
+
+          group: gmd\:source\#01 {
+
+            // group attributes:
+            		:gmd_description = "Auxiliary Calibration Key Data product" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary Calibration Key Data Set" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_AUX_L1_CKD_20141001T000001_20501231T235959_00000_01_001200_20171010T143000.h5" ;
+                } // group gmd\:alternateTitle\#01
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#01
+
+          group: gmi\:output {
+
+            // group attributes:
+            		:gmd_description = "TROPOMI L1b Irradiance product for SWIR module" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L1b" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:gmd_title = "S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101" ;
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "2021-06-30" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+              } // group gmd\:sourceCitation
+            } // group gmi\:output
+
+          group: gmd\:source\#09 {
+
+            // group attributes:
+            		:gmd_description = "L0 Band 5 NIR science data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T190159_20210630T192004_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T174400_20210630T180323_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T184929_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument data for band 5" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T180324_20210630T182159_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T172327_20210630T173834_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T182200_20210630T184004_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T170801_20210630T172324_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#09
+
+          group: gmd\:source\#05 {
+
+            // group attributes:
+            		:gmd_description = "L0 Band 1 UV science data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T190159_20210630T192001_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T174400_20210630T180323_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T184929_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument data for band 1" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T180324_20210630T182159_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T172325_20210630T173831_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T182200_20210630T184004_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T170802_20210630T172322_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#05
+
+          group: gmi\:report {
+
+            // group attributes:
+            		:gmi_description = "L0 processed to L1b data using the KNMI TROPOMI L01b processor" ;
+            		:gmi_fileType = "NetCDF-4" ;
+            		:gmi_name = "TROPOMI L01b processing report" ;
+            		:objectType = "gmi:LE_ProcessStepReport" ;
+            } // group gmi\:report
+
+          group: gmd\:source\#10 {
+
+            // group attributes:
+            		:gmd_description = "L0 Band 6 NIR science data" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmi\:processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:processedLevel
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:alternateTitle\#07 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T190159_20210630T192004_19245_03.RAW" ;
+                } // group gmd\:alternateTitle\#07
+
+              group: gmd\:alternateTitle\#03 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T174400_20210630T180323_19244_04.RAW" ;
+                } // group gmd\:alternateTitle\#03
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+
+              group: gmd\:alternateTitle\#06 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T184929_20210630T190158_19245_02.RAW" ;
+                } // group gmd\:alternateTitle\#06
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "L0 instrument data for band 6" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle\#04 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T180324_20210630T182159_19244_05.RAW" ;
+                } // group gmd\:alternateTitle\#04
+
+              group: gmd\:alternateTitle\#02 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T172327_20210630T173834_19244_03.RAW" ;
+                } // group gmd\:alternateTitle\#02
+
+              group: gmd\:alternateTitle\#05 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T182200_20210630T184004_19245_01.RAW" ;
+                } // group gmd\:alternateTitle\#05
+
+              group: gmd\:alternateTitle\#01 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T170801_20210630T172324_19244_02.RAW" ;
+                } // group gmd\:alternateTitle\#01
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#10
+
+          group: gmi\:processingInformation {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Processing" ;
+
+            group: gmi\:softwareReference {
+
+              // group attributes:
+              		:gmd_title = "TROPOMI L01b processor" ;
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "2018-03-13" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+              } // group gmi\:softwareReference
+
+            group: gmi\:documentation\#1 {
+
+              // group attributes:
+              		:gmd_title = "S5P-KNMI-L01B-0009-SD-algorithm_theoretical_basis_document" ;
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "publication" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+              } // group gmi\:documentation\#1
+
+            group: gmi\:documentation\#2 {
+
+              // group attributes:
+              		:gmd_title = "S5P-KNMI-L01B-0012-SD-input_output_data_specification" ;
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "publication" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+              } // group gmi\:documentation\#2
+
+            group: gmi\:identifier {
+
+              // group attributes:
+              		:gmd_code = "KNMI TROPOMI L01b processor" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi\:identifier
+            } // group gmi\:processingInformation
+
+          group: gmd\:source\#03 {
+
+            // group attributes:
+            		:gmd_description = "In-flight SWIR Calibration Key Data product" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmd\:sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd\:title {
+
+                // group attributes:
+                		:gco_characterString = "In-flight Calibration Key Data Set SWIR" ;
+                } // group gmd\:title
+
+              group: gmd\:alternateTitle {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_TEST_ICM_CKDSIR_20170601T000001_20501231T235959_00000_01_001200_20170601T120000.h5" ;
+                } // group gmd\:alternateTitle
+
+              group: gmd\:date {
+
+                // group attributes:
+                		:gmd_date = "" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd\:dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd\:dateType
+                } // group gmd\:date
+              } // group gmd\:sourceCitation
+            } // group gmd\:source\#03
+          } // group gmd\:processStep
+        } // group gmd\:lineage
+      } // group gmd\:dataQualityInfo
+
+    group: gmi\:acquisitionInformation {
+
+      // group attributes:
+      		:objectType = "gmi:MI_AcquisitionInformation" ;
+
+      group: gmi\:platform {
+
+        // group attributes:
+        		:objectType = "gmi:MI_Platform" ;
+
+        group: gmi\:identifier {
+
+          // group attributes:
+          		:gmd_code = "S5p" ;
+          		:gmd_codeSpace = "http://www.esa.int/" ;
+          		:objectType = "gmd:RS_Identifier" ;
+          } // group gmi\:identifier
+
+        group: gmi\:description {
+
+          // group attributes:
+          		:gco_characterString = "Sentinel 5 Precursor" ;
+          } // group gmi\:description
+
+        group: gmi\:instrument {
+
+          // group attributes:
+          		:objectType = "gmi:MI_Instrument" ;
+
+          group: gmi\:identifier {
+
+            // group attributes:
+            		:gmd_code = "TROPOMI" ;
+            		:gmd_codeSpace = "http://www.esa.int" ;
+            		:objectType = "gmd:RS_Identifier" ;
+            } // group gmi\:identifier
+
+          group: gmi\:type {
+
+            // group attributes:
+            		:codeList = " " ;
+            		:codeListValue = "UV-VIS-NIR-SWIR imaging spectrometer" ;
+            		:objectType = "gmd:MI_SensorTypeCode" ;
+            } // group gmi\:type
+          } // group gmi\:instrument
+        } // group gmi\:platform
+      } // group gmi\:acquisitionInformation
+
+    group: gmd\:contact {
+
+      // group attributes:
+      		:gmd_organisationName = "Copernicus Space Component Data Access System, ESA, Services Coordinated Interface" ;
+      		:objectType = "gmd:CI_ResponsibleParty" ;
+
+      group: gmd\:contactInfo {
+
+        // group attributes:
+        		:objectType = "gmd:CI_Contact" ;
+
+        group: gmd\:address {
+
+          // group attributes:
+          		:gmd_electronicMailAddress = "EOSupport@copernicus.esa.int" ;
+          		:objectType = "gmd:CI_Address" ;
+          } // group gmd\:address
+        } // group gmd\:contactInfo
+
+      group: gmd\:role {
+
+        // group attributes:
+        		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" ;
+        		:objectType = "gmd:CI_RoleCode" ;
+        		:codeListValue = "pointOfContact" ;
+        } // group gmd\:role
+      } // group gmd\:contact
+    } // group ISO_METADATA
+
+  group: EOP_METADATA {
+
+    // group attributes:
+    		:gml_id = "S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.EO" ;
+    		:objectType = "atm:EarthObservation" ;
+
+    group: om\:phenomenonTime {
+
+      // group attributes:
+      		:gml_beginPosition = "removed date-time" ;
+      		:gml_endPosition = "removed date-time" ;
+      		:objectType = "gml:TimePeriod" ;
+      } // group om\:phenomenonTime
+
+    group: om\:observedProperty {
+
+      // group attributes:
+      		:nilReason = "inapplicable" ;
+      } // group om\:observedProperty
+
+    group: eop\:metaDataProperty {
+
+      // group attributes:
+      		:eop_acquisitionType = "NOMINAL" ;
+      		:eop_productType = "S5P_OFFL_L1B_IR_SIR" ;
+      		:eop_identifier = "S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101" ;
+      		:eop_parentIdentifier = "urn:ogc:def:EOP:ESA:SENTINEL.S5P_TROP_L1B_IR_SIR" ;
+      		:objectType = "eop:EarthObservationMetaData" ;
+
+      group: eop\:processing {
+
+        // group attributes:
+        		:eop_nativeProductFormat = "NetCDF-4" ;
+        		:eop_processingCenter = "DLR-DFD" ;
+        		:eop_processingDate = "2021-06-30" ;
+        		:eop_processingLevel = "L1b" ;
+        		:eop_processingMode = "OFFL" ;
+        		:eop_processorName = "tropl01b" ;
+        		:eop_processorVersion = "1.0.0.19194" ;
+        		:objectType = "eop:ProcessingInformation" ;
+        } // group eop\:processing
+      } // group eop\:metaDataProperty
+
+    group: om\:procedure {
+
+      // group attributes:
+      		:gml_id = "S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.EOE" ;
+      		:objectType = "eop:EarthObservationEquipment" ;
+
+      group: eop\:platform {
+
+        // group attributes:
+        		:eop_shortName = "Sentinel-5p" ;
+        		:objectType = "eop:Platform" ;
+        } // group eop\:platform
+
+      group: eop\:instrument {
+
+        // group attributes:
+        		:eop_shortName = "TROPOMI" ;
+        		:objectType = "eop:Instrument" ;
+        } // group eop\:instrument
+
+      group: eop\:acquisitionParameters {
+
+        // group attributes:
+        		:eop_orbitNumber = "19243" ;
+        		:objectType = "eop:Acquisition" ;
+        } // group eop\:acquisitionParameters
+
+      group: eop\:sensor {
+
+        // group attributes:
+        		:eop_sensorType = "ATMOSPHERIC" ;
+        		:objectType = "eop:Sensor" ;
+        } // group eop\:sensor
+      } // group om\:procedure
+    } // group EOP_METADATA
+
+  group: ESA_METADATA {
+
+    // group attributes:
+    		:objectType = "Earth_Explorer_File" ;
+
+    group: earth_explorer_header {
+
+      // group attributes:
+      		:objectType = "Earth_Explorer_Header" ;
+
+      group: fixed_header {
+
+        // group attributes:
+        		:File_Class = "OFFL" ;
+        		:File_Description = "Sentinel-5p TROPOMI Level 1b Irradiance product SWIR module" ;
+        		:File_Name = "S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101" ;
+        		:File_Type = "L1B_IR_SIR" ;
+        		:File_Version = "1" ;
+        		:Mission = "Sentinel-5P" ;
+        		:Notes = " " ;
+        		:objectType = "Fixed_Header" ;
+
+        group: validity_period {
+
+          // group attributes:
+          		:Validity_Start = "UTC=removed date-time" ;
+          		:Validity_Stop = "UTC=removed date-time" ;
+          		:objectType = "Validity_Period" ;
+          } // group validity_period
+
+        group: source {
+
+          // group attributes:
+          		:Creation_Date = "UTC=removed date-time" ;
+          		:Creator = "KNMI TROPOMI L01b processor" ;
+          		:Creator_Version = "1.0.0.19194" ;
+          		:System = "DLR PDGS" ;
+          		:objectType = "Source" ;
+          } // group source
+        } // group fixed_header
+
+      group: variable_header {
+
+        // group attributes:
+        		:objectType = "Variable_Header" ;
+
+        group: gmd\:lineage {
+
+          // group attributes:
+          		:gmd_statement = "L1b Irradiance dataset for SWIR module produced by the DLR PDGS from the S5p TROPOMI L0 product" ;
+          		:objectType = "gmd:LI_Lineage" ;
+
+          group: gmd\:processStep {
+
+            // group attributes:
+            		:gmd_description = "Processing of L0 to L1b data using the KNMI TROPOMI L01b processor" ;
+            		:objectType = "gmi:LE_ProcessStep" ;
+
+            group: gmd\:source\#12 {
+
+              // group attributes:
+              		:gmd_description = "L0 Band 8 SWIR science data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T190159_20210630T192003_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T174400_20210630T180323_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T184929_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument data for band 8" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T180324_20210630T182159_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T172325_20210630T173833_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T182159_20210630T184004_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_8__20210630T170801_20210630T172324_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#12
+
+            group: gmd\:source\#07 {
+
+              // group attributes:
+              		:gmd_description = "L0 Band 3 UVIS science data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T190159_20210630T192001_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T174400_20210630T180323_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T184929_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument data for band 3" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T180324_20210630T182159_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T172325_20210630T173831_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T182200_20210630T184004_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T170802_20210630T172322_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#07
+
+            group: gmd\:source\#08 {
+
+              // group attributes:
+              		:gmd_description = "L0 Band 4 UVIS science data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T190159_20210630T192004_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T174400_20210630T180323_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T184929_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument data for band 4" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T180324_20210630T182159_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T172326_20210630T173834_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T182200_20210630T184004_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_4__20210630T170803_20210630T172323_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#08
+
+            group: gmd\:source\#02 {
+
+              // group attributes:
+              		:gmd_description = "In-flight UVN Calibration Key Data product" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "In-flight Calibration Key Data Set UVN" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_TEST_ICM_CKDUVN_20170601T000001_20501231T235959_00000_01_001200_20170601T120000.h5" ;
+                  } // group gmd\:alternateTitle
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#02
+
+            group: gmd\:source\#04 {
+
+              // group attributes:
+              		:gmd_description = "L0 Engineering data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T190200_20210630T192159_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T174325_20210630T180324_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T184200_20210630T190159_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument engineering data" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T180325_20210630T182201_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T172325_20210630T174324_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T182202_20210630T184159_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ENG_A__20210630T170325_20210630T172324_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#04
+
+            group: gmd\:source\#06 {
+
+              // group attributes:
+              		:gmd_description = "L0 Band 2 UV science data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T190159_20210630T192001_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T174400_20210630T180323_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T184929_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument data for band 2" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T180324_20210630T182159_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T172325_20210630T173831_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T182200_20210630T184004_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_2__20210630T170802_20210630T172322_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#06
+
+            group: gmd\:source\#13 {
+
+              // group attributes:
+              		:gmd_description = "L0 Ancillary data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T190159_20210630T192159_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T174325_20210630T180324_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T184200_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument ancillary data" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T180325_20210630T182201_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T172325_20210630T174324_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T182202_20210630T184159_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__SAT_A__20210630T170325_20210630T172324_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#13
+
+            group: gmd\:source\#11 {
+
+              // group attributes:
+              		:gmd_description = "L0 Band 7 SWIR science data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T190159_20210630T192003_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T174400_20210630T180323_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T184929_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument data for band 7" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T180324_20210630T182159_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T172325_20210630T173833_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T182200_20210630T184004_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_7__20210630T170801_20210630T172324_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#11
+
+            group: gmd\:source\#01 {
+
+              // group attributes:
+              		:gmd_description = "Auxiliary Calibration Key Data product" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary Calibration Key Data Set" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_AUX_L1_CKD_20141001T000001_20501231T235959_00000_01_001200_20171010T143000.h5" ;
+                  } // group gmd\:alternateTitle
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#01
+
+            group: gmi\:output {
+
+              // group attributes:
+              		:gmd_description = "L1b Irradiance product for SWIR module" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L1b" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:gmd_title = "S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.nc" ;
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "2021-06-30" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+                } // group gmd\:sourceCitation
+              } // group gmi\:output
+
+            group: gmd\:source\#09 {
+
+              // group attributes:
+              		:gmd_description = "L0 Band 5 NIR science data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T190159_20210630T192004_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T174400_20210630T180323_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T184929_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument data for band 5" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T180324_20210630T182159_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T172327_20210630T173834_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T182200_20210630T184004_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_5__20210630T170801_20210630T172324_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#09
+
+            group: gmd\:source\#05 {
+
+              // group attributes:
+              		:gmd_description = "L0 Band 1 UV science data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T190159_20210630T192001_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T174400_20210630T180323_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T184929_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument data for band 1" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T180324_20210630T182159_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T172325_20210630T173831_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T182200_20210630T184004_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_1__20210630T170802_20210630T172322_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#05
+
+            group: gmi\:report {
+
+              // group attributes:
+              		:gmi_description = "L0 processed to L1b data using the KNMI TROPOMI L01b processor" ;
+              		:gmi_fileType = "NetCDF-4" ;
+              		:gmi_name = "TROPOMI L01b processing report" ;
+              		:objectType = "gmi:LE_ProcessStepReport" ;
+              } // group gmi\:report
+
+            group: gmd\:source\#10 {
+
+              // group attributes:
+              		:gmd_description = "L0 Band 6 NIR science data" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmi\:processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:processedLevel
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:alternateTitle\#07 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T190159_20210630T192004_19245_03.RAW" ;
+                  } // group gmd\:alternateTitle\#07
+
+                group: gmd\:alternateTitle\#03 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T174400_20210630T180323_19244_04.RAW" ;
+                  } // group gmd\:alternateTitle\#03
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+
+                group: gmd\:alternateTitle\#06 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T184929_20210630T190158_19245_02.RAW" ;
+                  } // group gmd\:alternateTitle\#06
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "L0 instrument data for band 6" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle\#04 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T180324_20210630T182159_19244_05.RAW" ;
+                  } // group gmd\:alternateTitle\#04
+
+                group: gmd\:alternateTitle\#02 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T172327_20210630T173834_19244_03.RAW" ;
+                  } // group gmd\:alternateTitle\#02
+
+                group: gmd\:alternateTitle\#05 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T182200_20210630T184004_19245_01.RAW" ;
+                  } // group gmd\:alternateTitle\#05
+
+                group: gmd\:alternateTitle\#01 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_L0__ODB_6__20210630T170801_20210630T172324_19244_02.RAW" ;
+                  } // group gmd\:alternateTitle\#01
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#10
+
+            group: gmi\:processingInformation {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Processing" ;
+
+              group: gmi\:softwareReference {
+
+                // group attributes:
+                		:gmd_title = "TROPOMI L01b processor" ;
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "2018-03-13" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+                } // group gmi\:softwareReference
+
+              group: gmi\:documentation\#1 {
+
+                // group attributes:
+                		:gmd_title = "S5P-KNMI-L01B-0009-SD-algorithm_theoretical_basis_document" ;
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "publication" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+                } // group gmi\:documentation\#1
+
+              group: gmi\:documentation\#2 {
+
+                // group attributes:
+                		:gmd_title = "S5P-KNMI-L01B-0012-SD-input_output_data_specification" ;
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "publication" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+                } // group gmi\:documentation\#2
+
+              group: gmi\:identifier {
+
+                // group attributes:
+                		:gmd_code = "KNMI TROPOMI L01b processor" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi\:identifier
+              } // group gmi\:processingInformation
+
+            group: gmd\:source\#03 {
+
+              // group attributes:
+              		:gmd_description = "In-flight SWIR Calibration Key Data product" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmd\:sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd\:title {
+
+                  // group attributes:
+                  		:gco_characterString = "In-flight Calibration Key Data Set SWIR" ;
+                  } // group gmd\:title
+
+                group: gmd\:alternateTitle {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_TEST_ICM_CKDSIR_20170601T000001_20501231T235959_00000_01_001200_20170601T120000.h5" ;
+                  } // group gmd\:alternateTitle
+
+                group: gmd\:date {
+
+                  // group attributes:
+                  		:gmd_date = "" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd\:dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd\:dateType
+                  } // group gmd\:date
+                } // group gmd\:sourceCitation
+              } // group gmd\:source\#03
+            } // group gmd\:processStep
+          } // group gmd\:lineage
+        } // group variable_header
+      } // group earth_explorer_header
+    } // group ESA_METADATA
+  } // group METADATA
+}
