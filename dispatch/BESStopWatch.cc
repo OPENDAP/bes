@@ -149,7 +149,7 @@ BESStopWatch::~BESStopWatch() {
             return;
         }
 
-#i 0
+#if 0
         d_stopped = true;
 #endif
 #if 0
