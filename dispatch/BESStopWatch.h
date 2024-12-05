@@ -91,7 +91,7 @@ private:
     unsigned long int get_elapsed_us() const;
     unsigned long int get_start_us() const;
     unsigned long int get_stop_us() const;
-    bool get_time_of_day(struct timeval &time_val) const;
+    static bool get_time_of_day(struct timeval &time_val);
 
  public:
 
