@@ -107,7 +107,6 @@ BESStopWatch::start(const string &name, const string &reqID) {
 #endif
     // either we started the stop watch, or failed to start it. Either way,
     // no timings are available, so set stopped to false.
-    d_stopped = false;
     return d_started;
 }
 
@@ -141,30 +140,20 @@ BESStopWatch::~BESStopWatch() {
 
         if (!get_time_of_day(d_stop_usage)) {
             d_started = false;
-            d_stopped = false;
             return;
         }
 
-        d_stopped = true;
-        if (BESDebug::GetStrm()) {
-            std::unique_lock<std::mutex> lck(bes_debug_log_mutex);
-            std::stringstream msg;
-            msg << get_debug_log_line_prefix();
-            msg << "[" << d_log_name << "]";
-            msg << "[ELAPSED][" << get_elapsed_us() << " us]";
-            msg << "[STARTED][" << get_start_us() << " us]";
-            msg << "[STOPPED][" << get_stop_us() << " us]";
-            msg << "[" << (d_req_id.empty() ? "-" : d_req_id) << "]";
-            msg << "[" << d_timer_name << "]";
-            *(BESDebug::GetStrm()) << msg.str() << endl;
-        }
-        std::stringstream msg;
-        msg << "elapsed_us" << BESLog::mark << get_elapsed_us() << BESLog::mark;
-        msg << "start_us" << BESLog::mark << get_start_us() << BESLog::mark;
-        msg << "stop_us" << BESLog::mark << get_stop_us() << BESLog::mark;
-        msg << (d_req_id.empty() ? "-" : d_req_id) << BESLog::mark;
-        msg << d_timer_name << endl;
-        TIMING_LOG(msg.str());
+        BESDEBUG(TIMING_LOG_KEY, get_debug_log_line_prefix() +  "[" << d_log_name + "]"
+            + "[ELAPSED][" + std::to_string(get_elapsed_us()) + " us]"
+            + "[STARTED][" + std::to_string(get_start_us()) + " us]"
+            + "[STOPPED][" + std::to_string(get_stop_us()) + " us]"
+            + "[" + (d_req_id.empty() ? "-" : d_req_id) + "]" + "[" << d_timer_name + "]\n");
+
+        TIMING_LOG( "elapsed_us" + BESLog::mark + std::to_string(get_elapsed_us()) + BESLog::mark
+                    + "start_us" + BESLog::mark + std::to_string(get_start_us()) + BESLog::mark
+                    +  "stop_us" + BESLog::mark + std::to_string(get_stop_us()) + BESLog::mark
+                    + (d_req_id.empty() ? "-" : d_req_id) + BESLog::mark
+                    + d_timer_name + "\n");
     }
 }
 

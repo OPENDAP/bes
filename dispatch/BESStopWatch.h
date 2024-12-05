@@ -79,15 +79,14 @@ extern BESStopWatch *elapsedTimeToTransmitStart;
 }
 
 class BESStopWatch : public BESObj {
- private:
-	std::string d_timer_name;
-	std::string d_req_id;
-	std::string d_log_name = TIMING_LOG_KEY;
+private:
+    std::string d_timer_name;
+    std::string d_req_id;
+    std::string d_log_name = TIMING_LOG_KEY;
     bool d_started = false;
-    bool d_stopped = false;
 
-	struct timeval d_start_usage{};
-	struct timeval d_stop_usage{};
+    struct timeval d_start_usage{};
+    struct timeval d_stop_usage{};
 
     unsigned long int get_elapsed_us() const;
     unsigned long int get_start_us() const;
