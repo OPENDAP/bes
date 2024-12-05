@@ -405,11 +405,6 @@ int BESInterface::execute_request(const string &from)
 
     // TODO If this is only used for logging, it is not needed since the log has a copy
     //  of the BES PID. jhrg 11/13/17
-#if 0
-    ostringstream ss;
-    ss << getpid();
-    d_dhi_ptr->data[SERVER_PID] = ss.str();
-#endif
     d_dhi_ptr->data[SERVER_PID] = to_string(getpid());
 
 
