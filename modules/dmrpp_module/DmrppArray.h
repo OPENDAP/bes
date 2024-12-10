@@ -103,13 +103,22 @@ private:
 
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
+#if 0
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
                                        std::vector<unsigned long long> &subset_addr,
                                        const std::vector<unsigned long long> &array_shape, char *data);
+#endif
 
+    void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
+                                       std::vector<unsigned long long> &subset_addr,
+                                       const std::vector<unsigned long long> &array_shape, char *data, char *dest_buf);
+
+
+#if 0
     void insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
                                        std::vector<unsigned long long> &subset_addr,
                                        const std::vector<unsigned long long> &array_shape, char *data, std::vector<char> &values);
+#endif
     void read_contiguous();
     void read_one_chunk_dio();
     void read_contiguous_string();
@@ -160,7 +169,7 @@ private:
             std::vector<unsigned long long> *target_element_address,
             std::vector<unsigned long long> *chunk_element_address,
             std::shared_ptr<Chunk> chunk,
-            const vector<unsigned long long> &constrained_array_shape);
+            const vector<unsigned long long> &constrained_array_shape,char *target_buf);
     void read_array_of_structure(vector<char> &values);
     bool check_struct_handling();
 
@@ -169,6 +178,15 @@ private:
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 
 public:
+#if 0
+    virtual void insert_chunk(
+            unsigned int dim,
+            std::vector<unsigned long long> *target_element_address,
+            std::vector<unsigned long long> *chunk_element_address,
+            std::shared_ptr<Chunk> chunk,
+            const vector<unsigned long long> &constrained_array_shape,char *target_buf);
+#endif
+ 
     DmrppArray(const std::string &n, libdap::BaseType *v) :
             libdap::Array(n, v, true /*is dap4*/), DmrppCommon()
             { }
@@ -240,6 +258,7 @@ public:
     vector<u_int8_t> &compact_str_buffer(){ return d_compact_str_buf; }
 
     vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
+    char * get_structure_array_buf_ptr() { return d_structure_array_buf.data(); }
 
     unsigned long long get_bytes_per_element() { return bytes_per_element;}
     void set_bytes_per_element(unsigned long long bpe) { bytes_per_element = bpe;}

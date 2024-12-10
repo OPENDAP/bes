@@ -90,8 +90,13 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
 
+        char *dest_buf = array->get_buf();
+        if (array->var()->type() == libdap::dods_structure_c) {
+            dest_buf = array->get_structure_array_buf_ptr();
+
+        }
         array->insert_chunk(0, &target_element_address, &chunk_source_address,
-                            chunk, constrained_array_shape);
+                            chunk, constrained_array_shape, dest_buf);
     }
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );

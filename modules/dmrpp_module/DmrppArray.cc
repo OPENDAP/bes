@@ -753,13 +753,13 @@ DmrppArray::dimension DmrppArray::get_dimension(unsigned int i)
  */
 void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
                                                vector<unsigned long long> &subset_addr,
-                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf)
+                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf, char *dest_buf)
 {
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
 
-    unsigned int bytes_per_elem = prototype()->width();
+    //unsigned int bytes_per_elem = prototype()->width();
 
-    char *dest_buf = get_buf();
+    //char *dest_buf = get_buf();
 
     uint64_t start = this->dimension_start_ll(dim_iter, true);
     uint64_t stop = this->dimension_stop_ll(dim_iter, true);
@@ -782,10 +782,10 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
         // Copy data block from start_index to stop_index
         // TODO Replace this loop with a call to std::memcpy()
         for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
-            uint64_t target_byte = *target_index * bytes_per_elem;
-            uint64_t source_byte = source_index * bytes_per_elem;
+            uint64_t target_byte = *target_index * bytes_per_element;
+            uint64_t source_byte = source_index * bytes_per_element;
             // Copy a single value.
-            for (unsigned long i = 0; i < bytes_per_elem; i++) {
+            for (unsigned long i = 0; i < bytes_per_element; i++) {
                 dest_buf[target_byte++] = src_buf[source_byte++];
             }
             (*target_index)++;
@@ -799,7 +799,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
             if (dim_iter != dim_end()) {
                 // Nope! Then we recurse to the last dimension to read stuff
                 subset_addr.push_back(myDimIndex);
-                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf);
+                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf, dest_buf);
                 subset_addr.pop_back();
             }
             else {
@@ -809,10 +809,10 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
                 subset_addr.pop_back();
 
                 // Copy a single value.
-                uint64_t target_byte = *target_index * bytes_per_elem;
-                uint64_t source_byte = sourceIndex * bytes_per_elem;
+                uint64_t target_byte = *target_index * bytes_per_element;
+                uint64_t source_byte = sourceIndex * bytes_per_element;
 
-                for (unsigned int i = 0; i < bytes_per_elem; i++) {
+                for (unsigned int i = 0; i < bytes_per_element; i++) {
                     dest_buf[target_byte++] = src_buf[source_byte++];
                 }
                 (*target_index)++;
@@ -821,6 +821,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
     }
 }
 
+#if 0
 /**
  * @brief Insert data into a variable for structure.  
  *
@@ -875,7 +876,7 @@ void DmrppArray::insert_constrained_contiguous_structure(Dim_iter dim_iter, unsi
             if (dim_iter != dim_end()) {
                 // Nope! Then we recurse to the last dimension to read stuff
                 subset_addr.push_back(myDimIndex);
-                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf);
+                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf,dest_buf.data());
                 subset_addr.pop_back();
             }
             else {
@@ -896,6 +897,7 @@ void DmrppArray::insert_constrained_contiguous_structure(Dim_iter dim_iter, unsi
         }
     }
 }
+#endif
 
 
 /**
@@ -1062,19 +1064,6 @@ void DmrppArray::read_contiguous()
             if (is_readable_struct) {
                 // Only "one chunk", we can simply obtain the buf_value.
                 char *buf_value = the_one_chunk->get_rbuf();
-#if 0
-                // The chunk may be compressed. Even if it is not compressed, the get_size() may be smaller than the extra structure buffer.
-                // So we have to allocate enough size of buffer!! TO BE CORRECTED.
-                // Need to use the struct size to obtain the total value size if possible.
-                unsigned long long value_size = this->width_ll();
-cerr<<"one compressed chunk value_size: "<<value_size <<endl;
-
-                // Retrieve the real structure size stored in the buffer
-                vector<unsigned int> s_offs= this->get_struct_offsets();
-                if (!s_offs.empty())
-                    value_size = s_offs.back()*this->length_ll();
-cerr<<"one compressed chunk value_size final: "<<value_size <<endl;
-#endif
                 
                 unsigned long long value_size = this->length_ll() * bytes_per_element;  
                 vector<char> values(buf_value,buf_value+value_size);
@@ -1094,7 +1083,9 @@ cerr<<"one compressed chunk value_size final: "<<value_size <<endl;
 
             // Reserve space in this array for the constrained size of the data request
             reserve_value_capacity_ll(get_size(true));
-            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+            char *dest_buf = get_buf();
+            //insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),dest_buf);
         }
         else {
             // Currently we only handle one-layer simple int/float types. 
@@ -1108,7 +1099,8 @@ cerr<<"one compressed chunk value_size final: "<<value_size <<endl;
                 vector<unsigned long long> array_shape = get_shape(false);
                 unsigned long target_index = 0;
                 vector<unsigned long long> subset;
-                insert_constrained_contiguous_structure(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values);
+                //insert_constrained_contiguous_structure(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values);
+                insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values.data());
                 read_array_of_structure(values);
             }
             else 
@@ -1603,10 +1595,13 @@ void DmrppArray::read_linked_blocks_constrained(){
     vector<unsigned long long> array_shape = get_shape(false);
     unsigned long target_index = 0;
     vector<unsigned long long> subset;
+    char *dest_buf = get_buf();
     if (is_compressed) 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, uncompressed_values.data());
+        //insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, uncompressed_values.data());
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, uncompressed_values.data(),dest_buf);
     else 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, values.data());
+        //insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, values.data());
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, values.data(), dest_buf);
 
 
     set_read_p(true);
@@ -1851,7 +1846,7 @@ void DmrppArray::insert_chunk(
         vector<unsigned long long> *target_element_address,
         vector<unsigned long long> *chunk_element_address,
         shared_ptr<Chunk> chunk,
-        const vector<unsigned long long> &constrained_array_shape){
+        const vector<unsigned long long> &constrained_array_shape,char *target_buffer){
 
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
@@ -1875,7 +1870,7 @@ void DmrppArray::insert_chunk(
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
         char *source_buffer = chunk->get_rbuf();
-        char *target_buffer = get_buf();
+        //char *target_buffer = get_buf();
         //unsigned int elem_width = prototype()->width();
         unsigned int elem_width = bytes_per_element;
 
@@ -1923,7 +1918,7 @@ void DmrppArray::insert_chunk(
             (*chunk_element_address)[dim] = chunk_index;
 
             // Re-entry here:
-            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk, constrained_array_shape);
+            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk, constrained_array_shape, target_buffer);
         }
     }
 }
@@ -1979,6 +1974,8 @@ void DmrppArray::read_chunks()
     }
 
     reserve_value_capacity_ll(get_size(true));
+    if (is_readable_struct) 
+        d_structure_array_buf.resize(get_size(true)*bytes_per_element);
 
     BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
@@ -2009,6 +2006,8 @@ void DmrppArray::read_chunks()
 #endif
         read_super_chunks_concurrent(super_chunks, this);
     }
+    if (is_readable_struct)
+        read_array_of_structure(d_structure_array_buf);
     set_read_p(true);
 }
 
