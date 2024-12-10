@@ -103,22 +103,10 @@ private:
 
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
-#if 0
-    void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
-                                       std::vector<unsigned long long> &subset_addr,
-                                       const std::vector<unsigned long long> &array_shape, char *data);
-#endif
-
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
                                        std::vector<unsigned long long> &subset_addr,
                                        const std::vector<unsigned long long> &array_shape, char *data, char *dest_buf);
 
-
-#if 0
-    void insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
-                                       std::vector<unsigned long long> &subset_addr,
-                                       const std::vector<unsigned long long> &array_shape, char *data, std::vector<char> &values);
-#endif
     void read_contiguous();
     void read_one_chunk_dio();
     void read_contiguous_string();
@@ -260,7 +248,7 @@ public:
     vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
     char * get_structure_array_buf_ptr() { return d_structure_array_buf.data(); }
 
-    unsigned long long get_bytes_per_element() { return bytes_per_element;}
+    unsigned long long get_bytes_per_element() const { return bytes_per_element;}
     void set_bytes_per_element(unsigned long long bpe) { bytes_per_element = bpe;}
     void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;}
     bool get_special_structure_flag() { return is_special_structure;} 
