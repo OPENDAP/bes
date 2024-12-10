@@ -376,6 +376,26 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_array_fix_str_
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_array_fix_str.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_array_fix_vlen_str.h5.dap])
 
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_one_chunk.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_one_chunk_naligned.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_two_chunks.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_two_chunks_naligned.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_one_chunk_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_one_chunk_naligned_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_two_chunks_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_two_chunks_naligned_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_one_chunk.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_one_chunk_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_one_chunk_naligned.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_one_chunk_naligned_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_simple_array_constraint.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_simple_chunk.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks_naligned.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks_naligned_lc.h5.dap])
+
+
 
 #############################################################################
 # Arrays of Variable Length String tests

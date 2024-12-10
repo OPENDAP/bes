@@ -2336,6 +2336,7 @@ DmrppArray *get_as_byte_array(DmrppArray &array){
     // Replace prototype
     auto *tmp_proto  = new libdap::Byte(byte_array_proxy->prototype()->name());
     byte_array_proxy->set_prototype(tmp_proto);
+    byte_array_proxy->set_bytes_per_element(byte_array_proxy->prototype()->width());
     tmp_proto->set_parent(byte_array_proxy);
 
     // Fiddle Chunk dimension sizes

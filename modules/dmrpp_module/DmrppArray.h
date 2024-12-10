@@ -242,6 +242,7 @@ public:
     vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
 
     unsigned long long get_bytes_per_element() { return bytes_per_element;}
+    void set_bytes_per_element(unsigned long long bpe) { bytes_per_element = bpe;}
     void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;}
     bool get_special_structure_flag() { return is_special_structure;} 
     bool is_projected();
