@@ -93,6 +93,10 @@ private:
     string_pad_type d_fixed_length_string_pad_type = not_set;
     vector<u_int8_t> d_compact_str_buf;
 
+    bool is_readable_struct = false;
+    vector<char> d_structure_array_buf;
+    unsigned long long bytes_per_element;
+
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
  
@@ -237,6 +241,7 @@ public:
 
     vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
 
+    unsigned long long get_bytes_per_element() { return bytes_per_element;}
     void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;}
     bool get_special_structure_flag() { return is_special_structure;} 
     bool is_projected();

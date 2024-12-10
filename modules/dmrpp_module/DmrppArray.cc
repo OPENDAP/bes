@@ -1042,9 +1042,11 @@ void DmrppArray::read_contiguous()
     }
     BESDEBUG(dmrpp_3, prolog << "Before is_filter " << endl);
 
+    // Check if this is a DAP structure we can handle
     // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty() && !get_one_chunk_fill_value()) {
-        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+        //the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), bytes_per_element);
     }
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
@@ -1055,11 +1057,26 @@ void DmrppArray::read_contiguous()
            val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
         else { // Structure 
             // Check if we can handle this case. 
-            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
-            bool can_handle_struct = check_struct_handling();
-            if (can_handle_struct) {
+            // Currently we only handle one-layer simple int/float types. 
+            //bool can_handle_struct = check_struct_handling();
+            if (is_readable_struct) {
+                // Only "one chunk", we can simply obtain the buf_value.
                 char *buf_value = the_one_chunk->get_rbuf();
-                unsigned long long value_size = the_one_chunk->get_size();
+#if 0
+                // The chunk may be compressed. Even if it is not compressed, the get_size() may be smaller than the extra structure buffer.
+                // So we have to allocate enough size of buffer!! TO BE CORRECTED.
+                // Need to use the struct size to obtain the total value size if possible.
+                unsigned long long value_size = this->width_ll();
+cerr<<"one compressed chunk value_size: "<<value_size <<endl;
+
+                // Retrieve the real structure size stored in the buffer
+                vector<unsigned int> s_offs= this->get_struct_offsets();
+                if (!s_offs.empty())
+                    value_size = s_offs.back()*this->length_ll();
+cerr<<"one compressed chunk value_size final: "<<value_size <<endl;
+#endif
+                
+                unsigned long long value_size = this->length_ll() * bytes_per_element;  
                 vector<char> values(buf_value,buf_value+value_size);
                 read_array_of_structure(values);
             }
@@ -1080,10 +1097,12 @@ void DmrppArray::read_contiguous()
             insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
         }
         else {
-            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
-            bool can_handle_struct = check_struct_handling();
-            if (can_handle_struct) {
-                unsigned long long value_size = get_size(true)*width_ll();
+            // Currently we only handle one-layer simple int/float types. 
+            //bool can_handle_struct = check_struct_handling();
+            //if (can_handle_struct) {
+            if (is_readable_struct) {
+                //unsigned long long value_size = get_size(true)*width_ll();
+                unsigned long long value_size = get_size(true)*bytes_per_element;
                 vector<char> values;
                 values.resize(value_size);
                 vector<unsigned long long> array_shape = get_shape(false);
@@ -1158,15 +1177,24 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
-        unsigned int elem_width = prototype()->width();
+        //unsigned int elem_width = prototype()->width();
+        unsigned int elem_width = bytes_per_element;
 
         array_offset += chunk_origin[dim];
 
         // Compute how much we are going to copy
-        unsigned long long chunk_bytes = (end_element - chunk_origin[dim] + 1) * elem_width;
+        unsigned long long chunk_bytes = (end_element - chunk_origin[dim] + 1) * bytes_per_element;
         char *source_buffer = chunk->get_rbuf();
-        char *target_buffer = get_buf();
+        char *target_buffer = nullptr;
+        if (is_readable_struct) 
+            target_buffer = d_structure_array_buf.data();
+        else 
+            target_buffer = get_buf();
+//cerr<<"before memory copy "<<endl;
         memcpy(target_buffer + (array_offset * elem_width), source_buffer + (chunk_offset * elem_width), chunk_bytes);
+        //memcpy(target_buffer + (array_offset * bytes_per_element), source_buffer + (chunk_offset * bytes_per_element), chunk_bytes);
+//cerr<<"after memory copy "<<endl;
+
     }
     else {
         unsigned long long mc = multiplier(chunk_shape, dim);
@@ -1238,11 +1266,20 @@ void DmrppArray::read_chunks_unconstrained()
     }
 
     reserve_value_capacity_ll(get_size());
+//cerr<<"array size: "<<get_size()<<endl;
+//cerr<<"array bytes: "<<this->width_ll() <<endl;
+    if (is_readable_struct) {
+// STOP: check if this->width_ll() is the same as structure size. Very possible it is not!!
+        d_structure_array_buf.resize(this->length_ll()*bytes_per_element);
+    }
+
+
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
 
+    
     BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
 
@@ -1267,7 +1304,13 @@ void DmrppArray::read_chunks_unconstrained()
 #endif
         read_super_chunks_unconstrained_concurrent(super_chunks, this);
     }
+
+//cerr<<"before structure "<<endl;
+    //if (this->var()->type() == dods_structure_c) {
+    if (is_readable_struct) 
+        read_array_of_structure(d_structure_array_buf);
     set_read_p(true);
+
 }
 
 //The direct chunk IO routine of read chunks., mostly copy from the general IO handling routines.
@@ -1345,6 +1388,7 @@ void DmrppArray::read_chunks_dio_unconstrained()
 // Retrieve data from the linked blocks.  We don't need to use the super chunk technique
 // since the adjacent blocks are already combined. We just need to read the data
 // from each chunk, combine them and decompress the buffer if necessary.
+// TODO: HDF4 vdata doesn't have the alignment issue, however, we may still use bytes_per_element to replace width_ll() or width() to make the code consistent.
 void DmrppArray::read_linked_blocks(){
     unsigned int num_linked_blocks = this->get_total_linked_blocks();
     if (num_linked_blocks <2)
@@ -1368,15 +1412,23 @@ void DmrppArray::read_linked_blocks(){
 
     if (this->var()->type() == dods_structure_c) {
 
+        // Check if we can handle this case. 
+        // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+        //bool can_handle_struct = check_struct_handling();
+        if (!is_readable_struct) 
+            throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+ 
         string filters_str = this->get_filters();
         if (filters_str.find("deflate")!=string::npos) 
             throw InternalErr(__FILE__, __LINE__, "We don't handle compressed array of structure now.");
 
+#if 0
         // Check if we can handle this case. 
         // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
         bool can_handle_struct = check_struct_handling();
         if (!can_handle_struct) 
             throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+#endif
 
         vector<char> values;
         values.resize(get_var_chunks_storage_size());
@@ -1500,7 +1552,8 @@ void DmrppArray::read_linked_blocks_constrained(){
         accumulated_lengths[i] = individual_lengths[i-1] + accumulated_lengths[i-1];
 
     // Allocate the final constrained buffer
-    size_t array_var_type_size = prototype()->width();
+    //size_t array_var_type_size = prototype()->width();
+    size_t array_var_type_size = bytes_per_element;
     reserve_value_capacity_ll_byte(array_var_type_size*get_size(true));
 
     // For the linked block compressed case, we need to obtain the whole buffer to do subsetting. 
@@ -1823,7 +1876,8 @@ void DmrppArray::insert_chunk(
     if (dim == last_dim) {
         char *source_buffer = chunk->get_rbuf();
         char *target_buffer = get_buf();
-        unsigned int elem_width = prototype()->width();
+        //unsigned int elem_width = prototype()->width();
+        unsigned int elem_width = bytes_per_element;
 
         if (thisDim.stride == 1) {
             // The start element in this array
@@ -2487,7 +2541,19 @@ bool DmrppArray::read()
             dmrpp_vs_info.var_chunk_info.push_back(vci_t);
         }
         this->set_var_storage_info(dmrpp_vs_info);
-
+        bytes_per_element = this->var()->width_ll();
+    }
+    else {
+        is_readable_struct = check_struct_handling();       
+        if (is_readable_struct) {
+            vector<unsigned int> s_off = this->get_struct_offsets();
+            if (s_off.empty())
+                bytes_per_element = this->var()->width_ll(); 
+            else 
+                bytes_per_element = s_off.back();
+        }
+        else 
+            bytes_per_element = this->var()->width_ll();
     }
     
 
