@@ -1,0 +1,122 @@
+netcdf test {
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.0" ;
+		:build_dmrpp_metadata.bes = "3.21.0" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.0" ;
+		:build_dmrpp_metadata.configuration = "\n# TheBESKeys::get_as_config()\nAllowedHosts=^https?:\\/\\/\nBES.Catalog.catalog.FollowSymLinks=Yes\nBES.Catalog.catalog.RootDirectory=.\nBES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\nBES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\nBES.Data.RootDirectory=/dev/null\nBES.LogName=./bes.log\nBES.UncompressCache.dir=/tmp/hyrax_ux\nBES.UncompressCache.prefix=ux_\nBES.UncompressCache.size=500\nBES.modules=dap,cmd,h5,dmrpp,nc,fonc\nFONc.ClassicModel=false\nFONc.NoGlobalAttrs=true\nH5.EnableCF=false\nH5.EnableCheckNameClashing=true\n" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.wIk0RLgmOT -f ./AMSR_E_L2_Land_V11_201110031920_D.he5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.xTO8GpbyUT -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex AMSR_E_L2_Land_V11_201110031920_D.he5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"AMSR_E_L2_Land_V11_201110031920_D.he5.dmrpp\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: POINTS {
+
+    group: AMSR_E_Level_2_Land_Data {
+
+      // group attributes:
+      		:_LevelWritten = 1U, 0U, 0U, 0U, 0U, 0U, 0U, 0U ;
+
+      group: Data {
+        dimensions:
+        	sdim1 = 22753 ;
+        	sdim2 = 22753 ;
+        	sdim3 = 22753 ;
+        	sdim4 = 22753 ;
+        	sdim5 = 22753 ;
+        	sdim6 = 22753 ;
+        	sdim7 = 22753 ;
+        	sdim8 = 22753 ;
+        	sdim9 = 22753 ;
+        	sdim10 = 22753 ;
+        	sdim11 = 22753 ;
+        	sdim12 = 22753 ;
+        	sdim13 = 22753 ;
+        	sdim14 = 22753 ;
+        	sdim15 = 22753 ;
+        	sdim16 = 22753 ;
+        	sdim17 = 22753 ;
+        	sdim18 = 22753 ;
+        	sdim19 = 22753 ;
+        	sdim20 = 22753 ;
+        	sdim21 = 22753 ;
+        	sdim22 = 22753 ;
+        	sdim23 = 22753 ;
+        	sdim24 = 22753 ;
+        	sdim25 = 22753 ;
+        	sdim26 = 22753 ;
+        	sdim27 = 22753 ;
+        	sdim28 = 22753 ;
+        	sdim29 = 22753 ;
+        	sdim30 = 22753 ;
+        	sdim31 = 22753 ;
+        	sdim32 = 22753 ;
+        	sdim33 = 22753 ;
+        	sdim34 = 22753 ;
+        	sdim35 = 22753 ;
+        variables:
+        	double Combined_NPD_and_SCA_Output_Fields.Time(sdim1) ;
+        	float Combined_NPD_and_SCA_Output_Fields.Latitude(sdim2) ;
+        	float Combined_NPD_and_SCA_Output_Fields.Longitude(sdim3) ;
+        	int Combined_NPD_and_SCA_Output_Fields.RowIndex(sdim4) ;
+        	int Combined_NPD_and_SCA_Output_Fields.ColumnIndex(sdim5) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBH10r2(sdim6) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBV10r2(sdim7) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBH18r2(sdim8) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBV18r2(sdim9) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBH23r2(sdim10) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBV23r2(sdim11) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBH36r2(sdim12) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBV36r2(sdim13) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBH89r2(sdim14) ;
+        	float Combined_NPD_and_SCA_Output_Fields.TBV89r2(sdim15) ;
+        	float Combined_NPD_and_SCA_Output_Fields.VegetationRoughnessNPD(sdim16) ;
+        	float Combined_NPD_and_SCA_Output_Fields.SoilMoistureNPD(sdim17) ;
+        	int Combined_NPD_and_SCA_Output_Fields.RetrievalQualityFlagNPD(sdim18) ;
+        	float Combined_NPD_and_SCA_Output_Fields.SoilMoistureSCA(sdim19) ;
+        	int Combined_NPD_and_SCA_Output_Fields.RetrievalQualityFlagSCA(sdim20) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountAllSamples(sdim21) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountGoodSamples(sdim22) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountRFI(sdim23) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountInvalidTBRange(sdim24) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountWater(sdim25) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountIce(sdim26) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountSnow(sdim27) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountFrozenGround(sdim28) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountRain(sdim29) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountWetland(sdim30) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountUrban(sdim31) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountLow2ModerateVWC(sdim32) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountDenseVWC(sdim33) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountMissingSoilTexture(sdim34) ;
+        	int Combined_NPD_and_SCA_Output_Fields.FlagCountMissingNDVI(sdim35) ;
+        } // group Data
+
+      group: Linkage {
+        } // group Linkage
+      } // group AMSR_E_Level_2_Land_Data
+    } // group POINTS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 5068 ;
+  	CoreMetadata_0_len2 = 9782 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+  	char CoreMetadata_0(CoreMetadata_0_len2) ;
+  		CoreMetadata_0:fullnamepath = "/HDFEOS INFORMATION/CoreMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.16" ;
+  } // group HDFEOS_INFORMATION
+}
