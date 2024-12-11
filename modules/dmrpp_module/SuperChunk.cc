@@ -129,7 +129,6 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
 
     if(array){
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            //chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->get_bytes_per_element());
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());

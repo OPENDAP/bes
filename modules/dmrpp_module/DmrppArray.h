@@ -166,14 +166,6 @@ private:
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 
 public:
-#if 0
-    virtual void insert_chunk(
-            unsigned int dim,
-            std::vector<unsigned long long> *target_element_address,
-            std::vector<unsigned long long> *chunk_element_address,
-            std::shared_ptr<Chunk> chunk,
-            const vector<unsigned long long> &constrained_array_shape,char *target_buf);
-#endif
  
     DmrppArray(const std::string &n, libdap::BaseType *v) :
             libdap::Array(n, v, true /*is dap4*/), DmrppCommon()

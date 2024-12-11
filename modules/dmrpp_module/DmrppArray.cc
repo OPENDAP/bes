@@ -757,8 +757,6 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 {
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
 
-    //unsigned int bytes_per_elem = prototype()->width();
-
     uint64_t start = this->dimension_start_ll(dim_iter, true);
     uint64_t stop = this->dimension_stop_ll(dim_iter, true);
     uint64_t stride = this->dimension_stride_ll(dim_iter, true);
@@ -1007,7 +1005,6 @@ void DmrppArray::read_contiguous()
         else {
             // Currently we only handle one-layer simple int/float types. 
             if (is_readable_struct) {
-                //unsigned long long value_size = get_size(true)*width_ll();
                 unsigned long long value_size = get_size(true)*bytes_per_element;
                 vector<char> values;
                 values.resize(value_size);
@@ -1083,9 +1080,8 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
-        //unsigned int elem_width = prototype()->width();
-        unsigned int elem_width = bytes_per_element;
 
+        unsigned int elem_width = bytes_per_element;
         array_offset += chunk_origin[dim];
 
         // Compute how much we are going to copy
@@ -1286,8 +1282,9 @@ void DmrppArray::read_chunks_dio_unconstrained()
 // Retrieve data from the linked blocks.  We don't need to use the super chunk technique
 // since the adjacent blocks are already combined. We just need to read the data
 // from each chunk, combine them and decompress the buffer if necessary.
-// TODO: HDF4 vdata doesn't have the alignment issue, however, we may still use bytes_per_element to replace width_ll() or width() to make the code consistent.
+// Note: HDF4 vdata doesn't have the alignment issue.
 void DmrppArray::read_linked_blocks(){
+
     unsigned int num_linked_blocks = this->get_total_linked_blocks();
     if (num_linked_blocks <2)
         throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
