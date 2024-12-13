@@ -145,6 +145,8 @@ class DmrppCommon {
     bool using_linked_block = false;
     unsigned int total_linked_blocks =0;
 
+    bool multi_linked_blocks_chunk = false;
+
     // Structure offset 
     std::vector<unsigned int> struct_offsets;
 protected:
@@ -213,10 +215,21 @@ public:
         return d_missing_data;
     }
 
-    /// @brief Set the value of the compact property
+    /// @brief Set the value of the missing data.
     void set_missing_data(bool value) {
         d_missing_data = value;
     }
+
+    /// @brief Returns true if this object contains a chunk that have multiple linked blocks .
+    virtual bool is_multi_linked_blocks_chunk() const {
+        return multi_linked_blocks_chunk;
+    }
+
+    /// @brief Set the value of the boolean variable that indicates this variable contains multiple linked blocks in a chunk.
+    void set_multi_linked_blocks_chunk(bool value) {
+        multi_linked_blocks_chunk = value;
+    }
+
 
     /// @brief Returns true if this object describes the missing data.
     virtual bool is_disable_dio() const {
@@ -355,6 +368,13 @@ public:
             bool linked_block,
             unsigned int linked_block_index);
 
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array, bool multi_linked_blocks, unsigned int multi_linked_block_index);
+
 
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
@@ -362,6 +382,7 @@ public:
             unsigned long long size,
             unsigned long long offset,
             const std::vector<unsigned long long> &position_in_array);
+
 
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
@@ -384,6 +405,15 @@ public:
             unsigned long long offset,
             bool linked_block,
             unsigned int linked_block_index);
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array,
+            bool multi_linked_blocks,
+            unsigned int linked_block_index);
+
 
     virtual unsigned long add_chunk(
             const std::string &byte_order,

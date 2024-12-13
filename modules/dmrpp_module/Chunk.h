@@ -84,8 +84,18 @@ private:
     unsigned long long d_offset{0};
     unsigned long long direct_io_offset{0};
     unsigned int d_filter_mask{0};
+
+    // The following two members mean this chunk is actually a linked block.
+    // We don't need to remember chunk position but to remember the linked block index.
     bool linked_block{false};
     unsigned int linked_block_index {0};
+
+    // The following two memebers mean this chunk contains multiple linked blocks.
+    // This is still a chunk but inside this chunk it contains multiple linked blocks.
+    // We will record this chunk multiple times with different multi_linked_block_index.
+    bool multi_linked_blocks{false};
+    unsigned int multi_linked_block_index {0};
+
     bool d_uses_fill_value{false};
     libdap::Type d_fill_value_type{libdap::dods_null_c};
     std::vector<std::pair<libdap::Type,int>> compound_udf_type_elms;
@@ -139,6 +149,8 @@ protected:
         d_filter_mask = bs.d_filter_mask;
         linked_block = bs.linked_block;
         linked_block_index = bs.linked_block_index;
+        multi_linked_block_index = bs.multi_linked_block_index;
+        multi_linked_blocks = bs.multi_linked_blocks;
         d_data_url = bs.d_data_url;
         d_byte_order = bs.d_byte_order;
         d_fill_value = bs.d_fill_value;
@@ -219,6 +231,28 @@ public:
 #endif
         set_position_in_array(pia_str);
     }
+
+    Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size, unsigned long long offset,
+          const std::vector<unsigned long long> &pia_vec,bool is_multi_lb, unsigned int lb_index) :
+            d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
+            d_size(size), d_offset(offset),  multi_linked_blocks(is_multi_lb), multi_linked_block_index(lb_index) {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_vec);
+    }
+
+    Chunk(std::string order, unsigned long long size, unsigned long long offset,
+          const std::vector<unsigned long long> &pia_vec,bool is_multi_lb, unsigned int lb_index) :
+            d_byte_order(std::move(order)),
+            d_size(size), d_offset(offset),  multi_linked_blocks(is_multi_lb), multi_linked_block_index(lb_index) {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_vec);
+    }
+
+
     /**
      * @brief Get a chunk initialized with values
      *
@@ -369,6 +403,17 @@ public:
     {
         return linked_block_index;
     }
+
+    virtual bool get_multi_linked_blocks() const
+    {
+        return multi_linked_blocks;
+    }
+
+    virtual unsigned int get_multi_linked_block_index() const
+    {
+        return multi_linked_block_index;
+    }
+
 
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
