@@ -68,6 +68,8 @@ DmrppStructure::read()
 
     size_t value_size = 0;
     char *buf_value = read_atomic(name(),value_size);
+    // Note for scalar, the buffer size is the storage size of this variable, which for HDF5, is always the correct size to store the buffer.
+    // We don't need to retrieve this in a different way.
     vector<char> values(buf_value,buf_value+value_size);
  
     size_t values_offset = 0;

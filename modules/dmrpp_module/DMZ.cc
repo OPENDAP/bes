@@ -1955,6 +1955,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         return false;
 
     bool has_fill_value = false;
+
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
             dc(btp)->set_filter(attr.value());
@@ -2000,6 +2001,10 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
         else if (is_eq(attr.name(), "byteOrder"))
             dc(btp)->ingest_byte_order(attr.value());
+        
+        // Here we don't need to check the structOffset attribute if the datatype is not dods_structure_c or array of dods_structure_c.
+        // But since most variables won't have the structOffset attribute, the code will NOT even go to the following "else if block" after
+        // looping through the last attribute. So still keep the following implementation.
         else if (is_eq(attr.name(), "structOffset")) {
             string so_str = attr.value();
             // decompose the string.
@@ -2008,8 +2013,8 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
             for (const auto &s_off:so_str_vec)
                 struct_offsets.push_back(stoul(s_off));
             dc(btp)->set_struct_offsets(struct_offsets);
+            
         }
-        
         
     }
 
@@ -2020,38 +2025,54 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
     process_cds_node(dc(btp), chunks);
 
-    // Chunks for this node will be held in the var_node siblings.
+    // If child node "dmrpp:chunk" is found, the child node "dmrpp:block" will be not present.
+    // They are mutual exclusive. 
+
+    bool is_chunked_storage = false;
     for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
         if (is_eq(chunk.name(), "dmrpp:chunk")) {
-            process_chunk(dc(btp), chunk);
+            is_chunked_storage = true;
+            break;
         }
     }
 
-    // Blocks for this node, we need to first check if there is only one block. If this is the case,
-    // we should issue an error.
-    unsigned int block_count = 0;
-    for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
-        if (is_eq(chunk.name(), "dmrpp:block")) {
-            block_count++;
-        }
-        if (block_count >1)
-            break;
-    }
-    if (block_count == 1)
-        throw BESInternalError(" The number of linked block is 1, but it should be > 1.", __FILE__, __LINE__);
-    if (block_count >1) {
-        // set using linked block
-        dc(btp)->set_using_linked_block();
-        // reset the count to 0 to process the blocks.
-        block_count = 0;
-        for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
-            if (is_eq(chunk.name(), "dmrpp:block")) {
-                process_block(dc(btp), chunk, block_count);
-                BESDEBUG(PARSER, prolog << "This count of linked block of this variable is: " << block_count << endl);
-                block_count++;
+    if (is_chunked_storage) {
+        // Chunks for this node will be held in the var_node siblings.
+        for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:chunk")) {
+                process_chunk(dc(btp), chunk);
             }
         }
-        dc(btp)->set_total_linked_blocks(block_count);
+    }
+
+    else {
+
+        // Blocks for this node, we need to first check if there is only one block. If this is the case,
+        // we should issue an error.
+        unsigned int block_count = 0;
+        for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:block")) {
+                block_count++;
+            }
+            if (block_count >1)
+                break;
+        }
+        if (block_count == 1)
+            throw BESInternalError(" The number of linked block is 1, but it should be > 1.", __FILE__, __LINE__);
+        if (block_count >1) {
+            // set using linked block
+            dc(btp)->set_using_linked_block();
+            // reset the count to 0 to process the blocks.
+            block_count = 0;
+            for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
+                if (is_eq(chunk.name(), "dmrpp:block")) {
+                    process_block(dc(btp), chunk, block_count);
+                    BESDEBUG(PARSER, prolog << "This count of linked block of this variable is: " << block_count << endl);
+                    block_count++;
+                }
+            }
+            dc(btp)->set_total_linked_blocks(block_count);
+        }
     }
     return true;
 

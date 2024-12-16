@@ -153,7 +153,7 @@ public:
     { return true; }
 
     void insert_chunk(unsigned int, vector<unsigned long long> *, vector<unsigned long long> *,
-                              shared_ptr<Chunk>, const vector<unsigned long long> &) override
+                              shared_ptr<Chunk>, const vector<unsigned long long> &, char*buf) override
     {
         // Do nothing
     }
