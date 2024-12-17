@@ -22,10 +22,11 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <vector>
+#include <unordered_set>
+#include <stack>
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <unordered_set>
 #include <cstring>
 #include <zlib.h>
 
@@ -1840,13 +1841,15 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
     bool href_trusted = false;
 
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+#if 0
         if (is_eq(attr.name(), "href")) {
             href = attr.value();
         }
         else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
             href_trusted = is_eq(attr.value(), "true");
         }
-        else if (is_eq(attr.name(), "offset")) {
+#endif
+        if (is_eq(attr.name(), "offset")) {
             offset = attr.value();
         }
         else if (is_eq(attr.name(), "nBytes")) {
@@ -1857,6 +1860,12 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         }
         else if (is_eq(attr.name(), "fm")) {
             filter_mask = attr.value();
+        }
+        else if (is_eq(attr.name(), "href")) {
+            href = attr.value();
+        }
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
+            href_trusted = is_eq(attr.value(), "true");
         }
     }
 
@@ -1890,18 +1899,27 @@ void DMZ::process_block(DmrppCommon *dc, const xml_node &chunk,unsigned int bloc
     bool href_trusted = false;
 
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+#if 0
         if (is_eq(attr.name(), "href")) {
             href = attr.value();
         }
         else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
             href_trusted = is_eq(attr.value(), "true");
         }
-        else if (is_eq(attr.name(), "offset")) {
+#endif
+        if (is_eq(attr.name(), "offset")) {
             offset = attr.value();
         }
         else if (is_eq(attr.name(), "nBytes")) {
             size = attr.value();
         }
+        else if (is_eq(attr.name(), "href")) {
+            href = attr.value();
+        }
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
+            href_trusted = is_eq(attr.value(), "true");
+        }
+ 
     }
 
     if (offset.empty() || size.empty())
@@ -1956,7 +1974,11 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
 
     bool has_fill_value = false;
 
+    unsigned int block_count = 0;
+    bool is_multi_lb_chunks = false;
+
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
+
         if (is_eq(attr.name(), "compressionType")) {
             dc(btp)->set_filter(attr.value());
         }
@@ -2013,7 +2035,14 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
             for (const auto &s_off:so_str_vec)
                 struct_offsets.push_back(stoul(s_off));
             dc(btp)->set_struct_offsets(struct_offsets);
-            
+        }
+        // The following only applies to rare cases when handling HDF4, most cases won't even come here.
+        else if (is_eq(attr.name(),"LBChunk")) {
+            string is_lbchunk_value = attr.value();
+            if (is_lbchunk_value == "true") {
+                is_multi_lb_chunks = true;
+                dc(btp)->set_multi_linked_blocks_chunk(true);
+            }
         }
         
     }
@@ -2044,12 +2073,10 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
             }
         }
     }
-
     else {
 
         // Blocks for this node, we need to first check if there is only one block. If this is the case,
         // we should issue an error.
-        unsigned int block_count = 0;
         for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
             if (is_eq(chunk.name(), "dmrpp:block")) {
                 block_count++;
@@ -2057,6 +2084,8 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
             if (block_count >1)
                 break;
         }
+    }
+    if (block_count > 0) {
         if (block_count == 1)
             throw BESInternalError(" The number of linked block is 1, but it should be > 1.", __FILE__, __LINE__);
         if (block_count >1) {
@@ -2073,6 +2102,24 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
             }
             dc(btp)->set_total_linked_blocks(block_count);
         }
+    }
+    else if (is_multi_lb_chunks) {
+
+        queue <vector<pair<unsigned long long,unsigned long long>>> mb_index_queue;
+        vector<pair<unsigned long long, unsigned long long>> offset_length_pair;
+        // Chunks for this node will be held in the var_node siblings.
+        for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:chunk")) 
+                add_mblock_index(chunk, mb_index_queue,offset_length_pair);
+        }
+        // This is the last one.
+        mb_index_queue.push(offset_length_pair);
+
+        for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:chunk")) 
+                process_multi_blocks_chunk(dc(btp),chunk, mb_index_queue);
+        }
+
     }
     return true;
 
@@ -2493,6 +2540,130 @@ void DMZ::handle_subset(DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsign
             }
         }
     }
+}
+
+void DMZ::add_mblock_index(const xml_node &chunk, queue<vector<pair<unsigned long long, unsigned long long >>>& mb_index_queue,
+                       vector<pair<unsigned long long, unsigned long long>>& offset_length_pair) const{
+
+    string LBIndex_value;
+    for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+        if (is_eq(attr.name(),"LinkedBlockIndex")) {
+            LBIndex_value = attr.value();
+            break;
+        } 
+    }
+
+    // We find the linked blocks in this chunk
+    if (LBIndex_value.empty() == false) {
+        
+        pair<unsigned long long, unsigned long long> temp_offset_length;
+
+        // We need to loop through the chunk attributes again to find the offset and length.
+        bool found_offset = false;
+        bool found_length = false;
+        for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+            if (is_eq(attr.name(), "offset")) {
+                string offset = attr.value();
+                temp_offset_length.first = stoull(offset);
+                found_offset = true;
+            }
+            else if (is_eq(attr.name(), "nBytes")) {
+                string size = attr.value();
+                temp_offset_length.second = stoull(size);
+                found_length = true;
+            }
+            if (found_offset and found_length)
+                break;
+        }
+
+        if (LBIndex_value == "0") {
+            if (offset_length_pair.empty() == false) { 
+                mb_index_queue.push(offset_length_pair);
+                offset_length_pair.clear();
+                offset_length_pair.push_back(temp_offset_length);
+            }
+            else 
+                offset_length_pair.push_back(temp_offset_length);
+        }
+        else 
+            offset_length_pair.push_back(temp_offset_length);
+    }
+
+}
+
+void DMZ::process_multi_blocks_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk, std::queue<std::vector<std::pair<unsigned long long, unsigned long long>>>& mb_index_queue) const {
+
+    // Clone process_chunk
+    string href;
+    string trust;
+    string offset;
+    string size;
+    string chunk_position_in_array;
+    string filter_mask;
+    bool href_trusted = false;
+
+#if 0
+vector<pair<unsigned long long, unsigned long long>> temp_pair;
+while (!mb_index_queue.empty()) {
+        temp_pair = mb_index_queue.front();
+
+        for (const auto &tp:temp_pair) {
+cout<<"offset: "<<tp.first<<endl;
+cout<<"length: "<<tp.second<<endl;
+
+
+        }
+        mb_index_queue.pop(); // Remove the processed element
+}
+#endif
+
+    for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+#if 0
+        if (is_eq(attr.name(), "href")) {
+            href = attr.value();
+        }
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
+            href_trusted = is_eq(attr.value(), "true");
+        }
+#endif
+        if (is_eq(attr.name(), "offset")) {
+            offset = attr.value();
+        }
+        else if (is_eq(attr.name(), "nBytes")) {
+            size = attr.value();
+        }
+        else if (is_eq(attr.name(), "chunkPositionInArray")) {
+            chunk_position_in_array = attr.value();
+        }
+        else if (is_eq(attr.name(), "fm")) {
+            filter_mask = attr.value();
+        }
+        else if (is_eq(attr.name(), "href")) {
+            href = attr.value();
+        }
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
+            href_trusted = is_eq(attr.value(), "true");
+        }
+    }
+
+    if (offset.empty() || size.empty())
+        throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
+    if (!href.empty()) {
+        shared_ptr<http::url> data_url(new http::url(href, href_trusted));
+        if (filter_mask.empty())
+            dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
+        else
+            dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), stoul(filter_mask), chunk_position_in_array);
+    }
+    else {
+        if (filter_mask.empty())
+            dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset),   chunk_position_in_array);
+        else
+            dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), stoul(filter_mask),  chunk_position_in_array);
+    }
+
+    dc->accumlate_storage_size(stoull(size));
+
 }
 
 // Return the index of the pos in nD array to the equivalent pos in 1D array
