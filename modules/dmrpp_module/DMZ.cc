@@ -2119,6 +2119,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
             if (is_eq(chunk.name(), "dmrpp:chunk")) 
                 process_multi_blocks_chunk(dc(btp),chunk, mb_index_queue);
         }
+        dc(btp)->set_multi_linked_blocks_chunk(true);
 
     }
     return true;
@@ -2572,7 +2573,7 @@ void DMZ::add_mblock_index(const xml_node &chunk, queue<vector<pair<unsigned lon
                 temp_offset_length.second = stoull(size);
                 found_length = true;
             }
-            if (found_offset and found_length)
+            if (found_offset && found_length)
                 break;
         }
 
@@ -2603,8 +2604,8 @@ void DMZ::process_multi_blocks_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_nod
     bool href_trusted = false;
 
 #if 0
-vector<pair<unsigned long long, unsigned long long>> temp_pair;
 while (!mb_index_queue.empty()) {
+vector<pair<unsigned long long, unsigned long long>> temp_pair;
         temp_pair = mb_index_queue.front();
 
         for (const auto &tp:temp_pair) {
@@ -2617,6 +2618,30 @@ cout<<"length: "<<tp.second<<endl;
 }
 #endif
 
+    // We will only check if the last attribute is the "LinkedBlockIndex". 
+    // If yes, we will check the "LinkedBlockIndex" value, mark it if it is the first index(0).
+    //    If the "LinkedBlockIndex" is not 0, we simply return. The information of this linked block is retrieved from the mb_index_queue.
+    bool multi_lbs_chunk = false;
+    auto LBI_attr = chunk.last_attribute();
+    if (is_eq(LBI_attr.name(),"LinkedBlockIndex")) {
+        string LBI_attr_value = LBI_attr.value();
+        if (LBI_attr_value =="0")
+            multi_lbs_chunk = true;
+        else 
+            return;
+    }
+    else {// This should happen really rarely, still we try to cover the corner case. We loop through all the attributes and search if Linked BlockIndex is present.
+        for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+            if (is_eq(LBI_attr.name(),"LinkedBlockIndex")) {
+                string LBI_attr_value = LBI_attr.value();
+                if (LBI_attr_value =="0")
+                    multi_lbs_chunk = true;
+                else 
+                    return;
+            }
+        }
+    }
+    
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
 #if 0
         if (is_eq(attr.name(), "href")) {
@@ -2648,19 +2673,33 @@ cout<<"length: "<<tp.second<<endl;
 
     if (offset.empty() || size.empty())
         throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
-    if (!href.empty()) {
-        shared_ptr<http::url> data_url(new http::url(href, href_trusted));
-        if (filter_mask.empty())
+
+    if (multi_lbs_chunk) {//STOPP: The chunk that has linked blocks.
+
+        vector<pair<unsigned long long, unsigned long long>> temp_pair;
+        if (!mb_index_queue.empty())   
+            temp_pair = mb_index_queue.front();
+
+        if (!href.empty()) {
+            shared_ptr<http::url> data_url(new http::url(href, href_trusted));
+            dc->add_chunk(data_url, dc->get_byte_order(), chunk_position_in_array,temp_pair);
+        }
+        else {
+            dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), chunk_position_in_array, temp_pair);
+        }
+        mb_index_queue.pop(); // Remove the processed element
+
+    }
+    else { //General Chunk
+        if (!href.empty()) {
+            shared_ptr<http::url> data_url(new http::url(href, href_trusted));
             dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
-        else
-            dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), stoul(filter_mask), chunk_position_in_array);
-    }
-    else {
-        if (filter_mask.empty())
+        }
+        else {
             dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset),   chunk_position_in_array);
-        else
-            dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), stoul(filter_mask),  chunk_position_in_array);
+        }
     }
+    
 
     dc->accumlate_storage_size(stoull(size));
 

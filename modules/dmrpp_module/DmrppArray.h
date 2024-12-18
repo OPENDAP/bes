@@ -147,7 +147,9 @@ private:
     void read_chunks_dio_unconstrained();
     void read_linked_blocks();
     void read_linked_blocks_constrained();
-
+    void read_chunks_with_linked_blocks();
+    void read_chunks_with_linked_blocks_constrained();
+    
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address, std::shared_ptr<Chunk> chunk);

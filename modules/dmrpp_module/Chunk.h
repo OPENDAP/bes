@@ -96,6 +96,8 @@ private:
     bool multi_linked_blocks{false};
     unsigned int multi_linked_block_index {0};
 
+    std::vector<std::pair<unsigned long long,unsigned long long>> mlb_offset_lengths;
+
     bool d_uses_fill_value{false};
     libdap::Type d_fill_value_type{libdap::dods_null_c};
     std::vector<std::pair<libdap::Type,int>> compound_udf_type_elms;
@@ -232,6 +234,7 @@ public:
         set_position_in_array(pia_str);
     }
 
+    // For build_dmrpp that has multiple linked blocks in a chunk
     Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size, unsigned long long offset,
           const std::vector<unsigned long long> &pia_vec,bool is_multi_lb, unsigned int lb_index) :
             d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
@@ -252,6 +255,30 @@ public:
         set_position_in_array(pia_vec);
     }
 
+    // For retrieving dmrpp that has multiple linked blocks in a chunk
+    Chunk(std::shared_ptr<http::url> data_url, std::string order, 
+          const std::string &pia_vec,const std::vector<std::pair<unsigned long long, unsigned long long>> &lb_ol) :
+            d_data_url(std::move(data_url)), d_byte_order(std::move(order))
+             {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_vec);
+        set_multi_linked_offset_length(lb_ol);
+        if (lb_ol.empty()==false) 
+            multi_linked_blocks = true;
+    }
+
+    Chunk(std::string order, 
+          const std::string &pia_vec,const std::vector<std::pair<unsigned long long, unsigned long long>> &lb_ol) :
+            d_byte_order(std::move(order))
+             {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_vec);
+        set_multi_linked_offset_length(lb_ol);
+    }
 
     /**
      * @brief Get a chunk initialized with values
@@ -409,6 +436,7 @@ public:
         return multi_linked_blocks;
     }
 
+    // TODO: change the member and method name to something _index_in_dmrpp_file
     virtual unsigned int get_multi_linked_block_index() const
     {
         return multi_linked_block_index;
@@ -515,6 +543,29 @@ public:
 
     void set_position_in_array(const std::string &pia);
     void set_position_in_array(const std::vector<unsigned long long> &pia);
+
+    void set_multi_linked_offset_length(const std::vector<std::pair<unsigned long long,unsigned long long>> &lb_offset_lengths){
+
+        for (const auto &lb_ol:lb_offset_lengths) {
+            
+            std::pair<unsigned long long,unsigned long long> temp_pair;
+            temp_pair.first = lb_ol.first;
+            temp_pair.second = lb_ol.second;
+            mlb_offset_lengths.push_back(temp_pair);
+        }
+
+    }
+    void obtain_multi_linked_offset_length(vector<std::pair<unsigned long long, unsigned long long>> & cur_chunk_lb_offset_length) {
+
+         for (const auto &lb_ol:mlb_offset_lengths) {
+            
+            std::pair<unsigned long long,unsigned long long> temp_pair;
+            temp_pair.first = lb_ol.first;
+            temp_pair.second = lb_ol.second;
+            cur_chunk_lb_offset_length.push_back(temp_pair);
+        }
+
+    }
 
     void set_compound_udf_info(const std::vector<std::pair<libdap::Type,int>> &structure_type_element){
 

@@ -1496,7 +1496,26 @@ void DmrppArray::read_linked_blocks_constrained(){
     set_read_p(true);
 }
 
+void DmrppArray::read_chunks_with_linked_blocks() {
 
+    for(const auto& chunk: get_immutable_chunks()) {
+        if (chunk->get_multi_linked_blocks()) {
+            vector<std::pair<unsigned long long, unsigned long long>>  cur_chunk_lb_offset_lengths;
+            chunk->obtain_multi_linked_offset_length(cur_chunk_lb_offset_lengths);
+            // STOP: debugging info.
+        }
+        else { // General Chunk
+
+        }
+    }
+ 
+
+}
+
+void DmrppArray::read_chunks_with_linked_blocks_constrained() {
+
+
+}
 
 unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
 
@@ -2482,8 +2501,20 @@ bool DmrppArray::read()
 
                 }
             }
-            else
-            {
+            else if (is_multi_linked_blocks_chunk()) {
+                if (!array_to_read->is_projected()) {
+                    array_to_read->read_chunks_with_linked_blocks();
+                }
+                else {
+                    array_to_read->read_chunks_with_linked_blocks_constrained();
+#if 0
+                    throw BESInternalFatalError(prolog + "Not support data subset when linked blocks are used. ",
+                                           __FILE__, __LINE__);
+#endif
+                }
+            }
+            else {
+            
                 if (!array_to_read->is_projected()) {
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
                     // KENT: Only here we need to consider the direct buffer IO.

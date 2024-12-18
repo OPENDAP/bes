@@ -299,6 +299,7 @@ unsigned long DmrppCommon::add_chunk(
     return d_chunks.size();
 }
 
+// For build_dmrpp to handle multi-linked blocks.
 unsigned long DmrppCommon::add_chunk(
             std::shared_ptr<http::url> d_data_url,
             const std::string &byte_order,
@@ -328,6 +329,29 @@ unsigned long DmrppCommon::add_chunk(
     return d_chunks.size();
 }
 
+// For retrieving data from the dmrpp module
+unsigned long DmrppCommon::add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            const std::string &position_in_array,
+            const std::vector<std::pair<unsigned long long, unsigned long long>> &lb_offset_length)
+{
+    shared_ptr<Chunk> chunk(new Chunk(std::move(d_data_url),  byte_order,  position_in_array,lb_offset_length));
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+
+unsigned long DmrppCommon::add_chunk(
+            const std::string &byte_order,
+            const std::string &position_in_array,
+            const std::vector<std::pair<unsigned long long, unsigned long long>> &lb_offset_length)
+
+{
+    shared_ptr<Chunk> chunk(new Chunk(byte_order, position_in_array,lb_offset_length));
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
 
 /**
  * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
