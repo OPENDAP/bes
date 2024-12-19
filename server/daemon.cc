@@ -531,7 +531,7 @@ static int start_command_processor(DaemonCommandHandler &handler)
         int port = 0;
         TheBESKeys::TheKeys()->get_value(DAEMON_PORT_STR, port_str, port_found);
         if (port_found) {
-            port = std::stoi(port_str, nullptr, 10);
+            port = std::stoi(port_str);
             if (port == 0) {
                 cerr << "Invalid port number for daemon command interface: " << port_str << endl;
                 exit(1);
