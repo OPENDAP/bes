@@ -407,6 +407,11 @@ public:
         return d_offset;
     }
 
+    virtual void set_size(unsigned long long storage_size) 
+    {
+        d_size = storage_size;
+    }
+
     virtual unsigned long long get_direct_io_offset() const
     {
         return direct_io_offset;
@@ -459,6 +464,7 @@ public:
         d_data_url = std::move(data_url);
     }
 
+    virtual bool is_read_buffer_is_mine() { return d_read_buffer_is_mine; }
     /// @return Get the number of bytes read so far for this Chunk.
     virtual unsigned long long get_bytes_read() const
     {
@@ -555,6 +561,7 @@ public:
         }
 
     }
+    //bool has_mlb_offset_lengths() {return !mlb_offset_lengths.empty();}
     void obtain_multi_linked_offset_length(vector<std::pair<unsigned long long, unsigned long long>> & cur_chunk_lb_offset_length) {
 
          for (const auto &lb_ol:mlb_offset_lengths) {

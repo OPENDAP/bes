@@ -2065,7 +2065,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         }
     }
 
-    if (is_chunked_storage) {
+    if (is_chunked_storage && is_multi_lb_chunks== false) {
         // Chunks for this node will be held in the var_node siblings.
         for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
             if (is_eq(chunk.name(), "dmrpp:chunk")) {
@@ -2642,6 +2642,7 @@ cout<<"length: "<<tp.second<<endl;
         }
     }
     
+    // For linked block cases, as far as we know, we don't need to load fill values as the HDF5 case. So we ignore checking and filling the fillvalue to save performance.
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
 #if 0
         if (is_eq(attr.name(), "href")) {
@@ -2674,7 +2675,7 @@ cout<<"length: "<<tp.second<<endl;
     if (offset.empty() || size.empty())
         throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
 
-    if (multi_lbs_chunk) {//STOPP: The chunk that has linked blocks.
+    if (multi_lbs_chunk) {//The chunk that has linked blocks
 
         vector<pair<unsigned long long, unsigned long long>> temp_pair;
         if (!mb_index_queue.empty())   

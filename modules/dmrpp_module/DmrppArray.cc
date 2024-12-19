@@ -1498,17 +1498,109 @@ void DmrppArray::read_linked_blocks_constrained(){
 
 void DmrppArray::read_chunks_with_linked_blocks() {
 
+//cout <<"coming to read_chunks_with_linked_blocks"<<endl;
+     reserve_value_capacity_ll(get_size(false));
     for(const auto& chunk: get_immutable_chunks()) {
+    //for(auto& chunk: get_immutable_chunks()) {
+//cout<<"Start chunk position 0: "<<chunk->get_position_in_array()[0] <<endl; 
         if (chunk->get_multi_linked_blocks()) {
+        //if (chunk->has_mlb_offset_lengths()) {
+//cout<<"coming to linked blocks" <<endl;
+//cout<<"chunk position 0: "<<chunk->get_position_in_array()[0] <<endl; 
             vector<std::pair<unsigned long long, unsigned long long>>  cur_chunk_lb_offset_lengths;
             chunk->obtain_multi_linked_offset_length(cur_chunk_lb_offset_lengths);
             // STOP: debugging info.
-        }
-        else { // General Chunk
+#if 0
+for (const auto &tp:cur_chunk_lb_offset_lengths) {
+cout<<"DA offset: "<<tp.first<<endl;
+cout<<"DA length: "<<tp.second<<endl;
+        
+    
+}
+#endif
+            unsigned long long cb_buffer_size =0;
+            for (const auto &tp:cur_chunk_lb_offset_lengths) 
+                cb_buffer_size +=tp.second;
+
+            chunk->set_size(cb_buffer_size);
+            //vector<char> cb_buffer(cb_buffer_size);
+            // Now we get the chunk buffer size, set it.
+            if (chunk->is_read_buffer_is_mine()) 
+                chunk->set_rbuf_to_size();
+            else 
+                throw BESInternalError("For multi-linked blocks, the chunk buffer ownship must be true", __FILE__, __LINE__);
+
+            char *temp_cb_buffer = chunk->get_rbuf();
+
+            for (const auto &tp:cur_chunk_lb_offset_lengths) {
+
+                // Obtain this chunk block's offset and length.
+                auto cb_offset = tp.first;
+                auto cb_length = tp.second;
+#if 0
+cout<<"DAF offset: "<<tp.first<<endl;
+cout<<"DAF length: "<<tp.second<<endl;
+#endif
+    
+                // Obtain this chunk's other information:byteOrder,URL,chunk position.
+                // Create a block chunk for each block in order to obtain the data.
+                
+                auto cb_data_url = chunk->get_data_url();
+                auto cb_position_in_array = chunk->get_position_in_array();
+                auto cb_byte_order = chunk->get_byte_order();
+                
+                //shared_ptr<Chunk> block_chunk = nullptr;
+                Chunk* block_chunk = nullptr;
+                if (cb_data_url == nullptr) 
+                    block_chunk = new Chunk(cb_byte_order,cb_length,cb_offset,cb_position_in_array);
+                else 
+                    block_chunk = new Chunk(cb_data_url,cb_byte_order,cb_length,cb_offset,cb_position_in_array);
+                
+                block_chunk->read_chunk();
+                char *block_chunk_buffer = block_chunk->get_rbuf();
+                if (block_chunk->get_bytes_read() != cb_length) {
+                    ostringstream oss;
+                    oss << "Wrong number of bytes read for chunk; read: " << block_chunk->get_bytes_read() << ", expected: " << cb_length;
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+                memcpy(temp_cb_buffer,block_chunk_buffer,cb_length);
+                temp_cb_buffer +=cb_length;
+                delete block_chunk;
+                
+            }
+            chunk->set_is_read(true);
 
         }
+        else { // General Chunk
+//cout <<"before read chunk "<<endl;
+            chunk->read_chunk();
+//cout <<"after read chunk "<<endl;
+        }
+//#if 0
+        // Now we need to handle the filters.
+        if (chunk->get_uses_fill_value()) {
+            //No, we won't handle the filled chunks case since HDF4 doesn't have this.
+            throw BESInternalError(string("Encounters filled linked-block chunks for variable ") + name(), __FILE__, __LINE__);
+        }
+        else if (!is_filters_empty())
+            chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), get_bytes_per_element());
+
+        // No, HDF4 doesn't have linked-block chunk structure AFAIK
+        if (var()->type() == libdap::dods_structure_c)
+            throw BESInternalError(string("Encounters linked-block chunk structures  for variable ") + name(), __FILE__, __LINE__);
+
+        // Now we go to the insert_chunk routine
+
+        vector<unsigned long long> array_shape = get_shape(false);
+        vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+        vector<unsigned long long> chunk_origin = chunk->get_position_in_array();
+//cout <<"chunk position 0: "<<chunk_origin[0] <<endl;
+
+        this->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0,chunk_shape,chunk_origin);
+
+//cout <<"After insertion " <<endl;
+//#endif
     }
- 
 
 }
 
