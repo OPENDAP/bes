@@ -133,17 +133,17 @@ dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 dnl Enable/Disable new categorized logging output
 dnl
 
-AC_ARG_WITH([newlog],
-    [AS_HELP_STRING([--without-newlog],
-    [Disable support for the new categorized logging output. (Enabled by default)])]
-)
-AM_CONDITIONAL([WITH_NEWLOG], [test "x$with_newlog" != "xno"])
-AM_COND_IF([WITH_NEWLOG],
-    [AC_DEFINE([USE_LOG_CATEGORIES], [1], [Set this to 0 to disable categorized log output.])
-    AC_MSG_NOTICE([Support for categorized logging output is ENABLED.]) ],
-    [AC_DEFINE([USE_LOG_CATEGORIES], [0], [Set this to 1 to enable categorized log output.])
-    AC_MSG_NOTICE([Support for categorized logging output is DISABLED.])]
-)
+dnl AC_ARG_WITH([newlog],
+dnl     [AS_HELP_STRING([--without-newlog],
+dnl     [Disable support for the new categorized logging output. (Enabled by default)])]
+dnl )
+dnl AM_CONDITIONAL([WITH_NEWLOG], [test "x$with_newlog" != "xno"])
+dnl AM_COND_IF([WITH_NEWLOG],
+dnl     [AC_DEFINE([USE_LOG_CATEGORIES], [1], [Set this to 0 to disable categorized log output.])
+dnl     AC_MSG_NOTICE([Support for categorized logging output is ENABLED.]) ],
+dnl     [AC_DEFINE([USE_LOG_CATEGORIES], [0], [Set this to 1 to enable categorized log output.])
+dnl     AC_MSG_NOTICE([Support for categorized logging output is DISABLED.])]
+dnl )
 
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
