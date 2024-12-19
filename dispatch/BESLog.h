@@ -49,15 +49,12 @@
 #undef  TRACE_LOGGING
 
 #ifdef TRACE_LOGGING
-// #define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
-
 #define REQUEST_LOG(x) do { BESLog::TheLog()->trace_request(x, __FILE__ ,__LINE__); } while(0)
 #define INFO_LOG(x)    do { BESLog::TheLog()->trace_info(x, __FILE__ ,__LINE__); } while(0)
 #define ERROR_LOG(x)   do { BESLog::TheLog()->trace_error(x, __FILE__ ,__LINE__); } while(0)
 #define VERBOSE(x)     do {if (BESLog::TheLog()->is_verbose()) BESLog::TheLog()->trace_verbose(x, __FILE__, __LINE__; } while(0)
 #define TIMING_LOG(x)  do { BESLog::TheLog()->trace_timing(x, __FILE__ ,__LINE__); } while(0)
 #else
-// #define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << tag << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #define REQUEST_LOG(x) do { BESLog::TheLog()->request(x); } while(0)
 #define INFO_LOG(x)    do { BESLog::TheLog()->info(x); } while(0)
 #define ERROR_LOG(x)   do { BESLog::TheLog()->error(x); } while(0)
@@ -65,10 +62,6 @@
 #define TIMING_LOG(x)  do { BESLog::TheLog()->timing(x); } while(0)
 #endif
 
-#define REQUEST_LOG_KEY "request"
-#define INFO_LOG_KEY "info"
-#define ERROR_LOG_KEY "error"
-#define VERBOSE_LOG_KEY "verbose"
 
 
 #define USE_IO_OPS false
@@ -132,11 +125,16 @@ private:
 
     bool d_use_unix_time; // Use the UNIX time value as the log time.
 
+    auto REQUEST_LOG_KEY = "request";
+    auto INFO_LOG_KEY = "info";
+    auto ERROR_LOG_KEY = "error";
+    auto VERBOSE_LOG_KEY = "verbose";
+
 protected:
     BESLog();
 
     // Dumps the current system time.
-    std::string log_record_begin();
+    std::string log_record_begin() const;
 public:
     ~BESLog() override;
 
