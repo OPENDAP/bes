@@ -243,7 +243,7 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
         ensureClean();
     }
     catch (BESError &e) {
-        ERROR_LOG("WARNING - " + string(__PRETTY_FUNCTION__) + ": " + e.get_file() + ":" + e.get_line() + ": "
+        ERROR_LOG("WARNING - " + string(__PRETTY_FUNCTION__) + ": " + e.get_file() + ":" + std::to_string(e.get_line()) + ": "
                             + e.get_message() + " (the exception was re-thrown).");
 
         // We should be clean here too.
