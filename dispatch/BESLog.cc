@@ -164,8 +164,7 @@ BESLog::~BESLog()
  * "MDT Thu Sep  9 11:05:16 2004", or in ISO8601 format:
  * "YYYY-MM-DDTHH:MM:SS zone"
  */
-std::string BESLog::log_record_begin()
-{
+std::string BESLog::log_record_begin() const {
     string log_msg;
 #ifdef ISO8601_TIME_IN_LOGS
     time_t now;

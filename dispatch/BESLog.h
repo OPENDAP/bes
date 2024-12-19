@@ -125,10 +125,10 @@ private:
 
     bool d_use_unix_time; // Use the UNIX time value as the log time.
 
-    auto REQUEST_LOG_KEY = "request";
-    auto INFO_LOG_KEY = "info";
-    auto ERROR_LOG_KEY = "error";
-    auto VERBOSE_LOG_KEY = "verbose";
+    const char* REQUEST_LOG_KEY = "request";
+    const char* INFO_LOG_KEY = "info";
+    const char* ERROR_LOG_KEY = "error";
+    const char* VERBOSE_LOG_KEY = "verbose";
 
 protected:
     BESLog();
