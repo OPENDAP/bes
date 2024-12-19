@@ -176,7 +176,7 @@ void BESServerHandler::execute(Connection *connection)
 
             BESDEBUG(MODULE,prolog << "Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
 
-            INFO_LOG("Received exit command." << endl);
+            INFO_LOG("Received exit command.");
 
             exit(CHILD_SUBPROCESS_READY);
         }
@@ -220,7 +220,7 @@ void BESServerHandler::execute(Connection *connection)
             switch (status) {
             case BES_INTERNAL_FATAL_ERROR:
                 ERROR_LOG("BES Internal Fatal Error; child returning "
-                    << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
+                    + std::to_string(SERVER_EXIT_ABNORMAL_TERMINATION) + " to the master listener.");
 
                 connection->closeConnection();
                 exit(SERVER_EXIT_ABNORMAL_TERMINATION);
@@ -231,7 +231,7 @@ void BESServerHandler::execute(Connection *connection)
                 // This should be an option. The default is to not exit. jhrg 10/4/18
                 if (TheBESKeys::TheKeys()->read_bool_key(EXIT_ON_INTERNAL_ERROR, false)) {
                     ERROR_LOG("BES Internal Error; child returning "
-                        << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
+                        + std::to_string(SERVER_EXIT_ABNORMAL_TERMINATION) + " to the master listener.");
 
                     connection->closeConnection();
                     exit(SERVER_EXIT_ABNORMAL_TERMINATION);

@@ -54,7 +54,7 @@
 
 #define prolog std::string("NgapOwnedContainer::").append(__func__).append("() - ")
 // CACHE_LOG is defined separately from INFO_LOG so that we can turn it off easily. jhrg 11/19/23
-#define CACHE_LOG(x) MR_LOG("info", x)
+#define CACHE_LOG(x) INFO_LOG(x)
 
 using namespace std;
 using namespace bes;
@@ -332,14 +332,14 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
     bool dmrpp_read = false;
     try {
         string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
-        INFO_LOG(prolog << "Look in the OPeNDAP-bucket for the DMRpp for: " << dmrpp_url_str << '\n');
+        INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
         curl::http_get(dmrpp_url_str, dmrpp_string);
         map <string, string, std::less<>> content_filters;
         if (!get_opendap_content_filters(content_filters)) {
             throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
         }
         filter_response(content_filters, dmrpp_string);
-        INFO_LOG(prolog << "Found the DMRpp in the OPeNDAP-bucket for: " << dmrpp_url_str << '\n');
+        INFO_LOG(prolog + "Found the DMRpp in the OPeNDAP-bucket for: " + dmrpp_url_str);
         dmrpp_read = true;
     }
     catch (http::HttpError &http_error) {
@@ -353,8 +353,8 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
             case 400:
             case 401:
             case 403:
-                ERROR_LOG(prolog << "Looked in the OPeNDAP bucket for the DMRpp for: " << get_real_name()
-                                 << " but got HTTP Status: " << http_error.http_status() << '\n');
+                ERROR_LOG(prolog + "Looked in the OPeNDAP bucket for the DMRpp for: " + get_real_name()
+                                 + " but got HTTP Status: " + std::to_string(http_error.http_status()));
                 dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
                 dmrpp_read = false;
                 break;
@@ -384,7 +384,7 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     try {
         string data_url = build_data_url_to_daac_bucket(get_real_name());
         string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
-        INFO_LOG(prolog << "Look in the DAAC-bucket for the DMRpp for: " << dmrpp_url_str << '\n');
+        INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
         curl::http_get(dmrpp_url_str, dmrpp_string);
         // filter the DMRPP from the DAAC's bucket to replace the template href with the data_url
         map <string, string, std::less<>> content_filters;
@@ -392,7 +392,7 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
             throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
         }
         filter_response(content_filters, dmrpp_string);
-        INFO_LOG(prolog << "Found the DMRpp in the DAAC-bucket for: " << dmrpp_url_str << '\n');
+        INFO_LOG(prolog + "Found the DMRpp in the DAAC-bucket for: " + dmrpp_url_str);
     }
     catch (http::HttpError &http_error) {
         http_error.set_message(http_error.get_message() + ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");

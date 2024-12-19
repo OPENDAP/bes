@@ -33,7 +33,7 @@
 #include "config.h"
 
 #include <iostream>
-#include <time.h>
+#include <ctime>
 #include <string>
 #include <sstream>
 
@@ -53,7 +53,7 @@
 
 using namespace std;
 
-BESLog *BESLog::d_instance = 0;
+BESLog *BESLog::d_instance = nullptr;
 const string BESLog::mark = string("|&|");
 
 
@@ -76,7 +76,7 @@ const string BESLog::mark = string("|&|");
  * @see BESKeys
  */
 BESLog::BESLog() :
-    d_flushed(1), d_file_buffer(0), d_suspended(0), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
+    d_flushed(1), d_file_buffer(nullptr), d_suspended(0), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
 {
     d_suspended = 0;
     bool found = false;
@@ -88,7 +88,7 @@ BESLog::BESLog() :
         msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
         BESDEBUG(MODULE,msg.str());
         cerr << msg.str();
-        throw bife;
+        throw;
     }
     catch (...) {
         stringstream msg;
@@ -100,8 +100,8 @@ BESLog::BESLog() :
 
     // By default, use UTC in the logs.
     found = false;
-    string local_time;
     try {
+        string local_time;
         TheBESKeys::TheKeys()->get_value("BES.LogTimeLocal", local_time, found);
         d_use_local_time = found && (BESUtil::lowercase(local_time) == "yes");
         BESDEBUG(MODULE, prolog << "d_use_local_time: " << (d_use_local_time?"true":"false") << endl);
@@ -154,7 +154,7 @@ BESLog::~BESLog()
 {
     d_file_buffer->close();
     delete d_file_buffer;
-    d_file_buffer = 0;
+    d_file_buffer = nullptr;
 }
 
 /** @brief Protected method that dumps the date/time to the log file
@@ -164,17 +164,18 @@ BESLog::~BESLog()
  * "MDT Thu Sep  9 11:05:16 2004", or in ISO8601 format:
  * "YYYY-MM-DDTHH:MM:SS zone"
  */
-void BESLog::dump_time()
+std::string BESLog::log_record_begin()
 {
+    string log_msg;
 #ifdef ISO8601_TIME_IN_LOGS
     time_t now;
     time(&now);
 
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
     if(d_use_unix_time){
-        (*d_file_buffer) << now;
+        log_msg = std::to_string(now);
     }
     else {
+        char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
         struct tm date_time{};
         if (!d_use_local_time){
             gmtime_r(&now, &date_time);
@@ -183,25 +184,26 @@ void BESLog::dump_time()
             localtime_r(&now, &date_time);
         }
         (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
-        (*d_file_buffer) << buf;
+        log_msg = buf;
     }
 #else
-    const time_t sctime = time(NULL);
+    const time_t sctime = time(nullptr);
     const struct tm *sttime = localtime(&sctime);
     char zone_name[10];
     strftime(zone_name, sizeof(zone_name), "%Z", sttime);
     char *b = asctime(sttime);
 
-    (*d_file_buffer) << zone_name << " ";
+    log_msg = zone_name;
+    log_msg += " ";
     for (register int j = 0; b[j] != '\n'; j++)
-        (*d_file_buffer) << b[j];
+        log_msg += b[j];
 #endif
 
-    (*d_file_buffer) << mark << getpid() << mark;
-
-    d_flushed = 0;
+    log_msg += mark + std::to_string(getpid()) + mark;
+    return log_msg;
 }
 
+#if USE_IO_OPS
 /** @brief Overloaded inserter that writes the specified string.
  *
  * @todo Decide if this is really necessary.
@@ -355,11 +357,6 @@ BESLog& BESLog::operator<<(p_ostream_manipulator val)
     return *this;
 }
 
-void BESLog::flush_me(){
-    (*d_file_buffer) << flush;
-    d_flushed = 1;
-}
-
 /** @brief Overloaded inserter that takes ios methods
  *
  * Overloaded inserter that can take the address oct, dec and hex functions.
@@ -371,6 +368,36 @@ BESLog& BESLog::operator<<(p_ios_manipulator val)
     if (!d_suspended) (*d_file_buffer) << val;
     return *this;
 }
+#endif
+
+void BESLog::log(const std::string &tag, const std::string &msg) {
+
+    *d_file_buffer << log_record_begin() << tag << mark << msg ;
+    if(!msg.empty() && msg.back() != '\n')
+        *d_file_buffer << "\n";
+
+    *d_file_buffer << flush;
+}
+
+void BESLog::trace_log(const std::string &tag, const std::string &msg, const std::string &file, const int line)
+{
+    *d_file_buffer << log_record_begin() << "trace-" << tag << BESLog::mark;
+    *d_file_buffer << file << BESLog::mark << line << BESLog::mark << msg ;
+    if(!msg.empty() && msg.back() != '\n')
+        *d_file_buffer << "\n";
+
+    *d_file_buffer << flush;
+
+}
+
+
+#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+
+void BESLog::flush_me(){
+    (*d_file_buffer) << flush;
+    d_flushed = 1;
+}
+
 
 /** @brief dumps information about this object
  *

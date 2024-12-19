@@ -38,30 +38,40 @@
 #include <fstream>
 #include <string>
 
+#include "BESObj.h"
+
 // Note that the BESLog::operator<<() methods will prefix output with
 // the time and PID by checking for the flush and endl stream operators.
 //
 // TRACE_LOGGING provides a way to see just where in the code the log info
 // is written from. jhrg 11/14/17
 
-#undef TRACE_LOGGING
+#undef  TRACE_LOGGING
 
 #ifdef TRACE_LOGGING
-#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+// #define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+
+#define REQUEST_LOG(x) do { BESLog::TheLog()->trace_request(x, __FILE__ ,__LINE__); } while(0)
+#define INFO_LOG(x)    do { BESLog::TheLog()->trace_info(x, __FILE__ ,__LINE__); } while(0)
+#define ERROR_LOG(x)   do { BESLog::TheLog()->trace_error(x, __FILE__ ,__LINE__); } while(0)
+#define VERBOSE(x)     do {if (BESLog::TheLog()->is_verbose()) BESLog::TheLog()->trace_verbose(x, __FILE__, __LINE__; } while(0)
+#define TIMING_LOG(x)  do { BESLog::TheLog()->trace_timing(x, __FILE__ ,__LINE__); } while(0)
 #else
-#if USE_LOG_CATEGORIES
-#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << tag << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
-#else
-#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
-#endif
+// #define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << tag << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define REQUEST_LOG(x) do { BESLog::TheLog()->request(x); } while(0)
+#define INFO_LOG(x)    do { BESLog::TheLog()->info(x); } while(0)
+#define ERROR_LOG(x)   do { BESLog::TheLog()->error(x); } while(0)
+#define VERBOSE(x)     do {if (BESLog::TheLog()->is_verbose()) BESLog::TheLog()->verbose(x); } while(0)
+#define TIMING_LOG(x)  do { BESLog::TheLog()->timing(x); } while(0)
 #endif
 
-#define REQUEST_LOG(x) MR_LOG("request", x)
-#define INFO_LOG(x) MR_LOG("info", x)
-#define ERROR_LOG(x) MR_LOG("error", x)
-#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) MR_LOG("verbose", x); } while( 0 )
+#define REQUEST_LOG_KEY "request"
+#define INFO_LOG_KEY "info"
+#define ERROR_LOG_KEY "error"
+#define VERBOSE_LOG_KEY "verbose"
 
-#include "BESObj.h"
+
+#define USE_IO_OPS false
 
 /** @brief Provides a mechanism for applications to log information to an
  * external file.
@@ -126,7 +136,7 @@ protected:
     BESLog();
 
     // Dumps the current system time.
-    void dump_time();
+    std::string log_record_begin();
 public:
     ~BESLog() override;
 
@@ -193,6 +203,7 @@ public:
         return d_verbose;
     }
 
+#if USE_IO_OPS
     /// Defines a data type p_ios_manipulator "pointer to function that takes ios& and returns ios&".
     typedef std::ios& (*p_ios_manipulator)(std::ios&);
     /// Defines a data type p_std::ostream_manipulator "pointer to function that takes std::ostream& and returns std::ostream&".
@@ -211,6 +222,23 @@ public:
 
     BESLog& operator<<(p_ostream_manipulator);
     BESLog& operator<<(p_ios_manipulator);
+
+#endif
+
+    void log(const std::string &tag, const std::string &msg);
+    void request(const std::string &msg){ log(REQUEST_LOG_KEY,msg); }
+    void info(const std::string &msg){ log(INFO_LOG_KEY,msg); }
+    void error(const std::string &msg){ log(ERROR_LOG_KEY,msg); }
+    void verbose(const std::string &msg){ log(VERBOSE_LOG_KEY,msg); }
+    void timing(const std::string &msg){ log("timing",msg); }
+
+    void trace_log(const std::string &tag, const std::string &msg, const std::string &file, int line);
+
+    void trace_request(const std::string &msg, const std::string &file, int line){ trace_log(REQUEST_LOG_KEY,msg, file, line ); }
+    void trace_info(const std::string &msg, const std::string &file, int line){ trace_log("info",msg, file, line ); }
+    void trace_error(const std::string &msg, const std::string &file, int line){ trace_log("error",msg, file, line ); }
+    void trace_verbose(const std::string &msg, const std::string &file, int line){ trace_log("verbose",msg, file, line ); }
+    void trace_timing(const std::string &msg, const std::string &file, int line){ trace_log("timing",msg, file, line ); }
 
     void dump(std::ostream &strm) const override;
 

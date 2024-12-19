@@ -47,7 +47,6 @@ using std::string;
 using std::endl;
 using std::ostream;
 
-#define TIMING_LOG(x) MR_LOG(TIMING_LOG_KEY, x)
 
 #define MODULE TIMING_LOG_KEY
 #define prolog string("BESStopWatch::").append(__func__).append("() - ")

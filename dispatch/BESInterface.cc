@@ -99,17 +99,18 @@ static inline void downcase(string &s)
  * @brief Write a phrase that describes the current RSS for this process
  * @param out Write to this stream
  */
-ostream &add_memory_info(ostream &out)
+std::string memory_info()
 {
     long mem_size = BESUtil::get_current_memory_usage();
+    string mem_info;
     if (mem_size) {
-        out << ", current memory usage is " << mem_size << " KB.";
+        mem_info = "Current memory usage is: " + std::to_string(mem_size) +" KB.";
     }
     else {
-        out << ", current memory usage is unknown.";
+        mem_info =  "Current memory usage is unknown.";
     }
 
-    return out;
+    return mem_info;
 }
 
 /**
@@ -158,12 +159,12 @@ static void log_error(const BESError &e)
     string err_msg(e.get_message());
 
     if (TheBESKeys::read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg) << add_memory_info << "\n");
+        ERROR_LOG("ERROR: " + error_name + ": " + remove_crlf(err_msg) + " " + memory_info());
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << remove_crlf(err_msg)
-            << " (" << e.get_file() << ":" << e.get_line() << ")"
-            << add_memory_info << "\n");
+        ERROR_LOG("ERROR: " + error_name + ": " + remove_crlf(err_msg)
+            + " (" + e.get_file() + ":" + std::to_string(e.get_line()) + ") "
+            + memory_info() + "\n");
     }
 }
 
@@ -323,7 +324,8 @@ void BESInterface::set_bes_timeout()
     string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
     if (found) {
         d_bes_timeout = strtol(context.c_str(), NULL, 10);
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << d_bes_timeout << " seconds (from context)." << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout)
+            + " seconds (from context).");
 
     }
     else {
@@ -335,7 +337,8 @@ void BESInterface::set_bes_timeout()
         // If the value is not set in teh BES keys, d_timeout_from_keys will get the
         // default value of 0. jhrg 4/20/22
         d_bes_timeout = TheBESKeys::TheKeys()->read_int_key(BES_TIMEOUT_KEY, 0);
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << d_bes_timeout << " seconds (from keys)." << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout)
+            + " seconds (from keys).");
     }
 }
 
@@ -419,7 +422,7 @@ int BESInterface::execute_request(const string &from)
     // information.
     int status = 0; // save the return status from exception_manager() and return that.
     try {
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " request received" << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " request received");
 
         // Initialize the transmitter for this interface instance to the BASIC
         // TRANSMITTER. This ensures that a simple response, such as an error,
@@ -503,10 +506,10 @@ int BESInterface::finish(int status)
         end_request();
     }
     catch (BESError &ex) {
-        ERROR_LOG("Problem logging status or running end of request cleanup: " << ex.get_message() << endl);
+        ERROR_LOG("Problem logging status or running end of request cleanup: " + ex.get_message());
     }
     catch (...) {
-        ERROR_LOG("Unknown problem logging status or running end of request cleanup" << endl);
+        ERROR_LOG("Unknown problem logging status or running end of request cleanup");
     }
 
     return status;

@@ -302,7 +302,7 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
                 + "' does not handle the response type '" + dhi.action + "'", __FILE__, __LINE__);
         }
 
-        VERBOSE("Found handler '" << rh->get_name() << "' for item '" << dhi.container->get_symbolic_name() << "'." << endl);
+        VERBOSE("Found handler '" + rh->get_name() + "' for item '" + dhi.container->get_symbolic_name() + "'.\n");
 
         request_handler_method(dhi); // This is where the request handler method is called
     }

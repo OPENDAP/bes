@@ -73,10 +73,11 @@ constexpr auto MODULE_VERBOSE = "dap_utils_verbose";
 static void log_response_and_memory_size_helper(const std::string &caller_id, long response_size) {
     auto mem_size = BESUtil::get_current_memory_usage();    // size in KB or 0. jhrg 4/6/22
     if (mem_size) {
-        INFO_LOG(caller_id + "response size: " << response_size << "KB|&|memory used by process: " << mem_size << "KB" << endl);
+        INFO_LOG(caller_id + "response size: " + std::to_string(response_size) + "KB"+BESLog::mark+"memory used by process: " +
+            std::to_string(mem_size) + "KB");
     }
     else {
-        INFO_LOG(caller_id + "response size: " << response_size << "KB" << endl);
+        INFO_LOG(caller_id + "response size: " + std::to_string(response_size) + "KB");
     }
 }
 

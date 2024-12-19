@@ -1298,8 +1298,7 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
     }
 
     if (arg.status() == false) {
-        (*BESLog::TheLog())<<  "HDF-EOS parse error while processing a "
-                           << metadata  << " HDFEOS attribute. (2) " << endl;
+        INFO_LOG("HDF-EOS parse error while processing a " + metadata  + " HDFEOS attribute. (2)");
 #if 0
 // for debugging
                            << arg.error()->get_error_message() << endl;
@@ -2174,7 +2173,7 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-            ERROR_LOG("Parse error while processing a CoreMetadata attribute. (2) " << endl);
+            ERROR_LOG("Parse error while processing a CoreMetadata attribute. (2)");
 #if 0
         //        << arg.error()->get_error_message() << endl;
 #endif
@@ -2198,7 +2197,7 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-            ERROR_LOG("Parse error while processing an ArchiveMetadata attribute. (2) " << endl);
+            ERROR_LOG("Parse error while processing an ArchiveMetadata attribute. (2) ");
 #if 0
  //               << arg.error()->get_error_message() << endl;
 #endif
@@ -2221,7 +2220,9 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
         }
 
         if (arg.status() == false) {
-            ERROR_LOG("Parse error while processing a StructMetadata attribute.  (2)" << endl);
+            // @TODO Does the flow of control ever reach this point? Doesn't throwing the Error above mean
+            //   that this can never be true??
+            ERROR_LOG("Parse error while processing a StructMetadata attribute.  (2)");
         }
 
         // Errors returned from here are ignored.
@@ -2593,7 +2594,7 @@ bool read_das_special_eos2_core(DAS &das,const HDFSP::File* f,const string& file
     
             // Errors returned from here are ignored.
             if (arg.status() == false) {
-                ERROR_LOG("Parse error while processing a CoreMetadata attribute. (2)" << endl);
+                ERROR_LOG("Parse error while processing a CoreMetadata attribute. (2)");
 #if 0
                 //for debugging
                 << arg.error()->get_error_message() << endl;
@@ -2619,7 +2620,7 @@ bool read_das_special_eos2_core(DAS &das,const HDFSP::File* f,const string& file
     
             // Errors returned from here are ignored.
             if (arg.status() == false) 
-                ERROR_LOG("Parse error while processing an ArchiveMetadata attribute. (2)" << endl);
+                ERROR_LOG("Parse error while processing an ArchiveMetadata attribute. (2)");
     
             hdfeos_delete_buffer(buf);
         }
@@ -3977,7 +3978,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                 sdmap[ref].in_vgroup = true;
                 break;
             default:
-                ERROR_LOG("unknown tag: " << tag << " ref: " << ref << endl);
+                ERROR_LOG("unknown tag: " + std::to_string(tag) + " ref: " + std::to_string(ref));
                 // TODO: Make this an exception? jhrg 8/19/11
                 // Don't make an exception. Possibly you will meet other valid tags. Need to know if it
                 // is worth to tackle this. KY 09/13/12
@@ -4161,8 +4162,7 @@ void AddHDFAttr(DAS & das, const string & varname,
 
                 // We don't use the parse_error for this case since it generates memory leaking. KY 2014-02-25
                 if (arg.status() == false) {
-                    ERROR_LOG("HDF-EOS parse error while processing a "
-                    << container_name << " HDFEOS attribute. (2)" << endl);
+                    ERROR_LOG("HDF-EOS parse error while processing a " + container_name + " HDFEOS attribute. (2)");
                     //<< arg.error()->get_error_message() << endl;
                 }
 

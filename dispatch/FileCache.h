@@ -50,8 +50,8 @@
 
 // Make all the error log messages uniform in one small way. This is a macro
 // so that we can switch to exceptions if that seems necessary. jhrg 11/06/23
-#define ERROR(msg) ERROR_LOG("FileCache: " << msg)
-#define INFO(msg) INFO_LOG("FileCache: " << msg)
+#define ERROR(msg) ERROR_LOG("FileCache: " + std::string(msg))
+#define INFO(msg) INFO_LOG("FileCache: " + std::string(msg))
 
 // If this is defined, then the access time of a file is updated when it is
 // closed by the Item dtor. This is a hack to get around the fact that the
@@ -150,20 +150,20 @@ class FileCache {
         CacheLock &operator=(const CacheLock &) = delete;
         ~CacheLock() {
             if (flock(d_fd, LOCK_UN) < 0)
-                ERROR("Could not unlock the FileCache.\n");
+                ERROR("Could not unlock the FileCache.");
         }
 
         bool lock_the_cache(int lock_type, const std::string &msg = "") {
             if (d_fd < 0) {
-                ERROR("Call to CacheLock::lock_the_cache with uninitialized lock object\n");
+                ERROR("Call to CacheLock::lock_the_cache with uninitialized lock object.");
                 return false;
             }
             const std::lock_guard<std::mutex> lock(cache_lock_mtx);
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
-                    ERROR(msg << get_lock_type_string(lock_type) << get_errno() << '\n');
+                    ERROR(msg + get_lock_type_string(lock_type) + get_errno());
                 else
-                    ERROR(msg << get_errno() << '\n');
+                    ERROR(msg + get_errno() );
                 return false;
             }
             return true;
@@ -191,7 +191,7 @@ class FileCache {
             closedir (dir);
         }
         else {
-            ERROR("Could not open the cache directory (" << d_cache_dir << ").\n");
+            ERROR("Could not open the cache directory (" + d_cache_dir + ").");
             return false;
         }
 
@@ -275,7 +275,7 @@ public:
             hex_stream << std::hex << std::setw(2) << std::setfill('0') << (int)b;
         }
         if (log_it)
-            INFO_LOG("FileCache::hash_key: " << key << " -> " << hex_stream.str() << '\n');
+            INFO_LOG(":hash_key() " + key + " -> " + hex_stream.str());
         return {hex_stream.str()};
     }
 
@@ -307,15 +307,15 @@ public:
 
         bool lock_the_item(int lock_type, const std::string &msg = "") {
             if (d_fd < 0) {
-                ERROR("Call to Item::lock_the_item() with uninitialized item file descriptor.\n");
+                ERROR("Call to Item::lock_the_item() with uninitialized item file descriptor.");
                 return false;
             }
             const std::lock_guard<std::mutex> lock(item_mtx);
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
-                    ERROR("Could not get " << get_lock_type_string(lock_type) << " lock: " << get_errno() << '\n');
+                    ERROR("Could not get " + get_lock_type_string(lock_type) + " lock: " + get_errno() );
                 else
-                    ERROR(msg << ": " << get_errno() << '\n');
+                    ERROR(msg  +  ": " + get_errno());
                 return false;
             }
 
@@ -342,7 +342,7 @@ public:
         const PutItem &operator=(const PutItem &) = delete;
         ~PutItem() override {
             if (!d_fc.update_cache_info_size(d_fc.get_cache_info_size() + get_file_size(get_fd()))) {
-                ERROR("Could not update the cache info file while unlocking a put item: " << get_errno() << '\n');
+                ERROR("Could not update the cache info file while unlocking a put item: " + get_errno() );
             }
         }
     };
@@ -375,7 +375,7 @@ public:
         if (stat(cache_dir.c_str(), &sb) != 0) {
             BESUtil::mkdir_p(cache_dir, 0775);
             if (stat(cache_dir.c_str(), &sb) != 0) {
-                ERROR_LOG("FileCache::initialize() - could not stat the cache directory: " << cache_dir << '\n');
+                ERROR_LOG("FileCache::initialize() - could not stat the cache directory: " + cache_dir);
                 return false;
             }
         }
@@ -383,7 +383,7 @@ public:
         d_cache_dir = cache_dir;
 
         if (!open_cache_info()) {
-            ERROR_LOG("FileCache::initialize() - could not open the cache info file: " << cache_dir << '\n');
+            ERROR_LOG("FileCache::initialize() - could not open the cache info file: " + cache_dir);
             return false;
         }
 
@@ -413,11 +413,11 @@ public:
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
             if (errno == EEXIST) {
-                INFO_LOG("Could not create the key/file; it already exists: " << key << " " << get_errno() << '\n');
+                INFO_LOG("Could not create the key/file; it already exists: " + key + " " + get_errno() );
                 return false;
             }
             else {
-                ERROR("Error creating key/file: " << key << " " << get_errno() << '\n');
+                ERROR("Error creating key/file: " + key + " " + get_errno());
                 return false;
             }
         }
@@ -432,7 +432,7 @@ public:
         // Copy the contents of the file_name to the new file
         int fd2;
         if ((fd2 = open(file_name.c_str(), O_RDONLY)) < 0) {
-            ERROR("Error reading from source file: " << file_name << " " << get_errno() << '\n');
+            ERROR("Error reading from source file: " + file_name + " " + get_errno());
             return false;
         }
 
@@ -444,7 +444,7 @@ public:
         ssize_t n;
         while ((n = read(fd2, buf.data(), buf.size())) > 0) {
             if (write(fd, buf.data(), n) != n) {
-                ERROR("Error writing to destination file: " << key << " " << get_errno() << '\n');
+                ERROR("Error writing to destination file: " + key + " " + get_errno());
                 return false;
             }
         }
@@ -480,11 +480,11 @@ public:
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
             if (errno == EEXIST) {
-                INFO("Could not create the key/file; it already exists (2): " << key << " " << get_errno() << '\n');
+                INFO("Could not create the key/file; it already exists (2): " + key + " " + get_errno());
                 return false;
             }
             else {
-                ERROR("Error creating key/file (2): " << key << " " << get_errno() << '\n');
+                ERROR("Error creating key/file (2): " + key + " " + get_errno() );
                 return false;
             }
         }
@@ -524,7 +524,7 @@ public:
             if (errno == ENOENT)
                 return false;
             else {
-                ERROR("Error opening the cache item in get for: " << key << " " << get_errno() << '\n');
+                ERROR("Error opening the cache item in get for: " + key + " " + get_errno());
                 return false;
             }
         }
@@ -557,7 +557,7 @@ public:
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
         int fd = open(key_file_name.c_str(), O_WRONLY, 0666);
         if (fd < 0) {
-            ERROR("Error opening the cache item in del() for: " << key << " " << get_errno() << '\n');
+            ERROR("Error opening the cache item in del() for: " + key + " " + get_errno());
             return false;
         }
 
@@ -568,7 +568,7 @@ public:
         auto file_size = get_file_size(fd);
 
         if (remove(key_file_name.c_str()) != 0) {
-            ERROR("Error removing " << key << " from cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
+            ERROR("Error removing " + key + " from cache directory (" + d_cache_dir + ") - " + get_errno());
             return false;
         }
 
@@ -596,7 +596,7 @@ public:
 
         for (const auto &file: files) {
             if (remove(file.c_str()) != 0) {
-                ERROR("Error removing " << file << " from cache directory (" << d_cache_dir << ") - " << get_errno() << '\n');
+                ERROR("Error removing " + file + " from cache directory (" + d_cache_dir + ") - " + get_errno());
                 return false;
             }
         }
@@ -643,7 +643,7 @@ public:
             struct stat sb{0};
 
             if (stat(file.c_str(), &sb) < 0) {
-                ERROR("Error getting info on " << file << " in purge() - " << get_errno() << '\n');
+                ERROR("Error getting info on " + file + " in purge() - " + get_errno());
                 return false;
             }
 
@@ -652,7 +652,7 @@ public:
         }
 
         if (ci_size != total_size) {
-            ERROR("Error cache_info and the measured size of items differ by " << std::to_string(total_size) << " bytes\n");
+            ERROR("Error cache_info and the measured size of items differ by " + std::to_string(total_size) + " bytes.");
         }
 
         // choose which files to remove - since the 'items' map orders the things by time, use that ordering
@@ -665,7 +665,7 @@ public:
             // cannot get that lock, move on to the next item. jhrg 11/06/23
             int fd = open(item.second.d_name.c_str(), O_WRONLY, 0666);
             if (fd < 0) {
-                ERROR("Error opening the cache item in purge() for: " << item.second.d_name << " " << get_errno() << '\n');
+                ERROR("Error opening the cache item in purge() for: " + item.second.d_name + " " + get_errno());
                 return false;
             }
             Item item_lock(fd);  // The Item dtor is called on every loop iteration according to Google. jhrg 11/03/23
@@ -673,7 +673,7 @@ public:
                 continue;
 
             if (remove(item.second.d_name.c_str()) != 0) {
-                ERROR("Error removing " << item.second.d_name << " from cache directory in purge() - " << get_errno() << '\n');
+                ERROR("Error removing " + item.second.d_name + " from cache directory in purge() - " + get_errno());
                 // but keep going; this is a soft error
             }
             else {
@@ -684,7 +684,7 @@ public:
 
         // update the cache info file
         if (!update_cache_info_size(ci_size - removed_bytes)) {
-            ERROR("Error updating the cache_info size in purge() - " << get_errno() << '\n');
+            ERROR("Error updating the cache_info size in purge() - " + get_errno());
             return false;
         }
 
