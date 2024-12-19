@@ -63,9 +63,6 @@
 #endif
 
 
-
-#define USE_IO_OPS false
-
 /** @brief Provides a mechanism for applications to log information to an
  * external file.
  *
@@ -129,12 +126,17 @@ private:
     const char* INFO_LOG_KEY = "info";
     const char* ERROR_LOG_KEY = "error";
     const char* VERBOSE_LOG_KEY = "verbose";
+    const char* TIMING_LOG_KEY = "timing";
 
 protected:
     BESLog();
 
-    // Dumps the current system time.
+    // Starts a log record with time and PID.
     std::string log_record_begin() const;
+
+    void log(const std::string &tag, const std::string &msg);
+    void trace_log(const std::string &tag, const std::string &msg, const std::string &file, int line);
+
 public:
     ~BESLog() override;
 
@@ -201,42 +203,38 @@ public:
         return d_verbose;
     }
 
-#if USE_IO_OPS
-    /// Defines a data type p_ios_manipulator "pointer to function that takes ios& and returns ios&".
-    typedef std::ios& (*p_ios_manipulator)(std::ios&);
-    /// Defines a data type p_std::ostream_manipulator "pointer to function that takes std::ostream& and returns std::ostream&".
-    typedef std::ostream& (*p_ostream_manipulator)(std::ostream&);
+    void request(const std::string &msg) {
+        log(REQUEST_LOG_KEY, msg);
+    }
+    void info(const std::string &msg) {
+        log(INFO_LOG_KEY, msg);
+    }
+    void error(const std::string &msg) {
+        log(ERROR_LOG_KEY, msg);
+    }
+    void verbose(const std::string &msg) {
+        log(VERBOSE_LOG_KEY, msg);
+    }
+    void timing(const std::string &msg) {
+        log(TIMING_LOG_KEY, msg);
+    }
 
-    BESLog& operator <<(std::string&);
-    BESLog& operator <<(const std::string&);
-    BESLog& operator <<(char*);
-    BESLog& operator <<(const char*);
-    BESLog& operator <<(int);
-    BESLog& operator <<(unsigned int);
-    BESLog& operator <<(char);
-    BESLog& operator <<(long);
-    BESLog& operator <<(unsigned long);
-    BESLog& operator <<(double);
 
-    BESLog& operator<<(p_ostream_manipulator);
-    BESLog& operator<<(p_ios_manipulator);
-
-#endif
-
-    void log(const std::string &tag, const std::string &msg);
-    void request(const std::string &msg){ log(REQUEST_LOG_KEY,msg); }
-    void info(const std::string &msg){ log(INFO_LOG_KEY,msg); }
-    void error(const std::string &msg){ log(ERROR_LOG_KEY,msg); }
-    void verbose(const std::string &msg){ log(VERBOSE_LOG_KEY,msg); }
-    void timing(const std::string &msg){ log("timing",msg); }
-
-    void trace_log(const std::string &tag, const std::string &msg, const std::string &file, int line);
-
-    void trace_request(const std::string &msg, const std::string &file, int line){ trace_log(REQUEST_LOG_KEY,msg, file, line ); }
-    void trace_info(const std::string &msg, const std::string &file, int line){ trace_log("info",msg, file, line ); }
-    void trace_error(const std::string &msg, const std::string &file, int line){ trace_log("error",msg, file, line ); }
-    void trace_verbose(const std::string &msg, const std::string &file, int line){ trace_log("verbose",msg, file, line ); }
-    void trace_timing(const std::string &msg, const std::string &file, int line){ trace_log("timing",msg, file, line ); }
+    void trace_request(const std::string &msg, const std::string &file, int line) {
+        trace_log(REQUEST_LOG_KEY, msg, file, line);
+    }
+    void trace_info(const std::string &msg, const std::string &file, int line) {
+        trace_log(INFO_LOG_KEY, msg, file, line);
+    }
+    void trace_error(const std::string &msg, const std::string &file, int line) {
+        trace_log(ERROR_LOG_KEY, msg, file, line);
+    }
+    void trace_verbose(const std::string &msg, const std::string &file, int line) {
+        trace_log(VERBOSE_LOG_KEY, msg, file, line);
+    }
+    void trace_timing(const std::string &msg, const std::string &file, int line) {
+        trace_log(TIMING_LOG_KEY, msg, file, line);
+    }
 
     void dump(std::ostream &strm) const override;
 
