@@ -76,7 +76,7 @@ const string BESLog::mark = string("|&|");
  * @see BESKeys
  */
 BESLog::BESLog() :
-    d_flushed(1), d_file_buffer(nullptr), d_suspended(0), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
+    d_file_buffer(nullptr), d_suspended(0), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
 {
     d_suspended = 0;
     bool found = false;
@@ -214,23 +214,14 @@ void BESLog::log(const std::string &tag, const std::string &msg) {
 
 void BESLog::trace_log(const std::string &tag, const std::string &msg, const std::string &file, const int line)
 {
-    *d_file_buffer << log_record_begin() << "trace-" << tag << BESLog::mark;
-    *d_file_buffer << file << BESLog::mark << line << BESLog::mark << msg ;
+    *d_file_buffer << log_record_begin() << "trace-" << tag << mark;
+    *d_file_buffer << file << mark << line << mark << msg ;
     if(!msg.empty() && msg.back() != '\n')
         *d_file_buffer << "\n";
 
     *d_file_buffer << flush;
 
 }
-
-
-#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
-
-void BESLog::flush_me(){
-    (*d_file_buffer) << flush;
-    d_flushed = 1;
-}
-
 
 /** @brief dumps information about this object
  *
@@ -251,7 +242,6 @@ void BESLog::dump(ostream &strm) const
         strm << BESIndent::LMarg << "log is NOT valid" << endl;
     }
     strm << BESIndent::LMarg << "is verbose: " << d_verbose << endl;
-    strm << BESIndent::LMarg << "is flushed: " << d_flushed << endl;
     strm << BESIndent::LMarg << "is suspended: " << d_suspended << endl;
     BESIndent::UnIndent();
 }

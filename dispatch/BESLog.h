@@ -115,7 +115,6 @@ class BESLog: public BESObj {
 private:
     static BESLog * d_instance;
 
-    int d_flushed;
     std::ofstream * d_file_buffer;
     std::string d_file_name;
 
@@ -244,8 +243,6 @@ public:
     }
 
     void dump(std::ostream &strm) const override;
-
-    virtual void flush_me();
 
     static BESLog *TheLog();
 
