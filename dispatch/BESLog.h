@@ -119,6 +119,7 @@ private:
     std::string d_file_name;
     std::string d_instance_id = "-";
     std::string d_pid = "-";
+    std::string d_log_record_prolog_base;
 
     // Flag to indicate whether to log verbose messages
     bool d_verbose = false;

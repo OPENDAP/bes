@@ -163,6 +163,7 @@ BESLog::BESLog() {
     d_use_unix_time = found && (BESUtil::lowercase(s)=="true");
     BESDEBUG(MODULE, prolog << "d_use_unix_time: " << (d_use_unix_time?"true":"false") << endl);
 
+    d_log_record_prolog_base = mark + d_instance_id + mark + d_pid + mark;
 }
 
 /** @brief Cleans up the logging mechanism
@@ -187,16 +188,16 @@ BESLog::~BESLog()
  * @return The string: time + mark + pid + mark
  */
 std::string BESLog::log_record_begin() const {
-    string record_prolog;
+    string log_record_prolog;
 
     time_t now;
     time(&now);
     if(d_use_unix_time){
-        record_prolog = std::to_string(now);
+        log_record_prolog = std::to_string(now);
     }
     else {
         char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
-        struct tm date_time{};
+        tm date_time{};
         if (!d_use_local_time){
             gmtime_r(&now, &date_time);
         }
@@ -204,11 +205,11 @@ std::string BESLog::log_record_begin() const {
             localtime_r(&now, &date_time);
         }
         (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
-        record_prolog = buf;
+        log_record_prolog = buf;
     }
 
-    record_prolog += mark + d_instance_id + mark + d_pid + mark;
-    return record_prolog;
+    log_record_prolog += d_log_record_prolog_base;
+    return log_record_prolog;
 }
 
 
@@ -233,12 +234,12 @@ void BESLog::log_record(const std::string &lrt, const std::string &msg) const {
  */
 void BESLog::trace_log_record(const std::string &lrt, const std::string &msg, const std::string &file, const int line) const {
 
-        *d_file_buffer << log_record_begin() << "trace-" << lrt << mark;
-        *d_file_buffer << file << mark << line << mark << msg ;
-        if(!msg.empty() && msg.back() != '\n')
-            *d_file_buffer << "\n";
+    *d_file_buffer << log_record_begin() << "trace-" << lrt << mark;
+    *d_file_buffer << file << mark << line << mark << msg ;
+    if(!msg.empty() && msg.back() != '\n')
+        *d_file_buffer << "\n";
 
-        *d_file_buffer << flush;
+    *d_file_buffer << flush;
 }
 
 /** @brief dumps information about this object
