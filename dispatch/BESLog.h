@@ -83,11 +83,10 @@
  * current_time + BESLog::mark + to_string(getpid()) + BESLog::mark + "record_type" + BESLog::mark
  * </pre>
  *
- *
- * The logging API implements log records of type request, info, error, verbose, and
- * timing. All of these logs take a single message string as their input. The users of the
- * request logger (BESXMLInterface) and the timing logger (BESStopWatch) are
- * responsible for injecting additional log fields for their respective use cases into
+ * The BESLog API implements methods to write log records of type request, info, error,
+ * verbose, and timing. All of these logs take a single message string as their input.
+ * The users of the request logger (BESXMLInterface) and the timing logger (BESStopWatch)
+ * are responsible for injecting additional log fields for their respective use cases into
  * the message and ultimately the log record.
  *
  * It is preferred to use the logging macros REQUEST_LOG(x), INFO_LOG(x), ERROR_LOG(x),
@@ -100,8 +99,8 @@
  * </PRE>
  *
  * Note:
- *  The content and order of the request log fields are determined in BESXMLInterface::log_the_command()
- *  The content and order of the timing log fields are determined in BESStopWatch::~BESStopWatch();
+ *  - The content and order of the request log fields are determined in BESXMLInterface::log_the_command()
+ *  - The content and order of the timing log fields are determined in BESStopWatch::~BESStopWatch();
  * <PRE>
  *     TIMING_LOG("timing field value" + BESLog::mark + "next timing field value" + BESLog::mark + "another value");
  *     REQUEST_LOG("request field value" + BESLog::mark + "next request field value" + BESLog::mark + "another value");
