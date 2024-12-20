@@ -2220,8 +2220,6 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
         }
 
         if (arg.status() == false) {
-            // @TODO Does the flow of control ever reach this point? Doesn't throwing the Error above mean
-            //   that this can never be true??
             ERROR_LOG("Parse error while processing a StructMetadata attribute.  (2)");
         }
 
