@@ -92,9 +92,10 @@ private:
 
     // The following two memebers mean this chunk contains multiple linked blocks.
     // This is still a chunk but inside this chunk it contains multiple linked blocks.
-    // We will record this chunk multiple times with different multi_linked_block_index.
+    // We will record this chunk multiple times with different multi_linked_block_index_in_dmrpp_file.
+    // This is for generating the dmrpp file. 
     bool multi_linked_blocks{false};
-    unsigned int multi_linked_block_index {0};
+    unsigned int multi_linked_block_index_in_dmrpp_file {0};
 
     std::vector<std::pair<unsigned long long,unsigned long long>> mlb_offset_lengths;
 
@@ -151,7 +152,7 @@ protected:
         d_filter_mask = bs.d_filter_mask;
         linked_block = bs.linked_block;
         linked_block_index = bs.linked_block_index;
-        multi_linked_block_index = bs.multi_linked_block_index;
+        multi_linked_block_index_in_dmrpp_file = bs.multi_linked_block_index_in_dmrpp_file;
         multi_linked_blocks = bs.multi_linked_blocks;
         d_data_url = bs.d_data_url;
         d_byte_order = bs.d_byte_order;
@@ -238,7 +239,7 @@ public:
     Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size, unsigned long long offset,
           const std::vector<unsigned long long> &pia_vec,bool is_multi_lb, unsigned int lb_index) :
             d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
-            d_size(size), d_offset(offset),  multi_linked_blocks(is_multi_lb), multi_linked_block_index(lb_index) {
+            d_size(size), d_offset(offset),  multi_linked_blocks(is_multi_lb), multi_linked_block_index_in_dmrpp_file(lb_index) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
@@ -248,7 +249,7 @@ public:
     Chunk(std::string order, unsigned long long size, unsigned long long offset,
           const std::vector<unsigned long long> &pia_vec,bool is_multi_lb, unsigned int lb_index) :
             d_byte_order(std::move(order)),
-            d_size(size), d_offset(offset),  multi_linked_blocks(is_multi_lb), multi_linked_block_index(lb_index) {
+            d_size(size), d_offset(offset),  multi_linked_blocks(is_multi_lb), multi_linked_block_index_in_dmrpp_file(lb_index) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
@@ -441,10 +442,9 @@ public:
         return multi_linked_blocks;
     }
 
-    // TODO: change the member and method name to something _index_in_dmrpp_file
-    virtual unsigned int get_multi_linked_block_index() const
+    virtual unsigned int get_multi_linked_block_index_in_dmrpp_file() const
     {
-        return multi_linked_block_index;
+        return multi_linked_block_index_in_dmrpp_file;
     }
 
 
@@ -561,8 +561,7 @@ public:
         }
 
     }
-    //bool has_mlb_offset_lengths() {return !mlb_offset_lengths.empty();}
-    void obtain_multi_linked_offset_length(vector<std::pair<unsigned long long, unsigned long long>> & cur_chunk_lb_offset_length) {
+    void obtain_multi_linked_offset_length(vector<std::pair<unsigned long long, unsigned long long>> & cur_chunk_lb_offset_length) const{
 
          for (const auto &lb_ol:mlb_offset_lengths) {
             

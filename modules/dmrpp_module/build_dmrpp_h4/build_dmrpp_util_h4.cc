@@ -519,15 +519,13 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
                 for (unsigned int i = 0; i < map_info.nblocks; i++) {
                     VERBOSE(cerr << "offsets[" << k << ", " << i << "]: " << map_info.offsets[i] << endl);
                     VERBOSE(cerr << "lengths[" << k << ", " << i << "]: " << map_info.lengths[i] << endl);
-                    // STOP: add the block index for this chunk.
+                    // add the block index for this chunk.
                     dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], pia,true,i);
 
                 }
             }
 
             else if (map_info.nblocks == 1) {
-                    //VERBOSE(cerr << "offsets[" << k << ", " << 0 << "]: " << map_info.offsets[0] << endl);
-                    //VERBOSE(cerr << "lengths[" << k << ", " << 0 << "]: " << map_info.lengths[0] << endl);
                     dc->add_chunk(endian_name, map_info.lengths[0], map_info.offsets[0], pia);
             }
 

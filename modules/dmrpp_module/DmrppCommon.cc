@@ -654,7 +654,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
                 // Here we also need to check if this chunk contains multi-linked blocks. If yes, add the linked block index here.
                 if (chunk->get_multi_linked_blocks()) {
                     ostringstream mlb_index;
-                    mlb_index << chunk->get_multi_linked_block_index();
+                    mlb_index << chunk->get_multi_linked_block_index_in_dmrpp_file();
                     if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "LinkedBlockIndex",
                                                     (const xmlChar *) mlb_index.str().c_str()) < 0)
                         throw BESInternalError("Could not write attribute fm(filter mask)", __FILE__, __LINE__);

@@ -373,7 +373,7 @@ public:
             const std::string &byte_order,
             unsigned long long size,
             unsigned long long offset,
-            const std::vector<unsigned long long> &position_in_array, bool multi_linked_blocks, unsigned int multi_linked_block_index);
+            const std::vector<unsigned long long> &position_in_array, bool multi_linked_blocks, unsigned int multi_linked_block_index_in_dmrpp_file);
 
 
     virtual unsigned long add_chunk(
