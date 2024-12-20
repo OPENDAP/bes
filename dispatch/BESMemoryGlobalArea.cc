@@ -103,8 +103,6 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                 throw BESInternalFatalError(line, __FILE__, __LINE__);
             }
             else {
-                if (verbose == "no") BESLog::TheLog()->suspend();
-
                 unsigned int emergency = atol(eps.c_str());
 
                 if (control_heap == "yes") {
@@ -167,8 +165,6 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
             exit(1);
         }
     }
-
-    BESLog::TheLog()->resume();
 }
 
 BESMemoryGlobalArea::~BESMemoryGlobalArea()

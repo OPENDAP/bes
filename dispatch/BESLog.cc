@@ -75,9 +75,36 @@ const string BESLog::mark = string("|&|");
  * @see BESKeys
  */
 BESLog::BESLog() :
-    d_file_buffer(nullptr), d_suspended(false), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
+    d_file_buffer(nullptr),
+    d_instance_id("-"),
+    d_pid("-"),
+    d_verbose(false),
+    d_use_local_time(false),
+    d_use_unix_time(false)
 {
+    // The process ID doesn't change (does it??)
+    d_pid = to_string(getpid());
+
     bool found = false;
+    try {
+        d_instance_id = TheBESKeys::TheKeys()->read_string_key("AWS.instance-id", "-");
+    }
+    catch (BESInternalFatalError &bife) {
+        stringstream msg;
+        msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
+        BESDEBUG(MODULE,msg.str());
+        cerr << msg.str();
+        throw;
+    }
+    catch (...) {
+        stringstream msg;
+        msg << prolog << "FATAL ERROR: Caught unknown exception! Unable to determine log file name." << endl;
+        BESDEBUG(MODULE,msg.str());
+        cerr << msg.str();
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    // Find the log filename.
     try {
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
     }
@@ -95,6 +122,7 @@ BESLog::BESLog() :
         cerr << msg.str();
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
+
 
     // By default, use UTC in the logs.
     found = false;
@@ -155,25 +183,6 @@ BESLog::~BESLog()
     d_file_buffer = nullptr;
 }
 
-/**
- * @deprecated Remove this completely?
- * @return The time expressed as "MDT Thu Sep  9 11:05:16 2004"
- */
-string legacy_time() {
-    const time_t sctime = time(nullptr);
-    const struct tm *sttime = localtime(&sctime);
-    char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
-    char *b = asctime(sttime);
-
-    string time_str = zone_name;
-    time_str += " ";
-    for (register int j = 0; b[j] != '\n'; j++)
-        time_str += b[j];
-
-    return time_str;
-}
-
 
 /** @brief Protected method that returns a string with the first fields of a log record.
  *
@@ -205,7 +214,7 @@ std::string BESLog::log_record_begin() const {
         record_prolog = buf;
     }
 
-    record_prolog += mark + std::to_string(getpid()) + mark;
+    record_prolog += mark + d_instance_id + mark + d_pid + mark;
     return record_prolog;
 }
 
@@ -217,14 +226,11 @@ std::string BESLog::log_record_begin() const {
  */
 void BESLog::log_record(const std::string &lrt, const std::string &msg) const {
 
-    if(!d_suspended) {
+    *d_file_buffer << log_record_begin() << lrt << mark << msg ;
+    if(!msg.empty() && msg.back() != '\n')
+        *d_file_buffer << "\n";
 
-        *d_file_buffer << log_record_begin() << lrt << mark << msg ;
-        if(!msg.empty() && msg.back() != '\n')
-            *d_file_buffer << "\n";
-
-        *d_file_buffer << flush;
-    }
+    *d_file_buffer << flush;
 }
 
 /**
@@ -234,15 +240,12 @@ void BESLog::log_record(const std::string &lrt, const std::string &msg) const {
  */
 void BESLog::trace_log_record(const std::string &lrt, const std::string &msg, const std::string &file, const int line) const {
 
-    if(!d_suspended) {
-
         *d_file_buffer << log_record_begin() << "trace-" << lrt << mark;
         *d_file_buffer << file << mark << line << mark << msg ;
         if(!msg.empty() && msg.back() != '\n')
             *d_file_buffer << "\n";
 
         *d_file_buffer << flush;
-    }
 }
 
 /** @brief dumps information about this object
@@ -254,17 +257,18 @@ void BESLog::trace_log_record(const std::string &lrt, const std::string &msg, co
  */
 void BESLog::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESLog::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESLog::dump - (" << (void *) this << ")\n";
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "log file: " << d_file_name << endl;
+    strm << BESIndent::LMarg << "    log file: " << d_file_name;
     if (d_file_buffer && *d_file_buffer) {
-        strm << BESIndent::LMarg << "log is valid" << endl;
+        strm << BESIndent::LMarg << " (log is valid)\n";
     }
     else {
-        strm << BESIndent::LMarg << "log is NOT valid" << endl;
+        strm << BESIndent::LMarg << " (log is NOT valid)\n";
     }
-    strm << BESIndent::LMarg << "is verbose: " << d_verbose << endl;
-    strm << BESIndent::LMarg << "is suspended: " << d_suspended << endl;
+    strm << BESIndent::LMarg << "    d_verbose: " << (d_verbose?"enabled":"disable") << "\n";
+    strm << BESIndent::LMarg << "d_instance_id: " << d_instance_id << "\n";
+    strm << BESIndent::LMarg << "        d_pid: " << d_pid << "\n";
     BESIndent::UnIndent();
 }
 

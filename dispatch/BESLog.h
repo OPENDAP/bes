@@ -117,9 +117,8 @@ private:
 
     std::ofstream * d_file_buffer;
     std::string d_file_name;
-
-    // Flag to indicate the object is not routing data to its associated stream
-    bool d_suspended;
+    std::string d_instance_id;
+    std::string d_pid;
 
     // Flag to indicate whether to log verbose messages
     bool d_verbose;
@@ -147,20 +146,6 @@ public:
     ~BESLog() override;
 
     const static std::string mark;
-
-    /** @brief Suspend logging of any information until resumed.
-     *
-     * This method suspends any logging of information. If already suspended
-     * then nothing changes, logging is still suspended.
-     */
-    void suspend(){ d_suspended = true; }
-
-    /** @brief Resumes logging after being suspended.
-     *
-     * This method resumes logging after suspended by the user. If logging was
-     * not already suspended this method does nothing.
-     */
-    void resume(){ d_suspended = false; }
 
     /** @brief turn on verbose logging
      *
