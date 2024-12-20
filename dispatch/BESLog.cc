@@ -74,14 +74,7 @@ const string BESLog::mark = string("|&|");
  * problems opening or writing to the log file.
  * @see BESKeys
  */
-BESLog::BESLog() :
-    d_file_buffer(nullptr),
-    d_instance_id("-"),
-    d_pid("-"),
-    d_verbose(false),
-    d_use_local_time(false),
-    d_use_unix_time(false)
-{
+BESLog::BESLog() {
     // The process ID doesn't change (does it??)
     d_pid = to_string(getpid());
 

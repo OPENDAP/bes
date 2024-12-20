@@ -115,17 +115,19 @@ class BESLog: public BESObj {
 private:
     static BESLog * d_instance;
 
-    std::ofstream * d_file_buffer;
+    std::ofstream *d_file_buffer = nullptr;
     std::string d_file_name;
-    std::string d_instance_id;
-    std::string d_pid;
+    std::string d_instance_id = "-";
+    std::string d_pid = "-";
 
     // Flag to indicate whether to log verbose messages
-    bool d_verbose;
+    bool d_verbose = false;
 
-    bool d_use_local_time; // Use UTC by default
+    // Use UTC by default
+    bool d_use_local_time = false;
 
-    bool d_use_unix_time; // Use the UNIX time value as the log time.
+    // Use the UNIX time value as the log time.
+    bool d_use_unix_time = false;
 
     const char* REQUEST_LOG_TYPE_KEY = "request";
     const char* INFO_LOG_TYPE_KEY = "info";
