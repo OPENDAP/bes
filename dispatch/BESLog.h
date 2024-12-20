@@ -75,29 +75,37 @@
  *
  * Logging can also be suspended and resumed using so named methods.
  *
- * BESLog is used similar to cerr and cout using the overloaded operator <<.
+ * A log record is synonymous with a log line.
+ * Log fields are seperated by BESLog::mark (currently "|&|")
+ *
+ * All log records have a "prolog" which consists of:
+ * <pre>
+ * current_time + BESLog::mark + to_string(getpid()) + BESLog::mark + "record_type" + BESLog::mark
+ * </pre>
+ *
+ *
+ * The logging API implements log records of type request, info, error, verbose, and
+ * timing. All of these logs take a single message string as their input. The users of the
+ * request logger (BESXMLInterface) and the timing logger (BESStopWatch) are
+ * responsible for injecting additional log fields for their respective use cases into
+ * the message and ultimately the log record.
+ *
+ * It is preferred to use the logging macros REQUEST_LOG(x), INFO_LOG(x), ERROR_LOG(x),
+ * VERBOSE_LOG(x), and TIMING_LOG(x) where x is the message string.
  *
  * <PRE>
- * if( BESLog::TheLog()->is_verbose() )
- * {
- *     *(BESLog::TheLog()) << "This is some information to be logged"
- * 		  << endl ;
- * }
+ *     INFO_LOG("This is some information to be logged...");
+ *     ERROR_LOG("OUCH! The bad things happened!");
+ *     VERBOSE_LOG("I'm feeling chatty.");
  * </PRE>
  *
- * Types of data that can be logged include:
- * <UL>
- * <LI>std::string
- * <LI>char *
- * <LI>const char *
- * <LI>int
- * <LI>char
- * <LI>long
- * <LI>unsigned long
- * <LI>double
- * <LI>stream manipulators endl, ends and flush
- * <LI>ios manipulators hex, oct, dec
- * </UL>
+ * Note:
+ *  The content and order of the request log fields are determined in BESXMLInterface::log_the_command()
+ *  The content and order of the timing log fields are determined in BESStopWatch::~BESStopWatch();
+ * <PRE>
+ *     TIMING_LOG("timing field value" + BESLog::mark + "next timing field value" + BESLog::mark + "another value");
+ *     REQUEST_LOG("request field value" + BESLog::mark + "next request field value" + BESLog::mark + "another value");
+ * </PRE>
  *
  * BESLog provides a static method for access to a single BESLog object,
  * TheLog.
@@ -175,7 +183,7 @@ public:
 
     /** @brief turns off verbose logging
      *
-     * This methods turns off verbose logging. If verbose logging was not
+     * This method turns off verbose logging. If verbose logging was not
      * already turned on then nothing changes.
      */
     void verbose_off()
@@ -245,8 +253,7 @@ public:
     // I added this so that it's easy to route the BESDebug messages to the
     // log file. This will enable the Admin Interface to display the contents
     // of those debug messages when it displays the log file. jhrg
-    std::ostream *get_log_ostream()
-    {
+    std::ostream *get_log_ostream() const {
         return d_file_buffer;
     }
 };
