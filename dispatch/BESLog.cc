@@ -47,7 +47,6 @@
 #include <unistd.h>
 #endif
 
-#define ISO8601_TIME_IN_LOGS
 #define MODULE "bes"
 #define prolog std::string("BESLog::").append(__func__).append("() - ")
 
@@ -156,21 +155,42 @@ BESLog::~BESLog()
     d_file_buffer = nullptr;
 }
 
-/** @brief Protected method that dumps the date/time to the log file
+/**
+ * @deprecated Remove this completely?
+ * @return The time expressed as "MDT Thu Sep  9 11:05:16 2004"
+ */
+string legacy_time() {
+    const time_t sctime = time(nullptr);
+    const struct tm *sttime = localtime(&sctime);
+    char zone_name[10];
+    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
+    char *b = asctime(sttime);
+
+    string time_str = zone_name;
+    time_str += " ";
+    for (register int j = 0; b[j] != '\n'; j++)
+        time_str += b[j];
+
+    return time_str;
+}
+
+
+/** @brief Protected method that returns a string with the first fields of a log record.
  *
- * Depending on the compile-time constant ISO8601_TIME_IN_LOGS,
- * the time is dumped to the log file in the format:
- * "MDT Thu Sep  9 11:05:16 2004", or in ISO8601 format:
- * "YYYY-MM-DDTHH:MM:SS zone"
+ * By default, the time will be expressed in ISO8601 format: "YYYY-MM-DDTHH:MM:SS zone"
+ *
+ * However, if BES.LogUnixTime=true appears in the BES configuration then time
+ * will be expressed as a numeric unix time value.
+ *
+ * @return The string: time + mark + pid + mark
  */
 std::string BESLog::log_record_begin() const {
-    string log_msg;
-#ifdef ISO8601_TIME_IN_LOGS
+    string record_prolog;
+
     time_t now;
     time(&now);
-
     if(d_use_unix_time){
-        log_msg = std::to_string(now);
+        record_prolog = std::to_string(now);
     }
     else {
         char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
@@ -182,44 +202,47 @@ std::string BESLog::log_record_begin() const {
             localtime_r(&now, &date_time);
         }
         (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
-        log_msg = buf;
+        record_prolog = buf;
     }
-#else
-    const time_t sctime = time(nullptr);
-    const struct tm *sttime = localtime(&sctime);
-    char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
-    char *b = asctime(sttime);
 
-    log_msg = zone_name;
-    log_msg += " ";
-    for (register int j = 0; b[j] != '\n'; j++)
-        log_msg += b[j];
-#endif
-
-    log_msg += mark + std::to_string(getpid()) + mark;
-    return log_msg;
+    record_prolog += mark + std::to_string(getpid()) + mark;
+    return record_prolog;
 }
 
 
-void BESLog::log(const std::string &tag, const std::string &msg) {
+/**
+ * @brief Writes msg to a log record with type lrt.
+ * @param lrt The log record type
+ * @param msg The message to be logged.
+ */
+void BESLog::log_record(const std::string &lrt, const std::string &msg) const {
 
-    *d_file_buffer << log_record_begin() << tag << mark << msg ;
-    if(!msg.empty() && msg.back() != '\n')
-        *d_file_buffer << "\n";
+    if(!d_suspended) {
 
-    *d_file_buffer << flush;
+        *d_file_buffer << log_record_begin() << lrt << mark << msg ;
+        if(!msg.empty() && msg.back() != '\n')
+            *d_file_buffer << "\n";
+
+        *d_file_buffer << flush;
+    }
 }
 
-void BESLog::trace_log(const std::string &tag, const std::string &msg, const std::string &file, const int line)
-{
-    *d_file_buffer << log_record_begin() << "trace-" << tag << mark;
-    *d_file_buffer << file << mark << line << mark << msg ;
-    if(!msg.empty() && msg.back() != '\n')
-        *d_file_buffer << "\n";
+/**
+ * @brief Writes msg, file, and line to a trace log record with type lrt.
+ * @param lrt The log record type
+ * @param msg The message to be logged.
+ */
+void BESLog::trace_log_record(const std::string &lrt, const std::string &msg, const std::string &file, const int line) const {
 
-    *d_file_buffer << flush;
+    if(!d_suspended) {
 
+        *d_file_buffer << log_record_begin() << "trace-" << lrt << mark;
+        *d_file_buffer << file << mark << line << mark << msg ;
+        if(!msg.empty() && msg.back() != '\n')
+            *d_file_buffer << "\n";
+
+        *d_file_buffer << flush;
+    }
 }
 
 /** @brief dumps information about this object

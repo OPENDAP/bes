@@ -128,11 +128,11 @@ private:
 
     bool d_use_unix_time; // Use the UNIX time value as the log time.
 
-    const char* REQUEST_LOG_KEY = "request";
-    const char* INFO_LOG_KEY = "info";
-    const char* ERROR_LOG_KEY = "error";
-    const char* VERBOSE_LOG_KEY = "verbose";
-    const char* TIMING_LOG_KEY = "timing";
+    const char* REQUEST_LOG_TYPE_KEY = "request";
+    const char* INFO_LOG_TYPE_KEY = "info";
+    const char* ERROR_LOG_TYPE_KEY = "error";
+    const char* VERBOSE_LOG_TYPE_KEY = "verbose";
+    const char* TIMING_LOG_TYPE_KEY = "timing";
 
 protected:
     BESLog();
@@ -140,8 +140,8 @@ protected:
     // Starts a log record with time and PID.
     std::string log_record_begin() const;
 
-    void log(const std::string &tag, const std::string &msg);
-    void trace_log(const std::string &tag, const std::string &msg, const std::string &file, int line);
+    void log_record(const std::string &record_type, const std::string &msg) const;
+    void trace_log_record(const std::string &record_type, const std::string &msg, const std::string &file, int line) const;
 
 public:
     ~BESLog() override;
@@ -153,20 +153,14 @@ public:
      * This method suspends any logging of information. If already suspended
      * then nothing changes, logging is still suspended.
      */
-    void suspend()
-    {
-        d_suspended = true;
-    }
+    void suspend(){ d_suspended = true; }
 
     /** @brief Resumes logging after being suspended.
      *
      * This method resumes logging after suspended by the user. If logging was
      * not already suspended this method does nothing.
      */
-    void resume()
-    {
-        d_suspended = false;
-    }
+    void resume(){ d_suspended = false; }
 
     /** @brief turn on verbose logging
      *
@@ -174,20 +168,14 @@ public:
      * ability to log more detailed debugging information. If verbose is
      * already turned on then nothing is changed.
      */
-    void verbose_on()
-    {
-        d_verbose = true;
-    }
+    void verbose_on(){ d_verbose = true; }
 
     /** @brief turns off verbose logging
      *
      * This method turns off verbose logging. If verbose logging was not
      * already turned on then nothing changes.
      */
-    void verbose_off()
-    {
-        d_verbose = false;
-    }
+    void verbose_off() { d_verbose = false; }
 
     /** @brief Returns true if verbose logging is requested.
      *
@@ -204,42 +192,80 @@ public:
      * @see verbose_off
      * @see BESKeys
      */
-    bool is_verbose() const
-    {
-        return d_verbose;
+    bool is_verbose() const { return d_verbose; }
+
+    /**
+    * @brief Writes request msg to the log stream.
+    */
+    void request(const std::string &msg) const {
+        log_record(REQUEST_LOG_TYPE_KEY, msg);
     }
 
-    void request(const std::string &msg) {
-        log(REQUEST_LOG_KEY, msg);
-    }
-    void info(const std::string &msg) {
-        log(INFO_LOG_KEY, msg);
-    }
-    void error(const std::string &msg) {
-        log(ERROR_LOG_KEY, msg);
-    }
-    void verbose(const std::string &msg) {
-        log(VERBOSE_LOG_KEY, msg);
-    }
-    void timing(const std::string &msg) {
-        log(TIMING_LOG_KEY, msg);
+    /**
+    * @brief Writes info msg to the log stream.
+    */
+    void info(const std::string &msg) const {
+        log_record(INFO_LOG_TYPE_KEY, msg);
     }
 
+    /**
+    * @brief Writes error msg to the log stream.
+    */
+    void error(const std::string &msg) const {
+        log_record(ERROR_LOG_TYPE_KEY, msg);
+    }
 
-    void trace_request(const std::string &msg, const std::string &file, int line) {
-        trace_log(REQUEST_LOG_KEY, msg, file, line);
+    /**
+    * @brief Writes verbose msg to the log stream, if verbose logging is enabled.
+    */
+    void verbose(const std::string &msg) const {
+        if(d_verbose) {
+            log_record(VERBOSE_LOG_TYPE_KEY, msg);
+        }
     }
-    void trace_info(const std::string &msg, const std::string &file, int line) {
-        trace_log(INFO_LOG_KEY, msg, file, line);
+
+    /**
+    * @brief Writes timing msg to the log stream.
+    */
+    void timing(const std::string &msg) const {
+        log_record(TIMING_LOG_TYPE_KEY, msg);
     }
-    void trace_error(const std::string &msg, const std::string &file, int line) {
-        trace_log(ERROR_LOG_KEY, msg, file, line);
+
+    /**
+    * @brief Writes request msg to the log stream with FILE and LINE
+    */
+    void trace_request(const std::string &msg, const std::string &file, int line) const {
+        trace_log_record(REQUEST_LOG_TYPE_KEY, msg, file, line);
     }
-    void trace_verbose(const std::string &msg, const std::string &file, int line) {
-        trace_log(VERBOSE_LOG_KEY, msg, file, line);
+
+    /**
+    * @brief Writes info msg to the log stream with FILE and LINE
+    */
+    void trace_info(const std::string &msg, const std::string &file, int line) const {
+        trace_log_record(INFO_LOG_TYPE_KEY, msg, file, line);
     }
-    void trace_timing(const std::string &msg, const std::string &file, int line) {
-        trace_log(TIMING_LOG_KEY, msg, file, line);
+
+    /**
+    * @brief Writes error msg to the log stream with FILE and LINE
+    */
+    void trace_error(const std::string &msg, const std::string &file, int line) const {
+        trace_log_record(ERROR_LOG_TYPE_KEY, msg, file, line);
+    }
+
+    /**
+    * @brief Writes verbose msg to the log stream with FILE and LINE, if verbose logging is enabled.
+    */
+    void trace_verbose(const std::string &msg, const std::string &file, int line) const {
+        if(d_verbose) {
+            trace_log_record(VERBOSE_LOG_TYPE_KEY, msg, file, line);
+        }
+    }
+
+    /**
+    * @brief Writes timing msg to the log stream with FILE and LINE
+    */
+    void trace_timing(const std::string &msg, const std::string &file, int line) const {
+        trace_log_record(TIMING_LOG_TYPE_KEY, msg, file, line);
     }
 
     void dump(std::ostream &strm) const override;
