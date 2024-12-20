@@ -486,8 +486,8 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", error_buffer.data(), __FILE__, __LINE__);
 
     }
-    VERBOSE(prolog << " is using the netrc file '"
-                   << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
+    VERBOSE(prolog + " is using the netrc file '"
+                   + (!netrc_file.empty() ? netrc_file : "~/.netrc") + "'");
 
 
     // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
@@ -745,7 +745,7 @@ static bool eval_curl_easy_perform_code(
         msg << "ERROR - Problem with data transfer. Message: " << curl::error_message(curl_code, error_buffer);
         msg << " CURLINFO_EFFECTIVE_URL: " << filter_aws_url(eff_req_url);
         BESDEBUG(MODULE, prolog << msg.str() << endl);
-        ERROR_LOG(msg.str() << endl);
+        ERROR_LOG(msg.str());
         return false;
     }
 
@@ -785,7 +785,7 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
         case 408: // Request Timeout
         {
             // These issues are not considered retryable problems, so we throw immediately.
-            ERROR_LOG(msg.str() << endl);
+            ERROR_LOG(msg.str());
             throw http::HttpError(msg.str(),
                                   CURLE_OK,
                                   http_code,
@@ -803,7 +803,7 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
             // These problems might actually be retryable, so we check and then act accordingly.
             if (!is_retryable(last_accessed_url)) {
                 msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
-                ERROR_LOG(msg.str() << endl);
+                ERROR_LOG(msg.str());
                 throw http::HttpError(msg.str(),
                                       CURLE_OK,
                                       http_code,
@@ -818,7 +818,7 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
             break;
 
         default:
-            ERROR_LOG(msg.str() << endl);
+            ERROR_LOG(msg.str());
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 }
@@ -996,7 +996,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 msg << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
                 msg << "CURLINFO_EFFECTIVE_URL: " << effective_url << " ";
                 msg << "Returned HTTP_STATUS: " << http_code;
-                ERROR_LOG(msg.str() << endl);
+                ERROR_LOG(msg.str());
                 throw HttpError(msg.str(),
                                 curl_code,
                                 http_code,
@@ -1004,10 +1004,10 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                                 effective_url,
                                 __FILE__, __LINE__);
             } else {
-                ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
-                                 << filter_aws_url(target_url) << " attempt: " << attempts << "). "
-                                 << "CURLINFO_EFFECTIVE_URL: " << effective_url << " "
-                                 << "Returned HTTP_STATUS: " << http_code << "\n");
+                ERROR_LOG(prolog + "ERROR - Problem with data transfer. Will retry (url: "
+                                 + filter_aws_url(target_url) + " attempt: " + std::to_string(attempts) + "). "
+                                 + "CURLINFO_EFFECTIVE_URL: " + effective_url + " "
+                                 + "Returned HTTP_STATUS: " + std::to_string(http_code));
                 usleep(retry_time);
                 retry_time *= 2;
 
@@ -1170,10 +1170,10 @@ void http_get(const string &target_url, string &buf) {
 #ifdef DEVELOPER
         AccessCredentials *credentials = CredentialsManager::theCM()->get(url);
         if (credentials) {
-            INFO_LOG(prolog << "Looking for EDL Token for URL: " << target_url << '\n');
+            INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
             string edl_token = credentials->get("edl_token");
             if (!edl_token.empty()) {
-                INFO_LOG(prolog << "Using EDL Token for URL: " << target_url << '\n');
+                INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
                 request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
             }
         }
@@ -1663,10 +1663,10 @@ bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     //  for more info. jhrg 5/24/24
     AccessCredentials *credentials = CredentialsManager::theCM()->get(origin_url);
     if (credentials) {
-        INFO_LOG(prolog << "Looking for EDL Token for URL: " << origin_url->str() << '\n');
+        INFO_LOG(prolog + "Looking for EDL Token for URL: " + origin_url->str() + '\n');
         string edl_token = credentials->get("edl_token");
         if (!edl_token.empty()) {
-            INFO_LOG(prolog << "Using EDL Token for URL: " << origin_url->str() << '\n');
+            INFO_LOG(prolog + "Using EDL Token for URL: " + origin_url->str() + '\n');
             req_headers = curl::append_http_header(req_headers, "Authorization", edl_token);
         }
     }

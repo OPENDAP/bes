@@ -120,7 +120,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
             << data_url->protocol() << data_url->host() << data_url->path() << " Object Store Message: "
             << message;
         BESDEBUG(MODULE, msg.str() << endl);
-        VERBOSE(msg.str() << endl);
+        VERBOSE(msg.str());
         throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
     }
     else {
@@ -128,7 +128,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
         msg << prolog << "The underlying object store returned an error. " << "(Tried: " << data_url->protocol()
             << "://" << data_url->host() << data_url->path() << ") Object Store Message: " << message;
         BESDEBUG(MODULE, msg.str() << endl);
-        VERBOSE(msg.str() << endl);
+        VERBOSE(msg.str());
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 }

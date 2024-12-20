@@ -64,6 +64,6 @@ hcerr::hcerr(const char *msg, const char *file, int line)
         << "Location: \"" << file << "\", line " << line << endl;
     for (int i = 0; i < 5; ++i)
         strm << i << ") " << HEstring((hdf_err_code_t) HEvalue(i)) << endl;
-    (*BESLog::TheLog()) << strm.str() << endl ;
+    ERROR_LOG(strm.str());
 }
 

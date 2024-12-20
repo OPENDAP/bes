@@ -503,7 +503,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         // if it's got the unsupported bits in fillValue
         auto var_name = var_node.attribute("name");
         auto var_type = var_node.name();
-        INFO_LOG(prolog << "Unsupported Type Encountered: " << var_type << " " << var_name.value() << "; flag: '" << unsupported_flag << "'\n");
+        INFO_LOG(prolog + "Unsupported Type Encountered: " + var_type + " " + var_name.value() + "; flag: '" + unsupported_flag + "'\n");
         return;
     }
 

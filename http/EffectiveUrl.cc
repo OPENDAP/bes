@@ -144,7 +144,7 @@ void EffectiveUrl::ingest_response_headers(const vector <string> &resp_hdrs) {
                                     << d_response_header_values.size() << ")" << endl);
         }
         else {
-            ERROR_LOG(prolog << "Encounter malformed response header! Missing ':' delimiter. SKIPPING" << endl);
+            ERROR_LOG(prolog + "Encounter malformed response header! Missing ':' delimiter. SKIPPING");
         }
     }
 }

@@ -47,7 +47,6 @@ using std::string;
 using std::endl;
 using std::ostream;
 
-#define TIMING_LOG(x) MR_LOG(TIMING_LOG_KEY, x)
 
 #define MODULE TIMING_LOG_KEY
 #define prolog string("BESStopWatch::").append(__func__).append("() - ")
@@ -136,9 +135,9 @@ BESStopWatch::~BESStopWatch() {
             + "[STOPPED][" + std::to_string(get_stop_us()) + " us]"
             + "[" + (d_req_id.empty() ? "-" : d_req_id) + "]" + "[" << d_timer_name + "]\n");
 
-        TIMING_LOG( "elapsed_us" + BESLog::mark + std::to_string(get_elapsed_us()) + BESLog::mark
-                    + "start_us" + BESLog::mark + std::to_string(get_start_us()) + BESLog::mark
-                    +  "stop_us" + BESLog::mark + std::to_string(get_stop_us()) + BESLog::mark
+        TIMING_LOG( "elapsed-us" + BESLog::mark + std::to_string(get_elapsed_us()) + BESLog::mark
+                    + "start-us" + BESLog::mark + std::to_string(get_start_us()) + BESLog::mark
+                    +  "stop-us" + BESLog::mark + std::to_string(get_stop_us()) + BESLog::mark
                     + (d_req_id.empty() ? "-" : d_req_id) + BESLog::mark
                     + d_timer_name + "\n");
     }
