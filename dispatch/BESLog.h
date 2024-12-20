@@ -119,7 +119,7 @@ private:
     std::string d_file_name;
 
     // Flag to indicate the object is not routing data to its associated stream
-    int d_suspended;
+    bool d_suspended;
 
     // Flag to indicate whether to log verbose messages
     bool d_verbose;
@@ -155,7 +155,7 @@ public:
      */
     void suspend()
     {
-        d_suspended = 1;
+        d_suspended = true;
     }
 
     /** @brief Resumes logging after being suspended.
@@ -165,7 +165,7 @@ public:
      */
     void resume()
     {
-        d_suspended = 0;
+        d_suspended = false;
     }
 
     /** @brief turn on verbose logging

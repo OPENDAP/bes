@@ -76,9 +76,8 @@ const string BESLog::mark = string("|&|");
  * @see BESKeys
  */
 BESLog::BESLog() :
-    d_file_buffer(nullptr), d_suspended(0), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
+    d_file_buffer(nullptr), d_suspended(false), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
 {
-    d_suspended = 0;
     bool found = false;
     try {
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
