@@ -1529,7 +1529,7 @@ void DmrppArray::read_chunks_with_linked_blocks() {
                 auto cb_position_in_array = chunk->get_position_in_array();
                 auto cb_byte_order = chunk->get_byte_order();
                 
-                //shared_ptr<Chunk> block_chunk = nullptr;
+                // Cannot use the shared pointer here somehow.
                 Chunk* block_chunk = nullptr;
                 if (cb_data_url == nullptr) 
                     block_chunk = new Chunk(cb_byte_order,cb_length,cb_offset,cb_position_in_array);
@@ -1537,7 +1537,7 @@ void DmrppArray::read_chunks_with_linked_blocks() {
                     block_chunk = new Chunk(cb_data_url,cb_byte_order,cb_length,cb_offset,cb_position_in_array);
                 
                 block_chunk->read_chunk();
-                char *block_chunk_buffer = block_chunk->get_rbuf();
+                const char *block_chunk_buffer = block_chunk->get_rbuf();
                 if (block_chunk->get_bytes_read() != cb_length) {
                     ostringstream oss;
                     oss << "Wrong number of bytes read for chunk; read: " << block_chunk->get_bytes_read() << ", expected: " << cb_length;
@@ -1580,6 +1580,7 @@ void DmrppArray::read_chunks_with_linked_blocks() {
 
 void DmrppArray::read_chunks_with_linked_blocks_constrained() {
 
+    // Will handle this in a separate ticket.
 
 }
 
