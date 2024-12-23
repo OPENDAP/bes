@@ -1584,10 +1584,9 @@ void DmrppArray::read_chunks_with_linked_blocks_constrained() {
     reserve_value_capacity_ll(get_size(true));
     char *dest_buf = this->get_buf();
     vector<unsigned long long> constrained_array_shape = this->get_shape(true);
-    bool found_needed_chunks = false;
     for(const auto& chunk: get_immutable_chunks()){
-        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
-        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
+        vector<unsigned long long> chunk_element_address = chunk->get_position_in_array();
+        auto needed = find_needed_chunks(0 /* dimension */, &chunk_element_address, chunk);
         if (needed){
             if (chunk->get_multi_linked_blocks()) {
                 vector<std::pair<unsigned long long, unsigned long long>>  cur_chunk_lb_offset_lengths;
