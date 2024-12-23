@@ -87,15 +87,15 @@ private:
 
     // The following two members mean this chunk is actually a linked block.
     // We don't need to remember chunk position but to remember the linked block index.
-    bool linked_block{false};
-    unsigned int linked_block_index {0};
+    bool linked_block=false;
+    unsigned int linked_block_index = 0;
 
     // The following two memebers mean this chunk contains multiple linked blocks.
     // This is still a chunk but inside this chunk it contains multiple linked blocks.
     // We will record this chunk multiple times with different multi_linked_block_index_in_dmrpp_file.
     // This is for generating the dmrpp file. 
-    bool multi_linked_blocks{false};
-    unsigned int multi_linked_block_index_in_dmrpp_file {0};
+    bool multi_linked_blocks =false;
+    unsigned int multi_linked_block_index_in_dmrpp_file=0;
 
     std::vector<std::pair<unsigned long long,unsigned long long>> mlb_offset_lengths;
 
@@ -464,7 +464,7 @@ public:
         d_data_url = std::move(data_url);
     }
 
-    virtual bool is_read_buffer_is_mine() { return d_read_buffer_is_mine; }
+    virtual bool get_read_buffer_is_mine() { return d_read_buffer_is_mine; }
     /// @return Get the number of bytes read so far for this Chunk.
     virtual unsigned long long get_bytes_read() const
     {
