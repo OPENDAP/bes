@@ -1509,7 +1509,7 @@ void DmrppArray::read_chunks_with_linked_blocks() {
 
             chunk->set_size(cb_buffer_size);
             // Now we get the chunk buffer size, set it.
-            if (chunk->is_read_buffer_is_mine()) 
+            if (chunk->get_read_buffer_is_mine()) 
                 chunk->set_rbuf_to_size();
             else 
                 throw BESInternalError("For multi-linked blocks, the chunk buffer ownship must be true", __FILE__, __LINE__);

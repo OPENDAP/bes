@@ -508,9 +508,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             
             auto pia = write_chunk_position_in_array(rank, chunk_dimension_sizes.data(), strides.data());
 
-            // We cannot find a chunked case when the number of blocks is greater than 1. We will issue a failure
-            // when we encounter such a case for the time being. KY 02/19/2024.
-
+            // When we find this chunk contains multiple blocks.
             if (map_info.nblocks >1) {
 
                 if (!LBChunk) 
