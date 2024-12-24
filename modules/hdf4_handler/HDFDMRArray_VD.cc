@@ -448,7 +448,7 @@ for (const auto &fn:field_names)
     
         //auto vdata_s = dynamic_cast<HDFStructure*>(var(element));
         vdata_s = dynamic_cast<HDFStructure*>(var()->ptr_duplicate());
-	    size_t struct_elem_offset = values_offset + vdata_size*element;
+        size_t struct_elem_offset = values_offset + vdata_size*element;
 
         if(!vdata_s)
             throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
