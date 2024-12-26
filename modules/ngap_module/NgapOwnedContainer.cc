@@ -132,7 +132,7 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  * cache and it is not thread-safe.
  */
 string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
-    BES_COMMAND_TIMING(prolog + rest_path);
+    BES_MODULE_TIMING(prolog + rest_path);
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
@@ -171,7 +171,7 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
     // The PATH part of a URL to the NGAP/DMR++ is an 'NGAP REST path' that has the form:
     // /collections/<ccid>/granules/<granule_id>. In our 'owned' S3 bucket, we use object
     // names of the form: /<ccid>/<granule_id>.dmrpp.
-    BES_COMMAND_TIMING(prolog + rest_path);
+    BES_MODULE_TIMING(prolog + rest_path);
 
     auto parts = BESUtil::split(rest_path, '/');
     if (parts.size() != 4 || parts[0] != "collections" || parts[2] != "granules") {
@@ -328,7 +328,7 @@ bool NgapOwnedContainer::get_opendap_content_filters(map<string, string, std::le
  * @return True if the document was found, false otherwise
  */
 bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) const {
-    BES_COMMAND_TIMING(prolog + get_real_name());
+    BES_MODULE_TIMING(prolog + get_real_name());
     bool dmrpp_read = false;
     try {
         string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
@@ -380,7 +380,7 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
  * @exception http::HttpError if the granule is not found
  */
 void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const {
-    BES_COMMAND_TIMING(prolog + get_real_name());
+    BES_MODULE_TIMING(prolog + get_real_name());
     try {
         string data_url = build_data_url_to_daac_bucket(get_real_name());
         string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
@@ -416,7 +416,7 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
  * @exception http::HttpError if there is a problem making the remote request if one is needed.
  */
 bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) const {
-    BES_COMMAND_TIMING(prolog + get_real_name());
+    BES_MODULE_TIMING(prolog + get_real_name());
 
     // If the DMR++ is cached, return it. NB: This cache holds OPeNDAP- and DAAC-owned DMR++ documents.
     if (NgapRequestHandler::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
