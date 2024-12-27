@@ -57,7 +57,6 @@
 #include "BESServerHandler.h"
 #include "BESError.h"
 #include "PPTServer.h"
-#include "BESMemoryManager.h"
 #include "BESDebug.h"
 #include "BESCatalogUtils.h"
 #include "BESUtil.h"
@@ -458,7 +457,6 @@ int ServerApp::run()
 {
     try {
         BESDEBUG("beslistener", "beslistener: initializing memory pool ... " << endl);
-        BESMemoryManager::initialize_memory_pool();
         BESDEBUG("beslistener", "OK" << endl);
 
         SocketListener listener;
