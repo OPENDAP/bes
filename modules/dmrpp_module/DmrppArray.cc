@@ -3068,7 +3068,7 @@ void DmrppArray::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-int64_t DmrppArray::buf2val(void **val){
+int64_t DmrppArray::buf2val_ll(void **val){
 
     if (!val) {
         throw BESInternalError("NULL pointer encountered.", __FILE__, __LINE__);

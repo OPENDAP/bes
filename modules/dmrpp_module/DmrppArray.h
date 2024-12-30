@@ -232,7 +232,7 @@ public:
     static string ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
 
 
-    int64_t buf2val(void **val) override;
+    int64_t buf2val_ll(void **val) override;
     vector<u_int8_t> &compact_str_buffer(){ return d_compact_str_buf; }
 
     vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
