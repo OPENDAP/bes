@@ -121,6 +121,8 @@ void BESServerHandler::handle(Connection *c)
 
 void BESServerHandler::execute(Connection *connection)
 {
+    BESLog::TheLog()->update_pid();
+
     // TODO This seems like a waste of time - do we really need to log this information?
     // jhrg 11/13/17
     ostringstream strm;
