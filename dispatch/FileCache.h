@@ -153,6 +153,12 @@ class FileCache {
                 ERROR("Could not unlock the FileCache.");
         }
 
+        /**
+         * This methods locks the cache using the given lock type. It is thread-safe.
+         * @param lock_type LOCK_EX or LOCK_SH and can be combined with LOCK_NB
+         * @param msg
+         * @return true if the cache is locked, false otherwise. Errors are logged.
+         */
         bool lock_the_cache(int lock_type, const std::string &msg = "") {
             if (d_fd < 0) {
                 ERROR("Call to CacheLock::lock_the_cache with uninitialized lock object.");
@@ -183,6 +189,8 @@ class FileCache {
             /* print all the files and directories within directory */
             while ((ent = readdir (dir)) != nullptr) {
                 // Skip the '.' and '..' files and the cache info file
+                // TODO For large caches, this could be slow. Instead, build the list
+                //  and then use three operations to remove these three files. jhrg 12/27/24
                 if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0
                     || strcmp(ent->d_name, CACHE_INFO_FILE_NAME.c_str()) == 0)
                     continue;
@@ -207,7 +215,7 @@ class FileCache {
 
     /// Return the size of an open file in bytes. Return zero on error.
     static unsigned long long get_file_size(int fd) {
-        struct stat sb;
+        struct stat sb = {};
         if (fstat(fd, &sb) != 0)
             return 0;
         return sb.st_size;
@@ -241,7 +249,7 @@ class FileCache {
             return 0;
         unsigned long long size = 0;
         if (read(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
-            return 0;
+            return 0; // TODO Make this an error - log it. jhrg 12/27/24
         return size;
     }
 
@@ -371,7 +379,7 @@ public:
             return false;
         }
 
-        struct stat sb;
+        struct stat sb = {};
         if (stat(cache_dir.c_str(), &sb) != 0) {
             BESUtil::mkdir_p(cache_dir, 0775);
             if (stat(cache_dir.c_str(), &sb) != 0) {
@@ -490,13 +498,10 @@ public:
         }
 
         // The Item instance will take care of closing the file.
-        item.
-                set_fd(fd);
+        item.set_fd(fd);
 
         // Lock the file for writing; released when the file descriptor is closed.
-        if (!item.
-                lock_the_item(LOCK_EX,
-                              "Error locking the just created key/file: " + key))
+        if (!item.lock_the_item(LOCK_EX, "Error locking the just created key/file: " + key))
             return false;
 
         // The Item instances will take care of closing (and thus unlocking) the files.
@@ -640,7 +645,7 @@ public:
             return false;
 
         for (const auto &file: files) {
-            struct stat sb{0};
+            struct stat sb = {};
 
             if (stat(file.c_str(), &sb) < 0) {
                 ERROR("Error getting info on " + file + " in purge() - " + get_errno());

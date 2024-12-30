@@ -158,13 +158,13 @@ public:
     }
 
     // a cache that has not been initialized should fail the invariant test
-    void test_unintialized_cache()
+    void test_uninitialized_cache()
     {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
     }
 
-    void test_intialized_cache()
+    void test_initialized_cache()
     {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
@@ -176,7 +176,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("d_cache_dir should be \"/tmp/\" - cache initialized", fc.d_cache_dir == cache_dir);
     }
 
-    void test_two_intialized_caches_same_directory()
+    void test_two_initialized_caches_same_directory()
     {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
@@ -1063,9 +1063,9 @@ public:
     CPPUNIT_TEST(test_hash_key);
     CPPUNIT_TEST(test_hash_key_with_info_log);
 
-    CPPUNIT_TEST(test_unintialized_cache);
-    CPPUNIT_TEST(test_intialized_cache);
-    CPPUNIT_TEST(test_two_intialized_caches_same_directory);
+    CPPUNIT_TEST(test_uninitialized_cache);
+    CPPUNIT_TEST(test_initialized_cache);
+    CPPUNIT_TEST(test_two_initialized_caches_same_directory);
 
     CPPUNIT_TEST(test_open_cache_info);
     CPPUNIT_TEST(test_open_cache_info_cache_dir_not_set);
