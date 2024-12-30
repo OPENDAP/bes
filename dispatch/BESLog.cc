@@ -75,8 +75,6 @@ const string BESLog::mark = string("|&|");
  * @see BESKeys
  */
 BESLog::BESLog() {
-    // The process ID doesn't change (does it??)
-    d_pid = to_string(getpid());
 
     bool found = false;
     try {
@@ -163,7 +161,8 @@ BESLog::BESLog() {
     d_use_unix_time = found && (BESUtil::lowercase(s)=="true");
     BESDEBUG(MODULE, prolog << "d_use_unix_time: " << (d_use_unix_time?"true":"false") << endl);
 
-    d_log_record_prolog_base = mark + d_instance_id + mark + d_pid + mark;
+    // Set the pid and build the log rord prolog base...
+    update_pid();
 }
 
 /** @brief Cleans up the logging mechanism
@@ -175,6 +174,17 @@ BESLog::~BESLog()
     d_file_buffer->close();
     delete d_file_buffer;
     d_file_buffer = nullptr;
+}
+
+/**
+* @brief Update the d_pid and the d_log_record_prolog_base values.
+*/
+pid_t BESLog::update_pid()
+{
+    auto pid = getpid();
+    d_pid = to_string(pid);
+    d_log_record_prolog_base = mark + d_instance_id + mark + d_pid + mark;
+    return pid;
 }
 
 
