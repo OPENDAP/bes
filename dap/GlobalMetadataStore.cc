@@ -517,9 +517,16 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
         os << xml.get_doc();
     }
     else if (d_dmr) {
-        XMLWriter xml;
-        d_dmr->print_dap4(xml);
-        os << xml.get_doc();
+        if (d_dmr->get_utf8_xml_encoding()) {
+            XMLWriter xml = XMLWriter("    ","UTF-8");
+            d_dmr->print_dap4(xml);
+            os << xml.get_doc();
+        }
+        else {
+            XMLWriter xml;
+            d_dmr->print_dap4(xml);
+            os << xml.get_doc();
+        }
     }
     else {
         throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);

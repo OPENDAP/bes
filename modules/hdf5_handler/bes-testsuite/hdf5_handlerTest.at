@@ -895,10 +895,13 @@ AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_fal
 # is not being caught. jhrg 8/21/24. At least on OSX Sonoma, but not on Ubuntu Linux. I'm commenting
 # these tests out. jhrg 8/21/24
 # AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf], [xfail])
+#AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf], [xfail])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf])
 
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.default.conf])
 # AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.default.conf], [xfail])
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.default.conf], [xfail])
+#AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.default.conf], [xfail])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.default.conf])
 
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.dap2dmr.conf], [xfail])
+#AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.dap2dmr.conf], [xfail])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.dap2dmr.conf])
