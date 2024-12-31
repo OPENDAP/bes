@@ -4,7 +4,7 @@
         <Int32 name="Orbit"/>
         <Float32 name="Temperature"/>
         <Dim size="2"/>
-        <dmrpp:chunks fillValue="0" byteOrder="LE">
+        <dmrpp:chunks fillValue="0" byteOrder="LE" structOffset="4 8">
             <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="3496" nBytes="16" chunkPositionInArray="[0]"/>
         </dmrpp:chunks>

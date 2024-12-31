@@ -3,7 +3,7 @@
     <Structure name="DSC_scalar">
         <Int32 name="Orbit"/>
         <Float32 name="Temperature"/>
-        <dmrpp:chunks fillValue="0" byteOrder="LE">
+        <dmrpp:chunks fillValue="0" byteOrder="LE" structOffset="4 8">
             <dmrpp:chunk offset="2048" nBytes="8"/>
         </dmrpp:chunks>
     </Structure>

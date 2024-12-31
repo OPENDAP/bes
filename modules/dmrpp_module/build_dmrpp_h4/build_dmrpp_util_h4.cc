@@ -497,6 +497,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         VERBOSE(cerr<<endl);
 
 
+        bool LBChunk = false;
         for (int k = 0; k < number_of_chunks; ++k) {
             auto info_count = read_chunk(sdsid, &map_info, strides.data());
             if (info_count == FAIL) {
@@ -507,22 +508,23 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             
             auto pia = write_chunk_position_in_array(rank, chunk_dimension_sizes.data(), strides.data());
 
-            // We cannot find a chunked case when the number of blocks is greater than 1. We will issue a failure
-            // when we encounter such a case for the time being. KY 02/19/2024.
-
+            // When we find this chunk contains multiple blocks.
             if (map_info.nblocks >1) {
-#if 0
-                cout << "number of blocks in a chunk is: " << map_info.nblocks << endl;
-#endif
-                ERROR("Number of blocks in this chunk is greater than 1.");
-                SDendaccess(sdsid);
-                return false;
+
+                if (!LBChunk) 
+                    LBChunk = true;
+                VERBOSE(cerr << "number of blocks in a chunk is: " << map_info.nblocks << endl);
+                for (unsigned int i = 0; i < map_info.nblocks; i++) {
+                    VERBOSE(cerr << "offsets[" << k << ", " << i << "]: " << map_info.offsets[i] << endl);
+                    VERBOSE(cerr << "lengths[" << k << ", " << i << "]: " << map_info.lengths[i] << endl);
+                    // add the block index for this chunk.
+                    dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], pia,true,i);
+
+                }
             }
 
-            for (int i = 0; i < map_info.nblocks; i++) {
-                VERBOSE(cerr << "offsets[" << k << ", " << i << "]: " << map_info.offsets[i] << endl);
-                VERBOSE(cerr << "lengths[" << k << ", " << i << "]: " << map_info.lengths[i] << endl);
-                dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], pia);
+            else if (map_info.nblocks == 1) {
+                    dc->add_chunk(endian_name, map_info.lengths[0], map_info.offsets[0], pia);
             }
 
             // Increase strides for each dimension. The fastest varying dimension is rank-1.
@@ -535,6 +537,10 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             }
             SDfree_mapping_info(&map_info);
         }
+        if (LBChunk) 
+            dc->set_multi_linked_blocks_chunk(LBChunk);
+           
+        
     }
     else if (chunk_flag == HDF_NONE) {
         SD_mapping_info_t map_info;

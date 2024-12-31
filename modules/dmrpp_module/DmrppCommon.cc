@@ -231,7 +231,7 @@ unsigned long DmrppCommon::add_chunk(
 {
     vector<unsigned long long> cpia_vector;
     Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
-    return add_chunk(std::move(data_url), byte_order, size, offset, filter_mask,cpia_vector);
+    return add_chunk(std::move(data_url), byte_order, size, offset,filter_mask,cpia_vector);
 }
 
 /**
@@ -298,6 +298,61 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
+
+// For build_dmrpp to handle multi-linked blocks.
+unsigned long DmrppCommon::add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array,
+            bool multi_linked_blocks,
+            unsigned int lb_index) 
+
+{
+    shared_ptr<Chunk> chunk(new Chunk(std::move(d_data_url),  byte_order, size, offset,  position_in_array,multi_linked_blocks,lb_index));
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+unsigned long DmrppCommon::add_chunk(
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array,
+            bool multi_linked_blocks,
+            unsigned int lb_index) 
+
+{
+    shared_ptr<Chunk> chunk(new Chunk(byte_order, size, offset,  position_in_array,multi_linked_blocks,lb_index));
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+// For retrieving data from the dmrpp module
+unsigned long DmrppCommon::add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            const std::string &position_in_array,
+            const std::vector<std::pair<unsigned long long, unsigned long long>> &lb_offset_length)
+{
+    shared_ptr<Chunk> chunk(new Chunk(std::move(d_data_url),  byte_order,  position_in_array,lb_offset_length));
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+
+unsigned long DmrppCommon::add_chunk(
+            const std::string &byte_order,
+            const std::string &position_in_array,
+            const std::vector<std::pair<unsigned long long, unsigned long long>> &lb_offset_length)
+
+{
+    shared_ptr<Chunk> chunk(new Chunk(byte_order, position_in_array,lb_offset_length));
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
 /**
  * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
  *
@@ -486,12 +541,32 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         }
     }
 
-    // If the disable_dio flag is true, we will set the DIO=off attribute.
+    if (!d_chunks.empty() && !struct_offsets.empty()) {
 
+        string sos;
+        for (unsigned int i = 0; i <struct_offsets.size(); i++) {
+            if ( i != struct_offsets.size()-1)
+                sos = sos + to_string(struct_offsets[i]) + " ";
+            else 
+                sos = sos +to_string(struct_offsets[i]);
+        }
+        BESDEBUG(dmrpp_3, "Structure offset: " << sos<<endl);
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "structOffset", (const xmlChar*) sos.c_str()) < 0)
+            throw BESInternalError("Could not write structOffset.", __FILE__, __LINE__);
+
+    }
+
+    if (!d_chunks.empty() && multi_linked_blocks_chunk == true) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "LBChunk",
+                                        (const xmlChar *) "true") < 0)
+            throw BESInternalError("Could not write attribute LBChunk", __FILE__, __LINE__);
+    }
+
+    // If the disable_dio flag is true, we will set the DIO=off attribute.
     if (!d_filters.empty() && d_disable_dio == true) {
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "DIO",
                                         (const xmlChar *) "off") < 0)
-            throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+            throw BESInternalError("Could not write attribute DIO", __FILE__, __LINE__);
     }
  
     if (!d_chunk_dimension_sizes.empty()) { //d_chunk_dimension_sizes.size() > 0) {
@@ -575,6 +650,16 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
                                                     (const xmlChar *) fm.str().c_str()) < 0)
                         throw BESInternalError("Could not write attribute fm(filter mask)", __FILE__, __LINE__);
                 }
+
+                // Here we also need to check if this chunk contains multi-linked blocks. If yes, add the linked block index here.
+                if (chunk->get_multi_linked_blocks()) {
+                    ostringstream mlb_index;
+                    mlb_index << chunk->get_multi_linked_block_index_in_dmrpp_file();
+                    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "LinkedBlockIndex",
+                                                    (const xmlChar *) mlb_index.str().c_str()) < 0)
+                        throw BESInternalError("Could not write attribute fm(filter mask)", __FILE__, __LINE__);
+                }
+                
 
             }
         }

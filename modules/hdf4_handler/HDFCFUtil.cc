@@ -985,9 +985,9 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
                 }
                 if(true == need_change_scale)  {
                     sotype = SOType::MODIS_DIV_SCALE;
-                    (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
-                                   << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
-                                   << " Now change it to MODIS_DIV_SCALE. "<<endl;
+                    INFO_LOG("The field " + newfname + " scale factor is "+ scale_factor_value
+                               + " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. "
+                               + " Now change it to MODIS_DIV_SCALE. ");
                 }
             }
         }
@@ -995,9 +995,9 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
         if (SOType::MODIS_DIV_SCALE == sotype) {
             if (orig_scale_value_float < 1 || orig_scale_value_double<1) {
                 sotype = SOType::MODIS_MUL_SCALE;
-                (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
-                                   << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
-                                   << " Now change it to MODIS_MUL_SCALE. "<<endl;
+                INFO_LOG("The field " + newfname + " scale factor is "+ scale_factor_value
+                           + " But the original scale factor type is MODIS_DIV_SCALE. "
+                           + " Now change it to MODIS_MUL_SCALE. ");
             }
         }
 
@@ -1387,9 +1387,9 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                     }
                     if(true == need_change_scale) {
                         sotype = SOType::MODIS_DIV_SCALE;
-                        (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
-                                 << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
-                                 << " Now change it to MODIS_DIV_SCALE. "<<endl;
+                        INFO_LOG("The field " + newfname + " scale factor is "+ std::to_string(orig_scale_value)
+                                 + " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE."
+                                 + " Now change it to MODIS_DIV_SCALE. ");
                     }
                 }
             }
@@ -1397,9 +1397,9 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
             if (SOType::MODIS_DIV_SCALE == sotype) {
                 if (orig_scale_value < 1) {
                     sotype = SOType::MODIS_MUL_SCALE;
-                    (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
-                                 << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
-                                 << " Now change it to MODIS_MUL_SCALE. "<<endl;
+                    INFO_LOG("The field " + newfname + " scale factor is " + std::to_string(orig_scale_value)
+                                 + " But the original scale factor type is MODIS_DIV_SCALE."
+                                 + " Now change it to MODIS_MUL_SCALE.");
                 }
             }
 

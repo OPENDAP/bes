@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 #include <set>
-#include <stack>
+#include <queue>
 #include <memory>
 
 #define PUGIXML_NO_XPATH
@@ -88,8 +88,11 @@ private:
     static void load_config_from_keys();
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     static pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
+    void add_mblock_index(const pugi::xml_node &chunk,std::queue<std::vector<std::pair<unsigned long long, unsigned long long>>>& mb_index_queue,
+                                                      std::vector<std::pair<unsigned long long, unsigned long long >>&) const;
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
     void process_block(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk, unsigned int block_count) const;
+    void process_multi_blocks_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk, std::queue<std::vector<std::pair<unsigned long long, unsigned long long>>>& mb_index_queue) const;
     bool process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks) const;
 
     static void process_fill_value_chunks(libdap::BaseType *btp, const std::set<shape> &chunk_map, const shape &chunk_shape,

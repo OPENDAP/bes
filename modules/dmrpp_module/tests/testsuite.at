@@ -320,6 +320,16 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_fv.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_fv_chunk.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv_chunk_cmp_right.h5.dap])
 
+# Test the reading of compound data when the fill value is not used.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_scalar_udf_nfv.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_scalar_udf_nfv_right_offset.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv2.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv_chunk_cmp_right_offset.h5.dap])
+# The data is partial filled and the structure is not well aligned.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/compound_two_chunks_naligned_lc_pf.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/compound_high_comp_two_chunks_naligned_pf.h5.dap])
+
 
 # Test chunked data where chunks are compressed twice (and thus must be
 # inflated twice). The first file uses deflate once, the second uses it
@@ -369,6 +379,30 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_scalar_memb_st
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_array_fix_str_only.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_array_fix_str.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_array_fix_vlen_str.h5.dap])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_one_chunk.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_one_chunk_naligned.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_two_chunks.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_two_chunks_naligned.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_one_chunk_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_one_chunk_naligned_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_two_chunks_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_two_chunks_naligned_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_one_chunk.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_one_chunk_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_one_chunk_naligned.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_one_chunk_naligned_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_simple_chunk.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks_naligned.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks_naligned_lc.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_simple_array_constraint.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_one_chunk_naligned_constraint.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks_naligned_constraint.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_two_chunks_lc_constraint.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_two_chunks_naligned_constraint.h5.dap])
+
 
 
 #############################################################################

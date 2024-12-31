@@ -33,7 +33,7 @@
 #include "config.h"
 
 #include <iostream>
-#include <time.h>
+#include <ctime>
 #include <string>
 #include <sstream>
 
@@ -47,13 +47,12 @@
 #include <unistd.h>
 #endif
 
-#define ISO8601_TIME_IN_LOGS
 #define MODULE "bes"
 #define prolog std::string("BESLog::").append(__func__).append("() - ")
 
 using namespace std;
 
-BESLog *BESLog::d_instance = 0;
+BESLog *BESLog::d_instance = nullptr;
 const string BESLog::mark = string("|&|");
 
 
@@ -75,20 +74,18 @@ const string BESLog::mark = string("|&|");
  * problems opening or writing to the log file.
  * @see BESKeys
  */
-BESLog::BESLog() :
-    d_flushed(1), d_file_buffer(0), d_suspended(0), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
-{
-    d_suspended = 0;
+BESLog::BESLog() {
+
     bool found = false;
     try {
-        TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
+        d_instance_id = TheBESKeys::TheKeys()->read_string_key("AWS.instance-id", "-");
     }
     catch (BESInternalFatalError &bife) {
         stringstream msg;
         msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
         BESDEBUG(MODULE,msg.str());
         cerr << msg.str();
-        throw bife;
+        throw;
     }
     catch (...) {
         stringstream msg;
@@ -98,10 +95,30 @@ BESLog::BESLog() :
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
 
+    // Find the log filename.
+    try {
+        TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
+    }
+    catch (BESInternalFatalError &bife) {
+        stringstream msg;
+        msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
+        BESDEBUG(MODULE,msg.str());
+        cerr << msg.str();
+        throw;
+    }
+    catch (...) {
+        stringstream msg;
+        msg << prolog << "FATAL ERROR: Caught unknown exception! Unable to determine log file name." << endl;
+        BESDEBUG(MODULE,msg.str());
+        cerr << msg.str();
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+
+
     // By default, use UTC in the logs.
     found = false;
-    string local_time;
     try {
+        string local_time;
         TheBESKeys::TheKeys()->get_value("BES.LogTimeLocal", local_time, found);
         d_use_local_time = found && (BESUtil::lowercase(local_time) == "yes");
         BESDEBUG(MODULE, prolog << "d_use_local_time: " << (d_use_local_time?"true":"false") << endl);
@@ -144,6 +161,8 @@ BESLog::BESLog() :
     d_use_unix_time = found && (BESUtil::lowercase(s)=="true");
     BESDEBUG(MODULE, prolog << "d_use_unix_time: " << (d_use_unix_time?"true":"false") << endl);
 
+    // Set the pid and build the log rord prolog base...
+    update_pid();
 }
 
 /** @brief Cleans up the logging mechanism
@@ -154,28 +173,41 @@ BESLog::~BESLog()
 {
     d_file_buffer->close();
     delete d_file_buffer;
-    d_file_buffer = 0;
+    d_file_buffer = nullptr;
 }
 
-/** @brief Protected method that dumps the date/time to the log file
- *
- * Depending on the compile-time constant ISO8601_TIME_IN_LOGS,
- * the time is dumped to the log file in the format:
- * "MDT Thu Sep  9 11:05:16 2004", or in ISO8601 format:
- * "YYYY-MM-DDTHH:MM:SS zone"
- */
-void BESLog::dump_time()
+/**
+* @brief Update the d_pid and the d_log_record_prolog_base values.
+*/
+pid_t BESLog::update_pid()
 {
-#ifdef ISO8601_TIME_IN_LOGS
+    auto pid = getpid();
+    d_pid = to_string(pid);
+    d_log_record_prolog_base = mark + d_instance_id + mark + d_pid + mark;
+    return pid;
+}
+
+
+/** @brief Protected method that returns a string with the first fields of a log record.
+ *
+ * By default, the time will be expressed in ISO8601 format: "YYYY-MM-DDTHH:MM:SS zone"
+ *
+ * However, if BES.LogUnixTime=true appears in the BES configuration then time
+ * will be expressed as a numeric unix time value.
+ *
+ * @return The string: time + mark + pid + mark
+ */
+std::string BESLog::log_record_begin() const {
+    string log_record_prolog;
+
     time_t now;
     time(&now);
-
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
     if(d_use_unix_time){
-        (*d_file_buffer) << now;
+        log_record_prolog = std::to_string(now);
     }
     else {
-        struct tm date_time{};
+        char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
+        tm date_time{};
         if (!d_use_local_time){
             gmtime_r(&now, &date_time);
         }
@@ -183,193 +215,41 @@ void BESLog::dump_time()
             localtime_r(&now, &date_time);
         }
         (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
-        (*d_file_buffer) << buf;
+        log_record_prolog = buf;
     }
-#else
-    const time_t sctime = time(NULL);
-    const struct tm *sttime = localtime(&sctime);
-    char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
-    char *b = asctime(sttime);
 
-    (*d_file_buffer) << zone_name << " ";
-    for (register int j = 0; b[j] != '\n'; j++)
-        (*d_file_buffer) << b[j];
-#endif
-
-    (*d_file_buffer) << mark << getpid() << mark;
-
-    d_flushed = 0;
+    log_record_prolog += d_log_record_prolog_base;
+    return log_record_prolog;
 }
 
-/** @brief Overloaded inserter that writes the specified string.
- *
- * @todo Decide if this is really necessary.
- *
- * @param s string to write to the log file
+
+/**
+ * @brief Writes msg to a log record with type lrt.
+ * @param lrt The log record type
+ * @param msg The message to be logged.
  */
-BESLog& BESLog::operator<<(string &s)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        (*d_file_buffer) << s;
-    }
-    return *this;
+void BESLog::log_record(const std::string &lrt, const std::string &msg) const {
+
+    *d_file_buffer << log_record_begin() << lrt << mark << msg ;
+    if(!msg.empty() && msg.back() != '\n')
+        *d_file_buffer << "\n";
+
+    *d_file_buffer << flush;
 }
 
-/** @brief Overloaded inserter that writes the specified const string.
- *
- * @param s const string to write to the log file
+/**
+ * @brief Writes msg, file, and line to a trace log record with type lrt.
+ * @param lrt The log record type
+ * @param msg The message to be logged.
  */
-BESLog& BESLog::operator<<(const string &s)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        (*d_file_buffer) << s;
-    }
-    return *this;
-}
+void BESLog::trace_log_record(const std::string &lrt, const std::string &msg, const std::string &file, const int line) const {
 
-/** @brief Overloaded inserter that writes the specified char *.
- *
- * @param val char * to write to the log file
- */
-BESLog& BESLog::operator<<(char *val)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        if (val)
-            (*d_file_buffer) << val;
-        else
-            (*d_file_buffer) << "NULL";
-    }
-    return *this;
-}
+    *d_file_buffer << log_record_begin() << "trace-" << lrt << mark;
+    *d_file_buffer << file << mark << line << mark << msg ;
+    if(!msg.empty() && msg.back() != '\n')
+        *d_file_buffer << "\n";
 
-/** @brief Overloaded inserter that writes the specified const char *.
- *
- * @param val const char * to write to the log file
- */
-BESLog& BESLog::operator<<(const char *val)
-{
-    if (!d_suspended) {
-        if (d_flushed) {
-            dump_time();
-        }
-        if (val)
-            (*d_file_buffer) << val;
-        else
-            (*d_file_buffer) << "NULL";
-    }
-    return *this;
-}
-
-/** @brief Overloaded inserter that writes the specified int value.
- *
- * @param val int value to write to the log file
- */
-BESLog& BESLog::operator<<(int val)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
-    }
-    return *this;
-}
-
-BESLog& BESLog::operator<<(unsigned int val)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
-    }
-    return *this;
-}
-
-
-/** @brief Overloaded inserter that writes the specified char value.
- *
- * @param val char value to write to the log file
- */
-BESLog& BESLog::operator<<(char val)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
-    }
-    return *this;
-}
-
-/** @brief Overloaded inserter that writes the specified long value.
- *
- * @param val long value to write to the log file
- */
-BESLog& BESLog::operator<<(long val)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
-    }
-    return *this;
-}
-
-/** @brief Overloaded inserter that writes the specified unsigned long value.
- *
- * @param val unsigned long value to write to the log file
- */
-BESLog& BESLog::operator<<(unsigned long val)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
-    }
-    return *this;
-}
-
-/** @brief Overloaded inserter that writes the specified double value.
- *
- * @param val double value to write to the log file
- */
-BESLog& BESLog::operator<<(double val)
-{
-    if (!d_suspended) {
-        if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
-    }
-    return *this;
-}
-
-/** @brief Overloaded inserter that takes stream manipulation methods.
- *
- * Overloaded inserter that can take the address of endl, flush and ends
- * functions. This inserter is based on p_ostream_manipulator, therefore
- * the C++ standard functions for I/O endl, flush, and ends can be applied
- * to objects of the class BESLog.
- */
-BESLog& BESLog::operator<<(p_ostream_manipulator val)
-{
-    if (!d_suspended) {
-        (*d_file_buffer) << val;
-        if ((val == (p_ostream_manipulator) endl) || (val == (p_ostream_manipulator) flush)) d_flushed = 1;
-    }
-    return *this;
-}
-
-void BESLog::flush_me(){
-    (*d_file_buffer) << flush;
-    d_flushed = 1;
-}
-
-/** @brief Overloaded inserter that takes ios methods
- *
- * Overloaded inserter that can take the address oct, dec and hex functions.
- * This inserter is based on p_ios_manipulator, therefore the C++ standard
- * functions oct, dec and hex can be applied to objects of the class BESLog.
- */
-BESLog& BESLog::operator<<(p_ios_manipulator val)
-{
-    if (!d_suspended) (*d_file_buffer) << val;
-    return *this;
+    *d_file_buffer << flush;
 }
 
 /** @brief dumps information about this object
@@ -381,18 +261,18 @@ BESLog& BESLog::operator<<(p_ios_manipulator val)
  */
 void BESLog::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESLog::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESLog::dump - (" << (void *) this << ")\n";
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "log file: " << d_file_name << endl;
+    strm << BESIndent::LMarg << "    log file: " << d_file_name;
     if (d_file_buffer && *d_file_buffer) {
-        strm << BESIndent::LMarg << "log is valid" << endl;
+        strm << BESIndent::LMarg << " (log is valid)\n";
     }
     else {
-        strm << BESIndent::LMarg << "log is NOT valid" << endl;
+        strm << BESIndent::LMarg << " (log is NOT valid)\n";
     }
-    strm << BESIndent::LMarg << "is verbose: " << d_verbose << endl;
-    strm << BESIndent::LMarg << "is flushed: " << d_flushed << endl;
-    strm << BESIndent::LMarg << "is suspended: " << d_suspended << endl;
+    strm << BESIndent::LMarg << "    d_verbose: " << (d_verbose?"enabled":"disable") << "\n";
+    strm << BESIndent::LMarg << "d_instance_id: " << d_instance_id << "\n";
+    strm << BESIndent::LMarg << "        d_pid: " << d_pid << "\n";
     BESIndent::UnIndent();
 }
 

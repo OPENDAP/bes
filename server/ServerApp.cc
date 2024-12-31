@@ -57,7 +57,6 @@
 #include "BESServerHandler.h"
 #include "BESError.h"
 #include "PPTServer.h"
-#include "BESMemoryManager.h"
 #include "BESDebug.h"
 #include "BESCatalogUtils.h"
 #include "BESUtil.h"
@@ -178,8 +177,8 @@ static void catch_sig_pipe(int sig)
         // listener, allow the processing loop to handle this signal
         // and do not exit.  jhrg 9/22/15
         if (getpid() != master_listener_pid) {
-            INFO_LOG("Child listener (PID: " << getpid() << ") caught SIGPIPE (master listener PID: "
-                << master_listener_pid << "). Child listener Exiting." << endl);
+            INFO_LOG("Child listener (PID: " + std::to_string(getpid()) + ") caught SIGPIPE (master listener PID: "
+                + std::to_string(master_listener_pid) + "). Child listener Exiting.");
 
             // cleanup code here; only the Master listener should run the code
             // in ServerApp::terminate(); do nothing for cleanup for a child
@@ -192,7 +191,7 @@ static void catch_sig_pipe(int sig)
             raise(sig);
         }
         else {
-            INFO_LOG("Master listener (PID: " << getpid() << ") caught SIGPIPE." << endl);
+            INFO_LOG("Master listener (PID: " + std::to_string(getpid()) + ") caught SIGPIPE.");
 
             sigpipe = 1;
         }
@@ -350,7 +349,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            ERROR_LOG(err << endl);
+            ERROR_LOG(err);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         if (found) {
@@ -370,7 +369,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            ERROR_LOG(err << endl);
+            ERROR_LOG(err);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
 
@@ -388,7 +387,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            ERROR_LOG(err << endl);
+            ERROR_LOG(err);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
     }
@@ -399,7 +398,7 @@ int ServerApp::initialize(int argc, char **argv)
         msg += " and/or -u <unix_socket>\n";
         msg += "Or specify in the bes configuration file with " + port_key + " and/or " + socket_key + "\n";
         cout << endl << msg;
-        ERROR_LOG(msg << endl);
+        ERROR_LOG(msg);
         BESServerUtils::show_usage(BESApp::TheApplication()->appName());
     }
 
@@ -413,7 +412,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            ERROR_LOG(err << endl);
+            ERROR_LOG(err);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         if (isSecure == "Yes" || isSecure == "YES" || isSecure == "yes") {
@@ -458,7 +457,6 @@ int ServerApp::run()
 {
     try {
         BESDEBUG("beslistener", "beslistener: initializing memory pool ... " << endl);
-        BESMemoryManager::initialize_memory_pool();
         BESDEBUG("beslistener", "OK" << endl);
 
         SocketListener listener;
@@ -480,7 +478,7 @@ int ServerApp::run()
             long res = write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
 
             if (res == -1) {
-                ERROR_LOG("Master listener could not send status to daemon: " << strerror(errno) << endl);
+                ERROR_LOG("Master listener could not send status to daemon: " + string(strerror(errno)));
                 ::exit(SERVER_EXIT_FATAL_CANNOT_START);
             }
         }
@@ -515,22 +513,22 @@ int ServerApp::run()
                 while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/)) > 0) {
                     d_ppt_server->decr_num_children();
                     if (sigpipe) {
-                        INFO_LOG("Master listener caught SISPIPE from child: " << cpid << endl);
+                        INFO_LOG("Master listener caught SISPIPE from child: " + std::to_string(cpid));
                     }
-                    INFO_LOG(bes_exit_message(cpid, stat) << "; num children: " << d_ppt_server->get_num_children() << endl);
+                    INFO_LOG(bes_exit_message(cpid, stat) + "; num children: " + std::to_string(d_ppt_server->get_num_children()));
                     BESDEBUG("ppt2", bes_exit_message(cpid, stat) << "; num children: " << d_ppt_server->get_num_children() << endl);
                 }
             }
 
             if (sighup) {
-                BESDEBUG("ppt2", "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
-                INFO_LOG("Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
+                BESDEBUG("ppt2", "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART");
+                INFO_LOG("Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART");
                 return SERVER_EXIT_RESTART;
             }
 
             if (sigterm) {
-                BESDEBUG("ppt2", "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
-                INFO_LOG("Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
+                BESDEBUG("ppt2", "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN");
+                INFO_LOG("Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN");
                 return SERVER_EXIT_NORMAL_SHUTDOWN;
             }
 
@@ -548,11 +546,11 @@ int ServerApp::run()
     catch (BESError &se) {
         BESDEBUG("beslistener", "beslistener: caught BESError (" << se.get_message() << ")" << endl);
 
-        ERROR_LOG(se.get_message() << endl);
+        ERROR_LOG(se.get_message());
         return SERVER_EXIT_FATAL_CANNOT_START;
     }
     catch (...) {
-        ERROR_LOG("caught unknown exception initializing sockets" << endl);
+        ERROR_LOG("caught unknown exception initializing sockets");
         return SERVER_EXIT_FATAL_CANNOT_START;
     }
 }

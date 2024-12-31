@@ -252,7 +252,7 @@ void BESXMLInterface::build_data_request_plan()
 void BESXMLInterface::log_the_command()
 {
     // In 'verbose' logging mode, log all the commands.
-    VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
+    VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " [" + d_dhi_ptr->data[LOG_INFO] + "] executing");
 
     // This is the main log entry when the server is not in 'verbose' mode.
     // There are two ways we can do this, one writes a log line for only the
@@ -295,7 +295,7 @@ void BESXMLInterface::log_the_command()
             }
         }
 
-        REQUEST_LOG(new_log_info << endl);
+        REQUEST_LOG(new_log_info);
 
         if (d_dhi_ptr->containers.size() > 1)
             ERROR_LOG("The previous command had multiple containers defined, but only the first was logged.");
@@ -314,7 +314,7 @@ void BESXMLInterface::log_the_command()
  */
 void BESXMLInterface::execute_data_request_plan()
 {
-    BES_COMMAND_TIMING(prolog);
+    BES_COMMAND_TIMING(prolog, d_dhi_ptr);
 
     for(auto bescmd : d_xml_cmd_list){
         bescmd->prep_request();
@@ -359,20 +359,20 @@ void BESXMLInterface::execute_data_request_plan()
  */
 void BESXMLInterface::transmit_data()
 {
-    BES_COMMAND_TIMING(prolog);
+    BES_COMMAND_TIMING(prolog, d_dhi_ptr);
 
     if (d_dhi_ptr->error_info) {
-        VERBOSE(d_dhi_ptr->data[SERVER_PID] << " from " << d_dhi_ptr->data[REQUEST_FROM] << " ["
-                << d_dhi_ptr->data[LOG_INFO] << "] Error" << endl);
+        VERBOSE(d_dhi_ptr->data[SERVER_PID] + " from " + d_dhi_ptr->data[REQUEST_FROM] + " ["
+                + d_dhi_ptr->data[LOG_INFO] + "] Error" );
 
         ostringstream strm;
         d_dhi_ptr->error_info->print(strm);
-        INFO_LOG("Transmitting error content: " << strm.str() << endl);
+        INFO_LOG("Transmitting error content: " + strm.str() );
 
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
     else if (d_dhi_ptr->response_handler) {
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " [" + d_dhi_ptr->data[LOG_INFO] + "] transmitting" );
 
         BESStopWatch sw;
         if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
@@ -406,7 +406,7 @@ void BESXMLInterface::log_status()
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             // This is only printed for verbose logging.
-            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << std::endl);
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " [" + d_dhi_ptr->data[LOG_INFO] + "] " + result );
         }
     }
 }
@@ -418,7 +418,7 @@ void BESXMLInterface::clean()
         d_dhi_ptr = &cmd->get_xmlcmd_dhi();
 
         if (d_dhi_ptr) {
-            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] cleaning" << endl);
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " [" + d_dhi_ptr->data[LOG_INFO] + "] cleaning" );
 
             d_dhi_ptr->clean(); // Delete the ResponseHandler if present
         }

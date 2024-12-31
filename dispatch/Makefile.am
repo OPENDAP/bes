@@ -77,8 +77,6 @@ SRCS = BESInterface.cc \
 	BESTransmitter.cc \
 	BESReporterList.cc BESConstraintFuncs.cc			\
 	BESServiceRegistry.cc BESServicesResponseHandler.cc		\
-	BESMemoryGlobalArea.cc						\
-	BESMemoryManager.cc 			\
 	BESReturnManager.cc						\
 	BESError.cc				\
 	BESDataHandlerInterface.cc					\
@@ -136,7 +134,6 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESSyntaxUserError.h BESForbiddenError.h BESNotFoundError.h 	\
 	BESTimeoutError.h \
 	BESConstraintFuncs.h  			\
-	BESMemoryGlobalArea.h BESMemoryManager.h 			\
 	BESServerSystemResources.h 					\
 	BESReturnManager.h 						\
 	BESDataNames.h BESApp.h BESObj.h BESIndent.h 	\

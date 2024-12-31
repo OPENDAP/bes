@@ -53,6 +53,7 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/PODAAC/
 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GHRC/LISOTD_HRAC_V2.2.hdf
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MYD09.A2019003.2040.006.2019005020913.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MYD09.A2019003.2040.006.2019005020913.hdf.dmrpp
 
 #Cloud
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf

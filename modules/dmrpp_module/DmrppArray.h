@@ -93,6 +93,10 @@ private:
     string_pad_type d_fixed_length_string_pad_type = not_set;
     vector<u_int8_t> d_compact_str_buf;
 
+    bool is_readable_struct = false;
+    vector<char> d_structure_array_buf;
+    unsigned long long bytes_per_element;
+
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
  
@@ -101,11 +105,8 @@ private:
 
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
                                        std::vector<unsigned long long> &subset_addr,
-                                       const std::vector<unsigned long long> &array_shape, char *data);
+                                       const std::vector<unsigned long long> &array_shape, char *data, char *dest_buf);
 
-    void insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
-                                       std::vector<unsigned long long> &subset_addr,
-                                       const std::vector<unsigned long long> &array_shape, char *data, std::vector<char> &values);
     void read_contiguous();
     void read_one_chunk_dio();
     void read_contiguous_string();
@@ -146,7 +147,9 @@ private:
     void read_chunks_dio_unconstrained();
     void read_linked_blocks();
     void read_linked_blocks_constrained();
-
+    void read_chunks_with_linked_blocks();
+    void read_chunks_with_linked_blocks_constrained();
+    
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address, std::shared_ptr<Chunk> chunk);
@@ -156,7 +159,7 @@ private:
             std::vector<unsigned long long> *target_element_address,
             std::vector<unsigned long long> *chunk_element_address,
             std::shared_ptr<Chunk> chunk,
-            const vector<unsigned long long> &constrained_array_shape);
+            const vector<unsigned long long> &constrained_array_shape,char *target_buf);
     void read_array_of_structure(vector<char> &values);
     bool check_struct_handling();
 
@@ -165,6 +168,7 @@ private:
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 
 public:
+ 
     DmrppArray(const std::string &n, libdap::BaseType *v) :
             libdap::Array(n, v, true /*is dap4*/), DmrppCommon()
             { }
@@ -236,7 +240,10 @@ public:
     vector<u_int8_t> &compact_str_buffer(){ return d_compact_str_buf; }
 
     vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
+    char * get_structure_array_buf_ptr() { return d_structure_array_buf.data(); }
 
+    unsigned long long get_bytes_per_element() const { return bytes_per_element;}
+    void set_bytes_per_element(unsigned long long bpe) { bytes_per_element = bpe;}
     void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;}
     bool get_special_structure_flag() { return is_special_structure;} 
     bool is_projected();
