@@ -3087,8 +3087,9 @@ unsigned int DmrppArray::buf2val(void **val){
         }
         memcpy(*val, str_buf.data(), buf_size);
         return buf_size;
+    } else {
+        return (unsigned int)Vector::buf2val_ll(val);
     }
-    return Vector::buf2val_ll(val);
 }
 
 // Check if direct chunk IO can be used. 
