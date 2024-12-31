@@ -47,26 +47,28 @@ using namespace build_dmrpp_util;
 
 #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
 
-
-
 void usage() {
     const char *help = R"(
     build_dmrpp -h: Show this help
 
     build_dmrpp -V: Show build versions for components that make up the program
 
-    build_dmrpp -f <data file> -r <dmr file> [-u <href url>]: As above, but uses the DMR
-       read from the given file.
+    build_dmrpp -f <data file> -r <dmr file> [-u <href url>] [-c <bes conf file>] [-M] [-D] [-v] [-d]
 
-    Other options:
-        -v: Verbose
-        -d: Turn on BES software debugging output
-        -M: Add information about the build_dmrpp software, incl versions, to the built DMR++
-        -D: Disable Direct IO feature)";
+    options:
+        -f: HDF5 file to build DMR++ from
+        -r: DMR file to build DMR++ from
+        -u: The href value to use in the DMR++ for the data file
+        -c: The BES configuration file used to create the DMR file
+        -M: Add production metadata to the built DMR++
+        -D: Disable Direct IO feature
+        -h: Show this help
+        -v: Verbose HDF5 errors
+        -V: Show build versions for components that make up the program
+        -d: Turn on BES software debugging output)";
 
     cerr << help << endl;
 }
-
 
 /**
  *
@@ -89,7 +91,11 @@ int main(int argc, char *argv[]) {
             case 'V':
                 cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-"
                     << libdap_version() << ")" << endl;
-                return 0;
+                exit(EXIT_SUCCESS);
+
+            case 'h':
+                usage();
+                exit(EXIT_FAILURE);
 
             case 'v':
                 build_dmrpp_util::verbose = true; // verbose hdf5 errors
@@ -123,23 +129,18 @@ int main(int argc, char *argv[]) {
                 disable_dio = true;
                 break;
 
-            case 'h':
-                usage();
-                exit(EXIT_FAILURE);
-
             default:
                 break;
         }
     }
 
     try {
-
         // Check to see if the file is hdf5 compliant
         qc_input_file(h5_file_name);
 
-        if (dmr_filename.empty()){
+        if (dmr_filename.empty()) {
             stringstream msg;
-            msg << "A DMR fully file for the granule '" << h5_file_name << " must also be provided." << endl;
+            msg << "A DMR file for the granule '" << h5_file_name << " must also be provided." << endl;
             throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
 
@@ -152,7 +153,6 @@ int main(int argc, char *argv[]) {
                 bes_conf_file_used_to_create_dmr,
                 disable_dio,
                 argc,  argv);
-
     }
     catch (const BESError &e) {
         cerr << "ERROR Caught BESError. message: " << e.get_message() << endl;

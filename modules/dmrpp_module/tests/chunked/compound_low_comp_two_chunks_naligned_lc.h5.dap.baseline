@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_low_comp_two_chunks_naligned_lc.h5">
+    <Structure name="comp_array">
+        <Float64 name="a_name"/>
+        <Int16 name="b_name"/>
+        <Float32 name="c_name">
+            <Dim size="2"/>
+        </Float32>
+        <Dim size="2"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Structure>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>removed date-time</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed-version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed-version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed-version</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.EYZJfdeTju -f ./compound_low_comp_two_chunks_naligned_lc.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.P8lF5zwuHb -u data/dmrpp/compound_low_comp_two_chunks_naligned_lc.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Structure {
+    Float64 a_name;
+    Int16 b_name;
+    Float32 c_name[2];
+} comp_array[2] = {{ 0.11, 2, {2.77, 3.77} }, { 1.11, 3, {3.77, 4.77} }};
+

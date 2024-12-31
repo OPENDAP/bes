@@ -70,7 +70,7 @@ BESMemoryManager::register_global_pool()
 void
 BESMemoryManager::swap_memory()
 {
-    INFO_LOG("BESMemoryManager::This is just a simulation, here we tell BES to go to persistence state" << endl);
+    INFO_LOG("BESMemoryManager::This is just a simulation, here we tell BES to go to persistence state.");
     set_new_handler( BESMemoryManager::release_global_pool ) ;
 }
 
@@ -119,7 +119,7 @@ BESMemoryManager::release_global_pool() throw (bad_alloc)
         // unexpected behavior from the program.
         BESDEBUG("bes", "BES Warning: low in memory, " << "releasing global memory pool!" << endl);
 
-        INFO_LOG("BES Warning: low in memory, " << "releasing global memory pool!" << endl);
+        INFO_LOG("BES Warning: low in memory, releasing global memory pool!\n");
     }
     catch (BESError &e) {
         // At this point, exceptions are pretty moot.

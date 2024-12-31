@@ -110,7 +110,8 @@ int Socket::receive(char *inBuff, const int inSize)
 			// These codes are only returned when no bytes have been read, so
 			// there is no need to update the values of inSize or inBuff.
 			// jhrg 11/6/13
-            ERROR_LOG("Socket::receive: errno: " << strerror(errno) << ", bytesRead: " << bytesRead << endl);
+            ERROR_LOG("Socket::receive: errno: " + string(strerror(errno)) + ", bytesRead: "
+            	+ std::to_string(bytesRead) );
 			errno = 0;
 			continue;
 		}

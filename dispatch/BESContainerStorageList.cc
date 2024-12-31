@@ -306,7 +306,7 @@ BESContainerStorageList::look_for(const string &sym_name)
     }
     if (!ret_container) {
         string msg = (string) "Could not find the symbolic name " + sym_name;
-        ERROR_LOG(msg << endl);
+        ERROR_LOG(msg);
         if (!isnice()) {
             throw BESSyntaxUserError(msg, __FILE__, __LINE__);
         }

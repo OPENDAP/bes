@@ -753,13 +753,9 @@ DmrppArray::dimension DmrppArray::get_dimension(unsigned int i)
  */
 void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
                                                vector<unsigned long long> &subset_addr,
-                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf)
+                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf, char *dest_buf)
 {
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
-
-    unsigned int bytes_per_elem = prototype()->width();
-
-    char *dest_buf = get_buf();
 
     uint64_t start = this->dimension_start_ll(dim_iter, true);
     uint64_t stop = this->dimension_stop_ll(dim_iter, true);
@@ -782,10 +778,10 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
         // Copy data block from start_index to stop_index
         // TODO Replace this loop with a call to std::memcpy()
         for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
-            uint64_t target_byte = *target_index * bytes_per_elem;
-            uint64_t source_byte = source_index * bytes_per_elem;
+            uint64_t target_byte = *target_index * bytes_per_element;
+            uint64_t source_byte = source_index * bytes_per_element;
             // Copy a single value.
-            for (unsigned long i = 0; i < bytes_per_elem; i++) {
+            for (unsigned long i = 0; i < bytes_per_element; i++) {
                 dest_buf[target_byte++] = src_buf[source_byte++];
             }
             (*target_index)++;
@@ -799,7 +795,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
             if (dim_iter != dim_end()) {
                 // Nope! Then we recurse to the last dimension to read stuff
                 subset_addr.push_back(myDimIndex);
-                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf);
+                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf, dest_buf);
                 subset_addr.pop_back();
             }
             else {
@@ -809,86 +805,10 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
                 subset_addr.pop_back();
 
                 // Copy a single value.
-                uint64_t target_byte = *target_index * bytes_per_elem;
-                uint64_t source_byte = sourceIndex * bytes_per_elem;
+                uint64_t target_byte = *target_index * bytes_per_element;
+                uint64_t source_byte = sourceIndex * bytes_per_element;
 
-                for (unsigned int i = 0; i < bytes_per_elem; i++) {
-                    dest_buf[target_byte++] = src_buf[source_byte++];
-                }
-                (*target_index)++;
-            }
-        }
-    }
-}
-
-/**
- * @brief Insert data into a variable for structure.  
- *
- * This method is a clone of the method insert_constrained_contiguous with the minimal addition to handle the structure.
- *
- * This method is used only for contiguous data. It is called only by itself
- * and read_contiguous().
- */
-void DmrppArray::insert_constrained_contiguous_structure(Dim_iter dim_iter, unsigned long *target_index,
-                                               vector<unsigned long long> &subset_addr,
-                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf, vector<char> &dest_buf)
-{
-    BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
-
-    unsigned int bytes_per_elem = prototype()->width();
-
-    uint64_t start = this->dimension_start_ll(dim_iter, true);
-    uint64_t stop = this->dimension_stop_ll(dim_iter, true);
-    uint64_t stride = this->dimension_stride_ll(dim_iter, true);
-
-    dim_iter++;
-
-    // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
-    // See the else clause for the general case.
-    if (dim_iter == dim_end() && stride == 1) {
-        // For the start and stop indexes of the subset, get the matching indexes in the whole array.
-        subset_addr.push_back(start);
-        unsigned long long start_index = get_index(subset_addr, array_shape);
-        subset_addr.pop_back();
-
-        subset_addr.push_back(stop);
-        unsigned long long stop_index = get_index(subset_addr, array_shape);
-        subset_addr.pop_back();
-
-        // Copy data block from start_index to stop_index
-        // TODO Replace this loop with a call to std::memcpy()
-        for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
-            uint64_t target_byte = *target_index * bytes_per_elem;
-            uint64_t source_byte = source_index * bytes_per_elem;
-            // Copy a single value.
-            for (unsigned long i = 0; i < bytes_per_elem; i++) {
-                dest_buf[target_byte++] = src_buf[source_byte++];
-            }
-            (*target_index)++;
-        }
-
-    }
-    else {
-        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
-
-            // Is it the last dimension?
-            if (dim_iter != dim_end()) {
-                // Nope! Then we recurse to the last dimension to read stuff
-                subset_addr.push_back(myDimIndex);
-                insert_constrained_contiguous(dim_iter, target_index, subset_addr, array_shape, src_buf);
-                subset_addr.pop_back();
-            }
-            else {
-                // We are at the last (innermost) dimension, so it's time to copy values.
-                subset_addr.push_back(myDimIndex);
-                unsigned int sourceIndex = get_index(subset_addr, array_shape);
-                subset_addr.pop_back();
-
-                // Copy a single value.
-                uint64_t target_byte = *target_index * bytes_per_elem;
-                uint64_t source_byte = sourceIndex * bytes_per_elem;
-
-                for (unsigned int i = 0; i < bytes_per_elem; i++) {
+                for (unsigned int i = 0; i < bytes_per_element; i++) {
                     dest_buf[target_byte++] = src_buf[source_byte++];
                 }
                 (*target_index)++;
@@ -1042,9 +962,10 @@ void DmrppArray::read_contiguous()
     }
     BESDEBUG(dmrpp_3, prolog << "Before is_filter " << endl);
 
+    // Check if this is a DAP structure we can handle
     // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty() && !get_one_chunk_fill_value()) {
-        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), bytes_per_element);
     }
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
@@ -1055,11 +976,12 @@ void DmrppArray::read_contiguous()
            val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
         else { // Structure 
             // Check if we can handle this case. 
-            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
-            bool can_handle_struct = check_struct_handling();
-            if (can_handle_struct) {
+            // Currently we only handle one-layer simple int/float types. 
+            if (is_readable_struct) {
+                // Only "one chunk", we can simply obtain the buf_value.
                 char *buf_value = the_one_chunk->get_rbuf();
-                unsigned long long value_size = the_one_chunk->get_size();
+                
+                unsigned long long value_size = this->length_ll() * bytes_per_element;  
                 vector<char> values(buf_value,buf_value+value_size);
                 read_array_of_structure(values);
             }
@@ -1077,19 +999,19 @@ void DmrppArray::read_contiguous()
 
             // Reserve space in this array for the constrained size of the data request
             reserve_value_capacity_ll(get_size(true));
-            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
+            char *dest_buf = get_buf();
+            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),dest_buf);
         }
         else {
-            // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
-            bool can_handle_struct = check_struct_handling();
-            if (can_handle_struct) {
-                unsigned long long value_size = get_size(true)*width_ll();
+            // Currently we only handle one-layer simple int/float types. 
+            if (is_readable_struct) {
+                unsigned long long value_size = get_size(true)*bytes_per_element;
                 vector<char> values;
                 values.resize(value_size);
                 vector<unsigned long long> array_shape = get_shape(false);
                 unsigned long target_index = 0;
                 vector<unsigned long long> subset;
-                insert_constrained_contiguous_structure(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values);
+                insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),values.data());
                 read_array_of_structure(values);
             }
             else 
@@ -1158,15 +1080,20 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
-        unsigned int elem_width = prototype()->width();
 
+        unsigned int elem_width = bytes_per_element;
         array_offset += chunk_origin[dim];
 
         // Compute how much we are going to copy
-        unsigned long long chunk_bytes = (end_element - chunk_origin[dim] + 1) * elem_width;
+        unsigned long long chunk_bytes = (end_element - chunk_origin[dim] + 1) * bytes_per_element;
         char *source_buffer = chunk->get_rbuf();
-        char *target_buffer = get_buf();
+        char *target_buffer = nullptr;
+        if (is_readable_struct) 
+            target_buffer = d_structure_array_buf.data();
+        else 
+            target_buffer = get_buf();
         memcpy(target_buffer + (array_offset * elem_width), source_buffer + (chunk_offset * elem_width), chunk_bytes);
+
     }
     else {
         unsigned long long mc = multiplier(chunk_shape, dim);
@@ -1238,11 +1165,17 @@ void DmrppArray::read_chunks_unconstrained()
     }
 
     reserve_value_capacity_ll(get_size());
+    if (is_readable_struct) {
+        d_structure_array_buf.resize(this->length_ll()*bytes_per_element);
+    }
+
+
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
 
+    
     BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
 
@@ -1267,7 +1200,11 @@ void DmrppArray::read_chunks_unconstrained()
 #endif
         read_super_chunks_unconstrained_concurrent(super_chunks, this);
     }
+
+    if (is_readable_struct) 
+        read_array_of_structure(d_structure_array_buf);
     set_read_p(true);
+
 }
 
 //The direct chunk IO routine of read chunks., mostly copy from the general IO handling routines.
@@ -1345,7 +1282,9 @@ void DmrppArray::read_chunks_dio_unconstrained()
 // Retrieve data from the linked blocks.  We don't need to use the super chunk technique
 // since the adjacent blocks are already combined. We just need to read the data
 // from each chunk, combine them and decompress the buffer if necessary.
+// Note: HDF4 vdata doesn't have the alignment issue.
 void DmrppArray::read_linked_blocks(){
+
     unsigned int num_linked_blocks = this->get_total_linked_blocks();
     if (num_linked_blocks <2)
         throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
@@ -1368,15 +1307,14 @@ void DmrppArray::read_linked_blocks(){
 
     if (this->var()->type() == dods_structure_c) {
 
+        // Check if we can handle this case. 
+        // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
+        if (!is_readable_struct) 
+            throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
+ 
         string filters_str = this->get_filters();
         if (filters_str.find("deflate")!=string::npos) 
             throw InternalErr(__FILE__, __LINE__, "We don't handle compressed array of structure now.");
-
-        // Check if we can handle this case. 
-        // Currently we only handle one-layer simple int/float types, and the data is not compressed. 
-        bool can_handle_struct = check_struct_handling();
-        if (!can_handle_struct) 
-            throw InternalErr(__FILE__, __LINE__, "Only handle integer and float base types. Cannot handle the array of complex structure yet."); 
 
         vector<char> values;
         values.resize(get_var_chunks_storage_size());
@@ -1413,9 +1351,6 @@ void DmrppArray::read_linked_blocks(){
     
             char **destp = nullptr;
             char *dest_deflate = nullptr;
-#if 0
-            unsigned long long out_buf_size = 0;
-#endif
             unsigned long long dest_len = get_var_chunks_storage_size();
             unsigned long long src_len = get_var_chunks_storage_size();
             dest_deflate = new char[dest_len];
@@ -1500,7 +1435,8 @@ void DmrppArray::read_linked_blocks_constrained(){
         accumulated_lengths[i] = individual_lengths[i-1] + accumulated_lengths[i-1];
 
     // Allocate the final constrained buffer
-    size_t array_var_type_size = prototype()->width();
+    //size_t array_var_type_size = prototype()->width();
+    size_t array_var_type_size = bytes_per_element;
     reserve_value_capacity_ll_byte(array_var_type_size*get_size(true));
 
     // For the linked block compressed case, we need to obtain the whole buffer to do subsetting. 
@@ -1550,16 +1486,185 @@ void DmrppArray::read_linked_blocks_constrained(){
     vector<unsigned long long> array_shape = get_shape(false);
     unsigned long target_index = 0;
     vector<unsigned long long> subset;
+    char *dest_buf = get_buf();
     if (is_compressed) 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, uncompressed_values.data());
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, uncompressed_values.data(),dest_buf);
     else 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, values.data());
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, values.data(), dest_buf);
 
 
     set_read_p(true);
 }
 
+void DmrppArray::read_chunks_with_linked_blocks() {
 
+    reserve_value_capacity_ll(get_size(false));
+    for(const auto& chunk: get_immutable_chunks()) {
+        if (chunk->get_multi_linked_blocks()) {
+            vector<std::pair<unsigned long long, unsigned long long>>  cur_chunk_lb_offset_lengths;
+            chunk->obtain_multi_linked_offset_length(cur_chunk_lb_offset_lengths);
+            unsigned long long cb_buffer_size =0;
+            for (const auto &tp:cur_chunk_lb_offset_lengths) 
+                cb_buffer_size +=tp.second;
+
+            chunk->set_size(cb_buffer_size);
+            // Now we get the chunk buffer size, set it.
+            if (chunk->get_read_buffer_is_mine()) 
+                chunk->set_rbuf_to_size();
+            else 
+                throw BESInternalError("For multi-linked blocks, the chunk buffer ownship must be true", __FILE__, __LINE__);
+
+            char *temp_cb_buffer = chunk->get_rbuf();
+
+            for (const auto &tp:cur_chunk_lb_offset_lengths) {
+
+                // Obtain this chunk block's offset and length.
+                auto cb_offset = tp.first;
+                auto cb_length = tp.second;
+    
+                // Obtain this chunk's other information:byteOrder,URL,chunk position.
+                // Create a block chunk for each block in order to obtain the data.
+                
+                auto cb_data_url = chunk->get_data_url();
+                auto cb_position_in_array = chunk->get_position_in_array();
+                auto cb_byte_order = chunk->get_byte_order();
+                
+                // Cannot use the shared pointer here somehow.
+                Chunk* block_chunk = nullptr;
+                if (cb_data_url == nullptr) 
+                    block_chunk = new Chunk(cb_byte_order,cb_length,cb_offset,cb_position_in_array);
+                else 
+                    block_chunk = new Chunk(cb_data_url,cb_byte_order,cb_length,cb_offset,cb_position_in_array);
+                
+                block_chunk->read_chunk();
+                const char *block_chunk_buffer = block_chunk->get_rbuf();
+                if (block_chunk->get_bytes_read() != cb_length) {
+                    ostringstream oss;
+                    oss << "Wrong number of bytes read for chunk; read: " << block_chunk->get_bytes_read() << ", expected: " << cb_length;
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+                memcpy(temp_cb_buffer,block_chunk_buffer,cb_length);
+                temp_cb_buffer +=cb_length;
+                delete block_chunk;
+                
+            }
+            chunk->set_is_read(true);
+
+        }
+        else { // General Chunk
+            chunk->read_chunk();
+        }
+        // Now we need to handle the filters.
+        if (chunk->get_uses_fill_value()) {
+            //No, we won't handle the filled chunks case since HDF4 doesn't have this.
+            throw BESInternalError(string("Encounters filled linked-block chunks for variable ") + name(), __FILE__, __LINE__);
+        }
+        else if (!is_filters_empty())
+            chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), get_bytes_per_element());
+
+        // No, HDF4 doesn't have linked-block chunk structure AFAIK
+        if (var()->type() == libdap::dods_structure_c)
+            throw BESInternalError(string("Encounters linked-block chunk structures  for variable ") + name(), __FILE__, __LINE__);
+
+        // Now we go to the insert_chunk routine
+
+        vector<unsigned long long> array_shape = get_shape(false);
+        vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+        vector<unsigned long long> chunk_origin = chunk->get_position_in_array();
+
+        this->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0,chunk_shape,chunk_origin);
+
+    }
+    set_read_p(true);
+
+}
+
+void DmrppArray::read_chunks_with_linked_blocks_constrained() {
+
+    reserve_value_capacity_ll(get_size(true));
+    char *dest_buf = this->get_buf();
+    vector<unsigned long long> constrained_array_shape = this->get_shape(true);
+    for(const auto& chunk: get_immutable_chunks()){
+        vector<unsigned long long> chunk_element_address = chunk->get_position_in_array();
+        auto needed = find_needed_chunks(0 /* dimension */, &chunk_element_address, chunk);
+        if (needed){
+            if (chunk->get_multi_linked_blocks()) {
+                vector<std::pair<unsigned long long, unsigned long long>>  cur_chunk_lb_offset_lengths;
+                chunk->obtain_multi_linked_offset_length(cur_chunk_lb_offset_lengths);
+                unsigned long long cb_buffer_size =0;
+                for (const auto &tp:cur_chunk_lb_offset_lengths) 
+                    cb_buffer_size +=tp.second;
+    
+                chunk->set_size(cb_buffer_size);
+                // Now we get the chunk buffer size, set it.
+                if (chunk->get_read_buffer_is_mine()) 
+                    chunk->set_rbuf_to_size();
+                else 
+                    throw BESInternalError("For multi-linked blocks, the chunk buffer ownship must be true", __FILE__, __LINE__);
+    
+                char *temp_cb_buffer = chunk->get_rbuf();
+    
+                for (const auto &tp:cur_chunk_lb_offset_lengths) {
+    
+                    // Obtain this chunk block's offset and length.
+                    auto cb_offset = tp.first;
+                    auto cb_length = tp.second;
+        
+                    // Obtain this chunk's other information:byteOrder,URL,chunk position.
+                    // Create a block chunk for each block in order to obtain the data.
+                    
+                    auto cb_data_url = chunk->get_data_url();
+                    auto cb_position_in_array = chunk->get_position_in_array();
+                    auto cb_byte_order = chunk->get_byte_order();
+                    
+                    // Cannot use the shared pointer here somehow.
+                    Chunk* block_chunk = nullptr;
+                    if (cb_data_url == nullptr) 
+                        block_chunk = new Chunk(cb_byte_order,cb_length,cb_offset,cb_position_in_array);
+                    else 
+                        block_chunk = new Chunk(cb_data_url,cb_byte_order,cb_length,cb_offset,cb_position_in_array);
+                    
+                    block_chunk->read_chunk();
+                    const char *block_chunk_buffer = block_chunk->get_rbuf();
+                    if (block_chunk->get_bytes_read() != cb_length) {
+                        ostringstream oss;
+                        oss << "Wrong number of bytes read for chunk; read: " << block_chunk->get_bytes_read() << ", expected: " << cb_length;
+                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                    }
+                    memcpy(temp_cb_buffer,block_chunk_buffer,cb_length);
+                    temp_cb_buffer +=cb_length;
+                    delete block_chunk;
+                    
+                }
+                chunk->set_is_read(true);
+    
+            }
+            else { // General Chunk
+                chunk->read_chunk();
+            }
+            // Now we need to handle the filters.
+            if (chunk->get_uses_fill_value()) {
+                //No, we won't handle the filled chunks case since HDF4 doesn't have this.
+                throw BESInternalError(string("Encounters filled linked-block chunks for variable ") + name(), __FILE__, __LINE__);
+            }
+            else if (!is_filters_empty())
+                chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), get_bytes_per_element());
+    
+            // No, HDF4 doesn't have linked-block chunk structure AFAIK
+            if (var()->type() == libdap::dods_structure_c)
+                throw BESInternalError(string("Encounters linked-block chunk structures  for variable ") + name(), __FILE__, __LINE__);
+    
+            // Now we go to the insert_chunk routine
+            vector<unsigned long long> target_element_address = chunk->get_position_in_array();
+            vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
+            insert_chunk(0, &target_element_address, &chunk_source_address,chunk, constrained_array_shape, dest_buf);
+
+        }
+    }
+
+    set_read_p(true);
+ 
+}
 
 unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
 
@@ -1798,7 +1903,7 @@ void DmrppArray::insert_chunk(
         vector<unsigned long long> *target_element_address,
         vector<unsigned long long> *chunk_element_address,
         shared_ptr<Chunk> chunk,
-        const vector<unsigned long long> &constrained_array_shape){
+        const vector<unsigned long long> &constrained_array_shape,char *target_buffer){
 
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
@@ -1822,8 +1927,7 @@ void DmrppArray::insert_chunk(
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
         char *source_buffer = chunk->get_rbuf();
-        char *target_buffer = get_buf();
-        unsigned int elem_width = prototype()->width();
+        unsigned int elem_width = bytes_per_element;
 
         if (thisDim.stride == 1) {
             // The start element in this array
@@ -1869,7 +1973,7 @@ void DmrppArray::insert_chunk(
             (*chunk_element_address)[dim] = chunk_index;
 
             // Re-entry here:
-            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk, constrained_array_shape);
+            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk, constrained_array_shape, target_buffer);
         }
     }
 }
@@ -1925,6 +2029,8 @@ void DmrppArray::read_chunks()
     }
 
     reserve_value_capacity_ll(get_size(true));
+    if (is_readable_struct) 
+        d_structure_array_buf.resize(get_size(true)*bytes_per_element);
 
     BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
@@ -1955,6 +2061,8 @@ void DmrppArray::read_chunks()
 #endif
         read_super_chunks_concurrent(super_chunks, this);
     }
+    if (is_readable_struct)
+        read_array_of_structure(d_structure_array_buf);
     set_read_p(true);
 }
 
@@ -2282,6 +2390,9 @@ DmrppArray *get_as_byte_array(DmrppArray &array){
     // Replace prototype
     auto *tmp_proto  = new libdap::Byte(byte_array_proxy->prototype()->name());
     byte_array_proxy->set_prototype(tmp_proto);
+
+    // bytes_per_element should be updated since the proto is updated. 
+    byte_array_proxy->set_bytes_per_element(byte_array_proxy->prototype()->width());
     tmp_proto->set_parent(byte_array_proxy);
 
     // Fiddle Chunk dimension sizes
@@ -2487,7 +2598,19 @@ bool DmrppArray::read()
             dmrpp_vs_info.var_chunk_info.push_back(vci_t);
         }
         this->set_var_storage_info(dmrpp_vs_info);
-
+        bytes_per_element = this->var()->width_ll();
+    }
+    else {
+        is_readable_struct = check_struct_handling();       
+        if (is_readable_struct) {
+            vector<unsigned int> s_off = this->get_struct_offsets();
+            if (s_off.empty())
+                bytes_per_element = this->var()->width_ll(); 
+            else 
+                bytes_per_element = s_off.back();
+        }
+        else 
+            bytes_per_element = this->var()->width_ll();
     }
     
 
@@ -2527,8 +2650,20 @@ bool DmrppArray::read()
 
                 }
             }
-            else
-            {
+            else if (is_multi_linked_blocks_chunk()) {
+                if (!array_to_read->is_projected()) {
+                    array_to_read->read_chunks_with_linked_blocks();
+                }
+                else {
+                    array_to_read->read_chunks_with_linked_blocks_constrained();
+#if 0
+                    throw BESInternalFatalError(prolog + "Not support data subset when linked blocks are used. ",
+                                           __FILE__, __LINE__);
+#endif
+                }
+            }
+            else {
+            
                 if (!array_to_read->is_projected()) {
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
                     // KENT: Only here we need to consider the direct buffer IO.
@@ -3180,12 +3315,15 @@ void DmrppArray::read_array_of_structure(vector<char> &values) {
     if (this->twiddle_bytes()) 
         BESDEBUG(dmrpp_3, prolog << "swap bytes " << endl);
 
+    vector<unsigned int> s_offs = this->get_struct_offsets();
+
     for (int64_t element = 0; element < nelms; ++element) {
 
         auto dmrpp_s = dynamic_cast<DmrppStructure*>(var()->ptr_duplicate());
         if(!dmrpp_s)
             throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer."); 
         try {
+            dmrpp_s->set_struct_offsets(s_offs);
             dmrpp_s->structure_read(values,values_offset, this->twiddle_bytes());
         }
         catch(...) {

@@ -65,10 +65,13 @@ if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_v
 // This macro is used specifically to time the execution of a command. It does not depend
 // on the code being built in developer mode. jhrg 11/24/24
 #ifdef COMMAND_TIMING
-#define BES_COMMAND_TIMING(message) BESStopWatch commandTimer; \
-    commandTimer.start(string("Command timing: ") + (message))
+#define BES_MODULE_TIMING(message) BESStopWatch commandTimer; \
+    commandTimer.start(string("Module timing: ") + (message))
+#define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
+    commandTimer.start(string("Command timing: ") + (message) + (d_dhi_ptr->data[REQUEST_ID] + " " + d_dhi_ptr->data[LOG_INFO]))
 #else
-#define BES_COMMAND_TIMING(message)
+#define BES_MODULE_TIMING(message)
+#define BES_COMMAND_TIMING(message, DHI)
 #endif
 
 class BESStopWatch;
@@ -79,20 +82,19 @@ extern BESStopWatch *elapsedTimeToTransmitStart;
 }
 
 class BESStopWatch : public BESObj {
- private:
-	std::string d_timer_name;
-	std::string d_req_id;
-	std::string d_log_name = TIMING_LOG_KEY;
+private:
+    std::string d_timer_name;
+    std::string d_req_id;
+    std::string d_log_name = TIMING_LOG_KEY;
     bool d_started = false;
-    bool d_stopped = false;
 
-	struct timeval d_start_usage{};
-	struct timeval d_stop_usage{};
+    struct timeval d_start_usage{};
+    struct timeval d_stop_usage{};
 
     unsigned long int get_elapsed_us() const;
     unsigned long int get_start_us() const;
     unsigned long int get_stop_us() const;
-    bool get_time_of_day(struct timeval &time_val) const;
+    static bool get_time_of_day(struct timeval &time_val);
 
  public:
 

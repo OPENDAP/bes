@@ -4,7 +4,7 @@
         <Float64 name="a_name"/>
         <Int32 name="b_name"/>
         <Float32 name="c_name"/>
-        <dmrpp:chunks fillValue="-9999.9 32767 999.9" byteOrder="LE">
+        <dmrpp:chunks fillValue="-9999.9 32767 999.9" byteOrder="LE" structOffset="8 12 16">
             <dmrpp:chunk offset="2048" nBytes="16"/>
         </dmrpp:chunks>
     </Structure>

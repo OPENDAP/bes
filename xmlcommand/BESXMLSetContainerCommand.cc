@@ -96,7 +96,7 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
     BESCatalog *cat = BESUtil::separateCatalogFromPath(value);
     if (cat) {
         if (!props["space"].empty())
-            VERBOSE("SetContainer called with 'space=\"" << props["space"] << "\" but the pathname uses \"" << cat->get_catalog_name() << "\"");
+            VERBOSE("SetContainer called with 'space=\"" + props["space"] + "\" but the pathname uses \"" + cat->get_catalog_name() + "\"");
         props["space"] = cat->get_catalog_name();
     }
 

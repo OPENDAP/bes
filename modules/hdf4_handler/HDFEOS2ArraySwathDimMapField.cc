@@ -1001,22 +1001,18 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
     if (SOType::MODIS_EQ_SCALE == sotype || SOType::MODIS_MUL_SCALE == sotype) {
         if (scale > 1) {
             sotype = SOType::MODIS_DIV_SCALE;
-            (*BESLog::TheLog())<< "The field " << fieldname << " scale factor is "
-             << scale << endl
-             << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " 
-             << endl
-             << " Now change it to MODIS_DIV_SCALE. "<<endl;
+            INFO_LOG("The field " + fieldname + " scale factor is "
+             + std::to_string(scale) + ". But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. "
+             + " Now change it to MODIS_DIV_SCALE. ");
         }
     }
     
     if (SOType::MODIS_DIV_SCALE == sotype) {
         if (scale < 1) {
             sotype = SOType::MODIS_MUL_SCALE;
-            (*BESLog::TheLog())<< "The field " << fieldname << " scale factor is "
-                               << scale << endl
-                               << " But the original scale factor type is MODIS_DIV_SCALE. " 
-                               << endl
-                               << " Now change it to MODIS_MUL_SCALE. "<<endl;
+            INFO_LOG("The field " + fieldname + " scale factor is " + std::to_string(scale) +
+                + " But the original scale factor type is MODIS_DIV_SCALE. "
+                + " Now change it to MODIS_MUL_SCALE.");
         }
     }
 

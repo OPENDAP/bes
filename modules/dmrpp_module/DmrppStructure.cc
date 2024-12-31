@@ -68,6 +68,8 @@ DmrppStructure::read()
 
     size_t value_size = 0;
     char *buf_value = read_atomic(name(),value_size);
+    // Note for scalar, the buffer size is the storage size of this variable, which for HDF5, is always the correct size to store the buffer.
+    // We don't need to retrieve this in a different way.
     vector<char> values(buf_value,buf_value+value_size);
  
     size_t values_offset = 0;
@@ -82,9 +84,18 @@ DmrppStructure::read()
 void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset, bool byte_swap) {
 
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
+    // Remember the value offset. 
+    size_t temp_values_offset = values_offset;
+
     Constructor::Vars_iter vi = this->var_begin();
     Constructor::Vars_iter ve = this->var_end();
 
+    vector<unsigned int> s_offs = this->get_struct_offsets();
+    unsigned int offset_counter = 0;
+    unsigned int s_offs_size = s_offs.size();
+    BESDEBUG("dmrpp", "s_offs_size: " << s_offs_size << "'" << endl);
+    
     for (; vi != ve; vi++) {
         BaseType *bt = *vi;
         Type t_bt = bt->type();
@@ -116,7 +127,19 @@ void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset,
             }
             else 
                bt->val2buf(values.data() + values_offset);
-            values_offset += bt->width_ll();
+
+            // Update values_offset
+            // With the old dmrpp file, it is possible that the data value is not retrieved correctly. 
+            // In order not to interrupt the operational service, we don't throw the error. This needs to be evaluated.
+            if (s_offs_size == 0) 
+                values_offset += bt->width_ll();
+            // s_offs_size should always be greater than offset_counter.
+            else if (s_offs_size <=offset_counter)
+                    throw InternalErr(__FILE__, __LINE__, "The size of offset should always be greater than the offset_counter");
+            else {
+                values_offset = temp_values_offset + s_offs[offset_counter];
+                offset_counter++;
+            }
         }
         else if (t_bt == dods_array_c) {
 
@@ -132,8 +155,20 @@ void DmrppStructure::structure_read(vector<char> &values, size_t &values_offset,
                 }
                 else 
                     t_a->val2buf(values.data()+values_offset);
-                // update values_offset.
-                values_offset +=t_a->width_ll();
+
+                // Update values_offset.
+                // With the old dmrpp file, it is possible that the data value is not retrieved correctly. 
+                // In order not to interrupt the operational service, we don't throw the error. This needs to be evaluated.
+                if (s_offs_size == 0) 
+                    values_offset += t_a->width_ll();
+                // s_offs_size should always be greater than offset_counter.
+                else if (s_offs_size <=offset_counter)
+                        throw InternalErr(__FILE__, __LINE__, "The size of offset should always be greater than the offset_counter");
+                else {
+                    values_offset = temp_values_offset + s_offs[offset_counter];
+                    offset_counter++;
+                }
+ 
             }
             else 
                 throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
