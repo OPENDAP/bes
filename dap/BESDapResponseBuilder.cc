@@ -1335,7 +1335,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
     BESDEBUG(MODULE, prolog << "dmr.request_xml_base(): '"<< dmr.request_xml_base() << "' (dmr: " << (void *) &dmr << ")" << endl);
 
     if (dmr.get_utf8_xml_encoding()) {
-        XMLWriter xml = XMLWriter("    ","UTF-8");
+        auto xml = XMLWriter("    ","UTF-8");
         dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
         out << xml.get_doc() << flush;
     }
