@@ -73,7 +73,6 @@ static inline std::string get_errno() {
 }
 
 #if 0
-
 // TODO this fails on ubuntu. jhrg 12/31/24
 
 // This is a hack to get the file path from a file descriptor. It's not perfect,
@@ -86,7 +85,6 @@ static inline std::string get_file_path(int fd) {
     }
     return "";
 }
-
 #endif
 
 #if 0
