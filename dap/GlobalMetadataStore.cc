@@ -518,7 +518,7 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
     }
     else if (d_dmr) {
         if (d_dmr->get_utf8_xml_encoding()) {
-            XMLWriter xml = XMLWriter("    ","UTF-8");
+            auto xml = XMLWriter("    ","UTF-8");
             d_dmr->print_dap4(xml);
             os << xml.get_doc();
         }
