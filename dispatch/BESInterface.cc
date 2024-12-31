@@ -399,7 +399,7 @@ int BESInterface::execute_request(const string &from)
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
 
-    BES_COMMAND_TIMING(prolog);
+    BES_COMMAND_TIMING(prolog, d_dhi_ptr);
 
     // TODO These never change for the life of a BES, so maybe they can move out of
     //  code that runs for every request? jhrg 11/8/17

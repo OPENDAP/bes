@@ -182,6 +182,8 @@ public:
      */
     bool is_verbose() const { return d_verbose; }
 
+    pid_t update_pid();
+
     /**
     * @brief Writes request msg to the log stream.
     */
