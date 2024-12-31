@@ -65,10 +65,13 @@ if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_v
 // This macro is used specifically to time the execution of a command. It does not depend
 // on the code being built in developer mode. jhrg 11/24/24
 #ifdef COMMAND_TIMING
-#define BES_COMMAND_TIMING(message) BESStopWatch commandTimer; \
-    commandTimer.start(string("Command timing: ") + (message))
+#define BES_MODULE_TIMING(message) BESStopWatch commandTimer; \
+    commandTimer.start(string("Module timing: ") + (message))
+#define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
+    commandTimer.start(string("Command timing: ") + (message) + (d_dhi_ptr->data[REQUEST_ID] + " " + d_dhi_ptr->data[LOG_INFO]))
 #else
-#define BES_COMMAND_TIMING(message)
+#define BES_MODULE_TIMING(message)
+#define BES_COMMAND_TIMING(message, DHI)
 #endif
 
 class BESStopWatch;
