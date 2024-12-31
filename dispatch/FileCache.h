@@ -72,6 +72,10 @@ static inline std::string get_errno() {
     return s_err ? s_err : "unknown error";
 }
 
+#if 0
+
+// TODO this fails on ubuntu. jhrg 12/31/24
+
 // This is a hack to get the file path from a file descriptor. It's not perfect,
 // because a fd might be a socket or a pipe, but it's good enough for our purposes.
 // jhrg  12/30/24
@@ -82,6 +86,8 @@ static inline std::string get_file_path(int fd) {
     }
     return "";
 }
+
+#endif
 
 #if 0
 bool lock_file(int fd) {
@@ -136,7 +142,7 @@ const unsigned long long MEGABYTE = 1048576;
  * large. It is up to the client code to call the purge() method when the
  * size is at the maximum size.
  *
- * When a process tries to get a file is already in the cache, the entire cache is
+ * When a process tries to get a file that is already in the cache, the entire cache is
  * locked. If the file is present, a shared read lock on the cached file is
  * obtained and the cache is unlocked.
  *
@@ -280,7 +286,9 @@ class FileCache {
                 ERROR("Call to CacheLock::lock_the_cache with uninitialized lock object.");
                 return false;
             }
+#if 0
             const std::lock_guard<std::mutex> lock(cache_lock_mtx);
+#endif
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
                     ERROR(msg + get_lock_type_string(lock_type) + get_errno());
@@ -569,7 +577,9 @@ public:
                 ERROR("Call to Item::lock_the_item() with uninitialized item file descriptor.");
                 return false;
             }
+#if 0
             const std::lock_guard<std::mutex> lock(item_mtx);
+#endif
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
                     ERROR("Could not get " + get_lock_type_string(lock_type) + " lock: " + get_errno() );
@@ -601,9 +611,8 @@ public:
         PutItem(const PutItem &) = delete;
         const PutItem &operator=(const PutItem &) = delete;
         ~PutItem() override {
-            // FIXME Lock the cache before doing this. jhrg 12/30/24
             CacheLock lock(d_fc.d_cache_info_fd);
-            if (!lock.lock_the_cache(LOCK_EX, "locking the cache in ~PutItem() for: " + get_file_path(get_fd())))
+            if (!lock.lock_the_cache(LOCK_EX, "locking the cache in ~PutItem() for descriptor: " + std::to_string(get_fd())))
                 return;
             if (!d_fc.update_cache_info_size(d_fc.get_cache_info_size() + get_file_size(get_fd()))) {
                 ERROR("Could not update the cache info file while unlocking a put item: " + get_errno() );
@@ -727,7 +736,9 @@ public:
      * the item. The called can write directly to the item, rewind the descriptor
      * and read from it and then close the file descriptor to release the Exclusive
      * lock.
-     * @note when the PutItem goes out of scope, the cache_info file is updated.
+     * @note When the PutItem goes out of scope, the cache_info file is updated. Make
+     * _sure_ no operation that locks the cache gets called before the PutItem lock
+     * is removed, otherwise there will be a deadlock.
      * @param key The key that can be used to access the file
      * @param item A value-result parameter than is a reference to a PutItem instance.
      * @return True if the PutItem holds an open, locked, file descriptor, otherwise
