@@ -33,6 +33,7 @@
 
 #include <cstdlib>
 #include <cerrno>
+#include <cstring>
 #include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>

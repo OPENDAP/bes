@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="unicode-simple.h5">
     <String name="fl_string_dataset">
         <Dim size="1"/>
         <Attribute name="utf8_attr" type="String">
-            <Value>&#1708407;&#99657;&#892928;&#1989555;&#1415926;&#247786;&#100630;&#694245;&#62625;&#827555;&#1674843;&#223381;&#743125;&#1156868;&#102289;&#1129089;</Value>
+            <Value>ö¡…·ð˜•‰óš€€÷¥®³õ™«¶ð¼Ÿªð˜¤–ò©Ÿ¥ï’¡óŠ‚£ö˜¹›ð¶¢•òµ›•ôšœ„ð˜¾‘ô“ª</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>fl_string_dataset</Value>
