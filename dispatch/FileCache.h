@@ -65,7 +65,7 @@
 // NFS, but I think that is really for NFS 3. For NFS 4, flock(2) is supposed to be
 // fully supported. It's much easier and it supports multi threading. The fcntl(2)
 // code here is not yet passing all the tests!
-#define USE_FNCTL 0
+#define USE_FCNTL 0
 
 static inline std::string get_errno() {
     const char *s_err = strerror(errno);
@@ -192,7 +192,7 @@ class FileCache {
     }
 
     /// Manage the Cache-level locking. Each instance has to be initialized with d_cache_info_fd.
-#if USE_FNCTL
+#if USE_FCNTL
     class CacheLock {
     private:
         int d_fd = -1;
@@ -411,7 +411,7 @@ public:
     }
 
     /// Manage the state of an open file descriptor for a cached item.
-#if USE_FNCTL
+#if USE_FCNTL
     class Item {
     private:
         int d_fd = -1;
@@ -962,7 +962,7 @@ public:
     }
 };
 
-#if USE_FNCTL
+#if USE_FCNTL
 std::mutex FileCache::CacheLock::cache_lock_mtx;
 std::mutex FileCache::Item::lock_table_mtx;
 std::unordered_map<ino_t, int> FileCache::Item::lock_table;
