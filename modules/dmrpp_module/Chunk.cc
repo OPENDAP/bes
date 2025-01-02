@@ -1179,7 +1179,10 @@ void Chunk::load_fill_values() {
         if (value_size == 0) 
             throw BESInternalError("The size of fill value should NOT be 0.", __FILE__,__LINE__);
         compound_fvalue.resize(value_size);
-        get_compound_fvalue(d_fill_value,compound_fvalue);
+        // When the fill_value is 0 for the compound datatype, we don't need to retrieve the filled values.
+        // This will effectively resolve the compound datatype default filled value case.
+        if (d_fill_value !="0")
+            get_compound_fvalue(d_fill_value,compound_fvalue);
         value = compound_fvalue.data();
 
     }
