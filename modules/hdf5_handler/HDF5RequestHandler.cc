@@ -1234,6 +1234,8 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
     H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
     D4BaseTypeFactory MyD4TypeFactory;
     dmr->set_factory(&MyD4TypeFactory);
+    if(_escape_utf8_attr == false)
+        dmr->set_utf8_xml_encoding();
 
     if(true ==_usecf) {// CF option
 
@@ -1298,6 +1300,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
             H5Fclose(cf_fileid);
 
         dmr->build_using_dds(dds);
+
 
     }// "if(true == _usecf)"
     else {// default option
