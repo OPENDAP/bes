@@ -261,7 +261,9 @@ class FileCache {
     class CacheLock {
     private:
         int d_fd = -1;
+#if 0
         std::mutex cache_lock_mtx;
+#endif
 
     public:
         CacheLock() = default;
@@ -549,10 +551,12 @@ public:
 #else
     class Item {
         int d_fd = -1;
-        std::string d_name;
+        std::string d_name; // Only for debugging/analysis. jhrg 1/1/25
 
+#if 0
         // Should this be static (two threads want to lock the same file)? jhrg 5/17/24
         std::mutex item_mtx;
+#endif
 
     public:
         Item() = default;
