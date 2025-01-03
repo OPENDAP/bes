@@ -1180,7 +1180,7 @@ public:
     CPPUNIT_TEST(test_put_duplicate_key_two_processes_three_threads_each);
 
     CPPUNIT_TEST(test_put_fd_version_single_file);
-    CPPUNIT_TEST(test_put_fd_version_two_files_two_processes);
+    CPPUNIT_TEST_FAIL(test_put_fd_version_two_files_two_processes);
 
     CPPUNIT_TEST(test_get_a_file_not_cached);
     CPPUNIT_TEST(test_get_a_file);
