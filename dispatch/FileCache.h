@@ -61,12 +61,6 @@
 // an LRU cache. jhrg 11/03/23
 #define FORCE_ACCESS_TIME_UPDATE 1
 
-// I tried using fcntl(2) because it's supposedly better than flock(2) when using
-// NFS, but I think that is really for NFS 3. For NFS 4, flock(2) is supposed to be
-// fully supported. It's much easier and it supports multi threading. The fcntl(2)
-// code here is not yet passing all the tests!
-#define USE_FCNTL 0
-
 static inline std::string get_errno() {
     const char *s_err = strerror(errno);
     return s_err ? s_err : "unknown error";
