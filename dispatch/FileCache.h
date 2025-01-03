@@ -72,53 +72,6 @@ static inline std::string get_errno() {
     return s_err ? s_err : "unknown error";
 }
 
-#if 0
-// TODO this fails on ubuntu. jhrg 12/31/24
-
-// This is a hack to get the file path from a file descriptor. It's not perfect,
-// because a fd might be a socket or a pipe, but it's good enough for our purposes.
-// jhrg  12/30/24
-static inline std::string get_file_path(int fd) {
-    char filePath[PATH_MAX];
-    if (fcntl(fd, F_GETPATH, filePath) != -1) {
-        return filePath;
-    }
-    return "";
-}
-#endif
-
-#if 0
-bool lock_file(int fd) {
-    struct flock lock = {};
-    lock.l_type = F_WRLCK; // Write lock
-    lock.l_whence = SEEK_SET;
-    lock.l_start = 0;
-    lock.l_len = 0; // Lock the whole file
-
-    if (fcntl(fd, F_SETLKW, &lock) == -1) {
-        ERROR("Failed to acquire lock");
-        return false;
-    }
-
-    return true;
-}
-
-bool unlock_file(int fd) {
-    struct flock lock = {};
-    lock.l_type = F_UNLCK; // Unlock
-    lock.l_whence = SEEK_SET;
-    lock.l_start = 0;
-    lock.l_len = 0;
-
-    if (fcntl(fd, F_SETLK, &lock) == -1) {
-        ERROR("Failed to release lock");
-        return false;
-    }
-
-    return true;
-}
-#endif
-
 const unsigned long long MEGABYTE = 1048576;
 
 /**
@@ -192,78 +145,9 @@ class FileCache {
     }
 
     /// Manage the Cache-level locking. Each instance has to be initialized with d_cache_info_fd.
-#if USE_FCNTL
     class CacheLock {
     private:
         int d_fd = -1;
-        static std::mutex cache_lock_mtx;
-
-        /**
-         * Helper method to set up the lock structure.
-         */
-        bool set_lock(int lock_type) const {
-            struct flock lock = {};
-            lock.l_type = (lock_type & LOCK_EX) ? F_WRLCK : F_RDLCK; // Exclusive or shared lock
-            lock.l_whence = SEEK_SET; // Lock the entire file
-            lock.l_start = 0;
-            lock.l_len = 0; // Length 0 means "until EOF"
-
-            // Attempt to set the lock
-            if (fcntl(d_fd, (lock_type & LOCK_NB) ? F_SETLK : F_SETLKW, &lock) == -1) {
-                return false;
-            }
-            return true;
-        }
-
-    public:
-        CacheLock() = default;
-        CacheLock(const CacheLock &) = delete;
-        explicit CacheLock(int fd) : d_fd(fd) {}
-        CacheLock &operator=(const CacheLock &) = delete;
-
-        ~CacheLock() {
-            if (d_fd >= 0) {
-                struct flock lock = {};
-                lock.l_type = F_UNLCK; // Unlock
-                lock.l_whence = SEEK_SET;
-                lock.l_start = 0;
-                lock.l_len = 0;
-                if (fcntl(d_fd, F_SETLK, &lock) == -1) {
-                    ERROR("Could not unlock the FileCache: " + get_errno());
-                }
-            }
-        }
-
-        /**
-         * This method locks the cache using the given lock type. It is thread-safe.
-         * @param lock_type LOCK_EX or LOCK_SH and can be combined with LOCK_NB
-         * @param msg
-         * @return true if the cache is locked, false otherwise. Errors are logged.
-         */
-        bool lock_the_cache(int lock_type, const std::string &msg = "") {
-            if (d_fd < 0) {
-                ERROR("Call to CacheLock::lock_the_cache with uninitialized lock object.");
-                return false;
-            }
-            const std::lock_guard<std::mutex> lock(cache_lock_mtx);
-            if (!set_lock(lock_type)) {
-                if (!msg.empty()) {
-                    ERROR(msg + get_lock_type_string(lock_type) + get_errno());
-                } else {
-                    ERROR("Failed to lock the cache: " + get_lock_type_string(lock_type) + get_errno());
-                }
-                return false;
-            }
-            return true;
-        }
-    };
-#else
-    class CacheLock {
-    private:
-        int d_fd = -1;
-#if 0
-        std::mutex cache_lock_mtx;
-#endif
 
     public:
         CacheLock() = default;
@@ -271,7 +155,6 @@ class FileCache {
         explicit CacheLock(int fd) : d_fd(fd) {}
         CacheLock &operator=(const CacheLock &) = delete;
         ~CacheLock() {
-            INFO("unlock the cache()");
             if (flock(d_fd, LOCK_UN) < 0)
                 ERROR("Could not unlock the FileCache.");
         }
@@ -287,10 +170,6 @@ class FileCache {
                 ERROR("Call to CacheLock::lock_the_cache with uninitialized lock object.");
                 return false;
             }
-#if 0
-            const std::lock_guard<std::mutex> lock(cache_lock_mtx);
-#endif
-            INFO("lock_the_cache(): " + msg + " " + FileCache::get_lock_type_string(lock_type));
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
                     ERROR(msg + get_lock_type_string(lock_type) + get_errno());
@@ -301,7 +180,6 @@ class FileCache {
             return true;
         }
     };
-#endif
 
     // These private methods assume they are called on a locked instance of the cache.
 
@@ -369,26 +247,39 @@ class FileCache {
 
     /// Return the size of the cache as recorded in the cache info file.
     /// Return zero on error or if there's nothing in the cache.
-    unsigned long long get_cache_info_size() const {
-        if (d_cache_info_fd == -1)
+    unsigned long long get_cache_info_size() const
+    {
+        if (d_cache_info_fd == -1) {
+            ERROR("Cache info file not open.");
             return 0;
-        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+        }
+        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1) {
+            ERROR("Could not seek to the beginning of the cache info file.");
             return 0;
+        }
         unsigned long long size = 0;
-        if (read(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
-            return 0; // TODO Make this an error - log it. jhrg 12/27/24
+        if (read(d_cache_info_fd, &size, sizeof(size)) != sizeof(size)) {
+            ERROR("Could not read the cache info file.");
+            return 0;
+        }
         return size;
     }
 
     /// Add 'size' to the size recorded in the cache_info file
     /// Return true if the size is updated, false otherwise.
     bool update_cache_info_size(unsigned long long size) const {
-        if (d_cache_info_fd == -1)
+        if (d_cache_info_fd == -1) {
+            ERROR("Cache info file not open.");
             return false;
-        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+        }
+        if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1) {
+            ERROR("Could not seek to the beginning of the cache info file.");
             return false;
-        if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
+        }
+        if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size)) {
+            ERROR("Could not write to the cache info file.");
             return false;
+        }
         return true;
     }
 
@@ -415,157 +306,16 @@ public:
     }
 
     /// Manage the state of an open file descriptor for a cached item.
-#if USE_FCNTL
     class Item {
-    private:
         int d_fd = -1;
-        ino_t d_inode = 0; // Resolved inode of the file
-        static std::unordered_map<ino_t, int> lock_table; // Tracks lock state per inode
-        static std::mutex lock_table_mtx; // Guards access to lock_table
-
-        /**
-         * Resolve the inode of the file.
-         */
-        ino_t resolve_inode() const {
-            struct stat st = {};
-            if (fstat(d_fd, &st) == -1) {
-                ERROR("Could not retrieve file inode: " + std::string(std::strerror(errno)));
-                return 0; // Invalid inode
-            }
-            return st.st_ino;
-        }
-
-        /**
-         * Helper method to set up the lock structure.
-         */
-        bool set_lock(int lock_type) const {
-            struct flock lock = {};
-            lock.l_type = (lock_type & LOCK_EX) ? F_WRLCK : F_RDLCK; // Exclusive or shared lock
-            lock.l_whence = SEEK_SET; // Lock the entire file
-            lock.l_start = 0;
-            lock.l_len = 0; // Length 0 means "until EOF"
-
-            // Attempt to set the lock
-            if (fcntl(d_fd, (lock_type & LOCK_NB) ? F_SETLK : F_SETLKW, &lock) == -1) {
-                return false;
-            }
-            return true;
-        }
-
-        /**
-         * Helper method to manage the local lock table.
-         */
-        bool update_lock_table(int lock_type) {
-            std::lock_guard<std::mutex> guard(lock_table_mtx);
-
-            auto it = lock_table.find(d_inode);
-            if (it != lock_table.end()) {
-                // Check for conflicting locks
-                // FIXME This does not work as expected. A call from del() with lock_type == LOCK_EX | LOCK_NB
-                //  is not detected as a conflict. jhrg 12/30/24 At this point I'm shelving the fnctl version
-                //  and going back to the flock(2) code. I think I have found the issue with put() and that
-                //  might fix the problem with purging that we see on SIT in NGAP. jhrg 12/30/24
-                if ((it->second == F_WRLCK) || (lock_type == LOCK_EX && it->second == F_RDLCK)) {
-                    return false; // Conflict detected
-                }
-            }
-
-            // Update the lock table
-            lock_table[d_inode] = (lock_type & LOCK_EX) ? F_WRLCK : F_RDLCK;
-            return true;
-        }
-
-        void remove_from_lock_table() const {
-            std::lock_guard<std::mutex> guard(lock_table_mtx);
-            lock_table.erase(d_inode);
-        }
 
     public:
         Item() = default;
         Item(const Item &) = delete;
-        explicit Item(int fd) : d_fd(fd), d_inode(resolve_inode()) {}
-        Item &operator=(const Item &) = delete;
-
-        virtual ~Item() {
-            if (d_fd != -1) {
-                struct flock lock = {};
-                lock.l_type = F_UNLCK; // Unlock the file
-                lock.l_whence = SEEK_SET;
-                lock.l_start = 0;
-                lock.l_len = 0;
-                if (fcntl(d_fd, F_SETLK, &lock) == -1) {
-                    ERROR("Could not unlock the item: " + std::string(std::strerror(errno)));
-                }
-                remove_from_lock_table();
-                close(d_fd); // Close file descriptor
-                d_fd = -1;
-            }
-        }
-
-        int get_fd() const {
-            return d_fd;
-        }
-
-        void set_fd(int fd) {
-            d_fd = fd;
-            d_inode = resolve_inode();
-        }
-
-        bool lock_the_item(int lock_type, const std::string &msg = "") {
-            if (d_fd < 0) {
-                ERROR("Call to Item::lock_the_item() with uninitialized item file descriptor.");
-                return false;
-            }
-
-            if (d_inode == 0) {
-                ERROR("Resolved inode is invalid. Cannot lock the item.");
-                return false;
-            }
-
-            // Check and update the lock table
-            if (!update_lock_table(lock_type)) {
-                if (!msg.empty()) {
-                    ERROR(msg + ": conflicting lock detected.");
-                } else {
-                    ERROR("Could not get lock: conflicting lock detected.");
-                }
-                return false;
-            }
-
-            if (!set_lock(lock_type)) {
-                remove_from_lock_table();
-                if (!msg.empty()) {
-                    ERROR(msg + ": " + std::string(std::strerror(errno)));
-                } else {
-                    ERROR("Could not get lock: " + std::string(std::strerror(errno)));
-                }
-                return false;
-            }
-
-#if FORCE_ACCESS_TIME_UPDATE
-            futimes(d_fd, nullptr); // Update access time if defined
-#endif
-            return true;
-        }
-    };
-#else
-    class Item {
-        int d_fd = -1;
-        std::string d_name; // Only for debugging/analysis. jhrg 1/1/25
-
-#if 0
-        // Should this be static (two threads want to lock the same file)? jhrg 5/17/24
-        std::mutex item_mtx;
-#endif
-
-    public:
-        Item() = default;
-        Item(const Item &) = delete;
-        Item(int fd, const std::string &name = "") : d_fd(fd), d_name(name) { }
+        explicit Item(int fd) : d_fd(fd) { }
         Item &operator=(const Item &) = delete;
         virtual ~Item() {
             if (d_fd != -1) {
-                INFO("unlock the item, fd = " + (!d_name.empty() ? d_name : std::to_string(d_fd)));
                 close(d_fd);    // Also releases any locks
                 d_fd = -1;
             }
@@ -583,10 +333,6 @@ public:
                 ERROR("Call to Item::lock_the_item() with uninitialized item file descriptor.");
                 return false;
             }
-#if 0
-            const std::lock_guard<std::mutex> lock(item_mtx);
-#endif
-            INFO("lock_the_item(): " + msg + " fd(" + std::to_string(d_fd) +  ") " + FileCache::get_lock_type_string(lock_type));
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
                     ERROR("Could not get " + get_lock_type_string(lock_type) + " lock: " + get_errno() );
@@ -601,7 +347,7 @@ public:
             return true;
         }
     };
-#endif
+
 
     /**
      * A PutItem wraps a file descriptor just like an Item, but also ensures
@@ -618,6 +364,7 @@ public:
         PutItem(const PutItem &) = delete;
         const PutItem &operator=(const PutItem &) = delete;
         ~PutItem() override {
+            // Locking the cache before calling update_cache_info_size() is necessary. jhrg 1/1/25
             CacheLock lock(d_fc.d_cache_info_fd);
             if (!lock.lock_the_cache(LOCK_EX, "locking the cache in ~PutItem() for descriptor: " + std::to_string(get_fd())))
                 return;
@@ -1013,11 +760,5 @@ public:
         return true;
     }
 };
-
-#if USE_FCNTL
-std::mutex FileCache::CacheLock::cache_lock_mtx;
-std::mutex FileCache::Item::lock_table_mtx;
-std::unordered_map<ino_t, int> FileCache::Item::lock_table;
-#endif
 
 #endif // FileCache_h_
