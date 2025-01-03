@@ -545,6 +545,8 @@ public:
             }
         }
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
         // Now check the size of the cached file - same as the source file?
         struct stat rcfp_b = {};
         if (stat(raw_cached_file_path.c_str(), &rcfp_b) != 0)
@@ -560,19 +562,24 @@ public:
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
         string source_file_1 = string(TEST_SRC_DIR) + "/cache/testfile.txt.bz2";    // 74 bytes
         string source_file_2 = string(TEST_SRC_DIR) + "/cache/testfile.txt.gz";     // 70 bytes
 
         if (fork() == 0) {
             // child process
+            // Use a new cache object to ensure each process opens its own cache_info file. There is an
+            // issue where if two processes share the same fd, flock(2) will not lock the file as expected.
+            // This can be fixed by having each process open the cache_info file. jhrg 1/1/25
+            FileCache fc2;  // Use a new cache object to ensure each process opens its own cache_info file.
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
             // Put the first file in the cache
             for (int i = 0; i < 1000; i++) {
-                put_an_item_helper(fc, source_file_1, "key1-" + to_string(i), cache_dir);
+                put_an_item_helper(fc2, source_file_1, "key1-" + to_string(i), cache_dir);
             }
 
             FileCache::Item item;
-            bool status = fc.get("key1-999", item);
+            bool status = fc2.get("key1-999", item);
             DBG(cerr << prolog << "child process get() status: " << status << '\n');
             exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
         }
@@ -580,7 +587,7 @@ public:
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             // Put the second file in the cache.
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
             for (int i = 0; i < 1000; i++) {
                 put_an_item_helper(fc, source_file_2, "key2-" + to_string(i), cache_dir);
             }
@@ -605,7 +612,6 @@ public:
                                 cache_info_file_size == 8);
         CPPUNIT_ASSERT_MESSAGE("Cache size should be 144,000, but is " + to_string(cache_size), cache_size == 144'000);
     }
-
 
     void test_get_a_file_not_cached() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
@@ -1174,7 +1180,7 @@ public:
     CPPUNIT_TEST(test_put_duplicate_key_two_processes_three_threads_each);
 
     CPPUNIT_TEST(test_put_fd_version_single_file);
-    CPPUNIT_TEST_FAIL(test_put_fd_version_two_files_two_processes);
+    CPPUNIT_TEST(test_put_fd_version_two_files_two_processes);
 
     CPPUNIT_TEST(test_get_a_file_not_cached);
     CPPUNIT_TEST(test_get_a_file);
