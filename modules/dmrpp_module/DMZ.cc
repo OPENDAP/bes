@@ -2259,6 +2259,10 @@ void DMZ::load_chunks(BaseType *btp)
                 // to the vector of chunks.
                 auto const &chunk_shape = dc(btp)->get_chunk_dimension_sizes();
                 unsigned long long chunk_size_bytes = array->var()->width(); // start with the element size in bytes
+                vector<unsigned int> s_off = dc(btp)->get_struct_offsets();
+                if (!s_off.empty())
+                   chunk_size_bytes = s_off.back();
+
                 for (auto dim_size: chunk_shape)
                     chunk_size_bytes *= dim_size;
                 process_fill_value_chunks(btp, chunk_map, dc(btp)->get_chunk_dimension_sizes(),
