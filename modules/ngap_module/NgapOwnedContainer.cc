@@ -225,7 +225,8 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
     return false;
 }
 
-bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const {
+bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const
+{
 
     FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
     if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
@@ -240,6 +241,16 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
         ERROR_LOG("NgapOwnedContainer::access() - failed to put DMR++ in file cache\n");
         return false;
     }
+
+#if 0
+    if (NgapRequestHandler::d_dmrpp_file_cache.put_data(get_real_name(), dmrpp_string)) {
+        CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
+    }
+    else {
+        ERROR_LOG("NgapOwnedContainer::access() - failed to put DMR++ in memory cache\n");
+        return false;
+    }
+#endif
 
     if (!NgapRequestHandler::d_dmrpp_file_cache.purge()) {
         ERROR_LOG("NgapOwnedContainer::access() - call to FileCache::purge() failed\n");
