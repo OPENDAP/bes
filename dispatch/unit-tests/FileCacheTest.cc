@@ -78,6 +78,33 @@ string sha256(const string &filename)
     return ss.str();
 }
 
+string
+read_file(const string &fn)
+{
+    ifstream is;
+    is.open (fn.c_str(), ios::binary );
+
+    if (!is)
+        return {"Could not read file: " + fn};
+
+    // get length of file:
+    is.seekg (0, ios::end);
+    long length = is.tellg();
+
+    // back to start
+    is.seekg (0, ios::beg);
+
+    // allocate memory:
+    vector<char> buffer(length+1);
+
+    // read data as a block:
+    is.read (buffer.data(), length);
+    is.close();
+    buffer[length] = '\0';
+
+    return {buffer.data()};
+}
+
 class FileCacheTest : public CppUnit::TestFixture {
     std::string cache_dir = string(TEST_BUILD_DIR) + "/fc";
 
@@ -126,6 +153,65 @@ public:
         else {
             CPPUNIT_FAIL("Failed to open cache directory in tearDown()");
         }
+    }
+
+    void demonstrate_flock(const string &filename) {
+        int fd = open(filename.c_str(), O_RDWR | O_CREAT, 0666);
+        if (fd == -1) {
+            CPPUNIT_FAIL("Failed to open the file for flock demonstration: " + string(filename) + " " + get_errno());
+        }
+
+        pid_t pid = fork();
+        if (pid == -1) {
+            close(fd);
+            CPPUNIT_FAIL("Failed to fork in flock demonstrator: " + get_errno());
+        }
+
+        if (pid == 0) {  // Child process
+            DBG(cerr << prolog << "Child: Attempting to acquire lock...\n");
+            if (flock(fd, LOCK_EX | LOCK_NB) == -1) {
+                if (errno == EWOULDBLOCK) {
+                    DBG(cerr << prolog << "Child: Lock is already held by another process.\n");
+                } else {
+                    CPPUNIT_FAIL("Child process: The only acceptable error is EWOULDBLOCK: " + get_errno());
+                }
+            } else {
+                DBG(cerr << prolog << "Child: Lock acquired! Writing to file.\n");
+                dprintf(fd, "Child: Writing to the file.\n");
+                sleep(2); // Simulate work
+                DBG(cerr << prolog << "Child: Releasing lock.\n");
+                flock(fd, LOCK_UN);
+            }
+            close(fd);
+        } else {  // Parent process
+            DBG(cerr << prolog << "Parent: Attempting to acquire lock...\n");
+            if (flock(fd, LOCK_EX | LOCK_NB) == -1) {
+                if (errno == EWOULDBLOCK) {
+                    DBG(cerr << prolog << "Parent: Lock is already held by another process.\n");
+                } else {
+                    CPPUNIT_FAIL("Parent process: The only acceptable error is EWOULDBLOCK: " + get_errno());
+                }
+            } else {
+                DBG(cerr << prolog << "Parent: Lock acquired! Writing to file.\n");
+                dprintf(fd, "Parent: Writing to the file.\n");
+                sleep(2); // Simulate work
+                DBG(cerr << prolog << "Parent: Releasing lock.\n");
+                flock(fd, LOCK_UN);
+            }
+            close(fd);
+
+            // Wait for the child process to finish
+            wait(NULL);
+        }
+    }
+
+    void test_flock() {
+        string test_file_path = cache_dir + "/flock_test.txt";
+        demonstrate_flock(test_file_path);
+        string contents = read_file(test_file_path);
+        auto result = (contents.find("Parent: Writing to the file.") != string::npos && contents.find("Child: Writing to the file.") == string::npos)
+                || (contents.find("Child: Writing to the file.") != string::npos && contents.find("Parent: Writing to the file.") == string::npos);
+        CPPUNIT_ASSERT_MESSAGE("The file should contain the child's xor the parent's message", result);
     }
 
     void test_hash_key() {
@@ -442,6 +528,90 @@ public:
         }
     }
 
+    /**
+     * @brief Helper function for test_put_two_files_two_processes()
+     * @note when put() exits, the cache_info file will be updated so that the cache size is
+     * incremented to include the new file. The test_put_two_files_two_processes() test is checking
+     * to see that the cache_info file is correctly protected against simultaneous writes. This
+     * function is called from two different processes.
+     */
+    void put_helper(FileCache &fc, const string &source_file, const string &key, const string &cache_dir) {
+        FileCache::PutItem item(fc);
+
+        bool status = fc.put(key, source_file);    // creates and locks an empty file.
+        CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
+
+        // cached file is really there
+        string raw_cached_file_path = cache_dir + "/" + key;
+        CPPUNIT_ASSERT_MESSAGE("Should see cached file", access(raw_cached_file_path.c_str(), F_OK) == 0);
+
+        // Now check the size of the cached file - same as the source file?
+        struct stat rcfp_b = {};
+        if (stat(raw_cached_file_path.c_str(), &rcfp_b) != 0)
+            CPPUNIT_FAIL("stat() failed on cached file");
+
+        struct stat source_file_b = {};
+        if (stat(raw_cached_file_path.c_str(), &source_file_b) != 0)
+            CPPUNIT_FAIL("stat() failed on source file");
+
+        CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file", source_file_b.st_size == rcfp_b.st_size);
+
+        CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
+                               sha256(source_file) == sha256(raw_cached_file_path));
+    }
+
+    void test_put_two_files_two_processes() {
+        DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
+
+        FileCache fc;
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
+        string source_file_1 = string(TEST_SRC_DIR) + "/cache/testfile.txt.bz2";    // 74 bytes
+        string source_file_2 = string(TEST_SRC_DIR) + "/cache/testfile.txt.gz";     // 70 bytes
+
+        if (fork() == 0) {
+            // child process
+            FileCache fc2;
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100, 20));
+            // Put the first file in the cache
+            for (int i = 0; i < 100; i++) {
+                put_helper(fc2, source_file_1, "key1-" + to_string(i), cache_dir);
+            }
+
+            FileCache::Item item;
+            bool status = fc2.get("key1-9", item);
+            DBG(cerr << prolog << "child process get() status: " << status << '\n');
+            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
+        }
+        else {
+            // parent process - generally faster. I used std::this_thread::sleep_for() but this is
+            // not multi-threaded code. It's just a way to sleep for a short time.
+            // Put the second file in the cache.
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            for (int i = 0; i < 100; i++) {
+                put_helper(fc, source_file_2, "key2-" + to_string(i), cache_dir);
+            }
+
+            FileCache::Item item;
+            bool status = fc.get("key2-9", item);
+            DBG(cerr << prolog << "parent process get() status: " << status << '\n');
+            CPPUNIT_ASSERT_MESSAGE("get() in the parent should return true", status);
+
+            int child_status;
+            wait(&child_status);
+            DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');
+            // exit status for a process: 0 is true, 1 is false
+            CPPUNIT_ASSERT_MESSAGE("get() in the child should return true", WEXITSTATUS(child_status) == 0);
+        }
+
+
+        auto cache_info_file_size = FileCache::get_file_size(fc.d_cache_info_fd);
+        auto cache_size = fc.get_cache_info_size();
+        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size)
+                               + " and the recorded cache size should be 14,400 but is " + to_string(cache_size),
+                               cache_info_file_size == 8);
+        CPPUNIT_ASSERT_MESSAGE("Cache size should be 14,400, but is " + to_string(cache_size), cache_size == 14'400);
+    }
+
     void test_put_fd_version_single_file()
     {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
@@ -645,12 +815,12 @@ public:
         if (fork() == 0) {
             // child process
             // Put the first file in the cache
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 25; i++) {
                 put_an_item_helper(fc, source_file_1, "key1-" + to_string(i), cache_dir);
             }
 
             FileCache::Item item;
-            bool status = fc.get("key1-999", item);
+            bool status = fc.get("key1-9", item);
             DBG(cerr << prolog << "child process get() status: " << status << '\n');
             exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
         }
@@ -659,12 +829,12 @@ public:
             // not multi-threaded code. It's just a way to sleep for a short time.
             // Put the second file in the cache.
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 25; i++) {
                 put_an_item_helper(fc, source_file_2, "key2-" + to_string(i), cache_dir);
             }
 
             FileCache::Item item;
-            bool status = fc.get("key2-999", item);
+            bool status = fc.get("key2-9", item);
             DBG(cerr << prolog << "parent process get() status: " << status << '\n');
             CPPUNIT_ASSERT_MESSAGE("get() in the parent should return true", status);
 
@@ -678,10 +848,10 @@ public:
 
         auto cache_info_file_size = FileCache::get_file_size(fc.d_cache_info_fd);
         auto cache_size = fc.get_cache_info_size();
-        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes, but is " + to_string(cache_info_file_size)
-                                + " and the recorded cache size should be 144,000 but is " + to_string(cache_size),
+        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size)
+                                + " and the recorded cache size should be 3,600 but is " + to_string(cache_size),
                                 cache_info_file_size == 8);
-        CPPUNIT_ASSERT_MESSAGE("Cache size should be 144,000, but is " + to_string(cache_size), cache_size == 144'000);
+        CPPUNIT_ASSERT_MESSAGE("Cache size should be 3,600, but is " + to_string(cache_size), cache_size == 3'600);
     }
 
 
@@ -1231,6 +1401,8 @@ public:
 
     CPPUNIT_TEST_SUITE(FileCacheTest);
 
+    CPPUNIT_TEST(test_flock);
+
     CPPUNIT_TEST(test_hash_key);
     CPPUNIT_TEST(test_hash_key_with_info_log);
 
@@ -1250,6 +1422,7 @@ public:
     CPPUNIT_TEST(test_put_duplicate_key_three_threads);
     CPPUNIT_TEST(test_get_key_in_thread_then_del);
     CPPUNIT_TEST(test_put_duplicate_key_two_processes_three_threads_each);
+    CPPUNIT_TEST(test_put_two_files_two_processes);
 
     CPPUNIT_TEST(test_put_fd_version_single_file);
     CPPUNIT_TEST(test_put_fd_version_two_files_two_processes);

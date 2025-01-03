@@ -269,6 +269,7 @@ class FileCache {
         explicit CacheLock(int fd) : d_fd(fd) {}
         CacheLock &operator=(const CacheLock &) = delete;
         ~CacheLock() {
+            INFO("unlock the cache()");
             if (flock(d_fd, LOCK_UN) < 0)
                 ERROR("Could not unlock the FileCache.");
         }
@@ -279,7 +280,7 @@ class FileCache {
          * @param msg
          * @return true if the cache is locked, false otherwise. Errors are logged.
          */
-        bool lock_the_cache(int lock_type, const std::string &msg = "") {
+        bool lock_the_cache(int lock_type, const std::string &msg = "") const {
             if (d_fd < 0) {
                 ERROR("Call to CacheLock::lock_the_cache with uninitialized lock object.");
                 return false;
@@ -287,6 +288,7 @@ class FileCache {
 #if 0
             const std::lock_guard<std::mutex> lock(cache_lock_mtx);
 #endif
+            INFO("lock_the_cache(): " + msg + " " + FileCache::get_lock_type_string(lock_type));
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
                     ERROR(msg + get_lock_type_string(lock_type) + get_errno());
@@ -547,6 +549,7 @@ public:
 #else
     class Item {
         int d_fd = -1;
+        std::string d_name;
 
         // Should this be static (two threads want to lock the same file)? jhrg 5/17/24
         std::mutex item_mtx;
@@ -554,10 +557,11 @@ public:
     public:
         Item() = default;
         Item(const Item &) = delete;
-        explicit Item(int fd) : d_fd(fd) { }
+        Item(int fd, const std::string &name = "") : d_fd(fd), d_name(name) { }
         Item &operator=(const Item &) = delete;
         virtual ~Item() {
             if (d_fd != -1) {
+                INFO("unlock the item, fd = " + (!d_name.empty() ? d_name : std::to_string(d_fd)));
                 close(d_fd);    // Also releases any locks
                 d_fd = -1;
             }
@@ -570,7 +574,7 @@ public:
             d_fd = fd;
         }
 
-        bool lock_the_item(int lock_type, const std::string &msg = "") {
+        bool lock_the_item(int lock_type, const std::string &msg = "") const {
             if (d_fd < 0) {
                 ERROR("Call to Item::lock_the_item() with uninitialized item file descriptor.");
                 return false;
@@ -578,6 +582,7 @@ public:
 #if 0
             const std::lock_guard<std::mutex> lock(item_mtx);
 #endif
+            INFO("lock_the_item(): " + msg + " fd(" + std::to_string(d_fd) +  ") " + FileCache::get_lock_type_string(lock_type));
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
                     ERROR("Could not get " + get_lock_type_string(lock_type) + " lock: " + get_errno() );
@@ -676,7 +681,7 @@ public:
     bool put(const std::string &key, const std::string &file_name) {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
-        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in put() for: " + key))
+        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in put(1) for: " + key))
             return false;
 
         // Create the new cache entry
@@ -697,7 +702,7 @@ public:
         Item fdl(fd);
 
         // Lock the file for writing; released when the file descriptor is closed.
-        if (!fdl.lock_the_item(LOCK_EX, "Error locking the just created key/file: " + key))
+        if (!fdl.lock_the_item(LOCK_EX, "locking the just created key/file in put(1): " + key))
             return false;
 
         // Copy the contents of the file_name to the new file
@@ -728,6 +733,49 @@ public:
         return true;
     }
 
+    bool put_data(const std::string &key, const std::string &data) {
+        // Lock the cache. Ensure the cache is unlocked no matter how we exit
+        CacheLock lock(d_cache_info_fd);
+        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in put_data() for: " + key))
+            return false;
+
+        // Create the new cache entry
+        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
+        int fd;
+        if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
+            if (errno == EEXIST) {
+                INFO_LOG("Could not create the key/file; it already exists: " + key + " " + get_errno() );
+                return false;
+            }
+            else {
+                ERROR("Error creating key/file: " + key + " " + get_errno());
+                return false;
+            }
+        }
+
+        // The Item instance will take care of closing the file.
+        Item fdl(fd);
+
+        // Lock the file for writing; released when the file descriptor is closed.
+        if (!fdl.lock_the_item(LOCK_EX, "locking the just created key/file in put_data(): " + key))
+            return false;
+
+        // Here we might use st_blocks and st_blksize if that will speed up the transfer.
+        // This is likely to matter only for large files (where large means...?). jhrg 11/02/23
+
+       if (write(fd, data.c_str(), data.size()) != data.size()) {
+            ERROR("Error writing to data to cache file: " + key + " " + get_errno());
+            return false;
+        }
+
+        // NB: The cache_info file ws locked on entry to this method.
+        if (!update_cache_info_size(get_cache_info_size() + get_file_size(fd)))
+            return false;
+
+        // The fd_wrapper instances will take care of closing (and thus unlocking) the files.
+        return true;
+    }
+
     /**
      * @brief Put an item in the cache
      * Put an item in the cache by returning an open and lock file descriptor to
@@ -745,7 +793,7 @@ public:
     bool put(const std::string &key, PutItem &item) {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
-        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in put() for: " + key))
+        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in put(2) for: " + key))
             return false;
 
         // Create the new cache entry
@@ -766,7 +814,7 @@ public:
         item.set_fd(fd);
 
         // Lock the file for writing; released when the file descriptor is closed.
-        if (!item.lock_the_item(LOCK_EX, "Error locking the just created key/file: " + key))
+        if (!item.lock_the_item(LOCK_EX, "locking the just created key/file in put(2): " + key))
             return false;
 
         // The Item instances will take care of closing (and thus unlocking) the files.
@@ -784,7 +832,7 @@ public:
     bool get(const std::string &key, Item &item, int lock_type = LOCK_SH | LOCK_NB) {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
-        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in get() for: " + key))
+        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in get() for: " + key))
             return false;
 
         // open the file
@@ -800,7 +848,7 @@ public:
         }
 
         item.set_fd(fd);
-        if (!item.lock_the_item(lock_type, "Error locking the item in get() for: " + key))
+        if (!item.lock_the_item(lock_type, "locking the item in get() for: " + key))
             return false;
 
         // Here's where we should update the info about the item in the cache_info file
@@ -821,7 +869,7 @@ public:
     bool del(const std::string &key, int lock_type = LOCK_EX | LOCK_NB) {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
-        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in del()."))
+        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in del()."))
             return false;
 
         std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
@@ -856,7 +904,7 @@ public:
     bool clear() const {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
-        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in clear()."))
+        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in clear()."))
             return false;
 
         std::vector<std::string> files;
@@ -888,7 +936,7 @@ public:
     bool purge() {
         // Lock the cache. Ensure the cache is unlocked no matter how we exit
         CacheLock lock(d_cache_info_fd);
-        if (!lock.lock_the_cache(LOCK_EX, "Error locking the cache in purge()."))
+        if (!lock.lock_the_cache(LOCK_EX, "locking the cache in purge()."))
             return false;
 
         uint64_t ci_size = get_cache_info_size();
