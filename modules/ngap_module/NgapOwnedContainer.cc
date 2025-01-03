@@ -225,9 +225,9 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
     return false;
 }
 
-bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const {
+bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const
+{
 
-    // FIXME This is much work for what a new function could do. jhrg 1/1/25
     FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
     if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
         // Do this in a child thread someday, but what about the return value. jhrg 11/14/23
