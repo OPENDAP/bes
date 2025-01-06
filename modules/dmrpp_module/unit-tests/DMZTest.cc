@@ -798,7 +798,7 @@ public:
         set<shape> cm;
         shape cs{10000};
         shape as{40000};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 10000);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 10000,0);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 4);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                  [](const shared_ptr<Chunk> c) { cerr << c->get_fill_value() << " "; }));
@@ -837,7 +837,7 @@ public:
 
         shape cs{10000};
         shape as{40000};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 20000);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 20000,0);
         CPPUNIT_ASSERT_MESSAGE("There should be two chunks", dc->get_immutable_chunks().size() == 4);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
@@ -875,7 +875,7 @@ public:
 
         shape cs{3, 7};
         shape as{6, 16};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 21);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 21,0);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 6);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
@@ -911,7 +911,7 @@ public:
         set<shape> cm;
         shape cs{3, 7};
         shape as{6, 16};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 1);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 1,0);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 6);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));

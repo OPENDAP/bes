@@ -102,6 +102,7 @@ private:
     bool d_uses_fill_value{false};
     libdap::Type d_fill_value_type{libdap::dods_null_c};
     std::vector<std::pair<libdap::Type,int>> compound_udf_type_elms;
+    unsigned int struct_size = 0;
 
     std::vector<unsigned long long> d_chunk_position_in_array;
 
@@ -361,6 +362,11 @@ public:
 
     }
 
+    Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long chunk_size, std::vector<unsigned long long> pia, unsigned int s_size) :
+            d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_size(chunk_size),
+            d_uses_fill_value(true), d_fill_value_type(fv_type), struct_size(s_size),d_chunk_position_in_array(std::move(pia)) {
+
+    }
 
     Chunk(const Chunk &h4bs)
     {

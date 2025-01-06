@@ -96,7 +96,7 @@ private:
     bool process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks) const;
 
     static void process_fill_value_chunks(libdap::BaseType *btp, const std::set<shape> &chunk_map, const shape &chunk_shape,
-                                   const shape &array_shape, unsigned long long chunk_size);
+                                   const shape &array_shape, unsigned long long chunk_size, unsigned int struct_size);
 
     static bool is_simple_dap_structure_scalar_array(libdap::BaseType *btp, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
     static bool is_simple_dap_structure_internal(const libdap::Structure *ds, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
