@@ -449,6 +449,7 @@ public:
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
 
+    // For structure, if we don't have structure offset information, we will calculate the structure size based on our best knowledge.
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             const std::string &fill_value,
@@ -456,6 +457,16 @@ public:
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array,
             const std::vector<std::pair<libdap::Type,int>> &structure_type_element);
+
+    // If we know the structure offset information, we will pass the structure offset to the chunk and this will be used for fill value handling.
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            const std::string &fill_value,
+            libdap::Type fv_type,
+            unsigned long long chunk_size,
+            const std::vector<unsigned long long> &position_in_array,
+            unsigned int struct_size);
+
 
     void accumlate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
     unsigned long long get_var_chunks_storage_size() const {return var_chunks_storage_size; }

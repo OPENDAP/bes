@@ -899,8 +899,11 @@ unsigned int Chunk::obtain_compound_udf_type_size() const {
 unsigned int Chunk::get_value_size(libdap::Type type) 
 {
 
-    if (type == libdap::dods_structure_c && !compound_udf_type_elms.empty()) {
-        return obtain_compound_udf_type_size();
+    if (type == libdap::dods_structure_c) {
+        if (struct_size !=0) 
+            return struct_size;
+        else if (!compound_udf_type_elms.empty())
+            return obtain_compound_udf_type_size();
     }
     switch(type) {
         case libdap::dods_int8_c:
@@ -1174,12 +1177,15 @@ void Chunk::load_fill_values() {
     const char *value = nullptr;
     vector<char> compound_fvalue;
 
-    if (d_fill_value_type == libdap::dods_structure_c && !compound_udf_type_elms.empty()) {
+    if (d_fill_value_type == libdap::dods_structure_c && (!compound_udf_type_elms.empty() || struct_size !=0)) {
 
         if (value_size == 0) 
             throw BESInternalError("The size of fill value should NOT be 0.", __FILE__,__LINE__);
         compound_fvalue.resize(value_size);
-        get_compound_fvalue(d_fill_value,compound_fvalue);
+        // When the fill_value is 0 for the compound datatype, we don't need to retrieve the filled values.
+        // This will effectively resolve the compound datatype default filled value case.
+        if (d_fill_value !="0")
+            get_compound_fvalue(d_fill_value,compound_fvalue);
         value = compound_fvalue.data();
 
     }

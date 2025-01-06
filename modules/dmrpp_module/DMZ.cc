@@ -2193,7 +2193,7 @@ set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chu
  * @param chunk_size the number of bytes in the chunk
  */
 void DMZ::process_fill_value_chunks(BaseType *btp, const set<shape> &chunk_map, const shape &chunk_shape,
-                                    const shape &array_shape, unsigned long long chunk_size)
+                                    const shape &array_shape, unsigned long long chunk_size, unsigned int struct_size)
 {
     auto dcp = dc(btp);
     // Use an Odometer to walk over each potential chunk
@@ -2207,8 +2207,12 @@ void DMZ::process_fill_value_chunks(BaseType *btp, const set<shape> &chunk_map, 
             // We also need to check the user-defined fill value case.
             vector<pair<Type,int>> structure_type_element;
             bool ret_value = is_simple_dap_structure_scalar_array(btp,structure_type_element);
-            if (ret_value) 
-                dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s, structure_type_element);
+            if (ret_value) {
+                if (struct_size !=0) 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s, struct_size);
+                else 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s, structure_type_element);
+            }
             else 
                 dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s);
         }
@@ -2259,10 +2263,15 @@ void DMZ::load_chunks(BaseType *btp)
                 // to the vector of chunks.
                 auto const &chunk_shape = dc(btp)->get_chunk_dimension_sizes();
                 unsigned long long chunk_size_bytes = array->var()->width(); // start with the element size in bytes
+                vector<unsigned int> s_off = dc(btp)->get_struct_offsets();
+                if (!s_off.empty())
+                   chunk_size_bytes = s_off.back();
+
                 for (auto dim_size: chunk_shape)
                     chunk_size_bytes *= dim_size;
+                unsigned int struct_size =(s_off.empty())?0:s_off.back();
                 process_fill_value_chunks(btp, chunk_map, dc(btp)->get_chunk_dimension_sizes(),
-                                          array_shape, chunk_size_bytes);
+                                          array_shape, chunk_size_bytes,struct_size);
                 // Now we need to check if this var only contains one chunk.
                 // If yes, we will go ahead to set one_chunk_fill_value be true. 
                 // While later in process_chunks(), we will check if fillValue is defined and adjust the value.

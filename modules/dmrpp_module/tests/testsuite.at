@@ -326,9 +326,15 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_scalar_udf_nfv_right_offset
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv2.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/comp_array2_udf_nfv_chunk_cmp_right_offset.h5.dap])
+
 # The data is partial filled and the structure is not well aligned.
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/compound_two_chunks_naligned_lc_pf.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/compound_high_comp_two_chunks_naligned_pf.h5.dap])
+
+# The fill value is the default value assigned by the HDF5 library. Two tests: chunked and contiguous.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/compound_two_chunks_default_fv.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/compound_filled_cont.h5.dap])
+
 
 
 # Test chunked data where chunks are compressed twice (and thus must be
