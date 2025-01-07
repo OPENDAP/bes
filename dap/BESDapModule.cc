@@ -102,17 +102,17 @@ void BESDapModule::initialize(const string &modname)
 	BESDEBUG("dap", "Adding " << OPENDAP_SERVICE << " services:" << endl);
 	BESServiceRegistry *registry = BESServiceRegistry::TheRegistry();
 	registry->add_service(OPENDAP_SERVICE);
-	registry->add_to_service(OPENDAP_SERVICE, DAS_SERVICE, DAS_DESCRIPT, DAP2_FORMAT);
-	registry->add_to_service(OPENDAP_SERVICE, DDS_SERVICE, DDS_DESCRIPT, DAP2_FORMAT);
-	registry->add_to_service(OPENDAP_SERVICE, DDX_SERVICE, DDX_DESCRIPT, DAP2_FORMAT);
-	registry->add_to_service(OPENDAP_SERVICE, DATA_SERVICE, DATA_DESCRIPT, DAP2_FORMAT);
-	registry->add_to_service(OPENDAP_SERVICE, DATADDX_SERVICE, DATADDX_DESCRIPT, DAP2_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DAS_SERVICE, DAS_DESCRIPT, DAP_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DDS_SERVICE, DDS_DESCRIPT, DAP_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DDX_SERVICE, DDX_DESCRIPT, DAP_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DATA_SERVICE, DATA_DESCRIPT, DAP_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DATADDX_SERVICE, DATADDX_DESCRIPT, DAP_FORMAT);
 
-	registry->add_to_service(OPENDAP_SERVICE, DMR_SERVICE, DMR_DESCRIPT, DAP2_FORMAT);
-	registry->add_to_service(OPENDAP_SERVICE, DAP4DATA_SERVICE, DAP4DATA_DESCRIPT, DAP2_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DMR_SERVICE, DMR_DESCRIPT, DAP_FORMAT);
+	registry->add_to_service(OPENDAP_SERVICE, DAP4DATA_SERVICE, DAP4DATA_DESCRIPT, DAP_FORMAT);
 
 	BESDEBUG("dap", "Initializing DAP Basic Transmitters:" << endl);
-	BESReturnManager::TheManager()->add_transmitter(DAP2_FORMAT, new BESDapTransmit());
+	BESReturnManager::TheManager()->add_transmitter(DAP_FORMAT, new BESDapTransmit());
 	// TODO ?? BESReturnManager::TheManager()->add_transmitter( DAP4_FORMAT, new BESDapTransmit( ) );
 
     BESDEBUG("dap", "    adding DAP Utility Function 'wrapitup'()" << endl);
@@ -154,7 +154,7 @@ void BESDapModule::terminate(const string &modname)
 	BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
 	if (rh) delete rh;
 
-	BESReturnManager::TheManager()->del_transmitter(DAP2_FORMAT);
+	BESReturnManager::TheManager()->del_transmitter(DAP_FORMAT);
 	// TODO ?? BESReturnManager::TheManager()->del_transmitter( DAP4_FORMAT );
 
 	BESDEBUG("dap", "Done Removing DAP Modules:" << endl);

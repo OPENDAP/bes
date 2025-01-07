@@ -47,6 +47,6 @@ void
 BESDapService::add_to_dap_service( const string &cmd, const string &desc )
 {
     BESServiceRegistry *registry = BESServiceRegistry::TheRegistry() ;
-    registry->add_to_service( OPENDAP_SERVICE, cmd, desc, DAP2_FORMAT ) ;
+    registry->add_to_service( OPENDAP_SERVICE, cmd, desc, DAP_FORMAT ) ;
 }
 

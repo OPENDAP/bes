@@ -58,7 +58,7 @@ using std::string;
 
 #include "BESXMLWWWGetCommand.h"
 
-void BESWWWModule::initialize(const string & modname)
+void BESWWWModule::initialize(const string &modname)
 {
     BESDEBUG("www", "Initializing OPeNDAP WWW module " << modname << endl);
 
@@ -69,19 +69,19 @@ void BESWWWModule::initialize(const string & modname)
 
     BESDapService::add_to_dap_service(WWW_SERVICE, "OPeNDAP HTML Form for data constraints and access");
 
-    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( DAP2_FORMAT);
+    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter(DAP_FORMAT);
     if (t) {
-        t->add_method( WWW_TRANSMITTER, BESWWWTransmit::send_basic_form);
+        t->add_method(WWW_TRANSMITTER, BESWWWTransmit::send_basic_form);
     }
 
-    BESXMLCommand::add_command( WWW_RESPONSE, BESXMLWWWGetCommand::CommandBuilder);
+    BESXMLCommand::add_command(WWW_RESPONSE, BESXMLWWWGetCommand::CommandBuilder);
 
     BESDebug::Register("www");
 
     BESDEBUG("www", "Done Initializing OPeNDAP WWW module " << modname << endl);
 }
 
-void BESWWWModule::terminate(const string & modname)
+void BESWWWModule::terminate(const string &modname)
 {
     BESDEBUG("www", "Cleaning OPeNDAP WWW module " << modname << endl);
 
@@ -90,14 +90,14 @@ void BESWWWModule::terminate(const string & modname)
 
     BESResponseHandlerList::TheList()->remove_handler(WWW_RESPONSE);
 
-    BESXMLCommand::del_command( WWW_RESPONSE);
+    BESXMLCommand::del_command(WWW_RESPONSE);
 
-    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( DAP2_FORMAT);
+    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter(DAP_FORMAT);
     if (t) {
         t->remove_method(WWW_TRANSMITTER);
     }
 
-    t = BESReturnManager::TheManager()->find_transmitter( DAP2_FORMAT);
+    t = BESReturnManager::TheManager()->find_transmitter(DAP_FORMAT);
     if (t) {
         t->remove_method(WWW_TRANSMITTER);
     }
@@ -111,7 +111,7 @@ void BESWWWModule::terminate(const string & modname)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESWWWModule::dump(ostream & strm) const
+void BESWWWModule::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "BESWWWModule::dump - (" << (void *) this << ")" << endl;
 }

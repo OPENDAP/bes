@@ -133,25 +133,28 @@ void BESXMLGetCommand::parse_basic_get(const string &type, map<string, string> &
     if (_definition.empty())
         throw BESSyntaxUserError("get command: Must specify definition", __FILE__, __LINE__);
 
-    // TODO Lookup the definition and get the container. Then lookup the container and
-    //   get the path and constraint. jhrg 11/14/17
     d_cmd_log_info.append(" for ").append(_definition);
 
     _space = props["space"];
 
     if (!_space.empty()) d_cmd_log_info.append(" in ").append(_space);
 
-    string returnAs = props["returnAs"];
-    if (returnAs.empty()) {
-        returnAs = DAP2_FORMAT;
+    // An empty 'return as' value means 'return a DAP response'. The DAP Module handles
+    // both versions of the protocol. If the value is not empty,  then it's the name of
+    // the file format like netCDF4. jhrg 1/6/25
+    if (props["returnAs"].empty()) {
+        d_xmlcmd_dhi.data[RETURN_CMD] = DAP_FORMAT;
+    }
+    else {
+        d_xmlcmd_dhi.data[RETURN_CMD] = props["returnAs"];
     }
 
-    d_xmlcmd_dhi.data[RETURN_CMD] = returnAs;
+    if (!props["returnAs"].empty()) {
+        d_cmd_log_info.append(" return as ").append(props["returnAs"]);
+    }
 
     d_xmlcmd_dhi.data[STORE_RESULT] = props[STORE_RESULT];
     d_xmlcmd_dhi.data[ASYNC] = props[ASYNC];
-
-    d_cmd_log_info.append(" return as ").append(returnAs);
 
     d_xmlcmd_dhi.action = "get.";
     d_xmlcmd_dhi.action.append(BESUtil::lowercase(type));
