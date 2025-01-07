@@ -50,7 +50,6 @@
  */
 
 #define OPENDAP_SERVICE "dap"
-#define DAP_FORMAT "dap2"
 
 // Use this to indicate that the BESDapModule should be used; it will then use the DAP2 or DAP4 format as appropriate.
 // jhrg 1/6/25
