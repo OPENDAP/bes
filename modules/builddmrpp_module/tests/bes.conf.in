@@ -40,10 +40,6 @@ Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf
 Http.MimeTypes+=h5:application/x-hdf5
 
-Http.Cache.dir=/tmp
-Http.Cache.prefix=ngap_
-Http.Cache.size=500
-
 #-----------------------------------------------------------------------#
 #                                                                       #
 # Data Handler Specific key/value parameters                            #

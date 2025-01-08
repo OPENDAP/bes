@@ -14,22 +14,6 @@
 # Http.RemoteResource.TmpDir = /tmp/bes_rr_tmp
 # Http.RemoteResource.TmpFile.Delete = true
 
-# NB: The RemoteResource class does not current cache responses. These
-# keys are here for future use and by the HttpCache class and its test
-# code. Hopefully we will be able to use that in the future. jhrg 3/28/23
-#
-# Http.Cache.dir - defines which directory to use for caching web
-# resources retrieved by the gateway_module
-#
-# Http.Cache.prefix - defines the prefix for cache files so that
-# they will be easily identifiable.
-#
-# Http.Cache.size - The maximum size of the Gateway cache, in megabytes.
-#
-# Http.Cache.expires - The expiration time in seconds for cached resources
-# 60 is equal to 1 minute
-# 3600 is equal to 1 hour
-
 # Cookie Files base (one file for each beslistener pid). These directories
 # are not automatically removed by the server. jhrg 3/28/23
 Http.Cookies.File = /tmp/.hyrax-cookies

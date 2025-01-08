@@ -5,11 +5,6 @@ BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 
 BES.LogName = ./bes.log
 
-Http.Cache.dir=@abs_top_builddir@/http/unit-tests/cache
-Http.Cache.prefix=hut_
-Http.Cache.size=500
-Http.Cache.expires.time=300
-
 Http.RemoteResource.TmpDir = @abs_top_builddir@/http/unit-tests/bes_rr_tmp
 
 Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$

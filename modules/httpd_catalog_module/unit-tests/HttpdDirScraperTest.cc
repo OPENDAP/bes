@@ -53,7 +53,9 @@ using namespace std;
 static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
+#if 0
 static bool purge_cache = false;
+#endif
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -66,11 +68,6 @@ namespace httpd_catalog {
 class HttpdDirScraperTest: public CppUnit::TestFixture {
 private:
 
-    // char curl_error_buf[CURL_ERROR_SIZE];
-
-    /**
-     *
-     */
     void show_file(string filename)
     {
         ifstream t(filename.c_str());
@@ -87,9 +84,6 @@ private:
         }
     }
 
-    /**
-     *
-     */
     std::string get_file_as_string(string filename)
     {
         ifstream t(filename.c_str());
@@ -153,6 +147,7 @@ public:
 
         if (bes_debug) show_file(bes_conf);
 
+#if 0
         if(purge_cache){
             if(Debug) cerr << prolog << "Purging cache!" << endl;
             string cache_dir;
@@ -165,6 +160,7 @@ public:
                 system(cmd.c_str());
             }
         }
+#endif
 
         if(Debug) cerr << "setUp() - END" << endl;
     }
@@ -314,7 +310,7 @@ int main(int argc, char*argv[])
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     int option_char;
-    while ((option_char = getopt(argc, argv, "dbDP")) != -1)
+    while ((option_char = getopt(argc, argv, "dbD")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -328,10 +324,12 @@ int main(int argc, char*argv[])
             bes_debug = true;  // debug is a static global
             cerr << "bes_debug enabled" << endl;
             break;
-        case 'P':
+#if 0
+            case 'P':
             purge_cache = true;  // debug is a static global
             cerr << "purge_cache enabled" << endl;
             break;
+#endif
         default:
             break;
         }

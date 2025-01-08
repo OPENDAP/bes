@@ -17,11 +17,6 @@ AllowedHosts=^https?:\/\/localhost(:8080)?\/.*$
 AllowedHosts+=^http:\/\/test\.opendap\.org\/.*$
 
 BES.LogName=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/bes.log
-# Configure dat cache
-Http.Cache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache
-#Http.Cache.dir=/tmp/cache
-Http.Cache.prefix=httpd_cat_
-Http.Cache.size=500
 
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf
@@ -33,7 +28,6 @@ BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 
 Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
 Httpd_Catalog.Collections+=iris:https://ds.iris.edu/files/products/
-
 
 BES.Catalog.RemoteResources.RootDirectory=UNUSED
 BES.Catalog.RemoteResources.TypeMatch+=unused:*;

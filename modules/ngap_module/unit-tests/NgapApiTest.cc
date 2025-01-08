@@ -48,7 +48,6 @@
 #include "RemoteResource.h"
 
 #include "NgapApi.h"
-// #include "NgapContainer.h"
 #include "NgapNames.h"
 
 #include "test_config.h"
@@ -78,6 +77,8 @@ private:
             cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
         }
     }
+
+#if 0
     void purge_http_cache(){
         DBG2(cerr << prolog << "Purging cache!" << endl);
         string cache_dir;
@@ -101,6 +102,7 @@ private:
             DBG2(cerr << prolog << "The HTTP cache has been purged." << endl);
         }
     }
+#endif
 
 public:
     // Called once before everything gets tested
@@ -121,7 +123,9 @@ public:
 
         if (debug2) show_file(bes_conf);
 
+#if 0
         purge_http_cache();
+#endif
 
         DBG2(cerr << "setUp() - END" << endl);
     }
@@ -306,7 +310,6 @@ public:
         string signed_url_str;
         std::map<std::string,std::string> url_info;
         bool is_expired;
-
 
         signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
               "A-userid=hyrax"
