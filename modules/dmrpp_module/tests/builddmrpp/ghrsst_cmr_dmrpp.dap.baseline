@@ -1052,9 +1052,6 @@ removed line
 removed line
 BES.modules=dap,cmd,dmrpp,h5,builddmrpp
 CredentialsManager.config=ENV_CREDS
-Http.Cache.dir=/tmp/hyrax_http
-Http.Cache.prefix=dmrpp_
-Http.Cache.size=100
 </Value>
         </Attribute>
         <Attribute name="invocation" type="String">
