@@ -53,15 +53,11 @@ using namespace std;
 static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
-#if 0
-static bool purge_cache = false;
-#endif
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
 #define prolog std::string("HttpdDirScraperTest::").append(__func__).append("() - ")
-
 
 namespace httpd_catalog {
 
