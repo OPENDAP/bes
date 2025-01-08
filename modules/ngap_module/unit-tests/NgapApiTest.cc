@@ -48,7 +48,6 @@
 #include "RemoteResource.h"
 
 #include "NgapApi.h"
-// #include "NgapContainer.h"
 #include "NgapNames.h"
 
 #include "test_config.h"
@@ -78,29 +77,6 @@ private:
             cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
         }
     }
-    void purge_http_cache(){
-        DBG2(cerr << prolog << "Purging cache!" << endl);
-        string cache_dir;
-        bool found_dir;
-        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found_dir);
-        bool found_prefix;
-        string cache_prefix;
-        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_PREFIX_KEY,cache_prefix,found_prefix);
-
-        if(found_dir && found_prefix){
-            DBG2(cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl);
-            DBG2(cerr << prolog << "Purging " << cache_dir << " of files with prefix: " << cache_prefix << endl);
-            string sys_cmd = "mkdir -p "+ cache_dir;
-            DBG2(cerr << "Running system command: " << sys_cmd << endl);
-            system(sys_cmd.c_str());
-
-            sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,cache_prefix);
-            sys_cmd =  sys_cmd.append("*");
-            DBG2(cerr << "Running system command: " << sys_cmd << endl);
-            system(sys_cmd.c_str());
-            DBG2(cerr << prolog << "The HTTP cache has been purged." << endl);
-        }
-    }
 
 public:
     // Called once before everything gets tested
@@ -120,8 +96,6 @@ public:
         TheBESKeys::ConfigFile = bes_conf;
 
         if (debug2) show_file(bes_conf);
-
-        purge_http_cache();
 
         DBG2(cerr << "setUp() - END" << endl);
     }
@@ -307,7 +281,6 @@ public:
         std::map<std::string,std::string> url_info;
         bool is_expired;
 
-
         signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
               "A-userid=hyrax"
               "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
@@ -369,10 +342,6 @@ public:
         CPPUNIT_TEST(resty_path_to_cmr_query_test_01);
         CPPUNIT_TEST(resty_path_to_cmr_query_test_02);
         CPPUNIT_TEST(resty_path_to_cmr_query_test_03);
-#if 0
-        CPPUNIT_TEST(cmr_access_entry_title_test);
-        CPPUNIT_TEST(cmr_access_collection_concept_id_test);
-#endif
         CPPUNIT_TEST(signed_url_is_expired_test);
         CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_lpdaac);
         CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_podaac);

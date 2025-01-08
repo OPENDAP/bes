@@ -14,12 +14,6 @@ BES.Catalog.catalog.RootDirectory=@abs_top_builddir@/modules/ngap_module
 
 BES.LogName=/dev/null
 
-Http.Cache.dir=/tmp
-Http.Cache.prefix=ngap_unit_tests_
-Http.Cache.size=500
-Http.Cache.expires.time=3600
-#-----------------------------------------------------------------------#
-
 AllowedHosts=^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov\/.*$
 
 NGAP.inject_data_urls=true

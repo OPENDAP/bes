@@ -52,8 +52,4 @@ AllowedHosts += ^https:\/\/ngap-ssmis\.s3\.amazonaws\.com\/.*$
 
 CredentialsManager.config=ENV_CREDS
 
-Http.Cache.dir=/tmp/hyrax_http
-Http.Cache.prefix=dmrpp_
-Http.Cache.size=100
-
 AllowedHosts += ^https:\/\/cmr\.earthdata\.nasa\.gov\/.*$

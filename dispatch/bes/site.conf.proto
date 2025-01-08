@@ -105,27 +105,6 @@
 #
 ###################################################################################
 
-
-###################################################################################
-# HTTP Cache Management
-# Depending on your deployment the server may be tasked with retrieving various
-# things from remote locations. These are typically cached in a local filesystem
-# HTTP cache. If the default values, as shown below, are not sufficient, uncomment
-# the lines below and adjust the values as needed.
-#
-# Cache directory where the cached files are stored.
-#Http.Cache.dir=/tmp/hyrax_http
-#
-# Cache file prefix.
-#Http.Cache.prefix=http_
-#
-# Max Cache Size in MB
-#Http.Cache.size=500
-#
-#
-###################################################################################
-
-
 ###################################################################################
 # Control the Metadata Response Store. Here, DAP metadata responses
 # are stored/cached so that they can be returned by the server w/o
