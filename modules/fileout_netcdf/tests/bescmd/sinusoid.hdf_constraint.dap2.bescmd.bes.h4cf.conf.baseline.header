@@ -1,0 +1,15 @@
+netcdf test {
+dimensions:
+	YDim = 2 ;
+	XDim = 2 ;
+variables:
+	double Longitude(YDim, XDim) ;
+		Longitude:long_name = "Longitude" ;
+		Longitude:units = "degrees_east" ;
+
+// global attributes:
+		:HDFEOSVersion = "HDFEOS_V2.19" ;
+		:history = "removed date-timex sinusoid.hdf?Longitude[0:2:3][1:2:3]\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"sinusoid.hdf?Longitude[0:2:3][1:2:3]\"}]}]" ;
+}
