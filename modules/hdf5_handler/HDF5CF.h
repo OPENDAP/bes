@@ -839,6 +839,11 @@ public:
         return this->spvars;
     }
 
+    bool is_special_gpm_l3() const
+    {
+        return this->special_gpm_l3;
+    }
+
     /// Retrieve DDS information from the HDF5 file; real implementation for general HDF5 products.
     void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr) override;
 
@@ -1061,6 +1066,7 @@ private:
     bool ll2d_no_cv;
 #endif
     bool have_nc4_non_coord = false;
+    bool special_gpm_l3 = false;
 
 };
 

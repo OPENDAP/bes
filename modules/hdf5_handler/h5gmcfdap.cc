@@ -236,7 +236,8 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         if(f->HaveUnlimitedDim() == true) 
             f->Adjust_Dim_Name();
         // Handle the "coordinate" attributes.
-        f->Handle_Coor_Attr();
+        if (f->is_special_gpm_l3()==false)
+            f->Handle_Coor_Attr();
 
         f->Handle_Hybrid_EOS5();
         if(true == f->Have_Grid_Mapping_Attrs()) 
@@ -246,7 +247,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
         f->Rename_NC4_NonCoordVars();
 
-        if(true == HDF5RequestHandler::get_enable_coord_attr_add_path())
+        if(true == HDF5RequestHandler::get_enable_coord_attr_add_path() && f->is_special_gpm_l3()==false)
             f->Add_Path_Coord_Attr();
 
         f->Update_Bounds_Attr();
