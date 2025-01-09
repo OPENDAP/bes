@@ -83,7 +83,7 @@ private:
 public:
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
     virtual ~FONcTransform();
-	virtual void transform_dap2(ostream &strm);
+	virtual void transform_dap2();
 	virtual void transform_dap4();
 
 	virtual void dump(ostream &strm) const;
@@ -109,9 +109,6 @@ private:
     virtual void build_reduce_dim();
     virtual void build_reduce_dim_internal(libdap::D4Group *grp, libdap::D4Group *root_grp);
 
-    virtual bool is_streamable();
-    virtual bool is_dds_streamable();
-    virtual bool is_dmr_streamable(libdap::D4Group *group);
     void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
     void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");
     string too_big_error_msg(

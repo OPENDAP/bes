@@ -359,7 +359,6 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h_swath.hdf.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/PointFile.hdf.dmrpp.bescmd)
 
 #HDF4 direct dmr
-# comment out the following two tests. See https://bugs.earthdata.nasa.gov/browse/HYRAX-1406
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vdata_test.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vdata_packed_linked_blocks.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_simple_comp.hdf.bescmd)
@@ -368,6 +367,10 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/sinusoid.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/sinusoid_ll_constraint.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/grid_2_2d_ps.hdf.bescmd)
 
+#HDF4 CF 
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2.bescmd], [bes.h4cf.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2dmr.bescmd], [bes.h4cf.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/sinusoid.hdf_constraint.dap2.bescmd], [bes.h4cf.conf])
 
 
 #Disable direct IO tests

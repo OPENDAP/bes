@@ -115,6 +115,8 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
 {
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
+    uint64_t bytes_sent = 0;
+
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
         auto bdds = dynamic_cast<BESDataDDSResponse *>(obj);
         if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
@@ -128,16 +130,22 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file_name << endl);
 
-        ostream &strm = dhi.get_output_stream();
-        if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
-
-        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
-
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(obj, &dhi, temp_file_name, dhi.data[RETURN_CMD]);
 
-        ft.transform_dap2(strm);
+        ft.transform_dap2();
+        ostream &strm = dhi.get_output_stream();
+        if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
+
+        // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+        BESUtil::conditional_timeout_cancel();
+
+        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
+
+        bytes_sent = BESUtil::file_to_stream(temp_file_name,strm);
+ 
     }
     // This series of catch blocks is used to convert other errors into BESErrors.
     // Thus, we do not need to catch BESError here because it's already what we want.
@@ -154,7 +162,7 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
     catch (...) {
         throw BESInternalError(prolog + "Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
-    BESDEBUG(MODULE,  prolog << "END Transmitted as netcdf" << endl);
+    BESDEBUG(MODULE,  prolog << "END Transmitted as netcdf. bytes_sent: " << bytes_sent<<endl);
 }
 
 /**
@@ -216,7 +224,6 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
 
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
 
-        // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
         bytes_sent = BESUtil::file_to_stream(temp_file_name,strm);
     }
     // This series of catch blocks is used to convert other errors into BESErrors.

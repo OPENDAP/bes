@@ -280,7 +280,7 @@ void FONcTransform::throw_if_dap2_response_too_big(DDS *dds, const string &dap2_
  * particular netcdf type. Also write out any global variables stored at the
  * top level of the DataDDS.
  */
-void FONcTransform::transform_dap2(ostream &strm) {
+void FONcTransform::transform_dap2() {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     BESDEBUG(MODULE, prolog << "Reading data into DataDDS" << endl);
@@ -472,21 +472,6 @@ void FONcTransform::transform_dap2(ostream &strm) {
             FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__,
                                     __LINE__);
         }
-        // write file data
-        uint64_t bytes_written = 0;
-
-        if (is_streamable()) {
-            // Verify the request hasn't exceeded bes_timeout.
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmitting data.", __FILE__, __LINE__);
-
-            // Now that we are ready to start streaming the response data we
-            // cancel any pending timeout alarm according to the configuration.
-            BESUtil::conditional_timeout_cancel();
-
-            bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
-            BESDEBUG(MODULE,  prolog << "First write data to stream, bytes_written:  " << bytes_written << endl);
-        }
-
         for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG(MODULE,  prolog << "Writing data for variable:  " << fbt->name() << endl);
 
@@ -495,84 +480,17 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
             fbt->write(_ncid);
             nc_sync(_ncid);
-
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting: " + fbt->name() , __FILE__, __LINE__);
-
-            if (is_streamable()) {
-                // write the what's been written
-                bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
-                BESDEBUG(MODULE,  prolog << "Writing data to stream, bytes_written:  " << bytes_written << endl);
-            }
         }
 
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting data." , __FILE__, __LINE__);
-
-        bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
-        BESDEBUG(MODULE,  prolog << "After nc_close() bytes_written:  " << bytes_written << endl);
     }
     catch (const BESError &e) {
         (void) nc_close(_ncid); // ignore the error at this point
         throw;
     }
-}
-
-/** @brief checks if a netcdf file is streamable
- *
- * /!\ WARNING /!\ DDS/DMR object must be correctly constructed for this function to work
- * checks if a netcdf file is to be returned as netcdf-4 and if so is not streamable
- * if file is returned as netcdf-3 then checks if the dds/dmr has a structure datatype
- * @return false if file returns as netcdf-4 OR has a structure datatype
- */
-bool FONcTransform::is_streamable() {
-    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
-        return false;
-    }
-
-    if (_dds != nullptr) {
-        return is_dds_streamable();
-    }
-    else {
-        return is_dmr_streamable(_dmr->root());
-    }
-}
-
-/** @brief checks if a DDS contains a Structure datatype in its variables
- *
- * checks the variable type for a structure datatype
- * @return false if the dds contains a structure datatype
- */
-bool FONcTransform::is_dds_streamable() {
-    for (auto var = _dds->var_begin(), varEnd = _dds->var_end(); var != varEnd; ++var) {
-        if ((*var)->type() == dods_structure_c) {
-            return false; // cannot be streamed
-        }
-    }
-    return true;
-}
-
-/** checks if a DMR contains a Structure datatype in its variables
- *
- * checks the variable type for a structure datatype
- * @param group the D4Group holding the variables to search through
- * @return false if the dmr contains a structure datatype
- */
-bool FONcTransform::is_dmr_streamable(D4Group *group) {
-    for (auto var = group->var_begin(), varEnd = group->var_end(); var != varEnd; ++var) {
-        if ((*var)->type() == dods_structure_c)
-            return false; // cannot be streamed
-
-        if ((*var)->type() == dods_group_c) {
-            D4Group *g = dynamic_cast<D4Group *>(*var);
-            if (g != nullptr && !is_dmr_streamable(g)) {
-                return false;
-            }
-        }
-    }
-    return true;
 }
 
 /**

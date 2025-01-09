@@ -1,0 +1,92 @@
+
+BES.ServerAdministrator=admin.email.address@your.domain.name
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,dr,fonc,h4,nc,h5,dmrpp
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dr=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
+BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
+
+BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
+
+BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
+BES.module.h4=@abs_top_builddir@/modules/hdf4_handler/.libs/libhdf4_module.so
+BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/fileout_netcdf
+BES.Data.RootDirectory=/dev/null
+
+BES.Catalog.catalog.TypeMatch=dr:.*\.(dods|xml)$;
+BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF)(\.bz2|\.gz|\.Z)?$;
+#BES.Catalog.catalog.TypeMatch+=h5:.*\.h5(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5|HDF5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
+
+BES.ServerPort=10002
+
+BES.ServerSecure=no
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
+
+BES.Container.Persistence=strict
+
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+
+BES.ProcessManagerMethod=multiple
+
+BES.DefaultResponseMethod=POST
+
+AllowedHosts = *
+#BESRegex error: repetition-operator operand invalid
+AllowedHosts = ^https:\/\/s3\.amazonaws\.com\/cloudy(open)?dap\/.*$
+
+# This is needed even if the tests are local because the whitelist check
+# if performed on local files too. Thus, the whitelist needs to be configured.
+AllowedHosts += ^https?:\/\/localhost(:8080)?\/.*$
+AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
+AllowedHosts += ^https:\/\/ngap-ssmis\.s3\.amazonaws\.com\/.*$
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+FONc.Tempdir=@abs_top_builddir@/modules/fileout_netcdf/tests/
+
+# The default values for these keys
+FONc.UseCompression = true
+FONc.ChunkSize = 4096
+FONc.RequestMaxSizeKB = 0
+FONc.ClassicModel = true
+# Uncomment the following line to suppress the output of global attributes.
+# FONc.NoGlobalAttrs = true
+NC.PromoteByteToShort = true
+H5.EnableCF = false
+
+# For HDF4
+
+# Test HDF4 EnableCF option
+H4.EnableCF=true
+H4.DisableStructMetaAttr=true
+H4.EnableVdata_to_Attr=true
