@@ -96,7 +96,7 @@ NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &rea
  */
 bool NgapOwnedContainer::file_to_string(int fd, string &content) {
     // The file size is needed later; this doubles as a check that the file in open.
-    struct stat statbuf{};
+    struct stat statbuf = {};
     if (fstat(fd, &statbuf) < 0) {
         ERROR_LOG("NgapOwnedContainer::file_to_string() - failed to get file descriptor status\n");
         return false;

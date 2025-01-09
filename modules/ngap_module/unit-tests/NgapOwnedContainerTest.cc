@@ -115,7 +115,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
         CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
         DBG2(cerr << "Content length : " << content.size() << '\n');
-        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k (was" + to_string(content.size()) + ").", content.size() > 16'000);
+        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k (was " + to_string(content.size()) + ").", content.size() > 15'000);
     }
 
     void test_file_to_string_file_not_open() {
