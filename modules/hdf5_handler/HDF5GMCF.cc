@@ -205,11 +205,13 @@ void GMFile::Update_Product_Type()  {
 #if 0
         //Check_General_Product_Pattern();
 #endif
+
         Check_Dimscale_General_Product_Pattern();
         if(GENERAL_DIMSCALE == this->gproduct_pattern){
             if(GPMS_L3 == this->product_type) {
                 for (auto &var:this->vars) 
                     var->newname = var->name;
+                special_gpm_l3 = true;
             }
             this->product_type = General_Product;
         }
@@ -6917,6 +6919,8 @@ void GMFile::Add_Path_Coord_Attr() {
 void GMFile::Update_Bounds_Attr() {
 
     BESDEBUG("h5", "GMFile::Coming to Add_Path_Coor_Attr()"<<endl);
+    if (product_type == GPMS_L3 || product_type == GPMM_L3 || product_type == GPM_L3_New || special_gpm_l3)
+        return;
     for (auto &var:this->vars) {
         for (auto &attr:var->attrs) {
             if (attr->name == "bounds") {
