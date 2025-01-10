@@ -450,7 +450,7 @@ public:
         if (!fdl.lock_the_item(LOCK_EX, "locking the just created key/file in put(1): " + key))
             return false;
 
-        // Copy the contents of the file_name to the new file
+        // Copy the contents of file_name to the new file
         int fd2;
         if ((fd2 = open(file_name.c_str(), O_RDONLY)) < 0) {
             ERROR("Error reading from source file: " + file_name + " " + get_errno());
