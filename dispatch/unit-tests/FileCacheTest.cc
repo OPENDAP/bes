@@ -151,9 +151,8 @@ public:
             }
         }
         else {
-#if 0
-            CPPUNIT_FAIL("Failed to open cache directory in tearDown()");
-#endif
+            DBG(cerr << prolog << "Could not clean the cache directory: " << cache_dir << "(process: "
+                << getpid() << ")\n");
         }
 #endif
     }
