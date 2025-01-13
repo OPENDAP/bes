@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+        <setContainer name="grid_1_2d" space="catalog">/data/3B-HHR.MS.MRG.3IMERG.20240630-S233000-E235959.1410.V07B.HDF5
+        </setContainer>
+            <define name="d">
+                <container name="grid_1_2d" />
+                    </define>
+                        <get type="das" definition="d" />
+                        </request>

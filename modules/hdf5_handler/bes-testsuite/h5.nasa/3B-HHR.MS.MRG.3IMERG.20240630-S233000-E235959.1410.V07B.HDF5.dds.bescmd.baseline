@@ -1,0 +1,21 @@
+Dataset {
+    Float32 MWprecipitation[time = 1][lon = 3600][lat = 1800];
+    Int16 MWobservationTime[time = 1][lon = 3600][lat = 1800];
+    Float32 IRprecipitation[time = 1][lon = 3600][lat = 1800];
+    Int16 MWprecipSource[time = 1][lon = 3600][lat = 1800];
+    Int16 IRinfluence[time = 1][lon = 3600][lat = 1800];
+    Float32 precipitationUncal[time = 1][lon = 3600][lat = 1800];
+    Float32 precipitationQualityIndex[time = 1][lon = 3600][lat = 1800];
+    Float32 lat_bnds[lat = 1800][latv = 2];
+    Float32 precipitation[time = 1][lon = 3600][lat = 1800];
+    Int16 probabilityLiquidPrecipitation[time = 1][lon = 3600][lat = 1800];
+    Float32 randomError[time = 1][lon = 3600][lat = 1800];
+    Int32 time_bnds[time = 1][nv = 2];
+    Float32 lon_bnds[lon = 3600][lonv = 2];
+    Float32 lat[lat = 1800];
+    Int32 latv[latv = 2];
+    Float32 lon[lon = 3600];
+    Int32 lonv[lonv = 2];
+    Int32 nv[nv = 2];
+    Int32 time[time = 1];
+} 3B-HHR.MS.MRG.3IMERG.20240630-S233000-E235959.1410.V07B.HDF5;
