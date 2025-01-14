@@ -183,6 +183,7 @@ exit 0
 %{_bindir}/populateMDS
 %{_bindir}/get_dmrpp
 %{_bindir}/get_dmrpp_h4
+%{_bindir}/get_dmrpp_h5
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
 %{_bindir}/gen_dmrpp_side_car
