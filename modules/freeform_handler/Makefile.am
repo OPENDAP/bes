@@ -12,7 +12,7 @@ SUBDIRS = FFND . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=freeform_handler
-M_VER=3.10.8
+M_VER=3.10.9
 
 # There are some defines which must be set when you build code which uses
 # FreeForm.h. Add them here. 4/17/98 jhrg

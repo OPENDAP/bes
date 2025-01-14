@@ -1,3 +1,2129 @@
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## BES Version 3.21.1
+##
+
+2025-01-13  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.1-0 2025-01-13T22:50:55+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.1-1 2025-01-13T22:31:46+0000
+
+2025-01-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1036 from OPENDAP/hyrax-1613
+	HYRAX-1613 add the new GPM version 3 test.
+
+2025-01-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1613 add the new GPM version 3 test.
+
+2025-01-10  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1035 from OPENDAP/hyrax-1613
+	HYRAX-1613, update the handling of new GPM level 3 files so that the …
+
+2025-01-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1613, update the handling of new GPM level 3 files so that the coordinates and bound attributes are not changed.
+
+2025-01-09  James Gallagher  <jgallagher@opendap.org>
+
+	NgapOwnedContainerTest fixed
+	I removed text from NgapAPITest.cc, which shortend the file and
+	that altered what should be the baseline value the test in
+	NgapOwnedContainerTest.
+
+2025-01-09  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1034 from OPENDAP/hyrax-1610
+	HYRAX-1610, remove the netCDF-3 file streaming feature since it gener…
+
+2025-01-08  James Gallagher  <jgallagher@opendap.org>
+
+	Remove http cache key (#1032)
+	* Removed the old Http.Cache.Dir key
+	Also removed related keys.
+	* More Http.Cache.Dir key removal
+	* Removed excluded code
+
+2025-01-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1610, forgot adding the configuration file for testing
+
+	HYRAX-1610, remove the netCDF-3 file streaming feature since it generates wrong values for AIRS data. New tests are added.
+
+2025-01-07  James Gallagher  <jgallagher@opendap.org>
+
+	No longer log get requests using "return as dap2" for DAP4 responses. (#1031)
+	No longer log get requests using "return as dap2" for DAP4 responses.
+	Removed DAP2_FORMAT define, just to make it clearer what's going on.
+
+2025-01-06  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1030 from OPENDAP/hyrax-1265
+	HYRAX-1265, make the dmrpp read the default fill value of a compound …
+
+2025-01-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1265, pass the correct struct size to the chunk if that size can be found in the dmrpp file. Also update the corresponding unit-tests.
+
+2025-01-03  James Gallagher  <jgallagher@opendap.org>
+
+	Test the proposed fix for FileCache::put(const string&, PutItem&) (#1028)
+	Fixed a bug with put() - both versions were corrupting the cache_info file
+	The issue with put(), where it takes the FileCache::PutItem object
+	and thus transfers control of the Item lock back to the caller, is
+	that the cache_info file is modified by the PutItem dtor without
+	locking the cache. Two processes can update the cache_info file at
+	the same time. Not good.
+	A 'feature' of flock(2):  On a single machine when one process opens a file and then
+	forks, the parent and child processes have the same descriptor open to
+	the file. flock(2) will not work in this case. The child must close
+	the descriptor from the parent and open the file on its own, so that
+	it has its own descriptor to the open file. Once done, flock(2) works
+	as expected. I used flock(2) instead of fcntl(2) because flock(2) is
+	thread safe, which saves on bookkeeping within a process.
+	Speed them up and, ensure struct stat variables are initialized and
+	make sure all fork(2) uses properly open their own copy of the
+	FileCache object.
+
+2025-01-03  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1265, make sure to pass the correct chunk bytes to the fill value handling routine.
+
+2025-01-02  James Gallagher  <jgallagher@opendap.org>
+
+	Marked the failing test as expected to fail, redux
+	I backed this out for the previous commit, intentionally,
+	so I could test more easily. Added it back.
+
+	Modified the two-process test of put/PutItem
+	Now each process opens cache_info, which means they don't
+	share a file descriptor to it. This is a know issue with flock(2)
+	(but news to me). Thus, this is a fix for the test, not the code
+	being tested. It's still broken.
+
+2025-01-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1265, make the dmrpp read the default fill value of a compound datatype.
+
+2025-01-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Added a test for the FileCache PutItem bug (#1029)
+	Added a test to FileCacheTest demonstrating the PutItem bug.
+	I marked this as expected to fail. Will merge into the branch
+	with a fix for the bug and see if the fix works. By marking
+	this test as expected to fail, this can be merged into master.
+
+2024-12-31  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1027 from OPENDAP/hyrax-1497
+	Hyrax 1497
+
+2024-12-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1497, forgot adding this file for reducing the code smell
+
+	HYRAX-1497, reduce code smells according to sonar cloud
+
+2024-12-31  Kodi Neumiller  <kneumiller@opendap.org>
+
+	Merge pull request #994 from OPENDAP/DmrppArray_buffer
+	DmrppArray now returns int_64
+
+2024-12-31  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-143 2024-12-31T18:22:54+0000
+
+2024-12-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1497, clean up the testsuite a bit.
+
+	HYRAX-1497, clean up code
+
+2024-12-31  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge remote-tracking branch 'origin' into DmrppArray_buffer
+
+	Moved the return buf2val into an else block
+
+2024-12-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+2024-12-31  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1497
+
+2024-12-31  Ubuntu  <ubuntu@ip-172-31-45-111.us-west-2.compute.internal>
+
+	HYRAX-1497, add cstring header to avoid the compiling error
+
+2024-12-30  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Changed buf2val so that it uses unsigned int and uses Vector::buf2val_ll for the return value
+
+	DmrppArray now uses buf2val_ll
+
+2024-12-30  Nathan Potter  <ndp@opendap.org>
+
+	Making logging reflect the pid of the child processes (#1025)
+
+2024-12-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1497, add the code to use the UTF-8 encoding when the Unicode characters are not escaped in DMR.
+
+2024-12-27  James Gallagher  <jgallagher@opendap.org>
+
+	Added log_ingo and reqID to timing in the framework (#1024)
+	Morfed the BES_COMMAND_TIMING() macro into two: one for the framework
+	and a new macro for modules.
+
+2024-12-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1497,first version
+
+2024-12-27  Nathan Potter  <ndp@opendap.org>
+
+	Abandon BESMemoryManager and BESMemoryGlobalArea (#1023)
+
+2024-12-26  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1022 from OPENDAP/hyrax-1564
+	HYRAX-1564 fixed the bug that causes the segmentation fault for the H…
+
+2024-12-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1564, make indentation correct
+
+	HYRAX-1564 fixed the bug that causes the segmentation fault for the HDF4 handler to access an MOD021KM file. The Vdata field name needs to apply the CF naming rule.
+
+2024-12-24  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1021 from OPENDAP/hyrax-1597
+	Hyrax 1597
+
+	Merge pull request #1020 from OPENDAP/hyrax-1593
+	HYRAX-1593, add code to handle the access of subset data for the mult…
+
+2024-12-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1597, remove a redundant shell script.
+
+	HYRAX-1597, add scripts to download the NASA testing files from the opendap server.
+
+2024-12-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1597, add scripts to download from the opendap server.
+
+2024-12-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1593, reduce code smells according to sonar cloud
+
+	HYRAX-1593, add code to handle the access of subset data for the multi-linked block chunk case.
+
+2024-12-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1016 from OPENDAP/hyrax-1528
+	Hyrax 1528
+
+2024-12-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1528, small change according to Jame's suggestion.
+
+	HYRAX-1528, small changes according to Jame's comments.
+
+	Merge branch 'hyrax-1528' of https://github.com/opendap/bes into hyrax-1528
+
+	HYRAX-1528, final code clean-up before reviewing
+
+2024-12-20  Nathan Potter  <ndp@opendap.org>
+
+	Remove BESLog  i/o operator implementations (#1017)
+	* Removed I/o operator implementations from BESLog
+	* Simplified stoi invocation
+	* Fixing stuuf that's in #if statements not active on my dev system
+	* More hacking of the log calls.
+	* More hacking of the log calls.
+	* Updated BESLog comments to reflect new api
+
+2024-12-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1528, add a new NASA dmrpp test to the valgrind testing script.
+
+2024-12-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1528, clean up code and add the bescmd file.
+
+	HYRAX-1528, add a test to the NASA testsuite that includes linked blocks in a chunk.
+
+2024-12-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1528, add more code to handle the multi-linked-block chunk case.
+
+2024-12-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1528, more code to read multi-blocks chunk data. Pass the block offsets and lengths info to the read() of DmrppArray.cc.
+
+2024-12-17  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1528, storing the offsets and lengths of the linked blocks in a chunk
+
+2024-12-17  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	DmrppArray now uses int64_t
+
+2024-12-16  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1528
+
+2024-12-16  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1015 from OPENDAP/hyrax-1529
+	Hyrax 1529
+
+2024-12-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1528, add the code to generate the dmrpp file that can represent multi-linked-blocks in a chunk.
+
+2024-12-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1588, reduce the time to check the dmrpp linked block attributes.
+
+2024-12-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1587, add two tests to check the partial filled datasets with and without compression.
+
+2024-12-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1529, remove commented lines etc.
+
+	HYRAX-1529, update the NASA testsuite and add the AMSR_E test.
+
+2024-12-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1529, remove commented code
+
+	HYRAX-1529, add the NASA structure testing file to the testsuite.
+
+	HYRAX-1529, add subset support; also add tests.
+
+	HYRAX-1529, correct the byte_per_element assignment for the fixed string handling and add tests and source code that generates the testing files.
+
+	HYRAX-1529, add the first version of code to handle the array of structure in chunking storage
+
+2024-12-05  James Gallagher  <jgallagher@opendap.org>
+
+	Temp file todos (#1007)
+	Comments added to TempFile - no code change but some issues described.
+
+	Added help and some minor reformatting (#1008)
+
+2024-12-05  Nathan Potter  <ndp@opendap.org>
+
+	Removed crufty code from the BESStopWatch (#1014)
+
+2024-12-05  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-140 2024-12-05T19:36:17+0000
+
+2024-12-05  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Changed the buf2val typing in the header file
+
+2024-12-05  Nathan Potter  <ndp@opendap.org>
+
+	Fixing the way the BESDebug (#1012)
+	is utilized in BESStopWatch so that debugging lines are
+	not inadvertently written to the BESLog
+
+2024-12-04  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1011 from OPENDAP/hyrax-1584
+	HYRAX-1584, update tests to reflect the addition of structure offset …
+
+2024-12-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1584, update tests to reflect the addition of structure offset in the dmrpp file.
+
+2024-12-03  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1010 from OPENDAP/hyrax-1568
+	HYRAX-1568, first version of code to store structure offset and struc…
+
+2024-12-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1568, remove a redundant method.
+
+	HYRAX-1568, update the fileout netCDF testsuite to include the dmrpp files that have structure offset inside.
+
+	HYRAX-1568, add tests to the testsuite. Both scalar and array tests are added.
+
+	HYRAX-1568, first version of code to store structure offset and structure size so that the dmrpp module can retrieve the structure data value successfully. Only 1-layer integer or float basetype are supported.
+
+2024-12-02  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge branch 'master' of https://github.com/opendap/bes into DmrppArray_buffer
+
+2024-11-27  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1009 from OPENDAP/hyrax-1580
+	HYRAX-1580, update gen_dmrpp_side_car by adding a new option for user…
+
+2024-11-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1580, update gen_dmrpp_side_car by adding a new option for users to point to an existing sidecar file. Description is also updated.
+
+2024-11-25  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Stop watch hacking (#1006)
+	Start on timing requests
+	Fixes to the BESStopWatch macro. The macro cannot use the do-while-loop
+	pattern since that makes a block and the object exists only within the scope
+	of that block, not the intent.
+	Added timing to BESInterface, BESXMLInterface and NgapOwnedContainer.
+
+2024-11-25  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-138 2024-11-25T17:30:06+0000
+
+2024-11-25  James Gallagher  <jgallagher@opendap.org>
+
+	Fix the info message issue and write tests (#1005)
+	Change how we evaluate URLs for S3 signing
+	Fix the info messages in CurlHandlePool. These are too chatty.
+	Also refactored code to use CurlUtils function for S3 signing and
+	remove a use of strlen where its safety was dubious.
+	The SuperChunkTest and DmrppArrayTest unit tests failed on the M1
+	because mutexes in CurlHandlePool were being misused in the unit
+	tests. The DmrppRequestHandler was initializing and clearing the
+	curl library, but not the CurlHandlePool, and this invalidated mutexes
+	that the CH Pool used with the curl library (see libcurl's share interface).
+	Fixed by changing the static unique_ptr to a plain pointer and managing
+	its lifetime the old way.
+
+2024-11-22  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #1003 from OPENDAP/hyrax-1453
+	HYRAX-1453, add the support to reduce the generated dim…
+
+2024-11-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1453, remove a commented code line.
+
+	HYRAX-1453, update NASA testsuite.
+
+2024-11-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1453, forgot adding baseline files for one test.
+
+	HYRAX-1453, add tests, clean up code.
+
+	HYRAX-1453, add tests to reduce the dimension names in the fileout netCDF
+
+2024-11-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1453, adding the unordered_map header.
+
+	HYRAX-1453, add the first version of code to reduce the generated dimension names by the fileout netCDF module.
+
+2024-11-19  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+2024-11-18  James Gallagher  <jgallagher@opendap.org>
+
+	Forcing a CI/CD build
+
+2024-11-18  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #999 from OPENDAP/hyrax-1552
+	HYRAX-1522, provide an option to the gen_dmrpp_side_car python so tha…
+
+2024-11-15  James Gallagher  <jgallagher@opendap.org>
+
+	Remove (#if...) the CurlHandlePool token hack (#1000)
+	This was added for the DMR++ POC code. It uses the credential
+	manager to load in an EDL token for certain URLs. It generates
+	a huge number of info messages.
+
+2024-11-15  Nathan Potter  <ndp@opendap.org>
+
+	Tidy Time (#998)
+	* Made local variable a const
+	* Added new "built" files to various .gitignore lists
+
+2024-11-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1522, provide an option to the gen_dmrpp_side_car python so that users can add the path to the HDF5 or the side car files.
+
+2024-11-15  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #997 from OPENDAP/hyrax-1569
+	Hyrax 1569
+
+2024-11-14  Nathan Potter  <ndp@opendap.org>
+
+	Remove CR and LF from error log lines (#996)
+	* Implemented emoving CR and LF from the BES ERROR_LOG calls in BESInterface
+
+2024-11-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1569, add the support of compressed compound datatype variables.
+
+	Merge branch 'master' into hyrax-1569
+
+2024-11-14  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #995 from OPENDAP/hyrax-1530
+	Hyrax 1530
+
+2024-11-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1530, follow James' code review to make the code more clear
+
+	Merge branch 'hyrax-1530' into hyrax-1569
+
+	HYRAX-1530, HYRAX-1567 remove debugging info>
+
+	HYRAX-1530, HYRAX-1567 remove code smells and update valgrind tests.
+
+	HYRAX-1530, HYRAX-1567 make dmrpp access compound datatype variables that have user-defined fillvalue
+
+2024-11-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1530, HYRAX-1567, forgot checking in dmrpp test files.
+
+	HYRAX-1530, HYRAX-1567, make build_dmrpp and dmrpp access the compound datatype array that has user-defined fill value
+
+2024-11-12  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-131 2024-11-12T19:03:57+0000
+
+2024-11-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-125 2024-11-07T23:49:02+0000
+
+2024-11-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1530, update the unit-test for the compound user-defined fill value case
+
+	HYRAX-1530, add the handling of user-defined fill value in a compound datatype code. Now the user-defined fill value of a simple compound datatype is added to the dmrpp.
+
+2024-11-07  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-123 2024-11-07T20:02:23+0000
+
+2024-11-07  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	DmrppArray now uses uint_64
+
+2024-11-05  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #992 from OPENDAP/hyrax-1558
+	Hyrax 1558
+
+2024-11-05  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1668, update valgrind test shell scripts.
+
+2024-11-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1558, update NASA sample file testsuite. Remove the tests for the dmrrpp that has the missing data information.
+
+2024-11-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1558, update NASA sample testsuites for using fileout netcdf and dmrpp modules to access HDF4/HDF-EOS2 files.
+
+2024-10-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1559, 1) Improve the code a bit by following the sonar cloud suggestions. 2) Add the NASA HDF-EOS2 side car approach test(Disabling the generation of missing data in the dmrpp) for the build_dmrpp_h4 utility.
+
+	HYRAX-1558, HYRAX-1560, update dmrpp and fileout netCDF tests to reflect the change of making dmrpp support the CF grid mapping feature.
+
+	HYRAX-1558, HYRAX-1560 1) generate dmrpp files that include the CF grid variables. 2) make dmrpp module access those variables. 3) Add tests in the fileout netCDF module.
+
+2024-10-29  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1558, Add EOS2 CF grid attributes for build_dmrpp_h4 to add the corresponding missing data.
+
+	HYRAX-1555, during the test, found a mistake in the new test with the new CF grid information. Correct the issue.
+
+2024-10-29  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #991 from OPENDAP/hyrax-1553
+	Hyrax 1553, the last commit includes updates for manually testing. No need to pass through travis.
+
+2024-10-29  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1553, remove a test that triggers a memory leak. The memory leak is a known issue that causes by the dmrpp fixed-size string reading.
+
+2024-10-29  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1553, improve the use of the unique pointers.
+
+2024-10-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1553, divide one line code to several lines for easy reading.
+
+2024-10-25  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1556, remove unused and no longer useful DAP2 tests.
+
+	HYRAX-1553,update the HDF4 handler testsuite due to the addition of the CF grid mapping info.
+
+	HYRAX-1553, add a test and update testsuite
+
+2024-10-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1553, add CF grid variables and attributes for the DMR generation.
+
+2024-10-23  Kodi Neumiller  <kneumiller@opendap.org>
+
+	The library paths no longer appear in the BES.modules.
+	Updated the associated tests as well.
+
+2024-10-23  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Took out 'std' and split the variable declaration.
+
+2024-10-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1553, add the code to retrieve the grid mapping info for an HDF-EOS2 grid
+
+2024-10-23  James Gallagher  <jgallagher@opendap.org>
+
+	Clion discovery fix (#989)
+	Better clion-source-discovery target
+	This is now robust in the face of test failures.
+
+2024-10-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #988 from OPENDAP/hyrax-1548
+	Hyrax 1548
+
+2024-10-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1548, reformat again with Clion"
+
+	HYRAX-1548, add the main() function and reformat with clion.
+
+2024-10-22  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	The library paths no longer appear in the BES.modules. Updated the baseline tests to reflect this.
+
+2024-10-22  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1548, add the two python distributed scripts in the $file section of the rpm specification files.
+
+	HYRAX-1548, need to update the configuration file.
+
+2024-10-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1548, the first check-in to see if we can get it compiled.
+
+2024-10-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge remote-tracking branch 'origin/master'
+
+2024-10-18  James Gallagher  <jgallagher@opendap.org>
+
+	Zero length dmrpp bug (#987)
+	Added a test to make sure the output file option was used.
+	If the C++ build_dmrpp program returns nothing and get_dmrpp
+	is used without -o, the caller must test for a zero-length
+	DMR++ document/response (Unless we can modify build_dmrpp).
+
+2024-10-16  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+2024-10-14  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #986 from OPENDAP/hyrax-1543
+	Hyrax 1543
+
+2024-10-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #985 from OPENDAP/hyrax-1542
+	HYRAX-1542, build_dmrpp adds the fake coordinate values to the dmrpp …
+
+2024-10-11  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-1542' into hyrax-1543
+
+2024-10-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1543, forgot adding the HDF5 handler data file.
+
+	HYRAX-1543, fixed the wrong dimension size for the netCDF-4 pure unlimited dimension.
+
+	HYRAX-1542, remove code smells according to sonar cloud
+
+	HYRAX-1542, build_dmrpp adds the fake coordinate values to the dmrpp file. The fake coordinate values are based on the netCDF-4-like pure dimension generated by the EnableCF option.
+
+2024-10-09  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #984 from OPENDAP/hyrax-1541
+	 Need to increase one byte for a char array. The file has a vdata cla…
+
+2024-10-08  myang6  <myang6@hdfgroup.org>
+
+	 Need to increase one byte for a char array. The file has a vdata class with a long name. The name size is exactly equal to the maximum vdata class name length set by the HDF4 library. Without increasing the array size, it fails on MacOS although it works fine on Linux.
+
+2024-10-07  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #983 from OPENDAP/hyrax-1539
+	Hyrax 1539
+
+2024-10-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1539, correct comments a bit
+
+	HYRAX-1539,
+
+	HYRAX-1538, fixed a build_dmrpp issue to obtain 1-element VLSA string
+
+2024-10-03  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #981 from OPENDAP/hyrax-1521
+	Hyrax 1521
+
+2024-10-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1521, add the description of -m option.
+
+2024-10-02  myang6  <myang6@hdfgroup.org>
+
+	Update the get_dmrpp to use the -dap2 option for the check_dmrpp program
+
+	HYRAX-1521, add an option to generate the DAP2 constraint. Need to update the get_dmrpp tests.
+
+2024-10-02  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #980 from OPENDAP/hyrax-1524
+	Hyrax 1524
+
+2024-10-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1524, add an error check.
+
+	HYRAX-1524, add one more merge_dmrpp test.
+
+	HYRAX-1524, the first version of the merge_dmrpp testsuite.
+
+	HYRAX-1537, find that the text file containing the missing variables has a new line character at the end. Modify the code to check this.
+
+2024-09-30  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #979 from OPENDAP/hyrax-1536
+	HYRAX-1536, add the support of reading the artifical coordinate value…
+
+2024-09-30  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1536
+
+2024-09-30  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #978 from OPENDAP/hyrax-1522
+	HYRAX-1522, fixing a bug that doesn't merge dmrpp that contains the m…
+
+2024-09-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1536, remove several unused testing files.
+
+	HYRAX-1536, add the support of reading the artifical coordinate values in the dmrpp module. Tests are also added.
+
+2024-09-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1522, reduce code smell according to sonar cloud's suggestion
+
+	HYRAX-1522, use range-for and update some comments.
+
+2024-09-27  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #977 from OPENDAP/hyrax-1518-trim
+	Hyrax 1518 trim
+
+2024-09-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1522, fixing a bug that doesn't merge dmrpp that contains the missing lat/lonfor the TRMM dmrpp file. The reason is because the missing variable list contains the path /.
+
+	HYRAX-1518, trim the comments a bit
+
+	HYRAX-1518, another try to fix the permission denied issue in the distcheck.
+
+	Merge branch 'hyrax-1518-trim' of https://github.com/opendap/bes into hyrax-1518-trim
+
+	HYRAX-1518-trim, one more try to fix the permission denied issue in distcheck.
+
+2024-09-25  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1518, fix the distcheck error by adding the correct path; also add an expected failure test.
+
+	HYRAX-1518, temporarily turn off the two failed tests in distcheck in travis. Just to see if we can pass the travis tests.
+
+	Add the fillvalue check. If this variable contains FillValue mark, the data can be retrieved even if no offset and position are specified.
+
+2024-09-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1518, fix another issue
+
+	HYRAX-1518, use another way to test check_dmrpp to see if I can get make distcheck pass in travis
+
+	HYRAX-1518, another try to make "make distcheck" pass travis
+
+	HYRAX-1518, one more try to see if make distcheck can get passed.
+
+	HYRAX-1518, make the check_dmrpp ignore the compound string structure and variable length string data.
+
+2024-09-24  myang6  <myang6@jelly.ad.hdfgroup.org>
+
+	HYRAX-1518, add the testing directory check_dmrpp to the distribution list.
+
+2024-09-24  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1518
+
+2024-09-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1518, add a testsuite for check_dmrpp.
+
+2024-09-22  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #974 from OPENDAP/hyrax-1503
+	HYRAX-1503, add the support of Aquarius level 3 version 5.0 for the C…
+
+2024-09-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1518, update check_dmrpp to fix issues for the following: 1. Not identify Structure data 2. Not identify linked block data 3. Not identify missingdata and compact data
+
+2024-09-19  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1503, add the support of Aquarius level 3 version 5.0 for the CF option. Mainly make sure the lat/lon are added as the previous versions.
+
+2024-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+2024-09-11  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #970 from OPENDAP/xaerdt-very-large
+	Xaerdt very large
+
+2024-09-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1500, improve the code a bit.
+
+2024-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	More liberal 'NgapOwnedContainer' (#972)
+	Instead of limiting its 'forwarding behavior' to just 404 errors
+	the more liberal container will forward 400, 402, 403, and 404
+	responses from the attempt to read from the OPeNDAP bucket.
+
+2024-09-11  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into xaerdt-very-large
+
+	HYRAX-1500, remove unnecessary code and comments
+
+2024-09-11  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #969 from OPENDAP/omno2-direct-io
+	Omno2 direct io
+
+2024-09-10  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #967 from OPENDAP/hyrax-1447
+	Hyrax 1447
+
+	Merge pull request #971 from OPENDAP/hyrax-1455-56
+	Hyrax 1455 56
+
+2024-09-10  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1455-56
+
+	Merge branch 'master' into xaerdt-very-large
+
+	HYRAX-1498, update two NASA tests that contain HDF-EOS5 unlimited dimensions.
+
+2024-09-10  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-120 2024-09-10T09:50:28+0000
+
+2024-09-10  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #965 from OPENDAP/hyrax-1435
+	Hyrax 1435
+
+	Merge pull request #968 from OPENDAP/hyrax-1485
+	Hyrax 1485
+
+2024-09-09  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into omno2-direct-io
+
+2024-09-09  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #966 from OPENDAP/hyrax-1467
+	Hyrax 1467 - update get_dmrpp_h4 python: provide an option for user to generate a BES configuration file
+
+2024-09-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1447, remove some comments and debugging lines
+
+	Merge branch 'master' into hyrax-1447
+
+	HYRAX-1467, clean up the script caused by merging the master branch to the current branch.
+
+	Merge branch 'master' into hyrax-1467
+
+	HYRAX-1467, add an option for users to obtain the BES configuration file.
+
+	Merge branch 'master' into hyrax-1485
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2024-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	New info messages about where the DMR++ was found (OPeNDAP vs DAAC bucket)
+
+2024-09-04  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-117 2024-09-04T23:29:04+0000
+
+2024-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	Tests back to passing in the gateway module
+
+2024-08-30  James Gallagher  <jgallagher@opendap.org>
+
+	I marked four tests in the gateway module xfail
+	This frees a log jam with the new test.opendap.org
+	in AWS us-west-2 where the gateway code is now getting
+	a 403 error from the server. I'll add a ticket to fix
+	that and back the changes out once done.
+
+	Dmrpp bucket option (#963)
+	Fixed glaring errors in the NgapOwnedContainer that made it to master
+	Tested (manually) getting a DMR++ from a DAAC after trying OPeNDAP
+	That is, a granule's DMR++ is not in the OPeNDAP-owned bucket,
+	but is in the DAAC bucket. If we try the OPeNDAP bucket and don't
+	find the granule, does it then work to get the DMR++ from the
+	DAAC's bucket? Yes.
+	Updates to the ngap tests that don't run on Travis
+	These require credentials that are not avaialble with Travis.
+	Started adding 'trust' dmrpp attribute
+	Somewhat less tortured logic in get_dmrpp_from_cache_or_remote_source()
+	Addressed a complexity issue in get_dmrpp_from_cache_or_remote_source()
+
+2024-08-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+2024-08-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1456, update HDF4 testsuite file and one baseline file.
+
+	HYRAX-1455, add/revise comments for .at file
+
+2024-08-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1455, forgot removing one directory.
+
+	HYRAX-1455, remove unused the testsuites and testing files in the HDF5 handler.
+
+2024-08-14  James Gallagher  <jgallagher@opendap.org>
+
+	Compiled-in of d_use_opendap_bucket matches the conf file.
+	[skip ci]
+
+	Removed redundant configuration paramater in the ngap module conf file
+	[skip ci]
+
+2024-08-13  James Gallagher  <jgallagher@opendap.org>
+
+	Comments added to TempFile - no code change but some issues described.
+	[skip ci]
+
+2024-08-10  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed glaring errors in the NgapOwnedContainer that made it to master (#962)
+	Fixed glaring errors in the NgapOwnedContainer that made it to master
+	Tested (manually) getting a DMR++ from a DAAC after trying OPeNDAP.
+	That is, a granule's DMR++ is not in the OPeNDAP-owned bucket,
+	but is in the DAAC bucket. If we try the OPeNDAP bucket and don't
+	find the granule, does it then work to get the DMR++ from the
+	DAAC's bucket? Yes.
+	Also added Sonar fixes and a README about the integration tests.
+
+2024-08-08  James Gallagher  <jgallagher@opendap.org>
+
+	Own dmrpp (#961)
+	NGAP container for 'owned DMR++' documents
+	This enables Hyrax to use either a local S3 bucket or the DAAC
+	S3 bucket as the source of a DMR++ for a given REST path to
+	a NASA collection/granule.
+	Wrapped code for testing in DEVELOPER in CurlUtils.cc. This
+	will enable our local testing to use a Credentials Manager file
+	to supply an EDL token so tests can run against real data.
+	Changed from /tmp to /tmp/hyrax_dmrpp_cache
+
+2024-08-07  myang6  <myang6@hdfgroup.org>
+
+	update the code to handle HDF5 region reference type so that it can compile
+
+	remove the unlimited dimension when the size is less than 0. Will handle this case later.
+
+2024-08-05  myang6  <myang6@hdfgroup.org>
+
+	fixed the bug to handle the unlimited dimension of a XAERDT file.
+
+2024-08-05  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for FileCache::put() error messages that should be info messages (#950)
+	An error message was not actually an error.
+	I changed the message for FileCache::put so that when two
+	put calls collide, but only one adds the given key, there
+	is an IFO message written and not an error. The cache is
+	working correctly - the items is added only once - and
+	changing the caller to eliminate this for the small number
+	of cases where it happens would be worse than just letting
+	it happen. In one sample, this happened 265 times in 22392
+	calls to put (1.2%)
+
+2024-08-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1435, add the support of compact array subset. Also update the testsuite.
+
+2024-08-01  James Gallagher  <jgallagher@opendap.org>
+
+	Spelling
+	[skip ci]
+
+2024-08-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1485, fix the issue to handle the missing data when the HDF-EOS2 grid name contains space
+
+2024-07-30  Nathan Potter  <ndp@opendap.org>
+
+	Add creation date to build_dmrpp metadata (#960)
+	* Adding a creation time to the build_dmrpp meta data. Whay did we not have this prior?
+	* Refactored method names for metadata injection
+	* Added Z (UTC) to time created attribute value.
+	* Added content filter for created times (ISO-8601 format)
+	* Baselines and macros, oh my.
+	* Updated the (disabled) code in build_dmrpp_util_h4.cc to reflect these changes.
+
+2024-07-19  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #958 from OPENDAP/hyrax-1229
+	HYRAX-1229, add the support to disable the direct IO feature based on…
+
+2024-07-18  myang6  <myang6@hdfgroup.org>
+
+	 Make indentation as Sonar suggested
+
+	HYRAX-1229, add the support to disable the direct IO feature based on the dio="off" attribute in the dmrpp file. Also add an option to generate such a dmrpp file by using the build_dmrpp utility.
+
+2024-07-17  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-103 2024-07-18T06:15:28+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-102 2024-07-17T15:37:31+0000
+
+2024-07-15  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #957 from OPENDAP/hyrax-1451
+	HYRAX-1451, add an option to disable the generation of missing data v…
+
+2024-07-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1451, add an option to disable the generation of missing data values in a dmrpp file.
+
+2024-07-14  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #956 from OPENDAP/hyrax-1466
+	HYRAX-1466, change the default option of get_dmrpp_h4 to make it easi…
+
+2024-07-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1466, change the default option of get_dmrpp_h4 to make it easier for users. The python program will generate a temporary BES configuration file instead of relying on the system's BES configuration. Users can still use -s option to choose to use system's BES configuration.
+
+2024-07-11  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #955 from OPENDAP/hyrax-1454
+	Hyrax 1454
+
+2024-07-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1454, add comments and an error checking
+
+	HYRAX-1454, fix the issue when an empty string variable is chunked and compressed.
+
+2024-07-03  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #953 from OPENDAP/hyrax-1450
+	Hyrax 1450
+
+2024-07-03  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1450, fixed the memory leaks detected by valgrind.
+
+2024-07-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1450, add two testing data files
+
+	 HYRAX-1450, clean up code
+
+	HYRAX-1450, add NASA HDF-EOS2 missing data dmrpp and the sidecar file to the script of obtaining the data.
+
+	HYRAX-1450, add more NASA tests to handle the missing data in the fileout netCDF module. Also update the valgrind memory check scripts to include these tests.
+
+	HYRAX-1450, add bescmd tests.
+
+2024-07-02  Cloud User  <rocky@ip-172-31-57-143.us-west-2.compute.internal>
+
+	HYRAX-1450, update fileout netCDF test baseline files.
+
+	Merge branch 'master' into hyrax-1450
+
+2024-07-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1450, add DAP4 dimensions for the HDF4 SDS/HDF-EOS2 Grid variables. This is required to use the fileout netCDF to access HDF4 data via the HDF4 handler.
+
+2024-06-30  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1450, add a few bescmd files.
+
+2024-06-28  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #952 from OPENDAP/hyrax-1448
+	Hyrax 1448
+
+	Merge pull request #951 from OPENDAP/hyrax-1443
+	Hyrax 1443
+
+2024-06-28  myang6  <myang6@hdfgroup.org>
+
+	Add the no_missing_data test to the valgrind check script
+
+	HYRAX-1448, add an option to turn off the generation of the HDF4/HDF-EOS2 missing data in the dmrpp file. A test is added to verify the option.
+
+2024-06-27  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1443
+
+2024-06-27  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #949 from OPENDAP/hyrax-1228
+	Hyrax 1228
+
+2024-06-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1443, add the structure handling tests via the HDF5 handler.
+
+	Merge branch 'master' into hyrax-1443
+
+	HYRAX-1228, update the dmrpp.conf.in to include the description on how to disable the direct IO. Also clean up code a bit.
+
+2024-06-26  Nathan Potter  <ndp@opendap.org>
+
+	Added prolog to service chaining errors. (#948)
+
+2024-06-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1228, add tests and relevant files to the fileout netcdf module to ensure the disable direct IO feature works as expected.
+
+2024-06-25  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-79 2024-06-26T05:11:17+0000
+
+2024-06-25  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1228
+
+	HYRAX-1228, add a BES key for users to disable the direct IO feature.
+
+2024-06-25  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #947 from OPENDAP/hyrax-1297-dev
+	Hyrax 1297 dev
+
+2024-06-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1297-dev, clean up code a bit etc.
+
+2024-06-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1297, add a NASA GEDI test. This file contains a compound datatype and the compound datatype contains string elements.
+
+	HYRAX-1297-dev, clean up code and add tests that handle the structure that contains string elements.
+
+2024-06-24  Cloud User  <rocky@ip-172-31-57-143.us-west-2.compute.internal>
+
+	HYRAX-1297, fix a potential negative array index issue. This is only discovered by Linux8
+
+	HYRAX-1297, fix a potential negative array index issue. This is only discovered by Linux8
+
+2024-06-21  Nathan Potter  <ndp@opendap.org>
+
+	Make CMRContainer access configurable (#946)
+
+2024-06-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1297, adding checker functions to ensure the structure data is read in the DAP to FONc conversion step only when string is present. In this way, the old HDF4 test that includes sequence will not break.
+
+	HYRAX-1297, add the retrieve of structure reading
+
+2024-06-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1297, handle the dimensions; need to add the data
+
+2024-06-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1297-DEV, add developement code to investigate if the structure that contains strings can be handled.
+
+2024-06-18  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #944 from OPENDAP/hyrax-1434
+	HYRAX-1434, implement he subset of the miss…
+
+2024-06-17  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1434, update the NASA testsuite.
+
+2024-06-16  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1434, add trmm fileout constraint tests; also clean up the new added code.
+
+2024-06-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1434, optimize the way to retrieve the missing data in the subset routine. Also add more tests in the dmrpp and the fileout netcdf.
+
+2024-06-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1434, add the first version that handles the subset of the missing data
+
+2024-06-11  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed travis label for the rocky8 build
+	[skip ci]
+
+	Changed FileCache so errors in put() are easier to diagnose. (#938)
+	Changed FileCache so errors in put() are easier to diagnose.
+	I'm still not certain why I coded it to return false when put()
+	finds that the file already is in the cache. I think maybe it
+	should be returning true.
+
+	Rocky8 build (#943)
+	This addresses the EOL of CentOS Stream8 by using the Rocky8
+	linux distribution to build the BES RPMs
+
+2024-06-11  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #942 from OPENDAP/hyrax-1295
+	Hyrax 1295 -draft
+
+2024-06-11  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1295
+
+	HYRAX-1295, correct the function that prints xml data for the special structure.
+
+2024-06-11  James Gallagher  <jgallagher@opendap.org>
+
+	Improved print_compact_element and print_missing_data_element (#939)
+	Also added new print_missing_data_element() that takes
+	raw data and performs the base64 encoding itself.
+
+2024-06-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1295
+
+2024-06-10  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-74 2024-06-10T22:29:15+0000
+
+2024-06-10  James Gallagher  <jgallagher@opendap.org>
+
+	First try at a rocky8 RPM build. (#941)
+	Uses a hack to get the Centos stream 8 hyrax-deps to be used.
+
+2024-06-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1295, add all the build_dmrpp and dmrpp tests. Also tune the code according to sonar cloud. Clean up unused code.
+
+2024-06-07  James Gallagher  <jgallagher@opendap.org>
+
+	Change the .travis.yml to use the rocky8 docker image for the RPM build.
+
+	Added debug script for RPM build using Docker
+
+2024-06-07  myang6  <myang6@hdfgroup.org>
+
+	correct typo and remove unimplemented options from the python script that generates dmrpp from an HDF4 file.
+
+	HYRAX-1295, reduce duplicate code and add more tests.
+
+2024-06-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1295, add the support of scalar structure string read feature
+
+2024-06-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1295, add code to read structure string data by dmrpp.
+
+2024-06-04  myang6  <myang6@hdfgroup.org>
+
+	HYTAX-1295, make build_dmrpp generate special structure data in the dmrpp file. Also start adding code to read special structure data from the dmrpp file.
+
+2024-05-31  myang6  <myang6@hdfgroup.org>
+
+	Adding code to retrieve values in a structure variables that contains strings
+
+2024-05-30  Nathan Potter  <ndp@opendap.org>
+
+	Moved all 'unused' code to top level retired directory (#935)
+	* Moved all 'unused' code to top level retired directory
+	* Dropped all unused code files
+
+2024-05-30  James Gallagher  <jgallagher@opendap.org>
+
+	This fixes HYRAX-1426: the spurious PPTConnection error messages. (#937)
+	This fixes HYRAX-1426: the spurious PPTConnection error messages.
+	These messages happen because the olfs no longer sends an 'exit'
+	message to the BES. Instead the OLFS just closes the socket. The
+	PPTConnection code detects this as a read of zero bytes.
+
+2024-05-28  Nathan Potter  <ndp@opendap.org>
+
+	Credentials Manager Debugging (#920)
+	* CredsManagager debuggin
+
+	Dropping libbuilddmrpp_module.so from the bes.conf.in in testsuite (#934)
+
+	Fixed overflow error  (#932)
+	* Fixed overflow error.
+
+2024-05-24  James Gallagher  <jgallagher@opendap.org>
+
+	Added clion-build-env-config.sh whcih may solve some CLion woes
+	[skip ci]
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Cleanup and additions to .gitignore to limit noise
+	[skip ci]
+
+2024-05-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1295, add a complicate compound data type read test to the testsuite.
+
+2024-05-24  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #930 from OPENDAP/add_nasa_test
+	Add nasa test
+
+2024-05-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1295, correct a typo in the shell script and also add the test to the valgrind check.
+
+2024-05-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1295, add a test in the NASA testsuite that can successfully retrieve the data values of compound datatype that contains variable-length strings.
+
+2024-05-23  James Gallagher  <jgallagher@opendap.org>
+
+	Cmr lpdaac patch (#928)
+	Added a patch and two tests for LPDAAC's unusual use of the RelatedURL information
+	In CMR, LPDAAC stores an HTTPS/S3 pair of URLs to a file that is apparently
+	XML metadata from or for CMR (the file ends in '.cmr.xml'). This was tripping
+	up the NGAP API which returned that URL as the URL to the data granule. I
+	added to heuristic that looks for the data URL so that it won't return these XML
+	file URLs.
+	Also, I modified NgapApiTest to use the common unit test code and added
+	two tests for the function that encodes the heuristic lookup process. Each is
+	based on 'canned' JSON from CMR so the tests don't depend on CMR running,
+	et cetera.
+
+	Removed the 'fix' that actually broke the FileCache class (#927)
+	Added an explanation.
+	Fixed the FitRequestHandler.
+
+2024-05-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #929 from OPENDAP/hyrax-1415
+	HYRAX-1415, 1) Remove the DAP4_Checksum_CRC32 attribute value. 2) Add…
+
+2024-05-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1415, 1) Remove the DAP4_Checksum_CRC32 attribute value. 2) Add HDF-EOS2 lat/lon constraint tests.
+
+2024-05-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #925 from OPENDAP/hyrax-1358-new
+	Hyrax 1358 new
+
+2024-05-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1358-new, correct an error handling issue
+
+2024-05-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1358-new, add the handling of data subset for HDF-EOS2 lat/lon, also clean up code according to sonar cloud
+
+	Merge branch 'master' into hyrax-1358-new
+
+2024-05-22  Cloud User  <rocky@ip-172-31-57-143.us-west-2.compute.internal>
+
+	Again including some headers to make travis pass
+
+	HYRAX-1358-new, add cstring in another file to make travis happy
+
+	HYRAX-1358-new, add a cstring header to make travis happy
+
+	HYRAX-1358-new, use a different way to handle the structure reading in the HDF4 handler to make the tests get passed on Rocky Linux 8.
+
+2024-05-21  Cloud User  <rocky@ip-172-31-57-143.us-west-2.compute.internal>
+
+	Merge branch 'hyrax-1358' of https://github.com/opendap/bes into hyrax-1358
+
+	HYRAX-1358, change code a little to tackle the issue found at Rocky Linux 8
+
+2024-05-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed what I think is an error in FileCache. (#922)
+	The private method always zeroed the cache size information
+	in the cache info file (which doubles as a cache lock file).
+	I modified the code to look at the size of the cache info
+	file and if it's zero length, initialize it to zero. Otherwise,
+	do not set it to zero.
+
+	Added a macro to streamline BESStopWatch use. (#923)
+	Added a macro to streamline BESStopWatch use.
+
+2024-05-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1358, comment out two structure reading related tests
+
+	comment out some tests that cause failures on CentOS 8 and due to the DAP4_Checksum_CRC32 attribute value
+
+	HYRAX-1358, add the trmm level 7 hdf4_handler direct read dap4 data test to the testsuite.
+
+	Merge branch 'master' into hyrax-1358
+
+2024-05-17  Nathan Potter  <ndp@opendap.org>
+
+	Dap test asan (#921)
+	* Fixing ODR error in ResponseBuilderTest
+	* Drop test
+	* Delete dap/unit-tests/BFLC_Test.cc
+	* Dropping temporary test file.
+	* Disabled more CMR tests
+
+2024-05-16  Nathan Potter  <ndp@opendap.org>
+
+	Update Makefile.am
+	Shut off "unit-tests" because the target test collection, C179003030-ORNL_DAAC was deleted on 5/6/24 we need to migrate the tests to a different, more permanent, collection.
+
+2024-05-15  Weishen  <weishen@Weishens-MacBook-Air.local>
+
+	HYRAX-1358, add the data read feature of trmm level 3 version 7 data. Also add the tests.
+
+2024-05-14  Weishen  <weishen@Weishens-MacBook-Air.local>
+
+	HYRAX-1358, add fileout netcdf tests and the first round of code to handle trmm data.
+
+2024-05-09  The Robot Travis  <54914793+travis-ci-opendap@users.noreply.github.com>
+
+	Merge pull request #910 from OPENDAP/temp_file_pid
+	Temp file pid
+
+2024-05-01  Weishen  <weishen@Weishens-MacBook-Air.local>
+
+	HYRAX-1358, add code to support HDF-EOS2 latitude/longitude data retrieval by the HDF4 handler.
+
+2024-04-25  Weishen  <weishen@Weishens-MacBook-Air.local>
+
+	HYRAX-1358, update test scripts.
+
+	HYRAX-1358, check in the SDS expression constraint data reading test for the HDF4 handler.
+
+	HYRAX-1358, add an HDF4 handler direct DMR simple SDS test.
+
+2024-04-25  Muqun Yang  <myang6@hdfgroup.org>
+
+	Uncomment the baseline generation macro.
+
+	HYRAX-1358, forgot adding the subset routine. Add it now.
+
+2024-04-25  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1358, add SDS read functions for direct DMR.
+
+2024-04-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1358, minor update
+
+	HYRAX-1358, add the support of reading vdata (including structure and individual fields)
+
+2024-04-23  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1358, add the code to support the access of vdata vdalues for the DAP4 data response
+
+2024-04-22  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #917 from OPENDAP/hyrax-1404
+	HYRAX-1404, add HDF-EOS2 swath and point data dmr and dmrpp tests to …
+
+2024-04-22  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1404, add HDF-EOS2 swath and point data dmr and dmrpp tests to the hdf4 handler,dmrpp and fileout netcdf.
+
+	HYRAX-1327, fix the memory leaks in dds and das responses when handling HDF-EOS2 point data
+
+2024-04-22  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #916 from OPENDAP/hyrax-1363
+	HYRAX-1363, for the dmrpp module, add big-endian scalar HDF5 compound…
+
+2024-04-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1363, for the dmrpp module, add big-endian scalar HDF5 compound datatype tests for both build_dmrpp and dmrpp access.
+
+2024-04-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #915 from OPENDAP/hyrax-1402
+	Hyrax 1402
+
+2024-04-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1402, add a dmrpp test that generates from the CF option of the HDF5 handler that has the group hierarchy.
+
+2024-04-19  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #914 from OPENDAP/hyrax-1400
+	Hyrax 1400
+
+2024-04-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1402, add missing dmrpp tests to the build_dmrpp and dmrpp testsuites. The tests that contains the group hierarchy were missing.
+
+2024-04-19  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1402, find another memory leak case due to the access of fixed-size string via the dmrpp module. Comment out the test.
+
+2024-04-18  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1400, comment out the NASA SMAP level 3 dmrpp test that causes the memory leaking
+
+	HYRAX-1400, comment out the NASA SMAP level 3 dmrpp test that causes the memory leaking
+
+2024-04-17  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1400, remove another code smell.
+
+	Update the fileout netCDF trmm netcdf output header file
+
+	HYRAX-1400, update TRMM level 3 dmrpp tests.
+
+2024-04-17  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1400, add _FillValue for Trmm's HQprecipitation variable
+
+2024-04-16  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1400, add TRMM lat/lon info
+
+	HYRAX-1399, add the trmm lat/lon info.
+
+	 Add TRMM lat/lon info
+
+2024-04-15  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #913 from OPENDAP/hyrax-1373
+	HYRAX-1373, add the eos2 lat/lon tests for NASA files in dmrpp and fi…
+
+2024-04-15  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1373, add the eos2 lat/lon tests for NASA files in dmrpp and fileout netcdf.
+
+2024-04-11  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #912 from OPENDAP/hyrax-1369
+	Hyrax 1369
+
+2024-04-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1369, remove another code smell
+
+2024-04-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1367, fix a memory leaking and remove unnecessary code
+
+	HYRAX-1369, comment out one build_dmrpp_h4 test due to the variation of encoding on different platforms.
+
+2024-04-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1369, add the dmrpp data for the eos2 lat/lon tests.
+
+	HYRAX-1369, add dmrpp, build_dmrpp_h4 and fileout netCDF tests for handling eos lat/lon fields.
+
+2024-04-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1369, remove some code smells and debugging info.
+
+	HYRAX-1369, add the support to read compressed missing data from dmrpp
+
+2024-04-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1369, add HDF-EOS2 lat/lon data to the dmrpp file
+
+2024-04-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1369, add HDF-EOS2 projection code
+
+2024-04-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1367, add the predefined attribute to identify the HDF-EOS2 lat/lon grids.
+
+2024-04-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1367, reduce one code smell
+
+	HYRAX-1367, update baseline files for NASA HDF-EOS2 grid files. The lat/lon are included.
+
+	HYRAX-1367, add the code to include HDF-EOS2 Grid lat/lon and the corresponding attributes in the dmr file.
+
+2024-04-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1367, add code to handle HDF-EOS2 grid lat/lon
+
+	HYRAX-1367, update an HDF5 handler test so that the CF attribute is added for groups. This helps check if tools such as Panoply can display such data properly.
+
+	HYRAX-1367, change a routine so it can check if the file is an HDF-EOS2 file.
+
+2024-04-02  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into temp_file_pid
+
+2024-04-02  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1367, add HDF-EOS2 grid testing files.
+
+2024-04-02  ndp-opendap  <ndp@opendap.org>
+
+	Adding pid to temp file name
+
+2024-04-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1361, update the get_dmrpp_h4 python script to make the lower python version work since rocky linux 8 uses the lower version
+
+2024-04-01  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #909 from OPENDAP/hyrax-1361
+	Hyrax 1361
+
+2024-04-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1361, clean up the get_dmrpp_h4 script
+
+	HYRAX-1361, revert the default behavior of the HDF4 handler since it breaks the regression tests used by hyrax docker. the get_dmrpp_h4 is also updated.
+
+2024-03-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1361, update rpm spec. for get_dmrpp_h4
+
+	HYRAX-1361, improve the error message.
+
+	Correct a typo.
+
+	Merge branch 'hyrax-1361' of https://github.com/opendap/bes into hyrax-1361
+
+	HYRAX-1361, add a python script to generate an HDF4 dmrpp file without first generating the dmr file.
+
+2024-03-28  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #907 from OPENDAP/hyrax-1361
+	HYRAX-1361, install build_dmrpp_h4 and make sure that the direct DMR …
+
+2024-03-28  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1361, also need to update bes.spec.all_static.in to include build_dmrpp_h4.
+
+	HYRAX-1361, since build_dmrpp_h4 is installed. Need to update the bes.spec.in to include this program.
+
+	HYRAX-1361, need to use HDF4 handler's CF DMR for the tests.
+
+2024-03-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1361, install build_dmrpp_h4 and make sure that the direct DMR is generated by default.
+
+2024-03-22  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #906 from OPENDAP/hyrax-1336
+	Hyrax 1336
+
+2024-03-22  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1336, add two more NASA tests.
+
+	HYRAX-1336, add tests in dmrpp and fileout netcdf for the case when the dimension size is 0.
+
+2024-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Service chain errors (#900)
+	* C++ lifecycle and methods for HttpError
+	* Draft utilization of HttpError
+	* Added http::Response and HttpError
+	* Refactored super_easy_perform() so that it and it's workers use HttpError (no response headers, no response body)
+	* Adding HttpError to the debug functions
+	* Dropped deprecated centos7 reference in .travis.yml
+	* Renamed BESError::add_my_error_info_to() to BESError::add_my_error_details_to()
+	* Added context appropriate Service Chaining info to HttpError messages.
+
+2024-03-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1336, add the NASA TRMM test for build_dmrpp_h4.
+
+	HYRAX-1336, update NASA TRMM file test.
+
+2024-03-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1336, remove the zero dimension size SDS objects and add tests.
+
+2024-03-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #904 from OPENDAP/hyrax-1356
+	Hyrax 1356
+
+2024-03-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1356, add the corresponding tests for handling packed vdata that uses linked blocks.
+
+2024-03-20  Nathan Potter  <ndp@opendap.org>
+
+	Fixing issues identified by asan (#903)
+	* Fixing issues identified by asan
+	* Refined checksum recovery
+	* Fixed index bounds issues
+	* Normailzed the way vectors are decl;ared and initialized in build_dmrpp. This eleminated asan errors
+
+2024-03-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1356, now the direct DMR is set by default, we add a test to make sure the CFDMR is still working. Also update the configuration file for the testsuite.
+
+2024-03-20  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #902 from OPENDAP/hyrax-1365
+	Hyrax 1365
+
+2024-03-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1365, reduce a code smell and update valgrind memory check shell scripts for the constraint tests.
+
+2024-03-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1365, address some suggestions from the previous pull request
+
+2024-03-20  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #901 from OPENDAP/hyrax-1303
+	Hyrax 1303
+
+2024-03-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1365, add expression constraint tests for the linked-blocks case.
+
+	HYRAX-1365, add the expression constraint support for the linked block case.
+
+2024-03-18  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1303, add fileout netCDF NASA file tests and shell scripts to check memory leaks for NASA file tests.
+
+2024-03-17  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1303
+
+	HYRAX-1303, add a line to avoid potential memory leaks in the error handling
+
+	HYRAX-1304, fix the issue of structure reading in the linked blocks. Also fix an issue that provides a wrong value for the netCDF4_enhanced flag
+
+2024-03-15  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-70 2024-03-16T00:08:50+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-63 2024-03-15T19:52:10+0000
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-61 2024-03-15T19:26:36+0000
+
+2024-03-15  ndp-opendap  <ndp@opendap.org>
+
+	Ignoreing test products in dmrpp_module
+
+2024-03-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1303, adopt suggestions from clang-tidy.
+
+2024-03-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1303, 1) Make the direct dmr the default setting of the hdf4 handler. 2) Improve the error handling of build_dmrpp for the HDF4 file.
+
+2024-03-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1303, correct a macro.
+
+	HYRAX-1307, add error handling code and reduce some code smells.
+
+	Merge branch 'master' into hyrax-1303
+
+	HYRAX-1303, add vdata support tests for fileout netcdf and build_dmrpp_h4.
+
+2024-03-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1303, support the access of HDF4 vdata objects.
+
+2024-03-11  rwmjones  <rjones@redhat.com>
+
+	Fix missing libxml2 headers (#887)
+	Required by changes in libxml2 >= 2.12
+
+	Fix missing includes (#886)
+	* http: Fix missing include <cstring>
+	* modules/hdf4_handler: Add missing include <cmath>
+	---------
+
+2024-03-08  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-52 2024-03-08T19:00:43+0000
+
+2024-03-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1303, add code to support vdata with linked blocks.
+
+2024-03-08  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-50 2024-03-08T16:39:10+0000
+
+2024-03-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1303, the first check-in to generate dmrpp files for HDF4 vdata.
+
+2024-03-06  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the last vestige of the unique_ptr singleton in TheBESKeys. (#897)
+	Removed the last vestage of the unique_ptr singleton in TheBESKeys.
+
+2024-03-06  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #898 from OPENDAP/hyrax-1302
+	Hyrax 1302 -draft
+
+2024-03-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1302, reduce code smells.
+
+	HYRAX-1302, fix the cmr baseline to make travis happy
+
+2024-03-06  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add the AIRS dmrpp file to the testsuite.
+
+	HYRAX-1302, delete accidentally added testing file, add an HDF4 AIRS dmrpp testing file.
+
+2024-03-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add a NASA test for the fileout netCDF module on accessing a dmrpp file.
+
+	Merge branch 'master' into hyrax-1302
+
+2024-03-05  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add a SDS test to the fileout netcdf for the dmrpp module to access the data with linked blocks.
+
+2024-03-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add code to support the decompression of the HDF4 data via linked blocks. Tested.
+
+2024-03-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add the support to access the HDF4 data that uses linked blocks. Handle the case without using the compression.
+
+2024-03-04  Kodi Neumiller  <kneumiller@opendap.org>
+
+	Merge pull request #896 from OPENDAP/h4_mapping_test
+	testsuite_h4 is now included in 'make check'
+
+2024-03-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	remove unused testing directory
+
+2024-03-01  James Gallagher  <jgallagher@opendap.org>
+
+	fixes for 883 - missing include <cstring> needed by GCC 14 (#889)
+
+	Refactor to remove use of unique_ptr as singleton. (#894)
+	Refactor to remove use of unique_ptr as singleton.
+	Also includes more tests, but no change to functionality.
+
+2024-03-01  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	changed srcdir to builddir
+
+	Merge branch 'master' into h4_mapping_test
+
+	testsuite_h4 is now included in 'make check'
+
+2024-03-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add the code that generates dmrpp that contains linked blocks. A test is also added.
+
+2024-03-01  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #893 from OPENDAP/hyrax-1302
+	Hyrax 1302
+
+2024-02-29  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1302, 1)rename the build_dmrpp_h4 tessuite to a meaningful name. 2) add clean and dist for this testsuite. 3) add more tests to theis testsuite.
+
+2024-02-29  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add the constraint tests.
+
+2024-02-29  Kodi Neumiller  <kneumiller@opendap.org>
+
+	Merge pull request #891 from OPENDAP/h4_mapping_test
+	H4 mapping test
+
+2024-02-29  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #892 from OPENDAP/hyrax-1338
+	HYRAX-1338, 1) Add the support to handle the HDF4 SDS fill value code…
+
+2024-02-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1338, try to reduce code smells
+
+	HYRAX-1338, 1) Add the support to handle the HDF4 SDS fill value code. 2) Fix the bug that generates the wrong value when the datatype is big-endian 3) Add corresponding tests to the HDF4 handler, dmrpp and fileout netCDF.
+
+2024-02-28  James Gallagher  <jgallagher@opendap.org>
+
+	Removed HttpCache (#890)
+	Removed HttpCache
+
+2024-02-28  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #888 from OPENDAP/hyrax-1337
+	HYRAX-1337, add the support of IEEE big-endian floating-point data.
+
+2024-02-27  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	./testsuite_h4_tests now runs the build_dmrpp_h4 test
+
+2024-02-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1337, correct a typo
+
+	HYRAX-1337, Add the floating-point swap functions
+
+2024-02-27  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added a testsuite for h4 tests
+
+2024-02-26  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-44 2024-02-26T20:33:26+0000
+
+2024-02-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1337, reduce sonar cloud code smell, add dmrpp and fileout netcdf tests.
+
+	HYRAX-1337, add the support of IEEE-bigendian floating-point data.
+
+2024-02-23  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-39 2024-02-23T21:52:47+0000
+
+2024-02-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #882 from OPENDAP/hyrax-1302
+	Hyrax 1302
+
+2024-02-23  myang6  <myang6@hdfgroup.org>
+
+	minor code clean-up.
+
+2024-02-23  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add the hdf4 test directories to the dmrpp module. Otherwise, make distcheck will fail.
+
+2024-02-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1302, 1) Handle compression for the contiguous storage. 2) Fix the bug that generates wrong chunk position for the un-even chunk case(when the total chunk size is not equal to the array size) 3) combine the linked blocks offset/length if possible for the contiguous storage. 4) Add the HDF4 APIs to close SD interface to avoid the memory leaks and bad performance. 5) Add simple HDF4 dmrpp tests to fileout netcdf and dmrpp modules.
+
+2024-02-20  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-1302
+
+	HYRAX-1302, add more SDS testing cases.
+
+2024-02-14  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	One change to a comment in FONcBaseType.h
+	[skip ci]
+
+	Fonc asan patch (#881)
+	These changes patch the issue in HYRAX-1334
+	The problem is that over time the software has moved from the
+	original FONcTransform constructors, which initialized the FONc types'
+	DDS, DMR, ...,  fields so that those can now be be null. Because of this
+	change, the intern_data()  method was being called using references to
+	'null objects' which oddly didn't seem to hurt the way the code ran,
+	but was not good.
+	A better fix would be to refactor the underlying code and fix the logic.
+
+2024-02-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1302, add code and meaningful comments to handle SDS objects.
+
+2024-02-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #879 from OPENDAP/hyrax-1307
+	Hyrax 1307
+
+2024-02-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, remove the unnecessary directories before merging to the branch. If needing information in these directories, check the branch h4_mapper.
+
+	HYRAX-1307, clean up comments
+
+2024-02-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, add more error handling code
+
+	HYRAX-1307, clean up the error handling etc.
+
+2024-02-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, update NASA dmr testsuite baseline files etc.
+
+	HYRAX-1307, add the support of lone vdata and vdata attribute mappings.
+
+2024-02-07  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1307, fix memory leaks for vdaa mapping.
+
+	Merge branch 'master' into hyrax-1307
+
+2024-02-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, add the first round support of mapping vdata to DAP4. The case with the vdata field order that is greater than 1 is also supported.
+
+2024-02-06  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4: Triggering BES build for snapshot production. Build Version Matrix: libdap4-3.21.0-29 2024-02-06T18:25:57+0000
+
+2024-02-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, map 8-bit integer to DAP4's 8-bit integer. For DAP2, 8-bit integer is mapped to 32-bit integer.
+
+2024-02-05  James Gallagher  <jgallagher@opendap.org>
+
+	Changed 'struct tm <var>' so the variable is always initialized (#880)
+	Ensure 'struct tm' instances are initialized.
+
+2024-02-05  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'h4_mapper' into hyrax-1307
+
+	HYRAX-1307, Use full path for object's dimension names.
+
+	Merge branch 'master' into hyrax-1307
+
+	HYRAX-1307, remove comments
+
+	HYRAX-1307, clean up code a bit according to sonar cloud
+
+2024-02-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, add DMR tests for the NASA files. Also ensure the vgroup attributes generated with old APIs are mapped to DAP4 while the internal HDF-EOS2 attributes are excluded.
+
+2024-02-02  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1307, comment out a few Point file tests because it causes memory leaks. Will submit a jira ticket to investigate this later.
+
+	HYRAX-1307, use set instead of unordered-set to output lone SDS objects because the output order may be different on different platforms.
+
+2024-02-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, update the testing files and the testsuite.
+
+2024-02-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, check in the first round of HDF4 to DMR code.
+
+2024-01-31  James Gallagher  <jgallagher@opendap.org>
+
+	I removed a particularly ugly use of unary_function. (#878)
+	I removed a particularly ugly use of unary_function.
+	The unary_function template class is deprecated and
+	its use produces lots of warnings. Time for it to go.
+	This was in DmrppArray.cc - there are other places
+	where the class is still used.
+
+2024-01-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, add more code to handle special characters
+
+2024-01-31  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1307, fix memory leaks and other warnings detected by valgrind
+
+2024-01-31  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, this doesn't cause segmentation fault on my Mac, will check in and rebuild
+
+2024-01-29  James Gallagher  <jgallagher@opendap.org>
+
+	This is needed for the source build (#876)
+	Add testsuite_s3 in the http convenience library to EXTRA_DIST
+	so that it is included in the source tar ball.
+
+2024-01-29  myang6  <myang6@hdfgroup.org>
+
+	add code to handle lone sds
+
+2024-01-26  Nathan Potter  <ndp@opendap.org>
+
+	Fixing variable representation (#875)
+	* Fixing variable representation
+
+2024-01-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, add dimension handling for SDS
+
+2024-01-26  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #872 from OPENDAP/hyrax-1280
+	Hyrax 1280
+
+2024-01-25  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-1307, add more code for dimension
+
+2024-01-25  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-1280, fix a memory leak detected by valgrind, reduce a few code smells etc
 
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## BES Version 3.21.0
