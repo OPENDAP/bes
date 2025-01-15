@@ -544,16 +544,16 @@ m4_define([AT_BUILD_DMRPP_H4_TEST], [dnl
     AT_KEYWORDS([build_dmrpp_h4])
 
     input=$abs_srcdir/$1
-    output=$abs_srcdir/$1.dmr
+    input2=$abs_srcdir/$1.dmr
     baseline=$abs_srcdir/$1.dmr.baseline
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output], [], [stdout])
+            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2], [], [stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output], [], [stdout])
+            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2], [], [stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -567,16 +567,39 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA], [dnl
     AT_KEYWORDS([build_dmrpp_h4])
 
     input=$abs_srcdir/$1
-    output=$abs_srcdir/$1.dmr
+    input2=$abs_srcdir/$1.dmr
     baseline=$abs_srcdir/$1.dmr.nmd.baseline
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output -D], [], [stdout])
+            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -D], [], [stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $output -D], [], [stdout])
+            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -D], [], [stdout])
+            AT_CHECK([diff -b -B $baseline stdout])
+        ])
+
+    AT_CLEANUP
+])
+
+dnl build a dmrpp file that users can add the location(URL) in the dmrpp file.
+m4_define([AT_BUILD_DMRPP_H4_TEST_U], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([build_dmrpp_h4])
+
+    input=$abs_srcdir/$1
+    input2=$abs_srcdir/$1.dmr
+    baseline=$abs_srcdir/$1.dmr.u.baseline
+    input3=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -u $input3], [], [stdout])
+            AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+            AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -u $input3], [], [stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 

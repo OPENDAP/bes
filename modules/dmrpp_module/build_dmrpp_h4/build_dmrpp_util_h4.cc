@@ -26,8 +26,10 @@
 #include <memory>
 #include <iterator>
 #include <unordered_set>
+#include <iomanip>      // std::put_time()
+#include <ctime>      // std::gmtime_r()
 
-#include "h4config.h"
+#include "config.h"
 #include "hdf.h"  // HDF4 header file
 #include "mfhdf.h"  // Include the HDF4 header file
 #include "HdfEosDef.h"
@@ -42,6 +44,7 @@
 #include <BESInternalFatalError.h>
 
 #include <TheBESKeys.h>
+#include <BESContextManager.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
@@ -51,9 +54,6 @@
 #include "D4ParserSax2.h"
 
 #define COMP_INFO 512 /*!< Max buffer size for compression information.  */
-#if 0
-#define FAIL_ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; exit(1); } while(false)
-#endif
 
 #define ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; } while(false)
 
@@ -81,10 +81,7 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
 #define prolog std::string("build_dmrpp_h4::").append(__func__).append("() - ")
 
-#if 0
-// will be used later maybe? jhrg 12/7/23
 constexpr auto INVOCATION_CONTEXT = "invocation";
-#endif
 
 // This function is adapted from H4mapper implemented by the HDF group. 
 // h4mapper can be found from https://docs.hdfgroup.org/archive/support/projects/h4map/h4map_writer.html
@@ -1452,7 +1449,6 @@ void qc_input_file(const string &file_fqn)
 }
 
 
-#if 0
 /**
  * @brief Recreate the command invocation given argv and argc.
  *
@@ -1468,6 +1464,29 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
             ss << " ";
         ss << argv[i];
     }
+    return ss.str();
+}
+
+/**
+ * @brief Returns an ISO-8601 date time string for the time at which this function is called.
+ * Tip-o-the-hat to Morris Day and The Time...
+ * @return An ISO-8601 date time string
+ */
+std::string what_time_is_it(){
+    // Get current time as a time_point
+    auto now = std::chrono::system_clock::now();
+
+    // Convert to system time (time_t)
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to tm structure (GMT time)
+    struct tm tbuf{};
+    const std::tm* gmt_time = gmtime_r(&time_t_now, &tbuf);
+
+    // Format the time using a stringstream
+    std::stringstream ss;
+    ss << std::put_time(gmt_time, "%Y-%m-%dT%H:%M:%SZ");
+
     return ss.str();
 }
 
@@ -1487,6 +1506,9 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
     // Build the version attributes for the DMR++
     auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
 
+    auto creation_date = new D4Attribute("created", StringToD4AttributeType("string")); 
+    creation_date->add_value(what_time_is_it()); 
+    version->attributes()->add_attribute_nocopy(creation_date); 
     auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
     build_dmrpp_version->add_value(CVER);
     version->attributes()->add_attribute_nocopy(build_dmrpp_version);
@@ -1575,7 +1597,6 @@ void inject_version_and_configuration(DMRpp *dmrpp)
     // Do the work now...
     inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
 }
-#endif
 
 /**
  * @brief Builds a DMR++ from an existing DMR file in conjunction with source granule file.
@@ -1603,14 +1624,9 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
 
     add_chunk_information(h4_file_fqn, &dmrpp,disable_missing_data);
 
-#if 0
     if (add_production_metadata) {
-        // I updated this function call to reflect the changes I made to the build_dmrpp_util.cc
-        // I see that it is not currently in service but it's clear that something like this
-        // will be needed to establish history/provenance of the dmr++ file. - ndp 07/26/24
-        inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+        inject_version_and_configuration(argc,argv,bes_conf_file_used_to_create_dmr,&dmrpp);
     }
-#endif
 
     XMLWriter writer;
     dmrpp.print_dmrpp(writer, dmrpp_href_value);

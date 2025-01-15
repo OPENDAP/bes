@@ -26,4 +26,6 @@ AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp/PointFile.hdf])
 #Build dmrpp without generating the missing data inside the dmrpp file.
 AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA([hdf4_build_dmrpp/no_missing_data/sinusoid.hdf])
 AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA([hdf4_build_dmrpp/no_missing_data/grid_2_2d_ps.hdf])
+#Test -u option, the data location can be added by using -u option.
+AT_BUILD_DMRPP_H4_TEST_U([hdf4_build_dmrpp/add_data_location/SDS_simple_comp.hdf],[https://fake-url/SDS_simple_comp.hdf])
 
