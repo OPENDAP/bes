@@ -1504,7 +1504,9 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
-    auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+    //auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+    auto version_unique = make_unique<D4Attribute>("build_dmrpp_metadata", StringToD4AttributeType("container"));
+    auto version = version_unique.get();
 
     auto creation_date = new D4Attribute("created", StringToD4AttributeType("string")); 
     creation_date->add_value(what_time_is_it()); 
@@ -1537,7 +1539,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
         version->attributes()->add_attribute_nocopy(invoke);
     }
     // Inject version and configuration attributes into DMR here.
-    dmrpp->root()->attributes()->add_attribute_nocopy(version);
+    dmrpp->root()->attributes()->add_attribute_nocopy(version_unique.release());
 }
 
 
