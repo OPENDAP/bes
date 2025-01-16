@@ -3954,7 +3954,7 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
         for (int i = 0; i <sds_rank; i++)
             ar->append_dim(dimsizes[i],dimnames[i]);
        dds.add_var_nocopy(ar_unique.release());
-
+       delete bt;
     }
 
 
