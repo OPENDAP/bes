@@ -304,6 +304,9 @@ bool read_das_special_eos2_core(DAS &das, const HDFSP::File *spf, const string &
 void read_das_sds(DAS & das, const string & filename,int32 sdfd, bool ecs_metadata,HDFSP::File**h4fileptr);
 void read_dds_sds(DDS &dds, const string & filename,int32 sdfd, HDFSP::File*h4file,bool dds_set_cache);
 
+void read_das_simple_cf(DAS &das,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type);
+void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type);
+
 void change_das_mod08_scale_offset(DAS & das, const HDFSP::File *spf);
 
 // Functions to handle SDS fields for the CF option.
@@ -1173,6 +1176,11 @@ void read_dds_use_eos2lib(DDS & dds, const string & filename,int32 sdfd,int32 fi
 {
 
     BESDEBUG("h4","Coming to read_dds_use_eos2lib" <<endl);
+    if((basename(filename).size() >=7) && ((basename(filename)).compare(0,7,"MCD43GF")==0)) {
+        short cf_simple_type = 1;
+        read_dds_simple_cf(dds, filename,  sdfd,  fileid,cf_simple_type);
+        return;
+    }
 
     int ret_value = read_dds_hdfeos2(dds,filename,sdfd,gridfd,swathfd,h4file,eosfile);
 
@@ -1895,6 +1903,11 @@ void read_das_use_eos2lib(DAS & das, const string & filename,
 
     BESDEBUG("h4","Coming to read_das_use_eos2lib" << endl);
 
+    if((basename(filename).size() >=7) && ((basename(filename)).compare(0,7,"MCD43GF")==0)) {
+        short cf_simple_type = 1;
+        read_das_simple_cf(das,filename,  sdfd, fileid, cf_simple_type);
+        return;
+    }
     int ret_value = read_das_hdfeos2(das,filename,sdfd,fileid, gridfd, swathfd,ecs_metadata,h4filepptr,eosfilepptr);
 
     BESDEBUG("h4","ret_value of read_das_hdfeos2 is "<<ret_value <<endl);
@@ -3710,6 +3723,240 @@ void read_dds_sds(DDS &dds, const string & filename,int32 sdfd, HDFSP::File*h4fi
     dds.set_dataset_name(basename(filename));
     read_dds_special_1d_grid(dds,h4file,filename,sdfd,dds_setcache);
     return;
+
+}
+
+void read_das_simple_cf(DAS &das,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type) {
+
+    int32 n_sds      = 0;       
+    int32 n_sd_attrs = 0;
+
+    // Obtain number of SDS objects and number of SD(file) attributes
+    if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        close_vgroup_fileids(fileid,sdfd,-1);
+        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+    }
+    
+    AttrTable *at = das.add_table("HDF_GLOBAL", new AttrTable);
+
+    for (int attr_index = 0; attr_index < n_sd_attrs;attr_index++) {
+
+        char attr_name[H4_MAX_NC_NAME];
+        int32 attr_type     = -1;
+        int32 attr_count    = -1;
+ 
+        if (SDattrinfo(sdfd,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDattrinfo failed ");
+        }
+
+        vector<char> attr_value;
+        attr_value.resize(attr_count * DFKNTsize(attr_type));
+        if (SDreadattr (sdfd, attr_index, attr_value.data()) == -1)  {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+        }
+            
+        string das_attrname (attr_name);
+        das_attrname = HDFCFUtil::get_CF_string(das_attrname);
+        if (attr_type==DFNT_UCHAR || attr_type == DFNT_CHAR){
+            string tempstring(attr_value.begin(),attr_value.end());
+            auto tempfinalstr= string(tempstring.c_str());
+            at->append_attr(HDFCFUtil::get_CF_string(das_attrname), "String" , tempfinalstr);
+        }
+        else {
+
+            for (int loc=0; loc < attr_count ; loc++) {
+                string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*) (attr_value.data()));
+                at->append_attr(das_attrname, HDFCFUtil::print_type(attr_type), print_rep);
+            }
+
+        }
+
+    }
+
+    for (int i = 0; i <n_sds; i++) {
+
+        uint16 name_len = 0;
+        vector<char> sds_name;
+
+        int32 sds_id  = SDselect(sdfd,i);
+        if (sds_id == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+        }
+
+        if (SDgetnamelen(sds_id, &name_len) == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+        }
+    
+        sds_name.resize(name_len+1);
+    
+        int32 n_sds_attrs = 0;
+    
+        // Obtain object name, rank, size, field type and number of SDS attributes
+        if (FAIL == SDgetinfo (sds_id, sds_name.data(), nullptr, nullptr, nullptr, &n_sds_attrs)) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        }                        
+        
+        string sds_name_str(sds_name.begin(),sds_name.end()-1);
+    
+        // Handle special characters in the sds_name.
+        sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
+
+        AttrTable *at_sds = das.get_table(sds_name_str);
+        if (!at_sds)
+            at_sds = das.add_table(sds_name_str, new AttrTable);
+    
+        char attr_name[H4_MAX_NC_NAME];
+        for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {
+    
+            int32 sds_attr_type = 0;
+            int32 attr_value_count = 0;
+            if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count))
+                    throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+    
+            vector<char> attr_value;
+            attr_value.resize(attr_value_count * DFKNTsize(sds_attr_type));
+            if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) 
+                throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+                
+            string das_attrname (attr_name);
+            das_attrname = HDFCFUtil::get_CF_string(das_attrname);
+            if (sds_attr_type==DFNT_UCHAR || sds_attr_type == DFNT_CHAR){
+                string tempstring(attr_value.begin(),attr_value.end());
+                auto tempfinalstr= string(tempstring.c_str());
+                at_sds->append_attr(HDFCFUtil::get_CF_string(das_attrname), "String" , tempfinalstr);
+            }
+            else {
+    
+                for (int loc=0; loc < attr_value_count ; loc++) {
+                    string print_rep = HDFCFUtil::print_attr(sds_attr_type, loc, (void*) (attr_value.data()));
+                    at_sds->append_attr(das_attrname, HDFCFUtil::print_type(sds_attr_type), print_rep);
+                }
+            }
+        }
+    }
+}
+
+
+void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type) {
+
+    int32 n_sds      = 0;       
+    int32 n_sd_attrs = 0;
+
+    // Obtain number of SDS objects and number of SD(file) attributes
+    if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        close_vgroup_fileids(fileid,sdfd,-1);
+        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+    }
+ 
+    for (int i = 0; i <n_sds; i++) {
+
+        uint16 name_len = 0;
+        vector<char> sds_name;
+
+        int32 sds_id  = SDselect(sdfd,i);
+        if (sds_id == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+        }
+
+        int32 obj_ref = SDidtoref(sds_id);
+        if (obj_ref == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDidtoref failed ");
+        }
+ 
+        if (SDgetnamelen(sds_id, &name_len) == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+        }
+    
+        sds_name.resize(name_len+1);
+    
+        int32  sds_rank = 0;
+        int32  sds_type = 0;
+ 
+        // Obtain object name, rank, size, field type and number of SDS attributes
+        if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, nullptr, &sds_type,nullptr)) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        }                        
+        
+        string sds_name_str(sds_name.begin(),sds_name.end()-1);
+    
+        // Handle special characters in the sds_name.
+        sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
+
+        vector<string> dimnames;
+        vector<int32> dimsizes;
+        for (int dimindex = 0; dimindex <sds_rank; dimindex++) {
+
+            int dimid = SDgetdimid (sds_id, dimindex);
+            if (dimid == FAIL) {
+                SDendaccess (sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
+            }
+            char dim_name[H4_MAX_NC_NAME];
+            int32 dim_size = 0;
+            int32 dim_type = 0;
+    
+            // Number of dimension attributes(This is almost never used)
+            int32  num_dim_attrs = 0;
+    
+            intn status = SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
+                                &num_dim_attrs);
+    
+            if (status == FAIL) {
+                SDendaccess (sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
+            }
+    
+            if (dim_size == 0) { 
+                // This is the unlimited dimension case. Currently we don't support this.
+                //continue;
+                SDendaccess (sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__, __LINE__, "Currently not support the unlimited dimension for simple CF handling.");
+            }
+            string dim_name_str (dim_name);
+
+            // Make dimension names to follow the CF rule.
+            dim_name_str = HDFCFUtil::get_CF_string(dim_name_str);
+            dimnames.push_back(dim_name_str);
+            dimsizes.push_back(dim_size);
+        }
+
+        BaseType *bt = gen_dap_var(sds_type,sds_name_str, filename);
+        auto ar_unique = make_unique<HDFSPArray_RealField>(
+                                                      sds_rank,
+                                                      filename,
+                                                      sdfd,
+                                                      obj_ref,
+                                                      sds_type,
+                                                      OTHERHDF,
+                                                      sds_name_str,
+                                                      dimsizes,
+                                                      sds_name_str,
+                                                      bt);
+
+        auto ar = ar_unique.get();
+        for (int i = 0; i <sds_rank; i++)
+            ar->append_dim(dimsizes[i],dimnames[i]);
+       dds.add_var_nocopy(ar_unique.release());
+
+    }
+
 
 }
 // Default option 
