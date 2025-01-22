@@ -1504,39 +1504,45 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
-    //auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
     auto version_unique = make_unique<D4Attribute>("build_dmrpp_metadata", StringToD4AttributeType("container"));
     auto version = version_unique.get();
 
-    auto creation_date = new D4Attribute("created", StringToD4AttributeType("string")); 
+    auto creation_date_unique = make_unique<D4Attribute>("created", StringToD4AttributeType("string")); 
+    auto creation_date = creation_date_unique.get();
     creation_date->add_value(what_time_is_it()); 
-    version->attributes()->add_attribute_nocopy(creation_date); 
-    auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
-    build_dmrpp_version->add_value(CVER);
-    version->attributes()->add_attribute_nocopy(build_dmrpp_version);
+    version->attributes()->add_attribute_nocopy(creation_date_unique.release()); 
 
-    auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
+    auto build_dmrpp_version_unique = make_unique<D4Attribute>("build_dmrpp", StringToD4AttributeType("string"));
+    auto build_dmrpp_version = build_dmrpp_version_unique.get();
+    build_dmrpp_version->add_value(CVER);
+    version->attributes()->add_attribute_nocopy(build_dmrpp_version_unique.release());
+
+    auto bes_version_unique = make_unique<D4Attribute>("bes", StringToD4AttributeType("string"));
+    auto bes_version = bes_version_unique.get();
     bes_version->add_value(CVER);
-    version->attributes()->add_attribute_nocopy(bes_version);
+    version->attributes()->add_attribute_nocopy(bes_version_unique.release());
 
     stringstream ldv;
     ldv << libdap_name() << "-" << libdap_version();
-    auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
+    auto libdap4_version_unique =  make_unique<D4Attribute>("libdap", StringToD4AttributeType("string"));
+    auto libdap4_version = libdap4_version_unique.get();
     libdap4_version->add_value(ldv.str());
-    version->attributes()->add_attribute_nocopy(libdap4_version);
+    version->attributes()->add_attribute_nocopy(libdap4_version_unique.release());
 
     if(!bes_conf_doc.empty()) {
         // Add the BES configuration used to create the base DMR
-        auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
+        auto config_unique = make_unique<D4Attribute>("configuration", StringToD4AttributeType("string"));
+        auto config = config_unique.get();
         config->add_value(bes_conf_doc);
-        version->attributes()->add_attribute_nocopy(config);
+        version->attributes()->add_attribute_nocopy(config_unique.release());
     }
 
     if(!invocation.empty()) {
         // How was build_dmrpp invoked?
-        auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+        auto invoke_unique = make_unique<D4Attribute>("invocation", StringToD4AttributeType("string"));
+        auto invoke = invoke_unique.get();
         invoke->add_value(invocation);
-        version->attributes()->add_attribute_nocopy(invoke);
+        version->attributes()->add_attribute_nocopy(invoke_unique.release());
     }
     // Inject version and configuration attributes into DMR here.
     dmrpp->root()->attributes()->add_attribute_nocopy(version_unique.release());
