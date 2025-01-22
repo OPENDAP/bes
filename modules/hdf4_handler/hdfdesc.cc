@@ -9,6 +9,7 @@
 // Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 //
 // Copyright (c) 2005 OPeNDAP, Inc.
+// Author: Kent Yang <myang6@hdfgroup.org> (CF option and direct dmr modules)
 // Author: James Gallagher <jgallagher@opendap.org>
 //
 // This is free software; you can redistribute it and/or modify it under the
@@ -42,7 +43,6 @@
 
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
-//
 //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -306,6 +306,7 @@ void read_dds_sds(DDS &dds, const string & filename,int32 sdfd, HDFSP::File*h4fi
 
 void read_das_simple_cf(DAS &das,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type);
 void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type);
+void obtain_cf_simple_lat_lon(int32 sdfd,string &lat_name, string &lon_name, int &lat_size, int &lon_size);
 
 void change_das_mod08_scale_offset(DAS & das, const HDFSP::File *spf);
 
@@ -3757,7 +3758,7 @@ void read_das_simple_cf(DAS &das,const string & filename, int32 sdfd, int32 file
             throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
         }
             
-        string das_attrname (attr_name);
+        string das_attrname(attr_name);
         das_attrname = HDFCFUtil::get_CF_string(das_attrname);
         if (attr_type==DFNT_UCHAR || attr_type == DFNT_CHAR){
             string tempstring(attr_value.begin(),attr_value.end());
@@ -3817,13 +3818,19 @@ void read_das_simple_cf(DAS &das,const string & filename, int32 sdfd, int32 file
     
             int32 sds_attr_type = 0;
             int32 attr_value_count = 0;
-            if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count))
-                    throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+            if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count)) {
+                SDendaccess(sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+            }
     
             vector<char> attr_value;
             attr_value.resize(attr_value_count * DFKNTsize(sds_attr_type));
-            if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) 
+            if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) { 
+                SDendaccess(sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
                 throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+            }
                 
             string das_attrname (attr_name);
             das_attrname = HDFCFUtil::get_CF_string(das_attrname);
@@ -3840,11 +3847,101 @@ void read_das_simple_cf(DAS &das,const string & filename, int32 sdfd, int32 file
                 }
             }
         }
+        SDendaccess(sds_id);
     }
 }
 
+void obtain_cf_simple_lat_lon(int32 sdfd,int32 fileid,int32 n_sds, string &lat_name, string &lon_name, int &lat_size, int &lon_size) {
+
+    bool find_lat = false;
+    bool find_lon = false;
+
+    for (int i = 0; i <n_sds; i++) {
+
+        uint16 name_len = 0;
+        vector<char> sds_name;
+
+        int32 sds_id  = SDselect(sdfd,i);
+        if (sds_id == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+        }
+
+        if (SDgetnamelen(sds_id, &name_len) == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+        }
+    
+        sds_name.resize(name_len+1);
+    
+        int32  sds_rank = 0;
+        int32 dim_sizes[H4_MAX_VAR_DIMS];
+        int32 num_attrs = 0;
+ 
+        // Obtain object name, rank, size, field type and number of SDS attributes
+        if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, dim_sizes, nullptr, &num_attrs)) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        }                        
+ 
+        // This simple CF grid only contains 1-D lat/lon.
+        if (sds_rank == 1) {
+
+            char attr_name[H4_MAX_NC_NAME];
+
+            for (int attrindex = 0; attrindex < num_attrs; attrindex++) {
+        
+                int32 sds_attr_type = 0;
+                int32 attr_value_count = 0;
+                if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count)) {
+                    SDendaccess(sds_id);
+                    close_vgroup_fileids(fileid,sdfd,-1);
+                    throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+                }
+
+                string attrname_str(attr_name);
+                if(attrname_str == "units" && sds_attr_type == DFNT_CHAR) {
+                    vector<char> attr_value;
+                    attr_value.resize(attr_value_count * DFKNTsize(sds_attr_type));
+                    if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) { 
+                        SDendaccess(sds_id);
+                        close_vgroup_fileids(fileid,sdfd,-1);
+                        throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+                    }
+                    string tempstring(attr_value.begin(),attr_value.end());
+                    auto tempfinalstr= string(tempstring.c_str());   
+                    if (tempfinalstr == "degrees_north") {
+                        find_lat = true;
+                        string sds_name_str(sds_name.begin(),sds_name.end()-1);
+                        lat_name = HDFCFUtil::get_CF_string(sds_name_str);
+                        lat_size = dim_sizes[0];   
+                    }   
+                    else if (tempfinalstr == "degrees_east") {
+                        find_lon = true;
+                        string sds_name_str(sds_name.begin(),sds_name.end()-1);
+                        lon_name = HDFCFUtil::get_CF_string(sds_name_str);
+                        lon_size = dim_sizes[0];   
+                    }
+                } 
+                if (find_lat && find_lon) 
+                    break;
+            }
+        }
+        if (find_lat && find_lon) {
+            SDendaccess(sds_id);
+            break;
+        }
+        else 
+            SDendaccess(sds_id);
+    }
+
+}
 
 void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type) {
+
+    dds.set_dataset_name(basename(filename));
 
     int32 n_sds      = 0;       
     int32 n_sd_attrs = 0;
@@ -3922,9 +4019,8 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
                 throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
             }
     
-            if (dim_size == 0) { 
+            if (dim_size == 0) {
                 // This is the unlimited dimension case. Currently we don't support this.
-                //continue;
                 SDendaccess (sds_id);
                 close_vgroup_fileids(fileid,sdfd,-1);
                 throw InternalErr(__FILE__, __LINE__, "Currently not support the unlimited dimension for simple CF handling.");
@@ -3951,13 +4047,78 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
                                                       bt);
 
         auto ar = ar_unique.get();
-        for (int i = 0; i <sds_rank; i++)
-            ar->append_dim(dimsizes[i],dimnames[i]);
-       dds.add_var_nocopy(ar_unique.release());
-       delete bt;
+        for (int j = 0; j <sds_rank; j++)
+            ar->append_dim(dimsizes[j],dimnames[j]);
+        dds.add_var_nocopy(ar_unique.release());
+        delete bt;
+        SDendaccess(sds_id);
     }
 
+    // Make the dimension names to follow the COARDS
+    if (cf_simple_type == 1) {
 
+        // Since DAP2 DDS is separated from DAS, which contains the attributes. So we need to use the HDF4 API to obtain
+        // the CF attributes degrees_east and degrees_north, then to identify the CF coordinates.
+        string lat_name;
+        string lon_name;
+        string lat_dim_name;
+        string lon_dim_name;
+        int lat_size = 0;
+        int lon_size = 0;
+        
+        obtain_cf_simple_lat_lon(sdfd,fileid,n_sds,lat_name,lon_name,lat_size,lon_size);
+
+        if (!lat_name.empty() && !lon_name.empty()) {
+
+            bool find_lat_dim_name = false;
+            bool find_lon_dim_name = false;
+      
+            for (const auto &var: dds.variables()) {
+
+                if (var->type() == dods_array_c) {
+                    auto ar = dynamic_cast<Array*>(var); 
+                    if (ar->dimensions() == 1) {
+                        string cf_var_name = HDFCFUtil::get_CF_string(ar->name());
+                        if (cf_var_name == lat_name) {
+                            lat_dim_name = ar->dimension_name(ar->dim_begin());
+                            ar->rename_dim(lat_dim_name, lat_name);
+                            find_lat_dim_name = true;
+                        }
+                        else if(cf_var_name == lon_name) {
+                            lon_dim_name = ar->dimension_name(ar->dim_begin());
+                            ar->rename_dim(lon_dim_name, lon_name);
+                            find_lon_dim_name = true;
+                        }
+                    }
+                }
+                if (find_lat_dim_name && find_lon_dim_name)
+                    break;
+            }
+
+            if (!find_lat_dim_name || !find_lon_dim_name) {
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__, __LINE__, "Cannot find lat or lon dimension names for simple CF handling.");
+            }
+ 
+            // Since a dimension name of a data variable may just contains the dimension name of lat/lon,
+            // we will replace such dimension name with the lon/lat's name. 
+            for (const auto &var: dds.variables()) {
+
+                if (var->type() == dods_array_c) {
+
+                    auto ar = dynamic_cast<Array*>(var); 
+
+                    for (Array::Dim_iter p = ar->dim_begin(); p != ar->dim_end(); ++p) {
+                        if (ar->dimension_size(p) == lat_size && ar->dimension_name(p).find(lat_dim_name)==0) 
+                            ar->rename_dim(ar->dimension_name(p),lat_name);
+                        else if (ar->dimension_size(p) == lon_size && ar->dimension_name(p).find(lon_dim_name)==0) {
+                            ar->rename_dim(ar->dimension_name(p),lon_name);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 // Default option 
 void read_dds(DDS & dds, const string & filename)
