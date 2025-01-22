@@ -1,0 +1,5 @@
+Dataset {
+    Int16 Albedo_Map_0_659[Latitude = 21600][Longitude = 43200];
+    Float32 Latitude[Latitude = 21600];
+    Float32 Longitude[Longitude = 43200];
+} MCD43GF_bsa_Band1_365_2021_V061.hdf;

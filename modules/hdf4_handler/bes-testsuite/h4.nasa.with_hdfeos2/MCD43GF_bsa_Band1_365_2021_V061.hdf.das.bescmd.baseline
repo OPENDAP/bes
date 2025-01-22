@@ -1,0 +1,72 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+        String StructMetadata_0 "GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName=\"MCD43GF_30arc_second\"
+		XDim=43200
+		YDim=21600
+		UpperLeftPointMtrs=(-180000000.000000,90000000.000000)
+		LowerRightMtrs=(180000000.000000,-90000000.000000)
+		Projection=GCTP_GEO
+		GROUP=Dimension
+			OBJECT=Dimension_1
+				DimensionName=\"NumLatPoints\"
+				Size=21600
+			END_OBJECT=Dimension_1
+			OBJECT=Dimension_2
+				DimensionName=\"NumLongPoints\"
+				Size=43200
+			END_OBJECT=Dimension_2
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=\"Albedo_Map_0.659\"
+				DataType=DFNT_INT16
+				DimList=(\"NumLatPoints\",\"NumLongPoints\")
+			END_OBJECT=DataField_1
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+";
+        String InternalVersion "Unversioned directory";
+        String Creation_Date "05/02/2023";
+        String This_file_albedo_type "Complete Black Sky Albedo Maps.";
+        String Resolution "30arc second (1/120 degree) Global, Rectangular coordinates.";
+        String Original_File_Name "/project/umb_crystal_schaaf/mcd43gf_1/production/temp/output/2021/MCD43GF_bsa_Band1_365_2021_V061.hdf";
+    }
+    Albedo_Map_0_659 {
+        Int16 _FillValue 32767;
+        Int16 valid_range 1000, 0;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String long_name "Gapfilled BRDF/Albedo data from V061 MCD43D";
+        String unit "none";
+        String Parameter_Type "MODIS/MAS input";
+    }
+    Latitude {
+        Float32 valid_range -90.00000000, 90.00000000;
+        Float32 _FillValue -999.9000244;
+        String long_name "Geodetic Latitude";
+        String units "degrees_north";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS/MAS input";
+    }
+    Longitude {
+        Float32 valid_range -180.0000000, 180.0000000;
+        Float32 _FillValue -999.9000244;
+        String long_name "Geodetic Longitude";
+        String units "degrees_east";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        String Parameter_Type "MODIS/MAS input";
+    }
+}
