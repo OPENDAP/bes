@@ -95,3 +95,4 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.dmrpp
 
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf

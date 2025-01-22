@@ -304,7 +304,7 @@ bool read_das_special_eos2_core(DAS &das, const HDFSP::File *spf, const string &
 void read_das_sds(DAS & das, const string & filename,int32 sdfd, bool ecs_metadata,HDFSP::File**h4fileptr);
 void read_dds_sds(DDS &dds, const string & filename,int32 sdfd, HDFSP::File*h4file,bool dds_set_cache);
 
-void read_das_simple_cf(DAS &das,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type);
+void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid);
 void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type);
 void obtain_cf_simple_lat_lon(int32 sdfd,string &lat_name, string &lon_name, int &lat_size, int &lon_size);
 
@@ -1905,8 +1905,7 @@ void read_das_use_eos2lib(DAS & das, const string & filename,
     BESDEBUG("h4","Coming to read_das_use_eos2lib" << endl);
 
     if((basename(filename).size() >=7) && ((basename(filename)).compare(0,7,"MCD43GF")==0)) {
-        short cf_simple_type = 1;
-        read_das_simple_cf(das,filename,  sdfd, fileid, cf_simple_type);
+        read_das_simple_cf(das,  sdfd, fileid);
         return;
     }
     int ret_value = read_das_hdfeos2(das,filename,sdfd,fileid, gridfd, swathfd,ecs_metadata,h4filepptr,eosfilepptr);
@@ -3727,7 +3726,7 @@ void read_dds_sds(DDS &dds, const string & filename,int32 sdfd, HDFSP::File*h4fi
 
 }
 
-void read_das_simple_cf(DAS &das,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type) {
+void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
 
     int32 n_sds      = 0;       
     int32 n_sd_attrs = 0;
