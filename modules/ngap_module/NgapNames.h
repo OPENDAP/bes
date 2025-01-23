@@ -36,7 +36,7 @@ constexpr static auto const NGAP_NAME = "ngap";
 #define MODULE NGAP_NAME
 
 constexpr static auto const DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_DATA_ACCESS_URL";
-constexpr static auto const MISSING_DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL";
+constexpr static auto const MISSING_DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_SC_DATA_ACCESS_URL";
 constexpr static auto const NGAP_INJECT_DATA_URL_KEY = "NGAP.inject_data_urls";
 constexpr static auto const NGAP_CMR_HOSTNAME_KEY = "NGAP.cmr_host_url";
 constexpr static auto const NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY = "NGAP.cmr_search_endpoint_path";

@@ -85,6 +85,8 @@ def main():
                         help='Generate dmrpp from an HDF4 file.')
     parser.add_argument("-u", "--URL", nargs=1,
                         help='The URL that provides the HDF4/5 file path(including the file name at the end). ') 
+    parser.add_argument("-U", "--SCTURL", action='store_true',
+                        help='the location of the sidecar file will contain the template string OPeNDAP_DMRpp_SC_DATA_ACCESS_URL, which can be replaced at runtime. ') 
     parser.add_argument("-s", "--SURL", nargs=1,
                         help='The URL that provides the location of the side car file.')
     parser.add_argument("-S", "--ESURL", nargs=1,
@@ -324,6 +326,9 @@ def main():
             hdf_surl = get_obj_path(hdf_url)
             fsidecar_rel_path = hdf_surl +fsidecar
  
+    # Check if the sidecar file template URL is desired.
+    if (args.SCTURL is True):
+        fsidecar_rel_path = "OPeNDAP_DMRpp_SC_DATA_ACCESS_URL"
     # Now we come to the merge_dmrpp part.
     ret = subprocess.run(
         ["merge_dmrpp", fsidecar_dmrpp_full_path, file_dmrpp_full_path, fsidecar_rel_path, f1_full_path])
