@@ -41,7 +41,7 @@ namespace http {
 
 class HttpError : public BESError {
     CURLcode d_curl_code = CURLE_OK;
-    long d_http_status;
+    long d_http_status = 200; // TODO Keep this '200'? See the ctor below which fails to init this field. jhrg 1/24/25
     std::string d_origin_url;
     std::string d_redirect_url;
     std::vector<std::string> d_response_headers;

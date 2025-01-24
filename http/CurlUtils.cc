@@ -785,6 +785,8 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
         case 408: // Request Timeout
         {
             // These issues are not considered retryable problems, so we throw immediately.
+            // TODO Remove this redundant call to ERROR_LOG since the thrown exception is
+            //  logged as an error. jhrg 1/24/25
             ERROR_LOG(msg.str());
             throw http::HttpError(msg.str(),
                                   CURLE_OK,

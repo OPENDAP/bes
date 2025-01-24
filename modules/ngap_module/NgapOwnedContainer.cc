@@ -392,6 +392,8 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
  */
 void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const {
     BES_MODULE_TIMING(prolog + get_real_name());
+    // TODO Split this up so that we can tell if an exception is thrown from the CMR call
+    //  or the raw http_get() call. jhrg 1/24/25
     try {
         string data_url = build_data_url_to_daac_bucket(get_real_name());
         string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
@@ -406,6 +408,7 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
         INFO_LOG(prolog + "Found the DMRpp in the DAAC-bucket for: " + dmrpp_url_str);
     }
     catch (http::HttpError &http_error) {
+        // TODO This adds an extra period (.) - change to "This..." and/or make this name this method so we can track it in the error log jhrg 1/24/25
         http_error.set_message(http_error.get_message() + ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
         throw;
     }
