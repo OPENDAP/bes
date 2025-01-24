@@ -80,11 +80,10 @@ public:
             d_origin_url(origin_url),
             d_redirect_url(redirect_url) {};
 
-
     HttpError(std::string msg, std::string file, unsigned int line) :
             BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) {}
 
-    HttpError(const HttpError &src) noexcept = default;
+    HttpError(const HttpError &src) = default;
 
     ~HttpError() override = default;
 
