@@ -425,10 +425,11 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
     }
     catch (http::HttpError &http_error) {
         string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "
-                         "attempting to retrieve a CMR record.\n" + http_error.get_message();
+                         "attempting to retrieve a CMR record. " + http_error.get_message();
         http_error.set_message(err_msg);
         throw;
     }
+
     rapidjson::Document cmr_response;
     cmr_response.Parse(cmr_json_string.c_str());
     data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);

@@ -785,9 +785,9 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
         case 408: // Request Timeout
         {
             // These issues are not considered retryable problems, so we throw immediately.
-            // TODO Remove this redundant call to ERROR_LOG since the thrown exception is
+            // Remove this redundant call to ERROR_LOG since the thrown exception is
             //  logged as an error. jhrg 1/24/25
-            ERROR_LOG(msg.str());
+            // ERROR_LOG(msg.str());
             throw http::HttpError(msg.str(),
                                   CURLE_OK,
                                   http_code,
@@ -820,7 +820,7 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
             break;
 
         default:
-            ERROR_LOG(msg.str());
+            // ERROR_LOG(msg.str());
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 }

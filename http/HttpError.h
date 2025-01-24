@@ -41,7 +41,7 @@ namespace http {
 
 class HttpError : public BESError {
     CURLcode d_curl_code = CURLE_OK;
-    long d_http_status = 200; // TODO Keep this '200'? See the ctor below which fails to init this field. jhrg 1/24/25
+    long d_http_status = 200;
     std::string d_origin_url;
     std::string d_redirect_url;
     std::vector<std::string> d_response_headers;
@@ -84,7 +84,7 @@ public:
     HttpError(std::string msg, std::string file, unsigned int line) :
             BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) {}
 
-    HttpError(const HttpError &src) = default;
+    HttpError(const HttpError &src) noexcept = default;
 
     ~HttpError() override = default;
 

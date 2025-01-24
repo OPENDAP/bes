@@ -70,7 +70,6 @@ private:
     std::string _file;
     unsigned int _line{0};
 
-
 public:
     BESError() = default;
 
