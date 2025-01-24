@@ -291,23 +291,23 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
  *  1. A TYPE of Type 'GET DATA' with a URL that uses the https:// protocol where that URL does
  *  not end in 'xml'. The latter characteristic was added for records added by LPDAAC. jhrg 5/22/24
  *
- * @param restified_path The restified path used to form the CMR query (only used for error messages)
+ * @param rest_path The REST path used to form the CMR query (only used for error messages)
  * @param cmr_granules The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  The "GET DATA" URL for the granule.
  */
-std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path,
+std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &rest_path,
                                                                  rapidjson::Document &cmr_granule_response) {
     const rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
     if (hits < 1) {
-        throw BESNotFoundError(string("The specified path '") + restified_path
-                + "' does not identify a granule in CMR.", __FILE__, __LINE__);
+        throw BESNotFoundError(string("The specified path '") + rest_path
+                               + "' does not identify a granule in CMR.", __FILE__, __LINE__);
     }
 
     rapidjson::Value &items = cmr_granule_response["items"];
     if (!items.IsArray()) {
         throw BESInternalError(string("ERROR! The CMR response did not contain the data URL information: ")
-                               + restified_path, __FILE__, __LINE__);
+                               + rest_path, __FILE__, __LINE__);
     } else {
         // Search the items array for the first item that contains a RelatedUrls array
         if (BESISDEBUG(MODULE)) {
@@ -381,7 +381,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
         }
 
         if (data_access_url.empty()) {
-            throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
+            throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + rest_path,
                                    __FILE__, __LINE__);
         }
 
