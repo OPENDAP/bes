@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=usage
-M_VER=4.3.6
+M_VER=4.3.7
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)

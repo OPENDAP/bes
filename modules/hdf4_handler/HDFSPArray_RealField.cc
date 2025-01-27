@@ -297,7 +297,35 @@ HDFSPArray_RealField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            val2buf(buf.data());
+            if((basename(filename).size() >=7) && ((basename(filename)).compare(0,7,"MCD43GF")==0)) {
+                if (fieldname=="Latitude" && dtype == DFNT_FLOAT32) {
+
+                    char *temp_buf  = buf.data()+nelms*dtype_size-dtype_size;
+                    float last_val  = *((float*)(temp_buf));
+                    if (last_val <-90.0) { 
+                        last_val = -90.0;
+                        vector<char>last_val_buf(dtype_size);
+                        memcpy(last_val_buf.data(),(void*)&last_val,dtype_size);
+                        for (unsigned int i = 0; i<dtype_size;i++)
+                            buf[i+nelms*dtype_size-dtype_size] = last_val_buf[i];
+                    }
+                }
+                else if (fieldname=="Longitude" && dtype == DFNT_FLOAT32) {
+                    char *temp_buf  = buf.data()+nelms*dtype_size-dtype_size;
+                    float last_val  = *((float*)(temp_buf));
+                    if (last_val > 180.0) { 
+                        last_val = 180.0;
+                        vector<char>last_val_buf(dtype_size);
+                        memcpy(last_val_buf.data(),(void*)&last_val,dtype_size);
+                        for (unsigned int i = 0; i<dtype_size;i++)
+                            buf[i+nelms*dtype_size-dtype_size] = last_val_buf[i];
+                    }
+                }
+                val2buf(buf.data());
+            }
+            else 
+                val2buf(buf.data());
+
             set_read_p(true);
 
             // write data to cache if cache is set.

@@ -1,0 +1,88 @@
+netcdf test {
+dimensions:
+	Latitude = 5 ;
+	Longitude = 5 ;
+variables:
+	short Albedo_Map_0_659(Latitude, Longitude) ;
+		Albedo_Map_0_659:_FillValue = 32767s ;
+		Albedo_Map_0_659:valid_range = 1000s, 0s ;
+		Albedo_Map_0_659:scale_factor = 0.001 ;
+		Albedo_Map_0_659:add_offset = 0. ;
+		Albedo_Map_0_659:long_name = "Gapfilled BRDF/Albedo data from V061 MCD43D" ;
+		Albedo_Map_0_659:unit = "none" ;
+		Albedo_Map_0_659:Parameter_Type = "MODIS/MAS input" ;
+	float Latitude(Latitude) ;
+		Latitude:valid_range = -90.f, 90.f ;
+		Latitude:_FillValue = -999.9f ;
+		Latitude:long_name = "Geodetic Latitude" ;
+		Latitude:units = "degrees_north" ;
+		Latitude:scale_factor = 1. ;
+		Latitude:add_offset = 0. ;
+		Latitude:Parameter_Type = "MODIS/MAS input" ;
+	float Longitude(Longitude) ;
+		Longitude:valid_range = -180.f, 180.f ;
+		Longitude:_FillValue = -999.9f ;
+		Longitude:long_name = "Geodetic Longitude" ;
+		Longitude:units = "degrees_east" ;
+		Longitude:scale_factor = 1. ;
+		Longitude:add_offset = 0. ;
+		Longitude:Parameter_Type = "MODIS/MAS input" ;
+
+// global attributes:
+		:HDFEOSVersion = "HDFEOS_V2.18" ;
+		:StructMetadata_0 = "GROUP=SwathStructure\n",
+			"END_GROUP=SwathStructure\n",
+			"GROUP=GridStructure\n",
+			"\tGROUP=GRID_1\n",
+			"\t\tGridName=\"MCD43GF_30arc_second\"\n",
+			"\t\tXDim=43200\n",
+			"\t\tYDim=21600\n",
+			"\t\tUpperLeftPointMtrs=(-180000000.000000,90000000.000000)\n",
+			"\t\tLowerRightMtrs=(180000000.000000,-90000000.000000)\n",
+			"\t\tProjection=GCTP_GEO\n",
+			"\t\tGROUP=Dimension\n",
+			"\t\t\tOBJECT=Dimension_1\n",
+			"\t\t\t\tDimensionName=\"NumLatPoints\"\n",
+			"\t\t\t\tSize=21600\n",
+			"\t\t\tEND_OBJECT=Dimension_1\n",
+			"\t\t\tOBJECT=Dimension_2\n",
+			"\t\t\t\tDimensionName=\"NumLongPoints\"\n",
+			"\t\t\t\tSize=43200\n",
+			"\t\t\tEND_OBJECT=Dimension_2\n",
+			"\t\tEND_GROUP=Dimension\n",
+			"\t\tGROUP=DataField\n",
+			"\t\t\tOBJECT=DataField_1\n",
+			"\t\t\t\tDataFieldName=\"Albedo_Map_0.659\"\n",
+			"\t\t\t\tDataType=DFNT_INT16\n",
+			"\t\t\t\tDimList=(\"NumLatPoints\",\"NumLongPoints\")\n",
+			"\t\t\tEND_OBJECT=DataField_1\n",
+			"\t\tEND_GROUP=DataField\n",
+			"\t\tGROUP=MergedFields\n",
+			"\t\tEND_GROUP=MergedFields\n",
+			"\tEND_GROUP=GRID_1\n",
+			"END_GROUP=GridStructure\n",
+			"GROUP=PointStructure\n",
+			"END_GROUP=PointStructure\n",
+			"END\n",
+			"" ;
+		:InternalVersion = "Unversioned directory" ;
+		:Creation_Date = "05/02/2023" ;
+		:This_file_albedo_type = "Complete Black Sky Albedo Maps." ;
+		:Resolution = "30arc second (1/120 degree) Global, Rectangular coordinates." ;
+		:Original_File_Name = "/project/umb_crystal_schaaf/mcd43gf_1/production/temp/output/2021/MCD43GF_bsa_Band1_365_2021_V061.hdf" ;
+		:history = "removed date-timex MCD43GF_bsa_Band1_365_2021_V061.hdf\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"MCD43GF_bsa_Band1_365_2021_V061.hdf\"}]}]" ;
+data:
+
+ Albedo_Map_0_659 =
+  _, _, _, _, _,
+  _, _, _, _, _,
+  _, _, _, _, _,
+  _, _, _, _, _,
+  _, _, _, _, _ ;
+
+ Latitude = 89.99167, 85.825, 81.65833, 77.49167, 73.325 ;
+
+ Longitude = -179.9917, -175.825, -171.6583, -167.4917, -163.325 ;
+}

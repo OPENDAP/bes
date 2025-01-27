@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=ncml_moddule
-M_VER=1.5.7
+M_VER=1.5.8
 
 AM_CPPFLAGS = $(ICU_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)

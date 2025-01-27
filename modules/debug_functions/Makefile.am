@@ -6,7 +6,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=debug_functions
-M_VER=1.1.5
+M_VER=1.1.6
 
 AM_CPPFLAGS = $(GF_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 LIBADD = $(GF_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(BES_HTTP_LIB)

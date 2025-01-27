@@ -32,7 +32,7 @@ def check_required_programs():
     # Sanity check if the necessary programs exist
     # The following programs  must exist 
     has_required_programs = \
-        is_program_present('check_dmrpp') and is_program_present('get_dmrpp') \
+        is_program_present('check_dmrpp') and is_program_present('get_dmrpp_h5') \
         and is_program_present('merge_dmrpp') and is_program_present('build_dmrpp_h4') \
         and is_program_present('get_hdf_side_car')
 
@@ -53,16 +53,14 @@ def obtain_hdf_full_path(hdf_name):
     elif hdf_name[0] != '/':
         hdf_name = os.getcwd() + '/' + hdf_name
     if (os.path.isfile(hdf_name) != True):
-        print("The hdf4 file:", hdf_name, "doesn't exist.")
+        print("The hdf file:", hdf_name, "doesn't exist.")
         hdf_name = ''
     return hdf_name
 
 
 #  Error handling
-def print_error(err_str, enable_cf, use_cf_conf_name):
+def print_error(err_str):
     print(err_str)
-    if (enable_cf is True):
-        subprocess.run(["rm", "-rf", use_cf_conf_name])
     subprocess.run(["rm", "-rf", "bes.log"])
     subprocess.run(["rm", "-rf", "mds_ledger.txt"])
     print("Stop. ")
@@ -87,6 +85,8 @@ def main():
                         help='Generate dmrpp from an HDF4 file.')
     parser.add_argument("-u", "--URL", nargs=1,
                         help='The URL that provides the HDF4/5 file path(including the file name at the end). ') 
+    parser.add_argument("-U", "--SCTURL", action='store_true',
+                        help='the location of the sidecar file will contain the template string OPeNDAP_DMRpp_SC_DATA_ACCESS_URL, which can be replaced at runtime. ') 
     parser.add_argument("-s", "--SURL", nargs=1,
                         help='The URL that provides the location of the side car file.')
     parser.add_argument("-S", "--ESURL", nargs=1,
@@ -104,7 +104,7 @@ def main():
     
         The HDF4/5 file must be under the current or its children directories. If putting under a child directory, the file name can be something like foo/foo1.hdf.
     
-        Users can use the -c option to generate the output netCDF-4/HDF5 file with the EnableCF option.
+        Users can use the -c option to generate the output netCDF-4/HDF5 file with the EnableCF option. Currently we only support the EnableCF option for the HDF5 file.
     
         The dmrpp file name will be the original HDF file name +".dmrpp" such as foo.hdf.dmrpp.
         Without using the -S option, the side car file name will be the original HDF file name + "_mvs.h5" such as foo.hdf_mvs.h5.
@@ -187,7 +187,6 @@ def main():
     if (args.verbosity is True):
         print("hdf_abs_dir: ", hdf_abs_dir)
 
-    tmp_use_cf_conf_name = ""
     hdf_url=""
     if (args.URL is not None):
         hdf_url = ' '.join(args.URL)
@@ -199,42 +198,39 @@ def main():
             ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-D"],
                              stdout=subprocess.PIPE, universal_newlines=True)
         if ret.returncode != 0:
-            print("get_dmrpp_h4 fails to generate the dmrpp file for the HDF4 file. ")
-            print("The HDF4 file name is:  ", hdf_full_path)
-            print("Stop. ")
-            sys.exit(1)
-
-        if (hdf_rel_path != hdf_name):
-            file_dmrpp_abs_path = os.getcwd() + "/" + file_dmrpp
-            subprocess.run(["mv", "-f", file_dmrpp, hdf_rel_dir])
+            err_msg = "get_dmrpp_h4 fails to generate the dmrpp file for the HDF4 file. "
+            err_msg += "\n The HDF4 file name is:  " + hdf_full_path
+            print_error(err_msg)
     else:
-
         if (args.c is True):
-            # Create a temporary CF configuration file ("H5.EnableCF=true")
-            tmp_use_cf_conf_name = "tmp_use_cf_conf"
-            tmp_use_cf_conf_contents = "H5.EnableCF=true"
-            use_cf_conf_id = open(tmp_use_cf_conf_name, 'w')
-            use_cf_conf_id.write(tmp_use_cf_conf_contents)
-            use_cf_conf_id.close()
             if (args.URL is not None):
                 ret = subprocess.run(
-                    ["get_dmrpp", "-A", "-b.", "-s", tmp_use_cf_conf_name, "-u", hdf_url, "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
+                    ["get_dmrpp_h5", "-i", hdf_full_path, "-u", hdf_url, "-C"],
+                     stdout=subprocess.PIPE, universal_newlines=True)
             else: 
                 ret = subprocess.run(
-                    ["get_dmrpp", "-A", "-b.", "-s", tmp_use_cf_conf_name, "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
+                    ["get_dmrpp_h5", "-i", hdf_full_path, "-C"],
+                     stdout=subprocess.PIPE, universal_newlines=True)
         else:
             if (args.URL is not None):
-                ret = subprocess.run(["get_dmrpp", "-A", "-b.", "-u", hdf_url, "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
+                ret = subprocess.run(
+                    ["get_dmrpp_h5", "-i", hdf_full_path, "-u", hdf_url],
+                     stdout=subprocess.PIPE, universal_newlines=True)
             else: 
-                ret = subprocess.run(["get_dmrpp", "-A", "-b.", "-o", file_dmrpp_rel_path, "-X", hdf_rel_path])
+                ret = subprocess.run(
+                    ["get_dmrpp_h5", "-i", hdf_full_path],
+                     stdout=subprocess.PIPE, universal_newlines=True)
 
         if ret.returncode != 0:
-            err_msg = "get_dmrpp fails to generate the dmrpp file for the HDF5 file. "
+            err_msg = "get_dmrpp_h5 fails to generate the dmrpp file for the HDF5 file. "
             err_msg += "\n The HDF5 file name is:  " + hdf_full_path
-            if (args.verbosity is False):
-                subprocess.run(["rm", "-rf", file_dmrpp_rel_path])
-            print_error(err_msg, args.c, tmp_use_cf_conf_name)
+            print_error(err_msg)
 
+    if (hdf_rel_path != hdf_name):
+        file_dmrpp_abs_path = os.getcwd() + "/" + file_dmrpp
+        # Not sure why we do this. Comment out for the time being.
+        #subprocess.run(["mv", "-f", file_dmrpp, hdf_rel_dir])
+ 
     # Run check_dmrpp
     # f1 is the file that stores the variables that dmrpp cannot provide values.
     f1 = hdf_name + ".mvs"
@@ -248,11 +244,9 @@ def main():
         err_msg += "\n and the missing variable name file: " + f1_full_path
         if (args.verbosity is False):
             subprocess.run(["rm", "-rf", file_dmrpp_full_path])
-        print_error(err_msg, args.c, tmp_use_cf_conf_name)
+        print_error(err_msg)
 
     if (os.path.isfile(f1_full_path) == False):
-        if (args.c is True and args.HDF4 is False):
-            subprocess.run(["rm", "-rf", tmp_use_cf_conf_name])
         subprocess.run(["rm", "-rf", "bes.log"])
         subprocess.run(["rm", "-rf", "mds_ledger.txt"])
         sys.exit(0)
@@ -293,18 +287,18 @@ def main():
                 if (args.verbosity is False):
                     subprocess.run(["rm", "-rf", file_dmrpp_full_path])
                     subprocess.run(["rm", "-rf", f1_full_path])
-                print_error(err_msg, args.c, tmp_use_cf_conf_name)
+                print_error(err_msg)
     
             ret = subprocess.run(
-                ["get_dmrpp", "-A", "-b.", "-s", tmp_use_cf_conf_name, "-o", fsidecar_dmrpp_rel_path, "-X",
-                 fsidecar_rel_path])
+                ["get_dmrpp_h5", "-i", fsidecar_full_path, "-C"],
+                  stdout=subprocess.PIPE, universal_newlines=True)
             if ret.returncode != 0:
-                err_msg = "get_dmrpp fails for the HDF5 file: " + fsidecar_rel_path + " with the enableCF option."
+                err_msg = "get_dmrpp_h5 fails for the HDF5 file: " + fsidecar_rel_path + " with the enableCF option."
                 if (args.verbosity is False):
                     subprocess.run(["rm", "-rf", file_dmrpp_full_path])
                     subprocess.run(["rm", "-rf", f1_full_path])
                     subprocess.run(["rm", "-rf", fsidecar_rel_path])
-                print_error(err_msg, args.c, tmp_use_cf_conf_name)
+                print_error(err_msg)
         else:
             ret = subprocess.run(["get_hdf_side_car", "-i", hdf_full_path, f1_full_path, "-o", fsidecar_full_path])
             if ret.returncode != 0:
@@ -313,16 +307,17 @@ def main():
                 if (args.verbosity is False):
                     subprocess.run(["rm", "-rf", file_dmrpp_full_path])
                     subprocess.run(["rm", "-rf", f1_full_path])
-                print_error(err_msg, args.c, tmp_use_cf_conf_name)
-    
-            ret = subprocess.run(["get_dmrpp", "-A", "-b.", "-o", fsidecar_dmrpp_rel_path, "-X", fsidecar_rel_path])
+                print_error(err_msg)
+            ret = subprocess.run(
+                ["get_dmrpp_h5", "-i", fsidecar_full_path],
+                  stdout=subprocess.PIPE, universal_newlines=True)
             if ret.returncode != 0:
-                err_msg = "get_dmrpp fails for the HDF5 file: " + fsidecar_rel_path
+                err_msg = "get_dmrpp_h5 fails for the HDF5 file: " + fsidecar_rel_path
                 if (args.verbosity is False):
                     subprocess.run(["rm", "-rf", file_dmrpp_full_path])
                     subprocess.run(["rm", "-rf", f1_full_path])
                     subprocess.run(["rm", "-rf", fsidecar_rel_path])
-                print_error(err_msg, args.c, tmp_use_cf_conf_name)
+                print_error(err_msg)
 
         if (args.SURL is not None):
             surl_str = ' '.join(args.SURL)
@@ -331,6 +326,9 @@ def main():
             hdf_surl = get_obj_path(hdf_url)
             fsidecar_rel_path = hdf_surl +fsidecar
  
+    # Check if the sidecar file template URL is desired.
+    if (args.SCTURL is True):
+        fsidecar_rel_path = "OPeNDAP_DMRpp_SC_DATA_ACCESS_URL"
     # Now we come to the merge_dmrpp part.
     ret = subprocess.run(
         ["merge_dmrpp", fsidecar_dmrpp_full_path, file_dmrpp_full_path, fsidecar_rel_path, f1_full_path])
@@ -346,14 +344,11 @@ def main():
             if (args.ESURL is None):
                 subprocess.run(["rm", "-rf", fsidecar_rel_path])
                 subprocess.run(["rm", "-rf", fsidecar_dmrpp_rel_path])
-        print_error(err_msg, args.c, tmp_use_cf_conf_name)
+        print_error(err_msg)
 
     subprocess.run(["rm", "-rf", "bes.log"])
     mds_ledger_name = os.getcwd() + '/' + "mds_ledger.txt"
     subprocess.run(["rm", "-rf", mds_ledger_name])
-
-    if (args.c is True and args.HDF4 is False):
-        subprocess.run(["rm", "-rf", tmp_use_cf_conf_name])
 
     subprocess.run(["rm", "-rf", f1_full_path])
     if (args.ESURL is None):

@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=httpd_catalog_module
-M_VER=0.9.8
+M_VER=0.9.9
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
