@@ -28,6 +28,7 @@
 #ifndef FileCache_h_
 #define FileCache_h_ 1
 
+#include <utility>
 #include <vector>
 #include <algorithm>
 #include <map>
@@ -176,6 +177,29 @@ class FileCache {
     };
 
     // These private methods assume they are called on a locked instance of the cache.
+
+    /**
+     * Return the open file descriptor to the file name 'key' in the cache.
+     * The cache must be locked exclusively.
+     * @param key
+     * @return The open file descriptor
+     */
+    int create_key(const std::string &key) {
+        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
+        int fd;
+        if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
+            if (errno == EEXIST) {
+                INFO_LOG("Could not create the key/file; it already exists: " + key + " " + get_errno() );
+                return -1;
+            }
+            else {
+                ERROR("Error creating key/file: " + key + " " + get_errno());
+                return -1;
+            }
+        }
+
+        return fd;
+    }
 
     /// Scan the cache and return a value-result vector of all the files it
     /// holds except the cache_info file.
@@ -342,7 +366,6 @@ public:
         }
     };
 
-
     /**
      * A PutItem wraps a file descriptor just like an Item, but also ensures
      * that the cache_info file is updated to include the new item's size when
@@ -352,6 +375,7 @@ public:
      */
     class PutItem : public Item {
         FileCache &d_fc;
+
     public:
         PutItem() = delete;
         explicit PutItem(FileCache &fc) : d_fc(fc) {}
@@ -430,18 +454,9 @@ public:
             return false;
 
         // Create the new cache entry
-        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
-        int fd;
-        if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if (errno == EEXIST) {
-                INFO_LOG("Could not create the key/file; it already exists: " + key + " " + get_errno() );
-                return false;
-            }
-            else {
-                ERROR("Error creating key/file: " + key + " " + get_errno());
-                return false;
-            }
-        }
+        int fd = create_key(key);
+        if (fd == -1)
+            return false;
 
         // The Item instance will take care of closing the file.
         Item fdl(fd);
@@ -485,18 +500,9 @@ public:
             return false;
 
         // Create the new cache entry
-        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
-        int fd;
-        if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if (errno == EEXIST) {
-                INFO_LOG("Could not create the key/file; it already exists: " + key + " " + get_errno() );
-                return false;
-            }
-            else {
-                ERROR("Error creating key/file: " + key + " " + get_errno());
-                return false;
-            }
-        }
+        int fd = create_key(key);
+        if (fd == -1)
+            return false;
 
         // The Item instance will take care of closing the file.
         Item fdl(fd);
@@ -542,18 +548,9 @@ public:
             return false;
 
         // Create the new cache entry
-        std::string key_file_name = BESUtil::pathConcat(d_cache_dir, key);
-        int fd;
-        if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
-            if (errno == EEXIST) {
-                INFO("Could not create the key/file; it already exists (2): " + key + " " + get_errno());
-                return false;
-            }
-            else {
-                ERROR("Error creating key/file (2): " + key + " " + get_errno() );
-                return false;
-            }
-        }
+        int fd = create_key(key);
+        if (fd == -1)
+            return false;
 
         // The Item instance will take care of closing the file.
         item.set_fd(fd);
@@ -691,7 +688,7 @@ public:
         struct item_info {
             std::string d_name;
             off_t d_size;
-            item_info(const std::string &name, off_t size) :d_name(name), d_size(size) {}
+            item_info(std::string name, off_t size) :d_name(std::move(name)), d_size(size) {}
         };
 
         // sorted by access time, with the oldest time first
