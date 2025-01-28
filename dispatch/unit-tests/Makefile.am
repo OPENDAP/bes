@@ -38,7 +38,6 @@ ServerAdministratorTest kvp_utils_test \
 RequestTimerTest BESFileLockingCacheTest FileCacheTest
 
 # removed cacheT jhrg 1/11/23
-# FIXME keysT removed to see if it's the only blocker. jhrg 2/2/23
 
 # Debugging code is compiled out of the project when
 # BES_DEVELOPER is not set, and so running the debugT tests
@@ -69,7 +68,8 @@ endif
 
 # Limit the files copied to just these, eliminating the files created when tests are run.
 # jhrg 5/13/07
-CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz cache/testfile.txt.Z
+CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz cache/testfile.txt.Z \
+cache/testfile_plain.txt cache/testfile_plain_2.txt
 
 EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 	defT.ini empty.ini info_test.ini keys_test.ini \

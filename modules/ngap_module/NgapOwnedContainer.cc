@@ -228,7 +228,7 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
 
 bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const
 {
-
+#if 0
     FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
     if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
         // Do this in a child thread someday, but what about the return value. jhrg 11/14/23
@@ -243,8 +243,8 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
         return false;
     }
 
-#if 0
-    if (NgapRequestHandler::d_dmrpp_file_cache.put_data(get_real_name(), dmrpp_string)) {
+#else
+    if (NgapRequestHandler::d_dmrpp_file_cache.put_data(FileCache::hash_key(get_real_name()), dmrpp_string)) {
         CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
     }
     else {
