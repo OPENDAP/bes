@@ -100,6 +100,7 @@ private:
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
  
+    bool is_buffer_chunk = false;
 
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
@@ -149,6 +150,8 @@ private:
     void read_linked_blocks_constrained();
     void read_chunks_with_linked_blocks();
     void read_chunks_with_linked_blocks_constrained();
+
+    void read_buffer_chunks_unconstrained();
     
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
@@ -164,6 +167,8 @@ private:
     bool check_struct_handling();
 
     bool use_direct_io_opt();
+
+    bool use_buffer_chunk();
 
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 

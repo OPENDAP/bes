@@ -2663,13 +2663,18 @@ bool DmrppArray::read()
                 }
             }
             else {
+
+                bool buffer_chunk_case = array_to_read->use_buffer_chunk();
             
+//buffer_chunk_case = false;
                 if (!array_to_read->is_projected()) {
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
                     // KENT: Only here we need to consider the direct buffer IO.
                     // The best way is to hold another function but with direct buffer
                     if (this->get_dio_flag())
                         array_to_read->read_chunks_dio_unconstrained();
+                    else if(buffer_chunk_case) 
+                        array_to_read->read_buffer_chunks_unconstrained();
                     else
                         array_to_read->read_chunks_unconstrained();
                 } else {
@@ -3381,5 +3386,91 @@ bool DmrppArray::check_struct_handling() {
     return ret_value;
 }
 
+void DmrppArray::read_buffer_chunks_unconstrained() {
+    
 
+    BESDEBUG(dmrpp_3, prolog << "coming to read_buffer_chunks_unconstrained()  "  << endl);
+    // Here we can adjust the buffer size as needed, for now we just use the whole array size.
+    unsigned long long buffer_size = bytes_per_element * this->get_size(false);
+    
+    if (get_chunks_size() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    // Follow the general superchunk way.
+    unsigned long long sc_count=0;
+    stringstream sc_id;
+    sc_id << name() << "-" << sc_count++;
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    auto current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this) ;
+    current_super_chunk->set_non_contiguous_chunk_flag(true);
+    super_chunks.push(current_super_chunk);
+
+    auto array_chunks = get_immutable_chunks();
+
+    // Make sure buffer_size at least can hold one chunk.
+    if (buffer_size < (array_chunks[0])->get_size())
+        buffer_size = (array_chunks[0])->get_size();
+//cerr<<"chunk size: "<<array_chunks.size() <<endl;
+//cerr<<"buffer_size: "<<buffer_size <<endl;
+
+    unsigned long long buffer_end_position = buffer_size + (array_chunks[0])->get_offset();
+
+//cerr<<"buffer_end_position: "<<buffer_end_position <<endl;
+
+    // Make the SuperChunks using all the chunks.
+    for(const auto& chunk: get_immutable_chunks()) {
+//cerr<<"chunk loop: offset "<<chunk->get_offset() <<endl;
+        bool added = current_super_chunk->add_chunk_non_contiguous(chunk,buffer_end_position);
+        if (!added) {
+//cerr<<"new super chunk: offset "<<chunk->get_offset() <<endl;
+            sc_id.str(std::string());
+            sc_id << name() << "-" << sc_count++;
+            current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
+            current_super_chunk->set_non_contiguous_chunk_flag(true);
+            super_chunks.push(current_super_chunk);
+            buffer_end_position = buffer_size + chunk->get_offset();
+//cerr<<"buffer_end_position again: "<<buffer_end_position <<endl;
+            if (!current_super_chunk->add_chunk_non_contiguous(chunk,buffer_end_position)) {
+                stringstream msg ;
+                msg << prolog << "Failed to add Chunk to new SuperChunk for non-contiguous chunks. chunk: " << chunk->to_string();
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        }
+    }
+
+    reserve_value_capacity_ll(get_size());
+
+    while(!super_chunks.empty()) {
+        auto super_chunk = super_chunks.front();
+        super_chunks.pop();
+        super_chunk->read_unconstrained();
+    }
+
+    set_read_p(true);
+}
+
+bool DmrppArray::use_buffer_chunk() {
+
+    bool ret_value = false;
+    auto chunks = this->get_chunks();
+
+    bool has_fill_value_chunk = false;
+    for (const auto &chunk:chunks) {
+        if (chunk->get_uses_fill_value()) {
+            has_fill_value_chunk = true;
+            break;
+        }
+    }
+    // For our use case, we only need to check if the first chunk and the second chunk is adjacent.
+    // To make the process clear and simple, we don't handle structure data.
+    if (has_fill_value_chunk == false && chunks.size() >1 && this->var()->type() !=dods_structure_c){
+        unsigned long long first_chunk_offset = (chunks[0])->get_offset();
+        unsigned long long first_chunk_size = (chunks[0])->get_size();
+        unsigned long long second_chunk_offset = (chunks[1])->get_offset();
+        if ((first_chunk_offset + first_chunk_size) != second_chunk_offset)
+            ret_value = true;
+    }
+
+    return ret_value;
+}
 } // namespace dmrpp

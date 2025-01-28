@@ -56,8 +56,11 @@ class SuperChunk {
 
     bool d_uses_fill_value{false};
 
+    bool non_contiguous_chunk{false};
+
     bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk);
     void map_chunks_to_buffer();
+    void map_non_contiguous_chunks_to_buffer();
     void read_aggregate_bytes();
     void read_fill_value_chunk();
 
@@ -97,6 +100,10 @@ public:
     virtual void process_child_chunks_unconstrained();
 
     virtual bool empty() const { return d_chunks.empty(); }
+
+    void set_non_contiguous_chunk_flag(bool flag) { non_contiguous_chunk = flag; }
+    bool get_non_contiguous_chunk_flag() { return non_contiguous_chunk;}
+    virtual bool add_chunk_non_contiguous(std::shared_ptr<Chunk> candidate_chunk, unsigned long long &end_pos);
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;
