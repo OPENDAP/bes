@@ -82,10 +82,10 @@ string
 read_file(const string &fn)
 {
     ifstream is;
-    is.open (fn.c_str(), ios::binary );
+    is.open (fn.c_str(), ios::binary);
 
     if (!is)
-        return {"Could not read file: " + fn};
+        CPPUNIT_FAIL("Could not read file: " + fn);
 
     // get length of file:
     is.seekg (0, ios::end);
@@ -984,7 +984,7 @@ public:
      * to see that the cache_info file is correctly protected against simultaneous writes .
      */
     void put_a_string_helper(FileCache &fc, const string &data, const string &key) {
-        bool status = fc.put_data(key, data);    // creates and locks an empty file.
+        bool status = fc.put_data(key, data);    // creates-locks and stores data.
         CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
 
         // cached file is really there
