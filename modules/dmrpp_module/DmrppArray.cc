@@ -3454,6 +3454,7 @@ bool DmrppArray::use_buffer_chunk() {
     bool ret_value = false;
     auto chunks = this->get_chunks();
 
+#if 0
     bool has_fill_value_chunk = false;
     for (const auto &chunk:chunks) {
         if (chunk->get_uses_fill_value()) {
@@ -3461,9 +3462,11 @@ bool DmrppArray::use_buffer_chunk() {
             break;
         }
     }
+#endif
     // For our use case, we only need to check if the first chunk and the second chunk is adjacent.
     // To make the process clear and simple, we don't handle structure data.
-    if (has_fill_value_chunk == false && chunks.size() >1 && this->var()->type() !=dods_structure_c){
+    //if (has_fill_value_chunk == false && chunks.size() >1 && this->var()->type() !=dods_structure_c){
+    if (chunks.size() >1 && this->var()->type() !=dods_structure_c){
         unsigned long long first_chunk_offset = (chunks[0])->get_offset();
         unsigned long long first_chunk_size = (chunks[0])->get_size();
         unsigned long long second_chunk_offset = (chunks[1])->get_offset();
