@@ -1,0 +1,2 @@
+This is a test of a compression method.
+This is additional text not part of the original template.txt.
