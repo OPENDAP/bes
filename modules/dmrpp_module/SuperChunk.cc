@@ -570,11 +570,10 @@ bool SuperChunk::add_chunk_non_contiguous(const std::shared_ptr<Chunk> candidate
     // For now, if a chunk uses fill values, it gets its own SuperChunk. jhrg 5/7/22
     else if(!candidate_chunk->get_uses_fill_value()){
         if (candidate_chunk->get_offset() >=d_offset) {
-        //if ((candidate_chunk->get_offset() + candidate_chunk->get_size())<buffer_end_position) { 
-        if ((candidate_chunk->get_offset() + candidate_chunk->get_size())<=buffer_end_position) { 
-            this->d_chunks.push_back(candidate_chunk);
-            chunk_was_added =  true;
-        }
+            if ((candidate_chunk->get_offset() + candidate_chunk->get_size())<=buffer_end_position) { 
+                this->d_chunks.push_back(candidate_chunk);
+                chunk_was_added =  true;
+            }
         }
     }
     
@@ -631,24 +630,23 @@ void SuperChunk::map_chunks_to_buffer()
 void SuperChunk::map_non_contiguous_chunks_to_buffer()
 {
     unsigned long long bindex = 0;
-    //for(const auto &chunk : d_chunks){
+
     for (unsigned i = 0; i <d_chunks.size(); i++){
         
         (d_chunks[i])->set_read_buffer(d_read_buffer + bindex, (d_chunks[i])->get_size(),0, false);
-//cerr<<"d_offset: "<<d_offset<<endl;
-//cerr<<"chunk->get_offset(): "<<chunk->get_offset()<<endl;
-        // Wrong: need to use the next offset 
+
+        // Need to use the next offset to figure out the starting position for this chunk buffer
         if (i <(d_chunks.size()-1)) {
-        long long temp_bindex = (d_chunks[i+1])->get_offset()-d_offset;
-        if (temp_bindex <0) 
-            throw BESInternalError("The non-contiguous chunk offset cannot be smaller than the SuperChunk offset. ", __FILE__, __LINE__);
-        bindex = (unsigned long long)temp_bindex;
-        if (bindex > d_size) {
-            stringstream msg;
-            msg << "ERROR The computed buffer index, " << bindex << " is larger than expected size of the SuperChunk. ";
-            msg << "d_size: " << d_size;
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
+            long long temp_bindex = (d_chunks[i+1])->get_offset()-d_offset;
+            if (temp_bindex <0) 
+                throw BESInternalError("The non-contiguous chunk offset cannot be smaller than the SuperChunk offset. ", __FILE__, __LINE__);
+            bindex = (unsigned long long)temp_bindex;
+            if (bindex > d_size) {
+                stringstream msg;
+                msg << "ERROR The computed buffer index, " << bindex << " is larger than expected size of the SuperChunk. ";
+                msg << "d_size: " << d_size;
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
         }
     }
 }

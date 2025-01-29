@@ -100,8 +100,6 @@ private:
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
  
-    bool is_buffer_chunk = false;
-
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
