@@ -549,15 +549,16 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
 
 bool SuperChunk::add_chunk_non_contiguous(const std::shared_ptr<Chunk> candidate_chunk, unsigned long long &buffer_end_position) {
 
-BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Coming to add_chunk_non_contiguous" << endl);
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Coming to add_chunk_non_contiguous" << endl);
     bool chunk_was_added = false;
     if(d_chunks.empty()){
         d_chunks.push_back(candidate_chunk);
         d_offset = candidate_chunk->get_offset();
-        //d_size = candidate_chunk->get_size();
         d_size = buffer_end_position-d_offset;
-//cerr<<"add_chunk_non d_size: "<<d_size<<endl;
-//cerr<<"add_chunk_non d_offset: "<<d_offset<<endl;
+
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_size: "<<d_size<< endl);
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_offset: "<<d_offset<< endl);
+
         // When get_uses_fill_value() is true, returns a shared_ptr<Chunk> initialized to nullptr. jhrg 5/7/22
         d_uses_fill_value = candidate_chunk->get_uses_fill_value();
         if (!d_uses_fill_value)

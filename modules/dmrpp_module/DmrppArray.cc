@@ -3410,12 +3410,25 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     // Make sure buffer_size at least can hold one chunk.
     if (buffer_size < (array_chunks[0])->get_size())
         buffer_size = (array_chunks[0])->get_size();
+    //unsigned long long max_buffer_end_position = buffer_size + (array_chunks[0])->get_offset();
+    unsigned long long max_buffer_end_position = 0;
+    
+
+    // For highly compressed chunks, we need to make sure the buffer_size is not too big to exceed the file size.
+    // We need to find the max_buffer_end_position based on the offset and length of all chunks.
+    for (const auto &chunk: array_chunks) {
+        unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
+        if(max_buffer_end_position < temp_max_buffer_end_position)
+            max_buffer_end_position = temp_max_buffer_end_position;
+    }
+    
 //cerr<<"chunk size: "<<array_chunks.size() <<endl;
 //cerr<<"buffer_size: "<<buffer_size <<endl;
 
-    unsigned long long buffer_end_position = buffer_size + (array_chunks[0])->get_offset();
+    unsigned long long buffer_end_position = min((buffer_size + (array_chunks[0])->get_offset()),max_buffer_end_position);
 
-//cerr<<"buffer_end_position: "<<buffer_end_position <<endl;
+    BESDEBUG(dmrpp_3, prolog << "variable name:  "  << this->name() <<endl);
+    BESDEBUG(dmrpp_3, prolog << "maximum buffer_end_position:  "  << max_buffer_end_position <<endl);
 
     // Make the SuperChunks using all the chunks.
     for(const auto& chunk: get_immutable_chunks()) {
@@ -3428,7 +3441,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
             current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
             current_super_chunk->set_non_contiguous_chunk_flag(true);
             super_chunks.push(current_super_chunk);
-            buffer_end_position = buffer_size + chunk->get_offset();
+            buffer_end_position = min((buffer_size + chunk->get_offset()),max_buffer_end_position);
 //cerr<<"buffer_end_position again: "<<buffer_end_position <<endl;
             if (!current_super_chunk->add_chunk_non_contiguous(chunk,buffer_end_position)) {
                 stringstream msg ;
