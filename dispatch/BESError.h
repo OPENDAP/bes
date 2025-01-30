@@ -191,7 +191,8 @@ public:
      */
     void dump(std::ostream &strm) const override;
 
-    virtual std::string error_name() { return "BESError"; }
+    virtual std::string error_name() const { return "BESError"; }
 
 };
-#endif // BESError_h_ 
+
+#endif // BESError_h_

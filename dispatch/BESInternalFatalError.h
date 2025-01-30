@@ -54,7 +54,7 @@ public:
         BESError::dump(strm);
         BESIndent::UnIndent();
     }
-    std::string error_name() override { return "BESInternalFatalError"; }
+    std::string error_name() const override { return "BESInternalFatalError"; }
 };
 
 #endif // BESInternalFatalError_h_

@@ -52,7 +52,7 @@ public:
         BESError::dump( strm ) ;
         BESIndent::UnIndent() ;
     }
-    std::string error_name() override { return "BESForbiddenError"; }
+    std::string error_name() const override { return "BESForbiddenError"; }
 };
 
 #endif // BESForbiddenError_h_

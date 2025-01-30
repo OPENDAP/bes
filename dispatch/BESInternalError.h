@@ -55,7 +55,7 @@ public:
 		BESIndent::UnIndent();
 	}
 
-	std::string error_name() override { return "BESInternalError"; }
+	std::string error_name() const override { return "BESInternalError"; }
 };
 
 #endif // BESInternalError_h_

@@ -51,7 +51,7 @@ public:
         BESError::dump( strm ) ;
         BESIndent::UnIndent() ;
     }
-    std::string error_name() override { return "BESNotFoundError"; }
+    std::string error_name() const override { return "BESNotFoundError"; }
 };
 
 #endif // BESNotFoundError_h_

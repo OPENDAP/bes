@@ -116,40 +116,13 @@ std::string memory_info()
 
 static void log_error(const BESError &e)
 {
-    string error_name;
-
-    switch (e.get_bes_error_type()) {
-    case BES_INTERNAL_FATAL_ERROR:
-        error_name = "BES Internal Fatal Error";
-        break;
-
-    case BES_INTERNAL_ERROR:
-        error_name = "BES Internal Error";
-        break;
-
-    case BES_SYNTAX_USER_ERROR:
-        error_name = "BES User Syntax Error";
-        break;
-
-    case BES_FORBIDDEN_ERROR:
-        error_name = "BES Forbidden Error";
-        break;
-
-    case BES_NOT_FOUND_ERROR:
-        error_name = "BES Not Found Error";
-        break;
-
-    default:
-        error_name = "BES Error";
-        break;
-    }
     string err_msg(e.get_message());
 
     if (TheBESKeys::read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " + error_name + ": " + BESUtil::remove_crlf(err_msg) + " " + memory_info());
+        ERROR_LOG("ERROR! " + e.error_name() + ": " + BESUtil::remove_crlf(err_msg) + " " + memory_info());
     }
     else {
-        ERROR_LOG("ERROR: " + error_name + ": " + BESUtil::remove_crlf(err_msg)
+        ERROR_LOG("ERROR! " + e.error_name() + ": " + BESUtil::remove_crlf(err_msg)
             + " (" + e.get_file() + ":" + std::to_string(e.get_line()) + ") "
             + memory_info() + "\n");
     }
