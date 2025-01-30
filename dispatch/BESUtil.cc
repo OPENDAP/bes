@@ -1328,7 +1328,7 @@ void BESUtil::string_to_file(const string &filename, const string &content) {
  * @param msg The string to "sanitize"
  * @return A reference to the sanitized string.
  */
-static std::string &BESUtil::remove_crlf(std::string &str) {
+std::string &BESUtil::remove_crlf(std::string &str) {
     const auto the_bad_things ="\r\n";
     size_t pos = 0;
     while ((pos = str.find_first_of(the_bad_things, pos)) != std::string::npos) {
