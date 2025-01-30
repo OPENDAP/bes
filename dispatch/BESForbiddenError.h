@@ -52,6 +52,7 @@ public:
         BESError::dump( strm ) ;
         BESIndent::UnIndent() ;
     }
+    std::string error_name() override { return "BESForbiddenError"; }
 };
 
 #endif // BESForbiddenError_h_

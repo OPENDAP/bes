@@ -67,6 +67,8 @@ public:
 
     static int convert_error_code(int error_code, int current_error_type);
     static int convert_error_code(int error_code, bool fatal);
+
+    std::string error_name() override { return "BESDapError"; }
 };
 
 #endif // BESDapError_h_

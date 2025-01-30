@@ -54,6 +54,8 @@ public:
 		BESError::dump(strm);
 		BESIndent::UnIndent();
 	}
+
+	std::string error_name() override { return "BESInternalError"; }
 };
 
 #endif // BESInternalError_h_

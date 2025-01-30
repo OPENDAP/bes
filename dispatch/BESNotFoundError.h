@@ -37,8 +37,7 @@
 
 /** @brief error thrown if the resource requested cannot be found
  */
-class BESNotFoundError : public BESError
-{
+class BESNotFoundError : public BESError {
 public:
     BESNotFoundError(std::string s, std::string file, unsigned int line )
         : BESError( std::move(s), BES_NOT_FOUND_ERROR, std::move(file), line ) {}
@@ -52,6 +51,7 @@ public:
         BESError::dump( strm ) ;
         BESIndent::UnIndent() ;
     }
+    std::string error_name() override { return "BESNotFoundError"; }
 };
 
 #endif // BESNotFoundError_h_

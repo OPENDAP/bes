@@ -190,6 +190,9 @@ public:
      * @param strm output stream to use to dump the contents of this object
      */
     void dump(std::ostream &strm) const override;
+
+    virtual std::string error_name();
+
 };
 
 #endif // BESError_h_ 

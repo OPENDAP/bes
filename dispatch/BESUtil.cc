@@ -1322,3 +1322,17 @@ void BESUtil::string_to_file(const string &filename, const string &content) {
     }
     t << content;
 }
+
+/**
+ * @brief "Sanitizes" the string by replacing any 0x0A (new line) or 0x0D (carriage return) characters with 0x20 (space)
+ * @param msg The string to "sanitize"
+ * @return A reference to the sanitized string.
+ */
+static std::string &remove_crlf(std::string &str) {
+    const auto the_bad_things ="\r\n";
+    size_t pos = 0;
+    while ((pos = str.find_first_of(the_bad_things, pos)) != std::string::npos) {
+        str[pos] = ' ';
+    }
+    return str;
+}

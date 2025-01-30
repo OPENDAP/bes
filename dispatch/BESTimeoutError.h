@@ -53,6 +53,7 @@ public:
         BESError::dump( strm ) ;
         BESIndent::UnIndent() ;
     }
+    std::string error_name() override { return "BESTimeoutError"; }
 };
 
 #endif // BESTimeoutError_h_
