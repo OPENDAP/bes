@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# This script downloads NASA test data.
+#
+# Check whether "wget" or "curl" is available first.
+GET=""
+command -v  wget > /dev/null && GET="wget -N --retr-symlinks" 
+if [ -z "$GET" ]; then
+  command -v  curl > /dev/null && GET="curl -O"
+fi
+
+if [ -z "$GET" ]; then
+  echo "Neither wget nor curl found in your system."
+  exit
+fi
+
+#Cloud
+$GET https://download848.mediafire.com/3rdeg66hezsgJ9MTwjjhkAc580KahTK51D7rccpKly5iCbNqFpwzXJ0yUWuBR-xajPgiqNEfAEbaVJq-OxMftiIX5IcLLg3slAklp7jFl68hFxpf3rPzWOlqa0dTMEvg9XQS1TCG5iorfAscWHSeqdTTQmczBeF5CGASN7PwBYns/z9rgjz8e8k6qub7/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmr.baseline
+
+$GET https://download1325.mediafire.com/i089ihb1eflgAHIxWVjnDw22SGSutJpzEKOUslM-7o4uVpKIsaKkJI-oXCwzQhUW5y2xVlrMHP1SOEffbvwL8D_g4DfM2MO31fxja7WxB_m-Idl1Ld5eLlsSKrzPTmN2ijnUdR5gIWa67QOYfqqchEu_vY2Iy4fzPY_W1BgBEbq_/j001odjyrtm1nq0/3B42.20180802.03.7.HDF.dmr.baseline
+
+$GET https://download946.mediafire.com/nlyijfe32uhgZplNytMUABZ079AzC47nzLAWfN_2ePULFf34I_EUrN9yv4mImzD6AmAeyzrmJOFTdmUk0p5BCdRSuDx3432aCbeuoQasQhuEZh0dlAZMynJh8VKcWW4vIjyNTIalgL__Nvy-MQMYFyrHfAaYQ6ficL3p1BxzCpQq/85uwvmscd9nx8bm/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf.dmr.baseline
+$GET https://download1503.mediafire.com/km3dbl5l9jugvSkYsO4yigr1uWDBr6LJ08tQ6InivQl_0NOwkLr0aKg2YY1MzZl-wTHC9bOZ8yswYA9ez7W57IU-CIWe6nxPiOA3rQYCTjtyHgFZWOdo7qU2kHOiAmjD5pCeH9-oVbLdeqGDaqhIWMfPwiWViZrpDodtDp_d7Mx3/k5m5wtcisx7woov/MOD03.A2000166.0255.061.2017173092154.hdf.dmr.baseline
+
+$GET https://download1591.mediafire.com/pyv1tznk6fhg4l7dFUl2VVIqlOWqEyNrCOk-uv80OzD48MpHS7v4RNnLKL9_c7QUW-FC8OE_LtqPnlWg2qh_W7WvYjmuVRwZmRpQaNVGXxgtXQZpC1h-RKL9T3iYFgNqrTgARbvx_TlPvmYdrbuEjwSr-ACnJz7usYFwqbqEGLDN/x1n37yft678sy47/AMSR_E_L2_Land_V09_200206190615_A.hdf.dmr.baseline
+$GET https://download1527.mediafire.com/hx7yzldjw82g4ySQjqaToDJ2CdpZMOccKlgWzF7EqcqQe-kRPPPG-YjURhzU2Ox8WK1igYqpNDJ2fR6i6pjhYRlDHkyrAlvKwPgePu4l3E7AgCCRa_KxKJlp7q3LsnlTk67S_8HvYCvYJqN8A6tmTRlnWBuymi6vN4_ng7di9bI0/8918hklrqyfw7w8/AMSR_E_L3_SeaIce25km_V15_20020601.hdf.dmr.baseline
+$GET https://download943.mediafire.com/6qfwzpvyeizgOu1vydpcwTFcyjGxlKjyqXDn12AhsnT4r4fFdmx5A7vNlGffzIq2ZIwVbO27eJfCRbdwuFF_VJ-xVNkCDX1sHj1apwu4LR8fQ4ralTxDLwYCr8lxuj_yVyI5a1P7U9xMyLrcCPGl1xc6gpYv0Y8ik2-BsQKmd3wG/ef3f2bo2rs0y6mk/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf.dmr.baseline
+$GET https://download1592.mediafire.com/6knnfk1l0ligx0ehpGpeP1n1NpUdimj0TFxprXQlGt8pXKb6O6V2KB-TJLICWl9F3Le-zt5GoQRlkJt9QpGflpoaB2Y391hS0u1rMYuT3jEFhqP6PxuiCzipAZNOUyyhfMIN-2FSYjI-YcOybrRQTHPP52At7G2yBPxpLtpvdyGS/4zx17mdls4jut4j/MOD29.A2000166.0255.005.2008189120917.hdf.dmr.baseline
+
+$GET https://download1587.mediafire.com/1mmzowu8irdgJBiYQPccebA7gPf_lF6fGDRVpXqEbArT-6sq5AmRmgeLmaf1mQhrbDRD1dRpGcS4v2i_RyFYqRBnV4mSPegJsIxAgag9NU6ypGORKF1M7vhhx0E7BdK4z_5Rj1KQFo1AoEmJfuAe-5giQKFcnZD52gSN4qyCj3Ku/usvauqyck745goe/MOD11A1.A2024025.h10v06.061.2024028004317.hdf.dmr.baseline
+$GET https://download943.mediafire.com/2rischrq64agqN699S1En713r-bajIn5zIViVXRwWJRGAXgujKOk4aE16lpW4E31dq95WFDgghXfhGoOJe6Ds91aSfi_hkhjU6aa5teQjx8CbqHG8rQ_OTyWiTcTulYmeb7nKJdO4Jhp5pwz6o4EQd44AK1ZYxqCWVm5fqlAHyHA/rhp41gb7otosrp9/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf.dmr.baseline
+$GET https://download1531.mediafire.com/uhcklmrhn7ugMAFAID765JO7-Dwz3XP1aBXcs8vZ2ggw8ez-YhYO_DUrj5Dp7ET-jwqlzsWo9AWjMftm0RpaiNzmw7A35yJ4QZ2mH1AujKaZiOQ4mnid8GkZ0sx9O_ZWixis4rxn06IGfAuC2wdYmvl-kymRIsWvUlddOKy1p70s/j05968oboqvjmmb/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf.dmr.baseline
+$GET https://download1530.mediafire.com/gw0xcr77tbfgVgG--ZaE2XdmB6xcrXGu9ezw07t2BUxly3qKlSe0p5tzGgCSpuH2GqNf2kfgPmTNkl8ynqzNESuG5Vtz78nN2h7dngtcMjAVLrwVV9mjkMFe5IETT9-A9NsnrqskXFyKPWlx4t8B1pOOFQCtr3G6zLwAojxShMYc/kopf6hcrac0pu7w/MCD19A1.A2024025.h10v06.061.2024027100206.hdf.dmr.baseline
+$GET https://download937.mediafire.com/990f1dla563gTx8Plt4qANSOYHNZeTwQgqVI7FfDuy4Sx25lGRL92D2aiEXorsmAMT_E96AhS0eEfpkZvkMEHZl4EIXgZjywNwsMoeAKVN_Fcq1-aKcGF808YQePyyhwbjudjrvlMRonA6gEvRJ5bZUeKvjt5iB62Qeq3Qin3n_q/tle7e8n3pghg9v2/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.dmr.baseline
+
+
