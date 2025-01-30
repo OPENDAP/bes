@@ -63,6 +63,8 @@ using namespace std;
 using namespace agg_util;
 using namespace libdap;
 
+#define prolog std::string("DDSLoader::").append(__func__).append("() - ")
+
 // Rep Init
 
 /* static */
@@ -173,8 +175,11 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
         container = addNewContainerToStorage();
     }
     catch (BESError &e) {
-        *(BESLog::TheLog()) << "WARNING - " << string(__PRETTY_FUNCTION__) << ": " << e.get_file() << ":" << e.get_line() << ": "
-                            << e.get_message() << " (the exception was re-thrown)."<< endl;
+        string msg = e.get_message();
+        INFO_LOG(prolog + "WARNING! Encountered a " +  e.error_name() +  " Message: " + BESUtil::remove_crlf(msg));
+
+        //*(BESLog::TheLog()) << "WARNING - " << string(__PRETTY_FUNCTION__) << ": " << e.get_file() << ":" << e.get_line() << ": "
+        //                    << e.get_message() << " (the exception was re-thrown)."<< endl;
 
         // Get rid of the container we added.
         removeContainerFromStorage();
@@ -243,8 +248,10 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
         ensureClean();
     }
     catch (BESError &e) {
-        ERROR_LOG("WARNING - " + string(__PRETTY_FUNCTION__) + ": " + e.get_file() + ":" + std::to_string(e.get_line()) + ": "
-                            + e.get_message() + " (the exception was re-thrown).");
+        string msg = e.get_message();
+        INFO_LOG(prolog + "WARNING! Encountered a " +  e.error_name() +  " Message: " + BESUtil::remove_crlf(msg));
+        //ERROR_LOG(prolog + "WARNING - " + string(__PRETTY_FUNCTION__) + ": " + e.get_file() + ":" + std::to_string(e.get_line()) + ": "
+        //                    + e.get_message() + " (the exception was re-thrown).");
 
         // We should be clean here too.
         ensureClean();

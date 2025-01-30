@@ -119,6 +119,7 @@ public:
         strm << dump();
     }
 
+    std::string error_name() const override { return "HttpError"; }
 };
 
 } // http
