@@ -3390,7 +3390,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
 
     BESDEBUG(dmrpp_3, prolog << "coming to read_buffer_chunks_unconstrained()  "  << endl);
 
-    // Here we can adjust the buffer size as needed, for now we just use the whole array size.
+    // Here we can adjust the buffer size as needed, for now we just use the whole array size as the starting point.
     unsigned long long buffer_size = bytes_per_element * this->get_size(false);
     
     if (get_chunks_size() < 2)
@@ -3399,7 +3399,8 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     // Follow the general superchunk way.
     unsigned long long sc_count=0;
     stringstream sc_id;
-    sc_id << name() << "-" << sc_count++;
+    sc_count++;
+    sc_id << name() << "-" << sc_count;
     queue<shared_ptr<SuperChunk>> super_chunks;
     auto current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this) ;
 
@@ -3416,14 +3417,14 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     unsigned long long max_buffer_end_position = 0;
 
     // For highly compressed chunks, we need to make sure the buffer_size is not too big to exceed the file size.
-    // We need to find the max_buffer_end_position based on the offset and length of all chunks.
+    // For this variable we also need to find the maximum value of the end position of all the chunks.
     for (const auto &chunk: array_chunks) {
         unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
         if(max_buffer_end_position < temp_max_buffer_end_position)
             max_buffer_end_position = temp_max_buffer_end_position;
     }
     
-
+    // The end position of the buffer should not exceed the max_buffer_end_position.
     unsigned long long buffer_end_position = min((buffer_size + (array_chunks[0])->get_offset()),max_buffer_end_position);
 
     BESDEBUG(dmrpp_3, prolog << "variable name:  "  << this->name() <<endl);
@@ -3434,12 +3435,14 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
         bool added = current_super_chunk->add_chunk_non_contiguous(chunk,buffer_end_position);
         if (!added) {
             sc_id.str(std::string());
-            sc_id << name() << "-" << sc_count++;
+            sc_count++;
+            sc_id << name() << "-" << sc_count;
             current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
+            // We need to mark this superchunk includes non-contiguous chunks.
             current_super_chunk->set_non_contiguous_chunk_flag(true);
             super_chunks.push(current_super_chunk);
 
-            // Here we need to make sure buffer_size is not too small.
+            // Here we need to make sure buffer_size is not too small although this rarely happens.
             if (buffer_size < chunk->get_size())
                 buffer_size = chunk->get_size();
             buffer_end_position = min((buffer_size + chunk->get_offset()),max_buffer_end_position);
@@ -3467,7 +3470,7 @@ bool DmrppArray::use_buffer_chunk() {
     bool ret_value = false;
     auto chunks = this->get_chunks();
 
-    // For our use case, we only need to check if the first chunk and the second chunk is adjacent.
+    // For our use case, we only need to check if the first chunk and the second chunk are adjacent.
     // To make the process clear and simple, we don't handle structure data.
     if (chunks.size() >1 && this->var()->type() !=dods_structure_c){
         unsigned long long first_chunk_offset = (chunks[0])->get_offset();

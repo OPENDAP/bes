@@ -547,6 +547,7 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
     return chunk_was_added;
 }
 
+// This method is for handling non-contiguous chunks. It follows the logic of add_chunk() but handles the non-contigous chunk case.
 bool SuperChunk::add_chunk_non_contiguous(const std::shared_ptr<Chunk> candidate_chunk, unsigned long long &buffer_end_position) {
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Coming to add_chunk_non_contiguous" << endl);
@@ -559,7 +560,7 @@ bool SuperChunk::add_chunk_non_contiguous(const std::shared_ptr<Chunk> candidate
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_size: "<<d_size<< endl);
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_offset: "<<d_offset<< endl);
 
-        // When get_uses_fill_value() is true, returns a shared_ptr<Chunk> initialized to nullptr. jhrg 5/7/22
+        // When get_uses_fill_value() is true, returns a shared_ptr<Chunk> initialized to nullptr.
         d_uses_fill_value = candidate_chunk->get_uses_fill_value();
         if (!d_uses_fill_value)
             d_data_url = candidate_chunk->get_data_url();
@@ -567,9 +568,10 @@ bool SuperChunk::add_chunk_non_contiguous(const std::shared_ptr<Chunk> candidate
             d_data_url = nullptr;
         chunk_was_added =  true;
     }
-    // For now, if a chunk uses fill values, it gets its own SuperChunk. jhrg 5/7/22
+    // For now, if a chunk uses fill values, it gets its own SuperChunk. 
     else if(!candidate_chunk->get_uses_fill_value()){
         if (candidate_chunk->get_offset() >=d_offset) {
+            // The chunk exceeds the boundary of this buffer. Create a new SuperChunk.
             if ((candidate_chunk->get_offset() + candidate_chunk->get_size())<=buffer_end_position) { 
                 this->d_chunks.push_back(candidate_chunk);
                 chunk_was_added =  true;
@@ -726,6 +728,7 @@ void SuperChunk::retrieve_data() {
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the d_read_buffer memory.
     // "Slice it up!"
+    // We need to map non-contigous chunks differently.
     if (non_contiguous_chunk) 
         map_non_contiguous_chunks_to_buffer();
     else 
