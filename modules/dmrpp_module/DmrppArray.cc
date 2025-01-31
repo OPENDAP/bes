@@ -2124,12 +2124,10 @@ void DmrppArray::read_buffer_chunks()
     super_chunks.push(current_super_chunk);
 
     // Loop through all the needed chunks and put them to the super chunk.
-    bool found_needed_chunks = false;
     for(const auto& chunk: get_immutable_chunks()){
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
         if (needed){
-            found_needed_chunks = true;
             bool added = current_super_chunk->add_chunk_non_contiguous(chunk,buffer_end_position);
             if(!added){
                 sc_id.str(std::string()); // Clears stringstream.
