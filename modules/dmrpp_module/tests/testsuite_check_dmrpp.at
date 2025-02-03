@@ -1,0 +1,40 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/dmrpp_module/tests testsuite_check_dmrpp])
+
+m4_include([../../common/handler_tests_macros.m4])
+
+dnl - check_dmrpp tests for any variable that doesn't have data in the current data file.
+# No-group hierarchy dmrpp file that has missing data variables.
+AT_CHECK_DMRPP_TEST([check_dmrpp/grid_1_2d_missing.h5.dmrpp])
+AT_CHECK_DMRPP_TEST([check_dmrpp/grid_1_2d_missing_dap2.h5.dmrpp],[-dap2])
+# Group hierarchy dmrpp file that has missing data variables.
+AT_CHECK_DMRPP_TEST([check_dmrpp/grid_2_2d_sin.h5.dmrpp])
+
+# This file has the missing data variables, so expect to fail.
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/sinusoid.hdf.nmd.dmrpp],[xfail])
+# No missing data variable tests.
+# Structure and data in linked blocks 
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/vdata_packed_linked_blocks.hdf.dmrpp])
+# Linked blocks
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/SDS_unlimited_2.hdf.dmrpp])
+# Scalar structure 
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_simple_scalar.h5.dmrpp])
+# Variable length string
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/t_vl_string_1d.h5.dmrpp])
+# Structure array that contains strings
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_array_fix_vlen_str.h5.dmrpp])
+# Structure scalar that contains strings
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_simple_scalar_vlen_str.h5.dmrpp])
+# Contains fillvalue
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_string.h5.dmrpp])
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_uint64.h5.dmrpp])
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/FValue_scalar_cont.h5.dmrpp])
+# Contains missingdata xml attribute
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/t_cf_1dllzs.h5.dmrpp])
+# Compound group 
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/compound_group_simple.h5.dmrpp])
+# netCDF-4 group 
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/nc4_group_atomic_comp.h5.dmrpp])
+# netCDF-4 no-group
+AT_CHECK_DMRPP_TEST_NO_MISSING_VARS([check_dmrpp/nc4_group_atomic_cf.h5.dmrpp])

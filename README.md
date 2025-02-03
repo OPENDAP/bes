@@ -1,9 +1,28 @@
-<a href="https://travis-ci.org/OPENDAP/bes">
+><a href="https://travis-ci.org/OPENDAP/bes">
   <img alt="TravisCI" src="https://travis-ci.org/OPENDAP/bes.svg?branch=master"/>
 </a> 
 
 README for the OPeNDAP BES 
 ==========================
+# Version 3.21.1-0
+
+This version of the BES is part of Hyrax 1.17.1, a data server that supports the
+OPeNDAP data access protocols. See
+[opendap.org/software/hyrax/1.17](https://www.opendap.org/software/hyrax/1.17)
+for information about Hyrax.
+
+For specific information about the BES, see the file _NEWS_ for a summary of new
+features and important updates. See _ChangeLog_ for a complete listing of changes/fixes
+since the previous release.
+
+Major changes in this release are substantially improved support for HDF4, HDF4-EOS and 
+HDF4-EOS2 data stored in S3 via the DMR++ much faster generation of NetCDF4 response 
+files. There are many  other improvements and bug fixes.
+
+This version of the BES requires *libdap-3.21.1*
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14646648.svg)](https://doi.org/10.5281/zenodo.14646648)
+
+
 # Version 3.21.0-46
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10564745.svg)](https://doi.org/10.5281/zenodo.10564745)
 
@@ -573,3 +592,4 @@ CF option:
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 //
+

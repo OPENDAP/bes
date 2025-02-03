@@ -1,0 +1,262 @@
+Attributes {
+    HDF5_GLOBAL {
+        String FileHeader "DOI=10.5067/GPM/IMERG/3B-HH/07;
+DOIauthority=http://dx.doi.org/;
+DOIshortName=3IMERGHH;
+AlgorithmID=3IMERGHH;
+AlgorithmVersion=3IMERGH_7.0;
+FileName=3B-HHR.MS.MRG.3IMERG.20240630-S233000-E235959.1410.V07B.HDF5;
+SatelliteName=MULTI;
+InstrumentName=MERGED;
+GenerationDateTime=2024-11-11T14:17:54.000Z;
+StartGranuleDateTime=2024-06-30T23:30:00.000Z;
+StopGranuleDateTime=2024-06-30T23:59:59.999Z;
+GranuleNumber=;
+NumberOfSwaths=0;
+NumberOfGrids=1;
+GranuleStart=;
+TimeInterval=HALF_HOUR;
+ProcessingSystem=PPS;
+ProductVersion=V07B;
+EmptyGranule=NOT_EMPTY;
+MissingData=;
+";
+        String FileInfo "DataFormatVersion=7e;
+TKCodeBuildVersion=0;
+MetadataVersion=7e;
+FormatPackage=HDF5-1.10.9;
+BlueprintFilename=GPM.V7.3IMERGHH.blueprint.xml;
+BlueprintVersion=BV_69;
+TKIOVersion=3.101;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+";
+    }
+    Grid {
+        String GridHeader "BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.1;
+LongitudeResolution=0.1;
+NorthBoundingCoordinate=90;
+SouthBoundingCoordinate=-90;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+";
+        String fullnamepath "/Grid";
+    }
+    Grid_Intermediate {
+    }
+    MWprecipitation {
+        String DimensionNames "time,lon,lat";
+        String Units "mm/hr";
+        String units "mm/hr";
+        String coordinates "time lon lat";
+        Float32 _FillValue -9999.900391;
+        String CodeMissingValue "-9999.9";
+        String LongName "Observed merged microwave precipitation estimate;
+                        formerly HQprecipitation";
+        String origname "MWprecipitation";
+        String fullnamepath "/Grid/Intermediate/MWprecipitation";
+    }
+    MWobservationTime {
+        String DimensionNames "time,lon,lat";
+        String Units "minutes";
+        String units "minutes";
+        String coordinates "time lon lat";
+        Int16 _FillValue -9999;
+        String CodeMissingValue "-9999";
+        String LongName "
+Observed merged microwave observation time after
+                        dataset start time;  formerly HQobservationTime
+";
+        String origname "MWobservationTime";
+        String fullnamepath "/Grid/Intermediate/MWobservationTime";
+    }
+    IRprecipitation {
+        String DimensionNames "time,lon,lat";
+        String Units "mm/hr";
+        String units "mm/hr";
+        String coordinates "time lon lat";
+        Float32 _FillValue -9999.900391;
+        String CodeMissingValue "-9999.9";
+        String LongName "Infrared precipitation estimate";
+        String origname "IRprecipitation";
+        String fullnamepath "/Grid/Intermediate/IRprecipitation";
+    }
+    MWprecipSource {
+        String DimensionNames "time,lon,lat";
+        String coordinates "time lon lat";
+        Int16 _FillValue -9999;
+        String CodeMissingValue "-9999";
+        String LongName "Observed merged microwave satellite source;
+                        formerly HQprecipSource";
+        String origname "MWprecipSource";
+        String fullnamepath "/Grid/Intermediate/MWprecipSource";
+    }
+    IRinfluence {
+        String DimensionNames "time,lon,lat";
+        String coordinates "time lon lat";
+        Int16 _FillValue -9999;
+        String CodeMissingValue "-9999";
+        String LongName "
+Relative influence of infrared precipitation in the merged
+                        microwave-infrared precipitation estimate
+";
+        String origname "IRinfluence";
+        String fullnamepath "/Grid/Intermediate/IRinfluence";
+    }
+    precipitationUncal {
+        String DimensionNames "time,lon,lat";
+        String Units "mm/hr";
+        String units "mm/hr";
+        String coordinates "time lon lat";
+        Float32 _FillValue -9999.900391;
+        String CodeMissingValue "-9999.9";
+        String LongName "Merged microwave-infrared 
+                        precipitation estimate";
+        String origname "precipitationUncal";
+        String fullnamepath "/Grid/Intermediate/precipitationUncal";
+    }
+    precipitationQualityIndex {
+        String DimensionNames "time,lon,lat";
+        String coordinates "time lon lat";
+        Float32 _FillValue -9999.900391;
+        String CodeMissingValue "-9999.9";
+        String LongName "
+Precipitation quality index; qualitative indicator
+                        of skill based on the microwave-infrared merging process
+";
+        String origname "precipitationQualityIndex";
+        String fullnamepath "/Grid/precipitationQualityIndex";
+    }
+    lat_bnds {
+        String DimensionNames "lat,latv";
+        String Units "degrees_north";
+        String units "degrees_north";
+        String coordinates "lat latv";
+        String origname "lat_bnds";
+        String fullnamepath "/Grid/lat_bnds";
+    }
+    precipitation {
+        String DimensionNames "time,lon,lat";
+        String Units "mm/hr";
+        String units "mm/hr";
+        String coordinates "time lon lat";
+        Float32 _FillValue -9999.900391;
+        String CodeMissingValue "-9999.9";
+        String LongName "
+Complete merged microwave-infrared (gauge-adjusted)
+                        precipitation estimate;  formerly precipitationCal
+";
+        String origname "precipitation";
+        String fullnamepath "/Grid/precipitation";
+    }
+    probabilityLiquidPrecipitation {
+        String DimensionNames "time,lon,lat";
+        String Units "percent";
+        String units "percent";
+        String coordinates "time lon lat";
+        Int16 _FillValue -9999;
+        String CodeMissingValue "-9999";
+        String LongName "
+Probability of liquid precipitation;  estimated with
+                        a diagnostic parameterization using ancillary data
+";
+        String origname "probabilityLiquidPrecipitation";
+        String fullnamepath "/Grid/probabilityLiquidPrecipitation";
+    }
+    randomError {
+        String DimensionNames "time,lon,lat";
+        String Units "mm/hr";
+        String units "mm/hr";
+        String coordinates "time lon lat";
+        Float32 _FillValue -9999.900391;
+        String CodeMissingValue "-9999.9";
+        String LongName "
+Root-mean-square error estimate for 
+                        complete merged microwave-infrared (gauge-adjusted)
+                        precipitation
+";
+        String origname "randomError";
+        String fullnamepath "/Grid/randomError";
+    }
+    time_bnds {
+        String DimensionNames "time,nv";
+        String Units "seconds since 1980-01-06 00:00:00 UTC";
+        String units "seconds since 1980-01-06 00:00:00 UTC";
+        String coordinates "time nv";
+        String origname "time_bnds";
+        String fullnamepath "/Grid/time_bnds";
+    }
+    lon_bnds {
+        String DimensionNames "lon,lonv";
+        String Units "degrees_east";
+        String units "degrees_east";
+        String coordinates "lon lonv";
+        String origname "lon_bnds";
+        String fullnamepath "/Grid/lon_bnds";
+    }
+    lat {
+        String DimensionNames "lat";
+        String Units "degrees_north";
+        String units "degrees_north";
+        String standard_name "latitude";
+        String LongName "Latitude at the center of
+			0.10 degree grid intervals of latitude
+			from -90 to 90.";
+        String bounds "lat_bnds";
+        String axis "Y";
+        String origname "lat";
+        String fullnamepath "/Grid/lat";
+    }
+    latv {
+        String DimensionNames "latv";
+        String standard_name "numberlatbnds";
+        String LongName "Number of latitude bounds.";
+    }
+    lon {
+        String DimensionNames "lon";
+        String Units "degrees_east";
+        String units "degrees_east";
+        String standard_name "longitude";
+        String LongName "Longitude at the center of
+			0.10 degree grid intervals of longitude 
+			from -180 to 180.";
+        String bounds "lon_bnds";
+        String axis "X";
+        String origname "lon";
+        String fullnamepath "/Grid/lon";
+    }
+    lonv {
+        String DimensionNames "lonv";
+        String standard_name "numberlonbnds";
+        String LongName "Number of longitude bounds.";
+    }
+    nv {
+        String DimensionNames "nv";
+        String standard_name "numbertimebnds";
+        String LongName "Number of time bounds.";
+    }
+    time {
+        String DimensionNames "time";
+        String Units "seconds since 1980-01-06 00:00:00 UTC";
+        String units "seconds since 1980-01-06 00:00:00 UTC";
+        String standard_name "time";
+        String LongName "
+Representative time of data in 
+			seconds since 1980-01-06 00:00:00 UTC.
+			The calculation of time does not add leap seconds.
+			The difference due to leap seconds grows with time 
+			and in 2019 is less than 30 seconds.
+";
+        String bounds "time_bnds";
+        String axis "T";
+        String calendar "julian";
+        String origname "time";
+        String fullnamepath "/Grid/time";
+    }
+    DODS_EXTRA {
+        String Unlimited_Dimension "time";
+    }
+}

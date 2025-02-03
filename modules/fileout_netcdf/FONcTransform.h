@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <set>
 
 #include <BESObj.h>
@@ -75,10 +76,14 @@ private:
     //       This flag is not necessary and should be removed. KY 11/29/23
     bool global_dio_flag = false; 
 
+    bool do_reduce_dim = false;
+    std::unordered_map<int64_t, std::vector<std::string>> dimsize_to_dup_dimnames;
+    int reduced_dim_num = 0;
+
 public:
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
     virtual ~FONcTransform();
-	virtual void transform_dap2(ostream &strm);
+	virtual void transform_dap2();
 	virtual void transform_dap4();
 
 	virtual void dump(ostream &strm) const;
@@ -98,9 +103,12 @@ private:
     virtual bool check_group_support();
     virtual void gen_included_grp_list(libdap::D4Group *grp);
 
-    virtual bool is_streamable();
-    virtual bool is_dds_streamable();
-    virtual bool is_dmr_streamable(libdap::D4Group *group);
+    virtual bool check_reduce_dim();
+    virtual bool check_reduce_dim_internal(libdap::D4Group *grp);
+    virtual bool check_var_dim(libdap::BaseType *bt);
+    virtual void build_reduce_dim();
+    virtual void build_reduce_dim_internal(libdap::D4Group *grp, libdap::D4Group *root_grp);
+
     void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
     void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");
     string too_big_error_msg(

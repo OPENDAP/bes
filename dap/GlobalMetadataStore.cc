@@ -126,7 +126,7 @@ void GlobalMetadataStore::transfer_bytes(int fd, ostream &os)
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0)
-        ERROR_LOG(prolog << "Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+        ERROR_LOG(prolog + "Error calling posix_advise() in the GlobalMetadataStore: " + strerror(status));
 #endif
 
     char buf[BUFFER_SIZE + 1];
@@ -162,7 +162,7 @@ void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0)
-        ERROR_LOG(prolog << "Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+        ERROR_LOG(prolog + "Error calling posix_advise() in the GlobalMetadataStore: " + strerror(status));
 #endif
 
     char buf[BUFFER_SIZE + 1];
@@ -438,7 +438,7 @@ static void dump_time(ostream &os, bool use_local_time)
         status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
     }
     if (!status)
-        ERROR_LOG(prolog << "Error getting time for Metadata Store ledger.");
+        ERROR_LOG(prolog + "Error getting time for Metadata Store ledger.");
 
     os << buf;
 }
@@ -458,7 +458,7 @@ GlobalMetadataStore::write_ledger()
 	    try {
 		dump_time(of, d_use_local_time);
 		of << " " << d_ledger_entry << endl;
-		VERBOSE("MDS Ledger name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
+		VERBOSE("MDS Ledger name: '" + d_ledger_name + "', entry: '" + d_ledger_entry + "'.");
 		unlock_and_close(d_ledger_name); // closes fd
 	    }
 	    catch (...) {
@@ -467,7 +467,7 @@ GlobalMetadataStore::write_ledger()
 	    }
         }
         else {
-            ERROR_LOG(prolog << "Warning: Metadata store could not write to its ledger file.");
+            ERROR_LOG(prolog + "Warning: Metadata store could not write to its ledger file.");
             unlock_and_close(d_ledger_name);
         }
     }
@@ -517,9 +517,16 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
         os << xml.get_doc();
     }
     else if (d_dmr) {
-        XMLWriter xml;
-        d_dmr->print_dap4(xml);
-        os << xml.get_doc();
+        if (d_dmr->get_utf8_xml_encoding()) {
+            auto xml = XMLWriter("    ","UTF-8");
+            d_dmr->print_dap4(xml);
+            os << xml.get_doc();
+        }
+        else {
+            XMLWriter xml;
+            d_dmr->print_dap4(xml);
+            os << xml.get_doc();
+        }
     }
     else {
         throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
@@ -602,7 +609,7 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
             throw;
         }
 
-        VERBOSE("Metadata store: Wrote " << response_name << " response for '" << name << "'." << endl);
+        VERBOSE("Metadata store: Wrote " + response_name + " response for '" + name + "'.");
         d_ledger_entry.append(" ").append(key);
 
         return true;
@@ -612,7 +619,7 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
         BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Found " << item_name << " in the store already." << endl);
         unlock_and_close(item_name);
 
-        ERROR_LOG(prolog << "Metadata store: unable to store the " << response_name << " response for '" << name << "'." << endl);
+        ERROR_LOG(prolog + "Metadata store: unable to store the " + response_name + " response for '" + name + "'.");
 
         return false;
     }
@@ -747,10 +754,11 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
     MDSReadLock lock(item_name, get_read_lock(item_name, fd), this);
     BESDEBUG(DEBUG_KEY, __func__ << "() MDS lock for " << item_name << ": " << lock() <<  endl);
 
-    if (lock())
-        INFO_LOG(prolog << "MDS Cache hit for '" << name << "' and response " << object_name << endl);
-    else
-        INFO_LOG(prolog << "MDS Cache miss for '" << name << "' and response " << object_name << endl);
+    string hit_or_miss="miss";
+    if (lock()) {
+        hit_or_miss = "hit";
+    }
+    INFO_LOG(prolog + "MDS Cache " + hit_or_miss + " for '" + name + "' and response " + object_name);
 
     return lock;
  }
@@ -1028,7 +1036,7 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd; // value-result parameter;
     if (get_read_lock(item_name, fd)) {
-        VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
+        VERBOSE("Metadata store: Cache hit: read " + object_name + " response for '" + name + "'.");
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
         try {
             transfer_bytes(fd, os);
@@ -1059,7 +1067,7 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd; // value-result parameter;
     if (get_read_lock(item_name, fd)) {
-        VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
+        VERBOSE("Metadata store: Cache hit: read " + object_name + " response for '" + name + "'.");
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
         try {
             insert_xml_base(fd, os, xml_base);
@@ -1160,12 +1168,13 @@ GlobalMetadataStore::remove_response_helper(const string& name, const string &su
 {
     string hash = get_hash(name + suffix);
     if (unlink(get_cache_file_name(hash, false).c_str()) == 0) {
-        VERBOSE("Metadata store: Removed " << object_name << " response for '" << hash << "'." << endl);
+        VERBOSE("Metadata store: Removed " + object_name + " response for '" + hash + "'.");
         d_ledger_entry.append(" ").append(hash);
         return true;
     }
     else {
-        ERROR_LOG(prolog << "Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
+        ERROR_LOG(prolog + "Metadata store: unable to remove the " + object_name + " response for '" + name
+            + "' (" + strerror(errno) + ").");
     }
 
     return false;
@@ -1298,7 +1307,7 @@ GlobalMetadataStore::parse_das_from_mds(libdap::DAS* das, const std::string &nam
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd; // value-result parameter;
     if (get_read_lock(item_name, fd)) {
-        VERBOSE("Metadata store: Cache hit: read " << " response for '" << name << "'." << endl);
+        VERBOSE("Metadata store: Cache hit: read response for '" + name + "'.");
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
         try {
             // Just generate the DAS by parsing from the file

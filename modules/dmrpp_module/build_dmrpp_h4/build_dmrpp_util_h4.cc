@@ -26,8 +26,10 @@
 #include <memory>
 #include <iterator>
 #include <unordered_set>
+#include <iomanip>      // std::put_time()
+#include <ctime>      // std::gmtime_r()
 
-#include "h4config.h"
+#include "config.h"
 #include "hdf.h"  // HDF4 header file
 #include "mfhdf.h"  // Include the HDF4 header file
 #include "HdfEosDef.h"
@@ -42,17 +44,16 @@
 #include <BESInternalFatalError.h>
 
 #include <TheBESKeys.h>
+#include <BESContextManager.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppArray.h"
+#include "DmrppByte.h"
 #include "D4ParserSax2.h"
 
 #define COMP_INFO 512 /*!< Max buffer size for compression information.  */
-#if 0
-#define FAIL_ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; exit(1); } while(false)
-#endif
 
 #define ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; } while(false)
 
@@ -80,10 +81,7 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
 #define prolog std::string("build_dmrpp_h4::").append(__func__).append("() - ")
 
-#if 0
-// will be used later maybe? jhrg 12/7/23
 constexpr auto INVOCATION_CONTEXT = "invocation";
-#endif
 
 // This function is adapted from H4mapper implemented by the HDF group. 
 // h4mapper can be found from https://docs.hdfgroup.org/archive/support/projects/h4map/h4map_writer.html
@@ -496,6 +494,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         VERBOSE(cerr<<endl);
 
 
+        bool LBChunk = false;
         for (int k = 0; k < number_of_chunks; ++k) {
             auto info_count = read_chunk(sdsid, &map_info, strides.data());
             if (info_count == FAIL) {
@@ -506,22 +505,23 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             
             auto pia = write_chunk_position_in_array(rank, chunk_dimension_sizes.data(), strides.data());
 
-            // We cannot find a chunked case when the number of blocks is greater than 1. We will issue a failure
-            // when we encounter such a case for the time being. KY 02/19/2024.
-
+            // When we find this chunk contains multiple blocks.
             if (map_info.nblocks >1) {
-#if 0
-                cout << "number of blocks in a chunk is: " << map_info.nblocks << endl;
-#endif
-                ERROR("Number of blocks in this chunk is greater than 1.");
-                SDendaccess(sdsid);
-                return false;
+
+                if (!LBChunk) 
+                    LBChunk = true;
+                VERBOSE(cerr << "number of blocks in a chunk is: " << map_info.nblocks << endl);
+                for (unsigned int i = 0; i < map_info.nblocks; i++) {
+                    VERBOSE(cerr << "offsets[" << k << ", " << i << "]: " << map_info.offsets[i] << endl);
+                    VERBOSE(cerr << "lengths[" << k << ", " << i << "]: " << map_info.lengths[i] << endl);
+                    // add the block index for this chunk.
+                    dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], pia,true,i);
+
+                }
             }
 
-            for (int i = 0; i < map_info.nblocks; i++) {
-                VERBOSE(cerr << "offsets[" << k << ", " << i << "]: " << map_info.offsets[i] << endl);
-                VERBOSE(cerr << "lengths[" << k << ", " << i << "]: " << map_info.lengths[i] << endl);
-                dc->add_chunk(endian_name, map_info.lengths[i], map_info.offsets[i], pia);
+            else if (map_info.nblocks == 1) {
+                    dc->add_chunk(endian_name, map_info.lengths[0], map_info.offsets[0], pia);
             }
 
             // Increase strides for each dimension. The fastest varying dimension is rank-1.
@@ -534,6 +534,10 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             }
             SDfree_mapping_info(&map_info);
         }
+        if (LBChunk) 
+            dc->set_multi_linked_blocks_chunk(LBChunk);
+           
+        
     }
     else if (chunk_flag == HDF_NONE) {
         SD_mapping_info_t map_info;
@@ -789,6 +793,103 @@ bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,si
 }
 #endif
 
+bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute *eos_cf_attr, string &err_msg) {
+
+    VERBOSE(cerr<<"Coming to add_missing_cf_grid"<<endl);
+    
+    string eos_cf_attr_value = eos_cf_attr->value(0);
+
+    VERBOSE(cerr<<"eos_cf_attr_value: "<<eos_cf_attr_value <<endl);
+
+    size_t space_pos = eos_cf_attr_value.find_last_of(' ');
+    if (space_pos ==string::npos) { 
+        err_msg = "Attribute eos_latlon must have space inside";
+        return false;
+    }
+
+    string grid_name = eos_cf_attr_value.substr(0,space_pos);
+    string cf_name = eos_cf_attr_value.substr(space_pos+1);
+
+    VERBOSE(cerr<<"grid_name: "<<grid_name <<endl);
+    VERBOSE(cerr<<"cf_name: "<<cf_name<<endl);
+    bool is_xdim = true;
+    if (cf_name =="YDim")
+        is_xdim = false;
+
+    int32 gridfd = GDopen(const_cast < char *>(filename.c_str()), DFACC_READ);
+    if (gridfd <0) {
+        err_msg = "HDF-EOS: GDopen failed";
+        return false;
+    }
+    int32 gridid = GDattach(gridfd, const_cast<char *>(grid_name.c_str()));
+    if (gridid <0) {
+        err_msg = "HDF-EOS: GDattach failed to attach " + grid_name;
+        GDclose(gridfd);
+        return false;
+    }
+
+    int32 xdim = 0;
+    int32 ydim = 0;
+
+    float64 upleft[2];
+    float64 lowright[2];
+
+    // Retrieve dimensions and X-Y coordinates of corners
+    if (GDgridinfo(gridid, &xdim, &ydim, upleft,
+                   lowright) == -1) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "GDgridinfo failed for grid name: " + grid_name;
+        return false;
+    }
+
+    auto dc = dynamic_cast<DmrppCommon *>(btp);
+    if (!dc) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_cf_grid";
+        return false;
+    }
+    auto da = dynamic_cast<DmrppArray *>(btp);
+    if (!da) {
+        GDdetach(gridid);
+        GDclose(gridfd);
+        err_msg = "Expected to find a DmrppArray instance but did not in add_missing_cf_grid";
+        return false;
+    }
+
+    da->set_missing_data(true);
+ 
+    int total_num = is_xdim?xdim:ydim;
+    vector<double>val(total_num);    
+    double evalue = 0;
+    double svalue = 0;
+
+    if (is_xdim) {
+        svalue = upleft[0];
+        evalue = lowright[0];
+    }
+    else {
+        svalue = upleft[1];
+        evalue = lowright[1];
+    }
+
+    double step_v = (evalue - svalue)/total_num;
+
+    val[0] = svalue;
+    for(int i = 1;i<total_num; i++)
+        val[i] = val[i-1] + step_v;
+
+    da->set_value(val.data(),total_num);
+    da->set_read_p(true);
+       
+
+    GDdetach(gridid);
+    GDclose(gridfd);
+ 
+    return true;
+
+}
 
 bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attribute *eos_ll_attr, string &err_msg) {
 
@@ -1035,7 +1136,6 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
         err_msg = "The number of dimensions of the array should be 1.";
         return false;
     }
-    
 
     da->set_missing_data(true);
  
@@ -1120,9 +1220,21 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
                 }
             }
             else {
-                close_hdf4_file_ids(sd_id,file_id);
-                string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon for ";
-                throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
+                attr = d4_attrs->find("eos_cf_grid");
+                if (attr) {
+                    string err_msg;
+                    bool ret_value = add_missing_cf_grid(filename, btp, attr,err_msg);
+                    if (ret_value == false) {
+                        close_hdf4_file_ids(sd_id,file_id);
+                        throw BESInternalError(err_msg,__FILE__,__LINE__);
+                    }
+                
+                }
+                else {
+                    close_hdf4_file_ids(sd_id,file_id);
+                    string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon or special cf grid for ";
+                    throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
+                }
             }
             
         }        
@@ -1130,6 +1242,49 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
  
 
     return true;
+}
+
+bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, string &err_msg) {
+
+    bool ret_value = false;
+
+    VERBOSE(cerr<<"For none_array: var name: "<<btp->name() <<endl);
+
+    D4Attributes *d4_attrs = btp->attributes();
+    if (d4_attrs->empty() == false && btp->type() == dods_byte_c) {
+
+        auto attr = d4_attrs->find("eos_cf_grid_mapping");
+
+        if (disable_missing_data == false) {
+
+            // Here we don't bother to check the attribute value since this CF grid variable value is dummy.
+            if (attr) {
+    
+                auto dc = dynamic_cast<DmrppCommon *>(btp);
+                if (!dc) {
+                    err_msg = "Expected to find a DmrppCommon instance but did not in handle_chunks_for_none_array";
+                    return false;
+                }
+                auto db = dynamic_cast<DmrppByte *>(btp);
+                if (!db) {
+                    err_msg = "Expected to find a DmrppByte instance but did not in handle_chunks_for_none_array";
+                    return false;
+                }
+
+                VERBOSE(cerr<<"For none_array cf dummy grid variable: var name: "<<btp->name() <<endl);
+
+                char buf='p';
+                db->set_missing_data(true);
+                db->set_value((dods_byte)buf);
+                db->set_read_p(true);
+    
+            }
+        }
+        ret_value = true;
+    }
+
+    return ret_value;
+ 
 }
 
 bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data) {
@@ -1156,9 +1311,19 @@ bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id
         }
         case dods_array_c:
             return get_chunks_for_an_array(filename,sd_id,file_id, btp,disable_missing_data);
-        default:
-            VERBOSE(cerr << btp->FQN() << ": " << btp->type_name() << " is not supported by DMR++ for HDF4 at this time.\n");
-            return false;
+        default: {
+            string err_msg;
+            bool ret_value = handle_chunks_for_none_array(btp,disable_missing_data,err_msg);
+            if (ret_value == false) {
+                if (err_msg.empty() == false) { 
+                    close_hdf4_file_ids(sd_id,file_id);
+                    throw BESInternalError(err_msg, __FILE__, __LINE__);
+                }
+                else 
+                    VERBOSE(cerr << btp->FQN() << ": " << btp->type_name() << " is not supported by DMR++ for HDF4 at this time.\n");
+            }
+            return ret_value;
+        }
     }
 }
 
@@ -1284,7 +1449,6 @@ void qc_input_file(const string &file_fqn)
 }
 
 
-#if 0
 /**
  * @brief Recreate the command invocation given argv and argc.
  *
@@ -1303,6 +1467,29 @@ static string recreate_cmdln_from_args(int argc, char *argv[])
     return ss.str();
 }
 
+/**
+ * @brief Returns an ISO-8601 date time string for the time at which this function is called.
+ * Tip-o-the-hat to Morris Day and The Time...
+ * @return An ISO-8601 date time string
+ */
+std::string what_time_is_it(){
+    // Get current time as a time_point
+    auto now = std::chrono::system_clock::now();
+
+    // Convert to system time (time_t)
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to tm structure (GMT time)
+    struct tm tbuf{};
+    const std::tm* gmt_time = gmtime_r(&time_t_now, &tbuf);
+
+    // Format the time using a stringstream
+    std::stringstream ss;
+    ss << std::put_time(gmt_time, "%Y-%m-%dT%H:%M:%SZ");
+
+    return ss.str();
+}
+
 
 /**
  * @brief This worker method provides a SSOT for how the version and configuration information are added to the DMR++
@@ -1317,37 +1504,48 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
-    auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+    auto version_unique = make_unique<D4Attribute>("build_dmrpp_metadata", StringToD4AttributeType("container"));
+    auto version = version_unique.get();
 
-    auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
+    auto creation_date_unique = make_unique<D4Attribute>("created", StringToD4AttributeType("string")); 
+    auto creation_date = creation_date_unique.get();
+    creation_date->add_value(what_time_is_it()); 
+    version->attributes()->add_attribute_nocopy(creation_date_unique.release()); 
+
+    auto build_dmrpp_version_unique = make_unique<D4Attribute>("build_dmrpp", StringToD4AttributeType("string"));
+    auto build_dmrpp_version = build_dmrpp_version_unique.get();
     build_dmrpp_version->add_value(CVER);
-    version->attributes()->add_attribute_nocopy(build_dmrpp_version);
+    version->attributes()->add_attribute_nocopy(build_dmrpp_version_unique.release());
 
-    auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
+    auto bes_version_unique = make_unique<D4Attribute>("bes", StringToD4AttributeType("string"));
+    auto bes_version = bes_version_unique.get();
     bes_version->add_value(CVER);
-    version->attributes()->add_attribute_nocopy(bes_version);
+    version->attributes()->add_attribute_nocopy(bes_version_unique.release());
 
     stringstream ldv;
     ldv << libdap_name() << "-" << libdap_version();
-    auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
+    auto libdap4_version_unique =  make_unique<D4Attribute>("libdap", StringToD4AttributeType("string"));
+    auto libdap4_version = libdap4_version_unique.get();
     libdap4_version->add_value(ldv.str());
-    version->attributes()->add_attribute_nocopy(libdap4_version);
+    version->attributes()->add_attribute_nocopy(libdap4_version_unique.release());
 
     if(!bes_conf_doc.empty()) {
         // Add the BES configuration used to create the base DMR
-        auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
+        auto config_unique = make_unique<D4Attribute>("configuration", StringToD4AttributeType("string"));
+        auto config = config_unique.get();
         config->add_value(bes_conf_doc);
-        version->attributes()->add_attribute_nocopy(config);
+        version->attributes()->add_attribute_nocopy(config_unique.release());
     }
 
     if(!invocation.empty()) {
         // How was build_dmrpp invoked?
-        auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+        auto invoke_unique = make_unique<D4Attribute>("invocation", StringToD4AttributeType("string"));
+        auto invoke = invoke_unique.get();
         invoke->add_value(invocation);
-        version->attributes()->add_attribute_nocopy(invoke);
+        version->attributes()->add_attribute_nocopy(invoke_unique.release());
     }
     // Inject version and configuration attributes into DMR here.
-    dmrpp->root()->attributes()->add_attribute_nocopy(version);
+    dmrpp->root()->attributes()->add_attribute_nocopy(version_unique.release());
 }
 
 
@@ -1407,7 +1605,6 @@ void inject_version_and_configuration(DMRpp *dmrpp)
     // Do the work now...
     inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
 }
-#endif
 
 /**
  * @brief Builds a DMR++ from an existing DMR file in conjunction with source granule file.
@@ -1435,14 +1632,9 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
 
     add_chunk_information(h4_file_fqn, &dmrpp,disable_missing_data);
 
-#if 0
     if (add_production_metadata) {
-        // I updated this function call to reflect the changes I made to the build_dmrpp_util.cc
-        // I see that it is not currently in service but it's clear that something like this
-        // will be needed to establish history/provenance of the dmr++ file. - ndp 07/26/24
-        inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);
+        inject_version_and_configuration(argc,argv,bes_conf_file_used_to_create_dmr,&dmrpp);
     }
-#endif
 
     XMLWriter writer;
     dmrpp.print_dmrpp(writer, dmrpp_href_value);

@@ -25,12 +25,12 @@
 #include "config.h"
 
 #include <unistd.h>
-#include <time.h>
 
-#include <cstring>
+#include <ctime>
+//#include <cstring>
 #include <cassert>
-#include <cerrno>
-#include <list>
+//#include <cerrno>
+//#include <list>
 #include <memory>
 
 #include <queue>
@@ -56,16 +56,12 @@
 #include "CurlHandlePool.h"
 
 #include "test_config.h"
+#include "run_tests_cppunit.h"
 
 #define THREAD_SLEEP_TIME 1 // sleep time in seconds
 
 using namespace std;
 
-static bool debug = false;
-static bool bes_debug = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 #define prolog std::string("CurlHandlePoolTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
@@ -78,28 +74,28 @@ public:
     MockChunk(CurlHandlePool *chp, bool sim_err) : Chunk(), d_chp(chp), d_sim_err(sim_err)
     {}
 
-    void inflate_chunk(bool, bool, unsigned int, unsigned int)
+    void inflate_chunk(bool, bool, unsigned int, unsigned int) const
     {
-        return;
+        // Do nothing
     }
 
-    virtual shared_ptr<http::url> get_data_url() const override {
-        return shared_ptr<http::url>(new  http::url("https://httpbin.org/"));
+    shared_ptr<http::url> get_data_url() const override {
+        return std::make_shared<http::url>("https://httpbin.org/");
     }
 
-    virtual unsigned long long get_bytes_read() const  override
+    unsigned long long get_bytes_read() const  override
     {
         return 2;
     }
 
-    virtual unsigned long long get_size() const  override
+    unsigned long long get_size() const  override
     {
         return 2;
     }
 
     std::vector<unsigned long long> mock_pia = {1};
 
-    virtual const std::vector<unsigned long long> &get_position_in_array() const  override
+    const std::vector<unsigned long long> &get_position_in_array() const  override
     {
         return mock_pia;
     }
@@ -120,9 +116,8 @@ public:
             throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
         try {
-            // handle->read_data();  // throws if error
             time_t t;
-            srandom(time(&t));
+            srandom((int)time(&t));
             sleep(THREAD_SLEEP_TIME);
 
             if (d_sim_err)
@@ -157,10 +152,10 @@ public:
     bool is_filters_empty() const override
     { return true; }
 
-    virtual void insert_chunk(unsigned int, vector<unsigned long long> *, vector<unsigned long long> *,
-                              shared_ptr<Chunk>, const vector<unsigned long long> &) override
+    void insert_chunk(unsigned int, vector<unsigned long long> *, vector<unsigned long long> *,
+                              shared_ptr<Chunk>, const vector<unsigned long long> &, char*buf) override
     {
-        return;
+        // Do nothing
     }
 
 };
@@ -184,7 +179,6 @@ public:
         // The following will show threads joined after an exception was thrown by a thread
         chp = new CurlHandlePool();
         chp->initialize();
-        if (bes_debug) BESDebug::SetUp("cerr,dmrpp:3");
     }
 
     // Called after each test
@@ -200,12 +194,12 @@ public:
 
         CPPUNIT_ASSERT(true);
 
-        shared_ptr<Chunk> chunk(new MockChunk(chp, true));
-        auto array = new MockDmrppArray;
+        shared_ptr<Chunk> chunk(std::make_shared<MockChunk>(chp, true));
+        auto array = std::make_unique<MockDmrppArray>();
         vector<unsigned long long> array_shape = {1};
 
         try {
-            process_one_chunk(chunk, array, array_shape);
+            process_one_chunk(chunk, array.get(), array_shape);
         }
         catch (BESError &e) {
             DBG(cerr << prolog << "BES Exception: " << e.get_verbose_message() << endl);
@@ -234,20 +228,19 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         queue<shared_ptr<Chunk>> chunks_to_read;
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
 
-        //MockDmrppArray *array = new MockDmrppArray;
-        auto array = new MockDmrppArray;
+        auto array = std::make_unique<MockDmrppArray>();
         vector<unsigned long long> array_shape = {1};
 
         vector<unsigned long long> chunk_dim_sizes = {1};
         array->set_chunk_dimension_sizes(chunk_dim_sizes);
 
         try {
-            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            dmrpp_array_thread_control(chunks_to_read, array.get(), array_shape);
         }
         catch(BESError &e) {
             CPPUNIT_FAIL(string("Caught BESError: ").append(e.get_verbose_message()));
@@ -263,16 +256,16 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
 
-        auto array = new MockDmrppArray;
+        auto array = std::make_unique<MockDmrppArray>();
         vector<unsigned long long> array_shape = {1};
 
         try {
-            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            dmrpp_array_thread_control(chunks_to_read, array.get(), array_shape);
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
@@ -286,18 +279,18 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
 
-        auto array = new MockDmrppArray;
+        auto array = std::make_unique<MockDmrppArray>();
         vector<unsigned long long> array_shape = {1};
 
         try {
-            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            dmrpp_array_thread_control(chunks_to_read, array.get(), array_shape);
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
@@ -311,19 +304,19 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(std::make_shared<MockChunk>(chp, false)));
 
-        auto array = new MockDmrppArray;
+        auto array = std::make_unique<MockDmrppArray>();
         vector<unsigned long long> array_shape = {1};
 
         try {
-            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            dmrpp_array_thread_control(chunks_to_read, array.get(), array_shape);
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
@@ -338,19 +331,19 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, true));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, true));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
 
-        auto array = new MockDmrppArray;
+        auto array = std::make_unique<MockDmrppArray>();
         vector<unsigned long long> array_shape = {1};
 
         try {
-            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            dmrpp_array_thread_control(chunks_to_read, array.get(), array_shape);
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
@@ -365,19 +358,19 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, true));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, true));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+        chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
 
-        auto array = new MockDmrppArray;
+        auto array = std::make_unique<MockDmrppArray>();
         vector<unsigned long long> array_shape = {1};
 
         try {
-            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            dmrpp_array_thread_control(chunks_to_read, array.get(), array_shape);
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
@@ -393,19 +386,19 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         for (int i = 0; i < 5; ++i) {
-            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
-            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
-            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+            chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+            chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+            chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+            chunks_to_read.push(std::make_shared<MockChunk>(chp, true));
+            chunks_to_read.push(std::make_shared<MockChunk>(chp, true));
+            chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
+            chunks_to_read.push(std::make_shared<MockChunk>(chp, false));
 
-            auto array = new MockDmrppArray;
+            auto array = std::make_unique<MockDmrppArray>();
             vector<unsigned long long> array_shape = {1};
 
             try {
-                dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+                dmrpp_array_thread_control(chunks_to_read, array.get(), array_shape);
                 CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
             }
             catch (BESInternalError &e) {
@@ -415,6 +408,26 @@ public:
 
         DBG(cerr << prolog << "END" << endl);
     }
+
+#if 0
+Write tests for get_easy_handle() and test the signed URL below. jhrg 11/19/24
+dmrpp_easy_handle *
+CurlHandlePool::get_easy_handle(Chunk *chunk)
+
+Test using:
+https://podaac-ops-cumulus-protected.s3.us-west-2.amazonaws.com/CYGNSS_L1_V3.1/cyg03.ddmi.
+s20180801-000000-e20180801-235959.l1.power-brcs.a31.d32.nc?A-userid=jhrg&X-Amz-Algorithm=AWS4-HMAC-SHA256
+        &X-Amz-Credential=ASIAxxxxxxxxxxxxxxxxus-west-2%2Fs3%2Faws4_request
+&X-Amz-Date=20241119T222214Z
+&X-Amz-Expires=3600
+&X-Amz-Security-Token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+&X-Amz-SignedHeaders=host
+&X-Amz-Signature=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+#endif
 
     CPPUNIT_TEST_SUITE(CurlHandlePoolTest);
 
@@ -434,43 +447,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CurlHandlePoolTest);
 
 } // namespace dmrpp
 
-int main(int argc, char *argv[])
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "db")) != -1)
-        switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                break;
-            case 'b':
-                debug = true;  // debug is a static global
-                bes_debug = true;  // debug is a static global
-                break;
-            default:
-                break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    bool wasSuccessful = true;
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << prolog << "Running " << argv[i] << endl;
-            string test = dmrpp::CurlHandlePoolTest::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+int main(int argc, char*argv[]) {
+    return bes_run_tests<dmrpp::CurlHandlePoolTest>(argc, argv, "cerr,dmrpp:3") ? 0 : 1;
 }

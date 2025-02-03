@@ -47,10 +47,6 @@
 #define HTTP_MAX_REDIRECTS_KEY "Http.MaxRedirects"
 #define HTTP_MAX_REDIRECTS_DEFAULT 20
 
-#define HTTP_CACHE_DIR_KEY "Http.Cache.dir"
-#define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"
-#define HTTP_CACHE_SIZE_KEY "Http.Cache.size"
-#define HTTP_CACHE_EXPIRES_TIME_KEY "Http.Cache.expires.time"
 #define REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL 3600
 
 #define HTTP_NETRC_FILE_KEY "Http.netrc.file"

@@ -45,23 +45,23 @@ public:
     DmrppUrl(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Url(n, d), DmrppCommon(dmz) { }
     DmrppUrl(const DmrppUrl &) = default;
 
-    virtual ~DmrppUrl() = default;
+    ~DmrppUrl() override = default;
 
     DmrppUrl &operator=(const DmrppUrl &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppUrl(*this);
     }
 
     bool read() override;
     void set_send_p(bool state) override;
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override
     {
         DmrppCommon::print_dmrpp(writer, constrained);
     }
 
-    virtual void dump(std::ostream & strm) const;
+    void dump(std::ostream & strm) const override;
 };
 
 } // namespace dmrpp

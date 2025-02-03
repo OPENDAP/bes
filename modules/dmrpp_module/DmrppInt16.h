@@ -41,27 +41,27 @@ class DmrppInt16: public libdap::Int16, public DmrppCommon {
 public:
     DmrppInt16(const std::string &n) : libdap::Int16(n), DmrppCommon() { }
     DmrppInt16(const std::string &n, const std::string &d) : libdap::Int16(n, d), DmrppCommon() { }
-    DmrppInt16(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Int16(n), DmrppCommon(dmz) { }
-    DmrppInt16(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Int16(n, d), DmrppCommon(dmz) { }
+    DmrppInt16(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Int16(n), DmrppCommon(std::move(dmz)) { }
+    DmrppInt16(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Int16(n, d), DmrppCommon(std::move(dmz)) { }
     DmrppInt16(const DmrppInt16 &) = default;
 
-    virtual ~DmrppInt16() = default;
+    ~DmrppInt16() override = default;
 
     DmrppInt16 &operator=(const DmrppInt16 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppInt16(*this);
     }
 
     bool read() override;
     void set_send_p(bool state) override;
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override
     {
         DmrppCommon::print_dmrpp(writer, constrained);
     }
 
-    virtual void dump(ostream & strm) const;
+    void dump(ostream & strm) const override;
 };
 
 } // namespace dmrpp

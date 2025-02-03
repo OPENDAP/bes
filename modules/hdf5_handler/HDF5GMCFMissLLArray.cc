@@ -135,9 +135,19 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
     int LL_total_num = 0;
 
     if (CV_LAT_MISS == cvartype) {
+
         string Lat_SWP_name = (Aqu_L3 == product_type) ? "SW Point Latitude" : "sw_point_latitude";
+        if ((Aqu_L3 == product_type) && (H5Aexists(rootid,Lat_SWP_name.c_str())==0))
+            Lat_SWP_name ="sw_point_latitude";
+
         string Lat_step_name = (Aqu_L3 == product_type) ? "Latitude Step" : "latitude_step";
+        if ((Aqu_L3 == product_type) && (H5Aexists(rootid,Lat_step_name.c_str())==0))
+            Lat_step_name ="latitude_step";
+
         string Num_lines_name = (Aqu_L3 == product_type) ? "Number of Lines" : "number_of_lines";
+        if ((Aqu_L3 == product_type) && (H5Aexists(rootid,Num_lines_name.c_str())==0))
+            Num_lines_name ="number_of_lines";
+
         float Lat_SWP = 0.0;
         float Lat_step = 0.0;
         int Num_lines = 0;
@@ -161,8 +171,17 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
     if (CV_LON_MISS == cvartype) {
 
         string Lon_SWP_name = (Aqu_L3 == product_type) ? "SW Point Longitude" : "sw_point_longitude";
+        if ((Aqu_L3 == product_type) && (H5Aexists(rootid,Lon_SWP_name.c_str())==0))
+            Lon_SWP_name ="sw_point_longitude";
+
         string Lon_step_name = (Aqu_L3 == product_type) ? "Longitude Step" : "longitude_step";
+        if ((Aqu_L3 == product_type) && (H5Aexists(rootid,Lon_step_name.c_str())==0))
+            Lon_step_name ="longitude_step";
+
         string Num_columns_name = (Aqu_L3 == product_type) ? "Number of Columns" : "number_of_columns";
+        if ((Aqu_L3 == product_type) && (H5Aexists(rootid,Num_columns_name.c_str())==0))
+            Num_columns_name ="number_of_columns";
+
         float Lon_SWP = 0.0;
         float Lon_step = 0.0;
         int Num_cols = 0;

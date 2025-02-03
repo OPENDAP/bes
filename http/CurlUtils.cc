@@ -69,6 +69,8 @@ using namespace std;
 
 namespace curl {
 
+static void super_easy_perform(CURL *c_handle, int fd);
+
 const unsigned int retry_limit = 3; // 10; // Amazon's suggestion
 const useconds_t url_retry_time = 250'000; // 1/4 second in micro seconds
 
@@ -486,8 +488,8 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", error_buffer.data(), __FILE__, __LINE__);
 
     }
-    VERBOSE(prolog << " is using the netrc file '"
-                   << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
+    VERBOSE(prolog + " is using the netrc file '"
+                   + (!netrc_file.empty() ? netrc_file : "~/.netrc") + "'");
 
 
     // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
@@ -745,7 +747,7 @@ static bool eval_curl_easy_perform_code(
         msg << "ERROR - Problem with data transfer. Message: " << curl::error_message(curl_code, error_buffer);
         msg << " CURLINFO_EFFECTIVE_URL: " << filter_aws_url(eff_req_url);
         BESDEBUG(MODULE, prolog << msg.str() << endl);
-        ERROR_LOG(msg.str() << endl);
+        ERROR_LOG(msg.str());
         return false;
     }
 
@@ -785,7 +787,9 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
         case 408: // Request Timeout
         {
             // These issues are not considered retryable problems, so we throw immediately.
-            ERROR_LOG(msg.str() << endl);
+            // Remove this redundant call to ERROR_LOG since the thrown exception is
+            //  logged as an error. jhrg 1/24/25
+            // ERROR_LOG(msg.str());
             throw http::HttpError(msg.str(),
                                   CURLE_OK,
                                   http_code,
@@ -803,7 +807,7 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
             // These problems might actually be retryable, so we check and then act accordingly.
             if (!is_retryable(last_accessed_url)) {
                 msg << " The HTTP response code of this last accessed URL indicate that it should not be retried.";
-                ERROR_LOG(msg.str() << endl);
+                ERROR_LOG(msg.str());
                 throw http::HttpError(msg.str(),
                                       CURLE_OK,
                                       http_code,
@@ -818,7 +822,7 @@ process_http_code_helper(const long http_code, const string &requested_url, cons
             break;
 
         default:
-            ERROR_LOG(msg.str() << endl);
+            // ERROR_LOG(msg.str());
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 }
@@ -947,7 +951,34 @@ static void truncate_file(int fd) {
                                __FILE__, __LINE__);
 }
 
-// Used here only. jhrg 3/8/23
+// used only in one place here. jhrg 3/8/23
+/**
+ * @brief Performs a curl_easy_perform(), retrying if certain types of errors are encountered.
+ *
+ * @note Used in dmrpp_module and by three functions here (http_get, http_get, and
+ * retrieve_effective_url). jhrg 3/8/23
+ *
+ * This function contains the operational frame work and state checking for performing retries of
+ * failed requests as necessary.
+ *
+ * The code that contains the state assessment is held in the functions
+ * - curl::eval_curl_easy_perform_code()
+ * - curl::eval_http_get_response()
+ *
+ * These functions have a tri-state behavior:
+ *   - If the assessed operation was a success they return true.
+ *   - If the assessed operation had what is considered a retryable failure, they return false.
+ *   - If the assessed operation had any other failure, a BESInternalError is thrown.
+ * These functions are used in the retry logic of this curl::super_easy_perform() to
+ * determine when there was success, when to keep trying, and if to give up.
+ *
+ * @param c_handle The CURL easy handle on which to operate
+ */
+void super_easy_perform(CURL *c_handle) {
+    int fd = -1;
+    super_easy_perform(c_handle, fd);
+}
+
 static void super_easy_perform(CURL *c_handle, int fd) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
@@ -996,7 +1027,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 msg << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
                 msg << "CURLINFO_EFFECTIVE_URL: " << effective_url << " ";
                 msg << "Returned HTTP_STATUS: " << http_code;
-                ERROR_LOG(msg.str() << endl);
+                // Remove redundant error log entryvERROR_LOG(msg.str());
                 throw HttpError(msg.str(),
                                 curl_code,
                                 http_code,
@@ -1004,10 +1035,10 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                                 effective_url,
                                 __FILE__, __LINE__);
             } else {
-                ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: "
-                                 << filter_aws_url(target_url) << " attempt: " << attempts << "). "
-                                 << "CURLINFO_EFFECTIVE_URL: " << effective_url << " "
-                                 << "Returned HTTP_STATUS: " << http_code << "\n");
+                INFO_LOG(prolog + "Problem with data transfer. Will retry (url: "
+                                 + filter_aws_url(target_url) + " attempt: " + std::to_string(attempts) + "). "
+                                 + "CURLINFO_EFFECTIVE_URL: " + effective_url + " "
+                                 + "Returned HTTP_STATUS: " + std::to_string(http_code));
                 usleep(retry_time);
                 retry_time *= 2;
 
@@ -1118,16 +1149,16 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
  * @note Used here and in dmrpp_module in one place. jhrg 3/8/23
  * @param response_code
  * @param error_buf
- * @return
+ * @return A formated error message in a C++ string.
  */
 string error_message(const CURLcode response_code, const char *error_buffer) {
-    std::ostringstream oss;
-    size_t len = strlen(error_buffer);
-    if (len) {
-        oss << "cURL_error_buffer: " << error_buffer << ", ";
+    string msg;
+    if (error_buffer) {
+        msg = string("cURL_error_buffer: ") + error_buffer + ", ";
     }
-    oss << "cURL_message: " << curl_easy_strerror(response_code) << " (code: " << (int) response_code << ")";
-    return oss.str();
+    msg += string("cURL_message: ") + curl_easy_strerror(response_code) + " (code: "
+            + to_string(response_code) + ")\n";
+    return msg;
 }
 
 
@@ -1170,10 +1201,10 @@ void http_get(const string &target_url, string &buf) {
 #ifdef DEVELOPER
         AccessCredentials *credentials = CredentialsManager::theCM()->get(url);
         if (credentials) {
-            INFO_LOG(prolog << "Looking for EDL Token for URL: " << target_url << '\n');
+            INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
             string edl_token = credentials->get("edl_token");
             if (!edl_token.empty()) {
-                INFO_LOG(prolog << "Using EDL Token for URL: " << target_url << '\n');
+                INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
                 request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
             }
         }
@@ -1218,33 +1249,6 @@ void http_get(const string &target_url, string &buf) {
         throw;
     }
     BESDEBUG(MODULE, prolog << "END\n");
-}
-
-/**
- * @brief Performs a curl_easy_perform(), retrying if certain types of errors are encountered.
- *
- * @note Used in dmrpp_module and by three functions here (http_get, http_get, and
- * retrieve_effective_url). jhrg 3/8/23
- *
- * This function contains the operational frame work and state checking for performing retries of
- * failed requests as necessary.
- *
- * The code that contains the state assessment is held in the functions
- * - curl::eval_curl_easy_perform_code()
- * - curl::eval_http_get_response()
- *
- * These functions have a tri-state behavior:
- *   - If the assessed operation was a success they return true.
- *   - If the assessed operation had what is considered a retryable failure, they return false.
- *   - If the assessed operation had any other failure, a BESInternalError is thrown.
- * These functions are used in the retry logic of this curl::super_easy_perform() to
- * determine when there was success, when to keep trying, and if to give up.
- *
- * @param c_handle The CURL easy handle on which to operate
- */
-void super_easy_perform(CURL *c_handle) {
-    int fd = -1;
-    super_easy_perform(c_handle, fd);
 }
 
 // used only in one place here. jhrg 3/8/23
@@ -1460,6 +1464,33 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
     return req_headers;
 }
 
+/**
+ * @brief Checks if a URL has been signed for S3.
+ *
+ * This function looks for the presence of specific query parameters
+ * that are typically used in S3 signed URLs.
+ *
+ * @param url The URL to check.
+ * @return True if the URL is signed for S3, false otherwise.
+ */
+bool is_url_signed_for_s3(const std::string &url) {
+    return url.find("X-Amz-Algorithm=") != string::npos &&
+           url.find("X-Amz-Credential=") != string::npos &&
+           url.find("X-Amz-Signature=") != string::npos;
+}
+
+/**
+ * @brief Checks if a URL has been signed for S3.
+ *
+ * This function looks for the presence of specific query parameters
+ * that are typically used in S3 signed URLs.
+ *
+ * @param target_url The URL to check.
+ * @return True if the URL is signed for S3, false otherwise.
+ */
+bool is_url_signed_for_s3(const std::shared_ptr<http::url> &target_url) {
+    return is_url_signed_for_s3(target_url->str());
+}
 
 /**
  * @brief Returns an cURL easy handle for recovering the location
@@ -1636,10 +1667,10 @@ bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     //  for more info. jhrg 5/24/24
     AccessCredentials *credentials = CredentialsManager::theCM()->get(origin_url);
     if (credentials) {
-        INFO_LOG(prolog << "Looking for EDL Token for URL: " << origin_url->str() << '\n');
+        INFO_LOG(prolog + "Looking for EDL Token for URL: " + origin_url->str() + '\n');
         string edl_token = credentials->get("edl_token");
         if (!edl_token.empty()) {
-            INFO_LOG(prolog << "Using EDL Token for URL: " << origin_url->str() << '\n');
+            INFO_LOG(prolog + "Using EDL Token for URL: " + origin_url->str() + '\n');
             req_headers = curl::append_http_header(req_headers, "Authorization", edl_token);
         }
     }

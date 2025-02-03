@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.69])
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT([bes],[3.21.0],[support@opendap.org])
+AC_INIT([bes],[3.21.1],[support@opendap.org])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -129,21 +129,6 @@ AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
     [AC_MSG_NOTICE([Disabled support for the CMR Module])])
 
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl Enable/Disable new categorized logging output
-dnl
-
-AC_ARG_WITH([newlog],
-    [AS_HELP_STRING([--without-newlog],
-    [Disable support for the new categorized logging output. (Enabled by default)])]
-)
-AM_CONDITIONAL([WITH_NEWLOG], [test "x$with_newlog" != "xno"])
-AM_COND_IF([WITH_NEWLOG],
-    [AC_DEFINE([USE_LOG_CATEGORIES], [1], [Set this to 0 to disable categorized log output.])
-    AC_MSG_NOTICE([Support for categorized logging output is ENABLED.]) ],
-    [AC_DEFINE([USE_LOG_CATEGORIES], [0], [Set this to 1 to enable categorized log output.])
-    AC_MSG_NOTICE([Support for categorized logging output is DISABLED.])]
-)
 
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
@@ -185,7 +170,7 @@ dnl Interfaces removed or changed (BAD, breaks upward compatibility):
 dnl ==> Increment CURRENT, set AGE and REVISION to 0.
 
 LIB_DIS_CURRENT=18
-LIB_DIS_REVISION=10
+LIB_DIS_REVISION=11
 LIB_DIS_AGE=0
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_REVISION)
@@ -194,7 +179,7 @@ LIBDISPATCH_VERSION="$LIB_DIS_CURRENT:$LIB_DIS_REVISION:$LIB_DIS_AGE"
 AC_SUBST(LIBDISPATCH_VERSION)
 
 LIB_PPT_CURRENT=5
-LIB_PPT_REVISION=8
+LIB_PPT_REVISION=9
 LIB_PPT_AGE=0
 AC_SUBST(LIB_PPT_CURRENT)
 AC_SUBST(LIB_PPT_REVISION)
@@ -203,7 +188,7 @@ LIBPPT_VERSION="$LIB_PPT_CURRENT:$LIB_PPT_REVISION:$LIB_PPT_AGE"
 AC_SUBST(LIBPPT_VERSION)
 
 LIB_XML_CMD_CURRENT=5
-LIB_XML_CMD_REVISION=9
+LIB_XML_CMD_REVISION=10
 LIB_XML_CMD_AGE=0
 AC_SUBST(LIB_XML_CMD_CURRENT)
 AC_SUBST(LIB_XML_CMD_REVISION)
@@ -1144,6 +1129,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/data/Makefile
     modules/dmrpp_module/writer/Makefile
     modules/dmrpp_module/build_dmrpp_h4/Makefile
+    modules/dmrpp_module/get_dmrpp/Makefile
 
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 

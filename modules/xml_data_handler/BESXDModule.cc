@@ -62,7 +62,7 @@ void BESXDModule::initialize(const string &modname)
 
     BESDapService::add_to_dap_service(XD_SERVICE, "OPeNDAP xml data representation");
 
-    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter(DAP2_FORMAT);
+    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter(DAP_FORMAT);
     if (t)
         t->add_method(XD_TRANSMITTER, BESXDTransmit::send_basic_ascii);
 
@@ -81,11 +81,11 @@ void BESXDModule::terminate(const string &modname)
 
     BESResponseHandlerList::TheList()->remove_handler(XD_RESPONSE);
 
-    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter(DAP2_FORMAT);
+    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter(DAP_FORMAT);
     if (t)
         t->remove_method(XD_TRANSMITTER);
 
-    t = BESReturnManager::TheManager()->find_transmitter(DAP2_FORMAT);
+    t = BESReturnManager::TheManager()->find_transmitter(DAP_FORMAT);
     if (t)
         t->remove_method(XD_TRANSMITTER);
 

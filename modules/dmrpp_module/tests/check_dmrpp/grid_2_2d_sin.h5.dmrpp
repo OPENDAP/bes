@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_sin.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.0">
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.0</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.module.cmd=/Users/myang6/work/opendap/hyrax-1518/bes/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dap=/Users/myang6/work/opendap/hyrax-1518/bes/dap/.libs/libdap_module.so
+BES.module.dmrpp=/Users/myang6/work/opendap/hyrax-1518/bes/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.fonc=/Users/myang6/work/opendap/hyrax-1518/bes/modules/fileout_netcdf/.libs/libfonc_module.so
+BES.module.h5=/Users/myang6/work/opendap/hyrax-1518/bes/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.nc=/Users/myang6/work/opendap/hyrax-1518/bes/modules/netcdf_handler/.libs/libnc_module.so
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/bes_conf_XXXX.Fn3LqCpHK0 -f ./grid_2_2d_sin.h5 -r /var/folders/pt/4hkk2rfd3kjdzz4spzbw32_m0000gr/T/dmr__XXXXXX.xrhQlC0Sfv -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES"/>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="SinGrid1">
+                <Dimension name="XDim" size="2"/>
+                <Dimension name="YDim" size="2"/>
+                <Byte name="eos5_cf_projection">
+                    <Attribute name="grid_mapping_name" type="String">
+                        <Value>sinusoidal</Value>
+                    </Attribute>
+                    <Attribute name="longitude_of_central_meridian" type="Float64">
+                        <Value>0.0</Value>
+                    </Attribute>
+                    <Attribute name="earth_radius" type="Float64">
+                        <Value>6371007.181</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisTypes" type="String">
+                        <Value>GeoX GeoY</Value>
+                    </Attribute>
+                </Byte>
+                <Float64 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_x_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>x coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoX</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_y_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>y coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoY</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="Latitude">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="Longitude">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float64>
+                <Group name="Data_Fields">
+                    <Float32 name="Temperature">
+                        <Dim name="/HDFEOS/GRIDS/SinGrid1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SinGrid1/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SinGrid1/Data Fields/Temperature</Value>
+                        </Attribute>
+                        <Attribute name="coordinates" type="String">
+                            <Value>/HDFEOS/GRIDS/SinGrid1/Latitude /HDFEOS/GRIDS/SinGrid1/Longitude</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>/HDFEOS/GRIDS/SinGrid1/eos5_cf_projection</Value>
+                        </Attribute>
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
+                            <dmrpp:chunk offset="34096" nBytes="16"/>
+                        </dmrpp:chunks>
+                    </Float32>
+                </Group>
+            </Group>
+            <Group name="SinGrid2">
+                <Dimension name="XDim" size="4"/>
+                <Dimension name="YDim" size="4"/>
+                <Byte name="eos5_cf_projection">
+                    <Attribute name="grid_mapping_name" type="String">
+                        <Value>sinusoidal</Value>
+                    </Attribute>
+                    <Attribute name="longitude_of_central_meridian" type="Float64">
+                        <Value>0.0</Value>
+                    </Attribute>
+                    <Attribute name="earth_radius" type="Float64">
+                        <Value>6371007.181</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisTypes" type="String">
+                        <Value>GeoX GeoY</Value>
+                    </Attribute>
+                </Byte>
+                <Float64 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_x_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>x coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoX</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_y_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>y coordinate of projection </Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>meter</Value>
+                    </Attribute>
+                    <Attribute name="_CoordinateAxisType" type="String">
+                        <Value>GeoY</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="Latitude">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="Longitude">
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                    <Dim name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float64>
+                <Group name="Data_Fields">
+                    <Float32 name="Temperature">
+                        <Dim name="/HDFEOS/GRIDS/SinGrid2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SinGrid2/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SinGrid2/Data Fields/Temperature</Value>
+                        </Attribute>
+                        <Attribute name="coordinates" type="String">
+                            <Value>/HDFEOS/GRIDS/SinGrid2/Latitude /HDFEOS/GRIDS/SinGrid2/Longitude</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>/HDFEOS/GRIDS/SinGrid2/eos5_cf_projection</Value>
+                        </Attribute>
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
+                            <dmrpp:chunk offset="34112" nBytes="64"/>
+                        </dmrpp:chunks>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+            <dmrpp:chunks fillValue="">
+                <dmrpp:chunk offset="2096" nBytes="32000"/>
+            </dmrpp:chunks>
+        </String>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.17</Value>
+        </Attribute>
+    </Group>
+</Dataset>

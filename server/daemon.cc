@@ -183,7 +183,7 @@ void block_signals()
     sigaddset(&set, SIGHUP);
     sigaddset(&set, SIGTERM);
 
-    if (sigprocmask(SIG_BLOCK, &set, 0) < 0) {
+    if (sigprocmask(SIG_BLOCK, &set, nullptr) < 0) {
         cerr << errno_str(": sigprocmask error, blocking signals in stop_all_beslisteners ");
     }
 }
@@ -197,7 +197,7 @@ void unblock_signals()
     sigaddset(&set, SIGHUP);
     sigaddset(&set, SIGTERM);
 
-    if (sigprocmask(SIG_UNBLOCK, &set, 0) < 0) {
+    if (sigprocmask(SIG_UNBLOCK, &set, nullptr) < 0) {
         cerr << errno_str(": sigprocmask error unblocking signals in stop_all_beslisteners ");
     }
 }
@@ -301,7 +301,7 @@ char **update_beslistener_args()
             arguments[i++] = strdup((*it).second.c_str());
         }
     }
-    arguments[i] = 0;       // terminal null
+    arguments[i] = nullptr;       // terminal null
 
     return arguments;
 }
@@ -528,11 +528,10 @@ static int start_command_processor(DaemonCommandHandler &handler)
 
         string port_str;
         bool port_found;
-        long port = 0;
+        int port = 0;
         TheBESKeys::TheKeys()->get_value(DAEMON_PORT_STR, port_str, port_found);
         if (port_found) {
-            char *ptr;
-            port = strtol(port_str.c_str(), &ptr, 10);
+            port = std::stoi(port_str);
             if (port == 0) {
                 cerr << "Invalid port number for daemon command interface: " << port_str << endl;
                 exit(1);
@@ -764,7 +763,7 @@ static void set_group_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = string("FAILED: ") + e.get_message();
         cerr << err << endl;
-        ERROR_LOG(err << endl);
+        ERROR_LOG(err);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -772,7 +771,7 @@ static void set_group_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = "FAILED: Group not specified in BES configuration file";
         cerr << err << endl;
-        ERROR_LOG(err << endl);
+        ERROR_LOG(err);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG("server", "to " << group_str << " ... " << endl);
@@ -799,7 +798,7 @@ static void set_group_id()
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = string( "FAILED: Group ") + group_str + " does not exist (" + strerror(errno) + ").";
             cerr << err << endl;
-            ERROR_LOG(err << endl);
+            ERROR_LOG(err);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_gid = result->gr_gid;
@@ -810,7 +809,7 @@ static void set_group_id()
         ostringstream err;
         err << "FAILED: Group id " << new_gid << " not a valid group id for BES";
         cerr << err.str() << endl;
-        ERROR_LOG(err.str() << endl);
+        ERROR_LOG(err.str());
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -820,7 +819,7 @@ static void set_group_id()
         ostringstream err;
         err << "FAILED: unable to set the group id to " << new_gid;
         cerr << err.str() << endl;
-        ERROR_LOG(err.str() << endl);
+        ERROR_LOG(err.str());
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -846,17 +845,17 @@ static void set_user_id()
     }
     catch (BESError &e) {
         BESDEBUG("server", "beslistener: FAILED" << endl);
-        string err = (string) "FAILED: " + e.get_message();
+        string err =  "FAILED: " + e.get_message();
         cerr << err << endl;
-        ERROR_LOG(err << endl);
+        ERROR_LOG(err);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
     if (!found || user_str.empty()) {
         BESDEBUG("server", "beslistener: FAILED" << endl);
-        auto err = (string) "FAILED: User not specified in BES config file";
+        auto err = "FAILED: User not specified in BES config file";
         cerr << err << endl;
-        ERROR_LOG(err << endl);
+        ERROR_LOG(err);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG("server", "to " << user_str << " ... " << endl);
@@ -881,7 +880,7 @@ static void set_user_id()
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = (string) "FAILED: Bad user name specified: " + user_str + "(" + strerror(errno) + ").";
             cerr << err << endl;
-            ERROR_LOG(err << endl);
+            ERROR_LOG(err);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_id = result->pw_uid;
@@ -892,7 +891,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         auto err = (string) "FAILED: BES cannot run as root";
         cerr << err << endl;
-        ERROR_LOG(err << endl);
+        ERROR_LOG(err);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -905,7 +904,7 @@ static void set_user_id()
         ostringstream err;
         err << "FAILED: Unable to relinquish supplementary groups (" << new_id << ")";
         cerr << err.str() << endl;
-        ERROR_LOG(err.str() << endl);
+        ERROR_LOG(err.str());
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -915,7 +914,7 @@ static void set_user_id()
         ostringstream err;
         err << "FAILED: Unable to set user id to " << new_id;
         cerr << err.str() << endl;
-        ERROR_LOG(err.str() << endl);
+        ERROR_LOG(err.str());
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 

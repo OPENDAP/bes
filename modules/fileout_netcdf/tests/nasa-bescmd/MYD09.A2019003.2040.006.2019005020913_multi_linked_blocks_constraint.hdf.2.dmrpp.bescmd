@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">4.0</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+         
+  <bes:setContainer name="c" space="catalog">data/MYD09.A2019003.2040.006.2019005020913.hdf.dmrpp </bes:setContainer>
+         
+  <bes:define name="d1" space="default">
+    <bes:container name="c">
+     <dap4constraint>/MODIS_SWATH_TYPE_L2/Data_Fields/_1km_Atmospheric_Optical_Depth_Band_3[1909:2:1911][203:2:207]</dap4constraint>
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dap" definition="d1" returnAs="netcdf-4"/>
+    
+</bes:request>

@@ -99,56 +99,32 @@ static inline void downcase(string &s)
  * @brief Write a phrase that describes the current RSS for this process
  * @param out Write to this stream
  */
-ostream &add_memory_info(ostream &out)
+std::string memory_info()
 {
     long mem_size = BESUtil::get_current_memory_usage();
+    string mem_info;
     if (mem_size) {
-        out << ", current memory usage is " << mem_size << " KB.";
+        mem_info = "Current memory usage is: " + std::to_string(mem_size) +" KB.";
     }
     else {
-        out << ", current memory usage is unknown.";
+        mem_info =  "Current memory usage is unknown.";
     }
 
-    return out;
+    return mem_info;
 }
+
 
 static void log_error(const BESError &e)
 {
-    string error_name;
+    string err_msg(e.get_message());
 
-    switch (e.get_bes_error_type()) {
-    case BES_INTERNAL_FATAL_ERROR:
-        error_name = "BES Internal Fatal Error";
-        break;
-
-    case BES_INTERNAL_ERROR:
-        error_name = "BES Internal Error";
-        break;
-
-    case BES_SYNTAX_USER_ERROR:
-        error_name = "BES User Syntax Error";
-        break;
-
-    case BES_FORBIDDEN_ERROR:
-        error_name = "BES Forbidden Error";
-        break;
-
-    case BES_NOT_FOUND_ERROR:
-        error_name = "BES Not Found Error";
-        break;
-
-    default:
-        error_name = "BES Error";
-        break;
-    }
-
-    if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << add_memory_info << endl);
+    if (TheBESKeys::read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
+        ERROR_LOG("ERROR! " + e.error_name() + ": " + BESUtil::remove_crlf(err_msg) + " " + memory_info());
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message()
-            << " (" << e.get_file() << ":" << e.get_line() << ")"
-            << add_memory_info << endl);
+        ERROR_LOG("ERROR! " + e.error_name() + ": " + BESUtil::remove_crlf(err_msg)
+            + " (" + e.get_file() + ":" + std::to_string(e.get_line()) + ") "
+            + memory_info() + "\n");
     }
 }
 
@@ -308,7 +284,8 @@ void BESInterface::set_bes_timeout()
     string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
     if (found) {
         d_bes_timeout = strtol(context.c_str(), NULL, 10);
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << d_bes_timeout << " seconds (from context)." << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout)
+            + " seconds (from context).");
 
     }
     else {
@@ -320,7 +297,8 @@ void BESInterface::set_bes_timeout()
         // If the value is not set in teh BES keys, d_timeout_from_keys will get the
         // default value of 0. jhrg 4/20/22
         d_bes_timeout = TheBESKeys::TheKeys()->read_int_key(BES_TIMEOUT_KEY, 0);
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << d_bes_timeout << " seconds (from keys)." << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout)
+            + " seconds (from keys).");
     }
 }
 
@@ -381,13 +359,7 @@ int BESInterface::execute_request(const string &from)
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) {
-        // It would be great to have more info to put here, but that is buried in
-        // BESXMLInterface::build_data_request_plan() where the XML document is
-        // parsed. jhrg 11/9/17
-        sw.start("BESInterface::execute_request", d_dhi_ptr->data[REQUEST_ID]);
-    }
+    BES_COMMAND_TIMING(prolog, d_dhi_ptr);
 
     // TODO These never change for the life of a BES, so maybe they can move out of
     //  code that runs for every request? jhrg 11/8/17
@@ -396,9 +368,8 @@ int BESInterface::execute_request(const string &from)
 
     // TODO If this is only used for logging, it is not needed since the log has a copy
     //  of the BES PID. jhrg 11/13/17
-    ostringstream ss;
-    ss << getpid();
-    d_dhi_ptr->data[SERVER_PID] = ss.str();
+    d_dhi_ptr->data[SERVER_PID] = to_string(getpid());
+
 
     // We split up the calls for the reason that if we catch an
     // exception during the initialization, building, execution, or response
@@ -406,7 +377,7 @@ int BESInterface::execute_request(const string &from)
     // information.
     int status = 0; // save the return status from exception_manager() and return that.
     try {
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " request received" << endl);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " request received");
 
         // Initialize the transmitter for this interface instance to the BASIC
         // TRANSMITTER. This ensures that a simple response, such as an error,
@@ -490,10 +461,10 @@ int BESInterface::finish(int status)
         end_request();
     }
     catch (BESError &ex) {
-        ERROR_LOG("Problem logging status or running end of request cleanup: " << ex.get_message() << endl);
+        ERROR_LOG("Problem logging status or running end of request cleanup: " + ex.get_message());
     }
     catch (...) {
-        ERROR_LOG("Unknown problem logging status or running end of request cleanup" << endl);
+        ERROR_LOG("Unknown problem logging status or running end of request cleanup");
     }
 
     return status;

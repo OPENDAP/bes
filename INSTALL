@@ -1,5 +1,5 @@
 
-Updated for version 3.21.0 of the OPeNDAP BES.
+Updated for version 3.21.1 of the OPeNDAP BES.
 
 Building and Installing the BES
 
@@ -31,7 +31,7 @@ builds for the BES.
 
 1. The BES repo on GitHub now includes the default set of BES modules,
 
-    'git clone https://github.com/opendap/bes'
+    'git clone https://github.com/OPENDAP/bes'
 
 Then...
 

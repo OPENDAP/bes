@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 #include <set>
-#include <stack>
+#include <queue>
 #include <memory>
 
 #define PUGIXML_NO_XPATH
@@ -88,12 +88,18 @@ private:
     static void load_config_from_keys();
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     static pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
+    void add_mblock_index(const pugi::xml_node &chunk,std::queue<std::vector<std::pair<unsigned long long, unsigned long long>>>& mb_index_queue,
+                                                      std::vector<std::pair<unsigned long long, unsigned long long >>&) const;
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
     void process_block(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk, unsigned int block_count) const;
+    void process_multi_blocks_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk, std::queue<std::vector<std::pair<unsigned long long, unsigned long long>>>& mb_index_queue) const;
     bool process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks) const;
 
-    static void process_fill_value_chunks(dmrpp::DmrppCommon *dc, const std::set<shape> &chunk_map, const shape &chunk_shape,
-                                   const shape &array_shape, unsigned long long chunk_size);
+    static void process_fill_value_chunks(libdap::BaseType *btp, const std::set<shape> &chunk_map, const shape &chunk_shape,
+                                   const shape &array_shape, unsigned long long chunk_size, unsigned int struct_size);
+
+    static bool is_simple_dap_structure_scalar_array(libdap::BaseType *btp, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
+    static bool is_simple_dap_structure_internal(const libdap::Structure *ds, std::vector<std::pair<libdap::Type,int>> &structure_type_element);
 
     static std::vector<unsigned long long int> get_array_dims(libdap::Array *array);
     static size_t logical_chunks(const std::vector<unsigned long long> &array_dim_sizes, const dmrpp::DmrppCommon *dc);

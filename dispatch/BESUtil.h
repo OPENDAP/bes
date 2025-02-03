@@ -136,6 +136,9 @@ public:
     static std::string file_to_string(const std::string &filename, std::string &error_msg);
     static int make_temp_file(const std::string &temp_file_dir, std::string &temp_file_name);
     static void string_to_file(const std::string &filename, const std::string &content);
+
+    static std::string &remove_crlf(std::string &str);
+
 };
 
 #endif // E_BESUtil_h

@@ -50,6 +50,7 @@
 #include "DMZ.h"
 #include "Chunk.h"
 #include "DmrppCommon.h"
+#include "DmrppInt32.h"
 #include "DmrppArray.h"
 #include "DmrppTypeFactory.h"
 #include "Base64.h"
@@ -789,7 +790,7 @@ public:
 
     // Test the case when there are no chunks in the DMR++ - the array is all fill values
     void test_process_fill_value_chunks_all_fill() {
-        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        unique_ptr<DmrppInt32> dc(new DmrppInt32("dummy"));
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
         dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
@@ -797,7 +798,7 @@ public:
         set<shape> cm;
         shape cs{10000};
         shape as{40000};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 10000);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 10000,0);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 4);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                  [](const shared_ptr<Chunk> c) { cerr << c->get_fill_value() << " "; }));
@@ -818,7 +819,7 @@ public:
     }
 
     void test_process_fill_value_chunks_some_fill() {
-        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        unique_ptr<DmrppInt32> dc(new DmrppInt32("dummy"));
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
         dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
@@ -836,7 +837,7 @@ public:
 
         shape cs{10000};
         shape as{40000};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 20000);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 20000,0);
         CPPUNIT_ASSERT_MESSAGE("There should be two chunks", dc->get_immutable_chunks().size() == 4);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
@@ -857,7 +858,7 @@ public:
     }
 
     void test_process_fill_value_chunks_some_fill_2D() {
-        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        unique_ptr<DmrppInt32> dc(new DmrppInt32("dummy"));
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
         dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
@@ -874,7 +875,7 @@ public:
 
         shape cs{3, 7};
         shape as{6, 16};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 21);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 21,0);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 6);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
@@ -902,7 +903,7 @@ public:
     }
 
     void test_process_fill_value_chunks_all_fill_2D() {
-        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        unique_ptr<DmrppInt32> dc(new DmrppInt32("dummy"));
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
         dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
@@ -910,7 +911,7 @@ public:
         set<shape> cm;
         shape cs{3, 7};
         shape as{6, 16};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 1);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 1,0);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 6);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));

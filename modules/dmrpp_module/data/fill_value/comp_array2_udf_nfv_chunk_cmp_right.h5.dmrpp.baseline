@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="comp_array2_udf_nfv_chunk_cmp_right.h5">
+    <Structure name="comp_array">
+        <Float64 name="a_name"/>
+        <Int32 name="b_name"/>
+        <Float32 name="c_name"/>
+        <Dim size="2"/>
+        <dmrpp:chunks compressionType="deflate fletcher32" deflateLevel="9" fillValue="-9999.9 32767 999.9" byteOrder="LE" structOffset="8 12 16">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3640" nBytes="38" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Structure>
+</Dataset>

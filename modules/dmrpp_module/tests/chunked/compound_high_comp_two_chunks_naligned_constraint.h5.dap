@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">/data/dmrpp/compound_high_comp_two_chunks_naligned.h5.dmrpp</setContainer>
+    <define name="d">
+	   <container name="c" >
+           <dap4constraint>comp_array[1:2:3]</dap4constraint>
+           </container>
+    </define>
+    <get type="dap" definition="d" />
+</request>

@@ -205,11 +205,13 @@ void GMFile::Update_Product_Type()  {
 #if 0
         //Check_General_Product_Pattern();
 #endif
+
         Check_Dimscale_General_Product_Pattern();
         if(GENERAL_DIMSCALE == this->gproduct_pattern){
             if(GPMS_L3 == this->product_type) {
                 for (auto &var:this->vars) 
                     var->newname = var->name;
+                special_gpm_l3 = true;
             }
             this->product_type = General_Product;
         }
@@ -5568,19 +5570,25 @@ GMFile:: Add_Aqu_Attrs()  {
 
     const string orig_longname_attr_name = "Parameter";
     const string longname_attr_name ="long_name";
+    bool has_orig_longname = false;
     string longname_value;
     
 
     const string orig_units_attr_name = "Units";
     const string units_attr_name = "units";
+    bool has_orig_units = false;
     string units_value;
     
     const string orig_valid_min_attr_name = "Data Minimum";
+    const string orig_valid_min_attr_name2 = "data_minimum";
     const string valid_min_attr_name = "valid_min";
+    bool has_orig_valid_min = false;
     float valid_min_value = 0;
 
     const string orig_valid_max_attr_name = "Data Maximum";
+    const string orig_valid_max_attr_name2 = "data_maximum";
     const string valid_max_attr_name = "valid_max";
+    bool has_orig_valid_max = false;
     float valid_max_value = 0;
 
     // The fill value is -32767.0. However, No _FillValue attribute is added.
@@ -5594,22 +5602,24 @@ GMFile:: Add_Aqu_Attrs()  {
             Retrieve_H5_Attr_Value(*ira,"/");
             longname_value.resize((*ira)->value.size());
             copy((*ira)->value.begin(),(*ira)->value.end(),longname_value.begin());
-
+            has_orig_longname = true;
         }
         else if (orig_units_attr_name == (*ira)->name) {
             Retrieve_H5_Attr_Value(*ira,"/");
             units_value.resize((*ira)->value.size());
             copy((*ira)->value.begin(),(*ira)->value.end(),units_value.begin());
-
+            has_orig_units = true;
         }
-        else if (orig_valid_min_attr_name == (*ira)->name) {
+        else if (orig_valid_min_attr_name == (*ira)->name || orig_valid_min_attr_name2 == (*ira)->name) {
             Retrieve_H5_Attr_Value(*ira,"/");
             memcpy(&valid_min_value,(void*)(&((*ira)->value[0])),(*ira)->value.size());
+            has_orig_valid_min = true;
         }
 
-        else if (orig_valid_max_attr_name == (*ira)->name) {
+        else if (orig_valid_max_attr_name == (*ira)->name || orig_valid_max_attr_name2 == (*ira)->name) {
             Retrieve_H5_Attr_Value(*ira,"/");
             memcpy(&valid_max_value,(void*)(&((*ira)->value[0])),(*ira)->value.size());
+            has_orig_valid_max = true;
         }
         
     }// end of for (ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira)
@@ -5646,7 +5656,7 @@ GMFile:: Add_Aqu_Attrs()  {
         if ("l3m_data" == (*it_v)->name) {
 
             // 1. Add the long_name attribute if no
-            if(false == has_long_name) {
+            if(false == has_long_name && true == has_orig_longname) {
                 auto attr_unique = make_unique<Attribute>();
                 auto attr = attr_unique.release();
                 Add_Str_Attr(attr,longname_attr_name,longname_value);
@@ -5654,7 +5664,7 @@ GMFile:: Add_Aqu_Attrs()  {
             }
 
             // 2. Add the units attribute
-            if(false == has_units) {
+            if(false == has_units && true == has_orig_units) {
                 auto attr_unique = make_unique<Attribute>();
                 auto attr = attr_unique.release();
                 Add_Str_Attr(attr,units_attr_name,units_value);
@@ -5662,7 +5672,7 @@ GMFile:: Add_Aqu_Attrs()  {
             }
 
             // 3. Add the valid_min attribute
-            if (false == has_valid_min) {
+            if (false == has_valid_min && has_orig_valid_min == true) {
                 auto attr_unique = make_unique<Attribute>();
                 auto attr = attr_unique.release();
                 Add_One_Float_Attr(attr,valid_min_attr_name,valid_min_value);
@@ -5670,7 +5680,7 @@ GMFile:: Add_Aqu_Attrs()  {
             }
 
             // 4. Add the valid_max attribute
-            if(false == has_valid_max) {
+            if(false == has_valid_max && has_orig_valid_max == true) {
                 auto attr_unique = make_unique<Attribute>();
                 auto attr = attr_unique.release();
                 Add_One_Float_Attr(attr,valid_max_attr_name,valid_max_value);
@@ -6909,6 +6919,8 @@ void GMFile::Add_Path_Coord_Attr() {
 void GMFile::Update_Bounds_Attr() {
 
     BESDEBUG("h5", "GMFile::Coming to Add_Path_Coor_Attr()"<<endl);
+    if (product_type == GPMS_L3 || product_type == GPMM_L3 || product_type == GPM_L3_New || special_gpm_l3)
+        return;
     for (auto &var:this->vars) {
         for (auto &attr:var->attrs) {
             if (attr->name == "bounds") {
@@ -6933,6 +6945,29 @@ void GMFile::Update_Bounds_Attr() {
         }
     }
 
+}
+
+void GMFile::Update_NC4_PureDimSize() {
+
+    for (auto &cvar:this->cvars) {
+        if (cvar->getRank() == 1) {
+            Dimension *dim = cvar->dims[0];
+            if (dim->HaveUnlimitedDim()==true && dim->getSize()==0) {
+                bool correct_dim_size = false;
+                for (const auto &var:this->vars) {
+                    for (auto & vdim:var->dims) {
+                        if (vdim->unlimited_dim && vdim->newname == dim->newname) {
+                            dim->size = vdim->size;
+                            correct_dim_size = true;
+                            break;
+                        }
+                    }
+                    if (correct_dim_size)
+                        break;
+                }
+            }
+        }
+    }
 
 }
 

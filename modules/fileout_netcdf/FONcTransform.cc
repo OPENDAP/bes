@@ -280,7 +280,7 @@ void FONcTransform::throw_if_dap2_response_too_big(DDS *dds, const string &dap2_
  * particular netcdf type. Also write out any global variables stored at the
  * top level of the DataDDS.
  */
-void FONcTransform::transform_dap2(ostream &strm) {
+void FONcTransform::transform_dap2() {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     BESDEBUG(MODULE, prolog << "Reading data into DataDDS" << endl);
@@ -472,21 +472,6 @@ void FONcTransform::transform_dap2(ostream &strm) {
             FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__,
                                     __LINE__);
         }
-        // write file data
-        uint64_t bytes_written = 0;
-
-        if (is_streamable()) {
-            // Verify the request hasn't exceeded bes_timeout.
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmitting data.", __FILE__, __LINE__);
-
-            // Now that we are ready to start streaming the response data we
-            // cancel any pending timeout alarm according to the configuration.
-            BESUtil::conditional_timeout_cancel();
-
-            bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
-            BESDEBUG(MODULE,  prolog << "First write data to stream, bytes_written:  " << bytes_written << endl);
-        }
-
         for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG(MODULE,  prolog << "Writing data for variable:  " << fbt->name() << endl);
 
@@ -495,84 +480,17 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
             fbt->write(_ncid);
             nc_sync(_ncid);
-
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting: " + fbt->name() , __FILE__, __LINE__);
-
-            if (is_streamable()) {
-                // write the what's been written
-                bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
-                BESDEBUG(MODULE,  prolog << "Writing data to stream, bytes_written:  " << bytes_written << endl);
-            }
         }
 
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting data." , __FILE__, __LINE__);
-
-        bytes_written += BESUtil::file_to_stream(_localfile, strm, bytes_written);
-        BESDEBUG(MODULE,  prolog << "After nc_close() bytes_written:  " << bytes_written << endl);
     }
     catch (const BESError &e) {
         (void) nc_close(_ncid); // ignore the error at this point
         throw;
     }
-}
-
-/** @brief checks if a netcdf file is streamable
- *
- * /!\ WARNING /!\ DDS/DMR object must be correctly constructed for this function to work
- * checks if a netcdf file is to be returned as netcdf-4 and if so is not streamable
- * if file is returned as netcdf-3 then checks if the dds/dmr has a structure datatype
- * @return false if file returns as netcdf-4 OR has a structure datatype
- */
-bool FONcTransform::is_streamable() {
-    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
-        return false;
-    }
-
-    if (_dds != nullptr) {
-        return is_dds_streamable();
-    }
-    else {
-        return is_dmr_streamable(_dmr->root());
-    }
-}
-
-/** @brief checks if a DDS contains a Structure datatype in its variables
- *
- * checks the variable type for a structure datatype
- * @return false if the dds contains a structure datatype
- */
-bool FONcTransform::is_dds_streamable() {
-    for (auto var = _dds->var_begin(), varEnd = _dds->var_end(); var != varEnd; ++var) {
-        if ((*var)->type() == dods_structure_c) {
-            return false; // cannot be streamed
-        }
-    }
-    return true;
-}
-
-/** checks if a DMR contains a Structure datatype in its variables
- *
- * checks the variable type for a structure datatype
- * @param group the D4Group holding the variables to search through
- * @return false if the dmr contains a structure datatype
- */
-bool FONcTransform::is_dmr_streamable(D4Group *group) {
-    for (auto var = group->var_begin(), varEnd = group->var_end(); var != varEnd; ++var) {
-        if ((*var)->type() == dods_structure_c)
-            return false; // cannot be streamed
-
-        if ((*var)->type() == dods_group_c) {
-            D4Group *g = dynamic_cast<D4Group *>(*var);
-            if (g != nullptr && !is_dmr_streamable(g)) {
-                return false;
-            }
-        }
-    }
-    return true;
 }
 
 /**
@@ -659,6 +577,42 @@ void FONcTransform::transform_dap4() {
     besDRB.set_async_accepted(d_dhi->data[ASYNC]);
     besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
 
+    // Here we need to check if we need to reduce the redundant dimension names.
+    if (FONcRequestHandler::reduce_dim == true) {
+        do_reduce_dim = check_reduce_dim();
+        if (do_reduce_dim) 
+            build_reduce_dim();
+#if !NDEBUG        
+        if (do_reduce_dim) 
+            BESDEBUG(MODULE, prolog << "reduced dimensions" << endl);
+        else
+            BESDEBUG(MODULE, prolog << "Not reduced dimensions" << endl);
+    
+        if (do_reduce_dim) {
+            D4Group *root_grp_debug = _dmr->root();
+            for (auto &var:root_grp_debug->variables()) {
+        
+                if (var->type() == dods_array_c) {
+                    auto t_a = dynamic_cast<Array *>(var);
+                    Array::Dim_iter dim_i = t_a->dim_begin();
+                    Array::Dim_iter dim_e = t_a->dim_end();
+                    for (; dim_i != dim_e; dim_i++) {
+                        BESDEBUG(MODULE, prolog << "CHANGED dim name: " << dim_i->name<<endl);
+                    }
+                }
+            }
+        
+            D4Dimensions *root_dims = root_grp_debug->dims();
+            for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+                BESDEBUG(MODULE,  prolog << "transform_dap4() - check dimensions" << endl);
+                BESDEBUG(MODULE,  prolog << "transform_dap4() - dim name is: " << (*di)->name() << endl);
+                BESDEBUG(MODULE,  prolog << "transform_dap4() - dim size is: " << (*di)->size() << endl);
+                BESDEBUG(MODULE,  prolog << "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
+            }
+        }
+ 
+#endif
+    }
     // Check if direct_io_flag is set for any Array variables. If the global dio flag is false, we don't need to loop through
     // every variable to check if the direct IO can be applied. 
     if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model) {
@@ -1414,6 +1368,168 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::BaseType* bt) const{
         }
     }
 }
+
+bool FONcTransform::check_reduce_dim() {
+
+    bool ret_value = true;
+    D4Group *root_grp = _dmr->root();
+    ret_value = check_reduce_dim_internal(root_grp);
+    return ret_value;
+}
+
+bool FONcTransform::check_reduce_dim_internal(D4Group*grp) {
+
+    bool ret_value = true;
+    D4Dimensions *grp_dims = grp->dims();
+
+    // Check DAP4 dimensions
+    for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
+        if((*di)->name().empty() == false) {
+            ret_value = false;
+            break;
+        }
+    }
+
+    // Check DAP4 variables
+    if (ret_value) {
+        for (const auto &var:grp->variables()) {
+            if (var->send_p()) {
+                ret_value = check_var_dim(var);
+                if (ret_value == false)
+                    break;
+            }
+        }
+    }
+    // Check the children groups
+    if (ret_value) {
+        for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+            ret_value = check_reduce_dim_internal(*gi);
+            if (ret_value ==false) 
+                break;
+        }
+    }
+    return ret_value;
+
+}
+
+bool FONcTransform::check_var_dim(BaseType *var) {
+
+    bool ret_value = true;
+
+    if (var->type() == dods_array_c) {
+
+        auto t_a = dynamic_cast<Array *>(var);
+        Array::Dim_iter dim_i = t_a->dim_begin();
+        Array::Dim_iter dim_e = t_a->dim_end();
+        for (; dim_i != dim_e; dim_i++) {
+            if ((*dim_i).name != "") {
+                ret_value = false;
+                break;
+            }
+        }
+    }
+    return ret_value;
+}
+
+void FONcTransform::build_reduce_dim() {
+
+    D4Group *root_grp = _dmr->root();
+    build_reduce_dim_internal(root_grp, root_grp);
+}
+
+void FONcTransform::build_reduce_dim_internal(D4Group *grp, D4Group *root_grp) {
+
+    for (auto &var:grp->variables()) {
+
+        if (var->type() == dods_array_c && var->send_p()) {
+            auto t_a = dynamic_cast<Array *>(var);
+
+            unordered_map<int64_t,int> local_dsize_count;
+ 
+            Array::Dim_iter dim_i = t_a->dim_begin();
+            Array::Dim_iter dim_e = t_a->dim_end();
+            for (; dim_i != dim_e; dim_i++) {
+
+                if ((*dim_i).name == "") {
+   
+                    int64_t dimsize = t_a->dimension_size_ll(dim_i, true);
+
+                    // We need to update the number of occurences this dim size is used in this array.
+                    bool local_dsize_found = false;
+                    if(local_dsize_count.find(dimsize)!=local_dsize_count.end()) {
+                        int prev_count = local_dsize_count[dimsize];
+                        local_dsize_count[dimsize] = prev_count +1;
+                        local_dsize_found = true;
+                    }
+                    else  
+                        local_dsize_count[dimsize] = 1;
+                    
+                    bool dim_name_exist = false;
+                    auto it_sn=dimsize_to_dup_dimnames.find(dimsize);
+                    if (it_sn !=dimsize_to_dup_dimnames.end()) {
+                        vector<string>temp_dimnames = dimsize_to_dup_dimnames[dimsize];
+                        if (local_dsize_found) {
+
+                            int temp_local_dsize_count = local_dsize_count[dimsize];
+
+                            // Now we need to create a new dim name for this dimension
+                            // since for this size, the unique dimension names are used up.
+                            if (temp_local_dsize_count > temp_dimnames.size()) {
+                                string dim_name_suffix= to_string(reduced_dim_num);
+                                (*dim_i).name ="dim" + dim_name_suffix;
+                                reduced_dim_num++;
+                                // Update the global map
+                                temp_dimnames.push_back((*dim_i).name);
+                                dimsize_to_dup_dimnames[dimsize]=temp_dimnames;
+                            }
+                            else {//Pick up the earliest created non-used dimension name.
+                                (*dim_i).name = temp_dimnames[temp_local_dsize_count-1];
+                                dim_name_exist = true;
+                            }
+
+                        }
+                        else { // Use the first created dimension name for this dimension size.
+                            (*dim_i).name = temp_dimnames[0];
+                            dim_name_exist = true;
+                        }
+                    }
+                    else { // This dimension has not been assigned a name in this file so far,assign it.
+                        string dim_name_suffix= to_string(reduced_dim_num);
+                        (*dim_i).name ="dim" + dim_name_suffix;
+                        reduced_dim_num++;
+                        vector<string>temp_dimnames;
+                        temp_dimnames.push_back((*dim_i).name);
+                        dimsize_to_dup_dimnames[dimsize] = temp_dimnames;
+                    }
+
+                    if (dim_name_exist) {
+
+                        D4Dimensions *dims = root_grp->dims();
+                        D4Dimension *d4_dim = dims->find_dim((*dim_i).name);
+                        if(d4_dim == nullptr)
+                            throw BESInternalError("D4 dimension cannot be found", __FILE__, __LINE__);
+                        else 
+                            (*dim_i).dim= d4_dim;
+                    }
+                    else {
+                        // We need to add D4Dimension and group dimensions.
+                         auto d4_dim0_unique = make_unique<D4Dimension>((*dim_i).name, dimsize);
+                         (*dim_i).dim=d4_dim0_unique.get();
+        
+                         // The DAP4 group needs also to store these dimensions. 
+                         D4Dimensions *dims = root_grp->dims();
+                         dims->add_dim_nocopy(d4_dim0_unique.release());
+                    }
+                }
+            }
+        }
+    }
+
+    for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) 
+        build_reduce_dim_internal(*gi,root_grp); 
+
+}
+
 
 /** @brief dumps information about this transformation object for debugging
  * purposes

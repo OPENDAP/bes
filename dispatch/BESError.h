@@ -70,7 +70,6 @@ private:
     std::string _file;
     unsigned int _line{0};
 
-
 public:
     BESError() = default;
 
@@ -191,6 +190,9 @@ public:
      * @param strm output stream to use to dump the contents of this object
      */
     void dump(std::ostream &strm) const override;
+
+    virtual std::string error_name() const { return "BESError"; }
+
 };
 
-#endif // BESError_h_ 
+#endif // BESError_h_

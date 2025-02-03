@@ -22,10 +22,11 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <vector>
+#include <unordered_set>
+#include <stack>
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <unordered_set>
 #include <cstring>
 #include <zlib.h>
 
@@ -55,6 +56,7 @@
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
 #include "DmrppStructure.h"
+#include "DmrppByte.h"
 #include "DmrppStr.h"
 #include "DmrppUrl.h"
 #include "DmrppD4Group.h"
@@ -502,7 +504,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         // if it's got the unsupported bits in fillValue
         auto var_name = var_node.attribute("name");
         auto var_type = var_node.name();
-        INFO_LOG(prolog << "Unsupported Type Encountered: " << var_type << " " << var_name.value() << "; flag: '" << unsupported_flag << "'\n");
+        INFO_LOG(prolog + "Unsupported Type Encountered: " + var_type + " " + var_name.value() + "; flag: '" + unsupported_flag + "'\n");
         return;
     }
 
@@ -1543,9 +1545,15 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
 
     std::vector <u_int8_t> decoded = base64::Base64::decode(char_data);
 
-    if (btp->type() != dods_array_c) 
-        throw BESInternalError("The dmrpp::missing_data element must be the child of an array variable", __FILE__, __LINE__);
+    if (btp->type() != dods_array_c && btp->type() !=dods_byte_c) 
+        throw BESInternalError("The dmrpp::missing_data element must be the child of an array or a unsigned char scalar variable", __FILE__, __LINE__);
 
+    if (btp->type() == dods_byte_c) {
+        auto db = dynamic_cast<DmrppByte *>(btp);
+        db->set_value(decoded[0]);
+        db->set_read_p(true);
+        return;
+    }
     auto *da = dynamic_cast<DmrppArray *>(btp);
 
     vector<Bytef> result_bytes;
@@ -1555,9 +1563,13 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data)
     auto result_size = (uLongf)(da->get_size(false) *da->prototype()->width());
     result_bytes.resize(result_size);
 
-    int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
-    if (retval != 0)
-        throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
+    if (da->get_size(false) == 1) 
+        memcpy(result_bytes.data(),decoded.data(),result_size);
+    else {
+        int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
+        if (retval != 0)
+            throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
+    }
 
     if (da->is_projected()) {
 
@@ -1829,13 +1841,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
     bool href_trusted = false;
 
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
-        if (is_eq(attr.name(), "href")) {
-            href = attr.value();
-        }
-        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
-            href_trusted = is_eq(attr.value(), "true");
-        }
-        else if (is_eq(attr.name(), "offset")) {
+        if (is_eq(attr.name(), "offset")) {
             offset = attr.value();
         }
         else if (is_eq(attr.name(), "nBytes")) {
@@ -1846,6 +1852,12 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         }
         else if (is_eq(attr.name(), "fm")) {
             filter_mask = attr.value();
+        }
+        else if (is_eq(attr.name(), "href")) {
+            href = attr.value();
+        }
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
+            href_trusted = is_eq(attr.value(), "true");
         }
     }
 
@@ -1879,18 +1891,19 @@ void DMZ::process_block(DmrppCommon *dc, const xml_node &chunk,unsigned int bloc
     bool href_trusted = false;
 
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
-        if (is_eq(attr.name(), "href")) {
-            href = attr.value();
-        }
-        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
-            href_trusted = is_eq(attr.value(), "true");
-        }
-        else if (is_eq(attr.name(), "offset")) {
+        if (is_eq(attr.name(), "offset")) {
             offset = attr.value();
         }
         else if (is_eq(attr.name(), "nBytes")) {
             size = attr.value();
         }
+        else if (is_eq(attr.name(), "href")) {
+            href = attr.value();
+        }
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
+            href_trusted = is_eq(attr.value(), "true");
+        }
+ 
     }
 
     if (offset.empty() || size.empty())
@@ -1944,7 +1957,12 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         return false;
 
     bool has_fill_value = false;
+
+    unsigned int block_count = 0;
+    bool is_multi_lb_chunks = false;
+
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
+
         if (is_eq(attr.name(), "compressionType")) {
             dc(btp)->set_filter(attr.value());
         }
@@ -1978,8 +1996,6 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
 
             if (btp->type() == dods_structure_c) {
                 string fvalue_str = attr.value();
-                if (fvalue_str !="0")
-                    throw BESInternalError("Fill Value chunks for structure are only supported when the fill value is 0 .", __FILE__, __LINE__);
             }
 
             if (btp->type() == dods_array_c) {
@@ -1992,6 +2008,27 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
         else if (is_eq(attr.name(), "byteOrder"))
             dc(btp)->ingest_byte_order(attr.value());
         
+        // Here we don't need to check the structOffset attribute if the datatype is not dods_structure_c or array of dods_structure_c.
+        // But since most variables won't have the structOffset attribute, the code will NOT even go to the following "else if block" after
+        // looping through the last attribute. So still keep the following implementation.
+        else if (is_eq(attr.name(), "structOffset")) {
+            string so_str = attr.value();
+            // decompose the string.
+            vector<string> so_str_vec = BESUtil::split(so_str, ' ' );
+            vector<unsigned int> struct_offsets;
+            for (const auto &s_off:so_str_vec)
+                struct_offsets.push_back(stoul(s_off));
+            dc(btp)->set_struct_offsets(struct_offsets);
+        }
+        // The following only applies to rare cases when handling HDF4, most cases won't even come here.
+        else if (is_eq(attr.name(),"LBChunk")) {
+            string is_lbchunk_value = attr.value();
+            if (is_lbchunk_value == "true") {
+                is_multi_lb_chunks = true;
+                dc(btp)->set_multi_linked_blocks_chunk(true);
+            }
+        }
+        
     }
 
     // reset one_chunk_fillvalue to false if has_fill_value = false
@@ -2001,38 +2038,77 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
     process_cds_node(dc(btp), chunks);
 
-    // Chunks for this node will be held in the var_node siblings.
+    // If child node "dmrpp:chunk" is found, the child node "dmrpp:block" will be not present.
+    // They are mutual exclusive. 
+
+    bool is_chunked_storage = false;
     for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
         if (is_eq(chunk.name(), "dmrpp:chunk")) {
-            process_chunk(dc(btp), chunk);
+            is_chunked_storage = true;
+            break;
         }
     }
 
-    // Blocks for this node, we need to first check if there is only one block. If this is the case,
-    // we should issue an error.
-    unsigned int block_count = 0;
-    for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
-        if (is_eq(chunk.name(), "dmrpp:block")) {
-            block_count++;
-        }
-        if (block_count >1)
-            break;
-    }
-    if (block_count == 1)
-        throw BESInternalError(" The number of linked block is 1, but it should be > 1.", __FILE__, __LINE__);
-    if (block_count >1) {
-        // set using linked block
-        dc(btp)->set_using_linked_block();
-        // reset the count to 0 to process the blocks.
-        block_count = 0;
-        for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
-            if (is_eq(chunk.name(), "dmrpp:block")) {
-                process_block(dc(btp), chunk, block_count);
-                BESDEBUG(PARSER, prolog << "This count of linked block of this variable is: " << block_count << endl);
-                block_count++;
+    if (is_chunked_storage && is_multi_lb_chunks== false) {
+        // Chunks for this node will be held in the var_node siblings.
+        for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:chunk")) {
+                process_chunk(dc(btp), chunk);
             }
         }
-        dc(btp)->set_total_linked_blocks(block_count);
+    }
+    else {
+
+        // Blocks for this node, we need to first check if there is only one block. If this is the case,
+        // we should issue an error.
+        for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:block")) {
+                block_count++;
+            }
+            if (block_count >1)
+                break;
+        }
+    }
+    if (block_count > 0) {
+        if (block_count == 1)
+            throw BESInternalError(" The number of linked block is 1, but it should be > 1.", __FILE__, __LINE__);
+        if (block_count >1) {
+            // set using linked block
+            dc(btp)->set_using_linked_block();
+            // reset the count to 0 to process the blocks.
+            block_count = 0;
+            for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
+                if (is_eq(chunk.name(), "dmrpp:block")) {
+                    process_block(dc(btp), chunk, block_count);
+                    BESDEBUG(PARSER, prolog << "This count of linked block of this variable is: " << block_count << endl);
+                    block_count++;
+                }
+            }
+            dc(btp)->set_total_linked_blocks(block_count);
+        }
+    }
+    else if (is_multi_lb_chunks) {
+
+        queue <vector<pair<unsigned long long,unsigned long long>>> mb_index_queue;
+        vector<pair<unsigned long long, unsigned long long>> offset_length_pair;
+
+        // Loop through all the chunks.
+        for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
+
+            // Check the block offset and length for this chunk.
+            if (is_eq(chunk.name(), "dmrpp:chunk")) 
+                add_mblock_index(chunk, mb_index_queue,offset_length_pair);
+        }
+        // This is the last one.
+        mb_index_queue.push(offset_length_pair);
+
+        // Now we get all the blocks and we will process them.
+        for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:chunk")) 
+                process_multi_blocks_chunk(dc(btp),chunk, mb_index_queue);
+        }
+        dc(btp)->set_multi_linked_blocks_chunk(true);
+
     }
     return true;
 
@@ -2116,17 +2192,29 @@ set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chu
  * @param array_shape The shape of the array
  * @param chunk_size the number of bytes in the chunk
  */
-void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map, const shape &chunk_shape,
-                                    const shape &array_shape, unsigned long long chunk_size)
+void DMZ::process_fill_value_chunks(BaseType *btp, const set<shape> &chunk_map, const shape &chunk_shape,
+                                    const shape &array_shape, unsigned long long chunk_size, unsigned int struct_size)
 {
+    auto dcp = dc(btp);
     // Use an Odometer to walk over each potential chunk
     DmrppChunkOdometer odometer(array_shape, chunk_shape);
     do {
         const auto &s = odometer.indices();
         if (chunk_map.find(s) == chunk_map.end()) {
+
             // Fill Value chunk
             // what we need byte order, pia, fill value
-            dc->add_chunk(dc->get_byte_order(), dc->get_fill_value(), dc->get_fill_value_type(), chunk_size, s);
+            // We also need to check the user-defined fill value case.
+            vector<pair<Type,int>> structure_type_element;
+            bool ret_value = is_simple_dap_structure_scalar_array(btp,structure_type_element);
+            if (ret_value) {
+                if (struct_size !=0) 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s, struct_size);
+                else 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s, structure_type_element);
+            }
+            else 
+                dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), chunk_size, s);
         }
     } while (odometer.next());
 }
@@ -2175,10 +2263,15 @@ void DMZ::load_chunks(BaseType *btp)
                 // to the vector of chunks.
                 auto const &chunk_shape = dc(btp)->get_chunk_dimension_sizes();
                 unsigned long long chunk_size_bytes = array->var()->width(); // start with the element size in bytes
+                vector<unsigned int> s_off = dc(btp)->get_struct_offsets();
+                if (!s_off.empty())
+                   chunk_size_bytes = s_off.back();
+
                 for (auto dim_size: chunk_shape)
                     chunk_size_bytes *= dim_size;
-                process_fill_value_chunks(dc(btp), chunk_map, dc(btp)->get_chunk_dimension_sizes(),
-                                          array_shape, chunk_size_bytes);
+                unsigned int struct_size =(s_off.empty())?0:s_off.back();
+                process_fill_value_chunks(btp, chunk_map, dc(btp)->get_chunk_dimension_sizes(),
+                                          array_shape, chunk_size_bytes,struct_size);
                 // Now we need to check if this var only contains one chunk.
                 // If yes, we will go ahead to set one_chunk_fill_value be true. 
                 // While later in process_chunks(), we will check if fillValue is defined and adjust the value.
@@ -2224,7 +2317,14 @@ void DMZ::load_chunks(BaseType *btp)
             }
             else {
                 array_size_bytes *= array->var()->width();
-                dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia);
+
+                // We also need to check the user-defined fill value case.
+                vector<pair<Type,int>> structure_type_element;
+                bool ret_value = is_simple_dap_structure_scalar_array(btp,structure_type_element);
+                if (ret_value) 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia, structure_type_element);
+                else 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia);
             }
  
         }
@@ -2255,8 +2355,14 @@ void DMZ::load_chunks(BaseType *btp)
                 }
                 dcp->add_chunk(dcp->get_byte_order(), fvalue, dcp->get_fill_value_type(), array_size, pia);
             }
-            else 
-                dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), btp->width(), pia);
+            else {
+                vector<pair<Type,int>> structure_type_element;
+                bool ret_value = is_simple_dap_structure_scalar_array(btp,structure_type_element);
+                if (ret_value) 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), btp->width(), pia, structure_type_element);
+                else 
+                    dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), btp->width(), pia);
+            }
                 
         }
     }
@@ -2304,6 +2410,66 @@ void DMZ::load_chunks(BaseType *btp)
     }
 
     dc(btp)->set_chunks_loaded(true);
+}
+
+bool DMZ::is_simple_dap_structure_scalar_array(BaseType *btp, vector<pair<Type,int>> &structure_type_element) {
+
+    bool ret_value = false;
+
+    if (btp->type()==dods_array_c) {
+
+        auto t_a = dynamic_cast<Array *>(btp);
+        Type t_array_var = t_a->var()->type();
+        if (t_array_var == dods_structure_c) {
+            auto t_s = dynamic_cast<Structure *>(t_a->var());
+            ret_value = is_simple_dap_structure_internal(t_s, structure_type_element);
+        }
+    }
+    else if (btp->type() == dods_structure_c) { 
+        auto t_s = dynamic_cast<Structure *>(btp);
+        ret_value = is_simple_dap_structure_internal(t_s, structure_type_element);
+    }
+
+    return ret_value;
+}
+
+bool DMZ::is_simple_dap_structure_internal(const Structure *ds, vector<pair<Type,int>> &structure_type_element) {
+
+    bool ret_value = true;
+    for (const auto &bt:ds->variables()) {
+ 
+        Type t_bt = bt->type();
+ 
+        // Only support array or scalar of float/int.
+        if (t_bt == dods_array_c) {
+            auto t_a = dynamic_cast<Array *>(bt);
+            Type t_array_var = t_a->var()->type();
+
+            if (libdap::is_simple_type(t_array_var) == true && t_array_var != dods_str_c) {
+                pair<Type,int> temp_pair;
+                int64_t num_eles= t_a->length_ll();
+                temp_pair.first = t_array_var;
+                temp_pair.second = (int)(num_eles);
+                structure_type_element.push_back(temp_pair);
+            }
+            else {
+                ret_value = false;
+                break;
+            }
+        }
+        else if (libdap::is_simple_type(t_bt) == true && t_bt != dods_str_c) {
+            pair<Type,int> temp_pair;
+            temp_pair.first = t_bt;
+            temp_pair.second = 1;
+            structure_type_element.push_back(temp_pair);
+        }
+        else {
+            ret_value = false;
+            break;
+        }
+    }
+
+    return ret_value;
 }
 
 void DMZ::handle_subset(DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsigned long & subset_index, vector<unsigned long long> & subset_pos,
@@ -2372,6 +2538,150 @@ void DMZ::handle_subset(DmrppArray *da, libdap::Array::Dim_iter dim_iter, unsign
             }
         }
     }
+}
+
+void DMZ::add_mblock_index(const xml_node &chunk, queue<vector<pair<unsigned long long, unsigned long long >>>& mb_index_queue,
+                       vector<pair<unsigned long long, unsigned long long>>& offset_length_pair) const{
+
+    string LBIndex_value;
+    for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+        if (is_eq(attr.name(),"LinkedBlockIndex")) {
+            LBIndex_value = attr.value();
+            break;
+        } 
+    }
+
+    // We find the linked blocks in this chunk
+    if (LBIndex_value.empty() == false) {
+        
+        pair<unsigned long long, unsigned long long> temp_offset_length;
+
+        // We need to loop through the chunk attributes again to find the offset and length.
+        bool found_offset = false;
+        bool found_length = false;
+        for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+            if (is_eq(attr.name(), "offset")) {
+                string offset = attr.value();
+                temp_offset_length.first = stoull(offset);
+                found_offset = true;
+            }
+            else if (is_eq(attr.name(), "nBytes")) {
+                string size = attr.value();
+                temp_offset_length.second = stoull(size);
+                found_length = true;
+            }
+            if (found_offset && found_length)
+                break;
+        }
+
+        // We make this a new chunk that stores the multiple blocks.
+        if (LBIndex_value == "0") {
+            if (offset_length_pair.empty() == false) { 
+                mb_index_queue.push(offset_length_pair);
+
+                // Here offset_length_pair will be reused, so clear it.
+                offset_length_pair.clear();
+                offset_length_pair.push_back(temp_offset_length);
+            }
+            else 
+                offset_length_pair.push_back(temp_offset_length);
+        }
+        else 
+            offset_length_pair.push_back(temp_offset_length);
+    }
+
+}
+
+void DMZ::process_multi_blocks_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk, std::queue<std::vector<std::pair<unsigned long long, unsigned long long>>>& mb_index_queue) const {
+
+    // Follow process_chunk
+    string href;
+    string trust;
+    string offset;
+    string size;
+    string chunk_position_in_array;
+    string filter_mask;
+    bool href_trusted = false;
+
+    // We will only check if the last attribute is the "LinkedBlockIndex". 
+    // If yes, we will check the "LinkedBlockIndex" value, mark it if it is the first index(0).
+    //    If the "LinkedBlockIndex" is not 0, we simply return. The information of this linked block is retrieved from the mb_index_queue already.
+    bool multi_lbs_chunk = false;
+    auto LBI_attr = chunk.last_attribute();
+    if (is_eq(LBI_attr.name(),"LinkedBlockIndex")) {
+        string LBI_attr_value = LBI_attr.value();
+        if (LBI_attr_value =="0")
+            multi_lbs_chunk = true;
+        else 
+            return;
+    }
+    else {// This should happen really rarely, still we try to cover the corner case. We loop through all the attributes and search if Linked BlockIndex is present.
+        for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+            if (is_eq(LBI_attr.name(),"LinkedBlockIndex")) {
+                string LBI_attr_value = LBI_attr.value();
+                if (LBI_attr_value =="0")
+                    multi_lbs_chunk = true;
+                else 
+                    return;
+            }
+        }
+    }
+    
+    // For linked block cases, as far as we know, we don't need to load fill values as the HDF5 case. So we ignore checking and filling the fillvalue to save performance.
+    for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
+
+        if (is_eq(attr.name(), "offset")) {
+            offset = attr.value();
+        }
+        else if (is_eq(attr.name(), "nBytes")) {
+            size = attr.value();
+        }
+        else if (is_eq(attr.name(), "chunkPositionInArray")) {
+            chunk_position_in_array = attr.value();
+        }
+        else if (is_eq(attr.name(), "fm")) {
+            filter_mask = attr.value();
+        }
+        else if (is_eq(attr.name(), "href")) {
+            href = attr.value();
+        }
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
+            href_trusted = is_eq(attr.value(), "true");
+        }
+    }
+
+    if (offset.empty() || size.empty())
+        throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
+
+    if (multi_lbs_chunk) {//The chunk that has linked blocks
+
+        vector<pair<unsigned long long, unsigned long long>> temp_pair;
+        if (!mb_index_queue.empty())   
+            temp_pair = mb_index_queue.front();
+
+        if (!href.empty()) {
+            shared_ptr<http::url> data_url(new http::url(href, href_trusted));
+            dc->add_chunk(data_url, dc->get_byte_order(), chunk_position_in_array,temp_pair);
+        }
+        else {
+            dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), chunk_position_in_array, temp_pair);
+        }
+        mb_index_queue.pop(); // Remove the processed element
+
+    }
+    else { //General Chunk, not the linked block.
+        if (!href.empty()) {
+            shared_ptr<http::url> data_url(new http::url(href, href_trusted));
+            dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
+        }
+        else {
+            dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset),   chunk_position_in_array);
+        }
+    }
+    
+
+    dc->accumlate_storage_size(stoull(size));
+
 }
 
 // Return the index of the pos in nD array to the equivalent pos in 1D array

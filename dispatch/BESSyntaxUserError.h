@@ -52,6 +52,7 @@ public:
         BESError::dump(strm);
         BESIndent::UnIndent();
     }
+    std::string error_name() const override { return "BESSyntaxUserError"; }
 };
 
 #endif // BESSyntaxUserError_h_

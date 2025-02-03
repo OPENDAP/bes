@@ -9,6 +9,7 @@
 // Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 //
 // Copyright (c) 2005 OPeNDAP, Inc.
+// Author: Kent Yang <myang6@hdfgroup.org> (CF option and direct dmr modules)
 // Author: James Gallagher <jgallagher@opendap.org>
 //
 // This is free software; you can redistribute it and/or modify it under the
@@ -42,7 +43,6 @@
 
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
-//
 //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -149,6 +149,8 @@
 // HDF-EOS2 (including the hybrid) will be handled as HDF-EOS2 objects if the HDF-EOS2 library is configured in
 #ifdef USE_HDFEOS2_LIB
 #include "HDFEOS2.h"
+#include "HDFEOS2GeoCFProj.h"
+#include "HDFEOS2GeoCF1D.h"
 #include "HDFEOS2Array_RealField.h"
 #include "HDFEOS2ArrayGridGeoField.h"
 #include "HDFEOS2ArraySwathGeoField.h"
@@ -192,6 +194,16 @@ typedef struct eos2_grid {
 
 }eos2_grid_t;
 
+typedef struct eos2_grid_info {
+    int32 projcode;
+    int32 zone;
+    int32 sphere;
+    float64 upleft[2];
+    float64 lowright[2];
+    float64 params[16];
+}eos2_grid_info_t;
+
+
 // Functions for the default option
 void AddHDFAttr(DAS & das, const string & varname,
                 const vector < hdf_attr > &hav);
@@ -223,7 +235,7 @@ void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string 
 void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const string &filename);
 
 // 2. vgroup handlings
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4g, D4Group *root_grp, const string &vgroupname,const string & filename, bool is_eos2_grid);
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id, int32 sdfd, D4Group* d4g, D4Group *root_grp, const string &vgroupname,const string & filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping);
 void convert_vgroup_attrs(int32 vgroup_id,D4Group* d4g, const string &vgroupname);
 void map_vgroup_attr(D4Group *d4g, const string &dap4_attrname,int32 attr_type, int32 attr_count, vector<char> & attr_value);
 bool reserved_vgroups(const vector<char> &vgroup_class);
@@ -232,7 +244,7 @@ bool reserved_vgroups(const vector<char> &vgroup_class);
 #if 0
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* d4g,const string& filename);
 #endif
-void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,D4Group *root_grp, const string &filename, bool is_eos2_grid);
+void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,D4Group *root_grp, const string &filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping);
 void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref);
 void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>&sds_ref);
 void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unordered_set<int32>&sds_ref);
@@ -245,9 +257,14 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
 void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_ref, D4Group *d4g, const string &filename);
 void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref);
 
-// 5. HDF-EOS2 handlings
+// 5. HDF-EOS2 handlings(Not need the hdf-eos2 library)
 int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid_lls);
-void add_eos2_latlon(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const string&filename);
+void add_eos2_latlon_info(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t &eos2_grid_info, const string&filename);
+void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t &eos2_grid_info);
+void add_ps_cf_grid_mapping_attrs(libdap::BaseType *var, const eos2_grid_info_t & eg_info);
+void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *var, const eos2_grid_info_t & eg_info);
+void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t &eos2_grid_info, const string& xdim_path, const string &ydim_path);
+void add_CF_1D_cv_attrs(libdap::BaseType *var, bool is_ydim);
 
 // 6. Special HDF4 handlings
 
@@ -287,6 +304,10 @@ bool read_das_special_eos2_core(DAS &das, const HDFSP::File *spf, const string &
 void read_das_sds(DAS & das, const string & filename,int32 sdfd, bool ecs_metadata,HDFSP::File**h4fileptr);
 void read_dds_sds(DDS &dds, const string & filename,int32 sdfd, HDFSP::File*h4file,bool dds_set_cache);
 
+void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid);
+void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type);
+void obtain_cf_simple_lat_lon(int32 sdfd,string &lat_name, string &lon_name, int &lat_size, int &lon_size);
+
 void change_das_mod08_scale_offset(DAS & das, const HDFSP::File *spf);
 
 // Functions to handle SDS fields for the CF option.
@@ -301,8 +322,8 @@ int check_special_eosfile(const string&filename,string&grid_name,int32 sdfd);
 // The following blocks only handle HDF-EOS2 objects based on HDF-EOS2 libraries.
 #ifdef USE_HDFEOS2_LIB
 
-bool obtain_eos2_gd_ll_info(const string & fname, const string &grid_name, int32 &ydim, int32 &xdim, bool & oned_ll);
-bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eos2_grid_lls);
+bool obtain_eos2_gd_ll_info(const string & fname, const string &grid_name, int32 &ydim, int32 &xdim, bool & oned_ll, eos2_grid_info_t &eos2_grid_info);
+bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eos2_grid_lls, vector<eos2_grid_info_t>& eos2_grids_info);
 
 // Parse HDF-EOS2's ECS metadata(coremetadata etc.)
 void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata); 
@@ -1156,6 +1177,11 @@ void read_dds_use_eos2lib(DDS & dds, const string & filename,int32 sdfd,int32 fi
 {
 
     BESDEBUG("h4","Coming to read_dds_use_eos2lib" <<endl);
+    if((basename(filename).size() >=7) && ((basename(filename)).compare(0,7,"MCD43GF")==0)) {
+        short cf_simple_type = 1;
+        read_dds_simple_cf(dds, filename,  sdfd,  fileid,cf_simple_type);
+        return;
+    }
 
     int ret_value = read_dds_hdfeos2(dds,filename,sdfd,gridfd,swathfd,h4file,eosfile);
 
@@ -1281,8 +1307,7 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
     }
 
     if (arg.status() == false) {
-        (*BESLog::TheLog())<<  "HDF-EOS parse error while processing a "
-                           << metadata  << " HDFEOS attribute. (2) " << endl;
+        INFO_LOG("HDF-EOS parse error while processing a " + metadata  + " HDFEOS attribute. (2)");
 #if 0
 // for debugging
                            << arg.error()->get_error_message() << endl;
@@ -1879,6 +1904,10 @@ void read_das_use_eos2lib(DAS & das, const string & filename,
 
     BESDEBUG("h4","Coming to read_das_use_eos2lib" << endl);
 
+    if((basename(filename).size() >=7) && ((basename(filename)).compare(0,7,"MCD43GF")==0)) {
+        read_das_simple_cf(das,  sdfd, fileid);
+        return;
+    }
     int ret_value = read_das_hdfeos2(das,filename,sdfd,fileid, gridfd, swathfd,ecs_metadata,h4filepptr,eosfilepptr);
 
     BESDEBUG("h4","ret_value of read_das_hdfeos2 is "<<ret_value <<endl);
@@ -2157,7 +2186,7 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-            ERROR_LOG("Parse error while processing a CoreMetadata attribute. (2) " << endl);
+            ERROR_LOG("Parse error while processing a CoreMetadata attribute. (2)");
 #if 0
         //        << arg.error()->get_error_message() << endl;
 #endif
@@ -2181,7 +2210,7 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-            ERROR_LOG("Parse error while processing an ArchiveMetadata attribute. (2) " << endl);
+            ERROR_LOG("Parse error while processing an ArchiveMetadata attribute. (2) ");
 #if 0
  //               << arg.error()->get_error_message() << endl;
 #endif
@@ -2204,7 +2233,7 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
         }
 
         if (arg.status() == false) {
-            ERROR_LOG("Parse error while processing a StructMetadata attribute.  (2)" << endl);
+            ERROR_LOG("Parse error while processing a StructMetadata attribute.  (2)");
         }
 
         // Errors returned from here are ignored.
@@ -2576,7 +2605,7 @@ bool read_das_special_eos2_core(DAS &das,const HDFSP::File* f,const string& file
     
             // Errors returned from here are ignored.
             if (arg.status() == false) {
-                ERROR_LOG("Parse error while processing a CoreMetadata attribute. (2)" << endl);
+                ERROR_LOG("Parse error while processing a CoreMetadata attribute. (2)");
 #if 0
                 //for debugging
                 << arg.error()->get_error_message() << endl;
@@ -2602,7 +2631,7 @@ bool read_das_special_eos2_core(DAS &das,const HDFSP::File* f,const string& file
     
             // Errors returned from here are ignored.
             if (arg.status() == false) 
-                ERROR_LOG("Parse error while processing an ArchiveMetadata attribute. (2)" << endl);
+                ERROR_LOG("Parse error while processing an ArchiveMetadata attribute. (2)");
     
             hdfeos_delete_buffer(buf);
         }
@@ -3696,6 +3725,400 @@ void read_dds_sds(DDS &dds, const string & filename,int32 sdfd, HDFSP::File*h4fi
     return;
 
 }
+
+void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
+
+    int32 n_sds      = 0;       
+    int32 n_sd_attrs = 0;
+
+    // Obtain number of SDS objects and number of SD(file) attributes
+    if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        close_vgroup_fileids(fileid,sdfd,-1);
+        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+    }
+    
+    AttrTable *at = das.add_table("HDF_GLOBAL", new AttrTable);
+
+    for (int attr_index = 0; attr_index < n_sd_attrs;attr_index++) {
+
+        char attr_name[H4_MAX_NC_NAME];
+        int32 attr_type     = -1;
+        int32 attr_count    = -1;
+ 
+        if (SDattrinfo(sdfd,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDattrinfo failed ");
+        }
+
+        vector<char> attr_value;
+        attr_value.resize(attr_count * DFKNTsize(attr_type));
+        if (SDreadattr (sdfd, attr_index, attr_value.data()) == -1)  {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+        }
+            
+        string das_attrname(attr_name);
+        das_attrname = HDFCFUtil::get_CF_string(das_attrname);
+        if (attr_type==DFNT_UCHAR || attr_type == DFNT_CHAR){
+            string tempstring(attr_value.begin(),attr_value.end());
+            auto tempfinalstr= string(tempstring.c_str());
+            at->append_attr(HDFCFUtil::get_CF_string(das_attrname), "String" , tempfinalstr);
+        }
+        else {
+
+            for (int loc=0; loc < attr_count ; loc++) {
+                string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*) (attr_value.data()));
+                at->append_attr(das_attrname, HDFCFUtil::print_type(attr_type), print_rep);
+            }
+
+        }
+
+    }
+
+    for (int i = 0; i <n_sds; i++) {
+
+        uint16 name_len = 0;
+        vector<char> sds_name;
+
+        int32 sds_id  = SDselect(sdfd,i);
+        if (sds_id == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+        }
+
+        if (SDgetnamelen(sds_id, &name_len) == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+        }
+    
+        sds_name.resize(name_len+1);
+    
+        int32 n_sds_attrs = 0;
+    
+        // Obtain object name, rank, size, field type and number of SDS attributes
+        if (FAIL == SDgetinfo (sds_id, sds_name.data(), nullptr, nullptr, nullptr, &n_sds_attrs)) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        }                        
+        
+        string sds_name_str(sds_name.begin(),sds_name.end()-1);
+    
+        // Handle special characters in the sds_name.
+        sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
+
+        AttrTable *at_sds = das.get_table(sds_name_str);
+        if (!at_sds)
+            at_sds = das.add_table(sds_name_str, new AttrTable);
+    
+        char attr_name[H4_MAX_NC_NAME];
+        for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {
+    
+            int32 sds_attr_type = 0;
+            int32 attr_value_count = 0;
+            if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count)) {
+                SDendaccess(sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+            }
+    
+            vector<char> attr_value;
+            attr_value.resize(attr_value_count * DFKNTsize(sds_attr_type));
+            if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) { 
+                SDendaccess(sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+            }
+                
+            string das_attrname (attr_name);
+            das_attrname = HDFCFUtil::get_CF_string(das_attrname);
+            if (sds_attr_type==DFNT_UCHAR || sds_attr_type == DFNT_CHAR){
+                string tempstring(attr_value.begin(),attr_value.end());
+                auto tempfinalstr= string(tempstring.c_str());
+                at_sds->append_attr(HDFCFUtil::get_CF_string(das_attrname), "String" , tempfinalstr);
+            }
+            else {
+    
+                for (int loc=0; loc < attr_value_count ; loc++) {
+                    string print_rep = HDFCFUtil::print_attr(sds_attr_type, loc, (void*) (attr_value.data()));
+                    at_sds->append_attr(das_attrname, HDFCFUtil::print_type(sds_attr_type), print_rep);
+                }
+            }
+        }
+        SDendaccess(sds_id);
+    }
+}
+
+void obtain_cf_simple_lat_lon(int32 sdfd,int32 fileid,int32 n_sds, string &lat_name, string &lon_name, int &lat_size, int &lon_size) {
+
+    bool find_lat = false;
+    bool find_lon = false;
+
+    for (int i = 0; i <n_sds; i++) {
+
+        uint16 name_len = 0;
+        vector<char> sds_name;
+
+        int32 sds_id  = SDselect(sdfd,i);
+        if (sds_id == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+        }
+
+        if (SDgetnamelen(sds_id, &name_len) == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+        }
+    
+        sds_name.resize(name_len+1);
+    
+        int32  sds_rank = 0;
+        int32 dim_sizes[H4_MAX_VAR_DIMS];
+        int32 num_attrs = 0;
+ 
+        // Obtain object name, rank, size, field type and number of SDS attributes
+        if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, dim_sizes, nullptr, &num_attrs)) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        }                        
+ 
+        // This simple CF grid only contains 1-D lat/lon.
+        if (sds_rank == 1) {
+
+            char attr_name[H4_MAX_NC_NAME];
+
+            for (int attrindex = 0; attrindex < num_attrs; attrindex++) {
+        
+                int32 sds_attr_type = 0;
+                int32 attr_value_count = 0;
+                if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count)) {
+                    SDendaccess(sds_id);
+                    close_vgroup_fileids(fileid,sdfd,-1);
+                    throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+                }
+
+                string attrname_str(attr_name);
+                if(attrname_str == "units" && sds_attr_type == DFNT_CHAR) {
+                    vector<char> attr_value;
+                    attr_value.resize(attr_value_count * DFKNTsize(sds_attr_type));
+                    if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) { 
+                        SDendaccess(sds_id);
+                        close_vgroup_fileids(fileid,sdfd,-1);
+                        throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+                    }
+                    string tempstring(attr_value.begin(),attr_value.end());
+                    auto tempfinalstr= string(tempstring.c_str());   
+                    if (tempfinalstr == "degrees_north") {
+                        find_lat = true;
+                        string sds_name_str(sds_name.begin(),sds_name.end()-1);
+                        lat_name = HDFCFUtil::get_CF_string(sds_name_str);
+                        lat_size = dim_sizes[0];   
+                    }   
+                    else if (tempfinalstr == "degrees_east") {
+                        find_lon = true;
+                        string sds_name_str(sds_name.begin(),sds_name.end()-1);
+                        lon_name = HDFCFUtil::get_CF_string(sds_name_str);
+                        lon_size = dim_sizes[0];   
+                    }
+                } 
+                if (find_lat && find_lon) 
+                    break;
+            }
+        }
+        if (find_lat && find_lon) {
+            SDendaccess(sds_id);
+            break;
+        }
+        else 
+            SDendaccess(sds_id);
+    }
+
+}
+
+void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 fileid, short cf_simple_type) {
+
+    dds.set_dataset_name(basename(filename));
+
+    int32 n_sds      = 0;       
+    int32 n_sd_attrs = 0;
+
+    // Obtain number of SDS objects and number of SD(file) attributes
+    if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
+        close_vgroup_fileids(fileid,sdfd,-1);
+        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+    }
+ 
+    for (int i = 0; i <n_sds; i++) {
+
+        uint16 name_len = 0;
+        vector<char> sds_name;
+
+        int32 sds_id  = SDselect(sdfd,i);
+        if (sds_id == FAIL) {
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+        }
+
+        int32 obj_ref = SDidtoref(sds_id);
+        if (obj_ref == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);
+            throw InternalErr (__FILE__,__LINE__,"SDidtoref failed ");
+        }
+ 
+        if (SDgetnamelen(sds_id, &name_len) == FAIL) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+        }
+    
+        sds_name.resize(name_len+1);
+    
+        int32  sds_rank = 0;
+        int32  sds_type = 0;
+ 
+        // Obtain object name, rank, size, field type and number of SDS attributes
+        if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, nullptr, &sds_type,nullptr)) {
+            SDendaccess(sds_id);
+            close_vgroup_fileids(fileid,sdfd,-1);  
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        }                        
+        
+        string sds_name_str(sds_name.begin(),sds_name.end()-1);
+    
+        // Handle special characters in the sds_name.
+        sds_name_str = HDFCFUtil::get_CF_string(sds_name_str);
+
+        vector<string> dimnames;
+        vector<int32> dimsizes;
+        for (int dimindex = 0; dimindex <sds_rank; dimindex++) {
+
+            int dimid = SDgetdimid (sds_id, dimindex);
+            if (dimid == FAIL) {
+                SDendaccess (sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
+            }
+            char dim_name[H4_MAX_NC_NAME];
+            int32 dim_size = 0;
+            int32 dim_type = 0;
+    
+            // Number of dimension attributes(This is almost never used)
+            int32  num_dim_attrs = 0;
+    
+            intn status = SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
+                                &num_dim_attrs);
+    
+            if (status == FAIL) {
+                SDendaccess (sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
+            }
+    
+            if (dim_size == 0) {
+                // This is the unlimited dimension case. Currently we don't support this.
+                SDendaccess (sds_id);
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__, __LINE__, "Currently not support the unlimited dimension for simple CF handling.");
+            }
+            string dim_name_str (dim_name);
+
+            // Make dimension names to follow the CF rule.
+            dim_name_str = HDFCFUtil::get_CF_string(dim_name_str);
+            dimnames.push_back(dim_name_str);
+            dimsizes.push_back(dim_size);
+        }
+
+        BaseType *bt = gen_dap_var(sds_type,sds_name_str, filename);
+        auto ar_unique = make_unique<HDFSPArray_RealField>(
+                                                      sds_rank,
+                                                      filename,
+                                                      sdfd,
+                                                      obj_ref,
+                                                      sds_type,
+                                                      OTHERHDF,
+                                                      sds_name_str,
+                                                      dimsizes,
+                                                      sds_name_str,
+                                                      bt);
+
+        auto ar = ar_unique.get();
+        for (int j = 0; j <sds_rank; j++)
+            ar->append_dim(dimsizes[j],dimnames[j]);
+        dds.add_var_nocopy(ar_unique.release());
+        delete bt;
+        SDendaccess(sds_id);
+    }
+
+    // Make the dimension names to follow the COARDS
+    if (cf_simple_type == 1) {
+
+        // Since DAP2 DDS is separated from DAS, which contains the attributes. So we need to use the HDF4 API to obtain
+        // the CF attributes degrees_east and degrees_north, then to identify the CF coordinates.
+        string lat_name;
+        string lon_name;
+        string lat_dim_name;
+        string lon_dim_name;
+        int lat_size = 0;
+        int lon_size = 0;
+        
+        obtain_cf_simple_lat_lon(sdfd,fileid,n_sds,lat_name,lon_name,lat_size,lon_size);
+
+        if (!lat_name.empty() && !lon_name.empty()) {
+
+            bool find_lat_dim_name = false;
+            bool find_lon_dim_name = false;
+      
+            for (const auto &var: dds.variables()) {
+
+                if (var->type() == dods_array_c) {
+                    auto ar = dynamic_cast<Array*>(var); 
+                    if (ar->dimensions() == 1) {
+                        string cf_var_name = HDFCFUtil::get_CF_string(ar->name());
+                        if (cf_var_name == lat_name) {
+                            lat_dim_name = ar->dimension_name(ar->dim_begin());
+                            ar->rename_dim(lat_dim_name, lat_name);
+                            find_lat_dim_name = true;
+                        }
+                        else if(cf_var_name == lon_name) {
+                            lon_dim_name = ar->dimension_name(ar->dim_begin());
+                            ar->rename_dim(lon_dim_name, lon_name);
+                            find_lon_dim_name = true;
+                        }
+                    }
+                }
+                if (find_lat_dim_name && find_lon_dim_name)
+                    break;
+            }
+
+            if (!find_lat_dim_name || !find_lon_dim_name) {
+                close_vgroup_fileids(fileid,sdfd,-1);
+                throw InternalErr(__FILE__, __LINE__, "Cannot find lat or lon dimension names for simple CF handling.");
+            }
+ 
+            // Since a dimension name of a data variable may just contains the dimension name of lat/lon,
+            // we will replace such dimension name with the lon/lat's name. 
+            for (const auto &var: dds.variables()) {
+
+                if (var->type() == dods_array_c) {
+
+                    auto ar = dynamic_cast<Array*>(var); 
+
+                    for (Array::Dim_iter p = ar->dim_begin(); p != ar->dim_end(); ++p) {
+                        if (ar->dimension_size(p) == lat_size && ar->dimension_name(p).find(lat_dim_name)==0) 
+                            ar->rename_dim(ar->dimension_name(p),lat_name);
+                        else if (ar->dimension_size(p) == lon_size && ar->dimension_name(p).find(lon_dim_name)==0) {
+                            ar->rename_dim(ar->dimension_name(p),lon_name);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 // Default option 
 void read_dds(DDS & dds, const string & filename)
 {
@@ -3960,7 +4383,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                 sdmap[ref].in_vgroup = true;
                 break;
             default:
-                ERROR_LOG("unknown tag: " << tag << " ref: " << ref << endl);
+                ERROR_LOG("unknown tag: " + std::to_string(tag) + " ref: " + std::to_string(ref));
                 // TODO: Make this an exception? jhrg 8/19/11
                 // Don't make an exception. Possibly you will meet other valid tags. Need to know if it
                 // is worth to tackle this. KY 09/13/12
@@ -4144,8 +4567,7 @@ void AddHDFAttr(DAS & das, const string & varname,
 
                 // We don't use the parse_error for this case since it generates memory leaking. KY 2014-02-25
                 if (arg.status() == false) {
-                    ERROR_LOG("HDF-EOS parse error while processing a "
-                    << container_name << " HDFEOS attribute. (2)" << endl);
+                    ERROR_LOG("HDF-EOS parse error while processing a " + container_name + " HDFEOS attribute. (2)");
                     //<< arg.error()->get_error_message() << endl;
                 }
 
@@ -4433,7 +4855,7 @@ void read_lone_sds(D4Group *root_grp, int32 file_id,int32 sdfd, const string &fi
 
    // Map lone SDS objects and put them under  DAP4's root group.
    for (const auto &sds_ref:ordered_lone_sds_refs) {
-        convert_sds(file_id, sdfd, -1,sds_ref, root_grp, root_grp, filename,false);  
+        convert_sds(file_id, sdfd, -1,sds_ref, root_grp, root_grp, filename,false, false);  
    }
 
    BESDEBUG("h4"," End read_lone_sds() "<<endl);
@@ -4712,10 +5134,11 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
 
     // Check if this is an HDF-EOS2 grid. 
     vector<eos2_grid_t> eos2_grid_lls;
+    vector<eos2_grid_info_t> eos2_grids_info;
  
 
 #ifdef USE_HDFEOS2_LIB
-    bool ret_value = check_eos2_grids(filename,sdfd,eos2_grid_lls);
+    bool ret_value = check_eos2_grids(filename,sdfd,eos2_grid_lls, eos2_grids_info);
     if (ret_value == false) {
         close_vgroup_fileids(file_id,sdfd,-1);
         throw InternalErr(__FILE__, __LINE__, "error in the check_eos2_grid(). ");
@@ -4730,6 +5153,9 @@ else
     cout<<"2d latlon "<<endl;
     cout<<"xdim: "<< eg.xdim <<endl;
     cout<<"ydim: "<< eg.ydim <<endl;
+}
+for(const auto& eg:eos2_grids_info) {
+    cout<<"eg.proj_code:  "<< eg.projcode << endl;
 
 
 }
@@ -4801,12 +5227,16 @@ else
         
         // Add latitude and longitude fields,plus attributes
         bool is_eos2_grid = false;
+        bool is_eos2_grid_cf_mapping = false;
         if (eos2_grid_lls_index >=0) {
-           add_eos2_latlon(tem_d4_cgroup, root_grp, eos2_grid_lls[eos2_grid_lls_index],filename);
+           add_eos2_latlon_info(tem_d4_cgroup, root_grp, eos2_grid_lls[eos2_grid_lls_index],eos2_grids_info[eos2_grid_lls_index],filename);
            is_eos2_grid = true;
+           int32 proj_code = eos2_grids_info[eos2_grid_lls_index].projcode;
+           if (proj_code == GCTP_LAMAZ || proj_code == GCTP_PS || proj_code == GCTP_SNSOID) 
+                is_eos2_grid_cf_mapping = true;
         }
 
-        convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,root_grp, vgroup_name_orig_str,filename,is_eos2_grid);
+        convert_vgroup_objects(vgroup_id,file_id,sdfd,tem_d4_cgroup,root_grp, vgroup_name_orig_str,filename,is_eos2_grid,is_eos2_grid_cf_mapping);
 
         Vdetach(vgroup_id);
         
@@ -4864,7 +5294,7 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
 }
 #endif
 
-void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,D4Group *root_grp, const string &vgroupname, const string& filename, bool is_eos2_grid) {
+void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,D4Group *root_grp, const string &vgroupname, const string& filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping) {
 
     BESDEBUG("h4"," Start convert_vgroup_objects"<<endl);
 
@@ -4888,7 +5318,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
         
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
-            convert_sds(file_id,sdfd,vgroup_id,obj_ref,d4g,root_grp, filename,is_eos2_grid);
+            convert_sds(file_id,sdfd,vgroup_id,obj_ref,d4g,root_grp, filename,is_eos2_grid, is_eos2_grid_cf_mapping);
         }
         else if(Visvs(vgroup_id,obj_ref)) {
             convert_vdata(file_id, sdfd, vgroup_id, obj_ref,d4g,filename);
@@ -4959,7 +5389,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             auto d4c_g  = d4c_g_ptr.release();
             d4g->add_group_nocopy(d4c_g);
 
-            convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,root_grp,vgroup_name_orig_str,filename, is_eos2_grid);
+            convert_vgroup_objects(vgroup_cid,file_id,sdfd,d4c_g,root_grp,vgroup_name_orig_str,filename, is_eos2_grid, is_eos2_grid_cf_mapping);
 
             Vdetach(vgroup_cid);
         }
@@ -5028,7 +5458,7 @@ void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Gr
     }
 
     // Vdata class
-    char vdata_class[VSNAMELENMAX];
+    char vdata_class[VSNAMELENMAX+1];
 
     if (VSgetclass (vdata_id, vdata_class) == FAIL) {
         VSdetach (vdata_id);
@@ -5228,7 +5658,7 @@ void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref) 
 }
 
 
-void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, D4Group *root_grp,const string &filename, bool is_eos2_grid) {
+void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, D4Group *root_grp,const string &filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping) {
 
     int32 sds_index = 0; 
     int32 sds_id = 0; 
@@ -5353,6 +5783,13 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
         string coordinates =grid_name+"/Longitude ";   
         coordinates +=grid_name+"/Latitude";
         add_var_dap4_attr(ar,"coordinates",attr_str_c,coordinates);
+        
+        // Here need to add "grid_mapping" grid_name + /eos_cf_projection", this is for grid_mapping attribute to follow the CF.
+        // But we only support 3 projections now. So need to check this. 
+        if (is_eos2_grid_cf_mapping) {
+            string grid_cf_mapping = grid_name+"/eos_cf_projection";
+            add_var_dap4_attr(ar,"grid_mapping",attr_str_c,grid_cf_mapping);
+        }
     }
 
     ar->set_is_dap4(true);
@@ -5735,13 +6172,21 @@ int is_group_eos2_grid(const string& vgroup_name, vector<eos2_grid_t>& eos2_grid
     return ret_value;
 }
 
-void add_eos2_latlon(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const string &filename){
+void add_eos2_latlon_info(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t & eos2_grid_info, const string &filename){
 
+    
     string ydim_path = "YDim/"+eos2_grid.grid_name;
     ydim_path = HDFCFUtil::get_CF_string(ydim_path);
     string xdim_path = "XDim/"+eos2_grid.grid_name;
     xdim_path = HDFCFUtil::get_CF_string(xdim_path);
 
+    int32 proj_code = eos2_grid_info.projcode;
+    if (proj_code == GCTP_SNSOID || proj_code == GCTP_PS || proj_code == GCTP_LAMAZ) {
+        // Add grid_mapping dummy variable
+        add_dummy_grid_cv(d4_grp, eos2_grid, eos2_grid_info);
+        // Add 1-D CF grid coordinates
+        add_CF_1D_cvs(d4_grp,root_grp,eos2_grid,eos2_grid_info,xdim_path,ydim_path);
+    }
     string lat_name ="Latitude";
     string lon_name ="Longitude";
     
@@ -5794,7 +6239,7 @@ void add_eos2_latlon(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2
 }
 
 #ifdef USE_HDFEOS2_LIB
-bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eos2_grid_lls) {
+bool check_eos2_grids(const string &filename, int32 sdfd, vector<eos2_grid_t>& eos2_grid_lls, vector<eos2_grid_info_t>& eos2_grids_info) {
 
     bool ret_value = true;
     // Here we need to check if this is an HDF-EOS2 grid file.
@@ -5814,7 +6259,8 @@ bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eo
             int32 ydim = 0;
             int32 xdim = 0;
             bool one_d_ll = false;
-            ret_value = obtain_eos2_gd_ll_info(filename,gname,ydim,xdim,one_d_ll);
+            eos2_grid_info_t eg_info;
+            ret_value = obtain_eos2_gd_ll_info(filename,gname,ydim,xdim,one_d_ll,eg_info);
             if (ret_value ==false)
                 break;
 
@@ -5824,6 +6270,7 @@ bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eo
             eg.xdim = xdim;
             eg.grid_name = gname;
             eos2_grid_lls.push_back(eg);
+            eos2_grids_info.push_back(eg_info);
             
         }
     }
@@ -5831,7 +6278,7 @@ bool check_eos2_grids(const string &filename, int32 sdfd,vector<eos2_grid_t>& eo
     return ret_value;
 }
 
-bool obtain_eos2_gd_ll_info(const string & fname, const string & grid_name, int32 &ydim, int32 &xdim, bool &oned_ll) {
+bool obtain_eos2_gd_ll_info(const string & fname, const string & grid_name, int32 &ydim, int32 &xdim, bool &oned_ll, eos2_grid_info_t &eg_info) {
 
     int32 gfid = GDopen(const_cast<char*>(fname.c_str()),DFACC_READ);
     if (gfid <0) 
@@ -5867,11 +6314,210 @@ bool obtain_eos2_gd_ll_info(const string & fname, const string & grid_name, int3
     if (GCTP_CEA == projcode || GCTP_GEO == projcode)
         oned_ll = true;
 
+    eg_info.projcode = projcode;
+    eg_info.zone = zone;
+    eg_info.sphere = sphere;
+    for (int i = 0; i<2;i++) {
+        eg_info.upleft[i]   = upleft[i];
+        eg_info.lowright[i] = lowright[i];
+    }
+    for (int i = 0; i<16;i++)
+        eg_info.params[i] = params[i];
+  
     GDdetach(gridid);
     GDclose(gfid);
 
     return true;
 }
+void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_t & eos2_grid, const eos2_grid_info_t &eg_info) {
+
+    string dummy_proj_cf_name = "eos_cf_projection";
+    auto dummy_proj_cf_unique = make_unique<HDFEOS2GeoCFProj>(dummy_proj_cf_name, dummy_proj_cf_name);
+    HDFEOS2GeoCFProj *dummy_proj_cf = dummy_proj_cf_unique.get();
+    dummy_proj_cf->set_is_dap4(true);
+
+    if (eg_info.projcode == GCTP_SNSOID) {
+
+        add_var_dap4_attr(dummy_proj_cf, "grid_mapping_name", attr_str_c, "sinusoidal");
+        add_var_dap4_attr(dummy_proj_cf, "longitude_of_central_meridian", attr_float64_c, "0.0");
+        add_var_dap4_attr(dummy_proj_cf, "earth_radius", attr_float64_c, "6371007.181");
+        add_var_dap4_attr(dummy_proj_cf, "_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
+    } else if (eg_info.projcode == GCTP_PS)
+        add_ps_cf_grid_mapping_attrs(dummy_proj_cf, eg_info);
+    else if (eg_info.projcode == GCTP_LAMAZ)
+        add_lamaz_cf_grid_mapping_attrs(dummy_proj_cf, eg_info);
+
+    string eos_cf_grid_value = eos2_grid.grid_name + " eos_cf_projection";
+    add_var_dap4_attr(dummy_proj_cf,"eos_cf_grid_mapping",attr_str_c,eos_cf_grid_value);
+    d4_grp->add_var_nocopy(dummy_proj_cf_unique.release());
+
+}
+
+void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t &eos2_grid_info, const string& xdim_path, const string &ydim_path) {
+
+    auto ar_bt_dim1_unique = make_unique<Float64>("XDim");
+    auto ar_bt_dim1 = ar_bt_dim1_unique.get();
+    auto ar_dim1_unique = make_unique<HDFEOS2GeoCF1D>(eos2_grid_info.projcode, eos2_grid_info.upleft[0], eos2_grid_info.lowright[0],
+                                                        eos2_grid.xdim, "XDim", ar_bt_dim1);
+    auto ar_dim1 = ar_dim1_unique.get();
+    ar_dim1->append_dim_ll(eos2_grid.xdim, xdim_path);
+    dims_transform_to_dap4(ar_dim1,root_grp,true);
+    ar_dim1->set_is_dap4(true);
+    add_CF_1D_cv_attrs(ar_dim1,false);
+
+    string eos_cf_grid_value = eos2_grid.grid_name + " XDim";
+    add_var_dap4_attr(ar_dim1,"eos_cf_grid",attr_str_c,eos_cf_grid_value);
+    d4_grp->add_var_nocopy(ar_dim1_unique.release());
+
+    auto ar_bt_dim0_unique = make_unique<Float64>("YDim");
+    auto ar_bt_dim0 = ar_bt_dim0_unique.get();
+    auto ar_dim0_unique = make_unique<HDFEOS2GeoCF1D>(eos2_grid_info.projcode, 
+                                                      eos2_grid_info.upleft[1], eos2_grid_info.lowright[1],
+                                                      eos2_grid.ydim, "YDim", ar_bt_dim0);
+    auto ar_dim0 = ar_dim0_unique.get();
+    ar_dim0->append_dim_ll(eos2_grid.ydim, ydim_path);
+    dims_transform_to_dap4(ar_dim0,root_grp,true);
+
+    ar_dim0->set_is_dap4(true);
+    add_CF_1D_cv_attrs(ar_dim0,true);
+
+    eos_cf_grid_value = eos2_grid.grid_name + " YDim";
+    add_var_dap4_attr(ar_dim0,"eos_cf_grid",attr_str_c,eos_cf_grid_value);
+
+    d4_grp->add_var_nocopy(ar_dim0_unique.release());
+
+}
+
+// Direct CF to DAP4, 
+// add CF grid_mapping $attributes for the special dimension variables.
+void add_CF_1D_cv_attrs(libdap::BaseType *var, bool is_ydim) {
+
+    string standard_name;
+    string long_name;
+    string COORAxisTypes;
+
+    if (true == is_ydim) {
+        standard_name = "projection_y_coordinate";
+        long_name = "y coordinate of projection ";
+        COORAxisTypes = "GeoY";
+    }
+    else {
+        standard_name = "projection_x_coordinate";
+        long_name = "x coordinate of projection ";
+        COORAxisTypes = "GeoX";
+    }
+
+    add_var_dap4_attr(var,"standard_name", attr_str_c, standard_name);
+    add_var_dap4_attr(var,"long_name", attr_str_c, long_name);
+    add_var_dap4_attr(var,"units", attr_str_c, "meter");
+    add_var_dap4_attr(var,"_CoordinateAxisType", attr_str_c, COORAxisTypes);
+
+}
+
+
+void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *var, const eos2_grid_info_t & eg_info) {
+
+    double lon_proj_origin = EHconvAng(eg_info.params[4],HDFE_DMS_DEG);
+    double lat_proj_origin = EHconvAng(eg_info.params[5],HDFE_DMS_DEG);
+    double fe = eg_info.params[6];
+    double fn = eg_info.params[7];
+
+    add_var_dap4_attr(var,"grid_mapping_name", attr_str_c, "lambert_azimuthal_equal_area");
+
+    // Here we don't use to_string since it adds trailing zeros at the end.
+    ostringstream s_lon_proj_origin;
+    s_lon_proj_origin << lon_proj_origin;
+    add_var_dap4_attr(var,"longitude_of_projection_origin", attr_float64_c, s_lon_proj_origin.str());
+
+    ostringstream s_lat_proj_origin;
+    s_lat_proj_origin << lat_proj_origin;
+
+    add_var_dap4_attr(var,"latitude_of_projection_origin", attr_float64_c, s_lat_proj_origin.str());
+
+    if(fe == 0.0)
+        add_var_dap4_attr(var,"false_easting",attr_float64_c,"0.0");
+    else {
+        ostringstream s_fe;
+        s_fe << fe;
+        add_var_dap4_attr(var,"false_easting",attr_float64_c,s_fe.str());
+    }
+
+    if(fn == 0.0)
+        add_var_dap4_attr(var,"false_northing",attr_float64_c,"0.0");
+    else {
+        ostringstream s_fn;
+        s_fn << fn;
+        add_var_dap4_attr(var,"false_northing",attr_float64_c,s_fn.str());
+    }
+
+    add_var_dap4_attr(var,"_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
+}
+
+
+void add_ps_cf_grid_mapping_attrs(libdap::BaseType *var, const eos2_grid_info_t & eg_info) {
+
+    // The following information is added according to the HDF-EOS2 user's guide and
+    // CF 1.11 grid_mapping requirement.
+
+    // Longitude down below pole of map
+    double vert_lon_pole =  EHconvAng(eg_info.params[4],HDFE_DMS_DEG);
+
+    // Latitude of true scale
+    double lat_true_scale = EHconvAng(eg_info.params[5],HDFE_DMS_DEG);
+
+    // False easting
+    double fe = eg_info.params[6];
+
+    // False northing
+    double fn = eg_info.params[7];
+
+    add_var_dap4_attr(var,"grid_mapping_name",attr_str_c,"polar_stereographic");
+
+    ostringstream s_vert_lon_pole;
+    s_vert_lon_pole << vert_lon_pole;
+
+    // The following mapping is based on my best understanding. KY
+    // CF: straight_vertical_longitude_from_pole
+    add_var_dap4_attr(var,"straight_vertical_longitude_from_pole", attr_float64_c, s_vert_lon_pole.str());
+    // Not using to_string here because it adds trailing zeros at the end. 
+#if 0
+    add_var_dap4_attr(var,"straight_vertical_longitude_from_pole", attr_float64_c, to_string(vert_lon_pole));
+#endif
+
+    ostringstream s_lat_true_scale;
+    s_lat_true_scale << lat_true_scale;
+    add_var_dap4_attr(var,"standard_parallel", attr_float64_c, s_lat_true_scale.str());
+
+    if(fe == 0.0)
+        add_var_dap4_attr(var,"false_easting",attr_float64_c,"0.0");
+    else {
+        ostringstream s_fe;
+        s_fe << fe;
+        add_var_dap4_attr(var,"false_easting",attr_float64_c,s_fe.str());
+    }
+
+    if(fn == 0.0)
+        add_var_dap4_attr(var,"false_northing",attr_float64_c,"0.0");
+    else {
+        ostringstream s_fn;
+        s_fn << fn;
+        add_var_dap4_attr(var,"false_northing",attr_float64_c,s_fn.str());
+    }
+
+    if(lat_true_scale >0)
+        add_var_dap4_attr(var,"latitude_of_projection_origin",attr_float64_c,"+90.0");
+    else
+        add_var_dap4_attr(var, "latitude_of_projection_origin",attr_float64_c,"-90.0");
+
+    add_var_dap4_attr(var, "_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
+
+    // From CF, PS has another paramseter,
+    // Either standard_parallel (EPSG 9829) or scale_factor_at_projection_origin (EPSG 9810)
+    // I cannot find the corresponding paramseter from the EOS library.
+
+}
+
+
 #endif
 
 bool add_sp_hdf4_info(D4Group *d4_grp, const string &filename, string &err_msg) {
@@ -5892,6 +6538,7 @@ bool add_sp_hdf4_info(D4Group *d4_grp, const string &filename, string &err_msg) 
     return ret_value;
 
 }
+
 
 bool add_sp_hdf4_trmm_info(D4Group *d4_grp, const string& filename, const D4Attribute *d4_attr, string &err_msg) {
     

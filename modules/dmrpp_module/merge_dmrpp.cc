@@ -107,10 +107,17 @@ int main(int argc,char**argv)
 
     if(argc != 5) {
         cout<<"Please provide four arguments: "<< endl;
-        cout<<"  The first is the dmrpp file that contains the missing variable value information. "<<endl;
-        cout<<"  The second is the original dmrpp file. "<<endl;
-        cout<<"  The third one is the href to the missing variables HDF5 file. "<<endl;
-        cout<<"  The fourth one is the text file that includes the missing variable information. "<<endl;
+        cout<<"  The first is the dmrpp file that contains the information of the variable of which";
+        cout<<" the data cannot be found in the original HDF5/4 file but can be found" 
+            <<" from the HDF5 file pointed by this dmrpp file. "<<endl;
+        cout<<"  The second is the dmrpp file for the original HDF5/4 file. "<<endl;
+        cout<<"  The third one is the href to HDF5/HDF4 file of which the missing data is stored. "<<endl;
+        cout<<"  The fourth one is the text file that includes the variable path of which"
+            <<" the data cannot be found in the original HDF5/4 file. "<<endl;
+        cout <<endl;
+        cout <<" Warning: before running this program, one must run the check_dmrpp program first to see "
+             <<"if the original dmrpp file contains any missing variable of which the data cannot be found "
+             <<"in the original HDF5/HDF4 file. "<<endl; 
         return 0;
     }
 
@@ -171,6 +178,19 @@ cout<<"chunk_info_list["<<i<<"] "<< chunk_info_list[i] << endl;
 
     // Read the missing variable names to a string and tokenize the string to a vector of string.
     file_to_string(mvar_fname,missing_vname_str);
+    // The data-missing variable list must not be empty.
+    if (missing_vname_str.empty()) {
+        cout<<"  The text file that has the data-missing variable path is empty." <<endl; 
+        cout<<" Please check the file. "<<endl;
+        return 0;
+    }
+
+    if (missing_vname_str[missing_vname_str.size()-1]=='\n')
+        missing_vname_str = missing_vname_str.substr(0,missing_vname_str.size()-1);
+
+#if 0
+cout<<"missing_vname_str: "<<missing_vname_str<<endl;
+#endif
 
     vector<string> missing_vname_list;
 
@@ -185,7 +205,7 @@ cout<<"chunk_info_list["<<i<<"] "<< chunk_info_list[i] << endl;
     }
 
     // Check if the dmrpp file that contains just the missing variables has groups.
-    // Note: we don't need to consider if there are groups the original dmrpp file since
+    // Note: we don't need to consider if there are groups in the original dmrpp file since
     //       we only care about the insertion of the chunk info for the missing variables.
     bool handle_grp = false;
     for (const auto &mv_name:missing_vname_list) {
@@ -337,14 +357,27 @@ for (const auto &mcil:missing_chunk_info_lines)
     }
     else {
 
+#if 0
+cout <<"coming to the nogroup case"<<endl;
+#endif
+
         // Remove the additional variables added by the filenetCDF-4 module.
         vector<string> new_var_types;
         vector<string> new_var_names;
         vector<string> new_chunk_info_list;
 
+        // Trim missing_vname_list if the missing_vname_list includes the root path /.
+        vector<string> missing_vname_list_trim;
+        for (const auto &mvname:missing_vname_list) {
+            string temp_str = mvname;
+            if (temp_str[0] == '/') 
+                temp_str = temp_str.substr(1);
+            missing_vname_list_trim.emplace_back(temp_str);
+        }
+
         for (size_t i =0; i<var_names.size();i++) {
-            for (size_t j = 0; j<missing_vname_list.size();j++) {
-                if (var_names[i] == missing_vname_list[j]) {
+            for (const auto &mvname:missing_vname_list_trim) {
+                if (var_names[i] == mvname) {
                     new_var_names.push_back(var_names[i]);
                     new_var_types.push_back(var_types[i]);
                     new_chunk_info_list.push_back(chunk_info_list[i]);

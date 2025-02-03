@@ -79,7 +79,7 @@ BESUsageModule::initialize( const string &modname )
     BESDapService::add_to_dap_service( Usage_SERVICE,
 				       "OPeNDAP Data Information Page" ) ;
 
-    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( DAP2_FORMAT ) ;
+    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( DAP_FORMAT ) ;
     if( t )
     {
 	BESDEBUG( "usage", "    adding basic " << Usage_TRANSMITTER
@@ -110,7 +110,7 @@ BESUsageModule::terminate( const string &modname )
     BESResponseHandlerList::TheList()->remove_handler( Usage_RESPONSE ) ;
 
     BESTransmitter *t =
-	BESReturnManager::TheManager()->find_transmitter( DAP2_FORMAT ) ;
+	BESReturnManager::TheManager()->find_transmitter( DAP_FORMAT ) ;
     if( t )
     {
 	BESDEBUG( "usage", "    removing basic " << Usage_TRANSMITTER
@@ -118,7 +118,7 @@ BESUsageModule::terminate( const string &modname )
 	t->remove_method( Usage_TRANSMITTER ) ;
     }
 
-    t = BESReturnManager::TheManager()->find_transmitter( DAP2_FORMAT ) ;
+    t = BESReturnManager::TheManager()->find_transmitter( DAP_FORMAT ) ;
     if( t )
     {
 	BESDEBUG( "usage", "    removing http " << Usage_TRANSMITTER

@@ -32,6 +32,7 @@ group: grid1 {
     	float temperature(YDim_grid1, XDim_grid1) ;
     		temperature:dmr_sds_ref = 5 ;
     		temperature:coordinates = "/grid1/Longitude /grid1/Latitude" ;
+    		temperature:grid_mapping = "/grid1/eos_cf_projection" ;
     data:
 
      temperature =

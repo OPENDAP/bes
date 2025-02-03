@@ -44,15 +44,15 @@ class DmrppD4Opaque: public libdap::D4Opaque, public DmrppCommon {
 public:
     DmrppD4Opaque(const std::string &n) : libdap::D4Opaque(n), DmrppCommon() { }
     DmrppD4Opaque(const std::string &n, const std::string &d) : libdap::D4Opaque(n, d), DmrppCommon() { }
-    DmrppD4Opaque(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::D4Opaque(n), DmrppCommon(dmz) { }
-    DmrppD4Opaque(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::D4Opaque(n, d), DmrppCommon(dmz) { }
+    DmrppD4Opaque(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::D4Opaque(n), DmrppCommon(std::move(dmz)) { }
+    DmrppD4Opaque(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::D4Opaque(n, d), DmrppCommon(std::move(dmz)) { }
     DmrppD4Opaque(const DmrppD4Opaque &) = default;
 
-    virtual ~DmrppD4Opaque() = default;
+    ~DmrppD4Opaque() override = default;
 
     DmrppD4Opaque &operator=(const DmrppD4Opaque &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() {
+    libdap::BaseType *ptr_duplicate() override {
         return new DmrppD4Opaque(*this);
     }
 
@@ -80,12 +80,12 @@ public:
     bool read() override;
     void set_send_p(bool state) override;
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override
     {
         DmrppCommon::print_dmrpp(writer, constrained);
     }
 
-    virtual void dump(ostream & strm) const;
+    void dump(ostream & strm) const override;
 };
 
 } // namespace dmrpp

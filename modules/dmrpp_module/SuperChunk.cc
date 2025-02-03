@@ -84,13 +84,18 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
         // If this chunk used/uses hdf5 fill values, do not attempt to deflate, etc., its
         // values since the fill value code makes the chunks 'fully formed.'' jhrg 5/16/22
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->get_bytes_per_element());
 
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
 
+        char *dest_buf = array->get_buf();
+        if (array->var()->type() == libdap::dods_structure_c) {
+            dest_buf = array->get_structure_array_buf_ptr();
+
+        }
         array->insert_chunk(0, &target_element_address, &chunk_source_address,
-                            chunk, constrained_array_shape);
+                            chunk, constrained_array_shape, dest_buf);
     }
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
@@ -124,7 +129,7 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
 
     if(array){
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->get_bytes_per_element());
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
@@ -608,10 +613,10 @@ void SuperChunk::read_aggregate_bytes()
 
     try {
         handle->read_data();  // throws if error
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        dmrpp::CurlHandlePool::release_handle(handle);
     }
     catch(...) {
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        dmrpp::CurlHandlePool::release_handle(handle);
         throw;
     }
 
@@ -687,6 +692,7 @@ void SuperChunk::retrieve_data() {
         chunk->set_bytes_read(chunk->get_size());
     }
 }
+
 // Direct chunk IO routine for retrieve_data, it clones from retrieve_data(). To ensure
 // the regular operations. Still use a separate method.
 void SuperChunk::retrieve_data_dio() {
@@ -868,8 +874,6 @@ void SuperChunk::read_unconstrained_dio() {
 
         process_chunks_unconstrained_concurrent_dio(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
     }
-
-
 }
 
 } // namespace dmrpp

@@ -68,10 +68,6 @@ cat bes-snapshot >&2
 # Bounding the commit message with the " character allows use to include
 # new line stuff for easy commit message readability later.
 git commit -am \
-"bes: Triggering OLFS build for snapshot production.
-Build Version Matrix:
-${LIBDAP4_SNAPSHOT}
-${BES_SNAPSHOT}
-";
+"bes: Triggering OLFS build for snapshot production.\nBuild Version Matrix:\n${LIBDAP4_SNAPSHOT}\n${BES_SNAPSHOT}";
 
 git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/olfs.git" --all;

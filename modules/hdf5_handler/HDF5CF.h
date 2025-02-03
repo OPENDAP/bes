@@ -839,6 +839,11 @@ public:
         return this->spvars;
     }
 
+    bool is_special_gpm_l3() const
+    {
+        return this->special_gpm_l3;
+    }
+
     /// Retrieve DDS information from the HDF5 file; real implementation for general HDF5 products.
     void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr) override;
 
@@ -923,6 +928,8 @@ public:
     /// Update the Bounds attribute to follow the CF conventions
     void Update_Bounds_Attr();
    
+    /// Update the netCDF-4 pure dimension size when the pure dimension is an unlimited dimension
+    void Update_NC4_PureDimSize();
 
     /// Obtain ignored info. flag
     bool Get_IgnoredInfo_Flag() override
@@ -1059,6 +1066,7 @@ private:
     bool ll2d_no_cv;
 #endif
     bool have_nc4_non_coord = false;
+    bool special_gpm_l3 = false;
 
 };
 

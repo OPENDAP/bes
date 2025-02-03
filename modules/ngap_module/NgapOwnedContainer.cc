@@ -54,7 +54,7 @@
 
 #define prolog std::string("NgapOwnedContainer::").append(__func__).append("() - ")
 // CACHE_LOG is defined separately from INFO_LOG so that we can turn it off easily. jhrg 11/19/23
-#define CACHE_LOG(x) MR_LOG("info", x)
+#define CACHE_LOG(x) INFO_LOG(x)
 
 using namespace std;
 using namespace bes;
@@ -96,7 +96,7 @@ NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &rea
  */
 bool NgapOwnedContainer::file_to_string(int fd, string &content) {
     // The file size is needed later; this doubles as a check that the file in open.
-    struct stat statbuf{};
+    struct stat statbuf = {};
     if (fstat(fd, &statbuf) < 0) {
         ERROR_LOG("NgapOwnedContainer::file_to_string() - failed to get file descriptor status\n");
         return false;
@@ -132,7 +132,7 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  * cache and it is not thread-safe.
  */
 string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
-    BES_STOPWATCH_START(MODULE, "build_data_url_to_daac_bucket: " + rest_path);
+    BES_MODULE_TIMING(prolog + rest_path);
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
@@ -150,6 +150,7 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
         }
     }
 
+    // Not cached or not using the cache; ask CMR. Throws on lookup failure, HTTP failure. jhrg 1/24/25
     data_url = NgapApi::convert_ngap_resty_path_to_data_access_url(rest_path);
 
     // If using the CMR cache, cache the response.
@@ -171,6 +172,7 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
     // The PATH part of a URL to the NGAP/DMR++ is an 'NGAP REST path' that has the form:
     // /collections/<ccid>/granules/<granule_id>. In our 'owned' S3 bucket, we use object
     // names of the form: /<ccid>/<granule_id>.dmrpp.
+    BES_MODULE_TIMING(prolog + rest_path);
 
     auto parts = BESUtil::split(rest_path, '/');
     if (parts.size() != 4 || parts[0] != "collections" || parts[2] != "granules") {
@@ -224,8 +226,9 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
     return false;
 }
 
-bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const {
-
+bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const
+{
+#if 0
     FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
     if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
         // Do this in a child thread someday, but what about the return value. jhrg 11/14/23
@@ -239,6 +242,16 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
         ERROR_LOG("NgapOwnedContainer::access() - failed to put DMR++ in file cache\n");
         return false;
     }
+
+#else
+    if (NgapRequestHandler::d_dmrpp_file_cache.put_data(FileCache::hash_key(get_real_name()), dmrpp_string)) {
+        CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
+    }
+    else {
+        ERROR_LOG("NgapOwnedContainer::access() - failed to put DMR++ in memory cache\n");
+        return false;
+    }
+#endif
 
     if (!NgapRequestHandler::d_dmrpp_file_cache.purge()) {
         ERROR_LOG("NgapOwnedContainer::access() - call to FileCache::purge() failed\n");
@@ -279,7 +292,7 @@ void NgapOwnedContainer::filter_response(const map <string, string, std::less<>>
 bool NgapOwnedContainer::get_daac_content_filters(const string &data_url, map<string, string, std::less<>> &content_filters) {
     if (NgapOwnedContainer::d_inject_data_url) {
         // data_url was get_real_name(). jhrg 8/9/24
-        const string missing_data_url_str = data_url + ".missing";
+        const string missing_data_url_str = data_url + "_mvs.h5";
         const string href = R"(href=")";
         const string trusted_url_hack = R"(" dmrpp:trust="true")";
         const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
@@ -327,17 +340,18 @@ bool NgapOwnedContainer::get_opendap_content_filters(map<string, string, std::le
  * @return True if the document was found, false otherwise
  */
 bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) const {
+    BES_MODULE_TIMING(prolog + get_real_name());
     bool dmrpp_read = false;
     try {
         string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
-        INFO_LOG(prolog << "Look in the OPeNDAP-bucket for the DMRpp for: " << dmrpp_url_str << '\n');
+        INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
         curl::http_get(dmrpp_url_str, dmrpp_string);
         map <string, string, std::less<>> content_filters;
         if (!get_opendap_content_filters(content_filters)) {
             throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
         }
         filter_response(content_filters, dmrpp_string);
-        INFO_LOG(prolog << "Found the DMRpp in the OPeNDAP-bucket for: " << dmrpp_url_str << '\n');
+        INFO_LOG(prolog + "Found the DMRpp in the OPeNDAP-bucket for: " + dmrpp_url_str);
         dmrpp_read = true;
     }
     catch (http::HttpError &http_error) {
@@ -351,8 +365,8 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
             case 400:
             case 401:
             case 403:
-                ERROR_LOG(prolog << "Looked in the OPeNDAP bucket for the DMRpp for: " << get_real_name()
-                                 << " but got HTTP Status: " << http_error.http_status() << '\n');
+                ERROR_LOG(prolog + "Looked in the OPeNDAP bucket for the DMRpp for: " + get_real_name()
+                                 + " but got HTTP Status: " + std::to_string(http_error.http_status()));
                 dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
                 dmrpp_read = false;
                 break;
@@ -367,16 +381,6 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
                     + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
                 throw;
         }
-#if 0
-        if (http_error.http_status() == 404 || http_error.http_status() == 400) {
-            dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
-            dmrpp_read = false;
-        }
-        else {
-            http_error.set_message(http_error.get_message() + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
-            throw;
-        }
-#endif
     }
 
     return dmrpp_read;
@@ -388,10 +392,13 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
  * @exception http::HttpError if the granule is not found
  */
 void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const {
+    BES_MODULE_TIMING(prolog + get_real_name());
+    // This code may ask CMR and will throw exceptions that mention CMR on error. jhrg 1/24/25
+    string data_url = build_data_url_to_daac_bucket(get_real_name());
+    string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
+    INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
+
     try {
-        string data_url = build_data_url_to_daac_bucket(get_real_name());
-        string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
-        INFO_LOG(prolog << "Look in the DAAC-bucket for the DMRpp for: " << dmrpp_url_str << '\n');
         curl::http_get(dmrpp_url_str, dmrpp_string);
         // filter the DMRPP from the DAAC's bucket to replace the template href with the data_url
         map <string, string, std::less<>> content_filters;
@@ -399,10 +406,10 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
             throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
         }
         filter_response(content_filters, dmrpp_string);
-        INFO_LOG(prolog << "Found the DMRpp in the DAAC-bucket for: " << dmrpp_url_str << '\n');
+        INFO_LOG(prolog + "Found the DMRpp in the DAAC-bucket for: " + dmrpp_url_str);
     }
     catch (http::HttpError &http_error) {
-        http_error.set_message(http_error.get_message() + ". This error for a DAAC-owned DMR++ could be from Hyrax, CMR, TEA, or S3.");
+        http_error.set_message(http_error.get_message() + "NgapOwnedContainer::dmrpp_read_from_daac_bucket() failed to read the DMR++ from S3.");
         throw;
     }
 }
@@ -423,7 +430,7 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
  * @exception http::HttpError if there is a problem making the remote request if one is needed.
  */
 bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) const {
-    BES_STOPWATCH_START(MODULE, prolog + get_real_name());
+    BES_MODULE_TIMING(prolog + get_real_name());
 
     // If the DMR++ is cached, return it. NB: This cache holds OPeNDAP- and DAAC-owned DMR++ documents.
     if (NgapRequestHandler::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {

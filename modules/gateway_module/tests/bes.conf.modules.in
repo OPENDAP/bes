@@ -33,11 +33,6 @@ BES.UncompressCache.dir=/tmp
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
-Http.Cache.dir=/tmp
-Http.Cache.prefix=gateway_cache_
-Http.Cache.size=500
-Http.Cache.expires.time=3600
-
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf
 Http.MimeTypes+=h5:application/x-hdf5

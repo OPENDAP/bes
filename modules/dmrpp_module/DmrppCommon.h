@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <utility>
 
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
@@ -144,6 +145,10 @@ class DmrppCommon {
     bool using_linked_block = false;
     unsigned int total_linked_blocks =0;
 
+    bool multi_linked_blocks_chunk = false;
+
+    // Structure offset 
+    std::vector<unsigned int> struct_offsets;
 protected:
     virtual char *read_atomic(const std::string &name);
       virtual char *read_atomic(const std::string &name, size_t & buf_size);
@@ -176,6 +181,12 @@ public:
          for(const auto &def_level:def_levels)
             deflate_levels.push_back(def_level);
     }
+    void set_struct_offsets(const std::vector<unsigned int>& s_offs) {
+         for(const auto &s_o:s_offs)
+            struct_offsets.push_back(s_o);
+    }
+    const std::vector<unsigned int> & get_struct_offsets() const { return struct_offsets;}
+
     void set_processing_fv_chunks() { processing_fv_chunks = true;}
     bool get_processing_fv_chunks() const { return processing_fv_chunks; }
 
@@ -204,10 +215,21 @@ public:
         return d_missing_data;
     }
 
-    /// @brief Set the value of the compact property
+    /// @brief Set the value of the missing data.
     void set_missing_data(bool value) {
         d_missing_data = value;
     }
+
+    /// @brief Returns true if this object contains a chunk that have multiple linked blocks .
+    virtual bool is_multi_linked_blocks_chunk() const {
+        return multi_linked_blocks_chunk;
+    }
+
+    /// @brief Set the value of the boolean variable that indicates this variable contains multiple linked blocks in a chunk.
+    void set_multi_linked_blocks_chunk(bool value) {
+        multi_linked_blocks_chunk = value;
+    }
+
 
     /// @brief Returns true if this object describes the missing data.
     virtual bool is_disable_dio() const {
@@ -218,9 +240,6 @@ public:
     void set_disable_dio(bool value) {
         d_disable_dio = value;
     }
-
-   
-
 
     /// @brief Returns true if this object utilizes shuffle compression.
     virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
@@ -291,7 +310,6 @@ public:
     /// @return Return true if this variable contains one chunk and the data are all 'fill value.'
     virtual bool get_one_chunk_fill_value() const { return d_one_chunk_fill_value; }
 
-
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
     void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "") const;
@@ -350,6 +368,13 @@ public:
             bool linked_block,
             unsigned int linked_block_index);
 
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array, bool multi_linked_blocks, unsigned int multi_linked_block_index_in_dmrpp_file);
+
 
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
@@ -357,6 +382,7 @@ public:
             unsigned long long size,
             unsigned long long offset,
             const std::vector<unsigned long long> &position_in_array);
+
 
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
@@ -380,11 +406,34 @@ public:
             bool linked_block,
             unsigned int linked_block_index);
 
+    // Multi-linked block handling for build_dmrpp
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array,
+            bool multi_linked_blocks,
+            unsigned int linked_block_index);
+
+
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             unsigned long long size,
             unsigned long long offset,
             const std::vector<unsigned long long> &position_in_array);
+
+    // Multi-linked block handling for retrieving the data
+
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            const std::string &position_in_array,
+            const std::vector<std::pair<unsigned long long, unsigned long long>> &lb_offset_length);
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            const std::string &position_in_array,
+            const std::vector<std::pair<unsigned long long, unsigned long long>> &lb_offset_length);
 
     virtual unsigned long add_chunk(
             const std::string &byte_order,
@@ -393,14 +442,31 @@ public:
             unsigned int filter_mask,
             const std::vector<unsigned long long> &position_in_array);
 
-
-
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             const std::string &fill_value,
             libdap::Type fv_type,
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
+
+    // For structure, if we don't have structure offset information, we will calculate the structure size based on our best knowledge.
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            const std::string &fill_value,
+            libdap::Type fv_type,
+            unsigned long long chunk_size,
+            const std::vector<unsigned long long> &position_in_array,
+            const std::vector<std::pair<libdap::Type,int>> &structure_type_element);
+
+    // If we know the structure offset information, we will pass the structure offset to the chunk and this will be used for fill value handling.
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            const std::string &fill_value,
+            libdap::Type fv_type,
+            unsigned long long chunk_size,
+            const std::vector<unsigned long long> &position_in_array,
+            unsigned int struct_size);
+
 
     void accumlate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
     unsigned long long get_var_chunks_storage_size() const {return var_chunks_storage_size; }

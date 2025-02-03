@@ -876,26 +876,23 @@ AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([d_int64.h5.dap.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_scalar_dset.h5.dmr.bescmd])
 AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_scalar_dset.h5.dap.bescmd])
 
-# These six tests use the new macro added at the top if the file. jhrg 3/12/22
+# netCDF-4 pure unlimited dimension
+AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_group_atomic_puredim_unlimit.h5.dmr.bescmd])
+
+# The following tests use the new macro added at the top if the file. jhrg 3/12/22, ky 12/31/24
 # tests for the H5.EscapeUTF8Attr bes key - using the default value of true first
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.cfdmr.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.cfdmr.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.cfdmr.conf], [xpass])
 
-# and change to false
-
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf], [xfail])
-
+# We use XML UTF-8 encoding when the excaping utf8 key is false. We only make this for DAP4 DMR tests.
+# We will see if DAP2 DDX escaping is needed. DAS is not a XML document and won't be affected.
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf])
-
-# I added this xfail. Apparently the test is failing because a std::length_error: vector exception
-# is not being caught. jhrg 8/21/24. At least on OSX Sonoma, but not on Ubuntu Linux. I'm commenting
-# these tests out. jhrg 8/21/24
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf], [xfail])
-
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.default.conf])
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.default.conf], [xfail])
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.default.conf], [xfail])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.default.conf])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.dap2dmr.conf])
 
-# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.dap2dmr.conf], [xfail])
+# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
+# AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.default.conf], [xfail])
+

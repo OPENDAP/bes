@@ -16,9 +16,9 @@ AM_CPPFLAGS += $(OPENSSL_INC)
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=dmrpp_module
-M_VER=1.1.7
+M_VER=1.1.8
 
-AM_CPPFLAGS += -DMODULE_VERSION=\"$(M_VER)\"
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\"  -DMODULE_VERSION=\"$(M_VER)\"
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -30,7 +30,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 AM_LDFLAGS = 
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = writer build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp
+SUBDIRS = writer build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la

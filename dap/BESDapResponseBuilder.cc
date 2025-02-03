@@ -1334,9 +1334,16 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 
     BESDEBUG(MODULE, prolog << "dmr.request_xml_base(): '"<< dmr.request_xml_base() << "' (dmr: " << (void *) &dmr << ")" << endl);
 
-    XMLWriter xml;
-    dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
-    out << xml.get_doc() << flush;
+    if (dmr.get_utf8_xml_encoding()) {
+        auto xml = XMLWriter("    ","UTF-8");
+        dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
+        out << xml.get_doc() << flush;
+    }
+    else {
+        XMLWriter xml;
+        dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
+        out << xml.get_doc() << flush;
+    }
 }
 
 void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool with_mime_headers)
@@ -1466,6 +1473,8 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 
     // Write the DMR
     XMLWriter xml;
+    if (dmr.get_utf8_xml_encoding()) 
+        xml = XMLWriter("    ","UTF-8");
     dmr.print_dap4(xml, !d_dap4ce.empty());
 
     // now make the chunked output stream; set the size to be at least chunk_size
@@ -1512,7 +1521,9 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 
         D4AsyncUtil d4au;
         XMLWriter xmlWrtr;
-
+        if (dmr.get_utf8_xml_encoding()) 
+            xmlWrtr = XMLWriter("    ","UTF-8");
+ 
         // FIXME See above comment for store dap2 result
         bool found;
         string *stylesheet_ref = nullptr, ss_ref_value;

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.0">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES"/>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="GeoGrid">
+                <Dimension name="YDim" size="4"/>
+                <Dimension name="XDim" size="8"/>
+                <Float32 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/GeoGrid/YDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_north</Value>
+                    </Attribute>
+                </Float32>
+                <Float32 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/GeoGrid/XDim"/>
+                    <Attribute name="units" type="String">
+                        <Value>degrees_east</Value>
+                    </Attribute>
+                </Float32>
+                <Group name="Data_Fields">
+                    <Float32 name="temperature">
+                        <Dim name="/HDFEOS/GRIDS/GeoGrid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/GeoGrid/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/GeoGrid/Data Fields/temperature</Value>
+                        </Attribute>
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
+                            <dmrpp:chunk offset="40672" nBytes="128"/>
+                        </dmrpp:chunks>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+            <dmrpp:chunks fillValue="">
+                <dmrpp:chunk offset="5304" nBytes="32000"/>
+            </dmrpp:chunks>
+        </String>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.13</Value>
+        </Attribute>
+    </Group>
+</Dataset>

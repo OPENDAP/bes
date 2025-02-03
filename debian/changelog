@@ -1,3 +1,54 @@
+bes (3.21.1) trusty; urgency=medium
+
+## BES Updates
+
+* Streamlined BESLog i/o operator implementations.
+* Improved support for log requests for dap4 responses.
+* Fixed a bug that caused in some edge cases segmentation fault for the HDF4
+  handler.
+* correct the byte_per_element assignment for the fixed string handling
+* Initial support to handle the array of structure in chunking storage
+* Improved the evaluation URLs for S3 signing
+
+### DMR++ Improvements
+* Improved support to set the correct struct size to the chunk  if that size
+  can be found in the dmrpp.
+* dmrpp now reads the default fill value of a compound data type.
+* DmrppArray now returns int_64
+* DMRpp file can now represent multi-linked-blocks in a chunk.
+* Improved process to read multi-blocks chunk data and transfer of block
+  offsets and lengths info to DMRppArray.
+* Initial support to store structure offset and structure size so that the
+  dmrpp module can retrieve structure data.
+* Update gen_dmrpp_side_car by adding a new option for users to point to an 
+  existing sidecar file
+* New option to the gen_dmrpp_side_car python so that users can add the path
+  to the HDF5 or the side car files.
+* Initial support of compressed compound datatype variables.
+* Now generates dmrpp files that include the CF grid variables.
+* Added new EOS2 CF grid attributes for build_dmrpp_h4 to add missing grid
+  data.
+* Adds fake coord dimensions for NetCDF4 when missing dimension names and
+  EnableCF option turned on.
+* Creation time is now added to the build_dmrpp metadata.
+* Now add DAP4 dimensions for the HDF4 SDS/HDF-EOS2 Grid variables. This is
+  required  to use the fileout netCDF to access HDF4 data via the HDF4 handler.
+* Includes an option to turn off the generation of the HDF4/HDF-EOS2 missing
+  data in the dmrpp file
+* Added support to handle data subset for HDF-EOS2 lat/lon.
+* Added support for HDF-EOS2 latitude/longitude data retrieval by the HDF4 
+  handler.
+* Added a dmrpp test that generates from the CF option of the HDF5 handler that
+  has the group hierarchy
+* Added support to read compressed missing data from dmrpp.
+* Addeed support to add HDF-EOS2 lat/lon data to the dmrpp file.
+* Added HDF-EOS2 projection code.
+* Added support to access the HDF4 data that uses linked blocks with and without
+  compression.
+
+### NOTE
+# not sure what happened after > 3.20.12
+
 bes (3.20.12-0) trusty; urgency=medium
 
 * Patched bug in HDF5Array.cc introduced by the std::vector refactor

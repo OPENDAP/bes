@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="comp_array2_udf_nfv2.h5" dmrpp:href="data/fill_value/comp_array2_udf_nfv2.h5">
+    <Structure name="comp_array">
+        <Float64 name="a_name"/>
+        <Int16 name="b_name"/>
+        <Int16 name="c_name">
+            <Dim size="4"/>
+        </Int16>
+        <Dim size="2"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE" structOffset="8 10 24">
+            <dmrpp:chunk offset="2048" nBytes="48"/>
+        </dmrpp:chunks>
+    </Structure>
+</Dataset>

@@ -47,7 +47,6 @@ using std::string;
 using std::endl;
 using std::ostream;
 
-#define TIMING_LOG(x) MR_LOG(TIMING_LOG_KEY, x)
 
 #define MODULE TIMING_LOG_KEY
 #define prolog string("BESStopWatch::").append(__func__).append("() - ")
@@ -73,7 +72,7 @@ BESStopWatch::start(const string &name) {
  * NB: This method will attempt to write logging
  * information to the BESDebug::GetStrm() stream.
  * @param name The name of the timer.
- * @param reqID The client's request ID associated with this activity.
+ * @param reqID The client's request ID associated with this activity. Not used.
  * Available from the DataHandlerInterface object.
  */
 bool
@@ -95,33 +94,19 @@ BESStopWatch::start(const string &name, const string &reqID) {
         msg << d_timer_name << endl;
         TIMING_LOG(msg.str());
     }
-#if 0
-    if (BESDebug::GetStrm()) {
-        msg << get_debug_log_line_prefix();
-        msg << "[" << d_log_name << "]";
-        msg << "[STARTED][" << get_start_us() << " us]";
-        msg << "[" << d_req_id << "]";
-        msg << "[" << d_timer_name << "]" << endl;
-        *(BESDebug::GetStrm()) << msg.str();
-    }
-#endif
     // either we started the stop watch, or failed to start it. Either way,
     // no timings are available, so set stopped to false.
-    d_stopped = false;
     return d_started;
 }
 
-bool BESStopWatch::get_time_of_day(struct timeval &time_val) const {
+bool BESStopWatch::get_time_of_day(struct timeval &time_val) {
     bool retval = true;
     if (gettimeofday(&time_val, nullptr) != 0) {
         const char *c_err = strerror(errno);
-        string errno_msg = (c_err != nullptr) ? c_err : "unknown error";
-        std::stringstream msg;
-        msg << prolog << "ERROR The gettimeofday() function failed. errno_msg: " << errno_msg << endl;
-        if (BESDebug::GetStrm()) {
-            *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << msg.str();
-        }
-        ERROR_LOG(msg.str());
+        string errno_msg = c_err != nullptr ? c_err : "unknown error";
+        string msg = prolog + "ERROR The gettimeofday() function failed. errno_msg: " + errno_msg + "\n";
+        BESDEBUG(TIMING_LOG_KEY, msg );
+        ERROR_LOG(msg);
         retval = false;
     }
     return retval;
@@ -141,30 +126,20 @@ BESStopWatch::~BESStopWatch() {
 
         if (!get_time_of_day(d_stop_usage)) {
             d_started = false;
-            d_stopped = false;
             return;
         }
 
-        d_stopped = true;
-        if (BESDebug::GetStrm()) {
-            std::unique_lock<std::mutex> lck(bes_debug_log_mutex);
-            std::stringstream msg;
-            msg << get_debug_log_line_prefix();
-            msg << "[" << d_log_name << "]";
-            msg << "[ELAPSED][" << get_elapsed_us() << " us]";
-            msg << "[STARTED][" << get_start_us() << " us]";
-            msg << "[STOPPED][" << get_stop_us() << " us]";
-            msg << "[" << (d_req_id.empty() ? "-" : d_req_id) << "]";
-            msg << "[" << d_timer_name << "]";
-            *(BESDebug::GetStrm()) << msg.str() << endl;
-        }
-        std::stringstream msg;
-        msg << "elapsed_us" << BESLog::mark << get_elapsed_us() << BESLog::mark;
-        msg << "start_us" << BESLog::mark << get_start_us() << BESLog::mark;
-        msg << "stop_us" << BESLog::mark << get_stop_us() << BESLog::mark;
-        msg << (d_req_id.empty() ? "-" : d_req_id) << BESLog::mark;
-        msg << d_timer_name << endl;
-        TIMING_LOG(msg.str());
+        BESDEBUG(TIMING_LOG_KEY, get_debug_log_line_prefix() +  "[" << d_log_name + "]"
+            + "[ELAPSED][" + std::to_string(get_elapsed_us()) + " us]"
+            + "[STARTED][" + std::to_string(get_start_us()) + " us]"
+            + "[STOPPED][" + std::to_string(get_stop_us()) + " us]"
+            + "[" + (d_req_id.empty() ? "-" : d_req_id) + "]" + "[" << d_timer_name + "]\n");
+
+        TIMING_LOG( "elapsed-us" + BESLog::mark + std::to_string(get_elapsed_us()) + BESLog::mark
+                    + "start-us" + BESLog::mark + std::to_string(get_start_us()) + BESLog::mark
+                    +  "stop-us" + BESLog::mark + std::to_string(get_stop_us()) + BESLog::mark
+                    + (d_req_id.empty() ? "-" : d_req_id) + BESLog::mark
+                    + d_timer_name + "\n");
     }
 }
 
@@ -185,210 +160,6 @@ unsigned long int BESStopWatch::get_stop_us() const {
     return d_stop_usage.tv_sec * 1000 * 1000 + d_stop_usage.tv_usec;
 }
 
-
-#if 0
-/**
- * struct timeval {
- *    time_t      tv_sec;   // Number of whole seconds of elapsed time
- *    long int    tv_usec;  // Number of microseconds of rest of elapsed time minus tv_sec. Always less than one million
- * };
- * @return
- */
-bool
-BESStopWatch::timeval_subtract()
-{
-    // struct
-    // time_t         tv_sec      seconds
-    // suseconds_t    tv_usec     microseconds
-
-    /* Perform the carry for the later subtraction by updating y. */
-    if( d_stop_usage.tv_usec < d_start_usage.tv_usec )
-    {
-        int nsec = (d_start_usage.tv_usec - d_stop_usage.tv_usec) / 1000000 + 1 ;
-        d_start_usage.tv_usec -= 1000000 * nsec ;
-        d_start_usage.tv_sec += nsec ;
-    }
-    if( d_stop_usage.tv_usec - d_start_usage.tv_usec > 1000000 )
-    {
-        int nsec = (d_start_usage.tv_usec - d_stop_usage.tv_usec) / 1000000 ;
-        d_start_usage.tv_usec += 1000000 * nsec ;
-        d_start_usage.tv_sec -= nsec ;
-    }
-
-    /* Compute the time remaining to wait.
-    tv_usec  is certainly positive. */
-    d_result.tv_sec = d_stop_usage.tv_sec - d_start_usage.tv_sec ;
-    d_result.tv_usec = d_stop_usage.tv_usec - d_start_usage.tv_usec ;
-
-    /* Return 1 if result is negative. */
-    return !(d_stop_usage.tv_sec < d_start_usage.tv_sec) ;
-}
-
-/**
- * Starts the timer.
- * NB: This method will attempt to write logging
- * information to the BESDebug::GetStrm() stream.
- * @param name The name of the timer.
- * @param reqID The client's request ID associated with this activity.
- * Available from the DataHandlerInterfact object.
- */
-bool
-BESStopWatch::start(string name, string reqID)
-{
-    d_timer_name = name;
-    d_req_id = reqID;
-    // get timing for current usage
-    if( getrusage( RUSAGE_SELF, &_start_usage ) != 0 )
-    {
-        int myerrno = errno ;
-        char *c_err = strerror( myerrno ) ;
-        string err = "getrusage failed in start: " ;
-        err += (c_err != 0) ? c_err : "unknown error";
-#if 0
-        if( c_err )
-        {
-            err += c_err ;
-        }
-        else
-        {
-            err += "unknown error" ;
-        }
-#endif
-        std::stringstream msg;
-        msg << "[" << BESDebug::GetPidStr() << "]["<< d_log_name << "][" << d_req_id << "]";
-        msg << "[ERROR][" << d_timer_name << "][" << err << "]" << endl;
-
-        if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
-            *(BESDebug::GetStrm()) << msg.str();
-        VERBOSE(msg.str());
-        d_started = false ;
-    }
-    else
-    {
-        d_started = true ;
-        struct timeval &start = _start_usage.ru_utime ;
-        double starttime =  start.tv_sec*1000.0 + start.tv_usec/1000.0;
-
-        std::stringstream msg;
-        msg << "[" << BESDebug::GetPidStr() << "]["<< d_log_name << "][" << d_req_id << "]";
-        msg << "[STARTED][" << starttime << " ms]["<< d_timer_name << "]" << endl;
-        if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
-            *(BESDebug::GetStrm()) << msg.str();
-        VERBOSE(msg.str());
-    }
-
-    // either we started the stop watch, or failed to start it. Either way,
-    // no timings are available, so set stopped to false.
-    d_stopped = false ;
-
-
-    return d_started ;
-}
-
-/**
- * This destructor is "special" in that it's execution signals the
- * timer to stop if it has been started. Stopping the timer will
- * initiate an attempt to write logging information to the
- * BESDebug::GetStrm() stream. If the start method has not been called
- * then the method exits silently.
- */
-BESStopWatch::~BESStopWatch()
-{
-    // if we have started, then stop and update the log.
-    if (d_started) {
-        // get timing for current usage
-        if (getrusage(RUSAGE_SELF, &_stop_usage) != 0) {
-            int myerrno = errno;
-            char *c_err = strerror(myerrno);
-            string err = "getrusage failed in stop: ";
-            err += (c_err != 0) ? c_err : "unknown error";
-#if 0
-            if( c_err )
-            {
-                err += c_err ;
-            }
-            else
-            {
-                err += "unknown error" ;
-            }
-#endif
-            std::stringstream msg;
-            msg << "[" << BESDebug::GetPidStr() << "][" << d_log_name << "]";
-            msg << "[" << d_req_id << "][ERROR][" << d_timer_name << "][" << err << "]" << endl;
-            if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
-                *(BESDebug::GetStrm()) << msg.str();
-            VERBOSE(msg.str());
-
-            d_started = false;
-            d_stopped = false;
-        } else {
-            // get the difference between the _start_usage and the
-            // _stop_usage and save the difference in _result.
-            bool success = timeval_subtract();
-            if (!success)
-            {
-                std::stringstream msg;
-                msg << "[" << BESDebug::GetPidStr() << "][" << d_log_name << "]";
-                msg << "[" << d_req_id << "][ERROR][" << d_timer_name << "][Failed to get timing.]" << endl;
-
-                if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
-                    *(BESDebug::GetStrm()) << msg.str();
-                VERBOSE(msg.str());
-
-                d_started = false;
-                d_stopped = false;
-            }
-            else
-                {
-                d_stopped = true;
-
-                struct timeval &stop = _stop_usage.ru_utime;
-                double stoptime = stop.tv_sec * 1000.0 + stop.tv_usec / 1000.0;
-                double elapsed = _result.tv_sec * 1000.0 + _result.tv_usec / 1000.0;
-
-                std::stringstream msg;
-                msg << "[" << BESDebug::GetPidStr() << "][" << d_log_name << "]";
-                msg << "[" << d_req_id << "][STOPPED][" << stoptime << " ms]";
-                msg << "[" << d_timer_name << "][ELAPSED][" << elapsed << " ms]" << endl;
-
-                if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
-                    *(BESDebug::GetStrm()) << msg.str();
-                VERBOSE(msg.str() );
-            }
-        }
-    }
-}
-
-bool
-BESStopWatch::timeval_subtract()
-{
-    struct timeval &start = _start_usage.ru_utime ;
-    struct timeval &stop = _stop_usage.ru_utime ;
-
-    /* Perform the carry for the later subtraction by updating y. */
-    if( stop.tv_usec < start.tv_usec )
-    {
-        int nsec = (start.tv_usec - stop.tv_usec) / 1000000 + 1 ;
-        start.tv_usec -= 1000000 * nsec ;
-        start.tv_sec += nsec ;
-    }
-    if( stop.tv_usec - start.tv_usec > 1000000 )
-    {
-        int nsec = (start.tv_usec - stop.tv_usec) / 1000000 ;
-        start.tv_usec += 1000000 * nsec ;
-        start.tv_sec -= nsec ;
-    }
-
-    /* Compute the time remaining to wait.
-    tv_usec  is certainly positive. */
-    _result.tv_sec = stop.tv_sec - start.tv_sec ;
-    _result.tv_usec = stop.tv_usec - start.tv_usec ;
-
-    /* Return 1 if result is negative. */
-    return !(stop.tv_sec < start.tv_sec) ;
-}
-
-#endif
 
 /** @brief dumps information about this object
  *

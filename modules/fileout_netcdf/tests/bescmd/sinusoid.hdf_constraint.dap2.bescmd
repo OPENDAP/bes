@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="data" space="catalog">/data/sinusoid.hdf</setContainer>
+    <define name="d">
+	<container name="data" >
+        <constraint>Longitude[0:2:3][1:2:3] </constraint>
+        </container>
+    </define>
+    <get type="dods" definition="d" returnAs="netcdf"/>
+</request>

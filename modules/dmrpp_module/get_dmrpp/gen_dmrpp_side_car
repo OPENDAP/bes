@@ -1,0 +1,359 @@
+#!/usr/bin/env python3
+import os
+import shutil
+import subprocess
+import sys
+import argparse as ap
+
+
+def get_obj_name(full_path):
+    last_forward_pos = full_path.rfind('/')
+    if last_forward_pos == -1:
+        print("Cannot find the file name :", full_path, "in the current directory.")
+        return ""
+    else:
+        return full_path[last_forward_pos + 1:]
+
+
+def get_obj_path(full_path):
+    last_forward_pos = full_path.rfind('/')
+    if last_forward_pos == -1:
+        return ""
+    else:
+        return full_path[0:last_forward_pos + 1]
+
+
+def is_program_present(p_name):
+    # Check whether `p_name` is on PATH and marked as executable.
+    return shutil.which(p_name) is not None
+
+
+def check_required_programs():
+    # Sanity check if the necessary programs exist
+    # The following programs  must exist 
+    has_required_programs = \
+        is_program_present('check_dmrpp') and is_program_present('get_dmrpp_h5') \
+        and is_program_present('merge_dmrpp') and is_program_present('build_dmrpp_h4') \
+        and is_program_present('get_hdf_side_car')
+
+    if (has_required_programs == False):
+        print("Some required programs are missing. ")
+        print("They are required to continue, stop!")
+
+    return has_required_programs
+
+
+#  Obtain HDF full path
+def obtain_hdf_full_path(hdf_name):
+    if '/' not in hdf_name:
+        hdf_name = os.getcwd() + '/' + hdf_name
+    elif ".." in hdf_name:
+        print("If using the relative path, the HDF file name must be under the current directory such as tmp/foo.hdf")
+        hdf_name = ''
+    elif hdf_name[0] != '/':
+        hdf_name = os.getcwd() + '/' + hdf_name
+    if (os.path.isfile(hdf_name) != True):
+        print("The hdf file:", hdf_name, "doesn't exist.")
+        hdf_name = ''
+    return hdf_name
+
+
+#  Error handling
+def print_error(err_str):
+    print(err_str)
+    subprocess.run(["rm", "-rf", "bes.log"])
+    subprocess.run(["rm", "-rf", "mds_ledger.txt"])
+    print("Stop. ")
+    sys.exit(1)
+
+
+def main():
+    #   Create by KY 2024-10-14
+    # We use python 3.6.8.It must be >=python 3.6
+    if sys.version_info <= (3, 6):
+        print("The tested version is python 3.6, your version is lower.")
+        sys.exit(1)
+
+    parser = ap.ArgumentParser(
+        description='Generate the dmrpp file for an HDF4/HDF5 file. If having the missing data, the HDF5 side car file that stores the data is also generated. ')
+    parser.add_argument("-i", nargs=1,
+                        help='The HDF4/5 file must be provided under the current directory or its children directories. ',
+                        required=True)
+    parser.add_argument("-c", action='store_true',
+                        help='For the netCDF4/HDF5 files, the dmrpp and the side car files will be generated via the EnableCF option. ')
+    parser.add_argument("-H", "--HDF4", action='store_true',
+                        help='Generate dmrpp from an HDF4 file.')
+    parser.add_argument("-u", "--URL", nargs=1,
+                        help='The URL that provides the HDF4/5 file path(including the file name at the end). ') 
+    parser.add_argument("-U", "--SCTURL", action='store_true',
+                        help='the location of the sidecar file will contain the template string OPeNDAP_DMRpp_SC_DATA_ACCESS_URL, which can be replaced at runtime. ') 
+    parser.add_argument("-s", "--SURL", nargs=1,
+                        help='The URL that provides the location of the side car file.')
+    parser.add_argument("-S", "--ESURL", nargs=1,
+                        help='The URL that provides the existing side car file path(must be absolute path or under current dir). The dmrpp file of the side car file should also exist.')
+    parser.add_argument("-v", "--verbosity", action='store_true',
+                        help='Detailed description message and other information.')
+
+    args = parser.parse_args()
+
+    if (args.verbosity is True):
+        desc_str = '''
+        Given an HDF4 or an HDF5 file, running this python script will generate the corresponding dmrpp file. 
+        Unless -S option is used, by default, if having missing data, a side car 
+        netCDF-4/HDF5 file that contains the missing data variable values is also created.
+    
+        The HDF4/5 file must be under the current or its children directories. If putting under a child directory, the file name can be something like foo/foo1.hdf.
+    
+        Users can use the -c option to generate the output netCDF-4/HDF5 file with the EnableCF option. Currently we only support the EnableCF option for the HDF5 file.
+    
+        The dmrpp file name will be the original HDF file name +".dmrpp" such as foo.hdf.dmrpp.
+        Without using the -S option, the side car file name will be the original HDF file name + "_mvs.h5" such as foo.hdf_mvs.h5.
+
+        Users can use the -u option to provide the original HDF4/5 file path(like an URL) in the dmrpp file. 
+        If option '-u' is not used; then dap4:Dataset/@dmrpp:href attribute will contain the template string OPeNDAP_DMRpp_DATA_ACCESS_URL, which can be
+        replaced at runtime. 
+        If option '-u' is used and the -s and -S options are not present, this script will assume the sidecar file shares the same path as the original HDF4 file.
+        
+        Users can use the -s option to provide the location of the side car file in the dmrpp file.
+        This script will add a '/' at the end of the location info that the -s option provides.
+
+        Users can use the -S option to provide the location of an existing side car file in the dmrpp file. If doing so, the dmrpp file of the side car file must exist
+        and is under the same location of the side car file. The dmrpp file name of the side car file should be the side car file plus .dmrpp. For example, if the
+        side car file is foo_mvs.h5. The corresponding dmrpp file foo_mvs.h5.dmrpp must exist under the same location of foo_mvs.h5. 
+
+        Also when the -S option is used, the script will not call the program to generate the side car file. If no missing data is found, -S option will be a noop. 
+
+        If none of -S or -s or -u options appears and there is missing data, only the side car file name appears in the dmrpp file.
+
+        Note: when using this script, the dmrpp file is generated under the SAME location of the original HDF4/5 file. If -S option is not used, the side car file 
+              is also generated under the location where the original HDF4/5 file is located. Users are responsible
+              to move these files to locations where they are going to be served.
+              The -u and -s options are only used to specify the location information of the HDF4/5 file and the side car file inside the ready-to-generate dmrpp file. 
+
+        Examples to generate dmrpp file for an HDF4 file. For an HDF5 file, remove the -H option
+        ./gen_dmrpp_side_car -i foo.hdf -H                                      
+                                                                                     : The dmrpp file is generated. No sidecar file is needed. This is the common case.
+        ./gen_dmrpp_side_car -i grid_2_2d_ps.hdf -H                                      
+                                                                                     : The dmrpp file and the sidecar file are generated under the current dir.
+
+        ./gen_dmrpp_side_car -i grid_2_2d_ps.hdf -H -u data/grid_2_2d_ps.hdf -s data     
+                                                                                     : The dmrpp file and the sidecar file are generated under the current dir.
+                                                                                       The path of the HDF4 file and the sidecar file are put inside the dmrpp file.
+
+        ./gen_dmrpp_side_car -i grid_2_2d_ps.hdf -H -u data/grid_2_2d_ps.hdf -S grid_2_2d_ps.hdf_mvs.h5 -s data 
+                                                                                     : The dmrpp file is generated by using the existing sidecar file and its dmrpp file.
+                                                                                       The path of the HDF4 file and the sidecar file are put inside the dmrpp file.
+
+        '''
+        print(desc_str)
+
+    # Sanity check to see if the necessary programs exist
+    if (check_required_programs() == False):
+        sys.exit(1)
+
+    # Obtain the HDF4/5 full path
+    hdf_full_path = obtain_hdf_full_path(args.i[0])
+    if (hdf_full_path == ""):
+        sys.exit(1)
+
+    if (args.verbosity is True):
+        print("hdf_full_path: ", hdf_full_path)
+
+    # Obtain the HDF4/5 file name
+    hdf_name = get_obj_name(hdf_full_path)
+    file_dmrpp = hdf_name + ".dmrpp"
+
+    if (args.verbosity is True):
+        print("hdf_name: ", hdf_name)
+
+    # Obtain the relative directory path of the HDF4/5 file name
+    hdf_rel_dir = get_obj_path(args.i[0])
+
+    if (args.verbosity is True):
+        print("hdf_rel_dir: ", hdf_rel_dir)
+
+    hdf_rel_path = ""
+    file_dmrpp_rel_path = ""
+    if (hdf_rel_dir == ""):
+        hdf_rel_path = hdf_name
+        file_dmrpp_rel_path = file_dmrpp
+    else:
+        hdf_rel_path = hdf_rel_dir + hdf_name
+        file_dmrpp_rel_path = hdf_rel_dir + file_dmrpp
+
+    # Obtain the HDF4/5 absolute directory
+    hdf_abs_dir = get_obj_path(hdf_full_path)
+
+    if (args.verbosity is True):
+        print("hdf_abs_dir: ", hdf_abs_dir)
+
+    hdf_url=""
+    if (args.URL is not None):
+        hdf_url = ' '.join(args.URL)
+    if (args.HDF4 is True):
+        if (args.URL is not None):
+            ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-u", hdf_url, "-D"],
+                             stdout=subprocess.PIPE, universal_newlines=True)
+        else:
+            ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-D"],
+                             stdout=subprocess.PIPE, universal_newlines=True)
+        if ret.returncode != 0:
+            err_msg = "get_dmrpp_h4 fails to generate the dmrpp file for the HDF4 file. "
+            err_msg += "\n The HDF4 file name is:  " + hdf_full_path
+            print_error(err_msg)
+    else:
+        if (args.c is True):
+            if (args.URL is not None):
+                ret = subprocess.run(
+                    ["get_dmrpp_h5", "-i", hdf_full_path, "-u", hdf_url, "-C"],
+                     stdout=subprocess.PIPE, universal_newlines=True)
+            else: 
+                ret = subprocess.run(
+                    ["get_dmrpp_h5", "-i", hdf_full_path, "-C"],
+                     stdout=subprocess.PIPE, universal_newlines=True)
+        else:
+            if (args.URL is not None):
+                ret = subprocess.run(
+                    ["get_dmrpp_h5", "-i", hdf_full_path, "-u", hdf_url],
+                     stdout=subprocess.PIPE, universal_newlines=True)
+            else: 
+                ret = subprocess.run(
+                    ["get_dmrpp_h5", "-i", hdf_full_path],
+                     stdout=subprocess.PIPE, universal_newlines=True)
+
+        if ret.returncode != 0:
+            err_msg = "get_dmrpp_h5 fails to generate the dmrpp file for the HDF5 file. "
+            err_msg += "\n The HDF5 file name is:  " + hdf_full_path
+            print_error(err_msg)
+
+    if (hdf_rel_path != hdf_name):
+        file_dmrpp_abs_path = os.getcwd() + "/" + file_dmrpp
+        # Not sure why we do this. Comment out for the time being.
+        #subprocess.run(["mv", "-f", file_dmrpp, hdf_rel_dir])
+ 
+    # Run check_dmrpp
+    # f1 is the file that stores the variables that dmrpp cannot provide values.
+    f1 = hdf_name + ".mvs"
+
+    # check_dmrpp will check the dmrpp file and write the missing variable names to f1.
+    file_dmrpp_full_path = hdf_abs_dir + file_dmrpp
+    f1_full_path = hdf_abs_dir + f1
+    ret = subprocess.run(["check_dmrpp", file_dmrpp_full_path, f1_full_path])
+    if ret.returncode != 0:
+        err_msg = "Check_dmrpp doesn't run successfully for dmrpp file " + file_dmrpp_full_path
+        err_msg += "\n and the missing variable name file: " + f1_full_path
+        if (args.verbosity is False):
+            subprocess.run(["rm", "-rf", file_dmrpp_full_path])
+        print_error(err_msg)
+
+    if (os.path.isfile(f1_full_path) == False):
+        subprocess.run(["rm", "-rf", "bes.log"])
+        subprocess.run(["rm", "-rf", "mds_ledger.txt"])
+        sys.exit(0)
+
+    fsidecar = hdf_name + "_mvs.h5"
+    fsidecar_full_path = hdf_abs_dir + fsidecar
+    fsidecar_rel_path = hdf_rel_dir + fsidecar
+    # fsidecar_dmrpp = fsidecar + ".dmrpp"
+    fsidecar_dmrpp_full_path = fsidecar_full_path + ".dmrpp"
+    fsidecar_dmrpp_rel_path = fsidecar_rel_path + ".dmrpp"
+
+    if (args.ESURL is not None):
+        fsidecar =' '.join(args.ESURL)
+        fsidecar_dmrpp_full_path=fsidecar + ".dmrpp"
+        if (fsidecar_dmrpp_full_path[0] != '/'):
+            fsidecar_dmrpp_full_path = obtain_hdf_full_path(fsidecar_dmrpp_full_path)
+
+        if (fsidecar[0] != '/'):
+            fsidecar_full_path = obtain_hdf_full_path(fsidecar)
+        else: 
+            fsidecar_full_path = fsidecar
+        fsidecar_name = get_obj_name(fsidecar_full_path)
+        
+        if (args.SURL is not None):
+            fsidecar_rel_path =' '.join(args.SURL)
+            fsidecar_rel_path = fsidecar_rel_path +"/" +fsidecar_name 
+        else:
+            fsidecar_rel_path = fsidecar_name 
+
+    # Now we will generate the sidecar file and the corresponding dmrpp file.
+    # We need to get the path correctly.
+    else: 
+        if (args.c is True and args.HDF4 is False):
+            ret = subprocess.run(["get_hdf_side_car", "-i", hdf_full_path, f1_full_path, "-c", "-o", fsidecar_full_path])
+            if ret.returncode != 0:
+                err_msg = "get_hdf_side_car fails for the HDF file: " + hdf_full_path
+                err_msg += "\n and for the missing variable name file: " + f1_full_path + " with the EnableCF option on."
+                if (args.verbosity is False):
+                    subprocess.run(["rm", "-rf", file_dmrpp_full_path])
+                    subprocess.run(["rm", "-rf", f1_full_path])
+                print_error(err_msg)
+    
+            ret = subprocess.run(
+                ["get_dmrpp_h5", "-i", fsidecar_full_path, "-C"],
+                  stdout=subprocess.PIPE, universal_newlines=True)
+            if ret.returncode != 0:
+                err_msg = "get_dmrpp_h5 fails for the HDF5 file: " + fsidecar_rel_path + " with the enableCF option."
+                if (args.verbosity is False):
+                    subprocess.run(["rm", "-rf", file_dmrpp_full_path])
+                    subprocess.run(["rm", "-rf", f1_full_path])
+                    subprocess.run(["rm", "-rf", fsidecar_rel_path])
+                print_error(err_msg)
+        else:
+            ret = subprocess.run(["get_hdf_side_car", "-i", hdf_full_path, f1_full_path, "-o", fsidecar_full_path])
+            if ret.returncode != 0:
+                err_msg = "get_hdf_side_car fails for HDF file: " + hdf_full_path
+                err_msg += "\n and for the missing variable name file: " + f1_full_path
+                if (args.verbosity is False):
+                    subprocess.run(["rm", "-rf", file_dmrpp_full_path])
+                    subprocess.run(["rm", "-rf", f1_full_path])
+                print_error(err_msg)
+            ret = subprocess.run(
+                ["get_dmrpp_h5", "-i", fsidecar_full_path],
+                  stdout=subprocess.PIPE, universal_newlines=True)
+            if ret.returncode != 0:
+                err_msg = "get_dmrpp_h5 fails for the HDF5 file: " + fsidecar_rel_path
+                if (args.verbosity is False):
+                    subprocess.run(["rm", "-rf", file_dmrpp_full_path])
+                    subprocess.run(["rm", "-rf", f1_full_path])
+                    subprocess.run(["rm", "-rf", fsidecar_rel_path])
+                print_error(err_msg)
+
+        if (args.SURL is not None):
+            surl_str = ' '.join(args.SURL)
+            fsidecar_rel_path = surl_str +"/"+fsidecar
+        elif(args.URL is not None):
+            hdf_surl = get_obj_path(hdf_url)
+            fsidecar_rel_path = hdf_surl +fsidecar
+ 
+    # Check if the sidecar file template URL is desired.
+    if (args.SCTURL is True):
+        fsidecar_rel_path = "OPeNDAP_DMRpp_SC_DATA_ACCESS_URL"
+    # Now we come to the merge_dmrpp part.
+    ret = subprocess.run(
+        ["merge_dmrpp", fsidecar_dmrpp_full_path, file_dmrpp_full_path, fsidecar_rel_path, f1_full_path])
+    if ret.returncode != 0:
+        err_msg = "merge_dmrpp fails for the HDF file: " + hdf_full_path
+        err_msg += "\n The side car file is: " + fsidecar_rel_path
+        err_msg += "\n The missing variable name text file is: " + f1_full_path
+        err_msg += "\n The side car dmrpp file is: " + fsidecar_dmrpp_full_path
+        err_msg += "\n The HDF dmrpp file is: " + file_dmrpp_full_path
+        if (args.verbosity is False):
+            subprocess.run(["rm", "-rf", file_dmrpp_full_path])
+            subprocess.run(["rm", "-rf", f1_full_path])
+            if (args.ESURL is None):
+                subprocess.run(["rm", "-rf", fsidecar_rel_path])
+                subprocess.run(["rm", "-rf", fsidecar_dmrpp_rel_path])
+        print_error(err_msg)
+
+    subprocess.run(["rm", "-rf", "bes.log"])
+    mds_ledger_name = os.getcwd() + '/' + "mds_ledger.txt"
+    subprocess.run(["rm", "-rf", mds_ledger_name])
+
+    subprocess.run(["rm", "-rf", f1_full_path])
+    if (args.ESURL is None):
+        subprocess.run(["rm", "-rf", fsidecar_dmrpp_rel_path])
+
+
+if __name__ == "__main__":
+    main()
