@@ -117,7 +117,7 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
     bool result = jobj.is_null();
     if(result){
         string msg;
-        msg + "ERROR: Json document is NULL. json: " + jobj.dump();
+        msg = "ERROR: Json document is NULL. json: " + jobj.dump();
         BESDEBUG(MODULE, prolog <<  msg << "\n");
         throw CmrInternalError(msg, __FILE__, __LINE__);
     }
@@ -125,7 +125,7 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
     result = jobj.is_object();
     if(!result){
         string msg;
-        msg + "ERROR: Json document is NOT an object. json: " + jobj.dump();
+        msg = "ERROR: Json document is NOT an object. json: " + jobj.dump();
         BESDEBUG(MODULE, prolog <<  msg << "\n");
         throw CmrInternalError(msg, __FILE__, __LINE__);
     }
@@ -133,8 +133,8 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
     const auto &has_children_j = jobj[CMR_V2_HAS_CHILDREN_KEY];
     if(!has_children_j.get<bool>()){
         string msg;
-        msg + prolog;
-        msg + "This json object does not have a child property of type " + CMR_V2_HAS_CHILDREN_KEY +".  json: " + jobj.dump();
+        msg = prolog;
+        msg += "This json object does not have a child property of type " + CMR_V2_HAS_CHILDREN_KEY +".  json: " + jobj.dump();
         BESDEBUG(MODULE, msg << "\n");
         INFO_LOG(msg);
     }
