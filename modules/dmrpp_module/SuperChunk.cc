@@ -547,6 +547,41 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
     return chunk_was_added;
 }
 
+// This method is for handling non-contiguous chunks. It follows the logic of add_chunk() but handles the non-contigous chunk case.
+bool SuperChunk::add_chunk_non_contiguous(const std::shared_ptr<Chunk> candidate_chunk, unsigned long long &buffer_end_position) {
+
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Coming to add_chunk_non_contiguous" << endl);
+    bool chunk_was_added = false;
+    if(d_chunks.empty()){
+        d_chunks.push_back(candidate_chunk);
+        d_offset = candidate_chunk->get_offset();
+        d_size = buffer_end_position-d_offset;
+
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_size: "<<d_size<< endl);
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_offset: "<<d_offset<< endl);
+
+        // When get_uses_fill_value() is true, returns a shared_ptr<Chunk> initialized to nullptr.
+        d_uses_fill_value = candidate_chunk->get_uses_fill_value();
+        if (!d_uses_fill_value)
+            d_data_url = candidate_chunk->get_data_url();
+        else
+            d_data_url = nullptr;
+        chunk_was_added =  true;
+    }
+    // For now, if a chunk uses fill values, it gets its own SuperChunk. 
+    else if(!candidate_chunk->get_uses_fill_value()){
+        if (candidate_chunk->get_offset() >=d_offset) {
+            // The chunk exceeds the boundary of this buffer. Create a new SuperChunk.
+            if ((candidate_chunk->get_offset() + candidate_chunk->get_size())<=buffer_end_position) { 
+                this->d_chunks.push_back(candidate_chunk);
+                chunk_was_added =  true;
+            }
+        }
+    }
+    
+    return chunk_was_added;
+}
+
 /**
  * @brief Returns true if candidate_chunk is "contiguous" with the end of the SuperChunk instance.
  *
@@ -594,6 +629,29 @@ void SuperChunk::map_chunks_to_buffer()
     }
 }
 
+void SuperChunk::map_non_contiguous_chunks_to_buffer()
+{
+    unsigned long long bindex = 0;
+
+    for (unsigned i = 0; i <d_chunks.size(); i++){
+        
+        (d_chunks[i])->set_read_buffer(d_read_buffer + bindex, (d_chunks[i])->get_size(),0, false);
+
+        // Need to use the next offset to figure out the starting position for this chunk buffer
+        if (i <(d_chunks.size()-1)) {
+            long long temp_bindex = (d_chunks[i+1])->get_offset()-d_offset;
+            if (temp_bindex <0) 
+                throw BESInternalError("The non-contiguous chunk offset cannot be smaller than the SuperChunk offset. ", __FILE__, __LINE__);
+            bindex = (unsigned long long)temp_bindex;
+            if (bindex > d_size) {
+                stringstream msg;
+                msg << "ERROR The computed buffer index, " << bindex << " is larger than expected size of the SuperChunk. ";
+                msg << "d_size: " << d_size;
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        }
+    }
+}
 /**
  * @brief Reads the contiguous range of bytes associated with the SuperChunk from the data URL.
  * This is a convenience/helper function for SuperChunk::retrieve_data()
@@ -670,7 +728,11 @@ void SuperChunk::retrieve_data() {
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the d_read_buffer memory.
     // "Slice it up!"
-    map_chunks_to_buffer();
+    // We need to map non-contigous chunks differently.
+    if (non_contiguous_chunk) 
+        map_non_contiguous_chunks_to_buffer();
+    else 
+        map_chunks_to_buffer();
 
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
