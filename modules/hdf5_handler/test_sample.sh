@@ -32,9 +32,10 @@
 
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d.h5.das.bescmd
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d.h5.data.bescmd | getdap -M -
-besstandalone -c bes-testsuite/bes.cfdmr.conf -i bes-testsuite/h5.cf/d_int64.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.cfdmr.conf -i bes-testsuite/h5.cf/d_int64.h5.dmr.bescmd
 #besstandalone -d"cerr,all" -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d_int64.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/d_int.h5.dap.bescmd | getdap4 -D -M -
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/d_int.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/nc4_coverage_special.h5.dmr.bescmd
 #valgrind besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d_int64.h5.dmr.bescmd
+besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/t_enum_name_scalar.h5.dmr.bescmd
