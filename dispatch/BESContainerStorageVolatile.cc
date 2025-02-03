@@ -142,7 +142,7 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
     // that knows how to handle the container.
     // Changed sym_name to real_name to make the message clearer. jhrg 11/14/19
     if (type.empty())
-        throw BESInternalError(string("Unable to add container '").append(real_name).append("', type of data must be specified"), __FILE__, __LINE__);
+        throw BESInternalError(string("Unable to add container '").append(real_name).append("', the type of data must be specified."), __FILE__, __LINE__);
 
     // if the container already exists then throw an error
     BESContainerStorageVolatile::Container_citer i = _container_list.find(sym_name);
@@ -197,7 +197,7 @@ void BESContainerStorageVolatile::add_container(BESContainer *c)
         throw BESInternalError("Unable to add container, container passed is null", __FILE__, __LINE__);
     }
     if (c->get_container_type().empty()) {
-        throw BESInternalError("Unable to add container, type of data must be specified", __FILE__, __LINE__);
+        throw BESInternalError("Unable to add container, the type of data must be specified.", __FILE__, __LINE__);
     }
 
     string sym_name = c->get_symbolic_name();
