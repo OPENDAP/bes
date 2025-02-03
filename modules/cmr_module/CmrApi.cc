@@ -134,7 +134,7 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
     if(!has_children_j.get<bool>()){
         string msg;
         msg + prolog;
-        msg + "This json object does not have children of type " + CMR_V2_HAS_CHILDREN_KEY +". json: " + jobj.dump();
+        msg + "This json object does not have a child property of type " + CMR_V2_HAS_CHILDREN_KEY +".  json: " + jobj.dump();
         BESDEBUG(MODULE, msg << "\n");
         INFO_LOG(msg);
     }
