@@ -1244,10 +1244,10 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
 
             case H5T_ENUM: {
                     // retrieve enum information
-                    D4EnumDef enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,vname,datatype);
-cerr<<"after map_hdf5_enum_to_dap4"<<endl;
-                    auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, enum_def.type());
-                    hdf5_enum->set_enumeration(&enum_def);
+                    D4EnumDef* enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,vname,datatype);
+//cerr<<"after map_hdf5_enum_to_dap4"<<endl;
+                    auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, enum_def->type());
+                    hdf5_enum->set_enumeration(enum_def);
                     btp = hdf5_enum.release();
                     
 #if 0
@@ -1593,7 +1593,7 @@ string obtain_enum_def_name(hid_t pid, hid_t datatype) {
     H5Gget_info(pid,&g_info);
     hsize_t nelms = g_info.nlinks;
 
-cerr<<"nelms: "<<nelms <<endl;
+//cerr<<"nelms: "<<nelms <<endl;
 
     for (hsize_t i = 0; i < nelms; i++) {
 
@@ -1626,7 +1626,7 @@ cerr<<"nelms: "<<nelms <<endl;
         }
 
     }
-cerr<<"enum defined name: "<<ret_value <<endl;
+//cerr<<"enum defined name: "<<ret_value <<endl;
     return ret_value;
 
 }
@@ -1755,17 +1755,17 @@ void obtain_enum_def_name_value(hid_t base_datatype, hid_t datatype, vector<stri
 
         char *name = H5Tget_member_name(datatype,i);
         string enum_def_name(name);
-cerr<<"enum_def_name: "<<enum_def_name<<endl;
+//cerr<<"enum_def_name: "<<enum_def_name<<endl;
         labels.push_back(enum_def_name);
         H5free_memory(name);
         int64_t label_value = obtain_enum_def_value(base_datatype,datatype,i);
-printf("label_value is %d\n",(int)label_value);
+//printf("label_value is %d\n",(int)label_value);
         label_values.push_back(label_value);
 
     }
 }
 
-D4EnumDef map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, hid_t datatype) {
+D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, hid_t datatype) {
 
     // Check if this HDF5 enum type has a name,if yes, return the name.
     string enum_def_name = obtain_enum_def_name(pid,datatype);
@@ -1774,8 +1774,9 @@ D4EnumDef map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::s
     hid_t base_hdf5_type = H5Tget_super(datatype);
 
     string enum_def_type_str = get_dap_integer_type(base_hdf5_type,true);
-cerr<<"enum_def_type: "<<enum_def_type_str <<endl;
+//cerr<<"enum_def_type: "<<enum_def_type_str <<endl;
     Type enum_def_type = get_type(enum_def_type_str.c_str());
+//cerr<<"enum_def_type in type: "<<enum_def_type<<endl;
 
 
     // Obtain this HDF5 enum type's defined names and values.
@@ -1783,13 +1784,14 @@ cerr<<"enum_def_type: "<<enum_def_type_str <<endl;
     vector<int64_t> label_values;   
     obtain_enum_def_name_value(base_hdf5_type, datatype,labels,label_values);
     H5Tclose(base_hdf5_type);
-    D4EnumDef enum_def(enum_def_name,enum_def_type);
+    //D4EnumDef enum_def(enum_def_name,enum_def_type);
+    D4EnumDef *enum_def = new D4EnumDef(enum_def_name,enum_def_type);
     for (unsigned i = 0; i <labels.size(); i++) 
-        enum_def.add_value(labels[i],label_values[i]);
+        enum_def->add_value(labels[i],label_values[i]);
 
     D4EnumDefs * d4enumdefs = d4_grp->enum_defs();
     if (d4_grp->find_enum_def(enum_def_name)==nullptr) 
-        d4enumdefs->add_enum_nocopy(&enum_def);
+        d4enumdefs->add_enum_nocopy(enum_def);
 
     return enum_def;
 

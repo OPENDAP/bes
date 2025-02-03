@@ -100,7 +100,7 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
 void write_vlen_str_attrs(hid_t attr_id, hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr,
                           libdap::AttrTable* d2_attr, bool is_dap4);
 
-libdap::D4EnumDef map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, hid_t datatype);
+libdap::D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, hid_t datatype);
 void obtain_enum_def_name_value(hid_t base_datatype, hid_t datatype, vector<string>& labels, vector<int64_t> &label_values);
 
 bool check_if_utf8_str(hid_t ty_id);
