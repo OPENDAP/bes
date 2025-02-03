@@ -1,0 +1,132 @@
+#!/bin/sh
+#
+# This script downloads NASA test data from The HDF Group's FTP server.
+#
+# Check whether "wget" or "curl" is available first.
+GET=""
+command -v  wget > /dev/null && GET="wget -N --retr-symlinks" 
+if [ -z "$GET" ]; then
+  command -v  curl > /dev/null && GET="curl -O"
+fi
+
+if [ -z "$GET" ]; then
+  echo "Neither wget nor curl found in your system."
+  exit
+fi
+
+$GET https://download947.mediafire.com/8nd5o799obigYbvKiwabL-EOL8O84yazrtbLIi65yv2DQ0-ioEi-4UZfUiJrPLHXmom5Ee3ZhL7jbnKaJHILcjqR0w8MvU934DWtjKbCtBzzr7mTZdvww1uy03UPQhj-oxYFvb0B4swKzdLLn-9dckUj7m5hTY73A25CKln4xPFU/odbdqyeyk0ma280/AIRS.2008.10.27.L3.RetStd001.v5.2.2.0.G08303124144.hdf
+
+
+$GET https://download1582.mediafire.com/9bubdc6b4xegTotbFncTtPIXMcC02IoEjIpWR2PR0AATZVWk6LIJa8GMCredOEArN-tQxlWz6ygXNyRzOwrVVudxEdCYMHDPL7OVTX0sMHpGi2GbyivrQJUxY0nJA3jblcNwtTp3fpeCTKVG3i0-Gr1drsgVZsyJsSWFxngcSdlU/857mucuu5h6tvwo/AIRS.2013.12.08.001.L2.RetStd.v6.0.7.0.G13345141819.hdf
+
+$GET https://download937.mediafire.com/stqj2mrjtv4gItjZsssp4yJoNPpvZfIAbes6s6FOkN4TOw0q5kS2oZ0Fr0dcoJUDUIkw7tDQacu1lPv6wonG_t0OEX1Yv6f_3meXvf_uEtEfSjTERM0prGcI2nB303ltoZtW8Zw9vBVh0jLx9WNAhVo57e7HcVqVwOS6ulqUw5jt/parml4kffzi742v/AIRS.2013.01.01.L3.RetStd001.v6.0.9.0.G13092214104.hdf
+
+$GET https://download1531.mediafire.com/7580f3v625bgwwB9jvUChnJHKS0rBxs6aV_jsfVXLG94y2fS2-XSXjgskMM_K1UBZfQ7aOW5OLimc-jeKOmiUnDV_N7zRZjdpBF3WQ5hHA4OKJapsDd-8CAh1JAi_3A5bknD4CxhwUtPhrW1YeAngwD3G5N_GdtO1aqDIALBDQPE/9mpbmkv3zei3i60/MOD021KM.A2010277.1710.005.2010278082807.hdf
+
+$GET https://download1336.mediafire.com/zyd6w4xgazwgxeps3xt85jROFd8HawX_UmvfYYQzFbRqSMnFVT2eDMTLFwt0YyC_e3iEpgfTA_C79op2WtAHxtgVt5YewNh8r-hTqlKjflc2DP5yK5Ioa_9zuLQlL8h6nGdCgUJ8VNlwPr8DjIVt5MtheCelVhLfqmXynBtKm2hF/a7ue2unjy30snjz/MYD09Q1.A2007001.h00v09.005.2007085230839.hdf
+
+$GET https://download1582.mediafire.com/g2jyla5pyn7g2rdPorgXJETjzxnLdpHwFcfrT96TkKPyBmW-po9DaTIepYpYKvbx6mZAp3OUT_21O_P056go9rJzvVGavJNJV-6s_p7TTTUXM85FAqR83ismihzWgEdRc4bI8NsvVslfXHecxuVUdOdXycQF98H-S9OWzhQynSW_/va85w8m3n4fxtw0/MOD16A2.A2017145.h10v04.006.2017160232658.hdf
+
+$GET https://download1588.mediafire.com/e37rjwvp3g7gJwLB1goW7MSxcbT6oV_xQNeKsB0pBAh0VBTN-sd6dFVE5U7OuDHoHJRZAf-7fnXkQEqaiyLMK7KvuY-olQ2LIV5ayo88x5-2Po1DB4TRDjAIY-t16I893RPGhHBrf7-wrs3dghjCTDEls0o9NJekUiPXEre6VLuE/iq3glfwvinwnm1l/MYD21A1N.A2018304.h06v03.006.2018327044516.hdf
+
+$GET https://download1652.mediafire.com/lm9yx2k9t29gZsKd_ldYhrpvRCQ7z-s0W_LltN9ifxSI0jG6p0UShy_i65UG5JQWJioarqV4U1b1ZRctD1hR4DmW6BuxjBiffZo64_OcSsS9yw6kHlQb7ALhLe2ohzgV-BuaVlpFrxqdiuNxY0FxgV3tGR_Zffuf4t-Mx9zjIRdr/6vlc79wrceqfbpe/MOD29.A2013196.1250.005.2013196195940.hdf
+
+$GET https://download1590.mediafire.com/5979fskd6cyg4mkIQmQxcGfVA4MCxYVt3H9-L0gUR0oITaggZaAQvdcnrxCLr6DimL54mluMTyo2Lba8_T9y_1PcKtj5zRqxJ5S-UQ40gzQz9SqEy_AM3CBhJjijGTzM6wZNvTJVYPvrF-hUe4vHH0r7zieOdOCMEuzmDhnoUJ2S/sodn5yfjm9yjr9z/MOD29E1D.A2009340.005.2009341094922.hdf
+
+$GET https://download1591.mediafire.com/leivl0avkqrg4L22jUnKQKfeU9pqyBpedYq5djwsJh84oZc64aJq0hLmBlSTEwWmEy7gf9A1eZm1aAGrJEoxsG7bZvWp2B6yDI_D__C4UjtiMxWVgmG7v6CVtKmoSTKeP0D-q3gq2ma9dRc7S5nPg31XW4qeyPPjBy-9XfAKSVCT/j66w92eyw34d4c1/MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf
+
+$GET https://download1073.mediafire.com/ujre8duq84dgu-gMnt_bxRxDKJsfXtrPakB2-KC23tcpyE00XwHPLwFqcehv6ZHD4SJbFycd1PkmrwAzdcn6Ig8K5kegu96Khlmg3BxAX1nQnPg09GH6Cm6sKB7t1VqZhbHfmXs-UZZ-6rlcbWYmCGQmck02FtNyFBnPaKdMeE5F/ujgjhcfr5h06sao/AMSR_E_L2A_BrightnessTemperatures_V10_200501180027_D.hdf
+
+$GET https://download1591.mediafire.com/ila32ejnvakg2_f5BTOzvOMujPhCezi6YYul3c1-enmZPW6vlDPB3EaZRoFTXVZIMOCcy2obQBq1k9CQ0ulMGR2-ZJ_X-xFshs0bxw9Q8rmF45zYqZMnD3p0vD3sObFrAnsePhbNk5ke3D10jJHch-IoCInlnJAVlGlfPg9aCusL/wwmbqigemgntk9j/AMSR_E_L3_RainGrid_V06_200206.hdf
+
+$GET https://download944.mediafire.com/t2lprt4bbrtgqDx24wg9PFGvazfJxhxWUDv01KVgnC0ja8BhWIIKu4tapUicVHhfK-Y05Ofx8QWfhpE7TxGRsUs6_gMLCjs3hTDPORYcZsXfhqLvS8D2cJgrnmFmSCG2rXAEv5urTh-N2WzPgr6-k9cxAVigZk3U2JeVk7mkrzZ7/2qljqycyzv6d5j7/AMSR_E_L3_5DaySnow_V09_20050126.hdf
+
+# latest = V15
+$GET https://download1320.mediafire.com/whjegcxxqofgTPrR-vZyosyfxHn_yOblshY2QC3DTGTCllQh7O4RxSRN-4lXzRNZ9l_SvLZLgCe7OByKuArl3ro18P2iav7TDg6z_Z9kcqLwvQzruLSnYhO5nr8DoAqVGpYMK_zMOqrzxG7gtv0d4eu9Z2inYLxZ3fDklPeFBnWA/96wyhy3lwe2k0mn/AMSR_E_L3_SeaIce6km_V11_20050118.hdf
+
+$GET https://download1322.mediafire.com/1vmznvvn8wwg1_f628ETBhnLEsdSCDJ3xI9bfzKbd2lwSfsJvrLwUtJ02RyxauYDMYWu5vJAD_Jm2c2CYocha98pt0_8wRD7QG05sXQ2jUNpbGaVCh2tGURjNpib9QYO0qCw6HLkvpHz5dqP-P9fLqIw39sx0UtUGlNHY7MeWYjz/s9msm6o1vi0yfxc/MOP02-20120801-L2V8.2.2.prov.hdf
+
+
+$GET https://download1590.mediafire.com/b9rzfil7z78gq6GBjIc46blV1JlyOOU0ClZV59KIBaNEp3kFEnorMrPIRtFticM7FNbd4JmX0cPptvPPG2Ng1oqZbQH_0NfLtcrxj2BzFvoJEYBb2pfFpbf0HGzlboASifdNTcuGFX_erzLWdkSHaQ3HklIrbcEc2HDUrzN8sQZF/v19q5j5psgzyi67/MOP03-200112220L3V2.0.1.hdf
+
+# NISE v4
+$GET https://n5eil01u.ecs.nsidc.org/DP4/OTHR/NISE.004/2011.04.24/NISE_SSMISF17_20110424.HDFEOS
+
+$GET https://download1322.mediafire.com/9frn7eryb56gBGaNxt4_nW6-T5MHpxfpMuGZNEjUuS2b12Ln9HvI31Ffm5DmR-SfZs-APQJjI0TY-gVPYQrddO_eRqXKc6WCgBFv7XqjqyX-MYFktKlioSwS-4nJislAu4xx7mDZlMZ6MNTMKT8QOQk2TktHclcvFzKhMjWVcYsm/mw8k9tz4a74eukx/VIP01P4.A2010001.002.hdf
+
+# TRMM_2A23
+$GET https://data.gesdisc.earthdata.nasa.gov/data/TRMM_L2/TRMM_2A23.7/2012/269/2A23.20120925.84650.7.HDF
+
+# TRMM_3B43
+$GET https://data.gesdisc.earthdata.nasa.gov/data/TRMM_L3/TRMM_3B43.7/2013/3B43.20130901.7.HDF
+
+$GET https://download1349.mediafire.com/pbtjku3koeegPhQm_mIHIshJZZamyYXNcsa_Hzla33Z5ZSLVXFK9w-7TkBCd4r58QwOZ4kUW6qi970_4T3U6qt3PxUlpueFHUxLZER96ZwUiKgrQrS-DrzEgImgEiwZCIRd392UfEurcRkSqOGg0QfpCrALfm96cpR0ObIAAtjIy/nvruna22mmzl8kx/CER_ISCCP-D2like-GEO_Composite_Beta1_023031.200510.hdf
+
+# CER_ES8_TRMM-PFM
+$GET https://asdc.larc.nasa.gov/data/CERES/ES8/TRMM-PFM_Edition2/2000/02/CER_ES8_TRMM-PFM_Edition2_025021.20000229.hdf
+
+$GET https://download1589.mediafire.com/gpu4kjhrscygbjTa0W8LvWwK7TZlCUtAO0nStsFwbP0BM2hpzJEfXLNEFYY9xWO2TYDcZyykjO0IpPy9i9UtaQt49nqYTXx_pFKzuoIUAI86TJE6bwvivA2sOChLCaoE8u8_0PYvUxlnDDkBYkce399odkETf6VblMKgLfmH9j1_/7lmn62hl8ckcxzr/MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf
+
+$GET https://download1322.mediafire.com/xod0a1r6ndeg-LKZ3RUBrMfUyhKS3VmIH3T5_-fHsn257UH1Tlbc6EyQYJDa9fn35P4mw6LJ-OopVK1387bs8Etr0YkwEfw7UOOQs31O4G8Oeg6BEVwdYFAbItno8vWXrkwhFlaEDvk6zA_tVYH32azrBvK2qrTWyH8RQyJ9gMz6/nitr6bdxym7oohp/T20000322000060.L3m_MO_NSST_4.hdf
+
+$GET https://download1532.mediafire.com/i9udpnx4qncgMsnusxVC6yXWUJMz0SdjqRfr1F1CswODPciFx7_xKwgY5vLGuf01A55v7-8rYGbzihwQuOwYj1i7N_ZG_BXfVvJwUImA8ZBVWisUiLYwXDpRrt8XtgMs-xp4phJvpJhbzxItq0locIvCx4dGrXxeyGv7KHsJNoW0/53790ducvxdwyr0/T2010001000000.L2_LAC_SST.hdf
+
+$GET https://download1349.mediafire.com/9q27cs31crog60ZTvH15gvmvyeoScGUKUTkQ0ebir1StQnZbO5DZTu7PVWKKq8doG5s0nR6uNdAFzULDHt2vRbEGlAHhUpfaPgHPH6UiRvLPCAXUfSYmfSPQfjhbRxeI9VOPHt-MUc9oA5qxU2pzo--OMqs_e-hahguYObQPVC1s/q95hokm62upne1g/2006001-2006005.s0454pfrt-bsst.hdf
+
+$GET https://download1085.mediafire.com/8x8k8vwdxezg9kOd-BJ8KFLvUwcmmIgPmCYJdsrChbFRE4mLYaHWfFQQE339XRBpY0XTLqzl4YM1iganhRFfBX_lOxwAWWp8P9Ig23vB3pTQK5DrLpedAI6uYuu7zjHE_T6f59ZCWAuME8Wc6_-buVkMzep6Iq5fAv4US7AvSR8M/hud0wmozj8rl9p9/LISOTD_HRAC_V2.2.hdf
+
+# latest = v6.1
+$GET https://download938.mediafire.com/ja00myxf5fhghx2c7-qKVnlOfxJZldtAuAPEUdlfMppZRTTBYata3azQS6ujKU0DX4m--aDCMkrAXmZ4cTIrgvNbnw99WqIIUXuQFzqna2WebgAFirevlRFqnnCNY_VotskeS1Ci6sT6MfBpSk7eq_6x9DarN-Ho2pMOms93XBly/z3luyzoabj3c2n1/MYD09.A2019003.2040.006.2019005020913.hdf
+
+# Cloud
+## AIRS3STD
+$GET https://data.gesdisc.earthdata.nasa.gov/data/Aqua_AIRS_Level3/AIRS3STD.7.0/2024/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf
+$GET https://download947.mediafire.com/5y988035pybghAu1DHhqtrSlZrJQiJfZN2v-Qeiy0aT8j6-Dp1QP4Cp8qS8LeDbckKXQLoNe5r_9G6WtgV7r4UxQbPocSk3JvxWOCWQFdIutoIDBauJ1FJ3DDDPZbtlVr1zLmruSraBYmBwwakv7R8XYZ_rAvc5-7lKmDCbnwM-2/bu4z5fwpsr7kjv4/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmrpp
+
+## TRMM_3B42_7
+$GET https://data.gesdisc.earthdata.nasa.gov/data/TRMM_L3/TRMM_3B42.7/2018/214/3B42.20180802.03.7.HDF
+$GET https://download1324.mediafire.com/x43ynyfth1sgXs3HSob4IplAFU9DcC71mYm_rtvzOXGo85OEKK5FZ3QJPWlINuOK7FhgS9dMkCMf8sn8RhjMA-5Ncp8cA3cxTzcoGqFFxzZJsuloX2aFFwqwgPpMvuVWg6jc5XFNS1eiFiJ2esiInv2ex3nJwpbFyVQ_0AOcjic0/lw23xmh8nsdlj5l/3B42.20180802.03.7.HDF.dmrpp
+
+## NRT has only latest granules.
+$GET https://download1654.mediafire.com/x7e72mrwntvglxSX3_59teP6q_wQn4jkUoAHkXV_oAzWbhE6dnMS5_vkkvNSrL1kZm5GVqeI2kg2AinQaz5ZPB3atT8nFI1zh0DKfgUvlPetCIIdUkrXNKCO20hGiIyO_gYlO9zoyLytxt8g8BLM2q4SRf9-F5ViVuzPlCb719Gc/rfp5oaxwd1rn0ks/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf
+$GET https://download1655.mediafire.com/2i97nnk8m0zg0aOX3IXdxuzQy-gAq2d8QESrr433kmtGgPLSi5wx_9Hd89aUpqOKmb8SmOnlWuUsmmQp01gLtNog_dIURUfrdg-Vvt6qfIR-B1eVRwKzfpVgSpWw9DqmnDvXx-aKFsuGOc0xsE17NoSVrTEs2P2e_l1xuXZ-yIP-/24so2m3rgmglzmv/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf.dmrpp
+
+## MOD03
+$GET https://data.laadsdaac.earthdatacloud.nasa.gov/prod-lads/MOD03/MOD03.A2000166.0255.061.2017173092154.hdf
+$GET https://download848.mediafire.com/4cp9uh9v5ypgvFxmRBLOQwmUcOSGj8Yg1dm4IBUGztXSyUwHjSsp2mPtHat8lX70vy3vunIGIbTunABpomz4HD5ccR1-DfqzopfgYP5RqLx5AnZgP4M-SDBYFk1heyZdy74phkKFeor_qxJ4oxso8sGan95BtkSRs4cm1iS4JuaS/9fhnmuq5xpoigtu/MOD03.A2000166.0255.061.2017173092154.hdf.dmrpp
+
+# latest =  V11
+$GET https://download856.mediafire.com/lm1543da2xog-D4gvG6-FKFOzc4An04QSFsree8WqcMBr_PwJEEpWDmppyPhaiv7GVd0Tx8kIV64ktBjdcnQ0cCze3_hpuqx0MvvWRg64r82SGXPEEI0gK9Oowip5frpNZ0nnKvTzA5me4EyfL7UgDjg-84Q_xAR0AAATwdO6EOW/ryofdikqpn381l3/AMSR_E_L2_Land_V09_200206190615_A.hdf
+$GET https://download847.mediafire.com/h39txocyuwngUt0oEBB5YhkASW2-gL34dR0mBCPWsGfpsO6F1LIHkkyGcpd8HpcvMe60QXPn2xVyiyLQPjNORIS4be0G_xxtviZ-QPt06P0JrlcbyhSh0EYiDZQcuFxkBaGvUB8Gs2k28cIaTK8-DR8KdFzCv9jjceFxbEtxD-5Z/am7k5fpd8tvm9u7/AMSR_E_L2_Land_V09_200206190615_A.hdf.dmrpp
+
+# AE_SI25
+$GET https://n5eil01u.ecs.nsidc.org/DP4/AMSA/AE_SI25.003/2002.06.01/AMSR_E_L3_SeaIce25km_V15_20020601.hdf
+$GET https://download1322.mediafire.com/cj7f1pg93r4gwWHrqdygJ4wFiTWRMaFbZfLqPhBxpdt5x5XRDmtjcFCN62PKlNsxTlCg3EBzOtYarJPBalDjvzDljBtK8zXqRPygpUryNmIbaSaYJKWihE9dqlkpD-XmEgJvXPm30_vQMhpOr5GPi_NlKWdyr1mpBMbXDlyTTPXb/ne7fjhnoqfkshfq/AMSR_E_L3_SeaIce25km_V15_20020601.hdf.dmrpp
+
+# MOD10A1F
+$GET https://n5eil01u.ecs.nsidc.org/DP4/MOST/MOD10A1F.061/2024.01.25/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf
+$GET https://download1321.mediafire.com/h2u9xydoe8igOashDWdcTGJJyvYxVGH-a_9TaUqwJVX88sH-rXdiYO5EtooqGWL7qnrffTe6MJRuo3Yqxjaxh83OG8CUkk5Ew_-XgrpjiGwh-GgskY4KfnXbV2kzlFADRVl7J8c1MlOnd3ZzVY9Cn-BUKzl5OUuk7nMa83dshspV/c44fez36ednae4t/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf.dmrpp
+
+# latest = 061
+$GET https://download1530.mediafire.com/adz8ehvbpyigmj60spNdCwOwaqP7gTwB1FeUeNSx7ovdh2GO1Aw_Dq7Zyh4xVEshzvDy_OAJ-oCwxnzQyW8eza1WlEihUQlQ94u0H9jAt09DV3_kqHAHkUV_wMwCguFDXjj0SUCw6kW-V2q5qV9mwVOD8LCeg2GkFDC2XBqVjbxg/p1vh61ent9g43s1/MOD29.A2000166.0255.005.2008189120917.hdf
+$GET https://download1588.mediafire.com/jlvldlclbnhg86bV7c43wPLeCK3W_ELraUDDVncCu5L-I8TClZXq9aQvgg_WqgCEN6FF0SnLuCeJcLGFNrHEmqt6k7ZwlwjS-0rKemEBxSk89EFDxJ-Ni8eNSWX5ag-uxTmQEqGAQcAc-d3K_yd515dVE95zk4o1xxBcEKELUaBs/g8tgbydx83zbwfu/MOD29.A2000166.0255.005.2008189120917.hdf.dmrpp
+
+# MOD11A1
+$GET https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD11A1.061/MOD11A1.A2024025.h10v06.061.2024028004317/MOD11A1.A2024025.h10v06.061.2024028004317.hdf
+$GET https://download1322.mediafire.com/zcxws73pqolgU8dBFkPU5sKq4VuvejGInzbYHwup1URuKIzXpHMSPso9VH5-GnKk8cgcI5q_gJb3c3RLKJSxvhftIHj97N2LAPey65QKOlZsTcbNHapd_6KrrDbqNjHEB57Cdk1ER2p_PmDuSld7Y8U8qSyrLfLI2hq856xUswFK/ty7gtcvu2ajuryf/MOD11A1.A2024025.h10v06.061.2024028004317.hdf.dmrpp
+
+# MCD12Q1
+$GET https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MCD12Q1.061/MCD12Q1.A2022001.h10v06.061.2023243073808/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf
+$GET https://download1582.mediafire.com/ij7k7438n9og4FhSa_JocEayrQZ9_-bgZGohqSytKI0JmpBbwCU1d8TbA3_jVE8iE_HE0LDyzdZSm8W8ZIfE7ebrNrgE9f2gLZjbzt0_YrlDdlHhzWySa7oeJ41u4GibgbFjikCRCuT4hsai9bzhHCTIBLskXZXojBvE-pHUTUZN/9cn15akvnfeqs3v/MCD12Q1.A2022001.h10v06.061.2023243073808.hdf.dmrpp
+
+# MOD13Q1
+$GET https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2023353.h17v06.061.2024005131728/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf
+$GET https://download1589.mediafire.com/3vctyoz4fxhgy7JkTzi5PAaxtSegHWVxvLqO3FPAH_x-6um7uAazr0ymjgY9eaVS9CjKVC7-KZkYlAPzH1u0piwioNyb0vcMjMboca32APpu1PqyR6mdb1JjaE_YgNa6wHCL64yeS2V9f70Z2Qcopb45uxgrCqUaTB9w2eSfiXgq/i8f4ni5d7320yv2/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf.dmrpp
+
+# MCD19A1
+$GET https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MCD19A1.061/MCD19A1.A2024025.h10v06.061.2024027100206/MCD19A1.A2024025.h10v06.061.2024027100206.hdf
+$GET https://download847.mediafire.com/gg3ss1j6o8ngOB4leEG3X--RvszWDWLZeS6ZX-QryQbkkJmSvelqLl34HeShudSkCuhV-7i6TFBNJxV9vJZGsDLQ7PzAs1Q1sPTIbZVP_Osl-vQlKGN_bKNgvVRJ9ckLxYqnl-jwQ5JEkX7YAF0zjIQ0BxLYq-z0xTxSKwr1DSQM/i1eesxxi44739zg/MCD19A1.A2024025.h10v06.061.2024027100206.hdf.dmrpp
+
+# MCD43A4
+$GET https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MCD43A4.061/MCD43A4.A2012009.h25v05.061.2021202161101/MCD43A4.A2012009.h25v05.061.2021202161101.hdf
+$GET https://download1588.mediafire.com/ptzm48ncl5og35iYYBZbxmhI7by_PfA6SJJDrbQl9cv0Y1BWJ_jCeckistfjAy2yEhttnmF1VEDPnaDosWaPy6ZPAn8AulX_M8_ZBwMXFiYf-p7WIuyH5SutWimyyVCQM1AmQIvrx_UVFASsD_IElt3589DVkbGoHprEqXEVHx3B/eot2fx9ztljxcfw/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.dmrpp

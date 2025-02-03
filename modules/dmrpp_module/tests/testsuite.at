@@ -453,3 +453,5 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/sinusoid_ll_constraint.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/sinusoid_ll_constraint2.hdf.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/sinusoid_ll_constraint_var.hdf.dap])
 
+# non-contiguous chunk constraint check
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_fill_notdefined_constraint.dap])

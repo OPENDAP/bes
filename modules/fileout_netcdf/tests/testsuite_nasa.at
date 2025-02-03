@@ -152,5 +152,9 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(nasa-bescmd/MYD09.A2019003.2040.
 
 #HDF4 CF fileout netCDF-3 DAP2 response - constraint(caused by https://bugs.earthdata.nasa.gov/browse/HYRAX-1610)
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf_dap2constraint_nc3.bescmd], [bes.h4cf.conf])
+
 #HDF4 CF fileout netCDF-4 DAP4 response - MCDGCF 
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([nasa-bescmd/MCD43GF_bsa_Band1_365_2021_V061.hdf_dap4constraint.bescmd], [bes.h4cf.conf])
+
+#HDF4 non-contiguous chunk subset tests.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(nasa-bescmd/MOD13Q1.A2023353.h17v06.061.2024005131728_constraint.hdf.dmrpp.bescmd)
