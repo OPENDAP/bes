@@ -46,7 +46,7 @@ class HDF5D4Enum:public libdap::D4Enum {
   public:
 
     /// Constructor
-    HDF5D4Enum(const std::string &n, const std::string &vpath, libdap::Type type);
+    HDF5D4Enum(const std::string &n, const std::string &vpath, const std::string &dataset, libdap::Type type);
     ~ HDF5D4Enum() override = default;
 
     /// Clone this instance.
@@ -58,7 +58,7 @@ class HDF5D4Enum:public libdap::D4Enum {
 
     /// Reads HDF5 16-bit integer data into local buffer
     bool read() override;
-
+    void close_objids(hid_t mem_type, hid_t base_type, hid_t dtype, hid_t dset_id, hid_t file_id);
 
 };
 #endif

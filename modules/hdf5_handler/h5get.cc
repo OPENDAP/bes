@@ -1246,7 +1246,7 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
                     // retrieve enum information
                     D4EnumDef* enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,vname,datatype);
 //cerr<<"after map_hdf5_enum_to_dap4"<<endl;
-                    auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, enum_def->type());
+                    auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, dataset, enum_def->type());
                     hdf5_enum->set_enumeration(enum_def);
                     btp = hdf5_enum.release();
                     
@@ -1585,6 +1585,7 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
     }
 }
 
+
 string obtain_enum_def_name(hid_t pid, hid_t datatype) {
     
     string ret_value;
@@ -1721,7 +1722,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
                 throw InternalErr(__FILE__, __LINE__,
                           "H5Tget_member_value is invalid");
             }
-            int64_t int64_max = (int64_t)~(1L<<64-1);
+            auto int64_max = (int64_t)~(1L<<64-1);
             if(val >(uint64_t)int64_max) {
                 throw InternalErr(__FILE__, __LINE__,
                           "The value exceeds the maximum value of 64-bit integer.");
@@ -1785,7 +1786,7 @@ D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::
     obtain_enum_def_name_value(base_hdf5_type, datatype,labels,label_values);
     H5Tclose(base_hdf5_type);
     //D4EnumDef enum_def(enum_def_name,enum_def_type);
-    D4EnumDef *enum_def = new D4EnumDef(enum_def_name,enum_def_type);
+    auto enum_def = new D4EnumDef(enum_def_name,enum_def_type);
     for (unsigned i = 0; i <labels.size(); i++) 
         enum_def->add_value(labels[i],label_values[i]);
 

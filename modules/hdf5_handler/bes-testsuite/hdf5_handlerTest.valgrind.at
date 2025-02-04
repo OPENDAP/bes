@@ -749,6 +749,9 @@ AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([d_int64.h5.dap.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_scalar_dset.h5.dmr.bescmd])                                                
 AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_scalar_dset.h5.dap.bescmd])  
 
+# netCDF-4 pure unlimited dimension
+AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_group_atomic_puredim_unlimit.h5.dmr.bescmd])
+
 # Test DAP4 coverage for the default option
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord2.h5.dmr.bescmd])
@@ -784,3 +787,6 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([SDS_fle_shuf_2def.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_scale_null_space.h5.dmr.bescmd])
 
+# ENUM test
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum_name_scalar.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum_name_scalar.h5.dap.bescmd])
