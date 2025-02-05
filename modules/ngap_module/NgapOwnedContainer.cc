@@ -248,7 +248,7 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
         CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
     }
     else {
-        ERROR_LOG("NgapOwnedContainer::access() - failed to put DMR++ in memory cache\n");
+        ERROR_LOG("NgapOwnedContainer::access() - failed to put DMR++ in file cache\n");
         return false;
     }
 #endif
