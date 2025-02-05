@@ -185,6 +185,11 @@ void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,
         m_array_of_structure(dset_id,values,has_values,values_offset,nelms,offset,count,step);
     else if(H5T_INTEGER == tcls || H5T_FLOAT == tcls || H5T_STRING == tcls) 
         m_array_of_atomic(dset_id,dtype_id,nelms,offset,count,step);
+    else if (H5T_ENUM == tcls) {
+        hid_t basetype = H5Tget_super(dtype_id);
+        m_array_of_atomic(dset_id,basetype,nelms,offset,count,step);
+        H5Tclose(basetype);
+    }
     else {
         throw InternalErr(__FILE__,__LINE__,"Fail to read the data for Unsupported datatype.");
     }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="t_enum_scalar.h5" space="catalog">/data/t_enum_array.h5</setContainer>
+    <define name="d">
+	<container name="t_enum_scalar.h5" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>

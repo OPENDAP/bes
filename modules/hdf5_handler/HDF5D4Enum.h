@@ -58,7 +58,7 @@ class HDF5D4Enum:public libdap::D4Enum {
 
     /// Reads HDF5 16-bit integer data into local buffer
     bool read() override;
-    void close_objids(hid_t mem_type, hid_t base_type, hid_t dtype, hid_t dset_id, hid_t file_id);
+    void close_objids(hid_t mem_type, hid_t base_type, hid_t dtype, hid_t dset_id, hid_t file_id) const;
 
 };
 #endif

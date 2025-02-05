@@ -113,7 +113,7 @@ bool HDF5D4Enum::read()
 
     case 1:
         if (sign == H5T_SGN_NONE) {
-            uint8_t val = 0;
+            uint8_t  val = 0;
             if (H5Dread(dset_id,H5T_NATIVE_UCHAR,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val)<0) {
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 throw InternalErr(__FILE__, __LINE__,
@@ -123,7 +123,7 @@ bool HDF5D4Enum::read()
         } 
         else {
             int8_t val = 0;
-            if (H5Dread(dset_id,H5T_NATIVE_CHAR,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val)<0) {
+            if (H5Dread(dset_id,H5T_NATIVE_SCHAR,H5S_ALL,H5S_ALL,H5P_DEFAULT,&val)<0) {
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 throw InternalErr(__FILE__, __LINE__,
                           "Cannot read the enum data for the signed char base type. ");
@@ -201,6 +201,7 @@ bool HDF5D4Enum::read()
     default:
         close_objids(memtype,base_type,dtypeid,dset_id,file_id);
         throw InternalErr(__FILE__, __LINE__,"The enum base type size is not within the currently supported values.");
+        break;
     }
     
     close_objids(memtype,base_type,dtypeid,dset_id,file_id);
@@ -208,7 +209,7 @@ bool HDF5D4Enum::read()
     return true;
 }
 
-void HDF5D4Enum::close_objids(hid_t mem_type, hid_t base_type, hid_t dtype, hid_t dset_id, hid_t file_id) {
+void HDF5D4Enum::close_objids(hid_t mem_type, hid_t base_type, hid_t dtype, hid_t dset_id, hid_t file_id) const {
 
     if (mem_type >0)
         H5Tclose(mem_type);

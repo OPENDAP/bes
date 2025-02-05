@@ -1245,16 +1245,9 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
             case H5T_ENUM: {
                     // retrieve enum information
                     D4EnumDef* enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,vname,datatype);
-//cerr<<"after map_hdf5_enum_to_dap4"<<endl;
                     auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, dataset, enum_def->type());
                     hdf5_enum->set_enumeration(enum_def);
                     btp = hdf5_enum.release();
-                    
-#if 0
-                    auto hdf5_enum= make_unique<HDF5Url>(vname, vpath, dataset);
-                    btp = hdf5_enum.release();
-#endif
-                
             }
                 break;
 
@@ -1594,8 +1587,6 @@ string obtain_enum_def_name(hid_t pid, hid_t datatype) {
     H5Gget_info(pid,&g_info);
     hsize_t nelms = g_info.nlinks;
 
-//cerr<<"nelms: "<<nelms <<endl;
-
     for (hsize_t i = 0; i < nelms; i++) {
 
         ssize_t oname_size = H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
@@ -1627,7 +1618,6 @@ string obtain_enum_def_name(hid_t pid, hid_t datatype) {
         }
 
     }
-//cerr<<"enum defined name: "<<ret_value <<endl;
     return ret_value;
 
 }
@@ -1756,11 +1746,9 @@ void obtain_enum_def_name_value(hid_t base_datatype, hid_t datatype, vector<stri
 
         char *name = H5Tget_member_name(datatype,i);
         string enum_def_name(name);
-//cerr<<"enum_def_name: "<<enum_def_name<<endl;
         labels.push_back(enum_def_name);
         H5free_memory(name);
         int64_t label_value = obtain_enum_def_value(base_datatype,datatype,i);
-//printf("label_value is %d\n",(int)label_value);
         label_values.push_back(label_value);
 
     }
@@ -1775,25 +1763,54 @@ D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::
     hid_t base_hdf5_type = H5Tget_super(datatype);
 
     string enum_def_type_str = get_dap_integer_type(base_hdf5_type,true);
-//cerr<<"enum_def_type: "<<enum_def_type_str <<endl;
     Type enum_def_type = get_type(enum_def_type_str.c_str());
-//cerr<<"enum_def_type in type: "<<enum_def_type<<endl;
-
 
     // Obtain this HDF5 enum type's defined names and values.
     vector<string> labels;
     vector<int64_t> label_values;   
     obtain_enum_def_name_value(base_hdf5_type, datatype,labels,label_values);
     H5Tclose(base_hdf5_type);
-    //D4EnumDef enum_def(enum_def_name,enum_def_type);
-    auto enum_def = new D4EnumDef(enum_def_name,enum_def_type);
-    for (unsigned i = 0; i <labels.size(); i++) 
-        enum_def->add_value(labels[i],label_values[i]);
 
+    D4EnumDef *enum_def = nullptr;
     D4EnumDefs * d4enumdefs = d4_grp->enum_defs();
-    if (d4_grp->find_enum_def(enum_def_name)==nullptr) 
-        d4enumdefs->add_enum_nocopy(enum_def);
 
+    // HDF5 doesn't require an enum name. However, DAP4 requires an enum name.
+    // So we need to generate a fake enum name.
+    // Since we have to make sure each enum name is unique under this group,
+    // so we will increase the counter once a new fake enum name is generated.
+    // We will use NoNameEum+number as the EnumName. For example, the name can be  NoNameEum0, NoNameEum1 etc.
+ 
+    // If HDF5 Enum doesn't have a name, we will create one when mapping to DAP4.
+    if (enum_def_name.empty()) {
+        if (d4enumdefs->empty()) {
+            enum_def_name = "NoNameEum0";
+            enum_def = new D4EnumDef(enum_def_name,enum_def_type);
+        }
+        else {
+            // Search if NoNameEum? is used as an enum name in this group. 
+            vector <string> enumdef_names;
+            for (auto iter = d4enumdefs->enum_begin(); iter != d4enumdefs->enum_end(); iter++) {
+                enumdef_names.push_back((*iter)->name());
+            }
+            enum_def_name = obtain_assigned_obj_name(enumdef_names,"NoNameEnum");
+            enum_def = new D4EnumDef(enum_def_name,enum_def_type);
+        }
+        for (unsigned i = 0; i <labels.size(); i++) 
+            enum_def->add_value(labels[i],label_values[i]);
+
+        // This enum_def_name is a new name, no need to search if it exists.
+        d4enumdefs->add_enum_nocopy(enum_def);
+    }
+    else {
+        enum_def = new D4EnumDef(enum_def_name,enum_def_type);
+
+        for (unsigned i = 0; i <labels.size(); i++) 
+            enum_def->add_value(labels[i],label_values[i]);
+    
+        if (d4_grp->find_enum_def(enum_def_name)==nullptr) 
+            d4enumdefs->add_enum_nocopy(enum_def);
+    }
+    
     return enum_def;
 
 }
@@ -2504,6 +2521,28 @@ visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo, void *
     }
     return ret;
  
+}
+
+// Obtain the assigned object names
+// It will assign an object name based on the obj_name_mark out of obj_names. 
+// Currently the assigned object name is the obj_name_mark+max(suffix_number of objects)+1.
+std::string obtain_assigned_obj_name(vector<string>& obj_names, string obj_name_mark) {
+
+    int assigned_suffix =0;
+    for (const auto &obj_name:obj_names) {
+        if(obj_name.find(obj_name_mark)==0) {
+            string obj_suffix=obj_name.substr(obj_name_mark.size());
+            int obj_suffix_number = stoi(obj_suffix);
+            if (assigned_suffix <obj_suffix_number)
+                assigned_suffix = obj_suffix_number;
+        }
+    }
+    // We need to build a new object suffix.
+    assigned_suffix++;
+    stringstream ss;
+    ss <<assigned_suffix;
+    string ret_str = obj_name_mark + ss.str();
+    return ret_str;
 }
 
 // Obtain the shortest path of all hard links of the object.

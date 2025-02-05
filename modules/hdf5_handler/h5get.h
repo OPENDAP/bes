@@ -109,6 +109,7 @@ hsize_t obtain_number_elements(hid_t space_id);
 std::string obtain_vlstr_values(std::vector<char> & temp_buf, hid_t atype_id, size_t ty_size,
                            hsize_t nelmts, hid_t aspace_id);
 
+std::string obtain_assigned_obj_name(vector<string>& obj_names, string obj_name_mark);
 std::string obtain_shortest_ancestor_path(const std::vector<std::string> &);
 
 std::string handle_string_special_characters(std::string &s);
