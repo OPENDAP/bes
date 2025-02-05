@@ -790,3 +790,14 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_scale_null_space.h5.dmr.bescmd])
 # ENUM test
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum_name_scalar.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum_name_scalar.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum_scalar.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum_scalar.h5.dap.bescmd])
+    
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum2n_scalar.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum2n_scalar.h5.dap.bescmd])
+    
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum_array.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum_array.h5.dap.bescmd])
+
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum2n_array.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum2n_array.h5.dap.bescmd])
