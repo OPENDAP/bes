@@ -100,7 +100,7 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
 void write_vlen_str_attrs(hid_t attr_id, hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr,
                           libdap::AttrTable* d2_attr, bool is_dap4);
 
-libdap::D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, hid_t datatype);
+libdap::D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, hid_t datatype);
 void obtain_enum_def_name_value(hid_t base_datatype, hid_t datatype, vector<string>& labels, vector<int64_t> &label_values);
 
 bool check_if_utf8_str(hid_t ty_id);
@@ -109,7 +109,7 @@ hsize_t obtain_number_elements(hid_t space_id);
 std::string obtain_vlstr_values(std::vector<char> & temp_buf, hid_t atype_id, size_t ty_size,
                            hsize_t nelmts, hid_t aspace_id);
 
-std::string obtain_assigned_obj_name(vector<string>& obj_names, string obj_name_mark);
+std::string obtain_assigned_obj_name(const vector<string>& obj_names, const string &obj_name_mark);
 std::string obtain_shortest_ancestor_path(const std::vector<std::string> &);
 
 std::string handle_string_special_characters(std::string &s);

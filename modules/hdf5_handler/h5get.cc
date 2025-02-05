@@ -1244,7 +1244,7 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
 
             case H5T_ENUM: {
                     // retrieve enum information
-                    D4EnumDef* enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,vname,datatype);
+                    D4EnumDef* enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,datatype);
                     auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, dataset, enum_def->type());
                     hdf5_enum->set_enumeration(enum_def);
                     btp = hdf5_enum.release();
@@ -1712,11 +1712,6 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
                 throw InternalErr(__FILE__, __LINE__,
                           "H5Tget_member_value is invalid");
             }
-            auto int64_max = (int64_t)~(1L<<64-1);
-            if(val >(uint64_t)int64_max) {
-                throw InternalErr(__FILE__, __LINE__,
-                          "The value exceeds the maximum value of 64-bit integer.");
-            } 
             ret_value = (int64_t)val;
 
         } 
@@ -1754,7 +1749,7 @@ void obtain_enum_def_name_value(hid_t base_datatype, hid_t datatype, vector<stri
     }
 }
 
-D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, hid_t datatype) {
+D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid,  hid_t datatype) {
 
     // Check if this HDF5 enum type has a name,if yes, return the name.
     string enum_def_name = obtain_enum_def_name(pid,datatype);
@@ -2526,7 +2521,7 @@ visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo, void *
 // Obtain the assigned object names
 // It will assign an object name based on the obj_name_mark out of obj_names. 
 // Currently the assigned object name is the obj_name_mark+max(suffix_number of objects)+1.
-std::string obtain_assigned_obj_name(vector<string>& obj_names, string obj_name_mark) {
+std::string obtain_assigned_obj_name(const vector<string>& obj_names, const string &obj_name_mark) {
 
     int assigned_suffix =0;
     for (const auto &obj_name:obj_names) {

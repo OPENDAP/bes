@@ -197,11 +197,11 @@ bool HDF5D4Enum::read()
             }
             set_value(val);
         }
+        break;
 
     default:
         close_objids(memtype,base_type,dtypeid,dset_id,file_id);
         throw InternalErr(__FILE__, __LINE__,"The enum base type size is not within the currently supported values.");
-        break;
     }
     
     close_objids(memtype,base_type,dtypeid,dset_id,file_id);
