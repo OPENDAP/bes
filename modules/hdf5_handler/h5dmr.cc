@@ -289,7 +289,7 @@ void handle_actual_dataset(D4Group *par_grp, hid_t pid, const string &full_path_
     }
 
     try {
-        read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale,is_eos5,eos5_dim_info);
+        read_objects(par_grp, pid, full_path_name, fname,dset_id,use_dimscale,is_eos5,eos5_dim_info);
     }
     catch(...) {
         H5Dclose(dset_id);
@@ -452,9 +452,10 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
 }
 /////////////////////////////////////////////////////////////////////////////// 
 ///// \fn read_objects( D4Group *d4_grp, 
+/////                            hid_t pid,
 /////                            const string & varname, 
 /////                            const string & filename,
-/////                            const hid_t dset_id,
+/////                            hid_t dset_id,
 /////                            bool use_dimscale
 /////                            bool is_eos5
 /////                            eos5_dim_info_t eos5_dim_info)
@@ -463,6 +464,7 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
 ///// This is a wrapper function that calls functions to read atomic types and structure.
 ///// 
 /////    \param d4_group DAP4 group
+/////    \param pid  HDF5 parent group id.
 /////    \param varname Absolute name of an HDF5 dataset.  
 /////    \param filename The HDF5 dataset name that maps to the DMR dataset name.
 ////     \param dset_id HDF5 dataset id.
@@ -473,7 +475,7 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
 /////////////////////////////////////////////////////////////////////////////////
 //
 void
-read_objects( D4Group * d4_grp, const string &varname, const string &filename, hid_t dset_id,bool use_dimscale,
+read_objects( D4Group * d4_grp, hid_t pid, const string &varname, const string &filename, hid_t dset_id,bool use_dimscale,
               bool is_eos5, eos5_dim_info_t & eos5_dim_info) {
 
     // NULL space data, ignore.
@@ -493,7 +495,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, h
                           "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");
     
     default:
-        read_objects_base_type(d4_grp,varname, filename,dset_id,use_dimscale,is_eos5,eos5_dim_info);
+        read_objects_base_type(d4_grp,pid,varname, filename,dset_id,use_dimscale,is_eos5,eos5_dim_info);
         break;
     }
     // Close the datatype obtained in the get_dataset_dmr() since the datatype is no longer used.
@@ -542,14 +544,15 @@ void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim
 }
 
 /////////////////////////////////////////////////////////////////////////////// 
-///// \fn read_objects_base_type(D4Group *d4_grp,
+///// \fn read_objects_base_type(D4Group *d4_grp,hid_t pid,
 /////                            const string & varname, 
-/////                            const string & filename,const hid_t dset_id, bool use_dimscale
+/////                            const string & filename,hid_t dset_id, bool use_dimscale
 ///                              bool is_eos5, eos5_dim_info_t eos5_dim_info)
 ///// fills in information of a dataset (name, data type, data space) with HDF5 atomic datatypes into the dap4 
 ///// group. 
 /////
 /////    \param d4_grp DAP4 group
+/////    \param pid HDF5 parent group id
 /////    \param varname Absolute name of an HDF5 dataset.  
 /////    \param filename The HDF5 dataset name that maps to the DDS dataset name. 
 ////     \param dset_id HDF5 dataset id.
@@ -562,14 +565,14 @@ void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim
 //
 
 void
-read_objects_base_type(D4Group * d4_grp, const string & varname, const string & filename, hid_t dset_id,
+read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, const string & filename, hid_t dset_id,
                        bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info)
 {
 
     string newvarname = obtain_new_varname(varname, use_dimscale, is_eos5);
 
     // Get a base type. It should be an HDF5 atomic datatype.
-    BaseType *bt = Get_bt(newvarname, varname,filename, dt_inst.type,true);
+    BaseType *bt = Get_bt_enhanced(d4_grp,pid, newvarname,varname, filename, dt_inst.type);
     if (!bt)
         throw InternalErr(__FILE__, __LINE__,"Unable to convert hdf5 datatype to dods basetype");
 

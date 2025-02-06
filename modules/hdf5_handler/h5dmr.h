@@ -154,9 +154,9 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname, libdap::D4Gro
                       eos5_dim_info_t & eos5_dim_info, std::vector<std::string> & handled_cv_names,
                       const std::vector<char>& oname);
 
-void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename, hid_t, bool, bool,
+void read_objects(libdap::D4Group* d4_grp,hid_t, const std::string & varname, const std::string & filename, hid_t, bool, bool,
                   eos5_dim_info_t &);
-void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename, hid_t,
+void read_objects_base_type(libdap::D4Group* d4_grp,hid_t, const std::string & varname, const std::string & filename, hid_t,
                             bool, bool, eos5_dim_info_t &);
 void read_objects_basetype_attr_hl(const std::string &varname, libdap::BaseType *bt, hid_t dset_id,  bool is_eos5);
 
