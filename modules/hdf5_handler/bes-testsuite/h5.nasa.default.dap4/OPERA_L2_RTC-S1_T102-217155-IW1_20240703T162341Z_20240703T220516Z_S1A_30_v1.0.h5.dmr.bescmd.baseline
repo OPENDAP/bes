@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OPERA_L2_RTC-S1_T102-217155-IW1_20240703T162341Z_20240703T220516Z_S1A_30_v1.0.h5">
+    <Attribute name="contact" type="String">
+        <Value>operasds@jpl.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>NASA JPL</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>OPERA</Value>
+    </Attribute>
+    <Attribute name="reference_document" type="String">
+        <Value>Product Specification Document for the OPERA Radiometric Terrain-Corrected SAR Backscatter from Sentinel-1, JPL D-108758, Rev. Working Version 1, Aug 31, 2023</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>OPERA RTC-S1 Product</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.8</Value>
+    </Attribute>
+    <Group name="data">
+        <String name="listOfPolarizations">
+            <Dim size="2"/>
+            <Attribute name="description" type="String">
+                <Value>List of processed polarization layers</Value>
+            </Attribute>
+        </String>
+        <Int32 name="projection">
+            <Attribute name="semi_major_axis" type="Float64">
+                <Value>6378137.</Value>
+            </Attribute>
+            <Attribute name="inverse_flattening" type="Float64">
+                <Value>298.25722356300003</Value>
+            </Attribute>
+            <Attribute name="ellipsoid" type="String">
+                <Value>WGS84</Value>
+            </Attribute>
+            <Attribute name="epsg_code" type="Int64">
+                <Value>32634</Value>
+            </Attribute>
+            <Attribute name="spatial_ref" type="String">
+                <Value>PROJCS[&quot;WGS 84 / UTM zone 34N&quot;,GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.0174532925199433,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]],PROJECTION[&quot;Transverse_Mercator&quot;],PARAMETER[&quot;latitude_of_origin&quot;,0],PARAMETER[&quot;central_meridian&quot;,21],PARAMETER[&quot;scale_factor&quot;,0.9996],PARAMETER[&quot;false_easting&quot;,500000],PARAMETER[&quot;false_northing&quot;,0],UNIT[&quot;metre&quot;,1,AUTHORITY[&quot;EPSG&quot;,&quot;9001&quot;]],AXIS[&quot;Easting&quot;,EAST],AXIS[&quot;Northing&quot;,NORTH],AUTHORITY[&quot;EPSG&quot;,&quot;32634&quot;]]</Value>
+            </Attribute>
+            <Attribute name="grid_mapping_name" type="String">
+                <Value>WGS 84 / UTM zone 34N</Value>
+            </Attribute>
+            <Attribute name="utm_zone_number" type="Int64">
+                <Value>34</Value>
+            </Attribute>
+            <Attribute name="false_easting" type="Float64">
+                <Value>500000.</Value>
+            </Attribute>
+            <Attribute name="false_northing" type="Float64">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="latitude_of_projection_origin" type="Float64">
+                <Value>0.</Value>
+            </Attribute>
+            <Attribute name="longitude_of_projection_origin" type="Float64">
+                <Value>0.</Value>
+            </Attribute>
+        </Int32>
+        <Float64 name="xCoordinateSpacing">
+            <Attribute name="description" type="String">
+                <Value>Nominal spacing in m between consecutive pixels</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>m</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate spacing</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="xCoordinates">
+            <Dim size="3316"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_x_coordinate</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>CF compliant dimension associated with the X coordinate</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>m</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>x coordinate of projection</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="yCoordinateSpacing">
+            <Attribute name="description" type="String">
+                <Value>Nominal spacing in m between consecutive lines</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>m</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinates spacing</Value>
+            </Attribute>
+        </Float64>
+        <Float64 name="yCoordinates">
+            <Dim size="1656"/>
+            <Attribute name="standard_name" type="String">
+                <Value>projection_y_coordinate</Value>
+            </Attribute>
+            <Attribute name="description" type="String">
+                <Value>CF compliant dimension associated with the Y coordinate</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>m</Value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <Value>y coordinate of projection</Value>
+            </Attribute>
+        </Float64>
+    </Group>
+    <Group name="identification">
+        <Enumeration name="NoNameEum0" basetype="Int8">
+            <EnumConst name="FALSE" value="0"/>
+            <EnumConst name="TRUE" value="1"/>
+        </Enumeration>
+        <Int64 name="absoluteOrbitNumber">
+            <Attribute name="description" type="String">
+                <Value>Absolute orbit number</Value>
+            </Attribute>
+        </Int64>
+        <String name="acquisitionMode">
+            <Attribute name="description" type="String">
+                <Value>Acquisition mode</Value>
+            </Attribute>
+        </String>
+        <Float64 name="boundingBox">
+            <Dim size="4"/>
+            <Attribute name="description" type="String">
+                <Value>Bounding box of the product, in order of xmin, ymin, xmax, ymax</Value>
+            </Attribute>
+            <Attribute name="epsg" type="String">
+                <Value>32634</Value>
+            </Attribute>
+            <Attribute name="pixel_coordinate_convention" type="String">
+                <Value>Edges/corners. Xmin, Ymin, Xmax, Ymax.</Value>
+            </Attribute>
+        </Float64>
+        <String name="boundingPolygon">
+            <Attribute name="description" type="String">
+                <Value>OGR compatible WKT representation of the product bounding polygon</Value>
+            </Attribute>
+            <Attribute name="epsg" type="String">
+                <Value>4326</Value>
+            </Attribute>
+        </String>
+        <String name="burstID">
+            <Attribute name="description" type="String">
+                <Value>Burst identification (burst ID)</Value>
+            </Attribute>
+        </String>
+        <String name="ceosAnalysisReadyDataDocumentIdentifier">
+            <Attribute name="description" type="String">
+                <Value>CEOS Analysis Ready Data (CARD) document identifier</Value>
+            </Attribute>
+        </String>
+        <String name="ceosAnalysisReadyDataProductType">
+            <Attribute name="description" type="String">
+                <Value>CEOS Analysis Ready Data (CARD) product type</Value>
+            </Attribute>
+        </String>
+        <String name="contactInformation">
+            <Attribute name="description" type="String">
+                <Value>Contact information for producer of this product</Value>
+            </Attribute>
+        </String>
+        <String name="dataAccess">
+            <Attribute name="description" type="String">
+                <Value>Location from where this product can be retrieved (URL or DOI)</Value>
+            </Attribute>
+        </String>
+        <String name="institution">
+            <Attribute name="description" type="String">
+                <Value>Institution that created this product</Value>
+            </Attribute>
+        </String>
+        <String name="instrumentName">
+            <Attribute name="description" type="String">
+                <Value>Name of the instrument used to collect the remote sensing data provided in this product</Value>
+            </Attribute>
+        </String>
+        <Enum name="isGeocoded" enum="/identification/NoNameEum0">
+            <Attribute name="description" type="String">
+                <Value>Flag to indicate whether the primary product data is in radar geometry (&quot;False&quot;) or map geometry (&quot;True&quot;)</Value>
+            </Attribute>
+        </Enum>
+        <String name="lookDirection">
+            <Attribute name="description" type="String">
+                <Value>Look direction can be left or right</Value>
+            </Attribute>
+        </String>
+        <String name="orbitPassDirection">
+            <Attribute name="description" type="String">
+                <Value>Orbit direction can be ascending or descending</Value>
+            </Attribute>
+        </String>
+        <String name="platform">
+            <Attribute name="description" type="String">
+                <Value>Platform name</Value>
+            </Attribute>
+        </String>
+        <String name="processingDateTime">
+            <Attribute name="description" type="String">
+                <Value>Processing date and time in the format YYYY-MM-DDThh:mm:ss.sZ</Value>
+            </Attribute>
+        </String>
+        <String name="processingType">
+            <Attribute name="description" type="String">
+                <Value>Processing type: &quot;NOMINAL&quot;, &quot;URGENT&quot;, &quot;CUSTOM&quot;, or &quot;UNDEFINED&quot;</Value>
+            </Attribute>
+        </String>
+        <String name="productLevel">
+            <Attribute name="description" type="String">
+                <Value>Product level. L0A: Unprocessed instrument data; L0B: Reformatted, unprocessed instrument data; L1: Processed instrument data in radar coordinates system; and L2: Processed instrument data in geocoded coordinates system</Value>
+            </Attribute>
+        </String>
+        <String name="productSpecificationVersion">
+            <Attribute name="description" type="String">
+                <Value>Product specification version which represents the schema of this product</Value>
+            </Attribute>
+        </String>
+        <String name="productType">
+            <Attribute name="description" type="String">
+                <Value>Product type</Value>
+            </Attribute>
+        </String>
+        <String name="productVersion">
+            <Attribute name="description" type="String">
+                <Value>Product version which represents the structure of the product and the science content governed by the algorithm, input data, and processing parameter</Value>
+            </Attribute>
+        </String>
+        <String name="project">
+            <Attribute name="description" type="String">
+                <Value>Project name</Value>
+            </Attribute>
+        </String>
+        <String name="radarBand">
+            <Attribute name="description" type="String">
+                <Value>Acquired frequency band</Value>
+            </Attribute>
+        </String>
+        <String name="staticLayersDataAccess">
+            <Attribute name="description" type="String">
+                <Value>Location of the static layers product associated with this product (URL or DOI)</Value>
+            </Attribute>
+        </String>
+        <String name="subSwathID">
+            <Attribute name="description" type="String">
+                <Value>Sub-swath identification</Value>
+            </Attribute>
+        </String>
+        <Int64 name="trackNumber">
+            <Attribute name="description" type="String">
+                <Value>Track number</Value>
+            </Attribute>
+        </Int64>
+        <String name="zeroDopplerEndTime">
+            <Attribute name="description" type="String">
+                <Value>Azimuth stop time of the product in the format YYYY-MM-DDThh:mm:ss.sZ</Value>
+            </Attribute>
+        </String>
+        <String name="zeroDopplerStartTime">
+            <Attribute name="description" type="String">
+                <Value>Azimuth start time of the product in the format YYYY-MM-DDThh:mm:ss.sZ</Value>
+            </Attribute>
+        </String>
+    </Group>
+    <Group name="metadata">
+        <Group name="orbit">
+            <String name="interpMethod"/>
+            <String name="orbitType">
+                <Attribute name="description" type="String">
+                    <Value>Type of orbit file used in processing</Value>
+                </Attribute>
+            </String>
+            <Float64 name="position">
+                <Dim size="13"/>
+                <Dim size="3"/>
+                <Attribute name="units" type="String">
+                    <Value>meters</Value>
+                </Attribute>
+                <Attribute name="description" type="String">
+                    <Value>Position vector record. This record contains the platform position data with respect to WGS84 G1762 reference frame</Value>
+                </Attribute>
+            </Float64>
+            <String name="referenceEpoch"/>
+            <Float64 name="time">
+                <Dim size="13"/>
+                <Attribute name="units" type="String">
+                    <Value>seconds since 2024-07-01 16:23:41</Value>
+                </Attribute>
+                <Attribute name="description" type="String">
+                    <Value>Time vector record. This record contains the time corresponding to position, velocity, acceleration records</Value>
+                </Attribute>
+            </Float64>
+            <Float64 name="velocity">
+                <Dim size="13"/>
+                <Dim size="3"/>
+                <Attribute name="units" type="String">
+                    <Value>meters per second</Value>
+                </Attribute>
+                <Attribute name="description" type="String">
+                    <Value>Velocity vector record. This record contains the platform velocity data with respect to WGS84 G1762 reference frame</Value>
+                </Attribute>
+            </Float64>
+        </Group>
+        <Group name="processingInformation">
+            <Group name="algorithms">
+                <String name="demEgmModel">
+                    <Attribute name="description" type="String">
+                        <Value>Earth Gravitational Model associated with the DEM</Value>
+                    </Attribute>
+                </String>
+                <String name="demInterpolation">
+                    <Attribute name="description" type="String">
+                        <Value>DEM interpolation method</Value>
+                    </Attribute>
+                </String>
+                <String name="geocoding">
+                    <Attribute name="description" type="String">
+                        <Value>Geocoding algorithm</Value>
+                    </Attribute>
+                </String>
+                <String name="geocodingAlgorithmReference">
+                    <Attribute name="description" type="String">
+                        <Value>A reference to the geocoding algorithm applied</Value>
+                    </Attribute>
+                </String>
+                <String name="isce3Version">
+                    <Attribute name="description" type="String">
+                        <Value>Version of the ISCE3 framework used for processing</Value>
+                    </Attribute>
+                </String>
+                <String name="noiseCorrectionAlgorithmReference">
+                    <Attribute name="description" type="String">
+                        <Value>A reference to the noise removal algorithm applied</Value>
+                    </Attribute>
+                </String>
+                <String name="radiometricTerrainCorrection">
+                    <Attribute name="description" type="String">
+                        <Value>Radiometric terrain correction (RTC) algorithm</Value>
+                    </Attribute>
+                </String>
+                <String name="radiometricTerrainCorrectionAlgorithmReference">
+                    <Attribute name="description" type="String">
+                        <Value>A reference to the radiometric terrain correction (RTC) algorithm applied</Value>
+                    </Attribute>
+                </String>
+                <String name="s1ReaderVersion">
+                    <Attribute name="description" type="String">
+                        <Value>Version of the OPERA s1-reader used for processing</Value>
+                    </Attribute>
+                </String>
+                <String name="softwareVersion">
+                    <Attribute name="description" type="String">
+                        <Value>Software version</Value>
+                    </Attribute>
+                </String>
+            </Group>
+            <Group name="inputs">
+                <String name="annotationFiles">
+                    <Dim size="2"/>
+                    <Attribute name="description" type="String">
+                        <Value>List of input annotation files used</Value>
+                    </Attribute>
+                </String>
+                <String name="demSource">
+                    <Attribute name="description" type="String">
+                        <Value>Description of the input digital elevation model (DEM)</Value>
+                    </Attribute>
+                </String>
+                <String name="l1SlcGranules">
+                    <Dim size="1"/>
+                    <Attribute name="description" type="String">
+                        <Value>List of input L1 SLC products used</Value>
+                    </Attribute>
+                </String>
+                <String name="orbitFiles">
+                    <Dim size="1"/>
+                    <Attribute name="description" type="String">
+                        <Value>List of input orbit files used</Value>
+                    </Attribute>
+                </String>
+            </Group>
+            <Group name="parameters">
+                <Enumeration name="NoNameEum0" basetype="Int8">
+                    <EnumConst name="FALSE" value="0"/>
+                    <EnumConst name="TRUE" value="1"/>
+                </Enumeration>
+                <Enumeration name="NoNameEnum1" basetype="Int8">
+                    <EnumConst name="FALSE" value="0"/>
+                    <EnumConst name="TRUE" value="1"/>
+                </Enumeration>
+                <Enumeration name="NoNameEnum2" basetype="Int8">
+                    <EnumConst name="FALSE" value="0"/>
+                    <EnumConst name="TRUE" value="1"/>
+                </Enumeration>
+                <Enumeration name="NoNameEnum3" basetype="Int8">
+                    <EnumConst name="FALSE" value="0"/>
+                    <EnumConst name="TRUE" value="1"/>
+                </Enumeration>
+                <Enumeration name="NoNameEnum4" basetype="Int8">
+                    <EnumConst name="FALSE" value="0"/>
+                    <EnumConst name="TRUE" value="1"/>
+                </Enumeration>
+                <Enumeration name="NoNameEnum5" basetype="Int8">
+                    <EnumConst name="FALSE" value="0"/>
+                    <EnumConst name="TRUE" value="1"/>
+                </Enumeration>
+                <Enumeration name="NoNameEnum6" basetype="Int8">
+                    <EnumConst name="FALSE" value="0"/>
+                    <EnumConst name="TRUE" value="1"/>
+                </Enumeration>
+                <Enum name="bistaticDelayCorrectionApplied" enum="/metadata/processingInformation/parameters/NoNameEum0">
+                    <Attribute name="description" type="String">
+                        <Value>Flag to indicate if the bistatic delay correction has been applied</Value>
+                    </Attribute>
+                </Enum>
+                <Enum name="filteringApplied" enum="/metadata/processingInformation/parameters/NoNameEnum1">
+                    <Attribute name="description" type="String">
+                        <Value>Flag to indicate if post-processing filtering has been applied</Value>
+                    </Attribute>
+                </Enum>
+                <String name="inputBackscatterNormalizationConvention">
+                    <Attribute name="description" type="String">
+                        <Value>Backscatter normalization convention of the source data</Value>
+                    </Attribute>
+                </String>
+                <Enum name="noiseCorrectionApplied" enum="/metadata/processingInformation/parameters/NoNameEnum2">
+                    <Attribute name="description" type="String">
+                        <Value>Flag to indicate if noise removal has been applied</Value>
+                    </Attribute>
+                </Enum>
+                <String name="outputBackscatterDecibelConversionEquation">
+                    <Attribute name="description" type="String">
+                        <Value>Equation to convert provided backscatter to decibel (dB)</Value>
+                    </Attribute>
+                </String>
+                <String name="outputBackscatterExpressionConvention">
+                    <Attribute name="description" type="String">
+                        <Value>Backscatter expression convention</Value>
+                    </Attribute>
+                </String>
+                <String name="outputBackscatterNormalizationConvention">
+                    <Attribute name="description" type="String">
+                        <Value>Backscatter normalization convention of the radar imagery associated with this product</Value>
+                    </Attribute>
+                </String>
+                <Enum name="preprocessingMultilookingApplied" enum="/metadata/processingInformation/parameters/NoNameEnum3">
+                    <Attribute name="description" type="String">
+                        <Value>Flag to indicate if a preprocessing multilooking has been applied</Value>
+                    </Attribute>
+                </Enum>
+                <Enum name="radiometricTerrainCorrectionApplied" enum="/metadata/processingInformation/parameters/NoNameEnum4">
+                    <Attribute name="description" type="String">
+                        <Value>Flag to indicate if radiometric terrain correction (RTC) has been applied</Value>
+                    </Attribute>
+                </Enum>
+                <Enum name="staticTroposphericGeolocationCorrectionApplied" enum="/metadata/processingInformation/parameters/NoNameEnum5">
+                    <Attribute name="description" type="String">
+                        <Value>Flag to indicate if the static tropospheric correction has been applied</Value>
+                    </Attribute>
+                </Enum>
+                <Enum name="wetTroposphericGeolocationCorrectionApplied" enum="/metadata/processingInformation/parameters/NoNameEnum6">
+                    <Attribute name="description" type="String">
+                        <Value>Flag to indicate if the wet tropospheric correction has been applied</Value>
+                    </Attribute>
+                </Enum>
+                <Group name="geocoding">
+                    <Float64 name="burstGeogridSnapX">
+                        <Attribute name="description" type="String">
+                            <Value>Burst geogrid snap for Coordinate X (W/E)</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="burstGeogridSnapY">
+                        <Attribute name="description" type="String">
+                            <Value>Burst geogrid snap for Coordinate Y (S/N)</Value>
+                        </Attribute>
+                    </Float64>
+                </Group>
+            </Group>
+        </Group>
+        <Group name="qa">
+            <Group name="geometricAccuracy">
+                <Group name="bias">
+                    <Float64 name="x">
+                        <Attribute name="description" type="String">
+                            <Value>An estimate of the localization error bias in the easting direction</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="y">
+                        <Attribute name="description" type="String">
+                            <Value>An estimate of the localization error bias in the northing direction</Value>
+                        </Attribute>
+                    </Float64>
+                </Group>
+                <Group name="stddev">
+                    <Float64 name="x">
+                        <Attribute name="description" type="String">
+                            <Value>An estimate of the localization error standard deviation in the easting direction</Value>
+                        </Attribute>
+                    </Float64>
+                    <Float64 name="y">
+                        <Attribute name="description" type="String">
+                            <Value>An estimate of the localization error standard deviation in the northing direction</Value>
+                        </Attribute>
+                    </Float64>
+                </Group>
+            </Group>
+            <Group name="rfi">
+                <Enumeration name="NoNameEum0" basetype="Int8">
+                    <EnumConst name="FALSE" value="0"/>
+                    <EnumConst name="TRUE" value="1"/>
+                </Enumeration>
+                <Enum name="isRfiInfoAvailable" enum="/metadata/qa/rfi/NoNameEum0">
+                    <Attribute name="description" type="String">
+                        <Value>A flag to indicate whether RFI information is available in the source data</Value>
+                    </Attribute>
+                </Enum>
+                <String name="rfiMitigationDomain">
+                    <Attribute name="description" type="String">
+                        <Value>Domain in which the RFI mitigation was performed</Value>
+                    </Attribute>
+                </String>
+                <String name="rfiMitigationPerformed">
+                    <Attribute name="description" type="String">
+                        <Value>RFI detection and mitigation strategy</Value>
+                    </Attribute>
+                </String>
+                <Group name="rfiBurstReport">
+                    <String name="azimuthTime">
+                        <Attribute name="description" type="String">
+                            <Value>Sensing start time of the burst that corresponds to the RFI report in the format YYYY-MM-DDThh:mm:ss.sZ</Value>
+                        </Attribute>
+                    </String>
+                    <Float64 name="inBandOutBandPowerRatio">
+                        <Attribute name="description" type="String">
+                            <Value>Ratio between the in-band and out-of-band power of the burst.</Value>
+                        </Attribute>
+                    </Float64>
+                    <String name="swath">
+                        <Attribute name="description" type="String">
+                            <Value>Swath associated with the IW RFI burst report list</Value>
+                        </Attribute>
+                    </String>
+                </Group>
+            </Group>
+        </Group>
+        <Group name="sourceData">
+            <Float64 name="averageZeroDopplerSpacingInMeters">
+                <Attribute name="description" type="String">
+                    <Value>Average pixel spacing in meters between consecutive lines in the along-track direction of the source data</Value>
+                </Attribute>
+            </Float64>
+            <Int64 name="azimuthLooks">
+                <Attribute name="description" type="String">
+                    <Value>Number of looks in azimuth used to generate source data</Value>
+                </Attribute>
+            </Int64>
+            <Float64 name="azimuthResolutionInMeters">
+                <Attribute name="description" type="String">
+                    <Value>Azimuth resolution of the source data in meters</Value>
+                </Attribute>
+            </Float64>
+            <Float64 name="centerFrequency">
+                <Attribute name="description" type="String">
+                    <Value>Center frequency of the processed image in Hz</Value>
+                </Attribute>
+            </Float64>
+            <String name="dataAccess">
+                <Attribute name="description" type="String">
+                    <Value>Location from where the source data can be retrieved (URL or DOI)</Value>
+                </Attribute>
+            </String>
+            <Float64 name="farRangeIncidenceAngle">
+                <Attribute name="description" type="String">
+                    <Value>Far range incidence angle in degrees</Value>
+                </Attribute>
+            </Float64>
+            <String name="institution">
+                <Attribute name="description" type="String">
+                    <Value>Institution that created the source data product</Value>
+                </Attribute>
+            </String>
+            <Float64 name="maxNoiseEquivalentSigmaZero">
+                <Attribute name="description" type="String">
+                    <Value>Maximum Noise equivalent sigma0 in dB</Value>
+                </Attribute>
+            </Float64>
+            <Float64 name="nearRangeIncidenceAngle">
+                <Attribute name="description" type="String">
+                    <Value>Near range incidence angle in degrees</Value>
+                </Attribute>
+            </Float64>
+            <Int64 name="numberOfAcquisitions">
+                <Attribute name="description" type="String">
+                    <Value>Number of source data acquisitions</Value>
+                </Attribute>
+            </Int64>
+            <Int64 name="numberOfAzimuthLines">
+                <Attribute name="description" type="String">
+                    <Value>Number of azimuth lines within the source data product</Value>
+                </Attribute>
+            </Int64>
+            <Int64 name="numberOfRangeSamples">
+                <Attribute name="description" type="String">
+                    <Value>Number of slant range samples for each azimuth line within the source data</Value>
+                </Attribute>
+            </Int64>
+            <String name="processingCenter">
+                <Attribute name="description" type="String">
+                    <Value>Source data processing center</Value>
+                </Attribute>
+            </String>
+            <String name="processingDateTime">
+                <Attribute name="description" type="String">
+                    <Value>Processing UTC date and time of the source data product (SLC post processing date time) in the format YYYY-MM-DDThh:mm:ss.sZ</Value>
+                </Attribute>
+            </String>
+            <String name="productLevel">
+                <Attribute name="description" type="String">
+                    <Value>Product level of the source data. L0A: Unprocessed instrument data; L0B: Reformatted, unprocessed instrument data; L1: Processed instrument data in radar coordinates system; and L2: Processed instrument data in geocoded coordinates system</Value>
+                </Attribute>
+            </String>
+            <Float64 name="rangeBandwidth">
+                <Attribute name="description" type="String">
+                    <Value>Processed range bandwidth in Hz</Value>
+                </Attribute>
+            </Float64>
+            <Int64 name="slantRangeLooks">
+                <Attribute name="description" type="String">
+                    <Value>Number of looks in slant range used to generate source data</Value>
+                </Attribute>
+            </Int64>
+            <Float64 name="slantRangeResolutionInMeters">
+                <Attribute name="description" type="String">
+                    <Value>Slant-range resolution of the source data in meters</Value>
+                </Attribute>
+            </Float64>
+            <Float64 name="slantRangeSpacing">
+                <Attribute name="description" type="String">
+                    <Value>Distance in meters between consecutive range samples of the source data</Value>
+                </Attribute>
+            </Float64>
+            <Float64 name="slantRangeStart">
+                <Attribute name="description" type="String">
+                    <Value>Slant-range start distance of the source data</Value>
+                </Attribute>
+            </Float64>
+            <String name="softwareVersion">
+                <Attribute name="description" type="String">
+                    <Value>Version of the software used to create the source data (IPF version)</Value>
+                </Attribute>
+            </String>
+            <String name="zeroDopplerEndTime">
+                <Attribute name="description" type="String">
+                    <Value>Azimuth stop time of the input product in the format YYYY-MM-DDThh:mm:ss.sZ</Value>
+                </Attribute>
+            </String>
+            <String name="zeroDopplerStartTime">
+                <Attribute name="description" type="String">
+                    <Value>Azimuth start time of the input product in the format YYYY-MM-DDThh:mm:ss.sZ</Value>
+                </Attribute>
+            </String>
+            <Float64 name="zeroDopplerTimeSpacing">
+                <Attribute name="description" type="String">
+                    <Value>Time interval in the along-track direction of the source data</Value>
+                </Attribute>
+            </Float64>
+        </Group>
+    </Group>
+</Dataset>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5">
+    <Group name="science">
+        <Group name="LSAR">
+            <Group name="RRSD">
+                <Group name="lowRateTelemetry">
+                    <Group name="attitude">
+                        <Float64 name="angularVelocity">
+                            <Dim size="22"/>
+                            <Dim size="3"/>
+                            <Attribute name="description" type="String">
+                                <Value>Attitude angular velocity vectors (wx, wy, wz)</Value>
+                            </Attribute>
+                            <Attribute name="units" type="String">
+                                <Value>radians per second</Value>
+                            </Attribute>
+                        </Float64>
+                        <String name="attitudeType">
+                            <Attribute name="description" type="String">
+                                <Value>PrOE (or) NOE (or) MOE (or) Custom</Value>
+                            </Attribute>
+                        </String>
+                        <Float64 name="eulerAngles">
+                            <Dim size="22"/>
+                            <Dim size="3"/>
+                            <Attribute name="description" type="String">
+                                <Value>Attitude Euler angles (roll, pitch, yaw</Value>
+                            </Attribute>
+                            <Attribute name="units" type="String">
+                                <Value>degrees</Value>
+                            </Attribute>
+                        </Float64>
+                        <Float64 name="quaternions">
+                            <Dim size="22"/>
+                            <Dim size="4"/>
+                            <Attribute name="description" type="String">
+                                <Value>Attitude quaternions (q0, q1, q2, q3)</Value>
+                            </Attribute>
+                            <Attribute name="units" type="String">
+                                <Value>unitless</Value>
+                            </Attribute>
+                        </Float64>
+                        <Float64 name="time">
+                            <Dim size="22"/>
+                            <Attribute name="description" type="String">
+                                <Value>Time vector record. This record contains the time</Value>
+                            </Attribute>
+                            <Attribute name="units" type="String">
+                                <Value>seconds since 2008-10-12T00:00:00.000000000</Value>
+                            </Attribute>
+                        </Float64>
+                    </Group>
+                    <Group name="orbit">
+                        <Float64 name="acceleration">
+                            <Dim size="28"/>
+                            <Dim size="3"/>
+                            <Attribute name="units" type="String">
+                                <Value>meters per second squared</Value>
+                            </Attribute>
+                            <Attribute name="description" type="String">
+                                <Value>GPS state vector acceleration</Value>
+                            </Attribute>
+                        </Float64>
+                        <String name="interpMethod"/>
+                        <String name="orbitType"/>
+                        <Float64 name="position">
+                            <Dim size="28"/>
+                            <Dim size="3"/>
+                            <Attribute name="units" type="String">
+                                <Value>meters</Value>
+                            </Attribute>
+                        </Float64>
+                        <Float64 name="time">
+                            <Dim size="28"/>
+                            <Attribute name="units" type="String">
+                                <Value>seconds since 2008-10-12 00:00:00</Value>
+                            </Attribute>
+                        </Float64>
+                        <Float64 name="velocity">
+                            <Dim size="28"/>
+                            <Dim size="3"/>
+                            <Attribute name="units" type="String">
+                                <Value>meters per second</Value>
+                            </Attribute>
+                        </Float64>
+                    </Group>
+                </Group>
+                <Group name="metadata">
+                    <Group name="processingInformation">
+                        <Group name="inputs">
+                            <String name="l0aGranules">
+                                <Dim size="1"/>
+                            </String>
+                        </Group>
+                    </Group>
+                </Group>
+                <Group name="swaths">
+                    <Group name="frequencyA">
+                        <String name="listOfTxPolarizations">
+                            <Dim size="1"/>
+                        </String>
+                        <Group name="txH">
+                            <Enumeration name="NoNameEum0" basetype="Byte">
+                                <EnumConst name="BYPASS" value="2"/>
+                                <EnumConst name="HPA" value="0"/>
+                                <EnumConst name="LNA" value="1"/>
+                            </Enumeration>
+                            <Float64 name="UTCtime">
+                                <Dim size="30540"/>
+                                <Attribute name="units" type="String">
+                                    <Value>seconds since 2008-10-12 00:00:00</Value>
+                                </Attribute>
+                            </Float64>
+                            <Enum name="calType" enum="/science/LSAR/RRSD/swaths/frequencyA/txH/NoNameEum0">
+                                <Dim size="30540"/>
+                            </Enum>
+                            <Float64 name="centerFrequency"/>
+                            <Structure name="chirpCorrelator">
+                                <Float32 name="r"/>
+                                <Float32 name="i"/>
+                                <Dim size="30540"/>
+                                <Dim size="1"/>
+                                <Dim size="3"/>
+                            </Structure>
+                            <Float64 name="chirpDuration"/>
+                            <Float64 name="chirpSlope"/>
+                            <Byte name="listOfTxTRMs">
+                                <Dim size="1"/>
+                            </Byte>
+                            <Float64 name="nominalAcquisitionPRF"/>
+                            <Int64 name="numberOfSubSwaths"/>
+                            <Float64 name="radarTime">
+                                <Dim size="30540"/>
+                            </Float64>
+                            <Float64 name="rangeBandwidth"/>
+                            <Int64 name="rangeLineIndex">
+                                <Dim size="30540"/>
+                            </Int64>
+                            <Float64 name="sceneCenterAlongTrackSpacing"/>
+                            <Float64 name="sceneCenterGroundRangeSpacing"/>
+                            <Float64 name="slantRange">
+                                <Dim size="7044"/>
+                            </Float64>
+                            <Float64 name="slantRangeSpacing"/>
+                            <Float32 name="txPhase">
+                                <Dim size="30540"/>
+                                <Dim size="1"/>
+                            </Float32>
+                            <Int64 name="validSamplesSubSwath1">
+                                <Dim size="30540"/>
+                                <Dim size="2"/>
+                            </Int64>
+                            <Group name="rxH">
+                                <Float32 name="BFPQLUT">
+                                    <Dim size="65536"/>
+                                </Float32>
+                                <Structure name="HH">
+                                    <UInt16 name="r"/>
+                                    <UInt16 name="i"/>
+                                    <Dim size="30540"/>
+                                    <Dim size="7044"/>
+                                    <Attribute name="_FillValue" type="Int64">
+                                        <Value>32768</Value>
+                                    </Attribute>
+                                </Structure>
+                                <Byte name="TRMDataWindow">
+                                    <Dim size="30540"/>
+                                    <Dim size="1"/>
+                                </Byte>
+                                <Float32 name="attenuation">
+                                    <Dim size="30540"/>
+                                    <Dim size="1"/>
+                                </Float32>
+                                <Structure name="caltone">
+                                    <Float32 name="r"/>
+                                    <Float32 name="i"/>
+                                    <Dim size="30540"/>
+                                    <Dim size="1"/>
+                                </Structure>
+                                <Byte name="listOfRxTRMs">
+                                    <Dim size="1"/>
+                                </Byte>
+                            </Group>
+                        </Group>
+                    </Group>
+                </Group>
+            </Group>
+            <Group name="identification">
+                <UInt32 name="absoluteOrbitNumber">
+                    <Attribute name="description" type="String">
+                        <Value>Absolute orbit number</Value>
+                    </Attribute>
+                </UInt32>
+                <String name="boundingPolygon">
+                    <Attribute name="description" type="String">
+                        <Value>OGR compatible WKT representation of bounding polygon of the image</Value>
+                    </Attribute>
+                </String>
+                <Byte name="diagnosticModeFlag">
+                    <Attribute name="description" type="String">
+                        <Value>Indicates if the radar operation mode is a diagnostic mode (1-2) or DBFed science (0): 0, 1, or 2</Value>
+                    </Attribute>
+                </Byte>
+                <String name="granuleId">
+                    <Attribute name="description" type="String">
+                        <Value>Unique granule identification name</Value>
+                    </Attribute>
+                </String>
+                <String name="instrumentName">
+                    <Attribute name="description" type="String">
+                        <Value>Name of the instrument used to collect the remote sensing data provided in this product</Value>
+                    </Attribute>
+                </String>
+                <String name="isDithered">
+                    <Attribute name="description" type="String">
+                        <Value>&quot;True&quot; if the pulse timing was varied (dithered) during acquisition, &quot;False&quot; otherwise.</Value>
+                    </Attribute>
+                </String>
+                <String name="isGeocoded">
+                    <Attribute name="description" type="String">
+                        <Value>Flag to indicate if the product data is in the radar geometry (&quot;False&quot;) or in the map geometry (&quot;True&quot;)</Value>
+                    </Attribute>
+                </String>
+                <String name="isMixedMode">
+                    <Attribute name="description" type="String">
+                        <Value>&quot;True&quot; if this product is a composite of data collected in multiple radar modes, &quot;False&quot; otherwise.</Value>
+                    </Attribute>
+                </String>
+                <String name="isUrgentObservation">
+                    <Attribute name="description" type="String">
+                        <Value>Flag indicating if observation is nominal (&quot;False&quot;) or urgent (&quot;True&quot;)</Value>
+                    </Attribute>
+                </String>
+                <String name="listOfFrequencies">
+                    <Dim size="1"/>
+                    <Attribute name="description" type="String">
+                        <Value>List of frequency layers available in the product</Value>
+                    </Attribute>
+                </String>
+                <String name="lookDirection">
+                    <Attribute name="description" type="String">
+                        <Value>Look direction can be left or right</Value>
+                    </Attribute>
+                </String>
+                <String name="missionId">
+                    <Attribute name="description" type="String">
+                        <Value>Mission identifier</Value>
+                    </Attribute>
+                </String>
+                <String name="orbitPassDirection">
+                    <Attribute name="description" type="String">
+                        <Value>Orbit direction can be ascending or descending</Value>
+                    </Attribute>
+                </String>
+                <String name="plannedDatatakeId">
+                    <Dim size="1"/>
+                    <Attribute name="description" type="String">
+                        <Value>List of planned datatakes included in the product</Value>
+                    </Attribute>
+                </String>
+                <String name="plannedObservationId">
+                    <Dim size="1"/>
+                    <Attribute name="description" type="String">
+                        <Value>List of planned observations included in the product</Value>
+                    </Attribute>
+                </String>
+                <String name="processingCenter">
+                    <Attribute name="description" type="String">
+                        <Value>Data processing center</Value>
+                    </Attribute>
+                </String>
+                <String name="processingDateTime">
+                    <Attribute name="description" type="String">
+                        <Value>Processing UTC date and time in the format YYYY-MM-DDTHH:MM:SS</Value>
+                    </Attribute>
+                </String>
+                <String name="processingType">
+                    <Attribute name="description" type="String">
+                        <Value>NOMINAL (or) URGENT (or) CUSTOM (or) UNDEFINED</Value>
+                    </Attribute>
+                </String>
+                <String name="productLevel">
+                    <Attribute name="description" type="String">
+                        <Value>Product level. L0A: Unprocessed instrument data; L0B: Reformatted, unprocessed instrument data; L1: Processed instrument data in radar coordinates system; and L2: Processed instrument data in geocoded coordinates system</Value>
+                    </Attribute>
+                </String>
+                <String name="productSpecificationVersion">
+                    <Attribute name="description" type="String">
+                        <Value>Product specification version which represents the schema of this product</Value>
+                    </Attribute>
+                </String>
+                <String name="productType">
+                    <Attribute name="description" type="String">
+                        <Value>Product type</Value>
+                    </Attribute>
+                </String>
+                <String name="productVersion">
+                    <Attribute name="description" type="String">
+                        <Value>Product version which represents the structure of the product and the science content governed by the algorithm, input data, and processing parameters</Value>
+                    </Attribute>
+                </String>
+                <String name="radarBand">
+                    <Attribute name="description" type="String">
+                        <Value>Acquired frequency band</Value>
+                    </Attribute>
+                </String>
+                <String name="zeroDopplerEndTime">
+                    <Attribute name="description" type="String">
+                        <Value>Azimuth stop time of product</Value>
+                    </Attribute>
+                </String>
+                <String name="zeroDopplerStartTime">
+                    <Attribute name="description" type="String">
+                        <Value>Azimuth start time of product</Value>
+                    </Attribute>
+                </String>
+            </Group>
+        </Group>
+    </Group>
+</Dataset>
