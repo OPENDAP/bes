@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="oco2_L1bScGL_05619a_150723_B7000_150723203202" space="catalog">/data/NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5</setContainer>
+    <define name="d">
+	<container name="oco2_L1bScGL_05619a_150723_B7000_150723203202" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>
