@@ -133,6 +133,7 @@ def main():
               The -u and -s options are only used to specify the location information of the HDF4/5 file and the side car file inside the ready-to-generate dmrpp file. 
 
         When the -U option is used, the location of the sidecar file will contain the template string OPeNDAP_DMRpp_SC_DATA_ACCESS_URL, which can be replaced at runtime.
+
         When the -D option is used, the sidecar file is not generated for the HDF4 file. Instead, the data supposed to store in the sidecar file will be stored in the
         dmrpp file.
 
