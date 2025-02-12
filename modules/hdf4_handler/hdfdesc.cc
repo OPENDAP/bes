@@ -274,6 +274,7 @@ void add_sp_hdf4_additional_info(D4Group *d4_grp);
 
 // 7. Helper functions
 void add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref);
+void add_sds_fvalue_attr(BaseType *d4b, int32 sds_id);
 BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string & filename);
 D4AttributeType h4type_to_dap4_attrtype(int32 h4_type);
 string print_dap4_attr(int32 type, int loc, void *vals);
@@ -5802,6 +5803,13 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
 
 void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs) {
 
+    intn emptySDS = 0;;
+    if (SDcheckempty(sds_id,&emptySDS) == FAIL) {
+        SDendaccess(sds_id);
+        throw InternalErr(__FILE__, __LINE__, "SDcheckempty failed.");
+    }
+    bool has_fv_attr = false;
+
     char attr_name[H4_MAX_NC_NAME];
     for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {
 
@@ -5816,11 +5824,21 @@ void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, in
             throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
             
         string dap4_attrname (attr_name);
+        if (emptySDS == 1) {
+            if (!has_fv_attr) {
+                if (dap4_attrname == "_FillValue")
+                    has_fv_attr = true;
+            }
+        } 
         dap4_attrname = HDFCFUtil::get_CF_string(dap4_attrname);
 
         map_sds_vdata_attr(ar,dap4_attrname,sds_attr_type,attr_value_count,attr_value);
         
     }
+
+    // This empty SDS doesn't have _FillValue attribute. We will add the _FillValue attribute based on the fillvalue of this SDS.
+    if (!has_fv_attr && emptySDS == 1) 
+        add_sds_fvalue_attr(ar, sds_id);
     // Save the reference number since it will be used by the dmrpp module.
     add_obj_ref_attr(ar,true,obj_ref);
 }
@@ -6141,6 +6159,111 @@ void  add_obj_ref_attr(BaseType * d4b, bool is_sds, int32 obj_ref) {
     d4b->attributes()->add_attribute_nocopy(d4_obj_ref_attr);
 
 }
+
+void  add_sds_fvalue_attr(BaseType * d4b, int32 sdsid) {
+
+    // Obtain SDS datatype
+    int32 sds_dtype = 0;
+    if (FAIL == SDgetinfo (sdsid, nullptr, nullptr, nullptr, &sds_dtype, nullptr)) {
+        SDendaccess(sdsid);
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS info.");
+    }                        
+ 
+    string fvalue_str;
+    switch (sds_dtype) {
+
+        case DFNT_UINT8:
+        case DFNT_UCHAR: {
+            uint8_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                fvalue_str = to_string(fvalue);
+            else
+                fvalue_str = to_string(255);
+        }
+            break;
+        case DFNT_INT8:
+        case DFNT_CHAR: {
+            int8_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                fvalue_str = to_string(fvalue);
+            else 
+                fvalue_str = to_string(FILL_BYTE);
+        }
+            break;
+
+        case DFNT_INT16: {
+            int16_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                fvalue_str = to_string(fvalue);
+            else
+                fvalue_str = to_string(FILL_SHORT);
+        }
+            break;
+
+        case DFNT_UINT16: {
+            uint16_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                fvalue_str = to_string(fvalue);
+             else
+                fvalue_str = to_string(65535);
+        }
+            break;
+
+        case DFNT_INT32: {
+            int32_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                fvalue_str = to_string(fvalue);
+            else 
+                fvalue_str = to_string(FILL_LONG);
+        }
+            break;
+
+        case DFNT_UINT32: {
+            uint32_t fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                fvalue_str = to_string(fvalue);
+            else
+                fvalue_str = to_string(4294967295);
+        }
+            break;
+
+        case DFNT_FLOAT: {
+            float fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                fvalue_str = to_string(fvalue);
+            else 
+                fvalue_str = to_string(FILL_FLOAT);
+        }
+            break;
+
+        case DFNT_DOUBLE: {
+            double fvalue;
+            if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
+                fvalue_str = to_string(fvalue);
+            else 
+                fvalue_str = to_string(FILL_DOUBLE);
+ 
+        }
+            break;
+        default:
+            break;
+    }
+
+    D4AttributeType dap4_attr_type = h4type_to_dap4_attrtype(sds_dtype);
+
+    // We encounter an unsupported DAP4 attribute type.
+    if (attr_null_c == dap4_attr_type) 
+        throw InternalErr(__FILE__, __LINE__, "unsupported DAP4 attribute type");
+
+    auto d4_fvalue_attr_unique = make_unique<D4Attribute>("_FillValue", dap4_attr_type);
+    D4Attribute *d4_fvalue_attr = d4_fvalue_attr_unique.get();
+    d4_fvalue_attr->add_value(fvalue_str);
+  
+    d4b->attributes()->add_attribute_nocopy(d4_fvalue_attr_unique.release());
+
+}
+
+
 void close_vgroup_fileids(int32 fileid, int32 sdfd, int32 vgroup_id) {
     if (vgroup_id != FAIL)
         Vdetach(vgroup_id);
