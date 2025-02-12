@@ -237,6 +237,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_doub
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_chunk_extra_area_comp.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_fillchunk_comp.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_unlimited_2.hdf.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_empty.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/testvs2.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_test.hdf.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_linked_blocks.hdf.dmrpp.bescmd>test.nc

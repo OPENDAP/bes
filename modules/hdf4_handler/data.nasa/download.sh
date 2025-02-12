@@ -62,6 +62,9 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/3B42.20180802.03.7.HDF
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/3B42.20180802.03.7.HDF.dmrpp
 
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/1B21.19971208.00160.7.HDF
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/1B21.19971208.00160.7.HDF.dmrpp
+
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf.dmrpp
 

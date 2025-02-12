@@ -1,0 +1,126 @@
+netcdf test {
+dimensions:
+	fakeDim0 = 1 ;
+	fakeDim1 = 1 ;
+	fakeDim2 = 16 ;
+	nray = 49 ;
+	fakeDim4 = 3 ;
+	fakeDim6 = 3 ;
+	fakeDim7 = 3 ;
+	fakeDim8 = 2 ;
+	fakeDim9 = 2 ;
+	fakeDim10 = 2 ;
+	fakeDim11 = 2 ;
+	fakeDim12 = 29 ;
+	fakeDim13 = 2 ;
+	fakeDim14 = 140 ;
+	fakeDim15 = 29 ;
+	fakeDim16 = 5 ;
+	fakeDim17 = 11 ;
+	fakeDim18 = 28 ;
+
+// global attributes:
+		:FileHeader = "AlgorithmID=1B21;\nAlgorithmVersion=emptyPPS;\nFileName=1B21.19971208.00160.7.HDF;\nGenerationDateTime=removed date-time;\nStartGranuleDateTime=removed date-time;\nStopGranuleDateTime=removed date-time;\nGranuleNumber=160;\nNumberOfSwaths=1;\nNumberOfGrids=0;\nGranuleStart=SOUTHERNMOST_LATITUDE;\nTimeInterval=ORBIT;\nProcessingSystem=PPS;\nProductVersion=7;\nMissingData=;\n" ;
+		:InputRecord = "InputFileNames=;\nInputAlgorithmVersions=;\nInputGenerationDateTimes=;\n" ;
+		:NavigationRecord = "LongitudeOfMaximumLatitude=;\nSolarBetaAngleAtBeginningOfGranule=;\nSolarBetaAngleAtEndOfGranule=;\n" ;
+		:FileInfo = "DataFormatVersion=m;\nTKCodeBuildVersion=1;\nMetadataVersion=m;\nFormatPackage=HDF Version 4.2 Release 4, January 25, 2009;\nBlueprintFilename=TRMM.V7.1B21.blueprint.xml;\nBlueprintVersion=BV_13;\nTKIOVersion=1.6;\nMetadataStyle=PVL;\nEndianType=LITTLE_ENDIAN;\n" ;
+		:JAXAInfo = "CalibrationCoefficientVersion=;\nGranuleFirstScanUTCDate=;\nGranuleFirstScanUTCTime=;\nGranuleFirstScanUTCMilliseconds=;\nGranuleLastScanUTCDate=;\nGranuleLastScanUTCTime=;\nGranuleLastScanUTCMilliseconds=;\nSoftwareVersion=;\nDatabaseVersion=;\nTotalQualityCode=;\nLongitudeOnEquator=;\nUTCDateOnEquator=;\nUTCTimeOnEquator=;\nUTCMillisecondsOnEquator=;\nCenterScanUTCDate=;\nCenterScanUTCTime=;\nCenterScanUTCMilliseconds=;\nFirstScanLat=;\nFirstScanLon=;\nLastScanLat=;\nLastScanLon=;\nNumberOfRainScans=;\n" ;
+		:SwathHeader = "NumberScansInSet=1;\nMaximumNumberScansTotal=10000;\nNumberScansBeforeGranule=0;\nNumberScansGranule=0;\nNumberScansAfterGranule=0;\nNumberPixels=49;\nScanType=CROSSTRACK;\n" ;
+		:history = "removed date-timex 1B21.19971208.00160.7.HDF.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"1B21.19971208.00160.7.HDF.dmrpp\"}]}]" ;
+
+group: pr_cal_coef {
+  variables:
+  	float transCoef(fakeDim0) ;
+  		transCoef:_FillValue = 9.96921e+36f ;
+  		transCoef:dmr_sds_ref = 3 ;
+  	float receptCoef(fakeDim1) ;
+  		receptCoef:_FillValue = 9.96921e+36f ;
+  		receptCoef:dmr_sds_ref = 4 ;
+  	float fcifIOchar(fakeDim2) ;
+  		fcifIOchar:_FillValue = 9.96921e+36f ;
+  		fcifIOchar:dmr_sds_ref = 5 ;
+  } // group pr_cal_coef
+
+group: ray_header {
+  variables:
+  	short rayStart(nray) ;
+  		rayStart:_FillValue = -32767s ;
+  		rayStart:dmr_sds_ref = 7 ;
+  	short raySize(nray) ;
+  		raySize:_FillValue = -32767s ;
+  		raySize:dmr_sds_ref = 8 ;
+  	float angle(nray) ;
+  		angle:units = "degrees" ;
+  		angle:_FillValue = 9.96921e+36f ;
+  		angle:dmr_sds_ref = 9 ;
+  	float startBinDist(nray) ;
+  		startBinDist:units = "m" ;
+  		startBinDist:_FillValue = 9.96921e+36f ;
+  		startBinDist:dmr_sds_ref = 10 ;
+  	float rainThres1(nray) ;
+  		rainThres1:_FillValue = 9.96921e+36f ;
+  		rainThres1:dmr_sds_ref = 11 ;
+  	float rainThres2(nray) ;
+  		rainThres2:_FillValue = 9.96921e+36f ;
+  		rainThres2:dmr_sds_ref = 12 ;
+  	float transAntenna(nray) ;
+  		transAntenna:units = "dB" ;
+  		transAntenna:_FillValue = 9.96921e+36f ;
+  		transAntenna:dmr_sds_ref = 13 ;
+  	float recvAntenna(nray) ;
+  		recvAntenna:units = "dB" ;
+  		recvAntenna:_FillValue = 9.96921e+36f ;
+  		recvAntenna:dmr_sds_ref = 14 ;
+  	float onewayAlongTrack(nray) ;
+  		onewayAlongTrack:_FillValue = 9.96921e+36f ;
+  		onewayAlongTrack:dmr_sds_ref = 15 ;
+  	float onewayCrossTrack(nray) ;
+  		onewayCrossTrack:_FillValue = 9.96921e+36f ;
+  		onewayCrossTrack:dmr_sds_ref = 16 ;
+  	float eqvWavelength(nray) ;
+  		eqvWavelength:units = "m" ;
+  		eqvWavelength:_FillValue = 9.96921e+36f ;
+  		eqvWavelength:dmr_sds_ref = 17 ;
+  	float radarConst(nray) ;
+  		radarConst:units = "dB" ;
+  		radarConst:_FillValue = 9.96921e+36f ;
+  		radarConst:dmr_sds_ref = 18 ;
+  	float prIntrDelay(nray) ;
+  		prIntrDelay:units = "s" ;
+  		prIntrDelay:_FillValue = 9.96921e+36f ;
+  		prIntrDelay:dmr_sds_ref = 19 ;
+  	float rangeBinSize(nray) ;
+  		rangeBinSize:units = "m" ;
+  		rangeBinSize:_FillValue = 9.96921e+36f ;
+  		rangeBinSize:dmr_sds_ref = 20 ;
+  	float logAveOffset(nray) ;
+  		logAveOffset:units = "dB" ;
+  		logAveOffset:_FillValue = 9.96921e+36f ;
+  		logAveOffset:dmr_sds_ref = 21 ;
+  	byte mainlobeEdge(nray) ;
+  		mainlobeEdge:_FillValue = -127b ;
+  		mainlobeEdge:dmr_sds_ref = 22 ;
+  	byte sidelobeRange(nray, fakeDim4) ;
+  		sidelobeRange:_FillValue = -127b ;
+  		sidelobeRange:dmr_sds_ref = 23 ;
+  } // group ray_header
+
+group: Swath {
+
+  // group attributes:
+  		:SwathHeader = "NumberScansInSet=1;\nMaximumNumberScansTotal=10000;\nNumberScansBeforeGranule=0;\nNumberScansGranule=0;\nNumberScansAfterGranule=0;\nNumberPixels=49;\nScanType=CROSSTRACK;\n" ;
+
+  group: ScanTime {
+    } // group ScanTime
+
+  group: scanStatus {
+    } // group scanStatus
+
+  group: navigation {
+    } // group navigation
+
+  group: powers {
+    } // group powers
+  } // group Swath
+}

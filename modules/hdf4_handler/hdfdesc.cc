@@ -5803,7 +5803,7 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
 
 void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, int32 n_sds_attrs) {
 
-    intn emptySDS = 0;;
+    intn emptySDS = 0;
     if (SDcheckempty(sds_id,&emptySDS) == FAIL) {
         SDendaccess(sds_id);
         throw InternalErr(__FILE__, __LINE__, "SDcheckempty failed.");

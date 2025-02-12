@@ -588,6 +588,7 @@ AT_BESCMD_RESPONSE_TEST([SDS_unlimited.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_simple_unlimited_0.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_fillchunk_comp.hdf.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS_fillchunk_alltypes.hdf.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([SDS_empty.hdf.dmr.bescmd])
 
 #HDF-EOS2 several grid tests.
 AT_BESCMD_RESPONSE_TEST([cea.hdf.dmr.bescmd])
