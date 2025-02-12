@@ -85,6 +85,8 @@ def main():
                         help='Generate dmrpp from an HDF4 file.')
     parser.add_argument("-u", "--URL", nargs=1,
                         help='The URL that provides the HDF4/5 file path(including the file name at the end). ') 
+    parser.add_argument("-D", "--DisableSideCar",action='store_true',
+                        help='The sidecar file is not generated for the HDF4 file.')
     parser.add_argument("-U", "--SCTURL", action='store_true',
                         help='the location of the sidecar file will contain the template string OPeNDAP_DMRpp_SC_DATA_ACCESS_URL, which can be replaced at runtime. ') 
     parser.add_argument("-s", "--SURL", nargs=1,
@@ -130,11 +132,22 @@ def main():
               to move these files to locations where they are going to be served.
               The -u and -s options are only used to specify the location information of the HDF4/5 file and the side car file inside the ready-to-generate dmrpp file. 
 
+        When the -U option is used, the location of the sidecar file will contain the template string OPeNDAP_DMRpp_SC_DATA_ACCESS_URL, which can be replaced at runtime.
+
+        When the -D option is used, the sidecar file is not generated for the HDF4 file. Instead, the data supposed to store in the sidecar file will be stored in the
+        dmrpp file.
+
         Examples to generate dmrpp file for an HDF4 file. For an HDF5 file, remove the -H option
         ./gen_dmrpp_side_car -i foo.hdf -H                                      
                                                                                      : The dmrpp file is generated. No sidecar file is needed. This is the common case.
         ./gen_dmrpp_side_car -i grid_2_2d_ps.hdf -H                                      
                                                                                      : The dmrpp file and the sidecar file are generated under the current dir.
+
+        ./gen_dmrpp_side_car -i grid_2_2d_ps.hdf -H -U                                      
+                                                                                     : The dmrpp file and the sidecar file are generated under the current dir.
+                                                                                       The template string OPeNDAP_DMRpp_SC_DATA_ACCESS_URL is stored in the sidecar file.
+        ./gen_dmrpp_side_car -i grid_2_2d_ps.hdf -H -D                                      
+                                                                                     : The sidecar file is not generated. The dmrpp file will include the data stored in the sidecar file.
 
         ./gen_dmrpp_side_car -i grid_2_2d_ps.hdf -H -u data/grid_2_2d_ps.hdf -s data     
                                                                                      : The dmrpp file and the sidecar file are generated under the current dir.
@@ -191,12 +204,20 @@ def main():
     if (args.URL is not None):
         hdf_url = ' '.join(args.URL)
     if (args.HDF4 is True):
-        if (args.URL is not None):
-            ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-u", hdf_url, "-D"],
-                             stdout=subprocess.PIPE, universal_newlines=True)
+        if (args.DisableSideCar is True): 
+            if (args.URL is not None):
+                ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-u", hdf_url],
+                                 stdout=subprocess.PIPE, universal_newlines=True)
+            else:
+                ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path],
+                                 stdout=subprocess.PIPE, universal_newlines=True)
         else:
-            ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-D"],
-                             stdout=subprocess.PIPE, universal_newlines=True)
+            if (args.URL is not None):
+                ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-u", hdf_url,"-D"],
+                                 stdout=subprocess.PIPE, universal_newlines=True)
+            else:
+                ret = subprocess.run(["get_dmrpp_h4", "-i", hdf_full_path, "-D"],
+                                 stdout=subprocess.PIPE, universal_newlines=True)
         if ret.returncode != 0:
             err_msg = "get_dmrpp_h4 fails to generate the dmrpp file for the HDF4 file. "
             err_msg += "\n The HDF4 file name is:  " + hdf_full_path
