@@ -235,7 +235,7 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
 
 string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
 
-    intn emptySDS = 0;;
+    intn emptySDS = 0;
     
     if (SDcheckempty(sdsid,&emptySDS) == FAIL) {
         SDendaccess(sdsid);
