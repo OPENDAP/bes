@@ -43,8 +43,6 @@
 #include "Base64.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
-#include "BESLog.h"
-
 
 #define prolog std::string("vlsa_util::").append(__func__).append("() - ")
 
@@ -187,9 +185,8 @@ string decode(const string &encoded, uint64_t expected_size) {
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     BESDEBUG(VLSA, prolog << "END\n");
-    return { string(result_bytes.begin(), result_bytes.end() ) };
+    return {result_bytes.begin(), result_bytes.end()};
 }
-
 
 /**
  * @brief Writes a dmrpp::vlsa  'v' element (value) with the passed value as the value.
@@ -204,7 +201,6 @@ string decode(const string &encoded, uint64_t expected_size) {
  */
 void write_value(libdap::XMLWriter &xml, const std::string &value, uint64_t dup_count)
 {
-
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) DMRPP_VLSA_VALUE_ELEMENT) < 0) {
         stringstream msg;
         msg <<  prolog << "Could not begin '" << DMRPP_VLSA_VALUE_ELEMENT << "' element.";
@@ -248,13 +244,10 @@ void write_value(libdap::XMLWriter &xml, const std::string &value, uint64_t dup_
         msg << prolog << "Could not end '" << DMRPP_VLSA_VALUE_ELEMENT << "' element";
         throw BESInternalError( msg.str(), __FILE__, __LINE__);
     }
-
-
 }
 
 void write(libdap::XMLWriter &xml, const vector<string> &values)
 {
-
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *)DMRPP_VLSA_ELEMENT) < 0) {
         stringstream msg;
         msg << prolog << "Could not write " << DMRPP_VLSA_VALUE_ELEMENT << " element";
@@ -290,12 +283,9 @@ void write(libdap::XMLWriter &xml, const vector<string> &values)
 
 }
 
-
-
 void write(libdap::XMLWriter &xml, dmrpp::DmrppArray &a)
 {
     write(xml, a.get_str());
-
 }
 
 /**
@@ -323,7 +313,7 @@ std::string read_value(const pugi::xml_node &v)
     return value;
 }
 
-void read(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries)
+void read(const pugi::xml_node &vlsa_element, vector<string> &entries)
 {
     static string vlsa_element_name(DMRPP_VLSA_ELEMENT);
 
@@ -340,7 +330,8 @@ void read(const pugi::xml_node &vlsa_element, std::vector<std::string> &entries)
         }
         BESDEBUG(VLSA, prolog << "value: '" << value << "' count: " << count << "\n");
         for(uint64_t i=0; i<count ;i++){
-            entries.emplace_back(value);
+            // Using emplace_back(value) here causes an error (why?) with ASAN on. jhrg 2/11/25
+            entries.push_back(value);
         }
     }
 }

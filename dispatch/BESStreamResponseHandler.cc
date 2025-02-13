@@ -45,11 +45,9 @@ using std::string;
 using std::ostream;
 
 #include "BESStreamResponseHandler.h"
-#include "BESRequestHandlerList.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
-#include "BESDataNames.h"
 #include "BESContainer.h"
 #include "BESDataHandlerInterface.h"
 #include "BESUtil.h"
@@ -83,22 +81,8 @@ BESStreamResponseHandler::~BESStreamResponseHandler()
  */
 void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    d_response_object = 0;
+    d_response_object = nullptr;
 
-
-    // Hack. We put this here because the bes timeout period should not
-    // include the time it takes to send  data for a file transfer response.
-    //
-    // An alternative would be to implement a BESTransmitter for the "get stream"
-    // operation and have that run from the call to BESInterface::transmist_data().
-    // pcw talks about that below.
-    // jhrg 1/24/17
-#if 0
-    if (bes_timeout != 0) {
-        bes_timeout = 0;
-        alarm(bes_timeout);
-    }
-#endif
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
     RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
     BESUtil::conditional_timeout_cancel();
@@ -149,14 +133,12 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
         throw BESForbiddenError(serr, __FILE__, __LINE__);
     }
 
-    int nbytes;
+    std::streamsize nbytes;
     char block[BES_STREAM_BUFFER_SIZE];
-    os.read(block, sizeof block);
-    nbytes = os.gcount();
+    os.read(block, sizeof block);   // read() returns the istream&
+    nbytes = os.gcount();   // gcount() returns the number of chars read above
     while (nbytes) {
-        bytes += nbytes;
         dhi.get_output_stream().write((char*) block, nbytes);
-
         os.read(block, sizeof block);
         nbytes = os.gcount();
     }

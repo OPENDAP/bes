@@ -30,7 +30,6 @@
 
 #include "config.h"
 
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -215,7 +214,7 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
             return true;
         }
         else {
-            ERROR_LOG("NgapOwnedContainer::access() - failed to read DMR++ from file cache\n");
+            ERROR_LOG(prolog + "Failed to read DMR++ from file cache\n");
             return false;
         }
     }
@@ -228,33 +227,17 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
 
 bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const
 {
-#if 0
-    FileCache::PutItem item(NgapRequestHandler::d_dmrpp_file_cache);
-    if (NgapRequestHandler::d_dmrpp_file_cache.put(FileCache::hash_key(get_real_name()), item)) {
-        // Do this in a child thread someday, but what about the return value. jhrg 11/14/23
-        if (write(item.get_fd(), dmrpp_string.data(), dmrpp_string.size()) != dmrpp_string.size()) {
-            ERROR_LOG("NgapOwnedContainer::access() - failed to write DMR++ to file cache\n");
-            return false;
-        }
-        CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
-    }
-    else {
-        ERROR_LOG("NgapOwnedContainer::access() - failed to put DMR++ in file cache\n");
-        return false;
-    }
-
-#else
     if (NgapRequestHandler::d_dmrpp_file_cache.put_data(FileCache::hash_key(get_real_name()), dmrpp_string)) {
         CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
     }
     else {
-        ERROR_LOG("NgapOwnedContainer::access() - failed to put DMR++ in memory cache\n");
+        // This might not be an error - put_data() records errors. jhrg 2/13/25
+        CACHE_LOG(prolog + "Failed to put DMR++ in file cache\n");
         return false;
     }
-#endif
 
     if (!NgapRequestHandler::d_dmrpp_file_cache.purge()) {
-        ERROR_LOG("NgapOwnedContainer::access() - call to FileCache::purge() failed\n");
+        ERROR_LOG(prolog + "Call to FileCache::purge() failed\n");
     }
 
     NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
@@ -338,6 +321,7 @@ bool NgapOwnedContainer::get_opendap_content_filters(map<string, string, std::le
  * @brief Read the DMR++ from the OPeNDAP S3 bucket
  * @param dmrpp_string value-result parameter for the DMR++ doc as a string
  * @return True if the document was found, false otherwise
+ * @exception Throw xxx on a 50x response from HTTP.
  */
 bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) const {
     BES_MODULE_TIMING(prolog + get_real_name());

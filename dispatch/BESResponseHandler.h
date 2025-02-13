@@ -80,17 +80,13 @@ protected:
     BESResponseObject *d_response_object;
 
     std::string d_annotation_service_url;   //< If not null, include this in the DAS/DMR
-#if 0
-    // Do this later if it seems advisable to 'bake the web api' into this. jhrg 12/19/18
-    bool d_include_dataset_in_annotation_url;    //< include the dataset URL if true
-#endif
 
     friend class resplistT;
 
-    BESResponseHandler(const std::string &name);
-
 public:
-    virtual ~BESResponseHandler();
+    explicit BESResponseHandler(std::string name);
+
+    ~BESResponseHandler() override;
 
     /** @brief return the current response object
      *
@@ -148,25 +144,7 @@ public:
      */
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
 
-#if 0
-    /** @brief return the name of this response object
-     *
-     * This name is used to determine which response handler can handle a
-     * requested response, such as das, dds, ddx, tab, info, version, help,
-     * et cetera.
-     *
-     * @todo Is this really used? Looks like only one test calls it. The d_response_name
-     * field is assigned only a few places. I think dhi.action is what is really used to
-     * choose the correct ResponseHandler. jhrg 2/9/18
-     *
-     * @return response name
-     */
-    virtual std::string get_name() const {
-        return d_response_name;
-    }
-#endif
-
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESResponseHandler_h
