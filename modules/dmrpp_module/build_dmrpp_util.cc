@@ -2163,8 +2163,7 @@ void qc_input_file(const string &file_fqn)
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
 
-    //HDF5 and NetCDF3 signatures:
-    const char hdf5Signature[] = {'\211', 'H', 'D', 'F', '\r', '\n', '\032', '\n'};
+    //NetCDF3 signatures:
     const char netcdf3Signature[] = {'C', 'D', 'F'};
 
     //Read the first 8 bytes (file signature) from the file
@@ -2172,8 +2171,10 @@ void qc_input_file(const string &file_fqn)
     signature.resize(8);
     file.read(&signature[0], signature.size());
 
+    htri_t temp_is_hdf5 = H5Fis_hdf5(file_fqn.c_str());
+    
+    bool isHDF5 = (temp_is_hdf5>0)?true:false;
     //First check if file is NOT an HDF5 file, then, if it is not, check if it is netcdf3
-    bool isHDF5 = memcmp(&signature[0], hdf5Signature, sizeof(hdf5Signature)) == 0;
     if (!isHDF5) {
         //Reset the file stream to read from the beginning
         file.clear();
