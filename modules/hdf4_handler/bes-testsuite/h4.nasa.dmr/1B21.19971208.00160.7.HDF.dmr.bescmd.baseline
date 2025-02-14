@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="1B21.19971208.00160.7.HDF">
+    <Dimension name="fakeDim0" size="1"/>
+    <Dimension name="fakeDim1" size="1"/>
+    <Dimension name="fakeDim2" size="16"/>
+    <Dimension name="nray" size="49"/>
+    <Dimension name="fakeDim4" size="3"/>
+    <Dimension name="fakeDim6" size="3"/>
+    <Dimension name="fakeDim7" size="3"/>
+    <Dimension name="fakeDim8" size="2"/>
+    <Dimension name="fakeDim9" size="2"/>
+    <Dimension name="fakeDim10" size="2"/>
+    <Dimension name="fakeDim11" size="2"/>
+    <Dimension name="fakeDim12" size="29"/>
+    <Dimension name="fakeDim13" size="2"/>
+    <Dimension name="fakeDim14" size="140"/>
+    <Dimension name="fakeDim15" size="29"/>
+    <Dimension name="fakeDim16" size="5"/>
+    <Dimension name="fakeDim17" size="11"/>
+    <Dimension name="fakeDim18" size="28"/>
+    <Attribute name="FileHeader" type="String">
+        <Value>AlgorithmID=1B21;
+AlgorithmVersion=emptyPPS;
+FileName=1B21.19971208.00160.7.HDF;
+GenerationDateTime=2012-08-10T11:40:49.000Z;
+StartGranuleDateTime=1997-12-07T23:57:17.000Z;
+StopGranuleDateTime=1997-12-08T01:28:36.000Z;
+GranuleNumber=160;
+NumberOfSwaths=1;
+NumberOfGrids=0;
+GranuleStart=SOUTHERNMOST_LATITUDE;
+TimeInterval=ORBIT;
+ProcessingSystem=PPS;
+ProductVersion=7;
+MissingData=;
+</Value>
+    </Attribute>
+    <Attribute name="InputRecord" type="String">
+        <Value>InputFileNames=;
+InputAlgorithmVersions=;
+InputGenerationDateTimes=;
+</Value>
+    </Attribute>
+    <Attribute name="NavigationRecord" type="String">
+        <Value>LongitudeOfMaximumLatitude=;
+SolarBetaAngleAtBeginningOfGranule=;
+SolarBetaAngleAtEndOfGranule=;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=m;
+TKCodeBuildVersion=1;
+MetadataVersion=m;
+FormatPackage=HDF Version 4.2 Release 4, January 25, 2009;
+BlueprintFilename=TRMM.V7.1B21.blueprint.xml;
+BlueprintVersion=BV_13;
+TKIOVersion=1.6;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
+    <Attribute name="JAXAInfo" type="String">
+        <Value>CalibrationCoefficientVersion=;
+GranuleFirstScanUTCDate=;
+GranuleFirstScanUTCTime=;
+GranuleFirstScanUTCMilliseconds=;
+GranuleLastScanUTCDate=;
+GranuleLastScanUTCTime=;
+GranuleLastScanUTCMilliseconds=;
+SoftwareVersion=;
+DatabaseVersion=;
+TotalQualityCode=;
+LongitudeOnEquator=;
+UTCDateOnEquator=;
+UTCTimeOnEquator=;
+UTCMillisecondsOnEquator=;
+CenterScanUTCDate=;
+CenterScanUTCTime=;
+CenterScanUTCMilliseconds=;
+FirstScanLat=;
+FirstScanLon=;
+LastScanLat=;
+LastScanLon=;
+NumberOfRainScans=;
+</Value>
+    </Attribute>
+    <Attribute name="SwathHeader" type="String">
+        <Value>NumberScansInSet=1;
+MaximumNumberScansTotal=10000;
+NumberScansBeforeGranule=0;
+NumberScansGranule=0;
+NumberScansAfterGranule=0;
+NumberPixels=49;
+ScanType=CROSSTRACK;
+</Value>
+    </Attribute>
+    <Group name="pr_cal_coef">
+        <Float32 name="transCoef">
+            <Dim name="/fakeDim0"/>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>3</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="receptCoef">
+            <Dim name="/fakeDim1"/>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>4</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="fcifIOchar">
+            <Dim name="/fakeDim2"/>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>5</Value>
+            </Attribute>
+        </Float32>
+    </Group>
+    <Group name="ray_header">
+        <Int16 name="rayStart">
+            <Dim name="/nray"/>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-32767</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>7</Value>
+            </Attribute>
+        </Int16>
+        <Int16 name="raySize">
+            <Dim name="/nray"/>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-32767</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>8</Value>
+            </Attribute>
+        </Int16>
+        <Float32 name="angle">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>degrees</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>9</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="startBinDist">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>m</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>10</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rainThres1">
+            <Dim name="/nray"/>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>11</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rainThres2">
+            <Dim name="/nray"/>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>12</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="transAntenna">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>dB</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>13</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="recvAntenna">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>dB</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>14</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="onewayAlongTrack">
+            <Dim name="/nray"/>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>15</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="onewayCrossTrack">
+            <Dim name="/nray"/>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>16</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="eqvWavelength">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>m</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>17</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="radarConst">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>dB</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>18</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="prIntrDelay">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>s</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>19</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="rangeBinSize">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>m</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>20</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="logAveOffset">
+            <Dim name="/nray"/>
+            <Attribute name="units" type="String">
+                <Value>dB</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>9969209968386869046778552952102584320.000000</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>21</Value>
+            </Attribute>
+        </Float32>
+        <Int8 name="mainlobeEdge">
+            <Dim name="/nray"/>
+            <Attribute name="_FillValue" type="Int8">
+                <Value>-127</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>22</Value>
+            </Attribute>
+        </Int8>
+        <Int8 name="sidelobeRange">
+            <Dim name="/nray"/>
+            <Dim name="/fakeDim4"/>
+            <Attribute name="_FillValue" type="Int8">
+                <Value>-127</Value>
+            </Attribute>
+            <Attribute name="dmr_sds_ref" type="Int32">
+                <Value>23</Value>
+            </Attribute>
+        </Int8>
+    </Group>
+    <Group name="Swath">
+        <Attribute name="SwathHeader" type="String">
+            <Value>NumberScansInSet=1;
+MaximumNumberScansTotal=10000;
+NumberScansBeforeGranule=0;
+NumberScansGranule=0;
+NumberScansAfterGranule=0;
+NumberPixels=49;
+ScanType=CROSSTRACK;
+</Value>
+        </Attribute>
+        <Group name="ScanTime"/>
+        <Group name="scanStatus"/>
+        <Group name="navigation"/>
+        <Group name="powers"/>
+    </Group>
+</Dataset>
