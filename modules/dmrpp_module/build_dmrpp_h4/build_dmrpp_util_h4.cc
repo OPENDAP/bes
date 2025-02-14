@@ -235,6 +235,13 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
 
 string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
 
+    intn emptySDS = 0;
+    
+    if (SDcheckempty(sdsid,&emptySDS) == FAIL) {
+        SDendaccess(sdsid);
+        throw BESInternalError("SDcheckempty fails. ",__FILE__,__LINE__);
+    }
+
     string ret_value;
     switch (datatype) {
 
@@ -243,6 +250,9 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
             uint8_t fvalue;
             if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
                 ret_value = to_string(fvalue);
+            // If the SDS is empty, we return the default netCDF fill value since SDS is following netCDF.
+            else if(emptySDS == 1)
+                ret_value = to_string(255);
         }
             break;
         case DFNT_INT8:
@@ -250,6 +260,8 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
             int8_t fvalue;
             if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
                 ret_value = to_string(fvalue);
+            else if(emptySDS == 1)
+                ret_value = to_string(FILL_BYTE);
         }
             break;
 
@@ -257,6 +269,8 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
             int16_t fvalue;
             if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
                 ret_value = to_string(fvalue);
+            else if(emptySDS == 1)
+                ret_value = to_string(FILL_SHORT);
         }
             break;
 
@@ -264,6 +278,8 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
             uint16_t fvalue;
             if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
                 ret_value = to_string(fvalue);
+             else if(emptySDS == 1)
+                ret_value = to_string(65535);
         }
             break;
 
@@ -271,6 +287,8 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
             int32_t fvalue;
             if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
                 ret_value = to_string(fvalue);
+            else if(emptySDS == 1)
+                ret_value = to_string(FILL_LONG);
         }
             break;
 
@@ -278,6 +296,8 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
             uint32_t fvalue;
             if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
                 ret_value = to_string(fvalue);
+            else if(emptySDS == 1)
+                ret_value = to_string(4294967295);
         }
             break;
 
@@ -285,6 +305,8 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
             float fvalue;
             if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
                 ret_value = to_string(fvalue);
+            else if(emptySDS == 1)
+                ret_value = to_string(FILL_FLOAT);
         }
             break;
 
@@ -292,7 +314,9 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
             double fvalue;
             if (SDgetfillvalue(sdsid, &fvalue) == SUCCEED)
                 ret_value = to_string(fvalue);
-
+            else if(emptySDS == 1)
+                ret_value = to_string(FILL_DOUBLE);
+ 
         }
             break;
         default:
@@ -395,25 +419,6 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             endian_name = "LE";
         else
             endian_name = "UNKNOWN";
-    }
-
-    // Check if SDS has no data. But, what should we do??? jhrg 12/7/23
-    int is_empty = 0;
-    status = SDcheckempty(sdsid, &is_empty);
-    if (status == FAIL) {
-        ERROR("SDcheckempty() failed.");
-        SDendaccess(sdsid);
-        return false;
-    }
-
-    if (is_empty) {
-        // FIXME Maybe this is the case where the variable is just fill values? jhrg 12/7/23
-        // No, this is mostly an SDS with unlimited dimension and the dimension size is 0.
-        // Now, we can just ignore since it doesn't contain any data. KY 02/12/24
-        VERBOSE(cerr << "SDS is empty." << endl);
-        ERROR("This SDS is empty; we haven't handled this case yet.");
-        SDendaccess(sdsid);
-        return false;
     }
 
     auto dc = dynamic_cast<DmrppCommon *>(btp);

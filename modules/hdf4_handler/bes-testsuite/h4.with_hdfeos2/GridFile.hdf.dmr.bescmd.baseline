@@ -256,6 +256,9 @@ END
             <Float32 name="Soil_Dryness">
                 <Dim name="/YDim_PolarGrid"/>
                 <Dim name="/XDim_PolarGrid"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>9969209968386869046778552952102584320.000000</Value>
+                </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>17</Value>
                 </Attribute>
@@ -292,6 +295,9 @@ END
                 <Dim name="/Bands_PolarGrid"/>
                 <Dim name="/YDim_PolarGrid"/>
                 <Dim name="/XDim_PolarGrid"/>
+                <Attribute name="_FillValue" type="Float64">
+                    <Value>9969209968386869046778552952102584320.000000</Value>
+                </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>21</Value>
                 </Attribute>

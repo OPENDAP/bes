@@ -1,0 +1,27 @@
+netcdf test {
+dimensions:
+	fakeDim0 = 2 ;
+	fakeDim1 = 2 ;
+	fakeDim2 = 2 ;
+	fakeDim3 = 2 ;
+variables:
+	int SDS_empty_fva(fakeDim0, fakeDim1) ;
+		SDS_empty_fva:_FillValue = -99 ;
+		SDS_empty_fva:dmr_sds_ref = 2 ;
+	short SDS_empty_nfva(fakeDim2, fakeDim3) ;
+		SDS_empty_nfva:_FillValue = -32767s ;
+		SDS_empty_nfva:dmr_sds_ref = 3 ;
+
+// global attributes:
+		:history = "removed date-timex SDS_empty.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"SDS_empty.hdf.dmrpp\"}]}]" ;
+data:
+
+ SDS_empty_fva =
+  _, _,
+  _, _ ;
+
+ SDS_empty_nfva =
+  _, _,
+  _, _ ;
+}
