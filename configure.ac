@@ -1,7 +1,7 @@
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.72])
+AC_PREREQ([2.69])
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT([bes],[3.21.1],[support@opendap.org])
