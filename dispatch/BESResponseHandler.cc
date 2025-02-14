@@ -47,8 +47,7 @@ using std::ostream;
 
 const string annotation_service_url = "BES.AnnotationServiceURL";
 
-BESResponseHandler::BESResponseHandler(string name) :
-    d_response_name(std::move(name)), d_response_object(nullptr)
+BESResponseHandler::BESResponseHandler(string name) : d_response_name(std::move(name))
 {
     d_annotation_service_url = TheBESKeys::read_string_key(annotation_service_url, "");
 }

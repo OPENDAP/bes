@@ -37,9 +37,9 @@
 
 class BESStreamResponseHandler : public BESResponseHandler {
 public:
-    explicit BESStreamResponseHandler(const std::string &name);
+    explicit BESStreamResponseHandler(const std::string &name) : BESResponseHandler(name) { }
 
-    ~BESStreamResponseHandler(void) override;
+    ~BESStreamResponseHandler() override = default;
 
     void execute(BESDataHandlerInterface &r) override;
 

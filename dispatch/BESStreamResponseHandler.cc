@@ -58,17 +58,6 @@ using std::ostream;
 #define MODULE "bes"
 #define prolog std::string("BESStreamResponseHandler::").append(__func__).append("() - ")
 
-BESStreamResponseHandler::BESStreamResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
-
-BESStreamResponseHandler::~BESStreamResponseHandler()
-{
-}
-
-//extern volatile int bes_timeout; // defined in BESInterface. jhrg 1/24/17
-
 /** @brief executes the command 'get file <filename>;' by
  * streaming the specified file
  *
@@ -110,7 +99,6 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    int bytes = 0;
     ifstream os;
     os.open(filename.c_str(), ios::in);
     int myerrno = errno;
