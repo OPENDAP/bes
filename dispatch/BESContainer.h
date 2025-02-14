@@ -35,6 +35,7 @@
 
 #include <list>
 #include <string>
+#include <utility>
 
 #include "BESObj.h"
 
@@ -89,8 +90,8 @@ protected:
      * @param real_name real name of the container, such as a file name
      * @param type type of data represented by this container, such as netcdf
      */
-    BESContainer(const std::string &sym_name, const std::string &real_name, const std::string &type) :
-        d_symbolic_name(sym_name), d_real_name(real_name), d_container_type(type)
+    BESContainer(std::string sym_name, std::string real_name, std::string type) :
+        d_symbolic_name(std::move(sym_name)), d_real_name(std::move(real_name)), d_container_type(std::move(type))
     {
     }
 

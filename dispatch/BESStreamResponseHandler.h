@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,19 +35,19 @@
 
 #include "BESResponseHandler.h"
 
-class BESStreamResponseHandler : public BESResponseHandler
-{
+class BESStreamResponseHandler : public BESResponseHandler {
 public:
-				BESStreamResponseHandler( const std::string &name ) ;
-    virtual			~BESStreamResponseHandler(void) ;
+    explicit BESStreamResponseHandler(const std::string &name) : BESResponseHandler(name) { }
 
-    virtual void		execute( BESDataHandlerInterface &r ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &r ) ;
+    ~BESStreamResponseHandler() override = default;
 
-    virtual void		dump( std::ostream &strm ) const ;
+    void execute(BESDataHandlerInterface &r) override;
 
-    static BESResponseHandler *BESStreamResponseBuilder( const std::string &name ) ;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &r) override;
+
+    void dump(std::ostream &strm) const override;
+
+    static BESResponseHandler *BESStreamResponseBuilder(const std::string &name);
 };
 
 #endif // I_BESStreamResponseHandler_h
