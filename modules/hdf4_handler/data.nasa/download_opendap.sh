@@ -62,6 +62,9 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/GESDISC/AIRS.20
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/GESDISC/3B42.20180802.03.7.HDF
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/GESDISC/3B42.20180802.03.7.HDF.dmrpp
 
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/GESDISC/1B21.19971208.00160.7.HDF
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/GESDISC/1B21.19971208.00160.7.HDF.dmrpp
+
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LAADS/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LAADS/MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf.dmrpp
 

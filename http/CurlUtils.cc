@@ -585,7 +585,6 @@ sign_url_for_s3_if_possible(const shared_ptr <url> &url, curl_slist *request_hea
         else {
             if(ac){
                 BESDEBUG(MODULE, prolog << "Located credentials for url: " << url->str()  << "They are " << (ac->is_s3_cred()?"":"NOT ") << "S3 credentials.\n");
-
             }
             else {
                 BESDEBUG(MODULE, prolog << "Unable to locate credentials for url: " << url->str() << "\n");
@@ -955,8 +954,8 @@ static void truncate_file(int fd) {
 /**
  * @brief Performs a curl_easy_perform(), retrying if certain types of errors are encountered.
  *
- * @note Used in dmrpp_module and by three functions here (http_get, http_get, and
- * retrieve_effective_url). jhrg 3/8/23
+ * @note Used in dmrpp_module and by two functions here (http_get, http_get_and_write_resource).
+ * jhrg 3/8/23
  *
  * This function contains the operational frame work and state checking for performing retries of
  * failed requests as necessary.
@@ -1027,7 +1026,6 @@ static void super_easy_perform(CURL *c_handle, int fd) {
                 msg << filter_aws_url(target_url) << " The retry limit has been exceeded. Giving up! ";
                 msg << "CURLINFO_EFFECTIVE_URL: " << effective_url << " ";
                 msg << "Returned HTTP_STATUS: " << http_code;
-                // Remove redundant error log entryvERROR_LOG(msg.str());
                 throw HttpError(msg.str(),
                                 curl_code,
                                 http_code,
@@ -1641,7 +1639,7 @@ bool process_get_redirect_http_code(const long http_code,
  * @param redirect_url A returned value parameter to receive the redirect url, if located.
  * @return true if the redirect url was found, false otherwise.
  */
-bool gru_mk_attempt(const shared_ptr <url> &origin_url,
+static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
                     const unsigned int attempt,
                     const unsigned int max_attempts,
                     shared_ptr <EffectiveUrl> &redirect_url) {
