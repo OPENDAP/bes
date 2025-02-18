@@ -3185,8 +3185,6 @@ void make_attributes_to_cf(BaseType *var, const eos5_dim_info_t &eos5_dim_info) 
 void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, const string &var_path,
                            const string &filename, hid_t dset_id) {
 
-//cerr<<"coming to handle_vlen_int_float"<<endl;
-
     hid_t vlen_type = H5Dget_type(dset_id);
     hid_t vlen_basetype = H5Tget_super(vlen_type);
     if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) 
@@ -3200,7 +3198,6 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE)
         throw InternalErr(__FILE__, __LINE__,"Only support array of float or intger variable-length datatype.");
 
-    int vlen_ndims = H5Sget_simple_extent_ndims(vlen_space);
     hssize_t vlen_number_elements = H5Sget_simple_extent_npoints(vlen_space);
     vector<hvl_t> vlen_data(vlen_number_elements);
     if (H5Dread(dset_id, vlen_memtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, vlen_data.data()) <0) {
@@ -3234,7 +3231,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     // set number of elements and variable name values.
     // This essentially stores in the struct.
     ar->set_varpath(var_path);
-    int dimnames_size = (int)(dt_inst.dimnames.size());
+    auto dimnames_size = (int)(dt_inst.dimnames.size());
     vector<string> dimnames;
     if (dimnames_size == dt_inst.ndims) { 
         for (const auto &dimname:dt_inst.dimnames)
