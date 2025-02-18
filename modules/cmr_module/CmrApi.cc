@@ -48,7 +48,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
-
+#include "BESLog.h"
 #include "CmrApi.h"
 #include "CmrNames.h"
 #include "CmrInternalError.h"
@@ -116,27 +116,27 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
     BESDEBUG(MODULE, prolog << json.probe_json(jobj) << endl);
     bool result = jobj.is_null();
     if(result){
-        stringstream msg;
-        msg <<  "ERROR: Json document is NULL: " << endl << jobj.dump(2) << endl;
-        BESDEBUG(MODULE, prolog <<  msg.str() << endl);
-        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
+        string msg;
+        msg.append("ERROR: Json document is NULL. json: ").append(jobj.dump());
+        BESDEBUG(MODULE, prolog <<  msg << "\n");
+        throw CmrInternalError(msg, __FILE__, __LINE__);
     }
 
     result = jobj.is_object();
     if(!result){
-        stringstream msg;
-        msg <<  "ERROR: Json document is NOT an object. json: " << endl << jobj.dump(2) << endl;
-        BESDEBUG(MODULE, prolog <<  msg.str() << endl);
-        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
+        string msg;
+        msg.append("ERROR: Json document is NOT an object. json: ").append(jobj.dump());
+        BESDEBUG(MODULE, prolog <<  msg << "\n");
+        throw CmrInternalError(msg, __FILE__, __LINE__);
     }
 
     const auto &has_children_j = jobj[CMR_V2_HAS_CHILDREN_KEY];
     if(!has_children_j.get<bool>()){
-        stringstream msg;
-        msg << prolog;
-        msg << "This json object does not have children. json: " << jobj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
+        string msg(prolog);
+        msg.append("This json object does not have a child property of type ").append(CMR_V2_HAS_CHILDREN_KEY);
+        msg.append(".  json: ").append(jobj.dump());
+        BESDEBUG(MODULE, msg << "\n");
+        INFO_LOG(msg);
     }
 
     return json.qc_get_array(CMR_V2_CHILDREN_KEY,jobj);
