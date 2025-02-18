@@ -1530,10 +1530,31 @@ void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
 }
 
 //STOP
-void handle_vlen_float_int_internal(hid_t dataset, BaseType *btp) {
+void handle_vlen_float_int_internal(hid_t dset_id, BaseType *btp) {
 
+    hid_t vlen_type = H5Dget_type(dset_id);
+    hid_t vlen_basetype = H5Tget_super(vlen_type);
+    if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) 
+        throw InternalErr(__FILE__, __LINE__,"Only support float or intger variable-length datatype.");
+
+    hid_t vlen_base_memtype = H5Tget_native_type(vlen_basetype, H5T_DIR_ASCEND);
+    hid_t vlen_memtype = H5Tvlen_create(vlen_base_memtype);
+
+    // Will not support the scalar type. 
+    hid_t vlen_space = H5Dget_space(dset_id);
+    if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE)
+        throw InternalErr(__FILE__, __LINE__,"Only support array of float or intger variable-length datatype.");
+
+    hssize_t vlen_number_elements = H5Sget_simple_extent_npoints(vlen_space);
+    vector<hvl_t> vlen_data(vlen_number_elements);
+    if (H5Dread(dset_id, vlen_memtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, vlen_data.data()) <0) {
+        H5Dclose(dset_id);
+        throw InternalErr(__FILE__, __LINE__,"Cannot read variable-length datatype data.");
+    }
+            
 
 }
+
 void handle_vlen_float_int(hid_t dataset, BaseType *btp) {
 
     hid_t type_id = H5Dget_type(dataset);
