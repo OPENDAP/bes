@@ -110,6 +110,7 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LAADS/XAERDT_L2
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LAADS/XAERDT_L2_MODIS_Aqua.A2022365.2355.001.2023250134344.nc.dmrpp
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.nc
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/S5P_OFFL_L1B_IR_SIR_20210630T172226_20210630T190356_19243_01_010000_20210630T205101.nc.dmrpp
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/AMSR_E_L2_Land_V11_201110031920_D.he5.dmrpp
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/AMSR_E_L2_Land_V11_201110031920_D.he5
 

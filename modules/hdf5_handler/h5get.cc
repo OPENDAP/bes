@@ -664,7 +664,6 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
 
     if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
         || (ty_class == H5T_OPAQUE) ) {
-        //|| (ty_class == H5T_OPAQUE) || (ty_class == H5T_VLEN)) {
         string msg = "unexpected datatype of HDF5 dataset  ";
         msg += dname;
         throw InternalErr(__FILE__, __LINE__, msg);
@@ -748,7 +747,6 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
 
     hid_t memtype = 0;
     if(H5Tget_class(dtype) == H5T_VLEN) {
-        //memtype = dtype;
         hid_t base_dtype = H5Tget_super(dtype);
         memtype = H5Tget_native_type(base_dtype, H5T_DIR_ASCEND);
         H5Tclose(base_dtype);
