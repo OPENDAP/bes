@@ -3195,7 +3195,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     hid_t vlen_base_memtype = H5Tget_native_type(vlen_basetype, H5T_DIR_ASCEND);
     hid_t vlen_memtype = H5Tvlen_create(vlen_base_memtype);
 
-    // Will not support the scalar type. Why just create a 1-D array?
+    // Will not support the scalar type. 
     hid_t vlen_space = H5Dget_space(dset_id);
     if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE)
         throw InternalErr(__FILE__, __LINE__,"Only support array of float or intger variable-length datatype.");
@@ -3228,9 +3228,8 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     H5Tclose(vlen_type);
     H5Tclose(vlen_memtype);
  
-    // Just see if it can work out.
     auto ar_unique = make_unique<HDF5Array>(vname, filename, bt);
-    HDF5Array *ar = ar_unique.release();
+    HDF5Array *ar = ar_unique.get();
 
     // set number of elements and variable name values.
     // This essentially stores in the struct.
@@ -3250,14 +3249,21 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     string vlen_length_dimname = vname + "_vlen";
     string vlen_length_dimpath = var_path + "_vlen";
     
-    ar->append_dim_ll(max_vlen_length, vlen_length_dimname);
+    if (dimnames.empty()) 
+        ar->append_dim_ll(max_vlen_length);
+    else 
+        ar->append_dim_ll(max_vlen_length, vlen_length_dimname);
 
     // We need to transform dimension info. to DAP4 group
     BaseType *new_var = nullptr;
-    vector<string> temp_dimnames_path = dt_inst.dimnames_path;
-    temp_dimnames_path.push_back(vlen_length_dimpath);
+    vector<string> temp_dimnames_path;
+    if (dimnames.empty() == false) {
+        for (const auto & dimname:dimnames) 
+            temp_dimnames_path.push_back(dimname);
+        temp_dimnames_path.push_back(vlen_length_dimpath);
+    }
+    
     new_var = ar->h5dims_transform_to_dap4(d4_grp,temp_dimnames_path);
-
 
     read_objects_basetype_attr_hl(var_path, new_var, dset_id,  false);
 
@@ -3267,13 +3273,14 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     new_var->attributes()->add_attribute_nocopy(vlen_d4_attr_unique.release());
 
     d4_grp->add_var_nocopy(new_var);
+    delete bt;
 
     // We need to create another variable to store the index of the vlen 
     string vname_idx = vname + "_vlen_index";
     auto hdf5_int32 = make_unique<HDF5Int32>(vname_idx,var_path,filename);
     
-    auto ar_index_unique = make_unique<HDF5Array>(vname_idx, filename, hdf5_int32.release());
-    HDF5Array *ar_index = ar_index_unique.release();
+    auto ar_index_unique = make_unique<HDF5Array>(vname_idx, filename, hdf5_int32.get());
+    HDF5Array *ar_index = ar_index_unique.get();
 
     // set number of elements and variable name values.
     // This essentially stores in the struct.
@@ -3296,8 +3303,8 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     auto vlen_index_d4_attr = vlen_index_d4_attr_unique.get();
     vlen_index_d4_attr->add_value("VLEN_INDEX");
     new_var_index->attributes()->add_attribute_nocopy(vlen_index_d4_attr_unique.release());
-    d4_grp->add_var_nocopy(new_var_index);
 
+    d4_grp->add_var_nocopy(new_var_index);
 
 }
         
