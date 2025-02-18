@@ -670,6 +670,21 @@ get_compound_fv_as_string(hid_t dtype_id, hid_t h5_plist_id, vector<char> &value
     return ret_str;
 }
 
+bool is_supported_vlen_type(hid_t dataset_id, hid_t h5_type) {
+
+    bool ret_value = false;
+    hid_t base_type = H5Tget_super(h5_type);
+    hid_t dspace = H5Dget_space(dataset_id);
+    if (H5S_SIMPLE == H5Sget_simple_extent_type(dspace) && 
+       (H5Tget_class(base_type) == H5T_INTEGER || H5Tget_class(base_type) == H5T_FLOAT))
+        ret_value = true;
+    H5Tclose(base_type);
+    H5Sclose(dspace);
+    return ret_value;
+
+}
+
+
 /**
  * @brief Get the value of the File Value as a string
  * @param dataset_id
@@ -1514,6 +1529,18 @@ void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
 
 }
 
+//STOP
+void handle_vlen_float_int_internal(hid_t dataset, BaseType *btp) {
+
+
+}
+void handle_vlen_float_int(hid_t dataset, BaseType *btp) {
+
+    hid_t type_id = H5Dget_type(dataset);
+    if (H5Tget_class(type_id) == H5T_VLEN) 
+        handle_vlen_float_int_internal(dataset,btp);
+    H5Tclose(type_id);
+}
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
  *
@@ -1534,6 +1561,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_d
         }
         cerr << prolog << "Processing dataset/variable: " << type_name << " " << btp->name() << endl;
     }
+
+    handle_vlen_float_int(dataset,btp);
     // Added support for HDF5 Fill Value. jhrg 4/22/22
     set_fill_value(dataset, btp);
 
@@ -1673,6 +1702,22 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
             }
 
             break;
+        }
+        case H5T_VLEN: {
+            bool supported_vlen_type = is_supported_vlen_type(dataset_id,h5_type_id);
+            if (supported_vlen_type == false) {
+                stringstream msgs;
+                msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
+                msgs << get_type_decl(btp) << " ";
+                msgs << "which the underlying HDF5/NetCDF-4 file has stored as an HDF5 vlen datatype and ";
+                msgs << "the basetype of the vlen datatype is not integer or float. ";
+                msgs << "This is not yet supported by the dmr++ creation machinery.";
+                msg = msgs.str();
+                is_unsupported = true;
+            }
+
+            break;
+
         }
 
         default:
