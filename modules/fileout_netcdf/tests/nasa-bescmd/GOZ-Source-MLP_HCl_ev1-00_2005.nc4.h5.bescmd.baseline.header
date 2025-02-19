@@ -267,7 +267,7 @@ group: ACE-FTS {
   		:DataSubset = "Full Dataset" ;
   } // group ACE-FTS
 
-group: Aura\ MLS {
+group: Aura_MLS {
   dimensions:
   	time = 12 ;
   	lev = 25 ;
@@ -379,5 +379,5 @@ group: Aura\ MLS {
   		:DataQuality = "All data screening according to the specifications of the dataset\'s originating science team, updated following MEaSUREs GOZCARDS documentation; see related URL" ;
   		:DataSource = "Aura MLS" ;
   		:DataSubset = "Full Dataset" ;
-  } // group Aura\ MLS
+  } // group Aura_MLS
 }
