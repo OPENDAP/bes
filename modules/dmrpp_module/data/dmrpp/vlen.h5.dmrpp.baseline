@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="vlen.h5">
+    <Int32 name="DS1">
+        <Dim size="2"/>
+        <Dim size="12"/>
+        <Attribute name="orig_datatype" type="String">
+            <Value>VLEN</Value>
+        </Attribute>
+        <dmrpp:missingdata>eJxjZmBgYAJiRgbiACMUg/QwAzErEHMAMS8QiwKxEhCbA3EkEE8AYgARwAF/</dmrpp:missingdata>
+    </Int32>
+    <Int32 name="DS1_vlen_index">
+        <Dim size="2"/>
+        <Attribute name="orig_datatype" type="String">
+            <Value>VLEN_INDEX</Value>
+        </Attribute>
+        <dmrpp:missingdata>eJxjZmBg4AFiAABQABA=</dmrpp:missingdata>
+    </Int32>
+</Dataset>
