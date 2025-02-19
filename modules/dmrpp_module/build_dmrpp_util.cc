@@ -1529,21 +1529,25 @@ void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
 
 }
 
-//STOP
-void handle_vlen_float_int_internal(hid_t dset_id, BaseType *btp) {
+//Note: the error handling part may be improved in the future.
+bool handle_vlen_float_int_internal(hid_t dset_id, BaseType *btp) {
 
     hid_t vlen_type = H5Dget_type(dset_id);
     hid_t vlen_basetype = H5Tget_super(vlen_type);
-    if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) 
+    if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) {
+        H5Dclose(dset_id);
         throw InternalErr(__FILE__, __LINE__,"Only support float or intger variable-length datatype.");
+    }
 
     hid_t vlen_base_memtype = H5Tget_native_type(vlen_basetype, H5T_DIR_ASCEND);
     hid_t vlen_memtype = H5Tvlen_create(vlen_base_memtype);
 
     // Will not support the scalar type. 
     hid_t vlen_space = H5Dget_space(dset_id);
-    if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE)
+    if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE) {
+        H5Dclose(dset_id);
         throw InternalErr(__FILE__, __LINE__,"Only support array of float or intger variable-length datatype.");
+    }
 
     hssize_t vlen_number_elements = H5Sget_simple_extent_npoints(vlen_space);
     vector<hvl_t> vlen_data(vlen_number_elements);
@@ -1551,16 +1555,144 @@ void handle_vlen_float_int_internal(hid_t dset_id, BaseType *btp) {
         H5Dclose(dset_id);
         throw InternalErr(__FILE__, __LINE__,"Cannot read variable-length datatype data.");
     }
-            
 
+    auto da = dynamic_cast<DmrppArray *>(btp);
+    if (!da) {
+        string err_msg = "Expected to find a DmrppArray instance but did not in handle_vlen_float_int_internal().";
+        throw BESInternalError(err_msg, __FILE__, __LINE__);
+    }
+    switch (da->var()->type()) {
+        case dods_byte_c:
+        case dods_uint8_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+        case dods_float32_c:
+        case dods_float64_c: {
+            // Retrieve the last dimension size.
+            libdap::Array::Dim_iter last_dim_iter = da->dim_end()-1;
+            int64_t last_dim_size = da->dimension_size(last_dim_iter);
+            size_t bytes_per_element = da->var()->width_ll();
+            size_t total_data_buf_size = da->get_size(false)*bytes_per_element;
+            vector<char> data_buf(total_data_buf_size,0);
+            char *temp_data_buf_ptr = data_buf.data();
+
+            for (ssize_t i = 0; i < vlen_number_elements; i++) {
+
+                size_t vlen_element_size = vlen_data[i].len * bytes_per_element;
+                vector<char> temp_buf(vlen_element_size);
+
+                // Copy the vlen data to the data buffer.
+                memcpy(temp_data_buf_ptr,vlen_data[i].p,vlen_element_size);
+
+                // Move the data buffer pointer to the next element.
+                // In this regular array, the rest data will be filled with zero.
+                temp_data_buf_ptr += last_dim_size*bytes_per_element;
+                
+            }
+            da->val2buf(data_buf.data());
+            da->set_missing_data(true);
+            da->set_read_p(true);
+ 
+            break;
+        }
+        default:
+            throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
+    }
+
+    H5Dvlen_reclaim(vlen_memtype, vlen_space, H5P_DEFAULT, (void*)(vlen_data.data()));
+    H5Sclose(vlen_space);
+    H5Tclose(vlen_base_memtype);
+    H5Tclose(vlen_basetype);
+    H5Tclose(vlen_type);
+    H5Tclose(vlen_memtype);
+
+    return true;
+    
 }
 
-void handle_vlen_float_int(hid_t dataset, BaseType *btp) {
+bool handle_vlen_float_int(hid_t dataset, BaseType *btp) {
 
+    bool ret_value = false;
     hid_t type_id = H5Dget_type(dataset);
     if (H5Tget_class(type_id) == H5T_VLEN) 
-        handle_vlen_float_int_internal(dataset,btp);
+        ret_value = handle_vlen_float_int_internal(dataset,btp);
     H5Tclose(type_id);
+    return ret_value;
+}
+
+void handle_vlen_float_int_index(hid_t file, BaseType *btp) {
+
+    string vlen_index_name = btp->FQN();
+    size_t vlen_name_pos = vlen_index_name.rfind("_vlen_index");
+    if (vlen_name_pos == string::npos) {
+        string err_msg = vlen_index_name + " is not a variable length index variable name.";
+        H5Fclose(file);
+        throw BESInternalError(err_msg, __FILE__, __LINE__);
+    }
+
+    string vlen_name = vlen_index_name.substr(0,vlen_name_pos);
+
+    H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr); 
+    hid_t dset_id = H5Dopen2(file, vlen_name.c_str(), H5P_DEFAULT);
+    if (dset_id < 0) 
+        throw BESInternalError("HDF5 vlen dataset '" + vlen_name + "' cannot be opened.", __FILE__, __LINE__);
+   
+    hid_t vlen_type = H5Dget_type(dset_id);
+    hid_t vlen_basetype = H5Tget_super(vlen_type);
+    if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) {
+        H5Dclose(dset_id);
+        throw InternalErr(__FILE__, __LINE__,"Only support float or intger variable-length datatype.");
+    }
+
+    hid_t vlen_base_memtype = H5Tget_native_type(vlen_basetype, H5T_DIR_ASCEND);
+    hid_t vlen_memtype = H5Tvlen_create(vlen_base_memtype);
+
+    // Will not support the scalar type. 
+    hid_t vlen_space = H5Dget_space(dset_id);
+    if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE) {
+        H5Dclose(dset_id);
+        throw InternalErr(__FILE__, __LINE__,"Only support array of float or intger variable-length datatype.");
+    }
+
+    hssize_t vlen_number_elements = H5Sget_simple_extent_npoints(vlen_space);
+    vector<hvl_t> vlen_data(vlen_number_elements);
+    if (H5Dread(dset_id, vlen_memtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, vlen_data.data()) <0) {
+        H5Dclose(dset_id);
+        throw InternalErr(__FILE__, __LINE__,"Cannot read variable-length datatype data.");
+    }
+
+    auto da = dynamic_cast<DmrppArray *>(btp);
+    if (!da) {
+        H5Dclose(dset_id);
+        string err_msg = "Expected to find a DmrppArray instance but did not in handle_vlen_float_int_internal().";
+        throw BESInternalError(err_msg, __FILE__, __LINE__);
+    }
+    if (da->var()->type() != dods_int32_c) {
+        H5Dclose(dset_id);
+        string err_msg = "vlen_index datatype must be 32-bit integer.";
+        throw BESInternalError(err_msg, __FILE__, __LINE__);
+    }
+    vector<int> vlen_index_data;
+    for (ssize_t i = 0; i<vlen_number_elements; i++) 
+        vlen_index_data.push_back(vlen_data[i].len);
+    da->set_value_ll(vlen_index_data.data(),vlen_number_elements);   
+    da->set_missing_data(true);
+    da->set_read_p(true);
+
+    H5Dvlen_reclaim(vlen_memtype, vlen_space, H5P_DEFAULT, (void*)(vlen_data.data()));
+    H5Sclose(vlen_space);
+    H5Tclose(vlen_base_memtype);
+    H5Tclose(vlen_basetype);
+    H5Tclose(vlen_type);
+    H5Tclose(vlen_memtype);
+    H5Dclose(dset_id);
+
 }
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
@@ -1583,7 +1715,9 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_d
         cerr << prolog << "Processing dataset/variable: " << type_name << " " << btp->name() << endl;
     }
 
-    handle_vlen_float_int(dataset,btp);
+    if (true == handle_vlen_float_int(dataset,btp))
+        return;
+
     // Added support for HDF5 Fill Value. jhrg 4/22/22
     set_fill_value(dataset, btp);
 
@@ -2111,8 +2245,6 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) 
                     
                         if (da->dimensions() ==1 && btp->var()->type() == dods_int32_c){
                 
-                            da->set_missing_data(true);
-                 
                             vector<int> level_value;
                             level_value.resize((size_t)(da->length()));
                             for (int32_t i = 0; i <da->length(); i++) 
@@ -2122,6 +2254,14 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) 
                             da->set_missing_data(true);
                             da->set_read_p(true);
                         }
+                    }
+                }
+                attr = d4_attrs->find("orig_datatype");
+                if (attr) {
+                    string attr_value = attr->value(0);
+                    if (attr_value == "VLEN_INDEX") {
+                        // This is a vlen index variable. We need to find the corresponding vlen variable.
+                         handle_vlen_float_int_index(file,btp);
                     }
                 }
             }
