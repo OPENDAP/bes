@@ -571,6 +571,16 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
 
     string newvarname = obtain_new_varname(varname, use_dimscale, is_eos5);
 
+    hid_t datatype = H5Dget_type(dset_id);
+
+    // If this is an HDF5 variable length float/integer type, we need to handle it differently.
+    if (H5Tget_class(datatype) == H5T_VLEN) {
+        handle_vlen_int_float(d4_grp, pid, newvarname, varname, filename,dset_id);
+        H5Tclose(datatype);
+        return;
+    }
+
+    H5Tclose(datatype);
     // Get a base type. It should be an HDF5 atomic datatype.
     BaseType *bt = Get_bt_enhanced(d4_grp,pid, newvarname,varname, filename, dt_inst.type);
     if (!bt)
@@ -3170,5 +3180,128 @@ void make_attributes_to_cf(BaseType *var, const eos5_dim_info_t &eos5_dim_info) 
                 break;
         }
     }
+}
+
+void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, const string &var_path,
+                           const string &filename, hid_t dset_id) {
+
+    hid_t vlen_type = H5Dget_type(dset_id);
+    hid_t vlen_basetype = H5Tget_super(vlen_type);
+    if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) 
+        throw InternalErr(__FILE__, __LINE__,"Only support float or intger variable-length datatype.");
+
+    hid_t vlen_base_memtype = H5Tget_native_type(vlen_basetype, H5T_DIR_ASCEND);
+    hid_t vlen_memtype = H5Tvlen_create(vlen_base_memtype);
+
+    // Will not support the scalar type. 
+    hid_t vlen_space = H5Dget_space(dset_id);
+    if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE)
+        throw InternalErr(__FILE__, __LINE__,"Only support array of float or intger variable-length datatype.");
+
+    hssize_t vlen_number_elements = H5Sget_simple_extent_npoints(vlen_space);
+    vector<hvl_t> vlen_data(vlen_number_elements);
+    if (H5Dread(dset_id, vlen_memtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, vlen_data.data()) <0) {
+        H5Dclose(dset_id);
+        throw InternalErr(__FILE__, __LINE__,"Cannot read variable-length datatype data.");
+    }
+    
+    size_t max_vlen_length = 0;
+    for (ssize_t i = 0; i<vlen_number_elements; i++) {
+        if (max_vlen_length<vlen_data[i].len)   
+            max_vlen_length = vlen_data[i].len;
+    }
+
+    H5Dvlen_reclaim(vlen_memtype, vlen_space, H5P_DEFAULT, (void*)(vlen_data.data()));
+    H5Sclose(vlen_space);
+    
+    // Now we need to create two variables: one to store vlen data, another to store vlen index.
+    // First: vlen data.
+    BaseType *bt = Get_bt_enhanced(d4_grp,pid, vname,var_path, filename, vlen_basetype);
+    if (!bt)
+        throw InternalErr(__FILE__, __LINE__,"Unable to convert hdf5 datatype to dods basetype");
+
+    H5Tclose(vlen_base_memtype);
+    H5Tclose(vlen_basetype);
+    H5Tclose(vlen_type);
+    H5Tclose(vlen_memtype);
+ 
+    auto ar_unique = make_unique<HDF5Array>(vname, filename, bt);
+    HDF5Array *ar = ar_unique.get();
+
+    // set number of elements and variable name values.
+    // This essentially stores in the struct.
+    ar->set_varpath(var_path);
+    auto dimnames_size = (int)(dt_inst.dimnames.size());
+    vector<string> dimnames;
+    if (dimnames_size == dt_inst.ndims) { 
+        for (const auto &dimname:dt_inst.dimnames)
+            dimnames.push_back(dimname);
+        array_add_dimensions_dimscale(ar);
+    }
+    else {
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
+            ar->append_dim_ll(dt_inst.size[dim_index]);
+    }
+    
+    string vlen_length_dimname = vname + "_vlen";
+    string vlen_length_dimpath = var_path + "_vlen";
+    
+    if (dimnames.empty()) 
+        ar->append_dim_ll(max_vlen_length);
+    else 
+        ar->append_dim_ll(max_vlen_length, vlen_length_dimname);
+
+    // We need to transform dimension info. to DAP4 group
+    BaseType *new_var = nullptr;
+    vector<string> temp_dimnames_path;
+    if (dimnames.empty() == false) {
+        for (const auto & dimname:dimnames) 
+            temp_dimnames_path.push_back(dimname);
+        temp_dimnames_path.push_back(vlen_length_dimpath);
+    }
+    
+    new_var = ar->h5dims_transform_to_dap4(d4_grp,temp_dimnames_path);
+
+    read_objects_basetype_attr_hl(var_path, new_var, dset_id,  false);
+
+    auto vlen_d4_attr_unique = make_unique<D4Attribute>("orig_datatype",attr_str_c);
+    auto vlen_d4_attr = vlen_d4_attr_unique.get();
+    vlen_d4_attr->add_value("VLEN");
+    new_var->attributes()->add_attribute_nocopy(vlen_d4_attr_unique.release());
+
+    d4_grp->add_var_nocopy(new_var);
+    delete bt;
+
+    // We need to create another variable to store the index of the vlen 
+    string vname_idx = vname + "_vlen_index";
+    auto hdf5_int32 = make_unique<HDF5Int32>(vname_idx,var_path,filename);
+    
+    auto ar_index_unique = make_unique<HDF5Array>(vname_idx, filename, hdf5_int32.get());
+    HDF5Array *ar_index = ar_index_unique.get();
+
+    // set number of elements and variable name values.
+    // This essentially stores in the struct.
+    ar_index->set_varpath(var_path);
+    if (dimnames.empty()==false)  
+        array_add_dimensions_dimscale(ar_index);
+    else {
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
+            ar_index->append_dim_ll(dt_inst.size[dim_index]);
+    }
+  
+    // We need to transform dimension info. to DAP4 group
+    BaseType *new_var_index = nullptr;
+    new_var_index = ar_index->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
+
+    // clear DAP4 dimnames_path vector
+    dt_inst.dimnames_path.clear();
+
+    auto vlen_index_d4_attr_unique = make_unique<D4Attribute>("orig_datatype",attr_str_c);
+    auto vlen_index_d4_attr = vlen_index_d4_attr_unique.get();
+    vlen_index_d4_attr->add_value("VLEN_INDEX");
+    new_var_index->attributes()->add_attribute_nocopy(vlen_index_d4_attr_unique.release());
+
+    d4_grp->add_var_nocopy(new_var_index);
+
 }
         
