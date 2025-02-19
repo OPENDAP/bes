@@ -379,47 +379,47 @@ group: METADATA {
     		:gml_id = "S5P_NRTI_L2__NO2____20180422T004709_20180422T005209_02706_01_001108_20180422T022729.ID" ;
     		:objectType = "atm:EarthObservation" ;
 
-    group: om\:phenomenonTime {
+    group: om_phenomenonTime {
 
       // group attributes:
       		:gml_beginPosition = "removed date-time" ;
       		:gml_endPosition = "removed date-time" ;
       		:objectType = "gml:TimePeriod" ;
-      } // group om\:phenomenonTime
+      } // group om_phenomenonTime
 
-    group: om\:observedProperty {
+    group: om_observedProperty {
 
       // group attributes:
       		:nilReason = "inapplicable" ;
-      } // group om\:observedProperty
+      } // group om_observedProperty
 
-    group: om\:featureOfInterest {
+    group: om_featureOfInterest {
 
       // group attributes:
       		:objectType = "eop:FootPrint" ;
       		:gml_id = "S5P_NRTI_L2__NO2____20180422T004709_20180422T005209_02706_01_001108_20180422T022729.FP" ;
 
-      group: eop\:multiExtentOf {
+      group: eop_multiExtentOf {
 
         // group attributes:
         		:objectType = "gml:MultiSurface" ;
 
-        group: gml\:surfaceMembers {
+        group: gml_surfaceMembers {
 
           // group attributes:
           		:objectType = "gml:Polygon" ;
 
-          group: gml\:exterior {
+          group: gml_exterior {
 
             // group attributes:
             		:gml_posList = "54.20914 45.93057 55.747627 47.992096 57.245056 50.229588 58.02496 51.501457 58.07221 51.365818 58.910698 48.823235 60.166405 44.45729 60.888218 41.586292 61.499126 38.927166 61.924553 36.94958 62.334095 34.95068 62.648376 33.35481 62.974487 31.641577 63.24079 30.197382 63.50828 28.702953 63.532234 28.566872 63.78206 27.123993 64.06827 25.41431 64.32479 23.824257 64.63183 21.83691 64.9189 19.87623 65.27609 17.25034 65.620285 14.434817 66.05117 10.229328 66.43809 4.986758 66.63626 0.36165863 66.63626 0.36165863 64.80096 0.6869812 62.96224 0.9269067 61.98034 1.0252753 61.971195 1.1998523 61.74491 4.649883 61.265347 9.659576 60.886856 12.74375 60.5062 15.4697895 60.210648 17.425585 59.905254 19.347462 59.65857 20.845625 59.39217 22.42061 59.166893 23.722683 58.933407 25.0463 58.912136 25.165655 58.68651 26.419378 58.41906 27.877655 58.17024 29.20811 57.858818 30.836897 57.550327 32.407146 57.13303 34.45328 56.676636 36.5752 55.96874 39.610332 55.02655 43.189922 54.20914 45.93057 54.20914 45.93057" ;
             		:objectType = "gml:LinearRing" ;
-            } // group gml\:exterior
-          } // group gml\:surfaceMembers
-        } // group eop\:multiExtentOf
-      } // group om\:featureOfInterest
+            } // group gml_exterior
+          } // group gml_surfaceMembers
+        } // group eop_multiExtentOf
+      } // group om_featureOfInterest
 
-    group: eop\:metaDataProperty {
+    group: eop_metaDataProperty {
 
       // group attributes:
       		:objectType = "eop:EarthObservationMetaData" ;
@@ -432,7 +432,7 @@ group: METADATA {
       		:eop_productQualityStatus = "DEGRADED" ;
       		:eop_productQualityDegradationTag = "MISSING AUXILIARY INPUT" ;
 
-      group: eop\:processing {
+      group: eop_processing {
 
         // group attributes:
         		:objectType = "eop:ProcessingInformation" ;
@@ -443,43 +443,43 @@ group: METADATA {
         		:eop_processorVersion = "0.11.8" ;
         		:eop_nativeProductFormat = "netCDF" ;
         		:eop_processingMode = "NRTI" ;
-        } // group eop\:processing
-      } // group eop\:metaDataProperty
+        } // group eop_processing
+      } // group eop_metaDataProperty
 
-    group: om\:procedure {
+    group: om_procedure {
 
       // group attributes:
       		:gml_id = "S5P_NRTI_L2__NO2____20180422T004709_20180422T005209_02706_01_001108_20180422T022729.EOE" ;
       		:objectType = "eop:EarthObservationEquipment" ;
 
-      group: eop\:instrument {
+      group: eop_instrument {
 
         // group attributes:
         		:eop_shortName = "TROPOMI" ;
         		:objectType = "eop:Instrument" ;
-        } // group eop\:instrument
+        } // group eop_instrument
 
-      group: eop\:sensor {
+      group: eop_sensor {
 
         // group attributes:
         		:eop_sensorType = "ATMOSPHERIC" ;
         		:objectType = "eop:Sensor" ;
-        } // group eop\:sensor
+        } // group eop_sensor
 
-      group: eop\:acquisitionParameters {
+      group: eop_acquisitionParameters {
 
         // group attributes:
         		:eop_orbitNumber = 2706 ;
         		:objectType = "eop:Acquisition" ;
-        } // group eop\:acquisitionParameters
+        } // group eop_acquisitionParameters
 
-      group: eop\:platform {
+      group: eop_platform {
 
         // group attributes:
         		:eop_shortName = "Sentinel-5p" ;
         		:objectType = "eop:Platform" ;
-        } // group eop\:platform
-      } // group om\:procedure
+        } // group eop_platform
+      } // group om_procedure
     } // group EOP_METADATA
 
   group: ISO_METADATA {
@@ -492,31 +492,31 @@ group: METADATA {
     		:gmd_metadataStandardVersion = "ISO 19115-2:2009(E), S5P profile" ;
     		:objectType = "gmi:MI_Metadata" ;
 
-    group: gmd\:characterSet {
+    group: gmd_characterSet {
 
       // group attributes:
       		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" ;
       		:codeListValue = "utf8" ;
       		:objectType = "gmd:MD_CharacterSetCode" ;
-      } // group gmd\:characterSet
+      } // group gmd_characterSet
 
-    group: gmd\:hierarchyLevel {
+    group: gmd_hierarchyLevel {
 
       // group attributes:
       		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" ;
       		:codeListValue = "series" ;
       		:objectType = "gmd:MD_ScopeCode" ;
-      } // group gmd\:hierarchyLevel
+      } // group gmd_hierarchyLevel
 
-    group: gmd\:language {
+    group: gmd_language {
 
       // group attributes:
       		:codeList = "http://www.loc.gov/standards/iso639-2/" ;
       		:codeListValue = "eng" ;
       		:objectType = "gmd:LanguageCode" ;
-      } // group gmd\:language
+      } // group gmd_language
 
-    group: gmd\:identificationInfo {
+    group: gmd_identificationInfo {
 
       // group attributes:
       		:gmd_abstract = "Nitrogen dioxide tropospheric column with a spatial resolution of 7x3.5km2 observed at about 13:30 local solar time from spectra measured by TROPOMI" ;
@@ -525,40 +525,40 @@ group: METADATA {
       		:gmd_topicCategory = "climatologyMeteorologyAtmosphere" ;
       		:objectType = "gmd:MD_DataIdentification" ;
 
-      group: gmd\:pointOfContact {
+      group: gmd_pointOfContact {
 
         // group attributes:
         		:gmd_organisationName = "Copernicus Space Component Data Access System,  ESA, Services Coordinated Interface" ;
         		:objectType = "gmd:CI_ResponsibleParty" ;
 
-        group: gmd\:contactInfo {
+        group: gmd_contactInfo {
 
           // group attributes:
           		:objectType = "gmd:CI_Contact" ;
 
-          group: gmd\:address {
+          group: gmd_address {
 
             // group attributes:
             		:gmd_electronicMailAddress = "EOSupport@copernicus.esa.int" ;
             		:objectType = "gmd:CI_Address" ;
-            } // group gmd\:address
-          } // group gmd\:contactInfo
+            } // group gmd_address
+          } // group gmd_contactInfo
 
-        group: gmd\:role {
+        group: gmd_role {
 
           // group attributes:
           		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" ;
           		:codeListValue = "distributor" ;
           		:objectType = "gmd:CI_RoleCode" ;
-          } // group gmd\:role
-        } // group gmd\:pointOfContact
+          } // group gmd_role
+        } // group gmd_pointOfContact
 
-      group: gmd\:extent {
+      group: gmd_extent {
 
         // group attributes:
         		:objectType = "gmd:EX_Extent" ;
 
-        group: gmd\:geographicElement {
+        group: gmd_geographicElement {
 
           // group attributes:
           		:gmd_eastBoundLongitude = 0.3616586f ;
@@ -567,92 +567,92 @@ group: METADATA {
           		:gmd_westBoundLongitude = 51.50146f ;
           		:gmd_extentTypeCode = "true" ;
           		:objectType = "gmd:EX_GeographicBoundingBox" ;
-          } // group gmd\:geographicElement
+          } // group gmd_geographicElement
 
-        group: gmd\:temporalElement {
+        group: gmd_temporalElement {
 
           // group attributes:
           		:objectType = "gmd:EX_TemporalExtent" ;
 
-          group: gmd\:extent {
+          group: gmd_extent {
 
             // group attributes:
             		:gml_beginPosition = "removed date-time" ;
             		:gml_endPosition = "removed date-time" ;
             		:objectType = "gml:TimePeriod" ;
-            } // group gmd\:extent
-          } // group gmd\:temporalElement
-        } // group gmd\:extent
+            } // group gmd_extent
+          } // group gmd_temporalElement
+        } // group gmd_extent
 
-      group: gmd\:resourceConstraints {
+      group: gmd_resourceConstraints {
 
         // group attributes:
         		:gmd_useLimitation = "no conditions apply" ;
         		:objectType = "gmd:MD_LegalConstraints" ;
 
-        group: gmd\:accessConstraints {
+        group: gmd_accessConstraints {
 
           // group attributes:
           		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" ;
           		:codeListValue = "copyright" ;
           		:objectType = "gmd:MD_RestrictionCode" ;
-          } // group gmd\:accessConstraints
-        } // group gmd\:resourceConstraints
+          } // group gmd_accessConstraints
+        } // group gmd_resourceConstraints
 
-      group: gmd\:spatialResolution {
+      group: gmd_spatialResolution {
 
         // group attributes:
         		:gmd_distance = 10.f ;
         		:uom = "km" ;
         		:objectType = "gmd:MD_Resolution" ;
-        } // group gmd\:spatialResolution
+        } // group gmd_spatialResolution
 
-      group: gmd\:characterSet {
+      group: gmd_characterSet {
 
         // group attributes:
         		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" ;
         		:codeListValue = "utf8" ;
         		:objectType = "gmd:MD_CharacterSetCode" ;
-        } // group gmd\:characterSet
+        } // group gmd_characterSet
 
-      group: gmd\:descriptiveKeywords\#1 {
+      group: gmd_descriptiveKeywords_1 {
 
         // group attributes:
         		:gmd_keyword_1 = "Atmospheric conditions" ;
         		:objectType = "gmd:MD_Keywords" ;
 
-        group: gmd\:type {
+        group: gmd_type {
 
           // group attributes:
           		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" ;
           		:codeListValue = "theme" ;
           		:objectType = "gmd:MD_KeywordTypeCode" ;
-          } // group gmd\:type
+          } // group gmd_type
 
-        group: gmd\:thesaurusName {
+        group: gmd_thesaurusName {
 
           // group attributes:
           		:gmd_title = "GEMET - INSPIRE themes, version 1.0" ;
           		:objectType = "gmd:CI_Citation" ;
 
-          group: gmd\:date {
+          group: gmd_date {
 
             // group attributes:
             		:gmd_date = "2008-06-01" ;
             		:objectType = "gmd:CI_Date" ;
 
-            group: gmd\:dateType {
+            group: gmd_dateType {
 
               // group attributes:
               		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
               		:codeListValue = "publication" ;
               		:objectType = "gmd:CI_DateTypeCode" ;
-              } // group gmd\:dateType
-            } // group gmd\:date
-          } // group gmd\:thesaurusName
-        } // group gmd\:descriptiveKeywords\#1
+              } // group gmd_dateType
+            } // group gmd_date
+          } // group gmd_thesaurusName
+        } // group gmd_descriptiveKeywords_1
 
-      group: gmd\:descriptiveKeywords\#2 {
+      group: gmd_descriptiveKeywords_2 {
 
         // group attributes:
         		:gmd_keyword_1 = "troposphere_mole_content_of_nitrogen_dioxide" ;
@@ -660,1558 +660,1558 @@ group: METADATA {
         		:gmd_keyword_2 = "stratosphere_mole_content_of_nitrogen_dioxide" ;
         		:gmd_keyword_3 = "atmosphere_mole_content_of_nitrogen_dioxide" ;
 
-        group: gmd\:thesaurusName {
+        group: gmd_thesaurusName {
 
           // group attributes:
           		:gmd_title = "CF Standard Name Table v29" ;
           		:xlink_href = "http://cfconventions.org/standard-names.html" ;
           		:objectType = "gmd:CI_Citation" ;
 
-          group: gmd\:date {
+          group: gmd_date {
 
             // group attributes:
             		:gmd_date = "2015-07-08" ;
             		:objectType = "gmd:CI_Date" ;
 
-            group: gmd\:dateType {
+            group: gmd_dateType {
 
               // group attributes:
               		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
               		:codeListValue = "publication" ;
               		:objectType = "gmd:CI_DateTypeCode" ;
-              } // group gmd\:dateType
-            } // group gmd\:date
-          } // group gmd\:thesaurusName
-        } // group gmd\:descriptiveKeywords\#2
+              } // group gmd_dateType
+            } // group gmd_date
+          } // group gmd_thesaurusName
+        } // group gmd_descriptiveKeywords_2
 
-      group: gmd\:citation {
+      group: gmd_citation {
 
         // group attributes:
         		:gmd_title = "TROPOMI/S5P NO2 1-Orbit L2 Swath 7x3.5km" ;
         		:objectType = "gmd:CI_Citation" ;
 
-        group: gmd\:date {
+        group: gmd_date {
 
           // group attributes:
           		:gmd_date = "2018-04-22" ;
           		:objectType = "gmd:CI_Date" ;
 
-          group: gmd\:dateType {
+          group: gmd_dateType {
 
             // group attributes:
             		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
             		:codeListValue = "creation" ;
             		:objectType = "gmd:CI_DateTypeCode" ;
-            } // group gmd\:dateType
-          } // group gmd\:date
+            } // group gmd_dateType
+          } // group gmd_date
 
-        group: gmd\:identifier {
+        group: gmd_identifier {
 
           // group attributes:
           		:gmd_code = "urn:ogc:def:EOP:ESA:SENTINEL.S5P_TROP_L2__NO2___" ;
           		:objectType = "gmd:MD_Identifier" ;
-          } // group gmd\:identifier
-        } // group gmd\:citation
+          } // group gmd_identifier
+        } // group gmd_citation
 
-      group: gmd\:spatialRepresentationType {
+      group: gmd_spatialRepresentationType {
 
         // group attributes:
         		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" ;
         		:codeListValue = "grid" ;
         		:objectType = "gmd:MD_SpatialRepresentationTypeCode" ;
-        } // group gmd\:spatialRepresentationType
-      } // group gmd\:identificationInfo
+        } // group gmd_spatialRepresentationType
+      } // group gmd_identificationInfo
 
-    group: gmd\:dataQualityInfo {
+    group: gmd_dataQualityInfo {
 
       // group attributes:
       		:objectType = "gmd:DQ_DataQuality" ;
 
-      group: gmd\:scope {
+      group: gmd_scope {
 
         // group attributes:
         		:objectType = "gmd:DQ_Scope" ;
 
-        group: gmd\:level {
+        group: gmd_level {
 
           // group attributes:
           		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" ;
           		:codeListValue = "dataset" ;
           		:objectType = "gmd:MD_ScopeCode" ;
-          } // group gmd\:level
-        } // group gmd\:scope
+          } // group gmd_level
+        } // group gmd_scope
 
-      group: gmd\:report {
+      group: gmd_report {
 
         // group attributes:
         		:objectType = "gmd:DQ_DomainConsistency" ;
 
-        group: gmd\:result {
+        group: gmd_result {
 
           // group attributes:
           		:objectType = "gmd:DQ_ConformanceResult" ;
           		:gmd_pass = "true" ;
           		:gmd_explanation = "INSPIRE Data specification for orthoimagery is not yet officially published so conformity has not yet been evaluated" ;
 
-          group: gmd\:specification {
+          group: gmd_specification {
 
             // group attributes:
             		:objectType = "gmd:CI_Citation" ;
             		:gmd_title = "INSPIRE Data Specification on Orthoimagery - Guidelines, version 3.0rc3" ;
 
-            group: gmd\:date {
+            group: gmd_date {
 
               // group attributes:
               		:gmd_date = "2013-02-04" ;
               		:objectType = "gmd:CI_Date" ;
 
-              group: gmd\:dateType {
+              group: gmd_dateType {
 
                 // group attributes:
                 		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                 		:codeListValue = "publication" ;
                 		:objectType = "gmd:CI_DateTypeCode" ;
-                } // group gmd\:dateType
-              } // group gmd\:date
-            } // group gmd\:specification
-          } // group gmd\:result
-        } // group gmd\:report
+                } // group gmd_dateType
+              } // group gmd_date
+            } // group gmd_specification
+          } // group gmd_result
+        } // group gmd_report
 
-      group: gmd\:lineage {
+      group: gmd_lineage {
 
         // group attributes:
         		:objectType = "gmd:LI_Lineage" ;
         		:gmd_statement = "L2 NO2___ dataset produced by EMPTY from the S5P/TROPOMI L1B product" ;
 
-        group: gmd\:processStep {
+        group: gmd_processStep {
 
           // group attributes:
           		:objectType = "gmi:LE_ProcessStep" ;
           		:gmd_description = "Processing of L1b to L2 NO2___ data for orbit 2706 using the KNMI processor version 0.11.8" ;
 
-          group: gmd\:source\#18 {
+          group: gmd_source_18 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_RA_BD6 radiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_RA_BD6 radiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
-
-                // group attributes:
-                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD6_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#1
-
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L1B_RA_BD6_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD6_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#18
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_18
 
-          group: gmd\:source\#22 {
+          group: gmd_source_22 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_RA_BD3 radiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_RA_BD3 radiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
-
-                // group attributes:
-                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD3_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#1
-
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L1B_RA_BD3_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD3_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#22
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_22
 
-          group: gmd\:source\#7 {
+          group: gmd_source_7 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary LUT_NO2CLD algorithm lookup table" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary LUT_NO2CLD algorithm lookup table" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_LUT_NO2CLD_00000000T000000_99999999T999999_20150604T135622.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#7
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_7
 
-          group: gmd\:source\#20 {
+          group: gmd_source_20 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_RA_BD7 radiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_RA_BD7 radiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
-
-                // group attributes:
-                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD7_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#1
-
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L1B_RA_BD7_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD7_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#20
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_20
 
-          group: gmd\:source\#12 {
+          group: gmd_source_12 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary ECMWF AUX_MET_QP Meteorological forecast data" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L4" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary ECMWF AUX_MET_QP Meteorological forecast data" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180421T030000_20180422T120000_20180420T120000.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_2 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180421T150000_20180423T000000_20180421T000000.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_2
 
-              group: gmd\:alternateTitle\#3 {
+              group: gmd_alternateTitle_3 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180422T030000_20180423T120000_20180421T120000.nc" ;
-                } // group gmd\:alternateTitle\#3
+                } // group gmd_alternateTitle_3
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#12
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_12
 
-          group: gmd\:source\#2 {
+          group: gmd_source_2 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary REF_DEM___ reference data" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary REF_DEM___ reference data" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_REF_DEM____00000000T000000_99999999T999999_20160114T095843.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#2
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_2
 
-          group: gmd\:source\#4 {
+          group: gmd_source_4 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary REF_SOLAR_ reference data" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary REF_SOLAR_ reference data" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_REF_SOLAR__00000000T000000_99999999T999999_20160314T165356.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#4
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_4
 
-          group: gmd\:source\#6 {
+          group: gmd_source_6 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary LUT_NO2AMF algorithm lookup table" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary LUT_NO2AMF algorithm lookup table" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_LUT_NO2AMF_00000000T000000_99999999T999999_20151016T130000.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#6
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_6
 
-          group: gmd\:source\#13 {
+          group: gmd_source_13 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L2 L2__AER_AI product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L2 L2__AER_AI product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L2__AER_AI_20180422T004709_20180422T005209_02706_01_001108_20180422T022623.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#13
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_13
 
-          group: gmd\:source\#15 {
+          group: gmd_source_15 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_RA_BD8 radiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_RA_BD8 radiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
-
-                // group attributes:
-                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD8_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#1
-
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L1B_RA_BD8_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD8_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#15
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_15
 
-          group: gmd\:source\#1 {
+          group: gmd_source_1 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Processor CFG_NO2___ configuration file" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Processor CFG_NO2___ configuration file" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_CFG_NO2____00000000T000000_99999999T999999_20170828T121210.cfg" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#1
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_1
 
-          group: gmd\:source\#11 {
+          group: gmd_source_11 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary ECMWF AUX_MET_2D Meteorological forecast data" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L4" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary ECMWF AUX_MET_2D Meteorological forecast data" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180421T030000_20180422T120000_20180420T120000.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_2 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180421T150000_20180423T000000_20180421T000000.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_2
 
-              group: gmd\:alternateTitle\#3 {
+              group: gmd_alternateTitle_3 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180422T030000_20180423T120000_20180421T120000.nc" ;
-                } // group gmd\:alternateTitle\#3
+                } // group gmd_alternateTitle_3
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#11
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_11
 
-          group: gmd\:source\#17 {
+          group: gmd_source_17 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_RA_BD4 radiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_RA_BD4 radiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
-
-                // group attributes:
-                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD4_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#1
-
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L1B_RA_BD4_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD4_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#17
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_17
 
-          group: gmd\:source\#9 {
+          group: gmd_source_9 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary ECMWF AUX_MET_TP Meteorological forecast data" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L4" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary ECMWF AUX_MET_TP Meteorological forecast data" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180421T030000_20180422T120000_20180420T120000.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_2 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180421T150000_20180423T000000_20180421T000000.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_2
 
-              group: gmd\:alternateTitle\#3 {
+              group: gmd_alternateTitle_3 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180422T030000_20180423T120000_20180421T120000.nc" ;
-                } // group gmd\:alternateTitle\#3
+                } // group gmd_alternateTitle_3
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#9
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_9
 
-          group: gmi\:output {
+          group: gmi_output {
 
             // group attributes:
             		:gmd_description = "TROPOMI/S5P NO2 1-Orbit L2 Swath 7x3.5km" ;
             		:objectType = "gmi:LE_Source" ;
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:gmd_title = "S5P_NRTI_L2__NO2____20180422T004709_20180422T005209_02706_01_001108_20180422T022729" ;
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "2018-04-22" ;
                 		:objectType = "gmd:CI_DateTime" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
+                  } // group gmd_dateType
+                } // group gmd_date
 
-              group: gmd\:identifier {
+              group: gmd_identifier {
 
                 // group attributes:
                 		:gmd_code = "L2__NO2___" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmd\:identifier
-              } // group gmd\:sourceCitation
+                } // group gmd_identifier
+              } // group gmd_sourceCitation
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L2" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
-            } // group gmi\:output
+              } // group gmi_processedLevel
+            } // group gmi_output
 
-          group: gmd\:source\#23 {
+          group: gmd_source_23 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_IR_UVN irradiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_IR_UVN irradiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_L1B_IR_UVN_20171128T163259_20171128T181628_00657_02_001301_20171205T124313.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#23
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_23
 
-          group: gmd\:source\#16 {
+          group: gmd_source_16 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_RA_BD5 radiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_RA_BD5 radiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
-
-                // group attributes:
-                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD5_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#1
-
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L1B_RA_BD5_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD5_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#16
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_16
 
-          group: gmi\:report {
+          group: gmi_report {
 
             // group attributes:
             		:gmi_description = "Sentinel 5-precursor TROPOMI L1b processed to L2 data using the KNMI L2 NO2___ processor" ;
             		:gmi_fileType = "netCDF" ;
             		:gmi_name = "S5P_NRTI_L2__NO2____20180422T004709_20180422T005209_02706_01_001108_20180422T022729.nc" ;
             		:objectType = "gmi:LE_ProcessStepReport" ;
-            } // group gmi\:report
+            } // group gmi_report
 
-          group: gmd\:source\#10 {
+          group: gmd_source_10 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary CTM AUX_CTMFCT model input data" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary CTM AUX_CTMFCT model input data" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_AUX_CTMFCT_20180422T000000_20180423T000000_20180419T063932.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_2 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_AUX_CTMFCT_20180422T000000_20180423T000000_20180420T060314.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_2
 
-              group: gmd\:alternateTitle\#3 {
+              group: gmd_alternateTitle_3 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_AUX_CTMFCT_20180422T000000_20180423T000000_20180421T054308.nc" ;
-                } // group gmd\:alternateTitle\#3
+                } // group gmd_alternateTitle_3
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#10
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_10
 
-          group: gmi\:processingInformation {
+          group: gmi_processingInformation {
 
             // group attributes:
             		:objectType = "gmi:LE_Processing" ;
 
-            group: gmi\:softwareReference {
+            group: gmi_softwareReference {
 
               // group attributes:
               		:gmd_title = "L2 NO2___ processor description" ;
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "2017-11-30" ;
                 		:objectType = "gmd:CI_DateTime" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmi\:softwareReference
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmi_softwareReference
 
-            group: gmi\:documentation\#1 {
+            group: gmi_documentation_1 {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
               		:gmd_title = "TROPOMI ATBD of the total and tropospheric NO2 data products; S5P-KNMI-L2-0005-RP; release 1.0" ;
               		:doi = "N/A" ;
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "2015-11-30" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "publication" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmi\:documentation\#1
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmi_documentation_1
 
-            group: gmi\:documentation\#2 {
+            group: gmi_documentation_2 {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
               		:gmd_title = "Sentinel-5 precursor/TROPOMI Level 2 Product User Manual Nitrogen Dioxide; S5P-KNMI-L2-0021-MA; release 1.0" ;
               		:doi = "N/A" ;
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "2015-11-30" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "publication" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmi\:documentation\#2
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmi_documentation_2
 
-            group: gmi\:identifier {
+            group: gmi_identifier {
 
               // group attributes:
               		:gmd_code = "KNMI L2 NO2___ processor, version 0.11.8" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:identifier
-            } // group gmi\:processingInformation
+              } // group gmi_identifier
+            } // group gmi_processingInformation
 
-          group: gmd\:source\#21 {
+          group: gmd_source_21 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_RA_BD1 radiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_RA_BD1 radiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
-
-                // group attributes:
-                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD1_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#1
-
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L1B_RA_BD1_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD1_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#21
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_21
 
-          group: gmd\:source\#3 {
+          group: gmd_source_3 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary REF_LER___ reference data" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary REF_LER___ reference data" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_REF_LER____00000000T000000_99999999T999999_20170504T133900.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#3
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_3
 
-          group: gmd\:source\#14 {
+          group: gmd_source_14 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L2 L2__FRESCO product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L2 L2__FRESCO product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L2__FRESCO_20180422T004709_20180422T005209_02706_01_001108_20180422T022622.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#14
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_14
 
-          group: gmd\:source\#8 {
+          group: gmd_source_8 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary LUT_COREG_ algorithm lookup table" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary LUT_COREG_ algorithm lookup table" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_LUT_COREG__00000000T000000_99999999T999999_20160114T000000.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#8
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_8
 
-          group: gmd\:source\#5 {
+          group: gmd_source_5 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "Auxiliary REF_XS_NO2 reference data" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "N/A" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "Auxiliary REF_XS_NO2 reference data" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OPER_REF_XS_NO2_00000000T000000_99999999T999999_20170822T111342.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#5
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_5
 
-          group: gmd\:source\#19 {
+          group: gmd_source_19 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_RA_BD2 radiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_RA_BD2 radiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
-
-                // group attributes:
-                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD2_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#1
-
-              group: gmd\:alternateTitle\#2 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_NRTI_L1B_RA_BD2_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                } // group gmd\:alternateTitle\#2
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_NRTI_L1B_RA_BD2_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#19
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_19
 
-          group: gmd\:source\#24 {
+          group: gmd_source_24 {
 
             // group attributes:
             		:objectType = "gmi:LE_Source" ;
             		:gmd_description = "TROPOMI L1B L1B_IR_SIR irradiance product" ;
 
-            group: gmi\:processedLevel {
+            group: gmi_processedLevel {
 
               // group attributes:
               		:gmd_code = "L1B" ;
               		:objectType = "gmd:MD_Identifier" ;
-              } // group gmi\:processedLevel
+              } // group gmi_processedLevel
 
-            group: gmd\:sourceCitation {
+            group: gmd_sourceCitation {
 
               // group attributes:
               		:objectType = "gmd:CI_Citation" ;
 
-              group: gmd\:title {
+              group: gmd_title {
 
                 // group attributes:
                 		:gco_characterString = "TROPOMI L1B L1B_IR_SIR irradiance product" ;
-                } // group gmd\:title
+                } // group gmd_title
 
-              group: gmd\:alternateTitle\#1 {
+              group: gmd_alternateTitle_1 {
 
                 // group attributes:
                 		:gmx_FileName = "S5P_OFFL_L1B_IR_SIR_20171128T163259_20171128T181628_00657_02_001301_20171205T124313.nc" ;
-                } // group gmd\:alternateTitle\#1
+                } // group gmd_alternateTitle_1
 
-              group: gmd\:date {
+              group: gmd_date {
 
                 // group attributes:
                 		:gmd_date = "removed date-time" ;
                 		:objectType = "gmd:CI_Date" ;
 
-                group: gmd\:dateType {
+                group: gmd_dateType {
 
                   // group attributes:
                   		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                   		:codeListValue = "creation" ;
                   		:objectType = "gmd:CI_DateTypeCode" ;
-                  } // group gmd\:dateType
-                } // group gmd\:date
-              } // group gmd\:sourceCitation
-            } // group gmd\:source\#24
-          } // group gmd\:processStep
-        } // group gmd\:lineage
-      } // group gmd\:dataQualityInfo
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_24
+          } // group gmd_processStep
+        } // group gmd_lineage
+      } // group gmd_dataQualityInfo
 
-    group: gmi\:acquisitionInformation {
+    group: gmi_acquisitionInformation {
 
       // group attributes:
       		:objectType = "gmi:MI_AcquisitionInformation" ;
 
-      group: gmi\:platform {
+      group: gmi_platform {
 
         // group attributes:
         		:gmi_description = "Sentinel 5 Precursor" ;
         		:objectType = "gmi:MI_Platform" ;
 
-        group: gmi\:instrument {
+        group: gmi_instrument {
 
           // group attributes:
           		:objectType = "gmi:MI_Instrument" ;
           		:gmi_type = "UV-VIS-NIR-SWIR imaging spectrometer" ;
 
-          group: gmi\:identifier {
+          group: gmi_identifier {
 
             // group attributes:
             		:gmd_code = "TROPOMI" ;
             		:gmd_codeSpace = "http://www.esa.int/" ;
             		:objectType = "gmd:RS_Identifier" ;
-            } // group gmi\:identifier
-          } // group gmi\:instrument
+            } // group gmi_identifier
+          } // group gmi_instrument
 
-        group: gmi\:identifier {
+        group: gmi_identifier {
 
           // group attributes:
           		:gmd_code = "S5P" ;
           		:gmd_codeSpace = "http://www.esa.int/" ;
           		:objectType = "gmd:RS_Identifier" ;
-          } // group gmi\:identifier
-        } // group gmi\:platform
-      } // group gmi\:acquisitionInformation
+          } // group gmi_identifier
+        } // group gmi_platform
+      } // group gmi_acquisitionInformation
 
-    group: gmd\:contact {
+    group: gmd_contact {
 
       // group attributes:
       		:gmd_organisationName = "Copernicus Space Component Data Access System,  ESA, Services Coordinated Interface" ;
       		:objectType = "gmd:CI_ResponsibleParty" ;
 
-      group: gmd\:contactInfo {
+      group: gmd_contactInfo {
 
         // group attributes:
         		:objectType = "gmd:CI_Contact" ;
 
-        group: gmd\:address {
+        group: gmd_address {
 
           // group attributes:
           		:gmd_electronicMailAddress = "EOSupport@copernicus.esa.int" ;
           		:objectType = "gmd:CI_Address" ;
-          } // group gmd\:address
-        } // group gmd\:contactInfo
+          } // group gmd_address
+        } // group gmd_contactInfo
 
-      group: gmd\:role {
+      group: gmd_role {
 
         // group attributes:
         		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" ;
         		:codeListValue = "pointOfContact" ;
         		:objectType = "gmd:CI_RoleCode" ;
-        } // group gmd\:role
-      } // group gmd\:contact
+        } // group gmd_role
+      } // group gmd_contact
     } // group ISO_METADATA
 
   group: ESA_METADATA {
@@ -2231,7 +2231,7 @@ group: METADATA {
           // group attributes:
           		:objectType = "subsystem_information" ;
 
-          group: subsystem\#0 {
+          group: subsystem_0 {
 
             // group attributes:
             		:Authors = "H.J. Eskes, K.F. Boersma, J.D. Maasakkers" ;
@@ -2240,1377 +2240,1377 @@ group: METADATA {
             		:Name = "TM5-MP-Domino3" ;
             		:Version = "3.2.0" ;
             		:VersionDate = "2016-10-05" ;
-            } // group subsystem\#0
+            } // group subsystem_0
           } // group subsystem_information
 
-        group: gmd\:lineage {
+        group: gmd_lineage {
 
           // group attributes:
           		:objectType = "gmd:LI_Lineage" ;
           		:gmd_statement = "L2 NO2___ dataset produced by EMPTY from the S5P/TROPOMI L1B product" ;
 
-          group: gmd\:processStep {
+          group: gmd_processStep {
 
             // group attributes:
             		:objectType = "gmi:LE_ProcessStep" ;
             		:gmd_description = "Processing of L1b to L2 NO2___ data for orbit 2706 using the KNMI processor version 0.11.8" ;
 
-            group: gmd\:source\#18 {
+            group: gmd_source_18 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_RA_BD6 radiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_RA_BD6 radiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
-
-                  // group attributes:
-                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD6_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#1
-
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L1B_RA_BD6_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD6_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#18
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_18
 
-            group: gmd\:source\#22 {
+            group: gmd_source_22 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_RA_BD3 radiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_RA_BD3 radiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
-
-                  // group attributes:
-                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD3_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#1
-
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L1B_RA_BD3_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD3_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#22
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_22
 
-            group: gmd\:source\#7 {
+            group: gmd_source_7 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary LUT_NO2CLD algorithm lookup table" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary LUT_NO2CLD algorithm lookup table" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_LUT_NO2CLD_00000000T000000_99999999T999999_20150604T135622.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#7
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_7
 
-            group: gmd\:source\#20 {
+            group: gmd_source_20 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_RA_BD7 radiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_RA_BD7 radiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
-
-                  // group attributes:
-                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD7_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#1
-
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L1B_RA_BD7_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD7_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#20
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_20
 
-            group: gmd\:source\#12 {
+            group: gmd_source_12 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary ECMWF AUX_MET_QP Meteorological forecast data" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L4" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary ECMWF AUX_MET_QP Meteorological forecast data" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180421T030000_20180422T120000_20180420T120000.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_2 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180421T150000_20180423T000000_20180421T000000.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_2
 
-                group: gmd\:alternateTitle\#3 {
+                group: gmd_alternateTitle_3 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180422T030000_20180423T120000_20180421T120000.nc" ;
-                  } // group gmd\:alternateTitle\#3
+                  } // group gmd_alternateTitle_3
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#12
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_12
 
-            group: gmd\:source\#2 {
+            group: gmd_source_2 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary REF_DEM___ reference data" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary REF_DEM___ reference data" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_REF_DEM____00000000T000000_99999999T999999_20160114T095843.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#2
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_2
 
-            group: gmd\:source\#4 {
+            group: gmd_source_4 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary REF_SOLAR_ reference data" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary REF_SOLAR_ reference data" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_REF_SOLAR__00000000T000000_99999999T999999_20160314T165356.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#4
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_4
 
-            group: gmd\:source\#6 {
+            group: gmd_source_6 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary LUT_NO2AMF algorithm lookup table" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary LUT_NO2AMF algorithm lookup table" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_LUT_NO2AMF_00000000T000000_99999999T999999_20151016T130000.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#6
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_6
 
-            group: gmd\:source\#13 {
+            group: gmd_source_13 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L2 L2__AER_AI product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L2 L2__AER_AI product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L2__AER_AI_20180422T004709_20180422T005209_02706_01_001108_20180422T022623.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#13
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_13
 
-            group: gmd\:source\#15 {
+            group: gmd_source_15 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_RA_BD8 radiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_RA_BD8 radiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
-
-                  // group attributes:
-                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD8_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#1
-
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L1B_RA_BD8_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD8_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#15
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_15
 
-            group: gmd\:source\#1 {
+            group: gmd_source_1 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Processor CFG_NO2___ configuration file" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Processor CFG_NO2___ configuration file" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_CFG_NO2____00000000T000000_99999999T999999_20170828T121210.cfg" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#1
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_1
 
-            group: gmd\:source\#11 {
+            group: gmd_source_11 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary ECMWF AUX_MET_2D Meteorological forecast data" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L4" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary ECMWF AUX_MET_2D Meteorological forecast data" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180421T030000_20180422T120000_20180420T120000.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_2 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180421T150000_20180423T000000_20180421T000000.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_2
 
-                group: gmd\:alternateTitle\#3 {
+                group: gmd_alternateTitle_3 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180422T030000_20180423T120000_20180421T120000.nc" ;
-                  } // group gmd\:alternateTitle\#3
+                  } // group gmd_alternateTitle_3
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#11
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_11
 
-            group: gmd\:source\#17 {
+            group: gmd_source_17 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_RA_BD4 radiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_RA_BD4 radiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
-
-                  // group attributes:
-                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD4_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#1
-
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L1B_RA_BD4_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD4_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#17
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_17
 
-            group: gmd\:source\#9 {
+            group: gmd_source_9 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary ECMWF AUX_MET_TP Meteorological forecast data" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L4" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary ECMWF AUX_MET_TP Meteorological forecast data" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180421T030000_20180422T120000_20180420T120000.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_2 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180421T150000_20180423T000000_20180421T000000.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_2
 
-                group: gmd\:alternateTitle\#3 {
+                group: gmd_alternateTitle_3 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180422T030000_20180423T120000_20180421T120000.nc" ;
-                  } // group gmd\:alternateTitle\#3
+                  } // group gmd_alternateTitle_3
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#9
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_9
 
-            group: gmi\:output {
+            group: gmi_output {
 
               // group attributes:
               		:gmd_description = "TROPOMI/S5P NO2 1-Orbit L2 Swath 7x3.5km" ;
               		:objectType = "gmi:LE_Source" ;
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:gmd_title = "S5P_NRTI_L2__NO2____20180422T004709_20180422T005209_02706_01_001108_20180422T022729" ;
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "2018-04-22" ;
                   		:objectType = "gmd:CI_DateTime" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
+                    } // group gmd_dateType
+                  } // group gmd_date
 
-                group: gmd\:identifier {
+                group: gmd_identifier {
 
                   // group attributes:
                   		:gmd_code = "L2__NO2___" ;
                   		:objectType = "gmd:MD_Identifier" ;
-                  } // group gmd\:identifier
-                } // group gmd\:sourceCitation
+                  } // group gmd_identifier
+                } // group gmd_sourceCitation
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L2" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
-              } // group gmi\:output
+                } // group gmi_processedLevel
+              } // group gmi_output
 
-            group: gmd\:source\#23 {
+            group: gmd_source_23 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_IR_UVN irradiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_IR_UVN irradiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_L1B_IR_UVN_20171128T163259_20171128T181628_00657_02_001301_20171205T124313.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#23
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_23
 
-            group: gmd\:source\#16 {
+            group: gmd_source_16 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_RA_BD5 radiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_RA_BD5 radiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
-
-                  // group attributes:
-                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD5_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#1
-
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L1B_RA_BD5_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD5_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#16
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_16
 
-            group: gmi\:report {
+            group: gmi_report {
 
               // group attributes:
               		:gmi_description = "Sentinel 5-precursor TROPOMI L1b processed to L2 data using the KNMI L2 NO2___ processor" ;
               		:gmi_fileType = "netCDF" ;
               		:gmi_name = "S5P_NRTI_L2__NO2____20180422T004709_20180422T005209_02706_01_001108_20180422T022729.nc" ;
               		:objectType = "gmi:LE_ProcessStepReport" ;
-              } // group gmi\:report
+              } // group gmi_report
 
-            group: gmd\:source\#10 {
+            group: gmd_source_10 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary CTM AUX_CTMFCT model input data" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary CTM AUX_CTMFCT model input data" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_AUX_CTMFCT_20180422T000000_20180423T000000_20180419T063932.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_2 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_AUX_CTMFCT_20180422T000000_20180423T000000_20180420T060314.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_2
 
-                group: gmd\:alternateTitle\#3 {
+                group: gmd_alternateTitle_3 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_AUX_CTMFCT_20180422T000000_20180423T000000_20180421T054308.nc" ;
-                  } // group gmd\:alternateTitle\#3
+                  } // group gmd_alternateTitle_3
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#10
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_10
 
-            group: gmi\:processingInformation {
+            group: gmi_processingInformation {
 
               // group attributes:
               		:objectType = "gmi:LE_Processing" ;
 
-              group: gmi\:softwareReference {
+              group: gmi_softwareReference {
 
                 // group attributes:
                 		:gmd_title = "L2 NO2___ processor description" ;
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "" ;
                   		:objectType = "gmd:CI_DateTime" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmi\:softwareReference
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmi_softwareReference
 
-              group: gmi\:documentation\#1 {
+              group: gmi_documentation_1 {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
                 		:gmd_title = "TROPOMI ATBD of the total and tropospheric NO2 data products; S5P-KNMI-L2-0005-RP; release 1.0" ;
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "2015-11-30" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "publication" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmi\:documentation\#1
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmi_documentation_1
 
-              group: gmi\:documentation\#2 {
+              group: gmi_documentation_2 {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
                 		:gmd_title = "Sentinel-5 precursor/TROPOMI Level 2 Product User Manual Nitrogen Dioxide; S5P-KNMI-L2-0021-MA; release 1.0" ;
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "2015-11-30" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "publication" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmi\:documentation\#2
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmi_documentation_2
 
-              group: gmi\:identifier {
+              group: gmi_identifier {
 
                 // group attributes:
                 		:gmd_code = "KNMI L2 NO2___ processor, version 0.11.8" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:identifier
-              } // group gmi\:processingInformation
+                } // group gmi_identifier
+              } // group gmi_processingInformation
 
-            group: gmd\:source\#21 {
+            group: gmd_source_21 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_RA_BD1 radiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_RA_BD1 radiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
-
-                  // group attributes:
-                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD1_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#1
-
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L1B_RA_BD1_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD1_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#21
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_21
 
-            group: gmd\:source\#3 {
+            group: gmd_source_3 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary REF_LER___ reference data" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary REF_LER___ reference data" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_REF_LER____00000000T000000_99999999T999999_20170504T133900.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#3
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_3
 
-            group: gmd\:source\#14 {
+            group: gmd_source_14 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L2 L2__FRESCO product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L2 L2__FRESCO product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L2__FRESCO_20180422T004709_20180422T005209_02706_01_001108_20180422T022622.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#14
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_14
 
-            group: gmd\:source\#8 {
+            group: gmd_source_8 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary LUT_COREG_ algorithm lookup table" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary LUT_COREG_ algorithm lookup table" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_LUT_COREG__00000000T000000_99999999T999999_20160114T000000.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#8
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_8
 
-            group: gmd\:source\#5 {
+            group: gmd_source_5 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "Auxiliary REF_XS_NO2 reference data" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "N/A" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "Auxiliary REF_XS_NO2 reference data" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OPER_REF_XS_NO2_00000000T000000_99999999T999999_20170822T111342.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#5
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_5
 
-            group: gmd\:source\#19 {
+            group: gmd_source_19 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_RA_BD2 radiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_RA_BD2 radiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
-
-                  // group attributes:
-                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD2_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#1
-
-                group: gmd\:alternateTitle\#2 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_NRTI_L1B_RA_BD2_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
-                  } // group gmd\:alternateTitle\#2
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_NRTI_L1B_RA_BD2_20180422T004703_20180422T005215_02706_01_010000_20180422T022421.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#19
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_19
 
-            group: gmd\:source\#24 {
+            group: gmd_source_24 {
 
               // group attributes:
               		:objectType = "gmi:LE_Source" ;
               		:gmd_description = "TROPOMI L1B L1B_IR_SIR irradiance product" ;
 
-              group: gmi\:processedLevel {
+              group: gmi_processedLevel {
 
                 // group attributes:
                 		:gmd_code = "L1B" ;
                 		:objectType = "gmd:MD_Identifier" ;
-                } // group gmi\:processedLevel
+                } // group gmi_processedLevel
 
-              group: gmd\:sourceCitation {
+              group: gmd_sourceCitation {
 
                 // group attributes:
                 		:objectType = "gmd:CI_Citation" ;
 
-                group: gmd\:title {
+                group: gmd_title {
 
                   // group attributes:
                   		:gco_characterString = "TROPOMI L1B L1B_IR_SIR irradiance product" ;
-                  } // group gmd\:title
+                  } // group gmd_title
 
-                group: gmd\:alternateTitle\#1 {
+                group: gmd_alternateTitle_1 {
 
                   // group attributes:
                   		:gmx_FileName = "S5P_OFFL_L1B_IR_SIR_20171128T163259_20171128T181628_00657_02_001301_20171205T124313.nc" ;
-                  } // group gmd\:alternateTitle\#1
+                  } // group gmd_alternateTitle_1
 
-                group: gmd\:date {
+                group: gmd_date {
 
                   // group attributes:
                   		:gmd_date = "removed date-time" ;
                   		:objectType = "gmd:CI_Date" ;
 
-                  group: gmd\:dateType {
+                  group: gmd_dateType {
 
                     // group attributes:
                     		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
                     		:codeListValue = "creation" ;
                     		:objectType = "gmd:CI_DateTypeCode" ;
-                    } // group gmd\:dateType
-                  } // group gmd\:date
-                } // group gmd\:sourceCitation
-              } // group gmd\:source\#24
-            } // group gmd\:processStep
-          } // group gmd\:lineage
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_24
+            } // group gmd_processStep
+          } // group gmd_lineage
         } // group variable_header
 
       group: fixed_header {
