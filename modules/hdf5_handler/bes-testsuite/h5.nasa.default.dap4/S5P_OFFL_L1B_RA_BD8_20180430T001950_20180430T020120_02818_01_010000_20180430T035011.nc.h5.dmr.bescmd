@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="S-MODE" space="catalog">/data/S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5</setContainer>
+    <define name="d">
+	<container name="S-MODE" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>
