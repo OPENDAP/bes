@@ -3269,6 +3269,15 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     vlen_d4_attr->add_value("VLEN");
     new_var->attributes()->add_attribute_nocopy(vlen_d4_attr_unique.release());
 
+    auto vlen_d4_attr2_unique = make_unique<D4Attribute>("vlen_description",attr_str_c);
+    auto vlen_d4_attr2 = vlen_d4_attr2_unique.get();
+    string desc_str = "The original variable-length array data is stored as the regular";
+    desc_str +=" array data that has an extra dimension. The data gap is filled with 0.";
+    desc_str +=" The actual length of each original variable-length element is stored in another array. The";
+    desc_str +=" variable name of this array is " + vname +"_vlen_index" +"."; 
+    vlen_d4_attr2->add_value(desc_str);
+    new_var->attributes()->add_attribute_nocopy(vlen_d4_attr2_unique.release());
+
     d4_grp->add_var_nocopy(new_var);
     delete bt;
 

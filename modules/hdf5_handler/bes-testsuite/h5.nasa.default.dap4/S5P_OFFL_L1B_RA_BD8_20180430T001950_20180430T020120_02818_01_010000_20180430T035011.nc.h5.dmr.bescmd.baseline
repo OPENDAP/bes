@@ -645,6 +645,9 @@
                     <Attribute name="orig_datatype" type="String">
                         <Value>VLEN</Value>
                     </Attribute>
+                    <Attribute name="vlen_description" type="String">
+                        <Value>The original variable-length array data is stored as the regular array data that has an extra dimension. The data gap is filled with 0. The actual length of each original variable-length element is stored in another array. The variable name of this array is small_pixel_radiance_vlen_index.</Value>
+                    </Attribute>
                 </Float32>
                 <Int32 name="small_pixel_radiance_vlen_index">
                     <Dim name="/BAND8_RADIANCE/STANDARD_MODE/time"/>
