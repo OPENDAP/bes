@@ -3255,7 +3255,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     BaseType *new_var = nullptr;
     vector<string> temp_dimnames_path;
     if (dimnames.empty() == false) {
-        for (const auto & dimname:dimnames) 
+        for (const auto & dimname:dt_inst.dimnames_path) 
             temp_dimnames_path.push_back(dimname);
         temp_dimnames_path.push_back(vlen_length_dimpath);
     }
