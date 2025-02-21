@@ -196,7 +196,7 @@ END
                 <Value>PolarGrid eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_PolarGrid">
             <Dim name="/XDim_PolarGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -214,7 +214,7 @@ END
                 <Value>PolarGrid XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_PolarGrid">
             <Dim name="/YDim_PolarGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -256,6 +256,9 @@ END
             <Float32 name="Soil_Dryness">
                 <Dim name="/YDim_PolarGrid"/>
                 <Dim name="/XDim_PolarGrid"/>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>9969209968386869046778552952102584320.000000</Value>
+                </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>17</Value>
                 </Attribute>
@@ -292,6 +295,9 @@ END
                 <Dim name="/Bands_PolarGrid"/>
                 <Dim name="/YDim_PolarGrid"/>
                 <Dim name="/XDim_PolarGrid"/>
+                <Attribute name="_FillValue" type="Float64">
+                    <Value>9969209968386869046778552952102584320.000000</Value>
+                </Attribute>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>21</Value>
                 </Attribute>

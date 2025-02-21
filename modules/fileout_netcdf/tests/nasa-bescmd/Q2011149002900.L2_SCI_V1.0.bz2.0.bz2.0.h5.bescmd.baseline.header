@@ -49,7 +49,7 @@ netcdf test {
 		:history = "removed date-timex Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0.h5\n" ;
 		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0.h5\"}]}]" ;
 
-group: Aquarius\ Data {
+group: Aquarius_Data {
   dimensions:
   	dim1 = 4042 ;
   	dim2 = 3 ;
@@ -408,9 +408,9 @@ group: Aquarius\ Data {
   	float wind_uncertainty(dim147, dim148) ;
   		wind_uncertainty:long_name = "Estimated wind speed error" ;
   		wind_uncertainty:units = "meters/sec" ;
-  } // group Aquarius\ Data
+  } // group Aquarius_Data
 
-group: Aquarius\ Flags {
+group: Aquarius_Flags {
   dimensions:
   	dim149 = 4042 ;
   	dim150 = 3 ;
@@ -450,9 +450,9 @@ group: Aquarius\ Flags {
   		scatterometer_flags:f03_name = "NEGSIG" ;
   		scatterometer_flags:f04_name = "BADATT" ;
   		scatterometer_flags:f05_name = "FARADAY" ;
-  } // group Aquarius\ Flags
+  } // group Aquarius_Flags
 
-group: Block\ Attributes {
+group: Block_Attributes {
   dimensions:
   	dim161 = 4042 ;
   	dim162 = 3 ;
@@ -472,16 +472,16 @@ group: Block\ Attributes {
   	double secGPS(dim167) ;
   		secGPS:long_name = "Block time, GPS time" ;
   		secGPS:units = "seconds" ;
-  } // group Block\ Attributes
+  } // group Block_Attributes
 
-group: Converted\ Telemetry {
+group: Converted_Telemetry {
   dimensions:
   	dim168 = 4042 ;
   	dim169 = 85 ;
   variables:
   	float rad_caltemps(dim168, dim169) ;
   		rad_caltemps:long_name = "Radiometer calibration temperatures" ;
-  } // group Converted\ Telemetry
+  } // group Converted_Telemetry
 
 group: Navigation {
   dimensions:

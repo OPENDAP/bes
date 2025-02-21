@@ -160,7 +160,8 @@ BES.module.cmd=
 BES.module.h5=
 BES.Catalog.catalog.RootDirectory=
 BES.Data.RootDirectory=/dev/null
-BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5|HDF5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.dmrpp$;
+BES.Catalog.catalog.TypeMatch+=h5:.*$;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 BES.FollowSymLinks=Yes
@@ -173,7 +174,7 @@ BES.UncompressCache.size=500
             bes_tmp_conf_str = bes_tmp_conf_str + "H5.EnableCF=true"
         else:
             bes_tmp_conf_str = bes_tmp_conf_str + "H5.EnableCF=false"
-        print(bes_tmp_conf_str)
+        #print(bes_tmp_conf_str)
         temp_text = add_module_path(bes_tmp_conf_str, "BES.module.dap=", libdap_path)
         temp_text = add_module_path(temp_text, "BES.module.cmd=", libdap_xml_path)
         temp_text = add_module_path(temp_text, "BES.module.h5=", libhdf5_path)

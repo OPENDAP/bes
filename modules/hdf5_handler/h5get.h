@@ -87,6 +87,9 @@ libdap::Structure *Get_structure(const std::string &varname, const std::string &
 void Get_structure_array_type(libdap::Structure *structure_ptr, hid_t memb_type, const std::string &memb_name,
                               const std::string &dataset, bool is_dap4 );
 
+void handle_vlen_int_float(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, const std::string &var_path,
+                           const std::string &filename, hid_t dset_id);
+
 bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
 void obtain_dimnames(hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5);

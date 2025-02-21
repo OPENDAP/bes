@@ -995,7 +995,12 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     if (is_root_grp == true)
         grp_id = _ncid;
     else {
-        stax = nc_def_grp(par_grp_id, (*grp).name().c_str(), &grp_id);
+        // Here we need to check if there is any special character inside the group name.
+        // If yes, we will replace that character to _ since nc_def_grp will fail if
+        // there are special characters inside the group name. KY 2025-02-14 
+        string grp_name = (*grp).name();
+        string new_grp_name = FONcUtils::id2netcdf(grp_name);
+        stax = nc_def_grp(par_grp_id, new_grp_name.c_str(), &grp_id);
         BESDEBUG(MODULE,  prolog << "Group name is " << (*grp).name() << endl);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define group: " + _localfile, __FILE__, __LINE__);
