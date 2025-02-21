@@ -286,6 +286,11 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
         // This call will, for BESFileContainer, decompress and cache compressed files,
         // changing their extensions from, e.g., '.gz' to '.h5' and enabling the
         // get_container_type() method to function correctly. jhrg 5/31/18
+
+        // TODO for the NgapOwnedContainer, this is a problem since these calls are
+        //  expensive, even when the container is intelligently written (DMR++ documents
+        //  can be many megabytes in size). Fix this mess so that get_container_type()
+        //  works without all of the handlers calling access() twice. jhrg 2/18/25
         dhi.container->access();
 
         // Given the kind of thing in the DHI's container (netcdf file, ...) find the

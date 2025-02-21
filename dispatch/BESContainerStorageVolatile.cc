@@ -156,6 +156,7 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
     BESUtil::check_path(real_name, _root_dir, _follow_sym_links);
 
     // add the root directory to the real_name passed
+    // TODO Remove the 'false' since that is the default value OR include both default params' values. jhrg 2/18/25
     string fully_qualified_real_name = BESUtil::assemblePath(_root_dir, real_name, false);
 
     BESDEBUG("container","BESContainerStorageVolatile::add_container() - "
@@ -257,7 +258,7 @@ bool BESContainerStorageVolatile::del_containers()
     return true;
 }
 
-/** @brief determine if the given container is data and what servies
+/** @brief determine if the given container is data and what services
  * are available for it
  *
  * @param inQuestion the container in question
