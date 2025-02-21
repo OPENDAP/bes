@@ -39,6 +39,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/2022093012
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/OMG_Bathy_SBES_L2_20150804000000.h5.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5.bescmd >nasa_dap4_default_test.nc
 
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmrpp.bescmd >nasa_dap4_default_test.nc
 #direct IO check
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dio.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/test_ba_grp_dim_whole.h5.deflev.dmrpp.bescmd >nasa_dap4_default_test.nc
