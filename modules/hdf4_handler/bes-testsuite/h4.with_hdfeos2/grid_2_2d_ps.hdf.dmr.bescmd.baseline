@@ -86,7 +86,7 @@ END
                 <Value>NPGrid eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_NPGrid">
             <Dim name="/XDim_NPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -104,7 +104,7 @@ END
                 <Value>NPGrid XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_NPGrid">
             <Dim name="/YDim_NPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -186,7 +186,7 @@ END
                 <Value>SPGrid eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_SPGrid">
             <Dim name="/XDim_SPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -204,7 +204,7 @@ END
                 <Value>SPGrid XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_SPGrid">
             <Dim name="/YDim_SPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>

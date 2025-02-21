@@ -6478,10 +6478,10 @@ void add_dummy_grid_cv(D4Group *d4_grp, const eos2_grid_t & eos2_grid, const eos
 
 void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_grid, const eos2_grid_info_t &eos2_grid_info, const string& xdim_path, const string &ydim_path) {
 
-    auto ar_bt_dim1_unique = make_unique<Float64>("XDim");
+    auto ar_bt_dim1_unique = make_unique<Float64>(xdim_path);
     auto ar_bt_dim1 = ar_bt_dim1_unique.get();
     auto ar_dim1_unique = make_unique<HDFEOS2GeoCF1D>(eos2_grid_info.projcode, eos2_grid_info.upleft[0], eos2_grid_info.lowright[0],
-                                                        eos2_grid.xdim, "XDim", ar_bt_dim1);
+                                                        eos2_grid.xdim, xdim_path, ar_bt_dim1);
     auto ar_dim1 = ar_dim1_unique.get();
     ar_dim1->append_dim_ll(eos2_grid.xdim, xdim_path);
     dims_transform_to_dap4(ar_dim1,root_grp,true);
@@ -6492,11 +6492,11 @@ void add_CF_1D_cvs(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t &eos2_g
     add_var_dap4_attr(ar_dim1,"eos_cf_grid",attr_str_c,eos_cf_grid_value);
     d4_grp->add_var_nocopy(ar_dim1_unique.release());
 
-    auto ar_bt_dim0_unique = make_unique<Float64>("YDim");
+    auto ar_bt_dim0_unique = make_unique<Float64>(ydim_path);
     auto ar_bt_dim0 = ar_bt_dim0_unique.get();
     auto ar_dim0_unique = make_unique<HDFEOS2GeoCF1D>(eos2_grid_info.projcode, 
                                                       eos2_grid_info.upleft[1], eos2_grid_info.lowright[1],
-                                                      eos2_grid.ydim, "YDim", ar_bt_dim0);
+                                                      eos2_grid.ydim, ydim_path, ar_bt_dim0);
     auto ar_dim0 = ar_dim0_unique.get();
     ar_dim0->append_dim_ll(eos2_grid.ydim, ydim_path);
     dims_transform_to_dap4(ar_dim0,root_grp,true);
