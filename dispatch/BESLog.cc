@@ -41,6 +41,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
+#include "BESContextManager.h"
 #include "BESInternalFatalError.h"
 
 #if HAVE_UNISTD_H
@@ -188,6 +189,25 @@ pid_t BESLog::update_pid()
 }
 
 
+string BESLog::get_request_id() const
+{
+    bool found;
+    string request_id;
+    string olfs_log = BESContextManager::TheManager()->get_context("olfsLog", found);
+    if( found ) {
+        vector<string> tokens;
+        BESUtil::tokenize(olfs_log, tokens, mark);
+        if( tokens.size() >= 6 )
+            request_id = tokens[5];
+        else
+            request_id = "-";
+    }
+    else{
+        request_id = "-";
+    }
+    return request_id;
+}
+
 /** @brief Protected method that returns a string with the first fields of a log record.
  *
  * By default, the time will be expressed in ISO8601 format: "YYYY-MM-DDTHH:MM:SS zone"
@@ -218,7 +238,7 @@ std::string BESLog::log_record_begin() const {
         log_record_prolog = buf;
     }
 
-    log_record_prolog += d_log_record_prolog_base;
+    log_record_prolog += d_log_record_prolog_base + get_request_id() + mark;
     return log_record_prolog;
 }
 
