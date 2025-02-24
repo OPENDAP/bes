@@ -258,6 +258,8 @@ public:
         trace_log_record(TIMING_LOG_TYPE_KEY, msg, file, line);
     }
 
+    std::string get_request_id() const;
+
     void dump(std::ostream &strm) const override;
 
     static BESLog *TheLog();
