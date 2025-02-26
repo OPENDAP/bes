@@ -261,7 +261,7 @@ bool file_is_secured(const string &filename) {
  * of the credentials.
  * The map of maps is accomplished by the following formatting:
  *
- * @todo FIXME The 'bucket' key is bit used. jhrg 2/19/25
+ * @todo FIXME The 'bucket' key is not used. jhrg 2/19/25
  * cloudydap=url:https://s3.amazonaws.com/cloudydap/
  * cloudydap+=id:---------------------------
  * cloudydap+=key:**************************

@@ -45,10 +45,6 @@ using std::string;
 BESRequestHandlerList *BESRequestHandlerList::d_instance = nullptr;
 static std::once_flag d_euc_init_once;
 
-BESRequestHandlerList::BESRequestHandlerList() {}
-
-BESRequestHandlerList::~BESRequestHandlerList() {}
-
 /** @brief add a request handler to the list of registered handlers for this
  * server
  *
@@ -62,7 +58,7 @@ bool BESRequestHandlerList::add_handler(const string &handler_name, BESRequestHa
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    if (find_handler(handler_name) == 0) {
+    if (find_handler(handler_name) == nullptr) {
         _handler_list[handler_name] = handler_object;
         return true;
     }
@@ -86,9 +82,9 @@ BESRequestHandlerList::remove_handler(const string &handler_name)
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESRequestHandler *ret = 0;
-    BESRequestHandlerList::Handler_iter i;
-    i = _handler_list.find(handler_name);
+    BESRequestHandler *ret = nullptr;
+
+    auto i = _handler_list.find(handler_name);
     if (i != _handler_list.end()) {
         ret = (*i).second;
         _handler_list.erase(i);
@@ -107,12 +103,11 @@ BESRequestHandlerList::find_handler(const string &handler_name)
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESRequestHandlerList::Handler_citer i;
-    i = _handler_list.find(handler_name);
+    auto i = _handler_list.find(handler_name);
     if (i != _handler_list.end()) {
         return (*i).second;
     }
-    return 0;
+    return nullptr;
 }
 
 /** @brief return an iterator pointing to the first request handler in the
@@ -152,12 +147,19 @@ string BESRequestHandlerList::get_handler_names()
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    string ret = "";
+    string ret;
     bool first_name = true;
+#if 0
     BESRequestHandlerList::Handler_citer i = _handler_list.begin();
     for (; i != _handler_list.end(); i++) {
         if (!first_name) ret += ", ";
         ret += (*i).first;
+        first_name = false;
+    }
+#endif
+    for (auto const &handler_pair: _handler_list) {
+        if (!first_name) ret += ", ";
+        ret += handler_pair.first;
         first_name = false;
     }
     return ret;
@@ -216,6 +218,7 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
+#if 0
     BESRequestHandlerList::Handler_citer i = get_first_handler();
     BESRequestHandlerList::Handler_citer ie = get_last_handler();
     for (; i != ie; i++) {
@@ -225,35 +228,14 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
             p(dhi);
         }
     }
-}
-
-#if 0
-/** @brief Execute a single method that will fill in the response object
- * rather than iterating over the list of containers or request handlers.
- *
- * This method is for requests of a single type of data. The request is passed
- * off to the request handler for the first container in the data handler
- * interface. It is up to this request handlers method for the specified
- * response object type to fill in the response object. It can iterate over
- * the containers in the data handler interface, for example.
- *
- * @note This method is not currently used. jhrg 2/23/16
- *
- * @param dhi data handler interface that contains the necessary information
- * to fill in the response object
- * @throws BESInternalError if the request handler cannot be found for the
- * first containers data type or if the request handler cannot fill in the
- * specified response object.
- * @see BESDataHandlerInterface
- * @see BESContainer
- * @see BESResponseObject
- */
-void BESRequestHandlerList::execute_once(BESDataHandlerInterface &dhi)
-{
-    dhi.first_container();
-    execute_current(dhi);
-}
 #endif
+
+    for (auto const &handler_pair: _handler_list) {
+        auto p = handler_pair.second->find_method(dhi.action);
+        if (p)
+            p(dhi);
+    }
+}
 
 /** @brief Execute a single method for the current container that will fill
  * in the response object rather than iterating over the list of containers
@@ -326,14 +308,19 @@ void BESRequestHandlerList::dump(ostream &strm) const
 
     strm << BESIndent::LMarg << "BESRequestHandlerList::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    if (_handler_list.size()) {
+    if (!_handler_list.empty()) {
         strm << BESIndent::LMarg << "registered handlers:" << endl;
         BESIndent::Indent();
+#if 0
         BESRequestHandlerList::Handler_citer i = _handler_list.begin();
         BESRequestHandlerList::Handler_citer ie = _handler_list.end();
         for (; i != ie; i++) {
             BESRequestHandler *rh = (*i).second;
             rh->dump(strm);
+        }
+#endif
+        for (auto const &handler_pair: _handler_list) {
+            handler_pair.second->dump(strm);
         }
         BESIndent::UnIndent();
     }
@@ -359,7 +346,7 @@ void BESRequestHandlerList::initialize_instance() {
 
 void BESRequestHandlerList::delete_instance() {
     delete d_instance;
-    d_instance = 0;
+    d_instance = nullptr;
 }
 
 
