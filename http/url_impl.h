@@ -41,7 +41,7 @@ namespace http {
  * @note This class also manages time and time-based expiration using
  * KVP info that AWS puts in the query string of the URL.
  */
-class  url {
+class url {
 public:
     using kvp_map_t = std::map<std::string, std::vector<std::string>>;
 
@@ -71,6 +71,7 @@ public:
 
     url(const http::url &src_url) = default;
 
+    // TODO Remove these shared_ptr methods if possible. jhrg 2/20/25
     explicit url(const std::shared_ptr<http::url> &source_url) :
             d_source_url_str(source_url->d_source_url_str),
             d_protocol(source_url->d_protocol),
@@ -120,7 +121,7 @@ public:
     virtual const std::vector<std::string> &query_parameter_values(const std::string &key) const;
 
     virtual bool is_expired();
-    virtual bool is_trusted() { return d_trusted; };
+    virtual bool is_trusted() const { return d_trusted; };
 
     virtual std::string dump();
 };

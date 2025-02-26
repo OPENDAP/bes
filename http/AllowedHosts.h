@@ -53,24 +53,33 @@ namespace http {
  */
 class AllowedHosts {
 private:
-	static AllowedHosts *d_instance;
     std::vector<std::string> d_allowed_hosts;
+
+#if 0
 
     static void initialize_instance();
     static void delete_instance();
 
-    AllowedHosts();
+#endif
 
     bool check(const std::string &url);
 
+    // Private constructor to prevent direct instantiation
+    AllowedHosts();
 public:
-    virtual ~AllowedHosts() {}
+    AllowedHosts(const AllowedHosts &) = delete;
+    AllowedHosts &operator=(const AllowedHosts &) = delete;
 
+    virtual ~AllowedHosts() = default;
+
+    // Static member function that returns the pointer to the singleton instance
     static AllowedHosts *theHosts();
 
-    bool is_allowed(std::shared_ptr<http::url> candidate_url);
-    bool is_allowed(std::shared_ptr<http::url> candidate_url, std::string &whynot);
+    bool is_allowed(const http::url &candidate_url);
+    bool is_allowed(const http::url &candidate_url, std::string &whynot);
 
+    bool is_allowed(const std::shared_ptr<http::url> &candidate_url);
+    bool is_allowed(const std::shared_ptr<http::url> &candidate_url, std::string &whynot);
 };
 
 } // namespace bes

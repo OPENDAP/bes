@@ -93,21 +93,18 @@ void BESContextManager::unset_context(const string &name)
 string BESContextManager::get_context(const string &name, bool &found)
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
-#if 1
-    string ret = "";
+
+    string ret;
     found = false;
-    auto i = _context_list.find(name);
+    // Use find() instead of operator[] to avoid inserting a default value at key
+    // if it does not exist int he map. jhrg 2/26/25
+    auto const i = _context_list.find(name);
     if (i != _context_list.end()) {
-        ret = (*i).second;
+        ret = i->second;
         found = true;
     }
+
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\", found=\"" << found << "\" value:\"" << ret << "\"" << endl);
-#else
-
-    string ret = _context_list[name];
-    BESDEBUG(MODULE, prolog << "name=\"" << name << "\"  value: \"" << ret << "\"" << endl);
-
-#endif
 
     return ret;
 }
