@@ -132,7 +132,7 @@ static string http_code_to_string(long code) {
 /**
  * @brief Translate a cURL authentication type value (int) into a human readable string.
  * @param auth_type The cURL authentication type value to convert
- * @return The human readable string associated with auth_type.
+ * @return The human-readable string associated with auth_type.
  */
 static string getCurlAuthTypeName(unsigned long auth_type) {
 
@@ -696,7 +696,6 @@ bool is_retryable(const string &target_url) {
  *
  *  If the curl_code is another value a BESInternalError is thrown.
  *
- * @param ceh The cURL easy handle used in the request.
  * @param eff_req_url The requested URL - This should be the 'effective URL'.
  * @param curl_code The CURLcode value to evaluate.
  * @param error_buffer The CURLOPT_ERRORBUFFER used in the request.
@@ -1167,6 +1166,86 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
     str->resize(current_size + nbytes);
     memcpy((void *) (str->data() + current_size), buffer, nbytes);
     return nbytes;
+}
+
+/**
+ * @brief Perform an HTTP HEAD request.
+ * @param target_url
+ * @param http_code HTTP status code
+ * @return True if the HEAD request was successful, false otherwise.
+ */
+bool http_head(const string &target_url, long &http_code) {
+    curl_slist *request_headers = nullptr;
+    try {
+        // Add the authorization headers
+        request_headers = add_edl_auth_headers(request_headers);
+
+        auto const url = std::make_shared<http::url>(target_url);
+        request_headers = sign_url_for_s3_if_possible(url, request_headers);
+
+#if 0
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(url);
+        if (credentials) {
+            INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url + '\n');
+            string edl_token = credentials->get("edl_token");
+            if (!edl_token.empty()) {
+                INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
+                request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
+            }
+        }
+#endif
+
+        CURL *ceh = curl::init(target_url, request_headers, nullptr);
+        if (!ceh)
+            throw BESInternalError("Failed to acquire cURL Easy Handle!", __FILE__, __LINE__);
+
+        vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
+        set_error_buffer(ceh, error_buffer.data());
+
+        curl_easy_setopt(ceh, CURLOPT_NOBODY, 1L);
+
+        const int tries = 3;
+        int attempts = 0;
+        bool status = false;
+        do {
+            const CURLcode curl_code = curl_easy_perform(ceh);
+            bool curl_success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
+            if (curl_success)
+                http_code = get_http_code(ceh);
+            else
+                http_code = 0;
+
+            if (curl_success && http_code == 200) {
+                status = true;
+                break;
+            }
+
+            if (curl_success && (http_code / 100 == 5)) {   // retry any '500' error (501, ...)
+                const int wait_time_us = 500'000;
+                usleep(wait_time_us);
+                continue;
+            }
+
+            if (!curl_success || http_code != 200) {
+                ERROR_LOG(string("Problem with HEAD request, HTTP response: ") + to_string(http_code) + '\n');
+                break;
+            }
+        } while (attempts++ < tries);
+
+        if (attempts >= tries) {
+            ERROR_LOG(string("HEAD request, failed after ") + to_string(tries) + " attempts.\n");
+            status = false;
+        }
+
+        unset_error_buffer(ceh);
+        curl_easy_cleanup(ceh);
+        curl_slist_free_all(request_headers);
+        return status;
+    }
+    catch (...) {
+        curl_slist_free_all(request_headers);
+        throw;
+    }
 }
 
 /**
