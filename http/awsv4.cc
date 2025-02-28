@@ -316,7 +316,7 @@ std::string compute_awsv4_signature(const std::string &canonical_uri, const std:
     // so here it is without.
     //
     // NOTE: Changing this will break the awsv4_test using tests. jhrg 1/3/20
-    std::vector<std::string> headers{"host: ", "x-amz-date: "};
+    std::vector<std::string> headers{"host:", "x-amz-date:"};
     headers[0].append(host);
     headers[1].append(ISO8601_date(request_date));
 
@@ -366,9 +366,10 @@ std::string compute_awsv4_signature(const std::string &canonical_uri, const std:
  *
  * This version takes an http::url object for the path, query string and host.
  *
- * @param uri_str The URI to fetch
+ * @param uri The URI to fetch
  * @param request_date The current date & time
  * @param secret_key The Secret key for this resource (the thing referenced by the URI).
+ * @param public_key The Public key associated with the secret key.
  * @param region The AWS region where the request is being made (us-west-2 by default)
  * @param service The AWS service that is the target of the request (S3 by default)
  * @return The AWS V4 Signature string.

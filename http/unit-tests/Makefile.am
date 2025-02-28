@@ -75,7 +75,7 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 if CPPUNIT
 
 UNIT_TESTS =  HttpUtilsTest HttpErrorTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
-AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest
+AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest aws-cpp-sdk-s3-get
 
 # CredentialsManagerTest HttpCacheTest
 
@@ -96,6 +96,9 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
+
+aws_cpp_sdk_s3_get_SOURCES = aws-cpp-sdk-s3-get.cc
+aws_cpp_sdk_s3_get_LDADD = -laws-cpp-sdk-s3 -laws-cpp-sdk-core
 
 HttpUtilsTest_SOURCES = HttpUtilsTest.cc
 HttpUtilsTest_LDADD = $(LIBADD)

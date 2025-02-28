@@ -782,7 +782,13 @@ public:
         auto const cmac_url = getenv("CMAC_URL");
         DBG(cerr << prolog << "CMAC_URL: " << cmac_url << "\n");
         const string url = "https://cloudydap.s3.us-east-1.amazonaws.com/samples/chunked_twoD.h5";
-        if (cmac_url && url.find(cmac_url) == 0) {
+        DBG(cerr << prolog << "Retrieving: " << url << "\n");
+        long http_response_code;
+        bool result = curl::http_head(url, http_response_code);
+        DBG(cerr << prolog << "HTTP Response code: " << http_response_code << "\n");
+        CPPUNIT_ASSERT_MESSAGE("The HEAD request should have succeeded.", result);
+#if 0
+          if (cmac_url && url.find(cmac_url) == 0) {
             DBG(cerr << prolog << "Retrieving: " << url << "\n");
             long http_response_code;
             bool result = curl::http_head(url, http_response_code);
@@ -792,6 +798,7 @@ public:
         else {
             DBG(cerr << prolog << "Skipping test do to missing CMAC_URL credentials\n");
         }
+#endif
         DBG(cerr << prolog << "END\n");
     }
 

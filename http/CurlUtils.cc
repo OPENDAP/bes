@@ -1195,13 +1195,15 @@ bool http_head(const string &target_url, long &http_code) {
         }
 #endif
 
-        CURL *ceh = curl::init(target_url, request_headers, nullptr);
+        vector<string> response_headers;
+        CURL *ceh = curl::init(target_url, request_headers, &response_headers);
         if (!ceh)
             throw BESInternalError("Failed to acquire cURL Easy Handle!", __FILE__, __LINE__);
 
         vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
         set_error_buffer(ceh, error_buffer.data());
 
+        curl_easy_setopt(ceh, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(ceh, CURLOPT_NOBODY, 1L);
 
         const int tries = 3;
@@ -1522,7 +1524,7 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
  * because some of the methods used modify internal state).
  * @param req_headers The header list that will hold the Authorization, etc.,
  * headers.
- * @param The modified list of request headers
+ * @return The modified list of request headers
  */
 curl_slist *
 sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slist *req_headers) {
@@ -1613,7 +1615,6 @@ static CURL *init_no_follow_redirects_handle(const string &target_url, const cur
     unset_error_buffer(ceh);
     return ceh;
 }
-
 
 /**
  *
@@ -1845,7 +1846,6 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
  * an http code of 2xx, 4xx, or 5xx is considered an error.
  *
  * @param origin_url The origin url for the request
- * @param redirect_url Returned value parameter for the redirect url.
  * @return The redirect URL string.
  */
 std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
@@ -1853,9 +1853,8 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
     if (!http::AllowedHosts::theHosts()->is_allowed(origin_url)) {
-        string err = (string) "The specified URL " + origin_url->str()
-                     + " does not match any of the accessible services in"
-                     + " the allowed hosts list.";
+        const string err = "The specified URL " + origin_url->str()
+            + " does not match any of the accessible services in the allowed hosts list.";
         BESDEBUG(MODULE, prolog << err << endl);
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }

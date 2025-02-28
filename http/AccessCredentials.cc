@@ -48,9 +48,8 @@ const char *AccessCredentials::URL_KEY = "url";
  */
 string
 AccessCredentials::get(const string &key) {
-    map<string, string>::iterator it;
     string value;
-    it = d_kvp.find(key);
+    auto const it = d_kvp.find(key);
     if (it != d_kvp.end())
         value = it->second;
     return value;
