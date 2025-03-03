@@ -31,7 +31,6 @@
 #ifndef I_AllowedHosts_H
 #define I_AllowedHosts_H 1
 
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -55,14 +54,7 @@ class AllowedHosts {
 private:
     std::vector<std::string> d_allowed_hosts;
 
-#if 0
-
-    static void initialize_instance();
-    static void delete_instance();
-
-#endif
-
-    bool check(const std::string &url);
+    bool check(const std::string &url) const;
 
     // Private constructor to prevent direct instantiation
     AllowedHosts();

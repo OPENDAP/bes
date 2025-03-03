@@ -109,12 +109,8 @@ BESContainerStorageVolatile::look_for(const string &sym_name)
     BESContainerStorageVolatile::Container_citer i;
     i = _container_list.find(sym_name);
     if (i != _container_list.end()) {
-#if 1
         BESContainer *c = (*i).second;
         ret_container = c->ptr_duplicate();
-#else
-        ret_container = (*i).second;
-#endif
     }
 
     return ret_container;
@@ -156,8 +152,8 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
     BESUtil::check_path(real_name, _root_dir, _follow_sym_links);
 
     // add the root directory to the real_name passed
-    // TODO Remove the 'false' since that is the default value OR include both default params' values. jhrg 2/18/25
-    string fully_qualified_real_name = BESUtil::assemblePath(_root_dir, real_name, false);
+    // Removed the 'false' since that is the default value. jhrg 3/3/25
+    string fully_qualified_real_name = BESUtil::assemblePath(_root_dir, real_name);
 
     BESDEBUG("container","BESContainerStorageVolatile::add_container() - "
     		<< " _root_dir: " << _root_dir

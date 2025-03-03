@@ -149,14 +149,6 @@ string BESRequestHandlerList::get_handler_names()
 
     string ret;
     bool first_name = true;
-#if 0
-    BESRequestHandlerList::Handler_citer i = _handler_list.begin();
-    for (; i != _handler_list.end(); i++) {
-        if (!first_name) ret += ", ";
-        ret += (*i).first;
-        first_name = false;
-    }
-#endif
     for (auto const &handler_pair: _handler_list) {
         if (!first_name) ret += ", ";
         ret += handler_pair.first;
@@ -217,18 +209,6 @@ void BESRequestHandlerList::execute_each(BESDataHandlerInterface &dhi)
 void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
-
-#if 0
-    BESRequestHandlerList::Handler_citer i = get_first_handler();
-    BESRequestHandlerList::Handler_citer ie = get_last_handler();
-    for (; i != ie; i++) {
-        BESRequestHandler *rh = (*i).second;
-        p_request_handler_method p = rh->find_method(dhi.action);
-        if (p) {
-            p(dhi);
-        }
-    }
-#endif
 
     for (auto const &handler_pair: _handler_list) {
         auto p = handler_pair.second->find_method(dhi.action);
@@ -311,14 +291,6 @@ void BESRequestHandlerList::dump(ostream &strm) const
     if (!_handler_list.empty()) {
         strm << BESIndent::LMarg << "registered handlers:" << endl;
         BESIndent::Indent();
-#if 0
-        BESRequestHandlerList::Handler_citer i = _handler_list.begin();
-        BESRequestHandlerList::Handler_citer ie = _handler_list.end();
-        for (; i != ie; i++) {
-            BESRequestHandler *rh = (*i).second;
-            rh->dump(strm);
-        }
-#endif
         for (auto const &handler_pair: _handler_list) {
             handler_pair.second->dump(strm);
         }

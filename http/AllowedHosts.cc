@@ -162,14 +162,13 @@ bool AllowedHosts::is_allowed(const http::url &candidate_url, std::string &why_n
     return isAllowed;
 }
 
-bool AllowedHosts::check(const std::string &url){
+bool AllowedHosts::check(const std::string &url) const {
     bool isAllowed=false;
     for (auto const &a_regex_pattern: d_allowed_hosts) {
         BESRegex reg_expr(a_regex_pattern.c_str());
         int match_result = reg_expr.match(url.c_str(), (int)url.size());
         if (match_result >= 0) {
-            // auto match_length = (unsigned int) match_result;
-            if (match_result == (int)url.size()) {
+            if (match_result == static_cast<int>(url.size())) {
                 BESDEBUG(MODULE, prolog << "FULL MATCH. pattern: " << a_regex_pattern << " url: " << url << endl);
                 isAllowed = true;;
             } else {
@@ -177,27 +176,6 @@ bool AllowedHosts::check(const std::string &url){
             }
         }
     }
-
-#if 0
-    auto it = d_allowed_hosts.begin();
-    auto end_it = d_allowed_hosts.end();
-    for (; it != end_it && !isAllowed; it++) {
-        string a_regex_pattern = *it;
-        BESRegex reg_expr(a_regex_pattern.c_str());
-        int match_result = reg_expr.match(url.c_str(), url.size());
-        if (match_result >= 0) {
-            auto match_length = (unsigned int) match_result;
-            if (match_length == url.size()) {
-                BESDEBUG(MODULE,
-                         prolog << "FULL MATCH. pattern: " << a_regex_pattern << " url: " << url << endl);
-                isAllowed = true;;
-            } else {
-                BESDEBUG(MODULE,
-                         prolog << "No Match. pattern: " << a_regex_pattern << " url: " << url << endl);
-            }
-        }
-    }
-#endif
 
     return isAllowed;
 }
