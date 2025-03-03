@@ -189,6 +189,10 @@ pid_t BESLog::update_pid()
 }
 
 
+/**
+* @TODO We need to cache this. Because endlessly retrieving and reparsing the
+* 	 olfsLog entry to find the request id is slow.
+*/
 string BESLog::get_request_id() const
 {
     bool found;
