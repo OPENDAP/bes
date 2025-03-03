@@ -228,6 +228,9 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_scalar_memb_str_array.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_array_fix_vlen_str.h5.dmrpp.bescmd>test.nc
 
+#VLEN support
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vlen.h5.dmrpp.bescmd>test.nc
+
 
 #HDF4 support
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vg_hl_test.hdf.dmrpp.bescmd>test.nc

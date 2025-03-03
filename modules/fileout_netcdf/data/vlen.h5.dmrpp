@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="vlen.h5" dmrpp:href="data/vlen.h5" dmrpp:version="3.21.1">
+    <Int32 name="DS1">
+        <Dim size="2"/>
+        <Dim size="12"/>
+        <Attribute name="orig_datatype" type="String">
+            <Value>VLEN</Value>
+        </Attribute>
+        <dmrpp:missingdata>eJxjZmBgYAJiRgbiACMUg/QwAzErEHMAMS8QiwKxEhCbA3EkEE8AYgARwAF/</dmrpp:missingdata>
+    </Int32>
+    <Int32 name="DS1_vlen_index">
+        <Dim size="2"/>
+        <Attribute name="orig_datatype" type="String">
+            <Value>VLEN_INDEX</Value>
+        </Attribute>
+        <dmrpp:missingdata>eJxjZmBg4AFiAABQABA=</dmrpp:missingdata>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2025-02-19T19:01:38Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1655/bes/modules/dmrpp_module/vlen.h5 -r vlen.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

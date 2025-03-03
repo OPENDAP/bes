@@ -1500,7 +1500,7 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Value>NpPolarGrid25km eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_NpPolarGrid25km">
             <Dim name="/XDim_NpPolarGrid25km"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -1518,7 +1518,7 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Value>NpPolarGrid25km XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_NpPolarGrid25km">
             <Dim name="/YDim_NpPolarGrid25km"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -2133,7 +2133,7 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Value>SpPolarGrid25km eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_SpPolarGrid25km">
             <Dim name="/XDim_SpPolarGrid25km"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -2151,7 +2151,7 @@ codeListValue=&quot;creation&quot;&gt;creation
                 <Value>SpPolarGrid25km XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_SpPolarGrid25km">
             <Dim name="/YDim_SpPolarGrid25km"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>

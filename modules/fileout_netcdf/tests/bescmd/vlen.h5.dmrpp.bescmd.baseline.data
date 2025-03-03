@@ -1,0 +1,27 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 12 ;
+	dim3 = 2 ;
+variables:
+	int DS1(dim1, dim2) ;
+		DS1:orig_datatype = "VLEN" ;
+	int DS1_vlen_index(dim3) ;
+		DS1_vlen_index:orig_datatype = "VLEN_INDEX" ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-1655/bes/modules/dmrpp_module/vlen.h5 -r vlen.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex vlen.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"vlen.h5.dmrpp\"}]}]" ;
+data:
+
+ DS1 =
+  3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144 ;
+
+ DS1_vlen_index = 3, 12 ;
+}

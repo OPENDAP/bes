@@ -613,7 +613,7 @@ END
                 <Value>MOD_Grid_Snow_500m eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_MOD_Grid_Snow_500m">
             <Dim name="/XDim_MOD_Grid_Snow_500m"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -631,7 +631,7 @@ END
                 <Value>MOD_Grid_Snow_500m XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_MOD_Grid_Snow_500m">
             <Dim name="/YDim_MOD_Grid_Snow_500m"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>

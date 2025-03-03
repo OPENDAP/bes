@@ -17,18 +17,18 @@ group: grid1 {
   		eos_cf_projection:earth_radius = 6371007.181 ;
   		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
   		eos_cf_projection:eos_cf_grid_mapping = "grid1 eos_cf_projection" ;
-  	double XDim(XDim_grid1) ;
-  		XDim:standard_name = "projection_x_coordinate" ;
-  		XDim:long_name = "x coordinate of projection " ;
-  		XDim:units = "meter" ;
-  		XDim:_CoordinateAxisType = "GeoX" ;
-  		XDim:eos_cf_grid = "grid1 XDim" ;
-  	double YDim(YDim_grid1) ;
-  		YDim:standard_name = "projection_y_coordinate" ;
-  		YDim:long_name = "y coordinate of projection " ;
-  		YDim:units = "meter" ;
-  		YDim:_CoordinateAxisType = "GeoY" ;
-  		YDim:eos_cf_grid = "grid1 YDim" ;
+  	double XDim_grid1(XDim_grid1) ;
+  		XDim_grid1:standard_name = "projection_x_coordinate" ;
+  		XDim_grid1:long_name = "x coordinate of projection " ;
+  		XDim_grid1:units = "meter" ;
+  		XDim_grid1:_CoordinateAxisType = "GeoX" ;
+  		XDim_grid1:eos_cf_grid = "grid1 XDim" ;
+  	double YDim_grid1(YDim_grid1) ;
+  		YDim_grid1:standard_name = "projection_y_coordinate" ;
+  		YDim_grid1:long_name = "y coordinate of projection " ;
+  		YDim_grid1:units = "meter" ;
+  		YDim_grid1:_CoordinateAxisType = "GeoY" ;
+  		YDim_grid1:eos_cf_grid = "grid1 YDim" ;
   	double Latitude(YDim_grid1, XDim_grid1) ;
   		Latitude:units = "degrees_north" ;
   		Latitude:eos_latlon = "grid1 lat" ;
@@ -39,9 +39,9 @@ group: grid1 {
 
    eos_cf_projection = 112 ;
 
-   XDim = -20000000, -19750000, -19500000, -19250000 ;
+   XDim_grid1 = -20000000, -19750000, -19500000, -19250000 ;
 
-   YDim = 1000000, 750000, 500000, 250000 ;
+   YDim_grid1 = 1000000, 750000, 500000, 250000 ;
 
    Latitude =
   7.86905518227308, 7.86905518227308, 7.86905518227308, 7.86905518227308,

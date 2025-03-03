@@ -561,9 +561,6 @@
                 </Structure>
             </Group>
             <Group name="OBSERVATIONS">
-                <Dimension name="time" size="1"/>
-                <Dimension name="scanline" size="2906"/>
-                <Dimension name="ground_pixel" size="215"/>
                 <Dimension name="small_pixel_radiance_vlen" size="6"/>
                 <Int32 name="spectral_channel">
                     <Dim name="/BAND8_RADIANCE/STANDARD_MODE/spectral_channel"/>
@@ -626,9 +623,9 @@
                     </Attribute>
                 </UInt16>
                 <Float32 name="small_pixel_radiance">
-                    <Dim name="/BAND8_RADIANCE/STANDARD_MODE/OBSERVATIONS/time"/>
-                    <Dim name="/BAND8_RADIANCE/STANDARD_MODE/OBSERVATIONS/scanline"/>
-                    <Dim name="/BAND8_RADIANCE/STANDARD_MODE/OBSERVATIONS/ground_pixel"/>
+                    <Dim name="/BAND8_RADIANCE/STANDARD_MODE/time"/>
+                    <Dim name="/BAND8_RADIANCE/STANDARD_MODE/scanline"/>
+                    <Dim name="/BAND8_RADIANCE/STANDARD_MODE/ground_pixel"/>
                     <Dim name="/BAND8_RADIANCE/STANDARD_MODE/OBSERVATIONS/small_pixel_radiance_vlen"/>
                     <Attribute name="comment" type="String">
                         <Value>Measured spectral radiance for the spectral channel dedicated for the small pixel measurements</Value>
@@ -647,6 +644,9 @@
                     </Attribute>
                     <Attribute name="orig_datatype" type="String">
                         <Value>VLEN</Value>
+                    </Attribute>
+                    <Attribute name="vlen_description" type="String">
+                        <Value>The original variable-length array data is stored as the regular array data that has an extra dimension. The data gap is filled with 0. The actual length of each original variable-length element is stored in another array. The variable name of this array is small_pixel_radiance_vlen_index.</Value>
                     </Attribute>
                 </Float32>
                 <Int32 name="small_pixel_radiance_vlen_index">

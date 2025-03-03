@@ -956,7 +956,7 @@ END
                 <Value>grid1km eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_grid1km">
             <Dim name="/XDim_grid1km"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -974,7 +974,7 @@ END
                 <Value>grid1km XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_grid1km">
             <Dim name="/YDim_grid1km"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -1568,7 +1568,7 @@ END
                 <Value>grid500m eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_grid500m">
             <Dim name="/XDim_grid500m"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -1586,7 +1586,7 @@ END
                 <Value>grid500m XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_grid500m">
             <Dim name="/YDim_grid500m"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -1877,7 +1877,7 @@ END
                 <Value>grid5km eos_cf_projection</Value>
             </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_grid5km">
             <Dim name="/XDim_grid5km"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -1895,7 +1895,7 @@ END
                 <Value>grid5km XDim</Value>
             </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_grid5km">
             <Dim name="/YDim_grid5km"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
