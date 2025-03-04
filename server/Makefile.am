@@ -19,6 +19,8 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
+EXTRA_DIST = beslog2json.py
+
 bin_PROGRAMS = beslistener besdaemon
 dist_bin_SCRIPTS = besctl hyraxctl
 
