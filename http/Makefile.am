@@ -23,6 +23,11 @@ libbes_http_la_SOURCES = $(SRCS) $(HDRS)
 libbes_http_la_LDFLAGS =
 libbes_http_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
 
+noinst_PROGRAMS = aws_sdk_test
+aws_sdk_test_SOURCES = AWS_SDK_Test.cc
+aws_sdk_test_LDFLAGS = -L.
+aws_sdk_test_LDADD = libbes_http.la -laws-cpp-sdk-s3 -laws-cpp-sdk-core
+
 pkginclude_HEADERS = $(HDRS) 
 
 pkgdata_DATA =
@@ -46,6 +51,7 @@ SRCS = CurlUtils.cc \
     AllowedHosts.cc \
     AccessCredentials.cc \
     CredentialsManager.cc \
+    AWS_SDK.cc \
     awsv4.cc
 
 HDRS = CurlUtils.h \
@@ -60,6 +66,7 @@ HDRS = CurlUtils.h \
     AllowedHosts.h \
     AccessCredentials.h \
     CredentialsManager.h \
+    AWS_SDK.h \
     awsv4.h
 
 # Removed jhrg 2/26/24 HttpCache.h     HttpCache.cc

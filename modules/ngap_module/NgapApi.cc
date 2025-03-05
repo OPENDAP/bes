@@ -250,14 +250,13 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
     // And, since we know that collection_concept_id will never contain a '/', and we know that the optional
     // part is separated from the collection_concept_id by a '/' we look for that and of we find it we truncate
     // the value at that spot.
-    string optional_part;
     size_t slash_pos = collection_name.find('/');
     if (slash_pos != string::npos) {
-        optional_part = collection_name.substr(slash_pos);
-        BESDEBUG(MODULE, prolog << "Found optional collections name component: " << optional_part << endl);
+        const string optional_part = collection_name.substr(slash_pos);
+        BESDEBUG(MODULE, prolog << "Found optional collections name component: " << optional_part << '\n');
         collection_name = collection_name.substr(0, slash_pos);
     }
-    BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << endl);
+    BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << '\n');
 
     // Build the CMR query URL for the dataset
     string cmr_url = get_cmr_search_endpoint_url() + "?";
@@ -266,11 +265,11 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
         CURL *ceh = curl_easy_init();
         char *esc_url_content;
 
-        esc_url_content = curl_easy_escape(ceh, collection_name.c_str(), collection_name.size());
+        esc_url_content = curl_easy_escape(ceh, collection_name.c_str(), static_cast<int>(collection_name.size()));
         cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
         curl_free(esc_url_content);
 
-        esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), granule_name.size());
+        esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), static_cast<int>(granule_name.size()));
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
 

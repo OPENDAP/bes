@@ -260,9 +260,9 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
  */
 void NgapOwnedContainer::filter_response(const map <string, string, std::less<>> &content_filters, string &content) {
     for (const auto &filter: content_filters) {
-        unsigned int replace_count = BESUtil::replace_all(content, filter.first, filter.second);
+        const unsigned int replace_count = BESUtil::replace_all(content, filter.first, filter.second);
         BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" << filter.first
-                 << ") with " << filter.second << " in cached RemoteResource" << endl);
+                 << ") with " << filter.second << " in the DMR++" << endl);
     }
 }
 
@@ -329,6 +329,7 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
     try {
         string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
         INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
+        // TODO AWS Replace with AWS C++ SDK call.
         curl::http_get(dmrpp_url_str, dmrpp_string);
         map <string, string, std::less<>> content_filters;
         if (!get_opendap_content_filters(content_filters)) {
@@ -383,6 +384,7 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
 
     try {
+        // TODO AWS Replace with AWS C++ SDK call.
         curl::http_get(dmrpp_url_str, dmrpp_string);
         // filter the DMRPP from the DAAC's bucket to replace the template href with the data_url
         map <string, string, std::less<>> content_filters;
@@ -420,22 +422,21 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     if (NgapRequestHandler::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
         return true;
     }
-    else {
-        // Else, the DMR++ is neither in the memory cache nor the file cache.
-        // Read it from S3, etc., and filter it. Put it in the memory cache
-        bool dmrpp_read = false;
 
-        // If the server is set up to try the OPeNDAP bucket, look there first.
-        if (NgapOwnedContainer::d_use_opendap_bucket) {
-            // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
-            // we don't also try the DAAC bucket.
-            dmrpp_read = dmrpp_read_from_opendap_bucket(dmrpp_string);
-        }
+    // Else, the DMR++ is neither in the memory cache nor the file cache.
+    // Read it from S3, etc., and filter it. Put it in the memory cache
+    bool dmrpp_read = false;
 
-        // Try the DAAC bucket if either the OPeNDAP bucket is not used or the OPeNDAP bucket failed
-        if (!dmrpp_read) {
-            dmrpp_read_from_daac_bucket(dmrpp_string);
-        }
+    // If the server is set up to try the OPeNDAP bucket, look there first.
+    if (NgapOwnedContainer::d_use_opendap_bucket) {
+        // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
+        // we don't also try the DAAC bucket.
+        dmrpp_read = dmrpp_read_from_opendap_bucket(dmrpp_string);
+    }
+
+    // Try the DAAC bucket if either the OPeNDAP bucket is not used or the OPeNDAP bucket failed
+    if (!dmrpp_read) {
+        dmrpp_read_from_daac_bucket(dmrpp_string);
     }
 
     // if we get here, the DMR++ has been pulled over the network. Put it in both caches.

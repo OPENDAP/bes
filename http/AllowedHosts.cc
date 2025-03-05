@@ -1,5 +1,3 @@
-// RemoteAccess.cc
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the OPeNDAP Back-End Server (BES)

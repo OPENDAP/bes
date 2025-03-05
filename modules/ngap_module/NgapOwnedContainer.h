@@ -29,13 +29,15 @@
 
 #include <string>
 #include <map>
-#include <memory>
 
 #include "BESContainer.h"
 
-namespace http {
+#if 0
+  namespace http {
 class RemoteResource;
 }
+#endif
+
 
 namespace ngap {
 

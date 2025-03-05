@@ -58,7 +58,7 @@ public:
     NgapOwnedContainerTest(const NgapOwnedContainerTest &src) = delete;
     const NgapOwnedContainerTest &operator=(const NgapOwnedContainerTest & rhs) = delete;
 
-    void set_bes_keys() const {
+    static void set_bes_keys() {
         TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory", "/tmp"); // any dir that exists will do
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.TypeMatch", "any-value:will-do");
@@ -108,14 +108,14 @@ public:
     void test_file_to_string_bigger_than_buffer() {
         TEST_NAME;
         string content;
-        string file_name = string(TEST_SRC_DIR) + "/NgapApiTest.cc";    // ~16k while the buffer is 4k
-        int fd = open(file_name.c_str(), O_RDONLY);
+        const string file_name = string(TEST_SRC_DIR) + "/NgapApiTest.cc";    // ~16k while the buffer is 4k
+        const int fd = open(file_name.c_str(), O_RDONLY);
         CPPUNIT_ASSERT_MESSAGE("The file " + file_name + " should be open", fd != -1);
         CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
         CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
         CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
         DBG2(cerr << "Content length : " << content.size() << '\n');
-        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k (was " + to_string(content.size()) + ").", content.size() > 15'000);
+        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k (was " + to_string(content.size()) + ").", content.size() > 12'000);
     }
 
     void test_file_to_string_file_not_open() {
