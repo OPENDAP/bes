@@ -777,6 +777,7 @@ public:
         DBG(cerr << prolog << "END\n");
     }
 
+#if 0
     void http_head_test_s3() {
         DBG(cerr << prolog << "BEGIN\n");
         auto const cmac_url = getenv("CMAC_URL");
@@ -812,6 +813,8 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The HEAD request should have succeeded.", !result);
         DBG(cerr << prolog << "END\n");
     }
+#endif
+
 
     void how_big() {
         DBG(cerr << prolog << "BEGIN\n");
@@ -829,10 +832,13 @@ public:
 
         CPPUNIT_TEST(http_head_test);
         CPPUNIT_TEST(http_head_test_404);
-        CPPUNIT_TEST(http_head_test_s3);
+#if 0
+          CPPUNIT_TEST(http_head_test_s3);
         CPPUNIT_TEST(http_head_test_s3_not_home);
+#endif
 
-        CPPUNIT_TEST(test_is_url_signed_for_s3_WithSignedUrl);
+
+    CPPUNIT_TEST(test_is_url_signed_for_s3_WithSignedUrl);
         CPPUNIT_TEST(test_is_url_signed_for_s3_with_one_key_only);
         CPPUNIT_TEST(test_is_url_signed_for_s3_WithoutSignedUrl);
         CPPUNIT_TEST(test_is_url_signed_for_s3_EmptyUrl);

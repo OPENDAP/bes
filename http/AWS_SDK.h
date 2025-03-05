@@ -33,12 +33,14 @@
 
 #include <aws/s3/S3Client.h>
 
-class AWS_SDK {
+#include "IAWS_SDK.h"
+
+class AWS_SDK: public IAWS_SDK {
     Aws::S3::S3Client d_get_s3_client;
     bool d_is_s3_initialized = false;
 
     void ok() const;  // throws BESInternalFatalError if the AWS_SDK instance is used before initialization.
-    Aws::S3::S3Client get_s3_client(const std::string &region);
+    static Aws::S3::S3Client get_s3_client(const std::string &region);
 
 public:
     AWS_SDK() = default;
@@ -51,9 +53,9 @@ public:
         d_is_s3_initialized = true;
     }
 
-    bool s3_head(const std::string &bucket, const std::string &key);
-    std::string s3_get_as_string(const std::string &bucket, const std::string &key);
-    bool s3_get_as_file(const std::string &bucket, const std::string &key, const std::string &filename);
+    bool s3_head(const std::string &bucket, const std::string &key) const;
+    std::string s3_get_as_string(const std::string &bucket, const std::string &key) const;
+    bool s3_get_as_file(const std::string &bucket, const std::string &key, const std::string &filename) const;
 };
 
 #endif //AWS_SDK_H

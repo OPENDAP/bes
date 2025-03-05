@@ -66,6 +66,7 @@ HDRS = CurlUtils.h \
     AllowedHosts.h \
     AccessCredentials.h \
     CredentialsManager.h \
+    IAWS_SDK.h \
     AWS_SDK.h \
     awsv4.h
 

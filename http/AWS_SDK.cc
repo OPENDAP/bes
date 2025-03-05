@@ -2,7 +2,7 @@
 
 // This file is part of the OPeNDAP Back-End Server (BES)
 // and creates an allowed hosts list of which systems that may be
-// accessed by the server as part of it's routine operation.
+// accessed by the server as part of its routine operation.
 
 // Copyright (c) 2025 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
@@ -67,12 +67,11 @@ void AWS_SDK::ok() const {
 
 /**
  *
- * @param s3_client S3 Client object
  * @param bucket Name of the S3 bucket
  * @param key Object key in the bucket
  * @return True if the object exists and can be accessed, false otherwise
  */
-bool AWS_SDK::s3_head(const string &bucket, const string &key) {
+bool AWS_SDK::s3_head(const string &bucket, const string &key) const {
     ok();
 
     Aws::S3::Model::HeadObjectRequest head_request;
@@ -93,12 +92,11 @@ bool AWS_SDK::s3_head(const string &bucket, const string &key) {
 
 /**
  *
- * @param s3_client S3 Client object
  * @param bucket Name of the S3 bucket
  * @param key Object key in the bucket
  * @return Received data as a string or the empty string
  */
-string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) {
+string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) const {
     ok();
 
     Aws::S3::Model::GetObjectRequest object_request;
@@ -121,13 +119,12 @@ string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) {
 
 /**
  *
- * @param s3_client S3 Client object
  * @param bucket Name of the S3 bucket
  * @param key Object key in the bucket
  * @param filename Local file/path name for the received data
  * @return True if successful, false otherwise
  */
-bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const string &filename) {
+bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const string &filename) const {
     ok();
 
     Aws::S3::Model::GetObjectRequest object_request;
@@ -147,4 +144,3 @@ bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const stri
             << get_object_outcome.GetError().GetMessage() << std::endl;
     return false;
 }
-
