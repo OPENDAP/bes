@@ -75,9 +75,7 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 if CPPUNIT
 
 UNIT_TESTS =  HttpUtilsTest HttpErrorTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
-AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest aws-cpp-sdk-s3-get
-
-# CredentialsManagerTest HttpCacheTest
+AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest AWS_SDK_Test
 
 else
 
@@ -97,18 +95,11 @@ clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
 
-aws_cpp_sdk_s3_get_SOURCES = aws-cpp-sdk-s3-get.cc
-aws_cpp_sdk_s3_get_LDADD = -laws-cpp-sdk-s3 -laws-cpp-sdk-core
-
 HttpUtilsTest_SOURCES = HttpUtilsTest.cc
 HttpUtilsTest_LDADD = $(LIBADD)
 
 HttpErrorTest_SOURCES = HttpErrorTest.cc
 HttpErrorTest_LDADD =  $(LIBADD)
-
-
-# ResponseTest_SOURCES = ResponseTest.cc
-# ResponseTest_LDADD = $(LIBADD)
 
 RemoteResourceTest_SOURCES = RemoteResourceTest.cc
 RemoteResourceTest_CXXFLAGS = -static
@@ -116,9 +107,6 @@ RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc
 CurlUtilsTest_LDADD = $(LIBADD)
-
-# HttpCacheTest_SOURCES = HttpCacheTest.cc
-# HttpCacheTest_LDADD = $(LIBADD)
 
 EffectiveUrlCacheTest_SOURCES = EffectiveUrlCacheTest.cc
 EffectiveUrlCacheTest_LDADD = $(LIBADD)
@@ -131,6 +119,9 @@ AllowedHostsTest_LDADD = $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
+
+AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
+AWS_SDK_Test_LDADD = ../.libs/libbes_http.a -laws-cpp-sdk-s3 -laws-cpp-sdk-core $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = ../.libs/libbes_http.a $(LIBADD)

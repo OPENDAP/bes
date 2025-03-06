@@ -23,12 +23,7 @@ libbes_http_la_SOURCES = $(SRCS) $(HDRS)
 libbes_http_la_LDFLAGS =
 libbes_http_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
 
-noinst_PROGRAMS = aws_sdk_test
-aws_sdk_test_SOURCES = AWS_SDK_Test.cc
-aws_sdk_test_LDFLAGS = -L.
-aws_sdk_test_LDADD = libbes_http.la -laws-cpp-sdk-s3 -laws-cpp-sdk-core
-
-pkginclude_HEADERS = $(HDRS) 
+pkginclude_HEADERS = $(HDRS)
 
 pkgdata_DATA =
 

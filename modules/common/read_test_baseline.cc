@@ -46,8 +46,7 @@ namespace bes {
  * @return A string that holds the verbatim contents of the string.
  */
 string
-read_test_baseline(const string &fn)
-{
+read_test_baseline(const string &fn) {
     ifstream is;
     is.open (fn.c_str(), ios::binary );
 
@@ -56,7 +55,7 @@ read_test_baseline(const string &fn)
 
     // get length of file:
     is.seekg (0, ios::end);
-    long length = is.tellg();
+    const long length = is.tellg();
 
     // back to start
     is.seekg (0, ios::beg);
@@ -69,16 +68,16 @@ read_test_baseline(const string &fn)
     is.close();
     buffer[length] = '\0';
 
-    return string(buffer.data());
-}
+    return {buffer.data()};
+};
 
 void clean_cache_dir(const string &cache)
 {
-    string cache_dir = cache + "/*";
+    const string cache_dir = cache + "/*";
 
-    string command = string("rm ") + cache_dir + " 2>/dev/null";
+    const string command = string("rm ") + cache_dir + " 2>/dev/null";
 
-    int status = system(command.c_str());
+    const int status = system(command.c_str());
 
     // it's normal for this to 'fail' because the clean operation has already
     // been run or because it's the first run of the tests. But, fork and waitpid

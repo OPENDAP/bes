@@ -26,6 +26,8 @@
 
 // Created by James Gallagher on 3/4/25.
 
+#include "config.h"
+
 #include <string>
 
 #include <aws/core/Aws.h>
@@ -42,9 +44,13 @@
 
 using namespace std;
 
+namespace http {
+
+Aws::SDKOptions AWS_SDK::options;
+
 /**
  * @brief Get an S3 Client.
- * @param region AWS region string. Defaults to 'us-east-1'
+ * @param region AWS region string, e.g., 'us-east-1'
  * @return The AWS S3 Client object.
  */
 Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region) {
@@ -59,9 +65,28 @@ Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region) {
     return {credentialsProvider, nullptr, clientConfig};
 }
 
+/**
+ * @brief Get an S3 Client.
+ * @param region AWS region string.
+ * @param aws_key The AWS Key ID
+ * @param aws_secret_key The AWS Secret Key
+ * @return The AWS S3 Client object
+ */
+Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region, const string &aws_key, const string &aws_secret_key) {
+    Aws::S3::S3ClientConfiguration clientConfig;
+    clientConfig.region = region; // Set your region
+
+    // Create a shared pointer to a SimpleAWSCredentialsProvider using your key and secret.
+    auto credentialsProvider = Aws::Auth::AWSCredentials(aws_key, aws_secret_key);
+
+    // Construct the S3 client with the credentials provider and client configuration.
+    // std::shared_ptr<S3EndpointProviderBase> is nullptr in the following call.
+    return {credentialsProvider, nullptr, clientConfig};
+}
+
 void AWS_SDK::ok() const {
     if (!d_is_s3_initialized) {
-        throw BESInternalFatalError("AWS_SDK initialization failed", __FILE__, __LINE__);
+        throw BESInternalFatalError("AWS_SDK object not initialized.", __FILE__, __LINE__);
     }
 }
 
@@ -71,7 +96,7 @@ void AWS_SDK::ok() const {
  * @param key Object key in the bucket
  * @return True if the object exists and can be accessed, false otherwise
  */
-bool AWS_SDK::s3_head(const string &bucket, const string &key) const {
+bool AWS_SDK::s3_head(const string &bucket, const string &key) {
     ok();
 
     Aws::S3::Model::HeadObjectRequest head_request;
@@ -80,13 +105,14 @@ bool AWS_SDK::s3_head(const string &bucket, const string &key) const {
 
     auto const head_outcome = d_get_s3_client.HeadObject(head_request);
     if (head_outcome.IsSuccess()) {
-        std::cout << "Object exists in S3." << std::endl;
         return true;
     }
+    auto const error = head_outcome.GetError();
+    auto const httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode is an enum. See cast below.
+    d_aws_exception_message = error.GetMessage();
+    d_aws_exception_name = error.GetExceptionName();
+    d_http_status_code = static_cast<int>(httpCode);
 
-    std::cerr << "Error: "
-            << head_outcome.GetError().GetExceptionName() << " - "
-            << head_outcome.GetError().GetMessage() << std::endl;
     return false;
 }
 
@@ -96,7 +122,7 @@ bool AWS_SDK::s3_head(const string &bucket, const string &key) const {
  * @param key Object key in the bucket
  * @return Received data as a string or the empty string
  */
-string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) const {
+string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) {
     ok();
 
     Aws::S3::Model::GetObjectRequest object_request;
@@ -110,10 +136,12 @@ string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) const 
         file_contents << retrieved_file.rdbuf();
         return {file_contents.str()};
     }
+    auto const error = get_object_outcome.GetError();
+    auto const httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode
+    d_aws_exception_message = error.GetMessage();
+    d_aws_exception_name = error.GetExceptionName();
+    d_http_status_code = static_cast<int>(httpCode);
 
-    std::cerr << "Error: "
-            << get_object_outcome.GetError().GetExceptionName() << " - "
-            << get_object_outcome.GetError().GetMessage() << std::endl;
     return {""};
 }
 
@@ -124,7 +152,7 @@ string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) const 
  * @param filename Local file/path name for the received data
  * @return True if successful, false otherwise
  */
-bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const string &filename) const {
+bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const string &filename) {
     ok();
 
     Aws::S3::Model::GetObjectRequest object_request;
@@ -138,9 +166,12 @@ bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const stri
         output_file << retrieved_file.rdbuf();
         return true;
     }
+    auto const error = get_object_outcome.GetError();
+    auto const httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode
+    d_aws_exception_message = error.GetMessage();
+    d_aws_exception_name = error.GetExceptionName();
+    d_http_status_code = static_cast<int>(httpCode);
 
-    std::cerr << "Error: "
-            << get_object_outcome.GetError().GetExceptionName() << " - "
-            << get_object_outcome.GetError().GetMessage() << std::endl;
     return false;
+}
 }
