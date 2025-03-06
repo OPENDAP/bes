@@ -44,7 +44,7 @@ test_config.h: test_config.h.in Makefile
 	sed -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" $< > test_config.h
 
 if CPPUNIT
-UNIT_TESTS = propsT buildT
+UNIT_TESTS = XmlInterfaceTest propsT buildT
 else
 UNIT_TESTS =
 
@@ -65,4 +65,8 @@ buildT_LDADD = $(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/
 propsT_SOURCES = propsT.cc
 propsT_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
 propsT_LDADD = $(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS) $(AM_LDADD)
+
+XmlInterfaceTest_SOURCES = XmlInterfaceTest.cc
+XmlInterfaceTest_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
+XmlInterfaceTest_LDADD = $(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS) $(AM_LDADD)
 

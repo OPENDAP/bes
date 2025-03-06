@@ -41,7 +41,6 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
-#include "BESContextManager.h"
 #include "BESInternalFatalError.h"
 
 #if HAVE_UNISTD_H
@@ -189,29 +188,6 @@ pid_t BESLog::update_pid()
 }
 
 
-/**
-* @TODO We need to cache this. Because endlessly retrieving and reparsing the
-* 	 olfsLog entry to find the request id is slow.
-*/
-string BESLog::get_request_id() const
-{
-    bool found;
-    string request_id;
-    string olfs_log = BESContextManager::TheManager()->get_context("olfsLog", found);
-    if( found ) {
-        vector<string> tokens;
-        BESUtil::tokenize(olfs_log, tokens, mark);
-        if( tokens.size() >= 6 )
-            request_id = tokens[5];
-        else
-            request_id = "-";
-    }
-    else{
-        request_id = "-";
-    }
-    return request_id;
-}
-
 /** @brief Protected method that returns a string with the first fields of a log record.
  *
  * By default, the time will be expressed in ISO8601 format: "YYYY-MM-DDTHH:MM:SS zone"
@@ -299,6 +275,16 @@ void BESLog::dump(ostream &strm) const
     strm << BESIndent::LMarg << "        d_pid: " << d_pid << "\n";
     BESIndent::UnIndent();
 }
+
+/**
+* @brief Sets the current request id (cached in BESLog) to id
+*/
+void BESLog::set_request_id(const std::string &id){
+    request_id = id;
+    BESDEBUG(MODULE, "request_id: " << request_id << endl);
+}
+
+
 
 BESLog *
 BESLog::TheLog()

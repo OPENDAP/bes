@@ -56,7 +56,7 @@ the_prefix=""
 
 ###############################################################################
 # Global variable for debuggin control.
-debug_flag = False
+DEBUG_FLAG = False
 
 ###############################################################################
 # The usual delimiter suspects
@@ -86,6 +86,7 @@ TIME_KEY            = "time"
 INSTANCE_ID_KEY     = "instance-id"
 PID_KEY             = "pid"
 TYPE_KEY            = "type"
+REQUEST_ID_KEY      = "request-id"
 MESSAGE_KEY         = "message"
 def add_prefix_to_shared_log_keys():
     """Applies user supplied prefix to shared log record keys """
@@ -93,6 +94,7 @@ def add_prefix_to_shared_log_keys():
     global INSTANCE_ID_KEY
     global PID_KEY
     global TYPE_KEY
+    global REQUEST_ID_KEY
     global MESSAGE_KEY
 
     if len(the_prefix) != 0 :
@@ -100,6 +102,7 @@ def add_prefix_to_shared_log_keys():
         INSTANCE_ID_KEY = the_prefix + INSTANCE_ID_KEY
         PID_KEY = the_prefix + PID_KEY
         TYPE_KEY = the_prefix + TYPE_KEY
+        REQUEST_ID_KEY = the_prefix + REQUEST_ID_KEY
         MESSAGE_KEY = the_prefix + MESSAGE_KEY
 
 
@@ -112,21 +115,19 @@ ELAPSED_TIME_KEY_BASE = "elapsed-us"
 ELAPSED_TIME_KEY      = ELAPSED_TIME_KEY_BASE
 START_TIME_KEY        = "start-us"
 STOP_TIME_KEY         = "stop-us"
-REQUEST_ID_TIMER_KEY  = "request-id"
 TIMER_NAME_KEY        = "timer-name"
 def add_prefix_to_timing_log_keys():
     """Applies user supplied prefix to timing log record keys """
     global ELAPSED_TIME_KEY
     global START_TIME_KEY
     global STOP_TIME_KEY
-    global REQUEST_ID_TIMER_KEY
+    global REQUEST_ID_KEY
     global TIMER_NAME_KEY
 
     if len(the_prefix) != 0 :
         ELAPSED_TIME_KEY = the_prefix + ELAPSED_TIME_KEY_BASE
         START_TIME_KEY = the_prefix + START_TIME_KEY
         STOP_TIME_KEY = the_prefix + STOP_TIME_KEY
-        REQUEST_ID_TIMER_KEY = the_prefix + REQUEST_ID_TIMER_KEY
         TIMER_NAME_KEY = the_prefix + TIMER_NAME_KEY
 
 ###########################################################################################################################
@@ -138,7 +139,6 @@ USER_AGENT_KEY      = "user-agent"
 SESSION_ID_KEY      = "session-id"
 USER_ID_KEY         = "user-id"
 OLFS_START_TIME_KEY = "olfs-start-time"
-REQUEST_ID_KEY      = "request-id"
 HTTP_VERB_KEY       = "http-verb"
 URL_PATH_KEY        = "url-path"
 QUERY_STRING_KEY    = "query-string"
@@ -153,7 +153,6 @@ def add_prefix_to_request_log_keys():
     global SESSION_ID_KEY
     global USER_ID_KEY
     global OLFS_START_TIME_KEY
-    global REQUEST_ID_KEY
     global HTTP_VERB_KEY
     global URL_PATH_KEY
     global QUERY_STRING_KEY
@@ -168,7 +167,6 @@ def add_prefix_to_request_log_keys():
         SESSION_ID_KEY = the_prefix + SESSION_ID_KEY
         USER_ID_KEY = the_prefix + USER_ID_KEY
         OLFS_START_TIME_KEY = the_prefix + OLFS_START_TIME_KEY
-        REQUEST_ID_KEY = the_prefix + REQUEST_ID_KEY
         HTTP_VERB_KEY = the_prefix + HTTP_VERB_KEY
         URL_PATH_KEY = the_prefix + URL_PATH_KEY
         QUERY_STRING_KEY = the_prefix + QUERY_STRING_KEY
@@ -186,7 +184,7 @@ def debug(msg):
         Args:
             msg: The message to write to stderr
     """
-    if debug_flag:
+    if DEBUG_FLAG:
         print("#", msg.replace("\n","\\n"), file=sys.stderr)
         sys.stderr.flush()
 
@@ -209,11 +207,11 @@ def eord(bool_val):
 ###############################################################################
 def show_config():
     """Transmits the configuration state to stderr when in debug mode is enabled"""
-    if debug_flag:
+    if DEBUG_FLAG:
         debug("###################################################")
         debug("beslog2json.py configuration")
         debug("")
-        debug(f"  debug_flag: {str(debug_flag).lower()}")
+        debug(f"  debug_flag: {str(DEBUG_FLAG).lower()}")
         debug(f"  the_prefix: '{the_prefix}'")
         debug(f"  SORT_KEYS:  {str(SORT_KEYS).lower()}")
         debug("")
@@ -393,7 +391,7 @@ def timing_log_to_json(log_fields, json_log_record):
             json_log_record[ELAPSED_TIME_KEY] = int(log_fields[6])
             json_log_record[START_TIME_KEY] = int(log_fields[8])
             json_log_record[STOP_TIME_KEY] = int(log_fields[10])
-            json_log_record[REQUEST_ID_TIMER_KEY] = log_fields[11]
+            json_log_record[REQUEST_ID_KEY] = log_fields[11]
             json_log_record[TIMER_NAME_KEY] = log_fields[12]
             send_it = True
     else:
@@ -469,7 +467,7 @@ def square_bracket_timing_record(log_fields, json_log_record):
             debug(f"{prolog} stop_us: {stop_us} ")
             json_log_record[STOP_TIME_KEY] = int(stop_us)
 
-            json_log_record[REQUEST_ID_TIMER_KEY] = log_fields[10]
+            json_log_record[REQUEST_ID_KEY] = log_fields[10]
             timer_name = log_fields[11]
             if timer_name.endswith("]"):
                 timer_name = timer_name[:-1]
@@ -751,7 +749,7 @@ def main(argv):
     """main(): In which we parse arguments and call functions toread the BES log
     lines, and write the json. woot."""
 
-    global debug_flag
+    global DEBUG_FLAG
     global TRANSMIT_REQUEST_LOG
     global TRANSMIT_INFO_LOG
     global TRANSMIT_ERROR_LOG
@@ -763,7 +761,7 @@ def main(argv):
     input_filename=""
 
     try:
-        opts, args = getopt.getopt(argv, "hadsr:i:e:v:t:p:f:", ["help", "debug", "all", "sort=", "requests=", "info=", "error=", "verbose=", "timing=", "prefix=", "filename="])
+        opts, args = getopt.getopt(argv, "hadsvr:i:e:t:p:f:", ["help", "debug", "all", "sort=", "requests=", "info=", "error=", "verbose=", "timing=", "prefix=", "filename="])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -793,9 +791,6 @@ def main(argv):
         elif opt in ("-e", "--error"):
             TRANSMIT_ERROR_LOG   = not arg.lower().startswith("f")
 
-        elif opt in ("-v", "--verbose"):
-            TRANSMIT_VERBOSE_LOG = not arg.lower().startswith("f")
-
         elif opt in ("-t", "--timing"):
             TRANSMIT_TIMING_LOG  = not arg.lower().startswith("f")
 
@@ -807,8 +802,11 @@ def main(argv):
             add_prefix_to_request_log_keys()
             add_prefix_to_timing_log_keys()
 
+        elif opt in ("-v", "--verbose"):
+            TRANSMIT_VERBOSE_LOG = True
+
         elif opt in ("-d", "--debug"):
-            debug_flag = True
+            DEBUG_FLAG = True
 
         elif opt in ("-s", "--sort"):
             SORT_KEYS = not arg.lower().startswith("f")

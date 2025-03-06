@@ -80,7 +80,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("W10NShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("W10NShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID_KEY]);
 
     BESDEBUG(W10N_DEBUG_KEY, "W10NShowPathInfoResponseHandler::execute() - BEGIN" << endl );
 

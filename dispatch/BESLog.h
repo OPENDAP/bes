@@ -136,6 +136,8 @@ private:
     const char* VERBOSE_LOG_TYPE_KEY = "verbose";
     const char* TIMING_LOG_TYPE_KEY = "timing";
 
+    std::string request_id{"-"};
+
 protected:
     BESLog();
 
@@ -258,7 +260,9 @@ public:
         trace_log_record(TIMING_LOG_TYPE_KEY, msg, file, line);
     }
 
-    std::string get_request_id() const;
+
+    void set_request_id(const std::string &id);
+    std::string get_request_id() const {return request_id;}
 
     void dump(std::ostream &strm) const override;
 

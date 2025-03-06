@@ -81,6 +81,8 @@ BESStopWatch::start(const string &name, const string &reqID) {
     d_req_id = reqID;
     // get timing for current usage
 
+    if (reqID.empty()) { d_req_id = BESLog::TheLog()->get_request_id(); }
+
     if (!get_time_of_day(d_start_usage)) {
         d_started = false;
         return d_started;
@@ -90,7 +92,7 @@ BESStopWatch::start(const string &name, const string &reqID) {
     std::stringstream msg;
     if (BESLog::TheLog()->is_verbose()) {
         msg << "start_us" << BESLog::mark << get_start_us() << BESLog::mark;
-        msg << (d_req_id.empty() ? "-" : d_req_id) << BESLog::mark;
+        msg << d_req_id << BESLog::mark;
         msg << d_timer_name << endl;
         TIMING_LOG(msg.str());
     }

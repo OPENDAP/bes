@@ -94,7 +94,7 @@ GatewayPathInfoResponseHandler::~GatewayPathInfoResponseHandler()
 void GatewayPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("GatewayPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("GatewayPathInfoResponseHandler::execute", dhi.data[REQUEST_ID_KEY]);
 
     BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - BEGIN" << endl );
 

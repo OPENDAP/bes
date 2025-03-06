@@ -56,6 +56,7 @@ using namespace std;
 
 #define LOG_ONLY_GET_COMMANDS
 #define MODULE "bes"
+#define BES_XML "besxml"
 #define prolog string("BESXMLInterface::").append(__func__).append("() - ")
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
@@ -75,8 +76,8 @@ BESXMLInterface::~BESXMLInterface()
  */
 void BESXMLInterface::build_data_request_plan()
 {
-    BESDEBUG("bes", prolog << "BEGIN" << endl);
-    BESDEBUG("bes", prolog << "Building request plan for xml document: " << endl << d_xml_document << endl);
+    BESDEBUG(BES_XML, prolog << "BEGIN #####################################################" << endl);
+    BESDEBUG(BES_XML, prolog << "Building request plan for xml document: " << endl << d_xml_document << endl);
 
     // I do not know why, but uncommenting this macro breaks some tests
     // on Linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
@@ -129,12 +130,18 @@ void BESXMLInterface::build_data_request_plan()
                                      __FILE__, __LINE__);
 
         // there should be a request id property with one value.
-        string const &reqId = attributes[REQUEST_ID];
+        auto reqId = attributes[REQUEST_ID_KEY];
+        BESDEBUG(BES_XML, prolog << "reqId: " << reqId << endl);
         if (reqId.empty()) throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
 
-        d_dhi_ptr->data[REQUEST_ID] = reqId;
+        d_dhi_ptr->data[REQUEST_ID_KEY] = reqId;
+        BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[REQUEST_ID]: " << d_dhi_ptr->data[REQUEST_ID_KEY] << endl);
 
-        BESDEBUG("besxml", "request id = " << d_dhi_ptr->data[REQUEST_ID] << endl);
+        BESLog::TheLog()->set_request_id(reqId);
+        BESDEBUG(BES_XML, prolog << "BESLog::TheLog()->get_request_id(): " << BESLog::TheLog()->get_request_id() << endl);
+
+        auto bes_client_id = attributes[BES_CLIENT_ID_KEY];
+        BESDEBUG(BES_XML, prolog << BES_CLIENT_ID_KEY << ": " << bes_client_id << endl);
 
         // iterate through the children of the request element. Each child is an
         // individual command.
@@ -375,7 +382,7 @@ void BESXMLInterface::transmit_data()
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " [" + d_dhi_ptr->data[LOG_INFO] + "] transmitting" );
 
         BESStopWatch sw;
-        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
+        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID_KEY]);
 
         string return_as = d_dhi_ptr->data[RETURN_CMD];
         if (!return_as.empty()) {
