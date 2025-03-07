@@ -366,7 +366,7 @@ bool start_super_chunk_unconstrained_transfer_thread_dio(list<std::future<bool>>
 void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks, DmrppArray *array)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name());
 
     // Parallel version based on read_chunks_unconstrained(). There is
     // substantial duplication of the code in read_chunks_unconstrained(), but
@@ -432,7 +432,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
 void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>> &super_chunks, DmrppArray *array)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name());
 
     // Parallel version based on read_chunks_unconstrained(). There is
     // substantial duplication of the code in read_chunks_unconstrained(), but
@@ -519,7 +519,7 @@ void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>
 void read_super_chunks_concurrent(queue< shared_ptr<SuperChunk> > &super_chunks, DmrppArray *array)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name());
 
     // Parallel version based on read_chunks_unconstrained(). There is
     // substantial duplication of the code in read_chunks_unconstrained(), but
@@ -842,7 +842,7 @@ void DmrppArray::read_contiguous()
 
     BESDEBUG(dmrpp_3, prolog << "NOT using direct IO " << endl);
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name());
 
     // Get the single chunk that makes up this CONTIGUOUS variable.
     if (get_chunks_size() != 1)
@@ -2328,7 +2328,7 @@ DmrppArray::set_send_p(bool state)
 void DmrppArray::read_contiguous_string()
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name());
 
     // This is the original chunk for this 'contiguous' variable.
     auto the_one_chunk = get_immutable_chunks()[0];
