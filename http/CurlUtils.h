@@ -90,6 +90,9 @@ curl_slist *append_http_header(curl_slist *slist, const std::string &header_name
 
 curl_slist *add_edl_auth_headers(curl_slist *request_headers);
 
+curl_slist *sign_s3_url(const std::string &target_url, http::AccessCredentials *ac, curl_slist *req_headers);
+
+// TODO Remove when no longer needed. jhrg 2/20/25
 curl_slist *sign_s3_url(const std::shared_ptr<http::url> &target_url, http::AccessCredentials *ac,
                         curl_slist *req_headers);
 

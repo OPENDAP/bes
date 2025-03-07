@@ -50,7 +50,7 @@ using namespace std;
 
 namespace kvp {
 
-    // Forward declaration, implementation at end of file..
+    // Forward declaration, implementation at end of file...
     void load_keys(
             const std::string &keys_file_name,
             set<string> &loaded_kvp_files,
@@ -58,7 +58,7 @@ namespace kvp {
 
     bool only_blanks(const char *line) {
         string my_line = line;
-        if (my_line.find_first_not_of(" ") != string::npos)
+        if (my_line.find_first_not_of(' ') != string::npos)
             return false;
         else
             return true;

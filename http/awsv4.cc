@@ -364,24 +364,23 @@ std::string compute_awsv4_signature(const std::string &canonical_uri, const std:
 /**
  * @brief Return the AWS V4 signature for a given GET request
  *
- * This version takes an http::url object for the path, query string and host.
+ * This version takes a http::url object for the path, query string and host.
  *
- * @param uri The URI to fetch
+ * @param uri The URI to fetch. This is a http::url object.
  * @param request_date The current date & time
  * @param secret_key The Secret key for this resource (the thing referenced by the URI).
- * @param public_key The Public key associated with the secret key.
  * @param region The AWS region where the request is being made (us-west-2 by default)
  * @param service The AWS service that is the target of the request (S3 by default)
  * @return The AWS V4 Signature string.
  */
 std::string compute_awsv4_signature(
-        const std::shared_ptr<http::url> &uri,
+        const http::url &uri,
         const std::time_t &request_date,
         const std::string &public_key,
         const std::string &secret_key,
         const std::string &region,
         const std::string &service) {
-    return compute_awsv4_signature(uri->path(), uri->query(), uri->host(), request_date, public_key, secret_key,
+    return compute_awsv4_signature(uri.path(), uri.query(), uri.host(), request_date, public_key, secret_key,
                                    region, service);
 }
 
