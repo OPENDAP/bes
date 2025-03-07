@@ -121,7 +121,6 @@ def add_prefix_to_timing_log_keys():
     global ELAPSED_TIME_KEY
     global START_TIME_KEY
     global STOP_TIME_KEY
-    global REQUEST_ID_KEY
     global TIMER_NAME_KEY
 
     if len(the_prefix) != 0 :
