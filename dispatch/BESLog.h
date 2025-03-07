@@ -119,6 +119,7 @@ private:
     std::string d_file_name;
     std::string d_instance_id = "-";
     std::string d_pid = "-";
+    std::string request_id{"BESLog-NotYetSet"};
     std::string d_log_record_prolog_base;
 
     // Flag to indicate whether to log verbose messages
@@ -136,7 +137,6 @@ private:
     const char* VERBOSE_LOG_TYPE_KEY = "verbose";
     const char* TIMING_LOG_TYPE_KEY = "timing";
 
-    std::string request_id{"-"};
 
 protected:
     BESLog();

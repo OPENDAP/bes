@@ -41,6 +41,10 @@
 #include <unistd.h>
 #endif
 
+#include <BESDataHandlerInterface.h>
+#include <BESDataNames.h>
+#include <BESLog.h>
+
 #include "BESObj.h"
 
 #define COMMAND_TIMING 1
@@ -68,7 +72,7 @@ if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_v
 #define BES_MODULE_TIMING(message) BESStopWatch commandTimer; \
     commandTimer.start(string("Module timing: ") + (message))
 #define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
-    commandTimer.start(string("Command timing: ") + (message) + (d_dhi_ptr->data[REQUEST_ID_KEY] + " " + d_dhi_ptr->data[LOG_INFO]))
+    commandTimer.start(string("Command timing: ") + (message) + (d_dhi_ptr->data[LOG_INFO]), d_dhi_ptr);
 #else
 #define BES_MODULE_TIMING(message)
 #define BES_COMMAND_TIMING(message, DHI)
@@ -120,22 +124,26 @@ private:
     ~BESStopWatch() override;
 
     /**
-     * Starts the timer.
-     * NB: This method will attempt to write logging
-     * information to the BESDebug::GetStrm() stream.
-     * @param name The name of the timer.
-     */
-    virtual bool start(const std::string &name);
-
-    /**
      * Starts the timer. NB: This method will attempt to write logging
      * information to the BESDebug::GetStrm() stream. @param name The
      * name of the timer. 
      *
+     * @param name A name for the timer (often it's the value of the "prolog" macro)
      * @param reqID The client's request ID associated with this
-     * activity. Available from the DataHandlerInterface object.
+     * activity. If not specified the values is retrieved from BESLog::get_request_id().
      */
-    virtual bool start(const std::string &name, const std::string &reqID);
+    virtual bool start(const std::string &name, const std::string &reqID = {BESLog::TheLog()->get_request_id()});
+
+
+    /**
+    * Starts the timer.
+    * NB: This method will attempt to write logging
+    * information to the BESDebug::GetStrm() stream.
+    * @param name The name of the timer.
+    * @param dhi The DataHandlerInterface object. Used to retrieve the request ID. If the dhi returns
+    * an empty string  for the request id then it's retrieved using BESLog::get_request_id().
+    */
+    virtual bool start(const std::string &name, BESDataHandlerInterface *dhi);
 
     void dump(std::ostream &strm) const override;
 };
