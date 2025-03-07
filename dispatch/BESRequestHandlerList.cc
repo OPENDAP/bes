@@ -105,7 +105,7 @@ BESRequestHandlerList::find_handler(const string &handler_name)
 
     auto i = _handler_list.find(handler_name);
     if (i != _handler_list.end()) {
-        return (*i).second;
+        return i->second;
     }
     return nullptr;
 }

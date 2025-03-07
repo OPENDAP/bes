@@ -103,11 +103,12 @@ bool AllowedHosts::is_allowed(const http::url &candidate_url, std::string &why_n
         // We know that when a file URL is parsed by http::url it stores everything in after the "file://" mark in
         // the path, as there is no hostname.
         string file_path = candidate_url.path();
-
+        BESDEBUG(MODULE, prolog << "   file_path: '" << file_path <<
+                                "' (length: " << file_path.size() << " size: " << file_path.size() << ")" <<endl);
         // Get the BES Catalog
         BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
-
+        BESDEBUG(MODULE, prolog << "Searching for catalog named: '" << default_catalog_name << "'" << endl);
         BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
         if (!bcat) {
             string error_msg = "INTERNAL_ERROR: Unable to locate default catalog. Check BES configuration.";
@@ -115,6 +116,9 @@ bool AllowedHosts::is_allowed(const http::url &candidate_url, std::string &why_n
         }
 
         string catalog_root = bcat->get_root();
+        BESDEBUG(MODULE, prolog << "catalog_root: '" << catalog_root <<
+            "' (length: " << catalog_root.size() << " size: " << catalog_root.size() << ")" << endl);
+
         string relative_path;
         if (file_path[0] == '/') {
             if (file_path.size() < catalog_root.size()) {
@@ -124,11 +128,15 @@ bool AllowedHosts::is_allowed(const http::url &candidate_url, std::string &why_n
             }
             else {
                 size_t ret = file_path.find(catalog_root);
+                BESDEBUG(MODULE, prolog << "file_path.find(catalog_root): " << ret << endl);
                 isAllowed = (ret == 0);
                 relative_path = file_path.substr(catalog_root.size());
+                BESDEBUG(MODULE, prolog << "relative_path: " << relative_path << endl);
+                BESDEBUG(MODULE, prolog << "isAllowed: " << (isAllowed?"true":"false") << endl);
             }
         }
         else {
+            BESDEBUG(MODULE, prolog << "Relative path detected");
             relative_path = file_path;
             isAllowed = true;
         }
