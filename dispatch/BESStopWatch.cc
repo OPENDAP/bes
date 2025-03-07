@@ -82,7 +82,9 @@ bool BESStopWatch::start(const std::string &name, BESDataHandlerInterface *dhi) 
  * NB: This method will attempt to write logging
  * information to the BESDebug::GetStrm() stream.
  * @param name The name of the timer.
- * @param reqID The client's request ID associated with this activity. If reqID is empty returned by BESLog::get_request_id()
+ * @param reqID The client's request ID associated with this activity.
+ * If reqID is not provided then the value of BESLog::get_request_id() \
+ * is utilized (see declaration in BESStopWatch.h)
  *
  */
 bool BESStopWatch::start(const string &name, const string &reqID) {

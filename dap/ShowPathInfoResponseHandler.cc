@@ -102,7 +102,7 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID_KEY]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ShowPathInfoResponseHandler::execute", &dhi);
 
     BESDEBUG(SPI_DEBUG_KEY,
         "ShowPathInfoResponseHandler::execute() - BEGIN ############################################################## BEGIN" << endl);

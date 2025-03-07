@@ -137,7 +137,6 @@ private:
     const char* VERBOSE_LOG_TYPE_KEY = "verbose";
     const char* TIMING_LOG_TYPE_KEY = "timing";
 
-
 protected:
     BESLog();
 
