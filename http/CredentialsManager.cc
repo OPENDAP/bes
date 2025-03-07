@@ -178,8 +178,8 @@ CredentialsManager::get(const std::string &url) {
     if (url.find(HTTP_PROTOCOL) != 0 && url.find(HTTPS_PROTOCOL) != 0)
         return nullptr;
 
-    // This lock is a RAII implementation. It will block until the mutex is
-    // available and the lock will be released when the instance is destroyed.
+    // I don't think this lock is needed. This information is set when the daemon
+    // starts and is not changed while it runs. jhrg 3/7/25
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     AccessCredentials *best_match = nullptr;
