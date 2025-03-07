@@ -39,6 +39,7 @@
 #include "BESStopWatch.h"
 #include "BESUtil.h"
 #include "CurlUtils.h"
+#include "AWS_SDK.h"
 #include "BESContextManager.h"
 #include "HttpError.h"
 #include "BESLog.h"
@@ -189,6 +190,25 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
     return dmrpp_url_str;
 }
 
+/**
+ * @brief Parse the NGAP REST path and build the object key to the DMR++ in the OPeNDAP Bucket.
+ * @param rest_path The NGAP REST path provided by the user
+ * @return The object key to the DMR++
+ */
+string NgapOwnedContainer::build_dmrpp_object_key_in_owned_bucket(const string &rest_path) {
+    // The PATH part of a URL to the NGAP/DMR++ is an 'NGAP REST path' that has the form:
+    // /collections/<ccid>/granules/<granule_id>. In our 'owned' S3 bucket, we use object
+    // names of the form: /<ccid>/<granule_id>.dmrpp.
+    BES_MODULE_TIMING(prolog + rest_path);
+
+    auto parts = BESUtil::split(rest_path, '/');
+    if (parts.size() != 4 || parts[0] != "collections" || parts[2] != "granules") {
+        throw BESSyntaxUserError("Invalid NGAP path: " + rest_path, __FILE__, __LINE__);
+    }
+
+    return {parts[1] + '/' + parts[3] + ".dmrpp"};
+}
+
 bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
 
     // Read the cache entry if it exists. jhrg 4/29/24
@@ -327,16 +347,23 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
     BES_MODULE_TIMING(prolog + get_real_name());
     bool dmrpp_read = false;
     try {
+#if 0
         string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
         INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
         // TODO AWS Replace with AWS C++ SDK call.
         curl::http_get(dmrpp_url_str, dmrpp_string);
+#endif
+        http::AWS_SDK aws_sdk;
+        aws_sdk.initialize("us-east-1");
+        const string object_key = build_dmrpp_object_key_in_owned_bucket(get_real_name());
+        dmrpp_string = aws_sdk.s3_get_as_string(get_data_source_location(), object_key);
+
         map <string, string, std::less<>> content_filters;
         if (!get_opendap_content_filters(content_filters)) {
             throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
         }
         filter_response(content_filters, dmrpp_string);
-        INFO_LOG(prolog + "Found the DMRpp in the OPeNDAP-bucket for: " + dmrpp_url_str);
+        INFO_LOG(prolog + "Found the DMRpp in the OPeNDAP bucket for: " + object_key);
         dmrpp_read = true;
     }
     catch (http::HttpError &http_error) {
