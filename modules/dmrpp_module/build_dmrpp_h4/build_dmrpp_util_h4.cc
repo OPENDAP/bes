@@ -467,6 +467,136 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         }
         dc->set_chunk_dimension_sizes(chunk_dimension_sizes);
 
+#if 0
+        SD_mapping_info_t map_info;
+        map_info.is_empty = 0;
+        map_info.nblocks = 0;
+        map_info.offsets = nullptr;
+        map_info.lengths = nullptr;
+        map_info.data_type = data_type;
+
+#endif
+        vector<unsigned long long> position_in_array(rank, 0);
+
+        /* Initialize steps. */
+        vector<int> steps(rank, 0);
+        vector<int32_t> strides(rank, 0);
+        int number_of_chunks = 1;
+        for(int i = 0; i < rank; i++) {
+
+            // This doesn't consider the un-even chunk case. It will miss the extra chunk(s). So correct it. KY 2/20/24
+#if 0
+            steps[i] = (dimsizes[i] / chunk_dimension_sizes[i]) ;
+#endif
+            steps[i] =  1 + ((dimsizes[i] - 1) / chunk_dimension_sizes[i]);
+            number_of_chunks = number_of_chunks * steps[i];
+            strides[i] = 0;
+        }
+
+        VERBOSE(cerr << "number_of_chunks: " << number_of_chunks << endl);
+        VERBOSE(cerr << "rank: " << rank << endl);
+        VERBOSE(cerr << "chunk dimension sizes: ");
+        VERBOSE(copy(chunk_dimension_sizes.begin(), chunk_dimension_sizes.end(),
+                     ostream_iterator<int32>(cerr, " ")));
+        VERBOSE(cerr<<endl);
+
+
+        // Obtain the offset/length of all chunks.
+
+        vector<uint32> info_count(number_of_chunks);
+        intn max_num_blocks = SDgetallchunkdatainfo(sdsid,number_of_chunks,rank,steps.data(),0,info_count.data(),
+                                               nullptr,nullptr);
+        if (max_num_blocks == FAIL) {
+            ERROR("SDgetallchunkdatainfo failed.");
+            SDendaccess(sdsid);
+            return false;
+        }
+
+        vector<int32>offsetarray(max_num_blocks*number_of_chunks);
+        vector<int32>lengtharray(max_num_blocks*number_of_chunks);
+
+        max_num_blocks = SDgetallchunkdatainfo(sdsid,number_of_chunks,rank,steps.data(),max_num_blocks,info_count.data(),
+                                               offsetarray.data(),lengtharray.data());
+        if (max_num_blocks == FAIL) {
+            ERROR("SDgetallchunkdatainfo failed.");
+            SDendaccess(sdsid);
+            return false;
+        }
+        bool LBChunk = (max_num_blocks>1);
+
+        intn ol_counter = 0;
+        for (int k = 0; k < number_of_chunks; ++k) {
+            
+            auto pia = write_chunk_position_in_array(rank, chunk_dimension_sizes.data(), strides.data());
+
+            // When we find this chunk contains multiple blocks.
+            if (info_count[k] >1) {
+
+                VERBOSE(cerr << "number of blocks in a chunk is: " << info_count[k]<< endl);
+                for (unsigned int i = 0; i < info_count[k]; i++) {
+                    VERBOSE(cerr << "offsets[" << k << ", " << i << "]: " << offsetarray[ol_counter] << endl);
+                    VERBOSE(cerr << "lengths[" << k << ", " << i << "]: " << lengtharray[ol_counter] << endl);
+                    // add the block index for this chunk.
+                    dc->add_chunk(endian_name, lengtharray[ol_counter], offsetarray[ol_counter], pia,true,i);
+                    ol_counter++;
+                }
+                ol_counter +=max_num_blocks-info_count[k];
+                
+            }
+
+            else if (info_count[k] == 1) {
+
+                dc->add_chunk(endian_name, lengtharray[ol_counter], offsetarray[ol_counter], pia);
+                ol_counter +=max_num_blocks;
+            }
+            else if (info_count[k] == 0) 
+                ol_counter +=max_num_blocks;
+
+            
+
+            // Increase strides for each dimension. The fastest varying dimension is rank-1.
+            int scale = 1;
+            for(int i = rank-1; i >= 0 ; i--) {
+                if ((k+1) % scale == 0) {
+                    strides[i] = ++strides[i] % steps[i];
+                }
+                scale = scale * steps[i];
+            }
+        }
+        if (LBChunk) 
+            dc->set_multi_linked_blocks_chunk(LBChunk);
+           
+        
+    }
+
+#if 0
+    // Also need to consider the case when the variable is compressed but not chunked.
+    if (chunk_flag == HDF_CHUNK || chunk_flag == HDF_COMP ) {
+        vector<unsigned long long> chunk_dimension_sizes(rank, 0);
+        for (int i = 0; i < rank; i++) {
+            if (chunk_flag == HDF_CHUNK) {
+                chunk_dimension_sizes[i] = cdef.chunk_lengths[i];
+            }
+            else {  // chunk_flag is HDF_COMP
+                chunk_dimension_sizes[i] = cdef.comp.chunk_lengths[i];
+            }
+        }
+        if (chunk_flag == HDF_COMP) {
+            // Add the deflated-compression level. KY 02/20/24
+            if (comp_coder_type == COMP_CODE_DEFLATE) {
+                dc->ingest_compression_type("deflate");
+                vector<unsigned int> deflate_levels;
+                deflate_levels.push_back(c_info.deflate.level);
+                dc->set_deflate_levels(deflate_levels);
+            } else {
+                SDendaccess(sdsid);
+                ERROR("Encounter unsupported compression method. Currently only support deflate compression.");
+                return false;
+            }
+
+        }
+        dc->set_chunk_dimension_sizes(chunk_dimension_sizes);
+
         SD_mapping_info_t map_info;
         map_info.is_empty = 0;
         map_info.nblocks = 0;
@@ -500,6 +630,8 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
 
         bool LBChunk = false;
+
+
         for (int k = 0; k < number_of_chunks; ++k) {
             auto info_count = read_chunk(sdsid, &map_info, strides.data());
             if (info_count == FAIL) {
@@ -544,6 +676,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
            
         
     }
+#endif
     else if (chunk_flag == HDF_NONE) {
         SD_mapping_info_t map_info;
         map_info.is_empty = 0;
