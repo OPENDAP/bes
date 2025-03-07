@@ -83,7 +83,7 @@ public:
 
         BESXMLInterface bxi(xml_doc_str, &oss);
 
-        // bxi.build_data_request_plan();
+        bxi.build_data_request_plan();
 
         DBG(cerr << prolog << "END\n");
     }
