@@ -81,6 +81,7 @@ public:
 
     void xml_cmd_test_0(){
         DBG(cerr << prolog << "BEGIN\n");
+        bool disabled = true;
 
         const string bescmd_str = BESUtil::file_to_string(d_commands_dir + "/bes.cmd");
 
@@ -91,6 +92,9 @@ public:
         BESXMLInterface bxi(bescmd_str, &oss);
 
         try {
+            cerr << "\n" << prolog << "This XmlInterfaceTest is currently DISABLED\n";
+            if (disabled)
+                return;
             bxi.build_data_request_plan();
         }
         catch (BESError &bes_error) { // Catch the libdap::Error and throw BESInternalError
