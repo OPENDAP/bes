@@ -68,7 +68,7 @@ if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_v
 #define BES_MODULE_TIMING(message) BESStopWatch commandTimer; \
     commandTimer.start(string("Module timing: ") + (message))
 #define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
-    commandTimer.start(string("Command timing: ") + (message) + (d_dhi_ptr->data[REQUEST_ID] + " " + d_dhi_ptr->data[LOG_INFO]))
+    commandTimer.start(string("Command timing: ") + (message) + (d_dhi_ptr->data[REQUEST_ID_KEY] + " " + d_dhi_ptr->data[LOG_INFO]))
 #else
 #define BES_MODULE_TIMING(message)
 #define BES_COMMAND_TIMING(message, DHI)

@@ -75,7 +75,7 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ShowBesKeyResponseHandler::execute", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ShowBesKeyResponseHandler::execute", dhi.data[REQUEST_ID_KEY]);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;

@@ -212,7 +212,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
+        sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID_KEY]);
 
     if (true == _usecf) {
 
@@ -365,7 +365,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 
     BESStopWatch sw;
         if (BESDebug::IsSet(TIMING_LOG_KEY))
-                sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
+                sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID_KEY]);
 
     if (true == _usecf) {
 
@@ -550,7 +550,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("HDF4RequestHandler::hdf4_build_data", dhi.data[REQUEST_ID]);
+        sw.start("HDF4RequestHandler::hdf4_build_data", dhi.data[REQUEST_ID_KEY]);
 
 
     int32 sdfd   = -1;
@@ -746,7 +746,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("HDF4RequestHandler::hdf4_build_data_with_IDs", dhi.data[REQUEST_ID]);
+        sw.start("HDF4RequestHandler::hdf4_build_data_with_IDs", dhi.data[REQUEST_ID_KEY]);
 
     int32 sdfd   = -1;
     int32 fileid = -1;
@@ -1360,7 +1360,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("HDF4RequestHandler::hdf4_build_dmr", dhi.data[REQUEST_ID]);
+        sw.start("HDF4RequestHandler::hdf4_build_dmr", dhi.data[REQUEST_ID_KEY]);
 
     if (true == _direct_dmr) 
         return hdf4_build_direct_dmr(dhi);
@@ -1597,7 +1597,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
 
     BESStopWatch sw;
         if (BESDebug::IsSet(TIMING_LOG_KEY))
-                sw.start("HDF4RequestHandler::hdf4_build_dmr_with_IDs", dhi.data[REQUEST_ID]);
+                sw.start("HDF4RequestHandler::hdf4_build_dmr_with_IDs", dhi.data[REQUEST_ID_KEY]);
 
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).
