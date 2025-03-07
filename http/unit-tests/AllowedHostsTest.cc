@@ -2,7 +2,7 @@
 
 // This file is part of the OPeNDAP Back-End Server (BES)
 // and creqates an allowed hosts list od systems that may be
-// accessed by the server as part of it's routine operation.
+// accessed by the server as part of its routine operation.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan D. Potter <ndp@opendap.org>
