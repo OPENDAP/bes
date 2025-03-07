@@ -40,8 +40,14 @@ DISTCLEANFILES = test_config.h
 ############################################################################
 # Unit Tests
 
-test_config.h: test_config.h.in Makefile
-	sed -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" $< > test_config.h
+test_config.h: $(srcdir)/test_config.h.in Makefile
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+
+
 
 if CPPUNIT
 UNIT_TESTS = XmlInterfaceTest propsT buildT

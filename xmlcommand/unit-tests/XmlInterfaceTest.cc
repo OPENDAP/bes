@@ -37,13 +37,16 @@
 #include "test_config.h"
 
 // Maybe the common testing code in modules should be moved up one level? jhrg 11/3/22
+#include <BESLog.h>
+#include <Error.h>
+
 #include "modules/common/run_tests_cppunit.h"
 
 using namespace std;
 
 #define prolog std::string("# XmlInterfaceTest::").append(__func__).append("() - ")
 
-namespace http {
+
 
 class XmlInterfaceTest : public CppUnit::TestFixture {
 
@@ -61,14 +64,16 @@ public:
         DBG(cerr << "\n");
         DBG(cerr << prolog << "#-----------------------------------------------------------------\n");
         DBG(cerr << prolog << "BEGIN\n");
+        string beslog_filename = TEST_BUILD_DIR ;
+        beslog_filename.append("/bes.log");
 
-
+        TheBESKeys::TheKeys()->set_key("BES.LogName",beslog_filename);
         DBG(cerr << prolog << "END\n");
     }
 
     // Called after each test
     void tearDown() override {
-        DBG(cerr << prolog << "BEGIN\n");
+        DBG(cerr << "\n" << prolog << "BEGIN\n");
 
 
         DBG(cerr << prolog << "END\n");
@@ -77,13 +82,26 @@ public:
     void xml_cmd_test_0(){
         DBG(cerr << prolog << "BEGIN\n");
 
-        const string xml_doc_str = BESUtil::file_to_string(d_commands_dir + "/bes.cmd");
+        const string bescmd_str = BESUtil::file_to_string(d_commands_dir + "/bes.cmd");
 
         ostringstream oss;
 
-        BESXMLInterface bxi(xml_doc_str, &oss);
+        DBG(cerr << prolog << "BES Command: \n" << bescmd_str << "\n");
 
-        bxi.build_data_request_plan();
+        BESXMLInterface bxi(bescmd_str, &oss);
+
+        try {
+            bxi.build_data_request_plan();
+        }
+        catch (BESError &bes_error) { // Catch the libdap::Error and throw BESInternalError
+            CPPUNIT_FAIL(bes_error.get_verbose_message());
+        }
+        catch (libdap::Error &libdap_error) { // Catch the libdap::Error and throw BESInternalError
+            CPPUNIT_FAIL(libdap_error.get_error_message());
+        }
+        catch(std::exception &std_error) {
+            CPPUNIT_FAIL(std_error.what());
+        }
 
         DBG(cerr << prolog << "END\n");
     }
@@ -99,8 +117,6 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XmlInterfaceTest);
 
-} // namespace http
-
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::XmlInterfaceTest>(argc, argv, "cerr,bes,besxml") ? 0 : 1;
+    return bes_run_tests<XmlInterfaceTest>(argc, argv, "cerr,bes,besxml") ? 0 : 1;
 }
