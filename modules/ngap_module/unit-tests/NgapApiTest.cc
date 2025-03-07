@@ -237,7 +237,7 @@ public:
         time_t then = now - 82810; // 23 hours and 10 seconds ago.
 
         signed_url.set_ingest_time(then);
-        bool is_expired = NgapApi::signed_url_is_expired(signed_url);
+        bool is_expired = signed_url.is_expired();
         CPPUNIT_ASSERT(is_expired == true);
         DBG(cerr << prolog << "END" << endl);
     }

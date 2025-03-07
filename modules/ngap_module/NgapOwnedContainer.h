@@ -32,13 +32,6 @@
 
 #include "BESContainer.h"
 
-#if 0
-  namespace http {
-class RemoteResource;
-}
-#endif
-
-
 namespace ngap {
 
 /**
