@@ -89,8 +89,18 @@ std::string calculate_signature(const std::time_t &request_date,
 
 // The whole enchilada. Added jhrg 11/25/19
 std::string compute_awsv4_signature(const std::shared_ptr<http::url> &uri_str, const std::time_t &request_date,
-                                          const std::string &public_key, const std::string &secret_key,
-                                          const std::string &region, const std::string &service = "s3");
+                                    const std::string &public_key, const std::string &secret_key,
+                                    const std::string &region, const std::string &service = "s3");
+
+// Added these two as part of removing the use of std::shared_ptr<http::url>. jhrg 2/20/25
+std::string compute_awsv4_signature(const http::url &uri, const std::time_t &request_date,
+                                    const std::string &public_key, const std::string &secret_key,
+                                    const std::string &region, const std::string &service = "s3");
+
+std::string compute_awsv4_signature(const std::string &canonical_uri, const std::string &canonical_query,
+                                    const std::string &host, const std::time_t &request_date,
+                                    const std::string &public_key, const std::string &secret_key,
+                                    const std::string &region, const std::string &service);
 }
 
 #endif

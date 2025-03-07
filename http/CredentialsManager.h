@@ -80,6 +80,7 @@ public:
     }
 
     AccessCredentials *get(const std::shared_ptr<http::url> &url);
+    AccessCredentials *get(const std::string &url);
 
     size_t size() const {
         return creds.size();

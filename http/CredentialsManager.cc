@@ -145,7 +145,7 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
 /**
  * Retrieve the AccessCredentials, if any, associated with the passed url (key).
  * @param url The URL for which AccessCredentials are desired
- * @return If there are AccessCredentials associated with the URL/key then a point to
+ * @return If there are AccessCredentials associated with the URL/key then a pointer to
  * them will be returned. Otherwise, NULL.
  */
 AccessCredentials *
@@ -170,6 +170,32 @@ CredentialsManager::get(const shared_ptr <http::url> &url) {
 
     return best_match;
 }
+
+AccessCredentials *
+CredentialsManager::get(const std::string &url) {
+    // Check the protocol before locking the credential manager. jhrg 2/20/25
+    const auto protocol = url.substr(0, url.find(':'));
+    if (url.find(HTTP_PROTOCOL) != 0 && url.find(HTTPS_PROTOCOL) != 0)
+        return nullptr;
+
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
+    AccessCredentials *best_match = nullptr;
+    for (auto &item: creds) {
+        std::string best_key;
+        const std::string &key = item.first;
+        if ((url.rfind(key, 0) == 0) && (key.size() > best_key.size())) {
+            // url starts with key
+            best_key = key;
+            best_match = item.second;
+        }
+    }
+
+    return best_match;
+}
+
 
 /**
  * Check for file existence
@@ -235,6 +261,7 @@ bool file_is_secured(const string &filename) {
  * of the credentials.
  * The map of maps is accomplished by the following formatting:
  *
+ * @todo FIXME The 'bucket' key is not used. jhrg 2/19/25
  * cloudydap=url:https://s3.amazonaws.com/cloudydap/
  * cloudydap+=id:---------------------------
  * cloudydap+=key:**************************
