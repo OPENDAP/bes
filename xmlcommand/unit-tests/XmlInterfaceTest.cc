@@ -38,6 +38,7 @@
 
 // Maybe the common testing code in modules should be moved up one level? jhrg 11/3/22
 #include <BESLog.h>
+#include <dirent.h>
 #include <Error.h>
 
 #include "../modules/common/run_tests_cppunit.h"
@@ -50,6 +51,30 @@ class XmlInterfaceTest : public CppUnit::TestFixture {
 
 public:
     string d_commands_dir = TEST_COMMAND_DIR;
+
+
+
+    std::vector<std::string> listDirectory(const std::string& path) {
+        std::vector<std::string> files;
+
+        DIR* dir = opendir(path.c_str());
+        if (dir) {
+            struct dirent* entry;
+            while ((entry = readdir(dir)) != nullptr) {
+                if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+                    files.push_back(entry->d_name);
+                    DBG(cerr << prolog << "    " << entry->d_name << "\n");
+                }
+            }
+            closedir(dir);
+        }
+        else {
+            cerr << prolog << "ERROR! The directory: " << path << "could not be opened!\n";
+        }
+        return files;
+    }
+
+
 
     // Called once before everything gets tested
     XmlInterfaceTest() = default;
@@ -69,11 +94,16 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.LogName",beslog_filename);
 
         DBG(cerr << prolog << "TEST_SRC_DIR: " << TEST_SRC_DIR << "\n");
+        auto fnames= listDirectory(TEST_SRC_DIR);
         DBG(cerr << prolog << "TEST_BUILD_DIR: " << TEST_BUILD_DIR << "\n");
+        fnames = listDirectory(TEST_BUILD_DIR);
         DBG(cerr << prolog << "TEST_COMMAND_DIR: " << TEST_COMMAND_DIR << "\n");
+        fnames = listDirectory(TEST_COMMAND_DIR);
+        DBG(cerr << "\n");
         DBG(cerr << prolog << "d_commands_dir: " << d_commands_dir << "\n");
 
         DBG(cerr << prolog << "END\n");
+        DBG(cerr << "\n");
     }
 
     // Called after each test
