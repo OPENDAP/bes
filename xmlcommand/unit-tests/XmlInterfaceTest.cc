@@ -85,12 +85,11 @@ public:
 
         string command_file_name = BESUtil::assemblePath(d_commands_dir , "bes.cmd");
         DBG(cerr << prolog << "command_file_name: " << command_file_name << "\n");
-
-        const string bescmd_str = BESUtil::file_to_string(command_file_name);
-        DBG(cerr << prolog << "BES Command: \n" << bescmd_str << "\n");
-
-
+        
         try {
+            const string bescmd_str = BESUtil::file_to_string(command_file_name);
+            DBG(cerr << prolog << "BES Command: \n" << bescmd_str << "\n");
+
             ostringstream oss;
             BESXMLInterface bxi(bescmd_str, &oss);
             if (disabled) {
