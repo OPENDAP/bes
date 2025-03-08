@@ -135,7 +135,7 @@ void BESXMLInterface::build_data_request_plan()
         if (reqId.empty()) throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
 
         d_dhi_ptr->data[REQUEST_ID_KEY] = reqId;
-        BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[REQUEST_ID]: " << d_dhi_ptr->data[REQUEST_ID_KEY] << endl);
+        BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_ID_KEY << "\"]: " << d_dhi_ptr->data[REQUEST_ID_KEY] << endl);
 
         BESLog::TheLog()->set_request_id(reqId);
         BESDEBUG(BES_XML, prolog << "BESLog::TheLog()->get_request_id(): " << BESLog::TheLog()->get_request_id() << endl);
