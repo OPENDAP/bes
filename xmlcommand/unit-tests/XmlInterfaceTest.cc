@@ -61,12 +61,18 @@ public:
     void setUp() override {
         debug = true;
         DBG(cerr << "\n");
-        DBG(cerr << prolog << "#-----------------------------------------------------------------\n");
+        DBG(cerr << prolog << "-----------------------------------------------------------------\n");
         DBG(cerr << prolog << "BEGIN\n");
-        string beslog_filename = TEST_BUILD_DIR ;
-        beslog_filename.append("/bes.log");
 
+        string beslog_filename = BESUtil::assemblePath(TEST_BUILD_DIR ,"bes.log");
+        DBG(cerr << prolog << "beslog_filename: " << beslog_filename << "\n");
         TheBESKeys::TheKeys()->set_key("BES.LogName",beslog_filename);
+
+        DBG(cerr << prolog << "TEST_SRC_DIR: " << TEST_SRC_DIR << "\n");
+        DBG(cerr << prolog << "TEST_BUILD_DIR: " << TEST_BUILD_DIR << "\n");
+        DBG(cerr << prolog << "TEST_COMMAND_DIR: " << TEST_COMMAND_DIR << "\n");
+        DBG(cerr << prolog << "d_commands_dir: " << d_commands_dir << "\n");
+
         DBG(cerr << prolog << "END\n");
     }
 
@@ -85,7 +91,7 @@ public:
 
         string command_file_name = BESUtil::assemblePath(d_commands_dir , "bes.cmd");
         DBG(cerr << prolog << "command_file_name: " << command_file_name << "\n");
-        
+
         try {
             const string bescmd_str = BESUtil::file_to_string(command_file_name);
             DBG(cerr << prolog << "BES Command: \n" << bescmd_str << "\n");
