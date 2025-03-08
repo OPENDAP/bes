@@ -93,9 +93,12 @@ public:
 
         try {
             cerr << "\n" << prolog << "This XmlInterfaceTest is currently DISABLED\n";
-            if (disabled)
-                return;
-            bxi.build_data_request_plan();
+            if (disabled) {
+                CPPUNIT_ASSERT(true);
+            }
+            else {
+                bxi.build_data_request_plan();
+            }
         }
         catch (BESError &bes_error) { // Catch the libdap::Error and throw BESInternalError
             CPPUNIT_FAIL(bes_error.get_verbose_message());
