@@ -40,7 +40,7 @@
 #include <BESLog.h>
 #include <Error.h>
 
-#include "modules/common/run_tests_cppunit.h"
+#include "../modules/common/run_tests_cppunit.h"
 
 using namespace std;
 
