@@ -119,6 +119,7 @@ private:
     std::string d_file_name;
     std::string d_instance_id = "-";
     std::string d_pid = "-";
+    std::string request_id{"BESLog-NotYetSet"};
     std::string d_log_record_prolog_base;
 
     // Flag to indicate whether to log verbose messages
@@ -257,6 +258,10 @@ public:
     void trace_timing(const std::string &msg, const std::string &file, int line) const {
         trace_log_record(TIMING_LOG_TYPE_KEY, msg, file, line);
     }
+
+
+    void set_request_id(const std::string &id);
+    std::string get_request_id() const {return request_id;}
 
     void dump(std::ostream &strm) const override;
 

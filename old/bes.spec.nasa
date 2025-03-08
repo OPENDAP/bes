@@ -173,6 +173,7 @@ exit 0
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
+%{_bindir}/beslog2json.py
 
 %{_libdir}/*.so.*
 %{_libdir}/bes/

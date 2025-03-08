@@ -173,13 +173,13 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     }
 
     /* Add the request id attribute */
-    string reqid = dhi.data[REQUEST_ID];
+    string reqid = dhi.data[REQUEST_ID_KEY];
     if (!reqid.empty()) {
-        rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST REQUEST_ID,
+        rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST REQUEST_ID_KEY,
             BAD_CAST reqid.c_str() );
         if (rc < 0) {
             cleanup();
-            string err = (string) "Error adding attribute " + REQUEST_ID + " for response " + _response_name;
+            string err = (string) "Error adding attribute " + REQUEST_ID_KEY + " for response " + _response_name;
             throw BESInternalError(err, __FILE__, __LINE__);
         }
     }

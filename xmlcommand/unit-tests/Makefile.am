@@ -29,7 +29,7 @@ check_PROGRAMS = $(UNIT_TESTS)
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
-DIRS_EXTRA = 
+DIRS_EXTRA = cmd
 
 EXTRA_DIST = $(DIRS_EXTRA) test_config.h.in bes.conf
 
@@ -40,11 +40,17 @@ DISTCLEANFILES = test_config.h
 ############################################################################
 # Unit Tests
 
-test_config.h: test_config.h.in Makefile
-	sed -e "s%[@]abs_srcdir[@]%${abs_srcdir}%" $< > test_config.h
+test_config.h: $(srcdir)/test_config.h.in Makefile
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+
+
 
 if CPPUNIT
-UNIT_TESTS = propsT buildT
+UNIT_TESTS = XmlInterfaceTest propsT buildT
 else
 UNIT_TESTS =
 
@@ -65,4 +71,8 @@ buildT_LDADD = $(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/
 propsT_SOURCES = propsT.cc
 propsT_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
 propsT_LDADD = $(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS) $(AM_LDADD)
+
+XmlInterfaceTest_SOURCES = XmlInterfaceTest.cc
+XmlInterfaceTest_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
+XmlInterfaceTest_LDADD = $(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS) $(AM_LDADD)
 

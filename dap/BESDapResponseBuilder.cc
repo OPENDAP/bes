@@ -690,7 +690,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, ConstraintEvaluator &eval, bool ce_eval)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer");
 
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
     RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
@@ -883,7 +883,7 @@ libdap::DDS *
 BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer");
 
     BESDEBUG(MODULE, prolog << "BEGIN"<< endl);
 
@@ -1400,7 +1400,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
 void BESDapResponseBuilder::dap4_process_ce_for_intern_data(DMR &dmr)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer");
     if (!d_dap4ce.empty()) {
         BESDEBUG(MODULE , prolog << "Expression constraint is not empty. " <<endl);
         D4ConstraintEvaluator parser(&dmr);
@@ -1463,7 +1463,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
 void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer");
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -1613,7 +1613,7 @@ libdap::DMR *
 BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer");
     BESDEBUG(MODULE , prolog << "BEGIN" << endl);
 
     unique_ptr<DMR> dmr = setup_dap4_intern_data(obj, dhi);
@@ -1627,7 +1627,7 @@ libdap::DMR *
 BESDapResponseBuilder::process_dap4_dmr(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer");
     BESDEBUG(MODULE , prolog << "BEGIN" << endl);
 
     unique_ptr<DMR> dmr = setup_dap4_intern_data(obj, dhi);
