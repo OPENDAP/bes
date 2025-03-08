@@ -46,8 +46,6 @@ using namespace std;
 
 #define prolog std::string("# XmlInterfaceTest::").append(__func__).append("() - ")
 
-
-
 class XmlInterfaceTest : public CppUnit::TestFixture {
 
 public:
@@ -80,23 +78,25 @@ public:
     }
 
     void xml_cmd_test_0(){
+
+        debug = true; cerr << "\n";
+
         DBG(cerr << prolog << "BEGIN\n");
         bool disabled = true;
 
         const string bescmd_str = BESUtil::file_to_string(d_commands_dir + "/bes.cmd");
-
-        ostringstream oss;
-
         DBG(cerr << prolog << "BES Command: \n" << bescmd_str << "\n");
 
-        BESXMLInterface bxi(bescmd_str, &oss);
 
         try {
-            cerr << "\n" << prolog << "This XmlInterfaceTest is currently DISABLED\n";
+            ostringstream oss;
+            BESXMLInterface bxi(bescmd_str, &oss);
             if (disabled) {
+                cerr << "\n" << prolog << "This XmlInterfaceTest is currently DISABLED\n";
                 CPPUNIT_ASSERT(true);
             }
             else {
+                DBG(cerr << prolog << "Calling: bxi.build_data_request_plan()\n");
                 bxi.build_data_request_plan();
             }
         }
