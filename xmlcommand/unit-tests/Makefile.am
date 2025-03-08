@@ -29,7 +29,7 @@ check_PROGRAMS = $(UNIT_TESTS)
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
-DIRS_EXTRA = 
+DIRS_EXTRA = cmd
 
 EXTRA_DIST = $(DIRS_EXTRA) test_config.h.in bes.conf
 
