@@ -59,6 +59,7 @@ public:
 
     // Called before each test
     void setUp() override {
+        debug = true;
         DBG(cerr << "\n");
         DBG(cerr << prolog << "#-----------------------------------------------------------------\n");
         DBG(cerr << prolog << "BEGIN\n");
@@ -79,12 +80,13 @@ public:
 
     void xml_cmd_test_0(){
 
-        debug = true; cerr << "\n";
-
         DBG(cerr << prolog << "BEGIN\n");
         bool disabled = true;
 
-        const string bescmd_str = BESUtil::file_to_string(d_commands_dir + "/bes.cmd");
+        string command_file_name = BESUtil::assemblePath(d_commands_dir , "bes.cmd");
+        DBG(cerr << prolog << "command_file_name: " << command_file_name << "\n");
+
+        const string bescmd_str = BESUtil::file_to_string(command_file_name);
         DBG(cerr << prolog << "BES Command: \n" << bescmd_str << "\n");
 
 
