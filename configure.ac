@@ -1065,8 +1065,7 @@ dnl A better way to control starting a stopping hyrax is needed.
 dnl For now, use besd (which can be run from startup scripts or
 dnl using besctl) and tomcat. both bes and tomcat can be set to
 dnl start at boot time. jhrg 9/27/17 
-AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
-dnl AC_CONFIG_FILES([server/beslog2json.py], [chmod +x server/beslog2json.py])
+AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 
 AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
