@@ -55,8 +55,8 @@
 using namespace std;
 
 #define LOG_ONLY_GET_COMMANDS
-#define MODULE "bes"
-#define BES_XML "besxml"
+const auto MODULE ="bes";
+const auto BES_XML = "besxml";
 #define prolog string("BESXMLInterface::").append(__func__).append("() - ")
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
