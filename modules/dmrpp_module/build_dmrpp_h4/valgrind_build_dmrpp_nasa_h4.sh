@@ -11,3 +11,5 @@ valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD11A1.A2024025.h10
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD10A1F.A2024025.h27v04.061.2024027145105.hdf.dmr
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf.dmr
 valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MOD29.A2000166.0255.005.2008189120917.hdf -r ../tests/hdf4_build_dmrpp_nasa/MOD29.A2000166.0255.005.2008189120917.hdf.dmr
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/AIRS.2002.08.31.L1B.Cal_Subset.v5.0.16.0.G07206065329.hdf -r ../tests/hdf4_build_dmrpp_nasa/AIRS.2002.08.31.L1B.Cal_Subset.v5.0.16.0.G07206065329.hdf.dmr 
+valgrind ./build_dmrpp_h4 -f ../tests/hdf4_build_dmrpp_nasa/MYD09.A2019003.2040.006.2019005020913.hdf -r ../tests/hdf4_build_dmrpp_nasa/MYD09.A2019003.2040.006.2019005020913.hdf.dmr
