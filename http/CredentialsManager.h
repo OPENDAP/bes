@@ -50,7 +50,10 @@ public:
 private:
     std::recursive_mutex d_lock_mutex{};
 
-    bool ngaps3CredentialsLoaded = false;
+#if 0
+      bool ngaps3CredentialsLoaded = false;
+#endif
+
     std::map<std::string, AccessCredentials *> creds;
 
     CredentialsManager() = default;   // only called here to build the singleton
@@ -76,7 +79,9 @@ public:
 
     void clear() {
         creds.clear();
-        ngaps3CredentialsLoaded = false;
+#if 0
+          ngaps3CredentialsLoaded = false;
+#endif
     }
 
     AccessCredentials *get(const std::shared_ptr<http::url> &url);
@@ -86,9 +91,11 @@ public:
         return creds.size();
     }
 
-    bool hasNgapS3Credentials() const {
+#if 0
+      bool hasNgapS3Credentials() const {
         return ngaps3CredentialsLoaded;
     }
+#endif
 };
 
 }   // namespace http

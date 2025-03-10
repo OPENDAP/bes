@@ -70,23 +70,76 @@ std::once_flag d_cmac_init_once;
 // Helper Functions
 //
 /**
- *  Get get the specified environment value. This function
+ *  Get the value of the specified environment value. This function
  *  returns an empty string if the environment variable is
  *  not found, AND if the environment value is set but empty.
  * @param key The environment value to retrieve
  * @return The value of the environment variable,
  * or the empty string is not found.
  */
-std::string get_env_value(const string &key) {
-    string value;
-    const char *cstr = getenv(key.c_str());
-    if (cstr) {
-        value.assign(cstr);
-        BESDEBUG(CREDS, prolog << "From system environment - " << key << ": " << value << endl);
-    } else {
-        value.clear();
+string get_env_value(const string &key) {
+    const char *env_var_value = getenv(key.c_str());
+    if (env_var_value) {
+        BESDEBUG(CREDS, prolog << "From system environment - " << key << ": " << env_var_value << endl);
+        return {env_var_value};
     }
-    return value;
+    return {""};
+}
+
+
+/**
+ * Check for file existence
+ * @param filename Name of file to check
+ * @return true if file exists, false otherwise.
+ */
+bool file_exists(const string &filename) {
+    struct stat buffer{};
+    return (stat(filename.c_str(), &buffer) == 0);
+}
+
+/**
+ * Uses stat() to check that the passed file has the
+ * permissions 600 (rw-------). An exception is thrown
+ * if the file does not exist.
+ *
+ *      modeval[0] = (perm & S_IRUSR) ? 'r' : '-';
+        modeval[1] = (perm & S_IWUSR) ? 'w' : '-';
+        modeval[2] = (perm & S_IXUSR) ? 'x' : '-';
+        modeval[3] = (perm & S_IRGRP) ? 'r' : '-';
+        modeval[4] = (perm & S_IWGRP) ? 'w' : '-';
+        modeval[5] = (perm & S_IXGRP) ? 'x' : '-';
+        modeval[6] = (perm & S_IROTH) ? 'r' : '-';
+        modeval[7] = (perm & S_IWOTH) ? 'w' : '-';
+        modeval[8] = (perm & S_IXOTH) ? 'x' : '-';
+        modeval[9] = '\0';
+
+ * @param filename
+ * @return True if the passed file exists and has the permissions 600
+ * (rw-------)
+ */
+bool file_is_secured(const string &filename) {
+    struct stat st{};
+    if (stat(filename.c_str(), &st) != 0) {
+        string err;
+        err.append("file_is_secured() Unable to access file ");
+        err.append(filename).append("  strerror: ").append(strerror(errno));
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
+
+    mode_t perm = st.st_mode;
+    bool status;
+    status = (perm & S_IRUSR) && !(
+            // (perm & S_IWUSR) || // We don't need to enforce user no write
+            (perm & S_IXUSR) ||
+            (perm & S_IRGRP) ||
+            (perm & S_IWGRP) ||
+            (perm & S_IXGRP) ||
+            (perm & S_IROTH) ||
+            (perm & S_IWOTH) ||
+            (perm & S_IXOTH));
+    BESDEBUG(HTTP_MODULE,
+             prolog << "file_is_secured() " << filename << " secured: " << (status ? "true" : "false") << endl);
+    return status;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,92 +249,24 @@ CredentialsManager::get(const std::string &url) {
     return best_match;
 }
 
-
-/**
- * Check for file existence
- * @param filename Name of file to check
- * @return true if file exists, false otherwise.
- */
-bool file_exists(const string &filename) {
-    struct stat buffer{};
-    return (stat(filename.c_str(), &buffer) == 0);
-}
-
-/**
- * Uses stat() to check that the passed file has the
- * permissions 600 (rw-------). An exception is thrown
- * if the file does not exist.
- *
- *      modeval[0] = (perm & S_IRUSR) ? 'r' : '-';
-        modeval[1] = (perm & S_IWUSR) ? 'w' : '-';
-        modeval[2] = (perm & S_IXUSR) ? 'x' : '-';
-        modeval[3] = (perm & S_IRGRP) ? 'r' : '-';
-        modeval[4] = (perm & S_IWGRP) ? 'w' : '-';
-        modeval[5] = (perm & S_IXGRP) ? 'x' : '-';
-        modeval[6] = (perm & S_IROTH) ? 'r' : '-';
-        modeval[7] = (perm & S_IWOTH) ? 'w' : '-';
-        modeval[8] = (perm & S_IXOTH) ? 'x' : '-';
-        modeval[9] = '\0';
-
- * @param filename
- * @return True if the passed file exists and has the permissions 600
- * (rw-------)
- */
-bool file_is_secured(const string &filename) {
-    struct stat st{};
-    if (stat(filename.c_str(), &st) != 0) {
-        string err;
-        err.append("file_is_secured() Unable to access file ");
-        err.append(filename).append("  strerror: ").append(strerror(errno));
-        throw BESInternalError(err, __FILE__, __LINE__);
-    }
-
-    mode_t perm = st.st_mode;
-    bool status;
-    status = (perm & S_IRUSR) && !(
-            // (perm & S_IWUSR) || // We don't need to enforce user no write
-            (perm & S_IXUSR) ||
-            (perm & S_IRGRP) ||
-            (perm & S_IWGRP) ||
-            (perm & S_IXGRP) ||
-            (perm & S_IROTH) ||
-            (perm & S_IWOTH) ||
-            (perm & S_IXOTH));
-    BESDEBUG(HTTP_MODULE,
-             prolog << "file_is_secured() " << filename << " secured: " << (status ? "true" : "false") << endl);
-    return status;
-}
-
 /**
  * This method loads credentials from a special file identified in the bes.conf chain
  * by the key "CredentialsManager.config". If the key is missing from the bes.conf chain
  * the method will return and no credentials will be loaded.
  *
- * The credentials are stored as a map of maps  where the key is the human readable name
- * of the credentials.
+ * The credentials are stored as a map of maps where the 'main' key is the human-readable
+ * name of the credentials and the sub-keys hold teh values of the different parts of the
+ * credential.
+ *
  * The map of maps is accomplished by the following formatting:
  *
- * @todo FIXME The 'bucket' key is not used. jhrg 2/19/25
  * cloudydap=url:https://s3.amazonaws.com/cloudydap/
  * cloudydap+=id:---------------------------
  * cloudydap+=key:**************************
  * cloudydap+=region:us-east-1
- * cloudydap+=bucket:cloudydap
  *
- * cloudyopendap=url:https://s3.amazonaws.com/cloudyopendap/
- * cloudyopendap+=id:---------------------------
- * cloudyopendap+=key:**************************
- * cloudyopendap+=region:us-east-1
- * cloudyopendap+=bucket:cloudyopendap
- *
- * cname_02=url:https://ssotherone.org/login
- * cname_02+=id:---------------------------
- * cname_02+=key:**************************
- * cname_02+=region:us-east-1
- * cname_02+=bucket:cloudyotherdap
- *
- * @throws BESInternalError if the file specified by the "CredentialsManager.config"
- * key is missing or if the file is not secured (permissions 600).
+ * @note This method is called in a constructor and never throws. It will
+ * write messages to the error log using the ERROR_LOG macro. jhrg 3/7/25
  *
  * @note NEVER call this method directly. It is called using call_once() by the
  * singleton accessor.
@@ -291,21 +276,20 @@ void CredentialsManager::load_credentials() {
     bool found_key = true;
     TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
     if (!found_key) {
-        BESDEBUG(HTTP_MODULE, prolog << "The BES key " << CATALOG_MANAGER_CREDENTIALS
-                                     << " was not found in the BES configuration tree. No AccessCredentials were loaded"
-                                     << endl);
+        BESDEBUG(HTTP_MODULE, prolog << "The key " << CATALOG_MANAGER_CREDENTIALS
+                                     << " was not found; no AccessCredentials were loaded\n");
         return;
     }
 
     // Does the configuration indicate that credentials will be submitted via the runtime environment?
     if (config_file == string(CredentialsManager::USE_ENV_CREDS_KEY_VALUE)) {
         // Apparently so...
-        auto *accessCredentials = load_credentials_from_env();
-        if (accessCredentials) {
+        auto *access_credentials = load_credentials_from_env();
+        if (access_credentials) {
             // So if we have them, we add them to CredentialsManager object that called this method
             // and then return without processing the configuration.
-            string url = accessCredentials->get(AccessCredentials::URL_KEY);
-            add(url, accessCredentials);
+            string url = access_credentials->get(AccessCredentials::URL_KEY);
+            add(url, access_credentials);
         }
         // Environment injected credentials override all other configuration credentials.
         // Since the value of CATALOG_MANAGER_CREDENTIALS is ENV_CREDS_VALUE, there is no
@@ -338,11 +322,10 @@ void CredentialsManager::load_credentials() {
     map<string, AccessCredentials *> credential_sets;
     AccessCredentials *accessCredentials = nullptr;
     for (const auto &key: keystore) {
-        string creds_name = key.first;
+        const string creds_name = key.first;  // In the method doc comment above, this is 'cloudydap.' jhrg 3/7/25
         const vector<string> &credentials_entries = key.second;
-        map<string, AccessCredentials *>::iterator mit;
-        mit = credential_sets.find(creds_name);
-        if (mit != credential_sets.end()) {  // New?
+        const auto mit = credential_sets.find(creds_name);
+        if (mit != credential_sets.end()) {  // In the method doc above, 'cloudydap'
             // Nope.
             accessCredentials = mit->second;
         } else {
@@ -352,6 +335,7 @@ void CredentialsManager::load_credentials() {
         }
 
         for (const auto &entry: credentials_entries) {
+            // This loop iterates over 'url:...,' etc., in the comment above. jhrg 3/7/25
             size_t index = entry.find(':');
             if (index > 0) {
                 string key_name = entry.substr(0, index);
@@ -363,6 +347,7 @@ void CredentialsManager::load_credentials() {
     }
 
     BESDEBUG(HTTP_MODULE, prolog << "Loaded " << credential_sets.size() << " AccessCredentials" << endl);
+    // Every credential must have a sub-key named 'url.' Push the ones that don't onto 'bad_creds.' jhrg 3/7/25
     vector<AccessCredentials *> bad_creds;
 
     for (const auto &acit: credential_sets) {
@@ -376,19 +361,19 @@ void CredentialsManager::load_credentials() {
     }
 
     if (!bad_creds.empty()) {
-        stringstream err;
-        err << "Encountered " << bad_creds.size() << " AccessCredentials "
-            << " definitions missing an associated URL. offenders: ";
+        string err{"Encountered "};
+        err += to_string(bad_creds.size()) + " AccessCredentials definitions missing an associated URL. offenders: ";
 
         for (auto &bc: bad_creds) {
-            err << bc->name() << "  ";
+            err += bc->name() + "  ";
             credential_sets.erase(bc->name());
             delete bc;
         }
-        ERROR_LOG(err.str());
-        BESDEBUG(HTTP_MODULE, err.str());
+        ERROR_LOG(err);
+        BESDEBUG(HTTP_MODULE, err);
         return;
     }
+
     BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << size() << " AccessCredentials" << endl);
 }
 
