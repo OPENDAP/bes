@@ -765,6 +765,11 @@ def main(argv):
         usage()
         sys.exit(2)
 
+    if len(args) > 0:
+        print("# ERROR: Found unexpected/unrecognized command line content.", file=sys.stderr)
+        usage()
+        sys.exit(2)
+
     arg: str
     for opt, arg in opts:
         if opt in ("-h", "--help"):
