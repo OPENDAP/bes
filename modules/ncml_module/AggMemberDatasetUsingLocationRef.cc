@@ -41,6 +41,9 @@
 
 using namespace std;
 
+#define MODULE "ncml"
+#define prolog string("AggMemberDatasetUsingLocationRef::").append(__func__).append("() - ")
+
 namespace agg_util {
 
 AggMemberDatasetUsingLocationRef::AggMemberDatasetUsingLocationRef(const std::string& locationToLoad,
@@ -89,8 +92,7 @@ AggMemberDatasetUsingLocationRef::getDDS()
 /////////////////////////////// Private Helpers ////////////////////////////////////
 void AggMemberDatasetUsingLocationRef::loadDDS()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggMemberDatasetUsingLocationRef::loadDDS", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     // We cannot load an empty location, so avoid the exception later.
     if (getLocation().empty()) {

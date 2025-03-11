@@ -52,6 +52,10 @@ using std::endl;
 using std::ostream;
 using std::string;
 
+#define MODULE "BESCatalog"
+#define prolog std::string("BESCatalogResponseHandler::").append(__func__).append("() - ")
+
+
 BESCatalogResponseHandler::BESCatalogResponseHandler(const string &name) :
     BESResponseHandler(name)
 {
@@ -72,8 +76,7 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler()
  */
 void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESCatalogResponseHandler::execute", &dhi);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timer", &dhi);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;

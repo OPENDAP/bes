@@ -69,6 +69,9 @@ using agg_util::GridJoinExistingAggregation;
 
 using namespace std;
 
+#define MODULE "ncml"
+#define prolog string("AggregationElement::").append(__func__).append("() - ")
+
 namespace ncml_module {
 const string AggregationElement::_sTypeName = "aggregation";
 
@@ -159,11 +162,7 @@ void AggregationElement::setAttributes(const XMLAttributeMap& attrs)
 
 void AggregationElement::handleBegin()
 {
-#if 0
-    BESStopWatch sw;
-    if (BESISDEBUG( TIMING_LOG_KEY ))
-    sw.start("AggregationElement::handleBegin", "");
-#endif
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     NCML_ASSERT(!getParentDataset());
 
@@ -201,10 +200,7 @@ void AggregationElement::handleContent(const string& content)
 
 void AggregationElement::handleEnd()
 {
-#if 1
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::handleEnd", "");
-#endif
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
     // Handle the actual processing!!
     BESDEBUG("ncml", "AggregationElement::handleEnd() - Processing the aggregation!!" << endl);
 
@@ -378,8 +374,7 @@ void AggregationElement::processUnion()
 
 void AggregationElement::processJoinNew()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinNew", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     // This will run any child <scan> elements to prepare them.
     processAnyScanElements();
@@ -626,8 +621,7 @@ void AggregationElement::fillDimensionCacheForJoinExistingDimension(AMDList& gra
     }
     else // look for cached dimension file or load dimensionalities from granules
     {
-    	BESStopWatch sw;
-        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("LOAD_AGGREGATION_DIMENSIONS_CACHE", "");
+        BES_STOPWATCH_START(MODULE, prolog + "LOAD_AGGREGATION_DIMENSIONS_CACHE");
 
     	agg_util::AggMemberDatasetDimensionCache *aggDimCache = agg_util::AggMemberDatasetDimensionCache::get_instance();
 
@@ -787,8 +781,7 @@ void AggregationElement::getParamsForJoinAggOnVariable(JoinAggParams* pOutParams
 
 void AggregationElement::processJoinNewOnAggVar(DDS* pAggDDS, const std::string& varName, const DDS& templateDDS)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinNewOnAggVar", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     // Get the params we need to factory the actual aggregation subclass
     JoinAggParams joinAggParams;
@@ -816,8 +809,7 @@ void AggregationElement::processJoinNewOnAggVar(DDS* pAggDDS, const std::string&
 void AggregationElement::processJoinExistingOnAggVar(DDS* pAggDDS, const std::string& varName, const DDS& templateDDS)
 {
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinExistingOnAggVar", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     // Get the params we need to factory the actual aggregation subclass
     JoinAggParams joinAggParams;
@@ -845,8 +837,7 @@ void AggregationElement::processJoinExistingOnAggVar(DDS* pAggDDS, const std::st
 void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap::Array& arrayTemplate,
     const agg_util::Dimension& dim, const AMDList& memberDatasets)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinExistingOnAggVar", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     // Use the basic array getter to read adn get from top level DDS.
     unique_ptr<agg_util::ArrayGetterInterface> arrayGetter(new agg_util::TopLevelArrayGetter());
@@ -875,8 +866,7 @@ void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap:
 void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gridTemplate,
     const agg_util::Dimension& dim, const AMDList& memberDatasets)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinNewForGrid", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     unique_ptr<GridAggregateOnOuterDimension> pAggGrid(
         new GridAggregateOnOuterDimension(gridTemplate, dim, memberDatasets, _parser->getDDSLoader()));
@@ -893,8 +883,7 @@ void AggregationElement::processAggVarJoinExistingForArray(DDS& aggDDS, const li
     const agg_util::Dimension& dim, const AMDList& memberDatasets)
 {
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinExistingForArray", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     // Use the basic array getter to read adn get from top level DDS.
     unique_ptr<agg_util::ArrayGetterInterface> arrayGetter(new agg_util::TopLevelArrayGetter());
@@ -918,9 +907,7 @@ void AggregationElement::processAggVarJoinExistingForArray(DDS& aggDDS, const li
 void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Grid& gridTemplate,
     const agg_util::Dimension& dim, const AMDList& memberDatasets)
 {
-
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinExistingForGrid", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     unique_ptr<GridJoinExistingAggregation> pAggGrid(
         new GridJoinExistingAggregation(gridTemplate, memberDatasets, _parser->getDDSLoader(), dim));
@@ -933,8 +920,7 @@ void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Gri
 
 void AggregationElement::processParentDatasetCompleteForJoinNew()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processParentDatasetCompleteForJoinNew", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     NetcdfElement* pParentDataset = getParentDataset();
     VALID_PTR(pParentDataset);
@@ -1001,8 +987,7 @@ void AggregationElement::processParentDatasetCompleteForJoinNew()
 
 void AggregationElement::processParentDatasetCompleteForJoinExisting()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processParentDatasetCompleteForJoinExisting", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     NetcdfElement* pParentDataset = getParentDataset();
     VALID_PTR(pParentDataset);

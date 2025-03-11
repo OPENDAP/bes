@@ -381,8 +381,7 @@ void BESXMLInterface::transmit_data()
     else if (d_dhi_ptr->response_handler) {
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " [" + d_dhi_ptr->data[LOG_INFO] + "] transmitting" );
 
-        BESStopWatch sw;
-        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr);
+        BES_STOPWATCH_START_DHI(MODULE, prolog + "Elapsed Time To Transmit", d_dhi_ptr);
 
         string return_as = d_dhi_ptr->data[RETURN_CMD];
         if (!return_as.empty()) {

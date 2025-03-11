@@ -72,6 +72,8 @@ using std::ostream;
 #define SIZE  "size"
 #define LMT  "lastModified"
 
+#define prolog std::string("GatewayPathInfoResponseHandler::").append(__func__).append("() - ")
+
 GatewayPathInfoResponseHandler::GatewayPathInfoResponseHandler(const string &name) :
     BESResponseHandler(name), _response(0)
 {
@@ -93,10 +95,9 @@ GatewayPathInfoResponseHandler::~GatewayPathInfoResponseHandler()
  */
 void GatewayPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("GatewayPathInfoResponseHandler::execute", &dhi);
+    BES_STOPWATCH_START(SPI_DEBUG_KEY, prolog + "Timer");
 
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - BEGIN" << endl );
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "BEGIN" << endl );
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     _response = info;
@@ -149,7 +150,7 @@ void GatewayPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     if (container[0] != '/') container = "/" + container;
 
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - container: " << container << endl );
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "container: " << container << endl );
 
     info->begin_response(SHOW_GATEWAY_PATH_INFO_RESPONSE_STR, dhi);
 
@@ -224,7 +225,7 @@ void GatewayPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     // end the response object
     info->end_response();
 
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - END" << endl );
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "END" << endl );
 
     }
 
@@ -276,11 +277,9 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
     long long &lastModifiedTime, bool &canRead, string &remainder)
 {
 
-    BESDEBUG(SPI_DEBUG_KEY,
-        "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "CatalogRoot: "<< catalog_root << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "CatalogRoot: "<< catalog_root << endl);
 
-    BESDEBUG(SPI_DEBUG_KEY,
-        "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "resourceID: "<< resource_path << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "resourceID: "<< resource_path << endl);
 
     // nothing valid yet...
     validPath = "";
@@ -296,20 +295,18 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
     // function for the eval operation.
     int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
     if (follow_sym_links) {
-        BESDEBUG(SPI_DEBUG_KEY,
-            "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "Using 'stat' function (follow_sym_links = true)" << endl);
+        BESDEBUG(SPI_DEBUG_KEY, prolog << "Using 'stat' function (follow_sym_links = true)" << endl);
         ye_old_stat_function = &stat;
     }
     else {
-        BESDEBUG(SPI_DEBUG_KEY,
-            "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "Using 'lstat' function (follow_sym_links = false)" << endl);
+        BESDEBUG(SPI_DEBUG_KEY, prolog << "Using 'lstat' function (follow_sym_links = false)" << endl);
         ye_old_stat_function = &lstat;
     }
 
     // if nothing is passed in path, then the path checks out since root is
     // assumed to be valid.
     if (resource_path == "") {
-        BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::"<<__func__ << "() - The resourceID is empty" << endl);
+        BESDEBUG(SPI_DEBUG_KEY, prolog << "The resourceID is empty" << endl);
         return;
     }
 
@@ -318,7 +315,8 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
     string::size_type dotdot = resource_path.find("..");
     if (dotdot != string::npos) {
         BESDEBUG(SPI_DEBUG_KEY,
-            "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << " ERROR: The resourceID '" << resource_path <<"' contains the substring '..' This is Forbidden." << endl);
+                 prolog << "ERROR: The resourceID '" << resource_path <<
+                 "' contains the substring '..' This is Forbidden." << endl);
         string s = (string) "Invalid node name '" + resource_path + "' ACCESS IS FORBIDDEN";
         throw BESForbiddenError(s, __FILE__, __LINE__);
     }
@@ -340,8 +338,7 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
     while (!done) {
         size_t slash = rem.find('/');
         if (slash == string::npos) {
-            BESDEBUG(SPI_DEBUG_KEY,
-                "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "Checking final path component: " << rem << endl);
+            BESDEBUG(SPI_DEBUG_KEY, prolog << "Checking final path component: " << rem << endl);
             fullpath = BESUtil::assemblePath(fullpath, rem, true);
             checking = BESUtil::assemblePath(validPath, rem, true);
             rem = "";
@@ -353,17 +350,13 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
             rem = rem.substr(slash + 1, rem.size() - slash);
         }
 
-        BESDEBUG(SPI_DEBUG_KEY,
-            "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "validPath: "<< validPath << endl);
-        BESDEBUG(SPI_DEBUG_KEY,
-            "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "checking: "<< checking << endl);
-        BESDEBUG(SPI_DEBUG_KEY,
-            "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "fullpath: "<< fullpath << endl);
+        BESDEBUG(SPI_DEBUG_KEY, prolog << "validPath: "<< validPath << endl);
+        BESDEBUG(SPI_DEBUG_KEY, prolog << " checking: "<< checking << endl);
+        BESDEBUG(SPI_DEBUG_KEY, prolog << " fullpath: "<< fullpath << endl);
 
-        BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "rem: "<< rem << endl);
+        BESDEBUG(SPI_DEBUG_KEY,  prolog << "     rem: "<< rem << endl);
 
-        BESDEBUG(SPI_DEBUG_KEY,
-            "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "remainder: "<< remainder << endl);
+        BESDEBUG(SPI_DEBUG_KEY, prolog << "remainder: "<< remainder << endl);
 
         struct stat sb;
         int statret = ye_old_stat_function(fullpath.c_str(), &sb);
@@ -385,11 +378,9 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
             else {
                 error = error + "unknown access error";
             }
-            BESDEBUG(SPI_DEBUG_KEY,
-                "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "error: "<< error << "   errno: " << errno << endl);
+            BESDEBUG(SPI_DEBUG_KEY, prolog << "    error: " << error << "   errno: " << errno << endl);
 
-            BESDEBUG(SPI_DEBUG_KEY,
-                "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "remainder: '" << remainder << "'" << endl);
+            BESDEBUG(SPI_DEBUG_KEY, prolog << "remainder: '" << remainder << "'" << endl);
 
             // ENOENT means that the node wasn't found. Otherwise, access
             // is denied for some reason
@@ -408,20 +399,16 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
                     size_t d_loc = basename.find_last_of(".");
                     if (d_loc != string::npos) {
                         basename = basename.substr(0, d_loc);
-                        BESDEBUG(SPI_DEBUG_KEY,
-                            "GatewayPathInfoResponseHandler::" << __func__ << "() - basename: "<< basename << endl);
+                        BESDEBUG(SPI_DEBUG_KEY, prolog << "basename: "<< basename << endl);
 
                         string candidate_remainder = remainder.substr(basename.size());
-                        BESDEBUG(SPI_DEBUG_KEY,
-                            "GatewayPathInfoResponseHandler::" << __func__ << "() - candidate_remainder: "<< candidate_remainder << endl);
+                        BESDEBUG(SPI_DEBUG_KEY, prolog << "candidate_remainder: "<< candidate_remainder << endl);
 
                         string candidate_path = BESUtil::assemblePath(validPath, basename, true);
-                        BESDEBUG(SPI_DEBUG_KEY,
-                            "GatewayPathInfoResponseHandler::" << __func__ << "() - candidate_path: "<< candidate_path << endl);
+                        BESDEBUG(SPI_DEBUG_KEY, prolog << "candidate_path: "<< candidate_path << endl);
 
                         string full_candidate_path = BESUtil::assemblePath(catalog_root, candidate_path, true);
-                        BESDEBUG(SPI_DEBUG_KEY,
-                            "GatewayPathInfoResponseHandler::" << __func__ << "() - full_candidate_path: "<< full_candidate_path << endl);
+                        BESDEBUG(SPI_DEBUG_KEY, prolog << "full_candidate_path: "<< full_candidate_path << endl);
 
                         struct stat sb1;
                         int statret1 = ye_old_stat_function(full_candidate_path.c_str(), &sb1);
@@ -432,15 +419,13 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
                         }
                     }
                     else {
-                        BESDEBUG(SPI_DEBUG_KEY,
-                            "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "No dots in remainder: "<< remainder << endl);
+                        BESDEBUG(SPI_DEBUG_KEY, prolog << "No dots in remainder: "<< remainder << endl);
                         moreDots = false;
                     }
                 }
             }
             else {
-                BESDEBUG(SPI_DEBUG_KEY,
-                    "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "Remainder has slash pollution: "<< remainder << endl);
+                BESDEBUG(SPI_DEBUG_KEY, prolog << "Remainder has slash pollution: "<< remainder << endl);
                 done = true;
             }
         }
@@ -448,20 +433,17 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
 
         statret = ye_old_stat_function(fullpath.c_str(), &sb);
         if (S_ISREG(sb.st_mode)) {
-            BESDEBUG(SPI_DEBUG_KEY,
-                "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "'"<< fullpath << "' Is regular file." << endl);
+            BESDEBUG(SPI_DEBUG_KEY, prolog << "'"<< fullpath << "' Is regular file." << endl);
             isFile = true;
             isDir = false;
         }
         else if (S_ISDIR(sb.st_mode)) {
-            BESDEBUG(SPI_DEBUG_KEY,
-                "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "'"<< fullpath << "' Is directory." << endl);
+            BESDEBUG(SPI_DEBUG_KEY, prolog << "'"<< fullpath << "' Is directory." << endl);
             isFile = false;
             isDir = true;
         }
         else if (S_ISLNK(sb.st_mode)) {
-            BESDEBUG(SPI_DEBUG_KEY,
-                "GatewayPathInfoResponseHandler::"<<__func__ << "() - " << "'"<< fullpath << "' Is symbolic Link." << endl);
+            BESDEBUG(SPI_DEBUG_KEY, prolog << "'"<< fullpath << "' Is symbolic Link." << endl);
             string error = "Service not configured to traverse symbolic links as embodied by the node '" + checking
                 + "' ACCESS IS FORBIDDEN";
             throw BESForbiddenError(error, __FILE__, __LINE__);
@@ -490,18 +472,14 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
         lastModifiedTime = sb.st_mtime;
 #endif
     }
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::" << __func__ << "() -  fullpath: " << fullpath << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::" << __func__ << "() - validPath: " << validPath << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::" << __func__ << "() - remainder: " << remainder << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::" << __func__ << "() -       rem: " << rem << endl);
-    BESDEBUG(SPI_DEBUG_KEY,
-        "GatewayPathInfoResponseHandler::" << __func__ << "() -    isFile: " << (isFile?"true":"false") << endl);
-    BESDEBUG(SPI_DEBUG_KEY,
-        "GatewayPathInfoResponseHandler::" << __func__ << "() -     isDir: " << (isDir?"true":"false") << endl);
-    BESDEBUG(SPI_DEBUG_KEY,
-        "GatewayPathInfoResponseHandler::" << __func__ << "() -    access: " << (canRead?"true":"false") << endl);
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::" << __func__ << "() -      size: " << size << endl);
-    BESDEBUG(SPI_DEBUG_KEY,
-        "GatewayPathInfoResponseHandler::" << __func__ << "() -       LMT: " << lastModifiedTime << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << " fullpath: " << fullpath << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "validPath: " << validPath << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "remainder: " << remainder << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "      rem: " << rem << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "   isFile: " << (isFile?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "    isDir: " << (isDir?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "   access: " << (canRead?"true":"false") << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "     size: " << size << endl);
+    BESDEBUG(SPI_DEBUG_KEY, prolog << "      LMT: " << lastModifiedTime << endl);
 
 }

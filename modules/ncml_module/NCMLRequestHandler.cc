@@ -75,6 +75,10 @@ using namespace agg_util;
 using namespace ncml_module;
 using namespace libdap;
 
+#define MODULE "ncml"
+#define prolog std::string("NCMLRequestHandler::").append(__func__).append("() - ")
+
+
 bool NCMLRequestHandler::_global_attributes_container_name_set = false;
 string NCMLRequestHandler::_global_attributes_container_name;
 
@@ -161,8 +165,7 @@ bool NCMLRequestHandler::ncml_build_redirect(BESDataHandlerInterface &dhi, const
 // apply ncml transformations to it, then return the modified DDS.
 bool NCMLRequestHandler::ncml_build_das(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_das", &dhi);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timer", &dhi);
 
     string filename = dhi.container->access();
 
@@ -196,8 +199,7 @@ bool NCMLRequestHandler::ncml_build_dds(BESDataHandlerInterface &dhi)
 {
 #if 0
     // original version 8/13/15
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_dds", &dhi);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timer", &dhi);
 
     string filename = dhi.container->access();
 
@@ -244,8 +246,7 @@ bool NCMLRequestHandler::ncml_build_dds(BESDataHandlerInterface &dhi)
     return true;
 #endif
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_dds", &dhi);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timer", &dhi);
 
     string filename = dhi.container->access();
 
@@ -281,8 +282,7 @@ bool NCMLRequestHandler::ncml_build_dds(BESDataHandlerInterface &dhi)
 
 bool NCMLRequestHandler::ncml_build_data(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_data", &dhi);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timer", &dhi);
 
     string filename = dhi.container->access();
 
@@ -318,8 +318,7 @@ bool NCMLRequestHandler::ncml_build_data(BESDataHandlerInterface &dhi)
 
 bool NCMLRequestHandler::ncml_build_dmr(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_dmr", &dhi);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timer", &dhi);
 
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).

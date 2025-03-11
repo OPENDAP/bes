@@ -61,8 +61,7 @@ using namespace std;
  */
 void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ShowNodeResponseHandler::execute", &dhi);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timing", &dhi);
 
     // Get the container. By convention, the path can start with a slash,
     // but doesn't have too. However, get_node() requires the leading '/'.

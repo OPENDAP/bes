@@ -76,6 +76,7 @@ using namespace std;
 using namespace libdap;
 
 const string HDF4_NAME="h4";
+#define prolog std::string("HDF4RequestHandler::").append(__func__).append("() - ")
 
 bool check_beskeys(const string &);
 bool get_beskeys(const string &,string &);
@@ -210,9 +211,7 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("HDF4RequestHandler::hdf4_build_das", &dhi);
+    BES_STOPWATCH_START_DHI(HDF4_NAME, prolog + "Timer", &dhi);
 
     if (true == _usecf) {
 
@@ -363,9 +362,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
 bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 
-    BESStopWatch sw;
-        if (BESDebug::IsSet(TIMING_LOG_KEY))
-                sw.start("HDF4RequestHandler::hdf4_build_das", &dhi);
+    BES_STOPWATCH_START_DHI(HDF4_NAME, prolog + "Timer", &dhi);
 
     if (true == _usecf) {
 
@@ -548,9 +545,7 @@ cerr<<"total time spent for DDS buld is "<<total_time_spent<< "micro seconds "<<
 
 bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("HDF4RequestHandler::hdf4_build_data", &dhi);
+    BES_STOPWATCH_START_DHI(HDF4_NAME, prolog + "Timer", &dhi);
 
 
     int32 sdfd   = -1;
@@ -744,9 +739,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
 bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi) {
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("HDF4RequestHandler::hdf4_build_data_with_IDs", &dhi);
+    BES_STOPWATCH_START_DHI(HDF4_NAME, prolog + "Timer", &dhi);
 
     int32 sdfd   = -1;
     int32 fileid = -1;
@@ -1358,9 +1351,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
 bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 {
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("HDF4RequestHandler::hdf4_build_dmr", &dhi);
+    BES_STOPWATCH_START_DHI(HDF4_NAME, prolog + "Timer", &dhi);
 
     if (true == _direct_dmr) 
         return hdf4_build_direct_dmr(dhi);
@@ -1595,9 +1586,7 @@ bool HDF4RequestHandler::hdf4_build_direct_dmr(BESDataHandlerInterface & dhi) {
 
 bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) {
 
-    BESStopWatch sw;
-        if (BESDebug::IsSet(TIMING_LOG_KEY))
-                sw.start("HDF4RequestHandler::hdf4_build_dmr_with_IDs", &dhi);
+    BES_STOPWATCH_START_DHI(HDF4_NAME, prolog + "Timer", &dhi);
 
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).

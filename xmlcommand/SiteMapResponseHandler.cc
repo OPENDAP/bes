@@ -55,6 +55,9 @@
 
 using namespace std;
 
+const auto MODULE = "bes";
+#define prolog string("SiteMapResponseHandler::").append(__func__).append("() - ")
+
 SiteMapResponseHandler::SiteMapResponseHandler(const string &name) :
     BESResponseHandler(name)
 {
@@ -76,8 +79,7 @@ SiteMapResponseHandler::~SiteMapResponseHandler()
  */
 void SiteMapResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("SiteMapResponseHandler::execute", &dhi);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timing", &dhi);
 
     // Force this command to use a TextInfo object. The default Info object type
     // is set using a key in bes.conf. jheg 11/27/18
