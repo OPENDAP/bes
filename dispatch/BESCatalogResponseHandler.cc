@@ -49,7 +49,7 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-#define MODULE "BESCatalog"
+const auto MODULE="BESCatalog";
 #define prolog std::string("BESCatalogResponseHandler::").append(__func__).append("() - ")
 
 

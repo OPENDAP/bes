@@ -52,7 +52,7 @@
 
 using namespace std;
 
-#define MODULE "bes"
+const auto MODULE = "bes";
 #define prolog std::string("ShowBesKeyResponseHandler::").append(__func__).append("() - ")
 
 ShowBesKeyResponseHandler::ShowBesKeyResponseHandler(const string &name) :

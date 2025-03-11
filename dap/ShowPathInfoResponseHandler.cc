@@ -79,7 +79,7 @@ using std::ostream;
 #define SPI_DEBUG_KEY "show-path-info"
 #define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
 
-#define MODULE "dap"
+const auto MODULE="dap";
 #define prolog string("ShowPathInfoResponseHandler::").append(__func__).append("() - ")
 
 ShowPathInfoResponseHandler::ShowPathInfoResponseHandler(const string &name) :

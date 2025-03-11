@@ -74,8 +74,8 @@ using namespace libdap;
 
 namespace ugrid {
 
-#define MODULE "ugrid"
-#define MODULE_2 "ugrid2"
+const auto MODULE = "ugrid";
+const auto MODULE_2 = "ugrid2";
 #define prolog string("urgid::").append(__func__).append("() - ")
 
 /**
