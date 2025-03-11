@@ -58,26 +58,32 @@ static const std::string MISSING_LOG_PARAM;
 // code when NDEBUG is defined. This is not a problem, but it does make the code a bit
 // slower. jhrg 5/17/24
 #ifndef NDEBUG
-#define BES_STOPWATCH_START(module, x) \
-BESStopWatch besTimer; \
-if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) \
-    besTimer.start((x))
 
-#define BES_STOPWATCH_START_DHI(module, msg, DHI) \
+#define BES_STOPWATCH_START(module, message) \
 BESStopWatch besTimer; \
 if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) \
-besTimer.start((msg), DHI)
+    besTimer.start((message))
+
+#define BES_STOPWATCH_START_DHI(module, message, DHI) \
+BESStopWatch besTimer; \
+if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) \
+besTimer.start((message), DHI)
+
 #else
-#define BES_STOPWATCH_START(module, x)
+#define BES_STOPWATCH_START(module, msg)
+#define BES_STOPWATCH_START_DHI(module, msg, DHI)
 #endif
 
 // This macro is used specifically to time the execution of a command. It does not depend
 // on the code being built in developer mode. jhrg 11/24/24
 #ifdef COMMAND_TIMING
+
 #define BES_MODULE_TIMING(message) BESStopWatch commandTimer; \
     commandTimer.start(string("Module timing: ") + (message))
+
 #define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
     commandTimer.start(string("Command timing: ") + (message) + (DHI->data[LOG_INFO]), DHI)
+
 #else
 #define BES_MODULE_TIMING(message)
 #define BES_COMMAND_TIMING(message, DHI)
