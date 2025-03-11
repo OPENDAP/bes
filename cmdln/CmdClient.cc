@@ -274,9 +274,6 @@ bool CmdClient::executeCommand(const string &cmd, int repeat)
         for (int i = 0; i < repeat && !do_exit; i++) {
             BESDEBUG(MODULE, prolog << "sending: " << cmd << endl);
 
-            // BES_STOPWATCH_START_DHI(MODULE, prolog + "Elapsed Time To Transmit", d_dhi_ptr);
-            BES_STOPWATCH_START(MODULE, prolog + "Elapsed Time To Transmit");
-
             map<string, string> extensions;
             _client->send(cmd, extensions);
 
