@@ -38,7 +38,6 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESStopWatch.h"
-#include "BESSyntaxUserError.h"
 
 #include "CatalogNode.h"
 #include "CatalogItem.h"
@@ -73,7 +72,7 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     // 'container' and, if found, set 'catalog' to that catalog. The value
     // null is used as a sentinel that the path in 'container' does not
     // name a catalog.
-    BESCatalog *catalog = 0;
+    BESCatalog *catalog = nullptr;
 
     vector<string> path_tokens;
     BESUtil::tokenize(container, path_tokens);
