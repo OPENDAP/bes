@@ -91,6 +91,6 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-S3ApiTest_SOURCES = # S3ApiTest.cc
-S3ApiTest_LDADD = # $(top_builddir)/modules/s3_module/.libs/libs3_module.a $(LIBADD)
+# S3ApiTest_SOURCES = # S3ApiTest.cc
+# S3ApiTest_LDADD = # $(top_builddir)/modules/s3_module/.libs/libs3_module.a $(LIBADD)
 

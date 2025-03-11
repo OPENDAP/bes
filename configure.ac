@@ -280,6 +280,27 @@ AC_SEARCH_LIBS([curl_multi_wait], [curl],
     [AC_DEFINE([HAVE_CURL_MULTI_API],[1],[Does libcurl have the multi API])],
     [AC_DEFINE([HAVE_CURL_MULTI_API],[0],[Does libcurl have the multi API])], [])
 
+dnl Look for the AWS libraries (aws-cpp-sdk-s3 aws-cpp-sdk-core) and headers
+dnl jhrg 3/11/25
+
+dnl AC_CHECK_HEADER (header-file, [action-if-found], [action-if-not-found], [includes = ‘default-includes’])
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADERS([aws/core/Aws.h], [found_aws_h=true], [found_aws_h=false])
+AC_CHECK_HEADERS([aws/s3/S3Client.h], [found_s3client_h=true], [found_s3client_h=false])
+AC_LANG_POP([C++])
+
+dnl
+dnl FIXME modify this so that it looks for the AWS C++ SDK and sets the conditional
+dnl FIXME compilation as needed. for now, hack to move on with other tasks. jhrg 3/11/25
+
+AS_IF([test true],
+    [AWS_SDK_LIBS="-laws-cpp-sdk-s3 -laws-cpp-sdk-core"
+     AC_SUBST(AWS_SDK_LIBS)
+     AC_MSG_NOTICE([AWS C++ SDK Found.])
+     AM_CONDITIONAL([USE_AWS_SDK], [true])],
+    [AC_MSG_NOTICE([AWS C++ SDK not Found.])
+     AM_CONDITIONAL([USE_AWS_SDK], [false])])
+
 AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h)
 AC_CHECK_HEADERS_ONCE(pthread.h bzlib.h string.h strings.h byteswap.h)
 dnl AC_CHECK_HEADERS_ONCE([uuid/uuid.h uuid.h])
@@ -975,6 +996,7 @@ AM_COND_IF([BUILD_NCML], [OPTIONAL_FEATURES="ncml $OPTIONAL_FEATURES"])
 AM_COND_IF([USING_GRIDFIELDS], [OPTIONAL_FEATURES="gridfields $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_STARE], [OPTIONAL_FEATURES="stare $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_S3], [OPTIONAL_FEATURES="s3_reader $OPTIONAL_FEATURES"])
+AM_COND_IF([USE_AWS_SDK], [OPTIONAL_FEATURES="AWS C++ SDK $OPTIONAL_FEATURES"])
 
 AM_COND_IF([BES_DEVELOPER], [OPTIONAL_FEATURES="developer $OPTIONAL_FEATURES"])
 
@@ -1016,6 +1038,9 @@ AC_CONFIG_FILES([Makefile
 		 hello_world/Makefile
 		 hello_world/tests/Makefile
 		 hello_world/tests/atlocal
+
+		 aws/Makefile
+		 aws/unit-tests/Makefile
 
 		 http/Makefile
 		 http/unit-tests/Makefile
@@ -1111,7 +1136,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile
     modules/s3_reader/tests/atlocal
-    modules/s3_reader/unit-tests/Makefile
 
     modules/httpd_catalog_module/Makefile
     modules/httpd_catalog_module/unit-tests/Makefile

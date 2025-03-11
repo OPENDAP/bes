@@ -46,7 +46,6 @@ SRCS = CurlUtils.cc \
     AllowedHosts.cc \
     AccessCredentials.cc \
     CredentialsManager.cc \
-    AWS_SDK.cc \
     awsv4.cc
 
 HDRS = CurlUtils.h \
@@ -61,8 +60,6 @@ HDRS = CurlUtils.h \
     AllowedHosts.h \
     AccessCredentials.h \
     CredentialsManager.h \
-    IAWS_SDK.h \
-    AWS_SDK.h \
     awsv4.h
 
 # Removed jhrg 2/26/24 HttpCache.h     HttpCache.cc
