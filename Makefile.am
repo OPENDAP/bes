@@ -69,7 +69,10 @@ bes-tmpfiles-conf besd.logrotate README.md rapidjson nlohmann pugixml
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf
 
-framework = dispatch xmlcommand ppt server aws http dap dapreader
+framework = dispatch xmlcommand ppt server standalone http dap dapreader
+if USE_AWS_SDK
+framework += aws
+endif
 .PHONY: framework-only
 framework-only:
 	for d in $(framework); do $(MAKE) -C $$d $(MFLAGS); done
