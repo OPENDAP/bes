@@ -2,14 +2,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-# FIXME Remove this hack. Set these with configure. jhrg 11/25/19
-OPENSSL_LIBS=-lcrypto
-OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
-
-AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/http \
-    -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-LIBADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
@@ -24,20 +18,19 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-DISTCLEANFILES = bes.conf bes.log bes_ngap_s3_creds.conf credentials.conf test_config.h
+DISTCLEANFILES = test_config.h
 
-CLEANFILES = bes.conf *.dbg *.log
+CLEANFILES = *.dbg *.log
 
-EXTRA_DIST = test_config.h.in bes.conf.in allowed_hosts_test.ini bes_ngap_s3_creds.conf.in \
-awsv4 weak.conf credentials.conf.src
+EXTRA_DIST = test_config.h.in
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf bes_ngap_s3_creds.conf
+noinst_DATA =
 
-BUILT_SOURCES = test_config.h credentials.conf bes.conf bes_ngap_s3_creds.conf
+BUILT_SOURCES = test_config.h
 
 noinst_HEADERS = test_config.h
 
@@ -52,17 +45,6 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
-credentials.conf: credentials.conf.src
-	cp $< $@
-	chmod 600 $@
-
-# Build the bes.conf used for testing so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using the
-# configure value for the parameter when running the distcheck target.
-
-bes.conf: bes.conf.in $(top_srcdir)/configure.ac
-bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
-
 %.conf: %.conf.in
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
@@ -74,8 +56,7 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 
 if CPPUNIT
 
-UNIT_TESTS =  HttpUtilsTest HttpErrorTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
-AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest AWS_SDK_Test CredentialsManagerTest
+UNIT_TESTS =  AWS_SDK_Test
 
 else
 
@@ -95,36 +76,5 @@ clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
 
-HttpUtilsTest_SOURCES = HttpUtilsTest.cc
-HttpUtilsTest_LDADD = $(LIBADD)
-
-HttpErrorTest_SOURCES = HttpErrorTest.cc
-HttpErrorTest_LDADD =  $(LIBADD)
-
-RemoteResourceTest_SOURCES = RemoteResourceTest.cc
-RemoteResourceTest_CXXFLAGS = -static
-RemoteResourceTest_LDADD = $(LIBADD)
-
-CurlUtilsTest_SOURCES = CurlUtilsTest.cc
-CurlUtilsTest_LDADD = $(LIBADD)
-
-EffectiveUrlCacheTest_SOURCES = EffectiveUrlCacheTest.cc
-EffectiveUrlCacheTest_LDADD = $(LIBADD)
-
-HttpUrlTest_SOURCES = HttpUrlTest.cc
-HttpUrlTest_LDADD = $(LIBADD)
-
-AllowedHostsTest_SOURCES = AllowedHostsTest.cc
-AllowedHostsTest_LDADD = $(LIBADD)
-
-CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
-CredentialsManagerTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
-
 AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
 AWS_SDK_Test_LDADD = ../.libs/libbes_http.a -laws-cpp-sdk-s3 -laws-cpp-sdk-core $(LIBADD)
-
-awsv4_test_SOURCES = awsv4_test.cc
-awsv4_test_LDADD = ../.libs/libbes_http.a $(LIBADD)
-
-CurlSListTest_SOURCES = CurlSListTest.cc
-CurlSListTest_LDADD = $(LIBADD)
