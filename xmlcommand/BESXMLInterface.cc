@@ -321,7 +321,7 @@ void BESXMLInterface::log_the_command()
  */
 void BESXMLInterface::execute_data_request_plan()
 {
-    BES_COMMAND_TIMING(prolog, d_dhi_ptr);
+    BES_COMMAND_TIMING(prolog+"Timer", d_dhi_ptr);
 
     for(auto bescmd : d_xml_cmd_list){
         bescmd->prep_request();
@@ -366,7 +366,7 @@ void BESXMLInterface::execute_data_request_plan()
  */
 void BESXMLInterface::transmit_data()
 {
-    BES_COMMAND_TIMING(prolog, d_dhi_ptr);
+    BES_COMMAND_TIMING(prolog+"Timer", d_dhi_ptr);
 
     if (d_dhi_ptr->error_info) {
         VERBOSE(d_dhi_ptr->data[SERVER_PID] + " from " + d_dhi_ptr->data[REQUEST_FROM] + " ["

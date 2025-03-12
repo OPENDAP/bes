@@ -365,7 +365,7 @@ int BESInterface::execute_request(const string &from)
     // id will be used and that makes things very confusing in the timing log.
     // Sorting this out seems like a lot of work with little benefit, so I am disabling this call
     // for the time being - ndp 03/07/2025
-    BES_COMMAND_TIMING(prolog, d_dhi_ptr);
+    BES_COMMAND_TIMING(prolog+"Timer", d_dhi_ptr);
 #endif
 
     // TODO These never change for the life of a BES, so maybe they can move out of
