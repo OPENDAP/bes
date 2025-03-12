@@ -81,6 +81,7 @@ besTimer.start((message), DHI)
 #define BES_MODULE_TIMING(message) BESStopWatch commandTimer; \
     commandTimer.start(string("Module timing: ") + (message))
 
+// Note the BES_COMMAND_TIMING macro assumes that the "message" string ends with white-space.
 #define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
     commandTimer.start(string("Command timing: ") + (message) + (DHI->data[LOG_INFO]), DHI)
 
