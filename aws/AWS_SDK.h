@@ -34,7 +34,7 @@
 
 #include "IAWS_SDK.h"
 
-namespace http {
+namespace bes {
 class AWS_SDK: public IAWS_SDK {
     Aws::S3::S3Client d_get_s3_client;
     bool d_is_s3_initialized = false;

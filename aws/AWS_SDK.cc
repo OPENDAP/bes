@@ -44,7 +44,7 @@
 
 using namespace std;
 
-namespace http {
+namespace bes {
 
 Aws::SDKOptions AWS_SDK::options;
 
@@ -103,12 +103,12 @@ bool AWS_SDK::s3_head(const string &bucket, const string &key) {
     head_request.SetBucket(bucket);
     head_request.SetKey(key);
 
-    auto const head_outcome = d_get_s3_client.HeadObject(head_request);
+    const auto head_outcome = d_get_s3_client.HeadObject(head_request);
     if (head_outcome.IsSuccess()) {
         return true;
     }
-    auto const error = head_outcome.GetError();
-    auto const httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode is an enum. See cast below.
+    const auto error = head_outcome.GetError();
+    const auto httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode is an enum. See cast below.
     d_aws_exception_message = error.GetMessage();
     d_aws_exception_name = error.GetExceptionName();
     d_http_status_code = static_cast<int>(httpCode);

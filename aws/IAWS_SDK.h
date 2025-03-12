@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace http {
+namespace bes {
 /**
  * @brief Interface for the AWS_SDK class that accesses S3
  * This interface will enable the dependency injection pattern so

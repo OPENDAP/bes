@@ -21,7 +21,7 @@ noinst_LTLIBRARIES = libbes_aws.la
 
 libbes_aws_la_SOURCES = $(SRCS) $(HDRS)
 libbes_aws_la_LDFLAGS =
-libbes_aws_la_LIBADD = $(BES_DISPATCH_LIB)
+libbes_aws_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 pkginclude_HEADERS = $(HDRS)
 
@@ -48,4 +48,4 @@ cccc:
 	cccc --outdir=$(C4_DIR) $(SRCS) $(HDRS)
 
 SRCS = AWS_SDK.cc
-HDRS = AWS_SDK.h
+HDRS = AWS_SDK.h IAWS_SDK.h

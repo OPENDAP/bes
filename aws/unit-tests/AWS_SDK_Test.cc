@@ -42,7 +42,7 @@ using namespace std;
 
 #define prolog std::string("AWS_SDK::").append(__func__).append("() - ")
 
-namespace http {
+namespace bes {
 class AWS_SDK_Test : public CppUnit::TestFixture {
 public:
     // Called once before everything gets tested
@@ -181,5 +181,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(AWS_SDK_Test);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::AWS_SDK_Test>(argc, argv, "cerr,bes,http") ? 0 : 1;
+    return bes_run_tests<bes::AWS_SDK_Test>(argc, argv, "cerr,bes,http") ? 0 : 1;
 }

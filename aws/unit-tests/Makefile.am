@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT

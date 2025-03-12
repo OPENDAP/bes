@@ -24,10 +24,10 @@
 #include "config.h"
 
 #include <memory>
+#include <aws/AWS_SDK.h>
 
-#include "BESUtil.h"
+#include "AWS_SDK.h"
 #include "TheBESKeys.h"
-#include "BESContextManager.h"
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 
@@ -81,6 +81,7 @@ public:
     }
 
     void setUp() override {
+        bes::AWS_SDK::aws_library_initialize();
         set_bes_keys();
         configure_ngap_handler();
     }
@@ -90,6 +91,7 @@ public:
     void tearDown() override {
         NgapRequestHandler::d_dmrpp_file_cache.clear();
         NgapRequestHandler::d_dmrpp_mem_cache.clear();
+        bes::AWS_SDK::aws_library_shutdown();
     }
 
     void test_file_to_string() {
