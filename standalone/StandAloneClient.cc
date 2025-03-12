@@ -103,6 +103,10 @@ extern "C" {
 #include "StandAloneClient.h"
 #include "CmdTranslation.h"
 
+#define MODULE "standalone"
+#define prolog string("StandAloneClient::").append(__func__).append("() - ")
+
+
 StandAloneClient::~StandAloneClient() {
     if (_strmCreated && _strm) {
         _strm->flush();
@@ -220,10 +224,9 @@ void StandAloneClient::executeCommand(const string &cmd, int repeat) {
                 show_stream = new ostringstream;
             }
 
-            BESDEBUG("standalone", "StandAloneClient::executeCommand sending: " << cmd << endl);
+            BESDEBUG(MODULE, "StandAloneClient::executeCommand sending: " << cmd << endl);
 
-            BESStopWatch sw;
-            if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("StandAloneClient::executeCommand");
+            BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
             BESXMLInterface *interface = nullptr;
             if (show_stream) {
@@ -242,10 +245,10 @@ void StandAloneClient::executeCommand(const string &cmd, int repeat) {
             status = interface->finish(status);
 
             if (status == 0) {
-                BESDEBUG("standalone", "StandAloneClient::executeCommand - executed successfully" << endl);
+                BESDEBUG(MODULE, "StandAloneClient::executeCommand - executed successfully" << endl);
             } else {
                 // an error has occurred.
-                BESDEBUG("standalone", "StandAloneClient::executeCommand - error occurred" << endl);
+                BESDEBUG(MODULE, "StandAloneClient::executeCommand - error occurred" << endl);
                 switch (status) {
                     case BES_INTERNAL_FATAL_ERROR: {
                         cerr << "Status not OK, dispatcher returned value " << status << endl;

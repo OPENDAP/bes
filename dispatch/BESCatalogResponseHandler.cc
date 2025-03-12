@@ -35,22 +35,23 @@
 #include "BESCatalogResponseHandler.h"
 #include "BESInfoList.h"
 #include "BESInfo.h"
-#include "BESRequestHandlerList.h"
-#include "BESRequestHandler.h"
 #include "BESNames.h"
 #include "BESDataNames.h"
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
 #include "BESCatalogEntry.h"
 #include "BESCatalogUtils.h"
-#include "BESSyntaxUserError.h"
+#include "BESStopWatch.h"
 #include "BESNotFoundError.h"
 #include "BESDebug.h"
-#include "BESStopWatch.h"
 
 using std::endl;
 using std::ostream;
 using std::string;
+
+const auto MODULE="BESCatalog";
+#define prolog std::string("BESCatalogResponseHandler::").append(__func__).append("() - ")
+
 
 BESCatalogResponseHandler::BESCatalogResponseHandler(const string &name) :
     BESResponseHandler(name)
@@ -72,8 +73,7 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler()
  */
 void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESCatalogResponseHandler::execute", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timer", &dhi);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;
@@ -86,7 +86,7 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     if (container.empty()) container = "/";
 
-    BESCatalog *besCatalog = 0;
+    BESCatalog *besCatalog = nullptr;
     string catalog = dhi.data[CATALOG];
     if(catalog.empty()){
         // Use default catalog to service request
@@ -102,7 +102,7 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
     }
 
-    BESCatalogEntry *entry = 0;
+    BESCatalogEntry *entry = nullptr;
     // we always want to get the container information from the
     // default catalog, whether the node is / or not
     entry = besCatalog->show_catalog(container, entry);
