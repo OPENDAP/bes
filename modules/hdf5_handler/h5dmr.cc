@@ -3317,7 +3317,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
             if (dimnames[dim_index].empty() == false)
                 ar_index->append_dim_ll(dt_inst.size[dim_index], dimnames[dim_index]);
             else
-                ar->append_dim_ll(dt_inst.size[dim_index]);
+                ar_index->append_dim_ll(dt_inst.size[dim_index]);
         }
  
     }
