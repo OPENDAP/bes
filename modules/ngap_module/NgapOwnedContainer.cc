@@ -63,7 +63,7 @@ namespace ngap {
 
 // This data source location currently (8/10/24) is a S3 bucket where the DMR++ files are stored
 // for the OPeNDAP-owned data used by the tests. jhrg 8/10/24
-std::string NgapOwnedContainer::d_data_source_location = "https://cloudydap.s3.us-east-1.amazonaws.com";
+std::string NgapOwnedContainer::d_data_source_location = "cloudydap";
 bool NgapOwnedContainer::d_use_opendap_bucket = true;
 bool NgapOwnedContainer::d_inject_data_url = true;
 
@@ -370,12 +370,12 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
 
     // Use an HTTP HEAD request to see if the object key exists in the OPeNDAP bucket.
     // get_data_source_location() returns the bucket.
-    if (!dmrpp_probe_opendap_bucket(aws_sdk, get_data_source_location(), object_key)) {
+    if (!dmrpp_probe_opendap_bucket(aws_sdk, d_data_source_location, object_key)) {
         return false;
     }
 
     // Once here, we know the object_key exists and can be accessed.
-    dmrpp_string = aws_sdk.s3_get_as_string(get_data_source_location(), object_key);
+    dmrpp_string = aws_sdk.s3_get_as_string(d_data_source_location, object_key);
 
     const auto http_status = aws_sdk.get_http_status_code();
     if (http_status == 200) {

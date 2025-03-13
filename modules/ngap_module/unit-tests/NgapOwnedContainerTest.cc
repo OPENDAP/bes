@@ -39,12 +39,12 @@
 
 using namespace std;
 
-auto const DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
-auto const DMRPP_TEST_BUCKET_OPENDAP_AWS = "https://s3.amazonaws.com/cloudydap";
-auto const TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
+constexpr auto DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
+constexpr auto DMRPP_TEST_BUCKET_OPENDAP_AWS = "cloudydap"; // was "https://s3.amazonaws.com/cloudydap". jhrg 3/13/25
+const auto TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
 
-#define TEST_NAME DBG(cerr << __PRETTY_FUNCTION__ << "()\n")
-#define prolog string("NgapOwnedContainerTest::").append(__func__).append("() - ")
+#define TEST_NAME DBG(cerr << __PRETTY_FUNCTION__ << "\n")
+#define prolog string(__PRETTY_FUNCTION__).append(" - ")
 
 namespace ngap {
 
@@ -215,9 +215,10 @@ public:
         string dmrpp_string;
         NgapOwnedContainer container;
         // The REST path will become data/d_int.h5
-        container.set_real_name("collections/data/granules/d_int.h5");
+        container.set_real_name("collections/ngap_owned/granules/d_int.h5");
         // Set the location of the data as a file:// URL for this test.
-        container.set_data_source_location(TEST_DATA_LOCATION);
+        //container.set_data_source_location("cloudydap");
+        NgapOwnedContainer::set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
         DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
@@ -228,10 +229,11 @@ public:
         string dmrpp_string;
         NgapOwnedContainer container;
         // The REST path will become data/d_int.h5
-        string real_name = "collections/data/granules/d_int.h5";
+        string real_name = "collections/ngap_owned/granules/d_int.h5";
         container.set_real_name(real_name);
         // Set the location of the data as a file:// URL for this test.
-        container.set_data_source_location(TEST_DATA_LOCATION);
+        //container.set_data_source_location(TEST_DATA_LOCATION);
+        NgapOwnedContainer::set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
 
         string cache_value;
         int status = container.get_item_from_dmrpp_cache(cache_value);
@@ -250,10 +252,11 @@ public:
         string dmrpp_string;
         NgapOwnedContainer container;
         // The REST path will become data/d_int.h5
-        string real_name = "collections/data/granules/d_int.h5";
+        string real_name = "collections/ngap_owned/granules/d_int.h5";
         container.set_real_name(real_name);
         // Set the location of the data as a file:// URL for this test.
-        container.set_data_source_location(TEST_DATA_LOCATION);
+        //container.set_data_source_location(TEST_DATA_LOCATION);
+        NgapOwnedContainer::set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
 
         string key = FileCache::hash_key(real_name);
         FileCache::Item item;
@@ -280,9 +283,10 @@ public:
         string dmrpp_string;
         NgapOwnedContainer container;
         // The REST path will become data/d_int.h5
-        container.set_real_name("collections/data/granules/d_int.h5");
+        container.set_real_name("collections/ngap_owned/granules/d_int.h5");
         // Set the location of the data as a file:// URL for this test.
-        container.set_data_source_location(TEST_DATA_LOCATION);
+        //container.set_data_source_location(TEST_DATA_LOCATION);
+        NgapOwnedContainer::set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
 
         string cached_value;
         int status = container.get_item_from_dmrpp_cache(cached_value);
@@ -303,9 +307,10 @@ public:
 
         NgapOwnedContainer container;
         // The REST path will become data/d_int.h5
-        container.set_real_name("collections/data/granules/d_int.h5");
+        container.set_real_name("collections/ngap_owned/granules/d_int.h5");
         // Set the location of the data as a file:// URL for this test.
-        container.set_data_source_location(TEST_DATA_LOCATION);
+        // container.set_data_source_location(TEST_DATA_LOCATION);
+        NgapOwnedContainer::set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
 
         string dmrpp = container.access();
         DBG2(cerr << "DMR++: " << dmrpp << '\n');
@@ -317,6 +322,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
     }
 
+    // FIXME This test is now a duplicate of the previous test or a test of s3 access failure. what to do with it?
     void test_access_s3() {
         TEST_NAME;
 
@@ -330,7 +336,7 @@ public:
         // s3-module-test-bucket that DMRPP_TEST_BUCKET_OPENDAP_AWS points toward. jhrg 5/17/24
         container.set_real_name("collections/ngap_owned/granules/d_int.h5");
         // Set the location of the data as a file:// URL for this test.
-        NgapOwnedContainer::set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
+        NgapOwnedContainer::set_data_source_location(TEST_DATA_LOCATION);
 
         try {
             string dmrpp = container.access();
@@ -345,7 +351,7 @@ public:
 
             CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
         }
-        catch (std::exception &e) {
+        catch (const std::exception &e) {
             CPPUNIT_FAIL("Caught exception when trying to access the container: " + string(e.what()));
         }
     }
