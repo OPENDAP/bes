@@ -45,50 +45,49 @@ public:
     static const char *ENV_ACCESS_KEY;
     static const char *ENV_REGION_KEY;
     static const char *ENV_URL_KEY;
+
     static const char *USE_ENV_CREDS_KEY_VALUE;
 
 private:
     std::recursive_mutex d_lock_mutex{};
 
-    bool ngaps3CredentialsLoaded = false;
-    std::map<std::string, AccessCredentials *> creds;
+    std::map<std::string, AccessCredentials *> d_creds;
 
-    CredentialsManager() = default;   // only called here to build the singleton
-
-    // These are static because they must use C-linkage.
-    static void initialize_instance();
-    static void delete_instance();
+    CredentialsManager() {
+        load_credentials();
+    }
 
     void load_credentials();
     AccessCredentials *load_credentials_from_env();
+
+    void clear() {
+        d_creds.clear();
+    }
 
     friend class CredentialsManagerTest;
     friend class CurlUtilsTest;
 
 public:
-    static CredentialsManager *theMngr;
-
-    ~CredentialsManager();
+    CredentialsManager(const CredentialsManager&) = delete;
+    CredentialsManager& operator=(const CredentialsManager&) = delete;
+    CredentialsManager(const CredentialsManager&&) = delete;
+    CredentialsManager& operator=(const CredentialsManager&&) = delete;
+    ~CredentialsManager() {
+        for (const auto &item: d_creds) {
+            delete item.second;
+        }
+    }
 
     static CredentialsManager *theCM();
 
     void add(const std::string &url, AccessCredentials *ac);
 
-    void clear() {
-        creds.clear();
-        ngaps3CredentialsLoaded = false;
-    }
+    AccessCredentials *get(const std::shared_ptr<http::url> &url) const;
+    AccessCredentials *get(const std::string &url) const;
 
-    AccessCredentials *get(const std::shared_ptr<http::url> &url);
-    AccessCredentials *get(const std::string &url);
+    AccessCredentials *get_bucket(const std::string &url) const;
 
-    size_t size() const {
-        return creds.size();
-    }
-
-    bool hasNgapS3Credentials() const {
-        return ngaps3CredentialsLoaded;
-    }
+    size_t size() const { return d_creds.size(); }
 };
 
 }   // namespace http

@@ -3,10 +3,11 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common -I$(top_srcdir)/modules/ngap_module \
-    -I$(top_srcdir)/dispatch  -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
+    -I$(top_srcdir)/dispatch  -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/aws $(DAP_CFLAGS)
 
 LIBADD = -L$(top_builddir)/modules/common -lmodules_common $(BES_DISPATCH_LIB) \
-    $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+    $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) $(top_builddir)/aws/.libs/libbes_aws.a \
+    $(AWS_SDK_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 # $(BES_DAP_LIB) Replace with static library explicitly referenced. jhrg 4/29/24
 

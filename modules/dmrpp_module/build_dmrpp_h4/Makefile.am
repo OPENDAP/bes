@@ -2,11 +2,11 @@
 #
 # 07/25/18
 #
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = subdir-objects
 
 dist_bin_SCRIPTS = get_dmrpp_h4
 
-ACLOCAL_AMFLAGS = -I conf
+# ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=builddmrpp_h4
