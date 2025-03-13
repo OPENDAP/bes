@@ -52,6 +52,9 @@
 
 using namespace std;
 
+const auto MODULE = "bes";
+#define prolog std::string("ShowBesKeyResponseHandler::").append(__func__).append("() - ")
+
 ShowBesKeyResponseHandler::ShowBesKeyResponseHandler(const string &name) :
     BESResponseHandler(name)
 {
@@ -74,8 +77,7 @@ ShowBesKeyResponseHandler::~ShowBesKeyResponseHandler()
 void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ShowBesKeyResponseHandler::execute", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timing", &dhi);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;

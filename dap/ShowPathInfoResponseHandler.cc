@@ -79,6 +79,9 @@ using std::ostream;
 #define SPI_DEBUG_KEY "show-path-info"
 #define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
 
+const auto MODULE="dap";
+#define prolog string("ShowPathInfoResponseHandler::").append(__func__).append("() - ")
+
 ShowPathInfoResponseHandler::ShowPathInfoResponseHandler(const string &name) :
     BESResponseHandler(name)
 {
@@ -101,8 +104,7 @@ ShowPathInfoResponseHandler::~ShowPathInfoResponseHandler()
 void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timing", &dhi);
 
     BESDEBUG(SPI_DEBUG_KEY,
         "ShowPathInfoResponseHandler::execute() - BEGIN ############################################################## BEGIN" << endl);

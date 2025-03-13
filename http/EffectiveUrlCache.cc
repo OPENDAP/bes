@@ -117,11 +117,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
     if (retrieve_and_cache) {
         BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url->str() << endl);
         {
-#ifndef NDEBUG
-            BESStopWatch sw;
-            if (BESDebug::IsSet(MODULE_TIMER) || BESDebug::IsSet(TIMING_LOG_KEY))
-                sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url->str());
-#endif
+            BES_STOPWATCH_START(MODULE_TIMER, prolog + "Retrieve and cache effective url for source url: " + source_url->str());
             try {
                 // This code throws an HttpError exception if there is a problem.
                 effective_url = curl::get_redirect_url(source_url);
