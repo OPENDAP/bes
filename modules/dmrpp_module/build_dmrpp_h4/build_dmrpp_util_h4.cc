@@ -467,6 +467,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         }
         dc->set_chunk_dimension_sizes(chunk_dimension_sizes);
 
+        // Leave the following code for the time being in case there are issues in the optimization 
 #if 0
         SD_mapping_info_t map_info;
         map_info.is_empty = 0;
@@ -476,18 +477,15 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         map_info.data_type = data_type;
 
 #endif
+
         vector<unsigned long long> position_in_array(rank, 0);
 
         /* Initialize steps. */
         vector<int> steps(rank, 0);
         vector<int32_t> strides(rank, 0);
         int number_of_chunks = 1;
-        for(int i = 0; i < rank; i++) {
-
-            // This doesn't consider the un-even chunk case. It will miss the extra chunk(s). So correct it. KY 2/20/24
-#if 0
-            steps[i] = (dimsizes[i] / chunk_dimension_sizes[i]) ;
-#endif
+        for (int i = 0; i < rank; i++) {
+            // The following line considers the un-even chunk case, otherwise we will miss the extra chunk(s). 
             steps[i] =  1 + ((dimsizes[i] - 1) / chunk_dimension_sizes[i]);
             number_of_chunks = number_of_chunks * steps[i];
             strides[i] = 0;
@@ -500,9 +498,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
                      ostream_iterator<int32>(cerr, " ")));
         VERBOSE(cerr<<endl);
 
-
         // Obtain the offset/length of all chunks.
-
         vector<uint32> info_count(number_of_chunks);
         intn max_num_blocks = SDgetallchunkdatainfo(sdsid,number_of_chunks,rank,steps.data(),0,info_count.data(),
                                                nullptr,nullptr);
@@ -552,8 +548,6 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             else if (info_count[k] == 0) 
                 ol_counter +=max_num_blocks;
 
-            
-
             // Increase strides for each dimension. The fastest varying dimension is rank-1.
             int scale = 1;
             for(int i = rank-1; i >= 0 ; i--) {
@@ -565,10 +559,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         }
         if (LBChunk) 
             dc->set_multi_linked_blocks_chunk(LBChunk);
-           
-        
     }
 
+    // Leave the following code for the time being in case there are issues in the optimization.
 #if 0
     // Also need to consider the case when the variable is compressed but not chunked.
     if (chunk_flag == HDF_CHUNK || chunk_flag == HDF_COMP ) {
@@ -611,11 +604,6 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         vector<int32_t> strides(rank, 0);
         int number_of_chunks = 1;
         for(int i = 0; i < rank; i++) {
-
-            // This doesn't consider the un-even chunk case. It will miss the extra chunk(s). So correct it. KY 2/20/24
-#if 0
-            steps[i] = (dimsizes[i] / chunk_dimension_sizes[i]) ;
-#endif
             steps[i] =  1 + ((dimsizes[i] - 1) / chunk_dimension_sizes[i]);
             number_of_chunks = number_of_chunks * steps[i];
             strides[i] = 0;
@@ -628,9 +616,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
                      ostream_iterator<int32>(cerr, " ")));
         VERBOSE(cerr<<endl);
 
-
         bool LBChunk = false;
-
 
         for (int k = 0; k < number_of_chunks; ++k) {
             auto info_count = read_chunk(sdsid, &map_info, strides.data());
@@ -673,8 +659,6 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         }
         if (LBChunk) 
             dc->set_multi_linked_blocks_chunk(LBChunk);
-           
-        
     }
 #endif
     else if (chunk_flag == HDF_NONE) {
