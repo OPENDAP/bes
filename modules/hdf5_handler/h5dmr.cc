@@ -506,19 +506,6 @@ read_objects( D4Group * d4_grp, hid_t pid, const string &varname, const string &
 
 void array_add_dimensions_dimscale(HDF5Array *ar){
 
-#if 0
-    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-        if (dt_inst.dimnames.empty() == false) {
-            if (dt_inst.dimnames[dim_index].empty() == false)
-                ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
-            else
-                ar->append_dim_ll(dt_inst.size[dim_index]);
-        }
-        else 
-            ar->append_dim_ll(dt_inst.size[dim_index]);
-    }
-#endif
-
     if (dt_inst.dimnames.empty() == true) {
         for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
             ar->append_dim_ll(dt_inst.size[dim_index]);
