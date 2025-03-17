@@ -1339,7 +1339,12 @@ std::string &BESUtil::remove_crlf(std::string &str) {
     return str;
 }
 
-
+/**
+ * Computes the md5 hash of the data.
+ * @param data
+ * @param size
+ * @return
+ */
 std::string BESUtil::hashed(const void* data, size_t size) {
     unsigned char hash[MD5_DIGEST_LENGTH];
     MD5(static_cast<const unsigned char*>(data), size, hash);
@@ -1349,4 +1354,3 @@ std::string BESUtil::hashed(const void* data, size_t size) {
     }
     return ss.str();
 }
-

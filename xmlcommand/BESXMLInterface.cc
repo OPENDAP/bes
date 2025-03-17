@@ -36,9 +36,7 @@
 #include <sstream>
 
 #include "BESXMLInterface.h"
-
 #include <BESUtil.h>
-
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
 #include "BESDataNames.h"
@@ -93,7 +91,6 @@ void BESXMLInterface::build_data_request_plan()
     xmlNode *root_element = nullptr;
     xmlNode *current_node = nullptr;
 
-
     try {
         // set the default error function to my own
         vector<string> parseerrors;
@@ -143,6 +140,7 @@ void BESXMLInterface::build_data_request_plan()
         auto reqID = attributes[REQUEST_ID_KEY];
         BESDEBUG(BES_XML, prolog << "reqId: " << reqID << endl);
         if (reqID.empty()) {
+            // But if no id then we punt and keep going.
             reqID = prolog + "NoRequestIdDetected";
         }
 
@@ -153,6 +151,7 @@ void BESXMLInterface::build_data_request_plan()
         auto reqUUID = attributes[REQUEST_UUID_KEY];
         BESDEBUG(BES_XML, prolog << "reqUUID: " << reqUUID << endl);
         if (reqUUID.empty()) {
+            // But if no uuid then we punt with the md5 of the request doc (NOT UNIQUE) and keep going.
             reqUUID = BESUtil::hashed(d_xml_document.c_str(), d_xml_document.size());
         }
 
