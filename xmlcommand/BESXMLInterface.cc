@@ -129,16 +129,33 @@ void BESXMLInterface::build_data_request_plan()
             throw BESSyntaxUserError(string("The request element must not contain a value, ").append(root_val),
                                      __FILE__, __LINE__);
 
-        // there should be a request id property with one value.
-        auto reqId = attributes[REQUEST_ID_KEY];
-        BESDEBUG(BES_XML, prolog << "reqId: " << reqId << endl);
-        if (reqId.empty()) throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Ingest request id. We know that we have to forward the request id value to downstream services.
+        // But there is nothing to prevent users/clients from submitting multiple requests with the same request id.
+        // We add the UUID part below so that in our logs we can easily disambiguate duplicate request ids
+        // without breaking the actual request id value needed by downstream services. ndp 03/17/25
 
-        d_dhi_ptr->data[REQUEST_ID_KEY] = reqId;
+        // there should be a request id property with one value.
+        auto reqID = attributes[REQUEST_ID_KEY];
+        BESDEBUG(BES_XML, prolog << "reqId: " << reqID << endl);
+        if (reqID.empty()) throw BESSyntaxUserError("The request id value may not empty", __FILE__, __LINE__);
+
+        d_dhi_ptr->data[REQUEST_ID_KEY] = reqID;
         BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_ID_KEY << "\"]: " << d_dhi_ptr->data[REQUEST_ID_KEY] << endl);
 
-        BESLog::TheLog()->set_request_id(reqId);
+        // there should be a request uuid property with one value.
+        auto reqUUID = attributes[REQUEST_UUID_KEY];
+        BESDEBUG(BES_XML, prolog << "reqUUID: " << reqUUID << endl);
+        if (reqUUID.empty()) throw BESSyntaxUserError("The request uuid value may not empty", __FILE__, __LINE__);
+
+        // Make the request id staring value for the BES application log.
+        auto request_id_for_log = reqID + "-" + reqUUID;
+        BESDEBUG(BES_XML, prolog << "request_id_for_log: " << request_id_for_log << endl);
+
+        BESLog::TheLog()->set_request_id(request_id_for_log);
         BESDEBUG(BES_XML, prolog << "BESLog::TheLog()->get_request_id(): " << BESLog::TheLog()->get_request_id() << endl);
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         auto bes_client_id = attributes[BES_CLIENT_ID_KEY];
         BESDEBUG(BES_XML, prolog << BES_CLIENT_ID_KEY << ": " << bes_client_id << endl);
