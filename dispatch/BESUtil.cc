@@ -57,6 +57,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include <openssl/md5.h>
+
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESDebug.h"
@@ -1336,3 +1338,15 @@ std::string &BESUtil::remove_crlf(std::string &str) {
     }
     return str;
 }
+
+
+std::string BESUtil::hashed(const void* data, size_t size) {
+    unsigned char hash[MD5_DIGEST_LENGTH];
+    MD5(static_cast<const unsigned char*>(data), size, hash);
+    std::stringstream ss;
+    for (unsigned char byte : hash) {
+        ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte);
+    }
+    return ss.str();
+}
+

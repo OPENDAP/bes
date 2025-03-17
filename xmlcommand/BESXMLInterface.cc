@@ -36,6 +36,9 @@
 #include <sstream>
 
 #include "BESXMLInterface.h"
+
+#include <BESUtil.h>
+
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
 #include "BESDataNames.h"
@@ -90,6 +93,7 @@ void BESXMLInterface::build_data_request_plan()
     xmlNode *root_element = nullptr;
     xmlNode *current_node = nullptr;
 
+
     try {
         // set the default error function to my own
         vector<string> parseerrors;
@@ -138,7 +142,9 @@ void BESXMLInterface::build_data_request_plan()
         // there should be a request id property with one value.
         auto reqID = attributes[REQUEST_ID_KEY];
         BESDEBUG(BES_XML, prolog << "reqId: " << reqID << endl);
-        if (reqID.empty()) throw BESSyntaxUserError("The request id value may not empty", __FILE__, __LINE__);
+        if (reqID.empty()) {
+            reqID = prolog + "NoRequestIdDetected";
+        }
 
         d_dhi_ptr->data[REQUEST_ID_KEY] = reqID;
         BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_ID_KEY << "\"]: " << d_dhi_ptr->data[REQUEST_ID_KEY] << endl);
@@ -146,7 +152,9 @@ void BESXMLInterface::build_data_request_plan()
         // there should be a request uuid property with one value.
         auto reqUUID = attributes[REQUEST_UUID_KEY];
         BESDEBUG(BES_XML, prolog << "reqUUID: " << reqUUID << endl);
-        if (reqUUID.empty()) throw BESSyntaxUserError("The request uuid value may not empty", __FILE__, __LINE__);
+        if (reqUUID.empty()) {
+            reqUUID = BESUtil::hashed(d_xml_document.c_str(), d_xml_document.size());
+        }
 
         // Make the request id staring value for the BES application log.
         auto request_id_for_log = reqID + "-" + reqUUID;
