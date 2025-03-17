@@ -139,6 +139,7 @@ public:
 
     static std::string &remove_crlf(std::string &str);
     static std::string hashed(const void* data, size_t size);
+    static std::string now();
 
 };
 

@@ -151,8 +151,9 @@ void BESXMLInterface::build_data_request_plan()
         auto reqUUID = attributes[REQUEST_UUID_KEY];
         BESDEBUG(BES_XML, prolog << "reqUUID: " << reqUUID << endl);
         if (reqUUID.empty()) {
-            // But if no uuid then we punt with the md5 of the request doc (NOT UNIQUE) and keep going.
-            reqUUID = BESUtil::hashed(d_xml_document.c_str(), d_xml_document.size());
+            // But if no uuid then we punt with the md5 of the request doc + plus the current time string and keep going.
+            string uuid_input = d_xml_document + " - " + BESUtil::now();
+            reqUUID = BESUtil::hashed(uuid_input.c_str(), uuid_input.size());
         }
 
         // Make the request id staring value for the BES application log.

@@ -56,6 +56,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <iomanip>
 
 #include <openssl/md5.h>
 
@@ -1353,4 +1354,15 @@ std::string BESUtil::hashed(const void* data, size_t size) {
         ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte);
     }
     return ss.str();
+}
+
+std::string BESUtil::now() {
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    stringstream ss;
+    // ss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << std::endl;
+    // ISO8601
+    ss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%Z") << std::endl;
+    return ss.str();
+
 }
