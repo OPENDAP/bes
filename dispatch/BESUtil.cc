@@ -1341,22 +1341,12 @@ std::string &BESUtil::remove_crlf(std::string &str) {
 }
 
 
-std::string uuid() {
+std::string BESUtil::uuid() {
     uuid_t raw_uuid;
     uuid_generate_random(raw_uuid);
-    uuid_string_t uuid;
-    uuid_unparse_lower(raw_uuid, uuid);
-    return {uuid};
+    uuid_string_t uuid_str;
+    uuid_unparse_lower(raw_uuid, uuid_str);
+    return {uuid_str};
 }
 
 
-std::string BESUtil::now() {
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
-    stringstream ss;
-    // ss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << std::endl;
-    // ISO8601
-    ss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%Z") << std::endl;
-    return ss.str();
-
-}

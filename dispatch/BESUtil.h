@@ -139,7 +139,6 @@ public:
 
     static std::string &remove_crlf(std::string &str);
     static std::string uuid();
-    static std::string now();
 
 };
 

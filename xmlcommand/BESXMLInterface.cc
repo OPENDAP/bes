@@ -138,22 +138,25 @@ void BESXMLInterface::build_data_request_plan()
 
         // there should be a request id property with one value.
         auto reqID = attributes[REQUEST_ID_KEY];
-        BESDEBUG(BES_XML, prolog << "reqId: " << reqID << endl);
+        BESDEBUG(BES_XML, prolog << "attributes[" << REQUEST_ID_KEY << "]: " << reqID << endl);
         if (reqID.empty()) {
             // But if no id then we punt and keep going.
             reqID = prolog + "NoRequestIdDetected";
         }
+        BESDEBUG(BES_XML, prolog << "Using reqId: " << reqID << endl);
 
         d_dhi_ptr->data[REQUEST_ID_KEY] = reqID;
         BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_ID_KEY << "\"]: " << d_dhi_ptr->data[REQUEST_ID_KEY] << endl);
 
         // there should be a request uuid property with one value.
+
         auto reqUUID = attributes[REQUEST_UUID_KEY];
-        BESDEBUG(BES_XML, prolog << "reqUUID: " << reqUUID << endl);
+        BESDEBUG(BES_XML, prolog << "attributes[" << REQUEST_UUID_KEY << "]: " << reqUUID << endl);
         if (reqUUID.empty()) {
-            // But if no uuid then make one.
+            // But if no uuid is found then make one.
             reqUUID = "bes-" + BESUtil::uuid();
         }
+        BESDEBUG(BES_XML, prolog << "Using reqUUID: " << reqUUID << endl);
 
         // Make the request id staring value for the BES application log.
         auto request_id_for_log = reqID + "-" + reqUUID;
