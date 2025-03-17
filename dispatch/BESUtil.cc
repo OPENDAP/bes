@@ -1344,7 +1344,7 @@ std::string &BESUtil::remove_crlf(std::string &str) {
 std::string BESUtil::uuid() {
     uuid_t raw_uuid;
     uuid_generate_random(raw_uuid);
-    uuid_string_t uuid_str;
+    char uuid_str[37];
     uuid_unparse_lower(raw_uuid, uuid_str);
     return {uuid_str};
 }

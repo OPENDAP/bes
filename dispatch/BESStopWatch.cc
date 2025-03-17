@@ -72,7 +72,7 @@ bool BESStopWatch::start(const std::string &name, BESDataHandlerInterface *dhi) 
         reqId = prolog + "The values of dhi->data[\"" REQUEST_ID_KEY "\" and BESLog::TheLog()->get_request_id() were empty.";
     }
     return start(name,reqId);
-};
+}
 
 
 
