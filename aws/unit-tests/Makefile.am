@@ -3,7 +3,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
-LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
+LIBADD = $(AWS_SDK_LIBS) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
@@ -77,4 +77,4 @@ clean-local:
 	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
 
 AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
-AWS_SDK_Test_LDADD = ../.libs/libbes_http.a -laws-cpp-sdk-s3 -laws-cpp-sdk-core $(LIBADD)
+AWS_SDK_Test_LDADD = ../.libs/libbes_aws.a $(LIBADD)
