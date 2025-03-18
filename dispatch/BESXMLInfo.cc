@@ -184,6 +184,18 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
         }
     }
 
+    /* Add the request uuid attribute */
+    string req_uuid = dhi.data[REQUEST_UUID_KEY];
+    if (!req_uuid.empty()) {
+        rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST REQUEST_UUID_KEY,
+            BAD_CAST req_uuid.c_str() );
+        if (rc < 0) {
+            cleanup();
+            string err = (string) "Error adding attribute " + REQUEST_UUID_KEY + " for response " + _response_name;
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+    }
+
     /* Start an element for the specific response. */
     rc = xmlTextWriterStartElement( _writer, BAD_CAST _response_name.c_str() );
     if (rc < 0) {

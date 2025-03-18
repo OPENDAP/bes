@@ -442,6 +442,7 @@ CPPUNIT_TEST_SUITE( servicesT );
             BESXMLInfo info;
             BESDataHandlerInterface dhi;
             dhi.data[REQUEST_ID_KEY] = "123456789";
+            dhi.data[REQUEST_UUID_KEY] = "0nce-up0n-a-t1m3-1n-th3-w3st";
             info.begin_response("showServices", dhi);
             registry->show_services(info);
             info.end_response();

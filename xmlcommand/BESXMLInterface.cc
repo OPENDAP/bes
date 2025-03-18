@@ -138,7 +138,7 @@ void BESXMLInterface::build_data_request_plan()
 
         // there should be a request id property with one value.
         auto reqID = attributes[REQUEST_ID_KEY];
-        BESDEBUG(BES_XML, prolog << "attributes[" << REQUEST_ID_KEY << "]: " << reqID << endl);
+        BESDEBUG(BES_XML, prolog << "attributes[" << REQUEST_ID_KEY << "]: '" << reqID << "'\n");
         if (reqID.empty()) {
             // But if no id then we punt and keep going.
             reqID = prolog + "NoRequestIdDetected";
@@ -146,24 +146,26 @@ void BESXMLInterface::build_data_request_plan()
         BESDEBUG(BES_XML, prolog << "Using reqId: " << reqID << endl);
 
         d_dhi_ptr->data[REQUEST_ID_KEY] = reqID;
-        BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_ID_KEY << "\"]: " << d_dhi_ptr->data[REQUEST_ID_KEY] << endl);
+        BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_ID_KEY << "\"]: '" << d_dhi_ptr->data[REQUEST_ID_KEY] << "'\n");
 
         // there should be a request uuid property with one value.
-
         auto reqUUID = attributes[REQUEST_UUID_KEY];
-        BESDEBUG(BES_XML, prolog << "attributes[" << REQUEST_UUID_KEY << "]: " << reqUUID << endl);
+        BESDEBUG(BES_XML, prolog << "attributes[" << REQUEST_UUID_KEY << "]: '" << reqUUID << "'\n");
         if (reqUUID.empty()) {
             // But if no uuid is found then make one.
-            reqUUID = "bes-" + BESUtil::uuid();
+            reqUUID = "BesXmlInterface-" + BESUtil::uuid();
         }
         BESDEBUG(BES_XML, prolog << "Using reqUUID: " << reqUUID << endl);
 
+        d_dhi_ptr->data[REQUEST_UUID_KEY] = reqUUID;
+        BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_UUID_KEY << "\"]: '" << d_dhi_ptr->data[REQUEST_UUID_KEY] << "'\n");
+
         // Make the request id staring value for the BES application log.
         auto request_id_for_log = reqID + "-" + reqUUID;
-        BESDEBUG(BES_XML, prolog << "request_id_for_log: " << request_id_for_log << endl);
+        BESDEBUG(BES_XML, prolog << "request_id_for_log: '" << request_id_for_log << "'\n");
 
         BESLog::TheLog()->set_request_id(request_id_for_log);
-        BESDEBUG(BES_XML, prolog << "BESLog::TheLog()->get_request_id(): " << BESLog::TheLog()->get_request_id() << endl);
+        BESDEBUG(BES_XML, prolog << "BESLog::TheLog()->get_request_id(): '" << BESLog::TheLog()->get_request_id() << "'\n");
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

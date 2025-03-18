@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
+<request reqID="some_unique_value" reqUUID="SomeUUIDString">
     <setContext name="dap_format">dap2</setContext>
     <setContainer name="c" space="catalog">/data/arrayT.dods</setContainer>
     <define name="d">
