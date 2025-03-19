@@ -277,7 +277,7 @@ def request_log_to_json(log_fields, json_log_record):
 
         # Time format may or may not be in unix time format.
         # If it's not numeric we treat the value as a string.
-        olfs_stime = log_fields[9]
+        olfs_stime = log_fields[10]
         if olfs_stime.isnumeric():
             json_log_record[OLFS_START_TIME_KEY] = int(olfs_stime)
         else:
