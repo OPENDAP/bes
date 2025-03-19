@@ -175,7 +175,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Add the request id attribute */
     string reqid = dhi.data[REQUEST_ID_KEY];
     if (!reqid.empty()) {
-        rc = xmlTextWriterWriteAttribute( _writer, reinterpret_cast<xmlChar *>(REQUEST_ID_KEY),
+        rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST REQUEST_ID_KEY,
             BAD_CAST reqid.c_str() );
         if (rc < 0) {
             cleanup();
