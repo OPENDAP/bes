@@ -187,8 +187,8 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Add the request uuid attribute */
     string req_uuid = dhi.data[REQUEST_UUID_KEY];
     if (!req_uuid.empty()) {
-        rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST REQUEST_UUID_KEY,
-            BAD_CAST req_uuid.c_str() );
+        rc = xmlTextWriterWriteAttribute( _writer, (const xmlChar *)( REQUEST_UUID_KEY),
+            (const xmlChar *)(req_uuid.c_str()) );
         if (rc < 0) {
             cleanup();
             string err = (string) "Error adding attribute " + REQUEST_UUID_KEY + " for response " + _response_name;
