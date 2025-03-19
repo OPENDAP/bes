@@ -56,6 +56,9 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <iomanip>
+
+#include <uuid/uuid.h>
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"
@@ -1336,3 +1339,14 @@ std::string &BESUtil::remove_crlf(std::string &str) {
     }
     return str;
 }
+
+
+std::string BESUtil::uuid() {
+    uuid_t raw_uuid;
+    uuid_generate_random(raw_uuid);
+    char uuid_str[37];
+    uuid_unparse_lower(raw_uuid, uuid_str);
+    return {uuid_str};
+}
+
+

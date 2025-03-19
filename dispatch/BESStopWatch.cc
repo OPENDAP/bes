@@ -40,6 +40,9 @@
 #include <sstream>
 
 #include "BESStopWatch.h"
+
+#include <BESUtil.h>
+
 #include "BESDebug.h"
 #include "BESLog.h"
 
@@ -65,14 +68,23 @@ BESStopWatch *elapsedTimeToTransmitStart = nullptr;
  */
 bool BESStopWatch::start(const std::string &name, BESDataHandlerInterface *dhi) {
     string reqId = dhi->data[REQUEST_ID_KEY];
-    if (reqId.empty()) {
+    if (!reqId.empty()) {
+        string uuid =  dhi->data[REQUEST_UUID_KEY];
+        if (uuid.empty()) {
+            uuid = "BESStopWatch-" + BESUtil::uuid();
+            dhi->data[REQUEST_UUID_KEY] = uuid;
+        }
+        reqId = reqId + "-" + uuid;
+    }
+    else {
+        // If we grab it from BESLog we know the uuid is already a part of the request id value.
         reqId = BESLog::TheLog()->get_request_id();
     }
     if (reqId.empty()) {
-        reqId = prolog + "The values of dhi->data[\"" REQUEST_ID_KEY "\" and BESLog::TheLog()->get_request_id() were empty.";
+        reqId = prolog + "OUCH! The values of dhi->data[\"" REQUEST_ID_KEY "\" and BESLog::TheLog()->get_request_id() were empty.";
     }
     return start(name,reqId);
-};
+}
 
 
 
