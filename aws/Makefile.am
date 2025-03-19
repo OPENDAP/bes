@@ -21,7 +21,10 @@ noinst_LTLIBRARIES = libbes_aws.la
 
 libbes_aws_la_SOURCES = $(SRCS) $(HDRS)
 libbes_aws_la_LDFLAGS =
-libbes_aws_la_LIBADD = $(BES_DISPATCH_LIB) $(AWS_SDK_LIBS) $(BES_HTTP_LIB)
+libbes_aws_la_LIBADD =
+
+# $(BES_DISPATCH_LIB) $(AWS_SDK_LIBS) $(BES_HTTP_LIB)
+
 
 pkginclude_HEADERS = $(HDRS)
 

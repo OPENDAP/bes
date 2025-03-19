@@ -3,7 +3,9 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
-LIBADD = $(AWS_SDK_LIBS) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
+LIBADD = $(AWS_SDK_LIBS) $(BES_HTTP_LIB)
+
+# $(BES_DISPATCH_LIB)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
