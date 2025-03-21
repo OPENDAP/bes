@@ -48,6 +48,8 @@ namespace bes {
 
 Aws::SDKOptions AWS_SDK::options;
 
+#if 0
+
 /**
  * @brief Get an S3 Client.
  * @param region AWS region string, e.g., 'us-east-1'
@@ -64,6 +66,8 @@ Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region) {
     // std::shared_ptr<S3EndpointProviderBase> is nullptr in the following call.
     return {credentialsProvider, nullptr, clientConfig};
 }
+
+#endif
 
 /**
  * @brief Get an S3 Client.

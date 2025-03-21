@@ -61,6 +61,13 @@ public:
         AWS_SDK::aws_library_shutdown();
     }
 
+    static void get_s3_creds(string &id, string &secret) {
+        id = getenv("CMAC_ID");
+        secret = getenv("CMAC_ACCESS_KEY");
+        CPPUNIT_ASSERT_MESSAGE("Neither the AWS ID nor Secret can be empty for these tests.",
+                               !(id.empty() || secret.empty()));
+    }
+
     static long get_file_size(const std::string &filename) {
         struct stat st{};
         if (stat(filename.c_str(), &st) == 0) {
@@ -76,18 +83,24 @@ public:
         ~file_wrapper() { remove(d_filename.c_str()); }
     };
 
-    void test_s3_head_yes() {
+    static void test_s3_head_yes() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1");
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize("us-east-1", id, secret);
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
         const bool status = aws_sdk.s3_head(bucket, object);
         CPPUNIT_ASSERT_MESSAGE("The object " + object + " should be in " + bucket, status == true);
     }
 
-    void test_s3_head_no() {
+    static void test_s3_head_no() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1");
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize("us-east-1", id, secret);
         const string object = "/samples/not_here";
         const string bucket = "cloudydap";
         const bool status = aws_sdk.s3_head(bucket, object);
@@ -98,7 +111,7 @@ public:
                                aws_sdk.get_http_status_code() == 404);
     }
 
-    void test_s3_head_bad_creds() {
+    static void test_s3_head_bad_creds() {
         AWS_SDK aws_sdk;
         aws_sdk.initialize("us-east-1", "foo", "bar");
         const string object = "/samples/chunked_twoD.h5";
@@ -111,9 +124,12 @@ public:
                                aws_sdk.get_http_status_code() == 403);
     }
 
-    void test_s3_get_as_string() {
+    static void test_s3_get_as_string() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1");
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize("us-east-1", id, secret);
         const string object =
                 "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
@@ -121,9 +137,12 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The object " + object + " should be in " + bucket, !dmrpp.empty());
     }
 
-    void test_s3_get_as_string_not_there() {
+    static void test_s3_get_as_string_not_there() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1");
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize("us-east-1", id, secret);
         const string object = "/C2036877806-POCLOUD/foobar.baz";
         const string bucket = "cloudydap";
         const string dmrpp = aws_sdk.s3_get_as_string(bucket, object);
@@ -134,7 +153,7 @@ public:
                                aws_sdk.get_http_status_code() == 404);
     }
 
-    void test_s3_get_as_string_bad_creds() {
+    static void test_s3_get_as_string_bad_creds() {
         AWS_SDK aws_sdk;
         aws_sdk.initialize("us-east-1", "foo", "bar");
         const string object = "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
@@ -147,9 +166,12 @@ public:
                                aws_sdk.get_http_status_code() == 403);
     }
 
-    void test_s3_get_as_file() {
+    static void test_s3_get_as_file() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1");
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize("us-east-1", id, secret);
         const string object =
                 "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";

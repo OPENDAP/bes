@@ -81,8 +81,10 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = # CmrCatalogTest GranuleTest # FIXME disabled 5/16/24 because target collection was deleted.
-# This fails often: CmrApiTest jhrg 6/29/23
+# FIXME disabled 5/16/24 because target collection was deleted.
+# FIXME This fails often: CmrApiTest jhrg 6/29/23
+UNIT_TESTS = CmrCatalogTest GranuleTest CmrApiTest
+
 else
 UNIT_TESTS =
 
@@ -98,9 +100,7 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../JsonUtils.o ../CmrApi.o \
-       ../Provider.o ../Collection.o ../Granule.o ../GranuleUMM.o \
-       ../CmrCatalog.o
+OBJS = ../JsonUtils.o ../CmrApi.o ../Provider.o ../Collection.o ../Granule.o ../GranuleUMM.o ../CmrCatalog.o
 
 CmrApiTest_SOURCES = CmrApiTest.cc
 CmrApiTest_LDADD = $(OBJS) $(LIBADD)

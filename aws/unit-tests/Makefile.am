@@ -3,7 +3,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
-LIBADD = $(AWS_SDK_LIBS) $(BES_HTTP_LIB)
+LIBADD = ../.libs/libbes_aws.a $(AWS_SDK_LIBS) $(BES_HTTP_LIB)
 
 # $(BES_DISPATCH_LIB)
 
@@ -79,4 +79,4 @@ clean-local:
 	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
 
 AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
-AWS_SDK_Test_LDADD = ../.libs/libbes_aws.a $(LIBADD)
+AWS_SDK_Test_LDADD = $(LIBADD)

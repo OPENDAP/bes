@@ -32,7 +32,11 @@ public:
     std::string get_aws_exception_message() const { return d_aws_exception_message; }
     int get_http_status_code() const { return d_http_status_code; }
 
+#if 0
+
     virtual void initialize(const std::string &region) = 0;
+
+#endif
     virtual void initialize(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) = 0;
 
     virtual bool s3_head(const std::string &bucket, const std::string &key) = 0;

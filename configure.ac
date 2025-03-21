@@ -283,6 +283,23 @@ AC_SEARCH_LIBS([curl_multi_wait], [curl],
 dnl Look for the AWS libraries (aws-cpp-sdk-s3 aws-cpp-sdk-core) and headers
 dnl jhrg 3/11/25
 
+dnl AC_CHECK_HEADER (header-file, [action-if-found], [action-if-not-found], [includes = default-includes])
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADERS([aws/core/Aws.h], [found_aws_h=true], [found_aws_h=false])
+AC_CHECK_HEADERS([aws/s3/S3Client.h], [found_s3client_h=true], [found_s3client_h=false])
+AC_LANG_POP([C++])
+
+dnl FIXME modify this so that it looks for the AWS C++ SDK and sets the conditional
+dnl FIXME compilation as needed. for now, hack to move on with other tasks. jhrg 3/11/25
+
+AS_IF([true],
+    [AWS_SDK_LIBS="-L/opt/homebrew/lib -laws-cpp-sdk-s3 -laws-cpp-sdk-core"
+     AC_SUBST(AWS_SDK_LIBS)
+     AC_MSG_NOTICE([AWS C++ SDK Found.])
+     AM_CONDITIONAL([USE_AWS_SDK], [true])],
+    [AC_MSG_NOTICE([AWS C++ SDK not Found.])
+     AM_CONDITIONAL([USE_AWS_SDK], [false])])
+
 AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h)
 AC_CHECK_HEADERS_ONCE(pthread.h bzlib.h string.h strings.h byteswap.h)
 dnl AC_CHECK_HEADERS_ONCE([uuid/uuid.h uuid.h])
