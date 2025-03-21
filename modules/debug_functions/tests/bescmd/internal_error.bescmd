@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]" reqUUID="SomeUUIDString">
   <bes:setContext name="xdap_accept">3.2</bes:setContext>
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>

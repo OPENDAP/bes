@@ -57,6 +57,8 @@
 #define IS_FILE "isFile"
 #define IS_DIR  "isDir"
 
+#define prolog string("W10nJsonTransmitter::").append(__func__).append("() - ")
+
 W10nShowPathInfoResponseHandler::W10nShowPathInfoResponseHandler(const string &name) :
     BESResponseHandler(name)
 {
@@ -78,11 +80,9 @@ W10nShowPathInfoResponseHandler::~W10nShowPathInfoResponseHandler()
  */
 void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
+    BES_STOPWATCH_START_DHI(W10N_DEBUG_KEY, prolog + "Timing", &dhi);
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("W10NShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
-
-    BESDEBUG(W10N_DEBUG_KEY, "W10NShowPathInfoResponseHandler::execute() - BEGIN" << endl );
+    BESDEBUG(W10N_DEBUG_KEY, prolog << "BEGIN" << endl );
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;
@@ -133,7 +133,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     if (container.empty()) container = "/";
 
-    BESDEBUG(W10N_DEBUG_KEY, "W10NShowPathInfoResponseHandler::execute() - w10n_id: " << container << endl );
+    BESDEBUG(W10N_DEBUG_KEY, prolog << "w10n_id: " << container << endl );
 
     info->begin_response(W10N_SHOW_PATH_INFO_REQUEST, dhi);
     //string coi = dhi.data[CATALOG_OR_INFO];
@@ -193,7 +193,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     // end the response object
     info->end_response();
 
-    BESDEBUG(W10N_DEBUG_KEY, "W10nShowPathInfoResponseHandler::execute() - END" << endl );
+    BESDEBUG(W10N_DEBUG_KEY, prolog << "END" << endl );
     }
 
     /** @brief transmit the response object built by the execute command
@@ -224,7 +224,7 @@ void W10nShowPathInfoResponseHandler::transmit(BESTransmitter *transmitter, BESD
  */
 void W10nShowPathInfoResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "W10nShowPathInfoResponseHandler::dump - (" << (void *) this << ")" << std::endl;
+    strm << BESIndent::LMarg << prolog << "(" << (void *) this << ")" << std::endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();

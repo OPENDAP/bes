@@ -160,12 +160,7 @@ string NgapBuildDmrppContainer::access() {
         auto data_url(std::make_shared<http::url>(data_access_url_str, true));
         {
             d_data_rresource = std::make_shared<http::RemoteResource>(data_url);
-#ifndef NDEBUG
-            BESStopWatch besTimer;
-            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
-                besTimer.start("DMR++ retrieval: " + data_url->str());
-            }
-#endif
+            BES_STOPWATCH_START(MODULE, prolog + "DMR++ retrieval: " + data_url->str());
             d_data_rresource->retrieve_resource();
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << data_url->str() << endl);

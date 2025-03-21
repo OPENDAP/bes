@@ -5,7 +5,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -22,9 +22,6 @@ noinst_LTLIBRARIES = libbes_aws.la
 libbes_aws_la_SOURCES = $(SRCS) $(HDRS)
 libbes_aws_la_LDFLAGS =
 libbes_aws_la_LIBADD =
-
-# $(BES_DISPATCH_LIB) $(AWS_SDK_LIBS) $(BES_HTTP_LIB)
-
 
 pkginclude_HEADERS = $(HDRS)
 

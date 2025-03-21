@@ -36,6 +36,7 @@
 #include <sstream>
 
 #include "BESXMLInterface.h"
+#include <BESUtil.h>
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
 #include "BESDataNames.h"
@@ -55,7 +56,8 @@
 using namespace std;
 
 #define LOG_ONLY_GET_COMMANDS
-#define MODULE "bes"
+const auto MODULE ="bes";
+const auto BES_XML = "besxml";
 #define prolog string("BESXMLInterface::").append(__func__).append("() - ")
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
@@ -75,8 +77,8 @@ BESXMLInterface::~BESXMLInterface()
  */
 void BESXMLInterface::build_data_request_plan()
 {
-    BESDEBUG("bes", prolog << "BEGIN" << endl);
-    BESDEBUG("bes", prolog << "Building request plan for xml document: " << endl << d_xml_document << endl);
+    BESDEBUG(BES_XML, prolog << "BEGIN #####################################################" << endl);
+    BESDEBUG(BES_XML, prolog << "Building request plan for xml document: " << endl << d_xml_document << endl);
 
     // I do not know why, but uncommenting this macro breaks some tests
     // on Linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
@@ -128,13 +130,47 @@ void BESXMLInterface::build_data_request_plan()
             throw BESSyntaxUserError(string("The request element must not contain a value, ").append(root_val),
                                      __FILE__, __LINE__);
 
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Ingest request id. We know that we have to forward the request id value to downstream services.
+        // But there is nothing to prevent users/clients from submitting multiple requests with the same request id.
+        // We add the UUID part below so that in our logs we can easily disambiguate duplicate request ids
+        // without breaking the actual request id value needed by downstream services. ndp 03/17/25
+
         // there should be a request id property with one value.
-        string const &reqId = attributes[REQUEST_ID];
-        if (reqId.empty()) throw BESSyntaxUserError("The request id value empty", __FILE__, __LINE__);
+        auto reqID = attributes[REQUEST_ID_KEY];
+        BESDEBUG(BES_XML, prolog << "attributes[" << REQUEST_ID_KEY << "]: '" << reqID << "'\n");
+        if (reqID.empty()) {
+            // But if no id then we punt and keep going.
+            reqID = prolog + "NoRequestIdDetected";
+        }
+        BESDEBUG(BES_XML, prolog << "Using reqId: " << reqID << endl);
 
-        d_dhi_ptr->data[REQUEST_ID] = reqId;
+        d_dhi_ptr->data[REQUEST_ID_KEY] = reqID;
+        BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_ID_KEY << "\"]: '" << d_dhi_ptr->data[REQUEST_ID_KEY] << "'\n");
 
-        BESDEBUG("besxml", "request id = " << d_dhi_ptr->data[REQUEST_ID] << endl);
+        // there should be a request uuid property with one value.
+        auto reqUUID = attributes[REQUEST_UUID_KEY];
+        BESDEBUG(BES_XML, prolog << "attributes[" << REQUEST_UUID_KEY << "]: '" << reqUUID << "'\n");
+        if (reqUUID.empty()) {
+            // But if no uuid is found then make one.
+            reqUUID = "BesXmlInterface-" + BESUtil::uuid();
+        }
+        BESDEBUG(BES_XML, prolog << "Using reqUUID: " << reqUUID << endl);
+
+        d_dhi_ptr->data[REQUEST_UUID_KEY] = reqUUID;
+        BESDEBUG(BES_XML, prolog << "d_dhi_ptr->data[\"" << REQUEST_UUID_KEY << "\"]: '" << d_dhi_ptr->data[REQUEST_UUID_KEY] << "'\n");
+
+        // Make the request id staring value for the BES application log.
+        auto request_id_for_log = reqID + "-" + reqUUID;
+        BESDEBUG(BES_XML, prolog << "request_id_for_log: '" << request_id_for_log << "'\n");
+
+        BESLog::TheLog()->set_request_id(request_id_for_log);
+        BESDEBUG(BES_XML, prolog << "BESLog::TheLog()->get_request_id(): '" << BESLog::TheLog()->get_request_id() << "'\n");
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        auto bes_client_id = attributes[BES_CLIENT_ID_KEY];
+        BESDEBUG(BES_XML, prolog << BES_CLIENT_ID_KEY << ": " << bes_client_id << endl);
 
         // iterate through the children of the request element. Each child is an
         // individual command.
@@ -374,8 +410,7 @@ void BESXMLInterface::transmit_data()
     else if (d_dhi_ptr->response_handler) {
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + " [" + d_dhi_ptr->data[LOG_INFO] + "] transmitting" );
 
-        BESStopWatch sw;
-        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
+        BES_STOPWATCH_START_DHI(MODULE, prolog + "Elapsed Time To Transmit", d_dhi_ptr);
 
         string return_as = d_dhi_ptr->data[RETURN_CMD];
         if (!return_as.empty()) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+<response reqID="some_unique_value" reqUUID="SomeUUIDString" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <getDODS>
         <BESError>
             <Type>1</Type>

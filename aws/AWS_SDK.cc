@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <string>
+#include <exception>
 
 #include <aws/core/Aws.h>
 #include <aws/core/auth/AWSCredentialsProvider.h>
@@ -40,7 +41,7 @@
 
 #include "AWS_SDK.h"
 
-#include "BESInternalFatalError.h"
+//#include "BESInternalFatalError.h"
 
 using namespace std;
 
@@ -90,7 +91,8 @@ Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region, const string &aws
 
 void AWS_SDK::ok() const {
     if (!d_is_s3_initialized) {
-        throw BESInternalFatalError("AWS_SDK object not initialized.", __FILE__, __LINE__);
+        // throw BESInternalFatalError("AWS_SDK object not initialized.", __FILE__, __LINE__);
+        throw std::runtime_error("AWS_SDK::ok() called before initialization");
     }
 }
 
@@ -111,11 +113,11 @@ bool AWS_SDK::s3_head(const string &bucket, const string &key) {
     if (head_outcome.IsSuccess()) {
         return true;
     }
-    const auto error = head_outcome.GetError();
-    const auto httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode is an enum. See cast below.
+    const auto &error = head_outcome.GetError();
+    const auto http_code = error.GetResponseCode(); // Aws::Http::HttpResponseCode is an enum. See cast below.
     d_aws_exception_message = error.GetMessage();
     d_aws_exception_name = error.GetExceptionName();
-    d_http_status_code = static_cast<int>(httpCode);
+    d_http_status_code = static_cast<int>(http_code);
 
     return false;
 }
@@ -135,13 +137,13 @@ string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) {
 
     auto get_object_outcome = d_get_s3_client.GetObject(object_request);
     if (get_object_outcome.IsSuccess()) {
-        auto const &retrieved_file = get_object_outcome.GetResultWithOwnership().GetBody();
+        const auto &retrieved_file = get_object_outcome.GetResultWithOwnership().GetBody();
         stringstream file_contents;
         file_contents << retrieved_file.rdbuf();
         return {file_contents.str()};
     }
-    auto const error = get_object_outcome.GetError();
-    auto const httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode
+    const auto error = get_object_outcome.GetError();
+    const auto httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode
     d_aws_exception_message = error.GetMessage();
     d_aws_exception_name = error.GetExceptionName();
     d_http_status_code = static_cast<int>(httpCode);
@@ -165,13 +167,13 @@ bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const stri
 
     auto get_object_outcome = d_get_s3_client.GetObject(object_request);
     if (get_object_outcome.IsSuccess()) {
-        auto const &retrieved_file = get_object_outcome.GetResultWithOwnership().GetBody();
+        const auto &retrieved_file = get_object_outcome.GetResultWithOwnership().GetBody();
         std::ofstream output_file(filename, std::ios::binary);
         output_file << retrieved_file.rdbuf();
         return true;
     }
-    auto const error = get_object_outcome.GetError();
-    auto const httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode
+    const auto error = get_object_outcome.GetError();
+    const auto httpCode = error.GetResponseCode(); // Aws::Http::HttpResponseCode
     d_aws_exception_message = error.GetMessage();
     d_aws_exception_name = error.GetExceptionName();
     d_http_status_code = static_cast<int>(httpCode);

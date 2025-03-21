@@ -406,11 +406,7 @@ uint64_t compute_response_size_and_inv_big_vars(
         const uint64_t max_var_size,
         std::vector<std::string> &too_big)
 {
-#ifndef NDEBUG
-    BESStopWatch sw;
-    sw.start(prolog + "DMR");
-#endif
-
+    BES_STOPWATCH_START(MODULE, prolog + "DMR");
     return compute_response_size_and_inv_big_vars(dmr.root(), max_var_size,too_big);
 }
 
@@ -429,10 +425,7 @@ uint64_t compute_response_size_and_inv_big_vars(
         const uint64_t max_var_size,
         std::vector<std::string> &too_big)
 {
-#ifndef NDEBUG
-    BESStopWatch sw;
-    sw.start(prolog + "DDS");
-#endif
+    BES_STOPWATCH_START(MODULE, prolog + "DDS");
     uint64_t response_size = 0;
     // Process child variables.
     for(auto dap_var:dds.variables()){
@@ -454,10 +447,7 @@ uint64_t compute_response_size_and_inv_big_vars(
  */
 void get_max_sizes_bytes(uint64_t &max_response_size_bytes, uint64_t &max_var_size_bytes,  bool is_dap2)
 {
-#ifndef NDEBUG
-    BESStopWatch sw;
-    sw.start(prolog + (is_dap2?"DAP2":"DAP4"));
-#endif
+    BES_STOPWATCH_START(MODULE, prolog + (is_dap2?"DAP2":"DAP4"));
 
     // The BES configuration is help in TheBESKeys, so we read from there.
     uint64_t config_max_resp_size = TheBESKeys::TheKeys()->read_uint64_key(BES_KEYS_MAX_RESPONSE_SIZE_KEY, 0);
@@ -636,10 +626,7 @@ bool its_too_big(
  */
 void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int line)
 {
-#ifndef NDEBUG
-    BESStopWatch sw;
-    sw.start(prolog + "DMR");
-#endif
+    BES_STOPWATCH_START(MODULE, prolog + "DMR");
 
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;
@@ -675,11 +662,7 @@ void throw_if_too_big(libdap::DMR &dmr, const string &file, const unsigned int l
 */
 void throw_if_too_big(const libdap::DDS &dds, const std::string &file, const unsigned int line)
 {
-
-#ifndef NDEBUG
-    BESStopWatch sw;
-    sw.start(prolog + "DDS");
-#endif
+    BES_STOPWATCH_START(MODULE, prolog + "DDS");
 
     uint64_t max_var_size_bytes=0;
     uint64_t max_response_size_bytes=0;

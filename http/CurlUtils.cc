@@ -1794,11 +1794,9 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
 
 #ifndef NDEBUG
         {
-            BESStopWatch sw;
-            if (BESDebug::IsSet(CURL_TIMING)) {
-                sw.start(prolog + "Retrieved HTTP response from origin_url: " + origin_url->str());
-            }
+            BES_STOPWATCH_START(MODULE,prolog + "Retrieved HTTP response from origin_url: " + origin_url->str());
 #endif
+
             curl_code = curl_easy_perform(ceh);
 #ifndef NDEBUG
         }

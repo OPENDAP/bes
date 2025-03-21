@@ -1,0 +1,3377 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MYD09.A2019003.2040.006.2019005020913.hdf">
+    <Dimension name="_1km_Data_Lines_MODIS_SWATH_TYPE_L2" size="2030"/>
+    <Dimension name="_1km_Data_Samples_MODIS_SWATH_TYPE_L2" size="1354"/>
+    <Dimension name="_250m_Data_Lines_MODIS_SWATH_TYPE_L2" size="8120"/>
+    <Dimension name="_250m_Data_Samples_MODIS_SWATH_TYPE_L2" size="5416"/>
+    <Dimension name="_500m_Data_Lines_MODIS_SWATH_TYPE_L2" size="4060"/>
+    <Dimension name="_500m_Data_Samples_MODIS_SWATH_TYPE_L2" size="2708"/>
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.19</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+	GROUP=SWATH_1
+		SwathName=&quot;MODIS SWATH TYPE L2&quot;
+		GROUP=Dimension
+			OBJECT=Dimension_1
+				DimensionName=&quot;250m Data Lines&quot;
+				Size=8120
+			END_OBJECT=Dimension_1
+			OBJECT=Dimension_2
+				DimensionName=&quot;250m Data Samples&quot;
+				Size=5416
+			END_OBJECT=Dimension_2
+			OBJECT=Dimension_3
+				DimensionName=&quot;500m Data Lines&quot;
+				Size=4060
+			END_OBJECT=Dimension_3
+			OBJECT=Dimension_4
+				DimensionName=&quot;500m Data Samples&quot;
+				Size=2708
+			END_OBJECT=Dimension_4
+			OBJECT=Dimension_5
+				DimensionName=&quot;1km Data Lines&quot;
+				Size=2030
+			END_OBJECT=Dimension_5
+			OBJECT=Dimension_6
+				DimensionName=&quot;1km Data Samples&quot;
+				Size=1354
+			END_OBJECT=Dimension_6
+		END_GROUP=Dimension
+		GROUP=DimensionMap
+			OBJECT=DimensionMap_1
+				GeoDimension=&quot;1km Data Lines&quot;
+				DataDimension=&quot;500m Data Lines&quot;
+				Offset=0
+				Increment=2
+			END_OBJECT=DimensionMap_1
+			OBJECT=DimensionMap_2
+				GeoDimension=&quot;1km Data Samples&quot;
+				DataDimension=&quot;500m Data Samples&quot;
+				Offset=0
+				Increment=2
+			END_OBJECT=DimensionMap_2
+			OBJECT=DimensionMap_3
+				GeoDimension=&quot;1km Data Lines&quot;
+				DataDimension=&quot;250m Data Lines&quot;
+				Offset=1
+				Increment=4
+			END_OBJECT=DimensionMap_3
+			OBJECT=DimensionMap_4
+				GeoDimension=&quot;1km Data Samples&quot;
+				DataDimension=&quot;250m Data Samples&quot;
+				Offset=0
+				Increment=4
+			END_OBJECT=DimensionMap_4
+		END_GROUP=DimensionMap
+		GROUP=IndexDimensionMap
+		END_GROUP=IndexDimensionMap
+		GROUP=GeoField
+			OBJECT=GeoField_1
+				GeoFieldName=&quot;Latitude&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=GeoField_1
+			OBJECT=GeoField_2
+				GeoFieldName=&quot;Longitude&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=GeoField_2
+		END_GROUP=GeoField
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;1km Atmospheric Optical Depth Band 1&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_1
+			OBJECT=DataField_2
+				DataFieldName=&quot;1km Atmospheric Optical Depth Band 3&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_2
+			OBJECT=DataField_3
+				DataFieldName=&quot;1km Atmospheric Optical Depth Band 8&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_3
+			OBJECT=DataField_4
+				DataFieldName=&quot;1km Atmospheric Optical Depth Model&quot;
+				DataType=DFNT_UINT8
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_4
+			OBJECT=DataField_5
+				DataFieldName=&quot;1km water_vapor&quot;
+				DataType=DFNT_UINT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_5
+			OBJECT=DataField_6
+				DataFieldName=&quot;1km Atmospheric Optical Depth Band QA&quot;
+				DataType=DFNT_UINT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_6
+			OBJECT=DataField_7
+				DataFieldName=&quot;1km Atmospheric Optical Depth Band CM&quot;
+				DataType=DFNT_UINT8
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_7
+			OBJECT=DataField_8
+				DataFieldName=&quot;250m Surface Reflectance Band 1&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;250m Data Lines&quot;,&quot;250m Data Samples&quot;)
+			END_OBJECT=DataField_8
+			OBJECT=DataField_9
+				DataFieldName=&quot;250m Surface Reflectance Band 2&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;250m Data Lines&quot;,&quot;250m Data Samples&quot;)
+			END_OBJECT=DataField_9
+			OBJECT=DataField_10
+				DataFieldName=&quot;500m Surface Reflectance Band 1&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;500m Data Lines&quot;,&quot;500m Data Samples&quot;)
+			END_OBJECT=DataField_10
+			OBJECT=DataField_11
+				DataFieldName=&quot;500m Surface Reflectance Band 2&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;500m Data Lines&quot;,&quot;500m Data Samples&quot;)
+			END_OBJECT=DataField_11
+			OBJECT=DataField_12
+				DataFieldName=&quot;500m Surface Reflectance Band 3&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;500m Data Lines&quot;,&quot;500m Data Samples&quot;)
+			END_OBJECT=DataField_12
+			OBJECT=DataField_13
+				DataFieldName=&quot;500m Surface Reflectance Band 4&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;500m Data Lines&quot;,&quot;500m Data Samples&quot;)
+			END_OBJECT=DataField_13
+			OBJECT=DataField_14
+				DataFieldName=&quot;500m Surface Reflectance Band 5&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;500m Data Lines&quot;,&quot;500m Data Samples&quot;)
+			END_OBJECT=DataField_14
+			OBJECT=DataField_15
+				DataFieldName=&quot;500m Surface Reflectance Band 6&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;500m Data Lines&quot;,&quot;500m Data Samples&quot;)
+			END_OBJECT=DataField_15
+			OBJECT=DataField_16
+				DataFieldName=&quot;500m Surface Reflectance Band 7&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;500m Data Lines&quot;,&quot;500m Data Samples&quot;)
+			END_OBJECT=DataField_16
+			OBJECT=DataField_17
+				DataFieldName=&quot;1km Surface Reflectance Band 1&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_17
+			OBJECT=DataField_18
+				DataFieldName=&quot;1km Surface Reflectance Band 2&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_18
+			OBJECT=DataField_19
+				DataFieldName=&quot;1km Surface Reflectance Band 3&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_19
+			OBJECT=DataField_20
+				DataFieldName=&quot;1km Surface Reflectance Band 4&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_20
+			OBJECT=DataField_21
+				DataFieldName=&quot;1km Surface Reflectance Band 5&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_21
+			OBJECT=DataField_22
+				DataFieldName=&quot;1km Surface Reflectance Band 6&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_22
+			OBJECT=DataField_23
+				DataFieldName=&quot;1km Surface Reflectance Band 7&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_23
+			OBJECT=DataField_24
+				DataFieldName=&quot;1km Surface Reflectance Band 8&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_24
+			OBJECT=DataField_25
+				DataFieldName=&quot;1km Surface Reflectance Band 9&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_25
+			OBJECT=DataField_26
+				DataFieldName=&quot;1km Surface Reflectance Band 10&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_26
+			OBJECT=DataField_27
+				DataFieldName=&quot;1km Surface Reflectance Band 11&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_27
+			OBJECT=DataField_28
+				DataFieldName=&quot;1km Surface Reflectance Band 12&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_28
+			OBJECT=DataField_29
+				DataFieldName=&quot;1km Surface Reflectance Band 13&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_29
+			OBJECT=DataField_30
+				DataFieldName=&quot;1km Surface Reflectance Band 14&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_30
+			OBJECT=DataField_31
+				DataFieldName=&quot;1km Surface Reflectance Band 15&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_31
+			OBJECT=DataField_32
+				DataFieldName=&quot;1km Surface Reflectance Band 16&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_32
+			OBJECT=DataField_33
+				DataFieldName=&quot;BAND20&quot;
+				DataType=DFNT_UINT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_33
+			OBJECT=DataField_34
+				DataFieldName=&quot;1km Surface Reflectance Band 26&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_34
+			OBJECT=DataField_35
+				DataFieldName=&quot;BAND31&quot;
+				DataType=DFNT_UINT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_35
+			OBJECT=DataField_36
+				DataFieldName=&quot;BAND32&quot;
+				DataType=DFNT_UINT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_36
+			OBJECT=DataField_37
+				DataFieldName=&quot;BAND20ALBEDO&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_37
+			OBJECT=DataField_38
+				DataFieldName=&quot;250m Reflectance Band Quality&quot;
+				DataType=DFNT_UINT16
+				DimList=(&quot;250m Data Lines&quot;,&quot;250m Data Samples&quot;)
+			END_OBJECT=DataField_38
+			OBJECT=DataField_39
+				DataFieldName=&quot;500m Reflectance Band Quality&quot;
+				DataType=DFNT_UINT32
+				DimList=(&quot;500m Data Lines&quot;,&quot;500m Data Samples&quot;)
+			END_OBJECT=DataField_39
+			OBJECT=DataField_40
+				DataFieldName=&quot;1km Reflectance Band Quality&quot;
+				DataType=DFNT_UINT32
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_40
+			OBJECT=DataField_41
+				DataFieldName=&quot;1km b8-15 Reflectance Band Quality&quot;
+				DataType=DFNT_UINT32
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_41
+			OBJECT=DataField_42
+				DataFieldName=&quot;1km b16 Reflectance Band Quality&quot;
+				DataType=DFNT_UINT8
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_42
+			OBJECT=DataField_43
+				DataFieldName=&quot;1km Reflectance Data State QA&quot;
+				DataType=DFNT_UINT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_43
+			OBJECT=DataField_44
+				DataFieldName=&quot;1km Band 3 Path Radiance&quot;
+				DataType=DFNT_INT16
+				DimList=(&quot;1km Data Lines&quot;,&quot;1km Data Samples&quot;)
+			END_OBJECT=DataField_44
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=SWATH_1
+END_GROUP=SwathStructure
+GROUP=GridStructure
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Attribute name="HDFEOS_FractionalOffset_500m_Data_Lines_MODIS_SWATH_TYPE_L2" type="Float32">
+        <Value>0.5000000000</Value>
+    </Attribute>
+    <Attribute name="HDFEOS_FractionalOffset_500m_Data_Samples_MODIS_SWATH_TYPE_L2" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="HDFEOS_FractionalOffset_250m_Data_Lines_MODIS_SWATH_TYPE_L2" type="Float32">
+        <Value>0.5000000000</Value>
+    </Attribute>
+    <Attribute name="HDFEOS_FractionalOffset_250m_Data_Samples_MODIS_SWATH_TYPE_L2" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="Number_of_instrument_scans" type="String">
+        <Value>203</Value>
+    </Attribute>
+    <Attribute name="Number_of_scans_with_possible_solar_eclipse" type="String">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Percentages_of_pixels_in_each_State_QA_state" type="String">
+        <Value>
+	Internal snow mask:	27
+	Pan:	0
+	Adjacent to cloud:	0
+	MOD35 Snow or ice:	19
+	Internal fire mask:	0
+	Internal cloud mask:	42
+	No cirrus:	95
+	Small cirrus:	0
+	Average cirrus:	0
+	High cirrus:	5
+	Aerosol quality, climatology:	71
+	Aerosol quality, low:	22
+	Aerosol quality, average:	4
+	Aerosol quality, high:	3
+	Shallow ocean:	1
+	Land:	84
+	Coastlines, shorelines:	3
+	Shallow inland water:	1
+	Ephemeral water:	0
+	Deep inland water:	0
+	Continental ocean:	1
+	Deep ocean:	10
+	Cloud shadow:	0
+	Clear:	45
+	Cloudy:	51
+	Mixed (partly cloudy):	4
+	Cloud not set:	0
+</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi" type="String">
+        <Value>10.5067/MODIS/MYD09.006</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
+    <Attribute name="CoreMetadata_0" type="String">
+        <Value>
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = &quot;MYD09.A2019003.2040.006.2019005020913.hdf&quot;
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = &quot;2019-01-05T02:09:13.000Z&quot;
+    END_OBJECT             = PRODUCTIONDATETIME
+
+    OBJECT                 = DAYNIGHTFLAG
+      NUM_VAL              = 1
+      VALUE                = &quot;Day&quot;
+    END_OBJECT             = DAYNIGHTFLAG
+
+    OBJECT                 = REPROCESSINGACTUAL
+      NUM_VAL              = 1
+      VALUE                = &quot;reprocessed&quot;
+    END_OBJECT             = REPROCESSINGACTUAL
+
+    OBJECT                 = REPROCESSINGPLANNED
+      NUM_VAL              = 1
+      VALUE                = &quot;further update is anticipated&quot;
+    END_OBJECT             = REPROCESSINGPLANNED
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = MEASUREDPARAMETER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;1&quot;
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Always 'Passed'.&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=aqua for the product Science Quality status.&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 2
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;MODIS Atmos Corrected Surf Refl&quot;
+      END_OBJECT             = PARAMETERNAME
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+  END_GROUP              = MEASUREDPARAMETER
+
+  GROUP                  = ORBITCALCULATEDSPATIALDOMAIN
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2019-01-03&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;21:20:46.144634&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 88666
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 63.7083382082782
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+  END_GROUP              = ORBITCALCULATEDSPATIALDOMAIN
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = 6
+    END_OBJECT             = VERSIONID
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = &quot;MYD09&quot;
+    END_OBJECT             = SHORTNAME
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 75
+      VALUE                = (&quot;gdas1.PGrbF00.190103.18z&quot;, &quot;gdas1.PGrbF00.190104.00z&quot;, &quot;MYD02PCQKM.A2019003.2040.006.2019004170150.hdf&quot;, &quot;MYDPCHKMDS.A2019003.2040.006.2019004170148.hdf&quot;, &quot;MYDPC1KMDS.A2019003.2040.006.2019004170144.hdf&quot;, &quot;MYD03.A2019003.2040.006.2019004162253.hdf&quot;, &quot;
+          MYD35_L2.A2019003.2040.006.2019004163133.hdf&quot;)
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = SPATIALDOMAINCONTAINER
+
+    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER
+
+      GROUP                  = GPOLYGON
+
+        OBJECT                 = GPOLYGONCONTAINER
+          CLASS                = &quot;1&quot;
+
+          GROUP                  = GRINGPOINT
+            CLASS                = &quot;1&quot;
+
+            OBJECT                 = GRINGPOINTLONGITUDE
+              NUM_VAL              = 4
+              CLASS                = &quot;1&quot;
+              VALUE                = (-98.5237623615703, -122.850628653365, -131.876160780343, -100.731496143619)
+            END_OBJECT             = GRINGPOINTLONGITUDE
+
+            OBJECT                 = GRINGPOINTLATITUDE
+              NUM_VAL              = 4
+              CLASS                = &quot;1&quot;
+              VALUE                = (32.2896394803434, 28.8233206294747, 45.7674150696915, 50.568369947233)
+            END_OBJECT             = GRINGPOINTLATITUDE
+
+            OBJECT                 = GRINGPOINTSEQUENCENO
+              NUM_VAL              = 4
+              CLASS                = &quot;1&quot;
+              VALUE                = (1, 2, 3, 4)
+            END_OBJECT             = GRINGPOINTSEQUENCENO
+
+          END_GROUP              = GRINGPOINT
+
+          GROUP                  = GRING
+            CLASS                = &quot;1&quot;
+
+            OBJECT                 = EXCLUSIONGRINGFLAG
+              NUM_VAL              = 1
+              CLASS                = &quot;1&quot;
+              VALUE                = &quot;N&quot;
+            END_OBJECT             = EXCLUSIONGRINGFLAG
+
+          END_GROUP              = GRING
+
+        END_OBJECT             = GPOLYGONCONTAINER
+
+      END_GROUP              = GPOLYGON
+
+    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER
+
+  END_GROUP              = SPATIALDOMAINCONTAINER
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2019-01-03&quot;
+    END_OBJECT             = RANGEENDINGDATE
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;20:45:00.000000&quot;
+    END_OBJECT             = RANGEENDINGTIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2019-01-03&quot;
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;20:40:00.000000&quot;
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = &quot;6.3.16&quot;
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+  GROUP                  = ANCILLARYINPUTGRANULE
+
+    OBJECT                 = ANCILLARYINPUTGRANULECONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ANCILLARYINPUTPOINTER
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;MYD03.A2019003.2040.006.2019004162253.hdf&quot;
+      END_OBJECT             = ANCILLARYINPUTPOINTER
+
+      OBJECT                 = ANCILLARYINPUTTYPE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Geolocation&quot;
+      END_OBJECT             = ANCILLARYINPUTTYPE
+
+    END_OBJECT             = ANCILLARYINPUTGRANULECONTAINER
+
+  END_GROUP              = ANCILLARYINPUTGRANULE
+
+  GROUP                  = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+    OBJECT                 = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ASSOCIATEDPLATFORMSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Aqua&quot;
+      END_OBJECT             = ASSOCIATEDPLATFORMSHORTNAME
+
+      OBJECT                 = ASSOCIATEDINSTRUMENTSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;MODIS&quot;
+      END_OBJECT             = ASSOCIATEDINSTRUMENTSHORTNAME
+
+      OBJECT                 = ASSOCIATEDSENSORSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;MODIS&quot;
+      END_OBJECT             = ASSOCIATEDSENSORSHORTNAME
+
+    END_OBJECT             = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+
+  END_GROUP              = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+  GROUP                  = ADDITIONALATTRIBUTES
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTGOODQUALITY&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;72&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;2&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTOTHERQUALITY&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;2&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;4&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;3&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTNOTPRODUCEDCLOUD&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;3&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;4&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTNOTPRODUCEDOTHER&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;4&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;5&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT250MBAND1&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;5&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;6&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT250MBAND2&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;6&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;7&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT500MBAND1&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;7&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;8&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT500MBAND2&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;8&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;9&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT500MBAND3&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;9&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;10&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT500MBAND4&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;10&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;11&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;11&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT500MBAND5&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;11&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;12&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;12&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT500MBAND6&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;12&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;13&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;13&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT500MBAND7&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;13&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;13&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;14&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;14&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT1KMBAND1&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;14&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;14&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;15&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;15&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT1KMBAND2&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;15&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;15&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;16&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;16&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT1KMBAND3&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;16&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;16&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;17&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;17&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT1KMBAND4&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;17&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;17&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;18&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;18&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT1KMBAND5&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;18&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;18&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;19&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;19&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT1KMBAND6&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;19&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;19&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;20&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;20&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;QAPERCENTPOOROUTPUT1KMBAND7&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;20&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;20&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;21&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;21&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;GRANULENUMBER&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;21&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;21&quot;
+          VALUE                = &quot;250&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;23&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;23&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;identifier_product_doi&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;23&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;23&quot;
+          VALUE                = &quot;10.5067/MODIS/MYD09.006&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;24&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;24&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;identifier_product_doi_authority&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;24&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;24&quot;
+          VALUE                = &quot;http://dx.doi.org&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;22&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;22&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;PROCESSVERSION&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;22&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;22&quot;
+          VALUE                = &quot;6.3.16&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+  END_GROUP              = ADDITIONALATTRIBUTES
+
+  OBJECT                 = LOCALVERSIONID
+    NUM_VAL              = 1
+    VALUE                = &quot;6.3.16&quot;
+  END_OBJECT             = LOCALVERSIONID
+
+END_GROUP              = INVENTORYMETADATA
+
+END
+</Value>
+    </Attribute>
+    <Attribute name="ArchiveMetadata_0" type="String">
+        <Value>
+GROUP                  = ARCHIVEDMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  OBJECT                 = ALGORITHMPACKAGEACCEPTANCEDATE
+    NUM_VAL              = 1
+    VALUE                = &quot;1998-01-01&quot;
+  END_OBJECT             = ALGORITHMPACKAGEACCEPTANCEDATE
+
+  OBJECT                 = ALGORITHMPACKAGEMATURITYCODE
+    NUM_VAL              = 1
+    VALUE                = &quot;pre-launch&quot;
+  END_OBJECT             = ALGORITHMPACKAGEMATURITYCODE
+
+  OBJECT                 = ALGORITHMPACKAGENAME
+    NUM_VAL              = 1
+    VALUE                = &quot;MOD09 L2&quot;
+  END_OBJECT             = ALGORITHMPACKAGENAME
+
+  OBJECT                 = ALGORITHMPACKAGEVERSION
+    NUM_VAL              = 1
+    VALUE                = &quot;version 4&quot;
+  END_OBJECT             = ALGORITHMPACKAGEVERSION
+
+  OBJECT                 = SYSTEMFILENAME
+    NUM_VAL              = 75
+    VALUE                = (&quot;gdas1.PGrbF00.190103.18z&quot;, &quot;gdas1.PGrbF00.190104.00z&quot;, &quot;MYD02PCQKM.A2019003.2040.006.2019004170150.hdf&quot;, &quot;MYDPCHKMDS.A2019003.2040.006.2019004170148.hdf&quot;, &quot;MYDPC1KMDS.A2019003.2040.006.2019004170144.hdf&quot;, &quot;MYD03.A2019003.2040.006.2019004162253.hdf&quot;, &quot;
+        MYD35_L2.A2019003.2040.006.2019004163133.hdf&quot;)
+  END_OBJECT             = SYSTEMFILENAME
+
+  OBJECT                 = ANCILLARYSYSTEMFILENAME
+    NUM_VAL              = 75
+    VALUE                = (&quot;MYD03.A2019003.2040.006.2019004162253.hdf&quot;)
+  END_OBJECT             = ANCILLARYSYSTEMFILENAME
+
+  OBJECT                 = LONGNAME
+    NUM_VAL              = 1
+    VALUE                = &quot;MODIS/Aqua Atmospherically Corrected Surface Reflectance 5-Min L2 Swath 250m, 500m, 1km&quot;
+  END_OBJECT             = LONGNAME
+
+  OBJECT                 = PROCESSINGCENTER
+    NUM_VAL              = 1
+    VALUE                = &quot;MODAPS&quot;
+  END_OBJECT             = PROCESSINGCENTER
+
+  OBJECT                 = SPSOPARAMETERS
+    NUM_VAL              = 1
+    VALUE                = &quot;2015&quot;
+  END_OBJECT             = SPSOPARAMETERS
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE1KMBAND1
+    NUM_VAL              = 16
+    VALUE                = (99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE1KMBAND1
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE1KMBAND2
+    NUM_VAL              = 16
+    VALUE                = (95, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 5, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE1KMBAND2
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE1KMBAND3
+    NUM_VAL              = 16
+    VALUE                = (99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE1KMBAND3
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE1KMBAND4
+    NUM_VAL              = 16
+    VALUE                = (100, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE1KMBAND4
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE1KMBAND5
+    NUM_VAL              = 16
+    VALUE                = (98, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 2, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE1KMBAND5
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE1KMBAND6
+    NUM_VAL              = 16
+    VALUE                = (60, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 40, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE1KMBAND6
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE1KMBAND7
+    NUM_VAL              = 16
+    VALUE                = (100, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE1KMBAND7
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE250MBAND1
+    NUM_VAL              = 16
+    VALUE                = (98, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 2, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE250MBAND1
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE250MBAND2
+    NUM_VAL              = 16
+    VALUE                = (95, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 5, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE250MBAND2
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE500MBAND1
+    NUM_VAL              = 16
+    VALUE                = (99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE500MBAND1
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE500MBAND2
+    NUM_VAL              = 16
+    VALUE                = (95, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 5, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE500MBAND2
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE500MBAND3
+    NUM_VAL              = 16
+    VALUE                = (99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE500MBAND3
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE500MBAND4
+    NUM_VAL              = 16
+    VALUE                = (99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE500MBAND4
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE500MBAND5
+    NUM_VAL              = 16
+    VALUE                = (93, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 2, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE500MBAND5
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE500MBAND6
+    NUM_VAL              = 16
+    VALUE                = (25, 0, 0, 0, 0, 0, 0, 15, 78, 0, 0, 0, 0, 0, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE500MBAND6
+
+  OBJECT                 = QUALITYCLASSPERCENTAGE500MBAND7
+    NUM_VAL              = 16
+    VALUE                = (100, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 0, 0)
+  END_OBJECT             = QUALITYCLASSPERCENTAGE500MBAND7
+
+  OBJECT                 = ADJACENCYCORRECTIONATTEMPTED
+    NUM_VAL              = 1
+    VALUE                = &quot;no&quot;
+  END_OBJECT             = ADJACENCYCORRECTIONATTEMPTED
+
+  OBJECT                 = ATMOSPHERICCORRECTIONATTEMPTED
+    NUM_VAL              = 1
+    VALUE                = &quot;yes&quot;
+  END_OBJECT             = ATMOSPHERICCORRECTIONATTEMPTED
+
+  OBJECT                 = NORTHBOUNDINGCOORDINATE
+    NUM_VAL              = 1
+    VALUE                = 50.2701833884673
+  END_OBJECT             = NORTHBOUNDINGCOORDINATE
+
+  OBJECT                 = SOUTHBOUNDINGCOORDINATE
+    NUM_VAL              = 1
+    VALUE                = 28.8376746231501
+  END_OBJECT             = SOUTHBOUNDINGCOORDINATE
+
+  OBJECT                 = EASTBOUNDINGCOORDINATE
+    NUM_VAL              = 1
+    VALUE                = -98.8325473898497
+  END_OBJECT             = EASTBOUNDINGCOORDINATE
+
+  OBJECT                 = WESTBOUNDINGCOORDINATE
+    NUM_VAL              = 1
+    VALUE                = -131.666649673637
+  END_OBJECT             = WESTBOUNDINGCOORDINATE
+
+  OBJECT                 = BRDFCORRECTIONATTEMPTED
+    NUM_VAL              = 1
+    VALUE                = &quot;no&quot;
+  END_OBJECT             = BRDFCORRECTIONATTEMPTED
+
+  OBJECT                 = INSTRUMENTSCANSPROCESSED
+    NUM_VAL              = 1
+    VALUE                = 203
+  END_OBJECT             = INSTRUMENTSCANSPROCESSED
+
+  OBJECT                 = PERCENTNOTSEA
+    NUM_VAL              = 1
+    VALUE                = 68
+  END_OBJECT             = PERCENTNOTSEA
+
+  OBJECT                 = SEAPROCESSED
+    NUM_VAL              = 1
+    VALUE                = &quot;yes&quot;
+  END_OBJECT             = SEAPROCESSED
+
+  OBJECT                 = SCIABNORM
+    NUM_VAL              = 1
+    VALUE                = 1
+  END_OBJECT             = SCIABNORM
+
+  OBJECT                 = SCISTATE
+    NUM_VAL              = 1
+    VALUE                = 1
+  END_OBJECT             = SCISTATE
+
+  OBJECT                 = NUMBEROFHIGHSOLARZENITHPIXELS1KM
+    NUM_VAL              = 1
+    VALUE                = 0
+  END_OBJECT             = NUMBEROFHIGHSOLARZENITHPIXELS1KM
+
+  OBJECT                 = AEROSOLQUANTITYCLMH
+    NUM_VAL              = 4
+    VALUE                = (71, 22, 4, 3)
+  END_OBJECT             = AEROSOLQUANTITYCLMH
+
+  OBJECT                 = DESCRREVISION
+    NUM_VAL              = 1
+    VALUE                = &quot;6.0&quot;
+  END_OBJECT             = DESCRREVISION
+
+  OBJECT                 = PRODUCTIONHISTORY
+    NUM_VAL              = 1
+    VALUE                = &quot;PGE11:6.3.16;PGE128:6.0.17;PGE02:6.1.37.25;PGE01:6.0.27&quot;
+  END_OBJECT             = PRODUCTIONHISTORY
+
+  OBJECT                 = PROCESSINGENVIRONMENT
+    NUM_VAL              = 1
+    VALUE                = &quot;Linux minion7043 3.10.0-862.11.6.el7.x86_64 #1 SMP Tue Aug 14 21:49:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux&quot;
+  END_OBJECT             = PROCESSINGENVIRONMENT
+
+END_GROUP              = ARCHIVEDMETADATA
+
+END
+</Value>
+    </Attribute>
+    <Group name="MODIS_SWATH_TYPE_L2">
+        <Group name="Geolocation_Fields">
+            <Float32 name="Latitude">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Latitude</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float32">
+                    <Value>-90.00000000</Value>
+                    <Value>90.00000000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>0.000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>1.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>117</Value>
+                </Attribute>
+            </Float32>
+            <Float32 name="Longitude">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>Longitude</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Float32">
+                    <Value>-180.0000000</Value>
+                    <Value>180.0000000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Float32">
+                    <Value>0.000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>1.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>120</Value>
+                </Attribute>
+            </Float32>
+        </Group>
+        <Group name="Data_Fields">
+            <Int16 name="_1km_Atmospheric_Optical_Depth_Band_1">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Atmospheric Optical Depth Band 1</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>unitless</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>60</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100000.00000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="Note" type="String">
+                    <Value>SDS actually contains chosen model residual values, scaled by 100000</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>6</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Atmospheric_Optical_Depth_Band_3">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Atmospheric Optical Depth Band 3</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>unitless</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>60</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>1000.0000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>9</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Atmospheric_Optical_Depth_Band_8">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Atmospheric Optical Depth Band 8</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>unitless</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>1000.0000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="Note" type="String">
+                    <Value>SDS actually contains angstrom exponent values, scaled by 1000</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>12</Value>
+                </Attribute>
+            </Int16>
+            <Byte name="_1km_Atmospheric_Optical_Depth_Model">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Atmospheric Optical Depth Model</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>unitless</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Byte">
+                    <Value>1</Value>
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>1.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="Model_values" type="String">
+                    <Value>0 = no AOTR, 1 = SMKL, 2 = SMKH, 3 = DUST, 4 = URBANPOLU, 5 = URBANCLEAN</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>15</Value>
+                </Attribute>
+            </Byte>
+            <UInt16 name="_1km_water_vapor">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km water_vapor</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>g/cm^2</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100.00000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>18</Value>
+                </Attribute>
+            </UInt16>
+            <UInt16 name="_1km_Atmospheric_Optical_Depth_Band_QA">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="QA_index" type="String">
+                    <Value>
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	15     Pixel has interpolated TR, PR or SA data;
+	       1 -- yes
+	       0 -- no
+	14     AOT has climatological values;
+	       1 -- yes
+	       0 -- no
+	13     criteria used for aerosol retrieval; 
+	       1 -- criterion 2
+	       0 -- criterion 1
+	12     pan flag; 
+	       1 -- salt pan
+	       0 -- no salt pan
+	10-11  cirrus; 
+	       00 -- none
+	       01 -- small
+	       10 -- average
+	       11 -- high
+	9      pixel is adjacent to cloud;
+	       1 -- yes
+	       0 -- no
+	8      cloud shadow;
+	       1 -- yes
+	       0 -- no
+	7      dust; 
+	       1 -- yes
+	       0 -- no
+	6      sun glint;
+	       1 -- yes
+	       0 -- no
+	5      fire;
+	       1 -- yes
+	       0 -- no
+	4      snow;
+	       1 -- yes
+	       0 -- no
+	3      low clouds;
+	       1 -- yes
+	       0 -- no
+	2      high clouds;
+	       1 -- yes
+	       0 -- no
+	1      clear;
+	       1 -- yes
+	       0 -- no
+	0      cloudy;
+	       1 -- yes
+	       0 -- no
+</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Atmospheric Optical Depth Band QA</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bitmap</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>65535</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>21</Value>
+                </Attribute>
+            </UInt16>
+            <Byte name="_1km_Atmospheric_Optical_Depth_Band_CM">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="QA_index" type="String">
+                    <Value>
+	Not bitmapped, but with the following values:
+	0      inital value;
+	1      None of the 500m pixels that correspond to this 1km pixel 
+	         has data that reaches either criteria for containing aerosols;
+	2      Pixel is over water;
+	3      One or more of the retrieved aerosol values has saturated
+	         (and then all are set to a fill value);
+	4      Pixel is cloudy or mixed or has a high band 26 value;
+	5      Pixel had been flagged as water, but also had positive NDVI;
+	6      Pixel is flagged as water and tests clear;
+	7      Pixel is flagged as water and tests for turbidity;
+	8      Snow (set in aot_filter());
+	9      Bad geolocation, or high solar zenith;
+	10     Snow, or sunglint, or fire;
+	11     Bad 500m data, no aerosol retrieval;
+	12     Subpixel cloud (set in aot_filter());
+	13     Aerosol retrieval anomalies;
+	14     Possible salt-pan;
+	15     Desert;
+	16     Aerosol retrieval rejection (from global_AOTR_rejection_mask.hdf);
+	17     Anomalous atmospheric correction in 500m cloud test;
+	18     AOT set to zero in routine check_correction();
+	19     Adjacent to cloud;
+	20     Anomalous atmospheric correction in 500m cloud test (b1/b3 over 2.0);
+	21     Flagged as clear in third pass of cloudmasking;
+	22     Flagged as cloudy in third pass of cloudmasking;
+</Value>
+                </Attribute>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Atmospheric Optical Depth Band CM</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bitmap</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Byte">
+                    <Value>0</Value>
+                    <Value>19</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>24</Value>
+                </Attribute>
+            </Byte>
+            <Int16 name="_250m_Surface_Reflectance_Band_1">
+                <Dim name="/_250m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_250m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m Surface Reflectance Band 1</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>250m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>27</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_250m_Surface_Reflectance_Band_2">
+                <Dim name="/_250m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_250m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m Surface Reflectance Band 2</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>250m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>30</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_500m_Surface_Reflectance_Band_1">
+                <Dim name="/_500m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_500m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>500m Surface Reflectance Band 1</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>500m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>33</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_500m_Surface_Reflectance_Band_2">
+                <Dim name="/_500m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_500m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>500m Surface Reflectance Band 2</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>500m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>36</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_500m_Surface_Reflectance_Band_3">
+                <Dim name="/_500m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_500m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>500m Surface Reflectance Band 3</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>500m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>39</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_500m_Surface_Reflectance_Band_4">
+                <Dim name="/_500m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_500m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>500m Surface Reflectance Band 4</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>500m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>42</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_500m_Surface_Reflectance_Band_5">
+                <Dim name="/_500m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_500m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>500m Surface Reflectance Band 5</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>500m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>45</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_500m_Surface_Reflectance_Band_6">
+                <Dim name="/_500m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_500m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>500m Surface Reflectance Band 6</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>500m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>48</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_500m_Surface_Reflectance_Band_7">
+                <Dim name="/_500m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_500m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>500m Surface Reflectance Band 7</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>500m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>51</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_1">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 1</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>54</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_2">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 2</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>57</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_3">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 3</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>60</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_4">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 4</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>63</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_5">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 5</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>66</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_6">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 6</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>69</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_7">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 7</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>72</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_8">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 8</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>75</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_9">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 9</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>78</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_10">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 10</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>81</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_11">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 11</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>84</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_12">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 12</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>87</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_13">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 13</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>90</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_14">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 14</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>93</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_15">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 15</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>96</Value>
+                </Attribute>
+            </Int16>
+            <Int16 name="_1km_Surface_Reflectance_Band_16">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 16</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>99</Value>
+                </Attribute>
+            </Int16>
+            <UInt16 name="BAND20">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>BAND20</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees K</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>33300</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100.00000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>102</Value>
+                </Attribute>
+            </UInt16>
+            <Int16 name="_1km_Surface_Reflectance_Band_26">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Surface Reflectance Band 26</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>-100</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>105</Value>
+                </Attribute>
+            </Int16>
+            <UInt16 name="BAND31">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>BAND31</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees K</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>37800</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100.00000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>108</Value>
+                </Attribute>
+            </UInt16>
+            <UInt16 name="BAND32">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>BAND32</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>degrees K</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>41900</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>0</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>100.00000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>111</Value>
+                </Attribute>
+            </UInt16>
+            <Int16 name="BAND20ALBEDO">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>BAND20ALBEDO</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>reflectance</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>5000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>114</Value>
+                </Attribute>
+            </Int16>
+            <UInt16 name="_250m_Reflectance_Band_Quality">
+                <Dim name="/_250m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_250m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>250m Reflectance Band Quality</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bitmap</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>250m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>16383</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>65535</Value>
+                </Attribute>
+                <Attribute name="QA_index" type="String">
+                    <Value>
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	14-15  spare (unused); 
+	13     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	12     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	8-11   band 2 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith &gt;= 86 degrees
+	       1010 -- solar zenith &gt;= 85 and &lt; 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	4-7    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	2-3    spare (unused);
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>123</Value>
+                </Attribute>
+            </UInt16>
+            <UInt32 name="_500m_Reflectance_Band_Quality">
+                <Dim name="/_500m_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_500m_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>500m Reflectance Band Quality</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bitmap</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>500m</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt32">
+                    <Value>0</Value>
+                    <Value>4294967295</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt32">
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="QA_index" type="String">
+                    <Value>
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	31     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	30     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	26-29  band 7 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith &gt;= 86 degrees
+	       1010 -- solar zenith &gt;= 85 and &lt; 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	22-25  band 6 data quality four bit range;
+	       SAME AS ABOVE
+	18-21  band 5 data quality four bit range;
+	       SAME AS ABOVE
+	14-17  band 4 data quality four bit range;
+	       SAME AS ABOVE
+	10-13  band 3 data quality four bit range;
+	       SAME AS ABOVE
+	6-9    band 2 data quality four bit range;
+	       SAME AS ABOVE
+	2-5    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>126</Value>
+                </Attribute>
+            </UInt32>
+            <UInt32 name="_1km_Reflectance_Band_Quality">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Reflectance Band Quality</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bitmap</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt32">
+                    <Value>0</Value>
+                    <Value>4294967295</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt32">
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="QA_index" type="String">
+                    <Value>
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	31     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	30     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	26-29  band 7 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith &gt;= 86 degrees
+	       1010 -- solar zenith &gt;= 85 and &lt; 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	22-25  band 6 data quality four bit range;
+	       SAME AS ABOVE
+	18-21  band 5 data quality four bit range;
+	       SAME AS ABOVE
+	14-17  band 4 data quality four bit range;
+	       SAME AS ABOVE
+	10-13  band 3 data quality four bit range;
+	       SAME AS ABOVE
+	6-9    band 2 data quality four bit range;
+	       SAME AS ABOVE
+	2-5    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>129</Value>
+                </Attribute>
+            </UInt32>
+            <UInt32 name="_1km_b8_15_Reflectance_Band_Quality">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km b8-15 Reflectance Band Quality</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bitmap</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt32">
+                    <Value>0</Value>
+                    <Value>4294967295</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt32">
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="QA_index" type="String">
+                    <Value>
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	28-31  band 15 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith &gt;= 86 degrees
+	       1010 -- solar zenith &gt;= 85 and &lt; 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	24-27  band 14 data quality four bit range;
+	       SAME AS ABOVE
+	20-23  band 13 data quality four bit range;
+	       SAME AS ABOVE
+	16-19  band 12 data quality four bit range;
+	       SAME AS ABOVE
+	12-15  band 11 data quality four bit range;
+	       SAME AS ABOVE
+	8-11   band 10 data quality four bit range;
+	       SAME AS ABOVE
+	4-7    band 9 data quality four bit range;
+	       SAME AS ABOVE
+	0-3    band 8 data quality four bit range;
+	       SAME AS ABOVE
+
+</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>132</Value>
+                </Attribute>
+            </UInt32>
+            <Byte name="_1km_b16_Reflectance_Band_Quality">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km b16 Reflectance Band Quality</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bitmap</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Byte">
+                    <Value>0</Value>
+                    <Value>255</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Byte">
+                    <Value>3</Value>
+                </Attribute>
+                <Attribute name="QA_index" type="String">
+                    <Value>
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	4-7    band 16 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith &gt;= 86 degrees
+	       1010 -- solar zenith &gt;= 85 and &lt; 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	0-3    spare (unused); 
+
+</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>135</Value>
+                </Attribute>
+            </Byte>
+            <UInt16 name="_1km_Reflectance_Data_State_QA">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Reflectance Data State QA</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>bitmap</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="UInt16">
+                    <Value>0</Value>
+                    <Value>49151</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="UInt16">
+                    <Value>65535</Value>
+                </Attribute>
+                <Attribute name="QA_index" type="String">
+                    <Value>
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	15     internal snow algorithm flag; 
+	       1 -- yes, 27.13%
+	       0 -- no, 72.87%
+	14     Salt pan;
+	       1 -- yes, 0.01%
+	       0 -- no, 99.99%
+	13     Pixel is adjacent to cloud;
+	       1 -- yes, 0.00%
+	       0 -- no, 100.00%
+	12     MOD35 snow/ice flag;
+	       1 -- yes, 18.91%
+	       0 -- no, 81.09%
+	11     internal fire algorithm flag;
+	       1 -- fire, 0.00%
+	       0 -- no fire, 100.00%
+	10     internal cloud algorithm flag;
+	       1 -- cloud, 42.31%
+	       0 -- no cloud, 57.69%
+	8-9    cirrus detected;
+	       00 -- none, 94.70%
+	       01 -- small, 0.22%
+	       10 -- average, 0.31%
+	       11 -- high, 4.76%
+	6-7    aerosol quantity;
+	       00 -- climatology, 70.51%
+	       01 -- low, 22.13%
+	       10 -- average, 4.16%
+	       11 -- high, 3.20%
+	3-5    land/water flag;
+	       000 -- shallow ocean, 1.27%
+	       001 -- land, 84.06%
+	       010 -- ocean coastlines and lake shorelines, 3.28%
+	       011 -- shallow inland water, 0.84%
+	       100 -- ephemeral water, 0.00%
+	       101 -- deep inland water, 0.00%
+	       110 -- continental/moderate ocean, 0.58%
+	       111 -- deep ocean, 9.96%
+	2      cloud shadow;
+	       1 -- yes, 0.00%
+	       0 -- no, 100.00%
+	0-1    cloud state;
+	       00 -- clear, 44.55%
+	       01 -- cloudy, 51.16%
+	       10 -- mixed, 4.29%
+	       11 -- not set, assumed clear, 0.00%
+</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>138</Value>
+                </Attribute>
+            </UInt16>
+            <Int16 name="_1km_Band_3_Path_Radiance">
+                <Dim name="/_1km_Data_Lines_MODIS_SWATH_TYPE_L2"/>
+                <Dim name="/_1km_Data_Samples_MODIS_SWATH_TYPE_L2"/>
+                <Attribute name="long_name" type="String">
+                    <Value>1km Band 3 Path Radiance</Value>
+                </Attribute>
+                <Attribute name="units" type="String">
+                    <Value>unitless</Value>
+                </Attribute>
+                <Attribute name="Nadir_Data_Resolution" type="String">
+                    <Value>1km</Value>
+                </Attribute>
+                <Attribute name="valid_range" type="Int16">
+                    <Value>0</Value>
+                    <Value>16000</Value>
+                </Attribute>
+                <Attribute name="_FillValue" type="Int16">
+                    <Value>-28672</Value>
+                </Attribute>
+                <Attribute name="scale_factor" type="Float64">
+                    <Value>10000.000000000000</Value>
+                </Attribute>
+                <Attribute name="scale_factor_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="add_offset_err" type="Float64">
+                    <Value>0.0000000000000000</Value>
+                </Attribute>
+                <Attribute name="calibrated_nt" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>141</Value>
+                </Attribute>
+            </Int16>
+        </Group>
+        <Group name="Swath_Attributes"/>
+    </Group>
+</Dataset>

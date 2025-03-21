@@ -48,6 +48,10 @@ static const bool PRINT_CONSTRAINTS = false;
 using namespace libdap;
 using namespace std;
 
+#define MODULE "agg_util"
+#define prolog string("ArrayAggregationBase::").append(__func__).append("() - ")
+
+
 namespace agg_util {
 ArrayAggregationBase::ArrayAggregationBase(const libdap::Array& proto, AMDList aggMembers, unique_ptr<ArrayGetterInterface> arrayGetter) :
     Array(proto), _pSubArrayProto(dynamic_cast<Array*>(const_cast<Array&>(proto).ptr_duplicate())),
@@ -96,8 +100,7 @@ ArrayAggregationBase::ptr_duplicate()
 // will still work.
 bool ArrayAggregationBase::read()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ArrayAggregationBase::read", "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     BESDEBUG_FUNC(DEBUG_CHANNEL, " function entered..." << endl);
 

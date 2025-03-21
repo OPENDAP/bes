@@ -191,10 +191,7 @@ struct ContextCleanup {
  */
 void W10nJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-#ifndef NDEBUG
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("W10nJsonTransmitter::send_data", dhi.data[REQUEST_ID]);
-#endif
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timing", &dhi);
 
     BESDEBUG(W10N_DEBUG_KEY, "W10nJsonTransmitter::send_data() - BEGIN." << endl);
 
@@ -264,10 +261,7 @@ void W10nJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterf
  */
 void W10nJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-#ifndef NDEBUG
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("W10nJsonTransmitter::send_metadata", dhi.data[REQUEST_ID]);
-#endif
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timing", &dhi);
 
     ContextCleanup cleanup;
 

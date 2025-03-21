@@ -506,13 +506,21 @@ read_objects( D4Group * d4_grp, hid_t pid, const string &varname, const string &
 
 void array_add_dimensions_dimscale(HDF5Array *ar){
 
-    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-        if (dt_inst.dimnames[dim_index].empty() == false)
-            ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
-        else
+    if (dt_inst.dimnames.empty() == true) {
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
             ar->append_dim_ll(dt_inst.size[dim_index]);
     }
-    dt_inst.dimnames.clear();
+    else { 
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+            if (dt_inst.dimnames[dim_index].empty() == false)
+                ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
+            else
+                ar->append_dim_ll(dt_inst.size[dim_index]);
+        }
+    }
+
+    if (dt_inst.dimnames.empty() == false)
+        dt_inst.dimnames.clear();
 
 }
 
@@ -3291,8 +3299,15 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     // set number of elements and variable name values.
     // This essentially stores in the struct.
     ar_index->set_varpath(var_path);
-    if (dimnames.empty()==false)  
-        array_add_dimensions_dimscale(ar_index);
+    if (dimnames.empty()==false) { 
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+            if (dimnames[dim_index].empty() == false)
+                ar_index->append_dim_ll(dt_inst.size[dim_index], dimnames[dim_index]);
+            else
+                ar_index->append_dim_ll(dt_inst.size[dim_index]);
+        }
+ 
+    }
     else {
         for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
             ar_index->append_dim_ll(dt_inst.size[dim_index]);
