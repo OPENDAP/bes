@@ -10,6 +10,7 @@
 /HttpCacheTest
 /NgapCredentialsTest
 /awsv4_test
+/AWS_SDK_Test
 /bes_ngap_s3_creds.conf
 /cache
 /unused/*

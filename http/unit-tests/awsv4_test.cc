@@ -40,20 +40,20 @@ namespace http {
 class awsv4_test : public CppUnit::TestFixture {
 private:
     string cm_config;
-    time_t request_time;
+    time_t request_time = 1440938160; // This is "2015 08 30 T 12 36 00Z".
     string aws_key_id;
     string aws_secret_key;
     string region;
     string serviceName;
 
-    string fileToString(const string &fn) {
+    static string fileToString(const string &fn) {
         ifstream is;
         is.open(fn.c_str(), ios::binary);
         if (!is || is.eof()) return "";
 
         // get length of file:
         is.seekg(0, ios::end);
-        int length = is.tellg();
+        const int length = (int)is.tellg();
 
         // back to start
         is.seekg(0, ios::beg);
@@ -66,7 +66,7 @@ private:
         is.close();
         buffer[length] = '\0';
 
-        return string(buffer.data());
+        return {buffer.data()};
     }
 
 public:
