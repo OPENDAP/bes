@@ -62,8 +62,8 @@ public:
     }
 
     static void get_s3_creds(string &id, string &secret) {
-        id = getenv("CMAC_ID");
-        secret = getenv("CMAC_ACCESS_KEY");
+        id = getenv("CMAC_ID") ? getenv("CMAC_ID"): "";
+        secret = getenv("CMAC_ACCESS_KEY")  ? getenv("CMAC_ACCESS_KEY"): "";
         CPPUNIT_ASSERT_MESSAGE("Neither the AWS ID nor Secret can be empty for these tests.",
                                !(id.empty() || secret.empty()));
     }
