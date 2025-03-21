@@ -3,7 +3,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
-LIBADD = ../.libs/libbes_aws.a $(AWS_SDK_LIBS) $(BES_HTTP_LIB)
+LIBADD = ../.libs/libbes_aws.a $(AWS_SDK_LIBS) $(BES_HTTP_LIB) $(BES_DISPATCH_LIB)
 
 # $(BES_DISPATCH_LIB)
 
