@@ -49,6 +49,7 @@
 
 using namespace std;
 
+#define MODULE "curl"
 #define prolog std::string("# CurlUtilsTest::").append(__func__).append("() - ")
 
 namespace http {
@@ -658,8 +659,8 @@ public:
             BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
 
             try {
-                BESStopWatch sw;
-                sw.start(prolog);
+                BES_STOPWATCH_START(MODULE, prolog + "Timing");
+
                 auto redirect_url = curl::get_redirect_url(source_url);
                 CPPUNIT_FAIL("The call to curl::get_redirect_url() should have thrown a "
                              "BESSyntaxUserError!");
@@ -720,8 +721,7 @@ public:
             {
                 // We warm up the test by making a first request - this always takes much longer than any
                 // subsequent request. Like 3,303,337 us for first and vs 641,921 us for second.
-                BESStopWatch sw;
-                DBG(sw.start("WARMUP - CurlUtilsTest calling curl::retrieve_effective_url()"));
+                BES_STOPWATCH_START(MODULE, prolog + "WARMUP - CurlUtilsTest calling curl::retrieve_effective_url()");
                 effective_url = curl::get_redirect_url(source_url);
                 DBG(cerr << prolog << "   effective_url: " << effective_url->str() << "\n");
                 // does the effective_url start with the baseline??
@@ -730,16 +730,15 @@ public:
             unsigned int reps = 2;
             for (unsigned int i = 0; i < reps; i++) {
                 {
-                    BESStopWatch sw;
-                    DBG(sw.start("CurlUtilsTest calling curl::retrieve_effective_url() - " + to_string(i)));
+                    BES_STOPWATCH_START(MODULE, prolog + "Calling curl::retrieve_effective_url(), rep: " + to_string(i));
+
                     effective_url = curl::get_redirect_url(source_url);
                     DBG(cerr << prolog << "   effective_url: " << effective_url->str() << "\n");
                     // does the effective_url start with the baseline??
                     CPPUNIT_ASSERT(effective_url->str().rfind(baseline, 0) == 0);
                 }
                 {
-                    BESStopWatch sw;
-                    DBG(sw.start("CurlUtilsTest calling curl::get_redirect_url() - " + to_string(i)));
+                    BES_STOPWATCH_START(MODULE, prolog + "Calling curl::get_redirect_url(), rep: " + to_string(i));
                     redirect_url = curl::get_redirect_url(source_url);
                     DBG(cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
                     // does the redirect_url_str start with the baseline??

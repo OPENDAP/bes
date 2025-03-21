@@ -7,6 +7,7 @@ m4_include([../../common/handler_tests_macros.m4])
 dnl - writer - h4 tests ------------------------------------------
 
 # ./../build_dmrpp_h4/build_dmrpp_h4 -f hdf4_build_dmrpp_nasa/vg_hl_test.hdf -r hdf4_build_dmrpp_nasa/vg_hl_test.hdf.dmr
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/AIRS.2002.08.31.L1B.Cal_Subset.v5.0.16.0.G07206065329.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/3B42.20180802.03.7.HDF])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/AMSR_E_L2_Land_V09_200206190615_A.hdf])
@@ -20,3 +21,4 @@ AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/MOD10A1F.A2024025.h27v04.061.20240
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/MOD11A1.A2024025.h10v06.061.2024028004317.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/MOD13Q1.A2023353.h17v06.061.2024005131728.hdf])
 AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/MOD29.A2000166.0255.005.2008189120917.hdf])
+AT_BUILD_DMRPP_H4_TEST([hdf4_build_dmrpp_nasa/MYD09.A2019003.2040.006.2019005020913.hdf])

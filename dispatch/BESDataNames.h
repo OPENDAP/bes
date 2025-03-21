@@ -46,8 +46,10 @@
 /// Information is built up describing the command and then dumped to the bes.log
 #define LOG_INFO "log_info"
 
-#define REQUEST_ID "reqID"
-
+#define REQUEST_ID_KEY "reqID"
+#define REQUEST_UUID_KEY "reqUUID"
+#define BES_CLIENT_ID_KEY "besClientId"
+#define BES_CLIENT_CMD_COUNT_KEY "clientCmdCount"
 /// The IP and port numbers from which the BES read this information.
 #define REQUEST_FROM "from"
 

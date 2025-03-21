@@ -91,6 +91,9 @@ extern "C"
 #include "BESStopWatch.h"
 #include "BESError.h"
 
+#define MODULE "cmdln"
+#define prolog string("CmdClient::").append(__func__).append("() - ")
+
 CmdClient::~CmdClient()
 {
     if (_strmCreated && _strm) {
@@ -269,16 +272,12 @@ bool CmdClient::executeCommand(const string &cmd, int repeat)
     else {
         if (repeat < 1) repeat = 1;
         for (int i = 0; i < repeat && !do_exit; i++) {
-            BESDEBUG("cmdln", "cmdclient sending " << cmd << endl);
-
-            BESStopWatch sw;
-			if( BESDebug::IsSet(TIMING_LOG_KEY) )
-				sw.start("CmdClient::executeCommand","command_line_client");
+            BESDEBUG(MODULE, prolog << "sending: " << cmd << endl);
 
             map<string, string> extensions;
             _client->send(cmd, extensions);
 
-            BESDEBUG("cmdln", "cmdclient receiving " << endl);
+            BESDEBUG(MODULE, prolog << "receiving " << endl);
             // keep reading till we get the last chunk, send to _strm
             bool done = false;
             ostringstream *show_stream = 0;
@@ -314,14 +313,14 @@ bool CmdClient::executeCommand(const string &cmd, int repeat)
                 delete show_stream;
                 show_stream = 0;
             }
-            if (BESDebug::IsSet("cmdln")) {
-                BESDEBUG("cmdln", "extensions:" << endl);
+            if (BESDebug::IsSet(MODULE)) {
+                BESDEBUG(MODULE, "extensions:" << endl);
                 map<string, string>::const_iterator i = extensions.begin();
                 map<string, string>::const_iterator e = extensions.end();
                 for (; i != e; i++) {
-                    BESDEBUG("cmdln", "  " << (*i).first << " = " << (*i).second << endl);
+                    BESDEBUG(MODULE, "  " << (*i).first << " = " << (*i).second << endl);
                 }
-                BESDEBUG("cmdln", "cmdclient done receiving " << endl);
+                BESDEBUG(MODULE, "cmdclient done receiving " << endl);
             }
 
             _strm->flush();

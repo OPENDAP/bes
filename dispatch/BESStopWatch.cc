@@ -40,6 +40,9 @@
 #include <sstream>
 
 #include "BESStopWatch.h"
+
+#include <BESUtil.h>
+
 #include "BESDebug.h"
 #include "BESLog.h"
 
@@ -61,26 +64,46 @@ BESStopWatch *elapsedTimeToTransmitStart = nullptr;
  * information to the BESDebug::GetStrm() stream.
  *
  * @param name The name of the timer.
+ * @param dhi The name of the timer.
  */
-bool
-BESStopWatch::start(const string &name) {
-    return start(name, MISSING_LOG_PARAM);
+bool BESStopWatch::start(const std::string &name, BESDataHandlerInterface *dhi) {
+    string reqId = dhi->data[REQUEST_ID_KEY];
+    if (!reqId.empty()) {
+        string uuid =  dhi->data[REQUEST_UUID_KEY];
+        if (uuid.empty()) {
+            uuid = "BESStopWatch-" + BESUtil::uuid();
+            dhi->data[REQUEST_UUID_KEY] = uuid;
+        }
+        reqId = reqId + "-" + uuid;
+    }
+    else {
+        // If we grab it from BESLog we know the uuid is already a part of the request id value.
+        reqId = BESLog::TheLog()->get_request_id();
+    }
+    if (reqId.empty()) {
+        reqId = prolog + "OUCH! The values of dhi->data[\"" REQUEST_ID_KEY "\" and BESLog::TheLog()->get_request_id() were empty.";
+    }
+    return start(name,reqId);
 }
+
+
+
 
 /**
  * Starts the timer.
  * NB: This method will attempt to write logging
  * information to the BESDebug::GetStrm() stream.
  * @param name The name of the timer.
- * @param reqID The client's request ID associated with this activity. Not used.
- * Available from the DataHandlerInterface object.
+ * @param reqID The client's request ID associated with this activity.
+ * If reqID is not provided then the value of BESLog::get_request_id() \
+ * is utilized (see declaration in BESStopWatch.h)
+ *
  */
-bool
-BESStopWatch::start(const string &name, const string &reqID) {
+bool BESStopWatch::start(const string &name, const string &reqID) {
     d_timer_name = name;
-    d_req_id = reqID;
-    // get timing for current usage
+    d_req_id = (reqID.empty()?"ReqIdEmpty":reqID);
 
+    // get timing for current usage
     if (!get_time_of_day(d_start_usage)) {
         d_started = false;
         return d_started;
@@ -90,7 +113,7 @@ BESStopWatch::start(const string &name, const string &reqID) {
     std::stringstream msg;
     if (BESLog::TheLog()->is_verbose()) {
         msg << "start_us" << BESLog::mark << get_start_us() << BESLog::mark;
-        msg << (d_req_id.empty() ? "-" : d_req_id) << BESLog::mark;
+        msg << d_req_id << BESLog::mark;
         msg << d_timer_name << endl;
         TIMING_LOG(msg.str());
     }

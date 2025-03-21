@@ -41,6 +41,7 @@
 #include "BESStopWatch.h"
 
 #define DEBUG_CHANNEL "agg_util"
+#define prolog string("ArrayAggregateOnOuterDimension::").append(__func__).append("() - ")
 
 namespace agg_util {
 
@@ -114,8 +115,7 @@ bool ArrayAggregateOnOuterDimension::serialize(libdap::ConstraintEvaluator &eval
     libdap::Marshaller &m, bool ce_eval)
 {
 
-	BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ArrayAggregateOnOuterDimension::serialize", "");
+    BES_STOPWATCH_START(DEBUG_CHANNEL, prolog + "Timing");
 
     // Only continue if we are supposed to serialize this object at all.
     if (!(send_p() || is_in_selection())) {
@@ -242,9 +242,7 @@ void ArrayAggregateOnOuterDimension::transferOutputConstraintsIntoGranuleTemplat
 // and this->set_value_slice_from_row_major_vector(). This
 void ArrayAggregateOnOuterDimension::readConstrainedGranuleArraysAndAggregateDataHook()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("ArrayAggregateOnOuterDimension::readConstrainedGranuleArraysAndAggregateDataHook", "");
+    BES_STOPWATCH_START(DEBUG_CHANNEL, prolog + "Timing");
 
     // outer one is the first in iteration
     const Array::dimension& outerDim = *(dim_begin());

@@ -777,8 +777,7 @@ const {
 void CmrApi::get_providers(vector<unique_ptr<cmr::Provider> > &providers) const
 {
     JsonUtils json;
-    BESStopWatch bsw;
-    bsw.start(prolog);
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
     const auto &cmr_doc = json.get_as_json(d_cmr_providers_search_endpoint_url);
     unsigned int hits = cmr_doc["hits"];
@@ -804,8 +803,7 @@ void CmrApi::get_providers(vector<unique_ptr<cmr::Provider> > &providers) const
 void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opendap_providers) const
 {
     vector<unique_ptr<cmr::Provider>> all_providers;
-    BESStopWatch bsw;
-    bsw.start(prolog);
+    BES_STOPWATCH_START(MODULE, prolog + "Timing");
     get_providers(all_providers);
     for(auto &provider: all_providers){
         BESDEBUG(MODULE, prolog << "Processing PROVIDER: " << provider->id() << endl);

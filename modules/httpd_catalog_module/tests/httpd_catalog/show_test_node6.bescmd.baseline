@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" reqUUID="SomeUUIDString" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showNode>
         <node count="3" lastModified="removed date-time" name="/data/">
             <item lastModified="removed date-time" name="csv" type="node"/>

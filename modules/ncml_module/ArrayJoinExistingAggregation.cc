@@ -43,6 +43,7 @@
 #include "NCMLDebug.h"
 
 #define DEBUG_CHANNEL "ncml:2"
+#define prolog string("ArrayJoinExistingAggregation::").append(__func__).append("() - ")
 
 namespace agg_util {
 
@@ -113,8 +114,7 @@ ArrayJoinExistingAggregation::ptr_duplicate()
 bool ArrayJoinExistingAggregation::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m,
     bool ce_eval)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ArrayJoinExistingAggregation::serialize", "");
+    BES_STOPWATCH_START(DEBUG_CHANNEL, prolog + "Timing");
 
     // *** This serialize() implementation was made by starting with a simple version that
     // *** tested read_p(), calling read() if needed and tsting send_p() and is_in_selection(),
@@ -310,9 +310,7 @@ void ArrayJoinExistingAggregation::transferOutputConstraintsIntoGranuleTemplateH
 
 void ArrayJoinExistingAggregation::readConstrainedGranuleArraysAndAggregateDataHook()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY))
-        sw.start("ArrayJoinExistingAggregation::readConstrainedGranuleArraysAndAggregateDataHook", "");
+    BES_STOPWATCH_START(DEBUG_CHANNEL, prolog + "Timing");
 
     // outer one is the first in iteration
     const Array::dimension& outerDim = *(dim_begin());

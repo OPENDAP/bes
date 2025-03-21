@@ -218,7 +218,7 @@ std::string BESLog::log_record_begin() const {
         log_record_prolog = buf;
     }
 
-    log_record_prolog += d_log_record_prolog_base;
+    log_record_prolog += d_log_record_prolog_base + get_request_id() + mark;
     return log_record_prolog;
 }
 
@@ -275,6 +275,16 @@ void BESLog::dump(ostream &strm) const
     strm << BESIndent::LMarg << "        d_pid: " << d_pid << "\n";
     BESIndent::UnIndent();
 }
+
+/**
+* @brief Sets the current request id (cached in BESLog) to id
+*/
+void BESLog::set_request_id(const std::string &id){
+    request_id = id;
+    BESDEBUG(MODULE, "request_id: " << request_id << endl);
+}
+
+
 
 BESLog *
 BESLog::TheLog()

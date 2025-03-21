@@ -62,10 +62,9 @@
 #include "NCRequestHandler.h"
 #include "GlobalMetadataStore.h"
 
-#define NC_NAME "nc"
-
 using namespace libdap;
 
+#define NC_NAME "nc"
 #define prolog std::string("NCRequestHandler::").append(__func__).append("() - ")
 
 
@@ -246,9 +245,7 @@ NCRequestHandler::~NCRequestHandler()
 
 bool NCRequestHandler::nc_build_das(BESDataHandlerInterface & dhi)
 {
-	BESStopWatch sw;
-	if (BESDebug::IsSet(TIMING_LOG_KEY))
-		sw.start("NCRequestHandler::nc_build_das", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(NC_NAME, prolog + "Timer", &dhi);
 
     BESDEBUG(NC_NAME, prolog << "BEGIN" << endl);
 
@@ -393,9 +390,7 @@ void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, co
 bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 {
 
-	BESStopWatch sw;
-	if (BESDebug::IsSet(TIMING_LOG_KEY))
-		sw.start("NCRequestHandler::nc_build_dds", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(NC_NAME, prolog + "Timer", &dhi);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *> (response);
@@ -455,9 +450,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 
 bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
 {
-	BESStopWatch sw;
-	if (BESDebug::IsSet(TIMING_LOG_KEY))
-		sw.start("NCRequestHandler::nc_build_data", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(NC_NAME, prolog + "Timer", &dhi);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
@@ -515,9 +508,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
 
 bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 {
-	BESStopWatch sw;
-	if (BESDebug::IsSet(TIMING_LOG_KEY))
-		sw.start("NCRequestHandler::nc_build_dmr", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(NC_NAME, prolog + "Timer", &dhi);
 
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
@@ -616,9 +607,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 
 bool NCRequestHandler::nc_build_help(BESDataHandlerInterface & dhi)
 {
-	BESStopWatch sw;
-	if (BESDebug::IsSet(TIMING_LOG_KEY))
-		sw.start("NCRequestHandler::nc_build_help", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(NC_NAME, prolog + "Timer", &dhi);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESInfo *info = dynamic_cast<BESInfo *> (response);
@@ -644,11 +633,9 @@ bool NCRequestHandler::nc_build_help(BESDataHandlerInterface & dhi)
     return true;
 }
 
-bool NCRequestHandler::nc_build_version(BESDataHandlerInterface & dhi)
+bool NCRequestHandler::nc_build_version(BESDataHandlerInterface &dhi)
 {
-	BESStopWatch sw;
-	if (BESDebug::IsSet(TIMING_LOG_KEY))
-		sw.start("NCRequestHandler::nc_build_version", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(NC_NAME, prolog + "Timer", &dhi);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *> (response);

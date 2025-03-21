@@ -38,7 +38,6 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESStopWatch.h"
-#include "BESSyntaxUserError.h"
 
 #include "CatalogNode.h"
 #include "CatalogItem.h"
@@ -61,8 +60,7 @@ using namespace std;
  */
 void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ShowNodeResponseHandler::execute", dhi.data[REQUEST_ID]);
+    BES_STOPWATCH_START_DHI(MODULE, prolog + "Timing", &dhi);
 
     // Get the container. By convention, the path can start with a slash,
     // but doesn't have too. However, get_node() requires the leading '/'.
@@ -74,7 +72,7 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     // 'container' and, if found, set 'catalog' to that catalog. The value
     // null is used as a sentinel that the path in 'container' does not
     // name a catalog.
-    BESCatalog *catalog = 0;
+    const BESCatalog *catalog = nullptr;
 
     vector<string> path_tokens;
     BESUtil::tokenize(container, path_tokens);

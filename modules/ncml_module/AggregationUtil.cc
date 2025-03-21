@@ -59,6 +59,17 @@ using libdap::Vector;
 using std::string;
 using std::vector;
 
+#define MODULE "agg_util"
+
+// AggregationUtil
+#define prolog_au string("AggregationUtil::").append(__func__).append("() - ")
+// TopLevelArrayGetter
+#define prolog_tlag string("TopLevelArrayGetter::").append(__func__).append("() - ")
+// TopLevelGridDataArrayGetter
+#define prolog_tlgdag string("TopLevelGridDataArrayGetter::").append(__func__).append("() - ")
+// TopLevelGridMapArrayGetter
+#define prolog_tlgmag string("TopLevelGridMapArrayGetter::").append(__func__).append("() - ")
+
 namespace agg_util {
 // Static class member used to track the position of the last CVs insertion
 // when building a JoinExisting aggregation.
@@ -98,8 +109,7 @@ TopLevelArrayGetter::readAndGetArray(const std::string& name, const libdap::DDS&
     const libdap::Array* const pConstraintTemplate, const std::string& debugChannel) const
 {
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("TopLevelArrayGetter::readAndGetArray", "");
+    BES_STOPWATCH_START(MODULE, prolog_tlag + "Timing");
 
     // First, look up the BaseType
     BaseType* pBT = AggregationUtil::getVariableNoRecurse(dds, name);
@@ -163,8 +173,7 @@ libdap::Array*
 TopLevelGridDataArrayGetter::readAndGetArray(const std::string& name, const libdap::DDS& dds,
     const libdap::Array* const pConstraintTemplate, const std::string& debugChannel) const
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("TopLevelGridDataArrayGetter::readAndGetArray", "");
+    BES_STOPWATCH_START(MODULE, prolog_tlgdag + "Timing");
 
     // First, look up the BaseType
     BaseType* pBT = AggregationUtil::getVariableNoRecurse(dds, name);
@@ -246,9 +255,7 @@ libdap::Array*
 TopLevelGridMapArrayGetter::readAndGetArray(const std::string& arrayName, const libdap::DDS& dds,
     const libdap::Array* const pConstraintTemplate, const std::string& debugChannel) const
 {
-
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("TopLevelGridMapArrayGetter::readAndGetArray", "");
+    BES_STOPWATCH_START(MODULE, prolog_tlgmag + "Timing");
 
     // First, look up the Grid the map is in
     BaseType* pBT = AggregationUtil::getVariableNoRecurse(dds, _gridName);
@@ -872,8 +879,7 @@ Array* AggregationUtil::readDatasetArrayDataForAggregation(const Array& constrai
     const std::string& varName, AggMemberDataset& dataset, const ArrayGetterInterface& arrayGetter,
     const std::string& debugChannel)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationUtil::readDatasetArrayDataForAggregation", "");
+    BES_STOPWATCH_START(MODULE, prolog_au + "Timing");
 
     const libdap::DDS* pDDS = dataset.getDDS();
     NCML_ASSERT_MSG(pDDS, "GridAggregateOnOuterDimension::read(): Got a null DataDDS "
@@ -923,8 +929,7 @@ void AggregationUtil::addDatasetArrayDataToAggregationOutputArray(libdap::Array&
     const Array& constrainedTemplateArray, const std::string& varName, AggMemberDataset& dataset,
     const ArrayGetterInterface& arrayGetter, const std::string& debugChannel)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationUtil::addDatasetArrayDataToAggregationOutputArray", "");
+    BES_STOPWATCH_START(MODULE, prolog_au + "Timing");
 
     libdap::Array* pDatasetArray = readDatasetArrayDataForAggregation(constrainedTemplateArray, varName, dataset, arrayGetter,
         debugChannel);
