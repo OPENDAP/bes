@@ -65,16 +65,16 @@ bes-tmpfiles-conf besd.logrotate README.md rapidjson nlohmann pugixml
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf
 
-framework = dispatch xmlcommand ppt server http dap dapreader
-.PHONY: framework-only
-framework-only:
-	for d in $(framework); do $(MAKE) -C $$d $(MFLAGS); done
+framework_dirs = dispatch xmlcommand ppt server http dap dapreader
+.PHONY: framework
+framework:
+	for d in $(framework_dirs); do $(MAKE) -C $$d $(MFLAGS); done
 
 # Added this as a simple way to test the framework without the modules.
 # jhrg 3.18.22
 .PHONY: framework-check
 framework-check:
-	for d in $(framework); do $(MAKE) check -C $$d $(MFLAGS); done
+	for d in $(framework_dirs); do $(MAKE) check -C $$d $(MFLAGS); done
 
 # This target only builds the documents, it does not move them to
 # github. Use the 'gh-docs' target below for that.
@@ -87,7 +87,7 @@ docs: ${DOXYGEN_CONF}
 gh-docs:
 	./build-gh-docs.sh
 
-# cccc computes metrics like Lines of code and McCabe. It'a available
+# cccc computes metrics like Lines of code and McCabe. It's available
 # on the web...
 # For the BES, compute metrics for: dispatch xmlcommand ppt server
 .PHONY: cccc
