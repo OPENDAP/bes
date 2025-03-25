@@ -1,0 +1,20 @@
+netcdf test {
+dimensions:
+	dim = 3 ;
+	var_vlen = 3 ;
+variables:
+	int var(dim, var_vlen) ;
+		var:orig_datatype = "VLEN" ;
+		var:vlen_description = "The original variable-length array data is stored as the regular array data that has an extra dimension. The data gap is filled with 0. The actual length of each original variable-length element is stored in another array. The variable name of this array is var_vlen_index." ;
+	int var_vlen_index(dim) ;
+		var_vlen_index:orig_datatype = "VLEN_INDEX" ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-1695/bes/modules/hdf5_handler/data/vlen_dim.h5 -r vlen_dim.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex vlen_dim.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"vlen_dim.h5.dmrpp\"}]}]" ;
+}
