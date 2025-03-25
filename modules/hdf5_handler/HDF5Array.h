@@ -54,11 +54,13 @@ class HDF5Array:public libdap::Array {
     hsize_t d_num_elm = 0;
     
     hsize_t d_memneed = 0;
+#if 0
     string var_path;
     
     // Parse constraint expression and make HDF5 coordinate point location.
     // return number of elements to read. 
    int64_t format_constraint(int64_t *cor, int64_t *step, int64_t *edg);
+#endif
 
 
     bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values, size_t values_offset,
@@ -127,6 +129,15 @@ class HDF5Array:public libdap::Array {
     void m_array_of_region_reference_hyperslab_selection(hid_t space_id, int ndim, const std::string &varname,
                                                              std::vector<std::string> &v_str,int64_t i) const;
     friend class HDF5Structure;
+
+  protected:
+    string var_path;
+    
+    // Parse constraint expression and make HDF5 coordinate point location.
+    // return number of elements to read. 
+   int64_t format_constraint(int64_t *cor, int64_t *step, int64_t *edg);
+
+
   public:
 
     /// Constructor
