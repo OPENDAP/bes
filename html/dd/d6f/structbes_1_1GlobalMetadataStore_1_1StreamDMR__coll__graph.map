@@ -1,0 +1,11 @@
+<map id="bes::GlobalMetadataStore::StreamDMR" name="bes::GlobalMetadataStore::StreamDMR">
+<area shape="rect" id="Node000001" title="Instantiate with a DDS or DMR and use to write the DMR response." alt="" coords="97,352,267,472"/>
+<area shape="rect" id="Node000002" href="$d8/d0a/structbes_1_1GlobalMetadataStore_1_1StreamDAP.html" title=" " alt="" coords="97,163,267,303"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="185,316,185,352,179,352,179,316"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,132,100"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="108,111,140,161,136,164,104,113"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="157,20,207,85"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="185,86,185,146,179,146,179,86"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="234,20,287,85"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="253,86,234,140,230,149,225,147,229,138,248,84"/>
+</map>

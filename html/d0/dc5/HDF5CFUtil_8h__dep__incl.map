@@ -1,0 +1,118 @@
+<map id="HDF5CFUtil.h" name="HDF5CFUtil.h">
+<area shape="rect" id="Node000001" title="This file includes several helper functions for translating HDF5 to CF&#45;compliant." alt="" coords="2727,5,2833,31"/>
+<area shape="rect" id="Node000002" href="$d3/d50/HDF5BaseArray_8h.html" title="A helper class that aims to reduce code redundence for different special CF derived array class For e..." alt="" coords="1193,152,1324,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2714,25,2397,46,1980,81,1609,123,1325,159,1324,153,1608,117,1980,76,2397,41,2713,19"/>
+<area shape="rect" id="Node000006" href="$d5/dcb/h5commoncfdap_8cc.html" title="Functions to generate DDS and DAS for one object(variable)." alt="" coords="2370,299,2507,324"/>
+<area shape="poly" id="edge70_Node000001_Node000006" title=" " alt="" coords="2754,41,2714,80,2697,105,2684,128,2668,170,2650,211,2634,232,2612,253,2588,269,2562,283,2508,301,2507,296,2560,278,2586,265,2609,249,2630,228,2645,208,2663,168,2680,125,2692,102,2710,77,2751,37"/>
+<area shape="rect" id="Node000027" href="$d3/d5a/HDF5CF_8h.html" title="This class specifies the core engineering of mapping HDF5 to DAP by following CF." alt="" coords="1992,79,2077,104"/>
+<area shape="poly" id="edge35_Node000001_Node000027" title=" " alt="" coords="2714,27,2078,90,2077,84,2713,22"/>
+<area shape="rect" id="Node000032" href="$d6/ded/h5dmr_8cc.html" title="DMR(Data Metadata Response) request processing source." alt="" coords="2521,225,2599,251"/>
+<area shape="poly" id="edge72_Node000001_Node000032" title=" " alt="" coords="2736,39,2702,57,2670,81,2635,118,2606,159,2568,226,2564,224,2602,156,2631,115,2666,77,2699,53,2733,34"/>
+<area shape="rect" id="Node000037" href="$de/d21/HDF5CFUtil_8cc.html" title="The implementation of several helper functions for translating HDF5 to CF&#45;compliant." alt="" coords="2725,79,2835,104"/>
+<area shape="poly" id="edge57_Node000001_Node000037" title=" " alt="" coords="2783,44,2783,78,2777,78,2777,44"/>
+<area shape="rect" id="Node000038" href="$d1/db3/HDF5MissLLArray_8cc_source.html" title=" " alt="" coords="2859,79,3007,104"/>
+<area shape="poly" id="edge58_Node000001_Node000038" title=" " alt="" coords="2820,34,2908,76,2905,81,2818,39"/>
+<area shape="rect" id="Node000039" href="$d1/d51/HE5Parser_8cc_source.html" title=" " alt="" coords="3032,79,3136,104"/>
+<area shape="poly" id="edge59_Node000001_Node000039" title=" " alt="" coords="2846,31,3032,76,3031,81,2845,36"/>
+<area shape="rect" id="Node000040" href="$d1/d64/h5cfdaputil_8h.html" title="Helper functions for generating DAS attributes and a function to check BES Key." alt="" coords="2762,225,2859,251"/>
+<area shape="poly" id="edge60_Node000001_Node000040" title=" " alt="" coords="2847,22,3028,44,3108,59,3135,68,3150,77,3162,96,3167,113,3165,130,3157,145,3125,170,3079,191,3023,208,2964,220,2860,236,2859,231,2963,215,3022,202,3077,186,3122,166,3153,142,3160,128,3162,114,3158,98,3146,81,3133,73,3106,65,3027,49,2846,27"/>
+<area shape="rect" id="Node000044" href="$d7/d43/h5dds_8cc.html" title="DDS/DODS request processing source." alt="" coords="3211,79,3287,104"/>
+<area shape="poly" id="edge71_Node000001_Node000044" title=" " alt="" coords="2847,24,3005,45,3192,76,3212,80,3211,85,3192,81,3004,51,2846,29"/>
+<area shape="rect" id="Node000003" href="$d8/d3b/HDF5BaseArray_8cc.html" title="Implementation of a helper class that aims to reduce code redundence for different special CF derived..." alt="" coords="887,225,1023,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1193,183,1008,228,1007,223,1192,178"/>
+<area shape="rect" id="Node000004" href="$d4/d44/HDF5CFArray_8h.html" title="This class includes the methods to read data array into DAP buffer from an HDF5 dataset for the CF op..." alt="" coords="2380,225,2497,251"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1338,163,1522,167,1778,177,2071,195,2368,223,2380,224,2379,230,2368,228,2071,200,1777,183,1522,173,1338,168"/>
+<area shape="rect" id="Node000009" href="$d8/d83/HDF5CFGeoCF1D_8h_source.html" title=" " alt="" coords="1515,225,1661,251"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="1329,178,1531,223,1530,228,1328,183"/>
+<area shape="rect" id="Node000011" href="$db/d0f/HDF5GMCFFillIndexArray_8h.html" title="This class includes the methods to read data array into DAP buffer from an HDF5 dataset for the CF op..." alt="" coords="1047,225,1236,251"/>
+<area shape="poly" id="edge11_Node000002_Node000011" title=" " alt="" coords="1228,187,1163,227,1161,223,1225,182"/>
+<area shape="rect" id="Node000013" href="$d8/d68/HDF5GMCFMissLLArray_8h.html" title="This class specifies the retrieval of the missing lat/lon values for general HDF5 products." alt="" coords="25,225,207,251"/>
+<area shape="poly" id="edge14_Node000002_Node000013" title=" " alt="" coords="1179,170,768,189,495,206,219,228,207,229,207,224,218,223,495,201,768,184,1179,165"/>
+<area shape="rect" id="Node000015" href="$df/dd1/HDF5GMCFMissNonLLCVArray_8h.html" title="This class specifies the retrieval of the values of non&#45;lat/lon coordinate variables for general HDF5..." alt="" coords="639,225,863,251"/>
+<area shape="poly" id="edge17_Node000002_Node000015" title=" " alt="" coords="1180,179,839,228,838,223,1179,173"/>
+<area shape="rect" id="Node000017" href="$d9/d6b/HDF5GMCFSpecialCVArray_8h.html" title="This class specifies the retrieval of the missing lat/lon values for general HDF5 products." alt="" coords="231,225,433,251"/>
+<area shape="poly" id="edge20_Node000002_Node000017" title=" " alt="" coords="1180,172,859,194,446,228,433,229,432,224,445,223,859,189,1180,167"/>
+<area shape="rect" id="Node000019" href="$d2/d9a/HDF5GMSPCFArray_8h.html" title="This class specifies the retrieval of data values for special HDF5 products Currently this only appli..." alt="" coords="457,225,615,251"/>
+<area shape="poly" id="edge23_Node000002_Node000019" title=" " alt="" coords="1180,174,933,196,627,228,615,229,615,224,626,223,933,191,1179,168"/>
+<area shape="rect" id="Node000021" href="$d1/d02/HDFEOS5CFMissLLArray_8h.html" title="This class specifies the retrieval of the missing lat/lon values for HDF&#45;EOS5 products." alt="" coords="1685,225,1873,251"/>
+<area shape="poly" id="edge26_Node000002_Node000021" title=" " alt="" coords="1338,173,1689,223,1688,228,1338,178"/>
+<area shape="rect" id="Node000023" href="$df/d8f/HDFEOS5CFMissNonLLCVArray_8h.html" title="This class specifies the retrieval of the missing lat/lon values for HDFEOS5 products." alt="" coords="1261,225,1491,251"/>
+<area shape="poly" id="edge29_Node000002_Node000023" title=" " alt="" coords="1292,182,1357,223,1354,227,1289,187"/>
+<area shape="rect" id="Node000025" href="$dd/da9/HDFEOS5CFSpecialCVArray_8h.html" title="This class specifies the retrieval of special coordinate variable values for HDF&#45;EOS5 products." alt="" coords="1897,225,2105,251"/>
+<area shape="poly" id="edge32_Node000002_Node000025" title=" " alt="" coords="1338,169,1884,223,1897,224,1897,229,1884,228,1338,175"/>
+<area shape="rect" id="Node000005" href="$d2/d36/HDF5CFArray_8cc.html" title="The implementation of methods to read data array into DAP buffer from an HDF5 dataset for the CF opti..." alt="" coords="2531,299,2655,324"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="2479,254,2567,296,2565,301,2477,259"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="2441,264,2441,298,2436,298,2436,264"/>
+<area shape="rect" id="Node000007" href="$d6/d38/h5gmcfdap_8cc.html" title="Map and generate DDS and DAS for the CF option for generic HDF5 products." alt="" coords="890,299,995,324"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="2367,253,2160,271,1984,278,1829,278,1685,275,1541,273,1387,274,1213,282,1008,301,996,303,995,298,1008,296,1213,277,1387,269,1541,268,1685,270,1829,273,1984,272,2159,265,2366,248"/>
+<area shape="rect" id="Node000008" href="$df/daa/heos5cfdap_8cc.html" title="Map and generate DDS and DAS for the CF option for HDF&#45;EOS5 products." alt="" coords="2133,299,2241,324"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="2382,257,2231,301,2230,296,2381,252"/>
+<area shape="poly" id="edge10_Node000009_Node000006" title=" " alt="" coords="1675,248,1867,265,2018,272,2167,279,2358,296,2370,298,2370,303,2357,301,2167,284,2017,277,1867,270,1674,253"/>
+<area shape="rect" id="Node000010" href="$d9/d98/HDF5CFGeoCF1D_8cc_source.html" title=" " alt="" coords="1500,299,1652,324"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="1586,265,1581,299,1576,298,1581,264"/>
+<area shape="poly" id="edge13_Node000011_Node000007" title=" " alt="" coords="1095,258,978,301,976,296,1093,253"/>
+<area shape="rect" id="Node000012" href="$d3/d2c/HDF5GMCFFillIndexArray_8cc.html" title="This class includes the methods to read data array into DAP buffer from an HDF5 dataset for the CF op..." alt="" coords="1020,299,1215,324"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="1135,265,1124,299,1119,297,1130,263"/>
+<area shape="poly" id="edge16_Node000013_Node000007" title=" " alt="" coords="221,248,407,262,551,268,695,276,878,296,890,298,890,303,877,301,695,282,551,274,406,267,221,253"/>
+<area shape="rect" id="Node000014" href="$d7/dce/HDF5GMCFMissLLArray_8cc.html" title="Implementation of the retrieval of the missing lat/lon values for general HDF5 products." alt="" coords="5,299,192,324"/>
+<area shape="poly" id="edge15_Node000013_Node000014" title=" " alt="" coords="112,264,104,299,99,298,107,263"/>
+<area shape="poly" id="edge19_Node000015_Node000007" title=" " alt="" coords="798,253,910,296,908,301,796,258"/>
+<area shape="rect" id="Node000016" href="$df/df3/HDF5GMCFMissNonLLCVArray_8cc.html" title="The implementation of the retrieval of the values of non&#45;lat/lon coordinate variables for general HDF..." alt="" coords="635,299,866,324"/>
+<area shape="poly" id="edge18_Node000015_Node000016" title=" " alt="" coords="753,264,753,298,748,298,748,264"/>
+<area shape="poly" id="edge22_Node000017_Node000007" title=" " alt="" coords="447,248,665,269,878,296,890,298,890,303,877,301,664,275,446,253"/>
+<area shape="rect" id="Node000018" href="$df/d12/HDF5GMCFSpecialCVArray_8cc.html" title="Implementation of the retrieval of special coordinate variable values(mostly from product specificati..." alt="" coords="217,299,423,324"/>
+<area shape="poly" id="edge21_Node000017_Node000018" title=" " alt="" coords="330,265,325,299,320,298,325,264"/>
+<area shape="poly" id="edge25_Node000019_Node000007" title=" " alt="" coords="623,250,878,296,890,298,889,304,877,301,622,256"/>
+<area shape="rect" id="Node000020" href="$de/d7e/HDF5GMSPCFArray_8cc.html" title="The implementation of the retrieval of data values for special HDF5 products Currently this only appl..." alt="" coords="448,299,611,324"/>
+<area shape="poly" id="edge24_Node000019_Node000020" title=" " alt="" coords="536,264,533,298,528,298,531,264"/>
+<area shape="poly" id="edge28_Node000021_Node000008" title=" " alt="" coords="1866,250,2120,296,2133,298,2132,304,2120,301,1865,256"/>
+<area shape="rect" id="Node000022" href="$df/d52/HDFEOS5CFMissLLArray_8cc.html" title="The implementation of the retrieval of the missing lat/lon values for HDF&#45;EOS5 products." alt="" coords="1677,299,1870,324"/>
+<area shape="poly" id="edge27_Node000021_Node000022" title=" " alt="" coords="1779,264,1777,298,1772,298,1774,264"/>
+<area shape="poly" id="edge31_Node000023_Node000008" title=" " alt="" coords="1505,248,1679,261,1815,268,1949,277,2120,296,2133,298,2132,303,2120,301,1949,282,1815,273,1679,266,1505,254"/>
+<area shape="rect" id="Node000024" href="$d3/d11/HDFEOS5CFMissNonLLCVArray_8cc.html" title="The implementation of the retrieval of the missing lat/lon values for HDFEOS5 products." alt="" coords="1239,299,1476,324"/>
+<area shape="poly" id="edge30_Node000023_Node000024" title=" " alt="" coords="1372,264,1363,299,1358,298,1367,263"/>
+<area shape="poly" id="edge34_Node000025_Node000008" title=" " alt="" coords="2047,253,2155,296,2153,301,2045,258"/>
+<area shape="rect" id="Node000026" href="$df/d70/HDFEOS5CFSpecialCVArray_8cc.html" title="This class specifies the retrieval of special coordinate variable values for HDF&#45;EOS5 products." alt="" coords="1895,299,2108,324"/>
+<area shape="poly" id="edge33_Node000025_Node000026" title=" " alt="" coords="2004,264,2004,298,1999,298,1999,264"/>
+<area shape="poly" id="edge37_Node000027_Node000004" title=" " alt="" coords="2092,96,2229,119,2295,134,2342,150,2370,166,2394,186,2430,223,2426,227,2391,190,2367,171,2340,154,2294,139,2228,124,2091,102"/>
+<area shape="poly" id="edge39_Node000027_Node000011" title=" " alt="" coords="2009,115,1955,153,1908,180,1845,195,1766,206,1580,217,1393,221,1248,228,1236,229,1236,224,1248,223,1393,216,1580,211,1766,200,1844,190,1906,175,1952,149,2005,110"/>
+<area shape="poly" id="edge40_Node000027_Node000013" title=" " alt="" coords="1978,95,1475,110,1117,128,751,155,441,191,194,228,193,223,441,186,750,149,1117,122,1474,104,1978,90"/>
+<area shape="poly" id="edge41_Node000027_Node000017" title=" " alt="" coords="1978,96,1556,113,1263,130,964,155,657,191,411,228,410,223,657,186,964,149,1263,125,1556,108,1978,90"/>
+<area shape="poly" id="edge42_Node000027_Node000019" title=" " alt="" coords="1978,97,1641,117,1413,134,1182,155,904,188,627,228,615,230,615,224,626,223,903,183,1181,149,1413,128,1641,112,1978,91"/>
+<area shape="poly" id="edge44_Node000027_Node000021" title=" " alt="" coords="2019,117,1990,149,1953,180,1895,209,1836,228,1835,223,1893,204,1951,175,1987,145,2015,113"/>
+<area shape="poly" id="edge45_Node000027_Node000025" title=" " alt="" coords="2031,118,2007,226,2002,225,2026,117"/>
+<area shape="rect" id="Node000028" href="$d2/d03/HDF5CF_8cc.html" title="Implementation of the basic mapping of HDF5 to DAP by following CF." alt="" coords="2679,299,2771,324"/>
+<area shape="poly" id="edge36_Node000027_Node000028" title=" " alt="" coords="2091,93,2193,104,2326,127,2398,144,2471,166,2543,192,2612,223,2670,261,2713,296,2710,301,2667,265,2609,228,2541,197,2470,171,2397,150,2325,133,2192,110,2091,98"/>
+<area shape="rect" id="Node000029" href="$d4/da4/HDF5GMCF_8cc.html" title="Implementation of the mapping of NASA generic HDF5 products to DAP by following CF." alt="" coords="1782,152,1895,177"/>
+<area shape="poly" id="edge38_Node000027_Node000029" title=" " alt="" coords="1989,111,1874,154,1872,149,1987,106"/>
+<area shape="rect" id="Node000030" href="$dc/d62/HDFEOS5CF_8cc.html" title="Implementation of the mapping of HDF&#45;EOS5 products to DAP by following CF." alt="" coords="3252,299,3372,324"/>
+<area shape="poly" id="edge43_Node000027_Node000030" title=" " alt="" coords="2091,96,2263,118,2475,149,2922,230,3252,296,3251,301,2921,235,2474,155,2262,123,2091,101"/>
+<area shape="rect" id="Node000031" href="$d4/da9/h5commoncfdap_8h.html" title="Functions to generate DDS and DAS for one object(variable)." alt="" coords="2198,152,2330,177"/>
+<area shape="poly" id="edge46_Node000027_Node000031" title=" " alt="" coords="2088,106,2225,149,2223,154,2087,111"/>
+<area shape="rect" id="Node000036" href="$d0/d9d/heos5cfdap_8h.html" title="Map and generate DDS and DAS for the CF option for HDF&#45;EOS5 products." alt="" coords="2130,225,2233,251"/>
+<area shape="poly" id="edge56_Node000027_Node000036" title=" " alt="" coords="2059,112,2170,223,2167,227,2055,116"/>
+<area shape="poly" id="edge47_Node000031_Node000032" title=" " alt="" coords="2330,178,2510,223,2522,226,2521,231,2509,228,2328,183"/>
+<area shape="rect" id="Node000033" href="$da/d5f/h5gmcfdap_8h.html" title="Map and generate DDS and DAS for the CF option for generic HDF5 products." alt="" coords="2257,225,2356,251"/>
+<area shape="poly" id="edge48_Node000031_Node000033" title=" " alt="" coords="2281,188,2301,224,2297,226,2276,191"/>
+<area shape="poly" id="edge53_Node000031_Node000036" title=" " alt="" coords="2241,188,2198,227,2194,223,2238,184"/>
+<area shape="poly" id="edge51_Node000033_Node000006" title=" " alt="" coords="2343,255,2417,296,2414,301,2341,260"/>
+<area shape="poly" id="edge52_Node000033_Node000007" title=" " alt="" coords="2244,253,2056,271,1896,279,1755,280,1623,278,1493,275,1353,276,1194,284,1008,301,996,303,995,298,1008,296,1194,279,1352,271,1493,270,1624,272,1755,275,1896,274,2055,266,2243,248"/>
+<area shape="rect" id="Node000034" href="$d6/d10/h5cfdap_8h.html" title="The main wrapper of headers of the HDF5 OPeNDAP handler for the CF option." alt="" coords="2265,299,2345,324"/>
+<area shape="poly" id="edge49_Node000033_Node000034" title=" " alt="" coords="2309,264,2308,298,2303,298,2304,264"/>
+<area shape="rect" id="Node000035" href="$d6/d67/h5cfdap_8cc.html" title="DAS/DDS/DATA request processing holder for the CF option." alt="" coords="2262,372,2349,397"/>
+<area shape="poly" id="edge50_Node000034_Node000035" title=" " alt="" coords="2308,338,2308,372,2303,372,2303,338"/>
+<area shape="poly" id="edge55_Node000036_Node000008" title=" " alt="" coords="2186,264,2188,298,2183,298,2181,264"/>
+<area shape="poly" id="edge54_Node000036_Node000034" title=" " alt="" coords="2216,256,2285,296,2282,301,2214,260"/>
+<area shape="poly" id="edge62_Node000040_Node000005" title=" " alt="" coords="2761,258,2632,301,2630,296,2759,253"/>
+<area shape="poly" id="edge67_Node000040_Node000006" title=" " alt="" coords="2749,253,2504,301,2503,296,2748,248"/>
+<area shape="poly" id="edge68_Node000040_Node000007" title=" " alt="" coords="2749,245,2611,253,2367,262,2160,264,1808,260,1639,260,1457,265,1251,278,1008,301,996,303,995,298,1008,296,1251,273,1457,260,1639,255,1808,255,2160,258,2366,256,2611,248,2748,240"/>
+<area shape="poly" id="edge69_Node000040_Node000008" title=" " alt="" coords="2748,246,2529,267,2254,301,2241,303,2240,298,2253,296,2528,262,2748,241"/>
+<area shape="poly" id="edge61_Node000040_Node000028" title=" " alt="" coords="2787,262,2742,300,2739,296,2784,258"/>
+<area shape="poly" id="edge65_Node000040_Node000030" title=" " alt="" coords="2873,243,3240,296,3252,298,3251,303,3240,301,2873,249"/>
+<area shape="rect" id="Node000041" href="$dd/da0/HDF5CFStr_8cc.html" title="The implementation of mapping HDF5 String to DAP String for the CF option." alt="" coords="2925,299,3033,324"/>
+<area shape="poly" id="edge63_Node000040_Node000041" title=" " alt="" coords="2853,254,2950,296,2948,301,2851,259"/>
+<area shape="rect" id="Node000042" href="$dd/d16/HDF5RequestHandler_8cc.html" title="The implementation of the entry functions to execute the handlers." alt="" coords="3057,299,3228,324"/>
+<area shape="poly" id="edge64_Node000040_Node000042" title=" " alt="" coords="2873,249,3086,296,3085,301,2872,254"/>
+<area shape="rect" id="Node000043" href="$d6/d28/h5cfdaputil_8cc.html" title="Helper functions for generating DAS attributes and a function to check BES Key." alt="" coords="2796,299,2900,324"/>
+<area shape="poly" id="edge66_Node000040_Node000043" title=" " alt="" coords="2826,261,2844,297,2839,299,2821,264"/>
+</map>

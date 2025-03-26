@@ -1,0 +1,7 @@
+<map id="HDF5Str.h" name="HDF5Str.h">
+<area shape="rect" id="Node000001" title="This class that translates HDF5 string into DAP string for the default option." alt="" coords="77,5,162,31"/>
+<area shape="rect" id="Node000002" href="$df/dd1/HDF5Array_8cc.html" title="This file contains the implementation on data array reading for the default option." alt="" coords="5,79,111,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,43,71,80,67,77,98,39"/>
+<area shape="rect" id="Node000003" href="$da/d36/HDF5Str_8cc.html" title="The implementation of translating HDF5 string into DAP string for the default option." alt="" coords="135,79,226,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="141,39,172,77,168,80,137,43"/>
+</map>

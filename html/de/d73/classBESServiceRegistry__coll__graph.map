@@ -1,0 +1,5 @@
+<map id="BESServiceRegistry" name="BESServiceRegistry">
+<area shape="rect" id="Node000001" title="The service registry allows modules to register services with the BES that they provide." alt="" coords="5,139,167,444"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="41,5,131,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,104,89,138,83,138,83,104"/>
+</map>

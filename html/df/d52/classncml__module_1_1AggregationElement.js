@@ -1,0 +1,28 @@
+var classncml__module_1_1AggregationElement =
+[
+    [ "addAggregationVariable", "df/d52/classncml__module_1_1AggregationElement.html#ac0709f43376782770ab257953b5dd8bb", null ],
+    [ "addChildDataset", "df/d52/classncml__module_1_1AggregationElement.html#a3efc7e8205f76bfd2ae97dde24fc78dc", null ],
+    [ "addPreDeleteCB", "df/d52/classncml__module_1_1AggregationElement.html#a825ce9286f38578da1c4baf95858d397", null ],
+    [ "addScanElement", "df/d52/classncml__module_1_1AggregationElement.html#a752e62bf8b4687dbea34d550e8606a47", null ],
+    [ "clone", "df/d52/classncml__module_1_1AggregationElement.html#ac1be4b31722b8cbf39f5006e1c0a1e94", null ],
+    [ "getAggregationVariableCoordinateAxisType", "df/d52/classncml__module_1_1AggregationElement.html#a30f1935e98e395985fb36f7ed3709802", null ],
+    [ "getRefCount", "df/d52/classncml__module_1_1AggregationElement.html#a57f721b57230bfe849d75707fb567d82", null ],
+    [ "getTypeName", "df/d52/classncml__module_1_1AggregationElement.html#a9758e060d74fb2dacacbbb1841b91d8b", null ],
+    [ "gotVariableAggElement", "df/d52/classncml__module_1_1AggregationElement.html#a90772e422f12f08b9a151f9974aaf178", null ],
+    [ "handleBegin", "df/d52/classncml__module_1_1AggregationElement.html#adc2cddc399b522f886e8cbb34b6b6536", null ],
+    [ "handleContent", "df/d52/classncml__module_1_1AggregationElement.html#aa1a3ab399ca768013a5fa99305f44629", null ],
+    [ "handleEnd", "df/d52/classncml__module_1_1AggregationElement.html#acf8c16d8c9defea6a2b20744bc76e57f", null ],
+    [ "isAggregationVariable", "df/d52/classncml__module_1_1AggregationElement.html#a795b1d8d197906b2a775fadc493a4a4b", null ],
+    [ "line", "df/d52/classncml__module_1_1AggregationElement.html#a0cab4b40b1b66741598c9753c489d8b1", null ],
+    [ "processParentDatasetComplete", "df/d52/classncml__module_1_1AggregationElement.html#a4acec56c46d547bcd094e3867ca908cd", null ],
+    [ "ref", "df/d52/classncml__module_1_1AggregationElement.html#a4f1d8d3bd58f1b3b618d8402c0ec03be", null ],
+    [ "removeFromPool", "df/d52/classncml__module_1_1AggregationElement.html#afb16e3ea983f5ab9ea2d6f06850a47b6", null ],
+    [ "removePreDeleteCB", "df/d52/classncml__module_1_1AggregationElement.html#a71f6dd7016edbc9dabadb6b83726e715", null ],
+    [ "setAggregationVariableCoordinateAxisType", "df/d52/classncml__module_1_1AggregationElement.html#a362c622e6e8c15380ee793cb41f85831", null ],
+    [ "setAttributes", "df/d52/classncml__module_1_1AggregationElement.html#a106b2b941df1d82e8732f7caacd072aa", null ],
+    [ "setParentDataset", "df/d52/classncml__module_1_1AggregationElement.html#a48bdf037e1a5ccef5da9f7c30d2ea089", null ],
+    [ "setVariableAggElement", "df/d52/classncml__module_1_1AggregationElement.html#a3c5aaff1d86c764cbe6aa758443ea285", null ],
+    [ "toString", "df/d52/classncml__module_1_1AggregationElement.html#a6e841e8a0241194d77dc5368417291a4", null ],
+    [ "unref", "df/d52/classncml__module_1_1AggregationElement.html#ae53768c000bbfcc3f7a612344ff22b7b", null ],
+    [ "validateAttributes", "df/d52/classncml__module_1_1AggregationElement.html#ac46b0d80cef66befcf19a4fa0b0412fc", null ]
+];

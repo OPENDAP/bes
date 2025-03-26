@@ -1,0 +1,13 @@
+<map id="HDFCFStr.h" name="HDFCFStr.h">
+<area shape="rect" id="Node000001" title="This class provides a way to map HDF4 1&#45;D character array to DAP Str for the CF option." alt="" coords="243,5,337,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,60,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="244,33,74,81,72,76,242,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="85,79,221,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="267,33,190,74,188,70,265,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="245,79,335,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="293,31,293,65,287,65,287,31"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="359,79,426,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="309,29,365,68,362,73,306,33"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="451,79,503,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="323,28,439,74,437,79,322,33"/>
+</map>

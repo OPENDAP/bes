@@ -1,0 +1,5 @@
+<map id="BESResponseObject" name="BESResponseObject">
+<area shape="rect" id="Node000001" title="Abstract base class representing a specific set of information in response to a request to the BES." alt="" coords="5,139,172,244"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="44,5,133,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,105,91,138,86,138,86,105"/>
+</map>

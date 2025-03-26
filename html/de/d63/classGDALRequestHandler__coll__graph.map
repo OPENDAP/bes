@@ -1,0 +1,7 @@
+<map id="GDALRequestHandler" name="GDALRequestHandler">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,452,179,712"/>
+<area shape="rect" id="Node000002" href="$d7/db0/classBESRequestHandler.html" title="Represents a specific data type request handler." alt="" coords="10,139,174,404"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,418,95,452,89,452,89,418"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="47,5,137,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="95,104,95,138,89,138,89,104"/>
+</map>

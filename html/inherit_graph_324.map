@@ -1,0 +1,15 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,77,140,102"/>
+<area shape="rect" id="Node000001" href="$d4/d69/structbes_1_1GlobalMetadataStore_1_1MDSReadLock.html" title="Unlock and close the MDS item when the ReadLock goes out of scope." alt="" coords="188,37,365,77"/>
+<area shape="poly" id="edge684_Node000000_Node000001" title=" " alt="" coords="153,74,187,69,188,74,154,79"/>
+<area shape="rect" id="Node000002" href="$d8/d0a/structbes_1_1GlobalMetadataStore_1_1StreamDAP.html" title=" " alt="" coords="188,101,365,141"/>
+<area shape="poly" id="edge685_Node000000_Node000002" title=" " alt="" coords="154,99,188,105,187,110,153,105"/>
+<area shape="rect" id="Node000003" href="$d2/db9/structbes_1_1DmrppMetadataStore_1_1StreamDMRpp.html" title="Hack use a DMR to write a DMR++ response. WIP." alt="" coords="413,5,592,45"/>
+<area shape="poly" id="edge686_Node000002_Node000003" title=" " alt="" coords="350,94,364,87,388,71,412,55,439,43,441,48,415,60,391,76,367,92,352,98"/>
+<area shape="rect" id="Node000004" href="$d4/d43/structbes_1_1GlobalMetadataStore_1_1StreamDAS.html" title="Instantiate with a DDS or DMR and use to write the DAS response." alt="" coords="414,69,591,109"/>
+<area shape="poly" id="edge687_Node000002_Node000004" title=" " alt="" coords="378,104,414,99,414,105,379,110"/>
+<area shape="rect" id="Node000005" href="$d0/d01/structbes_1_1GlobalMetadataStore_1_1StreamDDS.html" title="Instantiate with a DDS or DMR and use to write the DDS response." alt="" coords="414,133,591,173"/>
+<area shape="poly" id="edge688_Node000002_Node000005" title=" " alt="" coords="379,133,414,138,414,143,378,138"/>
+<area shape="rect" id="Node000006" href="$d8/dc3/structbes_1_1GlobalMetadataStore_1_1StreamDMR.html" title="Instantiate with a DDS or DMR and use to write the DMR response." alt="" coords="414,197,591,237"/>
+<area shape="poly" id="edge689_Node000002_Node000006" title=" " alt="" coords="330,145,414,183,445,195,443,200,412,188,328,150"/>
+</map>

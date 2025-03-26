@@ -1,0 +1,19 @@
+<map id="HDFSP::VDField" name="HDFSP::VDField">
+<area shape="rect" id="Node000001" title="One instance of this class represents one Vdata field." alt="" coords="100,733,221,919"/>
+<area shape="rect" id="Node000002" href="$df/de4/classHDFSP_1_1Field.html" title=" " alt="" coords="103,499,218,684"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="163,697,163,733,158,733,158,697"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="29,349,101,414"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="74,413,92,474,98,486,93,489,88,476,69,415"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,166,124,246"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="67,260,67,348,62,348,62,260"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="139,349,182,414"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="163,414,163,482,158,482,158,414"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="207,341,339,421"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="253,423,220,485,216,483,249,421"/>
+<area shape="rect" id="Node000007" href="$d0/df0/classHDFSP_1_1Attribute.html" title="Representing one attribute in grid or swath." alt="" coords="181,133,297,279"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="255,279,262,317,263,325,258,326,257,318,250,280"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="322,173,429,239"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="361,252,328,319,311,343,307,340,324,316,356,250"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="364,5,387,71"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="378,71,378,157,373,157,373,71"/>
+</map>

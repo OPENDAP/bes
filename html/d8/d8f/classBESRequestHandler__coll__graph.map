@@ -1,0 +1,5 @@
+<map id="BESRequestHandler" name="BESRequestHandler">
+<area shape="rect" id="Node000001" title="Represents a specific data type request handler." alt="" coords="5,139,169,404"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="43,5,132,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,104,90,138,85,138,85,104"/>
+</map>

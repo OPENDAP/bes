@@ -1,0 +1,7 @@
+<map id="HDFCFStr.h" name="HDFCFStr.h">
+<area shape="rect" id="Node000001" title="This class provides a way to map HDF4 1&#45;D character array to DAP Str for the CF option." alt="" coords="67,5,162,31"/>
+<area shape="rect" id="Node000002" href="$d4/d2c/HDFCFStr_8cc.html" title="The implementation of mapping HDF4 one dimensional character arry to DAP String for the CF option." alt="" coords="5,79,107,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="98,43,69,80,64,77,94,40"/>
+<area shape="rect" id="Node000003" href="$d6/d53/hdfdesc_8cc.html" title="DAP attributes and structure description generation code." alt="" coords="131,79,216,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="136,40,165,77,161,80,131,43"/>
+</map>
