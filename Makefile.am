@@ -79,7 +79,7 @@ framework-check:
 # This target only builds the documents, it does not move them to
 # github. Use the 'gh-docs' target below for that.
 .PHONY: docs
-docs: ${DOXYGEN_CONF} mainpage.doxygen
+docs: ${DOXYGEN_CONF} main_page.doxygen
 	doxygen ${DOXYGEN_CONF}
 
 # cccc computes metrics like Lines of code and McCabe. It's available
