@@ -64,10 +64,11 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
 
+    string vlen_var_path = get_VarPath();
     BESDEBUG("h5","variable name is "<<name() <<endl);
-    BESDEBUG("h5","variable path is  "<<var_path <<endl);
+    BESDEBUG("h5","variable path is  "<<vlen_var_path <<endl);
 
-    hid_t dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+    hid_t dset_id = H5Dopen2(file_id,vlen_var_path.c_str(),H5P_DEFAULT);
 
     if (dset_id < 0) {
         H5Fclose(file_id);
@@ -122,7 +123,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         if (num_dims ==0) {
             H5Dclose(dset_id);
             H5Fclose(file_id);
-            string err_msg = "This variable is a variable-length array, the number of dimensions must be greater than 1.";
+            string err_msg = "This variable is a variable-length array, the number of dimensions for DAP4 representation must be greater than 1.";
             throw InternalErr(__FILE__, __LINE__,err_msg);
         }
         vector<int64_t> offset(num_dims+1);
@@ -140,7 +141,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         if (count.back() != last_dim_size) {
             H5Dclose(dset_id);
             H5Fclose(file_id);
-            string err_msg = "This variable is a variable-length array, the last dimension cannot be subset.";
+            string err_msg = "This variable is a variable-length array, the last dimension in the DAP4 representation cannot be subset.";
             throw InternalErr(__FILE__, __LINE__,err_msg);
         }
 
@@ -155,21 +156,21 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
             vlen_num_elems *=vlen_count[i];
         }
     }
-#if 0
-cerr<<"var: "<<name()<<endl;
-cerr<<"varpath: "<<var_path <<endl;
-cerr<<"vlen_count[0]: "<<vlen_count[0] <<endl;
-cerr<<"vlen_offset[0]: "<<vlen_offset[0] <<endl;
-cerr<<"vlen_step[0]: "<<vlen_step[0] <<endl;
-cerr<<"num_dims: "<<num_dims <<endl;
-cerr<<"vlen_num_elems: "<<vlen_num_elems <<endl;
-#endif
+
+    BESDEBUG("h5","vlen_count[0]: "<<vlen_count[0] <<endl);
+    BESDEBUG("h5","vlen_offset[0]: "<<vlen_offset[0] <<endl);
+    BESDEBUG("h5","vlen_step[0]: "<<vlen_step[0] <<endl);
+    BESDEBUG("h5","num_dims: "<<num_dims <<endl);
+    BESDEBUG("h5","vlen_num_elems: "<<vlen_num_elems <<endl);
     
     if (H5Sselect_hyperslab(vlen_space, H5S_SELECT_SET,
                             vlen_offset.data(), vlen_step.data(),
                             vlen_count.data(), nullptr) < 0) {
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, "could not select hyperslab");
     } 
+ 
     hid_t memspace = H5Screate_simple(num_dims,vlen_count.data(),nullptr);
     if (memspace < 0) {
         H5Dclose(dset_id);
@@ -183,6 +184,7 @@ cerr<<"vlen_num_elems: "<<vlen_num_elems <<endl;
         H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__,"Cannot read variable-length datatype data.");
     }
+
     // Handle vlen and vlen_index here.
     if (vlen_index) {
         if (this->var()->type() != dods_int32_c) { 
@@ -217,6 +219,7 @@ cerr<<"vlen_num_elems: "<<vlen_num_elems <<endl;
                 int64_t last_dim_size = this->dimension_size(last_dim_iter);
                 size_t bytes_per_element = this->var()->width_ll();
                 size_t total_data_buf_size = vlen_num_elems*last_dim_size*bytes_per_element;
+
                 vector<char> data_buf(total_data_buf_size,0);
                 char *temp_data_buf_ptr = data_buf.data();
 

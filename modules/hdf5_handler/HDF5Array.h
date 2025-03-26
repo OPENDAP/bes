@@ -54,15 +54,8 @@ class HDF5Array:public libdap::Array {
     hsize_t d_num_elm = 0;
     
     hsize_t d_memneed = 0;
-#if 0
     string var_path;
     
-    // Parse constraint expression and make HDF5 coordinate point location.
-    // return number of elements to read. 
-   int64_t format_constraint(int64_t *cor, int64_t *step, int64_t *edg);
-#endif
-
-
     bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values, size_t values_offset,
                               int64_t nelms,const int64_t* offset,const int64_t* count,const int64_t *step);
 
@@ -131,7 +124,6 @@ class HDF5Array:public libdap::Array {
     friend class HDF5Structure;
 
   protected:
-    string var_path;
     
     // Parse constraint expression and make HDF5 coordinate point location.
     // return number of elements to read. 
@@ -154,6 +146,7 @@ class HDF5Array:public libdap::Array {
     /// Reads HDF5 array data into local buffer
     bool read() override;
 
+    string get_VarPath() { return var_path;}
     /// remembers memory size needed.    
     void set_memneed(size_t need);
 
