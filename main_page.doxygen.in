@@ -6,6 +6,8 @@
 
 /** \mainpage
 
+\showdate "%A %Y-%m-%d" 2025-03-26
+
 \section intro Introduction
 
 This reference documentation corresponds to version @PACKAGE_VERSION@ of the BES, a C++
