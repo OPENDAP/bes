@@ -1,7 +1,0 @@
-<map id="dmrpp::DmrppD4Group" name="dmrpp::DmrppD4Group">
-<area shape="rect" id="Node000001" title=" " alt="" coords="68,399,221,644"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,145,116,211"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,223,117,398,112,399,69,225"/>
-<area shape="rect" id="Node000003" href="$dc/dc2/classdmrpp_1_1DmrppCommon.html" title="Size and offset information of data included in DMR++ files." alt="" coords="140,5,317,351"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="186,365,177,399,172,398,181,363"/>
-</map>

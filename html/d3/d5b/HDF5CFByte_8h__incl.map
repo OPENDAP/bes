@@ -1,7 +1,0 @@
-<map id="HDF5CFByte.h" name="HDF5CFByte.h">
-<area shape="rect" id="Node000001" title="This class provides a way to map HDF5 byte to DAP byte for the CF option." alt="" coords="27,5,139,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,60,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,32,52,69,47,65,72,29"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="85,79,183,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="94,29,119,65,115,69,90,32"/>
-</map>

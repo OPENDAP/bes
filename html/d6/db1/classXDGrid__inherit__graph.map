@@ -1,7 +1,0 @@
-<map id="XDGrid" name="XDGrid">
-<area shape="rect" id="Node000001" title=" " alt="" coords="58,239,179,384"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,65,88,131"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,143,97,238,92,240,60,145"/>
-<area shape="rect" id="Node000003" href="$df/d03/classXDOutput.html" title=" " alt="" coords="112,5,272,191"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="158,205,146,239,141,238,153,203"/>
-</map>

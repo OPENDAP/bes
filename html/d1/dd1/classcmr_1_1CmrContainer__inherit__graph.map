@@ -1,7 +1,0 @@
-<map id="cmr::CmrContainer" name="cmr::CmrContainer">
-<area shape="rect" id="Node000001" title="Container representing a remote request." alt="" coords="5,532,195,757"/>
-<area shape="rect" id="Node000002" href="$d2/d74/classBESContainer.html" title="A container is something that holds data. E.G., a netcdf file or a database entry." alt="" coords="23,139,177,484"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,498,103,532,97,532,97,498"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="55,5,145,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="103,105,103,138,97,138,97,105"/>
-</map>

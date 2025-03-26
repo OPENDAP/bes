@@ -1,5 +1,0 @@
-<map id="HDF5CF::GMFile" name="HDF5CF::GMFile">
-<area shape="rect" id="Node000001" title="This class is a derived class of File. It includes methods applied to general HDF5 files only." alt="" coords="5,827,233,1400"/>
-<area shape="rect" id="Node000002" href="$d7/d63/classHDF5CF_1_1File.html" title="This class retrieves all information from an HDF5 file." alt="" coords="11,5,227,779"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="122,792,122,826,117,826,117,792"/>
-</map>

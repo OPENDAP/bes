@@ -1,9 +1,0 @@
-<map id="HE5Checker.h" name="HE5Checker.h">
-<area shape="rect" id="Node000001" title="A class for parsing NASA HDF&#45;EOS5 StructMetadata." alt="" coords="128,5,237,31"/>
-<area shape="rect" id="Node000002" href="$de/d94/HE5Checker_8cc.html" title="All rights reserved." alt="" coords="5,79,120,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="151,40,85,81,82,76,149,36"/>
-<area shape="rect" id="Node000003" href="$d6/ded/h5dmr_8cc.html" title="DMR(Data Metadata Response) request processing source." alt="" coords="144,79,221,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="185,44,185,78,180,78,180,44"/>
-<area shape="rect" id="Node000004" href="$df/daa/heos5cfdap_8cc.html" title="Map and generate DDS and DAS for the CF option for HDF&#45;EOS5 products." alt="" coords="246,79,354,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="216,36,281,76,278,81,213,40"/>
-</map>

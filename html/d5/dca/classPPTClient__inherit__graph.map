@@ -1,9 +1,0 @@
-<map id="PPTClient" name="PPTClient">
-<area shape="rect" id="Node000001" title=" " alt="" coords="25,965,157,1131"/>
-<area shape="rect" id="Node000002" href="$db/df1/classPPTConnection.html" title=" " alt="" coords="5,552,176,917"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,931,93,965,88,965,88,931"/>
-<area shape="rect" id="Node000003" href="$d0/db7/classConnection.html" title=" " alt="" coords="17,139,165,504"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="93,518,93,552,88,552,88,518"/>
-<area shape="rect" id="Node000004" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="46,5,135,91"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="93,104,93,138,88,138,88,104"/>
-</map>

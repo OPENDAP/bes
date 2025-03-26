@@ -1,6 +1,0 @@
-var classAsciiUInt32 =
-[
-    [ "get_full_name", "de/d48/classAsciiUInt32.html#af48553a8fd3363f020c3c78a20830dbe", null ],
-    [ "increment_state", "de/d48/classAsciiUInt32.html#aee2280bc784c10e718e369d2d68d920e", null ],
-    [ "print_ascii", "de/d48/classAsciiUInt32.html#ae4e14080db34ea8be2b89043cd134973", null ]
-];

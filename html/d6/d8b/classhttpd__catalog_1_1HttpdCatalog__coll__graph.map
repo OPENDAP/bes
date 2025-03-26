@@ -1,7 +1,0 @@
-<map id="httpd_catalog::HttpdCatalog" name="httpd_catalog::HttpdCatalog">
-<area shape="rect" id="Node000001" title="builds catalogs from a directory structure exposed by Apache httpd" alt="" coords="5,472,184,677"/>
-<area shape="rect" id="Node000002" href="$db/d0a/classBESCatalog.html" title="Catalogs provide a hierarchical organization for data." alt="" coords="17,139,172,424"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,438,97,472,92,472,92,438"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="50,5,139,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="97,104,97,138,92,138,92,104"/>
-</map>

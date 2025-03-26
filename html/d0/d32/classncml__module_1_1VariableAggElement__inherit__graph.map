@@ -1,9 +1,0 @@
-<map id="ncml_module::VariableAggElement" name="ncml_module::VariableAggElement">
-<area shape="rect" id="Node000001" title="Element for the &lt;variableAgg&gt; element child of an &lt;aggregation&gt;." alt="" coords="13,925,186,1225"/>
-<area shape="rect" id="Node000002" href="$d7/d8e/classncml__module_1_1NCMLElement.html" title="Base class for NcML element concrete classes." alt="" coords="5,512,193,877"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,891,102,925,97,925,97,891"/>
-<area shape="rect" id="Node000003" href="$d2/dfb/classagg__util_1_1RCObject.html" title="A base class for a simple reference counted object." alt="" coords="21,219,177,464"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="102,478,102,512,97,512,97,478"/>
-<area shape="rect" id="Node000004" href="$d5/d42/classagg__util_1_1RCObjectInterface.html" title=" " alt="" coords="11,5,188,171"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="102,184,102,218,97,218,97,184"/>
-</map>

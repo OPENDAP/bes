@@ -1,9 +1,0 @@
-<map id="dmrpp::DmrppCommon" name="dmrpp::DmrppCommon">
-<area shape="rect" id="Node000001" title="Size and offset information of data included in DMR++ files." alt="" coords="5,277,183,583"/>
-<area shape="rect" id="Node000002" href="$d9/db9/classbool.html" title=" " alt="" coords="8,135,47,200"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="28,200,31,253,33,261,28,262,26,254,23,200"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="125,135,197,200"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="155,201,140,261,134,260,150,199"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="101,5,220,85"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="163,99,163,134,158,134,158,99"/>
-</map>

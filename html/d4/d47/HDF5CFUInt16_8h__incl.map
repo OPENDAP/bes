@@ -1,7 +1,0 @@
-<map id="HDF5CFUInt16.h" name="HDF5CFUInt16.h">
-<area shape="rect" id="Node000001" title="This class provides a way to map HDF5 unsigned 16&#45;bit integer to DAP uint16 for the CF option." alt="" coords="23,5,149,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,60,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,32,52,69,48,66,75,29"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="85,79,197,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="98,29,125,66,121,69,93,32"/>
-</map>

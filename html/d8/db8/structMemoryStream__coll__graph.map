@@ -1,7 +1,0 @@
-<map id="MemoryStream" name="MemoryStream">
-<area shape="rect" id="Node000001" title="Represents an in&#45;memory input byte stream." alt="" coords="5,163,131,388"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="7,5,47,71"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="28,71,31,138,32,146,27,147,25,139,22,71"/>
-<area shape="rect" id="Node000003" href="$dd/de2/classsize__t.html" title=" " alt="" coords="85,5,134,71"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="106,71,93,147,88,146,101,71"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="BESFileContainer" name="BESFileContainer">
-<area shape="rect" id="Node000001" title="Holds real data, container type and constraint for symbolic name read from persistence." alt="" coords="5,532,269,777"/>
-<area shape="rect" id="Node000002" href="$d2/d74/classBESContainer.html" title="A container is something that holds data. E.G., a netcdf file or a database entry." alt="" coords="60,139,215,484"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="140,498,140,532,135,532,135,498"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="93,5,182,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="140,105,140,138,135,138,135,105"/>
-</map>

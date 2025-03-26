@@ -1,5 +1,0 @@
-<map id="ncml_module::RenamedArrayWrapper" name="ncml_module::RenamedArrayWrapper">
-<area shape="rect" id="Node000001" title="A Decorator Pattern for wrapping a libdap::Array in order to change its name efficiently in the face ..." alt="" coords="5,119,196,399"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="56,5,145,71"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,84,103,118,98,118,98,84"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="FONcSequence" name="FONcSequence">
-<area shape="rect" id="Node000001" title="A DAP Sequence with file out netcdf information included." alt="" coords="5,672,141,857"/>
-<area shape="rect" id="Node000002" href="$d4/ddf/classFONcBaseType.html" title="A DAP BaseType with file out netcdf information included." alt="" coords="7,139,140,624"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="76,638,76,672,71,672,71,638"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="29,5,118,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="76,104,76,139,71,139,71,104"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="HDF5Int8.h" name="HDF5Int8.h">
-<area shape="rect" id="Node000001" title="This class provides a way to map HDF5 int8 to DAP Int8 for the default option." alt="" coords="8,5,99,31"/>
-<area shape="rect" id="Node000002" href="$d9/d31/HDF5Int8_8cc.html" title="Implementation of mapping HDF5 byte to DAP Int8 for the default option." alt="" coords="5,79,101,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="56,44,56,78,51,78,51,44"/>
-</map>

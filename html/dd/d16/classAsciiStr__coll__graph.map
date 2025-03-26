@@ -1,9 +1,0 @@
-<map id="AsciiStr" name="AsciiStr">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,348,115,473"/>
-<area shape="rect" id="Node000002" href="$d9/df8/classStr.html" title=" " alt="" coords="11,183,42,249"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="37,262,52,347,47,348,32,263"/>
-<area shape="rect" id="Node000003" href="$db/d02/classAsciiOutput.html" title=" " alt="" coords="67,133,195,299"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="98,313,85,349,80,347,93,311"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="89,5,172,71"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="133,71,133,117,128,117,128,71"/>
-</map>

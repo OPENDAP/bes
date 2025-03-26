@@ -1,7 +1,0 @@
-<map id="BESSetContainerResponseHandler" name="BESSetContainerResponseHandler">
-<area shape="rect" id="Node000001" title="response handler that creates a container given the symbolic name, real name, and data type." alt="" coords="5,412,251,592"/>
-<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="41,139,215,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="131,378,131,412,125,412,125,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="83,5,173,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="131,105,131,138,125,138,125,105"/>
-</map>

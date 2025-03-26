@@ -1,7 +1,0 @@
-<map id="ncml_module::NCMLBaseArray" name="ncml_module::NCMLBaseArray">
-<area shape="rect" id="Node000001" title=" " alt="" coords="21,388,247,683"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,125,95,191"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="63,204,104,387,99,388,58,205"/>
-<area shape="rect" id="Node000003" href="$d6/db5/classncml__module_1_1Shape.html" title="A wrapper class for a vector of Array::dimension structs." alt="" coords="119,5,320,311"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="187,312,174,372,168,371,182,310"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="XDFloat64" name="XDFloat64">
-<area shape="rect" id="Node000001" title=" " alt="" coords="48,368,157,493"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,193,107,259"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="69,271,91,367,86,368,64,273"/>
-<area shape="rect" id="Node000003" href="$df/d03/classXDOutput.html" title=" " alt="" coords="131,133,291,319"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="158,332,138,369,134,366,153,330"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="169,5,252,71"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="213,71,213,117,208,117,208,71"/>
-</map>

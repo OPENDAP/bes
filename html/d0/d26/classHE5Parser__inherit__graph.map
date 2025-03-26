@@ -1,9 +1,0 @@
-<map id="HE5Parser" name="HE5Parser">
-<area shape="rect" id="Node000001" title=" " alt="" coords="124,359,253,584"/>
-<area shape="rect" id="Node000002" href="$dd/d19/structHE5Swath.html" title=" " alt="" coords="5,95,105,221"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="87,233,119,310,140,357,135,359,114,312,83,235"/>
-<area shape="rect" id="Node000003" href="$dd/dd0/structHE5Grid.html" title=" " alt="" coords="129,5,248,311"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="191,324,191,358,186,358,186,324"/>
-<area shape="rect" id="Node000004" href="$d2/da3/structHE5Za.html" title=" " alt="" coords="272,105,372,211"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="299,224,263,312,242,359,238,357,258,310,294,222"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="BESAsciiTransmit" name="BESAsciiTransmit">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,412,177,557"/>
-<area shape="rect" id="Node000002" href="$de/d2b/classBESTransmitter.html" title=" " alt="" coords="23,139,159,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,378,94,411,89,411,89,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="47,5,136,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="94,105,94,138,89,138,89,105"/>
-</map>

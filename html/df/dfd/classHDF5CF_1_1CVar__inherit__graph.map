@@ -1,9 +1,0 @@
-<map id="HDF5CF::CVar" name="HDF5CF::CVar">
-<area shape="rect" id="Node000001" title="This class is a derived class of Var. It represents a coordinate variable." alt="" coords="102,379,206,504"/>
-<area shape="rect" id="Node000003" href="$d6/da7/classHDF5CF_1_1EOS5CVar.html" title="This class is a derived class of CVar. It represents a coordinate variable for HDF&#45;EOS5 files." alt="" coords="5,552,145,817"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="132,518,121,553,116,551,127,517"/>
-<area shape="rect" id="Node000004" href="$d7/dc9/classHDF5CF_1_1GMCVar.html" title="This class is a derived class of CVar. It represents a coordinate variable for general HDF5 files." alt="" coords="170,622,295,747"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="181,517,215,621,210,623,176,518"/>
-<area shape="rect" id="Node000002" href="$d2/dd9/classHDF5CF_1_1Var.html" title="This class represents one HDF5 dataset(CF variable)" alt="" coords="77,5,231,331"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="157,344,157,378,151,378,151,344"/>
-</map>

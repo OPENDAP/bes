@@ -1,9 +1,0 @@
-<map id="builddmrpp::NgapBuildDmrppContainerStorage" name="builddmrpp::NgapBuildDmrppContainerStorage">
-<area shape="rect" id="Node000001" title="implementation of BESContainerStorageVolatile that represents a list of remote requests" alt="" coords="5,785,245,1000"/>
-<area shape="rect" id="Node000002" href="$d2/d69/classBESContainerStorageVolatile.html" title="implementation of BESContainerStorage that stores containers in memory for the duration of this proce..." alt="" coords="17,472,233,737"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="128,751,128,785,123,785,123,751"/>
-<area shape="rect" id="Node000003" href="$da/d00/classBESContainerStorage.html" title="provides persistent storage for data storage information represented by a container." alt="" coords="39,139,211,424"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="128,438,128,472,123,472,123,438"/>
-<area shape="rect" id="Node000004" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="81,5,170,91"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="128,104,128,138,123,138,123,104"/>
-</map>

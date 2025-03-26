@@ -1,7 +1,0 @@
-<map id="BESError" name="BESError">
-<area shape="rect" id="Node000001" title="Base exception class for the BES with basic string message." alt="" coords="21,139,203,404"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,15,101,81"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="68,93,80,138,74,139,63,95"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="126,5,215,91"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="159,105,150,139,144,138,153,103"/>
-</map>

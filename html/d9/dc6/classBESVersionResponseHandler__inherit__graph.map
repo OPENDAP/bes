@@ -1,7 +1,0 @@
-<map id="BESVersionResponseHandler" name="BESVersionResponseHandler">
-<area shape="rect" id="Node000001" title="response handler that returns the version of the BES and the version of any data request handlers reg..." alt="" coords="5,412,225,577"/>
-<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="28,139,203,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,378,118,412,113,412,113,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="71,5,160,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="118,105,118,138,113,138,113,105"/>
-</map>

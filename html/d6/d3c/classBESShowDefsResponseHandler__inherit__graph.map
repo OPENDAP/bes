@@ -1,7 +1,0 @@
-<map id="BESShowDefsResponseHandler" name="BESShowDefsResponseHandler">
-<area shape="rect" id="Node000001" title="response handler that returns list of definitions currently defined" alt="" coords="5,412,241,577"/>
-<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="36,139,211,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="126,378,126,412,121,412,121,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="79,5,168,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="126,105,126,138,121,138,121,105"/>
-</map>
