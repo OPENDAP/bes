@@ -1,0 +1,7 @@
+<map id="GatewayPathInfoCommand" name="GatewayPathInfoCommand">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,472,211,637"/>
+<area shape="rect" id="Node000002" href="$d4/dfd/classBESXMLCommand.html" title="Base class for the BES&#39;s commands." alt="" coords="29,139,187,424"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,437,111,472,105,472,105,437"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="63,5,153,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="111,104,111,138,105,138,105,104"/>
+</map>

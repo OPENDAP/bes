@@ -1,0 +1,5 @@
+<map id="http::HttpCache" name="http::HttpCache">
+<area shape="rect" id="node1" title="A cache for content accessed via HTTP." alt="" coords="8,447,177,612"/>
+<area shape="rect" id="node2" href="$dd/d75/classBESFileLockingCache.html" title="Implementation of a caching mechanism for compressed data." alt="" coords="5,145,180,399"/>
+<area shape="rect" id="node3" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="44,5,141,97"/>
+</map>

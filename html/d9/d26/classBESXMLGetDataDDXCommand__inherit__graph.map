@@ -1,0 +1,9 @@
+<map id="BESXMLGetDataDDXCommand" name="BESXMLGetDataDDXCommand">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,745,240,911"/>
+<area shape="rect" id="Node000002" href="$de/de8/classBESXMLGetCommand.html" title=" " alt="" coords="33,472,212,697"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,711,125,745,120,745,120,711"/>
+<area shape="rect" id="Node000003" href="$d4/dfd/classBESXMLCommand.html" title="Base class for the BES&#39;s commands." alt="" coords="44,139,201,424"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="125,438,125,472,120,472,120,438"/>
+<area shape="rect" id="Node000004" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="78,5,167,91"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="125,104,125,138,120,138,120,104"/>
+</map>

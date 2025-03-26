@@ -1,0 +1,13 @@
+<map id="internal::Stack&lt; Allocator &gt;" name="internal::Stack&lt; Allocator &gt;">
+<area shape="rect" id="Node000001" title="A type&#45;unsafe stack for storing different types of data." alt="" coords="473,5,646,271"/>
+<area shape="rect" id="Node000002" href="$d3/dab/classinternal_1_1Stack.html" title=" " alt="" coords="5,355,196,621"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="461,183,400,214,334,252,268,298,209,350,198,362,194,358,205,346,265,294,331,248,397,209,459,178"/>
+<area shape="rect" id="Node000003" href="$d3/dab/classinternal_1_1Stack.html" title=" " alt="" coords="220,348,453,628"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="464,216,428,254,396,296,371,349,366,347,392,293,424,250,461,212"/>
+<area shape="rect" id="Node000004" href="$d3/dab/classinternal_1_1Stack.html" title=" " alt="" coords="477,348,641,628"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="562,284,562,348,557,348,557,284"/>
+<area shape="rect" id="Node000005" href="$d3/dab/classinternal_1_1Stack.html" title=" " alt="" coords="665,355,872,621"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="658,211,695,250,726,293,740,323,751,354,746,356,735,325,721,296,691,253,654,215"/>
+<area shape="rect" id="Node000006" href="$d3/dab/classinternal_1_1Stack.html" title=" " alt="" coords="896,348,1060,628"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="660,173,760,223,810,256,856,293,902,346,898,349,852,297,807,260,757,228,658,178"/>
+</map>

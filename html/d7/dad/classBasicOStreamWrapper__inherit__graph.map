@@ -1,0 +1,7 @@
+<map id="BasicOStreamWrapper&lt; StreamType &gt;" name="BasicOStreamWrapper&lt; StreamType &gt;">
+<area shape="rect" id="Node000001" title="Wrapper of std::basic_ostream into RapidJSON&#39;s Stream concept." alt="" coords="103,5,273,225"/>
+<area shape="rect" id="Node000002" href="$d0/df4/classBasicOStreamWrapper.html" title=" " alt="" coords="5,288,176,568"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="152,239,137,288,132,287,147,238"/>
+<area shape="rect" id="Node000003" href="$d0/df4/classBasicOStreamWrapper.html" title=" " alt="" coords="200,288,371,568"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="251,237,255,249,265,287,260,288,249,250,246,239"/>
+</map>

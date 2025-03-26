@@ -1,0 +1,9 @@
+<map id="s3::S3ContainerStorage" name="s3::S3ContainerStorage">
+<area shape="rect" id="Node000001" title="implementation of BESContainerStorageVolatile that represents a list of remote requests" alt="" coords="32,785,195,911"/>
+<area shape="rect" id="Node000002" href="$d2/d69/classBESContainerStorageVolatile.html" title="implementation of BESContainerStorage that stores containers in memory for the duration of this proce..." alt="" coords="5,472,221,737"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,751,116,785,111,785,111,751"/>
+<area shape="rect" id="Node000003" href="$da/d00/classBESContainerStorage.html" title="provides persistent storage for data storage information represented by a container." alt="" coords="27,139,199,424"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="116,438,116,472,111,472,111,438"/>
+<area shape="rect" id="Node000004" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="69,5,158,91"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="116,104,116,138,111,138,111,104"/>
+</map>

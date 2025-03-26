@@ -1,0 +1,7 @@
+<map id="BESDefinitionStorage" name="BESDefinitionStorage">
+<area shape="rect" id="Node000001" title="provides persistent storage for a specific view of different containers including contraints and aggr..." alt="" coords="27,139,198,364"/>
+<area shape="rect" id="Node000003" href="$db/dc5/classBESDefinitionStorageVolatile.html" title="provides volatile storage for a specific definition/view of different containers including contraints..." alt="" coords="5,412,220,617"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="115,378,115,412,110,412,110,378"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="68,5,157,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="115,105,115,138,110,138,110,105"/>
+</map>

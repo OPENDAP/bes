@@ -1,0 +1,7 @@
+<map id="BESDapFunctionResponseCache" name="BESDapFunctionResponseCache">
+<area shape="rect" id="Node000001" title="Cache the results from server functions." alt="" coords="5,487,248,876"/>
+<area shape="rect" id="Node000002" href="$dd/d75/classBESFileLockingCache.html" title="Implementation of a caching mechanism for compressed data." alt="" coords="43,139,210,439"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,452,129,486,124,486,124,452"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="82,5,171,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="129,104,129,138,124,138,124,104"/>
+</map>

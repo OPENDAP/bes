@@ -1,0 +1,7 @@
+<map id="JPEG2000Transmitter" name="JPEG2000Transmitter">
+<area shape="rect" id="Node000001" title="BESTransmitter class named &quot;geotiff&quot; that transmits an OPeNDAP data object as a geotiff file." alt="" coords="5,412,179,517"/>
+<area shape="rect" id="Node000002" href="$de/d2b/classBESTransmitter.html" title=" " alt="" coords="24,139,160,364"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,378,95,412,89,412,89,378"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="47,5,137,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="95,105,95,138,89,138,89,105"/>
+</map>

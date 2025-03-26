@@ -1,0 +1,13 @@
+<map id="BESApp" name="BESApp">
+<area shape="rect" id="Node000001" title="Application class for BES applications." alt="" coords="154,139,275,424"/>
+<area shape="rect" id="Node000003" href="$de/de9/classBESModuleApp.html" title="Base application object for all BES applications." alt="" coords="60,522,196,667"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="174,438,151,522,146,521,169,437"/>
+<area shape="rect" id="Node000006" href="$d4/da3/classCmdApp.html" title=" " alt="" coords="221,472,382,717"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="260,437,270,471,265,472,255,438"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="170,5,259,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="217,104,217,138,212,138,212,104"/>
+<area shape="rect" id="Node000004" href="$d7/d63/classServerApp.html" title=" " alt="" coords="5,775,109,941"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="107,682,82,776,77,774,102,680"/>
+<area shape="rect" id="Node000005" href="$d6/df6/classStandAloneApp.html" title=" " alt="" coords="133,765,267,951"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="154,680,177,764,172,766,149,681"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="GenericReader&lt; SourceEncoding, TargetEncoding, StackAllocator &gt;" name="GenericReader&lt; SourceEncoding, TargetEncoding, StackAllocator &gt;">
+<area shape="rect" id="Node000001" title="SAX&#45;style JSON parser. Use Reader for UTF8 encoding and default allocator." alt="" coords="82,5,299,265"/>
+<area shape="rect" id="Node000002" href="$dc/d9e/classGenericReader.html" title=" " alt="" coords="5,343,179,677"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,279,124,290,112,343,106,342,119,289,122,277"/>
+<area shape="rect" id="Node000003" href="$dc/d9e/classGenericReader.html" title=" " alt="" coords="203,350,376,670"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="259,277,263,289,276,349,271,350,257,290,254,279"/>
+</map>

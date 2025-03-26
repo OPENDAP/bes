@@ -1,0 +1,5 @@
+<map id="bes::GlobalMetadataStore::MDSReadLock" name="bes::GlobalMetadataStore::MDSReadLock">
+<area shape="rect" id="Node000001" title="Unlock and close the MDS item when the ReadLock goes out of scope." alt="" coords="5,133,175,333"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="26,5,154,85"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,99,93,133,87,133,87,99"/>
+</map>

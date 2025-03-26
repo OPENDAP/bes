@@ -1,0 +1,7 @@
+<map id="bes::NullResponseHandler" name="bes::NullResponseHandler">
+<area shape="rect" id="Node000001" title="A ResponseHandler that does nothing." alt="" coords="7,412,179,577"/>
+<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="5,139,180,364"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,378,95,412,90,412,90,378"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="48,5,137,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="95,105,95,138,90,138,90,105"/>
+</map>

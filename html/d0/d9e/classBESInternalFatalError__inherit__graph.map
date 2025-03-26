@@ -1,0 +1,13 @@
+<map id="BESInternalFatalError" name="BESInternalFatalError">
+<area shape="rect" id="Node000001" title="exception thrown if an internal error is found and is fatal to the BES" alt="" coords="52,452,224,577"/>
+<area shape="rect" id="Node000005" href="$dc/d2a/classNoSuchLibrary.html" title=" " alt="" coords="5,625,127,691"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="103,591,85,626,80,624,98,588"/>
+<area shape="rect" id="Node000006" href="$de/d53/classNoSuchObject.html" title=" " alt="" coords="151,625,271,691"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="179,588,197,624,192,626,174,591"/>
+<area shape="rect" id="Node000002" href="$d7/dbd/classBESError.html" title="Base exception class for the BES with basic string message." alt="" coords="47,139,229,404"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="141,418,141,452,135,452,135,418"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="31,15,127,81"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="94,93,106,138,100,139,89,95"/>
+<area shape="rect" id="Node000004" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="152,5,241,91"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="185,105,176,139,170,138,179,103"/>
+</map>

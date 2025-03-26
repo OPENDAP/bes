@@ -1,0 +1,7 @@
+<map id="bes::GlobalMetadataStore::StreamDAS" name="bes::GlobalMetadataStore::StreamDAS">
+<area shape="rect" id="Node000001" title="Instantiate with a DDS or DMR and use to write the DAS response." alt="" coords="5,356,175,476"/>
+<area shape="rect" id="Node000002" href="$d8/d0a/structbes_1_1GlobalMetadataStore_1_1StreamDAP.html" title=" " alt="" coords="5,148,175,308"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,322,93,356,87,356,87,322"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="27,5,153,100"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="93,114,93,148,87,148,87,114"/>
+</map>
