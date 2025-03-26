@@ -264,6 +264,7 @@ before_deploy:
 deploy:
   # Push all build results to our S3 bucket
   - provider: s3
+    edge: true
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: opendap.travis.build
