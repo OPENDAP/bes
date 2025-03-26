@@ -292,7 +292,7 @@ AC_LANG_POP([C++])
 dnl FIXME modify this so that it looks for the AWS C++ SDK and sets the conditional
 dnl FIXME compilation as needed. for now, hack to move on with other tasks. jhrg 3/11/25
 
-AS_IF([true],
+AS_IF([false],
     [AWS_SDK_LIBS="-L/opt/homebrew/lib -laws-cpp-sdk-s3 -laws-cpp-sdk-core"
      AC_SUBST(AWS_SDK_LIBS)
      AC_MSG_NOTICE([AWS C++ SDK Found.])
