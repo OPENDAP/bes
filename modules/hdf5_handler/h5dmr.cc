@@ -3234,7 +3234,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     H5Tclose(vlen_type);
     H5Tclose(vlen_memtype);
  
-    auto ar_unique = make_unique<HDF5VlenAtomicArray>(vname, filename, bt,true);
+    auto ar_unique = make_unique<HDF5VlenAtomicArray>(vname, filename, bt,false);
     HDF5Array *ar = ar_unique.get();
 
     // set number of elements and variable name values.
