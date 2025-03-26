@@ -1,0 +1,7 @@
+<map id="BESCommand" name="BESCommand">
+<area shape="rect" id="Node000001" title=" " alt="" coords="150,5,253,71"/>
+<area shape="rect" id="Node000002" href="$df/d33/classBESWWWGetCommand.html" title=" " alt="" coords="5,129,195,234"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,84,140,130,135,127,168,81"/>
+<area shape="rect" id="Node000003" href="$da/d8a/classSampleSayCommand.html" title=" " alt="" coords="219,119,389,244"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="235,80,261,117,257,120,231,83"/>
+</map>

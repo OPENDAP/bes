@@ -1,0 +1,3 @@
+<map id="ncml_module::MyBaseTypeFactory" name="ncml_module::MyBaseTypeFactory">
+<area shape="rect" id="Node000001" title="Wrapper for the BaseTypeFactory that lets us create by type name." alt="" coords="5,5,228,211"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="BESContainerStorage" name="BESContainerStorage">
+<area shape="rect" id="Node000001" title="provides persistent storage for data storage information represented by a container." alt="" coords="5,283,177,568"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="9,135,99,220"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,234,72,282,67,283,60,234"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="123,145,195,210"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="153,211,137,267,132,266,148,210"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="100,5,219,85"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="162,99,162,144,157,144,157,99"/>
+</map>

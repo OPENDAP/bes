@@ -1,0 +1,9 @@
+<map id="ncml_module::SaxParser" name="ncml_module::SaxParser">
+<area shape="rect" id="Node000001" title="Interface class for the wrapper between libxml C SAX parser and our NCMLParser." alt="" coords="249,5,471,291"/>
+<area shape="rect" id="Node000002" href="$d7/db2/classncml__module_1_1NCMLParser.html" title=" " alt="" coords="5,344,224,659"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="255,303,226,345,222,342,251,300"/>
+<area shape="rect" id="Node000003" href="$d9/de2/classncml__module_1_1OtherXMLParser.html" title=" " alt="" coords="249,339,471,664"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="363,304,363,338,357,338,357,304"/>
+<area shape="rect" id="Node000004" href="$d7/df7/classncml__module_1_1SimpleLocationParser.html" title="SaxParser implementation that just grabs the netcdf@location attribute and returns it." alt="" coords="496,371,688,631"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="463,301,509,370,504,373,459,303"/>
+</map>

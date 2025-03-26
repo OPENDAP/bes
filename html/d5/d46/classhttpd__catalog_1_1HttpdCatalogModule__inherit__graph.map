@@ -1,0 +1,7 @@
+<map id="httpd_catalog::HttpdCatalogModule" name="httpd_catalog::HttpdCatalogModule">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,332,184,492"/>
+<area shape="rect" id="Node000002" href="$d9/d97/classBESAbstractModule.html" title=" " alt="" coords="15,139,175,284"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,298,97,332,92,332,92,298"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="50,5,139,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="97,104,97,138,92,138,92,104"/>
+</map>

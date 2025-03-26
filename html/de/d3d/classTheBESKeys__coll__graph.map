@@ -1,0 +1,9 @@
+<map id="TheBESKeys" name="TheBESKeys">
+<area shape="rect" id="Node000001" title="mapping of key/value pairs defining different behaviors of an application." alt="" coords="21,283,153,668"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="5,135,95,220"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="60,233,66,282,61,283,54,234"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="119,145,191,210"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="150,211,138,267,132,266,145,210"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="96,5,215,85"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="158,99,158,144,153,144,153,99"/>
+</map>

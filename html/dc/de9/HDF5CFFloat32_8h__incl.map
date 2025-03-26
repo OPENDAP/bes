@@ -1,0 +1,7 @@
+<map id="HDF5CFFloat32.h" name="HDF5CFFloat32.h">
+<area shape="rect" id="Node000001" title="This class provides a way to map HDF5 float to DAP float for the CF option." alt="" coords="22,5,153,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,60,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,32,53,69,48,66,76,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="85,79,202,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="99,29,127,66,123,69,95,32"/>
+</map>

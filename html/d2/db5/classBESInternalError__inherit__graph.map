@@ -1,0 +1,13 @@
+<map id="BESInternalError" name="BESInternalError">
+<area shape="rect" id="Node000001" title="exception thrown if internal error encountered" alt="" coords="97,452,240,577"/>
+<area shape="rect" id="Node000005" href="$d5/dd5/classcmr_1_1CmrInternalError.html" title=" " alt="" coords="5,643,148,748"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="133,591,106,644,101,641,128,588"/>
+<area shape="rect" id="Node000006" href="$d7/d23/classhttpd__catalog_1_1HttpdCatalogError.html" title=" " alt="" coords="173,625,351,765"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="210,588,228,623,223,626,205,591"/>
+<area shape="rect" id="Node000002" href="$d7/dbd/classBESError.html" title="Base exception class for the BES with basic string message." alt="" coords="78,139,259,404"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="171,418,171,452,166,452,166,418"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="62,15,158,81"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="125,93,136,138,131,139,120,95"/>
+<area shape="rect" id="Node000004" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="183,5,272,91"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="215,105,206,139,201,138,210,103"/>
+</map>

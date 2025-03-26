@@ -1,0 +1,9 @@
+<map id="BaseTypeFactory" name="BaseTypeFactory">
+<area shape="rect" id="Node000001" title=" " alt="" coords="197,5,316,71"/>
+<area shape="rect" id="Node000002" href="$d9/dfe/classAsciiOutputFactory.html" title=" " alt="" coords="5,119,159,464"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="209,82,173,120,161,138,157,135,169,117,205,78"/>
+<area shape="rect" id="Node000003" href="$d9/d50/classReadTypeFactory.html" title=" " alt="" coords="183,119,330,464"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="259,85,259,119,254,119,254,85"/>
+<area shape="rect" id="Node000004" href="$d6/dfb/classWWWOutputFactory.html" title=" " alt="" coords="355,119,519,464"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="308,78,344,117,357,134,352,137,340,120,304,82"/>
+</map>

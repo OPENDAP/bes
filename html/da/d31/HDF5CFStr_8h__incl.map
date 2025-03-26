@@ -1,0 +1,9 @@
+<map id="HDF5CFStr.h" name="HDF5CFStr.h">
+<area shape="rect" id="Node000001" title="This class provides a way to map HDF5 Str to DAP Str for the CF option." alt="" coords="101,5,204,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,60,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,33,67,74,64,69,130,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="85,79,221,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="155,31,155,65,150,65,150,31"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="245,79,335,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="178,28,255,70,253,74,175,33"/>
+</map>

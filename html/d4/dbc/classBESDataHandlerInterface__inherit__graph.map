@@ -1,0 +1,5 @@
+<map id="BESDataHandlerInterface" name="BESDataHandlerInterface">
+<area shape="rect" id="Node000001" title="Structure storing information used by the BES to handle the request." alt="" coords="5,139,200,624"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="58,5,147,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,104,105,139,100,139,100,104"/>
+</map>

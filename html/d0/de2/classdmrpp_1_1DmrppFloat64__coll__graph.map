@@ -1,0 +1,13 @@
+<map id="dmrpp::DmrppFloat64" name="dmrpp::DmrppFloat64">
+<area shape="rect" id="Node000001" title=" " alt="" coords="33,632,177,917"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,397,107,463"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,476,88,631,82,632,60,477"/>
+<area shape="rect" id="Node000003" href="$dc/dc2/classdmrpp_1_1DmrppCommon.html" title="Size and offset information of data included in DMR++ files." alt="" coords="131,277,309,583"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="168,596,155,633,150,631,162,595"/>
+<area shape="rect" id="Node000004" href="$d9/db9/classbool.html" title=" " alt="" coords="134,135,173,200"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="154,200,157,253,159,261,154,262,152,254,149,200"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="251,135,323,200"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="281,201,266,261,260,260,276,199"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="227,5,346,85"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="289,99,289,134,284,134,284,99"/>
+</map>

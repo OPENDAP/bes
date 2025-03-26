@@ -1,0 +1,10 @@
+<map id="struct_ff_array_dipole::struct_connect::union_locus" name="struct_ff_array_dipole::struct_connect::union_locus">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,291,192,371"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="64,5,104,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="78,71,66,143,63,186,67,228,79,275,74,276,61,228,58,186,60,143,73,70"/>
+<area shape="rect" id="Node000003" href="$de/d00/structstruct__ff__bufsize.html" title=" " alt="" coords="139,163,250,228"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="103,69,145,137,154,148,149,152,140,140,99,72"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="174,230,139,279,135,275,169,227"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="161,5,229,71"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="197,71,197,146,192,146,192,71"/>
+</map>

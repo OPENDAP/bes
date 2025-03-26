@@ -1,0 +1,9 @@
+<map id="ncml_module::ScopeStack::Entry" name="ncml_module::ScopeStack::Entry">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,277,177,417"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="9,135,91,200"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="59,200,70,253,72,261,67,262,65,254,54,201"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="115,135,187,200"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="143,201,122,262,117,261,138,200"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="92,5,211,85"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="154,99,154,134,149,134,149,99"/>
+</map>

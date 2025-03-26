@@ -1,0 +1,7 @@
+<map id="gateway::GatewayContainer" name="gateway::GatewayContainer">
+<area shape="rect" id="Node000001" title="Container representing a remote request." alt="" coords="5,532,187,737"/>
+<area shape="rect" id="Node000002" href="$d2/d74/classBESContainer.html" title="A container is something that holds data. E.G., a netcdf file or a database entry." alt="" coords="19,139,173,484"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,498,99,532,93,532,93,498"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="51,5,141,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="99,105,99,138,93,138,93,105"/>
+</map>
