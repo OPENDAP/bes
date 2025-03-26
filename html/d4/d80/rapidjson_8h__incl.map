@@ -1,9 +1,0 @@
-<map id="rapidjson.h" name="rapidjson.h">
-<area shape="rect" id="Node000001" title="common definitions and configuration" alt="" coords="77,5,164,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,65,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,33,63,71,59,67,104,29"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="90,79,151,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="123,31,123,65,118,65,118,31"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="176,79,241,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="138,29,184,68,181,72,134,33"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$dd/dd0/structHE5Grid.html" title=" " alt="" coords="11,5,85,31"/>
-<area shape="rect" id="Node000001" href="$d0/d47/classHE5Parser.html" title=" " alt="" coords="139,55,225,80"/>
-<area shape="poly" id="edge350_Node000000_Node000001" title=" " alt="" coords="96,33,148,52,146,57,94,38"/>
-<area shape="rect" id="Node000002" href="$dd/d19/structHE5Swath.html" title=" " alt="" coords="5,55,91,80"/>
-<area shape="poly" id="edge351_Node000002_Node000001" title=" " alt="" coords="104,65,138,65,138,70,104,70"/>
-<area shape="rect" id="Node000003" href="$d2/da3/structHE5Za.html" title=" " alt="" coords="16,104,80,129"/>
-<area shape="poly" id="edge352_Node000003_Node000001" title=" " alt="" coords="92,98,146,78,148,83,94,103"/>
-</map>

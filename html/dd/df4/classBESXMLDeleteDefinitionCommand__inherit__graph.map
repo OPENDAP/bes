@@ -1,7 +1,0 @@
-<map id="BESXMLDeleteDefinitionCommand" name="BESXMLDeleteDefinitionCommand">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,472,256,637"/>
-<area shape="rect" id="Node000002" href="$d4/dfd/classBESXMLCommand.html" title="Base class for the BES&#39;s commands." alt="" coords="52,139,209,424"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,437,133,472,128,472,128,437"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="86,5,175,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="133,104,133,138,128,138,128,104"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="BESServicesResponseHandler" name="BESServicesResponseHandler">
-<area shape="rect" id="Node000001" title="response handler that returns the list of servies provided by this BES" alt="" coords="5,412,231,577"/>
-<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="31,139,205,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,378,121,412,115,412,115,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="73,5,163,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="121,105,121,138,115,138,115,105"/>
-</map>

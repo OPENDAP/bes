@@ -1,7 +1,0 @@
-<map id="BasicIStreamWrapper&lt; StreamType &gt;" name="BasicIStreamWrapper&lt; StreamType &gt;">
-<area shape="rect" id="Node000001" title="Wrapper of std::basic_istream into RapidJSON&#39;s Stream concept." alt="" coords="99,5,263,265"/>
-<area shape="rect" id="Node000002" href="$d3/d91/classBasicIStreamWrapper.html" title=" " alt="" coords="5,328,169,608"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="143,279,129,328,124,327,138,278"/>
-<area shape="rect" id="Node000003" href="$d3/d91/classBasicIStreamWrapper.html" title=" " alt="" coords="193,328,357,608"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="239,277,242,289,252,327,247,329,237,290,233,279"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="XDArray" name="XDArray">
-<area shape="rect" id="Node000001" title=" " alt="" coords="15,368,175,593"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,193,95,259"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="61,272,78,367,73,368,56,272"/>
-<area shape="rect" id="Node000003" href="$df/d03/classXDOutput.html" title=" " alt="" coords="119,133,279,319"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="159,332,144,369,139,367,154,330"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="158,5,241,71"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="202,71,202,117,197,117,197,71"/>
-</map>

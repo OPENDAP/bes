@@ -1,9 +1,0 @@
-<map id="XDStr" name="XDStr">
-<area shape="rect" id="Node000001" title=" " alt="" coords="25,368,146,513"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,193,80,259"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="55,272,74,367,68,368,49,273"/>
-<area shape="rect" id="Node000003" href="$df/d03/classXDOutput.html" title=" " alt="" coords="104,133,264,319"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="138,332,121,369,116,367,133,330"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="143,5,225,71"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="187,71,187,117,181,117,181,71"/>
-</map>

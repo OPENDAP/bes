@@ -1,9 +1,0 @@
-<map id="UTF32&lt; CharType &gt;" name="UTF32&lt; CharType &gt;">
-<area shape="rect" id="Node000001" title="UTF&#45;32 encoding." alt="" coords="58,5,283,151"/>
-<area shape="rect" id="Node000002" href="$d9/d0f/structUTF32.html" title=" " alt="" coords="58,213,283,359"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="173,164,173,213,168,213,168,164"/>
-<area shape="rect" id="Node000003" href="$d9/d19/structUTF32BE.html" title="UTF&#45;32 big endian encoding." alt="" coords="5,408,160,533"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="132,372,115,409,110,407,128,370"/>
-<area shape="rect" id="Node000004" href="$d6/d57/structUTF32LE.html" title="UTF&#45;32 little endian enocoding." alt="" coords="184,408,336,533"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="214,370,232,407,227,409,209,372"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="HDF5CFModule.h" name="HDF5CFModule.h">
-<area shape="rect" id="Node000001" title="This class describes the different categories of HDF5 products for the CF option." alt="" coords="56,5,185,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,60,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,33,60,72,57,68,104,29"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="84,79,157,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="123,31,123,65,118,65,118,31"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="182,79,241,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="138,29,186,68,183,72,135,33"/>
-</map>

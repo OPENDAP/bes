@@ -1,7 +1,0 @@
-<map id="FoDapCovJsonTransmitter" name="FoDapCovJsonTransmitter">
-<area shape="rect" id="Node000001" title="BESTransmitter class named &quot;json&quot; that transmits an OPeNDAP data object as a JSON file." alt="" coords="5,412,205,577"/>
-<area shape="rect" id="Node000002" href="$de/d2b/classBESTransmitter.html" title=" " alt="" coords="37,139,173,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,378,108,412,103,412,103,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="61,5,150,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="108,105,108,138,103,138,103,105"/>
-</map>

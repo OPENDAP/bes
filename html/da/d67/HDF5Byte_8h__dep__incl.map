@@ -1,7 +1,0 @@
-<map id="HDF5Byte.h" name="HDF5Byte.h">
-<area shape="rect" id="Node000001" title="This class provides a way to map HDF5 byte to DAP Byte for the default option." alt="" coords="64,5,159,31"/>
-<area shape="rect" id="Node000002" href="$da/d16/HDF5Byte_8cc.html" title="Implementation of mapping HDF5 byte to DAP Byte for the default option." alt="" coords="5,79,105,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,43,67,80,63,77,91,40"/>
-<area shape="rect" id="Node000003" href="$d7/d43/h5dds_8cc.html" title="DDS/DODS request processing source." alt="" coords="129,79,205,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="131,40,159,77,155,80,127,43"/>
-</map>

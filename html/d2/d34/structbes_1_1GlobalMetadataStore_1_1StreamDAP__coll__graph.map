@@ -1,9 +1,0 @@
-<map id="bes::GlobalMetadataStore::StreamDAP" name="bes::GlobalMetadataStore::StreamDAP">
-<area shape="rect" id="Node000001" title=" " alt="" coords="97,163,267,303"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,132,100"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,111,140,161,136,164,104,113"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="157,20,207,85"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="185,86,185,146,179,146,179,86"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="234,20,287,85"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="253,86,234,140,230,149,225,147,229,138,248,84"/>
-</map>

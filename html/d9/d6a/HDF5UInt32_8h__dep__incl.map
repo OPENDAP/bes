@@ -1,9 +1,0 @@
-<map id="HDF5UInt32.h" name="HDF5UInt32.h">
-<area shape="rect" id="Node000001" title="This class provides a way to map unsigned HDF5 32 bit integer to DAP UInt32." alt="" coords="127,5,234,31"/>
-<area shape="rect" id="Node000002" href="$d7/de5/HDF5UInt32_8cc.html" title="The implementation of mapping unsigned HDF5 32 bit integer to DAP UInt32." alt="" coords="5,79,119,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="150,40,84,81,81,76,147,36"/>
-<area shape="rect" id="Node000003" href="$d7/d43/h5dds_8cc.html" title="DDS/DODS request processing source." alt="" coords="143,79,219,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,44,183,78,178,78,178,44"/>
-<area shape="rect" id="Node000004" href="$d6/ded/h5dmr_8cc.html" title="DMR(Data Metadata Response) request processing source." alt="" coords="243,79,321,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="211,36,266,76,263,81,208,41"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="BESInternalError" name="BESInternalError">
-<area shape="rect" id="Node000001" title="exception thrown if internal error encountered" alt="" coords="41,452,183,577"/>
-<area shape="rect" id="Node000002" href="$d7/dbd/classBESError.html" title="Base exception class for the BES with basic string message." alt="" coords="21,139,203,404"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="115,418,115,452,109,452,109,418"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="5,15,101,81"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="68,93,80,138,74,139,63,95"/>
-<area shape="rect" id="Node000004" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="126,5,215,91"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="159,105,150,139,144,138,153,103"/>
-</map>

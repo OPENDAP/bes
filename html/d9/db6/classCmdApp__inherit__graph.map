@@ -1,7 +1,0 @@
-<map id="CmdApp" name="CmdApp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,472,167,717"/>
-<area shape="rect" id="Node000002" href="$d6/da3/classBESApp.html" title="Application class for BES applications." alt="" coords="25,139,147,424"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,438,89,472,83,472,83,438"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="41,5,131,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="89,104,89,138,83,138,83,104"/>
-</map>

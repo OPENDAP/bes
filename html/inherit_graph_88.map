@@ -1,7 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$d5/dbc/classDODS__Date__Factory.html" title=" " alt="" coords="5,31,153,56"/>
-<area shape="rect" id="Node000001" href="$d3/dcd/classDODS__EndDate__Factory.html" title=" " alt="" coords="203,5,375,31"/>
-<area shape="poly" id="edge324_Node000000_Node000001" title=" " alt="" coords="166,30,203,26,203,31,167,35"/>
-<area shape="rect" id="Node000002" href="$d3/db0/classDODS__StartDate__Factory.html" title=" " alt="" coords="201,55,377,80"/>
-<area shape="poly" id="edge325_Node000000_Node000002" title=" " alt="" coords="167,51,202,55,201,60,166,56"/>
-</map>

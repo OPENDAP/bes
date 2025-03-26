@@ -1,9 +1,0 @@
-<map id="bes::GlobalMetadataStore" name="bes::GlobalMetadataStore">
-<area shape="rect" id="Node000001" title="Store the DAP metadata responses." alt="" coords="5,487,191,1356"/>
-<area shape="rect" id="Node000004" href="$de/d7d/classbes_1_1DmrppMetadataStore.html" title="Store the DAP DMR++ metadata responses." alt="" coords="13,1404,183,1689"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="101,1369,101,1404,95,1404,95,1369"/>
-<area shape="rect" id="Node000002" href="$dd/d75/classBESFileLockingCache.html" title="Implementation of a caching mechanism for compressed data." alt="" coords="15,139,181,439"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,453,101,486,95,486,95,453"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="53,5,143,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="101,104,101,138,95,138,95,104"/>
-</map>

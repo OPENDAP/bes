@@ -1,7 +1,0 @@
-<map id="FoInstanceJsonTransmitter" name="FoInstanceJsonTransmitter">
-<area shape="rect" id="Node000001" title="BESTransmitter class named &quot;json&quot; that transmits an OPeNDAP data object as a JSON file." alt="" coords="5,412,208,537"/>
-<area shape="rect" id="Node000002" href="$de/d2b/classBESTransmitter.html" title=" " alt="" coords="39,139,175,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,378,109,412,104,412,104,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="62,5,151,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,105,109,138,104,138,104,105"/>
-</map>

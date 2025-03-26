@@ -1,7 +1,0 @@
-<map id="BESServerHandler" name="BESServerHandler">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,312,159,437"/>
-<area shape="rect" id="Node000002" href="$d2/d4d/classServerHandler.html" title=" " alt="" coords="19,139,145,264"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,278,85,312,79,312,79,278"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="37,5,127,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="85,104,85,138,79,138,79,104"/>
-</map>

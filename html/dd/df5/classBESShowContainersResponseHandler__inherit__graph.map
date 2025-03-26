@@ -1,7 +1,0 @@
-<map id="BESShowContainersResponseHandler" name="BESShowContainersResponseHandler">
-<area shape="rect" id="Node000001" title="response handler that returns list of continers currently defined in all container storage lists." alt="" coords="5,412,239,621"/>
-<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="35,139,209,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,378,125,412,119,412,119,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="77,5,167,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="125,105,125,138,119,138,119,105"/>
-</map>

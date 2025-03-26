@@ -1,9 +1,0 @@
-<map id="XDUInt16" name="XDUInt16">
-<area shape="rect" id="Node000001" title=" " alt="" coords="44,368,153,493"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,193,101,259"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="66,271,87,367,82,368,61,273"/>
-<area shape="rect" id="Node000003" href="$df/d03/classXDOutput.html" title=" " alt="" coords="125,133,285,319"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="153,332,134,369,129,366,148,330"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="164,5,247,71"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="208,71,208,117,203,117,203,71"/>
-</map>

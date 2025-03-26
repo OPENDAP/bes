@@ -1,9 +1,0 @@
-<map id="ncml_module::Shape::IndexIterator" name="ncml_module::Shape::IndexIterator">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,451,144,711"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="27,276,123,401"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,415,77,450,72,450,72,415"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="21,133,128,199"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="77,212,77,276,72,276,72,212"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="63,5,86,71"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="77,71,77,117,72,117,72,71"/>
-</map>

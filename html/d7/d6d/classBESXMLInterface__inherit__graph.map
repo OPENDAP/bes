@@ -1,7 +1,0 @@
-<map id="BESXMLInterface" name="BESXMLInterface">
-<area shape="rect" id="Node000001" title="Entry point into BES using xml document requests." alt="" coords="5,561,161,816"/>
-<area shape="rect" id="Node000002" href="$de/d37/classBESInterface.html" title="Entry point into BES, building responses to given requests." alt="" coords="5,139,161,513"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="86,527,86,561,81,561,81,527"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="39,5,128,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="86,105,86,139,81,139,81,105"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="BESCatalogResponseHandler" name="BESCatalogResponseHandler">
-<area shape="rect" id="Node000001" title="response handler that returns nodes or leaves within the catalog either at the root or at a specified..." alt="" coords="5,412,227,577"/>
-<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="29,139,203,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,378,119,412,113,412,113,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="71,5,161,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="119,105,119,138,113,138,113,105"/>
-</map>

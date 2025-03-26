@@ -1,9 +1,0 @@
-<map id="ncml_module::NCMLArray&lt; T &gt;" name="ncml_module::NCMLArray&lt; T &gt;">
-<area shape="rect" id="Node000001" title="A parameterized subclass of libdap::Array that allows us to apply constraints on NcML&#45;specified data ..." alt="" coords="28,732,240,1052"/>
-<area shape="rect" id="Node000002" href="$d7/d3e/classncml__module_1_1NCMLBaseArray.html" title=" " alt="" coords="21,388,247,683"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="137,697,137,732,131,732,131,697"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="5,125,95,191"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="63,204,104,387,99,388,58,205"/>
-<area shape="rect" id="Node000004" href="$d6/db5/classncml__module_1_1Shape.html" title="A wrapper class for a vector of Array::dimension structs." alt="" coords="119,5,320,311"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="187,312,174,372,168,371,182,310"/>
-</map>

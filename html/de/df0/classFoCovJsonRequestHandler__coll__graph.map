@@ -1,7 +1,0 @@
-<map id="FoCovJsonRequestHandler" name="FoCovJsonRequestHandler">
-<area shape="rect" id="Node000001" title="A Request Handler for the Fileout NetCDF request." alt="" coords="5,452,211,657"/>
-<area shape="rect" id="Node000002" href="$d7/db0/classBESRequestHandler.html" title="Represents a specific data type request handler." alt="" coords="26,139,190,404"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,418,111,452,105,452,105,418"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="63,5,153,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="111,104,111,138,105,138,105,104"/>
-</map>

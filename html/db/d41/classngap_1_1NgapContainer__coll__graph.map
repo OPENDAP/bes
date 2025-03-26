@@ -1,5 +1,0 @@
-<map id="ngap::NgapContainer" name="ngap::NgapContainer">
-<area shape="rect" id="node1" title="Container representing a remote request to information stored in the NASA NGAP/EOSDIS cloud&#45;based dat..." alt="" coords="12,491,161,729"/>
-<area shape="rect" id="node2" href="$d2/d74/classBESContainer.html" title="A container is something that holds data. E.G., a netcdf file or a database entry." alt="" coords="5,145,168,443"/>
-<area shape="rect" id="node3" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="38,5,135,97"/>
-</map>

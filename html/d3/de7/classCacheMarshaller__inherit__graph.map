@@ -1,5 +1,0 @@
-<map id="CacheMarshaller" name="CacheMarshaller">
-<area shape="rect" id="Node000001" title="Marshaller that knows how serialize dap data objects to a disk cache This class can be used with libd..." alt="" coords="5,119,140,384"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="13,5,132,71"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="75,84,75,118,70,118,70,84"/>
-</map>

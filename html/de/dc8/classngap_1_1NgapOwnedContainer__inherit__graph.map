@@ -1,7 +1,0 @@
-<map id="ngap::NgapOwnedContainer" name="ngap::NgapOwnedContainer">
-<area shape="rect" id="Node000001" title="Container representing a data resource that is &#39;owned&#39; by NGAP/EDC/NASA but that is described by a DM..." alt="" coords="5,532,192,897"/>
-<area shape="rect" id="Node000002" href="$d2/d74/classBESContainer.html" title="A container is something that holds data. E.G., a netcdf file or a database entry." alt="" coords="21,139,176,484"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,498,101,532,96,532,96,498"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="54,5,143,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="101,105,101,138,96,138,96,105"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="internal::StreamLocalCopy&lt; Stream, int &gt;" name="internal::StreamLocalCopy&lt; Stream, int &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="103,5,273,85"/>
-<area shape="rect" id="Node000002" href="$d6/d18/classinternal_1_1StreamLocalCopy_3_01Stream_00_010_01_4.html" title="Keep reference." alt="" coords="5,158,176,238"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="157,98,119,159,114,156,153,95"/>
-<area shape="rect" id="Node000003" href="$d4/d4a/classinternal_1_1StreamLocalCopy_3_01Stream_00_011_01_4.html" title="Do copy optimization." alt="" coords="200,148,371,248"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="230,95,238,108,261,146,257,149,234,111,225,98"/>
-</map>

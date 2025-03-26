@@ -1,5 +1,0 @@
-<map id="HDF5CF::GMSPVar" name="HDF5CF::GMSPVar">
-<area shape="rect" id="Node000001" title="This class is a derived class of Var. It represents a special general HDF5 product(currently ACOS and..." alt="" coords="15,379,149,544"/>
-<area shape="rect" id="Node000002" href="$d2/dd9/classHDF5CF_1_1Var.html" title="This class represents one HDF5 dataset(CF variable)" alt="" coords="5,5,159,331"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,344,85,378,79,378,79,344"/>
-</map>

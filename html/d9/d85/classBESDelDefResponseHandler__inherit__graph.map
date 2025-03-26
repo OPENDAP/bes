@@ -1,7 +1,0 @@
-<map id="BESDelDefResponseHandler" name="BESDelDefResponseHandler">
-<area shape="rect" id="Node000001" title="response handler that deletes a definition from a specified definition store" alt="" coords="5,412,221,577"/>
-<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="26,139,201,364"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,378,116,412,111,412,111,378"/>
-<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="69,5,158,91"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="116,105,116,138,111,138,111,105"/>
-</map>

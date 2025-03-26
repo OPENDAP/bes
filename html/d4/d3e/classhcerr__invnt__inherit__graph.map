@@ -1,7 +1,0 @@
-<map id="hcerr_invnt" name="hcerr_invnt">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,252,105,317"/>
-<area shape="rect" id="Node000002" href="$d3/d54/classhcerr.html" title=" " alt="" coords="19,119,91,204"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="58,218,58,252,53,252,53,218"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="12,5,99,71"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="58,85,58,118,53,118,53,85"/>
-</map>

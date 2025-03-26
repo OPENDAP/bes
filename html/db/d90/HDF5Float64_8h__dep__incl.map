@@ -1,9 +1,0 @@
-<map id="HDF5Float64.h" name="HDF5Float64.h">
-<area shape="rect" id="Node000001" title="A class for mapping HDF5 64&#45;bit float to DAP for the default option." alt="" coords="130,5,242,31"/>
-<area shape="rect" id="Node000002" href="$d2/d30/HDF5Float64_8cc.html" title="Implementation fo mapping HDF5 64 bit float to DAP for the default option." alt="" coords="5,79,124,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="154,40,87,81,85,76,152,36"/>
-<area shape="rect" id="Node000003" href="$d7/d43/h5dds_8cc.html" title="DDS/DODS request processing source." alt="" coords="148,79,224,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="189,44,189,78,183,78,183,44"/>
-<area shape="rect" id="Node000004" href="$d6/ded/h5dmr_8cc.html" title="DMR(Data Metadata Response) request processing source." alt="" coords="249,79,326,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="216,36,271,76,268,81,213,41"/>
-</map>
