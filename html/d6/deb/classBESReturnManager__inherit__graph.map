@@ -1,0 +1,5 @@
+<map id="BESReturnManager" name="BESReturnManager">
+<area shape="rect" id="Node000001" title="ReturnManager holds the list of response object transmitter that knows how to transmit response objec..." alt="" coords="5,139,165,324"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="41,5,130,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="88,105,88,138,83,138,83,105"/>
+</map>

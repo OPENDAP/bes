@@ -1,0 +1,19 @@
+<map id="GenericPointer&lt; ValueType, Allocator &gt;" name="GenericPointer&lt; ValueType, Allocator &gt;">
+<area shape="rect" id="Node000001" title="Represents a JSON Pointer. Use Pointer for UTF8 encoding and default allocator." alt="" coords="206,345,387,680"/>
+<area shape="rect" id="Node000002" href="$d5/d8d/classCrtAllocator.html" title="C&#45;runtime library allocator." alt="" coords="5,148,89,253"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="63,253,75,287,92,320,140,380,195,433,192,437,136,384,88,323,70,289,58,255"/>
+<area shape="rect" id="Node000003" href="$d9/db9/classbool.html" title=" " alt="" coords="28,5,67,71"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="50,71,50,131,45,131,45,71"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="142,168,182,233"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="174,232,206,320,210,329,205,331,201,322,169,234"/>
+<area shape="rect" id="Node000005" href="$d2/d48/structGenericPointer_1_1Token.html" title="A token is the basic units of internal representation." alt="" coords="206,161,387,241"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="299,241,299,329,294,329,294,241"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="209,5,285,71"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="258,70,273,123,279,144,274,146,267,125,253,72"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="310,5,379,71"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="338,72,316,145,311,144,332,70"/>
+<area shape="rect" id="Node000008" href="$dd/de2/classsize__t.html" title=" " alt="" coords="412,168,461,233"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="424,235,381,331,376,329,420,232"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="498,168,650,233"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="567,234,551,278,526,323,498,357,467,389,402,444,399,440,463,385,494,353,521,320,546,276,562,233"/>
+</map>

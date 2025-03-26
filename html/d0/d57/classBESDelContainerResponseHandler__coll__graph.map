@@ -1,0 +1,14 @@
+<map id="BESDelContainerResponseHandler" name="BESDelContainerResponseHandler">
+<area shape="rect" id="Node000001" title="response handler that deletes a container" alt="" coords="5,572,251,752"/>
+<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="41,337,215,523"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="131,536,131,572,125,572,125,536"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="6,5,95,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="41,105,34,172,35,209,40,245,55,291,75,336,70,338,50,293,35,246,29,209,28,172,36,104"/>
+<area shape="rect" id="Node000006" href="$da/d1a/classBESResponseObject.html" title="Abstract base class representing a specific set of information in response to a request to the BES." alt="" coords="50,140,217,245"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="84,102,105,139,101,141,80,104"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="247,160,319,225"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="282,226,274,270,256,315,229,351,225,348,251,312,269,268,277,225"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="223,8,342,88"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="285,102,285,160,280,160,280,102"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="133,246,132,269,131,321,126,321,127,269,128,245"/>
+</map>

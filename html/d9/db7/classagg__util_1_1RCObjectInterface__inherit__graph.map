@@ -1,0 +1,42 @@
+<map id="agg_util::RCObjectInterface" name="agg_util::RCObjectInterface">
+<area shape="rect" id="Node000001" title=" " alt="" coords="929,5,1107,171"/>
+<area shape="rect" id="Node000002" href="$d4/d01/classagg__util_1_1DDSAccessRCInterface.html" title=" " alt="" coords="695,309,906,374"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="940,183,831,310,827,306,936,180"/>
+<area shape="rect" id="Node000004" href="$d2/dfb/classagg__util_1_1RCObject.html" title="A base class for a simple reference counted object." alt="" coords="1159,219,1315,464"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1101,180,1161,249,1156,253,1096,183"/>
+<area shape="rect" id="Node000003" href="$d6/d41/classncml__module_1_1NetcdfElement.html" title="Concrete class for NcML &lt;netcdf&gt; element." alt="" coords="5,925,225,1295"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="756,386,657,479,525,609,379,763,239,927,228,941,223,938,235,924,375,760,521,606,654,475,752,382"/>
+<area shape="rect" id="Node000005" href="$d4/d35/classagg__util_1_1AggMemberDataset.html" title=" " alt="" coords="1919,535,2107,855"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="1329,380,1919,649,1917,654,1326,385"/>
+<area shape="rect" id="Node000010" href="$d7/d8e/classncml__module_1_1NCMLElement.html" title="Base class for NcML element concrete classes." alt="" coords="1143,512,1331,877"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="1239,478,1239,512,1234,512,1234,478"/>
+<area shape="rect" id="Node000006" href="$d5/d72/classagg__util_1_1AggMemberDatasetWithDimensionCacheBase.html" title=" " alt="" coords="2457,941,2699,1279"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2121,733,2197,767,2282,811,2367,863,2446,923,2463,939,2459,942,2443,927,2364,867,2279,815,2195,772,2119,738"/>
+<area shape="rect" id="Node000007" href="$dd/dc1/classagg__util_1_1AggMemberDatasetDDSWrapper.html" title=" " alt="" coords="2173,1355,2412,1535"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="2451,1292,2447,1296,2391,1356,2387,1353,2443,1293,2447,1288"/>
+<area shape="rect" id="Node000008" href="$d4/d66/classagg__util_1_1AggMemberDatasetSharedDDSWrapper.html" title=" " alt="" coords="2437,1355,2719,1535"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="2581,1294,2581,1354,2575,1354,2575,1294"/>
+<area shape="rect" id="Node000009" href="$da/d77/classagg__util_1_1AggMemberDatasetUsingLocationRef.html" title=" " alt="" coords="2744,1343,2980,1547"/>
+<area shape="poly" id="edge8_Node000006_Node000009" title=" " alt="" coords="2710,1261,2777,1341,2773,1344,2706,1264"/>
+<area shape="poly" id="edge14_Node000010_Node000003" title=" " alt="" coords="1129,717,898,763,620,821,374,880,287,906,238,928,227,936,224,932,235,923,285,901,372,875,619,816,897,757,1128,712"/>
+<area shape="rect" id="Node000011" href="$df/d52/classncml__module_1_1AggregationElement.html" title=" " alt="" coords="2203,953,2433,1267"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="1344,725,1600,798,1754,838,1908,875,1951,882,1989,884,2056,883,2087,884,2120,890,2154,902,2193,923,2226,950,2223,954,2190,928,2152,907,2118,895,2087,890,2056,888,1989,889,1951,887,1907,880,1752,843,1599,803,1343,730"/>
+<area shape="rect" id="Node000012" href="$dd/df3/classncml__module_1_1AttributeElement.html" title="Concrete class for NcML &lt;attribute&gt; element." alt="" coords="249,967,448,1253"/>
+<area shape="poly" id="edge11_Node000010_Node000012" title=" " alt="" coords="1129,705,986,725,901,742,811,764,719,793,629,829,542,874,462,927,441,947,422,969,418,966,437,943,459,923,539,869,627,825,718,788,809,759,899,736,985,720,1129,700"/>
+<area shape="rect" id="Node000013" href="$d2/d81/classncml__module_1_1DimensionElement.html" title=" " alt="" coords="472,967,684,1253"/>
+<area shape="poly" id="edge12_Node000010_Node000013" title=" " alt="" coords="1130,723,1032,753,919,796,861,823,803,854,749,889,698,927,659,969,655,965,695,923,746,884,801,850,858,819,916,792,1030,748,1129,718"/>
+<area shape="rect" id="Node000014" href="$dc/d46/classncml__module_1_1ExplicitElement.html" title="Concrete class for NcML &lt;explicit&gt; element." alt="" coords="709,977,901,1243"/>
+<area shape="poly" id="edge13_Node000010_Node000014" title=" " alt="" coords="1132,757,1022,832,967,878,916,927,876,979,872,975,912,924,963,874,1019,828,1129,752"/>
+<area shape="rect" id="Node000015" href="$d4/da1/classncml__module_1_1ReadMetadataElement.html" title="Concrete class for NcML &lt;readMetadata&gt; element." alt="" coords="925,970,1113,1250"/>
+<area shape="poly" id="edge15_Node000010_Node000015" title=" " alt="" coords="1139,888,1095,971,1091,968,1134,885"/>
+<area shape="rect" id="Node000016" href="$d1/d85/classncml__module_1_1RemoveElement.html" title=" " alt="" coords="1137,977,1336,1243"/>
+<area shape="poly" id="edge16_Node000010_Node000016" title=" " alt="" coords="1239,891,1239,977,1234,977,1234,891"/>
+<area shape="rect" id="Node000017" href="$db/d7f/classncml__module_1_1ScanElement.html" title=" " alt="" coords="1360,967,1543,1253"/>
+<area shape="poly" id="edge17_Node000010_Node000017" title=" " alt="" coords="1339,888,1380,966,1375,969,1335,890"/>
+<area shape="rect" id="Node000018" href="$d7/dd5/classncml__module_1_1ValuesElement.html" title=" " alt="" coords="1567,977,1757,1243"/>
+<area shape="poly" id="edge18_Node000010_Node000018" title=" " alt="" coords="1344,753,1452,828,1507,874,1557,924,1597,976,1592,979,1553,927,1504,878,1449,832,1341,757"/>
+<area shape="rect" id="Node000019" href="$d3/d14/classncml__module_1_1VariableAggElement.html" title="Element for the &lt;variableAgg&gt; element child of an &lt;aggregation&gt;." alt="" coords="1782,960,1955,1260"/>
+<area shape="poly" id="edge19_Node000010_Node000019" title=" " alt="" coords="1345,716,1444,745,1556,789,1613,816,1670,847,1723,883,1772,923,1802,958,1798,962,1768,927,1720,887,1667,852,1611,821,1554,794,1442,750,1343,721"/>
+<area shape="rect" id="Node000020" href="$d2/db8/classncml__module_1_1VariableElement.html" title="Concrete class for NcML &lt;variable&gt; element." alt="" coords="1980,967,2179,1253"/>
+<area shape="poly" id="edge20_Node000010_Node000020" title=" " alt="" coords="1345,702,1481,724,1560,742,1644,765,1729,794,1814,829,1895,872,1969,923,2010,965,2006,969,1966,927,1892,877,1812,834,1728,799,1643,770,1559,747,1480,729,1344,707"/>
+</map>

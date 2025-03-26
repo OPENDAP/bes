@@ -1,0 +1,7 @@
+<map id="dmrpp::DmrppArray" name="dmrpp::DmrppArray">
+<area shape="rect" id="Node000001" title="Extend libdap::Array so that a handler can read data using a DMR++ file." alt="" coords="42,399,215,733"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,145,95,211"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="62,224,97,398,92,399,57,225"/>
+<area shape="rect" id="Node000003" href="$dc/dc2/classdmrpp_1_1DmrppCommon.html" title="Size and offset information of data included in DMR++ files." alt="" coords="119,5,296,351"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="172,365,165,399,160,398,167,364"/>
+</map>

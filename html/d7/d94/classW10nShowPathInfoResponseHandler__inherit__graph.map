@@ -1,0 +1,7 @@
+<map id="W10nShowPathInfoResponseHandler" name="W10nShowPathInfoResponseHandler">
+<area shape="rect" id="Node000001" title="response handler that returns nodes or leaves within the catalog either at the root or at a specified..." alt="" coords="5,412,216,636"/>
+<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="23,139,198,364"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,378,113,412,108,412,108,378"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="66,5,155,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="113,105,113,138,108,138,108,105"/>
+</map>

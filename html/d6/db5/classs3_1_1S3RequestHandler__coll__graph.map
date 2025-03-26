@@ -1,0 +1,9 @@
+<map id="s3::S3RequestHandler" name="s3::S3RequestHandler">
+<area shape="rect" id="Node000001" title=" " alt="" coords="104,468,257,613"/>
+<area shape="rect" id="Node000002" href="$d7/db0/classBESRequestHandler.html" title="Represents a specific data type request handler." alt="" coords="5,140,169,405"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="141,418,158,467,153,469,136,419"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="43,5,132,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="90,104,90,140,85,140,85,104"/>
+<area shape="rect" id="Node000004" href="$d9/db9/classbool.html" title=" " alt="" coords="193,240,232,305"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="211,306,194,452,189,451,206,305"/>
+</map>

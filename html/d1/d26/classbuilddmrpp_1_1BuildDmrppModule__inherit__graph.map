@@ -1,0 +1,7 @@
+<map id="builddmrpp::BuildDmrppModule" name="builddmrpp::BuildDmrppModule">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,332,207,477"/>
+<area shape="rect" id="Node000002" href="$d9/d97/classBESAbstractModule.html" title=" " alt="" coords="26,139,186,284"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,298,109,331,103,331,103,298"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="61,5,151,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,104,109,138,103,138,103,104"/>
+</map>

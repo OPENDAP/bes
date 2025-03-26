@@ -1,0 +1,9 @@
+<map id="Socket" name="Socket">
+<area shape="rect" id="Node000001" title=" " alt="" coords="85,139,239,504"/>
+<area shape="rect" id="Node000003" href="$dc/d5f/classTcpSocket.html" title=" " alt="" coords="5,552,151,817"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="119,518,111,552,106,551,114,517"/>
+<area shape="rect" id="Node000004" href="$d2/d4c/classUnixSocket.html" title=" " alt="" coords="175,552,320,817"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="211,517,219,551,214,552,205,518"/>
+<area shape="rect" id="Node000002" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="117,5,207,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,104,165,138,159,138,159,104"/>
+</map>

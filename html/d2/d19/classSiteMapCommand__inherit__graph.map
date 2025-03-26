@@ -1,0 +1,7 @@
+<map id="SiteMapCommand" name="SiteMapCommand">
+<area shape="rect" id="Node000001" title="Build a site map." alt="" coords="8,472,160,637"/>
+<area shape="rect" id="Node000002" href="$d4/dfd/classBESXMLCommand.html" title="Base class for the BES&#39;s commands." alt="" coords="5,139,163,424"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="87,437,87,472,81,472,81,437"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="39,5,129,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="87,104,87,138,81,138,81,104"/>
+</map>

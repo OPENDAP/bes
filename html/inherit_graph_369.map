@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$d9/d0f/structUTF32.html" title=" " alt="" coords="5,31,145,56"/>
+<area shape="rect" id="Node000001" href="$d9/d19/structUTF32BE.html" title="UTF&#45;32 big endian encoding." alt="" coords="193,5,356,31"/>
+<area shape="poly" id="edge692_Node000000_Node000001" title=" " alt="" coords="159,30,193,26,193,31,159,35"/>
+<area shape="rect" id="Node000002" href="$d6/d57/structUTF32LE.html" title="UTF&#45;32 little endian enocoding." alt="" coords="195,55,355,80"/>
+<area shape="poly" id="edge693_Node000000_Node000002" title=" " alt="" coords="159,51,195,55,194,60,159,56"/>
+</map>

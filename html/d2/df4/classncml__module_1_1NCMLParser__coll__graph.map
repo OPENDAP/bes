@@ -1,0 +1,7 @@
+<map id="ncml_module::NCMLParser" name="ncml_module::NCMLParser">
+<area shape="rect" id="Node000001" title=" " alt="" coords="86,353,305,668"/>
+<area shape="rect" id="Node000002" href="$d3/d39/classncml__module_1_1SaxParser.html" title="Interface class for the wrapper between libxml C SAX parser and our NCMLParser." alt="" coords="5,5,228,291"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="153,304,164,352,159,354,148,305"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="252,115,299,181"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="271,181,236,338,231,336,265,180"/>
+</map>

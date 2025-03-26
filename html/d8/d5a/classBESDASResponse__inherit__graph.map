@@ -1,0 +1,9 @@
+<map id="BESDASResponse" name="BESDASResponse">
+<area shape="rect" id="Node000001" title="Represents an OPeNDAP DAS DAP2 data object within the BES." alt="" coords="15,645,171,831"/>
+<area shape="rect" id="Node000002" href="$d3/dbc/classBESDapResponse.html" title="Represents an OPeNDAP DAP response object within the BES." alt="" coords="5,292,180,597"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,611,95,645,90,645,90,611"/>
+<area shape="rect" id="Node000003" href="$da/d1a/classBESResponseObject.html" title="Abstract base class representing a specific set of information in response to a request to the BES." alt="" coords="9,139,176,244"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="95,258,95,292,90,292,90,258"/>
+<area shape="rect" id="Node000004" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="48,5,137,91"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="95,105,95,138,90,138,90,105"/>
+</map>

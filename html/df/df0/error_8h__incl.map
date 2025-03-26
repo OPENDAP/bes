@@ -1,0 +1,11 @@
+<map id="error.h" name="error.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="90,5,151,31"/>
+<area shape="rect" id="Node000002" href="$d4/dc0/rapidjson_8h.html" title="common definitions and configuration" alt="" coords="71,79,170,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,31,123,65,118,65,118,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,65,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="108,106,63,145,59,141,104,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="90,152,151,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="123,104,123,138,118,138,118,104"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="176,152,241,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="138,102,184,141,181,145,134,106"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$d7/d63/classHDF5CF_1_1File.html" title="This class retrieves all information from an HDF5 file." alt="" coords="5,31,109,56"/>
+<area shape="rect" id="Node000001" href="$dd/d09/classHDF5CF_1_1EOS5File.html" title="This class is a derived class of File. It includes methods applied to HDF&#45;EOS5 files only." alt="" coords="157,5,296,31"/>
+<area shape="poly" id="edge337_Node000000_Node000001" title=" " alt="" coords="122,31,156,26,157,31,123,36"/>
+<area shape="rect" id="Node000002" href="$d5/d27/classHDF5CF_1_1GMFile.html" title="This class is a derived class of File. It includes methods applied to general HDF5 files only." alt="" coords="164,55,289,80"/>
+<area shape="poly" id="edge338_Node000000_Node000002" title=" " alt="" coords="123,50,164,56,163,61,123,55"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="GenericStreamWrapper&lt; InputStream, Encoding &gt;" name="GenericStreamWrapper&lt; InputStream, Encoding &gt;">
+<area shape="rect" id="Node000001" title="A Stream Wrapper." alt="" coords="5,5,180,285"/>
+<area shape="rect" id="Node000002" href="$d4/d22/classGenericStreamWrapper.html" title=" " alt="" coords="5,348,180,628"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,299,95,348,90,348,90,299"/>
+<area shape="rect" id="Node000003" href="$d7/d5e/classCursorStreamWrapper.html" title="Cursor stream wrapper for counting line and column number if error exists." alt="" coords="7,677,179,817"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="95,642,95,677,90,677,90,642"/>
+</map>

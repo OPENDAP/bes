@@ -1,0 +1,7 @@
+<map id="BESStatusResponseHandler" name="BESStatusResponseHandler">
+<area shape="rect" id="Node000001" title="response handler that returns the status of the server process serving the requesting client" alt="" coords="5,412,217,637"/>
+<area shape="rect" id="Node000002" href="$d4/d3f/classBESResponseHandler.html" title="handler object that knows how to create a specific response object" alt="" coords="24,139,199,364"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="114,377,114,412,109,412,109,377"/>
+<area shape="rect" id="Node000003" href="$d9/d76/classBESObj.html" title="top level BES object to house generic methods" alt="" coords="67,5,156,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="114,105,114,138,109,138,109,105"/>
+</map>

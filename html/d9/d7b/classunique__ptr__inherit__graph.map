@@ -1,0 +1,19 @@
+<map id="unique_ptr&lt; T &gt;" name="unique_ptr&lt; T &gt;">
+<area shape="rect" id="Node000001" title="STL class." alt="" coords="695,5,803,71"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,148,183,308"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="681,42,569,47,437,57,312,73,263,84,226,97,189,120,157,150,153,146,186,116,223,92,261,79,311,68,436,52,569,42,681,37"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="207,148,384,308"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="682,49,549,69,487,82,443,97,405,121,369,150,366,146,401,116,441,92,485,77,548,64,681,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="408,155,577,301"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="682,58,642,75,604,97,571,125,543,157,539,153,568,121,600,92,640,70,680,53"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="602,148,751,308"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="699,83,691,96,682,121,677,148,672,147,677,120,686,94,694,80"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="775,148,954,308"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="785,80,794,93,825,147,821,149,789,96,781,83"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="979,155,1129,301"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="817,42,933,60,985,74,1020,93,1040,121,1051,154,1046,156,1035,124,1016,97,983,79,932,65,816,47"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="1153,155,1368,301"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="816,42,970,63,1044,76,1096,92,1145,120,1189,153,1186,157,1142,124,1094,97,1043,82,969,68,816,48"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="1392,155,1583,301"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="816,40,1056,60,1179,75,1268,92,1334,118,1394,153,1391,157,1331,123,1267,97,1178,80,1055,66,816,45"/>
+</map>
