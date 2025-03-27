@@ -86,6 +86,7 @@ env:
     - CMAC_BUCKET="cloudydap"
 
 before_install:
+  - gem install bundler
   - pip install --user awscli
   # fix for Java 17 install for Sonar from Travis CI support. jhrg 1/23/24
   - curl -s "https://get.sdkman.io" | bash
@@ -264,7 +265,6 @@ before_deploy:
 deploy:
   # Push all build results to our S3 bucket
   - provider: s3
-    edge: true
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: opendap.travis.build
