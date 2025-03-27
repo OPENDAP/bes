@@ -69,27 +69,69 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
     BESDEBUG("h5","variable path is  "<<vlen_var_path <<endl);
 
     hid_t dset_id = H5Dopen2(file_id,vlen_var_path.c_str(),H5P_DEFAULT);
-
     if (dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to open the dataset .");
-
+        throw InternalErr(__FILE__,__LINE__, "Fail to open the dataset.");
     }
 
     hid_t vlen_type = H5Dget_type(dset_id);
+    if (vlen_type <0) {
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the vlen data type.");
+    }
     hid_t vlen_basetype = H5Tget_super(vlen_type);
+    if (vlen_basetype <0) {
+        H5Tclose(vlen_type);
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the vlen base data type.");
+    }
+
     if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) {
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
         H5Dclose(dset_id);
         H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__,"Only support float or intger variable-length datatype.");
     }
 
-    hid_t vlen_base_memtype = H5Tget_native_type(vlen_basetype, H5T_DIR_ASCEND);
+    hid_t vlen_base_memtype = H5Tget_native_type(vlen_basetype, H5T_DIR_ASCEND); 
+    if (vlen_base_memtype <0) {
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__, __LINE__,"Fail to obtain the vlen memory base data type.");
+    }
+ 
     hid_t vlen_memtype = H5Tvlen_create(vlen_base_memtype);
-
+    if (vlen_memtype <0) {
+        H5Tclose(vlen_base_memtype);
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__, __LINE__,"Fail to create the vlen memory data type.");
+    }
+ 
     // Will not support the scalar type.
     hid_t vlen_space = H5Dget_space(dset_id);
+    if (vlen_space <0) {
+        H5Tclose(vlen_base_memtype);
+        H5Tclose(vlen_memtype);
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        throw InternalErr(__FILE__, __LINE__,"Fail to obtain the vlen data space ID.");
+    }
     if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE) {
+        H5Sclose(vlen_space);
+        H5Tclose(vlen_base_memtype);
+        H5Tclose(vlen_memtype);
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
         H5Dclose(dset_id);
         H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__,"Only support array of float or intger variable-length datatype.");
@@ -121,6 +163,11 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
     else {
         num_dims = this->dimensions()-1;
         if (num_dims ==0) {
+            H5Sclose(vlen_space);
+            H5Tclose(vlen_base_memtype);
+            H5Tclose(vlen_memtype);
+            H5Tclose(vlen_basetype);
+            H5Tclose(vlen_type);
             H5Dclose(dset_id);
             H5Fclose(file_id);
             string err_msg = "This variable is a variable-length array, the number of dimensions for DAP4 representation must be greater than 1.";
@@ -139,6 +186,11 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         // we fill zero after the real data in the last dimension. So the last dimension
         // should not be subset like other variables. 
         if (count.back() != last_dim_size) {
+            H5Sclose(vlen_space);
+            H5Tclose(vlen_base_memtype);
+            H5Tclose(vlen_memtype);
+            H5Tclose(vlen_basetype);
+            H5Tclose(vlen_type);
             H5Dclose(dset_id);
             H5Fclose(file_id);
             string err_msg = "This variable is a variable-length array, the last dimension in the DAP4 representation cannot be subset.";
@@ -166,6 +218,11 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
     if (H5Sselect_hyperslab(vlen_space, H5S_SELECT_SET,
                             vlen_offset.data(), vlen_step.data(),
                             vlen_count.data(), nullptr) < 0) {
+        H5Tclose(vlen_base_memtype);
+        H5Tclose(vlen_memtype);
+        H5Sclose(vlen_space);
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
         H5Dclose(dset_id);
         H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, "could not select hyperslab");
@@ -173,6 +230,11 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
  
     hid_t memspace = H5Screate_simple(num_dims,vlen_count.data(),nullptr);
     if (memspace < 0) {
+        H5Tclose(vlen_base_memtype);
+        H5Tclose(vlen_memtype);
+        H5Sclose(vlen_space);
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
         H5Dclose(dset_id);
         H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, "could not create data space");
@@ -180,6 +242,12 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
 
     vector<hvl_t> vlen_data(vlen_num_elems);
     if (H5Dread(dset_id, vlen_memtype, memspace, vlen_space, H5P_DEFAULT, vlen_data.data()) <0) {
+        H5Tclose(vlen_base_memtype);
+        H5Tclose(vlen_memtype);
+        H5Sclose(vlen_space);
+        H5Sclose(memspace);
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
         H5Dclose(dset_id);
         H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__,"Cannot read variable-length datatype data.");
@@ -188,6 +256,12 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
     // Handle vlen and vlen_index here.
     if (vlen_index) {
         if (this->var()->type() != dods_int32_c) { 
+            H5Tclose(vlen_base_memtype);
+            H5Tclose(vlen_memtype);
+            H5Sclose(vlen_space);
+            H5Sclose(memspace);
+            H5Tclose(vlen_basetype);
+            H5Tclose(vlen_type);
             H5Dclose(dset_id); 
             H5Fclose(file_id);
             string err_msg = "vlen_index datatype must be 32-bit integer."; 
@@ -239,11 +313,26 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
 
                 break;
             }
-            default:
+            default: {
+                H5Tclose(vlen_base_memtype);
+                H5Tclose(vlen_memtype);
+                H5Sclose(vlen_space);
+                H5Sclose(memspace);
+                H5Tclose(vlen_basetype);
+                H5Tclose(vlen_type);
+                H5Dclose(dset_id); 
+                H5Fclose(file_id);
                 throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
+            }
         }
     }
     if(H5Dvlen_reclaim(vlen_memtype, memspace, H5P_DEFAULT, (void*)(vlen_data.data())) <0) {
+        H5Tclose(vlen_base_memtype);
+        H5Tclose(vlen_memtype);
+        H5Sclose(vlen_space);
+        H5Sclose(memspace);
+        H5Tclose(vlen_basetype);
+        H5Tclose(vlen_type);
         H5Dclose(dset_id);
         H5Fclose(file_id);
         throw InternalErr(__FILE__, __LINE__, "H5Dvlen_reclaim failed.");
