@@ -552,7 +552,7 @@ void FONcTransform::transform_dap4() {
         msg << endl;
         msg << "You may also try constraining your request to omit the problematic data type(s), " << endl;
         msg << "or ask for a different encoding such as DAP4 binary or NetCDF-4." << endl;
-        msg << "There are" << inventory.size() << " incompatible variables referenced in your request." << endl;
+        msg << "There are " << inventory.size() << " incompatible variables referenced in your request." << endl;
         msg << "Incompatible variables: " << endl;
         msg << endl;
         for(const auto &entry: inventory){
