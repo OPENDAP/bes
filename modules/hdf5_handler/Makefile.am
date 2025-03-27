@@ -42,11 +42,11 @@ lib_bes_LTLIBRARIES = libhdf5_module.la
 
 GRAM_SRCS = he5das.tab.cc he5das.tab.hh lex.he5das.cc he5dds.tab.cc he5dds.tab.hh lex.he5dds.cc
 
-HDF5DTYPE_SRCS = HDF5CFProj.cc HDF5CFProj1D.cc HDF5MissLLArray.cc HDF5Array.cc HDF5Byte.cc HDF5Int8.cc HDF5Float64.cc  HDF5UInt32.cc \
+HDF5DTYPE_SRCS = HDF5CFProj.cc HDF5CFProj1D.cc HDF5MissLLArray.cc HDF5VlenAtomicArray.cc HDF5Array.cc HDF5Byte.cc HDF5Int8.cc HDF5Float64.cc  HDF5UInt32.cc \
 	HDF5Int32.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc HDF5Url.cc \
 	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc HDF5Int64.cc HDF5UInt64.cc HDF5D4Enum.cc
 
-HDF5DTYPE_HDRS = HDF5CFProj.h HDF5CFProj1D.h HDF5MissLLArray.h HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
+HDF5DTYPE_HDRS = HDF5CFProj.h HDF5CFProj1D.h HDF5MissLLArray.h HDF5VlenAtomicArray.h HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Int8.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5Int64.h HDF5UInt64.h HDF5D4Enum.h
 

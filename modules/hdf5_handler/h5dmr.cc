@@ -49,6 +49,7 @@
 #include "HDF5UInt16.h"
 #include "HDF5Int16.h"
 #include "HDF5Array.h"
+#include "HDF5VlenAtomicArray.h"
 #include "HDF5Float32.h"
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
@@ -3233,7 +3234,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     H5Tclose(vlen_type);
     H5Tclose(vlen_memtype);
  
-    auto ar_unique = make_unique<HDF5Array>(vname, filename, bt);
+    auto ar_unique = make_unique<HDF5VlenAtomicArray>(vname, filename, bt,false);
     HDF5Array *ar = ar_unique.get();
 
     // set number of elements and variable name values.
@@ -3293,7 +3294,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     string vname_idx = vname + "_vlen_index";
     auto hdf5_int32 = make_unique<HDF5Int32>(vname_idx,var_path,filename);
     
-    auto ar_index_unique = make_unique<HDF5Array>(vname_idx, filename, hdf5_int32.get());
+    auto ar_index_unique = make_unique<HDF5VlenAtomicArray>(vname_idx, filename, hdf5_int32.get(),true);
     HDF5Array *ar_index = ar_index_unique.get();
 
     // set number of elements and variable name values.
