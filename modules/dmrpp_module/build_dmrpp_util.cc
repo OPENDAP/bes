@@ -1275,8 +1275,14 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
  * @param btp
  */
 void set_fill_value(hid_t dataset, BaseType *btp){
+
     short fill_value_defined = is_hdf5_fill_value_defined(dataset);
-    if (fill_value_defined >0) {
+
+    // We ignore the defined enum fill value for the time being.
+    if(btp->type() == dods_enum_c && fill_value_defined == 1) 
+        return;
+    else if (fill_value_defined >0) {
+        
         string fill_value = get_hdf5_fill_value_str(dataset);
         auto dc = toDC(btp);
         dc->set_uses_fill_value(fill_value_defined);
