@@ -542,6 +542,10 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
     }
     else {
         // Things not arrays must be scalars...
+#if 0
+if(t==dods_enum_c)
+cerr<<"this is an enum type"<<endl;
+#endif
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
             if(btp->type() != t){
@@ -601,6 +605,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
     if (t == dods_enum_c) {
         if (enum_value.empty())
             throw BESInternalError("The variable ' " + name_value + "' lacks an 'enum' attribute.", __FILE__, __LINE__);
+//cerr<<"enum_value: "<<enum_value <<endl;
 
         D4EnumDef *enum_def;
         if (enum_value[0] == '/')
@@ -712,6 +717,71 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
 
     return array;
 }
+/**
+ * @brief Process an Enumeration element
+ * @param dmr
+ * @param parent
+ * @param var_node
+ */
+void DMZ::process_enum_def(D4Group *d4g, const xml_node &var_node)
+{
+    string enum_def_name;
+    string basetype_value;
+    for (xml_attribute attr = var_node.first_attribute(); attr; attr = attr.next_attribute()) {
+        if (is_eq(attr.name(), "name")) {
+            enum_def_name = attr.value();
+        }
+        else if (is_eq(attr.name(), "basetype")) {
+            basetype_value = attr.value();
+        }
+    }
+
+    if (enum_def_name.empty())
+        throw BESInternalError("The required attribute 'name' was missing from an enumeration element.", __FILE__, __LINE__);
+
+    if (basetype_value.empty())
+        throw BESInternalError("The required attribute 'basetype' was missing from an enumeration element.", __FILE__, __LINE__);
+
+    Type enum_def_type = get_type(basetype_value.c_str());
+    if (!is_integer_type(enum_def_type)) {
+        string err_msg = "The enumeration '" + enum_def_name +"' must have an integer type, instead the type '"+basetype_value;
+        err_msg += "' is used.";
+        throw BESInternalError(err_msg, __FILE__, __LINE__);
+    }
+
+    D4EnumDefs *d4enumdefs = d4g->enum_defs();
+    vector <string> labels;
+    vector <int64_t> label_values; 
+    for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
+        if (is_eq(child.name(),"EnumConst")) {
+
+            string enum_const_def_name;
+            string enum_const_def_value;
+            for (xml_attribute attr =child.first_attribute(); attr; attr = attr.next_attribute()) {
+                if (is_eq(attr.name(), "name")) {
+                    enum_const_def_name = attr.value();
+                }
+                else if (is_eq(attr.name(), "value")) {
+                    enum_const_def_value = attr.value();
+                }
+            }
+
+            if (enum_const_def_name.empty()) 
+                throw BESInternalError("The enum const name is missing.", __FILE__, __LINE__);
+
+            if (enum_const_def_value.empty()) 
+                throw BESInternalError("The enum const value is missing.", __FILE__, __LINE__);
+            labels.push_back(enum_const_def_name);
+            label_values.push_back(stoll(enum_const_def_value));
+        }
+    }
+    D4EnumDef *enum_def = new D4EnumDef(enum_def_name,enum_def_type);
+    for (unsigned i = 0; i <labels.size(); i++) 
+        enum_def->add_value(labels[i],label_values[i]);
+    d4enumdefs->add_enum_nocopy(enum_def);
+   
+}
+
 
 /**
  * @brief Process a Group element
@@ -792,6 +862,9 @@ void DMZ::build_thin_dmr(DMR *dmr)
             process_group(dmr, dg, child);
         }
         // TODO Add EnumDef
+        else if (is_eq(child.name(), "Enumeration")) {
+            process_enum_def(dg, child);
+        }
         else if (member_of(variable_elements, child.name())) {
             process_variable(dmr, dg, nullptr, child);
         }
@@ -2231,7 +2304,6 @@ void DMZ::load_chunks(BaseType *btp)
 {
     if (dc(btp)->get_chunks_loaded())
         return;
-
     // goto the DOM tree node for this variable
     xml_node var_node = get_variable_xml_node(btp);
     if (var_node == nullptr)
