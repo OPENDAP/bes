@@ -1279,7 +1279,15 @@ void set_fill_value(hid_t dataset, BaseType *btp){
     short fill_value_defined = is_hdf5_fill_value_defined(dataset);
 
     // We ignore the defined enum fill value for the time being.
-    if(btp->type() == dods_enum_c && fill_value_defined == 1) 
+    bool is_enum_type = false;
+    if (btp->type() == dods_enum_c)
+        is_enum_type = true;
+    else if (btp->type() == dods_array_c) {
+        auto da = dynamic_cast<DmrppArray *>(btp);
+        if (da->var()->type() == dods_enum_c)
+            is_enum_type = true;
+    }
+    if(is_enum_type && fill_value_defined == 1) 
         return;
     else if (fill_value_defined >0) {
         
