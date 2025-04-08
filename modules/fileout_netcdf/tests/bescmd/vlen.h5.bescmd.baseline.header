@@ -1,0 +1,16 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 12 ;
+	dim3 = 2 ;
+variables:
+	int DS1(dim1, dim2) ;
+		DS1:orig_datatype = "VLEN" ;
+		DS1:vlen_description = "The original variable-length array data is stored as the regular array data that has an extra dimension. The data gap is filled with 0. The actual length of each original variable-length element is stored in another array. The variable name of this array is DS1_vlen_index." ;
+	int DS1_vlen_index(dim3) ;
+		DS1_vlen_index:orig_datatype = "VLEN_INDEX" ;
+
+// global attributes:
+		:history = "removed date-timex vlen.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"vlen.h5\"}]}]" ;
+}

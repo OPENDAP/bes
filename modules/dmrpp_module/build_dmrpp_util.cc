@@ -1599,7 +1599,6 @@ bool handle_vlen_float_int_internal(hid_t dset_id, BaseType *btp) {
             for (ssize_t i = 0; i < vlen_number_elements; i++) {
 
                 size_t vlen_element_size = vlen_data[i].len * bytes_per_element;
-                vector<char> temp_buf(vlen_element_size);
 
                 // Copy the vlen data to the data buffer.
                 memcpy(temp_data_buf_ptr,vlen_data[i].p,vlen_element_size);

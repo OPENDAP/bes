@@ -1780,16 +1780,16 @@ D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid,  hid_t data
     // So we need to generate a fake enum name.
     // Since we have to make sure each enum name is unique under this group,
     // so we will increase the counter once a new fake enum name is generated.
-    // We will use NoNameEum+number as the EnumName. For example, the name can be  NoNameEum0, NoNameEum1 etc.
+    // We will use NoNameEnum+number as the EnumName. For example, the name can be  NoNameEnum0, NoNameEnum1 etc.
  
     // If HDF5 Enum doesn't have a name, we will create one when mapping to DAP4.
     if (enum_def_name.empty()) {
         if (d4enumdefs->empty()) {
-            enum_def_name = "NoNameEum0";
+            enum_def_name = "NoNameEnum0";
             enum_def = new D4EnumDef(enum_def_name,enum_def_type);
         }
         else {
-            // Search if NoNameEum? is used as an enum name in this group. 
+            // Search if NoNameEnum? is used as an enum name in this group. 
             vector <string> enumdef_names;
             for (auto iter = d4enumdefs->enum_begin(); iter != d4enumdefs->enum_end(); iter++) {
                 enumdef_names.push_back((*iter)->name());

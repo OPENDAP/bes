@@ -10,7 +10,7 @@ your request will FAIL.
 
 You may also try constraining your request to omit the problematic data type(s), 
 or ask for a different encoding such as DAP4 binary or NetCDF-4.
-There are3 incompatible variables referenced in your request.
+There are 3 incompatible variables referenced in your request.
 Incompatible variables: 
 
     Group /b/

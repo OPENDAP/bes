@@ -805,5 +805,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum2n_array.h5.dap.bescmd])
 # VLEN test
 AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen.h5.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dap_ce.bescmd])
 
 
