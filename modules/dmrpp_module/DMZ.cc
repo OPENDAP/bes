@@ -542,10 +542,6 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
     }
     else {
         // Things not arrays must be scalars...
-#if 0
-if(t==dods_enum_c)
-cerr<<"this is an enum type"<<endl;
-#endif
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
             if(btp->type() != t){
@@ -605,17 +601,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
     if (t == dods_enum_c) {
         if (enum_value.empty())
             throw BESInternalError("The variable ' " + name_value + "' lacks an 'enum' attribute.", __FILE__, __LINE__);
-#if 0
-cerr<<"name_value: "<<name_value <<endl;
-cerr<<"group name: "<<group->name() <<endl;
-cerr<<"enum_value: "<<enum_value <<endl;
-D4EnumDefs::D4EnumDefIter d4_enum_def_i, d4_enum_def_e;
-        for (d4_enum_def_i = group->enum_defs()->enum_begin(), d4_enum_def_e = group->enum_defs()->enum_end();d4_enum_def_i != d4_enum_def_e; ++d4_enum_def_i) {
- cerr<<"d4_enum_def_name: "<<(*d4_enum_def_i)->name() <<endl;
-}
-#endif
-
-        D4EnumDef *enum_def;
+        D4EnumDef *enum_def =nullptr;
         if (enum_value[0] == '/')
             enum_def = dmr->root()->find_enum_def(enum_value);
         else
