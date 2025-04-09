@@ -733,7 +733,6 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
  */
 void DMZ::process_enum_def(D4Group *d4g, const xml_node &var_node)
 {
-//cerr<<"coming to process_enum_def"<<endl;
     string enum_def_name;
     string basetype_value;
     for (xml_attribute attr = var_node.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -763,7 +762,6 @@ void DMZ::process_enum_def(D4Group *d4g, const xml_node &var_node)
     vector <int64_t> label_values; 
     for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(),"EnumConst")) {
-//cerr<<"coming enumcost"<<endl;
             string enum_const_def_name;
             string enum_const_def_value;
             for (xml_attribute attr =child.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -784,10 +782,11 @@ void DMZ::process_enum_def(D4Group *d4g, const xml_node &var_node)
             label_values.push_back(stoll(enum_const_def_value));
         }
     }
-    D4EnumDef *enum_def = new D4EnumDef(enum_def_name,enum_def_type);
+    auto enum_def_unique = make_unique<D4EnumDef>(enum_def_name,enum_def_type);
+    auto enum_def = enum_def_unique.get();
     for (unsigned i = 0; i <labels.size(); i++) 
         enum_def->add_value(labels[i],label_values[i]);
-    d4enumdefs->add_enum_nocopy(enum_def);
+    d4enumdefs->add_enum_nocopy(enum_def_unique.release());
    
 }
 
