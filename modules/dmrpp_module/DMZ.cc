@@ -605,7 +605,14 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
     if (t == dods_enum_c) {
         if (enum_value.empty())
             throw BESInternalError("The variable ' " + name_value + "' lacks an 'enum' attribute.", __FILE__, __LINE__);
-//cerr<<"enum_value: "<<enum_value <<endl;
+#if 0
+cerr<<"group name: "<<group->name() <<endl;
+cerr<<"enum_value: "<<enum_value <<endl;
+D4EnumDefs::D4EnumDefIter d4_enum_def_i, d4_enum_def_e;
+        for (d4_enum_def_i = group->enum_defs()->enum_begin(), d4_enum_def_e = group->enum_defs()->enum_end();d4_enum_def_i != d4_enum_def_e; ++d4_enum_def_i) {
+ cerr<<"d4_enum_def_name: "<<(*d4_enum_def_i)->name() <<endl;
+}
+#endif
 
         D4EnumDef *enum_def;
         if (enum_value[0] == '/')
