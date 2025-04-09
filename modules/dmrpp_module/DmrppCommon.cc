@@ -768,7 +768,7 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
     }
 
     if (bt.type() == dods_enum_c) {
-        D4Enum *e = dynamic_cast<D4Enum *>(this);
+        auto e = dynamic_cast<D4Enum *>(this);
         string path = e->enumeration()->name();
         if (e->enumeration()->parent()) {
             // print the FQN for the enum def; D4Group::FQN() includes the trailing '/'
