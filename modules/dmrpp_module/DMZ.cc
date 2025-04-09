@@ -606,6 +606,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
         if (enum_value.empty())
             throw BESInternalError("The variable ' " + name_value + "' lacks an 'enum' attribute.", __FILE__, __LINE__);
 #if 0
+cerr<<"name_value: "<<name_value <<endl;
 cerr<<"group name: "<<group->name() <<endl;
 cerr<<"enum_value: "<<enum_value <<endl;
 D4EnumDefs::D4EnumDefIter d4_enum_def_i, d4_enum_def_e;
@@ -732,6 +733,7 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
  */
 void DMZ::process_enum_def(D4Group *d4g, const xml_node &var_node)
 {
+//cerr<<"coming to process_enum_def"<<endl;
     string enum_def_name;
     string basetype_value;
     for (xml_attribute attr = var_node.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -761,7 +763,7 @@ void DMZ::process_enum_def(D4Group *d4g, const xml_node &var_node)
     vector <int64_t> label_values; 
     for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(),"EnumConst")) {
-
+//cerr<<"coming enumcost"<<endl;
             string enum_const_def_name;
             string enum_const_def_value;
             for (xml_attribute attr =child.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -836,6 +838,9 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, const xml_node &var_node)
         else if (is_eq(child.name(), "Group")) {
             process_group(dmr, new_group, child);
         }
+        else if (is_eq(child.name(), "Enumeration")) {
+            process_enum_def(new_group, child);
+        }
         else if (member_of(variable_elements, child.name())) {
             process_variable(dmr, new_group, nullptr, child);
         }
@@ -868,7 +873,6 @@ void DMZ::build_thin_dmr(DMR *dmr)
         else if (is_eq(child.name(), "Group")) {
             process_group(dmr, dg, child);
         }
-        // TODO Add EnumDef
         else if (is_eq(child.name(), "Enumeration")) {
             process_enum_def(dg, child);
         }
@@ -877,6 +881,7 @@ void DMZ::build_thin_dmr(DMR *dmr)
         }
     }
 }
+
 
 // This method will check if any variable in this file can apply the direct IO feature.
 // If there is none,a global dio flag will be set to false. By checking the  global flag, 
